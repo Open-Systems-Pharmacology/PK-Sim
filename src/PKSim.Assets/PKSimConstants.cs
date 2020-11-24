@@ -1504,7 +1504,7 @@ namespace PKSim.Assets
          public static readonly string Core = "Core";
          public static readonly string UpdatingSimulation = "Updating Simulation...";
          public static readonly string PerformingSimulationClone = "Cloning Simulation...";
-         public static readonly string TransporterType = "Transporter Type";
+         public static readonly string DefaultTransporterDirection = "Default Transporter Direction";
          public static readonly string None = "<None>";
          public static readonly string Unknown = "Unknown";
          public static readonly string NoSystemicProcessAvailable = "Not available in compound";
@@ -2012,7 +2012,7 @@ namespace PKSim.Assets
          public static readonly string CompoundBindingProcess = "Binding process";
          public static readonly string FavoritesToolTip = "Add as favorite";
          public static readonly string NoParameter = "No parameter";
-         public static readonly string TransporterTypeDescription = "<B>Note:</B> Always verify localization of the defined transporter in tissues displaying apico-basal polarity (liver, kidney, intestine, brain). Apical (or basolateral) localization is tissue dependent and may not be consistent in all polarized cell types.";
+         public static readonly string TransporterDirectionDescription = "<B>Note:</B> Always verify localization of the defined transporter in tissues displaying apico-basal polarity (liver, kidney, intestine, brain). Apical (or basolateral) localization is tissue dependent and may not be consistent in all polarized cell types.";
          public static readonly string VisitUs = "Visit us";
          public static readonly string FilePath = "File Path";
          public static readonly string ExportDirectory = "Export Directory";

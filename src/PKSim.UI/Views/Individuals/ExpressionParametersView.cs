@@ -102,6 +102,7 @@ namespace PKSim.UI.Views.Individuals
 
       protected virtual bool ShouldMergeCell(GridColumn column, TExpressionParameterDTO p1, TExpressionParameterDTO p2, bool representSameOrgan)
       {
+         //We only merge compartment values if they are empty (across organ) or if they represent the same organ
          if (Equals(column, _colCompartment.XtraColumn))
             return string.IsNullOrEmpty(p1.CompartmentName) || representSameOrgan;
 
@@ -115,8 +116,7 @@ namespace PKSim.UI.Views.Individuals
 
          if (_gridView.FocusedColumn.ReadOnly)
             e.Cancel = true;
-
-
+         
          e.Cancel = !CanEditValueAt(_gridViewBinder.FocusedElement);
       }
 
