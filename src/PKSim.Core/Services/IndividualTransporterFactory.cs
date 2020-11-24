@@ -47,6 +47,7 @@ namespace PKSim.Core.Services
          //Special direction for vascular endothelium that is independent from the default direction choice
          addGlobalExpression(transporter, VascularEndothelium, TransportDirections.PlasmaToInterstitial, RelExpParam(REL_EXP_VASCULAR_ENDOTHELIUM));
 
+         addVascularSystemInitialConcentration(simulationSubject, transporter);
          addTissueOrgansExpression(simulationSubject, transporter);
          addMucosaExpression(simulationSubject, transporter);
 
@@ -90,6 +91,18 @@ namespace PKSim.Core.Services
          var transporterContainer = zone.EntityAt<TransporterExpressionContainer>(Intracellular, transporter.Name);
          transporterContainer.TransportDirection = TransportDirections.Excretion;
          transporterContainer.RelativeExpression = 1;
+      }
+
+      private void addVascularSystemInitialConcentration(ISimulationSubject simulationSubject, IndividualTransporter transporter)
+      {
+         var organism = simulationSubject.Organism;
+         organism.OrgansByType(OrganType.VascularSystem).Each(organ =>
+         {
+            addContainerExpression(organ.Container(BloodCells), transporter, TransportDirections.None,
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS_TRANSPORTER)
+            );
+
+         });
       }
 
       private void addTissueOrgansExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter)

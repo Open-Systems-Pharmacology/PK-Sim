@@ -3,6 +3,7 @@ using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
@@ -58,22 +59,29 @@ namespace PKSim.UI.Views.Individuals
             .WithCaption(PKSimConstants.UI.TransportDirection)
             .WithOnValueUpdating((o, e) => OnEvent(() => transporterExpressionParametersPresenter.SetTransportDirection(o, e.NewValue)));
 
-         _colDirection.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.False;
+         _colDirection.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.True;
       }
 
-      protected override void OnCellMerge(CellMergeEventArgs e)
+      protected override bool ShouldMergeCell(GridColumn column, TransporterExpressionParameterDTO p1, TransporterExpressionParameterDTO p2,
+         bool representSameOrgan)
       {
-         base.OnCellMerge(e);
-         var p1 = _gridViewBinder.ElementAt(e.RowHandle1);
-         var p2 = _gridViewBinder.ElementAt(e.RowHandle2);
-         //One raw represents an organ with lumen. We only authorize merging if the organ are the same
-         if (p1.IsInOrganWithLumen || p2.IsInOrganWithLumen) 
-            e.Handled = !string.Equals(p1.ContainerName, p2.ContainerName);
+         if (isDirection(column))
+         {
+            var noTransportDirections = p1.IsNotDirection && p2.IsNotDirection;
+            return noTransportDirections && representSameOrgan;
+         }
+
+         if (p1.IsInOrganWithLumen || p2.IsInOrganWithLumen)
+            return representSameOrgan;
+
+         return base.ShouldMergeCell(column, p1, p2, representSameOrgan);
       }
+
+      private bool isDirection(GridColumn column) => Equals(column, _colDirection.XtraColumn);
 
       protected override bool CanEditValueAt(TransporterExpressionParameterDTO expressionParameterDTO)
       {
-         if (!Equals(_gridView.FocusedColumn, _colDirection.XtraColumn))
+         if (!isDirection(_gridView.FocusedColumn))
             return base.CanEditValueAt(expressionParameterDTO);
 
          return allTransportDirectionsFor(expressionParameterDTO).Count > 1;
@@ -81,7 +89,7 @@ namespace PKSim.UI.Views.Individuals
 
       protected override void UpdateExpressionParameterAppearance(TransporterExpressionParameterDTO expressionParameterDTO, RowCellStyleEventArgs e)
       {
-         if (e.Column == _colDirection.XtraColumn)
+         if (isDirection(e.Column))
             _gridView.AdjustAppearance(e, isEnabled: allTransportDirectionsFor(expressionParameterDTO).Count > 1);
          else
             base.UpdateExpressionParameterAppearance(expressionParameterDTO, e);
@@ -120,7 +128,7 @@ namespace PKSim.UI.Views.Individuals
 
       protected override SuperToolTip GetToolTipFor(TransporterExpressionParameterDTO expressionParameterDTO, GridHitInfo hi)
       {
-         if (hi.Column != _colDirection.XtraColumn)
+         if (!isDirection(hi.Column))
             return base.GetToolTipFor(expressionParameterDTO, hi);
 
          //Show direction tool tio

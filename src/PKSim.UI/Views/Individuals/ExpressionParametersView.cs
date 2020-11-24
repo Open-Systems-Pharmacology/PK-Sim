@@ -39,6 +39,8 @@ namespace PKSim.UI.Views.Individuals
       private IGridViewColumn _colGrouping;
       private IGridViewColumn _colParameterValue;
       private IGridViewColumn _colParameterName;
+      private IGridViewColumn _colCompartment;
+
       private readonly ToolTipController _toolTipController = new ToolTipController();
       private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       public bool EmphasisRelativeExpressionParameters { get; set; } = false;
@@ -54,6 +56,7 @@ namespace PKSim.UI.Views.Individuals
 
       private readonly ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>> _screenBinder =
          new ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>>();
+
 
       public ExpressionParametersView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
       {
@@ -81,12 +84,28 @@ namespace PKSim.UI.Views.Individuals
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
          gridView.CustomColumnSort += customColumnSort;
          gridView.GridControl.ToolTipController = _toolTipController;
-         gridView.CellMerge += (o, e) => OnEvent(OnCellMerge, e);
+         gridView.CellMerge += (o, e) => OnEvent(onCellMerge, e);
       }
 
-      protected virtual void OnCellMerge(CellMergeEventArgs e)
+      private void onCellMerge(CellMergeEventArgs e)
       {
-         //nothing to do here
+         var p1 = _gridViewBinder.ElementAt(e.RowHandle1);
+         var p2 = _gridViewBinder.ElementAt(e.RowHandle2);
+
+         if (p1 == null || p2 == null)
+            return;
+
+         var representSameOrgan = string.Equals(p1.ContainerName, p2.ContainerName);
+
+         e.Handled = !ShouldMergeCell(e.Column, p1, p2, representSameOrgan);
+      }
+
+      protected virtual bool ShouldMergeCell(GridColumn column, TExpressionParameterDTO p1, TExpressionParameterDTO p2, bool representSameOrgan)
+      {
+         if (Equals(column, _colCompartment.XtraColumn))
+            return string.IsNullOrEmpty(p1.CompartmentName) || representSameOrgan;
+
+         return true;
       }
 
       private void onShowingEditor(object sender, CancelEventArgs e)
@@ -214,7 +233,7 @@ namespace PKSim.UI.Views.Individuals
             .AsReadOnly();
 
 
-         _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
+         _colCompartment= _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.CompartmentPathDTO))
             .WithCaption(PKSimConstants.UI.Compartment)
             .AsReadOnly();

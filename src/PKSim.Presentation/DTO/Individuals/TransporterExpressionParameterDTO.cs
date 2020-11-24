@@ -8,5 +8,7 @@ namespace PKSim.Presentation.DTO.Individuals
       public bool IsInOrganWithLumen { get; set; }
       public TransporterExpressionContainer TransporterExpressionContainer { get; set; }
       public TransportDirection TransportDirection { get; set; }
+
+      public bool IsNotDirection => TransportDirection == TransportDirections.None;
    }
 }
