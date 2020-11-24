@@ -1026,6 +1026,7 @@ namespace PKSim.Core
          public const string FRACTION_EXPRESSED_INTERSTITIAL = "Fraction expressed interstitial";
          public const string FRACTION_EXPRESSED_APICAL = "Fraction expressed apical";
          public const string FRACTION_EXPRESSED_BASOLATERAL = "Fraction expressed basolateral";
+         public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {
