@@ -101,7 +101,6 @@ namespace PKSim.Core.Services
             addContainerExpression(organ.Container(BloodCells), transporter, TransportDirections.None,
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS_TRANSPORTER)
             );
-
          });
       }
 
@@ -110,7 +109,11 @@ namespace PKSim.Core.Services
          var organism = simulationSubject.Organism;
          organism.NonGITissueContainers.Each(x =>
          {
-            if (x.IsOrganWithLumen())
+            //Special case for brain with a different structure to account for blood brain barrier
+            if (x.IsBrain())
+               addBrainParameters(x, transporter);
+
+            else if (x.IsOrganWithLumen())
                addOrganWithLumenParameters(x, transporter);
             else
                addTissueParameters(x, transporter);
@@ -145,6 +148,29 @@ namespace PKSim.Core.Services
          addContainerExpression(organ.Container(Interstitial), transporter, defaultTransportDirection,
             FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
+         );
+      }
+
+      private void addBrainParameters(IContainer organ, IndividualTransporter transporter)
+      {
+         var transportDirection = _transportContainerUpdater.MapTransportTypeTransportDirection(transporter.TransportType);
+
+         addContainerExpression(organ.Container(Plasma), transporter, transportDirection,
+            FractionParam(FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER, CoreConstants.Rate.ONE_RATE),
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BRAIN_PLASMA_TRANSPORTER)
+         );
+
+         addContainerExpression(organ.Container(BloodCells), transporter, TransportDirections.None,
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS_TRANSPORTER)
+         );
+
+         addContainerExpression(organ.Container(Interstitial), transporter, transportDirection,
+            FractionParam(FRACTION_EXPRESSED_BRAIN_TISSUE, CoreConstants.Rate.PARAM_F_EXP_BRN_TISSUE, editable: false),
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BRAIN_INTERSTITIAL_TRANSPORTER)
+         );
+
+         addContainerExpression(organ.Container(Intracellular), transporter, TransportDirections.None,
+            RelExpParam(REL_EXP)
          );
       }
 

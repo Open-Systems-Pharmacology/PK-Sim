@@ -71,7 +71,7 @@ namespace PKSim.UI.Views.Individuals
             return noTransportDirections && representSameOrgan;
          }
 
-         if (p1.IsInOrganWithLumen || p2.IsInOrganWithLumen)
+         if (p1.IsInOrganWithLumenOrBrain || p2.IsInOrganWithLumenOrBrain)
             return representSameOrgan;
 
          return base.ShouldMergeCell(column, p1, p2, representSameOrgan);

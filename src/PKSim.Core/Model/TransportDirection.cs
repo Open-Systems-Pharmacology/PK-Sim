@@ -21,7 +21,7 @@ namespace PKSim.Core.Model
 
    public static class TransportDirections
    {
-      private static readonly Cache<TransportDirectionId, TransportDirection> _allTransportDirections = new Cache<TransportDirectionId, TransportDirection>(x=>x.TransportDirectionId);
+      private static readonly Cache<TransportDirectionId, TransportDirection> _allTransportDirections = new Cache<TransportDirectionId, TransportDirection>(x=>x.Id);
       public static TransportDirection None = create(TransportDirectionId.None, PKSimConstants.TransportDirection.None, PKSimConstants.TransportDirection.None,ApplicationIcons.EmptyIcon, canBeSetGlobally:false);
       public static TransportDirection Influx = create(TransportDirectionId.Influx, PKSimConstants.TransportDirection.Influx, PKSimConstants.TransportDirection.InfluxDescription, ApplicationIcons.Influx, canBeSetGlobally: true);
       public static TransportDirection Efflux = create(TransportDirectionId.Efflux, PKSimConstants.TransportDirection.Efflux, PKSimConstants.TransportDirection.EffluxDescription, ApplicationIcons.Efflux, canBeSetGlobally: true);
@@ -49,15 +49,15 @@ namespace PKSim.Core.Model
    }
    public class TransportDirection
    {
-      public TransportDirectionId TransportDirectionId { get; }
+      public TransportDirectionId Id { get; }
       public string DisplayName { get; }
       public string Description { get; }
       public ApplicationIcon Icon { get; }
       public bool CanBeSetGlobally { get; }
 
-      public TransportDirection(TransportDirectionId transportDirectionId, string displayName, string description, ApplicationIcon icon, bool canBeSetGlobally)
+      public TransportDirection(TransportDirectionId id, string displayName, string description, ApplicationIcon icon, bool canBeSetGlobally)
       {
-         TransportDirectionId = transportDirectionId;
+         Id = id;
          DisplayName = displayName;
          Description = description;
          Icon = icon;

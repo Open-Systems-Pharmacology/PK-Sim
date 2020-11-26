@@ -20,8 +20,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly List<IPKSimProcess> _allSimulationActiveProcesses;
 
       public SimulationActiveProcessRepository(IFlatProcessRepository flatProcessesRepository,
-                                               IParameterContainerTask parameterContainerTask,
-                                               IFlatProcessToActiveProcessMapper activeProcessMapper)
+         IParameterContainerTask parameterContainerTask,
+         IFlatProcessToActiveProcessMapper activeProcessMapper)
       {
          _flatProcessesRepository = flatProcessesRepository;
          _parameterContainerTask = parameterContainerTask;
@@ -73,11 +73,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return ProcessFor<PKSimTransport>(simulationProcessNameFrom(individualProcessName, compoundProcessName));
       }
 
-
-      private string simulationProcessNameFrom(string compoundProcessName)
-      {
-         return simulationProcessNameFrom(compoundProcessName, compoundProcessName);
-      }
+   
+      private string simulationProcessNameFrom(string compoundProcessName) => simulationProcessNameFrom(compoundProcessName, compoundProcessName);
 
       private string simulationProcessNameFrom(string simulationPrefix, string compoundProcessName)
       {

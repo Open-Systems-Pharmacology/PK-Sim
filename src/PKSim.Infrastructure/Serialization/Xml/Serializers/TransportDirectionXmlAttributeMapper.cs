@@ -9,7 +9,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
    {
       public override string Convert(TransportDirection valueToConvert, SerializationContext context)
       {
-         return valueToConvert.TransportDirectionId.ToString();
+         return valueToConvert.Id.ToString();
       }
 
       public override object ConvertFrom(string attributeValue, SerializationContext context)

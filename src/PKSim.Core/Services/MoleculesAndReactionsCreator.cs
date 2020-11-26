@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
 
 namespace PKSim.Core.Services
@@ -61,7 +61,7 @@ namespace PKSim.Core.Services
          IMoleculeCalculationRetriever moleculeCalculationRetriever,
          IInteractionKineticUpdater interactionKineticUpdater,
          IInteractionTask interactionTask
-         )
+      )
 
       {
          _objectBaseFactory = objectBaseFactory;
@@ -132,7 +132,8 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void addTwoPoreModelsReactionAndMolecules(IReadOnlyList<CompoundProperties> compoundPropertiesList, ModelConfiguration modelConfiguration)
+      private void addTwoPoreModelsReactionAndMolecules(IReadOnlyList<CompoundProperties> compoundPropertiesList,
+         ModelConfiguration modelConfiguration)
       {
          if (modelConfiguration == null)
             return;
@@ -150,7 +151,8 @@ namespace PKSim.Core.Services
       {
          foreach (var reaction in _staticReactionRepository.AllFor(modelName))
          {
-            var reactionBuilder = _processBuilderMapper.ReactionFrom(reaction, moleculeBuilder.Name, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
+            var reactionBuilder =
+               _processBuilderMapper.ReactionFrom(reaction, moleculeBuilder.Name, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
 
             //some reactions are compound-independent (e.g. "FcRn binding endogenous Igg")
             //if we have >1 compounds, we must check that reaction was not added previously
@@ -200,7 +202,8 @@ namespace PKSim.Core.Services
       {
          compoundPropertiesList.Each(compoundProperties =>
          {
-            var drug = _moleculeBuilderFactory.Create(compoundProperties.Compound, compoundProperties, interactionProperties, _moleculeBuildingBlock.FormulaCache);
+            var drug = _moleculeBuilderFactory.Create(compoundProperties.Compound, compoundProperties, interactionProperties,
+               _moleculeBuildingBlock.FormulaCache);
             addMoleculeToBuildingBlock(drug, compoundProperties);
          });
       }
@@ -234,9 +237,11 @@ namespace PKSim.Core.Services
          _moleculeBuildingBlock.Add(moleculeBuilder);
       }
 
-      private void addPartialProcesses(IMoleculeBuilder compoundBuilder, Func<CompoundProcessesSelection, ProcessSelectionGroup> processSelectionGroup, CompoundProperties compoundProperties, Action<IMoleculeBuilder, IReactionMapping, CompoundProperties> addPartialProcess)
+      private void addPartialProcesses(IMoleculeBuilder compoundBuilder,
+         Func<CompoundProcessesSelection, ProcessSelectionGroup> processSelectionGroup, CompoundProperties compoundProperties,
+         Action<IMoleculeBuilder, IReactionMapping, CompoundProperties> addPartialProcess)
       {
-         foreach (var processSelection in  processSelectionGroup(compoundProperties.Processes).AllEnabledProcesses())
+         foreach (var processSelection in processSelectionGroup(compoundProperties.Processes).AllEnabledProcesses())
          {
             addPartialProcess(compoundBuilder, processSelection, compoundProperties);
          }
@@ -275,7 +280,8 @@ namespace PKSim.Core.Services
          _individual.AddMolecule(undefinedLiver);
       }
 
-      private void addMetabolismProcess(IMoleculeBuilder compoundBuilder, IReactionMapping compoundReactionMapping, CompoundProperties compoundProperties)
+      private void addMetabolismProcess(IMoleculeBuilder compoundBuilder, IReactionMapping compoundReactionMapping,
+         CompoundProperties compoundProperties)
       {
          var compound = compoundProperties.Compound;
          var process = compound.ProcessByName(compoundReactionMapping.ProcessName);
@@ -283,8 +289,10 @@ namespace PKSim.Core.Services
             return;
 
          var metabolite = getOrCreateMetaboliteFor(compoundReactionMapping, compoundProperties);
-         var reaction = _processBuilderMapper.MetabolismReactionFrom(process, compoundBuilder, metabolite, compoundReactionMapping.MoleculeName, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
-         _interactionKineticUpdater.UpdateReaction(reaction, compoundReactionMapping.MoleculeName, compound.Name, _simulation, _reactionBuildingBlock.FormulaCache);
+         var reaction = _processBuilderMapper.MetabolismReactionFrom(process, compoundBuilder, metabolite, compoundReactionMapping.MoleculeName,
+            _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
+         _interactionKineticUpdater.UpdateReaction(reaction, compoundReactionMapping.MoleculeName, compound.Name, _simulation,
+            _reactionBuildingBlock.FormulaCache);
          addReactionToBuildingBlock(reaction, compound);
       }
 
@@ -313,7 +321,8 @@ namespace PKSim.Core.Services
             .WithName(compoundReactionMapping.ProductName(CoreConstants.Molecule.Complex));
 
          addMoleculeToBuildingBlock(complex, compoundProperties);
-         var complexReactionFrom = _processBuilderMapper.ComplexReactionFrom(process, drug, complex, compoundReactionMapping.MoleculeName, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
+         var complexReactionFrom = _processBuilderMapper.ComplexReactionFrom(process, drug, complex, compoundReactionMapping.MoleculeName,
+            _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
          addReactionToBuildingBlock(complexReactionFrom, compound);
       }
 
@@ -323,17 +332,13 @@ namespace PKSim.Core.Services
          addIrreversibleInhibition(simulation);
       }
 
-      private void addInduction(Simulation simulation)
-      {
-         addInteraction(simulation, InteractionType.Induction, addInduction);
-      }
+      private void addInduction(Simulation simulation) => addInteraction(simulation, InteractionType.Induction, addInduction);
 
-      private void addIrreversibleInhibition(Simulation simulation)
-      {
+      private void addIrreversibleInhibition(Simulation simulation) =>
          addInteraction(simulation, InteractionType.IrreversibleInhibition, addIrreversibleBindings);
-      }
 
-      private void addInteraction(Simulation simulation, InteractionType interactionType, Action<IMoleculeBuilder, InteractionProcess> addInteractionAction)
+      private void addInteraction(Simulation simulation, InteractionType interactionType,
+         Action<IMoleculeBuilder, InteractionProcess> addInteractionAction)
       {
          if (!simulation.InteractionProperties.Any())
             return;
@@ -352,14 +357,17 @@ namespace PKSim.Core.Services
 
       private void addIrreversibleBindings(IMoleculeBuilder molecule, InteractionProcess irreversibleInteraction)
       {
-         var irreversibleBindingReaction = _processBuilderMapper.InactivationReactionFrom(irreversibleInteraction, molecule, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
-         _interactionKineticUpdater.UpdateReaction(irreversibleBindingReaction, molecule.Name, irreversibleInteraction.ParentCompound.Name, _simulation, _reactionBuildingBlock.FormulaCache);
+         var irreversibleBindingReaction =
+            _processBuilderMapper.InactivationReactionFrom(irreversibleInteraction, molecule, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
+         _interactionKineticUpdater.UpdateReaction(irreversibleBindingReaction, molecule.Name, irreversibleInteraction.ParentCompound.Name,
+            _simulation, _reactionBuildingBlock.FormulaCache);
          _reactionBuildingBlock.Add(irreversibleBindingReaction);
       }
 
       private void addInduction(IMoleculeBuilder molecule, InteractionProcess inductionProcess)
       {
-         var inductionReaction = _processBuilderMapper.InductionReactionFrom(inductionProcess, molecule, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
+         var inductionReaction =
+            _processBuilderMapper.InductionReactionFrom(inductionProcess, molecule, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
          _reactionBuildingBlock.Add(inductionReaction);
       }
 
@@ -369,7 +377,8 @@ namespace PKSim.Core.Services
             return;
 
          var templateReaction = _staticReactionRepository.FindByName(CoreConstants.Reaction.TURNOVER);
-         var reaction = _processBuilderMapper.TurnoverReactionFrom(templateReaction, molecule, _allMoleculeNames, _reactionBuildingBlock.FormulaCache);
+         var reaction = _processBuilderMapper.TurnoverReactionFrom(templateReaction, molecule, _allMoleculeNames,
+            _reactionBuildingBlock.FormulaCache);
          _reactionBuildingBlock.Add(reaction);
          _moleculeWithTurnoverReactions.Add(molecule);
       }
@@ -379,6 +388,8 @@ namespace PKSim.Core.Services
          var compound = compoundProperties.Compound;
          var process = compound.ProcessByName(compoundProcessMapping.ProcessName);
 
+
+         //Passive transport added to the passive transport list
          if (isRenalClearance(compoundProcessMapping))
          {
             var renalPassiveProcess = _processBuilderMapper.PassiveTransportProcessFrom(process, drug.Name, _passiveTransports.FormulaCache);
@@ -388,18 +399,20 @@ namespace PKSim.Core.Services
          }
 
          var transporter = _individual.MoleculeByName<IndividualTransporter>(compoundProcessMapping.MoleculeName);
-         var transporterMoleculeContainer = _processBuilderMapper.ActiveTransportFrom(process, transporter, _moleculeBuildingBlock.FormulaCache);
-         _interactionKineticUpdater.UpdateTransport(transporterMoleculeContainer, compoundProcessMapping.MoleculeName, compound.Name, _simulation, _moleculeBuildingBlock.FormulaCache);
+         var transporterMoleculeContainer =
+            _processBuilderMapper.ActiveTransportFrom(process, transporter, _individual, _moleculeBuildingBlock.FormulaCache);
+         _interactionKineticUpdater.UpdateTransport(transporterMoleculeContainer, compoundProcessMapping.MoleculeName, compound.Name, _simulation,
+            _moleculeBuildingBlock.FormulaCache);
          _parameterIdUpdater.UpdateBuildingBlockId(transporterMoleculeContainer.Parameters, compound);
          drug.AddTransporterMoleculeContainer(transporterMoleculeContainer);
       }
 
       private bool isRenalClearance(IProcessMapping compoundProcessMapping)
       {
-         var systemicPocess = compoundProcessMapping as SystemicProcessSelection;
-         if (systemicPocess == null) return false;
-         return (systemicPocess.ProcessType == SystemicProcessTypes.Renal) ||
-                (systemicPocess.ProcessType == SystemicProcessTypes.GFR);
+         var systemicProcess = compoundProcessMapping as SystemicProcessSelection;
+         if (systemicProcess == null) return false;
+         return (systemicProcess.ProcessType == SystemicProcessTypes.Renal) ||
+                (systemicProcess.ProcessType == SystemicProcessTypes.GFR);
       }
 
       private void addReactionToBuildingBlock(IReactionBuilder reaction, Compound compound)

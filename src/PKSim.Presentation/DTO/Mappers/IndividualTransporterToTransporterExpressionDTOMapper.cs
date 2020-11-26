@@ -38,12 +38,13 @@ namespace PKSim.Presentation.DTO.Mappers
          {
             foreach (var parameter in transporterExpressionContainer.AllParameters())
             {
+               var organ = transporterExpressionContainer.LogicalContainer;
                var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
-               var isInOrganWithLumen = transporterExpressionContainer.LogicalContainer.IsOrganWithLumen();
+               var isInOrganWithLumenOrBrain = organ.IsOrganWithLumen() || organ.IsBrain();
                expressionParameter.TransporterExpressionContainer = transporterExpressionContainer;
-               expressionParameter.IsInOrganWithLumen = isInOrganWithLumen;
+               expressionParameter.IsInOrganWithLumenOrBrain = isInOrganWithLumenOrBrain;
                expressionParameter.TransportDirection =
-                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumen);
+                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumenOrBrain);
                individualTransporterDTO.AddExpressionParameter(expressionParameter);
             }
          }
@@ -62,12 +63,12 @@ namespace PKSim.Presentation.DTO.Mappers
       }
 
       private TransportDirection retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter,
-         bool isInOrganWithLumen = false)
+         bool isInOrganWithLumenOrBrain = false)
       {
          if (parameter.IsNamed(INITIAL_CONCENTRATION))
             return TransportDirections.None;
          //Organ without lumen only show transporter direction at the rel exp parameter level
-         if (!isInOrganWithLumen)
+         if (!isInOrganWithLumenOrBrain)
             return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;
 
          return !parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;

@@ -38,6 +38,10 @@ namespace PKSim.Core.Model
       public static bool IsPlasma(this IContainer container) => container.Name.IsPlasma();
 
       public static bool IsLiver(this IContainer container) => container.Name.IsLiver();
+      
+      public static bool IsKidney(this IContainer container) => container.Name.IsLiver();
+      
+      public static bool IsBrain(this IContainer container) => container.Name.IsBrain();
 
       public static bool IsLumen(this IContainer container) => container.Name.IsLumen();
 
@@ -76,7 +80,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public static bool IsOrganWithLumen(this IContainer container)
       {
-         if (container.IsNamed(CoreConstants.Organ.Kidney))
+         if (container.IsKidney())
             return true;
 
          if (container.ParentContainer.NameIsOneOf(CoreConstants.Organ.Liver, CoreConstants.Compartment.Mucosa))

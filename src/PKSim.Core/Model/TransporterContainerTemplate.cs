@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
-using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Model
 {
@@ -48,8 +47,12 @@ namespace PKSim.Core.Model
       /// </summary>
       public TransportType TransportType { get; set; }
 
+      /// <summary>
+      ///    Transporter type => Direction of transport
+      /// </summary>
+      public TransportDirection TransportDirection { get; set; }
+      
       public override string Name => Gene;
 
-      public TransportDirection TransportDirection { get; set; }
    }
 }

@@ -192,6 +192,8 @@ namespace PKSim.Core
          public static readonly string INITIAL_CONCENTRATION_PLASMA = "InitialConcentrationPlasma";
          public static readonly string INITIAL_CONCENTRATION_ENDOSOME = "InitialConcentrationEndosome";
          public static readonly string INITIAL_CONCENTRATION_PLASMA_TRANSPORTER = "InitialConcentrationPlasma_Transporter";
+         public static readonly string INITIAL_CONCENTRATION_BRAIN_PLASMA_TRANSPORTER = "InitialConcentrationBrainPlasma_Transporter";
+         public static readonly string INITIAL_CONCENTRATION_BRAIN_INTERSTITIAL_TRANSPORTER = "InitialConcentrationBrainInterstitial_Transporter";
          public static readonly string INITIAL_CONCENTRATION_LUMEN = "InitialConcentrationLumen";
          public static readonly string ONE_RATE = "One_Rate";
          public static readonly string ZERO_RATE = "Zero_Rate";
@@ -199,6 +201,7 @@ namespace PKSim.Core
          public static readonly string PARAM_F_EXP_VASC_BASOLATERAL = "PARAM_f_exp_vasc_basolateral";
          public static readonly string PARAM_F_EXP_INTERSTITIAL = "PARAM_f_exp_interstitial";
          public static readonly string PARAM_F_EXP_BASOLATERAL = "PARAM_f_exp_basolateral";
+         public static readonly string PARAM_F_EXP_BRN_TISSUE = "PARAM_f_exp_brn_tissue";
       }
 
       public static class Alias
@@ -706,68 +709,69 @@ namespace PKSim.Core
 
       public static class ORM
       {
-         public static readonly string CompoundActiveProcessPrefix = "COMPOUND_";
-         public static readonly string ViewEventConditions = "VIEW_EVENT_CONDITIONS";
-         public static readonly string ViewEventChangedObjects = "VIEW_EVENT_CHANGED_OBJECTS";
-         public static readonly string ViewApplicationProcesses = "VIEW_APPLICATION_PROCESSES";
-         public static readonly string ViewApplications = "VIEW_APPLICATIONS";
-         public static readonly string ViewMolecules = "VIEW_MOLECULES";
-         public static readonly string ViewProcessDescriptorConditions = "VIEW_PROCESS_DESCRIPTOR_CONDITIONS";
-         public static readonly string ViewContainerTags = "VIEW_CONTAINER_TAGS";
-         public static readonly string ViewParameterRates = "VIEW_PARAMETER_RATES";
-         public static readonly string ViewParameterValues = "VIEW_PARAMETER_VALUES";
-         public static readonly string ViewParameterDistributions = "VIEW_PARAMETER_DISTRIBUTIONS";
-         public static readonly string ViewParametersInContainers = "VIEW_PARAMETERS_IN_CONTAINERS";
-         public static readonly string ViewGroups = "VIEW_GROUPS";
-         public static readonly string ViewPopulationGenders = "VIEW_POPULATION_GENDERS";
-         public static readonly string ViewPopulations = "VIEW_POPULATIONS";
-         public static readonly string ViewPopulationAge = "VIEW_POPULATION_AGE";
-         public static readonly string ViewGenders = "VIEW_GENDERS";
-         public static readonly string ViewSpecies = "VIEW_SPECIES";
-         public static readonly string ViewParameterValueVersions = "VIEW_PARAMETER_VALUE_VERSIONS";
-         public static readonly string ViewPopulationContainers = "VIEW_POPULATION_CONTAINERS";
-         public static readonly string ViewContainers = "VIEW_CONTAINERS";
-         public static readonly string ViewRepresentationInfos = "VIEW_REPRESENTATION_DATA";
-         public static readonly string ViewRateObjectPaths = "VIEW_RATE_OBJECT_PATHS";
-         public static readonly string ViewCalculationMethodRateFormula = "VIEW_CALCULATION_METHOD_RATE_FORMULA";
-         public static readonly string ViewModelContainers = "VIEW_MODEL_CONTAINERS";
-         public static readonly string ViewModelProcesses = "VIEW_MODEL_PROCESSES";
-         public static readonly string ViewSchemaItems = "VIEW_SCHEMA_ITEM_CONTAINERS";
-         public static readonly string ViewObservers = "VIEW_OBSERVERS";
-         public static readonly string ViewObserverDescriptorConditions = "VIEW_OBSERVER_DESCRIPTOR_CONDITIONS";
-         public static readonly string ViewIndividualActiveTransports = "VIEW_INDIVIDUAL_ACTIVE_TRANSPORTS";
-         public static readonly string ViewProteinSynonyms = "VIEW_PROTEIN_SYNONYMS";
-         public static readonly string ViewParameterRHS = "VIEW_PARAMETER_RHS";
-         public static readonly string UsageInIndividualRequired = "REQUIRED";
-         public static readonly string UsageInIndividualOptional = "OPTIONAL";
-         public static readonly string UsageInIndividualExtended = "EXTENDED";
-         public static readonly string ViewCalculationMethods = "VIEW_CALCULATION_METHODS";
-         public static readonly string ViewModels = "VIEW_MODELS";
-         public static readonly string ViewModelSpecies = "VIEW_MODEL_SPECIES";
-         public static readonly string ViewModelCalculationMethods = "VIEW_MODEL_CALCULATION_METHODS";
-         public static readonly string ViewProcesses = "VIEW_PROCESSES";
-         public static readonly string ViewObjectPaths = "VIEW_OBJECT_PATHS";
-         public static readonly string ViewNeighborhoods = "VIEW_NEIGHBORHOODS";
-         public static readonly string ContainerMe = ".";
-         public static readonly string ProcessMoleculeDirectionIn = "IN";
-         public static readonly string ProcessMoleculeDirectionOut = "OUT";
-         public static readonly string ProcessMoleculeDirectionModifier = "MODIFIER";
-         public static readonly string ViewModelObservers = "VIEW_MODEL_OBSERVERS";
-         public static readonly string ViewFormulationRoutes = "VIEW_FORMULATION_ROUTES";
-         public static readonly string ViewOrganTypes = "VIEW_ORGAN_TYPES";
-         public static readonly string ViewSpeciesCalculationMethods = "VIEW_SPECIES_CALCULATION_METHODS";
-         public static readonly string ViewCompoundProcessParameterMappings = "VIEW_COMPOUND_PROCESS_PARAMETER_MAPPING";
-         public static readonly string ViewMoleculeStartFormulas = "VIEW_MOLECULE_START_FORMULAS";
-         public static readonly string ViewOntogenies = "VIEW_ONTOGENIES";
-         public static readonly string ViewCategory = "VIEW_CATEGORIES";
-         public static readonly string ViewCalculationMethodParameterRates = "VIEW_CALCULATION_METHOD_PARAMETER_RATES";
-         public static readonly string ViewCalculationMethodParameterDescriptorConditions = "VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS";
-         public static readonly string ViewDynamicFormulaCriteriaRepository = "VIEW_CALCULATION_METHOD_RATE_DESCRIPTOR_CONDITIONS";
-         public static readonly string ViewModelPassiveTransportMoleculeNames = "VIEW_MODEL_TRANSPORT_MOLECULE_NAMES";
-         public static readonly string ViewModelContainerMolecules = "VIEW_MODEL_CONTAINER_MOLECULES";
-         public static readonly string ViewReactionPartners = "VIEW_REACTION_PARTNERS";
-         public static readonly string ViewMoleculeParameters = "VIEW_MOLECULE_PARAMETERS";
-         public static readonly string ViewValueOrigin = "VIEW_VALUE_ORIGINS";
+         public const string CompoundActiveProcessPrefix = "COMPOUND_";
+         public const string ViewEventConditions = "VIEW_EVENT_CONDITIONS";
+         public const string ViewEventChangedObjects = "VIEW_EVENT_CHANGED_OBJECTS";
+         public const string ViewApplicationProcesses = "VIEW_APPLICATION_PROCESSES";
+         public const string ViewApplications = "VIEW_APPLICATIONS";
+         public const string ViewMolecules = "VIEW_MOLECULES";
+         public const string ViewProcessDescriptorConditions = "VIEW_PROCESS_DESCRIPTOR_CONDITIONS";
+         public const string ViewContainerTags = "VIEW_CONTAINER_TAGS";
+         public const string ViewParameterRates = "VIEW_PARAMETER_RATES";
+         public const string ViewParameterValues = "VIEW_PARAMETER_VALUES";
+         public const string ViewParameterDistributions = "VIEW_PARAMETER_DISTRIBUTIONS";
+         public const string ViewParametersInContainers = "VIEW_PARAMETERS_IN_CONTAINERS";
+         public const string ViewGroups = "VIEW_GROUPS";
+         public const string ViewPopulationGenders = "VIEW_POPULATION_GENDERS";
+         public const string ViewPopulations = "VIEW_POPULATIONS";
+         public const string ViewPopulationAge = "VIEW_POPULATION_AGE";
+         public const string ViewGenders = "VIEW_GENDERS";
+         public const string ViewSpecies = "VIEW_SPECIES";
+         public const string ViewParameterValueVersions = "VIEW_PARAMETER_VALUE_VERSIONS";
+         public const string ViewPopulationContainers = "VIEW_POPULATION_CONTAINERS";
+         public const string ViewContainers = "VIEW_CONTAINERS";
+         public const string ViewRepresentationInfos = "VIEW_REPRESENTATION_DATA";
+         public const string ViewRateObjectPaths = "VIEW_RATE_OBJECT_PATHS";
+         public const string ViewCalculationMethodRateFormula = "VIEW_CALCULATION_METHOD_RATE_FORMULA";
+         public const string ViewModelContainers = "VIEW_MODEL_CONTAINERS";
+         public const string ViewModelProcesses = "VIEW_MODEL_PROCESSES";
+         public const string ViewSchemaItems = "VIEW_SCHEMA_ITEM_CONTAINERS";
+         public const string ViewObservers = "VIEW_OBSERVERS";
+         public const string ViewObserverDescriptorConditions = "VIEW_OBSERVER_DESCRIPTOR_CONDITIONS";
+         public const string ViewIndividualActiveTransports = "VIEW_INDIVIDUAL_ACTIVE_TRANSPORTS";
+         public const string ViewProteinSynonyms = "VIEW_PROTEIN_SYNONYMS";
+         public const string ViewParameterRHS = "VIEW_PARAMETER_RHS";
+         public const string UsageInIndividualRequired = "REQUIRED";
+         public const string UsageInIndividualOptional = "OPTIONAL";
+         public const string UsageInIndividualExtended = "EXTENDED";
+         public const string ViewCalculationMethods = "VIEW_CALCULATION_METHODS";
+         public const string ViewModels = "VIEW_MODELS";
+         public const string ViewModelSpecies = "VIEW_MODEL_SPECIES";
+         public const string ViewModelCalculationMethods = "VIEW_MODEL_CALCULATION_METHODS";
+         public const string ViewProcesses = "VIEW_PROCESSES";
+         public const string ViewObjectPaths = "VIEW_OBJECT_PATHS";
+         public const string ViewNeighborhoods = "VIEW_NEIGHBORHOODS";
+         public const string ContainerMe = ".";
+         public const string ProcessMoleculeDirectionIn = "IN";
+         public const string ProcessMoleculeDirectionOut = "OUT";
+         public const string ProcessMoleculeDirectionModifier = "MODIFIER";
+         public const string ViewModelObservers = "VIEW_MODEL_OBSERVERS";
+         public const string ViewFormulationRoutes = "VIEW_FORMULATION_ROUTES";
+         public const string ViewOrganTypes = "VIEW_ORGAN_TYPES";
+         public const string ViewSpeciesCalculationMethods = "VIEW_SPECIES_CALCULATION_METHODS";
+         public const string ViewCompoundProcessParameterMappings = "VIEW_COMPOUND_PROCESS_PARAMETER_MAPPING";
+         public const string ViewMoleculeStartFormulas = "VIEW_MOLECULE_START_FORMULAS";
+         public const string ViewOntogenies = "VIEW_ONTOGENIES";
+         public const string ViewCategory = "VIEW_CATEGORIES";
+         public const string ViewCalculationMethodParameterRates = "VIEW_CALCULATION_METHOD_PARAMETER_RATES";
+         public const string ViewCalculationMethodParameterDescriptorConditions = "VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS";
+         public const string ViewDynamicFormulaCriteriaRepository = "VIEW_CALCULATION_METHOD_RATE_DESCRIPTOR_CONDITIONS";
+         public const string ViewModelPassiveTransportMoleculeNames = "VIEW_MODEL_TRANSPORT_MOLECULE_NAMES";
+         public const string ViewModelContainerMolecules = "VIEW_MODEL_CONTAINER_MOLECULES";
+         public const string ViewReactionPartners = "VIEW_REACTION_PARTNERS";
+         public const string ViewMoleculeParameters = "VIEW_MOLECULE_PARAMETERS";
+         public const string ViewValueOrigin = "VIEW_VALUE_ORIGINS";
+         public const string ViewTransportDirections = "VIEW_TRANSPORT_DIRECTIONS";
       }
 
       public static class Organ
@@ -1027,6 +1031,7 @@ namespace PKSim.Core
          public const string FRACTION_EXPRESSED_APICAL = "Fraction expressed apical";
          public const string FRACTION_EXPRESSED_BASOLATERAL = "Fraction expressed basolateral";
          public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
+         public const string FRACTION_EXPRESSED_BRAIN_TISSUE = "Fraction expressed brain tissue";
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {

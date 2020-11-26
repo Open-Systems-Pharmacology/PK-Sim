@@ -72,7 +72,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
             from flatTemplatePerCompartment in flatTemplatePerOrgan.GroupBy(x => x.CompartmentName)
             from flatTemplatePerMembrane in flatTemplatePerCompartment.GroupBy(x => x.MembraneLocation)
             from flatTemplatePerTransport in flatTemplatePerMembrane.GroupBy(x => x.TransportType)
-            select flatTemplatePerTransport.ToList();
+            from flatTemplatePerTransportDirection in flatTemplatePerTransport.GroupBy(x => x.TransportDirection)
+            select flatTemplatePerTransportDirection.ToList();
 
          flatTemplatesGroupByKeys.Each(t => _allTemplates.Add(mapFrom(t)));
       }
@@ -88,7 +89,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
             Gene = flatTemplate.Gene,
             OrganName = flatTemplate.OrganName,
             Species = flatTemplate.Species,
-            TransportType = flatTemplate.TransportType
+            TransportType = flatTemplate.TransportType,
+            TransportDirection = TransportDirections.ById(flatTemplate.TransportDirection)
+            
          };
 
          flatTemplatesGroupByKeys.Select(x => x.ProcessName).Each(template.AddProcessName);

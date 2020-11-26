@@ -24,7 +24,7 @@ namespace PKSim.Core.Services
       void UpdateReaction(IReactionBuilder reaction, string enzymeName, string compoundName, Simulation simulation, IFormulaCache formulaCache);
 
       /// <summary>
-      ///    Updates the given transport process <paramref name="transporterMoleculeContainer" /> triggerd by the
+      ///    Updates the given transport process <paramref name="transporterMoleculeContainer" /> triggered by the
       ///    <paramref name="compoundName" />  and the <paramref name="transportedMolecule" /> (e.g. Drug) with the required
       ///    interaction terms
       ///    based on the interaction defined in the <paramref name="simulation" />
