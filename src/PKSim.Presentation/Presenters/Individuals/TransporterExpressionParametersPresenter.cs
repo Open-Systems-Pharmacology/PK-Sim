@@ -7,7 +7,7 @@ using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
-using static PKSim.Core.Model.TransportDirectionId;
+using static PKSim.Core.Model.TransportDirections;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -21,29 +21,16 @@ namespace PKSim.Presentation.Presenters.Individuals
       ITransporterExpressionParametersPresenter
    {
       private readonly ITransportDirectionRepository _transportDirectionRepository;
-      private static readonly TransportDirectionId[] PLASMA_DIRECTIONS = {InfluxPlasmaToInterstitial, EffluxInterstitialToPlasma};
-      private static readonly TransportDirectionId[] BLOOD_CELLS_DIRECTIONS = {InfluxPlasmaToBloodCells, EffluxBloodCellsToPlasma};
-
-      private static readonly TransportDirectionId[] CELLS_DIRECTIONS =
-      {
-         InfluxInterstitialToIntracellular, EffluxIntracellularToInterstitial,
-         PgpIntracellularToInterstitial
-      };
-
-      private static readonly TransportDirectionId[] BRAIN_TISSUE_DIRECTIONS =
-      {
-         InfluxBrainInterstitialToTissue, EffluxBrainTissueToInterstitial,
-         PgpBrainTissueToInterstitial
-      };
-
-      private static readonly TransportDirectionId[] BRAIN_BBB_DIRECTIONS =
-      {
-         InfluxBrainPlasmaToInterstitial, EffluxBrainInterstitialToPlasma,
-         PgpBrainInterstitialToPlasma
-      };
 
       private static readonly TransportDirectionId[][] ALL_DIRECTIONS =
-         {PLASMA_DIRECTIONS, BLOOD_CELLS_DIRECTIONS, CELLS_DIRECTIONS, BRAIN_TISSUE_DIRECTIONS, BRAIN_BBB_DIRECTIONS};
+      {
+         PLASMA_DIRECTIONS, 
+         BLOOD_CELLS_DIRECTIONS, 
+         MUCOSA_DIRECTIONS,
+         TISSUE_DIRECTIONS, 
+         BRAIN_TISSUE_DIRECTIONS, 
+         BRAIN_BBB_DIRECTIONS
+      };
 
       public TransporterExpressionParametersPresenter(
          ITransporterExpressionParametersView view,
@@ -66,7 +53,7 @@ namespace PKSim.Presentation.Presenters.Individuals
                return possibleDirections.Select(x => _transportDirectionRepository.ById(x)).ToList();
          }
 
-         return new[] { direction };
+         return new[] {direction};
       }
    }
 }

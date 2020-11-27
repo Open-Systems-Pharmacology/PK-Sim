@@ -33,13 +33,13 @@ namespace PKSim.Core.Model
 
       public static bool IsVascularEndothelium(this IContainer container) => container.Name.IsVascularEndothelium();
 
-      public static bool IsBloodCell(this IContainer container) => container.Name.IsBloodCell();
+      public static bool IsBloodCell(this IContainer container) => container.Name.IsBloodCells();
 
       public static bool IsPlasma(this IContainer container) => container.Name.IsPlasma();
 
       public static bool IsLiver(this IContainer container) => container.Name.IsLiver();
       
-      public static bool IsKidney(this IContainer container) => container.Name.IsLiver();
+      public static bool IsKidney(this IContainer container) => container.Name.IsKidney();
       
       public static bool IsBrain(this IContainer container) => container.Name.IsBrain();
 

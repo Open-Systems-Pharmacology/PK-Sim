@@ -1,3 +1,4 @@
+using System;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Model
@@ -30,5 +31,12 @@ namespace PKSim.Core.Model
       ///    The parent is typically a compartment so we go one level up (parent.parent) and get its name.
       /// </summary>
       public string ContainerName => LogicalContainer?.Name ?? string.Empty;
+
+
+      /// <summary>
+      ///    Returns the name of the physical container where the expression container is defined.
+      ///    The parent is typically a compartment 
+      /// </summary>
+      public string CompartmentName => ParentContainer?.Name ?? string.Empty;
    }
 }

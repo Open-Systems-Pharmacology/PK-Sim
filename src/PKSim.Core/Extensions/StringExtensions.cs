@@ -14,7 +14,7 @@ namespace PKSim.Core.Extensions
       public static bool IsSurrogate(this string containerName)
       {
          {
-            return containerName.IsPlasma() || containerName.IsBloodCell() ||
+            return containerName.IsPlasma() || containerName.IsBloodCells() ||
                    containerName.IsEndosome() || containerName.IsVascularEndothelium();
          }
       }
@@ -31,9 +31,11 @@ namespace PKSim.Core.Extensions
 
       public static bool IsVascularEndothelium(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.VascularEndothelium);
 
-      public static bool IsBloodCell(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.BloodCells);
+      public static bool IsBloodCells(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.BloodCells);
 
       public static bool IsPlasma(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.Plasma);
+      
+      public static bool IsInterstitial(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.Interstitial);
 
       public static bool IsLumen(this string containerName) => string.Equals(containerName, CoreConstants.Organ.Lumen);
 

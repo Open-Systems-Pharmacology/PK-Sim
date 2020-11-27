@@ -23,7 +23,7 @@ namespace PKSim.Core
          _repository = A.Fake<ITransporterContainerTemplateRepository>();
          _eventPublisher = A.Fake<IEventPublisher>();
          _transportDirectionRepository= A.Fake<ITransportDirectionRepository>();
-         sut = new TransportContainerUpdater(_repository, _eventPublisher,_transportDirectionRepository);
+         sut = new TransportContainerUpdater(_repository, _eventPublisher);
       }
    }
 
@@ -64,7 +64,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetDefaultSettingsForTransporter(_individual, _transporter, _species, _transporter.Name);
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter,  _transporter.Name);
       }
 
       [Observation]
@@ -112,7 +112,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetDefaultSettingsForTransporter (_individual, _transporter, _species, _transporterName);
+         sut.SetDefaultSettingsForTransporter (_individual, _transporter,  _transporterName);
       }
 
       [Observation]

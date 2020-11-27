@@ -149,7 +149,7 @@ namespace PKSim.Core.Services
 
       public ICommand SetTransporterTypeFor(IndividualTransporter transporter, TransportType transportType)
       {
-         return new SetTransportTypeInAllContainerCommand(transporter, transportType, _executionContext).Run(_executionContext);
+         return new SetTransportTypeCommand(transporter, transportType, _executionContext).Run(_executionContext);
       }
 
       private void setDefaultFor(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)
@@ -163,7 +163,7 @@ namespace PKSim.Core.Services
       {
          if (!(molecule is IndividualTransporter transporter)) return;
 
-         _transportContainerUpdater.SetDefaultSettingsForTransporter(simulationSubject, transporter, simulationSubject.Species.Name, moleculeName);
+         _transportContainerUpdater.SetDefaultSettingsForTransporter(simulationSubject, transporter,  moleculeName);
       }
 
       private void setDefaultOntogeny(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)
