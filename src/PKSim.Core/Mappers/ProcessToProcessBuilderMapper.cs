@@ -96,7 +96,7 @@ namespace PKSim.Core.Mappers
    public class ProcessToProcessBuilderMapper : IProcessToProcessBuilderMapper
    {
       private readonly ICloner _cloner;
-      private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      private readonly ITransportTemplateRepository _transportTemplateRepository;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IParameterContainerTask _parameterContainerTask;
@@ -104,14 +104,14 @@ namespace PKSim.Core.Mappers
 
       public ProcessToProcessBuilderMapper(
          ICloner cloner,
-         ITransporterContainerTemplateRepository transporterContainerTemplateRepository,
+         ITransportTemplateRepository transportTemplateRepository,
          ISimulationActiveProcessRepository simulationActiveProcessRepository,
          IParameterSetUpdater parameterSetUpdater,
          IObjectBaseFactory objectBaseFactory,
          IParameterContainerTask parameterContainerTask)
       {
          _cloner = cloner;
-         _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
+         _transportTemplateRepository = transportTemplateRepository;
          _simulationActiveProcessRepository = simulationActiveProcessRepository;
          _parameterSetUpdater = parameterSetUpdater;
          _objectBaseFactory = objectBaseFactory;
@@ -319,26 +319,32 @@ namespace PKSim.Core.Mappers
       private IReadOnlyCollection<InducedProcess> allInducedProcessesFor(IndividualTransporter transporter, Individual individual)
       {
          var inducedProcessCache = new Cache<string, InducedProcess>(x => x.Name, x => null);
-         foreach (var transporterContainer in individual.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
+         var allTransporterContainers = individual.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter)
+            .Where(x => x.TransportDirection != TransportDirectionId.None).ToList();
+
+         //Global containers surrogate do not have a logical container associated
+         var allOrganNames = new HashSet<string>(allTransporterContainers.Select(x => x.LogicalContainerName).Where(x => !string.IsNullOrEmpty(x)));
+
+         foreach (var transporterContainer in allTransporterContainers)
          {
-            if (transporterContainer.TransportDirection == TransportDirectionId.None)
-               continue;
+            var allTransportTemplates = _transportTemplateRepository.All()
+               .Where(x => x.TransportDirection == transporterContainer.TransportDirection)
+               //For apical transport for Lumen => Mucosa, the compartment is the name of our mapping
+               .Where(x => (x.SourceOrgan == transporterContainer.LogicalContainerName ||
+                            x.SourceCompartment == transporterContainer.LogicalContainerName));
 
-            var allProcesses = _transporterContainerTemplateRepository.All()
-               .Where(x => x.Species == individual.Species.Name)
-               .Where(x => x.OrganName == transporterContainer.ContainerName)
-               .Where(x => x.TransportDirection == transporterContainer.TransportDirection);
-
-            foreach (var process in allProcesses.SelectMany(x=>x.ProcessNames))
+            foreach (var transportTemplate in allTransportTemplates)
             {
-               var inducedProcess = inducedProcessCache[process];
+               var inducedProcess = inducedProcessCache[transportTemplate.ProcessName];
                if (inducedProcess == null)
                {
-                  inducedProcess = new InducedProcess {Name = process };
+                  inducedProcess = new InducedProcess {Name = transportTemplate.ProcessName};
+                  inducedProcess.AddOrgansToExclude(allOrganNames);
                   inducedProcessCache.Add(inducedProcess);
                }
 
-               inducedProcess.AddOrgan(transporterContainer.ContainerName);
+               inducedProcess.AddSourceOrgan(transportTemplate.SourceOrgan);
+               inducedProcess.AddTargetOrgan(transportTemplate.TargetOrgan);
             }
          }
 
@@ -347,17 +353,16 @@ namespace PKSim.Core.Mappers
 
       private void updateTransporterTagsFor(ITransportBuilder transporterBuilder, InducedProcess inducedProcess)
       {
-         //if one organ was specified already, no need to create the list of not tags!
-         var allOrgans = inducedProcess.Organs;
-         var allMatchTags = transporterBuilder.SourceCriteria.OfType<MatchTagCondition>()
-            .Select(x => x.Tag);
+         var allSourceTags = transporterBuilder.SourceCriteria.OfType<TagCondition>()
+            .Select(x => x.Tag).ToList();
 
-         if (allMatchTags.Intersect(allOrgans).Any())
+         //More than one tag coming from the database => This is a specific transport and we do not need to do anything
+         if (allSourceTags.Count > 1)
             return;
 
-         foreach (var organName in allOrgans)
+         foreach (var organName in inducedProcess.OrgansToExclude)
          {
-            transporterBuilder.SourceCriteria.Add(new MatchTagCondition(organName));
+            transporterBuilder.SourceCriteria.Add(new NotMatchTagCondition(organName));
          }
       }
 
@@ -413,10 +418,22 @@ namespace PKSim.Core.Mappers
       private class InducedProcess : IWithName
       {
          public string Name { get; set; }
-         private readonly HashSet<string> _organs = new HashSet<string>();
-         public IReadOnlyCollection<string> Organs => _organs;
+         private readonly HashSet<string> _sourceOrgans = new HashSet<string>();
+         private readonly HashSet<string> _targetOrgans = new HashSet<string>();
+         private readonly List<string> _organsToExclude = new List<string>();
+         public IReadOnlyCollection<string> SourceOrgans => _sourceOrgans;
+         public IReadOnlyCollection<string> TargetOrgans => _targetOrgans;
+         public IReadOnlyList<string> OrgansToExclude => _organsToExclude;
 
-         public void AddOrgan(string organName) => _organs.Add(organName);
+         public void AddOrgansToExclude(IEnumerable<string> organsToExclude) => _organsToExclude.AddRange(organsToExclude);
+
+         public void AddSourceOrgan(string organName)
+         {
+            _sourceOrgans.Add(organName);
+            _organsToExclude.Remove(organName);
+         }
+
+         public void AddTargetOrgan(string organName) => _targetOrgans.Add(organName);
       }
    }
 }

@@ -20,7 +20,7 @@ namespace PKSim.Core
       protected IParameterSetUpdater _parameterSetUpdater;
       protected IObjectBaseFactory _objectBaseFactory;
       private IParameterContainerTask _parameterContainerTask;
-      private ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      private ITransportTemplateRepository _transportTemplateRepository;
 
       protected override void Context()
       {
@@ -29,8 +29,8 @@ namespace PKSim.Core
          _parameterSetUpdater = A.Fake<IParameterSetUpdater>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _parameterContainerTask = A.Fake<IParameterContainerTask>();
-         _transporterContainerTemplateRepository= A.Fake<ITransporterContainerTemplateRepository>();
-         sut = new ProcessToProcessBuilderMapper(_cloneManager,_transporterContainerTemplateRepository, _simulationActiveProcessRepository, _parameterSetUpdater, _objectBaseFactory, _parameterContainerTask);
+         _transportTemplateRepository= A.Fake<ITransportTemplateRepository>();
+         sut = new ProcessToProcessBuilderMapper(_cloneManager,_transportTemplateRepository, _simulationActiveProcessRepository, _parameterSetUpdater, _objectBaseFactory, _parameterContainerTask);
       }
    }
 
@@ -182,7 +182,7 @@ namespace PKSim.Core
          _enzymeName = "P1";
          _formulaCache = new FormulaCache();
          _kinetic = new ExplicitFormula().WithId("trala");
-         _kinetic.AddObjectPath(new FormulaUsablePath(new[] {"Organism", CoreConstants.KeyWords.Molecule}));
+         _kinetic.AddObjectPath(new FormulaUsablePath("Organism", CoreConstants.KeyWords.Molecule));
          _kinetic.AddObjectPath(new FormulaUsablePath(new[] {"Organism", CoreConstants.KeyWords.Protein}));
          _parameterFormula = new ExplicitFormula();
          _parameterFormula.AddObjectPath(new FormulaUsablePath(new[] {"Liver", CoreConstants.KeyWords.Molecule}));

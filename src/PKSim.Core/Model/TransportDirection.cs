@@ -163,10 +163,10 @@ namespace PKSim.Core.Model
 
          var organ = expressionContainer.LogicalContainer;
          if (organ.IsBrain())
-            return expressionContainer.IsPlasma()
+            return expressionContainer.CompartmentName.IsPlasma()
                ? DefaultBloodBrainBarrierDirectionFor(transportType)
                : DefaultBrainTissueDirectionFor(transportType);
-         
+
          if (organ.IsOrganWithLumen())
          {
             if (expressionContainer.CompartmentName.IsInterstitial())
@@ -186,6 +186,5 @@ namespace PKSim.Core.Model
       public string DisplayName { get; set; }
       public string Description { get; set; }
       public string Icon { get; set; }
-      public bool Global { get; set; }
    }
 }

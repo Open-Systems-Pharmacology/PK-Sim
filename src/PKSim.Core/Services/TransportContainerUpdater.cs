@@ -40,7 +40,7 @@ namespace PKSim.Core.Services
          {
             //there is a db template
             var transporterTemplate = _transporterContainerTemplateRepository
-               .TransportersFor(speciesName, transporterContainer.ContainerName, transporterName)
+               .TransportersFor(speciesName, transporterContainer.LogicalContainerName, transporterName)
                .FirstOrDefault();
 
             updateTransporterContainerFromTemplate(transporterContainer, transporterTemplate, transporter.TransportType);

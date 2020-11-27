@@ -30,8 +30,18 @@ namespace PKSim.Core.Model
       ///    Returns the name of the logical container where the expression container is defined.
       ///    The parent is typically a compartment so we go one level up (parent.parent) and get its name.
       /// </summary>
-      public string ContainerName => LogicalContainer?.Name ?? string.Empty;
+      public string LogicalContainerName
+      {
+         get
+         {
+            var name = LogicalContainer?.Name;
+            //We do not want to return any name for surrogate container such as BloodCells or VascularEndothelium
+            if (string.Equals(name, Constants.ROOT))
+               return string.Empty;
 
+            return name ?? string.Empty;
+         }
+      }
 
       /// <summary>
       ///    Returns the name of the physical container where the expression container is defined.

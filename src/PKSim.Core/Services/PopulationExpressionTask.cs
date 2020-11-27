@@ -75,7 +75,7 @@ namespace PKSim.Core.Services
          return addMoleculeToPopulation(molecule, population, baseCommand);
       }
 
-      public ICommand RenameMolecule(IndividualMolecule molecule, Population simulationSubject, string newName)
+      public ICommand RenameMolecule(IndividualMolecule molecule, string newName, Population simulationSubject)
       {
          return new RenameMoleculeInSimulationSubjectCommand(molecule, simulationSubject, newName, _executionContext).Run(_executionContext);
       }

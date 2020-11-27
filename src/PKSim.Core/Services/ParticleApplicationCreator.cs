@@ -77,7 +77,7 @@ namespace PKSim.Core.Services
 
          //// add insoluble molecule for particle bin
          //var appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(0)); //TODO replace insolubleMoleculeName(0) with const string
-         //appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(CoreConstants.ContainerName.InsolubleDrug);
+         //appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(CoreConstants.OrganName.InsolubleDrug);
          //appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
          //applicationBuilder.AddMolecule(appMoleculeBuilder);
 

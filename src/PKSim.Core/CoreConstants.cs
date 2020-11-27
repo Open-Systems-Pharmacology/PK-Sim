@@ -772,6 +772,7 @@ namespace PKSim.Core
          public const string ViewMoleculeParameters = "VIEW_MOLECULE_PARAMETERS";
          public const string ViewValueOrigin = "VIEW_VALUE_ORIGINS";
          public const string ViewTransportDirections = "VIEW_TRANSPORT_DIRECTIONS";
+         public const string ViewTransports = "VIEW_TRANSPORTS";
       }
 
       public static class Organ

@@ -44,7 +44,7 @@ namespace PKSim.Core.Commands
          _oldTransportType = _individualTransporter.TransportType;
          _individualTransporter.TransportType = _transportType;
          var transportContainerUpdater = context.Resolve<ITransportContainerUpdater>();
-         transportContainerUpdater.SetDefaultSettingsForTransporter(_individual, _individualTransporter, _individual.Species.Name);
+         transportContainerUpdater.SetDefaultSettingsForTransporter(_individual, _individualTransporter, _transportType);
          Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_individualTransporter.Name, _oldTransportType.ToString(), _transportType.ToString());
       }
 

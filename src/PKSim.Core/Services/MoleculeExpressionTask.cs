@@ -4,7 +4,6 @@ using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Services
 {
@@ -56,6 +55,8 @@ namespace PKSim.Core.Services
 
       ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults,
          TSimulationSubject simulationSubject);
+
+      ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject);
    }
 
    public class MoleculeExpressionTask<TSimulationSubject> : IMoleculeExpressionTask<TSimulationSubject> where TSimulationSubject : ISimulationSubject
@@ -118,11 +119,16 @@ namespace PKSim.Core.Services
          return _simulationSubjectExpressionTask.EditMolecule(moleculeToEdit, editedMolecule, queryResults, simulationSubject);
       }
 
+      public ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject)
+      {
+         return _simulationSubjectExpressionTask.RenameMolecule(molecule,  newName, simulationSubject);
+      }
+
       public ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule molecule, QueryExpressionResults queryResults)
       {
          var moleculeName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
          //Required to rename here as we created a temp molecule earlier to create the structure;
-         _simulationSubjectExpressionTask.RenameMolecule(molecule, simulationSubject, moleculeName);
+         _simulationSubjectExpressionTask.RenameMolecule(molecule, moleculeName, simulationSubject);
          molecule.QueryConfiguration = queryResults.QueryConfiguration;
 
          var command = _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject, queryResults);
