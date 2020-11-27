@@ -43,7 +43,7 @@ namespace PKSim.Core
 
          _transporterRelativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
          _transporterExpressionContainer = new TransporterExpressionContainer().WithName("TRANS");
-         _transporterExpressionContainer.TransportDirection = TransportDirections.Influx;
+         _transporterExpressionContainer.TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular;
 
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 

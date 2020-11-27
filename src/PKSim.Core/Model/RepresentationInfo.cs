@@ -25,6 +25,7 @@ namespace PKSim.Core.Model
       ONTOGENY,
       EVENT,
       CURVE_SELECTION,
+      TRANSPORT_DIRECTION,
       UNKNOWN,
    }
 

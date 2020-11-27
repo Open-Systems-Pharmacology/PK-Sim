@@ -1,5 +1,6 @@
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Individuals;
 using static PKSim.Core.CoreConstants.Parameters;
 
@@ -14,11 +15,14 @@ namespace PKSim.Presentation.DTO.Mappers
    public class IndividualTransporterToTransporterExpressionDTOMapper : IIndividualTransporterToTransporterExpressionDTOMapper
    {
       private readonly IExpressionParameterMapper<TransporterExpressionParameterDTO> _expressionContainerMapper;
+      private readonly ITransportDirectionRepository _transportDirectionRepository;
 
       public IndividualTransporterToTransporterExpressionDTOMapper(
-         IExpressionParameterMapper<TransporterExpressionParameterDTO> expressionContainerMapper)
+         IExpressionParameterMapper<TransporterExpressionParameterDTO> expressionContainerMapper,
+         ITransportDirectionRepository transportDirectionRepository)
       {
          _expressionContainerMapper = expressionContainerMapper;
+         _transportDirectionRepository = transportDirectionRepository;
       }
 
       public IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject)
@@ -43,8 +47,8 @@ namespace PKSim.Presentation.DTO.Mappers
                var isInOrganWithLumenOrBrain = organ.IsOrganWithLumen() || organ.IsBrain();
                expressionParameter.TransporterExpressionContainer = transporterExpressionContainer;
                expressionParameter.IsInOrganWithLumenOrBrain = isInOrganWithLumenOrBrain;
-               expressionParameter.TransportDirection =
-                  retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumenOrBrain);
+               var direction = retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumenOrBrain);
+               expressionParameter.TransportDirection = _transportDirectionRepository.ById(direction);
                individualTransporterDTO.AddExpressionParameter(expressionParameter);
             }
          }
@@ -57,21 +61,23 @@ namespace PKSim.Presentation.DTO.Mappers
                ? transporter.BloodCellsContainer
                : transporter.VascularEndotheliumContainer;
 
-            expressionParameter.TransportDirection = expressionParameter.TransporterExpressionContainer.TransportDirection;
+            var direction = expressionParameter.TransporterExpressionContainer.TransportDirection;
+            expressionParameter.TransportDirection = _transportDirectionRepository.ById(direction);
             individualTransporterDTO.AddExpressionParameter(expressionParameter);
          }
       }
 
-      private TransportDirection retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter,
+      private TransportDirectionId retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter,
          bool isInOrganWithLumenOrBrain = false)
       {
          if (parameter.IsNamed(INITIAL_CONCENTRATION))
-            return TransportDirections.None;
+            return TransportDirectionId.None;
          //Organ without lumen only show transporter direction at the rel exp parameter level
          if (!isInOrganWithLumenOrBrain)
-            return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;
+            return parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirectionId.None;
 
-         return !parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirections.None;
+         return !parameter.IsNamed(REL_EXP) ? transporterExpressionContainer.TransportDirection : TransportDirectionId.None;
       }
+
    }
 }

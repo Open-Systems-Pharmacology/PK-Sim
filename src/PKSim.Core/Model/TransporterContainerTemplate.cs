@@ -50,7 +50,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Transporter type => Direction of transport
       /// </summary>
-      public TransportDirection TransportDirection { get; set; }
+      public TransportDirectionId TransportDirection { get; set; }
       
       public override string Name => Gene;
 

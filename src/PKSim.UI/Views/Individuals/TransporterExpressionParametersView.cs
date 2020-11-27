@@ -7,6 +7,7 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Extensions;
@@ -97,34 +98,36 @@ namespace PKSim.UI.Views.Individuals
 
       private RepositoryItem getTransporterMembraneRepository(TransporterExpressionParameterDTO expressionParameterDTO)
       {
-         var allMembranesTypes = allTransportDirectionsFor(expressionParameterDTO);
+         var allPossibleTransportDirections = allTransportDirectionsFor(expressionParameterDTO);
          var transportDirection = expressionParameterDTO.TransportDirection;
          var displayName = transportDirection.DisplayName;
 
          var repositoryItemImageComboBox = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever)
-            {ReadOnly = (allMembranesTypes.Count <= 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
+            {ReadOnly = (allPossibleTransportDirections.Count <= 1), AllowDropDownWhenReadOnly = DefaultBoolean.False};
          if (repositoryItemImageComboBox.ReadOnly)
             repositoryItemImageComboBox.Buttons.Clear();
 
 
-         var comboBoxItem = new ImageComboBoxItem(displayName, transportDirection, transportDirection.Icon.Index);
+         var comboBoxItem = new ImageComboBoxItem(displayName, transportDirection, iconIndexFor(transportDirection));
          repositoryItemImageComboBox.Items.Add(comboBoxItem);
          return repositoryItemImageComboBox;
       }
 
       private IReadOnlyList<TransportDirection> allTransportDirectionsFor(TransporterExpressionParameterDTO expressionParameterDTO)
       {
-         return transporterExpressionParametersPresenter.AllTransportDirectionsFor(expressionParameterDTO);
+         return transporterExpressionParametersPresenter.AllPossibleTransportDirectionsFor(expressionParameterDTO);
       }
 
       private void editTransporterMembraneTypeRepository(BaseEdit editor, TransporterExpressionParameterDTO containerDTO)
       {
-         var allMembranesTypes = transporterExpressionParametersPresenter.AllTransportDirectionsFor(containerDTO);
-         if (allMembranesTypes.Count == 1)
+         var allPossibleTransportDirections = transporterExpressionParametersPresenter.AllPossibleTransportDirectionsFor(containerDTO);
+         if (allPossibleTransportDirections.Count == 1)
             return;
 
-         editor.FillImageComboBoxEditorWith(allMembranesTypes, x => x.Icon.Index, x => x.Description);
+         editor.FillImageComboBoxEditorWith(allPossibleTransportDirections, iconIndexFor, x => x.Description);
       }
+
+      private int iconIndexFor(TransportDirection transportDirection) => ApplicationIcons.IconByName(transportDirection.Icon).Index;
 
       protected override SuperToolTip GetToolTipFor(TransporterExpressionParameterDTO expressionParameterDTO, GridHitInfo hi)
       {

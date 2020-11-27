@@ -16,12 +16,14 @@ namespace PKSim.Core
    {
       protected ITransporterContainerTemplateRepository _repository;
       protected IEventPublisher _eventPublisher;
+      protected ITransportDirectionRepository _transportDirectionRepository;
 
       protected override void Context()
       {
          _repository = A.Fake<ITransporterContainerTemplateRepository>();
          _eventPublisher = A.Fake<IEventPublisher>();
-         sut = new TransportContainerUpdater(_repository, _eventPublisher);
+         _transportDirectionRepository= A.Fake<ITransportDirectionRepository>();
+         sut = new TransportContainerUpdater(_repository, _eventPublisher,_transportDirectionRepository);
       }
    }
 
@@ -45,8 +47,8 @@ namespace PKSim.Core
          base.Context();
          _individual= A.Fake<ISimulationSubject>();
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "toto"};
-         _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirections.Influx}.WithName(_liver);
-         _transporterWithoutTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirections.Efflux}.WithName("Kidney");
+         _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}.WithName(_liver);
+         _transporterWithoutTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.EffluxIntracellularToInterstitial}.WithName("Kidney");
          A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)).Returns(new []{_transporterWithTemplate, _transporterWithoutTemplate, });
 
          _transporterContainerTemplate = new TransporterContainerTemplate { TransportType = TransportType.Influx};

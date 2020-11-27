@@ -266,7 +266,7 @@ namespace PKSim.IntegrationTests
          var transportContainer = _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)
             .First(x => x.LogicalContainer.IsNamed(CoreConstants.Organ.Brain));
 
-         transportContainer.TransportDirection = TransportDirections.Influx;
+         transportContainer.TransportDirection = TransportDirectionId.InfluxBrainPlasmaToInterstitial;
 
          _individual.AddMolecule(_transporter);
          _transportProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM)

@@ -45,26 +45,30 @@ namespace PKSim.Presentation
    public class When_setting_the_transport_type_for_a_transporter_expression_container : concern_for_IndividualTransporterExpressionsPresenter
    {
       private TransporterExpressionParameterDTO _transporterExpressionDTO;
+      private TransportDirection _effluxDirection;
+      private TransportDirection _InfluxDirection;
 
       protected override void Context()
       {
          base.Context();
+         _effluxDirection = new TransportDirection {Id = TransportDirectionId.EffluxIntracellularToInterstitial};
+         _InfluxDirection = new TransportDirection {Id = TransportDirectionId.InfluxInterstitialToIntracellular };
          _transporterExpressionDTO = new TransporterExpressionParameterDTO
          {
-            TransportDirection = TransportDirections.Efflux, 
+            TransportDirection = _effluxDirection,
             TransporterExpressionContainer = new TransporterExpressionContainer()
          };
       }
 
       protected override void Because()
       {
-         sut.SetTransportDirection(_transporterExpressionDTO, TransportDirections.Influx);
+         sut.SetTransportDirection(_transporterExpressionDTO, _InfluxDirection);
       }
 
       [Observation]
       public void should_have_updated_the_transport_direction_of_the_transport_container()
       {
-         _transporterExpressionDTO.TransportDirection.ShouldBeEqualTo(TransportDirections.Influx);
+         _transporterExpressionDTO.TransportDirection.ShouldBeEqualTo(_InfluxDirection);
       }
 
       [Observation]

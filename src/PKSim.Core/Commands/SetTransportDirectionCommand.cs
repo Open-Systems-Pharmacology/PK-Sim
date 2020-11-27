@@ -8,12 +8,12 @@ namespace PKSim.Core.Commands
    public class SetTransportDirectionCommand : BuildingBlockStructureChangeCommand
    {
       private TransporterExpressionContainer _transporterContainer;
-      private readonly TransportDirection _newTransportDirection;
+      private readonly TransportDirectionId _newTransportDirection;
       private Individual _individual;
       private readonly string _transporterContainerId;
-      private readonly TransportDirection _oldTransportDirection;
+      private readonly TransportDirectionId _oldTransportDirection;
 
-      public SetTransportDirectionCommand(TransporterExpressionContainer transporterContainer, TransportDirection newTransportDirection,
+      public SetTransportDirectionCommand(TransporterExpressionContainer transporterContainer, TransportDirectionId newTransportDirection,
          IExecutionContext context)
       {
          _transporterContainer = transporterContainer;

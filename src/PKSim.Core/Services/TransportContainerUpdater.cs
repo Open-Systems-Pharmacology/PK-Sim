@@ -23,13 +23,13 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="transporterContainer">Concrete transporter location (i.e. Liver, Kidney) that will be updated</param>
       /// <param name="newTransportType">New transport type that was set in transporter</param>
-      TransportDirection TransportDirectionToUse(TransporterExpressionContainer transporterContainer, TransportType newTransportType);
+      TransportDirectionId TransportDirectionToUse(TransporterExpressionContainer transporterContainer, TransportType newTransportType);
 
       /// <summary>
       ///    Retrieves the transport direction that should be use when updating the transport type to
       ///    <paramref name="transportType" />
       /// </summary>
-      TransportDirection MapTransportTypeTransportDirection(TransportType transportType);
+      TransportDirectionId MapTransportTypeTransportDirection(TransportType transportType);
 
    }
 
@@ -37,11 +37,16 @@ namespace PKSim.Core.Services
    {
       private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
       private readonly IEventPublisher _eventPublisher;
+      private readonly ITransportDirectionRepository _transportDirectionRepository;
 
-      public TransportContainerUpdater(ITransporterContainerTemplateRepository transporterContainerTemplateRepository, IEventPublisher eventPublisher)
+      public TransportContainerUpdater(
+         ITransporterContainerTemplateRepository transporterContainerTemplateRepository, 
+         IEventPublisher eventPublisher,
+         ITransportDirectionRepository transportDirectionRepository )
       {
          _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
          _eventPublisher = eventPublisher;
+         _transportDirectionRepository = transportDirectionRepository;
       }
 
       public void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, string species,
@@ -78,27 +83,28 @@ namespace PKSim.Core.Services
          expressionContainer.TransportDirection = TransportDirectionToUse(expressionContainer, transporterContainerTemplate.TransportType);
       }
 
-      public TransportDirection TransportDirectionToUse(TransporterExpressionContainer transporterContainer, TransportType newTransportType)
+      public TransportDirectionId TransportDirectionToUse(TransporterExpressionContainer transporterContainer, TransportType newTransportType)
       {
-         if (!transporterContainer.TransportDirection.CanBeSetGlobally)
-            return transporterContainer.TransportDirection;
+         var transportDirection = _transportDirectionRepository.ById(transporterContainer.TransportDirection);
+         if (!transportDirection.Global)
+            return transportDirection.Id;
 
          return MapTransportTypeTransportDirection(newTransportType);
       }
 
-      public TransportDirection MapTransportTypeTransportDirection(TransportType transportType)
+      public TransportDirectionId MapTransportTypeTransportDirection(TransportType transportType)
       {
          switch (transportType)
          {
             case TransportType.Influx:
-               return TransportDirections.Influx;
+               return TransportDirectionId.InfluxInterstitialToIntracellular;
             case TransportType.Efflux:
-               return TransportDirections.Efflux;
+               return TransportDirectionId.EffluxIntracellularToInterstitial;
             case TransportType.PgpLike:
-               return TransportDirections.PgpLike;
+               return TransportDirectionId.PgpIntracellularToInterstitial;
          }
 
-         return TransportDirections.None;
+         return TransportDirectionId.None;
       }
    }
 }

@@ -321,13 +321,13 @@ namespace PKSim.Core.Mappers
          var inducedProcessCache = new Cache<string, InducedProcess>(x => x.Name, x => null);
          foreach (var transporterContainer in individual.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
-            if (transporterContainer.TransportDirection == TransportDirections.None)
+            if (transporterContainer.TransportDirection == TransportDirectionId.None)
                continue;
 
             var allProcesses = _transporterContainerTemplateRepository.All()
                .Where(x => x.Species == individual.Species.Name)
                .Where(x => x.OrganName == transporterContainer.ContainerName)
-               .Where(x => x.TransportDirection.Id == transporterContainer.TransportDirection.Id);
+               .Where(x => x.TransportDirection == transporterContainer.TransportDirection);
 
             foreach (var process in allProcesses.SelectMany(x=>x.ProcessNames))
             {

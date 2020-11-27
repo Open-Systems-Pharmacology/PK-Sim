@@ -40,7 +40,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Updates the transport direction type for the transporter container given as parameter
       /// </summary>
-      ICommand SetTransportDirection(TransporterExpressionContainer transporterContainer, TransportDirection transportDirection);
+      ICommand SetTransportDirection(TransporterExpressionContainer transporterContainer, TransportDirectionId transportDirection);
 
       /// <summary>
       ///    Update the localization of the protein
@@ -137,7 +137,7 @@ namespace PKSim.Core.Services
          return command;
       }
 
-      public ICommand SetTransportDirection(TransporterExpressionContainer transporterContainer, TransportDirection transportDirection)
+      public ICommand SetTransportDirection(TransporterExpressionContainer transporterContainer, TransportDirectionId transportDirection)
       {
          return new SetTransportDirectionCommand(transporterContainer, transportDirection, _executionContext).Run(_executionContext);
       }

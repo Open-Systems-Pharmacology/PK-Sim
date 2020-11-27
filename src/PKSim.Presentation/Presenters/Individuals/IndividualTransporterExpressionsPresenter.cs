@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void SetTransportDirection(TransporterExpressionParameterDTO transporterExpressionContainerDTO, TransportDirection transportDirection)
       {
          AddCommand(_moleculeExpressionTask.SetTransportDirection(transporterExpressionContainerDTO.TransporterExpressionContainer,
-            transportDirection));
+            transportDirection.Id));
       }
 
       public void UpdateTransportType(TransportType newTransportType)
