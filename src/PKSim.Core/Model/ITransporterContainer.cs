@@ -2,6 +2,6 @@ namespace PKSim.Core.Model
 {
    public interface ITransporterContainer
    {
-      TransportDirection TransportDirection { get; set; }
+      TransportDirectionId TransportDirection { get; set; }
    }
 }

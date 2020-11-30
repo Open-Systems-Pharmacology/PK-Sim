@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -16,7 +16,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatProteinSynonymRepository _flatProteinSynonymRepository;
       private readonly IList<TransporterContainerTemplate> _allTemplates;
 
-      public TransporterContainerTemplateRepository(IFlatTransporterContainerTemplateRepository flatTransporterContainerTemplateRepository, IFlatProteinSynonymRepository flatProteinSynonymRepository)
+      public TransporterContainerTemplateRepository(IFlatTransporterContainerTemplateRepository flatTransporterContainerTemplateRepository,
+         IFlatProteinSynonymRepository flatProteinSynonymRepository)
       {
          _flatTransporterContainerTemplateRepository = flatTransporterContainerTemplateRepository;
          _flatProteinSynonymRepository = flatProteinSynonymRepository;
@@ -72,6 +73,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             from flatTemplatePerCompartment in flatTemplatePerOrgan.GroupBy(x => x.CompartmentName)
             from flatTemplatePerMembrane in flatTemplatePerCompartment.GroupBy(x => x.MembraneLocation)
             from flatTemplatePerTransport in flatTemplatePerMembrane.GroupBy(x => x.TransportType)
+            // from flatTemplatePerTransportDirection in flatTemplatePerTransport.GroupBy(x => x.TransportDirection)
             select flatTemplatePerTransport.ToList();
 
          flatTemplatesGroupByKeys.Each(t => _allTemplates.Add(mapFrom(t)));
@@ -88,7 +90,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
             Gene = flatTemplate.Gene,
             OrganName = flatTemplate.OrganName,
             Species = flatTemplate.Species,
-            TransportType = flatTemplate.TransportType
+            TransportType = flatTemplate.TransportType,
+            // TransportDirection = flatTemplate.TransportDirection
          };
 
          flatTemplatesGroupByKeys.Select(x => x.ProcessName).Each(template.AddProcessName);

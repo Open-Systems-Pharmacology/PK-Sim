@@ -1,69 +1,190 @@
-using System.Collections.Generic;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Collections;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using PKSim.Core.Extensions;
+using PKSim.Core.Model.Extensions;
+using static PKSim.Core.Model.TransportDirectionId;
 
 namespace PKSim.Core.Model
 {
    public enum TransportDirectionId
    {
       None,
-      Influx,
-      Efflux,
-      PgpLike,
-      CellsBiDirectional,
-      Excretion,
-      PlasmaToInterstitial,
-      InterstitialToPlasma,
-      VascEndoBiDirectional
-   }
+      InfluxPlasmaToInterstitial,
+      EffluxInterstitialToPlasma,
 
+      InfluxPlasmaToBloodCells,
+      EffluxBloodCellsToPlasma,
+
+      InfluxInterstitialToIntracellular,
+      EffluxIntracellularToInterstitial,
+      PgpIntracellularToInterstitial,
+
+      InfluxLumenToMucosaIntracellular,
+      EffluxMucosaIntracellularToLumen,
+      PgpMucosaIntracellularToLumen,
+
+      ExcretionKidney,
+      ExcretionLiver,
+
+      EffluxBrainTissueToInterstitial,
+      InfluxBrainInterstitialToTissue,
+      PgpBrainTissueToInterstitial,
+
+      InfluxBrainPlasmaToInterstitial,
+      EffluxBrainInterstitialToPlasma,
+      PgpBrainInterstitialToPlasma
+   }
 
    public static class TransportDirections
    {
-      private static readonly Cache<TransportDirectionId, TransportDirection> _allTransportDirections = new Cache<TransportDirectionId, TransportDirection>(x=>x.TransportDirectionId);
-      public static TransportDirection None = create(TransportDirectionId.None, PKSimConstants.TransportDirection.None, PKSimConstants.TransportDirection.None,ApplicationIcons.EmptyIcon, canBeSetGlobally:false);
-      public static TransportDirection Influx = create(TransportDirectionId.Influx, PKSimConstants.TransportDirection.Influx, PKSimConstants.TransportDirection.InfluxDescription, ApplicationIcons.Influx, canBeSetGlobally: true);
-      public static TransportDirection Efflux = create(TransportDirectionId.Efflux, PKSimConstants.TransportDirection.Efflux, PKSimConstants.TransportDirection.EffluxDescription, ApplicationIcons.Efflux, canBeSetGlobally: true);
-      public static TransportDirection CellsBiDirectional = create(TransportDirectionId.CellsBiDirectional, PKSimConstants.TransportDirection.CellsBiDirectional, PKSimConstants.TransportDirection.CellsBiDirectionalDescription, ApplicationIcons.Refresh, canBeSetGlobally: false);
-      public static TransportDirection PgpLike = create(TransportDirectionId.PgpLike, PKSimConstants.TransportDirection.PgpLike, PKSimConstants.TransportDirection.PgpLikeDescription, ApplicationIcons.Pgp, canBeSetGlobally: true);
-      public static TransportDirection Excretion = create(TransportDirectionId.Excretion, PKSimConstants.TransportDirection.Excretion, PKSimConstants.TransportDirection.Excretion, ApplicationIcons.Excretion, canBeSetGlobally: false);
-      public static TransportDirection PlasmaToInterstitial = create(TransportDirectionId.PlasmaToInterstitial, PKSimConstants.TransportDirection.PlasmaToInterstitial, PKSimConstants.TransportDirection.PlasmaToInterstitialDescription, ApplicationIcons.Plasma, canBeSetGlobally: false);
-      public static TransportDirection InterstitialToPlasma = create(TransportDirectionId.InterstitialToPlasma, PKSimConstants.TransportDirection.InterstitialToPlasma, PKSimConstants.TransportDirection.InterstitialToPlasmaDescription, ApplicationIcons.Interstitial, canBeSetGlobally: false);
-      public static TransportDirection VascEndoBiDirectional = create(TransportDirectionId.VascEndoBiDirectional, PKSimConstants.TransportDirection.VascEndoBiDirectional, PKSimConstants.TransportDirection.VascEndoBiDirectionalDescription, ApplicationIcons.Refresh, canBeSetGlobally: false);
-
-
-      public static TransportDirection ById(TransportDirectionId transportDirectionId)
+      public static readonly TransportDirectionId[] PLASMA_DIRECTIONS =
       {
-         return _allTransportDirections[transportDirectionId];
+         InfluxPlasmaToInterstitial,
+         EffluxInterstitialToPlasma
+      };
+
+      public static readonly TransportDirectionId[] BLOOD_CELLS_DIRECTIONS =
+      {
+         InfluxPlasmaToBloodCells,
+         EffluxBloodCellsToPlasma
+      };
+
+      public static readonly TransportDirectionId[] MUCOSA_DIRECTIONS =
+      {
+         InfluxLumenToMucosaIntracellular,
+         EffluxMucosaIntracellularToLumen,
+         PgpMucosaIntracellularToLumen
+      };
+
+      public static readonly TransportDirectionId[] TISSUE_DIRECTIONS =
+      {
+         InfluxInterstitialToIntracellular,
+         EffluxIntracellularToInterstitial,
+         PgpIntracellularToInterstitial
+      };
+
+      public static readonly TransportDirectionId[] BRAIN_TISSUE_DIRECTIONS =
+      {
+         InfluxBrainInterstitialToTissue,
+         EffluxBrainTissueToInterstitial,
+         PgpBrainTissueToInterstitial
+      };
+
+      public static readonly TransportDirectionId[] BRAIN_BBB_DIRECTIONS =
+      {
+         InfluxBrainPlasmaToInterstitial,
+         EffluxBrainInterstitialToPlasma,
+         PgpBrainInterstitialToPlasma
+      };
+
+      public static TransportDirectionId DefaultVascularEndotheliumDirectionFor(TransportType transportType)
+      {
+         switch (transportType)
+         {
+            case TransportType.Influx:
+               return InfluxPlasmaToInterstitial;
+            default:
+               return EffluxInterstitialToPlasma;
+         }
       }
 
-      private static TransportDirection create(TransportDirectionId transportDirectionId, string displayName, string description, ApplicationIcon applicationIcon, bool canBeSetGlobally)
+      public static TransportDirectionId DefaultBloodCellsDirectionFor(TransportType transportType)
       {
-         var transportDirection = new TransportDirection(transportDirectionId, displayName, description,  applicationIcon, canBeSetGlobally);
-         _allTransportDirections.Add(transportDirection);
-         return transportDirection;
+         switch (transportType)
+         {
+            case TransportType.Influx:
+               return InfluxPlasmaToBloodCells;
+            default:
+               return EffluxBloodCellsToPlasma;
+         }
       }
 
-      public static IReadOnlyCollection<TransportDirection> All() => _allTransportDirections;
+      public static TransportDirectionId DefaultMucosaDirectionFor(TransportType transportType)
+      {
+         switch (transportType)
+         {
+            case TransportType.Influx:
+               return InfluxLumenToMucosaIntracellular;
+            case TransportType.PgpLike:
+               return PgpMucosaIntracellularToLumen;
+            default:
+               return EffluxMucosaIntracellularToLumen;
+         }
+      }
+
+      public static TransportDirectionId DefaultTissueDirectionFor(TransportType transportType)
+      {
+         switch (transportType)
+         {
+            case TransportType.Influx:
+               return InfluxInterstitialToIntracellular;
+            case TransportType.PgpLike:
+               return PgpIntracellularToInterstitial;
+            default:
+               return EffluxIntracellularToInterstitial;
+         }
+      }
+
+      public static TransportDirectionId DefaultBrainTissueDirectionFor(TransportType transportType)
+      {
+         switch (transportType)
+         {
+            case TransportType.Influx:
+               return InfluxBrainInterstitialToTissue;
+            case TransportType.PgpLike:
+               return PgpBrainTissueToInterstitial;
+            default:
+               return EffluxBrainTissueToInterstitial;
+         }
+      }
+
+      public static TransportDirectionId DefaultBloodBrainBarrierDirectionFor(TransportType transportType)
+      {
+         switch (transportType)
+         {
+            case TransportType.Influx:
+               return InfluxBrainPlasmaToInterstitial;
+            case TransportType.PgpLike:
+               return PgpBrainInterstitialToPlasma;
+            default:
+               return EffluxBrainInterstitialToPlasma;
+         }
+      }
+
+      public static TransportDirectionId DefaultDirectionFor(TransportType transportType, TransporterExpressionContainer expressionContainer)
+      {
+         if (expressionContainer.TransportDirection == None)
+            return None;
+
+         if (expressionContainer.Name.IsBloodCells())
+            return DefaultBloodCellsDirectionFor(transportType);
+
+         if (expressionContainer.Name.IsVascularEndothelium())
+            return DefaultVascularEndotheliumDirectionFor(transportType);
+
+         var organ = expressionContainer.LogicalContainer;
+         if (organ.IsBrain())
+            return expressionContainer.CompartmentName.IsPlasma()
+               ? DefaultBloodBrainBarrierDirectionFor(transportType)
+               : DefaultBrainTissueDirectionFor(transportType);
+
+         if (organ.IsOrganWithLumen())
+         {
+            if (expressionContainer.CompartmentName.IsInterstitial())
+               return DefaultTissueDirectionFor(transportType);
+
+            //Organ with lumen not in mucosa=>Only one option (excretion
+            return organ.IsInMucosa() ? DefaultMucosaDirectionFor(transportType) : expressionContainer.TransportDirection;
+         }
+
+         return DefaultTissueDirectionFor(transportType);
+      }
    }
+
    public class TransportDirection
    {
-      public TransportDirectionId TransportDirectionId { get; }
-      public string DisplayName { get; }
-      public string Description { get; }
-      public ApplicationIcon Icon { get; }
-      public bool CanBeSetGlobally { get; }
-
-      public TransportDirection(TransportDirectionId transportDirectionId, string displayName, string description, ApplicationIcon icon, bool canBeSetGlobally)
-      {
-         TransportDirectionId = transportDirectionId;
-         DisplayName = displayName;
-         Description = description;
-         Icon = icon;
-         CanBeSetGlobally = canBeSetGlobally;
-      }
-
-      public override string ToString() => DisplayName;
+      public TransportDirectionId Id { get; set; }
+      public string DisplayName { get; set; }
+      public string Description { get; set; }
+      public string Icon { get; set; }
    }
 }

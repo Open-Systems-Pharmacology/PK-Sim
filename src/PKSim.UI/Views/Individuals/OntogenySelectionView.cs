@@ -11,11 +11,13 @@ using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Individuals
 {
-   public partial class OntogenySelectionView : BaseUserControl, IOntogenySelectionView
+   public partial class OntogenySelectionView : BaseResizableUserControl, IOntogenySelectionView
    {
       private readonly IToolTipCreator _toolTipCreator;
       private IOntogenySelectionPresenter _presenter;
       private ScreenBinder<IndividualMolecule> _screenBinder;
+
+      public override int OptimalHeight => layoutControlGroup.Height;
 
       public OntogenySelectionView(IToolTipCreator toolTipCreator)
       {
@@ -31,11 +33,12 @@ namespace PKSim.UI.Views.Individuals
       public void BindTo(IndividualMolecule individualMolecule)
       {
          _screenBinder.BindToSource(individualMolecule);
+         AdjustHeight();
       }
 
       public bool ShowOntogenyEnabled
       {
-         set { btnShowOntogeny.Enabled = value; }
+         set => btnShowOntogeny.Enabled = value;
       }
 
       public override void InitializeBinding()

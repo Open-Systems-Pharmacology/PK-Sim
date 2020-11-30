@@ -16,11 +16,13 @@ namespace PKSim.Core
    {
       protected ITransporterContainerTemplateRepository _repository;
       protected IEventPublisher _eventPublisher;
+      protected ITransportDirectionRepository _transportDirectionRepository;
 
       protected override void Context()
       {
          _repository = A.Fake<ITransporterContainerTemplateRepository>();
          _eventPublisher = A.Fake<IEventPublisher>();
+         _transportDirectionRepository= A.Fake<ITransportDirectionRepository>();
          sut = new TransportContainerUpdater(_repository, _eventPublisher);
       }
    }
@@ -45,8 +47,8 @@ namespace PKSim.Core
          base.Context();
          _individual= A.Fake<ISimulationSubject>();
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "toto"};
-         _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirections.Influx}.WithName(_liver);
-         _transporterWithoutTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirections.Efflux}.WithName("Kidney");
+         _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}.WithName(_liver);
+         _transporterWithoutTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.EffluxIntracellularToInterstitial}.WithName("Kidney");
          A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)).Returns(new []{_transporterWithTemplate, _transporterWithoutTemplate, });
 
          _transporterContainerTemplate = new TransporterContainerTemplate { TransportType = TransportType.Influx};
@@ -62,7 +64,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetDefaultSettingsForTransporter(_individual, _transporter, _species, _transporter.Name);
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter,  _transporter.Name);
       }
 
       [Observation]
@@ -110,7 +112,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.SetDefaultSettingsForTransporter (_individual, _transporter, _species, _transporterName);
+         sut.SetDefaultSettingsForTransporter (_individual, _transporter,  _transporterName);
       }
 
       [Observation]

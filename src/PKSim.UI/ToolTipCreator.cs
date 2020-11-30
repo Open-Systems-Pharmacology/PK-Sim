@@ -76,8 +76,8 @@ namespace PKSim.UI
 
       public SuperToolTip ToolTipFor(TransporterExpressionParameterDTO containerDTO)
       {
-         var transportDirection = containerDTO.TransportDirection;
-         if (transportDirection == TransportDirections.None)
+         var transportDirection = containerDTO.TransportDirection.Id;
+         if (transportDirection == TransportDirectionId.None)
             return null;
 
          var path = new List<string>();
@@ -88,7 +88,8 @@ namespace PKSim.UI
             path.Add(containerDTO.CompartmentName);
 
          var containerDisplay = path.ToString(" - ");
-         return CreateToolTip(transportDirection.Description, containerDisplay, transportDirection.Icon);
+         var info = _representationInfoRepository.InfoFor(RepresentationObjectType.TRANSPORT_DIRECTION, transportDirection.ToString());
+         return CreateToolTip(info.Description, containerDisplay, ApplicationIcons.IconByName(info.IconName));
       }
 
       public SuperToolTip WarningToolTip(string warning)

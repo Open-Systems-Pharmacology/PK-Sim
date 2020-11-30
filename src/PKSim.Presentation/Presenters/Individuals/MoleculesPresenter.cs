@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -220,7 +221,11 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void RenameMolecule(IndividualMolecule molecule)
       {
-         AddCommand(_entityTask.Rename(molecule));
+         var newName = _entityTask.NewNameFor(molecule, _simulationSubject.AllMolecules().AllNames());
+         if(string.IsNullOrEmpty(newName))
+            return;
+         
+         AddCommand(_editMoleculeTask.RenameMolecule(molecule, newName, _simulationSubject));
          editMolecule(molecule);
       }
 

@@ -48,6 +48,15 @@ namespace PKSim.Presentation.Services
       /// <param name="moleculeToRemove">Molecule to be removed</param>
       /// <param name="simulationSubject">Simulation subject containing the molecule to be removed</param>
       ICommand RemoveMoleculeFrom(IndividualMolecule moleculeToRemove, TSimulationSubject simulationSubject);
+
+
+      /// <summary>
+      ///    Remove the given molecule from the simulationSubject
+      /// </summary>
+      /// <param name="molecule">Molecule to rename</param>
+      /// <param name="newName">new name of the molecule</param>
+      /// <param name="simulationSubject">Simulation subject containing the molecule to be renamed</param>
+      ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject);
    }
 
    public class EditMoleculeTask<TSimulationSubject> : IEditMoleculeTask<TSimulationSubject> where TSimulationSubject : ISimulationSubject
@@ -116,6 +125,11 @@ namespace PKSim.Presentation.Services
       public ICommand RemoveMoleculeFrom(IndividualMolecule moleculeToRemove, TSimulationSubject simulationSubject)
       {
          return _moleculeExpressionTask.RemoveMoleculeFrom(moleculeToRemove, simulationSubject);
+      }
+
+      public ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject)
+      {
+         return _moleculeExpressionTask.RenameMolecule(molecule, newName, simulationSubject);
       }
 
       private ICommand simpleMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule

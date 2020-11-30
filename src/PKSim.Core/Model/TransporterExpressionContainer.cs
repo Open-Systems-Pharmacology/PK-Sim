@@ -5,9 +5,9 @@ namespace PKSim.Core.Model
 {
    public class TransporterExpressionContainer : MoleculeExpressionContainer, ITransporterContainer
    {
-      private TransportDirection _transportDirection = TransportDirections.None;
+      private TransportDirectionId _transportDirection = TransportDirectionId.None;
 
-      public TransportDirection TransportDirection
+      public TransportDirectionId TransportDirection
       {
          get => _transportDirection;
          set => SetProperty(ref _transportDirection, value);

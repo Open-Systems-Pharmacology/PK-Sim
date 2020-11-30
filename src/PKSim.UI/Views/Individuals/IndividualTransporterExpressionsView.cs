@@ -69,14 +69,14 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemTransporterType.Text = PKSimConstants.UI.TransporterType.FormatForLabel();
+         layoutItemTransporterDirection.Text = PKSimConstants.UI.DefaultTransporterDirection.FormatForLabel();
          cbTransporterType.SetImages(_imageListRetriever);
-         lblTransporterTypeDescription.AsDescription();
-         lblTransporterTypeDescription.Text = PKSimConstants.UI.TransporterTypeDescription;
+         lblTransporterDirectionDescription.AsDescription();
+         lblTransporterDirectionDescription.Text = PKSimConstants.UI.TransporterDirectionDescription;
          layoutItemMoleculeProperties.TextVisible = false;
          layoutItemExpressionParameters.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
-         layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.Localization;
+         layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.TransportDirection;
       }
    }
 }

@@ -67,6 +67,9 @@ namespace PKSim.Core.Mappers
          if (objectType.IsAnImplementationOf<IEventAssignment>())
             return RepresentationObjectType.EVENT;
 
+         if(objectType.IsAnImplementationOf<TransportDirection>())
+            return RepresentationObjectType.TRANSPORT_DIRECTION;
+
          return RepresentationObjectType.UNKNOWN;
       }
    }

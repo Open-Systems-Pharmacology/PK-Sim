@@ -1,4 +1,3 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -87,12 +86,7 @@ namespace PKSim.Core.Services
 
       private void setParameter(IParameter parameter)
       {
-         var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
-         var parameterStartValue = _defaultStartValues[parameterPath];
-
-         // We are setting value for a parameter that does not exist or th
-         if (parameterStartValue == null)
-            return;
+         var parameterStartValue = getOrCreateStartValueFor(parameter);
 
          if (parameter.Formula.IsExplicit())
          {
@@ -110,15 +104,21 @@ namespace PKSim.Core.Services
 
       private IParameterStartValue trySetValue(IParameter parameter)
       {
+         var parameterStartValue = getOrCreateStartValueFor(parameter);
+         parameterStartValue.StartValue = parameter.Value;
+         return parameterStartValue;
+      }
+
+
+      private IParameterStartValue getOrCreateStartValueFor(IParameter parameter)
+      {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var parameterStartValue = _defaultStartValues[parameterPath];
-         if (parameterStartValue != null)
-            parameterStartValue.StartValue = parameter.Value;
-         else
-         {
-            parameterStartValue = _parameterStartValuesCreator.CreateParameterStartValue(parameterPath, parameter);
-            _defaultStartValues.Add(parameterStartValue);
-         }
+         if (parameterStartValue != null) 
+            return parameterStartValue;
+
+         parameterStartValue = _parameterStartValuesCreator.CreateParameterStartValue(parameterPath, parameter);
+         _defaultStartValues.Add(parameterStartValue);
 
          return parameterStartValue;
       }

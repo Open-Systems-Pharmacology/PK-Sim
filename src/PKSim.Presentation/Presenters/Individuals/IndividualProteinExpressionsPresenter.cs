@@ -119,7 +119,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _expressionLocalizationPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
-         _moleculePropertiesPresenter.RefreshView();
       }
    }
 }

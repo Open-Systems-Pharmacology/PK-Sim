@@ -39,6 +39,8 @@ namespace PKSim.UI.Views.Individuals
       private IGridViewColumn _colGrouping;
       private IGridViewColumn _colParameterValue;
       private IGridViewColumn _colParameterName;
+      private IGridViewColumn _colCompartment;
+
       private readonly ToolTipController _toolTipController = new ToolTipController();
       private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       public bool EmphasisRelativeExpressionParameters { get; set; } = false;
@@ -74,7 +76,7 @@ namespace PKSim.UI.Views.Individuals
       protected override void InitializeWithGrid(UxGridView gridView)
       {
          base.InitializeWithGrid(gridView);
-         gridView.ShouldUseColorForDisabledCell = false;
+         gridView.ShouldUseColorForDisabledCell = true;
          gridView.OptionsView.AllowCellMerge = true;
          gridView.GroupFormat = "[#image]{1}";
          gridView.RowCellStyle += updateRowCellStyle;
@@ -82,13 +84,46 @@ namespace PKSim.UI.Views.Individuals
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
          gridView.CustomColumnSort += customColumnSort;
          gridView.GridControl.ToolTipController = _toolTipController;
+         gridView.CellMerge += (o, e) => OnEvent(onCellMerge, e);
+      }
+
+      private void onCellMerge(CellMergeEventArgs e)
+      {
+         var p1 = _gridViewBinder.ElementAt(e.RowHandle1);
+         var p2 = _gridViewBinder.ElementAt(e.RowHandle2);
+
+         if (p1 == null || p2 == null)
+            return;
+
+         var representSameOrgan = string.Equals(p1.ContainerName, p2.ContainerName);
+
+         e.Handled = !ShouldMergeCell(e.Column, p1, p2, representSameOrgan);
+      }
+
+      protected virtual bool ShouldMergeCell(GridColumn column, TExpressionParameterDTO p1, TExpressionParameterDTO p2, bool representSameOrgan)
+      {
+         //We only merge compartment values if they are empty (across organ) or if they represent the same organ
+         if (Equals(column, _colCompartment.XtraColumn))
+            return string.IsNullOrEmpty(p1.CompartmentName) || representSameOrgan;
+
+         return true;
       }
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {
+         if (_gridView.FocusedColumn == null)
+            return;
+
+         if (_gridView.FocusedColumn.ReadOnly)
+            e.Cancel = true;
+         
+         e.Cancel = !CanEditValueAt(_gridViewBinder.FocusedElement);
+      }
+
+      protected virtual bool CanEditValueAt(TExpressionParameterDTO expressionParameterDTO)
+      {
          var parameterDTO = _gridViewBinder.FocusedElement?.Parameter;
-         if (parameterDTO == null) return;
-         e.Cancel = !_presenter.CanEditParameter(parameterDTO);
+         return parameterDTO != null && _presenter.CanEditParameter(parameterDTO);
       }
 
       private void customColumnSort(object sender, CustomColumnSortEventArgs e)
@@ -198,7 +233,7 @@ namespace PKSim.UI.Views.Individuals
             .AsReadOnly();
 
 
-         _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
+         _colCompartment= _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.CompartmentPathDTO))
             .WithCaption(PKSimConstants.UI.Compartment)
             .AsReadOnly();
@@ -288,18 +323,23 @@ namespace PKSim.UI.Views.Individuals
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {
          var expressionDTO = _gridViewBinder.ElementAt(e.RowHandle);
-         var parameterDTO = expressionDTO?.Parameter;
-         if (parameterDTO == null)
-            return;
 
          //Make sure the name and value of a relative expression parameter are using a bold font
          if (shouldEmphasisCellAppearance(expressionDTO, e))
             e.Appearance.Font = new Font(e.Appearance.Font.FontFamily, e.Appearance.Font.Size, FontStyle.Bold);
-
          else if (e.Column.OptionsColumn.ReadOnly)
             _gridView.AdjustAppearance(e, true);
+         else
+            UpdateExpressionParameterAppearance(expressionDTO, e);
+      }
 
-         else if (!parameterDTO.Parameter.Editable)
+      protected virtual void UpdateExpressionParameterAppearance(TExpressionParameterDTO expressionParameterDTO, RowCellStyleEventArgs e)
+      {
+         var parameterDTO = expressionParameterDTO?.Parameter;
+         if (parameterDTO == null)
+            return;
+
+         if (!parameterDTO.Parameter.Editable)
             _gridView.AdjustAppearance(e, isEnabled: false);
 
          else if (_presenter.IsSetByUser(parameterDTO))
