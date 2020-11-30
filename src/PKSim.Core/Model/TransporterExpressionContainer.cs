@@ -19,5 +19,7 @@ namespace PKSim.Core.Model
          if (!(sourceObject is TransporterExpressionContainer sourceTransporterContainer)) return;
          TransportDirection = sourceTransporterContainer.TransportDirection;
       }
+
+      public override string ToString() => $"{base.ToString()} - {TransportDirection}";
    }
 }

@@ -55,9 +55,9 @@ namespace PKSim.IntegrationTests
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _enzyme = _enzymeFactory.AddMoleculeTo(_individual, "CYP").DowncastTo<IndividualEnzyme>();
          _allExpressionParameters = _individual.AllExpressionParametersFor(_enzyme);
-         _allExpressionParameters[CoreConstants.Compartment.Plasma].Value = _relExpPls;
-         _allExpressionParameters[CoreConstants.Compartment.BloodCells].Value = _relExpBloodCells;
-         _allExpressionParameters[CoreConstants.Compartment.VascularEndothelium].Value = _relExpVascEndo;
+         _allExpressionParameters[CoreConstants.Compartment.PLASMA].Value = _relExpPls;
+         _allExpressionParameters[CoreConstants.Compartment.BLOOD_CELLS].Value = _relExpBloodCells;
+         _allExpressionParameters[CoreConstants.Compartment.VASCULAR_ENDOTHELIUM].Value = _relExpVascEndo;
          _hct = _individual.Organism.Parameter(CoreConstants.Parameters.HCT).Value;
          _metabolizationProcess = _cloneManager.Clone(_compoundProcessRepository
             .ProcessByName(CoreConstantsForSpecs.Process.METABOLIZATION_SPECIFIC_FIRST_ORDER).DowncastTo<PartialProcess>());
@@ -95,7 +95,7 @@ namespace PKSim.IntegrationTests
       {
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
+            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
             .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExp)
@@ -162,7 +162,7 @@ namespace PKSim.IntegrationTests
       {
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
+            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
             .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExpNorm)
@@ -206,7 +206,7 @@ namespace PKSim.IntegrationTests
       {
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
-            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.Intracellular))
+            .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
             .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExp)
@@ -250,7 +250,7 @@ namespace PKSim.IntegrationTests
       public void should_have_created_the_enzyme_in_all_endosome_compartment()
       {
          var allContainerWithEnzyme = _simulation.All<IMoleculeAmount>().Where(x => x.Name.Equals(_enzyme.Name)).Select(x => x.ParentContainer);
-         allContainerWithEnzyme.Select(x => x.Name).Distinct().Contains(CoreConstants.Compartment.Endosome).ShouldBeTrue();
+         allContainerWithEnzyme.Select(x => x.Name).Distinct().Contains(CoreConstants.Compartment.ENDOSOME).ShouldBeTrue();
       }
    }
 
@@ -291,7 +291,7 @@ namespace PKSim.IntegrationTests
       {
          var allContainerWithTransporter =
             _simulation.All<IMoleculeAmount>().Where(x => x.Name.Equals(_transporter.Name)).Select(x => x.ParentContainer);
-         allContainerWithTransporter.Select(x => x.Name).Distinct().ShouldContain(CoreConstants.Compartment.Plasma);
+         allContainerWithTransporter.Select(x => x.Name).Distinct().ShouldContain(CoreConstants.Compartment.PLASMA);
       }
    }
 
@@ -300,10 +300,10 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _allExpressionParameters[CoreConstants.Compartment.Plasma].Value = 0;
-         _allExpressionParameters[CoreConstants.Compartment.BloodCells].Value = 0;
-         _allExpressionParameters[CoreConstants.Compartment.VascularEndothelium].Value = 0;
-         _allExpressionParameters[CoreConstants.Compartment.Periportal].Value = 1;
+         _allExpressionParameters[CoreConstants.Compartment.PLASMA].Value = 0;
+         _allExpressionParameters[CoreConstants.Compartment.BLOOD_CELLS].Value = 0;
+         _allExpressionParameters[CoreConstants.Compartment.VASCULAR_ENDOTHELIUM].Value = 0;
+         _allExpressionParameters[CoreConstants.Compartment.PERIPORTAL].Value = 1;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -319,8 +319,8 @@ namespace PKSim.IntegrationTests
          var objectPatFactory = new ObjectPathFactoryForSpecs();
          var path = objectPatFactory.CreateObjectPathFrom(Constants.ORGANISM,
             CoreConstants.Organ.Liver,
-            CoreConstants.Compartment.Pericentral,
-            CoreConstants.Compartment.Intracellular,
+            CoreConstants.Compartment.PERICENTRAL,
+            CoreConstants.Compartment.INTRACELLULAR,
             CoreConstants.Molecule.ProcessProductName(_compound.Name, _enzyme.Name, CoreConstants.Molecule.Metabolite),
             CoreConstants.Observer.ObserverNameFrom(CoreConstants.Observer.FRACTION_OF_DOSE, _compound.Name));
 
@@ -339,7 +339,7 @@ namespace PKSim.IntegrationTests
          var observerColumn = _simulation.DataRepository.Where(col => col.DataInfo.Origin == ColumnOrigins.Calculation)
             .Where(col => col.QuantityInfo.Type.Is(QuantityType.Metabolite))
             .Where(col => col.QuantityInfo.Path.Contains(CoreConstants.Organ.Liver))
-            .FirstOrDefault(col => col.QuantityInfo.Path.Contains(CoreConstants.Compartment.Intracellular));
+            .FirstOrDefault(col => col.QuantityInfo.Path.Contains(CoreConstants.Compartment.INTRACELLULAR));
 
          observerColumn.ShouldNotBeNull();
       }

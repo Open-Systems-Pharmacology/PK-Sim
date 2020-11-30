@@ -167,7 +167,7 @@ namespace PKSim.Presentation.Services
       {
          return simulation.Model.Root
             .EntityAt<IObserver>(Constants.ORGANISM, CoreConstants.Organ.VenousBlood,
-               CoreConstants.Compartment.Plasma, compound.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
+               CoreConstants.Compartment.PLASMA, compound.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
       }
 
       private bool speciesUsesVenousBlood(Species species)

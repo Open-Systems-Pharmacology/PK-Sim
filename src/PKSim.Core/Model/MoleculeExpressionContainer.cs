@@ -48,5 +48,7 @@ namespace PKSim.Core.Model
       ///    The parent is typically a compartment 
       /// </summary>
       public string CompartmentName => ParentContainer?.Name ?? string.Empty;
+
+      public override string ToString() => $"{LogicalContainerName} - {CompartmentName} - {Name}";
    }
 }

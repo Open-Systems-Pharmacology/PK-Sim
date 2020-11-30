@@ -65,25 +65,25 @@ namespace PKSim.Core.Services
 
       protected void AddTissueParameters(IContainer organ, string moleculeName)
       {
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.BloodCells), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.BLOOD_CELLS), moleculeName,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Plasma), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.PLASMA), moleculeName,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Endosome), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.ENDOSOME), moleculeName,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_ENDOSOME)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Intracellular), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.INTRACELLULAR), moleculeName,
             RelExpParam(REL_EXP),
             FractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ONE_RATE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Interstitial), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.INTERSTITIAL), moleculeName,
             FractionParam(FRACTION_EXPRESSED_INTERSTITIAL, CoreConstants.Rate.PARAM_F_EXP_INTERSTITIAL, editable: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL)
          );
@@ -93,7 +93,7 @@ namespace PKSim.Core.Services
       {
          foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
          {
-            var organMucosa = organ.Container(CoreConstants.Compartment.Mucosa);
+            var organMucosa = organ.Container(CoreConstants.Compartment.MUCOSA);
             organMucosa.GetChildren<Compartment>().Each(x => AddTissueParameters(x, moleculeName));
          }
       }

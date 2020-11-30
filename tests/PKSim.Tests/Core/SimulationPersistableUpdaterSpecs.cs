@@ -34,7 +34,7 @@ namespace PKSim.Core
          var venousBlood = new Container().WithName(CoreConstants.Organ.VenousBlood).WithParentContainer(organsim);
          var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PeripheralVenousBlood).WithParentContainer(organsim);
          var lumen = new Container().WithName(CoreConstants.Organ.Lumen).WithParentContainer(organsim);
-         var plasma = new Container().WithName(CoreConstants.Compartment.Plasma);
+         var plasma = new Container().WithName(CoreConstants.Compartment.PLASMA);
          var moleculeVenousBlood = new Container().WithName("DRUG")
             .WithParentContainer(plasma.WithParentContainer(venousBlood));
 

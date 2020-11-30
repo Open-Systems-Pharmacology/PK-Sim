@@ -35,7 +35,7 @@ namespace PKSim.Core.Services
       private void addRequiredOutputForSimulation(IContainer organism, Compound compound)
       {
          //make sure venous blood plasma is always selected so that PK can be calculated as well
-         updatePeristable(organism, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma,
+         updatePeristable(organism, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.PLASMA,
             compound.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
 
          //make sure peripheral venous blood plasma is always selected so that PK can be calculated as well

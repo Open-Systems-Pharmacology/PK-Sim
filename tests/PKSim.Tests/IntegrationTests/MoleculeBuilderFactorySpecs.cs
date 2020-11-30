@@ -57,23 +57,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_kept_the_global_relative_expression_parameters()
       {
-         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parmaterName => _result.Parameter(parmaterName).ShouldNotBeNull());
-      }
-   }
-
-   public class When_creating_a_molecule_for_a_transporter : concern_for_MoleculeBuilderFactory
-   {
-      private IMoleculeBuilder _result;
-
-      protected override void Because()
-      {
-         _result = sut.Create(QuantityType.Transporter, new FormulaCache());
-      }
-
-      [Observation]
-      public void should_remove_the_global_relative_expression_paramters_that_do_not_make_sense_for_trnasporter()
-      {
-         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parmaterName => _result.Parameter(parmaterName).ShouldBeNull());
+         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parameterName => _result.Parameter(parameterName).ShouldNotBeNull());
       }
    }
 

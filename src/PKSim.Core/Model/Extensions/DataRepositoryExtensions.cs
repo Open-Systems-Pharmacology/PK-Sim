@@ -23,7 +23,7 @@ namespace PKSim.Core.Model.Extensions
       /// </summary>
       public static DataColumn VenousBloodColumn(this DataRepository dataRepository,string compoundName)
       {
-         return dataRepository.drugColumnFor(CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName);
+         return dataRepository.drugColumnFor(CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName);
       }
 
       private static DataColumn drugColumnFor(this IEnumerable<DataColumn> dataRepository, string organ, string compartment, string columnName, string compoundName)

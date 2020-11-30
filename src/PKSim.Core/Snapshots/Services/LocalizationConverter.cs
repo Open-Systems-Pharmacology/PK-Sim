@@ -3,14 +3,6 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Services
 {
-   public enum MembraneLocation
-   {
-      Apical,
-      Basolateral,
-      BloodBrainBarrier, //(apical)
-      Tissue,            //(basolateral)
-   }
-
 
    public enum TissueLocation
    {
@@ -51,6 +43,7 @@ namespace PKSim.Core.Snapshots.Services
                throw new ArgumentOutOfRangeException(nameof(tissueLocation), tissueLocation, null);
          }
       }
-
    }
+
+   
 }

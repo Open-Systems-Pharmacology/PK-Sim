@@ -3,8 +3,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using static PKSim.Core.CoreConstants.Parameters;
+using IParameterFactory = PKSim.Core.Model.IParameterFactory;
+
 namespace PKSim.Core.Services
 {
    public interface IIndividualEnzymeFactory : IIndividualMoleculeFactory
@@ -18,8 +19,9 @@ namespace PKSim.Core.Services
          IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
-         IEntityPathResolver entityPathResolver, 
-         IIndividualPathWithRootExpander individualPathWithRootExpander) : base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, individualPathWithRootExpander)
+         IEntityPathResolver entityPathResolver,
+         IIndividualPathWithRootExpander individualPathWithRootExpander) : base(objectBaseFactory, parameterFactory, objectPathFactory,
+         entityPathResolver, individualPathWithRootExpander)
       {
       }
 
@@ -30,20 +32,19 @@ namespace PKSim.Core.Services
          undefinedLiver.ReferenceConcentration.Visible = false;
          undefinedLiver.HalfLifeLiver.Visible = false;
          undefinedLiver.HalfLifeIntestine.Visible = false;
-         CoreConstants.Compartment.LiverZones.Each(z => addLiverZoneExpression(individual, undefinedLiver, z));
+         var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
+         CoreConstants.Compartment.LiverZones.Each(zoneName =>
+         {
+            var zone = liver.Container(zoneName);
+            AddContainerExpression(zone.Container(CoreConstants.Compartment.INTRACELLULAR), undefinedLiver.Name,
+               RelExpParam(REL_EXP, defaultValue: 1),
+               FractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ONE_RATE),
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
+            );
+         });
          return undefinedLiver;
       }
 
-      private void addLiverZoneExpression(Individual individual, IndividualEnzyme individualEnzyme, string zoneName)
-      {
-         var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
-         var zone = liver.Container(zoneName);
-         AddTissueParameters(zone, individualEnzyme.Name);
-         var relExp = zone.EntityAt<IParameter>(CoreConstants.Compartment.Intracellular, individualEnzyme.Name, REL_EXP);
-         relExp.Value = 1;
-      }
-
       protected override ApplicationIcon Icon => ApplicationIcons.Enzyme;
-
    }
 }

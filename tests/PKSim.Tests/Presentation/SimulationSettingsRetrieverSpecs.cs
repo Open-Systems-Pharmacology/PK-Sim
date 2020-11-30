@@ -63,7 +63,7 @@ namespace PKSim.Presentation
          var organism = new Organism();
          var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PeripheralVenousBlood);
          var venousBlood = new Container().WithName(CoreConstants.Organ.VenousBlood);
-         var venousBloodPlasma = new Container().WithName(CoreConstants.Compartment.Plasma).WithParentContainer(venousBlood);
+         var venousBloodPlasma = new Container().WithName(CoreConstants.Compartment.PLASMA).WithParentContainer(venousBlood);
          var drugPeripheralBlood = new Container().WithName(_compound1.Name);
          var drugVenousBlood = new Container().WithName(_compound1.Name);
          var periperhalVenousBloodObserver = new Observer {Name = CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD};

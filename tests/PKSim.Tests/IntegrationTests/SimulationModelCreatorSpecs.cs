@@ -76,7 +76,7 @@ namespace PKSim.IntegrationTests
       public void the_start_amount_of_all_protein_should_point_the_the_start_amount_parameter()
       {
          var cypMuscleCell = _simulation.Model.Root.EntityAt<MoleculeAmount>(
-            Constants.ORGANISM, CoreConstants.Organ.Muscle, CoreConstants.Compartment.Intracellular, _enzyme.Name);
+            Constants.ORGANISM, CoreConstants.Organ.Muscle, CoreConstants.Compartment.INTRACELLULAR, _enzyme.Name);
 
          var explicitFormula = cypMuscleCell.Formula.DowncastTo<ExplicitFormula>();
          var path = explicitFormula.FormulaUsablePathBy("M_0");

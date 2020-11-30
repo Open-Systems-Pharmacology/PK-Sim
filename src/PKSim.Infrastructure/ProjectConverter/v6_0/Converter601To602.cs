@@ -67,11 +67,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
             {
                //store a new row for Periportal that will be added in the mapping
                var periportalRow = mappingTable.NewRow();
-               periportalRow[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.Periportal;
+               periportalRow[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.PERIPORTAL;
                periportalRow[DatabaseConfiguration.MappingColumns.COL_TISSUE] = row[DatabaseConfiguration.MappingColumns.COL_TISSUE];
 
                //this becomes now pericentral
-               row[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.Pericentral;
+               row[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.PERICENTRAL;
 
                periporalRows.Add(periportalRow);
             }

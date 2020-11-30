@@ -52,9 +52,9 @@ namespace PKSim.Core.Model
                 string.Equals(container.Name, CoreConstants.Organ.PortalVein);
       }
 
-      public static bool IsInterstitial(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.Interstitial);
+      public static bool IsInterstitial(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.INTERSTITIAL);
 
-      public static bool IsMucosa(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.Mucosa);
+      public static bool IsMucosa(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.MUCOSA);
 
       public static bool IsLumenOrMucosa(this IContainer container) => container.IsLumen() || container.IsMucosa();
 
@@ -83,7 +83,7 @@ namespace PKSim.Core.Model
          if (container.IsKidney())
             return true;
 
-         if (container.ParentContainer.NameIsOneOf(CoreConstants.Organ.Liver, CoreConstants.Compartment.Mucosa))
+         if (container.ParentContainer.NameIsOneOf(CoreConstants.Organ.Liver, CoreConstants.Compartment.MUCOSA))
             return true;
 
          return false;

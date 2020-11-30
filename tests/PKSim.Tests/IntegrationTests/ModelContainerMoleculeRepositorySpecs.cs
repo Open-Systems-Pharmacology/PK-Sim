@@ -67,9 +67,9 @@ namespace PKSim.IntegrationTests
          const string liverPeriportalPrefix = "Organism|Liver|Periportal|";
          const string liverPericentralPrefix = "Organism|Liver|Pericentral|";
 
-         _igg_pls_id = flatContainerRepo.ContainerFrom(endoIggPrefix + CoreConstants.Compartment.Plasma).Id;
-         _igg_int_id = flatContainerRepo.ContainerFrom(endoIggPrefix + CoreConstants.Compartment.Interstitial).Id;
-         _igg_endo_id = flatContainerRepo.ContainerFrom(endoIggPrefix + CoreConstants.Compartment.Endosome).Id;
+         _igg_pls_id = flatContainerRepo.ContainerFrom(endoIggPrefix + CoreConstants.Compartment.PLASMA).Id;
+         _igg_int_id = flatContainerRepo.ContainerFrom(endoIggPrefix + CoreConstants.Compartment.INTERSTITIAL).Id;
+         _igg_endo_id = flatContainerRepo.ContainerFrom(endoIggPrefix + CoreConstants.Compartment.ENDOSOME).Id;
          _igg_ids = new int[] {_igg_pls_id, _igg_int_id, _igg_endo_id};
 
          _liv_periportal_pls_id = flatContainerRepo.ContainerFrom(liverPeriportalPrefix + "Plasma").Id;

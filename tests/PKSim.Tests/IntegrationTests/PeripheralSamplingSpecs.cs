@@ -82,7 +82,7 @@ namespace PKSim.IntegrationTests
          var iv = applicationRepository.ApplicationFrom(ApplicationTypes.Intravenous.Name, CoreConstants.Formulation.EMPTY_FORMULATION);
          var transport = iv.Transports.First();
          var targetTags = transport.TargetCriteria.Cast<MatchTagCondition>().Select(x => x.Tag);
-         targetTags.ShouldOnlyContain(CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma);
+         targetTags.ShouldOnlyContain(CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.PLASMA);
       }
    }
 }

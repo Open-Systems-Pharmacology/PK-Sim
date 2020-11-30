@@ -113,7 +113,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          AddCommand(_protocolTask.SetApplicationType(schemaItem, applicationType));
          if (applicationType.UserDefined)
          {
-            schemaItem.TargetCompartment = CoreConstants.Compartment.Plasma;
+            schemaItem.TargetCompartment = CoreConstants.Compartment.PLASMA;
             schemaItem.TargetOrgan = CoreConstants.Organ.ArterialBlood;
          }
          else

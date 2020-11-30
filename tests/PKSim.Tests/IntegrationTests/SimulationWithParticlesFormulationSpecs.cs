@@ -303,7 +303,7 @@ namespace PKSim.IntegrationTests
       /// </summary>
       protected void SetSolubilitySchema1WithStopIn(string segment)
       {
-         Solubility(CoreConstants.Compartment.Stomach).Value = 1e-3; //[kg/l]
+         Solubility(CoreConstants.Compartment.STOMACH).Value = 1e-3; //[kg/l]
          Solubility(CoreConstants.Compartment.Duodenum).Value = 0;
          ParticleRadiusDissolved = 0;
          IntestinalTransitRateFor(CoreConstants.Compartment.Duodenum).Value = 0;
@@ -320,7 +320,7 @@ namespace PKSim.IntegrationTests
          for (var segmentIdx = 1; segmentIdx < stopSegmentIdx; segmentIdx++)
             Solubility(_lumenSegments[segmentIdx]).Value = 100;
 
-         IntestinalTransitRateFor(CoreConstants.Compartment.Stomach).Value = 1e-3;
+         IntestinalTransitRateFor(CoreConstants.Compartment.STOMACH).Value = 1e-3;
          SetSolubilitySchema1WithStopIn(segment);
       }
 
@@ -801,7 +801,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]
@@ -847,7 +847,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]
@@ -900,7 +900,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]
@@ -960,7 +960,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]

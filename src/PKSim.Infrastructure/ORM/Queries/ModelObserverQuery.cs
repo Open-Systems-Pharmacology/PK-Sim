@@ -223,16 +223,16 @@ namespace PKSim.Infrastructure.ORM.Queries
 
          observer.ContainerCriteria = Create.Criteria(x => x.With(CoreConstants.Organ.Liver)
             .And.With(compartment)
-            .And.Not(CoreConstants.Compartment.Pericentral)
-            .And.Not(CoreConstants.Compartment.Periportal));
+            .And.Not(CoreConstants.Compartment.PERICENTRAL)
+            .And.Not(CoreConstants.Compartment.PERIPORTAL));
 
          var formula = _objectBaseFactory.Create<ExplicitFormula>()
             .WithName(observerName)
             .WithFormulaString("(M_periportal + M_pericentral)/" + TOTAL_DRUG_MASS_ALIAS)
             .WithDimension(_dimensionRepository.Fraction);
 
-         formula.AddObjectPath(createZoneAmountPath(compartment, CoreConstants.Compartment.Periportal, "M_periportal"));
-         formula.AddObjectPath(createZoneAmountPath(compartment, CoreConstants.Compartment.Pericentral, "M_pericentral"));
+         formula.AddObjectPath(createZoneAmountPath(compartment, CoreConstants.Compartment.PERIPORTAL, "M_periportal"));
+         formula.AddObjectPath(createZoneAmountPath(compartment, CoreConstants.Compartment.PERICENTRAL, "M_pericentral"));
          formula.AddObjectPath(createTotalDrugMassObjectPath(compound.Name));
 
          observer.Formula = formula;

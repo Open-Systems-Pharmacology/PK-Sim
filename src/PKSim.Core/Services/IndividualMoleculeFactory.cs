@@ -53,11 +53,11 @@ namespace PKSim.Core.Services
 
       public abstract IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
 
-      protected ParameterValueMetaData RelExpParam(string paramName) => new ParameterValueMetaData
+      protected ParameterValueMetaData RelExpParam(string paramName, double defaultValue = 0) => new ParameterValueMetaData
       {
          ParameterName = paramName,
          Dimension = DIMENSIONLESS,
-         DefaultValue = 0,
+         DefaultValue = defaultValue,
          GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
          BuildingBlockType = PKSimBuildingBlockType.Individual,
          IsDefault = true,

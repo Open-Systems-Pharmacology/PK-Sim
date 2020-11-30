@@ -60,20 +60,20 @@ namespace PKSim.Core
          _venousBlood = new Organ().WithName(CoreConstants.Organ.VenousBlood).WithParentContainer(_organism);
          _liver = new Organ().WithName(CoreConstants.Organ.Liver).WithParentContainer(_organism);
          _kidney = new Organ().WithName(CoreConstants.Organ.Kidney).WithParentContainer(_organism);
-         _liverInt = new Compartment().WithName(CoreConstants.Compartment.Interstitial).WithParentContainer(_liver);
-         _liverCell = new Compartment().WithName(CoreConstants.Compartment.Intracellular).WithParentContainer(_liver);
+         _liverInt = new Compartment().WithName(CoreConstants.Compartment.INTERSTITIAL).WithParentContainer(_liver);
+         _liverCell = new Compartment().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(_liver);
          _kidneyUrine = new Compartment().WithName(CoreConstants.Compartment.URINE).WithParentContainer(_kidney);
          _gallBladder = new Organ().WithName(CoreConstants.Organ.Gallbladder).WithParentContainer(_organism);
          _lumen = new Organ().WithName(CoreConstants.Organ.Lumen).WithParentContainer(_organism);
          _peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PeripheralVenousBlood).WithParentContainer(_organism);
          _smallIntestine = new Organ().WithName(CoreConstants.Organ.SmallIntestine).WithParentContainer(_organism);
-         _mucosa = new Compartment().WithName(CoreConstants.Compartment.Mucosa).WithParentContainer(_smallIntestine);
+         _mucosa = new Compartment().WithName(CoreConstants.Compartment.MUCOSA).WithParentContainer(_smallIntestine);
          _mucosa_duo = new Compartment().WithName(CoreConstants.Compartment.Duodenum).WithParentContainer(_mucosa);
-         _mucosa_duo_interstitial = new Compartment().WithName(CoreConstants.Compartment.Interstitial).WithParentContainer(_mucosa_duo);
+         _mucosa_duo_interstitial = new Compartment().WithName(CoreConstants.Compartment.INTERSTITIAL).WithParentContainer(_mucosa_duo);
 
          _events = new Container().WithName(Constants.EVENTS);
          _eventGroup = new EventGroup().WithName("E1").WithParentContainer(_events);
-         _plasma = new Compartment().WithName(CoreConstants.Compartment.Plasma).WithParentContainer(_venousBlood);
+         _plasma = new Compartment().WithName(CoreConstants.Compartment.PLASMA).WithParentContainer(_venousBlood);
          _drugContainerVenousBlood = new Container().WithName(_drugName).WithContainerType(ContainerType.Molecule).WithParentContainer(_venousBlood);
          _drugContainerPeripheralVenousBlood = new Container().WithName(_drugName).WithContainerType(ContainerType.Molecule).WithParentContainer(_peripheralVenousBlood);
          _drugContainerGallBladder = new Container().WithName(_drugName).WithContainerType(ContainerType.Molecule).WithParentContainer(_gallBladder);
@@ -138,7 +138,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_name_of_the_observer_to_concentration()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma, _drugName, CoreConstants.Output.Concentration);
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.PLASMA, _drugName, CoreConstants.Output.Concentration);
       }
    }
 
@@ -155,7 +155,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_rename_the_name_entry()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma, _drugName, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.PLASMA, _drugName, _entity.Name);
       }
    }
 
@@ -198,7 +198,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _entity = new Observer().WithName(CoreConstants.CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName, CoreConstants.Organ.Liver, CoreConstants.Compartment.Intracellular))
+         _entity = new Observer().WithName(CoreConstants.CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName, CoreConstants.Organ.Liver, CoreConstants.Compartment.INTRACELLULAR))
             .WithParentContainer(_drugContainerInLiverCell)
             .WithDimension(_fractionDimension);
       }
@@ -206,7 +206,7 @@ namespace PKSim.Core
       [Observation]
       public void should_keep_the_name_of_the_observer_as_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.Liver, CoreConstants.Compartment.Intracellular, _drugName, CoreConstants.CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName));
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.Liver, CoreConstants.Compartment.INTRACELLULAR, _drugName, CoreConstants.CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName));
       }
    }
 
@@ -361,7 +361,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_category_to_mucosa()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Compartment.Duodenum, CoreConstants.Compartment.Interstitial, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Compartment.Duodenum, CoreConstants.Compartment.INTERSTITIAL, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Mucosa);
       }
    }

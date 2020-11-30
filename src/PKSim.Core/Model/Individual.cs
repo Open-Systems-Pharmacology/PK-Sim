@@ -194,6 +194,7 @@ namespace PKSim.Core.Model
 
       /// <summary>
       ///    Returns all possible molecule containers of the individual in which <paramref name="molecule" /> will be defined.
+      ///    This also returns global container under the global molecule named after <paramref name="molecule" />
       /// </summary>
       public virtual IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule) =>
          AllMoleculeContainersFor<MoleculeExpressionContainer>(molecule);
@@ -216,7 +217,7 @@ namespace PKSim.Core.Model
             else
             {
                var container = p.ParentContainer.ParentContainer;
-               var key = container.IsNamed(CoreConstants.Compartment.Intracellular) ? container.ParentContainer.Name : container.Name;
+               var key = container.IsNamed(CoreConstants.Compartment.INTRACELLULAR) ? container.ParentContainer.Name : container.Name;
                if (p.IsInLumen())
                   key = CoreConstants.ContainerName.LumenSegmentNameFor(key);
 

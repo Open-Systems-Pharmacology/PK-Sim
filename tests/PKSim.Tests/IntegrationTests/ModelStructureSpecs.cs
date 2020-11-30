@@ -25,18 +25,18 @@ namespace PKSim.IntegrationTests
       public void the_venous_blood_organ_should_contains_the_compartment_blood_cells_and_plasma()
       {
          var venousBlood = _organism.Container(CoreConstants.Organ.VenousBlood);
-         venousBlood.Container(CoreConstants.Compartment.BloodCells).ShouldNotBeNull();
-         venousBlood.Container(CoreConstants.Compartment.Plasma).ShouldNotBeNull();
+         venousBlood.Container(CoreConstants.Compartment.BLOOD_CELLS).ShouldNotBeNull();
+         venousBlood.Container(CoreConstants.Compartment.PLASMA).ShouldNotBeNull();
       }
 
       [Observation]
       public void the_liver_organ_should_contains_the_compartment_blood_cells_plasma_interstitial_and_intracellular()
       {
          var liver = _organism.Container(CoreConstants.Organ.Liver);
-         liver.Container(CoreConstants.Compartment.BloodCells).ShouldNotBeNull();
-         liver.Container(CoreConstants.Compartment.Plasma).ShouldNotBeNull();
-         liver.Container(CoreConstants.Compartment.Interstitial).ShouldNotBeNull();
-         liver.Container(CoreConstants.Compartment.Intracellular).ShouldNotBeNull();
+         liver.Container(CoreConstants.Compartment.BLOOD_CELLS).ShouldNotBeNull();
+         liver.Container(CoreConstants.Compartment.PLASMA).ShouldNotBeNull();
+         liver.Container(CoreConstants.Compartment.INTERSTITIAL).ShouldNotBeNull();
+         liver.Container(CoreConstants.Compartment.INTRACELLULAR).ShouldNotBeNull();
       }
 
 
@@ -44,10 +44,10 @@ namespace PKSim.IntegrationTests
       public void the_spleen_organ_should_contains_the_compartment_blood_cells_plasma_interstitial_and_intracellular()
       {
          var spleen = _organism.Container(CoreConstants.Organ.Spleen);
-         spleen.Container(CoreConstants.Compartment.BloodCells).ShouldNotBeNull();
-         spleen.Container(CoreConstants.Compartment.Plasma).ShouldNotBeNull();
-         spleen.Container(CoreConstants.Compartment.Interstitial).ShouldNotBeNull();
-         spleen.Container(CoreConstants.Compartment.Intracellular).ShouldNotBeNull();
+         spleen.Container(CoreConstants.Compartment.BLOOD_CELLS).ShouldNotBeNull();
+         spleen.Container(CoreConstants.Compartment.PLASMA).ShouldNotBeNull();
+         spleen.Container(CoreConstants.Compartment.INTERSTITIAL).ShouldNotBeNull();
+         spleen.Container(CoreConstants.Compartment.INTRACELLULAR).ShouldNotBeNull();
       }
    }
 }

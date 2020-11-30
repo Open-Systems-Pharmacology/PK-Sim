@@ -81,8 +81,8 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _pericentrals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.Pericentral).ToList();
-         _periportals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.Periportal).ToList();
+         _pericentrals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.PERICENTRAL).ToList();
+         _periportals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.PERIPORTAL).ToList();
       }
 
       [Observation]

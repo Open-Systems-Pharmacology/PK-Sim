@@ -27,15 +27,15 @@ namespace PKSim.Core.Extensions
          return containerName.IsOneOf(CoreConstants.Molecule.UndefinedLiver, CoreConstants.Molecule.UndefinedLiverTransporter);
       }
 
-      public static bool IsEndosome(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.Endosome);
+      public static bool IsEndosome(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.ENDOSOME);
 
-      public static bool IsVascularEndothelium(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.VascularEndothelium);
+      public static bool IsVascularEndothelium(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.VASCULAR_ENDOTHELIUM);
 
-      public static bool IsBloodCells(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.BloodCells);
+      public static bool IsBloodCells(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.BLOOD_CELLS);
 
-      public static bool IsPlasma(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.Plasma);
+      public static bool IsPlasma(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.PLASMA);
       
-      public static bool IsInterstitial(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.Interstitial);
+      public static bool IsInterstitial(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.INTERSTITIAL);
 
       public static bool IsLumen(this string containerName) => string.Equals(containerName, CoreConstants.Organ.Lumen);
 
