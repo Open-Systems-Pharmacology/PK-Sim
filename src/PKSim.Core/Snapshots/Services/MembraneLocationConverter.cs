@@ -60,8 +60,6 @@ namespace PKSim.Core.Snapshots.Services
 
 
          //this should never happen
-         firstContainer = firstContainer;
-
       }
    }
 }

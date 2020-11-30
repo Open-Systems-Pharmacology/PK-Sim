@@ -114,7 +114,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (expressionsContainers.Count == 1)
             return firstExpressionContainer;
 
-         //This is the old format. Basolateral was the default basolateral
+         //This is the old format. Basolateral was the default
          var membraneLocation = ModelValueFor(snapshot.MembraneLocation, MembraneLocation.Basolateral);
 
          MembraneLocationConverter.ConvertMembraneLocationToParameterFraction(expressionsContainers, membraneLocation);
