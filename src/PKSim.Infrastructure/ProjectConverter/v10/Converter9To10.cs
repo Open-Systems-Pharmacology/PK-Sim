@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -49,6 +50,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
       {
          individualElement.Descendants("IndividualEnzyme").Each(convertIndividualProtein);
          individualElement.Descendants("IndividualOtherProtein").Each(convertIndividualProtein);
+         individualElement.Descendants("IndividualTransporter").Each(convertIndividualTransporter);
       }
 
       private void convertIndividualProtein(XElement proteinNode)
@@ -63,6 +65,17 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          _converted = true;
       }
 
+      private void convertIndividualTransporter(XElement transporterNode)
+      {
+         transporterNode.Descendants("TransporterExpressionContainer").Each(transporterContainerNode =>
+         {
+            // membraneLocation is not used anymore. We will save it temporarily as Tag so that we can access it during object conversion
+            var membraneLocation = EnumHelper.ParseValue<MembraneLocation>(transporterContainerNode.GetAttribute("membraneLocation"));
+            var tag = new XElement("Tag");
+            tag.SetAttributeValue("value", membraneLocation);
+            transporterContainerNode.Add(new XElement("Tags", tag));
+         });
+      }
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
          _converted = false;
@@ -116,18 +129,48 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          //New molecules is added. We need to update all global parameters as well as relative expression parameters
          var newMolecule = factory.AddMoleculeTo(individual, moleculeToConvert.Name);
          
-         //TODO: Do to transporter not supported yet
          if (newMolecule == null)
             return;
 
          var allExpressionParameters = individual.AllExpressionParametersFor(newMolecule);
-
          moleculeToConvert.GetAllChildren<MoleculeExpressionContainer>().Each(x =>
          {
             convertParameter(x.RelativeExpressionParameter, allExpressionParameters[x.Name]);
          });
 
          moleculeToConvert.AllParameters().Each(p => { convertParameter(p, newMolecule.Parameter(p.Name)); });
+
+         if (!(newMolecule is IndividualTransporter transporter))
+            return;
+
+         var allTransporterExpressionContainers = individual.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter)
+            .Where(x => x.TransportDirection != TransportDirectionId.None).ToList();
+
+         moleculeToConvert.GetAllChildren<TransporterExpressionContainer>().Each(x =>
+         {
+            convertTransportContainer(x, allTransporterExpressionContainers, transporter);
+         });
+      }
+
+      private void convertTransportContainer(TransporterExpressionContainer expressionContainerToConvert,
+         IReadOnlyList<TransporterExpressionContainer> allTransporterExpressionContainers, IndividualTransporter transporter)
+      {
+         if (expressionContainerToConvert.Tags.Any())
+            return;
+
+         var membraneLocation = EnumHelper.ParseValue<MembraneLocation>(expressionContainerToConvert.Tags.ElementAt(0).Value);
+
+         var matchingContainers = allTransporterExpressionContainers
+            .Where(x=>x.LogicalContainerName == expressionContainerToConvert.Name || x.CompartmentName == expressionContainerToConvert.Name)
+            .ToList();
+
+         matchingContainers.Each(x => x.TransportDirection = TransportDirections.DefaultDirectionFor(transporter.TransportType, x));
+
+         //only one direction to take into consideration. all good, nothing else to do
+         if (matchingContainers.Count == 1)
+            return;
+
+         MembraneLocationConverter.ConvertMembraneLocationToParameterFraction(matchingContainers, membraneLocation);
       }
 
       private void convertParameter(IParameter oldParameter, IParameter newParameter)
