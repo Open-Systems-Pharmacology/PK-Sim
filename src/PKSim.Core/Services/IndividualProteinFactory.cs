@@ -91,7 +91,7 @@ namespace PKSim.Core.Services
       
       protected void AddMucosaExpression(ISimulationSubject simulationSubject, string moleculeName)
       {
-         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
+         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SMALL_INTESTINE, CoreConstants.Organ.LARGE_INTESTINE))
          {
             var organMucosa = organ.Container(CoreConstants.Compartment.MUCOSA);
             organMucosa.GetChildren<Compartment>().Each(x => AddTissueParameters(x, moleculeName));
@@ -100,7 +100,7 @@ namespace PKSim.Core.Services
 
       protected void AddLumenExpression(ISimulationSubject simulationSubject, string moleculeName)
       {
-         var lumen = simulationSubject.Organism.Organ(CoreConstants.Organ.Lumen);
+         var lumen = simulationSubject.Organism.Organ(CoreConstants.Organ.LUMEN);
          //Only visible compartments as we do not want to create RelExp for example in Feces
          foreach (var segment in lumen.Compartments.Where(x => x.Visible))
          {

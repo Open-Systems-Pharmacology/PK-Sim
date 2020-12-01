@@ -16,10 +16,10 @@ namespace PKSim.Core.Model
    {
       private static readonly Cache<SystemicProcessTypeId, SystemicProcessType> _allApplicationTypes = new Cache<SystemicProcessTypeId, SystemicProcessType>(proc => proc.SystemicProcessTypeId);
 
-      public static SystemicProcessType Hepatic = create(SystemicProcessTypeId.Hepatic, CoreConstants.Organ.Liver, PKSimConstants.UI.TotalHepaticClearance);
-      public static SystemicProcessType Renal = create(SystemicProcessTypeId.Renal, CoreConstants.Organ.Kidney, PKSimConstants.UI.RenalClearance);
-      public static SystemicProcessType Biliary = create(SystemicProcessTypeId.Biliary, CoreConstants.Organ.Gallbladder, PKSimConstants.UI.BiliaryClearance);
-      public static SystemicProcessType GFR = create(SystemicProcessTypeId.GFR, CoreConstants.Organ.Kidney, PKSimConstants.UI.GlomerularFiltration);
+      public static SystemicProcessType Hepatic = create(SystemicProcessTypeId.Hepatic, CoreConstants.Organ.LIVER, PKSimConstants.UI.TotalHepaticClearance);
+      public static SystemicProcessType Renal = create(SystemicProcessTypeId.Renal, CoreConstants.Organ.KIDNEY, PKSimConstants.UI.RenalClearance);
+      public static SystemicProcessType Biliary = create(SystemicProcessTypeId.Biliary, CoreConstants.Organ.GALLBLADDER, PKSimConstants.UI.BiliaryClearance);
+      public static SystemicProcessType GFR = create(SystemicProcessTypeId.GFR, CoreConstants.Organ.KIDNEY, PKSimConstants.UI.GlomerularFiltration);
 
       public static SystemicProcessType ById(SystemicProcessTypeId systemicProcessTypeId)
       {

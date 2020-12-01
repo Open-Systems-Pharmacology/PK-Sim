@@ -63,7 +63,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          //We find the old mapping for the organ liver 
          foreach (DataRow row in mappingTable.Rows)
          {
-            if (row[DatabaseConfiguration.MappingColumns.COL_CONTAINER].ToString() == CoreConstants.Organ.Liver)
+            if (row[DatabaseConfiguration.MappingColumns.COL_CONTAINER].ToString() == CoreConstants.Organ.LIVER)
             {
                //store a new row for Periportal that will be added in the mapping
                var periportalRow = mappingTable.NewRow();

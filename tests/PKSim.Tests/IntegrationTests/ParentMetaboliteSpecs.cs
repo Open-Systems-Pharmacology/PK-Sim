@@ -95,7 +95,7 @@ namespace PKSim.IntegrationTests
       {
          var enzymaticProcessSelection = ProcessSelectionFor(process);
 
-         var liverPeriportalCell = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.Liver,
+         var liverPeriportalCell = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.LIVER,
             liverZone, CoreConstants.Compartment.INTRACELLULAR);
 
          var dynamicMetaboliteName = enzymaticProcessSelection.ProductName(CoreConstants.Molecule.Metabolite);
@@ -116,7 +116,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_created_a_reaction_using_the_metabolite_as_product_in_liver_periportal_intracellular()
       {
-         var reactionInLiver = _simulation.Model.Root.EntityAt<IReaction>(Constants.ORGANISM, CoreConstants.Organ.Liver,
+         var reactionInLiver = _simulation.Model.Root.EntityAt<IReaction>(Constants.ORGANISM, CoreConstants.Organ.LIVER,
             CoreConstants.Compartment.PERIPORTAL, CoreConstants.Compartment.INTRACELLULAR,
             CoreConstants.CompositeNameFor(_compound.Name, _parentMetabolizationCYP3A4.Name));
 
@@ -127,7 +127,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_created_a_reaction_using_the_metabolite_as_product_in_liver_pericentral_intracellular()
       {
-         var reactionInLiver = _simulation.Model.Root.EntityAt<IReaction>(Constants.ORGANISM, CoreConstants.Organ.Liver,
+         var reactionInLiver = _simulation.Model.Root.EntityAt<IReaction>(Constants.ORGANISM, CoreConstants.Organ.LIVER,
             CoreConstants.Compartment.PERICENTRAL, CoreConstants.Compartment.INTRACELLULAR,
             CoreConstants.CompositeNameFor(_compound.Name, _parentMetabolizationCYP3A4.Name));
 
@@ -184,7 +184,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_not_create_a_fraction_execreted_to_urine_observer_for_the_floating_metabolite_in_the_simulation()
       {
-         var kidneyUrineMetabolite = _simulation.Model.Root.EntityAt<MoleculeAmount>(Constants.ORGANISM, CoreConstants.Organ.Kidney, CoreConstants.Compartment.URINE, _metabolite.Name);
+         var kidneyUrineMetabolite = _simulation.Model.Root.EntityAt<MoleculeAmount>(Constants.ORGANISM, CoreConstants.Organ.KIDNEY, CoreConstants.Compartment.URINE, _metabolite.Name);
          kidneyUrineMetabolite.Children.FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE).ShouldBeNull();
       }
 
@@ -200,8 +200,8 @@ namespace PKSim.IntegrationTests
       {
          var enzymaticProcessSelection = ProcessSelectionFor(_parentMetabolizationCYP2D6);
          var observerName = CoreConstants.Observer.ObserverNameFrom(CoreConstants.Observer.FRACTION_OF_DOSE, _compound.Name);
-         var liverCellCYP2D6 = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.Liver, CoreConstants.Compartment.INTRACELLULAR, enzymaticProcessSelection.ProductName());
-         var observerLiverCell = liverCellCYP2D6.Children.FindByName(CoreConstants.CompositeNameFor(observerName, CoreConstants.Organ.Liver, CoreConstants.Compartment.INTRACELLULAR)).DowncastTo<IObserver>();
+         var liverCellCYP2D6 = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR, enzymaticProcessSelection.ProductName());
+         var observerLiverCell = liverCellCYP2D6.Children.FindByName(CoreConstants.CompositeNameFor(observerName, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR)).DowncastTo<IObserver>();
          observerLiverCell.ShouldNotBeNull();
 
          observerLiverCell.Formula.DowncastTo<ExplicitFormula>().FormulaString.ShouldBeEqualTo("(M_periportal + M_pericentral)/TotalDrugMass");

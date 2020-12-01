@@ -126,7 +126,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_all_tissues_vascular_and_lumen_organs()
       {
-         _organs.ShouldNotContain(CoreConstants.Organ.Liver);
+         _organs.ShouldNotContain(CoreConstants.Organ.LIVER);
          _organs.ShouldContain(CoreConstants.Compartment.PERIPORTAL);
       }
    }
@@ -137,7 +137,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_the_list_of_direct_compartments_for_a_standard_organ()
       {
-         sut.AllCompartmentsFor(CoreConstants.Organ.Kidney).ShouldContain(CoreConstants.Compartment.PLASMA);
+         sut.AllCompartmentsFor(CoreConstants.Organ.KIDNEY).ShouldContain(CoreConstants.Compartment.PLASMA);
       }
 
       [Observation]

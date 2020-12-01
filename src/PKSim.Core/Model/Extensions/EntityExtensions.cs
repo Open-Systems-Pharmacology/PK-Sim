@@ -29,7 +29,7 @@ namespace PKSim.Core.Model.Extensions
 
       public static bool IsInLumen(this IEntity entity)
       {
-         if (entity.HasAncestorNamed(CoreConstants.Organ.Lumen))
+         if (entity.HasAncestorNamed(CoreConstants.Organ.LUMEN))
             return true;
 
          var neighborhood = entity.NeighborhoodAncestor();

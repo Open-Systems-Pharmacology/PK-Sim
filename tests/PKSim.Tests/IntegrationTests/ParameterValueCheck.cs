@@ -56,8 +56,8 @@ namespace PKSim.IntegrationTests
          foreach (var species in _speciesRepository.All().Where(x => x.Name != CoreConstants.Species.HUMAN))
          {
             var individualForSpecies = _individualRetriever.DefaultIndividualFor(species);
-            var smallIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.SmallIntestine);
-            var largeIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.LargeIntestine);
+            var smallIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.SMALL_INTESTINE);
+            var largeIntestine = individualForSpecies.Organism.Organ(CoreConstants.Organ.LARGE_INTESTINE);
 
             double siValue = smallIntestine.Parameter(Constants.Parameters.VOLUME).Value;
             double liValue = largeIntestine.Parameter(Constants.Parameters.VOLUME).Value;

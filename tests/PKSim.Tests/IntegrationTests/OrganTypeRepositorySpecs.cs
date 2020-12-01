@@ -16,7 +16,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_organ_type()
       {
-         sut.OrganTypeFor(CoreConstants.Organ.Bone).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+         sut.OrganTypeFor(CoreConstants.Organ.BONE).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
       }
    }
 
@@ -25,7 +25,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_organ_type()
       {
-         sut.OrganTypeFor(new Container {Name = CoreConstants.Organ.Bone}).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+         sut.OrganTypeFor(new Container {Name = CoreConstants.Organ.BONE}).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
       }
    }
 

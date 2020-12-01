@@ -32,7 +32,7 @@ namespace PKSim.Core.Services
          undefinedLiver.ReferenceConcentration.Visible = false;
          undefinedLiver.HalfLifeLiver.Visible = false;
          undefinedLiver.HalfLifeIntestine.Visible = false;
-         var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
+         var liver = individual.Organism.Organ(CoreConstants.Organ.LIVER);
          CoreConstants.Compartment.LiverZones.Each(zoneName =>
          {
             var zone = liver.Container(zoneName);

@@ -15,6 +15,7 @@ using PKSim.Infrastructure.ORM.Core;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Infrastructure.ProjectConverter;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
@@ -137,15 +138,15 @@ namespace PKSim.IntegrationTests
       {
          var meanStdRatios = new[]
          {
-            new {organ = CoreConstants.Organ.ArterialBlood, maleRatio = 0.05, femaleRatio = 0.05},
-            new {organ = CoreConstants.Organ.Bone, maleRatio = 0.011059, femaleRatio = 0.01},
-            new {organ = CoreConstants.Organ.Gonads, maleRatio = 0.05, femaleRatio = 0.05},
-            new {organ = CoreConstants.Organ.Kidney, maleRatio = 0.24628, femaleRatio = 0.25},
-            new {organ = CoreConstants.Organ.LargeIntestine, maleRatio = 0.14, femaleRatio = 0.14},
-            new {organ = CoreConstants.Organ.Liver, maleRatio = 0.25, femaleRatio = 0.25},
-            new {organ = CoreConstants.Organ.Pancreas, maleRatio = 0.2689, femaleRatio = 0.28},
-            new {organ = CoreConstants.Organ.Skin, maleRatio = 0.05, femaleRatio = 0.05},
-            new {organ = CoreConstants.Organ.VenousBlood, maleRatio = 0.05, femaleRatio = 0.05}
+            new {organ = ARTERIAL_BLOOD, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = BONE, maleRatio = 0.011059, femaleRatio = 0.01},
+            new {organ = GONADS, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = KIDNEY, maleRatio = 0.24628, femaleRatio = 0.25},
+            new {organ = LARGE_INTESTINE, maleRatio = 0.14, femaleRatio = 0.14},
+            new {organ = LIVER, maleRatio = 0.25, femaleRatio = 0.25},
+            new {organ = PANCREAS, maleRatio = 0.2689, femaleRatio = 0.28},
+            new {organ = SKIN, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = VENOUS_BLOOD, maleRatio = 0.05, femaleRatio = 0.05}
          };
 
          foreach (var meanStdRatio in meanStdRatios)
@@ -154,7 +155,7 @@ namespace PKSim.IntegrationTests
 
             foreach (var volumeParameter in volumeParameters)
             {
-               if (meanStdRatio.organ.Equals(CoreConstants.Organ.Liver) && volumeParameter.Gender.Equals(CoreConstants.Gender.Male))
+               if (meanStdRatio.organ.Equals(LIVER) && volumeParameter.Gender.Equals(CoreConstants.Gender.Male))
                   continue; //no update for this combination
 
                var ratio = volumeParameter.Deviation / volumeParameter.Mean;
@@ -327,12 +328,12 @@ namespace PKSim.IntegrationTests
             return false;
 
          var container = parameterRateMetaData.ContainerName;
-         if (container.Equals(CoreConstants.Organ.EndogenousIgG) ||
-             container.Equals(CoreConstants.Organ.PortalVein))
+         if (container.Equals(ENDOGENOUS_IGG) ||
+             container.Equals(PORTAL_VEIN))
             return false;
 
          var name = parameterRateMetaData.ParameterName;
-         var isIntestine = container.IsOneOf(CoreConstants.Organ.LargeIntestine, CoreConstants.Organ.SmallIntestine);
+         var isIntestine = container.IsOneOf(LARGE_INTESTINE, SMALL_INTESTINE);
 
          return (name.Equals(flowParameterName) && !isIntestine) ||
                 (name.Equals(flowInclMucosaParameterName) && isIntestine);
@@ -631,11 +632,11 @@ namespace PKSim.IntegrationTests
       public void should_have_set_the_saliva_icon_and_gall_bladder_icon()
       {
          var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
-         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, CoreConstants.Organ.Gallbladder)
-            .IconName.ShouldBeEqualTo(CoreConstants.Organ.Gallbladder);
+         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, GALLBLADDER)
+            .IconName.ShouldBeEqualTo(GALLBLADDER);
 
-         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, CoreConstants.Organ.Saliva)
-            .IconName.ShouldBeEqualTo(CoreConstants.Organ.Saliva);
+         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, SALIVA)
+            .IconName.ShouldBeEqualTo(SALIVA);
       }
 
       [Observation]

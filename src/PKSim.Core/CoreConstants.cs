@@ -325,7 +325,7 @@ namespace PKSim.Core
          public static readonly string PERIPORTAL = "Periportal";
          public static readonly string PERICENTRAL = "Pericentral";
          public static readonly string STOMACH = "Stomach";
-         public static readonly string Duodenum = "Duodenum";
+         public static readonly string DUODENUM = "Duodenum";
          public static readonly string UpperJejunum = "UpperJejunum";
          public static readonly string LowerJejunum = "LowerJejunum";
          public static readonly string UpperIleum = "UpperIleum";
@@ -355,7 +355,7 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToLowerIleum = new List<string>
          {
-            Duodenum,
+            DUODENUM,
             UpperJejunum,
             LowerJejunum,
             UpperIleum,
@@ -421,7 +421,7 @@ namespace PKSim.Core
 
          public static string LumenSegmentNameFor(string segmentName)
          {
-            return CompositeNameFor(Organ.Lumen, segmentName);
+            return CompositeNameFor(Organ.LUMEN, segmentName);
          }
 
          public static string MucosaSegmentNameFor(string segmentName)
@@ -772,57 +772,57 @@ namespace PKSim.Core
 
       public static class Organ
       {
-         public static readonly string ArterialBlood = "ArterialBlood";
-         public static readonly string Bone = "Bone";
-         public static readonly string Brain = "Brain";
+         public static readonly string ARTERIAL_BLOOD = "ArterialBlood";
+         public static readonly string BONE = "Bone";
+         public static readonly string BRAIN = "Brain";
          public static readonly string Dummy = "Dummy";
-         public static readonly string EndogenousIgG = "EndogenousIgG";
-         public static readonly string Fat = "Fat";
-         public static readonly string Gallbladder = "Gallbladder";
-         public static readonly string Gonads = "Gonads";
-         public static readonly string Heart = "Heart";
-         public static readonly string Kidney = "Kidney";
-         public static readonly string LargeIntestine = "LargeIntestine";
-         public static readonly string Lumen = "Lumen";
-         public static readonly string Lung = "Lung";
-         public static readonly string Liver = "Liver";
-         public static readonly string Muscle = "Muscle";
-         public static readonly string Pancreas = "Pancreas";
-         public static readonly string PortalVein = "PortalVein";
-         public static readonly string Saliva = "Saliva";
-         public static readonly string Skin = "Skin";
-         public static readonly string SmallIntestine = "SmallIntestine";
-         public static readonly string Spleen = "Spleen";
-         public static readonly string Stomach = "Stomach";
-         public static readonly string VenousBlood = "VenousBlood";
-         public static readonly string PeripheralVenousBlood = "PeripheralVenousBlood";
+         public static readonly string ENDOGENOUS_IGG = "EndogenousIgG";
+         public static readonly string FAT = "Fat";
+         public static readonly string GALLBLADDER = "Gallbladder";
+         public static readonly string GONADS = "Gonads";
+         public static readonly string HEART = "Heart";
+         public static readonly string KIDNEY = "Kidney";
+         public static readonly string LARGE_INTESTINE = "LargeIntestine";
+         public static readonly string LUMEN = "Lumen";
+         public static readonly string LUNG = "Lung";
+         public static readonly string LIVER = "Liver";
+         public static readonly string MUSCLE = "Muscle";
+         public static readonly string PANCREAS = "Pancreas";
+         public static readonly string PORTAL_VEIN = "PortalVein";
+         public static readonly string SALIVA = "Saliva";
+         public static readonly string SKIN = "Skin";
+         public static readonly string SMALL_INTESTINE = "SmallIntestine";
+         public static readonly string SPLEEN = "Spleen";
+         public static readonly string STOMACH = "Stomach";
+         public static readonly string VENOUS_BLOOD = "VenousBlood";
+         public static readonly string PERIPHERAL_VENOUS_BLOOD = "PeripheralVenousBlood";
 
          public static readonly IReadOnlyList<string> StandardOrgans = new List<string>
          {
-            Gonads,
-            Heart,
-            Kidney,
-            LargeIntestine,
-            Liver,
-            Muscle,
-            Pancreas,
-            PortalVein,
-            SmallIntestine,
-            Spleen,
-            Stomach,
-            VenousBlood,
-            Bone,
-            Fat,
-            Brain,
-            Skin,
-            Lung,
-            ArterialBlood
+            GONADS,
+            HEART,
+            KIDNEY,
+            LARGE_INTESTINE,
+            LIVER,
+            MUSCLE,
+            PANCREAS,
+            PORTAL_VEIN,
+            SMALL_INTESTINE,
+            SPLEEN,
+            STOMACH,
+            VENOUS_BLOOD,
+            BONE,
+            FAT,
+            BRAIN,
+            SKIN,
+            LUNG,
+            ARTERIAL_BLOOD
          };
 
          public static IReadOnlyList<string> PolarizedMembraneOrgans = new[]
          {
-            Brain,
-            Kidney,
+            BRAIN,
+            KIDNEY,
             Compartment.PERICENTRAL,
             Compartment.PERIPORTAL
          };

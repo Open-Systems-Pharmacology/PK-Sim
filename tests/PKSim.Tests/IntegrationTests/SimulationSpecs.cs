@@ -485,7 +485,7 @@ namespace PKSim.IntegrationTests
          string comp1FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound1Name);
          string comp2FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound2Name);
 
-         var bone = organ(CoreConstants.Organ.Bone);
+         var bone = organ(CoreConstants.Organ.BONE);
 
          // plasma must contain molecules and their FcRn complex
          var plasma = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
@@ -528,7 +528,7 @@ namespace PKSim.IntegrationTests
          string ligandEndo = CoreConstants.Molecule.LigandEndo;
          string ligandEndoComplex = CoreConstants.Molecule.LigandEndoComplex;
 
-         var endoIgg = organ(CoreConstants.Organ.EndogenousIgG);
+         var endoIgg = organ(CoreConstants.Organ.ENDOGENOUS_IGG);
 
          // plasma 
          var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
@@ -585,7 +585,7 @@ namespace PKSim.IntegrationTests
          string fcRnBindingTissueComp1 = CoreConstants.Reaction.FcRnBindingTissueNameFrom(_compound1Name);
          string fcRnBindingTissueComp2 = CoreConstants.Reaction.FcRnBindingTissueNameFrom(_compound2Name);
 
-         var bone = organ(CoreConstants.Organ.Bone);
+         var bone = organ(CoreConstants.Organ.BONE);
 
          // plasma must FcRn binding tissue for all compounds
          var plasma = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
@@ -632,7 +632,7 @@ namespace PKSim.IntegrationTests
 
          const string fcRnBindingEndogenousIgg = "FcRn binding endogenous Igg";
 
-         var endoIgg = organ(CoreConstants.Organ.EndogenousIgG);
+         var endoIgg = organ(CoreConstants.Organ.ENDOGENOUS_IGG);
 
          // plasma 
          var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);

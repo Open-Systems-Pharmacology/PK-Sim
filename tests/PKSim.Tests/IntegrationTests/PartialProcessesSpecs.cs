@@ -77,8 +77,8 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         _allExpressionParameters[CoreConstants.Organ.Bone].Value = _relExpBone;
-         _allExpressionParameters[CoreConstants.Compartment.Duodenum].Value = _relExpDuo;
+         _allExpressionParameters[CoreConstants.Organ.BONE].Value = _relExpBone;
+         _allExpressionParameters[CoreConstants.Compartment.DUODENUM].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -101,10 +101,10 @@ namespace PKSim.IntegrationTests
          foreach (var parameter in allRelExp)
          {
             var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
-            if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
+            if (grandparent.Name.Equals(CoreConstants.Organ.BONE))
                parameter.Value.ShouldBeEqualTo(_relExpBone);
 
-            else if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
+            else if (grandparent.Name.Equals(CoreConstants.Compartment.DUODENUM))
                parameter.Value.ShouldBeEqualTo(_relExpDuo);
             else
                parameter.Value.ShouldBeEqualTo(0);
@@ -145,8 +145,8 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         _allExpressionParameters[CoreConstants.Organ.Bone].Value = _relExpBone;
-         _allExpressionParameters[CoreConstants.Compartment.Duodenum].Value = _relExpDuo;
+         _allExpressionParameters[CoreConstants.Organ.BONE].Value = _relExpBone;
+         _allExpressionParameters[CoreConstants.Compartment.DUODENUM].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -169,10 +169,10 @@ namespace PKSim.IntegrationTests
          foreach (var parameter in allRelExpNorm)
          {
             var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
-            if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
+            if (grandparent.Name.Equals(CoreConstants.Organ.BONE))
                parameter.Value.ShouldBeEqualTo(_relExpBone);
 
-            else if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
+            else if (grandparent.Name.Equals(CoreConstants.Compartment.DUODENUM))
                parameter.Value.ShouldBeEqualTo(_relExpDuo);
             else
                parameter.Value.ShouldBeEqualTo(0);
@@ -188,8 +188,8 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
 
          _enzyme.Localization = Localization.Interstitial;
-         _allExpressionParameters[CoreConstants.Organ.Bone].Value = _relExpBone;
-         _allExpressionParameters[CoreConstants.Compartment.Duodenum].Value = _relExpDuo;
+         _allExpressionParameters[CoreConstants.Organ.BONE].Value = _relExpBone;
+         _allExpressionParameters[CoreConstants.Compartment.DUODENUM].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -213,10 +213,10 @@ namespace PKSim.IntegrationTests
          foreach (var parameter in allRelExp)
          {
             var grandparent = parameter.ParentContainer.ParentContainer.ParentContainer;
-            if (grandparent.Name.Equals(CoreConstants.Organ.Bone))
+            if (grandparent.Name.Equals(CoreConstants.Organ.BONE))
                parameter.Value.ShouldBeEqualTo(_relExpBone);
 
-            else if (grandparent.Name.Equals(CoreConstants.Compartment.Duodenum))
+            else if (grandparent.Name.Equals(CoreConstants.Compartment.DUODENUM))
                parameter.Value.ShouldBeEqualTo(_relExpDuo); 
             else
                parameter.Value.ShouldBeEqualTo(0);
@@ -265,7 +265,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _transporter = _transporterFactory.CreateFor(_individual, "TRANS", TransportType.Efflux).DowncastTo<IndividualTransporter>();
          var transportContainer = _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)
-            .First(x => x.LogicalContainer.IsNamed(CoreConstants.Organ.Brain));
+            .First(x => x.LogicalContainer.IsNamed(CoreConstants.Organ.BRAIN));
 
          transportContainer.TransportDirection = TransportDirectionId.InfluxBrainPlasmaToInterstitial;
 
@@ -319,7 +319,7 @@ namespace PKSim.IntegrationTests
 
          var objectPatFactory = new ObjectPathFactoryForSpecs();
          var path = objectPatFactory.CreateObjectPathFrom(Constants.ORGANISM,
-            CoreConstants.Organ.Liver,
+            CoreConstants.Organ.LIVER,
             CoreConstants.Compartment.PERICENTRAL,
             CoreConstants.Compartment.INTRACELLULAR,
             CoreConstants.Molecule.ProcessProductName(_compound.Name, _enzyme.Name, CoreConstants.Molecule.Metabolite),
@@ -339,7 +339,7 @@ namespace PKSim.IntegrationTests
 
          var observerColumn = _simulation.DataRepository.Where(col => col.DataInfo.Origin == ColumnOrigins.Calculation)
             .Where(col => col.QuantityInfo.Type.Is(QuantityType.Metabolite))
-            .Where(col => col.QuantityInfo.Path.Contains(CoreConstants.Organ.Liver))
+            .Where(col => col.QuantityInfo.Path.Contains(CoreConstants.Organ.LIVER))
             .FirstOrDefault(col => col.QuantityInfo.Path.Contains(CoreConstants.Compartment.INTRACELLULAR));
 
          observerColumn.ShouldNotBeNull();

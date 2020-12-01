@@ -187,7 +187,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private void createFractionOfDoseExcretedToBileObserver(Simulation simulation, IObserverBuildingBlock observerBuildingBlock)
       {
-         createSimpleFractionObserver(simulation, observerBuildingBlock, CoreConstants.Observer.FRACTION_EXCRETED_TO_BILE, CoreConstants.Organ.Gallbladder);
+         createSimpleFractionObserver(simulation, observerBuildingBlock, CoreConstants.Observer.FRACTION_EXCRETED_TO_BILE, CoreConstants.Organ.GALLBLADDER);
       }
 
       private void createFractionOfDoseExcretedToFecesObserver(Simulation simulation, IObserverBuildingBlock observerBuildingBlock)
@@ -210,7 +210,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private void addLiverZoneCompartmentObserver(IObserverBuilder observerBuilder, string compartment, IObserverBuildingBlock observerBuildingBlock, Compound compound)
       {
-         var observerName = CoreConstants.CompositeNameFor(observerBuilder.Name, CoreConstants.Organ.Liver, compartment);
+         var observerName = CoreConstants.CompositeNameFor(observerBuilder.Name, CoreConstants.Organ.LIVER, compartment);
          if (observerBuildingBlock.ExistsByName(observerName))
             return;
 
@@ -221,7 +221,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          observer.ForAll = false;
          observerBuilder.MoleculeNames().Each(observer.AddMoleculeName);
 
-         observer.ContainerCriteria = Create.Criteria(x => x.With(CoreConstants.Organ.Liver)
+         observer.ContainerCriteria = Create.Criteria(x => x.With(CoreConstants.Organ.LIVER)
             .And.With(compartment)
             .And.Not(CoreConstants.Compartment.PERICENTRAL)
             .And.Not(CoreConstants.Compartment.PERIPORTAL));
@@ -242,7 +242,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private IFormulaUsablePath createZoneAmountPath(string compartment, string zone, string alias)
       {
-         return _objectPathFactory.CreateFormulaUsablePathFrom(Constants.ORGANISM, CoreConstants.Organ.Liver, zone, compartment, ObjectPathKeywords.MOLECULE)
+         return _objectPathFactory.CreateFormulaUsablePathFrom(Constants.ORGANISM, CoreConstants.Organ.LIVER, zone, compartment, ObjectPathKeywords.MOLECULE)
             .WithAlias(alias)
             .WithDimension(_dimensionRepository.Amount);
       }

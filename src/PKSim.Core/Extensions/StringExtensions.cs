@@ -37,13 +37,13 @@ namespace PKSim.Core.Extensions
       
       public static bool IsInterstitial(this string containerName) => string.Equals(containerName, CoreConstants.Compartment.INTERSTITIAL);
 
-      public static bool IsLumen(this string containerName) => string.Equals(containerName, CoreConstants.Organ.Lumen);
+      public static bool IsLumen(this string containerName) => string.Equals(containerName, CoreConstants.Organ.LUMEN);
 
-      public static bool IsLiver(this string containerName) => string.Equals(containerName, CoreConstants.Organ.Liver);
+      public static bool IsLiver(this string containerName) => string.Equals(containerName, CoreConstants.Organ.LIVER);
       
-      public static bool IsKidney(this string containerName) => string.Equals(containerName, CoreConstants.Organ.Kidney);
+      public static bool IsKidney(this string containerName) => string.Equals(containerName, CoreConstants.Organ.KIDNEY);
       
-      public static bool IsBrain(this string containerName) => string.Equals(containerName, CoreConstants.Organ.Brain);
+      public static bool IsBrain(this string containerName) => string.Equals(containerName, CoreConstants.Organ.BRAIN);
 
       public static string ReplaceKeywords(this string input, string[] keywords, string[] replacementValues)
       {

@@ -73,7 +73,7 @@ namespace PKSim.Core.Services
       {
          var transporter = CreateMolecule(CoreConstants.Molecule.UndefinedLiverTransporter);
          transporter.TransportType = TransportType.Efflux;
-         var liver = individual.Organism.Organ(CoreConstants.Organ.Liver);
+         var liver = individual.Organism.Organ(CoreConstants.Organ.LIVER);
          LiverZones.Each(zoneName =>
          {
             var zone = liver.Compartment(zoneName);
@@ -118,7 +118,7 @@ namespace PKSim.Core.Services
 
       private void addMucosaExpression(ISimulationSubject simulationSubject, IndividualTransporter transporter)
       {
-         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
+         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SMALL_INTESTINE, CoreConstants.Organ.LARGE_INTESTINE))
          {
             var organMucosa = organ.Compartment(MUCOSA);
             organMucosa.GetChildren<Compartment>().Each(x => addOrganWithLumenParameters(x, transporter));
@@ -132,15 +132,15 @@ namespace PKSim.Core.Services
          var transportDirection = organ.IsInMucosa() ? DefaultMucosaDirectionFor(transporter.TransportType) :
             organ.IsKidney() ? TransportDirectionId.ExcretionKidney : TransportDirectionId.ExcretionLiver;
 
+         addContainerExpression(organ.Container(INTERSTITIAL), transporter, DefaultTissueDirectionFor(transporter.TransportType),
+            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable: false),
+            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
+         );
+
          addContainerExpression(organ.Container(INTRACELLULAR), transporter, transportDirection,
             RelExpParam(REL_EXP),
             FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ZERO_RATE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
-         );
-
-         addContainerExpression(organ.Container(INTERSTITIAL), transporter, DefaultTissueDirectionFor(transporter.TransportType),
-            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable: false),
-            InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }
 

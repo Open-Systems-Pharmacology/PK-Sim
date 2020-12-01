@@ -114,7 +114,7 @@ namespace PKSim.Presentation.Presenters.Protocols
          if (applicationType.UserDefined)
          {
             schemaItem.TargetCompartment = CoreConstants.Compartment.PLASMA;
-            schemaItem.TargetOrgan = CoreConstants.Organ.ArterialBlood;
+            schemaItem.TargetOrgan = CoreConstants.Organ.ARTERIAL_BLOOD;
          }
          else
          {
@@ -143,7 +143,7 @@ namespace PKSim.Presentation.Presenters.Protocols
             possibleCompartments = organ.Compartments.Where(c => c.Visible);
          else
          {
-            var liver = _defaultIndividual.Organism.Organ(CoreConstants.Organ.Liver);
+            var liver = _defaultIndividual.Organism.Organ(CoreConstants.Organ.LIVER);
             var zone = liver.Container(organName);
             possibleCompartments = zone.GetChildren<IContainer>();
          }

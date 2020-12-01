@@ -35,15 +35,15 @@ namespace PKSim.Core.Services
       private void addRequiredOutputForSimulation(IContainer organism, Compound compound)
       {
          //make sure venous blood plasma is always selected so that PK can be calculated as well
-         updatePeristable(organism, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.PLASMA,
+         updatePeristable(organism, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA,
             compound.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
 
          //make sure peripheral venous blood plasma is always selected so that PK can be calculated as well
-         updatePeristable(organism, CoreConstants.Organ.PeripheralVenousBlood, compound.Name,
+         updatePeristable(organism, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, compound.Name,
             CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD);
 
          //make sure lumen FabsOral is always selected for fabs calculation
-         updatePeristable(organism, CoreConstants.Organ.Lumen, compound.Name,
+         updatePeristable(organism, CoreConstants.Organ.LUMEN, compound.Name,
             CoreConstants.Observer.FABS_ORAL);
       }
 
@@ -79,13 +79,13 @@ namespace PKSim.Core.Services
          if (organism == null)
             return;
 
-         var urine = organism.EntityAt<IContainer>(CoreConstants.Organ.Kidney, CoreConstants.Compartment.URINE);
+         var urine = organism.EntityAt<IContainer>(CoreConstants.Organ.KIDNEY, CoreConstants.Compartment.URINE);
          updatePersitableInContainerAction(urine);
 
-         var feces = organism.EntityAt<IContainer>(CoreConstants.Organ.Lumen, CoreConstants.Compartment.FECES);
+         var feces = organism.EntityAt<IContainer>(CoreConstants.Organ.LUMEN, CoreConstants.Compartment.FECES);
          updatePersitableInContainerAction(feces);
 
-         var gallBladder = organism.EntityAt<IContainer>(CoreConstants.Organ.Gallbladder);
+         var gallBladder = organism.EntityAt<IContainer>(CoreConstants.Organ.GALLBLADDER);
          updatePersitableInContainerAction(gallBladder);
       }
 

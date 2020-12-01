@@ -44,9 +44,9 @@ namespace PKSim.Core
          _individual.Species.Name = _species;
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "toto"};
          var organism = new Organism();
-         var liver = new Container().WithName(CoreConstants.Organ.Liver).WithParentContainer(organism);
+         var liver = new Container().WithName(CoreConstants.Organ.LIVER).WithParentContainer(organism);
          var liverCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(liver);
-         var kidney = new Container().WithName(CoreConstants.Organ.Kidney).WithParentContainer(organism);
+         var kidney = new Container().WithName(CoreConstants.Organ.KIDNEY).WithParentContainer(organism);
          var kidneyCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(kidney);
          _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}
             .WithParentContainer(liverCell);
