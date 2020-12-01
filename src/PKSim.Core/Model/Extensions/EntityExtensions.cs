@@ -27,6 +27,7 @@ namespace PKSim.Core.Model.Extensions
             IsInMucosa(neighborhood.SecondNeighbor);
       }
 
+
       public static bool IsInLumen(this IEntity entity)
       {
          if (entity.HasAncestorNamed(CoreConstants.Organ.LUMEN))

@@ -46,6 +46,7 @@ namespace PKSim.Core.Services
             FractionParam(FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
          );
 
+         addVascularSystemInitialConcentration(simulationSubject, moleculeName);
          AddTissueOrgansExpression(simulationSubject, moleculeName);
          AddLumenExpression(simulationSubject, moleculeName);
          AddMucosaExpression(simulationSubject, moleculeName);
@@ -54,6 +55,21 @@ namespace PKSim.Core.Services
 
          _individualPathWithRootExpander.AddRootToPathIn(simulationSubject, moleculeName);
          return molecule;
+      }
+
+      private void addVascularSystemInitialConcentration(ISimulationSubject simulationSubject, string moleculeName)
+      {
+         var organism = simulationSubject.Organism;
+         organism.OrgansByType(OrganType.VascularSystem).Each(organ =>
+         {
+            AddContainerExpression(organ.Container(CoreConstants.Compartment.BLOOD_CELLS), moleculeName,
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS)
+            );
+
+            AddContainerExpression(organ.Container(CoreConstants.Compartment.PLASMA), moleculeName,
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA)
+            );
+         });
       }
 
       protected void AddTissueOrgansExpression(ISimulationSubject simulationSubject, string moleculeName)
@@ -88,7 +104,7 @@ namespace PKSim.Core.Services
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL)
          );
       }
-      
+
       protected void AddMucosaExpression(ISimulationSubject simulationSubject, string moleculeName)
       {
          foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SMALL_INTESTINE, CoreConstants.Organ.LARGE_INTESTINE))
@@ -108,7 +124,5 @@ namespace PKSim.Core.Services
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_LUMEN));
          }
       }
-
-    
    }
 }

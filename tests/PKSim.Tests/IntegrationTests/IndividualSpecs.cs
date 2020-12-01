@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -7,8 +9,10 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
+using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace PKSim.IntegrationTests
 {
@@ -93,6 +97,32 @@ namespace PKSim.IntegrationTests
       public void individual_should_not_have_BSA_parameter()
       {
          sut.Organism.Parameter(CoreConstants.Parameters.BSA).ShouldBeNull();
+      }
+   }
+
+   public class When_returning_all_physical_containers_involved_with_an_enzyme_expression : concern_for_Individual
+   {
+      private IndividualMolecule _enzyme;
+      private IReadOnlyList<IContainer> _allPhysicalContainers;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var moleculeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
+         sut = DomainFactoryForSpecs.CreateStandardIndividual();
+         _enzyme = moleculeFactory.AddMoleculeTo(sut, "CYP");
+
+      }
+
+      protected override void Because()
+      {
+         _allPhysicalContainers = sut.AllPhysicalContainersWithMoleculeFor(_enzyme);
+      }
+
+      [Observation]
+      public void should_also_return_all_instances_of_plasma_and_blood_cells_in_blood_container()
+      {
+         _allPhysicalContainers.Find(x=>x.IsPlasma() && x.ParentContainer.IsNamed(CoreConstants.Organ.ARTERIAL_BLOOD)).Any().ShouldBeTrue();
       }
    }
 }
