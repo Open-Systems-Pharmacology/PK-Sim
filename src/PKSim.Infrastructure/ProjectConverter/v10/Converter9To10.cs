@@ -155,6 +155,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
       private void convertTransportContainer(TransporterExpressionContainer expressionContainerToConvert,
          IReadOnlyList<TransporterExpressionContainer> allTransporterExpressionContainers, IndividualTransporter transporter)
       {
+         //This should never happen as a tag was added in the xml conversion with the membrane location
          if (expressionContainerToConvert.Tags.Any())
             return;
 
