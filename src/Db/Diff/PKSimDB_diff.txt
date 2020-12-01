@@ -1,19 +1,27 @@
 DROP TABLE tab_active_transports; -- due to schema mismatch
-CREATE TABLE "tab_active_transports"
-(
-	gene text not null,
-	species text not null
-		references tab_species,
-	container_type text not null,
-	container_name text not null,
-	compartment_type text,
-	compartment_name text,
-	membrane text,
-	sequence bigint not null,
-	transport_type text,
-	foreign key (container_type, container_name) references tab_container_names,
-	foreign key (compartment_type, compartment_name) references tab_container_names
-);
+CREATE TABLE [tab_active_transports](
+
+  [gene] text NOT NULL, 
+
+  [species] text NOT NULL REFERENCES [tab_species]([species]) ON UPDATE CASCADE, 
+
+  [container_type] text NOT NULL, 
+
+  [container_name] text NOT NULL, 
+
+  [compartment_type] text, 
+
+  [compartment_name] text, 
+
+  [membrane] text, 
+
+  [sequence] bigint NOT NULL, 
+
+  [transport_type] text, 
+
+  FOREIGN KEY([container_type], [container_name]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE, 
+
+  FOREIGN KEY([compartment_type], [compartment_name]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE);
 INSERT INTO tab_active_transports(rowid,gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES(1,'ABCC3','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
 INSERT INTO tab_active_transports(rowid,gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES(2,'ABCC3','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
 INSERT INTO tab_active_transports(rowid,gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES(3,'ABCC4','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
@@ -89,6 +97,49 @@ INSERT INTO tab_active_transports(rowid,gene,species,container_type,container_na
 INSERT INTO tab_active_transports(rowid,gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES(73,'ABCB1','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Apical',1,'PgpLike');
 INSERT INTO tab_active_transports(rowid,gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES(74,'ABCB1','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Apical',1,'PgpLike');
 INSERT INTO tab_active_transports(rowid,gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES(75,'ABCB1','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Apical',1,'PgpLike');
+DROP INDEX tab_container_namestab_applications;
+DROP INDEX tab_application_typestab_applications;
+DROP INDEX tab_applicationscontainer_type;
+CREATE UNIQUE INDEX [tab_container_namestab_applications]
+
+ON [tab_applications](
+
+  [container_type], 
+
+  [application_name]);
+CREATE INDEX [tab_application_typestab_applications]
+
+ON [tab_applications]([application_type]);
+CREATE INDEX [tab_applicationscontainer_type]
+
+ON [tab_applications]([container_type]);
+DROP INDEX id;
+DROP INDEX tab_tagstab_a;
+CREATE INDEX [tab_tagstab_a]
+
+ON [tab_calculation_method_parameter_descr_conditions]([tag]);
+CREATE INDEX [id]
+
+ON [tab_calculation_method_parameter_descr_conditions]([parameter_id]);
+DROP INDEX tab_calculation_method_ratestab_b;
+DROP INDEX tab_groupstab_calculation_method_parameter_rates;
+DROP INDEX tab_parameterstab_calculation_method_parameter_rates;
+CREATE INDEX [tab_parameterstab_calculation_method_parameter_rates]
+
+ON [tab_calculation_method_parameter_rates]([parameter_name]);
+CREATE INDEX [tab_groupstab_calculation_method_parameter_rates]
+
+ON [tab_calculation_method_parameter_rates]([group_name]);
+CREATE INDEX [tab_calculation_method_ratestab_b]
+
+ON [tab_calculation_method_parameter_rates](
+
+  [calculation_method], 
+
+  [formula_rate]);
+DROP INDEX ri_calculation_method_rates_1;
+DROP INDEX ri_calculation_method_rates_2;
+DROP INDEX tab_dimensionstab_calculation_method_rates;
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpBloodCellsGlobal';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpBloodCellsNormGlobal';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpEndosomal';
@@ -132,13 +183,184 @@ INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('Individual_PKSim','PARAM_f_endo_LiverZone','Liver_Parameter','Fraction');
 UPDATE tab_calculation_method_rates SET formula='TM * kcat * max(EffectiveLumenConcentration;0)^alpha / (Km^alpha+max(EffectiveLumenConcentration;0)^alpha)' WHERE calculation_method='LinksCommon' AND formula_rate='MucosaActiveInfluxFromLumen_Hill';
 UPDATE tab_calculation_method_rates SET formula='TM * kcat * EffectiveLumenConcentration / (Km+EffectiveLumenConcentration)' WHERE calculation_method='LinksCommon' AND formula_rate='MucosaActiveInfluxFromLumen_MM';
+CREATE INDEX [ri_calculation_method_rates_1]
+
+ON [tab_calculation_method_rates]([formula_rate]);
+CREATE INDEX [tab_dimensionstab_calculation_method_rates]
+
+ON [tab_calculation_method_rates]([dimension]);
+CREATE INDEX [ri_calculation_method_rates_2]
+
+ON [tab_calculation_method_rates]([calculation_method]);
+DROP INDEX ri_calculation_methods_1;
 INSERT INTO tab_calculation_methods(calculation_method,display_name,description,category,sequence) VALUES('ExpressionParameters','Expression parameters','Calculation of expression parameters for individual molecules','ExpressionParameters',1);
+CREATE INDEX [ri_calculation_methods_1]
+
+ON [tab_calculation_methods]([category]);
 INSERT INTO tab_categories(category,display_name,description,category_type,icon_name) VALUES('ExpressionParameters','Expression parameters','Expression parameters','Individual',NULL);
+DROP INDEX tab_compound_process_parameter_mappingcontainer_id;
+DROP INDEX tab_container_parameterstab_compound_process_parameter_mapping1;
+CREATE INDEX [tab_container_parameterstab_compound_process_parameter_mapping1]
+
+ON [tab_compound_process_parameter_mapping](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [parameter_name]);
+CREATE INDEX [tab_compound_process_parameter_mappingcontainer_id]
+
+ON [tab_compound_process_parameter_mapping]([container_id]);
+DROP INDEX tab_calculation_method_ratestab_container_molecule_startformulas;
+DROP INDEX tab_container_moleculestab_container_molecule_startformulas;
+DROP INDEX tab_value_originstab_container_molecule_startformulas;
+CREATE INDEX [tab_container_moleculestab_container_molecule_startformulas]
+
+ON [tab_container_molecule_start_formulas](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [molecule]);
+CREATE INDEX [tab_calculation_method_ratestab_container_molecule_startformulas]
+
+ON [tab_container_molecule_start_formulas](
+
+  [calculation_method], 
+
+  [formula_rate]);
+CREATE INDEX [tab_value_originstab_container_molecule_startformulas]
+
+ON [tab_container_molecule_start_formulas]([value_origin]);
+DROP INDEX ri_container_species_1;
+DROP INDEX ri_container_species_2;
+DROP INDEX ri_container_species_3;
+CREATE INDEX [ri_container_species_2]
+
+ON [tab_container_molecules](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name]);
+CREATE INDEX [ri_container_species_3]
+
+ON [tab_container_molecules]([container_type]);
+CREATE INDEX [ri_container_species_1]
+
+ON [tab_container_molecules]([molecule]);
+DROP INDEX ri_container_names_1;
 DELETE FROM tab_container_names WHERE container_type='PROCESS' AND container_name='BiliaryClearanceToDuodenum';
 DELETE FROM tab_container_names WHERE container_type='PROCESS' AND container_name='BiliaryClearanceToGallBladder';
 DELETE FROM tab_container_names WHERE container_type='PROCESS' AND container_name='BiliaryClearance_FirstOrder';
 INSERT INTO tab_container_names(container_type,container_name,display_name,description,extension,sequence,icon_name) VALUES('PROCESS','LiverActiveEffluxToDuodenum_FirstOrder','Biliary secretion to the lumen/duodenum - First Order','Active transport process from the hepatocyte into the lumen duodenum','_lnk',1,'Gallbladder');
 INSERT INTO tab_container_names(container_type,container_name,display_name,description,extension,sequence,icon_name) VALUES('PROCESS','LiverActiveEffluxToGallbladder_FirstOrder','Biliary secretion to the gall bladder - First Order','Active transport process from the hepatocyte into the bile.','_lnk',1,'Gallbladder');
+CREATE INDEX [ri_container_names_1]
+
+ON [tab_container_names]([container_type]);
+DROP INDEX ri_container_parameter_curves_1;
+DROP INDEX ri_container_parameter_curves_2;
+DROP INDEX ri_container_parameter_curves_3;
+DROP INDEX ri_container_parameter_curves_4;
+DROP INDEX ri_container_parameter_curves_5;
+DROP INDEX tab_value_originstab_container_parameter_curves;
+CREATE INDEX [ri_container_parameter_curves_5]
+
+ON [tab_container_parameter_curves](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [parameter_name]);
+CREATE INDEX [tab_value_originstab_container_parameter_curves]
+
+ON [tab_container_parameter_curves]([value_origin]);
+CREATE INDEX [ri_container_parameter_curves_1]
+
+ON [tab_container_parameter_curves](
+
+  [population], 
+
+  [gender]);
+CREATE INDEX [ri_container_parameter_curves_4]
+
+ON [tab_container_parameter_curves]([container_type]);
+CREATE INDEX [ri_container_parameter_curves_2]
+
+ON [tab_container_parameter_curves]([distribution_type]);
+CREATE INDEX [ri_container_parameter_curves_3]
+
+ON [tab_container_parameter_curves](
+
+  [species], 
+
+  [parameter_value_version]);
+DROP INDEX ri_container_parameter_fcurves_1;
+DROP INDEX ri_container_parameter_fcurves_2;
+DROP INDEX ri_container_parameter_fcurves_3;
+DROP INDEX ri_container_parameter_fcurves_4;
+DROP INDEX ri_container_parameter_fcurves_5;
+DROP INDEX ri_container_parameter_fcurves_6;
+DROP INDEX ri_container_parameter_fcurves_7;
+DROP INDEX tab_value_originstab_container_parameter_fcurves;
+CREATE INDEX [ri_container_parameter_fcurves_6]
+
+ON [tab_container_parameter_fcurves](
+
+  [calculation_method], 
+
+  [mean_value_rate]);
+CREATE INDEX [ri_container_parameter_fcurves_5]
+
+ON [tab_container_parameter_fcurves](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [parameter_name]);
+CREATE INDEX [ri_container_parameter_fcurves_7]
+
+ON [tab_container_parameter_fcurves](
+
+  [calculation_method], 
+
+  [standard_deviation_rate]);
+CREATE INDEX [ri_container_parameter_fcurves_4]
+
+ON [tab_container_parameter_fcurves]([container_type]);
+CREATE INDEX [ri_container_parameter_fcurves_3]
+
+ON [tab_container_parameter_fcurves]([distribution_type]);
+CREATE INDEX [ri_container_parameter_fcurves_1]
+
+ON [tab_container_parameter_fcurves](
+
+  [population], 
+
+  [gender]);
+CREATE INDEX [tab_value_originstab_container_parameter_fcurves]
+
+ON [tab_container_parameter_fcurves]([value_origin]);
+CREATE INDEX [ri_container_parameter_fcurves_2]
+
+ON [tab_container_parameter_fcurves]([species]);
+DROP INDEX ri_container_parameter_rates_1;
+DROP INDEX ri_container_parameter_rates_2;
+DROP INDEX ri_container_parameter_rates_3;
+DROP INDEX tab_value_originstab_container_parameter_rates;
 DELETE FROM tab_container_parameter_rates WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction endosomal' AND calculation_method='EndosomalSpaceBindingFormulas';
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(148,'ORGAN','Bone','Fraction endosomal','Individual_PKSim','PARAM_f_endo',0.0,1,1.0,1,26);
 DELETE FROM tab_container_parameter_rates WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction endosomal' AND calculation_method='EndosomalSpaceBindingFormulas';
@@ -240,6 +462,70 @@ INSERT INTO tab_container_parameter_rates(container_id,container_type,container_
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(5941,'GENERAL','TRANSPORTER','Start amount','CompoundCommon','PARAM_StartAmount_Protein',NULL,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(5941,'GENERAL','TRANSPORTER','t1/2 (intestine)','CompoundCommon','PARAM_HalfLife_Intestine',0.0,0,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(5941,'GENERAL','TRANSPORTER','t1/2 (liver)','CompoundCommon','PARAM_HalfLife_Liver',0.0,0,NULL,1,NULL);
+CREATE INDEX [ri_container_parameter_rates_1]
+
+ON [tab_container_parameter_rates]([container_type]);
+CREATE INDEX [ri_container_parameter_rates_3]
+
+ON [tab_container_parameter_rates](
+
+  [calculation_method], 
+
+  [formula_rate]);
+CREATE INDEX [ri_container_parameter_rates_2]
+
+ON [tab_container_parameter_rates](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [parameter_name]);
+CREATE INDEX [tab_value_originstab_container_parameter_rates]
+
+ON [tab_container_parameter_rates]([value_origin]);
+DROP INDEX tab_calculation_method_ratestab_container_parameter_rhs;
+CREATE INDEX [tab_calculation_method_ratestab_container_parameter_rhs]
+
+ON [tab_container_parameter_rhs](
+
+  [calculation_method], 
+
+  [formula_rate]);
+DROP INDEX ri_container_parameter_values_1;
+DROP INDEX ri_container_parameter_values_2;
+DROP INDEX ri_container_parameter_values_3;
+DROP INDEX tab_value_originstab_container_parameter_values;
+CREATE INDEX [ri_container_parameter_values_2]
+
+ON [tab_container_parameter_values]([container_type]);
+CREATE INDEX [ri_container_parameter_values_1]
+
+ON [tab_container_parameter_values](
+
+  [species], 
+
+  [parameter_value_version]);
+CREATE INDEX [ri_container_parameter_values_3]
+
+ON [tab_container_parameter_values](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [parameter_name]);
+CREATE INDEX [tab_value_originstab_container_parameter_values]
+
+ON [tab_container_parameter_values]([value_origin]);
+DROP INDEX ri_container_parameters_1;
+DROP INDEX ri_container_parameters_2;
+DROP INDEX ri_container_parameters_3;
+DROP INDEX ri_container_parameters_4;
 UPDATE tab_container_parameters SET building_block_type='INDIVIDUAL' WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET building_block_type='INDIVIDUAL' WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET building_block_type='INDIVIDUAL' WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction endosomal';
@@ -301,12 +587,381 @@ INSERT INTO tab_container_parameters(container_id,container_type,container_name,
 INSERT INTO tab_container_parameters(container_id,container_type,container_name,parameter_name,can_be_varied,read_only,visible,can_be_varied_in_population,group_name,sequence,build_mode,building_block_type,is_input) VALUES(5941,'GENERAL','TRANSPORTER','Start amount',1,1,0,0,'RELATIVE_EXPRESSIONS',1,'LOCAL','SIMULATION',0);
 INSERT INTO tab_container_parameters(container_id,container_type,container_name,parameter_name,can_be_varied,read_only,visible,can_be_varied_in_population,group_name,sequence,build_mode,building_block_type,is_input) VALUES(5941,'GENERAL','TRANSPORTER','t1/2 (intestine)',1,0,1,1,'RELATIVE_EXPRESSIONS',1,'GLOBAL','INDIVIDUAL',0);
 INSERT INTO tab_container_parameters(container_id,container_type,container_name,parameter_name,can_be_varied,read_only,visible,can_be_varied_in_population,group_name,sequence,build_mode,building_block_type,is_input) VALUES(5941,'GENERAL','TRANSPORTER','t1/2 (liver)',1,0,1,1,'RELATIVE_EXPRESSIONS',1,'GLOBAL','INDIVIDUAL',0);
+CREATE INDEX [ri_container_parameters_4]
+
+ON [tab_container_parameters]([container_type]);
+CREATE INDEX [ri_container_parameters_1]
+
+ON [tab_container_parameters]([parameter_name]);
+CREATE INDEX [ri_container_parameters_3]
+
+ON [tab_container_parameters](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name]);
+CREATE INDEX [ri_container_parameters_2]
+
+ON [tab_container_parameters]([group_name]);
+DROP INDEX ri_container_rates_1;
+DROP INDEX ri_container_rates_2;
+DROP INDEX ri_container_rates_3;
+CREATE INDEX [ri_container_rates_2]
+
+ON [tab_container_rates]([container_type]);
+CREATE INDEX [ri_container_rates_1]
+
+ON [tab_container_rates](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name]);
+CREATE INDEX [ri_container_rates_3]
+
+ON [tab_container_rates](
+
+  [calculation_method], 
+
+  [formula_rate]);
+DROP INDEX tab_container_tagscontainer_id;
+DROP INDEX tab_containerstab_container_tags;
+DROP INDEX tab_tagstab_container_tags;
+CREATE INDEX [tab_container_tagscontainer_id]
+
+ON [tab_container_tags]([container_id]);
+CREATE INDEX [tab_tagstab_container_tags] ON [tab_container_tags]([tag]);
+CREATE INDEX [tab_containerstab_container_tags]
+
+ON [tab_container_tags](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name]);
+DROP INDEX idx_container_container_u1;
+DROP INDEX ri_containers_1;
+DROP INDEX ri_containers_2;
+DROP INDEX ri_containers_3;
+DROP INDEX ri_containers_4;
 DELETE FROM tab_containers WHERE container_id=1675 AND container_type='PROCESS' AND container_name='BiliaryClearanceToGallBladder';
 DELETE FROM tab_containers WHERE container_id=5263 AND container_type='PROCESS' AND container_name='BiliaryClearanceToDuodenum';
 DELETE FROM tab_containers WHERE container_id=5360 AND container_type='PROCESS' AND container_name='BiliaryClearance_FirstOrder';
 INSERT INTO tab_containers(container_id,container_type,container_name,parent_container_id,parent_container_type,parent_container_name,visible,is_logical) VALUES(5941,'GENERAL','TRANSPORTER',NULL,NULL,NULL,1,1);
+CREATE INDEX [ri_containers_1]
+
+ON [tab_containers](
+
+  [parent_container_id], 
+
+  [parent_container_type], 
+
+  [parent_container_name]);
+CREATE INDEX [ri_containers_2] ON [tab_containers]([container_type]);
+CREATE UNIQUE INDEX [idx_container_container_u1]
+
+ON [tab_containers](
+
+  [container_name], 
+
+  [parent_container_id]);
+CREATE INDEX [ri_containers_4]
+
+ON [tab_containers](
+
+  [container_type], 
+
+  [container_name]);
+CREATE INDEX [ri_containers_3]
+
+ON [tab_containers]([parent_container_type]);
+DROP INDEX ri_distribution_values_1;
+CREATE INDEX [ri_distribution_values_1]
+
+ON [tab_distribution_values]([distribution_type]);
+DROP INDEX tab_calculation_method_ratestab_event_changed_molecules;
+DROP INDEX tab_container_moleculestab_event_changed_molecules;
+DROP INDEX tab_event_changed_moleculescontainer_id;
+DROP INDEX tab_event_conditionstab_event_changed_container_molecules;
+CREATE INDEX [tab_event_changed_moleculescontainer_id]
+
+ON [tab_event_changed_container_molecules]([container_id]);
+CREATE INDEX [tab_calculation_method_ratestab_event_changed_molecules]
+
+ON [tab_event_changed_container_molecules](
+
+  [calculation_method], 
+
+  [rate]);
+CREATE INDEX [tab_event_conditionstab_event_changed_container_molecules]
+
+ON [tab_event_changed_container_molecules](
+
+  [event_id], 
+
+  [event_container_type], 
+
+  [event_name], 
+
+  [calculation_method]);
+CREATE INDEX [tab_container_moleculestab_event_changed_molecules]
+
+ON [tab_event_changed_container_molecules](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [molecule]);
+DROP INDEX tab_calculation_method_ratestab_event_changed_parameters;
+DROP INDEX tab_container_parameterstab_event_changed_parameters;
+DROP INDEX tab_event_conditionstab_event_changed_container_parameters;
+CREATE INDEX [tab_calculation_method_ratestab_event_changed_parameters]
+
+ON [tab_event_changed_container_parameters](
+
+  [calculation_method], 
+
+  [rate]);
+CREATE INDEX [tab_event_conditionstab_event_changed_container_parameters]
+
+ON [tab_event_changed_container_parameters](
+
+  [event_id], 
+
+  [event_container_type], 
+
+  [event_name], 
+
+  [calculation_method]);
+CREATE INDEX [tab_container_parameterstab_event_changed_parameters]
+
+ON [tab_event_changed_container_parameters](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [parameter_name]);
+DROP INDEX tab_calculation_method_ratestab_event_changed_generic_molecules;
+DROP INDEX tab_event_conditionstab_event_changed_generic_molecules;
+DROP INDEX tab_object_pathstab_event_changed_generic_molecules;
+CREATE INDEX [tab_calculation_method_ratestab_event_changed_generic_molecules]
+
+ON [tab_event_changed_generic_molecules](
+
+  [calculation_method], 
+
+  [rate]);
+CREATE INDEX [tab_object_pathstab_event_changed_generic_molecules]
+
+ON [tab_event_changed_generic_molecules]([path_id]);
+CREATE INDEX [tab_event_conditionstab_event_changed_generic_molecules]
+
+ON [tab_event_changed_generic_molecules](
+
+  [event_id], 
+
+  [event_container_type], 
+
+  [event_name], 
+
+  [calculation_method]);
+DROP INDEX tab_calculation_method_ratestab_event_changed_generic_parameters;
+DROP INDEX tab_event_conditionstab_event_changed_generic_parameters;
+DROP INDEX tab_object_pathstab_event_changed_generic_parameters;
+DROP INDEX tab_parameterstab_event_changed_generic_parameters;
+CREATE INDEX [tab_event_conditionstab_event_changed_generic_parameters]
+
+ON [tab_event_changed_generic_parameters](
+
+  [event_id], 
+
+  [event_container_type], 
+
+  [event_name], 
+
+  [calculation_method]);
+CREATE INDEX [tab_parameterstab_event_changed_generic_parameters]
+
+ON [tab_event_changed_generic_parameters]([parameter_name]);
+CREATE INDEX [tab_object_pathstab_event_changed_generic_parameters]
+
+ON [tab_event_changed_generic_parameters]([path_id]);
+CREATE INDEX [tab_calculation_method_ratestab_event_changed_generic_parameters]
+
+ON [tab_event_changed_generic_parameters](
+
+  [calculation_method], 
+
+  [rate]);
+DROP INDEX tab_calculation_method_ratestab_event_conditions;
+DROP INDEX tab_containerstab_event_conditions;
+CREATE INDEX [tab_calculation_method_ratestab_event_conditions]
+
+ON [tab_event_conditions](
+
+  [calculation_method], 
+
+  [rate]);
+CREATE INDEX [tab_containerstab_event_conditions]
+
+ON [tab_event_conditions](
+
+  [event_id], 
+
+  [event_container_type], 
+
+  [event_name]);
+DROP INDEX tab_container_namestab_formulations;
+DROP INDEX tab_formulation_routescontainer_type;
+CREATE INDEX [tab_container_namestab_formulations]
+
+ON [tab_formulation_routes](
+
+  [container_type], 
+
+  [formulation]);
+CREATE INDEX [tab_formulation_routescontainer_type]
+
+ON [tab_formulation_routes]([container_type]);
+DROP INDEX full_name;
+DROP INDEX unique_id;
+DROP INDEX ri_groups_1;
 UPDATE tab_groups SET display_name='Organs & tissues', description='Organs & tissues' WHERE group_name='ORGANS_AND_TISSUES';
+CREATE UNIQUE INDEX [unique_id] ON [tab_groups]([unique_id]);
+CREATE UNIQUE INDEX [full_name] ON [tab_groups]([full_name]);
+CREATE INDEX [ri_groups_1] ON [tab_groups]([parent_group]);
+DROP INDEX ri_model_calculation_methods_1;
+DROP INDEX ri_model_calculation_methods_2;
+CREATE INDEX [ri_model_calculation_methods_1]
+
+ON [tab_model_calculation_methods]([model]);
+CREATE INDEX [ri_model_calculation_methods_2]
+
+ON [tab_model_calculation_methods]([calculation_method]);
+DROP INDEX ri_model_container_species_2;
+DROP INDEX ri_model_container_species_3;
+DROP INDEX tab_model_containerstab_model_container_molecules;
+CREATE INDEX [ri_model_container_species_3]
+
+ON [tab_model_container_molecules]([container_type]);
+CREATE INDEX [ri_model_container_species_2]
+
+ON [tab_model_container_molecules](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [molecule]);
+CREATE INDEX [tab_model_containerstab_model_container_molecules]
+
+ON [tab_model_container_molecules](
+
+  [model], 
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name]);
+DROP INDEX ri_model_containers_1;
+DROP INDEX ri_model_containers_2;
+DROP INDEX ri_model_containers_3;
+CREATE INDEX [ri_model_containers_2]
+
+ON [tab_model_containers](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name]);
+CREATE INDEX [ri_model_containers_3]
+
+ON [tab_model_containers]([container_type]);
+CREATE INDEX [ri_model_containers_1] ON [tab_model_containers]([model]);
+DROP INDEX tab_modelstab_model_observers;
+DROP INDEX tab_observerstab_model_observers;
+CREATE INDEX [tab_observerstab_model_observers]
+
+ON [tab_model_observers]([observer]);
+CREATE INDEX [tab_modelstab_model_observers]
+
+ON [tab_model_observers]([model]);
+DROP INDEX ri_model_creatures_1;
+DROP INDEX ri_model_creatures_2;
+CREATE INDEX [ri_model_creatures_1] ON [tab_model_species]([model]);
+CREATE INDEX [ri_model_creatures_2] ON [tab_model_species]([species]);
+DROP INDEX tab_modelstab_model_transport_molecule_names;
+DROP INDEX tab_moleculestab_model_transport_molecule_names;
+DROP INDEX tab_processestab_model_transport_molecule_names;
+CREATE INDEX [tab_processestab_model_transport_molecule_names]
+
+ON [tab_model_transport_molecule_names]([transport]);
+CREATE INDEX [tab_moleculestab_model_transport_molecule_names]
+
+ON [tab_model_transport_molecule_names]([molecule]);
+CREATE INDEX [tab_modelstab_model_transport_molecule_names]
+
+ON [tab_model_transport_molecule_names]([model]);
+DROP INDEX tab_distribution_typestab_protein_properties;
+DROP INDEX tab_parameterstab_protein_properties;
+DROP INDEX tab_protein_namestab_protein_properties;
+CREATE INDEX [tab_distribution_typestab_protein_properties]
+
+ON [tab_molecule_parameters]([distribution_type]);
+CREATE INDEX [tab_parameterstab_protein_properties]
+
+ON [tab_molecule_parameters]([parameter_name]);
+CREATE INDEX [tab_protein_namestab_protein_properties]
+
+ON [tab_molecule_parameters]([molecule]);
+DROP INDEX idx_species_ui1;
+DROP INDEX tab_calculation_method_ratestab_molecules;
 INSERT INTO tab_molecules(molecule,display_name,description,sequence,icon_name,default_is_present,start_formula_calculation_method,start_formula_rate,is_floating,molecule_type) VALUES('TRANSPORTER','Transporter','Transporter',8,NULL,0,'CompoundCommon','STARTAMOUNT_Protein',0,'Transporter');
+CREATE UNIQUE INDEX [idx_species_ui1] ON [tab_molecules]([display_name]);
+CREATE INDEX [tab_calculation_method_ratestab_molecules]
+
+ON [tab_molecules](
+
+  [start_formula_calculation_method], 
+
+  [start_formula_rate]);
+DROP INDEX tab_containerstab_neighborhoods;
+DROP INDEX tab_containerstab_neighborhoods1;
+CREATE INDEX [tab_containerstab_neighborhoods]
+
+ON [tab_neighborhoods](
+
+  [first_neighbor_id], 
+
+  [first_neighbor_type], 
+
+  [first_neighbor_name]);
+CREATE INDEX [tab_containerstab_neighborhoods1]
+
+ON [tab_neighborhoods](
+
+  [second_neighbor_id], 
+
+  [second_neighbor_type], 
+
+  [second_neighbor_name]);
+DROP INDEX ri_object_paths_1;
+DROP INDEX ri_object_paths_2;
+DROP INDEX ri_object_paths_3;
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4894,4894,'COMPARTMENT','..',NULL);
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4895,4894,'COMPARTMENT','..',NULL);
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4896,4895,'COMPARTMENT','..',NULL);
@@ -320,6 +975,60 @@ INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_conta
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4904,4903,'GENERAL','MOLECULE',NULL);
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4905,4900,'COMPARTMENT','Plasma',NULL);
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4906,4905,'GENERAL','MOLECULE',NULL);
+CREATE INDEX [ri_object_paths_1] ON [tab_object_paths]([parent_path_id]);
+CREATE INDEX [ri_object_paths_3]
+
+ON [tab_object_paths](
+
+  [ref_container_type], 
+
+  [ref_container_name]);
+CREATE INDEX [ri_object_paths_2]
+
+ON [tab_object_paths]([ref_container_type]);
+DROP INDEX tab_observerstab_observer_descriptor_conditions;
+DROP INDEX tab_tagstab_observer_descriptor_conditions;
+CREATE INDEX [tab_tagstab_observer_descriptor_conditions]
+
+ON [tab_observer_descriptor_conditions]([tag]);
+CREATE INDEX [tab_observerstab_observer_descriptor_conditions]
+
+ON [tab_observer_descriptor_conditions]([observer]);
+DROP INDEX ri_container_observer_rates_3;
+DROP INDEX tab_observerstab_observer_rates;
+CREATE INDEX [ri_container_observer_rates_3]
+
+ON [tab_observer_rates](
+
+  [calculation_method], 
+
+  [formula_rate]);
+CREATE INDEX [tab_observerstab_observer_rates]
+
+ON [tab_observer_rates]([observer]);
+DROP INDEX ri_observers_2;
+DROP INDEX tab_dimensionstab_observers;
+CREATE INDEX [ri_observers_2] ON [tab_observers]([category]);
+CREATE INDEX [tab_dimensionstab_observers]
+
+ON [tab_observers]([dimension]);
+DROP INDEX tab_groupstab_ontogenies;
+DROP INDEX tab_protein_namestab_ontogeny;
+DROP INDEX tab_speciestab_ontogeny;
+CREATE INDEX [tab_groupstab_ontogenies] ON [tab_ontogenies]([group_name]);
+CREATE INDEX [tab_protein_namestab_ontogeny]
+
+ON [tab_ontogenies]([molecule]);
+CREATE INDEX [tab_speciestab_ontogeny] ON [tab_ontogenies]([species]);
+DROP INDEX tab_organ_typescontainer_type;
+CREATE INDEX [tab_organ_typescontainer_type]
+
+ON [tab_organ_types]([container_type]);
+DROP INDEX ri_parameter_value_versions_1;
+CREATE INDEX [ri_parameter_value_versions_1]
+
+ON [tab_parameter_value_versions]([category]);
+DROP INDEX ri_parameters_2;
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Fraction expressed apical','Fraction expressed apical','TODO: Fraction expressed apical','Fraction',NULL);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Fraction expressed at blood brain barrier','Fraction expressed at blood brain barrier','TODO: Fraction expressed at blood brain barrier','Fraction',NULL);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Fraction expressed basolateral','Fraction expressed basolateral','TODO: Fraction expressed basolateral','Fraction',NULL);
@@ -336,6 +1045,39 @@ DELETE FROM tab_parameters WHERE parameter_name='Relative expression (normalized
 DELETE FROM tab_parameters WHERE parameter_name='Relative expression in blood cells (normalized)';
 DELETE FROM tab_parameters WHERE parameter_name='Relative expression in plasma (normalized)';
 DELETE FROM tab_parameters WHERE parameter_name='Relative expression in vascular endothelium (normalized)';
+CREATE INDEX [ri_parameters_2] ON [tab_parameters]([dimension]);
+DROP INDEX ri_creature_containers_2;
+DROP INDEX ri_creature_containers_3;
+DROP INDEX tab_populationstab_population_containers;
+CREATE INDEX [tab_populationstab_population_containers]
+
+ON [tab_population_containers]([population]);
+CREATE INDEX [ri_creature_containers_2]
+
+ON [tab_population_containers](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name]);
+CREATE INDEX [ri_creature_containers_3]
+
+ON [tab_population_containers]([container_type]);
+DROP INDEX ri_population_genders_1;
+DROP INDEX ri_population_genders_2;
+CREATE INDEX [ri_population_genders_1]
+
+ON [tab_population_genders]([population]);
+CREATE INDEX [ri_population_genders_2]
+
+ON [tab_population_genders]([gender]);
+DROP INDEX race_index;
+DROP INDEX ri_populations_1;
+CREATE INDEX [ri_populations_1] ON [tab_populations]([species]);
+CREATE UNIQUE INDEX [race_index] ON [tab_populations]([race_index]);
+DROP INDEX tab_reactionstab_process_tags;
+DROP INDEX tab_tagstab_process_tags;
 DELETE FROM tab_process_descriptor_conditions WHERE process='BiliaryClearanceToDuodenum' AND tag='Duodenum' AND tag_type='TARGET';
 DELETE FROM tab_process_descriptor_conditions WHERE process='BiliaryClearanceToDuodenum' AND tag='Intracellular' AND tag_type='SOURCE';
 DELETE FROM tab_process_descriptor_conditions WHERE process='BiliaryClearanceToDuodenum' AND tag='Liver' AND tag_type='SOURCE';
@@ -367,14 +1109,93 @@ INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) 
 DELETE FROM tab_process_descriptor_conditions WHERE process='MucosaActiveInfluxFromLumen_MM' AND tag='Lumen' AND tag_type='TARGET';
 DELETE FROM tab_process_descriptor_conditions WHERE process='MucosaActiveInfluxFromLumen_MM' AND tag='Mucosa' AND tag_type='SOURCE';
 INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('MucosaActiveInfluxFromLumen_MM','Mucosa','TARGET',1);
+CREATE INDEX [tab_tagstab_process_tags]
+
+ON [tab_process_descriptor_conditions]([tag]);
+CREATE INDEX [tab_reactionstab_process_tags]
+
+ON [tab_process_descriptor_conditions]([process]);
+DROP INDEX tab_moleculestab_process_molecules;
+DROP INDEX tab_processestab_process_molecules;
+CREATE INDEX [tab_processestab_process_molecules]
+
+ON [tab_process_molecules]([process]);
+CREATE INDEX [tab_moleculestab_process_molecules]
+
+ON [tab_process_molecules]([molecule]);
+DROP INDEX tab_calculation_method_ratestab_process_rates;
+DROP INDEX tab_reactionstab_process_rates;
 DELETE FROM tab_process_rates WHERE process='BiliaryClearanceToDuodenum' AND calculation_method='EliminationSecretionLink_PKSim';
 DELETE FROM tab_process_rates WHERE process='BiliaryClearanceToGallBladder' AND calculation_method='EliminationSecretionLink_PKSim';
 INSERT INTO tab_process_rates(process,calculation_method,formula_rate) VALUES('LiverActiveEffluxToDuodenum_FirstOrder','EliminationSecretionLink_PKSim','BiliaryClearanceToDuodenum');
 INSERT INTO tab_process_rates(process,calculation_method,formula_rate) VALUES('LiverActiveEffluxToGallbladder_FirstOrder','EliminationSecretionLink_PKSim','BiliaryClearanceToGallbladder');
+CREATE INDEX [tab_reactionstab_process_rates]
+
+ON [tab_process_rates]([process]);
+CREATE INDEX [tab_calculation_method_ratestab_process_rates]
+
+ON [tab_process_rates](
+
+  [calculation_method], 
+
+  [formula_rate]);
+DROP INDEX tab_container_namestab_processes;
+DROP INDEX ri_reactions_1;
+DROP INDEX ri_reactions_3;
+DROP INDEX tab_kinetic_typestab_processes;
+DROP INDEX tab_processescontainer_type;
 DELETE FROM tab_processes WHERE process='BiliaryClearanceToDuodenum';
 DELETE FROM tab_processes WHERE process='BiliaryClearanceToGallBladder';
 INSERT INTO tab_processes(process,container_type,template,group_name,kinetic_type,process_type,action_type,create_process_rate_parameter) VALUES('LiverActiveEffluxToDuodenum_FirstOrder','PROCESS',1,'SIMULATION_ACTIVE_PROCESS','FirstOrder','Efflux','TRANSPORT',0);
 INSERT INTO tab_processes(process,container_type,template,group_name,kinetic_type,process_type,action_type,create_process_rate_parameter) VALUES('LiverActiveEffluxToGallbladder_FirstOrder','PROCESS',1,'SIMULATION_ACTIVE_PROCESS','FirstOrder','Efflux','TRANSPORT',0);
+CREATE INDEX [tab_processescontainer_type]
+
+ON [tab_processes]([container_type]);
+CREATE INDEX [tab_kinetic_typestab_processes]
+
+ON [tab_processes]([kinetic_type]);
+CREATE INDEX [ri_reactions_1] ON [tab_processes]([process_type]);
+CREATE INDEX [ri_reactions_3] ON [tab_processes]([group_name]);
+CREATE UNIQUE INDEX [tab_container_namestab_processes]
+
+ON [tab_processes](
+
+  [container_type], 
+
+  [process]);
+DROP INDEX synonym;
+DROP INDEX tab_protein_namestab_protein_synonyms;
+CREATE UNIQUE INDEX [synonym] ON [tab_protein_synonyms]([synonym]);
+CREATE INDEX [tab_protein_namestab_protein_synonyms]
+
+ON [tab_protein_synonyms]([protein_name]);
+DROP INDEX ri_rate_container_species_1;
+DROP INDEX ri_rate_container_species_2;
+DROP INDEX ri_rate_container_species_3;
+CREATE INDEX [ri_rate_container_species_3]
+
+ON [tab_rate_container_molecules](
+
+  [calculation_method], 
+
+  [formula_rate]);
+CREATE INDEX [ri_rate_container_species_2]
+
+ON [tab_rate_container_molecules]([container_type]);
+CREATE INDEX [ri_rate_container_species_1]
+
+ON [tab_rate_container_molecules](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [molecule]);
+DROP INDEX ri_rate_container_parameters_1;
+DROP INDEX ri_rate_container_parameters_2;
+DROP INDEX ri_rate_container_parameters_3;
 DELETE FROM tab_rate_container_parameters WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpPlasmaMembraneExtracellularApicalBloodOrgan' AND container_id=146 AND container_type='ORGANISM' AND container_name='Organism' AND parameter_name='Hematocrit';
 DELETE FROM tab_rate_container_parameters WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpPlasmaMembraneExtracellularApicalTissueOrgan' AND container_id=146 AND container_type='ORGANISM' AND container_name='Organism' AND parameter_name='Hematocrit';
 DELETE FROM tab_rate_container_parameters WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpPlasmaMembraneExtracellularBasolateral' AND container_id=146 AND container_type='ORGANISM' AND container_name='Organism' AND parameter_name='Hematocrit';
@@ -382,6 +1203,46 @@ DELETE FROM tab_rate_container_parameters WHERE calculation_method='EndosomalSpa
 INSERT INTO tab_rate_container_parameters(calculation_method,formula_rate,container_id,container_type,container_name,parameter_name,alias) VALUES('ExpressionParameters','InitialConcentrationPlasma',146,'ORGANISM','Organism','Hematocrit','HCT');
 INSERT INTO tab_rate_container_parameters(calculation_method,formula_rate,container_id,container_type,container_name,parameter_name,alias) VALUES('ExpressionParameters','InitialConcentrationPlasma_Transporter',146,'ORGANISM','Organism','Hematocrit','HCT');
 INSERT INTO tab_rate_container_parameters(calculation_method,formula_rate,container_id,container_type,container_name,parameter_name,alias) VALUES('Individual_PKSim','PARAM_f_endo',146,'ORGANISM','Organism','Fraction endosomal (global)','f_endo_global');
+CREATE INDEX [ri_rate_container_parameters_3]
+
+ON [tab_rate_container_parameters](
+
+  [calculation_method], 
+
+  [formula_rate]);
+CREATE INDEX [ri_rate_container_parameters_1]
+
+ON [tab_rate_container_parameters]([container_type]);
+CREATE INDEX [ri_rate_container_parameters_2]
+
+ON [tab_rate_container_parameters](
+
+  [container_id], 
+
+  [container_type], 
+
+  [container_name], 
+
+  [parameter_name]);
+DROP INDEX ri_rate_generic_species_1;
+DROP INDEX ri_rate_generic_species_2;
+DROP INDEX ri_rate_generic_species_3;
+CREATE INDEX [ri_rate_generic_species_3]
+
+ON [tab_rate_generic_molecules](
+
+  [calculation_method], 
+
+  [formula_rate]);
+CREATE INDEX [ri_rate_generic_species_1]
+
+ON [tab_rate_generic_molecules]([molecule]);
+CREATE INDEX [ri_rate_generic_species_2]
+
+ON [tab_rate_generic_molecules]([path_id]);
+DROP INDEX ri_rate_generic_parameters_1;
+DROP INDEX ri_rate_generic_parameters_2;
+DROP INDEX ri_rate_generic_parameters_3;
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpBloodCellsGlobal' AND path_id=2106 AND parameter_name='Relative expression in blood cells';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpBloodCellsNormGlobal' AND path_id=2106 AND parameter_name='Relative expression in blood cells (normalized)';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpEndosomal' AND path_id=139 AND parameter_name='Relative expression (normalized)';
@@ -482,6 +1343,19 @@ INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('ExpressionParameters','PARAM_f_exp_vasc_basolateral',240,'Fraction expressed in endosomes','f_exp_vasc_endo');
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('ExpressionParameters','PARAM_f_exp_vasc_basolateral',240,'Fraction expressed on apical membrane of vascular endothelium','f_exp_vasc_apical');
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('Individual_PKSim','PARAM_f_endo_LiverZone',140,'Fraction endosomal','Liver_Parameter');
+CREATE INDEX [ri_rate_generic_parameters_3]
+
+ON [tab_rate_generic_parameters](
+
+  [calculation_method], 
+
+  [formula_rate]);
+CREATE INDEX [ri_rate_generic_parameters_1]
+
+ON [tab_rate_generic_parameters]([parameter_name]);
+CREATE INDEX [ri_rate_generic_parameters_2]
+
+ON [tab_rate_generic_parameters]([path_id]);
 INSERT INTO tab_rates(formula_rate,display_name,description) VALUES('InitialConcentrationBloodCells','InitialConcentrationBloodCells','Initial protein concentration for blood cells');
 INSERT INTO tab_rates(formula_rate,display_name,description) VALUES('InitialConcentrationBloodCells_Transporter','InitialConcentrationBloodCells_Transporter','InitialConcentrationBloodCells_Transporter');
 INSERT INTO tab_rates(formula_rate,display_name,description) VALUES('InitialConcentrationBrainInterstitial_Transporter','InitialConcentrationBrainInterstitial_Transporter','InitialConcentrationBrainInterstitial_Transporter');
@@ -515,6 +1389,22 @@ DELETE FROM tab_rates WHERE formula_rate='RelExpPlasmaMembraneExtracellularBasol
 DELETE FROM tab_rates WHERE formula_rate='RelExpPlasmaNormGlobal';
 DELETE FROM tab_rates WHERE formula_rate='RelExpVascEndoGlobal';
 DELETE FROM tab_rates WHERE formula_rate='RelExpVascEndoNormGlobal';
+DROP INDEX ri_creature_calculation_methods_1;
+DROP INDEX ri_creature_calculation_methods_2;
+CREATE INDEX [ri_creature_calculation_methods_1]
+
+ON [tab_species_calculation_methods]([calculation_method]);
+CREATE INDEX [ri_creature_calculation_methods_2]
+
+ON [tab_species_calculation_methods]([species]);
+DROP INDEX ri_creature_parameter_value_versions_1;
+DROP INDEX ri_creature_parameter_value_versions_2;
+CREATE INDEX [ri_creature_parameter_value_versions_1]
+
+ON [tab_species_parameter_value_versions]([parameter_value_version]);
+CREATE INDEX [ri_creature_parameter_value_versions_2]
+
+ON [tab_species_parameter_value_versions]([species]);
 CREATE TABLE "tab_transport_directions"
 (
 	transport_direction text
@@ -544,32 +1434,37 @@ INSERT INTO tab_transport_directions(transport_direction,display_name,descriptio
 INSERT INTO tab_transport_directions(transport_direction,display_name,description,global,icon) VALUES('PgpBrainTissueToInterstitial','PgpBrainTissueToInterstitial','PgpBrainTissueToInterstitial',0,'Pgp');
 INSERT INTO tab_transport_directions(transport_direction,display_name,description,global,icon) VALUES('PgpIntracellularToInterstitial','PgpIntracellularToInterstitial','PgpIntracellularToInterstitial',0,'Pgp');
 INSERT INTO tab_transport_directions(transport_direction,display_name,description,global,icon) VALUES('PgpMucosaIntracellularToLumen','PgpMucosaIntracellularToLumen','PgpMucosaIntracellularToLumen',0,'Pgp');
-CREATE TABLE "tab_transports"
-(
-	transport_direction text
-		references tab_transport_directions
-			on update cascade,
-	process text
-		references tab_processes,
-	source_organ text,
-	source_compartment text,
-	target_organ text,
-	target_compartment text,
-	source_organ_type text,
-	source_compartment_type text,
-	target_organ_type text,
-	target_compartment_type text,
-	constraint tab_transports_pk
-		primary key (transport_direction, process, source_organ, source_compartment, target_organ, target_compartment, source_organ_type, source_compartment_type, target_organ_type, target_compartment_type),
-	foreign key (source_organ_type, source_organ) references tab_container_names
-		on update cascade,
-	foreign key (source_compartment_type, source_compartment) references tab_container_names
-		on update cascade,
-	foreign key (target_organ_type, target_organ) references tab_container_names
-		on update cascade,
-	foreign key (target_compartment_type, target_compartment) references tab_container_names
-		on update cascade
-);
+CREATE TABLE [tab_transports](
+
+  [transport_direction] text REFERENCES [tab_transport_directions]([transport_direction]) ON UPDATE CASCADE, 
+
+  [process] text REFERENCES [tab_processes]([process]) ON UPDATE CASCADE, 
+
+  [source_organ] text, 
+
+  [source_compartment] text, 
+
+  [target_organ] text, 
+
+  [target_compartment] text, 
+
+  [source_organ_type] text, 
+
+  [source_compartment_type] text, 
+
+  [target_organ_type] text, 
+
+  [target_compartment_type] text, 
+
+  CONSTRAINT [tab_transports_pk] PRIMARY KEY([transport_direction], [process], [source_organ], [source_compartment], [target_organ], [target_compartment], [source_organ_type], [source_compartment_type], [target_organ_type], [target_compartment_type]), 
+
+  FOREIGN KEY([source_organ_type], [source_organ]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE, 
+
+  FOREIGN KEY([source_compartment_type], [source_compartment]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE, 
+
+  FOREIGN KEY([target_organ_type], [target_organ]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE, 
+
+  FOREIGN KEY([target_compartment_type], [target_compartment]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE);
 INSERT INTO tab_transports(transport_direction,process,source_organ,source_compartment,target_organ,target_compartment,source_organ_type,source_compartment_type,target_organ_type,target_compartment_type) VALUES('EffluxBrainInterstitialToPlasma','BrainActiveEffluxToPlasma','Brain','Interstitial','Brain','Plasma','ORGAN','COMPARTMENT','ORGAN','COMPARTMENT');
 INSERT INTO tab_transports(transport_direction,process,source_organ,source_compartment,target_organ,target_compartment,source_organ_type,source_compartment_type,target_organ_type,target_compartment_type) VALUES('EffluxBrainTissueToInterstitial','ActiveEffluxSpecific','Brain','Intracellular','Brain','Interstitial','ORGAN','COMPARTMENT','ORGAN','COMPARTMENT');
 INSERT INTO tab_transports(transport_direction,process,source_organ,source_compartment,target_organ,target_compartment,source_organ_type,source_compartment_type,target_organ_type,target_compartment_type) VALUES('EffluxIntracellularToInterstitial','ActiveEffluxSpecific','Bone','Intracellular','Bone','Interstitial','ORGAN','COMPARTMENT','ORGAN','COMPARTMENT');
@@ -692,3 +1587,7 @@ INSERT INTO tab_transports(transport_direction,process,source_organ,source_compa
 INSERT INTO tab_transports(transport_direction,process,source_organ,source_compartment,target_organ,target_compartment,source_organ_type,source_compartment_type,target_organ_type,target_compartment_type) VALUES('PgpMucosaIntracellularToLumen','MucosaPgPToLumen','Rectum','Intracellular','Lumen','Rectum','COMPARTMENT','COMPARTMENT','ORGAN','COMPARTMENT');
 INSERT INTO tab_transports(transport_direction,process,source_organ,source_compartment,target_organ,target_compartment,source_organ_type,source_compartment_type,target_organ_type,target_compartment_type) VALUES('PgpMucosaIntracellularToLumen','MucosaPgPToLumen','UpperIleum','Intracellular','Lumen','UpperIleum','COMPARTMENT','COMPARTMENT','ORGAN','COMPARTMENT');
 INSERT INTO tab_transports(transport_direction,process,source_organ,source_compartment,target_organ,target_compartment,source_organ_type,source_compartment_type,target_organ_type,target_compartment_type) VALUES('PgpMucosaIntracellularToLumen','MucosaPgPToLumen','UpperJejunum','Intracellular','Lumen','UpperJejunum','COMPARTMENT','COMPARTMENT','ORGAN','COMPARTMENT');
+DROP INDEX tab_referencestab_value_origins;
+CREATE INDEX [tab_referencestab_value_origins]
+
+ON [tab_value_origins]([description]);
