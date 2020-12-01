@@ -50,10 +50,8 @@ namespace PKSim.Presentation
 
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
          _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
-         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(ConverterConstants.Parameters.REL_EXP_NORM));
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
          _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
-         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(ConverterConstants.Parameters.REL_EXP_NORM));
 
          _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
 

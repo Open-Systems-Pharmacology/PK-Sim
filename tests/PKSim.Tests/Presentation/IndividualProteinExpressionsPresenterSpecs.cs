@@ -66,6 +66,9 @@ namespace PKSim.Presentation
          _enzymeDTO.AddExpressionParameter(_relativeExpression);
          _enzymeDTO.AddExpressionParameter(_fraction_exp_bc);
          A.CallTo(() => _individualProteinMapper.MapFrom(_enzyme, _individual)).Returns(_enzymeDTO);
+         A.CallTo(() => _expressionParametersPresenter.Edit(A<IReadOnlyList<ExpressionParameterDTO>>._))
+            .Invokes(x => _allParameters = x.GetArgument<IReadOnlyList<ExpressionParameterDTO>>(0).ToList());
+
 
       }
    }

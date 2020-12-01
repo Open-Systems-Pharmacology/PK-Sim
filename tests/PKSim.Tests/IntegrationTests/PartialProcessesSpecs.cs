@@ -117,7 +117,8 @@ namespace PKSim.IntegrationTests
       {
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
+            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP))
+            .Where(x => x != null);
 
          //Default value should not be NaN, which is the value coming from ModelConstructor. so that the parameter does not appear to have been set by the user
          foreach (var parameter in allRelExp)

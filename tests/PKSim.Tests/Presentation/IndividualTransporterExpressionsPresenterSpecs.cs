@@ -1,17 +1,16 @@
 ﻿using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Commands.Core;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Commands;
-using PKSim.Presentation.DTO.Individuals;
 
 namespace PKSim.Presentation
 {
@@ -19,7 +18,7 @@ namespace PKSim.Presentation
    {
       private IIndividualTransporterExpressionsView _view;
       private IEditParameterPresenterTask _parameterTask;
-      private IMoleculeExpressionTask<Individual> _moleculeTask;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       private IIndividualTransporterToTransporterExpressionDTOMapper _transporterMapper;
       private IIndividualMoleculePropertiesPresenter<Individual> _moleculePropertiesPresenter;
       private ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
@@ -29,12 +28,12 @@ namespace PKSim.Presentation
       {
          _view = A.Fake<IIndividualTransporterExpressionsView>();
          _parameterTask = A.Fake<IEditParameterPresenterTask>();
-         _moleculeTask = A.Fake<IMoleculeExpressionTask<Individual>>();
+         _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
          _transporterMapper = A.Fake<IIndividualTransporterToTransporterExpressionDTOMapper>();
          _moleculePropertiesPresenter = A.Fake<IIndividualMoleculePropertiesPresenter<Individual>>();
-         _transporterExpressionParametersPresenter= A.Fake<ITransporterExpressionParametersPresenter>(); 
+         _transporterExpressionParametersPresenter = A.Fake<ITransporterExpressionParametersPresenter>();
          sut = new IndividualTransporterExpressionsPresenter<Individual>(
-            _view, _parameterTask, _moleculeTask, _transporterMapper, _moleculePropertiesPresenter,
+            _view, _parameterTask, _moleculeExpressionTask, _transporterMapper, _moleculePropertiesPresenter,
             _transporterExpressionParametersPresenter);
 
          _commandCollector = new PKSimMacroCommand();
@@ -42,39 +41,39 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_setting_the_transport_type_for_a_transporter_expression_container : concern_for_IndividualTransporterExpressionsPresenter
+   public class When_setting_the_transport_direction_for_a_transporter_expression_container : concern_for_IndividualTransporterExpressionsPresenter
    {
       private TransporterExpressionParameterDTO _transporterExpressionDTO;
       private TransportDirection _effluxDirection;
-      private TransportDirection _InfluxDirection;
+      private TransportDirection _influxDirection;
+      private ICommand _command;
 
       protected override void Context()
       {
          base.Context();
          _effluxDirection = new TransportDirection {Id = TransportDirectionId.EffluxIntracellularToInterstitial};
-         _InfluxDirection = new TransportDirection {Id = TransportDirectionId.InfluxInterstitialToIntracellular };
+         _influxDirection = new TransportDirection {Id = TransportDirectionId.InfluxInterstitialToIntracellular};
          _transporterExpressionDTO = new TransporterExpressionParameterDTO
          {
             TransportDirection = _effluxDirection,
             TransporterExpressionContainer = new TransporterExpressionContainer()
          };
+
+         _command = A.Fake<IPKSimCommand>();
+         A.CallTo(() => _moleculeExpressionTask.SetTransportDirection(_transporterExpressionDTO.TransporterExpressionContainer, _influxDirection.Id))
+            .Returns(_command);
       }
 
       protected override void Because()
       {
-         sut.SetTransportDirection(_transporterExpressionDTO, _InfluxDirection);
+         sut.SetTransportDirection(_transporterExpressionDTO, _influxDirection);
       }
 
       [Observation]
-      public void should_have_updated_the_transport_direction_of_the_transport_container()
-      {
-         _transporterExpressionDTO.TransportDirection.ShouldBeEqualTo(_InfluxDirection);
-      }
-
-      [Observation]
-      public void should_have_triggered_a_command()
+      public void should_have_updated_the_transport_direction_of_the_transport_container_by_triggering_the_set_transport_direction_command()
       {
          _commandCollector.All().Count().ShouldBeEqualTo(1);
+         _commandCollector.All().ShouldOnlyContain(_command);
       }
    }
 }

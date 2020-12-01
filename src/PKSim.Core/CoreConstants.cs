@@ -223,11 +223,6 @@ namespace PKSim.Core
          public static readonly string K_WATER = "K_water";
       }
 
-      public static class ActiveTransport
-      {
-         public static readonly string VALID_FOR_ALL_GENES = "VALID_FOR_ALL_GENES";
-      }
-
       public static class Application
       {
          public static class Name

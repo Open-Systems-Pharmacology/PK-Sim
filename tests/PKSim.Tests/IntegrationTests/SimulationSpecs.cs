@@ -268,6 +268,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
+         var simulationExporter = IoC.Resolve<IMoBiExportTask>();
+         await simulationExporter.SaveSimulationToFileAsync(_simulation, "C:\\temp\\bug.pkml");
+      
          var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();

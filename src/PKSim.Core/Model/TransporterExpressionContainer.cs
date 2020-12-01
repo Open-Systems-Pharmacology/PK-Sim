@@ -3,7 +3,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
-   public class TransporterExpressionContainer : MoleculeExpressionContainer, ITransporterContainer
+   public class TransporterExpressionContainer : MoleculeExpressionContainer
    {
       private TransportDirectionId _transportDirection = TransportDirectionId.None;
 

@@ -120,6 +120,7 @@ namespace PKSim.Core
          _transporterRelativeExpressionParameter.IsDefault = false;
          _snapshot = await sut.MapToSnapshot(_transporterExpressionContainer);
          _snapshot.MembraneLocation = MembraneLocation.Basolateral;
+         _snapshot.Value = 10;
          _expressionContainerMapperContext.Molecule = _transporter;
          _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter>
             {{_snapshot.Name, _transporterRelativeExpressionParameter}};

@@ -65,7 +65,6 @@ namespace PKSim.Core
          A.CallTo(() => _repository.TransportTypeFor(_species, _transporter.Name)).Returns(TransportType.Influx);
          A.CallTo(() => _repository.TransportersFor(_species, liver.Name, _transporter.Name)).Returns(_allTransporterTemplates);
          A.CallTo(() => _repository.TransportersFor(_species, kidney.Name, _transporter.Name)).Returns(new List<TransporterContainerTemplate>());
-         A.CallTo(() => _repository.TransportersFor(_species, kidney.Name)).Returns(new List<TransporterContainerTemplate> {_defaultTemplate});
       }
 
       protected override void Because()
@@ -88,13 +87,13 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_template_defined_in_the_database_if_available()
       {
-         _transporterWithTemplate.TransportDirection.ShouldBeEqualTo(_transporterContainerTemplate.TransportDirection);
+         _transporterWithTemplate.TransportDirection.ShouldBeEqualTo(TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterWithTemplate));
       }
 
       [Observation]
       public void should_use_the_default_settings_otherwise()
       {
-         _transporterWithoutTemplate.TransportDirection.ShouldBeEqualTo(_defaultTemplate.TransportDirection);
+         _transporterWithoutTemplate.TransportDirection.ShouldBeEqualTo(TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterWithoutTemplate));
       }
    }
 
