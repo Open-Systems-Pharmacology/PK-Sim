@@ -155,6 +155,8 @@ DELETE FROM tab_calculation_method_rates WHERE calculation_method='ActiveProcess
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpPlasmaNormGlobal';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpVascEndoGlobal';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ActiveProcess_PKSim' AND formula_rate='RelExpVascEndoNormGlobal';
+UPDATE tab_calculation_method_rates SET formula='P_endothelial_l * SA_pls_int > 0 ? (J_iso+alpha_l*Q_lymph)*(1-sigma_l)/(P_endothelial_l*SA_pls_int) : 0' WHERE calculation_method='CalcPecletNumber' AND formula_rate='PecletNumber_l';
+UPDATE tab_calculation_method_rates SET formula='P_endothelial_s * SA_pls_int > 0 ? (-J_iso+(1-alpha_l)*Q_lymph)*(1-sigma_s)/(P_endothelial_s*SA_pls_int) : 0' WHERE calculation_method='CalcPecletNumber' AND formula_rate='PecletNumber_s';
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('CompoundCommon','NaN_Rate','NaN','Dimensionless');
 UPDATE tab_calculation_method_rates SET formula='C_0 * f_onto * V' WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_StartAmount_Protein';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='EndosomalSpaceBindingFormulas' AND formula_rate='PARAM_f_endo';
