@@ -67,7 +67,7 @@ namespace PKSim.Core.Services
          return ageParameter;
       }
 
-      //TODO workaround for body weight sum formula.
+      //workaround for body weight sum formula.
       //need to find a better solution
       private void addWeightParameterTags(Individual individual)
       {

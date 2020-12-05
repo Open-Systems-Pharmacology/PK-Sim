@@ -47,14 +47,14 @@ namespace PKSim.Core.Model
 
       public static bool IsBloodOrgan(this IContainer container)
       {
-         return string.Equals(container.Name, CoreConstants.Organ.VenousBlood) ||
-                string.Equals(container.Name, CoreConstants.Organ.ArterialBlood) ||
-                string.Equals(container.Name, CoreConstants.Organ.PortalVein);
+         return string.Equals(container.Name, CoreConstants.Organ.VENOUS_BLOOD) ||
+                string.Equals(container.Name, CoreConstants.Organ.ARTERIAL_BLOOD) ||
+                string.Equals(container.Name, CoreConstants.Organ.PORTAL_VEIN);
       }
 
-      public static bool IsInterstitial(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.Interstitial);
+      public static bool IsInterstitial(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.INTERSTITIAL);
 
-      public static bool IsMucosa(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.Mucosa);
+      public static bool IsMucosa(this IContainer container) => string.Equals(container.Name, CoreConstants.Compartment.MUCOSA);
 
       public static bool IsLumenOrMucosa(this IContainer container) => container.IsLumen() || container.IsMucosa();
 
@@ -83,7 +83,8 @@ namespace PKSim.Core.Model
          if (container.IsKidney())
             return true;
 
-         if (container.ParentContainer.NameIsOneOf(CoreConstants.Organ.Liver, CoreConstants.Compartment.Mucosa))
+         // We use parent here as liver is split into zones
+         if (container.ParentContainer.NameIsOneOf(CoreConstants.Organ.LIVER, CoreConstants.Compartment.MUCOSA))
             return true;
 
          return false;

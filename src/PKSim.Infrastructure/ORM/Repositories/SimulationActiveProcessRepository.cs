@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -79,6 +80,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private string simulationProcessNameFrom(string simulationPrefix, string compoundProcessName)
       {
          var compoundProcess = _flatProcessesRepository.FindByName(compoundProcessName);
+         if (compoundProcess==null)
+            throw new ArgumentException($"Cannot find simulation process named '{compoundProcessName}'");
 
          //already a process in simulation. Nothing to do
          if (compoundProcess.GroupName == CoreConstants.Groups.SIMULATION_ACTIVE_PROCESS)

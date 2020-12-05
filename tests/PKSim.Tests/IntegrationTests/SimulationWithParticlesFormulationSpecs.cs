@@ -102,7 +102,7 @@ namespace PKSim.IntegrationTests
          return ParticleBin(binIndex).Parameter(CoreConstants.Parameters.START_PARTICLE_RADIUS);
       }
 
-      protected IContainer Lumen => _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.Lumen);
+      protected IContainer Lumen => _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.LUMEN);
 
       protected IParameter Solubility(string segment) => Lumen.Container(segment).Container(_compound.Name).Parameter(CoreConstants.Parameters.SOLUBILITY);
 
@@ -303,10 +303,10 @@ namespace PKSim.IntegrationTests
       /// </summary>
       protected void SetSolubilitySchema1WithStopIn(string segment)
       {
-         Solubility(CoreConstants.Compartment.Stomach).Value = 1e-3; //[kg/l]
-         Solubility(CoreConstants.Compartment.Duodenum).Value = 0;
+         Solubility(CoreConstants.Compartment.STOMACH).Value = 1e-3; //[kg/l]
+         Solubility(CoreConstants.Compartment.DUODENUM).Value = 0;
          ParticleRadiusDissolved = 0;
-         IntestinalTransitRateFor(CoreConstants.Compartment.Duodenum).Value = 0;
+         IntestinalTransitRateFor(CoreConstants.Compartment.DUODENUM).Value = 0;
       }
 
       /// <summary>
@@ -320,7 +320,7 @@ namespace PKSim.IntegrationTests
          for (var segmentIdx = 1; segmentIdx < stopSegmentIdx; segmentIdx++)
             Solubility(_lumenSegments[segmentIdx]).Value = 100;
 
-         IntestinalTransitRateFor(CoreConstants.Compartment.Stomach).Value = 1e-3;
+         IntestinalTransitRateFor(CoreConstants.Compartment.STOMACH).Value = 1e-3;
          SetSolubilitySchema1WithStopIn(segment);
       }
 
@@ -688,7 +688,7 @@ namespace PKSim.IntegrationTests
          PrecipitatedDrugSoluble = false;
 
          //set low solubility in duodenum to assure precipitation
-         Solubility(CoreConstants.Compartment.Duodenum).Value = 1e-12;
+         Solubility(CoreConstants.Compartment.DUODENUM).Value = 1e-12;
       }
 
       [Observation]
@@ -756,7 +756,7 @@ namespace PKSim.IntegrationTests
          PrecipitatedDrugSoluble = false;
 
          //set low solubility in duodenum to assure precipitation
-         Solubility(CoreConstants.Compartment.Duodenum).Value = 1e-12;
+         Solubility(CoreConstants.Compartment.DUODENUM).Value = 1e-12;
       }
 
       [Observation]
@@ -795,20 +795,20 @@ namespace PKSim.IntegrationTests
 
          //following this schema, most of drug will be dissolved in the stomach
          //in duodenum the drug will be accumulated and nearly all drug will turn into solid form again
-         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.Duodenum);
+         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.DUODENUM);
       }
 
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]
       public void solid_drug_in_duodenum_should_be_monotonically_increasing()
       {
          //due to solubility=0 and flow to the next segment=0 solid drug must increase over time
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.Duodenum);
+         CheckSolidDrugIncreasing(CoreConstants.Compartment.DUODENUM);
       }
 
       [Observation]
@@ -841,13 +841,13 @@ namespace PKSim.IntegrationTests
 
          //following this schema, nearly all drug will be dissolved in the stomach
          //in duodenum the drug will be accumulated and nearly all drug will turn into insoluble (precipitated) form
-         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.Duodenum);
+         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.DUODENUM);
       }
 
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]
@@ -859,7 +859,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_duodenum_should_be_monotonically_increasing()
       {
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.Duodenum);
+         CheckSolidDrugIncreasing(CoreConstants.Compartment.DUODENUM);
       }
 
       [Observation]
@@ -900,7 +900,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]
@@ -913,7 +913,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_duodenum_should_be_monotonically_increasing()
       {
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.Duodenum);
+         CheckSolidDrugIncreasing(CoreConstants.Compartment.DUODENUM);
       }
 
       [Observation]
@@ -960,7 +960,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.Stomach);
+         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
       }
 
       [Observation]

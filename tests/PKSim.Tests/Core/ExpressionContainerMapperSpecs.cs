@@ -11,6 +11,7 @@ using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using Individual = PKSim.Core.Model.Individual;
+using OriginData = PKSim.Core.Model.OriginData;
 
 namespace PKSim.Core
 {
@@ -33,25 +34,26 @@ namespace PKSim.Core
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
-         _logger= A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPLogger>();
 
          sut = new ExpressionContainerMapper(_parameterMapper, _transportContainerUpdater, _logger);
 
-         _relativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault:true).WithName(CoreConstants.Parameters.REL_EXP);
+         _relativeExpressionParameter =
+            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
          _moleculeExpressionContainer = new MoleculeExpressionContainer().WithName("EXP");
          _moleculeExpressionContainer.Add(_relativeExpressionParameter);
 
-         _transporterRelativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
+         _transporterRelativeExpressionParameter =
+            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
          _transporterExpressionContainer = new TransporterExpressionContainer().WithName("TRANS");
          _transporterExpressionContainer.TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular;
 
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 
-         _individual = new Individual {OriginData = new  Model.OriginData {Species = new Species().WithName("Human")}};
+         _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
 
          _expressionContainerMapperContext = new ExpressionContainerMapperContext
          {
-            SimulationSubject = _individual
          };
 
          _enzyme = new IndividualEnzyme {_moleculeExpressionContainer};
@@ -74,21 +76,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_transport_molecule_expression_container_with_a_default_value_to_snapshot : concern_for_ExpressionContainerMapper
-   {
-      protected override async Task Because()
-      {
-         _snapshot = await sut.MapToSnapshot(_transporterExpressionContainer);
-      }
-
-      [Observation]
-      public void should_return_null()
-      {
-         _snapshot.ShouldBeNull();
-      }
-   }
-
-
    public class when_updating_a_undefined_expression_container_from_snapshot : concern_for_ExpressionContainerMapper
    {
       protected override Task Because()
@@ -109,7 +96,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = new ExpressionContainer {Name = "Plasma", Value = 5};
          _expressionContainerMapperContext.Molecule = _enzyme;
-         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter>{{ _snapshot.Name, _relativeExpressionParameter }};
+         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter> {{_snapshot.Name, _relativeExpressionParameter}};
       }
 
       protected override Task Because()
@@ -124,7 +111,6 @@ namespace PKSim.Core
       }
    }
 
-
    public class When_updating_a_transporter_expression_container_from_snapshot : concern_for_ExpressionContainerMapper
    {
       protected override async Task Context()
@@ -134,9 +120,11 @@ namespace PKSim.Core
          _transporterRelativeExpressionParameter.IsDefault = false;
          _snapshot = await sut.MapToSnapshot(_transporterExpressionContainer);
          _snapshot.MembraneLocation = MembraneLocation.Basolateral;
+         _snapshot.Value = 10;
          _expressionContainerMapperContext.Molecule = _transporter;
-         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter> { { _snapshot.Name, _transporterRelativeExpressionParameter } };
-
+         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter>
+            {{_snapshot.Name, _transporterRelativeExpressionParameter}};
+         _expressionContainerMapperContext.MoleculeExpressionContainers = new[] {_transporterExpressionContainer};
       }
 
       protected override Task Because()

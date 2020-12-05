@@ -54,10 +54,8 @@ namespace PKSim.Presentation
          var proteinFactory = A.Fake<IIndividualMoleculeFactory>();
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
          _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
-         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(ConverterConstants.Parameters.REL_EXP_NORM));
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
          _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
-         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(ConverterConstants.Parameters.REL_EXP_NORM));
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualProtein>()).Returns(proteinFactory);
          _molecule = new IndividualEnzyme {Name = "CYP3A4"};
          _molecule.Add(_moleculeContainer1);

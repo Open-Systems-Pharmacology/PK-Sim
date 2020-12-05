@@ -1,5 +1,6 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -27,13 +28,13 @@ namespace PKSim.IntegrationTests
          _undefined = sut.UndefinedLiverTransporterFor(_individual);
       }
 
-      //TODO
-
-      // [Observation]
-      // public void should_add_the_relative_expression_to_periportal_and_pericentral_and_set_the_value_to_1()
-      // {
-      //    _undefined.ExpressionContainer(CoreConstants.Compartment.Pericentral).RelativeExpression.ShouldBeEqualTo(1);
-      //    _undefined.ExpressionContainer(CoreConstants.Compartment.Periportal).RelativeExpression.ShouldBeEqualTo(1);
-      // }
+     
+      [Observation]
+      public void should_add_the_relative_expression_to_periportal_and_pericentral_and_set_the_value_to_1()
+      {
+         var allTransporterContainers = _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_undefined);
+         allTransporterContainers.Count.ShouldBeEqualTo(2);
+         allTransporterContainers.Each(x=>x.RelativeExpressionParameter.Value.ShouldBeEqualTo(1));
+      }
    }
 }

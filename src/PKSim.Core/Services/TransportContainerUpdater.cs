@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
    {
       /// <summary>
       ///    Update the default transporter settings using the template defined in the database based on the
-      ///    <paramref name="transporterName" />  and <paramref name="species" />
+      ///    <paramref name="transporterName" />/>
       /// </summary>
       void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, string transporterName) ;
 

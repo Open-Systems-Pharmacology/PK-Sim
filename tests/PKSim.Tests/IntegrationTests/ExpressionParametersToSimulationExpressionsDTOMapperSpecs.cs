@@ -55,15 +55,15 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          _parameters = new List<IParameter>();
-         var brain = new Organ().WithName(CoreConstants.Organ.Brain);
-         var brain_pls = new Compartment().WithName(CoreConstants.Compartment.Plasma).WithParentContainer(brain);
+         var brain = new Organ().WithName(CoreConstants.Organ.BRAIN);
+         var brain_pls = new Compartment().WithName(CoreConstants.Compartment.PLASMA).WithParentContainer(brain);
          var brain_pls_trans = new Container().WithName(_transporter.Name).WithParentContainer(brain_pls);
          var relExp2Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP)
             .WithParentContainer(brain_pls_trans);
          relExp2Param.Origin.SimulationId = "Sim";
 
-         var liver = new Organ().WithName(CoreConstants.Organ.Liver);
-         var liver_cell = new Container().WithName(CoreConstants.Compartment.Intracellular).WithParentContainer(liver);
+         var liver = new Organ().WithName(CoreConstants.Organ.LIVER);
+         var liver_cell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(liver);
          var liver_enz = new Container().WithName(_enzyme.Name).WithParentContainer(liver_cell);
          var relExp1Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP)
             .WithParentContainer(liver_enz);
@@ -116,15 +116,15 @@ namespace PKSim.IntegrationTests
          base.Context();
          _simulation.RemoveAllBuildingBlockOfType(PKSimBuildingBlockType.Individual);
          _parameters = new List<IParameter>();
-         var kidney = new Organ().WithName(CoreConstants.Organ.Kidney);
-         var kidney_cell = new Compartment().WithName(CoreConstants.Compartment.Intracellular).WithParentContainer(kidney);
+         var kidney = new Organ().WithName(CoreConstants.Organ.KIDNEY);
+         var kidney_cell = new Compartment().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(kidney);
          var kid_cell_trans = new Container().WithName(_transporter.Name).WithParentContainer(kidney_cell);
          var relExp2Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP)
             .WithParentContainer(kid_cell_trans);
          relExp2Param.Origin.SimulationId = "Sim";
 
-         var liver = new Organ().WithName(CoreConstants.Organ.Liver);
-         var liver_cell = new Container().WithName(CoreConstants.Compartment.Intracellular).WithParentContainer(liver);
+         var liver = new Organ().WithName(CoreConstants.Organ.LIVER);
+         var liver_cell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(liver);
          var liver_enz = new Container().WithName(_enzyme.Name).WithParentContainer(liver_cell);
          var relExp1Param = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP)
             .WithParentContainer(liver_enz);

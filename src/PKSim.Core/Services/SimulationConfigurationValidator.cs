@@ -96,7 +96,7 @@ namespace PKSim.Core.Services
 
          var hasUserDefinedApplicationInLumen = protocolSchemaItems
             .Where(x => x.IsUserDefined)
-            .Any(x => string.Equals(x.TargetOrgan, CoreConstants.Organ.Lumen));
+            .Any(x => string.Equals(x.TargetOrgan, CoreConstants.Organ.LUMEN));
 
          if (hasUserDefinedApplicationInLumen)
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.SaturationEnabledCanOnlyBeUsedForOralApplicationUsingParticleDissolution(compound.Name));

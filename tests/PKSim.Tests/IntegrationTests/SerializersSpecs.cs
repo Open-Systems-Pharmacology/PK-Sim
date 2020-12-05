@@ -147,8 +147,11 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (BinInterval))) return true;
          if (type.Equals(typeof (ContinuousDistributionData))) return true;
          if (type.Equals(typeof (DiscreteDistributionData))) return true;
+         if (type.Equals(typeof (TransportDirection))) return true;
+         if (type.Equals(typeof (TransportTemplate))) return true;
 
          //enum are created on the fly
+         if (type.Equals(typeof (TransportDirectionId))) return true;
          if (type.Equals(typeof (OrganType))) return true;
          if (type.Equals(typeof(InteractionType))) return true;
          if (type.Equals(typeof (ProtocolMode))) return true;

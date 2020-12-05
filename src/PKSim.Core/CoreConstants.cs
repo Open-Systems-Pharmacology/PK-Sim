@@ -190,8 +190,10 @@ namespace PKSim.Core
          public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL = "InitialConcentrationInterstitial";
          public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER = "InitialConcentrationInterstitial_Transporter";
          public static readonly string INITIAL_CONCENTRATION_PLASMA = "InitialConcentrationPlasma";
+         public static readonly string INITIAL_CONCENTRATION_PLASMA_VASCULAR_SYSTEM = "InitialConcentrationPlasma_VascularSystem";
          public static readonly string INITIAL_CONCENTRATION_ENDOSOME = "InitialConcentrationEndosome";
          public static readonly string INITIAL_CONCENTRATION_PLASMA_TRANSPORTER = "InitialConcentrationPlasma_Transporter";
+         public static readonly string INITIAL_CONCENTRATION_PLASMA_INTERSTITIAL_TRANSPORTER_VASCULAR_SYSTEM = "InitialConcentrationPlasma_TransporterVascularSystem";
          public static readonly string INITIAL_CONCENTRATION_BRAIN_PLASMA_TRANSPORTER = "InitialConcentrationBrainPlasma_Transporter";
          public static readonly string INITIAL_CONCENTRATION_BRAIN_INTERSTITIAL_TRANSPORTER = "InitialConcentrationBrainInterstitial_Transporter";
          public static readonly string INITIAL_CONCENTRATION_LUMEN = "InitialConcentrationLumen";
@@ -221,11 +223,6 @@ namespace PKSim.Core
          public static readonly string MIXED_COMPETITIVE_INHIBITION_I = "Im";
          public static readonly string IRREVERSIBLE_INHIBITION_I = "IcTD";
          public static readonly string K_WATER = "K_water";
-      }
-
-      public static class ActiveTransport
-      {
-         public static readonly string VALID_FOR_ALL_GENES = "VALID_FOR_ALL_GENES";
       }
 
       public static class Application
@@ -318,19 +315,19 @@ namespace PKSim.Core
 
       public static class Compartment
       {
-         public static readonly string Interstitial = "Interstitial";
-         public static readonly string Intracellular = "Intracellular";
-         public static readonly string BloodCells = "BloodCells";
-         public static readonly string Plasma = "Plasma";
-         public static readonly string Endosome = "Endosome";
-         public static readonly string VascularEndothelium = "VascularEndothelium";
+         public static readonly string INTERSTITIAL = "Interstitial";
+         public static readonly string INTRACELLULAR = "Intracellular";
+         public static readonly string BLOOD_CELLS = "BloodCells";
+         public static readonly string PLASMA = "Plasma";
+         public static readonly string ENDOSOME = "Endosome";
+         public static readonly string VASCULAR_ENDOTHELIUM = "VascularEndothelium";
          public static readonly string URINE = "Urine";
-         public static readonly string Mucosa = "Mucosa";
-         public static readonly string Saliva = "Saliva";
-         public static readonly string Periportal = "Periportal";
-         public static readonly string Pericentral = "Pericentral";
-         public static readonly string Stomach = "Stomach";
-         public static readonly string Duodenum = "Duodenum";
+         public static readonly string MUCOSA = "Mucosa";
+         public static readonly string SALIVA = "Saliva";
+         public static readonly string PERIPORTAL = "Periportal";
+         public static readonly string PERICENTRAL = "Pericentral";
+         public static readonly string STOMACH = "Stomach";
+         public static readonly string DUODENUM = "Duodenum";
          public static readonly string UpperJejunum = "UpperJejunum";
          public static readonly string LowerJejunum = "LowerJejunum";
          public static readonly string UpperIleum = "UpperIleum";
@@ -345,22 +342,22 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> LiverZones = new List<string>
          {
-            Periportal,
-            Pericentral
+            PERIPORTAL,
+            PERICENTRAL
          };
 
          public static readonly IReadOnlyList<string> LiverCompartments = new List<string>
          {
-            Interstitial,
-            Intracellular,
-            BloodCells,
-            Plasma,
-            Endosome,
+            INTERSTITIAL,
+            INTRACELLULAR,
+            BLOOD_CELLS,
+            PLASMA,
+            ENDOSOME,
          };
 
          public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToLowerIleum = new List<string>
          {
-            Duodenum,
+            DUODENUM,
             UpperJejunum,
             LowerJejunum,
             UpperIleum,
@@ -382,7 +379,7 @@ namespace PKSim.Core
          };
 
          public static readonly IReadOnlyList<string> LumenSegmentsStomachToRectum =
-            new List<string>(new[] {Stomach}.Concat(LumenSegmentsDuodenumToRectum));
+            new List<string>(new[] {STOMACH}.Concat(LumenSegmentsDuodenumToRectum));
       }
 
       public static class Compound
@@ -426,12 +423,12 @@ namespace PKSim.Core
 
          public static string LumenSegmentNameFor(string segmentName)
          {
-            return CompositeNameFor(Organ.Lumen, segmentName);
+            return CompositeNameFor(Organ.LUMEN, segmentName);
          }
 
          public static string MucosaSegmentNameFor(string segmentName)
          {
-            return CompositeNameFor(Compartment.Mucosa, segmentName);
+            return CompositeNameFor(Compartment.MUCOSA, segmentName);
          }
 
          public static string PartialProcessName(string proteinName, string dataSource)
@@ -444,11 +441,11 @@ namespace PKSim.Core
             switch (expressionParameter)
             {
                case Parameters.REL_EXP_PLASMA:
-                  return Compartment.Plasma;
+                  return Compartment.PLASMA;
                case Parameters.REL_EXP_BLOOD_CELLS:
-                  return Compartment.BloodCells;
+                  return Compartment.BLOOD_CELLS;
                case Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
-                  return Compartment.VascularEndothelium;
+                  return Compartment.VASCULAR_ENDOTHELIUM;
 
                default:
                   return string.Empty;
@@ -777,59 +774,59 @@ namespace PKSim.Core
 
       public static class Organ
       {
-         public static readonly string ArterialBlood = "ArterialBlood";
-         public static readonly string Bone = "Bone";
-         public static readonly string Brain = "Brain";
+         public static readonly string ARTERIAL_BLOOD = "ArterialBlood";
+         public static readonly string BONE = "Bone";
+         public static readonly string BRAIN = "Brain";
          public static readonly string Dummy = "Dummy";
-         public static readonly string EndogenousIgG = "EndogenousIgG";
-         public static readonly string Fat = "Fat";
-         public static readonly string Gallbladder = "Gallbladder";
-         public static readonly string Gonads = "Gonads";
-         public static readonly string Heart = "Heart";
-         public static readonly string Kidney = "Kidney";
-         public static readonly string LargeIntestine = "LargeIntestine";
-         public static readonly string Lumen = "Lumen";
-         public static readonly string Lung = "Lung";
-         public static readonly string Liver = "Liver";
-         public static readonly string Muscle = "Muscle";
-         public static readonly string Pancreas = "Pancreas";
-         public static readonly string PortalVein = "PortalVein";
-         public static readonly string Saliva = "Saliva";
-         public static readonly string Skin = "Skin";
-         public static readonly string SmallIntestine = "SmallIntestine";
-         public static readonly string Spleen = "Spleen";
-         public static readonly string Stomach = "Stomach";
-         public static readonly string VenousBlood = "VenousBlood";
-         public static readonly string PeripheralVenousBlood = "PeripheralVenousBlood";
+         public static readonly string ENDOGENOUS_IGG = "EndogenousIgG";
+         public static readonly string FAT = "Fat";
+         public static readonly string GALLBLADDER = "Gallbladder";
+         public static readonly string GONADS = "Gonads";
+         public static readonly string HEART = "Heart";
+         public static readonly string KIDNEY = "Kidney";
+         public static readonly string LARGE_INTESTINE = "LargeIntestine";
+         public static readonly string LUMEN = "Lumen";
+         public static readonly string LUNG = "Lung";
+         public static readonly string LIVER = "Liver";
+         public static readonly string MUSCLE = "Muscle";
+         public static readonly string PANCREAS = "Pancreas";
+         public static readonly string PORTAL_VEIN = "PortalVein";
+         public static readonly string SALIVA = "Saliva";
+         public static readonly string SKIN = "Skin";
+         public static readonly string SMALL_INTESTINE = "SmallIntestine";
+         public static readonly string SPLEEN = "Spleen";
+         public static readonly string STOMACH = "Stomach";
+         public static readonly string VENOUS_BLOOD = "VenousBlood";
+         public static readonly string PERIPHERAL_VENOUS_BLOOD = "PeripheralVenousBlood";
 
          public static readonly IReadOnlyList<string> StandardOrgans = new List<string>
          {
-            Gonads,
-            Heart,
-            Kidney,
-            LargeIntestine,
-            Liver,
-            Muscle,
-            Pancreas,
-            PortalVein,
-            SmallIntestine,
-            Spleen,
-            Stomach,
-            VenousBlood,
-            Bone,
-            Fat,
-            Brain,
-            Skin,
-            Lung,
-            ArterialBlood
+            GONADS,
+            HEART,
+            KIDNEY,
+            LARGE_INTESTINE,
+            LIVER,
+            MUSCLE,
+            PANCREAS,
+            PORTAL_VEIN,
+            SMALL_INTESTINE,
+            SPLEEN,
+            STOMACH,
+            VENOUS_BLOOD,
+            BONE,
+            FAT,
+            BRAIN,
+            SKIN,
+            LUNG,
+            ARTERIAL_BLOOD
          };
 
          public static IReadOnlyList<string> PolarizedMembraneOrgans = new[]
          {
-            Brain,
-            Kidney,
-            Compartment.Pericentral,
-            Compartment.Periportal
+            BRAIN,
+            KIDNEY,
+            Compartment.PERICENTRAL,
+            Compartment.PERIPORTAL
          };
       }
 
@@ -1203,8 +1200,8 @@ namespace PKSim.Core
 
       public static class Process
       {
-         public static readonly string BILIARY_CLEARANCE_TO_GALL_BLADDER = "BiliaryClearanceToGallBladder";
-         public static readonly string BILIARY_CLEARANCE_TO_DUODENUM = "BiliaryClearanceToDuodenum";
+         public static readonly string BILIARY_CLEARANCE_TO_GALL_BLADDER = "LiverActiveEffluxToGallbladder_FirstOrder";
+         public static readonly string BILIARY_CLEARANCE_TO_DUODENUM = "LiverActiveEffluxToDuodenum_FirstOrder";
          public static readonly string KIDNEY_CLEARANCE = "KidneyClearance";
       }
 

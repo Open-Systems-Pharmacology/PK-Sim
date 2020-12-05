@@ -97,7 +97,7 @@ namespace PKSim.IntegrationTests
       private void checkNewProteinModelStructure(Individual individual)
       {
          //just check that some of new parameters were added
-         individual.Organism.Organ(CoreConstants.Organ.Bone)
+         individual.Organism.Organ(CoreConstants.Organ.BONE)
             .AllParameters().Count(p => p.Name.EndsWith("flow proportionality factor")).ShouldBeEqualTo(2);
       }
 

@@ -268,6 +268,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
+         var simulationExporter = IoC.Resolve<IMoBiExportTask>();
+         await simulationExporter.SaveSimulationToFileAsync(_simulation, "C:\\temp\\bug.pkml");
+      
          var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
@@ -482,34 +485,34 @@ namespace PKSim.IntegrationTests
          string comp1FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound1Name);
          string comp2FcRnComplexName = CoreConstants.Molecule.DrugFcRnComplexName(_compound2Name);
 
-         var bone = organ(CoreConstants.Organ.Bone);
+         var bone = organ(CoreConstants.Organ.BONE);
 
          // plasma must contain molecules and their FcRn complex
-         var plasma = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Plasma);
+         var plasma = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
          var bonePlasmaMoleculeNames = moleculeNamesIn(plasma);
 
          bonePlasmaMoleculeNames.ShouldOnlyContain(_compound1Name, _compound2Name, comp1FcRnComplexName, comp2FcRnComplexName);
 
          // BC must contain compounds
-         var bloodCells = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.BloodCells);
+         var bloodCells = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.BLOOD_CELLS);
          var boneBloodCellsMoleculeNames = moleculeNamesIn(bloodCells);
 
          boneBloodCellsMoleculeNames.ShouldOnlyContain(_compound1Name, _compound2Name);
 
          // interstitial must contain compounds and their FcRn complex
-         var interstitial = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Interstitial);
+         var interstitial = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTERSTITIAL);
          var boneInterstitialMoleculeNames = moleculeNamesIn(interstitial);
 
          boneInterstitialMoleculeNames.ShouldOnlyContain(_compound1Name, _compound2Name, comp1FcRnComplexName, comp2FcRnComplexName);
 
          // cell must contain compounds
-         var intracellular = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Intracellular);
+         var intracellular = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTRACELLULAR);
          var boneIntracellularMoleculeNames = moleculeNamesIn(intracellular);
 
          boneIntracellularMoleculeNames.ShouldOnlyContain(_compound1Name, _compound2Name);
 
          // endosome must contain compounds and their FcRn complex
-         var endosome = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Endosome);
+         var endosome = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.ENDOSOME);
          var boneEndosomeMoleculeNames = moleculeNamesIn(endosome);
 
          boneEndosomeMoleculeNames.ShouldOnlyContain(_compound1Name, _compound2Name, comp1FcRnComplexName, comp2FcRnComplexName);
@@ -525,22 +528,22 @@ namespace PKSim.IntegrationTests
          string ligandEndo = CoreConstants.Molecule.LigandEndo;
          string ligandEndoComplex = CoreConstants.Molecule.LigandEndoComplex;
 
-         var endoIgg = organ(CoreConstants.Organ.EndogenousIgG);
+         var endoIgg = organ(CoreConstants.Organ.ENDOGENOUS_IGG);
 
          // plasma 
-         var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Plasma);
+         var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
          var endoIggPlasmaMoleculeNames = moleculeNamesIn(plasma);
 
          endoIggPlasmaMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsPlasma, ligandEndo, ligandEndoComplex);
 
          // interstitial 
-         var interstitial = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Interstitial);
+         var interstitial = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTERSTITIAL);
          var endoIggInterstitialMoleculeNames = moleculeNamesIn(interstitial);
 
          endoIggInterstitialMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsInterstitial, ligandEndo, ligandEndoComplex);
 
          // endosome
-         var endosome = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Endosome);
+         var endosome = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.ENDOSOME);
          var endoIggEndosomeMoleculeNames = moleculeNamesIn(endosome);
 
          endoIggEndosomeMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsEndosome, ligandEndo, ligandEndoComplex);
@@ -582,34 +585,34 @@ namespace PKSim.IntegrationTests
          string fcRnBindingTissueComp1 = CoreConstants.Reaction.FcRnBindingTissueNameFrom(_compound1Name);
          string fcRnBindingTissueComp2 = CoreConstants.Reaction.FcRnBindingTissueNameFrom(_compound2Name);
 
-         var bone = organ(CoreConstants.Organ.Bone);
+         var bone = organ(CoreConstants.Organ.BONE);
 
          // plasma must FcRn binding tissue for all compounds
-         var plasma = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Plasma);
+         var plasma = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
          var bonePlasmaReactionNames = reactionNamesIn(plasma);
 
          bonePlasmaReactionNames.ShouldOnlyContain(fcRnBindingTissueComp1, fcRnBindingTissueComp2);
 
          // BC has no reactions
-         var bloodCells = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.BloodCells);
+         var bloodCells = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.BLOOD_CELLS);
          var boneBloodCellsReactionNames = reactionNamesIn(bloodCells);
 
          boneBloodCellsReactionNames.Count().ShouldBeEqualTo(0);
 
          // interstitial must FcRn binding tissue for all compounds
-         var interstitial = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Interstitial);
+         var interstitial = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTERSTITIAL);
          var boneInterstitialReactionNames = reactionNamesIn(interstitial);
 
          boneInterstitialReactionNames.ShouldOnlyContain(fcRnBindingTissueComp1, fcRnBindingTissueComp2);
 
          // Cells has no reactions
-         var intracellular = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Intracellular);
+         var intracellular = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTRACELLULAR);
          var boneIntracellularReactionNames = reactionNamesIn(intracellular);
 
          boneIntracellularReactionNames.Count().ShouldBeEqualTo(0);
 
          // endosome must FcRn binding tissue for all compounds
-         var endosome = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Endosome);
+         var endosome = bone.GetSingleChildByName<IContainer>(CoreConstants.Compartment.ENDOSOME);
          var boneEndosomeReactionNames = reactionNamesIn(endosome);
 
          boneEndosomeReactionNames.ShouldOnlyContain(fcRnBindingTissueComp1, fcRnBindingTissueComp2);
@@ -629,22 +632,22 @@ namespace PKSim.IntegrationTests
 
          const string fcRnBindingEndogenousIgg = "FcRn binding endogenous Igg";
 
-         var endoIgg = organ(CoreConstants.Organ.EndogenousIgG);
+         var endoIgg = organ(CoreConstants.Organ.ENDOGENOUS_IGG);
 
          // plasma 
-         var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Plasma);
+         var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
          var endoIggPlasmaReactionNames = reactionNamesIn(plasma);
 
          endoIggPlasmaReactionNames.ShouldOnlyContain(fcRnBindingDrugComp1Pls, fcRnBindingDrugComp2Pls, fcRnBindingEndogenousIgg);
 
          // interstitial 
-         var interstitial = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Interstitial);
+         var interstitial = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTERSTITIAL);
          var endoIggInterstitialReactionNames = reactionNamesIn(interstitial);
 
          endoIggInterstitialReactionNames.ShouldOnlyContain(fcRnBindingDrugComp1Int, fcRnBindingDrugComp2Int, fcRnBindingEndogenousIgg);
 
          // endosome
-         var endosome = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.Endosome);
+         var endosome = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.ENDOSOME);
          var endoIggEndosomeReactionNames = reactionNamesIn(endosome);
 
          endoIggEndosomeReactionNames.ShouldOnlyContain(fcRnBindingDrugComp1Endo, fcRnBindingDrugComp2Endo, fcRnBindingEndogenousIgg);

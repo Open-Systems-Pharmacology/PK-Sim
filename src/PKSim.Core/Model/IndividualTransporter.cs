@@ -22,8 +22,8 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _transportType, value);
       }
 
-      public TransporterExpressionContainer BloodCellsContainer => globalContainer(BloodCells);
-      public TransporterExpressionContainer VascularEndotheliumContainer => globalContainer(VascularEndothelium);
+      public TransporterExpressionContainer BloodCellsContainer => globalContainer(BLOOD_CELLS);
+      public TransporterExpressionContainer VascularEndotheliumContainer => globalContainer(VASCULAR_ENDOTHELIUM);
 
       private TransporterExpressionContainer globalContainer(string containerName) =>
          this.GetSingleChildByName<TransporterExpressionContainer>(containerName);

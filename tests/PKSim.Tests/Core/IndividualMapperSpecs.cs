@@ -47,8 +47,8 @@ namespace PKSim.Core
          _individual.Name = "Ind";
          _individual.Description = "Model Description";
 
-         _parameterLiver = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.Liver, "PLiver");
-         _parameterKidney = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.Kidney, "PKidney");
+         _parameterLiver = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LIVER, "PLiver");
+         _parameterKidney = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.KIDNEY, "PKidney");
 
          _parameterLiver.ValueDiffersFromDefault().ShouldBeFalse();
          _parameterKidney.ValueDiffersFromDefault().ShouldBeFalse();

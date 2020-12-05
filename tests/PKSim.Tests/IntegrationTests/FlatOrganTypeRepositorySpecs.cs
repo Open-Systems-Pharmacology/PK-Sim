@@ -5,6 +5,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Repositories;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
@@ -18,30 +19,30 @@ namespace PKSim.IntegrationTests
         [Observation]
         public void should_return_the_expected_organ_type()
         {
-            sut.OrganTypeFor(CoreConstants.Organ.ArterialBlood).ShouldBeEqualTo(OrganType.VascularSystem);
-            sut.OrganTypeFor(CoreConstants.Organ.Bone).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Brain).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Dummy).ShouldBeEqualTo(OrganType.Unknown);
-            sut.OrganTypeFor(CoreConstants.Organ.EndogenousIgG).ShouldBeEqualTo(OrganType.Unknown);
-            sut.OrganTypeFor(CoreConstants.Organ.Fat).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Gallbladder).ShouldBeEqualTo(OrganType.Unknown);
-            sut.OrganTypeFor(CoreConstants.Organ.Gonads).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Heart).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Kidney).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.LargeIntestine).ShouldBeEqualTo(OrganType.GiTractOrgans);
-            sut.OrganTypeFor(CoreConstants.Organ.Lumen).ShouldBeEqualTo(OrganType.Lumen);
-            sut.OrganTypeFor(CoreConstants.Organ.Lung).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Liver).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Muscle).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Pancreas).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.PortalVein).ShouldBeEqualTo(OrganType.VascularSystem);
-            sut.OrganTypeFor(CoreConstants.Organ.Saliva).ShouldBeEqualTo(OrganType.Unknown);
-            sut.OrganTypeFor(CoreConstants.Organ.Skin).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.SmallIntestine).ShouldBeEqualTo(OrganType.GiTractOrgans);
-            sut.OrganTypeFor(CoreConstants.Organ.Spleen).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(CoreConstants.Organ.Stomach).ShouldBeEqualTo(OrganType.GiTractOrgans);
-            sut.OrganTypeFor(CoreConstants.Organ.VenousBlood).ShouldBeEqualTo(OrganType.VascularSystem);
-            sut.OrganTypeFor(CoreConstants.Organ.PeripheralVenousBlood).ShouldBeEqualTo(OrganType.Unknown);
+            sut.OrganTypeFor(ARTERIAL_BLOOD).ShouldBeEqualTo(OrganType.VascularSystem);
+            sut.OrganTypeFor(BONE).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(BRAIN).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(Dummy).ShouldBeEqualTo(OrganType.Unknown);
+            sut.OrganTypeFor(ENDOGENOUS_IGG).ShouldBeEqualTo(OrganType.Unknown);
+            sut.OrganTypeFor(FAT).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(GALLBLADDER).ShouldBeEqualTo(OrganType.Unknown);
+            sut.OrganTypeFor(GONADS).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(HEART).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(KIDNEY).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(LARGE_INTESTINE).ShouldBeEqualTo(OrganType.GiTractOrgans);
+            sut.OrganTypeFor(LUMEN).ShouldBeEqualTo(OrganType.Lumen);
+            sut.OrganTypeFor(LUNG).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(LIVER).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(MUSCLE).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(PANCREAS).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(PORTAL_VEIN).ShouldBeEqualTo(OrganType.VascularSystem);
+            sut.OrganTypeFor(SALIVA).ShouldBeEqualTo(OrganType.Unknown);
+            sut.OrganTypeFor(SKIN).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(SMALL_INTESTINE).ShouldBeEqualTo(OrganType.GiTractOrgans);
+            sut.OrganTypeFor(SPLEEN).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
+            sut.OrganTypeFor(STOMACH).ShouldBeEqualTo(OrganType.GiTractOrgans);
+            sut.OrganTypeFor(VENOUS_BLOOD).ShouldBeEqualTo(OrganType.VascularSystem);
+            sut.OrganTypeFor(PERIPHERAL_VENOUS_BLOOD).ShouldBeEqualTo(OrganType.Unknown);
         }
     }
 }	

@@ -47,8 +47,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_an_expression_containing_at_least_the_container_blood_cells_and_plasma()
       {
-         _allExpressionParameters.Contains(CoreConstants.Compartment.BloodCells).ShouldBeTrue();
-         _allExpressionParameters.Contains(CoreConstants.Compartment.Plasma).ShouldBeTrue();
+         _allExpressionParameters.Contains(CoreConstants.Compartment.BLOOD_CELLS).ShouldBeTrue();
+         _allExpressionParameters.Contains(CoreConstants.Compartment.PLASMA).ShouldBeTrue();
       }
 
       [Observation]
@@ -72,8 +72,8 @@ namespace PKSim.IntegrationTests
       public void should_add_the_relative_expression_to_periportal_and_pericentral_and_set_the_value_to_100()
       {
          var allExpressionsParameters = _individual.AllExpressionParametersFor(_undefined);
-         allExpressionsParameters[CoreConstants.Compartment.Pericentral].Value.ShouldBeEqualTo(1);
-         allExpressionsParameters[CoreConstants.Compartment.Periportal].Value.ShouldBeEqualTo(1);
+         allExpressionsParameters[CoreConstants.Compartment.PERICENTRAL].Value.ShouldBeEqualTo(1);
+         allExpressionsParameters[CoreConstants.Compartment.PERIPORTAL].Value.ShouldBeEqualTo(1);
       }
 
    }

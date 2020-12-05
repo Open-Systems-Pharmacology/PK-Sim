@@ -46,6 +46,7 @@ namespace PKSim.Core.Services
             FractionParam(FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
          );
 
+         addVascularSystemInitialConcentration(simulationSubject, moleculeName);
          AddTissueOrgansExpression(simulationSubject, moleculeName);
          AddLumenExpression(simulationSubject, moleculeName);
          AddMucosaExpression(simulationSubject, moleculeName);
@@ -54,6 +55,21 @@ namespace PKSim.Core.Services
 
          _individualPathWithRootExpander.AddRootToPathIn(simulationSubject, moleculeName);
          return molecule;
+      }
+
+      private void addVascularSystemInitialConcentration(ISimulationSubject simulationSubject, string moleculeName)
+      {
+         var organism = simulationSubject.Organism;
+         organism.OrgansByType(OrganType.VascularSystem).Each(organ =>
+         {
+            AddContainerExpression(organ.Container(CoreConstants.Compartment.BLOOD_CELLS), moleculeName,
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS)
+            );
+
+            AddContainerExpression(organ.Container(CoreConstants.Compartment.PLASMA), moleculeName,
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA_VASCULAR_SYSTEM)
+            );
+         });
       }
 
       protected void AddTissueOrgansExpression(ISimulationSubject simulationSubject, string moleculeName)
@@ -65,42 +81,42 @@ namespace PKSim.Core.Services
 
       protected void AddTissueParameters(IContainer organ, string moleculeName)
       {
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.BloodCells), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.BLOOD_CELLS), moleculeName,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Plasma), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.PLASMA), moleculeName,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Endosome), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.ENDOSOME), moleculeName,
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_ENDOSOME)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Intracellular), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.INTRACELLULAR), moleculeName,
             RelExpParam(REL_EXP),
             FractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ONE_RATE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
          );
 
-         AddContainerExpression(organ.Container(CoreConstants.Compartment.Interstitial), moleculeName,
+         AddContainerExpression(organ.Container(CoreConstants.Compartment.INTERSTITIAL), moleculeName,
             FractionParam(FRACTION_EXPRESSED_INTERSTITIAL, CoreConstants.Rate.PARAM_F_EXP_INTERSTITIAL, editable: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL)
          );
       }
-      
+
       protected void AddMucosaExpression(ISimulationSubject simulationSubject, string moleculeName)
       {
-         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SmallIntestine, CoreConstants.Organ.LargeIntestine))
+         foreach (var organ in simulationSubject.Organism.OrgansByName(CoreConstants.Organ.SMALL_INTESTINE, CoreConstants.Organ.LARGE_INTESTINE))
          {
-            var organMucosa = organ.Container(CoreConstants.Compartment.Mucosa);
+            var organMucosa = organ.Container(CoreConstants.Compartment.MUCOSA);
             organMucosa.GetChildren<Compartment>().Each(x => AddTissueParameters(x, moleculeName));
          }
       }
 
       protected void AddLumenExpression(ISimulationSubject simulationSubject, string moleculeName)
       {
-         var lumen = simulationSubject.Organism.Organ(CoreConstants.Organ.Lumen);
+         var lumen = simulationSubject.Organism.Organ(CoreConstants.Organ.LUMEN);
          //Only visible compartments as we do not want to create RelExp for example in Feces
          foreach (var segment in lumen.Compartments.Where(x => x.Visible))
          {
@@ -108,7 +124,5 @@ namespace PKSim.Core.Services
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_LUMEN));
          }
       }
-
-    
    }
 }

@@ -106,7 +106,7 @@ namespace PKSim.UI.Views.Individuals
          // 
          this.lblTransporterDirectionDescription.Location = new System.Drawing.Point(24, 170);
          this.lblTransporterDirectionDescription.Name = "lblTransporterDirectionDescription";
-         this.lblTransporterDirectionDescription.Size = new System.Drawing.Size(144, 13);
+         this.lblTransporterDirectionDescription.Size = new System.Drawing.Size(162, 13);
          this.lblTransporterDirectionDescription.StyleController = this.layoutControl;
          this.lblTransporterDirectionDescription.TabIndex = 13;
          this.lblTransporterDirectionDescription.Text = "lblTransporterDirectionDescription";

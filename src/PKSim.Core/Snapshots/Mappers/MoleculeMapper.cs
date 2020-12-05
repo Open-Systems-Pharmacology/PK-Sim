@@ -78,8 +78,8 @@ namespace PKSim.Core.Snapshots.Mappers
          var context = new ExpressionContainerMapperContext
          {
             Molecule = molecule,
-            SimulationSubject = individual,
-            ExpressionParameters = individual.AllExpressionParametersFor(molecule)
+            ExpressionParameters = individual.AllExpressionParametersFor(molecule),
+            MoleculeExpressionContainers = individual.AllMoleculeContainersFor(molecule)
          };
 
          await _expressionContainerMapper.MapToModels(snapshot.Expression, context);

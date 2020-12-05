@@ -327,11 +327,19 @@ namespace PKSim.Core.Mappers
 
          foreach (var transporterContainer in allTransporterContainers)
          {
+            //Logical containerName is empty for surrogate containers
+            var logicalContainer = transporterContainer.LogicalContainerName;
+
             var allTransportTemplates = _transportTemplateRepository.All()
-               .Where(x => x.TransportDirection == transporterContainer.TransportDirection)
+               .Where(x => x.TransportDirection == transporterContainer.TransportDirection);
+
+            //a logical container is defined. We are dealing with a localized transporter
+            if (!string.IsNullOrEmpty(logicalContainer)){
                //For apical transport for Lumen => Mucosa, the compartment is the name of our mapping
-               .Where(x => (x.SourceOrgan == transporterContainer.LogicalContainerName ||
-                            x.SourceCompartment == transporterContainer.LogicalContainerName));
+               allTransportTemplates = allTransportTemplates
+                  .Where(x => (x.SourceOrgan == logicalContainer || x.SourceCompartment == logicalContainer));
+
+            }
 
             foreach (var transportTemplate in allTransportTemplates)
             {

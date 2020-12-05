@@ -3,7 +3,6 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
@@ -36,10 +35,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private IEnumerable<TransporterContainerTemplate> allTransporterTemplates(string speciesName, string geneName)
       {
-         return from t in All()
-            where t.Species.Equals(speciesName)
-            where t.IsTemplateFor(geneName)
-            select t;
+         return All().Where(t => t.Species == speciesName).Where(t => t.IsTemplateFor(geneName));
       }
 
       public bool HasTransporterTemplateFor(string speciesName, string transporterName)
@@ -56,7 +52,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IEnumerable<TransporterContainerTemplate> TransportersFor(string speciesName, string containerName)
       {
-         return TransportersFor(speciesName, containerName, CoreConstants.ActiveTransport.VALID_FOR_ALL_GENES);
+         return All().Where(t => t.Species == speciesName).Where(t => t.OrganName == containerName);
       }
 
       public override IEnumerable<TransporterContainerTemplate> All()
@@ -73,7 +69,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
             from flatTemplatePerCompartment in flatTemplatePerOrgan.GroupBy(x => x.CompartmentName)
             from flatTemplatePerMembrane in flatTemplatePerCompartment.GroupBy(x => x.MembraneLocation)
             from flatTemplatePerTransport in flatTemplatePerMembrane.GroupBy(x => x.TransportType)
-            // from flatTemplatePerTransportDirection in flatTemplatePerTransport.GroupBy(x => x.TransportDirection)
             select flatTemplatePerTransport.ToList();
 
          flatTemplatesGroupByKeys.Each(t => _allTemplates.Add(mapFrom(t)));
@@ -94,7 +89,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
             // TransportDirection = flatTemplate.TransportDirection
          };
 
-         flatTemplatesGroupByKeys.Select(x => x.ProcessName).Each(template.AddProcessName);
          _flatProteinSynonymRepository.AddSynonymsTo(template);
 
          return template;

@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 using static PKSim.Core.CoreConstants.CalculationMethod;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
@@ -41,10 +42,7 @@ namespace PKSim.Core.Services
             var individual = simulation.Individual;
 
             //set the relative expression values for each molecule defined in individual
-            foreach (var molecule in individual.AllMolecules())
-            {
-               updateMoleculeParametersValues(molecule, individual);
-            }
+            individual.AllMolecules().Each(molecule => updateMoleculeParametersValues(molecule, individual, simulation));
 
             updateSimulationParameters(simulation);
 
@@ -60,7 +58,7 @@ namespace PKSim.Core.Services
       {
          //this is only required if the simulation already has a model. That means that we should update the PSV with any
          //simulation parameters that might have been updated by the user
-         if (simulation.Model == null) 
+         if (simulation.Model == null)
             return;
 
          var allSimulationParameters = simulation.Model.Root.GetAllChildren<IParameter>(isChangedSimulationParameter);
@@ -78,14 +76,19 @@ namespace PKSim.Core.Services
                 && parameter.ValueDiffersFromDefault();
       }
 
-      private void updateMoleculeParametersValues(IndividualMolecule molecule, Individual individual)
+      private void updateMoleculeParametersValues(IndividualMolecule molecule, Individual individual, Simulation simulation)
       {
          var allProteinParameters = individual.AllMoleculeParametersFor(molecule);
-         allProteinParameters.Each(setParameter);
+         var modelConfiguration = simulation.ModelConfiguration;
+         allProteinParameters.Each(p => setParameter(p, modelConfiguration.ModelName == CoreConstants.Model.FOUR_COMP));
       }
 
-      private void setParameter(IParameter parameter)
+      private void setParameter(IParameter parameter, bool isSmallMolecule)
       {
+         //We do not generate start values for endosome parameters when dealing with a small molecule model
+         if (parameter.HasAncestorNamed(CoreConstants.Compartment.ENDOSOME) && isSmallMolecule)
+            return;
+
          var parameterStartValue = getOrCreateStartValueFor(parameter);
 
          if (parameter.Formula.IsExplicit())
@@ -109,12 +112,11 @@ namespace PKSim.Core.Services
          return parameterStartValue;
       }
 
-
       private IParameterStartValue getOrCreateStartValueFor(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var parameterStartValue = _defaultStartValues[parameterPath];
-         if (parameterStartValue != null) 
+         if (parameterStartValue != null)
             return parameterStartValue;
 
          parameterStartValue = _parameterStartValuesCreator.CreateParameterStartValue(parameterPath, parameter);

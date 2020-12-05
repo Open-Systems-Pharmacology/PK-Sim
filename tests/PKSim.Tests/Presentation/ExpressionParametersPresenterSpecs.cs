@@ -1,4 +1,6 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -73,10 +75,16 @@ namespace PKSim.Presentation
 
    public class When_switching_the_visibility_of_initial_concentration_parameters_off : concern_for_ExpressionParametersPresenter
    {
+      private List<ExpressionParameterDTO> _allExpressionParameterDTO;
+
       protected override void Context()
       {
          base.Context();
          sut.Edit(new[] { _fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2, });
+
+         A.CallTo(() => _view.BindTo(A<IEnumerable<ExpressionParameterDTO>>._))
+            .Invokes(x => _allExpressionParameterDTO = x.GetArgument<IEnumerable<ExpressionParameterDTO>>(0).ToList());
+
       }
 
       protected override void Because()
@@ -87,16 +95,20 @@ namespace PKSim.Presentation
       [Observation]
       public void should_hide_concentration_parameters()
       {
-         _initialConcentration.Visible.ShouldBeFalse();
+         _allExpressionParameterDTO.Contains(_initialConcentration).ShouldBeFalse();
       }
    }
 
    public class When_switching_the_visibility_of_initial_concentration_parameters_on : concern_for_ExpressionParametersPresenter
    {
+      private List<ExpressionParameterDTO> _allExpressionParameterDTO;
       protected override void Context()
       {
          base.Context();
          sut.Edit(new[] { _fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2, });
+
+         A.CallTo(() => _view.BindTo(A<IEnumerable<ExpressionParameterDTO>>._))
+            .Invokes(x => _allExpressionParameterDTO = x.GetArgument<IEnumerable<ExpressionParameterDTO>>(0).ToList());
       }
 
       protected override void Because()
@@ -107,7 +119,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_show_concentration_parameters()
       {
-         _initialConcentration.Visible.ShouldBeTrue();
+         _allExpressionParameterDTO.Contains(_initialConcentration).ShouldBeTrue();
       }
    }
 
