@@ -67,7 +67,7 @@ namespace PKSim.Core.Services
             );
 
             AddContainerExpression(organ.Container(CoreConstants.Compartment.PLASMA), moleculeName,
-               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA)
+               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA_VASCULAR_SYSTEM)
             );
          });
       }

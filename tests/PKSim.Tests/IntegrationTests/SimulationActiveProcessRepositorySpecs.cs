@@ -8,6 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using static PKSim.CoreConstantsForSpecs.ActiveTransport;
 
 namespace PKSim.IntegrationTests
 {
@@ -36,7 +37,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_simulation_process()
       {
-         sut.TransportFor("ActiveEffluxSpecific", "ActiveTransportSpecific_MM").Name.ShouldBeEqualTo("ActiveEffluxSpecific_MM");
+         sut.TransportFor(ActiveEffluxSpecificIntracellularToInterstitial, "ActiveTransportSpecific_MM").Name.ShouldBeEqualTo(ActiveEffluxSpecificIntracellularToInterstitial_MM);
       }
    }
 

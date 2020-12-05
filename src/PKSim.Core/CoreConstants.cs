@@ -190,8 +190,10 @@ namespace PKSim.Core
          public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL = "InitialConcentrationInterstitial";
          public static readonly string INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER = "InitialConcentrationInterstitial_Transporter";
          public static readonly string INITIAL_CONCENTRATION_PLASMA = "InitialConcentrationPlasma";
+         public static readonly string INITIAL_CONCENTRATION_PLASMA_VASCULAR_SYSTEM = "InitialConcentrationPlasma_VascularSystem";
          public static readonly string INITIAL_CONCENTRATION_ENDOSOME = "InitialConcentrationEndosome";
          public static readonly string INITIAL_CONCENTRATION_PLASMA_TRANSPORTER = "InitialConcentrationPlasma_Transporter";
+         public static readonly string INITIAL_CONCENTRATION_PLASMA_INTERSTITIAL_TRANSPORTER_VASCULAR_SYSTEM = "InitialConcentrationPlasma_TransporterVascularSystem";
          public static readonly string INITIAL_CONCENTRATION_BRAIN_PLASMA_TRANSPORTER = "InitialConcentrationBrainPlasma_Transporter";
          public static readonly string INITIAL_CONCENTRATION_BRAIN_INTERSTITIAL_TRANSPORTER = "InitialConcentrationBrainInterstitial_Transporter";
          public static readonly string INITIAL_CONCENTRATION_LUMEN = "InitialConcentrationLumen";
