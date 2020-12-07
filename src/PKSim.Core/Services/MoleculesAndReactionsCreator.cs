@@ -387,8 +387,7 @@ namespace PKSim.Core.Services
       {
          var compound = compoundProperties.Compound;
          var process = compound.ProcessByName(compoundProcessMapping.ProcessName);
-
-
+         
          //Passive transport added to the passive transport list
          if (isRenalClearance(compoundProcessMapping))
          {
