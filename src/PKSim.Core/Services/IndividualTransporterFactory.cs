@@ -95,10 +95,6 @@ namespace PKSim.Core.Services
             addContainerExpression(organ.Container(BLOOD_CELLS), transporter, TransportDirectionId.None,
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BLOOD_CELLS_TRANSPORTER)
             );
-
-            addContainerExpression(organ.Container(PLASMA), transporter, TransportDirectionId.None,
-               InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_PLASMA_INTERSTITIAL_TRANSPORTER_VASCULAR_SYSTEM)
-            );
          });
       }
 

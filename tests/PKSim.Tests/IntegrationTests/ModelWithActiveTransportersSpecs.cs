@@ -108,7 +108,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void Should_create_active_efflux_specific_transport_in_bone()
       {
-         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificMM);
+         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificIntracellularToInterstitial_MM);
       }
    }
 
@@ -119,7 +119,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void Should_create_active_efflux_specific_with_competitive_inhibition_transport_in_bone()
       {
-         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificHill);
+         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificIntracellularToInterstitial_Hill);
       }
    }
 }
