@@ -88,13 +88,12 @@ namespace PKSim.IntegrationTests
          var rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
 
          var allHillFormulas = rateFormulaRepository.All().Where(r => r.Rate.EndsWith("_Hill")).ToArray();
-         allHillFormulas.Count().ShouldBeEqualTo(13);
-
+     
          foreach (var hillFormula in allHillFormulas)
          {
             var equation = hillFormula.Formula;
 
-            //count number of occurances of the exponent (alpha) and of the max function in the equation
+            //count number of occurrences of the exponent (alpha) and of the max function in the equation
             //all terms with exponent must have the form "max(C;0)^alpha/(KM^alpha+max(C;0)^alpha)"
             // thus <number of max-functions> must be 2/3*<number of exponents>
             var alphasCount = Regex.Matches(equation, "alpha").Count;
@@ -102,9 +101,9 @@ namespace PKSim.IntegrationTests
             alphasCount.ShouldBeGreaterThan(0);
             maxCount.ShouldBeEqualTo(2*alphasCount/3);
 
-            //all occurences of K_water should start with the opening bracket: 
+            //all occurrences of K_water should start with the opening bracket: 
             // "(K_water_xxx*C)^alpha
-            //Exception: one occurence in pgp-hill-kinetik
+            //Exception: one occurrence in pgp-hill-kinetic
             var kwaterCount = Regex.Matches(equation, "K_water").Count;
             var expectedBracketedKwaterCount = hillFormula.Rate.Equals("PgpSpecific_Hill") ? kwaterCount - 1 : kwaterCount;
             Regex.Matches(equation, "[(]K_water").Count.ShouldBeEqualTo(expectedBracketedKwaterCount);
@@ -274,7 +273,7 @@ namespace PKSim.IntegrationTests
          //check number of new bw/height/volume parameters
          (bwParams.Count + heightParams.Count + volumeParams.Count).ShouldBeEqualTo(1420);
 
-         //check some heigth standard deviations
+         //check some height standard deviations
          var teenHeightParams = heightParams.Where(p => p.Age == 13 || p.Age == 15).ToList();
          teenHeightParams.Count.ShouldBeEqualTo(2 * 2 * 3); //2 age groups*2genders*3populations
          teenHeightParams.Each(p => p.Deviation.ShouldBeGreaterThan(0.6));
