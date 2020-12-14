@@ -18,13 +18,13 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_correct_type_for_ABCB1()
       {
-         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "ABCB1").ShouldBeEqualTo(TransportType.PgpLike);
+         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "ABCB1").ShouldBeEqualTo(TransportType.Efflux);
       }
 
       [Observation]
       public void should_return_correct_type_for_ABCB1_written_in_lower_case()
       {
-         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "abcb1").ShouldBeEqualTo(TransportType.PgpLike);
+         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "abcb1").ShouldBeEqualTo(TransportType.Efflux);
       }
 
       [Observation]
@@ -42,7 +42,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_correcty_type_for_MDR1_defined_as_synonym_of_ABCB1()
       {
-         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "MDR1").ShouldBeEqualTo(TransportType.PgpLike);
+         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "MDR1").ShouldBeEqualTo(TransportType.Efflux);
       }
 
       [Observation]
