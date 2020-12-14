@@ -2,6 +2,7 @@
 using CommandLine;
 using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
