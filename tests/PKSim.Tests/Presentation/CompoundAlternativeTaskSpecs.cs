@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Importer;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;

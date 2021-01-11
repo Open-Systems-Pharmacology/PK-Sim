@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Importer;
+using OSPSuite.Infrastructure.Import.Core;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {

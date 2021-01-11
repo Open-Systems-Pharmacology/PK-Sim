@@ -8,7 +8,6 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Importer;
 using OSPSuite.Presentation.Core;
 
 namespace PKSim.Core

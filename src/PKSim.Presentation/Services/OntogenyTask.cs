@@ -11,9 +11,9 @@ using PKSim.Presentation.Presenters.Individuals;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Importer;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
+using OSPSuite.Infrastructure.Import.Core;
 
 namespace PKSim.Presentation.Services
 {

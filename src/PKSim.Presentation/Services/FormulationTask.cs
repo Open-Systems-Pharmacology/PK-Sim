@@ -14,7 +14,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Importer;
+using OSPSuite.Infrastructure.Import.Core;
 
 namespace PKSim.Presentation.Services
 {
