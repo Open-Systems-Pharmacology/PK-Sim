@@ -42,7 +42,7 @@ namespace PKSim.Core.Commands
          //do not clear ref for old species, as old species will be used in the rollback command
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetSpeciesInSpeciesDependentEntityCommand(_entity, _oldSpecies, context).AsInverseFor(this);
       }

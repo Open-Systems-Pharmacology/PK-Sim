@@ -15,6 +15,7 @@ using PKSim.Infrastructure.ORM.Core;
 using PKSim.Infrastructure.ORM.Mappers;
 using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Infrastructure.ProjectConverter;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
@@ -28,7 +29,7 @@ namespace PKSim.IntegrationTests
       public void should_update_the_parameter_tablet_time_delay_factor()
       {
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         verifyParameterIsVisibleAndEditable(parameterRateRepository, ConverterConstants.Parameter.TabletTimeDelayFactor);
+         verifyParameterIsVisibleAndEditable(parameterRateRepository, ConverterConstants.Parameters.TabletTimeDelayFactor);
       }
 
       [Observation]
@@ -54,7 +55,7 @@ namespace PKSim.IntegrationTests
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
          verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.INFUSION_TIME);
          verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT);
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameter.PartitionCoefficientWwaterProtein, "DRUG");
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameters.PartitionCoefficientWwaterProtein, "DRUG");
       }
 
       private void verifyParametersCanBeVariedInPopulation<T>(IParameterMetaDataRepository<T> parameterMetaDataRepository, string parameterName, string containerName = null) where T : ParameterMetaData
@@ -87,13 +88,12 @@ namespace PKSim.IntegrationTests
          var rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
 
          var allHillFormulas = rateFormulaRepository.All().Where(r => r.Rate.EndsWith("_Hill")).ToArray();
-         allHillFormulas.Count().ShouldBeEqualTo(13);
-
+     
          foreach (var hillFormula in allHillFormulas)
          {
             var equation = hillFormula.Formula;
 
-            //count number of occurances of the exponent (alpha) and of the max function in the equation
+            //count number of occurrences of the exponent (alpha) and of the max function in the equation
             //all terms with exponent must have the form "max(C;0)^alpha/(KM^alpha+max(C;0)^alpha)"
             // thus <number of max-functions> must be 2/3*<number of exponents>
             var alphasCount = Regex.Matches(equation, "alpha").Count;
@@ -101,9 +101,9 @@ namespace PKSim.IntegrationTests
             alphasCount.ShouldBeGreaterThan(0);
             maxCount.ShouldBeEqualTo(2*alphasCount/3);
 
-            //all occurences of K_water should start with the opening bracket: 
+            //all occurrences of K_water should start with the opening bracket: 
             // "(K_water_xxx*C)^alpha
-            //Exception: one occurence in pgp-hill-kinetik
+            //Exception: one occurrence in pgp-hill-kinetic
             var kwaterCount = Regex.Matches(equation, "K_water").Count;
             var expectedBracketedKwaterCount = hillFormula.Rate.Equals("PgpSpecific_Hill") ? kwaterCount - 1 : kwaterCount;
             Regex.Matches(equation, "[(]K_water").Count.ShouldBeEqualTo(expectedBracketedKwaterCount);
@@ -137,15 +137,15 @@ namespace PKSim.IntegrationTests
       {
          var meanStdRatios = new[]
          {
-            new {organ = CoreConstants.Organ.ArterialBlood, maleRatio = 0.05, femaleRatio = 0.05},
-            new {organ = CoreConstants.Organ.Bone, maleRatio = 0.011059, femaleRatio = 0.01},
-            new {organ = CoreConstants.Organ.Gonads, maleRatio = 0.05, femaleRatio = 0.05},
-            new {organ = CoreConstants.Organ.Kidney, maleRatio = 0.24628, femaleRatio = 0.25},
-            new {organ = CoreConstants.Organ.LargeIntestine, maleRatio = 0.14, femaleRatio = 0.14},
-            new {organ = CoreConstants.Organ.Liver, maleRatio = 0.25, femaleRatio = 0.25},
-            new {organ = CoreConstants.Organ.Pancreas, maleRatio = 0.2689, femaleRatio = 0.28},
-            new {organ = CoreConstants.Organ.Skin, maleRatio = 0.05, femaleRatio = 0.05},
-            new {organ = CoreConstants.Organ.VenousBlood, maleRatio = 0.05, femaleRatio = 0.05}
+            new {organ = ARTERIAL_BLOOD, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = BONE, maleRatio = 0.011059, femaleRatio = 0.01},
+            new {organ = GONADS, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = KIDNEY, maleRatio = 0.24628, femaleRatio = 0.25},
+            new {organ = LARGE_INTESTINE, maleRatio = 0.14, femaleRatio = 0.14},
+            new {organ = LIVER, maleRatio = 0.25, femaleRatio = 0.25},
+            new {organ = PANCREAS, maleRatio = 0.2689, femaleRatio = 0.28},
+            new {organ = SKIN, maleRatio = 0.05, femaleRatio = 0.05},
+            new {organ = VENOUS_BLOOD, maleRatio = 0.05, femaleRatio = 0.05}
          };
 
          foreach (var meanStdRatio in meanStdRatios)
@@ -154,7 +154,7 @@ namespace PKSim.IntegrationTests
 
             foreach (var volumeParameter in volumeParameters)
             {
-               if (meanStdRatio.organ.Equals(CoreConstants.Organ.Liver) && volumeParameter.Gender.Equals(CoreConstants.Gender.Male))
+               if (meanStdRatio.organ.Equals(LIVER) && volumeParameter.Gender.Equals(CoreConstants.Gender.Male))
                   continue; //no update for this combination
 
                var ratio = volumeParameter.Deviation / volumeParameter.Mean;
@@ -273,7 +273,7 @@ namespace PKSim.IntegrationTests
          //check number of new bw/height/volume parameters
          (bwParams.Count + heightParams.Count + volumeParams.Count).ShouldBeEqualTo(1420);
 
-         //check some heigth standard deviations
+         //check some height standard deviations
          var teenHeightParams = heightParams.Where(p => p.Age == 13 || p.Age == 15).ToList();
          teenHeightParams.Count.ShouldBeEqualTo(2 * 2 * 3); //2 age groups*2genders*3populations
          teenHeightParams.Each(p => p.Deviation.ShouldBeGreaterThan(0.6));
@@ -327,12 +327,12 @@ namespace PKSim.IntegrationTests
             return false;
 
          var container = parameterRateMetaData.ContainerName;
-         if (container.Equals(CoreConstants.Organ.EndogenousIgG) ||
-             container.Equals(CoreConstants.Organ.PortalVein))
+         if (container.Equals(ENDOGENOUS_IGG) ||
+             container.Equals(PORTAL_VEIN))
             return false;
 
          var name = parameterRateMetaData.ParameterName;
-         var isIntestine = container.IsOneOf(CoreConstants.Organ.LargeIntestine, CoreConstants.Organ.SmallIntestine);
+         var isIntestine = container.IsOneOf(LARGE_INTESTINE, SMALL_INTESTINE);
 
          return (name.Equals(flowParameterName) && !isIntestine) ||
                 (name.Equals(flowInclMucosaParameterName) && isIntestine);
@@ -511,7 +511,7 @@ namespace PKSim.IntegrationTests
       public void should_have_updated_the_description_for_residual_fraction()
       {
          var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
-         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, ConverterConstants.Parameter.RESIDUAL_FRACTION)
+         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, ConverterConstants.Parameters.RESIDUAL_FRACTION)
             .Description.ShouldBeEqualTo("Residual fraction after measuring time");
       }
    }
@@ -533,8 +533,8 @@ namespace PKSim.IntegrationTests
          var observersRepo = IoC.Resolve<IFlatModelObserverRepository>();
 
          var observerName = CoreConstants.Observer.CONCENTRATION_IN_FECES;
-         observersRepo.Contains(CoreConstants.Model.FourComp, observerName).ShouldBeTrue();
-         observersRepo.Contains(CoreConstants.Model.TwoPores, observerName).ShouldBeTrue();
+         observersRepo.Contains(CoreConstants.Model.FOUR_COMP, observerName).ShouldBeTrue();
+         observersRepo.Contains(CoreConstants.Model.TWO_PORES, observerName).ShouldBeTrue();
       }
 
       [Observation]
@@ -631,11 +631,11 @@ namespace PKSim.IntegrationTests
       public void should_have_set_the_saliva_icon_and_gall_bladder_icon()
       {
          var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
-         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, CoreConstants.Organ.Gallbladder)
-            .IconName.ShouldBeEqualTo(CoreConstants.Organ.Gallbladder);
+         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, GALLBLADDER)
+            .IconName.ShouldBeEqualTo(GALLBLADDER);
 
-         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, CoreConstants.Organ.Saliva)
-            .IconName.ShouldBeEqualTo(CoreConstants.Organ.Saliva);
+         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, SALIVA)
+            .IconName.ShouldBeEqualTo(SALIVA);
       }
 
       [Observation]

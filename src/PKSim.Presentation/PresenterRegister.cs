@@ -52,7 +52,7 @@ namespace PKSim.Presentation
             //UI Commands will be registered with another convention
             scan.ExcludeNamespaceContainingType<IExitCommand>();
 
-            //This specifc objects needs to be register as Singleton
+            //This specific objects needs to be register as Singleton
             scan.ExcludeType<CloseSubjectPresenterInvoker>();
             scan.ExcludeType<ExportToPDFInvoker>();
             scan.ExcludeType<ButtonGroupRepository>();
@@ -112,14 +112,16 @@ namespace PKSim.Presentation
 
          //Open generic type
          container.Register(typeof(IBuildingBlockSelectionPresenter<>), typeof(BuildingBlockSelectionPresenter<>));
-         container.Register(typeof(IMoleculeExpressionTask<>), typeof(MoleculeExpressionTask<>));
+         container.Register(typeof(IEditMoleculeTask<>), typeof(EditMoleculeTask<>));
          container.Register(typeof(IRootNodeToIndividualExpressionsPresenterMapper<>), typeof(RootNodeToIndividualExpressionsPresenterMapper<>));
          container.Register(typeof(IIndividualEnzymeExpressionsPresenter<>), typeof(IndividualEnzymeExpressionsPresenter<>));
          container.Register(typeof(IIndividualOtherProteinExpressionsPresenter<>), typeof(IndividualOtherProteinExpressionsPresenter<>));
          container.Register(typeof(IIndividualTransporterExpressionsPresenter<>), typeof(IndividualTransporterExpressionsPresenter<>));
+         container.Register(typeof(IExpressionLocalizationPresenter<>), typeof(ExpressionLocalizationPresenter<>));
          container.Register(typeof(IIndividualMoleculePropertiesPresenter<>), typeof(IndividualMoleculePropertiesPresenter<>));
          container.Register(typeof(IOntogenySelectionPresenter<>), typeof(OntogenySelectionPresenter<>));
          container.Register(typeof(ILoadFromSnapshotPresenter<>), typeof(LoadFromSnapshotPresenter<>));
+         container.Register(typeof(IExpressionParameterMapper<>), typeof(ExpressionParameterMapper<>));
 
          //generic types
          container.Register<ISimulationOutputSelectionPresenter<IndividualSimulation>, IndividualSimulationSettingsPresenter>();

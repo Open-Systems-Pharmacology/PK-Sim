@@ -4,8 +4,6 @@ namespace PKSim.Core.Model
 {
    public class QueryExpressionResults
    {
-      private readonly IEnumerable<ExpressionResult> _expressionResults;
-
       /// <summary>
       ///    Query configuration that will be saved in pksim and should be used to restore the query when loaded a second time
       /// </summary>
@@ -28,15 +26,12 @@ namespace PKSim.Core.Model
 
       public QueryExpressionResults(IEnumerable<ExpressionResult> expressionResults)
       {
-         _expressionResults = expressionResults;
+         ExpressionResults = expressionResults;
       }
 
       /// <summary>
       ///    Results of query
       /// </summary>
-      public IEnumerable<ExpressionResult> ExpressionResults
-      {
-         get { return _expressionResults; }
-      }
+      public IEnumerable<ExpressionResult> ExpressionResults { get; }
    }
 }

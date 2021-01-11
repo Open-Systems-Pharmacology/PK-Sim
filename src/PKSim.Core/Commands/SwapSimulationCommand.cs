@@ -46,7 +46,7 @@ namespace PKSim.Core.Commands
          project.AddClassifiable(new ClassifiableSimulation { Subject = _newBuildingBlock, Parent = oldClassifiable.Parent });
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SwapSimulationCommand(_newBuildingBlock, _oldBuildingBlock, context).AsInverseFor(this);
       }

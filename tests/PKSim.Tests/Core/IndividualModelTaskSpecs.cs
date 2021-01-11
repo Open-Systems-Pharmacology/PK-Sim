@@ -75,15 +75,15 @@ namespace PKSim.Core
       [Observation]
       public void should_add_all_individual_parameters_to_organism_and_its_sub_organs_and_compartments()
       {
-         A.CallTo(() => _parameterContainerTask.AddInvididualParametersTo<IContainer>(_organism, _originData)).MustHaveHappened();
-         A.CallTo(() => _parameterContainerTask.AddInvididualParametersTo<IContainer>(_organ, _originData)).MustHaveHappened();
-         A.CallTo(() => _parameterContainerTask.AddInvididualParametersTo<IContainer>(_compartment, _originData)).MustHaveHappened();
+         A.CallTo(() => _parameterContainerTask.AddIndividualParametersTo<IContainer>(_organism, _originData)).MustHaveHappened();
+         A.CallTo(() => _parameterContainerTask.AddIndividualParametersTo<IContainer>(_organ, _originData)).MustHaveHappened();
+         A.CallTo(() => _parameterContainerTask.AddIndividualParametersTo<IContainer>(_compartment, _originData)).MustHaveHappened();
       }
 
       [Observation]
       public void should_add_all_individual_parameters_to_the_neighborhoods_of_the_individual()
       {
-         A.CallTo(() => _parameterContainerTask.AddInvididualParametersTo(_neighborhoods, _originData)).MustHaveHappened();
+         A.CallTo(() => _parameterContainerTask.AddIndividualParametersTo(_neighborhoods, _originData)).MustHaveHappened();
       }
 
       [Observation]

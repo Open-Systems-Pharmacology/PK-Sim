@@ -8,14 +8,26 @@ namespace PKSim.Core.Services
 {
    public interface IIndividualPathWithRootExpander
    {
-      void AddRootToPathIn(Individual individual);
+      void AddRootToPathIn(ISimulationSubject simulationSubject);
+      void AddRootToPathIn(ISimulationSubject simulationSubject, string moleculeName);
    }
 
    public class IndividualPathWithRootExpander : IIndividualPathWithRootExpander, IVisitor<IUsingFormula>
    {
-      public void AddRootToPathIn(Individual individual)
+      private readonly IReadOnlyList<string> _defaultTopContainer = new[] {Constants.ORGANISM, Constants.NEIGHBORHOODS};
+
+      private List<string> _topContainers = new List<string>();
+
+      public void AddRootToPathIn(ISimulationSubject simulationSubject)
       {
-         individual.AcceptVisitor(this);
+         _topContainers = new List<string>(_defaultTopContainer);
+         simulationSubject.AcceptVisitor(this);
+      }
+
+      public void AddRootToPathIn(ISimulationSubject simulationSubject, string moleculeName)
+      {
+         _topContainers = new List<string>(_defaultTopContainer){moleculeName};
+         simulationSubject.AcceptVisitor(this);
       }
 
       public void Visit(IUsingFormula usingFormula)
@@ -33,8 +45,7 @@ namespace PKSim.Core.Services
 
       private bool shouldAddRootToPath(IList<string> objectPath)
       {
-         return string.Equals(objectPath[0], Constants.ORGANISM) ||
-                string.Equals(objectPath[0], Constants.NEIGHBORHOODS);
+         return _topContainers.Contains(objectPath[0]);
       }
    }
 }

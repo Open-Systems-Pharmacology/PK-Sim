@@ -84,18 +84,18 @@ namespace PKSim.Core
          category.Add(pvv);
          originData.SubPopulation.AddParameterValueVersion(pvv);
          var organism = new Organism().WithName(Constants.ORGANISM).WithId("OrganismId");
-         var organLiver = new Organ().WithName(CoreConstants.Organ.Liver).WithId("LiverId");
+         var organLiver = new Organ().WithName(CoreConstants.Organ.LIVER).WithId("LiverId");
          organLiver.OrganType = OrganType.TissueOrgansNotInGiTract;
-         var periportal = new Compartment().WithName(CoreConstants.Compartment.Periportal).WithId("PeriportalId");
-         periportal.Add(new Container().WithName(CoreConstants.Compartment.Intracellular).WithId("PeriportalIntracellular"));
-         var pericentral = new Compartment().WithName(CoreConstants.Compartment.Pericentral).WithId("PericentralId");
-         pericentral.Add(new Container().WithName(CoreConstants.Compartment.Intracellular).WithId("PericentralIntracellular"));
+         var periportal = new Compartment().WithName(CoreConstants.Compartment.PERIPORTAL).WithId("PeriportalId");
+         periportal.Add(new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithId("PeriportalIntracellular"));
+         var pericentral = new Compartment().WithName(CoreConstants.Compartment.PERICENTRAL).WithId("PericentralId");
+         pericentral.Add(new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithId("PericentralIntracellular"));
          organLiver.Add(periportal);
          organLiver.Add(pericentral);
 
-         var organKidney = new Organ().WithName(CoreConstants.Organ.Kidney).WithId("KidneyId");
+         var organKidney = new Organ().WithName(CoreConstants.Organ.KIDNEY).WithId("KidneyId");
          organKidney.OrganType = OrganType.TissueOrgansNotInGiTract;
-         organKidney.Add(new Compartment {Visible = true}.WithName(CoreConstants.Compartment.Plasma).WithId("KidneyPlasma"));
+         organKidney.Add(new Compartment {Visible = true}.WithName(CoreConstants.Compartment.PLASMA).WithId("KidneyPlasma"));
          var lumen = new Organ().WithName("GiTract").WithId("GiTract");
          lumen.OrganType = OrganType.Lumen;
 

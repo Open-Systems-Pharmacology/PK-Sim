@@ -36,7 +36,7 @@ namespace PKSim.Core.Commands
          _buildingBlock.AddCalculationMethod(_newCalculationMethod);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetCalculationMethodCommand<TBuildingBlockWithCalculationMethods>(_buildingBlock, _category, _oldCalculationMethod, _newCalculationMethod).AsInverseFor(this);
       }

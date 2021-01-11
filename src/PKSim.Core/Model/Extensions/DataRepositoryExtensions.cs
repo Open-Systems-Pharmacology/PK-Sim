@@ -15,7 +15,7 @@ namespace PKSim.Core.Model.Extensions
       /// </summary>
       public static DataColumn PeripheralVenousBloodColumn(this DataRepository dataRepository, string compoundName)
       {
-         return dataRepository.drugColumnFor(CoreConstants.Organ.PeripheralVenousBlood, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName);
+         return dataRepository.drugColumnFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName);
       }
 
       /// <summary>
@@ -23,7 +23,7 @@ namespace PKSim.Core.Model.Extensions
       /// </summary>
       public static DataColumn VenousBloodColumn(this DataRepository dataRepository,string compoundName)
       {
-         return dataRepository.drugColumnFor(CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName);
+         return dataRepository.drugColumnFor(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName);
       }
 
       private static DataColumn drugColumnFor(this IEnumerable<DataColumn> dataRepository, string organ, string compartment, string columnName, string compoundName)
@@ -43,7 +43,7 @@ namespace PKSim.Core.Model.Extensions
 
       public static DataColumn FabsOral(this DataRepository dataRepository,string compoundName)
       {
-         return dataRepository.drugColumnFor(CoreConstants.Organ.Lumen, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName);
+         return dataRepository.drugColumnFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName);
       }
 
       public static IEnumerable<DataColumn> BelongingTo(this IEnumerable<DataColumn> dataColumns, Simulation simulation)

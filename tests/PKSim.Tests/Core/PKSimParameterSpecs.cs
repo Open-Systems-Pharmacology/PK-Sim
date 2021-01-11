@@ -134,10 +134,10 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _fat = new Container().WithName(CoreConstants.Organ.Fat);
-         _muscle = new Container().WithName(CoreConstants.Organ.Muscle);
-         _liver = new Container().WithName(CoreConstants.Organ.Liver);
-         _duodenum = new Container().WithName(CoreConstants.Compartment.Duodenum);
+         _fat = new Container().WithName(CoreConstants.Organ.FAT);
+         _muscle = new Container().WithName(CoreConstants.Organ.MUSCLE);
+         _liver = new Container().WithName(CoreConstants.Organ.LIVER);
+         _duodenum = new Container().WithName(CoreConstants.Compartment.DUODENUM);
          _parameter = new PKSimParameter {BuildingBlockType = PKSimBuildingBlockType.Individual};
       }
 

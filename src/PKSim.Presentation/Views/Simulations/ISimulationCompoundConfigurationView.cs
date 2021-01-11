@@ -5,7 +5,7 @@ namespace PKSim.Presentation.Views.Simulations
 {
    public interface ISimulationCompoundConfigurationView : IView<ISimulationCompoundConfigurationPresenter>, IResizableView
    {
-      void AddParameterAlernativesView(IResizableView view);
+      void AddParameterAlternativesView(IResizableView view);
       void AddCalculationMethodsView(IResizableView view);
    }
 }

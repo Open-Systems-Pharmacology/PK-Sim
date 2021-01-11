@@ -17,7 +17,6 @@
          {
             components.Dispose();
          }
-         _gridViewBinder.Dispose();
          _screenBinder.Dispose();
          base.Dispose(disposing);
       }
@@ -31,30 +30,28 @@
       private void InitializeComponent()
       {
          this.mainLayout = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.panelExpressionParameters = new DevExpress.XtraEditors.PanelControl();
          this.panelMoleculeParameters = new DevExpress.XtraEditors.PanelControl();
-         this.gridParameters = new OSPSuite.UI.Controls.UxGridControl();
-         this.gridViewParameters = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutItemRelativeExpressions = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemMoleculeParameters = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupMoleculeParameters = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemMoleculeParameters = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemExpressionParameters = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.mainLayout)).BeginInit();
          this.mainLayout.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.panelExpressionParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeParameters)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRelativeExpressions)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeParameters)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeParameters)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExpressionParameters)).BeginInit();
          this.SuspendLayout();
          // 
          // mainLayout
          // 
          this.mainLayout.AllowCustomization = false;
+         this.mainLayout.Controls.Add(this.panelExpressionParameters);
          this.mainLayout.Controls.Add(this.panelMoleculeParameters);
-         this.mainLayout.Controls.Add(this.gridParameters);
          this.mainLayout.Dock = System.Windows.Forms.DockStyle.Fill;
          this.mainLayout.Location = new System.Drawing.Point(0, 0);
          this.mainLayout.Name = "mainLayout";
@@ -64,35 +61,19 @@
          this.mainLayout.TabIndex = 0;
          this.mainLayout.Text = "layoutControl1";
          // 
+         // panelExpressionParameters
+         // 
+         this.panelExpressionParameters.Location = new System.Drawing.Point(164, 98);
+         this.panelExpressionParameters.Name = "panelExpressionParameters";
+         this.panelExpressionParameters.Size = new System.Drawing.Size(258, 320);
+         this.panelExpressionParameters.TabIndex = 10;
+         // 
          // panelMoleculeParameters
          // 
-         this.panelMoleculeParameters.Location = new System.Drawing.Point(14, 32);
+         this.panelMoleculeParameters.Location = new System.Drawing.Point(176, 35);
          this.panelMoleculeParameters.Name = "panelMoleculeParameters";
-         this.panelMoleculeParameters.Size = new System.Drawing.Size(396, 50);
+         this.panelMoleculeParameters.Size = new System.Drawing.Size(234, 47);
          this.panelMoleculeParameters.TabIndex = 9;
-         // 
-         // gridParameters
-         // 
-         this.gridParameters.Location = new System.Drawing.Point(2, 98);
-         this.gridParameters.MainView = this.gridViewParameters;
-         this.gridParameters.Name = "gridParameters";
-         this.gridParameters.Size = new System.Drawing.Size(420, 320);
-         this.gridParameters.TabIndex = 6;
-         this.gridParameters.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridViewParameters});
-         // 
-         // gridViewParameters
-         // 
-         this.gridViewParameters.AllowsFiltering = true;
-         this.gridViewParameters.EnableColumnContextMenu = true;
-         this.gridViewParameters.GridControl = this.gridParameters;
-         this.gridViewParameters.MultiSelect = true;
-         this.gridViewParameters.Name = "gridViewParameters";
-         this.gridViewParameters.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseUp;
-         this.gridViewParameters.OptionsNavigation.AutoFocusNewRow = true;
-         this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridViewParameters.OptionsSelection.EnableAppearanceFocusedRow = false;
-         this.gridViewParameters.OptionsSelection.MultiSelect = true;
          // 
          // layoutControlGroup1
          // 
@@ -100,32 +81,12 @@
          this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemRelativeExpressions,
-            this.layoutGroupMoleculeParameters});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutGroupMoleculeParameters,
+            this.layoutItemExpressionParameters});
          this.layoutControlGroup1.Name = "Root";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(424, 420);
          this.layoutControlGroup1.TextVisible = false;
-         // 
-         // layoutItemRelativeExpressions
-         // 
-         this.layoutItemRelativeExpressions.Control = this.gridParameters;
-         this.layoutItemRelativeExpressions.CustomizationFormText = "layoutItemParameters";
-         this.layoutItemRelativeExpressions.Location = new System.Drawing.Point(0, 96);
-         this.layoutItemRelativeExpressions.Name = "layoutItemRelativeExpressions";
-         this.layoutItemRelativeExpressions.Size = new System.Drawing.Size(424, 324);
-         this.layoutItemRelativeExpressions.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemRelativeExpressions.TextVisible = false;
-         // 
-         // layoutItemMoleculeParameters
-         // 
-         this.layoutItemMoleculeParameters.Control = this.panelMoleculeParameters;
-         this.layoutItemMoleculeParameters.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemMoleculeParameters.Name = "layoutItemMoleculeParameters";
-         this.layoutItemMoleculeParameters.Size = new System.Drawing.Size(400, 54);
-         this.layoutItemMoleculeParameters.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemMoleculeParameters.TextVisible = false;
          // 
          // layoutGroupMoleculeParameters
          // 
@@ -134,6 +95,22 @@
          this.layoutGroupMoleculeParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupMoleculeParameters.Name = "layoutGroupMoleculeParameters";
          this.layoutGroupMoleculeParameters.Size = new System.Drawing.Size(424, 96);
+         // 
+         // layoutItemMoleculeParameters
+         // 
+         this.layoutItemMoleculeParameters.Control = this.panelMoleculeParameters;
+         this.layoutItemMoleculeParameters.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemMoleculeParameters.Name = "layoutItemMoleculeParameters";
+         this.layoutItemMoleculeParameters.Size = new System.Drawing.Size(400, 51);
+         this.layoutItemMoleculeParameters.TextSize = new System.Drawing.Size(159, 13);
+         // 
+         // layoutItemExpressionParameters
+         // 
+         this.layoutItemExpressionParameters.Control = this.panelExpressionParameters;
+         this.layoutItemExpressionParameters.Location = new System.Drawing.Point(0, 96);
+         this.layoutItemExpressionParameters.Name = "layoutItemExpressionParameters";
+         this.layoutItemExpressionParameters.Size = new System.Drawing.Size(424, 324);
+         this.layoutItemExpressionParameters.TextSize = new System.Drawing.Size(159, 13);
          // 
          // SimulationExpressionsView
          // 
@@ -146,13 +123,12 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.mainLayout)).EndInit();
          this.mainLayout.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.panelExpressionParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelMoleculeParameters)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridViewParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRelativeExpressions)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeParameters)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeParameters)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExpressionParameters)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -160,12 +136,11 @@
       #endregion
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private OSPSuite.UI.Controls.UxGridControl gridParameters;
-      private PKSim.UI.Views.Core.UxGridView gridViewParameters;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemRelativeExpressions;
       private OSPSuite.UI.Controls.UxLayoutControl mainLayout;
       private DevExpress.XtraEditors.PanelControl panelMoleculeParameters;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemMoleculeParameters;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupMoleculeParameters;
+      private DevExpress.XtraEditors.PanelControl panelExpressionParameters;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemExpressionParameters;
    }
 }

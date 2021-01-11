@@ -9,7 +9,7 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_FlatTransporterContainerTemplateRepository : ContextForIntegration<IFlatTransporterContainerTemplateRepository>
+   public abstract class concern_for_FlatTransporterContainerTemplateRepository : ContextForIntegration<ITransportTemplateRepository>
    {
    }
 
@@ -35,7 +35,8 @@ namespace PKSim.IntegrationTests
             {
                var simProcess = _simulationProcessRepository.TransportFor(transportProcess, flatTransportProcess.Name);
                if (simProcess == null)
-                  error.Add(string.Format("Could not find sim process for individual process '{0}' and compound process '{1}'", transportProcess, flatTransportProcess.Name));
+                  error.Add(
+                     $"Could not find sim process for individual process '{transportProcess}' and compound process '{flatTransportProcess.Name}'");
             }
          }
          error.Count().ShouldBeEqualTo(0, error.ToString("\n"));

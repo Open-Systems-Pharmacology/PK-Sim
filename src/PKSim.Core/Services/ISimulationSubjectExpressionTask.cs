@@ -9,5 +9,6 @@ namespace PKSim.Core.Services
       ICommand AddMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject);
       ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults, TSimulationSubject simulationSubject);
       ICommand AddMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject, QueryExpressionResults queryExpressionResults);
+      ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject);
    }
 }

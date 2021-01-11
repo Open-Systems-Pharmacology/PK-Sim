@@ -175,31 +175,4 @@ namespace PKSim.Core
          A.CallTo(() => _parameterUpdater.UpdateValue(_sourcePara2, _targetPara1)).MustNotHaveHappened();
       }
    }
-
-   public class When_updating_an_expression_norm_parameter : concern_for_ParameterSetUpdater
-   {
-      private ICommand _command;
-
-      private IParameter _expNormParameterSource;
-
-      private IParameter _expNormParameterTarget;
-
-      protected override void Context()
-      {
-         base.Context();
-         _expNormParameterSource = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM);
-         _expNormParameterTarget = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM);
-      }
-
-      protected override void Because()
-      {
-         _command = sut.UpdateValue(_expNormParameterSource, _expNormParameterTarget);
-      }
-
-      [Observation]
-      public void should_not_update_the_parameter_as_those_parameter_should_be_excluded_from_automatic_update()
-      {
-         _command.ShouldBeAnInstanceOf<PKSimEmptyCommand>();
-      }
-   }
 }

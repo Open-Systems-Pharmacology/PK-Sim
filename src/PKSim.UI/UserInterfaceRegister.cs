@@ -9,6 +9,8 @@ using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Presentation.Views.Individuals;
+using PKSim.UI.Views.Individuals;
 using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 
 namespace PKSim.UI
@@ -45,6 +47,7 @@ namespace PKSim.UI
 
          //register open views
          container.Register(typeof(ISimulationCompoundProcessView<,>), typeof(SimulationCompoundProcessView<,>));
+         container.Register(typeof(IExpressionParametersView<>), typeof(ExpressionParametersView<>));
 
          container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
 

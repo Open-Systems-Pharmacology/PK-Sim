@@ -48,7 +48,7 @@ namespace PKSim.IntegrationTests
       {
          foreach (var ontogeny in _result)
          {
-            var ontogenyFactor = sut.OntogenyFactorFor(ontogeny, CoreConstants.Organ.Liver, _originData);
+            var ontogenyFactor = sut.OntogenyFactorFor(ontogeny, CoreConstants.Organ.LIVER, _originData);
             ontogenyFactor.ShouldBeGreaterThan(0);
          }
       }
@@ -71,15 +71,15 @@ namespace PKSim.IntegrationTests
       {
          _originData.Age = 5 / 12.0; //5month
          _originData.GestationalAge = 30; //30 weeks
-         var v1 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.Liver, _originData);
+         var v1 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData);
 
          _originData.Age = 6 / 12.0; //6month
          _originData.GestationalAge = 26; //26 weeks
-         var v2 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.Liver, _originData);
+         var v2 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData);
 
          _originData.Age = 0.5 - 14.0 / 52.0;
          _originData.GestationalAge = null;
-         var v3 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.Liver, _originData);
+         var v3 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData);
 
          v1.ShouldBeEqualTo(v2, 1e-1);
          v3.ShouldBeEqualTo(v2, 1e-1);
@@ -105,8 +105,8 @@ namespace PKSim.IntegrationTests
       {
          _originData.Age = 5 / 12.0; //5month
          _originData.GestationalAge = 30; //30 weeks
-         var v1 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.Liver, _originData, _randomGenerator);
-         var v2 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.Liver, _originData, _randomGenerator);
+         var v1 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData, _randomGenerator);
+         var v2 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData, _randomGenerator);
 
          v1.ShouldNotBeEqualTo(v2);
       }
@@ -127,7 +127,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_always_create_different_values_based_on_the_distribution()
       {
-         sut.OntogenyFactorFor(new NullOntogeny(), CoreConstants.Organ.Liver, _originData, _randomGenerator).ShouldBeEqualTo(1);
+         sut.OntogenyFactorFor(new NullOntogeny(), CoreConstants.Organ.LIVER, _originData, _randomGenerator).ShouldBeEqualTo(1);
       }
    }
 
@@ -151,7 +151,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_always_create_different_values_based_on_the_distribution()
       {
-         sut.OntogenyFactorFor(_userDefinedOntogeny, CoreConstants.Organ.Liver, _originData, _randomGenerator).ShouldBeSmallerThan(1);
+         sut.OntogenyFactorFor(_userDefinedOntogeny, CoreConstants.Organ.LIVER, _originData, _randomGenerator).ShouldBeSmallerThan(1);
       }
    }
 

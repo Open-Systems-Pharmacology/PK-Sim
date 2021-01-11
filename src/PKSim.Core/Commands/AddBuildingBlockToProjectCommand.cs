@@ -40,7 +40,7 @@ namespace PKSim.Core.Commands
          _buildingBlockToAdd = context.Get<IPKSimBuildingBlock>(_buildingBlockToAddId);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RemoveBuildingBlockFromProjectCommand(_buildingBlockToAdd, context).AsInverseFor(this);
       }

@@ -4,6 +4,9 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Container;
+using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
 {
@@ -14,6 +17,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         sut = IoC.Resolve<IIndividualEnzymeFactory>();
       }
 
    }
@@ -21,11 +25,17 @@ namespace PKSim.IntegrationTests
    public class When_creating_a_metabolism_expression_for_an_individual : concern_for_IndividualEnzymeFactory
    {
       private IndividualMolecule _result;
+      private ICache<string, IParameter> _allExpressionParameters;
 
-     
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _result = sut.AddMoleculeTo(_individual, "CYP3A4");
+      }
+
       protected override void Because()
       {
-         _result = sut.CreateFor(_individual);
+         _allExpressionParameters = _individual.AllExpressionParametersFor(_result);
       }
 
       [Observation]
@@ -37,8 +47,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_an_expression_containing_at_least_the_container_blood_cells_and_plasma()
       {
-         _result.ContainsName(CoreConstants.Compartment.BloodCells).ShouldBeTrue();
-         _result.ContainsName(CoreConstants.Compartment.Plasma).ShouldBeTrue();
+         _allExpressionParameters.Contains(CoreConstants.Compartment.BLOOD_CELLS).ShouldBeTrue();
+         _allExpressionParameters.Contains(CoreConstants.Compartment.PLASMA).ShouldBeTrue();
       }
 
       [Observation]
@@ -55,21 +65,16 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _undefined = sut.UndefinedLiverFor(_individual);
+         _undefined = sut.AddUndefinedLiverTo(_individual);
       }
 
       [Observation]
       public void should_add_the_relative_expression_to_periportal_and_pericentral_and_set_the_value_to_100()
       {
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Pericentral).RelativeExpression.ShouldBeEqualTo(100);
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Periportal).RelativeExpression.ShouldBeEqualTo(100);
+         var allExpressionsParameters = _individual.AllExpressionParametersFor(_undefined);
+         allExpressionsParameters[CoreConstants.Compartment.PERICENTRAL].Value.ShouldBeEqualTo(1);
+         allExpressionsParameters[CoreConstants.Compartment.PERIPORTAL].Value.ShouldBeEqualTo(1);
       }
 
-      [Observation]
-      public void should_add_the_relative_expression_norm_to_periportal_and_pericentral_and_set_the_value_to_1()
-      {
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Pericentral).RelativeExpressionNorm.ShouldBeEqualTo(1);
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Periportal).RelativeExpressionNorm.ShouldBeEqualTo(1);
-      }
    }
 }

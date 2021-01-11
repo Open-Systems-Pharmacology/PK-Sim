@@ -1,22 +1,24 @@
 ﻿using System.Drawing;
-using PKSim.Assets;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Individuals.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Views;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Individuals
@@ -52,7 +54,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       /// <summary>
       ///    Add a new protein of the given type to the individual
       /// </summary>
-      void AddMolcule<TMolecule>() where TMolecule : IndividualMolecule;
+      void AddMolecule<TMolecule>() where TMolecule : IndividualMolecule;
 
       /// <summary>
       ///    Add a default protein using the default construct
@@ -73,10 +75,11 @@ namespace PKSim.Presentation.Presenters.Individuals
    public abstract class MoleculesPresenter<TSimulationSubject> : AbstractSubPresenter<IMoleculesView, IMoleculesPresenter>,
       IMoleculesPresenter,
       IListener<AddMoleculeToSimulationSubjectEvent<TSimulationSubject>>,
-      IListener<RemoveMoleculeFromSimulationSubjectEvent<TSimulationSubject>>
+      IListener<RemoveMoleculeFromSimulationSubjectEvent<TSimulationSubject>>,
+      IListener<RefreshMoleculeInSimulationSubjectEvent<TSimulationSubject>>
       where TSimulationSubject : ISimulationSubject
    {
-      private readonly IMoleculeExpressionTask<TSimulationSubject> _moleculeExpressionTask;
+      private readonly IEditMoleculeTask<TSimulationSubject> _editMoleculeTask;
       private readonly ITreeNodeFactory _treeNodeFactory;
       private readonly ITreeNodeContextMenuFactory _contextMenuFactory;
       private readonly IDialogCreator _dialogCreator;
@@ -88,7 +91,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private IIndividualMoleculeExpressionsPresenter _activePresenter;
 
       protected MoleculesPresenter(IMoleculesView view,
-         IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
+         IEditMoleculeTask<TSimulationSubject> editMoleculeTask,
          ITreeNodeFactory treeNodeFactory,
          ITreeNodeContextMenuFactory contextMenuFactory,
          IDialogCreator dialogCreator,
@@ -97,7 +100,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          INoItemInSelectionPresenter noItemInSelectionPresenter)
          : base(view)
       {
-         _moleculeExpressionTask = moleculeExpressionTask;
+         _editMoleculeTask = editMoleculeTask;
          _treeNodeFactory = treeNodeFactory;
          _contextMenuFactory = contextMenuFactory;
          _dialogCreator = dialogCreator;
@@ -144,7 +147,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          contextMenu.Show(_view, popupLocation);
       }
 
-      public bool QueryConfigurationEnabled => _moleculeExpressionTask.CanQueryProteinExpressionsFor(_simulationSubject);
+      public bool QueryConfigurationEnabled => _editMoleculeTask.CanQueryProteinExpressionsFor(_simulationSubject);
 
       public bool EditConfigurationEnabledFor(IndividualMolecule molecule)
       {
@@ -153,7 +156,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void AddDefaultMolecule<TMolecule>() where TMolecule : IndividualMolecule
       {
-         AddCommand(_moleculeExpressionTask.AddDefaultMolecule<TMolecule>(_simulationSubject));
+         AddCommand(_editMoleculeTask.AddDefaultMolecule<TMolecule>(_simulationSubject));
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
@@ -175,6 +178,7 @@ namespace PKSim.Presentation.Presenters.Individuals
             _view.ActivateView(_noItemInSelectionPresenter.BaseView);
             return;
          }
+
          var rootNode = node.ParentNode.DowncastTo<RootNode>();
          _activePresenter = presenterFor(rootNode);
          //needs to be done as soon as the view is available to allow proper resizing
@@ -203,10 +207,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          return _expressionsPresenterCache[node];
       }
 
-      public override bool CanClose
-      {
-         get { return _activePresenter == null || _activePresenter.CanClose; }
-      }
+      public override bool CanClose => _activePresenter == null || _activePresenter.CanClose;
 
       private bool nodeRepresentsMoleculeFolder(ITreeNode moleculeNode)
       {
@@ -215,14 +216,16 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private IndividualMolecule moleculeFrom(ITreeNode moleculeNode)
       {
-         if (moleculeNode == null)
-            return null;
-         return moleculeNode.TagAsObject as IndividualMolecule;
+         return moleculeNode?.TagAsObject as IndividualMolecule;
       }
 
       public void RenameMolecule(IndividualMolecule molecule)
       {
-         AddCommand(_entityTask.Rename(molecule));
+         var newName = _entityTask.NewNameFor(molecule, _simulationSubject.AllMolecules().AllNames());
+         if(string.IsNullOrEmpty(newName))
+            return;
+         
+         AddCommand(_editMoleculeTask.RenameMolecule(molecule, newName, _simulationSubject));
          editMolecule(molecule);
       }
 
@@ -231,7 +234,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          if (!EditConfigurationEnabledFor(molecule))
             return;
 
-         AddCommand(_moleculeExpressionTask.EditMolecule(molecule, _simulationSubject));
+         AddCommand(_editMoleculeTask.EditMolecule(molecule, _simulationSubject));
       }
 
       private void editMolecule(IndividualMolecule molecule)
@@ -246,12 +249,12 @@ namespace PKSim.Presentation.Presenters.Individuals
          var viewResult = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteProtein(_entityTask.TypeFor(molecule), molecule.Name));
          if (viewResult == ViewResult.No) return;
 
-         AddCommand(_moleculeExpressionTask.RemoveMoleculeFrom(molecule, _simulationSubject));
+         AddCommand(_editMoleculeTask.RemoveMoleculeFrom(molecule, _simulationSubject));
       }
 
-      public virtual void AddMolcule<TMolecule>() where TMolecule : IndividualMolecule
+      public virtual void AddMolecule<TMolecule>() where TMolecule : IndividualMolecule
       {
-         AddCommand(_moleculeExpressionTask.AddMoleculeTo<TMolecule>(_simulationSubject));
+         AddCommand(_editMoleculeTask.AddMoleculeTo<TMolecule>(_simulationSubject));
       }
 
       public void Handle(AddMoleculeToSimulationSubjectEvent<TSimulationSubject> eventToHandle)
@@ -274,6 +277,12 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          if (_simulationSubject == null) return false;
          return Equals(simulationSubjectEvent.SimulationSubject, _simulationSubject);
+      }
+
+      public void Handle(RefreshMoleculeInSimulationSubjectEvent<TSimulationSubject> eventToHandle)
+      {
+         if (!canHandle(eventToHandle)) return;
+         editMolecule(eventToHandle.Entity);
       }
    }
 }

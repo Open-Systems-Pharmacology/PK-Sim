@@ -1,5 +1,6 @@
 ﻿using PKSim.Presentation.Views;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Core
 {
@@ -18,9 +19,6 @@ namespace PKSim.UI.Views.Core
          group.ExpandButtonVisible = true;
       }
 
-      public void FinishedAddingViews()
-      {
-         AddEmptyPlaceHolder(layoutControl);
-      }
+      public void FinishedAddingViews() => AddEmptyPlaceHolder(layoutControl);
    }
 }

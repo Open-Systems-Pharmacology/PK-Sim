@@ -13,7 +13,7 @@ namespace PKSim.Core.Snapshots.Services
       public Population Population { get; set; }
       public Compound[] Compounds { get; set; }
       public Protocol[] Protocols { get; set; }
-      public string ModelName { get; set; } = CoreConstants.Model.FourComp;
+      public string ModelName { get; set; } = CoreConstants.Model.FOUR_COMP;
       public string SimulationName { get; set; } = "S";
       public bool AllowAging { get; set; }
    }

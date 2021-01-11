@@ -1,7 +1,5 @@
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Events;
@@ -24,7 +22,7 @@ namespace PKSim.Core.Commands
          _simulationId = simulation.Id;
          _usedBuildingBlockId = usedBuildingBlock.Id;
          _altered = altered;
-         IPKSimBuildingBlock buildingBlock = usedBuildingBlock.BuildingBlock;
+         var buildingBlock = usedBuildingBlock.BuildingBlock;
          Visible = false;
          ObjectType = PKSimConstants.ObjectTypes.Simulation;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
@@ -51,7 +49,7 @@ namespace PKSim.Core.Commands
          _usedBuildingBlock = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetUsedBuildingBlockAlteredFlagCommand(_simulation, _usedBuildingBlock, _oldAltered, context).AsInverseFor(this);
       }

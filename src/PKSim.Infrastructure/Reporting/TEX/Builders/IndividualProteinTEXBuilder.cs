@@ -10,7 +10,8 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 {
    public class IndividualProteinTeXBuilder : IndividualMoleculeTEXBuilder<IndividualProtein>
    {
-      public IndividualProteinTeXBuilder(ITeXBuilderRepository builderRepository, IRepresentationInfoRepository representationInfoRepository) : base(builderRepository, representationInfoRepository)
+      public IndividualProteinTeXBuilder(ITeXBuilderRepository builderRepository, IRepresentationInfoRepository representationInfoRepository) : base(
+         builderRepository, representationInfoRepository)
       {
       }
 
@@ -18,13 +19,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       {
          var sb = new StringBuilder();
 
-         sb.AddIs(PKSimConstants.UI.LocalizationInTissue, protein.TissueLocation);
-
-         if (protein.TissueLocation == TissueLocation.Intracellular)
-            sb.AddIs(PKSimConstants.UI.IntracellularVascularEndoLocation, protein.IntracellularVascularEndoLocation);
-
-         if (protein.TissueLocation == TissueLocation.ExtracellularMembrane)
-            sb.AddIs(PKSimConstants.UI.LocationOnVascularEndo, protein.MembraneLocation);
+         sb.AddIs(PKSimConstants.UI.Localization, protein.Localization);
 
          _builderRepository.Report(sb, buildTracker);
       }

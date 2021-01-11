@@ -14,7 +14,6 @@ using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.DTO.Snapshots;
 using PKSim.Presentation.Presenters.Snapshots;
 using PKSim.Presentation.Views.Snapshots;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation
 {

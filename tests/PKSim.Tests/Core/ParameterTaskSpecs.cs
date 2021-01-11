@@ -15,6 +15,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Infrastructure.ProjectConverter;
 
 namespace PKSim.Core
 {
@@ -43,40 +44,10 @@ namespace PKSim.Core
       }
    }
 
-   public class When_setting_value_of_normalized_relative_expression_parameter : concern_for_ParameterTask
-   {
-      private ICommand _command;
-      private Parameter _normalizedExpressionParameter;
-
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _executionContext.Resolve<IParameterTask>()).Returns(sut);
-
-         _normalizedExpressionParameter = new Parameter
-         {
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Formula = new ConstantFormula(0.0),
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP_NORM
-         };
-      }
-
-      protected override void Because()
-      {
-         _command = sut.SetParameterValue(_normalizedExpressionParameter, 0.0);
-      }
-
-      [Observation]
-      public void the_command_used_should_be_correct_implementation()
-      {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionFromNormalizedCommand>();
-      }
-   }
 
    public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_a_simulation : concern_for_ParameterTask
    {
-      private Parameter _relativeExpressionParameter, _normalizedExpressionParameter;
+      private Parameter _relativeExpressionParameter;
       private ICommand _command;
 
       protected override void Context()
@@ -91,15 +62,8 @@ namespace PKSim.Core
             Name = CoreConstants.Parameters.REL_EXP
          };
 
-         _normalizedExpressionParameter = new Parameter
-         {
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Formula = new ConstantFormula(0.0),
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP_NORM
-         };
 
-         var container = new Container {_relativeExpressionParameter, _normalizedExpressionParameter};
+         var container = new Container {_relativeExpressionParameter};
       }
 
       protected override void Because()
@@ -110,14 +74,13 @@ namespace PKSim.Core
       [Observation]
       public void the_command_used_should_be_correct_implementation()
       {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionInSimulationAndNormalizedCommand>();
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
       }
    }
 
    public class When_setting_value_of_relative_expression_parameter_of_a_relative_expression_parameter_defined_in_an_individual : concern_for_ParameterTask
    {
       private Parameter _relativeExpressionParameter;
-      private Parameter _relativeExpressionParameterNorm;
       private ICommand _command;
 
       protected override void Context()
@@ -132,17 +95,9 @@ namespace PKSim.Core
             Name = CoreConstants.Parameters.REL_EXP
          };
 
-         _relativeExpressionParameterNorm = new Parameter
-         {
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            Formula = new ConstantFormula(0.0),
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP_NORM
-         };
 
          var expressionContainer = new MoleculeExpressionContainer {Name = "Plasma"};
          expressionContainer.Add(_relativeExpressionParameter);
-         expressionContainer.Add(_relativeExpressionParameterNorm);
          var molecule = new IndividualEnzyme {expressionContainer};
       }
 
@@ -154,7 +109,7 @@ namespace PKSim.Core
       [Observation]
       public void the_command_used_should_be_correct_implementation()
       {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionAndNormalizeCommand>();
+         _command.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
       }
    }
 
@@ -538,67 +493,8 @@ namespace PKSim.Core
       }
    }
 
-   public class When_grouping_the_parameter_expressions : concern_for_ParameterTask
-   {
-      private IParameter _relExpPlasma;
-      private IParameter _relExpPlasmaNorm;
-      private IParameter _relExpLiver;
-      private IParameter _relExpLiverNorm;
-      private IParameter _relExpKidney;
-      private IParameter _relExpKidneyNorm;
-      private ICache<IParameter, IParameter> _result;
-      private IParameter _anotherParameter;
-      private IParameter _relExpWithoutNorm;
 
-      protected override void Context()
-      {
-         base.Context();
-         var organism = new Container().WithName("Organism");
-         var kidney = new Container().WithName("Kidney").WithParentContainer(organism);
-         var liver = new Container().WithName("Liver").WithParentContainer(organism);
-         var bone = new Container().WithName("Bone").WithParentContainer(organism);
-         _relExpPlasma = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_PLASMA).WithParentContainer(organism);
-         _relExpPlasmaNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_PLASMA_NORM).WithParentContainer(organism);
-         _relExpLiver = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(liver);
-         _relExpLiverNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(liver);
-         _relExpKidney = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(kidney);
-         _relExpKidneyNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP_NORM).WithParentContainer(kidney);
-         _anotherParameter = new PKSimParameter().WithName("not_a_rel_exp").WithParentContainer(kidney);
-         _relExpWithoutNorm = new PKSimParameter().WithName(CoreConstants.Parameters.REL_EXP).WithParentContainer(bone);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.GroupExpressionParameters(new[] {_relExpKidney, _relExpLiverNorm, _relExpLiver, _relExpPlasma, _relExpWithoutNorm, _relExpPlasmaNorm, _relExpKidneyNorm, _anotherParameter});
-      }
-
-      [Observation]
-      public void should_return_a_cache_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_global_rel_exp_parameters()
-      {
-         _result[_relExpPlasma].ShouldBeEqualTo(_relExpPlasmaNorm);
-      }
-
-      [Observation]
-      public void should_return_a_cache_contain_a_parameter_as_key_and_the_corresponding_norm_parameter_as_value_for_local_rel_exp_parameter()
-      {
-         _result[_relExpLiver].ShouldBeEqualTo(_relExpLiverNorm);
-         _result[_relExpKidney].ShouldBeEqualTo(_relExpKidneyNorm);
-      }
-
-      [Observation]
-      public void the_returned_cache_should_not_contain_any_entry_for_parameter_that_are_not_relative_expression_parameters()
-      {
-         _result.Contains(_anotherParameter).ShouldBeFalse();
-      }
-
-      [Observation]
-      public void the_returned_cache_should_not_contain_any_entry_for_relative_expression_parameters_for_which_a_norm_was_not_found()
-      {
-         _result.Contains(_relExpWithoutNorm).ShouldBeFalse();
-      }
-   }
-
-   public class When_a_paraemter_is_set_as_favorite : concern_for_ParameterTask
+   public class When_a_parameter_is_set_as_favorite : concern_for_ParameterTask
    {
       private string _parameterPath;
       private IEntityPathResolver _entityPathResolver;

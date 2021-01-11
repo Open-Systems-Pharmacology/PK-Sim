@@ -3,7 +3,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class EditIndividualMoleculeExpressionInPopulationFromQueryCommand : EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand<Population>
+   public class EditIndividualMoleculeExpressionInPopulationFromQueryCommand: EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand<Population>
    {
       public EditIndividualMoleculeExpressionInPopulationFromQueryCommand(IndividualMolecule originalMolecule, IndividualMolecule editedMolecule, QueryExpressionResults queryExpressionResults,
          Population population) : base(originalMolecule, editedMolecule, queryExpressionResults, population)

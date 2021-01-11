@@ -158,7 +158,7 @@ namespace PKSim.IntegrationTests
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, CoreConstants.Model.TwoPores).DowncastTo<IndividualSimulation>();
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(individual, compound, protocol, CoreConstants.Model.TWO_PORES).DowncastTo<IndividualSimulation>();
          _moleculeBuildingBlock = new MoleculeBuildingBlock();
          var compoundProperties = _simulation.CompoundPropertiesList.First();
          _compoundName = compoundProperties.Compound.Name;

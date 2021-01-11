@@ -71,7 +71,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TwoPores;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TWO_PORES;
          _compound.IsSmallMolecule = false;
       }
 
@@ -87,7 +87,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FourComp;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FOUR_COMP;
          _compound.IsSmallMolecule = true;
       }
 
@@ -103,7 +103,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TwoPores;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.TWO_PORES;
          _compound.IsSmallMolecule = true;
       }
 
@@ -119,7 +119,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FourComp;
+         _simulation.ModelConfiguration.ModelName = CoreConstants.Model.FOUR_COMP;
          _compound.IsSmallMolecule = false;
       }
 
@@ -272,7 +272,7 @@ namespace PKSim.Core
          _compound.SupersaturationEnabled = true;
          _schemaItem.ApplicationType = ApplicationTypes.UserDefined;
          _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
-         _schemaItem.TargetOrgan = CoreConstants.Organ.Lumen;
+         _schemaItem.TargetOrgan = CoreConstants.Organ.LUMEN;
          _formulation.FormulationType = CoreConstants.Formulation.LINT80;
          _protocolProperties.Protocol = _protocol;
          _protocolProperties.AddFormulationMapping(_formulationMapping);
@@ -293,7 +293,7 @@ namespace PKSim.Core
          _compound.SupersaturationEnabled = false;
          _schemaItem.ApplicationType = ApplicationTypes.UserDefined;
          _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
-         _schemaItem.TargetOrgan = CoreConstants.Organ.Lumen;
+         _schemaItem.TargetOrgan = CoreConstants.Organ.LUMEN;
          _formulation.FormulationType = CoreConstants.Formulation.LINT80;
          _protocolProperties.Protocol = _protocol;
          _protocolProperties.AddFormulationMapping(_formulationMapping);
@@ -314,7 +314,7 @@ namespace PKSim.Core
          _compound.SupersaturationEnabled = true;
          _schemaItem.ApplicationType = ApplicationTypes.UserDefined;
          _schemaItem.FormulationKey = _formulationMapping.FormulationKey;
-         _schemaItem.TargetOrgan = CoreConstants.Organ.Bone;
+         _schemaItem.TargetOrgan = CoreConstants.Organ.BONE;
          _formulation.FormulationType = CoreConstants.Formulation.LINT80;
          _protocolProperties.Protocol = _protocol;
          _protocolProperties.AddFormulationMapping(_formulationMapping);

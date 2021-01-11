@@ -30,7 +30,7 @@ namespace PKSim.R.Bootstrap
          if (_container != null)
             return _container;
 
-         redirectNHibernateAssembly();
+         redirectAssemblies();
 
          _container = new ApplicationStartup().performInitialization();
          return _container;
@@ -80,9 +80,11 @@ namespace PKSim.R.Bootstrap
          container.Register<IExceptionManager, CLIExceptionManager>();
       }
 
-      private static void redirectNHibernateAssembly()
+      private static void redirectAssemblies()
       {
          redirectAssembly("NHibernate", new Version(5, 2, 0, 0), "aa95f207798dfdb4");
+         redirectAssembly("Microsoft.Extensions.Options", new Version(3, 1, 0, 0), "adb9793829ddae60");
+         redirectAssembly("Microsoft.Extensions.Logging.Abstractions", new Version(3, 1, 0, 0), "adb9793829ddae60");
       }
 
       private static void redirectAssembly(string shortName, Version targetVersion, string publicKeyToken)

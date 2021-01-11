@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Random;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core.Repositories;
@@ -112,6 +113,12 @@ namespace PKSim.Core.Model
          return genderCovariates?.Select(genderRepository.FindByName).ToList() ?? new List<Gender>();
       }
 
+      public virtual IReadOnlyList<SpeciesPopulation> AllSpeciesPopulations(IPopulationRepository populationRepository)
+      {
+         var populationCovariates = IndividualValuesCache.AllCovariateValuesFor(Constants.Population.POPULATION);
+         return populationCovariates?.Select(populationRepository.FindByName).ToList() ?? new List<SpeciesPopulation>();
+      }
+
       public virtual IReadOnlyList<string> AllCovariateNames => new List<string>(IndividualValuesCache.AllCovariatesNames().Union(new[] {CoreConstants.Covariates.POPULATION_NAME}));
 
       public virtual IReadOnlyList<string> AllCovariateValuesFor(string covariateName)
@@ -169,6 +176,15 @@ namespace PKSim.Core.Model
       {
          FirstIndividual?.RemoveMolecule(molecule);
       }
+
+      Individual ISimulationSubject.Individual => FirstIndividual;
+
+      public ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule) => FirstIndividual?.AllExpressionParametersFor(molecule);
+
+      public IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule) => FirstIndividual?.AllMoleculeContainersFor(molecule);
+
+      public IReadOnlyList<T> AllMoleculeContainersFor<T>(IndividualMolecule molecule) where T : MoleculeExpressionContainer =>
+         FirstIndividual?.AllMoleculeContainersFor<T>(molecule);
 
       public virtual IEnumerable<IParameter> AllAdvancedParameters(IEntityPathResolver entityPathResolver)
       {

@@ -28,7 +28,7 @@ namespace PKSim.IntegrationTests
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
          var transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
 
-         var transporter = transporterFactory.CreateFor(individual).WithName(transporterName);
+         var transporter = transporterFactory.CreateFor(individual, transporterName, TransportType.Efflux);
          individual.AddMolecule(transporter);
 
          var compound = DomainFactoryForSpecs.CreateStandardCompound().WithName(_drugName);
@@ -108,21 +108,18 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void Should_create_active_efflux_specific_transport_in_bone()
       {
-         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificMM);
+         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificIntracellularToInterstitial_MM);
       }
    }
 
    public class When_creating_model_with_active_transporter_Hill : When_creating_a_model_with_active_transporter
    {
-      protected override string CompoundTransportName
-      {
-         get { return CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_HILL; }
-      }
+      protected override string CompoundTransportName => CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_HILL;
 
       [Observation]
       public void Should_create_active_efflux_specific_with_competitive_inhibition_transport_in_bone()
       {
-         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificHill);
+         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificIntracellularToInterstitial_Hill);
       }
    }
 }

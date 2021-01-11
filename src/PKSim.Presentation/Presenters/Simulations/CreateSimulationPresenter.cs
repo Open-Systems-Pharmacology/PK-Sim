@@ -12,7 +12,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {

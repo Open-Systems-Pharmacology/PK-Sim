@@ -82,7 +82,7 @@ namespace PKSim.Core.Commands
          parameter.IsFixedValue = false;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetParameterValueCommand(_parameter, _oldValue).AsInverseFor(this);
       }

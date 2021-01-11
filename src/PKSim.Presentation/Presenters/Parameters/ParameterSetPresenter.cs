@@ -32,16 +32,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// </summary>
       void ScaleParametersWith(double factor);
 
-      /// <summary>
-      ///    Reset the given parameter
-      /// </summary>
-      void ResetParameter(IParameterDTO parameterDTO);
-
-      /// <summary>
-      ///    Returns true if the parameter was set by the user
-      /// </summary>
-      bool IsSetByUser(IParameterDTO parameterDTO);
-
+     
       /// <summary>
       ///    Returns true if the parameter is a formula parameter not fixed
       /// </summary>
@@ -64,11 +55,6 @@ namespace PKSim.Presentation.Presenters.Parameters
       /// <param name="parameterDTO">Parameter</param>
       /// <param name="isFavorite">Is the parameter a favorite parameter</param>
       void SetFavorite(IParameterDTO parameterDTO, bool isFavorite);
-
-      /// <summary>
-      ///    Returns true if the parameter can be edited otherwise false
-      /// </summary>
-      bool CanEditParameter(IParameterDTO parameterDTO);
 
 
       /// <summary>
@@ -95,16 +81,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       }
 
       public abstract bool ShowFavorites { set; }
-
-      public bool CanEditParameter(IParameterDTO parameterDTO)
-      {
-         if (parameterDTO.Parameter.Editable)
-            return true;
-
-         //table parameter are always editable
-         return parameterDTO.FormulaType == FormulaType.Table;
-      }
-
+      
       public virtual bool CanEditValueOrigin(IParameterDTO parameterDTO)
       {
          if (!CanEditParameter(parameterDTO))
@@ -135,19 +112,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          AddCommand(_parameterTask.ScaleParameters(AllVisibleParameters, factor));
       }
 
-      public void ResetParameter(IParameterDTO parameterDTO)
-      {
-         AddCommand(_parameterTask.ResetParameter(ParameterFrom(parameterDTO)));
-      }
-
-      public bool IsSetByUser(IParameterDTO parameterDTO)
-      {
-         if (parameterDTO.Parameter == null)
-            return false;
-
-         return parameterDTO.Parameter.ValueDiffersFromDefault();
-      }
-
+     
       public bool IsFormulaNotFixed(IParameterDTO parameterDTO)
       {
          if (parameterDTO.Parameter == null) return false;

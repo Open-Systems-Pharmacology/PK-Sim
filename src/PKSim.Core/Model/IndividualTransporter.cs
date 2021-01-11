@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using static PKSim.Core.CoreConstants.Compartment;
 
 namespace PKSim.Core.Model
 {
@@ -23,43 +22,34 @@ namespace PKSim.Core.Model
          set => SetProperty(ref _transportType, value);
       }
 
-      /// <summary>
-      ///    Returns the organ container where the transporter mey be defined
-      /// </summary>
-      public new IEnumerable<TransporterExpressionContainer> AllExpressionsContainers()
-      {
-         return base.AllExpressionsContainers().Cast<TransporterExpressionContainer>();
-      }
+      public TransporterExpressionContainer BloodCellsContainer => globalContainer(BLOOD_CELLS);
+      public TransporterExpressionContainer VascularEndotheliumContainer => globalContainer(VASCULAR_ENDOTHELIUM);
 
-      /// <summary>
-      ///    Retuns the process names induced in the simulation by the given transporter definition
-      /// </summary>
-      public IEnumerable<string> AllInducedProcesses()
-      {
-         return AllExpressionsContainers().SelectMany(x => x.ProcessNames).Distinct();
-      }
+      private TransporterExpressionContainer globalContainer(string containerName) =>
+         this.GetSingleChildByName<TransporterExpressionContainer>(containerName);
 
-      /// <summary>
-      ///    Returns the list of organ name where the process will not take place
-      /// </summary>
-      /// <param name="simulationProcessName"> Process name in the simulation</param>
-      public IEnumerable<string> AllOrgansWhereProcessDoesNotTakePlace(string simulationProcessName)
-      {
-         return AllExpressionsContainers()
-            .Where(x => !x.ProcessNames.Contains(simulationProcessName))
-            .Select(x => x.OrganName);
-      }
-
-      /// <summary>
-      ///    Returns the list of organ name where the process will take place
-      /// </summary>
-      /// <param name="simulationProcessName"> Process name in the simulation</param>
-      public IEnumerable<string> AllOrgansWhereProcessTakesPlace(string simulationProcessName)
-      {
-         return AllExpressionsContainers()
-            .Where(x => x.ProcessNames.Contains(simulationProcessName))
-            .Select(x => x.OrganName);
-      }
+      //
+      // /// <summary>
+      // ///    Returns the list of organ name where the process will not take place
+      // /// </summary>
+      // /// <param name="simulationProcessName"> Process name in the simulation</param>
+      // public IEnumerable<string> AllOrgansWhereProcessDoesNotTakePlace(string simulationProcessName)
+      // {
+      //    return AllExpressionsContainers()
+      //       .Where(x => !x.ProcessNames.Contains(simulationProcessName))
+      //       .Select(x => x.OrganName);
+      // }
+      //
+      // /// <summary>
+      // ///    Returns the list of organ name where the process will take place
+      // /// </summary>
+      // /// <param name="simulationProcessName"> Process name in the simulation</param>
+      // public IEnumerable<string> AllOrgansWhereProcessTakesPlace(string simulationProcessName)
+      // {
+      //    return AllExpressionsContainers()
+      //       .Where(x => x.ProcessNames.Contains(simulationProcessName))
+      //       .Select(x => x.OrganName);
+      // }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

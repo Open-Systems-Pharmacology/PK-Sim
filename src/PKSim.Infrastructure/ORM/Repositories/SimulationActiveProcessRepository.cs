@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -20,8 +21,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly List<IPKSimProcess> _allSimulationActiveProcesses;
 
       public SimulationActiveProcessRepository(IFlatProcessRepository flatProcessesRepository,
-                                               IParameterContainerTask parameterContainerTask,
-                                               IFlatProcessToActiveProcessMapper activeProcessMapper)
+         IParameterContainerTask parameterContainerTask,
+         IFlatProcessToActiveProcessMapper activeProcessMapper)
       {
          _flatProcessesRepository = flatProcessesRepository;
          _parameterContainerTask = parameterContainerTask;
@@ -73,22 +74,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return ProcessFor<PKSimTransport>(simulationProcessNameFrom(individualProcessName, compoundProcessName));
       }
 
-
-      private string simulationProcessNameFrom(string compoundProcessName)
-      {
-         return simulationProcessNameFrom(compoundProcessName, compoundProcessName);
-      }
+   
+      private string simulationProcessNameFrom(string compoundProcessName) => simulationProcessNameFrom(compoundProcessName, compoundProcessName);
 
       private string simulationProcessNameFrom(string simulationPrefix, string compoundProcessName)
       {
          var compoundProcess = _flatProcessesRepository.FindByName(compoundProcessName);
+         if (compoundProcess==null)
+            throw new ArgumentException($"Cannot find simulation process named '{compoundProcessName}'");
 
          //already a process in simulation. Nothing to do
          if (compoundProcess.GroupName == CoreConstants.Groups.SIMULATION_ACTIVE_PROCESS)
             return compoundProcessName;
 
          //this is a composed name
-         return string.Format("{0}_{1}", simulationPrefix, compoundProcess.KineticType);
+         return $"{simulationPrefix}_{compoundProcess.KineticType}";
       }
    }
 }

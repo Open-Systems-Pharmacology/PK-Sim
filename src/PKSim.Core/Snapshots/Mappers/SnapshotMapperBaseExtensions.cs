@@ -11,22 +11,7 @@ namespace PKSim.Core.Snapshots.Mappers
    /// </summary>
    public static class SnapshotMapperBaseExtensions
    {
-      /// <summary>
-      ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
-      /// </summary>
-      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot>(this SnapshotMapperBase<TModel, TSnapshot> mapper, IEnumerable<TModel> models) where TSnapshot : new()
-      {
-         return MapToSnapshots(mapper, models, mapper.MapToSnapshot);
-      }
-
-      /// <summary>
-      ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
-      /// </summary>
-      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot>(this SnapshotMapperBase<TModel, TSnapshot> mapper, IEnumerable<TModel> models, Func<TModel, Task<TSnapshot>> mapToSnapshotFunc) where TSnapshot : new()
-      {
-         return MapTo(models, mapToSnapshotFunc);
-      }
-
+     
       /// <summary>
       ///    Maps a list of snapshot to the corresponding model arrays. If the list if null or empty, null will be returned
       /// </summary>
@@ -70,9 +55,17 @@ namespace PKSim.Core.Snapshots.Mappers
       /// <summary>
       ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
       /// </summary>
+      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot>(this SnapshotMapperBase<TModel, TSnapshot> mapper, IEnumerable<TModel> models) where TSnapshot : new()
+      {
+         return MapTo(models, mapper.MapToSnapshot);
+      }
+
+      /// <summary>
+      ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
+      /// </summary>
       public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this SnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> mapper, IEnumerable<TModel> models, TSnapshotContext snapshotContext) where TSnapshot : new()
       {
-         return MapToSnapshots(mapper, models, m => mapper.MapToSnapshot(m, snapshotContext));
+         return MapTo(models, m => mapper.MapToSnapshot(m, snapshotContext));
       }
 
       /// <summary>
@@ -80,7 +73,16 @@ namespace PKSim.Core.Snapshots.Mappers
       /// </summary>
       public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> mapper, IEnumerable<TModel> models, TSnapshotContext snapshotContext) where TSnapshot : IWithName, IWithDescription, new() where TModel : IWithName, IWithDescription
       {
-         return MapToSnapshots(mapper, models, m => mapper.MapToSnapshot(m, snapshotContext));
+         return MapTo(models, m => mapper.MapToSnapshot(m, snapshotContext));
+      }
+
+
+      /// <summary>
+      ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
+      /// </summary>
+      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> mapper, IEnumerable<TModel> models, TSnapshotContext snapshotContext) where TSnapshot : ParameterContainerSnapshotBase, new() where TModel : IContainer
+      {
+         return MapTo(models, m => mapper.MapToSnapshot(m, snapshotContext));
       }
 
       public static async Task<TTarget[]> MapTo<TSource, TTarget>(IEnumerable<TSource> sources, Func<TSource, Task<TTarget>> mapToFunc)
@@ -90,8 +92,9 @@ namespace PKSim.Core.Snapshots.Mappers
          if (list == null || !list.Any())
             return null;
 
-         var targets = await Task.WhenAll(list.Select(mapToFunc));
-         return targets.Where(x => x != null).ToArray();
+         var targets = (await Task.WhenAll(list.Select(mapToFunc))).Where(x=>x!=null).ToArray();
+         
+         return !targets.Any() ? null : targets;
       }
    }
 }

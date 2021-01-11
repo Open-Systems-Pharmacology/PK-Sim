@@ -49,7 +49,7 @@ namespace PKSim.Core.Commands
          //nothing to do
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new FinishingChangeProtocolModeCommand(_protocol, _newProtocolMode, _oldProtocolMode, context).AsInverseFor(this);
       }
@@ -67,7 +67,7 @@ namespace PKSim.Core.Commands
          context.PublishEvent(new ProtocolModeChangedEvent(_protocol, _newProtocolMode));
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new StartingChangeProtocolModeCommand(_protocol, _newProtocolMode, _oldProtocolMode, context).AsInverseFor(this);
       }

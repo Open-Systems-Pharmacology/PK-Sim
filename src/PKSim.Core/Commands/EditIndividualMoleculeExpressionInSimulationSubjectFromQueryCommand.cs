@@ -33,23 +33,24 @@ namespace PKSim.Core.Commands
          Description = PKSimConstants.Command.AddEntityToContainer(ObjectType, _originalMolecule.Name, context.TypeFor(_simulationSubject), containerName);
 
 
-         //First remove the orignal molecule
+         //First remove the original molecule
          Add(RemoveMoleculeFromSimulationSubjectCommand(_originalMolecule, _simulationSubject,  context));
 
          //Then add the new protein expression to the individual so tha undo will be available
          Add(AddMoleculeToSimulationSubjectCommand(_editedMolecule, _simulationSubject, context));
 
+         var allExpressionParameters = _simulationSubject.AllExpressionParametersFor(_editedMolecule);
          //Then update only the expression values that have changed
          foreach (var expressionResult in _queryExpressionResults.ExpressionResults)
          {
-            var expressionParameter = _editedMolecule.GetRelativeExpressionParameterFor(expressionResult.ContainerName);
+            var expressionParameter = allExpressionParameters[expressionResult.ContainerName];
             if (expressionParameter.Value == expressionResult.RelativeExpression)
                continue;
 
             Add(new SetRelativeExpressionCommand(expressionParameter, expressionResult.RelativeExpression));
          }
 
-         Add(new NormalizeRelativeExpressionCommand(_editedMolecule, context));
+         Add(new NormalizeRelativeExpressionCommand(_editedMolecule, _simulationSubject,  context));
 
          //update properties from first command
          this.UpdatePropertiesFrom(All().FirstOrDefault());

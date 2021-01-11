@@ -48,7 +48,7 @@ namespace PKSim.Core
    
    public class When_executing_the_set_parameter_percentile_inverse_command : concern_for_SetParameterPercentileCommand
    {
-      private IReversibleCommand<IExecutionContext> _inverseCommand;
+      private ICommand<IExecutionContext> _inverseCommand;
 
       protected override void Context()
       {

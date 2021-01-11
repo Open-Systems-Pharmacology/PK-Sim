@@ -1,7 +1,7 @@
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
@@ -13,7 +13,7 @@ namespace PKSim.Core.Commands
    ///    Liver : 10
    ///    Kidney :10
    ///    Stomach:20
-   ///    The normlized result would be
+   ///    The normalized result would be
    ///    Liver : 0.5
    ///    Kidney :0.5
    ///    Stomach:1
@@ -21,15 +21,17 @@ namespace PKSim.Core.Commands
    public class NormalizeRelativeExpressionCommand : BuildingBlockChangeCommand
    {
       private IndividualMolecule _molecule;
+      private ISimulationSubject _simulationSubject;
       private readonly string _moleculeId;
 
-      public NormalizeRelativeExpressionCommand(IndividualMolecule molecule, IExecutionContext context)
+      public NormalizeRelativeExpressionCommand(IndividualMolecule molecule, ISimulationSubject simulationSubject, IExecutionContext context)
       {
          _molecule = molecule;
+         _simulationSubject = simulationSubject;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          ObjectType = context.TypeFor(molecule);
          _moleculeId = molecule.Id;
-         //This command is necessary to insure consitency but does not need to be seen
+         //This command is necessary to insure consistency but does not need to be seen
          Visible = false;
       }
 
@@ -37,27 +39,32 @@ namespace PKSim.Core.Commands
       protected override void ClearReferences() 
       {
          _molecule = null;
+         _simulationSubject = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new NormalizeRelativeExpressionCommand(_molecule, context).AsInverseFor(this);
+         return new NormalizeRelativeExpressionCommand(_molecule, _simulationSubject, context).AsInverseFor(this);
       }
 
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
          _molecule = context.Get<IndividualMolecule>(_moleculeId);
+         _simulationSubject = context.Get<ISimulationSubject>(BuildingBlockId);
       }
 
       protected override void PerformExecuteWith(IExecutionContext context)
       {
          //Retrieve building block id in execute only since molecule might have been added in a macro command and bbid was not available in constructor
          BuildingBlockId = context.BuildingBlockIdContaining(_molecule);
-         var allRelExpressionContainer = _molecule.AllExpressionsContainers();
-         if (!allRelExpressionContainer.Any()) return;
-         var max = allRelExpressionContainer.Select(x => x.RelativeExpression).Max();
-         allRelExpressionContainer.Each(relExp => relExp.RelativeExpressionNorm = max == 0 ? 0 : relExp.RelativeExpression / max);
-      }
+         var allExpressionParameters = _simulationSubject.AllExpressionParametersFor(_molecule);
+         if (!allExpressionParameters.Any()) 
+            return;
+
+         var max = allExpressionParameters.Select(x => x.Value).Max();
+
+         allExpressionParameters.Each(relExp => relExp.Value = (max == 0 ? 0 : relExp.Value / max));
+       }
    }
 }

@@ -4,6 +4,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Drawing;
 using DevExpress.XtraEditors.ViewInfo;
 using DevExpress.XtraGrid.Columns;
+using OSPSuite.UI.Controls;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Views.Core
@@ -15,7 +16,7 @@ namespace PKSim.UI.Views.Core
          InitializeComponent();
       }
 
-      protected void InitializeWithGrid(UxGridView gridView)
+      protected virtual void InitializeWithGrid(UxGridView gridView)
       {
          gridView.MouseDown += (sender, e) => OnGridViewMouseDown(gridView, e);
       }

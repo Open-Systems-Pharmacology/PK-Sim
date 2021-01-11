@@ -3,6 +3,7 @@ using DevExpress.XtraLayout;
 using DevExpress.XtraTab;
 using PKSim.Presentation.Views;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Core
 {

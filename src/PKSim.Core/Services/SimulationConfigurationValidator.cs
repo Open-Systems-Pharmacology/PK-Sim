@@ -37,7 +37,7 @@ namespace PKSim.Core.Services
          var modelConfiguration = simulation.ModelConfiguration;
 
          //ForComp model can only be used with small molecules
-         if (string.Equals(modelConfiguration.ModelName, CoreConstants.Model.FourComp) && compounds.Any(x => !x.IsSmallMolecule))
+         if (string.Equals(modelConfiguration.ModelName, CoreConstants.Model.FOUR_COMP) && compounds.Any(x => !x.IsSmallMolecule))
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.FourCompModelCannotBeUsedWithLargeMolecule);
 
          if (simulation.NameIsOneOf(compounds.AllNames()))
@@ -96,7 +96,7 @@ namespace PKSim.Core.Services
 
          var hasUserDefinedApplicationInLumen = protocolSchemaItems
             .Where(x => x.IsUserDefined)
-            .Any(x => string.Equals(x.TargetOrgan, CoreConstants.Organ.Lumen));
+            .Any(x => string.Equals(x.TargetOrgan, CoreConstants.Organ.LUMEN));
 
          if (hasUserDefinedApplicationInLumen)
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.SaturationEnabledCanOnlyBeUsedForOralApplicationUsingParticleDissolution(compound.Name));

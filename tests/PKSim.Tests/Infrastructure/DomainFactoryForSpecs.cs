@@ -30,7 +30,7 @@ namespace PKSim.Infrastructure
       public static Compound CreateStandardCompound()
       {
          var objectCreator = IoC.Resolve<ISnapshotObjectCreator>();
-         var compoundMapper = IoC.Resolve<PKSim.Core.Snapshots.Mappers.CompoundMapper>();
+         var compoundMapper = IoC.Resolve<Core.Snapshots.Mappers.CompoundMapper>();
 
          var compoundSnapshot = objectCreator.StandardCompound(lipophilicity: -2, fractionUnbound: 0.8, molWeight: 400, solubilityAtRefPh: 1e-7).Result;
          return compoundMapper.MapToModel(compoundSnapshot).Result;

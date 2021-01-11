@@ -14,7 +14,7 @@ namespace PKSim.Core.Commands
          _valueOrigin = valueOrigin;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new UpdateParameterValueOriginCommand(_parameter, _oldValueOrigin).AsInverseFor(this);
       }

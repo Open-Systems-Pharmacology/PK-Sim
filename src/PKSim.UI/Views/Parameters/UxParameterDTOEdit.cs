@@ -92,7 +92,7 @@ namespace PKSim.UI.Views.Parameters
       public string ToolTip
       {
          set => tbValue.ToolTip = value;
-         get { return tbValue.ToolTip; }
+         get => tbValue.ToolTip;
       }
 
       public override void InitializeResources()
@@ -102,7 +102,7 @@ namespace PKSim.UI.Views.Parameters
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
       }
 
-      public void RegisterEditParameterEvents(IEditParameterPresenter editParameterPresenter)
+      public void RegisterEditParameterEvents(IParameterValuePresenter editParameterPresenter)
       {
          ValueChanged += (o, e) => OnEvent(() => editParameterPresenter.SetParameterValue(o, e));
          UnitChanged += (o, e) => OnEvent(() => editParameterPresenter.SetParameterUnit(o, e));

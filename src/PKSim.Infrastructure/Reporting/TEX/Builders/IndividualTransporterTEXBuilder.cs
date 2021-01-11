@@ -19,17 +19,18 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       protected override void AddMoleculeSpecificReportPart(IndividualTransporter transporter, OSPSuiteTracker buildTracker)
       {
          var sb = new StringBuilder();
-         sb.AddIs(PKSimConstants.UI.TransporterType, transporter.TransportType);
+         sb.AddIs(PKSimConstants.UI.DefaultTransporterDirection, transporter.TransportType);
          _builderRepository.Report(sb, buildTracker);
       }
 
-      protected override string ExpressionContainerDisplayNameFor(IParameter parameter)
-      {
-         var container = parameter.ParentContainer.DowncastTo<TransporterExpressionContainer>();
-         var displayName = _representationInfoRepository.DisplayNameFor(container);
-         if (container.HasPolarizedMembrane)
-            displayName = $"{displayName} ({container.MembraneLocation})";
-         return displayName;
-      }
+      //TODO
+       protected override string ExpressionContainerDisplayNameFor(IParameter parameter)
+       {
+          var container = parameter.ParentContainer.DowncastTo<TransporterExpressionContainer>();
+          var displayName = _representationInfoRepository.DisplayNameFor(container);
+      //    if (container.HasPolarizedMembrane)
+      //       displayName = $"{displayName} ({container.MembraneLocation})";
+          return displayName;
+       }
    }
 }

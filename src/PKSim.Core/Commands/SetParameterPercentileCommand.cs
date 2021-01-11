@@ -31,7 +31,7 @@ namespace PKSim.Core.Commands
          distributedParameter.Percentile = _percentile;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetParameterPercentileCommand(distributedParameter, _oldPercentile).AsInverseFor(this);
       }

@@ -7,21 +7,24 @@ namespace PKSim.Core.Events
       ISimulationSubject SimulationSubject { get; }
    }
 
-   public class RemoveMoleculeFromSimulationSubjectEvent<TSimulationSubject> : RemoveEntityEvent<IndividualMolecule, TSimulationSubject>, ISimulationSubjectEvent
+   public class RemoveMoleculeFromSimulationSubjectEvent<TSimulationSubject> : RemoveEntityEvent<IndividualMolecule, TSimulationSubject>,
+      ISimulationSubjectEvent
       where TSimulationSubject : ISimulationSubject
    {
-      public ISimulationSubject SimulationSubject
-      {
-         get { return Container; }
-      }
+      public ISimulationSubject SimulationSubject => Container;
    }
 
-   public class AddMoleculeToSimulationSubjectEvent<TSimulationSubject> : AddEntityEvent<IndividualMolecule, TSimulationSubject>, ISimulationSubjectEvent
+   public class AddMoleculeToSimulationSubjectEvent<TSimulationSubject> : AddEntityEvent<IndividualMolecule, TSimulationSubject>,
+      ISimulationSubjectEvent
       where TSimulationSubject : ISimulationSubject
    {
-      public ISimulationSubject SimulationSubject
-      {
-         get { return Container; }
-      }
+      public ISimulationSubject SimulationSubject => Container;
+   }
+
+   public class RefreshMoleculeInSimulationSubjectEvent<TSimulationSubject> : EntityContainerEvent<IndividualMolecule, TSimulationSubject>,
+      ISimulationSubjectEvent
+      where TSimulationSubject : ISimulationSubject
+   {
+      public ISimulationSubject SimulationSubject => Container;
    }
 }

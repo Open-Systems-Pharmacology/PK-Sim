@@ -25,7 +25,7 @@ namespace PKSim.Core.Repositories
       /// Returns the default transporter templates defined for the concrete location <paramref name="containerName"/> and for a specific gene. 
       /// </summary>
       /// <param name="speciesName">Species where the transporter will be defined</param>
-      /// <param name="containerName">Concrete transporter locaiton (e.g Kidney, Liver etc...)</param>
+      /// <param name="containerName">Concrete transporter location (e.g Kidney, Liver etc...)</param>
       /// <param name="geneName">Specific gene for which templates should be returned</param>
       IEnumerable<TransporterContainerTemplate> TransportersFor(string speciesName, string containerName, string geneName);
 
@@ -34,7 +34,7 @@ namespace PKSim.Core.Repositories
       /// Returns the default transporter templates defined for the concrete location <paramref name="containerName"/> 
       /// </summary>
       /// <param name="speciesName">Species where the transporter will be defined</param>
-      /// <param name="containerName">Concrete transporter locaiton (e.g Kidney, Liver etc...)</param>
+      /// <param name="containerName">Concrete transporter location (e.g Kidney, Liver etc...)</param>
       IEnumerable<TransporterContainerTemplate> TransportersFor(string speciesName, string containerName);
    }
 }

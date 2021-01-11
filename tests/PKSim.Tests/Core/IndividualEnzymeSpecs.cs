@@ -17,7 +17,6 @@ namespace PKSim.Core
       {
          _expressionContainer = new MoleculeExpressionContainer().WithName("tralal");
          _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP));
-         _expressionContainer.Add(A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP_NORM));
          _anotherContainer = new MoleculeExpressionContainer().WithName("AnotherContainer");
          sut = new IndividualEnzyme();
          _referenceConcentration = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
@@ -27,14 +26,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_list_of_active_container_for_an_enzyme : concern_for_IndividualEnzyme
-   {
-      [Observation]
-      public void should_only_return_the_active_container()
-      {
-         sut.AllExpressionsContainers().ShouldOnlyContain(_expressionContainer, _anotherContainer);
-      }
-   }
 
    public class When_asked_for_the_activity_factor_parameter : concern_for_IndividualEnzyme
    {

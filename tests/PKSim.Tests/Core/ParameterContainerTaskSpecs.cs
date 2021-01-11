@@ -70,7 +70,7 @@ namespace PKSim.Core
    {
       protected override void Because()
       {
-         sut.AddInvididualParametersTo(_organ, _originData);
+         sut.AddIndividualParametersTo(_organ, _originData);
       }
 
       [Observation]
@@ -95,7 +95,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.AddInvididualParametersTo(_organ, _originData);
+         sut.AddIndividualParametersTo(_organ, _originData);
       }
 
       [Observation]
@@ -123,7 +123,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-          The.Action(()=>sut.AddInvididualParametersTo(_organ, _originData)).ShouldThrowAn<PKSimException>();
+          The.Action(()=>sut.AddIndividualParametersTo(_organ, _originData)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -141,7 +141,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.AddInvididualParametersTo(_organ, _originData)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.AddIndividualParametersTo(_organ, _originData)).ShouldThrowAn<PKSimException>();
       }
    }
 }

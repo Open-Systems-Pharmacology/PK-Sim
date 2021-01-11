@@ -41,7 +41,7 @@ namespace PKSim.Core.Commands
          _objectBase = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new EditObjectBaseDescriptionCommand(_objectBase, _oldDescription, context).AsInverseFor(this);
       }

@@ -465,8 +465,8 @@ namespace PKSim.Presentation
       [Observation]
       public void should_also_set_the_default_value_for_target_and_compartment()
       {
-         _schemaItem.TargetOrgan.ShouldBeEqualTo(CoreConstants.Organ.ArterialBlood);
-         _schemaItem.TargetCompartment.ShouldBeEqualTo(CoreConstants.Compartment.Plasma);
+         _schemaItem.TargetOrgan.ShouldBeEqualTo(CoreConstants.Organ.ARTERIAL_BLOOD);
+         _schemaItem.TargetCompartment.ShouldBeEqualTo(CoreConstants.Compartment.PLASMA);
       }
    }
 }

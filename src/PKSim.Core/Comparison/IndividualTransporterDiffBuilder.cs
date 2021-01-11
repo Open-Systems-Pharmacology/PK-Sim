@@ -16,7 +16,7 @@ namespace PKSim.Core.Comparison
       public override void Compare(IComparison<IndividualTransporter> comparison)
       {
          _containerDiffBuilder.Compare(comparison);
-         CompareValues(x => x.TransportType, PKSimConstants.UI.TransporterType, comparison);
+         CompareValues(x => x.TransportType, PKSimConstants.UI.DefaultTransporterDirection, comparison);
       }
    }
 }

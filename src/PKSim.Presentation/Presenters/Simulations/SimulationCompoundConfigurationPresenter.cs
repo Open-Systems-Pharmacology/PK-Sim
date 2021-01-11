@@ -22,7 +22,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _calculationMethodSelectionPresenter = calculationMethodSelectionPresenter;
          AddSubPresenters(_alternativesSelectionPresenter, _calculationMethodSelectionPresenter);
          view.AddCalculationMethodsView(_calculationMethodSelectionPresenter.View);
-         view.AddParameterAlernativesView(_alternativesSelectionPresenter.View);
+         view.AddParameterAlternativesView(_alternativesSelectionPresenter.View);
       }
 
       public void SaveConfiguration()

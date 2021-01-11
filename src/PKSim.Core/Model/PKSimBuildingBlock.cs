@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using OSPSuite.Utility.Visitor;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Visitor;
 
 namespace PKSim.Core.Model
 {
@@ -77,60 +77,29 @@ namespace PKSim.Core.Model
          Root.AcceptVisitor(visitor);
       }
 
-      public virtual void Add(IEntity newChild)
-      {
-         Root.Add(newChild);
-      }
+      public virtual void Add(IEntity newChild) => Root.Add(newChild);
 
-      public virtual void RemoveChild(IEntity childToRemove)
-      {
-         Root.RemoveChild(childToRemove);
-      }
+      public virtual void RemoveChild(IEntity childToRemove) => Root.RemoveChild(childToRemove);
 
-      public void RemoveChildren()
-      {
-         Root.RemoveChildren();
-      }
+      public void RemoveChildren() => Root.RemoveChildren();
 
-      public virtual IReadOnlyList<T> GetAllChildren<T>(Func<T, bool> predicate) where T : class, IEntity
-      {
-         return Root.GetAllChildren(predicate);
-      }
+      public virtual IReadOnlyList<T> GetAllChildren<T>(Func<T, bool> predicate) where T : class, IEntity => Root.GetAllChildren(predicate);
 
-      public virtual IReadOnlyList<T> GetAllChildren<T>() where T : class, IEntity
-      {
-         return Root.GetAllChildren<T>();
-      }
+      public virtual IReadOnlyList<T> GetAllChildren<T>() where T : class, IEntity => Root.GetAllChildren<T>();
 
-      public virtual IEnumerable<T> GetChildren<T>(Func<T, bool> predicate) where T : class, IEntity
-      {
-         return Root.GetChildren(predicate);
-      }
+      public virtual IEnumerable<T> GetChildren<T>(Func<T, bool> predicate) where T : class, IEntity => Root.GetChildren(predicate);
 
-      public virtual IEnumerable<T> GetChildren<T>() where T : class, IEntity
-      {
-         return Root.GetChildren<T>();
-      }
+      public virtual IEnumerable<T> GetChildren<T>() where T : class, IEntity => Root.GetChildren<T>();
 
-      public virtual IEnumerable<IContainer> GetNeighborsFrom(IEnumerable<INeighborhood> neighborhoods)
-      {
-         return Root.GetNeighborsFrom(neighborhoods);
-      }
+      public virtual IEnumerable<IContainer> GetNeighborsFrom(IEnumerable<INeighborhood> neighborhoods) => Root.GetNeighborsFrom(neighborhoods);
 
-      public virtual IEnumerable<INeighborhood> GetNeighborhoods(IEnumerable<INeighborhood> neighborhoods)
-      {
-         return Root.GetNeighborhoods(neighborhoods);
-      }
+      public virtual IEnumerable<INeighborhood> GetNeighborhoods(IEnumerable<INeighborhood> neighborhoods) => Root.GetNeighborhoods(neighborhoods);
 
-      public virtual IReadOnlyList<TContainer> GetAllContainersAndSelf<TContainer>() where TContainer : class, IContainer
-      {
-         return Root.GetAllContainersAndSelf<TContainer>();
-      }
+      public virtual IReadOnlyList<TContainer> GetAllContainersAndSelf<TContainer>() where TContainer : class, IContainer =>
+         Root.GetAllContainersAndSelf<TContainer>();
 
-      public virtual IReadOnlyList<TContainer> GetAllContainersAndSelf<TContainer>(Func<TContainer, bool> predicate) where TContainer : class, IContainer
-      {
-         return Root.GetAllContainersAndSelf(predicate);
-      }
+      public virtual IReadOnlyList<TContainer> GetAllContainersAndSelf<TContainer>(Func<TContainer, bool> predicate)
+         where TContainer : class, IContainer => Root.GetAllContainersAndSelf(predicate);
 
       public virtual ContainerType ContainerType
       {
@@ -146,7 +115,7 @@ namespace PKSim.Core.Model
          set => Root.Mode = value;
       }
 
-      public virtual IEnumerable<IEntity> Children => Root.Children;
+      public virtual IReadOnlyList<IEntity> Children => Root.Children;
 
       public IEnumerator<IEntity> GetEnumerator()
       {

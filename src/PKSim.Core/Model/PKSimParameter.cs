@@ -89,22 +89,22 @@ namespace PKSim.Core.Model
 
       private bool isInPortalVein()
       {
-         return isIn(CoreConstants.Organ.PortalVein);
+         return isIn(CoreConstants.Organ.PORTAL_VEIN);
       }
 
       private bool isInLung()
       {
-         return isIn(CoreConstants.Organ.Lung);
+         return isIn(CoreConstants.Organ.LUNG);
       }
 
       private bool isInFat()
       {
-         return isIn(CoreConstants.Organ.Fat);
+         return isIn(CoreConstants.Organ.FAT);
       }
 
       private bool isInMuscle()
       {
-         return isIn(CoreConstants.Organ.Muscle);
+         return isIn(CoreConstants.Organ.MUSCLE);
       }
 
       private bool isIn(string organName)

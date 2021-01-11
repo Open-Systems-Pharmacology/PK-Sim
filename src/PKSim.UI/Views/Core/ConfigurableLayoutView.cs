@@ -2,6 +2,7 @@
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Core
 {

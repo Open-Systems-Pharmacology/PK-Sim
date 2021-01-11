@@ -1,41 +1,33 @@
 using System.Collections.Generic;
-using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IIndividualTransporterExpressionsPresenter : IIndividualMoleculeExpressionsPresenter,
+   public interface IIndividualTransporterExpressionsPresenter : IIndividualMoleculeExpressionsPresenter, IEditParameterPresenter,
       IListener<NoTranporterTemplateAvailableEvent>
 
    {
       /// <summary>
-      ///    Update the menbrane ttype for the given transporter container
+      ///    Update the transport direction for the given transporter container
       /// </summary>
-      void SetMembraneLocation(TransporterExpressionContainerDTO transporterExpressionContainerDTO, MembraneLocation membraneLocation);
-
-      /// <summary>
-      ///    Returns the available membrane type for the given expression container
-      /// </summary>
-      IEnumerable<MembraneLocation> AllProteinMembraneLocationsFor(TransporterExpressionContainerDTO transporterExpressionContainerDTO);
+      void SetTransportDirection(TransporterExpressionParameterDTO transporterExpressionContainerDTO, TransportDirection transportDirection);
 
       /// <summary>
       ///    Returns the available transporter types
       /// </summary>
-      IEnumerable<TransportType> AllTransportTypes();
+      IEnumerable<TransportTypeDTO> AllTransportTypes();
 
       /// <summary>
       ///    This function is called when the user triggers the transporter type change. All process, for which the selected
@@ -43,55 +35,54 @@ namespace PKSim.Presentation.Presenters.Individuals
       /// </summary>
       /// <param name="newTransportType"> </param>
       void UpdateTransportType(TransportType newTransportType);
-
-      /// <summary>
-      ///    Returns the application icon associated with the given transport type
-      /// </summary>
-      ApplicationIcon IconFor(TransportType transportType);
-
-      /// <summary>
-      ///    Returns the display name associaed with the given transport type
-      /// </summary>
-      string TransportTypeCaptionFor(TransportType transportType);
    }
 
    public interface IIndividualTransporterExpressionsPresenter<TSimulationSubject> : IIndividualTransporterExpressionsPresenter
    {
-      
    }
 
-   public class IndividualTransporterExpressionsPresenter<TSimulationSubject> : EditParameterPresenter<IIndividualTransporterExpressionsView, IIndividualTransporterExpressionsPresenter>, IIndividualTransporterExpressionsPresenter<TSimulationSubject> where TSimulationSubject : ISimulationSubject
+   public class IndividualTransporterExpressionsPresenter<TSimulationSubject> :
+      EditParameterPresenter<IIndividualTransporterExpressionsView, IIndividualTransporterExpressionsPresenter>,
+      IIndividualTransporterExpressionsPresenter<TSimulationSubject> where TSimulationSubject : ISimulationSubject
    {
       private readonly IMoleculeExpressionTask<TSimulationSubject> _moleculeExpressionTask;
       private readonly IIndividualTransporterToTransporterExpressionDTOMapper _transporterExpressionDTOMapper;
       private readonly IIndividualMoleculePropertiesPresenter<TSimulationSubject> _moleculePropertiesPresenter;
-      private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      private readonly ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
       private IndividualTransporter _transporter;
+      private IndividualTransporterDTO _transporterExpressionDTO;
       public ISimulationSubject SimulationSubject { get; set; }
 
-      public IndividualTransporterExpressionsPresenter(IIndividualTransporterExpressionsView view, IEditParameterPresenterTask parameterTask, IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
+      public IndividualTransporterExpressionsPresenter(
+         IIndividualTransporterExpressionsView view, IEditParameterPresenterTask parameterTask,
+         IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
          IIndividualTransporterToTransporterExpressionDTOMapper transporterExpressionDTOMapper,
-         ITransporterContainerTemplateRepository transporterContainerTemplateRepository, IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter)
+         IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
+         ITransporterExpressionParametersPresenter transporterExpressionParametersPresenter)
          : base(view, parameterTask)
       {
          _moleculeExpressionTask = moleculeExpressionTask;
          _transporterExpressionDTOMapper = transporterExpressionDTOMapper;
          _moleculePropertiesPresenter = moleculePropertiesPresenter;
-         _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
-         AddSubPresenters(_moleculePropertiesPresenter);
+         _transporterExpressionParametersPresenter = transporterExpressionParametersPresenter;
+         _transporterExpressionParametersPresenter.SetTransportDirection = SetTransportDirection;
+         AddSubPresenters(_moleculePropertiesPresenter, _transporterExpressionParametersPresenter);
          view.AddMoleculePropertiesView(_moleculePropertiesPresenter.View);
+         view.AddExpressionParametersView(_transporterExpressionParametersPresenter.View);
       }
 
-      public void SetMembraneLocation(TransporterExpressionContainerDTO transporterExpressionContainerDTO, MembraneLocation membraneLocation)
+      public void SetTransportDirection(TransporterExpressionParameterDTO transporterExpressionContainerDTO, TransportDirection transportDirection)
       {
-         AddCommand(_moleculeExpressionTask.SetMembraneLocationFor(transporterContainerFrom(transporterExpressionContainerDTO), _transporter.TransportType, membraneLocation));
+         AddCommand(_moleculeExpressionTask.SetTransportDirection(transporterExpressionContainerDTO.TransporterExpressionContainer,
+            transportDirection.Id));
       }
 
       public void UpdateTransportType(TransportType newTransportType)
       {
          AddCommand(_moleculeExpressionTask.SetTransporterTypeFor(_transporter, newTransportType));
          //required to refresh view when changing transport type as some UI elements need to be invalidated
-         RefreshView();         
+         _transporterExpressionDTOMapper.UpdateExpressionParameters(_transporterExpressionDTO, SimulationSubject);
+         rebind();
       }
 
       public override void AddCommand(ICommand command)
@@ -101,34 +92,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.HideWarning();
       }
 
-      public ApplicationIcon IconFor(TransportType transportType)
-      {
-         return TransportTypes.By(transportType).Icon;
-      }
-
-      public string TransportTypeCaptionFor(TransportType transportType)
-      {
-         return TransportTypes.By(transportType).DisplayName;
-      }
-
-      private TransporterExpressionContainer transporterContainerFrom(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
-      {
-         return _transporter.AllExpressionsContainers().FindByName(transporterExpressionContainerDTO.ContainerName);
-      }
-
-      public IEnumerable<MembraneLocation> AllProteinMembraneLocationsFor(TransporterExpressionContainerDTO transporterExpressionContainerDTO)
-      {
-         return _transporterContainerTemplateRepository
-            .TransportersFor(SimulationSubject.Species.Name, transporterExpressionContainerDTO.ContainerName)
-            .Where(x => x.TransportType == _transporter.TransportType)
-            .Select(x => x.MembraneLocation)
-            .Distinct();
-      }
-
-      public IEnumerable<TransportType> AllTransportTypes()
-      {
-         return TransportTypes.All().Select(x => x.TransportType);
-      }
+      public IEnumerable<TransportTypeDTO> AllTransportTypes() => TransportTypes.All();
 
       public bool OntogenyVisible
       {
@@ -143,21 +107,16 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void ActivateMolecule(IndividualMolecule molecule)
       {
          _transporter = molecule.DowncastTo<IndividualTransporter>();
+         _transporterExpressionDTO = _transporterExpressionDTOMapper.MapFrom(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
+         _view.BindTo(_transporterExpressionDTO);
+         rebind();
          _view.HideWarning();
-         _view.BindTo(_transporterExpressionDTOMapper.MapFrom(_transporter));
-         _moleculePropertiesPresenter.Edit(molecule,SimulationSubject.DowncastTo<TSimulationSubject>());
-         RefreshView();
       }
 
-      public void SetRelativeExpression(ExpressionContainerDTO expressionContainerDTO, double value)
+      private void rebind()
       {
-         AddCommand(_moleculeExpressionTask.SetRelativeExpressionFor(_transporter, expressionContainerDTO.RelativeExpressionParameter.Parameter, value));
-      }
-
-      public void RefreshView()
-      {
-         _moleculePropertiesPresenter.RefreshView();
-         _view.RefreshData();
+         _moleculePropertiesPresenter.Edit(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
+         _transporterExpressionParametersPresenter.Edit(_transporterExpressionDTO.AllExpressionParameters);
       }
 
       public void Handle(NoTranporterTemplateAvailableEvent eventToHandle)

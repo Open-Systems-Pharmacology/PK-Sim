@@ -251,7 +251,7 @@ namespace PKSim.Infrastructure.Services
       {
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
          addUndefinedValueTo(compCategory);
-         foreach (var compartment in defaultIndividual.Organism.Organ(CoreConstants.Organ.Muscle).Compartments.Where(x => x.Visible))
+         foreach (var compartment in defaultIndividual.Organism.Organ(CoreConstants.Organ.MUSCLE).Compartments.Where(x => x.Visible))
          {
             addInfoToCategory(compCategory, compartment);
          }
@@ -269,7 +269,7 @@ namespace PKSim.Infrastructure.Services
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
          var organism = defaultIndividual.Organism;
          addUndefinedValueTo(organCategory);
-         addInfoToCategory(organCategory, organism.Organ(CoreConstants.Organ.PeripheralVenousBlood));
+         addInfoToCategory(organCategory, organism.Organ(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD));
          foreach (var organ in organism.OrgansByType(OrganType.VascularSystem | OrganType.Tissue | OrganType.Lumen))
          {
             addInfoToCategory(organCategory, organ);

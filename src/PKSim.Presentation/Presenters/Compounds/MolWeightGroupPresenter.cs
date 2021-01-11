@@ -5,7 +5,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -17,7 +16,7 @@ using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
-   public interface IMolWeightGroupPresenter : ICompoundParameterGroupPresenter, IEditParameterPresenter
+   public interface IMolWeightGroupPresenter : ICompoundParameterGroupPresenter, IParameterValuePresenter
    {
       /// <summary>
       ///    Edit the halogens for the given mol weight group

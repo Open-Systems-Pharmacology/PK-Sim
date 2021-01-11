@@ -16,7 +16,7 @@ using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
-   public interface ISimulationEventsConfigurationPresenter : ISimulationItemPresenter, IEditParameterPresenter
+   public interface ISimulationEventsConfigurationPresenter : ISimulationItemPresenter, IParameterValuePresenter
    {
       void AddEventMapping();
       IEnumerable<PKSimEvent> AllEvents();
