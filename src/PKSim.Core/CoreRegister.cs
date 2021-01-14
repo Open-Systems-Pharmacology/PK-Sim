@@ -71,9 +71,6 @@ namespace PKSim.Core
          container.Register<IIndividualSimulationEngine, ISimulationEngine<IndividualSimulation, SimulationRunResults>, IndividualSimulationEngine>(LifeStyle.Transient);
          container.Register<IPopulationSimulationEngine, ISimulationEngine<PopulationSimulation, PopulationRunResults>, PopulationSimulationEngine>(LifeStyle.Transient);
 
-         //register the importer logger
-         container.Register<IImportLogger, ImportLogger>();
-
          //other singleton external to application
          container.Register<ICloneManager, Cloner>(LifeStyle.Singleton);
 
