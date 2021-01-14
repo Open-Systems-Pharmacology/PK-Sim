@@ -50,9 +50,6 @@ namespace PKSim.UI
          container.Register(typeof(IExpressionParametersView<>), typeof(ExpressionParametersView<>));
 
          container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
-
-
-         container.AddRegister(x=>x.FromType<OSPSuite.UI.UIImporterRegister>());
       }
    }
 }
