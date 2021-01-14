@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Data;
+using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Core.Comparison;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -69,6 +70,9 @@ namespace PKSim.Core
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IExecutionContext>>();
          container.Register<IIndividualSimulationEngine, ISimulationEngine<IndividualSimulation, SimulationRunResults>, IndividualSimulationEngine>(LifeStyle.Transient);
          container.Register<IPopulationSimulationEngine, ISimulationEngine<PopulationSimulation, PopulationRunResults>, PopulationSimulationEngine>(LifeStyle.Transient);
+
+         //register the importer logger
+         container.Register<IImportLogger, ImportLogger>();
 
          //other singleton external to application
          container.Register<ICloneManager, Cloner>(LifeStyle.Singleton);
