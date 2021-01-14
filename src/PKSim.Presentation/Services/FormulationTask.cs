@@ -15,6 +15,7 @@ using OSPSuite.Assets;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -74,7 +75,7 @@ namespace PKSim.Presentation.Services
             IconName = ApplicationIcons.Formulation.IconName
          };
 
-         var importedFormula = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);
+         var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 

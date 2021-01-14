@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;

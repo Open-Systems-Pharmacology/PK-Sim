@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;

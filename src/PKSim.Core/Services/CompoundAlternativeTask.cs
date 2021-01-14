@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Commands;
@@ -181,7 +182,7 @@ namespace PKSim.Core.Services
             IconName = ApplicationIcons.Compound.IconName
          };
 
-         var importedFormula = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);
+         var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 

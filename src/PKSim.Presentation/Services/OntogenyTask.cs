@@ -14,6 +14,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
 using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -59,7 +60,7 @@ namespace PKSim.Presentation.Services
             IconName = ApplicationIcons.Excel.IconName
          };
 
-         var data = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);
+         var data = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();
          if (data == null)
             return null;
 

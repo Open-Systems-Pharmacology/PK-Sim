@@ -2,6 +2,7 @@
 using System.Linq;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {
