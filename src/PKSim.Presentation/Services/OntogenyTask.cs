@@ -60,6 +60,8 @@ namespace PKSim.Presentation.Services
             IconName = ApplicationIcons.Excel.IconName
          };
 
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+
          var data = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();
          if (data == null)
             return null;
