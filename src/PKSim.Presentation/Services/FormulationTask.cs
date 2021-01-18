@@ -74,6 +74,7 @@ namespace PKSim.Presentation.Services
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportFormulation}",
             IconName = ApplicationIcons.Formulation.IconName
          };
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
          var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);

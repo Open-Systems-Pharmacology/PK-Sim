@@ -59,7 +59,6 @@ namespace PKSim.Presentation.Services
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportOntogeny}",
             IconName = ApplicationIcons.Excel.IconName
          };
-
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
          var data = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();

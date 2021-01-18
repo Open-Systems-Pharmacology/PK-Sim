@@ -181,6 +181,7 @@ namespace PKSim.Core.Services
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportSolubilityTable}",
             IconName = ApplicationIcons.Compound.IconName
          };
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
          var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
