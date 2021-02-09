@@ -17,7 +17,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IdentificationParameterMapper _identificationParameterMapper;
       private readonly ParameterIdentificationAnalysisMapper _parameterIdentificationAnalysisMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
       public ParameterIdentificationMapper(
          ParameterIdentificationConfigurationMapper parameterIdentificationConfigurationMapper,
@@ -25,7 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
          IdentificationParameterMapper identificationParameterMapper,
          ParameterIdentificationAnalysisMapper parameterIdentificationAnalysisMapper,
          IObjectBaseFactory objectBaseFactory,
-         IOSPLogger logger
+         IOSPSuiteLogger logger
       )
       {
          _parameterIdentificationConfigurationMapper = parameterIdentificationConfigurationMapper;

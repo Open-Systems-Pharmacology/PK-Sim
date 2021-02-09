@@ -27,12 +27,12 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
       public ExpressionContainerMapper(
          ParameterMapper parameterMapper,
          ITransportContainerUpdater transportContainerUpdater,
-         IOSPLogger logger)
+         IOSPSuiteLogger logger)
       {
          _parameterMapper = parameterMapper;
          _transportContainerUpdater = transportContainerUpdater;

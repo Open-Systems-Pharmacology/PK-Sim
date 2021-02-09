@@ -17,7 +17,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ICloner _cloner;
       private readonly ISpeciesRepository _speciesRepository;
       private readonly ICompoundProcessTask _compoundProcessTask;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
       public CompoundProcessMapper(
          ParameterMapper parameterMapper,
@@ -26,7 +26,7 @@ namespace PKSim.Core.Snapshots.Mappers
          ICloner cloner,
          ISpeciesRepository speciesRepository,
          ICompoundProcessTask compoundProcessTask,
-         IOSPLogger logger
+         IOSPSuiteLogger logger
       ) : base(parameterMapper)
       {
          _representationInfoRepository = representationInfoRepository;

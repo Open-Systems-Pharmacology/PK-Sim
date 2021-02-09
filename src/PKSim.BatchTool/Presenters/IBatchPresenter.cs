@@ -27,11 +27,11 @@ namespace PKSim.BatchTool.Presenters
       protected readonly TBatchRunner _batchRunner;
       protected readonly IDialogCreator _dialogCreator;
       private readonly ILogPresenter _logPresenter;
-      private readonly IOSPLogger _batchLogger;
+      private readonly IOSPSuiteLogger _batchLogger;
       protected bool _isRunning;
       protected TRunOptions _runOptionsDTO = new TRunOptions();
 
-      protected BatchPresenter(TView view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IOSPLogger batchLogger)
+      protected BatchPresenter(TView view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IOSPSuiteLogger batchLogger)
          : base(view)
       {
          _batchRunner = batchRunner;

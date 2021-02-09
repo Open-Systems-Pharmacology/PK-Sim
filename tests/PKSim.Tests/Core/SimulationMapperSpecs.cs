@@ -81,7 +81,7 @@ namespace PKSim.Core
       protected EventSelection _eventSelection;
       protected ObserverSetSelection _observerSetSelection;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected IContainerTask _containerTask;
       protected IEntityPathResolver _entityPathResolver;
       protected CompoundProcessSelection _noSelectionSnapshotInteraction;
@@ -109,7 +109,7 @@ namespace PKSim.Core
          _simulationRunner = A.Fake<ISimulationRunner>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
          _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
-         _logger= A.Fake<IOSPLogger>();
+         _logger= A.Fake<IOSPSuiteLogger>();
          _containerTask= A.Fake<IContainerTask>();
          _entityPathResolver= A.Fake<IEntityPathResolver>();
 

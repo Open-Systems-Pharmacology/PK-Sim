@@ -11,14 +11,14 @@ namespace PKSim.Presentation
    public abstract class concern_for_RunSimulationQualificationStepRunner : ContextSpecificationAsync<RunSimulationQualificationStepRunner>
    {
       protected ISimulationRunner _simulationRunner;
-      private IOSPLogger _logger;
+      private IOSPSuiteLogger _logger;
       protected RunSimulationQualificationStep _runSimulationQualificationStep;
       protected Simulation _simulation;
 
       protected override Task Context()
       {
          _simulationRunner= A.Fake<ISimulationRunner>();
-         _logger= A.Fake<IOSPLogger>();   
+         _logger= A.Fake<IOSPSuiteLogger>();   
          sut = new RunSimulationQualificationStepRunner(_simulationRunner,_logger);
 
          _simulation = new IndividualSimulation();

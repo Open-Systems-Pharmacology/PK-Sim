@@ -26,13 +26,13 @@ namespace PKSim.Core
       protected CalculationMethodCategory _singleCategory;
       protected CalculationMethodCategory _multipleCategory;
       protected CalculationMethod _anotherCalculationMethodInMultipleOptions;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
          _calculationMethodRepository = A.Fake<ICalculationMethodRepository>();
          _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
-         _logger= A.Fake<IOSPLogger>();
+         _logger= A.Fake<IOSPSuiteLogger>();
 
          sut = new CalculationMethodCacheMapper(_calculationMethodRepository, _calculationMethodCategoryRepository,_logger);
          _singleCategory = new CalculationMethodCategory {Name = "Multiple"};

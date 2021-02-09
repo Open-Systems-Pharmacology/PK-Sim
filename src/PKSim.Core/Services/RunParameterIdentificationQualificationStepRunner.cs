@@ -15,7 +15,7 @@ namespace PKSim.Core.Services
       public RunParameterIdentificationQualificationStepRunner(
          IParameterIdentificationEngineFactory parameterIdentificationEngineFactory,
          ITransferOptimizedParametersToSimulationsTask transferOptimizedParametersToSimulationsTask,
-         IOSPLogger logger) : base(logger)
+         IOSPSuiteLogger logger) : base(logger)
       {
          _parameterIdentificationEngineFactory = parameterIdentificationEngineFactory;
          _transferOptimizedParametersToSimulationsTask = transferOptimizedParametersToSimulationsTask;

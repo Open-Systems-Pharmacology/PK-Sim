@@ -13,6 +13,12 @@ namespace PKSim.CLI.Core.MinimalImplementations
          return Enumerable.Empty<DataRepository>();
       }
 
+      public IEnumerable<DataRepository> ImportFromXml(string configurationFilePath, bool promptForConfirmation, IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos,
+         DataImporterSettings dataImporterSettings)
+      {
+         return Enumerable.Empty<DataRepository>();
+      }
+
       public DataRepository ImportDataSet(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
       {
          return new NullDataRepository();

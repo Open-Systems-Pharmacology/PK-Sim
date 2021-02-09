@@ -18,7 +18,7 @@ namespace PKSim.Core
       protected IParameter _parameter;
       protected TableFormulaMapper _tableFormulaMapper;
       protected IEntityPathResolver _entityPathResolver;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected ValueOriginMapper _valueOriginMapper;
       protected ValueOrigin _snapshotValueOrigin;
 
@@ -27,7 +27,7 @@ namespace PKSim.Core
          _tableFormulaMapper = A.Fake<TableFormulaMapper>();
          _valueOriginMapper = A.Fake<ValueOriginMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          sut = new ParameterMapper(_tableFormulaMapper, _valueOriginMapper, _entityPathResolver, _logger);
 

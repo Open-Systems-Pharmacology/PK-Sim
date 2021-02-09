@@ -24,12 +24,12 @@ namespace PKSim.Core
       protected IEntitiesInContainerRetriever _entitiesInContainerRetriever;
       protected IndividualSimulation _simulation;
       protected PathCache<IQuantity> _allQuantities;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
          _entitiesInContainerRetriever = A.Fake<IEntitiesInContainerRetriever>();
-         _logger= A.Fake<IOSPLogger>();
+         _logger= A.Fake<IOSPSuiteLogger>();
          sut = new OutputSelectionsMapper(_entitiesInContainerRetriever, _logger);
 
          _quantitySelection1 = new QuantitySelection("PATH1", QuantityType.Drug);

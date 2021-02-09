@@ -70,7 +70,7 @@ namespace PKSim.Core
       protected QualificationPlanMapper _qualificationPlanMapper;
       protected QualificationPlan _qualificationPlan;
       protected Snapshots.QualificationPlan _qualificationPlanSnapshot;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected ICreationMetaDataFactory _creationMetaDataFactory;
       protected Snapshots.ObserverSet _observerSetSnapshot;
 
@@ -86,7 +86,7 @@ namespace PKSim.Core
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
          _qualificationPlanMapper = A.Fake<QualificationPlanMapper>();
          _creationMetaDataFactory= A.Fake<ICreationMetaDataFactory>();
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          sut = new ProjectMapper(
             _simulationMapper,

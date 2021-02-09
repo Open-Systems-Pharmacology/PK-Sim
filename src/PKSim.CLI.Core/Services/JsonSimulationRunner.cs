@@ -20,14 +20,14 @@ namespace PKSim.CLI.Core.Services
    public class JsonSimulationRunner : IBatchRunner<JsonRunOptions>
    {
       private readonly ISimulationExporter _simulationExporter;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
       private readonly ISnapshotTask _snapshotTask;
       private readonly IList<string> _allSimulationNames = new List<string>();
       private readonly SimulationRunOptions _simulationRunOptions;
 
       public JsonSimulationRunner(
          ISimulationExporter simulationExporter,
-         IOSPLogger logger,
+         IOSPSuiteLogger logger,
          ISnapshotTask snapshotTask
       )
       {

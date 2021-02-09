@@ -16,7 +16,7 @@ namespace PKSim.Presentation
    {
       protected IParameterIdentificationEngineFactory _parameterIdentificationEngineFactory;
       protected ITransferOptimizedParametersToSimulationsTask _transferOptimizedParametersToSimulationsTask;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected RunParameterIdentificationQualificationStep _runParameterIdentificationStep;
       protected ParameterIdentification _parameterIdentification;
       protected IParameterIdentificationEngine _parameterIdentificationEngine;
@@ -25,7 +25,7 @@ namespace PKSim.Presentation
       {
          _parameterIdentificationEngineFactory = A.Fake<IParameterIdentificationEngineFactory>();
          _transferOptimizedParametersToSimulationsTask = A.Fake<ITransferOptimizedParametersToSimulationsTask>();
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          sut = new RunParameterIdentificationQualificationStepRunner(_parameterIdentificationEngineFactory, _transferOptimizedParametersToSimulationsTask, _logger);
 
          _parameterIdentification = new ParameterIdentification();
