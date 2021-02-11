@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Serialization;
+using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Infrastructure.Import.Services;
@@ -29,11 +33,15 @@ namespace PKSim.Infrastructure.Services
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IObservedDataTask _observedDataTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
+      private readonly IDialogCreator _dialogCreator;
+      private readonly IContainer _container;
+      private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
 
       public ImportObservedDataTask(IDataImporter dataImporter, IExecutionContext executionContext,
          IDimensionRepository dimensionRepository, IBuildingBlockRepository buildingBlockRepository, ISpeciesRepository speciesRepository,
          IDefaultIndividualRetriever defaultIndividualRetriever, IRepresentationInfoRepository representationInfoRepository,
-         IObservedDataTask observedDataTask, IParameterChangeUpdater parameterChangeUpdater)
+         IObservedDataTask observedDataTask, IParameterChangeUpdater parameterChangeUpdater, IDialogCreator dialogCreator, IContainer container,
+         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository)
       {
          _dataImporter = dataImporter;
          _executionContext = executionContext;
@@ -44,6 +52,9 @@ namespace PKSim.Infrastructure.Services
          _representationInfoRepository = representationInfoRepository;
          _observedDataTask = observedDataTask;
          _parameterChangeUpdater = parameterChangeUpdater;
+         _dialogCreator = dialogCreator;
+         _container = container;
+         _modelingXmlSerializerRepository = modelingXmlSerializerRepository;
       }
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
@@ -52,6 +63,48 @@ namespace PKSim.Infrastructure.Services
       {
          _executionContext.Load(compound);
          addObservedData(importConfiguration, compound);
+      }
+
+      public void AddObservedDataFromXmlToProjectForCompound(Compound compound)
+      {
+         _executionContext.Load(compound);
+         AddObservedDataFromXml(importConfiguration, compound);
+      }
+
+      public void AddObservedDataFromXml(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
+      {
+         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+
+         var metaDataCategories = defaultMetaDataCategories().ToList();
+         metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
+
+
+//----------------------------------------------
+         using (var serializationContext = SerializationTransaction.Create(_container))
+         {
+            var configuration = new OSPSuite.Core.Import.ImporterConfiguration();
+
+            var serializer = _modelingXmlSerializerRepository.SerializerFor(configuration);
+
+            var fileName = _dialogCreator.AskForFileToOpen("Save configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*", Constants.DirectoryKey.PROJECT);
+
+            var xel = XElement.Load(fileName);
+            configuration = serializer.Deserialize<OSPSuite.Core.Import.ImporterConfiguration>(xel, serializationContext);
+            //broadcast...
+         }
+
+         //this should probably be a seperate function
+         
+
+         
+         var importedObservedData = _dataImporter.ImportFromXml(metaDataCategories, importConfiguration(), dataImporterSettings);
+         foreach (var observedData in importedObservedData)
+         {
+            adjustMolWeight(observedData);
+            _observedDataTask.AddObservedDataToProject(observedData);
+            updateQuantityInfoInImportedColumns(observedData);
+         }
       }
 
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
