@@ -18,6 +18,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
@@ -34,7 +35,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IObservedDataTask _observedDataTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IContainer _container;
+      private readonly OSPSuite.Utility.Container.IContainer _container;
       private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
 
       public ImportObservedDataTask(IDataImporter dataImporter, IExecutionContext executionContext,
@@ -58,6 +59,9 @@ namespace PKSim.Infrastructure.Services
       }
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
+
+      //public void AddObservedDataToProject() => AddObservedDataFromXmlToProjectForCompound(null);
+
 
       public void AddObservedDataToProjectForCompound(Compound compound)
       {
@@ -87,23 +91,25 @@ namespace PKSim.Infrastructure.Services
 
             var serializer = _modelingXmlSerializerRepository.SerializerFor(configuration);
 
-            var fileName = _dialogCreator.AskForFileToOpen("Save configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*", Constants.DirectoryKey.PROJECT);
+            var fileName = _dialogCreator.AskForFileToOpen("Save configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*",
+               Constants.DirectoryKey.PROJECT);
 
-            var xel = XElement.Load(fileName);
+            var xel = XElement.Load(fileName);// We have to correctly handle the case of cancellation
             configuration = serializer.Deserialize<OSPSuite.Core.Import.ImporterConfiguration>(xel, serializationContext);
             //broadcast...
-         }
 
-         //this should probably be a seperate function
-         
 
-         
-         var importedObservedData = _dataImporter.ImportFromXml(metaDataCategories, importConfiguration(), dataImporterSettings);
-         foreach (var observedData in importedObservedData)
-         {
-            adjustMolWeight(observedData);
-            _observedDataTask.AddObservedDataToProject(observedData);
-            updateQuantityInfoInImportedColumns(observedData);
+            //this should probably be a seperate function
+
+
+
+            var importedObservedData = _dataImporter.ImportFromXml(fileName, true, metaDataCategories, importConfiguration(), dataImporterSettings);
+            foreach (var observedData in importedObservedData)
+            {
+               adjustMolWeight(observedData);
+               _observedDataTask.AddObservedDataToProject(observedData);
+               updateQuantityInfoInImportedColumns(observedData);
+            }
          }
       }
 

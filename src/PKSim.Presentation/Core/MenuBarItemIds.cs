@@ -49,6 +49,7 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId NewFormulation = createMenuBarItemId("NewFormulation");
       public static MenuBarItemId LoadFormulationFromTemplate = createMenuBarItemId("LoadFormulationFromTemplate");
       public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");
+      public static MenuBarItemId AddObservedDataFromConfiguration = createMenuBarItemId("AddObservedDataFromConfiguration");
       public static MenuBarItemId ProjectReport = createMenuBarItemId("ProjectReport");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId NewEvent = createMenuBarItemId("NewEvent");

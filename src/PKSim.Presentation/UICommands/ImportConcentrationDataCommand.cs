@@ -3,11 +3,11 @@ using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class ImportConcentrationDataCommmand : IUICommand
+   public class ImportConcentrationDataCommand : IUICommand
    {
       private readonly IImportObservedDataTask _observedDataTask;
 
-      public ImportConcentrationDataCommmand(IImportObservedDataTask observedDataTask)
+      public ImportConcentrationDataCommand(IImportObservedDataTask observedDataTask)
       {
          _observedDataTask = observedDataTask;
       }
