@@ -83,8 +83,6 @@ namespace PKSim.Infrastructure.Services
          var metaDataCategories = defaultMetaDataCategories().ToList();
          metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
 
-
-//----------------------------------------------
          using (var serializationContext = SerializationTransaction.Create(_container))
          {
             var configuration = new OSPSuite.Core.Import.ImporterConfiguration();
