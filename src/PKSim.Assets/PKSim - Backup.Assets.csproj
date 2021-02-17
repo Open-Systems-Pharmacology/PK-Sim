@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,11 +10,10 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
-    <Description>CLI Core functionalities for PK-Sim</Description>
     <Authors>Open-Systems-Pharmacology</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <OutputPath>bin\$(Configuration)</OutputPath>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PKSim.CLI.Core.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
@@ -27,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.64" />
+    <PackageReference Include="OSPSuite.Assets" Version="10.0.54" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="10.0.54" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,9 +36,4 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj" />
-  </ItemGroup>
-
 </Project>

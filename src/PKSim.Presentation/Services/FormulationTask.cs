@@ -76,7 +76,7 @@ namespace PKSim.Presentation.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).FirstOrDefault();
+         var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).DataRepositories.FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 

@@ -118,7 +118,8 @@ namespace PKSim.Infrastructure.Services
          metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
 
          var importedObservedData = _dataImporter.ImportDataSets(metaDataCategories, importConfiguration(), dataImporterSettings);
-         foreach (var observedData in importedObservedData)
+         _observedDataTask.AddImporterConfigurationToProject(importedObservedData.Configuration);
+         foreach (var observedData in importedObservedData.DataRepositories)
          {
             adjustMolWeight(observedData);
             _observedDataTask.AddObservedDataToProject(observedData);
