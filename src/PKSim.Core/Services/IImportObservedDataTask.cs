@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Core.Import;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -7,5 +8,7 @@ namespace PKSim.Core.Services
       void AddObservedDataToProject();
       void AddObservedDataToProjectForCompound(Compound compound);
       void AddObservedDataFromXmlToProjectForCompound(Compound subject);
+      void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration);
+      void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration, string dataRepositoryName);
    }
 }

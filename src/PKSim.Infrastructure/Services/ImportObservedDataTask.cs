@@ -61,7 +61,9 @@ namespace PKSim.Infrastructure.Services
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
 
-      //public void AddObservedDataToProject() => AddObservedDataFromXmlToProjectForCompound(null);
+      public void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, null);
+
+      public void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration, string dataRepositoryName) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, dataRepositoryName);
 
 
       public void AddObservedDataToProjectForCompound(Compound compound)
@@ -76,14 +78,31 @@ namespace PKSim.Infrastructure.Services
          AddObservedDataFromXml(importConfiguration, compound);
       }
 
-      public void AddObservedDataFromXml(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
+      private void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
       {
-         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
-         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+         _executionContext.Load(compound);
+         AddObservedDataFromConfiguration(configuration, importConfiguration, compound, false, dataRepositoryName);
+      }
 
+      private void AddObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool propmtUser = true, string dataRepositoryName = null, bool allowCompoundNameEdit = false)
+      {
          var metaDataCategories = defaultMetaDataCategories().ToList();
          metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
 
+         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+
+         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, propmtUser, metaDataCategories, importConfiguration(), dataImporterSettings);
+         foreach (var observedData in string.IsNullOrEmpty(dataRepositoryName) ? importedObservedData : importedObservedData.Where(r => r.Name == dataRepositoryName))
+         {
+            adjustMolWeight(observedData);
+            _observedDataTask.AddObservedDataToProject(observedData);
+            updateQuantityInfoInImportedColumns(observedData);
+         }
+      }
+
+      private void AddObservedDataFromXml(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
+      {
          using (var serializationContext = SerializationTransaction.Create(_container))
          {
             var serializer = _modelingXmlSerializerRepository.SerializerFor<ImporterConfiguration>() ;
@@ -93,19 +112,8 @@ namespace PKSim.Infrastructure.Services
 
             var xel = XElement.Load(fileName);// We have to correctly handle the case of cancellation
             var configuration = serializer.Deserialize<ImporterConfiguration>(xel, serializationContext);
-            //broadcast...
 
-
-            //this should probably be a seperate function
-
-
-            var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, true, metaDataCategories, importConfiguration(), dataImporterSettings);
-            foreach (var observedData in importedObservedData)
-            {
-               adjustMolWeight(observedData);
-               _observedDataTask.AddObservedDataToProject(observedData);
-               updateQuantityInfoInImportedColumns(observedData);
-            }
+            AddObservedDataFromConfiguration(configuration, importConfiguration, compound, true, null, allowCompoundNameEdit);
          }
       }
 

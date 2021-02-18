@@ -28,6 +28,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       //somewhere here we should also add
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(DataRepository dataRepository, Simulation activeSimulation)
       {
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Reload)
+            .WithCommandFor<ReloadObservedDataCommand, DataRepository>(dataRepository)
+            .AsDisabledIf(!dataRepository.ExtendedProperties.Contains("Configuration"))
+            .WithIcon(ApplicationIcons.Refresh);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated)
+            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
+            .AsDisabledIf(!dataRepository.ExtendedProperties.Contains("Configuration"))
+            .WithIcon(ApplicationIcons.RefreshAll);
+
          yield return CreateMenuButton.WithCaption(MenuNames.Edit)
             .WithCommandFor<EditSubjectUICommand<DataRepository>, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.Edit);
