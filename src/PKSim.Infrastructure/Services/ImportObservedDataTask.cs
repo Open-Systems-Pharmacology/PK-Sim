@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using FluentNHibernate.Conventions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -110,6 +111,8 @@ namespace PKSim.Infrastructure.Services
             var fileName = _dialogCreator.AskForFileToOpen("Save configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*",
                Constants.DirectoryKey.PROJECT);
 
+            if (fileName.IsNullOrEmpty()) return;
+
             var xel = XElement.Load(fileName);// We have to correctly handle the case of cancellation
             var configuration = serializer.Deserialize<ImporterConfiguration>(xel, serializationContext);
 
@@ -126,6 +129,9 @@ namespace PKSim.Infrastructure.Services
          metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
 
          var importedObservedData = _dataImporter.ImportDataSets(metaDataCategories, importConfiguration(), dataImporterSettings);
+
+         if (importedObservedData.Configuration == null) return;
+
          _observedDataTask.AddImporterConfigurationToProject(importedObservedData.Configuration);
          foreach (var observedData in importedObservedData.DataRepositories)
          {
