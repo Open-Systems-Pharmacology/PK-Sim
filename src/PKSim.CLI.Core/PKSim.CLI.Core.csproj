@@ -29,7 +29,7 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.Core" Version="10.0.70" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.25" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.70" />
   </ItemGroup>
 
   <ItemGroup>
