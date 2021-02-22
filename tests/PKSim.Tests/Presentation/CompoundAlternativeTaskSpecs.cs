@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -440,7 +441,7 @@ namespace PKSim.Presentation
          base.Context();
          _solubilityDataRepository = DomainHelperForSpecs.ObservedData("SolubilityTable");
          A.CallTo(() => _formulaFactory.CreateTableFormula(A<bool>._)).Returns(new TableFormula {UseDerivedValues = true});
-         A.CallTo(_dataImporter).WithReturnType<DataRepository>().Returns(_solubilityDataRepository);
+         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored)).Returns((new List<DataRepository>() { _solubilityDataRepository }, null));
       }
 
       protected override void Because()
