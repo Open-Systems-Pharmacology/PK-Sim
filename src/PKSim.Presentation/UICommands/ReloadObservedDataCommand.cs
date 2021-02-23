@@ -31,7 +31,7 @@ namespace PKSim.Presentation.UICommands
          _observedDataTask.Delete(Subject);
 
          var configuration = project.ImporterConfigurationBy(Subject.ConfigurationId);
-         _importObservedDataTask.AddObservedDataFromConfigurationToProject(configuration, Subject.Name);
+         _importObservedDataTask.AddObservedDataFromConfigurationToProjectForDataRepository(configuration, Subject.Name);
       }
    }
 }

@@ -63,7 +63,7 @@ namespace PKSim.Infrastructure.Services
 
       public void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, null);
 
-      public void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration, string dataRepositoryName) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, dataRepositoryName);
+      public void AddObservedDataFromConfigurationToProjectForDataRepository(ImporterConfiguration configuration, string dataRepositoryName) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, dataRepositoryName);
 
       public ImporterConfiguration OpenXmlConfiguration()
       {
@@ -87,7 +87,7 @@ namespace PKSim.Infrastructure.Services
          addObservedData(importConfiguration, compound);
       }
       
-      public void AddObservedDataFromConfigurationToProject(Compound compound, ImporterConfiguration configuration)
+      public void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration)
       {
          _executionContext.Load(compound);
          AddObservedDataFromConfiguration(configuration, importConfiguration, compound, true, null);
