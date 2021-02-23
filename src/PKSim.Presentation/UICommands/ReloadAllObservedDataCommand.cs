@@ -25,12 +25,12 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         if (!Subject.ExtendedProperties.Contains("Configuration"))
+         if (string.IsNullOrEmpty(Subject.ConfigurationId))
             return;
 
          var project = _executionContext.Project;
-         var configurationId = Subject.ExtendedPropertyValueFor("Configuration");
-         _observedDataTask.Delete(project.AllObservedData.Where(r => r.ExtendedProperties.Contains("Configuration") && r.ExtendedPropertyValueFor("Configuration") == configurationId));
+         var configurationId = Subject.ConfigurationId;
+         _observedDataTask.Delete(project.AllObservedData.Where(r => !string.IsNullOrEmpty(r.ConfigurationId) && r.ConfigurationId == configurationId));
 
          var configuration = project.ImporterConfigurationBy(configurationId);
          _importObservedDataTask.AddObservedDataFromConfigurationToProject(configuration);

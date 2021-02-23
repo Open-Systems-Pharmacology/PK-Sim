@@ -30,12 +30,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Reload)
             .WithCommandFor<ReloadObservedDataCommand, DataRepository>(dataRepository)
-            .AsDisabledIf(!dataRepository.ExtendedProperties.Contains("Configuration"))
+            .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
             .WithIcon(ApplicationIcons.Refresh);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated)
             .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
-            .AsDisabledIf(!dataRepository.ExtendedProperties.Contains("Configuration"))
+            .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
             .WithIcon(ApplicationIcons.RefreshAll);
 
          yield return CreateMenuButton.WithCaption(MenuNames.Edit)

@@ -24,13 +24,13 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         if (!Subject.ExtendedProperties.Contains("Configuration"))
+         if (string.IsNullOrEmpty(Subject.ConfigurationId))
             return;
 
          var project = _executionContext.Project;
          _observedDataTask.Delete(Subject);
 
-         var configuration = project.ImporterConfigurationBy(Subject.ExtendedPropertyValueFor("Configuration"));
+         var configuration = project.ImporterConfigurationBy(Subject.ConfigurationId);
          _importObservedDataTask.AddObservedDataFromConfigurationToProject(configuration, Subject.Name);
       }
    }
