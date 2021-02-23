@@ -65,17 +65,32 @@ namespace PKSim.Infrastructure.Services
 
       public void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration, string dataRepositoryName) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, dataRepositoryName);
 
+      public ImporterConfiguration OpenXmlConfiguration()
+      {
+         using (var serializationContext = SerializationTransaction.Create(_container))
+         {
+            var serializer = _modelingXmlSerializerRepository.SerializerFor<ImporterConfiguration>();
+
+            var fileName = _dialogCreator.AskForFileToOpen("Open configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*", //move to constants and use filter
+               Constants.DirectoryKey.PROJECT);
+
+            if (fileName.IsNullOrEmpty()) return null;
+
+            var xel = XElement.Load(fileName); // We have to correctly handle the case of cancellation
+            return serializer.Deserialize<ImporterConfiguration>(xel, serializationContext);
+         }
+      }
 
       public void AddObservedDataToProjectForCompound(Compound compound)
       {
          _executionContext.Load(compound);
          addObservedData(importConfiguration, compound);
       }
-
-      public void AddObservedDataFromXmlToProjectForCompound(Compound compound)
+      
+      public void AddObservedDataFromConfigurationToProject(Compound compound, ImporterConfiguration configuration)
       {
          _executionContext.Load(compound);
-         AddObservedDataFromXml(importConfiguration, compound);
+         AddObservedDataFromConfiguration(configuration, importConfiguration, compound, true, null);
       }
 
       private void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
@@ -98,24 +113,6 @@ namespace PKSim.Infrastructure.Services
             adjustMolWeight(observedData);
             _observedDataTask.AddObservedDataToProject(observedData);
             updateQuantityInfoInImportedColumns(observedData);
-         }
-      }
-
-      private void AddObservedDataFromXml(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
-      {
-         using (var serializationContext = SerializationTransaction.Create(_container))
-         {
-            var serializer = _modelingXmlSerializerRepository.SerializerFor<ImporterConfiguration>() ;
-
-            var fileName = _dialogCreator.AskForFileToOpen("Open configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*",
-               Constants.DirectoryKey.PROJECT);
-
-            if (fileName.IsNullOrEmpty()) return;
-
-            var xel = XElement.Load(fileName);// We have to correctly handle the case of cancellation
-            var configuration = serializer.Deserialize<ImporterConfiguration>(xel, serializationContext);
-
-            AddObservedDataFromConfiguration(configuration, importConfiguration, compound, true, null, allowCompoundNameEdit);
          }
       }
 

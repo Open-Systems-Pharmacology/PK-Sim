@@ -1,3 +1,4 @@
+using OSPSuite.Core.Import;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Presentation.UICommands;
@@ -15,7 +16,8 @@ namespace PKSim.Presentation.UICommands
 
       protected override void PerformExecute()
       {
-         _observedDataTask.AddObservedDataFromXmlToProjectForCompound(Subject);
+         var configuration = _observedDataTask.OpenXmlConfiguration();
+         _observedDataTask.AddObservedDataFromConfigurationToProject(Subject, configuration);
       }
    }
 }
