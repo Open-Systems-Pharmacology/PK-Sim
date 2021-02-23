@@ -7,7 +7,7 @@ namespace PKSim.Core.Services
    {
       void AddObservedDataToProject();
       void AddObservedDataToProjectForCompound(Compound compound);
-      void AddObservedDataFromXmlToProjectForCompound(Compound subject);
+      void AddObservedDataFromXmlToProjectForCompound(Compound compound);
       void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration);
       void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration, string dataRepositoryName);
    }

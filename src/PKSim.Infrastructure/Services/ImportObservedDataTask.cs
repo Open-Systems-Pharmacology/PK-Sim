@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-using FluentNHibernate.Conventions;
+using System.Xml.Linq; //ToDo: Move out
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -108,7 +107,7 @@ namespace PKSim.Infrastructure.Services
          {
             var serializer = _modelingXmlSerializerRepository.SerializerFor<ImporterConfiguration>() ;
 
-            var fileName = _dialogCreator.AskForFileToOpen("Save configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*",
+            var fileName = _dialogCreator.AskForFileToOpen("Open configuration", "xml files (*.xml)|*.xml|All files (*.*)|*.*",
                Constants.DirectoryKey.PROJECT);
 
             if (fileName.IsNullOrEmpty()) return;

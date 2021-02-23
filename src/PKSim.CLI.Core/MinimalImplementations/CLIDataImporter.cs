@@ -22,7 +22,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
 
       (IEnumerable<DataRepository> DataRepositories, ImporterConfiguration Configuration) IDataImporter.ImportDataSets(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
       {
-         return (new List<DataRepository>(), null);
+         return (Enumerable.Empty<DataRepository>(), null);
       }
    }
 }
