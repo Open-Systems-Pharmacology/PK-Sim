@@ -35,7 +35,6 @@ namespace PKSim.Infrastructure.Reporting.TeX.Reporters
          list.AddRange(_simulationsReporter.Report(project.All<Simulation>().ToList(), tracker));
          list.AddRange(_simulationComparisonsReporter.Report(project.AllSimulationComparisons.ToList(), tracker));
          list.AddRange(_observedDataReporter.Report(project.AllObservedData.ToList(), tracker));
-         list.AddRange(_observedDataReporter.Report(project.AllImporterConfigurations.ToList(), tracker));
          return list;
       }
    }
