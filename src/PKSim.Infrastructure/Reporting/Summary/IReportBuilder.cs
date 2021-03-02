@@ -21,6 +21,10 @@ namespace PKSim.Infrastructure.Reporting.Summary
       {
          var reportPart = new ReportPart();
          FillUpReport(objectToReport, reportPart);
+         //Only one item returned in the report. Then return it instead of wrapping it in yet another report part
+         if (reportPart.SubParts.Count == 1)
+            return reportPart.SubParts[0];
+
          return reportPart;
       }
 
