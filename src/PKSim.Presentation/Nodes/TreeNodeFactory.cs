@@ -69,7 +69,7 @@ namespace PKSim.Presentation.Nodes
 
       public ITreeNode CreateFor(ModelProperties modelProperties)
       {
-         if (modelProperties == null || modelProperties.ModelConfiguration == null)
+         if (modelProperties?.ModelConfiguration == null)
             return null;
 
          var node = CreateFor(nodeText: modelProperties.ModelConfiguration.ModelName);

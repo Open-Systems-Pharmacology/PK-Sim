@@ -47,21 +47,22 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly ISimulationComparisonTask _simulationComparisonTask;
 
       public SimulationExplorerPresenter(
-         ISimulationExplorerView view, 
-         ITreeNodeFactory treeNodeFactory, 
+         ISimulationExplorerView view,
+         ITreeNodeFactory treeNodeFactory,
          ITreeNodeContextMenuFactory treeNodeContextMenuFactory,
-         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, 
+         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory,
          IBuildingBlockIconRetriever buildingBlockIconRetriever,
          IRegionResolver regionResolver,
-         IBuildingBlockTask buildingBlockTask, 
+         IBuildingBlockTask buildingBlockTask,
          IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         IToolTipPartCreator toolTipPartCreator, 
-         IProjectRetriever projectRetriever, 
-         IClassificationPresenter classificationPresenter, 
-         IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter, 
+         IToolTipPartCreator toolTipPartCreator,
+         IProjectRetriever projectRetriever,
+         IClassificationPresenter classificationPresenter,
+         IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter,
          IObservedDataInSimulationManager observedDataInSimulationManager,
          ISimulationComparisonTask simulationComparisonTask) :
-         base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
+         base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver,
+            buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
@@ -137,7 +138,8 @@ namespace PKSim.Presentation.Presenters.Main
 
       private ITreeNode addSimulationComparisonToTree(ISimulationComparison simulationComparison)
       {
-         return AddSubjectToClassifyToTree<ISimulationComparison, ClassifiableComparison>(simulationComparison, addClassifiableComparisonToRootFolder);
+         return AddSubjectToClassifyToTree<ISimulationComparison, ClassifiableComparison>(simulationComparison,
+            addClassifiableComparisonToRootFolder);
       }
 
       private ITreeNode addClassifiableSimulationToRootFolder(ClassifiableSimulation classifiableSimulation)
@@ -350,7 +352,9 @@ namespace PKSim.Presentation.Presenters.Main
 
       private string displayTypeFor(Simulation simulation)
       {
-         return simulation.IsAnImplementationOf<IndividualSimulation>() ? PKSimConstants.UI.IndividualSimulation : PKSimConstants.UI.PopulationSimulation;
+         return simulation.IsAnImplementationOf<IndividualSimulation>()
+            ? PKSimConstants.UI.IndividualSimulation
+            : PKSimConstants.UI.PopulationSimulation;
       }
 
       public void Handle(SwapBuildingBlockEvent eventToHandle)
