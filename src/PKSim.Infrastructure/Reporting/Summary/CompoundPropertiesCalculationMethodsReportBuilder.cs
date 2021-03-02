@@ -17,6 +17,8 @@ namespace PKSim.Infrastructure.Reporting.Summary
       protected override void FillUpReport(CompoundPropertiesCalculationMethods compoundPropertiesCalculationMethods, ReportPart reportPart)
       {
          var (compoundName, compoundProperties) = compoundPropertiesCalculationMethods;
+
+         //Because the compound might be lazy loaded, it is potentially not available in the compound properties
          var compoundNameToUse = compoundProperties.Compound?.Name ?? compoundName;
 
          var calculationMethodReportPart = _reportGenerator.ReportFor(compoundProperties.AllCalculationMethods());
