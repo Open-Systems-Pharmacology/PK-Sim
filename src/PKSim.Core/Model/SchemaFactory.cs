@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
@@ -19,7 +17,8 @@ namespace PKSim.Core.Model
       private readonly ISchemaItemFactory _schemaItemFactory;
       private readonly IContainerTask _containerTask;
 
-      public SchemaFactory(IObjectBaseFactory objectBaseFactory, IParameterFactory parameterFactory, ISchemaItemFactory schemaItemFactory, IContainerTask containerTask)
+      public SchemaFactory(IObjectBaseFactory objectBaseFactory, IParameterFactory parameterFactory, ISchemaItemFactory schemaItemFactory,
+         IContainerTask containerTask)
       {
          _objectBaseFactory = objectBaseFactory;
          _parameterFactory = parameterFactory;
@@ -42,11 +41,25 @@ namespace PKSim.Core.Model
          if (container != null)
             schema.Name = _containerTask.CreateUniqueName(container, PKSimConstants.UI.Schema);
 
-         schema.Add(_parameterFactory.CreateFor(Constants.Parameters.START_TIME, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
-         schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameters.NUMBER_OF_REPETITIONS, 1, PKSimBuildingBlockType.Protocol));
-         schema.Add(_parameterFactory.CreateFor(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS, 0, Constants.Dimension.TIME, PKSimBuildingBlockType.Protocol));
+         schema.Add(createParameter(Constants.Parameters.START_TIME, 0, Constants.Dimension.TIME));
+         schema.Add(createParameter(CoreConstants.Parameters.NUMBER_OF_REPETITIONS, 1));
+         schema.Add(createParameter(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS, 0, Constants.Dimension.TIME));
 
          return schema;
+      }
+
+      private IParameter createParameter(string name, double value, string dimension = Constants.Dimension.DIMENSIONLESS)
+      {
+         var parameterValueDefinition = new ParameterValueMetaData
+         {
+            ParameterName = name,
+            DefaultValue = value,
+            Dimension = dimension,
+            BuildingBlockType = PKSimBuildingBlockType.Protocol,
+            IsDefault = false
+         };
+
+         return _parameterFactory.CreateFor(parameterValueDefinition);
       }
    }
 }
