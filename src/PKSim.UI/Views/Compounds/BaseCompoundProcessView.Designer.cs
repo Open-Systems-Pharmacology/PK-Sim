@@ -32,7 +32,7 @@
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.lblProcessType = new DevExpress.XtraEditors.LabelControl();
-         this.cbSpecies = new DevExpress.XtraEditors.ImageComboBoxEdit();
+         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.tbDescription = new DevExpress.XtraEditors.MemoEdit();
          this.panelParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -197,7 +197,7 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutItemParameters;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
       private DevExpress.XtraEditors.LabelControl lblProcessType;
-      private DevExpress.XtraEditors.ImageComboBoxEdit cbSpecies;
+      private PKSim.UI.Views.Core.UxImageComboBoxEdit cbSpecies;
       protected DevExpress.XtraLayout.LayoutControlItem layoutItemSpecies;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemProcessType;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;

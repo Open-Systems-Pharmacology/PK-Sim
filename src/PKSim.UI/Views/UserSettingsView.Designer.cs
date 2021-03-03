@@ -36,7 +36,7 @@ namespace PKSim.UI.Views
          this.tbNumberOfBins = new DevExpress.XtraEditors.TextEdit();
          this.cbPreferredChartYScaling = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.cbPreferredVewLayout = new OSPSuite.UI.Controls.UxComboBoxEdit();
-         this.cbDefaultPopulationAnalysis = new DevExpress.XtraEditors.ImageComboBoxEdit();
+         this.cbDefaultPopulationAnalysis = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.tbNumberOfProcessors = new DevExpress.XtraEditors.TextEdit();
          this.chkShowUpdateNotification = new OSPSuite.UI.Controls.UxCheckEdit();
          this.colorFormula = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
@@ -47,7 +47,7 @@ namespace PKSim.UI.Views
          this.tbAbsTol = new DevExpress.XtraEditors.TextEdit();
          this.cbIconSizeContextMenu = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.cbDefaultPopulation = new OSPSuite.UI.Controls.UxComboBoxEdit();
-         this.cbDefaultSpecies = new DevExpress.XtraEditors.ImageComboBoxEdit();
+         this.cbDefaultSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.chkShouldRestoreWorkspaceLayout = new OSPSuite.UI.Controls.UxCheckEdit();
          this.cbDefaultParameterGroupingMode = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.colorDisabled = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
@@ -987,7 +987,7 @@ namespace PKSim.UI.Views
         private OSPSuite.UI.Controls.UxCheckEdit chkShouldRestoreWorkspaceLayout;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private OSPSuite.UI.Controls.UxComboBoxEdit cbDefaultPopulation;
-        private DevExpress.XtraEditors.ImageComboBoxEdit cbDefaultSpecies;
+        private PKSim.UI.Views.Core.UxImageComboBoxEdit cbDefaultSpecies;
         private DevExpress.XtraLayout.LayoutControlGroup layoutGroupDefaults;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemDefaultSpecies;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemDefaultPopulation;
@@ -1010,7 +1010,7 @@ namespace PKSim.UI.Views
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
         private DevExpress.XtraEditors.TextEdit tbNumberOfProcessors;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemNumberOfProcessors;
-        private DevExpress.XtraEditors.ImageComboBoxEdit cbDefaultPopulationAnalysis;
+        private PKSim.UI.Views.Core.UxImageComboBoxEdit cbDefaultPopulationAnalysis;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemDefaultPopulationAnalysis;
         private OSPSuite.UI.Controls.UxComboBoxEdit cbPreferredVewLayout;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemPreferredViewLayout;

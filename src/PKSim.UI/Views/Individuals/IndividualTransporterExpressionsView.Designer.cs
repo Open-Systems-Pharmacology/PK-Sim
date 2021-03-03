@@ -35,7 +35,7 @@ namespace PKSim.UI.Views.Individuals
          this.panelMoleculeProperties = new DevExpress.XtraEditors.PanelControl();
          this.panelWarning = new OSPSuite.UI.Controls.UxHintPanel();
          this.lblTransporterDirectionDescription = new DevExpress.XtraEditors.LabelControl();
-         this.cbTransporterType = new DevExpress.XtraEditors.ImageComboBoxEdit();
+         this.cbTransporterType = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupMoleculeProperties = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemMoleculeProperties = new DevExpress.XtraLayout.LayoutControlItem();
@@ -231,7 +231,7 @@ namespace PKSim.UI.Views.Individuals
       #endregion
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private DevExpress.XtraEditors.ImageComboBoxEdit cbTransporterType;
+      private PKSim.UI.Views.Core.UxImageComboBoxEdit cbTransporterType;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.LabelControl lblTransporterDirectionDescription;
       private OSPSuite.UI.Controls.UxHintPanel panelWarning;
