@@ -32,9 +32,9 @@
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbUnit = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbUnit = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.tbValue = new DevExpress.XtraEditors.TextEdit();
-         this.cbDiscreteValue = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbDiscreteValue = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItemValue = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemUnit = new DevExpress.XtraLayout.LayoutControlItem();
@@ -179,10 +179,10 @@
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraEditors.TextEdit tbValue;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemValue;
-      private DevExpress.XtraEditors.ComboBoxEdit cbUnit;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbUnit;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemUnit;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
-      private DevExpress.XtraEditors.ComboBoxEdit cbDiscreteValue;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDiscreteValue;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDiscreteValue;
    }
 }

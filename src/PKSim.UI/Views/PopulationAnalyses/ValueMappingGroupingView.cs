@@ -23,7 +23,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _gridViewBinder = new GridViewBinder<GroupingLabelDTO>(gridView);
          gridView.AllowsFiltering = false;
          gridView.ShowRowIndicator = false;
-         _symbolsRepository = new UxSymbolsComboBoxRepository(gridView);
+         _symbolsRepository = new UxRepositoryItemSymbols(gridView);
       }
 
       public override void InitializeBinding()

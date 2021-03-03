@@ -35,9 +35,9 @@ namespace PKSim.UI.Views.AdvancedParameters
          this.layoutControlTree = new OSPSuite.UI.Controls.UxLayoutControl();
          this.chkUseInReport = new OSPSuite.UI.Controls.UxCheckEdit();
          this.panelTreeGroup = new DevExpress.XtraEditors.PanelControl();
-         this.cbScalingMode = new DevExpress.XtraEditors.ComboBoxEdit();
-         this.cbBarType = new DevExpress.XtraEditors.ComboBoxEdit();
-         this.cbGroupBy = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbScalingMode = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbBarType = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbGroupBy = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupSettings = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -259,9 +259,9 @@ namespace PKSim.UI.Views.AdvancedParameters
       #endregion
 
       private DevExpress.XtraEditors.SplitContainerControl splitContainer;
-      private DevExpress.XtraEditors.ComboBoxEdit cbScalingMode;
-      private DevExpress.XtraEditors.ComboBoxEdit cbBarType;
-      private DevExpress.XtraEditors.ComboBoxEdit cbGroupBy;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbScalingMode;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbBarType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbGroupBy;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGender;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemBarType;

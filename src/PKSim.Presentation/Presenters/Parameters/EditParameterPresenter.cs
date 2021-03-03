@@ -73,11 +73,6 @@ namespace PKSim.Presentation.Presenters.Parameters
          _editParameterPresenterTask.SetParameterUnit(this, parameterDTO, displayUnit);
       }
 
-      public virtual void SetParameterName(IParameterDTO parameterDTO, string name)
-      {
-         _editParameterPresenterTask.SetParameterName(this, parameterDTO, name);
-      }
-
       protected virtual IParameter ParameterFrom(IParameterDTO parameterDTO)
       {
          return parameterDTO.Parameter;

@@ -12,7 +12,6 @@ using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Assets;
-using PKSim.UI.Views.Core;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 
@@ -37,8 +36,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _screenBinder = new ScreenBinder<IPopulationAnalysisObservedDataSettingsPresenter>();
          _gridViewBinder = new GridViewBinder<ObservedDataCurveOptionsDTO>(gridView);
          gridView.AllowsFiltering = false;
-         _lineStyleRepository = new UxLineStylesComboBoxRepository(gridView);
-         _symbolsRepository = new UxSymbolsComboBoxRepository(gridView);
+         _lineStyleRepository = new UxRepositoryItemLineStyles(gridView);
+         _symbolsRepository = new UxRepositoryItemSymbols(gridView);
          _colorRepository = new UxRepositoryItemColorPickEditWithHistory(gridView);
          _visibleRepository = new UxRepositoryItemCheckEdit(gridView);
          _toolTipController = new ToolTipController();

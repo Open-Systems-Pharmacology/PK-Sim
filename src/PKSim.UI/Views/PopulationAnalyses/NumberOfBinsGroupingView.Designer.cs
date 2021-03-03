@@ -34,9 +34,9 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.ceStartColor = new UxColorPickEditWithHistory();
-         this.cbSymbol = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbSymbol = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.ceEndColor = new UxColorPickEditWithHistory();
-         this.cbGenerationStrategy = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbGenerationStrategy = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.lblNamingPatternDescription = new DevExpress.XtraEditors.LabelControl();
@@ -354,7 +354,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       #endregion
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
-      private DevExpress.XtraEditors.ComboBoxEdit cbGenerationStrategy;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbGenerationStrategy;
       private OSPSuite.UI.Controls.UxGridControl gridControl;
       private PKSim.UI.Views.Core.UxGridView gridView;
       private DevExpress.XtraEditors.LabelControl lblNamingPatternDescription;
@@ -368,7 +368,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGenerationStrategie;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroupPattern;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroupLabels;
-      private DevExpress.XtraEditors.ComboBoxEdit cbSymbol;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbSymbol;
       private UxColorPickEditWithHistory ceEndColor;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemEndColor;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemSymbol;

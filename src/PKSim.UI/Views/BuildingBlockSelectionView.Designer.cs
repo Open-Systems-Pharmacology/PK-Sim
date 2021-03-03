@@ -31,7 +31,7 @@ namespace PKSim.UI.Views
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnLoadBuildingBlock = new DevExpress.XtraEditors.SimpleButton();
-         this.cbBuildingBlocks = new DevExpress.XtraEditors.ImageComboBoxEdit();
+         this.cbBuildingBlocks = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.btnCreateBuildingBlock = new DevExpress.XtraEditors.SimpleButton();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemCreate = new DevExpress.XtraLayout.LayoutControlItem();
@@ -168,7 +168,7 @@ namespace PKSim.UI.Views
       private DevExpress.XtraEditors.SimpleButton btnCreateBuildingBlock;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemCreate;
-      private DevExpress.XtraEditors.ImageComboBoxEdit cbBuildingBlocks;
+      private PKSim.UI.Views.Core.UxImageComboBoxEdit cbBuildingBlocks;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemComboBox;
       private DevExpress.XtraEditors.SimpleButton btnLoadBuildingBlock;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemLoad;

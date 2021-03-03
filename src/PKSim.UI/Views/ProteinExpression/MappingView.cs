@@ -16,6 +16,7 @@ using PKSim.Assets;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Presentation;
+using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.ProteinExpression
@@ -104,7 +105,7 @@ namespace PKSim.UI.Views.ProteinExpression
          col = view.Columns[DatabaseConfiguration.MappingColumns.COL_TISSUE];
          col.Caption = PKSimConstants.ProteinExpressions.ColumnCaptions.Mapping.COL_TISSUE;
          col.OptionsFilter.FilterPopupMode = FilterPopupMode.CheckedList;
-         var tissueComboBoxEditor = new RepositoryItemComboBox();
+         var tissueComboBoxEditor = new UxRepositoryItemComboBox(view);
          tissueComboBoxEditor.AutoComplete = true;
          tissueComboBoxEditor.AllowNullInput = DefaultBoolean.True;
          tissueComboBoxEditor.KeyDown += onTissueComboBoxEditorKeyDown;

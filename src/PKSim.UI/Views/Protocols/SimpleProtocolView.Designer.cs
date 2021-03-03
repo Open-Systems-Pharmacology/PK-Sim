@@ -32,12 +32,12 @@ namespace PKSim.UI.Views.Protocols
       private void InitializeComponent()
       {
          this.layoutSimpleProtocol = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbTargetCompartment = new DevExpress.XtraEditors.ImageComboBoxEdit();
-         this.cbTargetOrgan = new DevExpress.XtraEditors.ImageComboBoxEdit();
-         this.cbApplicationType = new DevExpress.XtraEditors.ImageComboBoxEdit();
+         this.cbTargetCompartment = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
+         this.cbTargetOrgan = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
+         this.cbApplicationType = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.panelDynamicParameters = new DevExpress.XtraEditors.PanelControl();
          this.uxEndTime = new UxParameterDTOEdit();
-         this.cbDosingType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbDosingType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.uxDose = new UxParameterDTOEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupProperties = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -295,7 +295,7 @@ namespace PKSim.UI.Views.Protocols
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private UxParameterDTOEdit uxEndTime;
-      private DevExpress.XtraEditors.ComboBoxEdit cbDosingType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDosingType;
       private UxParameterDTOEdit uxDose;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDose;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDosingInterval;
@@ -303,10 +303,10 @@ namespace PKSim.UI.Views.Protocols
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupProperties;
       private DevExpress.XtraEditors.PanelControl panelDynamicParameters;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDynamicParameters;
-      private DevExpress.XtraEditors.ImageComboBoxEdit cbApplicationType;
+      private PKSim.UI.Views.Core.UxImageComboBoxEdit cbApplicationType;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemApplicationType;
-      private DevExpress.XtraEditors.ImageComboBoxEdit cbTargetCompartment;
-      private DevExpress.XtraEditors.ImageComboBoxEdit cbTargetOrgan;
+      private PKSim.UI.Views.Core.UxImageComboBoxEdit cbTargetCompartment;
+      private PKSim.UI.Views.Core.UxImageComboBoxEdit cbTargetOrgan;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTargetOrgan;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTargetCompartment;
       private OSPSuite.UI.Controls.UxLayoutControl layoutSimpleProtocol;

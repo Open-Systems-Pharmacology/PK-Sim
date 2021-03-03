@@ -34,7 +34,7 @@ namespace PKSim.UI.Views.Simulations
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.pbModel = new System.Windows.Forms.PictureBox();
-         this.cbModel = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbModel = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupModelSettings = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -156,7 +156,7 @@ namespace PKSim.UI.Views.Simulations
       #endregion
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private DevExpress.XtraEditors.ComboBoxEdit cbModel;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbModel;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemModel;
       private System.Windows.Forms.PictureBox pbModel;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;

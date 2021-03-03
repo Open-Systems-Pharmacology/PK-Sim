@@ -405,39 +405,7 @@ namespace PKSim.Core
          _result.ShouldBeAnInstanceOf<SetParameterUnitStructureChangeCommand>();
       }
    }
-
-   public class When_asked_to_rename_a_parameter : concern_for_ParameterTask
-   {
-      private ICommand _result;
-      private string _oldName;
-      private string _newName;
-
-      protected override void Context()
-      {
-         base.Context();
-         _newName = "_newName";
-         _oldName = "_oldName";
-         _parameter.Name = _oldName;
-      }
-
-      protected override void Because()
-      {
-         _result = sut.SetParameterName(_parameter, _newName);
-      }
-
-      [Observation]
-      public void the_name_of_the_parameter_should_have_been_set_to_the_new_name()
-      {
-         _parameter.Name.ShouldBeEqualTo(_newName);
-      }
-
-      [Observation]
-      public void should_return_the_underlying_command_used_to_set_the_parameter_name()
-      {
-         _result.ShouldBeAnInstanceOf<RenameEntityCommand>();
-      }
-   }
-
+   
    public class When_asked_to_reset_a_set_of_parameters_to_their_original_values : concern_for_ParameterTask
    {
       private ICommand _result;

@@ -22,8 +22,6 @@ namespace PKSim.Core.Commands
          _entityId = entity.Id;
          BuildingBlockId = context.BuildingBlockIdContaining(entity);
 
-         //per default, should not change the version of the renamed entity 
-         ShouldChangeVersion = false;
          ObjectType = context.TypeFor(entity);
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          Description = PKSimConstants.Command.RenameEntityCommandDescripiton(ObjectType, entity.Name, _newName);
