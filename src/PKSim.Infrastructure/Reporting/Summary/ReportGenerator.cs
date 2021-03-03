@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
          }
          catch (Exception)
          {
-            //App should not crash if an expection occurs while resolving the report for a specific object
+            //App should not crash if an exception occurs while resolving the report for a specific object
             return defaultReportFor(objectToReport);
          }
       }
