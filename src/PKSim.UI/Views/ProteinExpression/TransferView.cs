@@ -34,6 +34,7 @@ namespace PKSim.UI.Views.ProteinExpression
          grdTransfer.ToolTipController.GetActiveObjectInfo += OnGetActiveObjectInfo;
 
          radioGroup.SelectedIndexChanged += OnRadioGroupSelectedIndexChanged;
+         radioGroup.Properties.AllowMouseWheel = false;
 
          //option settings
          var view = grdTransfer.MainView as Core.UxGridView;

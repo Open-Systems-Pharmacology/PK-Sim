@@ -46,8 +46,8 @@ namespace PKSim.UI.Views.Individuals
          this._panelValueOrigin = new DevExpress.XtraEditors.PanelControl();
          this.uxGestationalAge = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.uxBMI = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
-         this.cbPopulation = new DevExpress.XtraEditors.ComboBoxEdit();
-         this.cbGender = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbPopulation = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbGender = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.uxWeight = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.btnMeanValues = new DevExpress.XtraEditors.SimpleButton();
          this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -507,8 +507,8 @@ namespace PKSim.UI.Views.Individuals
 
       #endregion
 
-      private DevExpress.XtraEditors.ComboBoxEdit cbPopulation;
-      private DevExpress.XtraEditors.ComboBoxEdit cbGender;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbPopulation;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbGender;
       private DevExpress.XtraEditors.SimpleButton btnMeanValues;
       private DevExpress.XtraEditors.ImageComboBoxEdit cbSpecies;
       private OSPSuite.UI.Controls.UxGridControl gridParameterValueVersions;

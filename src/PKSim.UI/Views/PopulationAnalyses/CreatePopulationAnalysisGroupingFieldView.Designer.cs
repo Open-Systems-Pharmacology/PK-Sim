@@ -30,7 +30,7 @@
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbGroupingDefinition = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbGroupingDefinition = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.panelGroupingView = new DevExpress.XtraEditors.PanelControl();
          this.tbName = new DevExpress.XtraEditors.TextEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -223,7 +223,7 @@
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private DevExpress.XtraEditors.ComboBoxEdit cbGroupingDefinition;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbGroupingDefinition;
       private DevExpress.XtraEditors.PanelControl panelGroupingView;
       private DevExpress.XtraEditors.TextEdit tbName;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemName;

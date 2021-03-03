@@ -30,7 +30,7 @@
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbTimeUnit = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbTimeUnit = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.panelStatistics = new DevExpress.XtraEditors.PanelControl();
          this.btnRemove = new DevExpress.XtraEditors.SimpleButton();
          this.btnAdd = new DevExpress.XtraEditors.SimpleButton();
@@ -288,7 +288,7 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutItemButtonRemove;
       private DevExpress.XtraEditors.PanelControl panelStatistics;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemStatisticsSelection;
-      private DevExpress.XtraEditors.ComboBoxEdit cbTimeUnit;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbTimeUnit;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTimeUnit;
    }
 }

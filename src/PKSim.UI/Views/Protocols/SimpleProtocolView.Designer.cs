@@ -37,7 +37,7 @@ namespace PKSim.UI.Views.Protocols
          this.cbApplicationType = new DevExpress.XtraEditors.ImageComboBoxEdit();
          this.panelDynamicParameters = new DevExpress.XtraEditors.PanelControl();
          this.uxEndTime = new UxParameterDTOEdit();
-         this.cbDosingType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbDosingType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.uxDose = new UxParameterDTOEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupProperties = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -295,7 +295,7 @@ namespace PKSim.UI.Views.Protocols
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private UxParameterDTOEdit uxEndTime;
-      private DevExpress.XtraEditors.ComboBoxEdit cbDosingType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDosingType;
       private UxParameterDTOEdit uxDose;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDose;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDosingInterval;

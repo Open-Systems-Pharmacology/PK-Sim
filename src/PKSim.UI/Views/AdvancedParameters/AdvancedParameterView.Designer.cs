@@ -31,7 +31,7 @@
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelParameters = new DevExpress.XtraEditors.PanelControl();
-         this.cbDistributionType = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbDistributionType = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupDistributionType = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemDistributionType = new DevExpress.XtraLayout.LayoutControlItem();
@@ -150,7 +150,7 @@
       #endregion
 
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private DevExpress.XtraEditors.ComboBoxEdit cbDistributionType;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDistributionType;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDistributionType;
       private DevExpress.XtraEditors.PanelControl panelParameters;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupDistributionType;

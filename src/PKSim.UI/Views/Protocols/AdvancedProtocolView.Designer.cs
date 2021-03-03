@@ -42,7 +42,7 @@ namespace PKSim.UI.Views.Protocols
          this.mainView = new PKSim.UI.Views.Core.UxGridView();
          this.gridViewDynamicParameters = new PKSim.UI.Views.Core.UxGridView();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbTimeUnit = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbTimeUnit = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemTimeUnit = new DevExpress.XtraLayout.LayoutControlItem();
@@ -214,7 +214,7 @@ namespace PKSim.UI.Views.Protocols
       private PKSim.UI.Views.Core.UxGridView mainView;
       private PKSim.UI.Views.Core.UxGridView gridViewDynamicParameters;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
-      private DevExpress.XtraEditors.ComboBoxEdit cbTimeUnit;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbTimeUnit;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTimeUnit;
