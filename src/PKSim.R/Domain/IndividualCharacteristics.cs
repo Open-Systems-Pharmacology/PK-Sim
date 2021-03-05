@@ -11,9 +11,12 @@ namespace PKSim.R.Domain
       private readonly List<MoleculeOntogeny> _moleculeOntogenies = new List<MoleculeOntogeny>();
 
       public IReadOnlyList<MoleculeOntogeny> MoleculeOntogenies => _moleculeOntogenies;
+
       public MoleculeOntogeny[] MoleculeOntogeniesAsArray => _moleculeOntogenies.ToArray();
 
       public void AddMoleculeOntogeny(MoleculeOntogeny moleculeOntogeny) => _moleculeOntogenies.Add(moleculeOntogeny);
+
+      public int? Seed { get; set; }
    }
 }
 

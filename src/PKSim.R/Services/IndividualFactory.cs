@@ -55,7 +55,7 @@ namespace PKSim.R.Services
       {
          var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
-         var individual = _individualFactory.CreateAndOptimizeFor(originData);
+         var individual = _individualFactory.CreateAndOptimizeFor(originData, individualCharacteristics.Seed);
          var individualProperties = _individualValuesMapper.MapFrom(individual);
          var allIndividualParameters = individualProperties.ParameterValues;
          var ontogenyParameters = _ontogenyFactorsRetriever.FactorsFor(originData, moleculeOntogenies).Select(x => new ParameterValueWithUnit(x));
@@ -103,7 +103,7 @@ namespace PKSim.R.Services
       {
          var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
-         var individual = _individualFactory.CreateAndOptimizeFor(originData);
+         var individual = _individualFactory.CreateAndOptimizeFor(originData, individualCharacteristics.Seed);
          var distributedParameters = individual.GetAllChildren<IDistributedParameter>().Select(distributedParameterValueFrom).ToList();
          //Ontogeny factors have no units
          distributedParameters.AddRange(_ontogenyFactorsRetriever.DistributionFactorsFor(originData, moleculeOntogenies)

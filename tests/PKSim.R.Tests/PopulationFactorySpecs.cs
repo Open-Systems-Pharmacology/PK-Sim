@@ -73,7 +73,8 @@ namespace PKSim.R
                Unit = "kg",
             },
             NumberOfIndividuals = 10,
-            ProportionOfFemales = 70
+            ProportionOfFemales = 70,
+            Seed = 2
          };
 
          _populationCharacteristics.AddMoleculeOntogeny(new MoleculeOntogeny {Molecule = "CYP3A4", Ontogeny = "CYP3A4"});
