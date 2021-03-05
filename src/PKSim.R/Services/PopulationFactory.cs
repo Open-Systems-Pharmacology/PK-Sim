@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using FluentNHibernate.Testing.Values;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Utility.Exceptions;
