@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 
@@ -7,7 +9,7 @@ namespace PKSim.Core.Services
 {
    public class FileSelection : Notifier, IValidatable
    {
-      public IBusinessRuleSet Rules { get; private set; }
+      public IBusinessRuleSet Rules { get; }
 
       public FileSelection()
       {
@@ -29,6 +31,22 @@ namespace PKSim.Core.Services
       {
          get => _description;
          set => SetProperty(ref _description, value);
+      }
+
+      public FileSelection AddSuffixToFileName(string suffix)
+      {
+         if (string.IsNullOrEmpty(FilePath))
+            return this;
+
+         var fileName = FileHelper.FileNameFromFileFullPath(FilePath);
+         var folder = FileHelper.FolderFromFileFullPath(FilePath);
+         var ext = new FileInfo(FilePath).Extension;
+
+         return new FileSelection
+         {
+            FilePath = Path.Combine(folder, $"{fileName}{suffix}{ext}"), 
+            Description = _description
+         };
       }
 
       private static class AllRules

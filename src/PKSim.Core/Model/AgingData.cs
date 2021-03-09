@@ -16,10 +16,7 @@ namespace PKSim.Core.Model
          _data = new Cache<string, ParameterAgingData>(x => x.ParameterPath);
       }
 
-      public virtual IEnumerable<ParameterAgingData> AllParameterData
-      {
-         get { return _data; }
-      }
+      public virtual IReadOnlyCollection<ParameterAgingData> AllParameterData => _data;
 
       /// <summary>
       ///    Returns or set a <seealso cref="DataTable " /> containing 4 columns. First one is Individual index, second one is parameter ParameterPath, third one is X value (time) in base unit
@@ -41,7 +38,7 @@ namespace PKSim.Core.Model
             {
                var row = dataTable.NewRow();
                row[Constants.Population.INDIVIDUAL_ID_COLUMN] = parameterAgingData.IndividualIndexes[i];
-               row[Constants.Population.PARAMETER_PATH_COLUMN] = parameterAgingData.ParameterPath;
+               row[Constants.Population.PARAMETER_PATH_COLUMN] = parameterAgingData.ParameterPath.InQuotes();
 
                //use string converter to ensure value are generated with "."
                row[Constants.Population.TIME_COLUMN] = parameterAgingData.Times[i].ConvertedTo<string>();

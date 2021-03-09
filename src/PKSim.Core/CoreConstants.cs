@@ -1193,6 +1193,7 @@ namespace PKSim.Core
          public const string ICRP = "European_ICRP_2002";
          public const string PRETERM = "Preterm";
          public const string TABLE_PARAMETER_EXPORT = "_TableParameters";
+         public const string AGING_PARAMETER_EXPORT = "_Aging";
          public const string AGING_DATA_TABLE_NAME = "AgingData";
          public const string PREGNANT = "Pregnant";
       }
