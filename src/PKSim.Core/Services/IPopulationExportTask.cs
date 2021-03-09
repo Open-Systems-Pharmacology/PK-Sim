@@ -89,7 +89,6 @@ namespace PKSim.Core.Services
          exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader: true), fileSelection);
          
          //Also export all aging data
-         //all aging data
          var agingData = populationSimulation.AgingData.ToDataTable();
          if (agingData.Rows.Count== 0)
             return;
