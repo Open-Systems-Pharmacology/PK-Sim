@@ -87,6 +87,15 @@ namespace PKSim.Core.Services
       public void ExportToCSV(PopulationSimulation populationSimulation, FileSelection fileSelection)
       {
          exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader: true), fileSelection);
+         
+         //Also export all aging data
+         //all aging data
+         var agingData = populationSimulation.AgingData.ToDataTable();
+         if (agingData.Rows.Count== 0)
+            return;
+
+         var agingDataFile = fileSelection.AddSuffixToFileName(CoreConstants.Population.AGING_PARAMETER_EXPORT);
+         agingData.ExportToCSV(agingDataFile.FilePath, comments: CreateProjectMetaInfoFrom(agingDataFile.Description));
       }
 
       public void ExportToCSV(PopulationSimulation populationSimulation, string fileFullPath)
