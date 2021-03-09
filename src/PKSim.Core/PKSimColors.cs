@@ -7,7 +7,7 @@ namespace PKSim.Core
    public static class PKSimColors
    {
       /// <summary>
-      /// Color used for cell that are a formu;a
+      /// Color used for cell that are a formula
       /// </summary>
       public static Color Formula = Color.Azure;
 
@@ -21,20 +21,20 @@ namespace PKSim.Core
       /// </summary>
       public static Color ChartBack
       {
-         get { return Colors.ChartBack; }
-         set { Colors.ChartBack = value; }
+         get => Colors.ChartBack;
+         set => Colors.ChartBack = value;
       }
 
       public static Color ChartDiagramBack
       {
-         get { return Colors.ChartDiagramBack; }
-         set { Colors.ChartDiagramBack = value; }
+         get => Colors.ChartDiagramBack;
+         set => Colors.ChartDiagramBack = value;
       }
 
       /// <summary>
       /// Color used for cell that are locked/disabled 
       /// </summary>
-      public static Color Disabled = Colors.Disabled;
+      public static Color Disabled = Color.FromArgb(255, 247, 247, 249);
 
       /// <summary>
       /// Color used for the female gender (Start of gradient)
