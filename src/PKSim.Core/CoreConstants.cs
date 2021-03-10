@@ -442,8 +442,13 @@ namespace PKSim.Core
                case Parameters.REL_EXP_PLASMA:
                   return Compartment.PLASMA;
                case Parameters.REL_EXP_BLOOD_CELLS:
+               case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS:
+               case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
                   return Compartment.BLOOD_CELLS;
                case Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
+               case Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
+               case Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE:
+               case Parameters.FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE:
                   return Compartment.VASCULAR_ENDOTHELIUM;
 
                default:
