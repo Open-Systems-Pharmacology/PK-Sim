@@ -11,6 +11,12 @@ namespace PKSim.CLI.Core.RunOptions
       public IBusinessRuleSet Rules { get; } = new BusinessRuleSet();
       public SimulationExportMode ExportMode { get; set; }
 
+      /// <summary>
+      /// Indicates whether all outputs of the simulation should be exported or only the one actually selected in the simulation.
+      /// Default value is <c>TRUE</c>
+      /// </summary>
+      public bool RunForAllOutputs { get; set; } = true;
+
       public JsonRunOptions()
       {
          Rules.AddRange(new[]

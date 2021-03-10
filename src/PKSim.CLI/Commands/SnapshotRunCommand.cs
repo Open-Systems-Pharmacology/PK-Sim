@@ -8,7 +8,7 @@ using PKSim.CLI.Core.Services;
 
 namespace PKSim.CLI.Commands
 {
-   [Verb("snap", HelpText = "Start snapshot workflows by loading a set of project (or snapshot) files and creating the corresponding snapshot (or project) file automatically.")]
+   [Verb("snap", HelpText = "Start snapshot workflow by loading a set of project (or snapshot) files and creating the corresponding snapshot (or project) file automatically.")]
    public class SnapshotRunCommand : CLICommand<SnapshotRunOptions>, IWithInputAndOutputFolders
    {
       public override string Name { get; } = "Snapshot";

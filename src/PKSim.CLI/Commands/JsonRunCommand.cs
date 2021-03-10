@@ -17,6 +17,10 @@ namespace PKSim.CLI.Commands
       [Option('o', "output", Required = true, HelpText = "Output folder where calculated values will be exported.")]
       public string OutputFolder { get; set; }
 
+      [Option("forAll", Required = false,
+         HelpText = "Optional. Flag indicating whether all outputs should be generated or only the one selected in the simulation. Default is FALSE")]
+      public bool RunForAllOutputs { get; set; } = false;
+
       [Usage(ApplicationAlias = "PKSim.CLI")]
       public static IEnumerable<Example> Examples
       {
@@ -38,6 +42,7 @@ namespace PKSim.CLI.Commands
             InputFolder = InputFolder,
             OutputFolder = OutputFolder,
             ExportMode = ExportMode,
+            RunForAllOutputs = RunForAllOutputs
          };
       }
    }
