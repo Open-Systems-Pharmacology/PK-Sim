@@ -199,7 +199,7 @@ namespace PKSim.Core
          public static readonly string ONE_RATE = "One_Rate";
          public static readonly string ZERO_RATE = "Zero_Rate";
          public static readonly string PARAM_F_EXP_BC_MEMBRANE = "PARAM_f_exp_bc_membrane";
-         public static readonly string PARAM_F_EXP_VASC_BASOLATERAL = "PARAM_f_exp_vasc_basolateral";
+         public static readonly string PARAM_F_EXP_VASC_TISSUE_SIDE = "PARAM_f_exp_vasc_tissue_side";
          public static readonly string PARAM_F_EXP_INTERSTITIAL = "PARAM_f_exp_interstitial";
          public static readonly string PARAM_F_EXP_BASOLATERAL = "PARAM_f_exp_basolateral";
          public static readonly string PARAM_F_EXP_BRN_TISSUE = "PARAM_f_exp_brn_tissue";
@@ -442,8 +442,13 @@ namespace PKSim.Core
                case Parameters.REL_EXP_PLASMA:
                   return Compartment.PLASMA;
                case Parameters.REL_EXP_BLOOD_CELLS:
+               case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS:
+               case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
                   return Compartment.BLOOD_CELLS;
                case Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
+               case Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
+               case Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE:
+               case Parameters.FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE:
                   return Compartment.VASCULAR_ENDOTHELIUM;
 
                default:
@@ -1019,8 +1024,8 @@ namespace PKSim.Core
          public const string WEIGHT_TISSUE = "Weight (tissue)";
          public const string FRACTION_EXPRESSED_BLOOD_CELLS = "Fraction expressed in blood cells";
          public const string FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE = "Fraction expressed in blood cells membrane";
-         public const string FRACTION_EXPRESSED_VASC_ENDO_APICAL = "Fraction expressed on apical membrane of vascular endothelium";
-         public const string FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL = "Fraction expressed on basolateral membrane of vascular endothelium";
+         public const string FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE = "Fraction expressed on plasma-side membrane of vascular endothelium";
+         public const string FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE = "Fraction expressed on tissue-side membrane of vascular endothelium";
          public const string FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME = "Fraction expressed in endosomes";
          public const string INITIAL_CONCENTRATION = "Initial concentration";
          public const string FRACTION_EXPRESSED_INTRACELLULAR = "Fraction expressed intracellular";

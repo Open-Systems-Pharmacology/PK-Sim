@@ -42,8 +42,8 @@ namespace PKSim.Core.Services
          AddGlobalExpression(molecule,
             RelExpParam(REL_EXP_VASCULAR_ENDOTHELIUM),
             FractionParam(FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
-            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_APICAL, CoreConstants.Rate.ZERO_RATE),
-            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_VASC_BASOLATERAL, editable: false)
+            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE, CoreConstants.Rate.PARAM_F_EXP_VASC_TISSUE_SIDE, editable: false)
          );
 
          addVascularSystemInitialConcentration(simulationSubject, moleculeName);
