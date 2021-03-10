@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "PKSim.CLI": {
-      "commandName": "Project",
-      "commandLineArgs": "run -i  'c:/temp/test'  -o 'c:/temp/toto'"
-    }
-  }
-}

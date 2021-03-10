@@ -266,4 +266,5 @@ paket-files/
 /src/Db/7.2_PregnantWoman.xlsx
 /src/Db/PKSimDB.ldb
 /src/Db/**/*.develop.sqlite
-/src/PKSim.UI/Properties/licenses.licx
+/src/**/licenses.licx
+/src/**/launchSettings.json
