@@ -1,3 +1,6 @@
+DELETE FROM tab_calculation_method_rates WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_ProteinContainerVolume_Compartment';
+DELETE FROM tab_calculation_method_rates WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_ProteinContainerVolume_Organ';
+DELETE FROM tab_calculation_method_rates WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_ProteinContainerVolume_Organ_SinLin';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ExpressionParameters' AND formula_rate='PARAM_f_exp_vasc_basolateral';
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('ExpressionParameters','PARAM_f_exp_vasc_tissue_side','1 - f_exp_vasc_endo - f_exp_vasc_apical','Fraction');
 DELETE FROM tab_container_parameter_rates WHERE container_id=172 AND container_type='COMPARTMENT' AND container_name='BloodCells' AND parameter_name='Volume of protein container' AND calculation_method='CompoundCommon';
@@ -323,6 +326,10 @@ DELETE FROM tab_parameters WHERE parameter_name='Fraction expressed on basolater
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Fraction expressed on plasma-side membrane of vascular endothelium','Fraction expressed on plasma-side membrane of vascular endothelium','Fraction of total protein concentration in vascular endothelium that is located on the plasma membrane facing blood plasma','Fraction',NULL);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Fraction expressed on tissue-side membrane of vascular endothelium','Fraction expressed on tissue-side membrane of vascular endothelium','Fraction of total protein concentration in vascular endothelium that is located on the basolateral side facing interstitial space.','Fraction',NULL);
 DELETE FROM tab_parameters WHERE parameter_name='Volume of protein container';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_ProteinContainerVolume_Compartment' AND path_id=139 AND parameter_name='Volume';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_ProteinContainerVolume_Organ' AND path_id=140 AND parameter_name='Volume';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_ProteinContainerVolume_Organ_SinLin' AND path_id=140 AND parameter_name='Volume';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_ProteinContainerVolume_Organ_SinLin' AND path_id=140 AND parameter_name='Volume (mucosa)';
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('CompoundCommon','PARAM_StartAmount_Protein',140,'Volume','V');
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_StartAmount_Protein' AND path_id=140 AND parameter_name='Volume of protein container';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='ExpressionParameters' AND formula_rate='InitialConcentrationInterstitial' AND path_id=240 AND parameter_name='Fraction expressed on basolateral membrane of vascular endothelium';
@@ -333,5 +340,8 @@ DELETE FROM tab_rate_generic_parameters WHERE calculation_method='ExpressionPara
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='ExpressionParameters' AND formula_rate='PARAM_f_exp_vasc_basolateral' AND path_id=240 AND parameter_name='Fraction expressed on apical membrane of vascular endothelium';
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('ExpressionParameters','PARAM_f_exp_vasc_tissue_side',240,'Fraction expressed in endosomes','f_exp_vasc_endo');
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('ExpressionParameters','PARAM_f_exp_vasc_tissue_side',240,'Fraction expressed on plasma-side membrane of vascular endothelium','f_exp_vasc_apical');
+DELETE FROM tab_rates WHERE formula_rate='PARAM_ProteinContainerVolume_Compartment';
+DELETE FROM tab_rates WHERE formula_rate='PARAM_ProteinContainerVolume_Organ';
+DELETE FROM tab_rates WHERE formula_rate='PARAM_ProteinContainerVolume_Organ_SinLin';
 DELETE FROM tab_rates WHERE formula_rate='PARAM_f_exp_vasc_basolateral';
 INSERT INTO tab_rates(formula_rate,display_name,description) VALUES('PARAM_f_exp_vasc_tissue_side','PARAM_f_exp_vasc_tissue_side','PARAM_f_exp_vasc_tissue_side');
