@@ -30,10 +30,17 @@ namespace PKSim.Presentation.UICommands
 
          var project = _executionContext.Project;
          var configurationId = Subject.ConfigurationId;
-         _observedDataTask.Delete(project.AllObservedData.Where(r => !string.IsNullOrEmpty(r.ConfigurationId) && r.ConfigurationId == configurationId));
 
+         //we should check this
+         var observedDataFromSameFile =
+            project.AllObservedData.Where(r => !string.IsNullOrEmpty(r.ConfigurationId) && r.ConfigurationId == configurationId ); //actually the question here is: configID means they come from the same file right?
+
+         //_observedDataTask.Delete(project.AllObservedData.Where(r => !string.IsNullOrEmpty(r.ConfigurationId) && r.ConfigurationId == configurationId));
+
+
+         //hmmm....but my guess is the simulations would still need to reload...should we do something for this?
          var configuration = project.ImporterConfigurationBy(configurationId);
-         _importObservedDataTask.AddObservedDataFromConfigurationToProject(configuration);
+         _importObservedDataTask.AddAndReplaceObservedDataFromConfigurationToProject(configuration, observedDataFromSameFile);
       }
    }
 }

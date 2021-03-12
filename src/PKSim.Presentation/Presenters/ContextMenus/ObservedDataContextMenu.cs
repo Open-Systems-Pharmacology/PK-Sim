@@ -28,16 +28,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       //somewhere here we should also add
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(DataRepository dataRepository, Simulation activeSimulation)
       {
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Reload)
-            .WithCommandFor<ReloadObservedDataCommand, DataRepository>(dataRepository)
-            .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
-            .WithIcon(ApplicationIcons.Refresh);
-
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated)
-            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
-            .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
-            .WithIcon(ApplicationIcons.RefreshAll);
-
          yield return CreateMenuButton.WithCaption(MenuNames.Edit)
             .WithCommandFor<EditSubjectUICommand<DataRepository>, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.Edit);
@@ -50,6 +40,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithCommandFor<SaveObservedDataToTemplateDatabaseCommand, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .AsGroupStarter();
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated)
+            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
+            .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
+            .WithIcon(ApplicationIcons.RefreshAll);
 
          yield return CreateMenuButton.WithCaption(Captions.ExportToExcel.WithEllipsis())
             .WithCommandFor<ExportObservedDataToExcelCommand, DataRepository>(dataRepository)

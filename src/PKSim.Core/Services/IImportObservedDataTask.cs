@@ -1,4 +1,6 @@
-﻿using OSPSuite.Core.Import;
+﻿using System.Collections.Generic;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Import;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -11,5 +13,6 @@ namespace PKSim.Core.Services
       void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration);
       void AddObservedDataFromConfigurationToProjectForDataRepository(ImporterConfiguration configuration, string dataRepositoryName);
       ImporterConfiguration OpenXmlConfiguration();
+      void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile);
    }
 }

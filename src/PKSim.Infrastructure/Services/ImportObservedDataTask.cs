@@ -81,6 +81,67 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
+      public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
+      {
+         var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, null, false, false);
+         foreach (var dataSet in importedObservedData)
+         {
+            var existingDataSet= observedDataFromSameFile.FirstOrDefault(x => x.Name.Equals(dataSet.Name));
+
+            if (existingDataSet == null) continue; //here not continue. here add the existing data to the project
+
+           /*
+            existingDataSet.Remove(existingDataSet.AllButBaseGrid().FirstOrDefault());
+
+            //remove all but baseGrid
+            foreach (var column in list)
+            {
+               existingDataSet.Remove(column);
+            }
+            */
+            foreach (var column in dataSet.Columns)
+            {
+               var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
+               {
+                  QuantityInfo = column.QuantityInfo,
+                  DataInfo = column.DataInfo,
+                  IsInternal = column.IsInternal,
+                  Values = column.Values
+               };
+
+               if (column.IsBaseGrid())
+               {
+                  //if (existingDataSet.BaseGrid != null) continue;
+                  //existingDataSet.Add(datacolumn);
+                  existingDataSet.BaseGrid.Values = datacolumn.Values;
+               }
+               
+               else
+               {
+                  /*
+                  var baseGrid = dataSet.Columns.FirstOrDefault(x => x.IsBaseGrid());
+
+                  var baseGridColumn = new DataColumn(baseGrid.Id, baseGrid.Name, baseGrid.Dimension, baseGrid.BaseGrid)
+                  {
+                     QuantityInfo = column.QuantityInfo,
+                     DataInfo = column.DataInfo,
+                     IsInternal = column.IsInternal,
+                     Values = column.Values
+                  };
+                  existingDataSet.Add(baseGridColumn);
+                  existingDataSet.Add(datacolumn);*/
+
+                  var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
+                  if (existingColumn == null)
+                     existingDataSet.Add(column);
+                  else 
+                     existingColumn.Values = column.Values;
+               }
+            }
+         }
+
+      }
+
       public void AddObservedDataToProjectForCompound(Compound compound)
       {
          _executionContext.Load(compound);
@@ -101,19 +162,29 @@ namespace PKSim.Infrastructure.Services
 
       private void AddObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool propmtUser = true, string dataRepositoryName = null, bool allowCompoundNameEdit = false)
       {
-         var metaDataCategories = defaultMetaDataCategories().ToList();
-         metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
-
-         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
-         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
-
-         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, propmtUser, metaDataCategories, importConfiguration(), dataImporterSettings, string.Empty, string.Empty);
+         var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, compound, propmtUser, allowCompoundNameEdit);
          foreach (var observedData in string.IsNullOrEmpty(dataRepositoryName) ? importedObservedData : importedObservedData.Where(r => r.Name == dataRepositoryName))
          {
             adjustMolWeight(observedData);
             _observedDataTask.AddObservedDataToProject(observedData);
             updateQuantityInfoInImportedColumns(observedData);
          }
+      }
+
+      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool propmtUser,
+         bool allowCompoundNameEdit)
+      {
+         var metaDataCategories = defaultMetaDataCategories().ToList();
+         metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
+
+         var dataImporterSettings = new DataImporterSettings
+            {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+
+
+         var importedObservedData =
+            _dataImporter.ImportFromConfiguration(configuration, propmtUser, metaDataCategories, importConfiguration(), dataImporterSettings);
+         return importedObservedData;
       }
 
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
