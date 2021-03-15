@@ -39,7 +39,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, e);
          gridView.ShowRowIndicator = false;
          gridView.AllowsFiltering = false;
-         _symbolsRepository = new UxSymbolsComboBoxRepository(gridView);
+         _symbolsRepository = new UxRepositoryItemSymbols(gridView);
          _colorRepository = new UxRepositoryItemColorPickEditWithHistory();
       }
 

@@ -30,7 +30,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.cbOntogey = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbOntogey = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnLoadOntogenyFromFile = new DevExpress.XtraEditors.SimpleButton();
          this.btnShowOntogeny = new DevExpress.XtraEditors.SimpleButton();
@@ -156,7 +156,7 @@
 
       #endregion
 
-      private DevExpress.XtraEditors.ComboBoxEdit cbOntogey;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbOntogey;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.SimpleButton btnShowOntogeny;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;

@@ -37,7 +37,7 @@ namespace PKSim.UI.Views.Compounds
          this.lblSpeciesDescription = new DevExpress.XtraEditors.LabelControl();
          this.lblDataSourceDescription = new DevExpress.XtraEditors.LabelControl();
          this.lbProcessType = new DevExpress.XtraEditors.ListBoxControl();
-         this.cbSpecies = new DevExpress.XtraEditors.ImageComboBoxEdit();
+         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.tbSystemicProcessType = new DevExpress.XtraEditors.TextEdit();
          this.panelParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -460,7 +460,7 @@ namespace PKSim.UI.Views.Compounds
       private DevExpress.XtraLayout.LayoutControlItem layoutItemParameters;
       protected DevExpress.XtraLayout.LayoutControlItem layoutItemDataSource;
       protected DevExpress.XtraLayout.LayoutControlItem layoutItemProtein;
-      protected DevExpress.XtraEditors.ImageComboBoxEdit cbSpecies;
+      protected PKSim.UI.Views.Core.UxImageComboBoxEdit cbSpecies;
       protected DevExpress.XtraEditors.TextEdit tbSystemicProcessType;
       protected DevExpress.XtraLayout.LayoutControlItem layoutItemSystemicProcessType;
       protected DevExpress.XtraLayout.LayoutControlItem layoutItemSpecies;

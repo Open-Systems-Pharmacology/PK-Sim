@@ -44,7 +44,8 @@ namespace PKSim.UI.Views.Parameters
 
          _valueElementBinder.OnValueUpdating += (o, e) => ValueChanged(o, e.NewValue);
 
-         _screenBinder.Bind(p => p.DisplayUnit).To(cbUnit)
+         _screenBinder.Bind(p => p.DisplayUnit)
+            .To(cbUnit)
             .WithValues(p => p.AllUnits)
             .OnValueUpdating += (o, e) => UnitChanged(o, e.NewValue);
 

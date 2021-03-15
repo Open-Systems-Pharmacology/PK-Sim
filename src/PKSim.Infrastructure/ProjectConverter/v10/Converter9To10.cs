@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Converters.v10;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -17,24 +18,29 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
    public class Converter9To10 : IObjectConverter,
       IVisitor<Individual>,
       IVisitor<Population>,
-      IVisitor<Simulation>
+      IVisitor<Simulation>,
+      IVisitor<ParameterIdentification>
 
    {
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
+      private readonly Converter90To100 _coreConverter90To100;
       private bool _converted;
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V9;
 
       public Converter9To10(
-         IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver, 
-         IDefaultIndividualRetriever defaultIndividualRetriever, 
-         ICloner cloner)
+         IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
+         IDefaultIndividualRetriever defaultIndividualRetriever,
+         ICloner cloner,
+         Converter90To100 coreConverter90To100
+      )
       {
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
+         _coreConverter90To100 = coreConverter90To100;
       }
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
@@ -42,8 +48,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          _converted = false;
          element.DescendantsAndSelf("Individual").Each(convertIndividualProteinsIn);
          element.DescendantsAndSelf("BaseIndividual").Each(convertIndividualProteinsIn);
+         element.DescendantsAndSelf("UserSettings").Each(convertUserSettings);
 
          return (ProjectVersions.V10, _converted);
+      }
+
+      private void convertUserSettings(XElement settingsElement)
+      {
+         settingsElement.SetAttributeValue("disabledColor", PKSimColors.Disabled.ToArgb().ToString());
+         _converted = true;
       }
 
       private void convertIndividualProteinsIn(XElement individualElement)
@@ -76,6 +89,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
             transporterContainerNode.Add(new XElement("Tags", tag));
          });
       }
+
       public (int convertedToVersion, bool conversionHappened) Convert(object objectToConvert, int originalVersion)
       {
          _converted = false;
@@ -89,6 +103,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
 
       public void Visit(Simulation simulation) => convertIndividual(simulation.BuildingBlock<Individual>());
 
+      public void Visit(ParameterIdentification parameterIdentification)
+      {
+         (_, _converted) = _coreConverter90To100.Convert(parameterIdentification);
+      }
+
       private void convertIndividual(Individual individual)
       {
          if (individual == null)
@@ -98,6 +117,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
 
          //Use to list here as the collection will be modified during iteration
          individual.AllMolecules().ToList().Each(x => convertMolecule(x, individual));
+         _converted = true;
       }
 
       private void addFractionEndosomalParametersTo(Individual individual)
@@ -128,7 +148,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
 
          //New molecules is added. We need to update all global parameters as well as relative expression parameters
          var newMolecule = factory.AddMoleculeTo(individual, moleculeToConvert.Name);
-         
+
          if (newMolecule == null)
             return;
 
@@ -162,7 +182,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          var membraneLocation = EnumHelper.ParseValue<MembraneLocation>(expressionContainerToConvert.Tags.ElementAt(0).Value);
 
          var matchingContainers = allTransporterExpressionContainers
-            .Where(x=>x.LogicalContainerName == expressionContainerToConvert.Name || x.CompartmentName == expressionContainerToConvert.Name)
+            .Where(x => x.LogicalContainerName == expressionContainerToConvert.Name || x.CompartmentName == expressionContainerToConvert.Name)
             .ToList();
 
          matchingContainers.Each(x => x.TransportDirection = TransportDirections.DefaultDirectionFor(transporter.TransportType, x));

@@ -33,7 +33,7 @@
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.cbTemplateName = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbTemplateName = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutItemTemplate = new DevExpress.XtraLayout.LayoutControlItem();
          this.panelParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutItemParameters = new DevExpress.XtraLayout.LayoutControlItem();
@@ -164,7 +164,7 @@
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.PanelControl panelParameters;
-      private DevExpress.XtraEditors.ComboBoxEdit cbTemplateName;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbTemplateName;
       private DevExpress.XtraEditors.LabelControl lblDescription;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemTemplate;

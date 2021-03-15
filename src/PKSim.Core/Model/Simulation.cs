@@ -539,7 +539,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns all the buildng block with the given type used in the simulation
+      ///    Returns all the building block with the given type used in the simulation
       /// </summary>
       public virtual IEnumerable<UsedBuildingBlock> UsedBuildingBlocksInSimulation(PKSimBuildingBlockType buildingBlockType)
       {

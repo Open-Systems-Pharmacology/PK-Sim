@@ -80,7 +80,7 @@ namespace PKSim.UI.Views.Protocols
       {
          base.InitializeResources();
          _radioButtonSimple = new RadioGroupItem(ProtocolMode.Simple, PKSimConstants.UI.SimpleProtocolMode);
-
+         radioGroupProtocolMode.Properties.AllowMouseWheel = false;
          radioGroupProtocolMode.Properties.Items.AddRange(new[]
                                                              {
                                                                 _radioButtonSimple,

@@ -134,7 +134,7 @@ namespace PKSim.Core.Commands
       private IEnumerable<IOSPSuiteCommand> updateVascularEndotheliumExpressionParameters(IExecutionContext context)
       {
          var command = new PKSimMacroCommand();
-         var f_exp_apical = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_APICAL);
+         var f_exp_apical = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE);
          var f_exp_endosome = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME);
          var rel_exp_vasc = _protein.Parameter(CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
 

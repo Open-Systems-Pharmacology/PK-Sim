@@ -141,13 +141,6 @@ namespace PKSim.Core.Services
       ICommand SetParameterUnitWithoutBuildingBlockChange(IParameter parameter, Unit displayUnit);
 
       /// <summary>
-      ///    Renames the parameter
-      /// </summary>
-      /// <param name="parameter">Parameter</param>
-      /// <param name="name">New name for the parameter</param>
-      ICommand SetParameterName(IParameter parameter, string name);
-
-      /// <summary>
       ///    Resets all parameters to their default values
       /// </summary>
       /// <param name="parameters">Parameters to be reset</param>
@@ -399,11 +392,6 @@ namespace PKSim.Core.Services
       public ICommand UpdateTableFormulaWithoutBuildingBlockChange(IParameter tableParameter, TableFormula tableFormula)
       {
          return executeAndUpdatedDefaultStateAndValue(new UpdateParameterTableFormulaCommand(tableParameter, tableFormula), tableParameter, shouldChangeVersion: false);
-      }
-
-      public ICommand SetParameterName(IParameter parameter, string name)
-      {
-         return new RenameEntityCommand(parameter, name, _executionContext).Run(_executionContext);
       }
 
       public ICommand ResetParameters(IEnumerable<IParameter> parameters)

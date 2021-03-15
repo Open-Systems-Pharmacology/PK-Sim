@@ -38,14 +38,14 @@ namespace PKSim.CLI.Core.Services
          {
             Validate = false,
             CheckForNegativeValues = false,
-            RunForAllOutputs = true
          };
       }
 
       public async Task RunBatchAsync(JsonRunOptions runOptions)
       {
          _logger.AddInfo($"Starting batch run: {DateTime.Now.ToIsoFormat()}");
-
+         
+         _simulationRunOptions.RunForAllOutputs = runOptions.RunForAllOutputs;
          await Task.Run(() => startJsonSimulationRun(runOptions));
 
          _logger.AddInfo($"Batch run finished: {DateTime.Now.ToIsoFormat()}");
@@ -63,8 +63,8 @@ namespace PKSim.CLI.Core.Services
          if (!inputDirectory.Exists)
             throw new OSPSuiteException($"Input folder '{inputFolder}' does not exist");
 
-         var allSnapshsotFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
-         if (allSnapshsotFiles.Length == 0)
+         var allSnapshotFiles = inputDirectory.GetFiles(Constants.Filter.JSON_FILTER);
+         if (allSnapshotFiles.Length == 0)
             throw new OSPSuiteException($"No snapshot file found in '{inputFolder}'");
 
          var outputDirectory = new DirectoryInfo(outputFolder);
@@ -82,9 +82,9 @@ namespace PKSim.CLI.Core.Services
          });
 
          var begin = DateTime.UtcNow;
-         _logger.AddInfo($"Found {allSnapshsotFiles.Length} files in '{inputFolder}'");
+         _logger.AddInfo($"Found {allSnapshotFiles.Length} files in '{inputFolder}'");
 
-         foreach (var snapshotFile in allSnapshsotFiles)
+         foreach (var snapshotFile in allSnapshotFiles)
          {
             await runAndExportSimulationsInSnapshotFile(snapshotFile, outputFolder, exportMode)
                .ConfigureAwait(false);

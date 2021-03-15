@@ -31,8 +31,8 @@
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
-         this.cbYField = new DevExpress.XtraEditors.ComboBoxEdit();
-         this.cbXField = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbYField = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbXField = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemXField = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemYField = new DevExpress.XtraLayout.LayoutControlItem();
@@ -177,8 +177,8 @@
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.LabelControl lblDescription;
-      private DevExpress.XtraEditors.ComboBoxEdit cbYField;
-      private DevExpress.XtraEditors.ComboBoxEdit cbXField;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbYField;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbXField;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemXField;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemYField;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;

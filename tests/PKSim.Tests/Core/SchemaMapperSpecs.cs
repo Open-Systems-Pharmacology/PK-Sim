@@ -16,6 +16,9 @@ namespace PKSim.Core
       protected SchemaItem _schemaItem;
       protected Snapshots.Schema _snapshot;
       protected IParameter _parameter;
+      protected IParameter _parameter1;
+      protected IParameter _parameter2;
+      protected IParameter _parameter3;
       protected SchemaItemMapper _schemaItemMapper;
       protected ISchemaFactory _schemaFactory;
 
@@ -36,9 +39,19 @@ namespace PKSim.Core
          _schema.AddSchemaItem(_schemaItem);
 
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(3).WithName("Param1");
+         //Schema item parameters that have a value IsDefault true should still be saved to snapshot
+         _parameter1 = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:true).WithName(Constants.Parameters.START_TIME);
+         _parameter2 = DomainHelperForSpecs.ConstantParameterWithValue(2, isDefault:true).WithName(CoreConstants.Parameters.NUMBER_OF_REPETITIONS);
+         _parameter3 = DomainHelperForSpecs.ConstantParameterWithValue(3, isDefault:true).WithName(CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS);
          _schema.Add(_parameter);
+         _schema.Add(_parameter1);
+         _schema.Add(_parameter2);
+         _schema.Add(_parameter3);
 
          A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new Snapshots.Parameter().WithName(_parameter.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Snapshots.Parameter().WithName(_parameter1.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new Snapshots.Parameter().WithName(_parameter2.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter3)).Returns(new Snapshots.Parameter().WithName(_parameter3.Name));
 
          A.CallTo(() => _schemaItemMapper.MapToSnapshot(_schemaItem)).Returns(new Snapshots.SchemaItem().WithName(_schemaItem.Name));
 
@@ -64,8 +77,12 @@ namespace PKSim.Core
       public void should_save_all_schema_parameters()
       {
          _snapshot.Parameters.ExistsByName(_parameter.Name).ShouldBeTrue();
+         _snapshot.Parameters.ExistsByName(_parameter1.Name).ShouldBeTrue();
+         _snapshot.Parameters.ExistsByName(_parameter2.Name).ShouldBeTrue();
+         _snapshot.Parameters.ExistsByName(_parameter3.Name).ShouldBeTrue();
       }
 
+   
       [Observation]
       public void should_save_all_schema_items()
       {
