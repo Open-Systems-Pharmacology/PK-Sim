@@ -36,10 +36,10 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _identificationParameterFactory= A.Fake<IIdentificationParameterFactory>();
-         _logger= A.Fake<IOSPLogger>();
+         _identificationParameterFactory = A.Fake<IIdentificationParameterFactory>();
+         _logger = A.Fake<IOSPLogger>();
          _identificationParameterTask = A.Fake<IIdentificationParameterTask>();
-         sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _identificationParameterTask,  _logger);
+         sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _identificationParameterTask, _logger);
 
          _identificationParameter = new IdentificationParameter
          {
@@ -67,7 +67,7 @@ namespace PKSim.Core
          _snapshotStartValueParameter = new Parameter();
          A.CallTo(() => _parameterMapper.MapToSnapshot(_startValueParameter)).Returns(_snapshotStartValueParameter);
 
-         _project =new PKSimProject();
+         _project = new PKSimProject();
          _project.AddBuildingBlock(_simulation);
          _parameterIdentification = new ParameterIdentification();
          _parameterIdentificationContext = new ParameterIdentificationContext(_parameterIdentification, _project);
@@ -157,7 +157,6 @@ namespace PKSim.Core
       public void should_return_null()
       {
          _newParameterIdentification.ShouldBeNull();
-
       }
 
       [Observation]
