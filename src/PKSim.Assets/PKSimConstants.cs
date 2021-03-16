@@ -467,6 +467,9 @@ namespace PKSim.Assets
 
          public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
 
+         public static string CannotCreateIdentificationParameter(string parameterPath, string parameterIdentificationName)
+            => $"Cannot create identification parameter '{parameterPath}' for parameter identification '{parameterIdentificationName}'.";
+
          public static string ParameterIsRequired(string parameterName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
 
          public static string SimulationResultsFileDoesNotHaveTheExpectedFormat
