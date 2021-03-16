@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -35,10 +36,10 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _identificationParameterFactory= A.Fake<IIdentificationParameterFactory>();
-         _logger= A.Fake<IOSPLogger>();
+         _identificationParameterFactory = A.Fake<IIdentificationParameterFactory>();
+         _logger = A.Fake<IOSPLogger>();
          _identificationParameterTask = A.Fake<IIdentificationParameterTask>();
-         sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _identificationParameterTask,  _logger);
+         sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _identificationParameterTask, _logger);
 
          _identificationParameter = new IdentificationParameter
          {
@@ -66,7 +67,7 @@ namespace PKSim.Core
          _snapshotStartValueParameter = new Parameter();
          A.CallTo(() => _parameterMapper.MapToSnapshot(_startValueParameter)).Returns(_snapshotStartValueParameter);
 
-         _project =new PKSimProject();
+         _project = new PKSimProject();
          _project.AddBuildingBlock(_simulation);
          _parameterIdentification = new ParameterIdentification();
          _parameterIdentificationContext = new ParameterIdentificationContext(_parameterIdentification, _project);
@@ -133,6 +134,35 @@ namespace PKSim.Core
       public void should_call_the_update_range_method_if_the_identification_parameter_is_using_factor()
       {
          A.CallTo(() => _identificationParameterTask.UpdateParameterRange(_newParameterIdentification)).MustHaveHappened();
+      }
+   }
+
+   public class When_mapping_an_identification_parameter_snapshot_to_identification_parameter_that_cannot_be_created : concern_for_IdentificationParameterMapper
+   {
+      private IdentificationParameter _newParameterIdentification;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_identificationParameter);
+         A.CallTo(() => _identificationParameterFactory.CreateFor(A<IEnumerable<ParameterSelection>>._, _parameterIdentificationContext.ParameterIdentification)).Returns(null);
+      }
+
+      protected override async Task Because()
+      {
+         _newParameterIdentification = await sut.MapToModel(_snapshot, _parameterIdentificationContext);
+      }
+
+      [Observation]
+      public void should_return_null()
+      {
+         _newParameterIdentification.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_log_a_warning()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 }
