@@ -25,11 +25,11 @@ namespace PKSim.Presentation.Services
          AddToProject<ICreateRandomPopulationPresenter>(x => x.CreatePopulation(individual));
       }
 
-      public void ExtractIndividuals(Population population, IEnumerable<int> indivdualIds = null)
+      public void ExtractIndividuals(Population population, IEnumerable<int> individualIds = null)
       {
          using (var presenter = _applicationController.Start<IExtractIndividualsFromPopulationPresenter>())
          {
-            presenter.ExctractIndividuals(population, indivdualIds);
+            presenter.ExctractIndividuals(population, individualIds);
          }
       }
    }

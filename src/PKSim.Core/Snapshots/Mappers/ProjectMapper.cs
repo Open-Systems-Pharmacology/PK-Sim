@@ -68,7 +68,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ObserverSets = await mapBuildingBlocksToSnapshots<ObserverSet>(project.All<Model.ObserverSet>());
          snapshot.ObservedData = await mapObservedDataToSnapshots(project.AllObservedData);
          snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
-         snapshot.ParameterIdentifications = await mapParameterIdentificationToSnapshots(project.AllParameterIdentifications, project);
+         snapshot.ParameterIdentifications = await mapParameterIdentificationToSnapshots(project.AllParameterIdentifications);
          snapshot.SimulationComparisons = await mapSimulationComparisonsToSnapshots(project.AllSimulationComparisons);
          snapshot.QualificationPlans = await mapQualificationPlansToSnapshots(project.AllQualificationPlans);
          snapshot.ObservedDataClassifications = await mapClassifications<ClassifiableObservedData>(project);
@@ -162,11 +162,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return await _qualificationPlanMapper.MapToSnapshots(allQualificationPlans);
       }
 
-      private async Task<ParameterIdentification[]> mapParameterIdentificationToSnapshots(
-         IReadOnlyCollection<ModelParameterIdentification> allParameterIdentifications, ModelProject project)
+      private async Task<ParameterIdentification[]> mapParameterIdentificationToSnapshots(IReadOnlyCollection<ModelParameterIdentification> allParameterIdentifications)
       {
          allParameterIdentifications.Each(load);
-         return await _parameterIdentificationMapper.MapToSnapshots(allParameterIdentifications, project);
+         return await _parameterIdentificationMapper.MapToSnapshots(allParameterIdentifications);
       }
 
       private void load(ILazyLoadable lazyLoadable) => _lazyLoadTask.Load(lazyLoadable);

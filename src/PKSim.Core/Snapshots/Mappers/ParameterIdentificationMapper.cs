@@ -10,7 +10,7 @@ using SnapshotParameterIdentification = PKSim.Core.Snapshots.ParameterIdentifica
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterIdentificationMapper : ObjectBaseSnapshotMapperBase<ModelParameterIdentification, SnapshotParameterIdentification, PKSimProject, PKSimProject>
+   public class ParameterIdentificationMapper : ObjectBaseSnapshotMapperBase<ModelParameterIdentification, SnapshotParameterIdentification,  PKSimProject>
    {
       private readonly ParameterIdentificationConfigurationMapper _parameterIdentificationConfigurationMapper;
       private readonly OutputMappingMapper _outputMappingMapper;
@@ -36,7 +36,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _logger = logger;
       }
 
-      public override async Task<SnapshotParameterIdentification> MapToSnapshot(ModelParameterIdentification parameterIdentification, PKSimProject context)
+      public override async Task<SnapshotParameterIdentification> MapToSnapshot(ModelParameterIdentification parameterIdentification)
       {
          var snapshot = await SnapshotFrom(parameterIdentification, x => { x.Simulations = parameterIdentification.AllSimulations.AllNames().ToArray(); });
          snapshot.Configuration = await _parameterIdentificationConfigurationMapper.MapToSnapshot(parameterIdentification.Configuration);
