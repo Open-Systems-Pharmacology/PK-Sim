@@ -107,7 +107,7 @@ namespace PKSim.Infrastructure.Services
          var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, propmtUser, metaDataCategories, importConfiguration(), dataImporterSettings);
+         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, propmtUser, metaDataCategories, importConfiguration(), dataImporterSettings, string.Empty, string.Empty);
          foreach (var observedData in string.IsNullOrEmpty(dataRepositoryName) ? importedObservedData : importedObservedData.Where(r => r.Name == dataRepositoryName))
          {
             adjustMolWeight(observedData);
@@ -124,7 +124,7 @@ namespace PKSim.Infrastructure.Services
          var metaDataCategories = defaultMetaDataCategories().ToList();
          metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
 
-         var importedObservedData = _dataImporter.ImportDataSets(metaDataCategories, importConfiguration(), dataImporterSettings);
+         var importedObservedData = _dataImporter.ImportDataSets(metaDataCategories, importConfiguration(), dataImporterSettings, string.Empty, string.Empty);
 
          if (importedObservedData.Configuration == null) return;
 

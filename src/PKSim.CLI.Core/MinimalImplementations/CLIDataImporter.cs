@@ -14,15 +14,16 @@ namespace PKSim.CLI.Core.MinimalImplementations
          return Enumerable.Empty<DataRepository>();
       }
 
-      public IEnumerable<DataRepository> ImportFromConfiguration(ImporterConfiguration configuration, bool promptForConfirmation, IReadOnlyList<MetaDataCategory> metaDataCategories,
-         IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
+      public (IReadOnlyList<DataRepository> DataRepositories, ImporterConfiguration Configuration) ImportDataSets(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos,
+         DataImporterSettings dataImporterSettings, string moleculeName, string molWeightName)
       {
-         return Enumerable.Empty<DataRepository>();
+         return (Enumerable.Empty<DataRepository>().ToList(), null);
       }
 
-      (IEnumerable<DataRepository> DataRepositories, ImporterConfiguration Configuration) IDataImporter.ImportDataSets(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
+      public IReadOnlyList<DataRepository> ImportFromConfiguration(ImporterConfiguration configuration, bool promptForConfirmation, IReadOnlyList<MetaDataCategory> metaDataCategories,
+         IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings, string moleculeName, string molWeightName)
       {
-         return (Enumerable.Empty<DataRepository>(), null);
+         return Enumerable.Empty<DataRepository>().ToList();
       }
    }
 }

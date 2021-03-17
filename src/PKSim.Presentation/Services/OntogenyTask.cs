@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PKSim.Assets;
@@ -61,7 +62,7 @@ namespace PKSim.Presentation.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var data = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).DataRepositories.FirstOrDefault();
+         var data = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings, string.Empty, string.Empty).DataRepositories.FirstOrDefault();
          if (data == null)
             return null;
 
