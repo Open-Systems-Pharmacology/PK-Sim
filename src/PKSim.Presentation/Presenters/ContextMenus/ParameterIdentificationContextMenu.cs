@@ -28,7 +28,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       private IMenuBarItem exportParameterIdentificationToR(ParameterIdentification parameterIdentification)
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Export to R®"))
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Export for R®"))
             .WithCommandFor<ExportParameterIdentificationToRUICommand, ParameterIdentification>(parameterIdentification)
             .WithIcon(ApplicationIcons.R)
             .AsGroupStarter()

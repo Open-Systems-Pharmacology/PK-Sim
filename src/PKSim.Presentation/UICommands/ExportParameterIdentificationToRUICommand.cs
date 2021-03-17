@@ -44,7 +44,7 @@ namespace PKSim.Presentation.UICommands
          if (!DirectoryHelper.DirectoryExists(folder))
             return DirectoryHelper.CreateDirectory(folder);
 
-         if (_dialogCreator.MessageBoxYesNo(Captions.DoYouWantToDeleteDirectory(newDirectoryName), Captions.Delete, Captions.Cancel) == ViewResult.No)
+         if (_dialogCreator.MessageBoxYesNo(Captions.DoYouWantToDeleteDirectory(newDirectoryName), Captions.Delete, Captions.Cancel, defaultButton: ViewResult.No) == ViewResult.No)
             return string.Empty;
 
          DirectoryHelper.DeleteDirectory(folder, true);
