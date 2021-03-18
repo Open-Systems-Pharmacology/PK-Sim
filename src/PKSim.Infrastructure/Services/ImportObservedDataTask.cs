@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq; //ToDo: Move out
+using System.Xml.Linq;
+using NPOI.OpenXmlFormats.Dml.Diagram; //ToDo: Move out
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
@@ -81,11 +83,43 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
+      
+      private bool repositoryExistsInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
+      {
+         foreach (var dataRepo in dataRepositoryList)
+         {
+            var result = true;
+            foreach (var keyValuePair in targetDataRepository.ExtendedProperties.KeyValues)
+            {
+               if (dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() != keyValuePair.Value.ValueAsObject.ToString())
+               {
+                  result = false;
+                  break;
+               }
+            }
+            if (result)
+               return true;
+         }
+         return false;
+      }
+       
+
+      private bool test(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
+      {
+         return dataRepositoryList.Select(dataRepo => targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => dataRepo.ExtendedProperties[keyValuePair.Key] == keyValuePair.Value)).Any(result => result);
+      }
+
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
       {
          var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, null, false, false);
 
-         ( IEnumerable<DataRepository> newDataSets, IEnumerable<DataRepository> overwrittenDataSets, IEnumerable<DataRepository> dataSetsToBeDeleted) = _dataImporter.ReloadFromConfiguration(importedObservedData, observedDataFromSameFile);
+         var newDataSets = importedObservedData.Where(dataSet => !repositoryExistsInList(observedDataFromSameFile, dataSet));
+         var dataSetsToBeDeleted = observedDataFromSameFile.Where(dataSet => !repositoryExistsInList(importedObservedData, dataSet));
+
+
+         var overwrittenDataSets = importedObservedData.Except(newDataSets);
+
+
 
          foreach (var dataSet in newDataSets)
          {
@@ -94,7 +128,7 @@ namespace PKSim.Infrastructure.Services
             updateQuantityInfoInImportedColumns(dataSet);
          }
 
-         foreach (var dataSet in dataSetsToBeDeleted)
+         foreach (var dataSet in dataSetsToBeDeleted.ToArray())
          {
             _observedDataTask.Delete(dataSet);
          }
