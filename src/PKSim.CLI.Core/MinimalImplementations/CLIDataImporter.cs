@@ -14,16 +14,22 @@ namespace PKSim.CLI.Core.MinimalImplementations
          return Enumerable.Empty<DataRepository>();
       }
 
-      public (IReadOnlyList<DataRepository> DataRepositories, ImporterConfiguration Configuration) ImportDataSets(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos,
-         DataImporterSettings dataImporterSettings, string moleculeName, string molWeightName)
+      (IReadOnlyList<DataRepository> DataRepositories, ImporterConfiguration Configuration) IDataImporter.ImportDataSets(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos,
+         DataImporterSettings dataImporterSettings)
       {
          return (Enumerable.Empty<DataRepository>().ToList(), null);
       }
 
-      public IReadOnlyList<DataRepository> ImportFromConfiguration(ImporterConfiguration configuration, bool promptForConfirmation, IReadOnlyList<MetaDataCategory> metaDataCategories,
-         IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings, string moleculeName, string molWeightName)
+      public IReadOnlyList<DataRepository> ImportFromConfiguration(ImporterConfiguration configuration, IReadOnlyList<MetaDataCategory> metaDataCategories,
+         IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
       {
          return Enumerable.Empty<DataRepository>().ToList();
+      }
+
+      public (IEnumerable<DataRepository> newDataSets, IEnumerable<DataRepository> overwrittenDataSets, IEnumerable<DataRepository> dataSetsToBeDeleted) ReloadFromConfiguration(IEnumerable<DataRepository> dataSetsToImport,
+         IEnumerable<DataRepository> existingDataSets)
+      {
+         return (Enumerable.Empty<DataRepository>(), Enumerable.Empty<DataRepository>(), Enumerable.Empty<DataRepository>());
       }
    }
 }

@@ -75,7 +75,7 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.Core" Version="10.0.70" />
     <PackageReference Include="OSPSuite.Core" Version="10.0.75" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.95-qehsvesd" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.98" />
     <PackageReference Include="OSPSuite.DevExpress" Version="20.1.6" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.50" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.42" GeneratePathProperty="true" />
@@ -83,7 +83,7 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.Presentation" Version="10.0.70" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.Presentation" Version="10.0.75" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.95-qehsvesd" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.98" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" GeneratePathProperty="true" />
 
   </ItemGroup>

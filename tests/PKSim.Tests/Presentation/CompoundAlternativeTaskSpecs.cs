@@ -441,7 +441,7 @@ namespace PKSim.Presentation
          base.Context();
          _solubilityDataRepository = DomainHelperForSpecs.ObservedData("SolubilityTable");
          A.CallTo(() => _formulaFactory.CreateTableFormula(A<bool>._)).Returns(new TableFormula {UseDerivedValues = true});
-         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored, A<string>.Ignored, A<string>.Ignored)).Returns((new List<DataRepository>() { _solubilityDataRepository }, null));
+         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored)).Returns((new List<DataRepository>() { _solubilityDataRepository }, null));
       }
 
       protected override void Because()
