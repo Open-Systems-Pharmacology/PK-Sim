@@ -10,27 +10,33 @@ namespace PKSim.Core.Model
       None,
       InfluxPlasmaToInterstitial,
       EffluxInterstitialToPlasma,
+      BiDirectionalPlasmaInterstitial,
 
       InfluxPlasmaToBloodCells,
       EffluxBloodCellsToPlasma,
+      BiDirectionalPlasmaBloodCells,
 
       InfluxInterstitialToIntracellular,
       EffluxIntracellularToInterstitial,
+      BiDirectionalInterstitialIntracellular,
       PgpIntracellularToInterstitial,
 
       InfluxLumenToMucosaIntracellular,
       EffluxMucosaIntracellularToLumen,
+      BiDirectionalLumenMucosaIntracellular,
       PgpMucosaIntracellularToLumen,
 
       ExcretionKidney,
       ExcretionLiver,
 
-      EffluxBrainTissueToInterstitial,
       InfluxBrainInterstitialToTissue,
+      EffluxBrainTissueToInterstitial,
+      BiDirectionalBrainInterstitialTissue,
       PgpBrainTissueToInterstitial,
 
       InfluxBrainPlasmaToInterstitial,
       EffluxBrainInterstitialToPlasma,
+      BiDirectionalBrainPlasmaInterstitial,
       PgpBrainInterstitialToPlasma
    }
 
@@ -39,19 +45,22 @@ namespace PKSim.Core.Model
       public static readonly TransportDirectionId[] PLASMA_DIRECTIONS =
       {
          InfluxPlasmaToInterstitial,
-         EffluxInterstitialToPlasma
+         EffluxInterstitialToPlasma,
+         BiDirectionalPlasmaInterstitial
       };
 
       public static readonly TransportDirectionId[] BLOOD_CELLS_DIRECTIONS =
       {
          InfluxPlasmaToBloodCells,
-         EffluxBloodCellsToPlasma
+         EffluxBloodCellsToPlasma,
+         BiDirectionalPlasmaBloodCells
       };
 
       public static readonly TransportDirectionId[] MUCOSA_DIRECTIONS =
       {
          InfluxLumenToMucosaIntracellular,
          EffluxMucosaIntracellularToLumen,
+         BiDirectionalLumenMucosaIntracellular,
          PgpMucosaIntracellularToLumen
       };
 
@@ -59,6 +68,7 @@ namespace PKSim.Core.Model
       {
          InfluxInterstitialToIntracellular,
          EffluxIntracellularToInterstitial,
+         BiDirectionalInterstitialIntracellular,
          PgpIntracellularToInterstitial
       };
 
@@ -66,6 +76,7 @@ namespace PKSim.Core.Model
       {
          InfluxBrainInterstitialToTissue,
          EffluxBrainTissueToInterstitial,
+         BiDirectionalBrainInterstitialTissue,
          PgpBrainTissueToInterstitial
       };
 
@@ -73,6 +84,7 @@ namespace PKSim.Core.Model
       {
          InfluxBrainPlasmaToInterstitial,
          EffluxBrainInterstitialToPlasma,
+         BiDirectionalBrainPlasmaInterstitial,
          PgpBrainInterstitialToPlasma
       };
 
