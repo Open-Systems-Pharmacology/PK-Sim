@@ -27,17 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.70" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.70" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.75" />
-    <PackageReference Include="OSPSuite.Presentation.Importer" Version="10.0.27" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.Core" Version="10.0.75" />
     <PackageReference Include="OSPSuite.Presentation" Version="10.0.101" />
-    <PackageReference Include="OSPSuite.Presentation.Importer" Version="10.0.92" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.Core" Version="10.0.101" />
