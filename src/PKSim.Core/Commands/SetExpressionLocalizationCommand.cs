@@ -134,30 +134,30 @@ namespace PKSim.Core.Commands
       private IEnumerable<IOSPSuiteCommand> updateVascularEndotheliumExpressionParameters(IExecutionContext context)
       {
          var command = new PKSimMacroCommand();
-         var f_exp_apical = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE);
+         var f_exp_pls_side = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE);
          var f_exp_endosome = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME);
          var rel_exp_vasc = _protein.Parameter(CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
 
          //not in vasc endo => set expression to 0
          command.AddRange(setParametersForFlags(context, None, InVascularEndothelium, (rel_exp_vasc, 0)));
 
-         //In apical and endosome but not basolateral => split equally between apical and endosome
-         command.AddRange(setParametersForFlags(context, VascMembraneApical | VascEndosome, VascMembraneBasolateral, (f_exp_apical, 0.5), (f_exp_endosome, 0.5)));
+         //In plasma side and endosome but not tissue side => split equally between plasma side and endosome
+         command.AddRange(setParametersForFlags(context, VascMembranePlasmaSide | VascEndosome, VascMembraneTissueSide, (f_exp_pls_side, 0.5), (f_exp_endosome, 0.5)));
 
-         //In apical and basolateral but not endosome => split equally between apical and basolateral (basolateral = 1 - apical - endosome)
-         command.AddRange(setParametersForFlags(context, VascMembraneApical | VascMembraneBasolateral, VascEndosome, (f_exp_apical, 0.5), (f_exp_endosome, 0)));
+         //In plasma side and tissue side but not endosome => split equally between plasma side and tissue side (tissue side = 1 - plasma side - endosome)
+         command.AddRange(setParametersForFlags(context, VascMembranePlasmaSide | VascMembraneTissueSide, VascEndosome, (f_exp_pls_side, 0.5), (f_exp_endosome, 0)));
 
-         //In endosome and basolateral but not apical => split equally between endosome and basolateral (basolateral = 1 - apical - endosome)
-         command.AddRange(setParametersForFlags(context, VascEndosome | VascMembraneBasolateral, VascMembraneApical, (f_exp_apical, 0), (f_exp_endosome, 0.5)));
+         //In endosome and tissue side but not plasma side => split equally between endosome and tissue side (tissue side = 1 - plasma side - endosome)
+         command.AddRange(setParametersForFlags(context, VascEndosome | VascMembraneTissueSide, VascMembranePlasmaSide, (f_exp_pls_side, 0), (f_exp_endosome, 0.5)));
 
-         //In apical but not endosome or basolateral => set all to apical
-         command.AddRange(setParametersForFlags(context, VascMembraneApical, VascEndosome | VascMembraneBasolateral, (f_exp_apical, 1), (f_exp_endosome, 0)));
+         //In plasma side but not endosome or tissue side => set all to plasma side
+         command.AddRange(setParametersForFlags(context, VascMembranePlasmaSide, VascEndosome | VascMembraneTissueSide, (f_exp_pls_side, 1), (f_exp_endosome, 0)));
 
-         //In endosome but not apical or basolateral => set all to endosome
-         command.AddRange(setParametersForFlags(context, VascEndosome, VascMembraneApical | VascMembraneBasolateral, (f_exp_apical, 0), (f_exp_endosome, 1)));
+         //In endosome but not plasma side or tissue side => set all to endosome
+         command.AddRange(setParametersForFlags(context, VascEndosome, VascMembranePlasmaSide | VascMembraneTissueSide, (f_exp_pls_side, 0), (f_exp_endosome, 1)));
 
-         //In basolateral but not apical or endosome => set all to basolateral
-         command.AddRange(setParametersForFlags(context, VascMembraneBasolateral, VascMembraneApical | VascEndosome, (f_exp_apical, 0), (f_exp_endosome, 0)));
+         //In tissue side but not plasma side or endosome => set all to tissue side
+         command.AddRange(setParametersForFlags(context, VascMembraneTissueSide, VascMembranePlasmaSide | VascEndosome, (f_exp_pls_side, 0), (f_exp_endosome, 0)));
 
 
          // no action is required when all localization settings of a group are active. {InVascularEndothelium, None}

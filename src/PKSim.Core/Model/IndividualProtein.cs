@@ -13,12 +13,12 @@ namespace PKSim.Core.Model
       BloodCellsMembrane = 1 << 2,
       BloodCellsIntracellular = 1 << 3,
       VascEndosome = 1 << 4,
-      VascMembraneApical = 1 << 5,
-      VascMembraneBasolateral = 1 << 6,
+      VascMembranePlasmaSide = 1 << 5,
+      VascMembraneTissueSide = 1 << 6,
 
       InTissue = Intracellular | Interstitial,
       InBloodCells = BloodCellsMembrane | BloodCellsIntracellular,
-      InVascularEndothelium = VascEndosome | VascMembraneApical | VascMembraneBasolateral
+      InVascularEndothelium = VascEndosome | VascMembranePlasmaSide | VascMembraneTissueSide
    }
 
    public static class LocalizationExtensions
@@ -85,16 +85,16 @@ namespace PKSim.Core.Model
          set => setLocalizationFlag(Localization.VascEndosome, value);
       }
 
-      public bool IsVascMembraneApical
+      public bool IsVascMembranePlasmaSide
       {
-         get => Localization.Is(Localization.VascMembraneApical);
-         set => setLocalizationFlag(Localization.VascMembraneApical, value);
+         get => Localization.Is(Localization.VascMembranePlasmaSide);
+         set => setLocalizationFlag(Localization.VascMembranePlasmaSide, value);
       }
 
-      public bool IsVascMembraneBasolateral
+      public bool IsVascMembraneTissueSide
       {
-         get => Localization.Is(Localization.VascMembraneBasolateral);
-         set => setLocalizationFlag(Localization.VascMembraneBasolateral, value);
+         get => Localization.Is(Localization.VascMembraneTissueSide);
+         set => setLocalizationFlag(Localization.VascMembraneTissueSide, value);
       }
    }
 }

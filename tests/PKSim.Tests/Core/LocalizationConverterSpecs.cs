@@ -18,7 +18,7 @@ namespace PKSim.Core
       public void should_return_the_expected_localization_for_interstitial()
       {
          ConvertToLocalization(TissueLocation.Interstitial, MembraneLocation.Apical, IntracellularVascularEndoLocation.Interstitial)
-            .ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneBasolateral);
+            .ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneTissueSide);
       }
 
       [Observation]
@@ -32,14 +32,14 @@ namespace PKSim.Core
       public void should_return_the_expected_localization_for_intracellular_with_vascular_endo_location_interstitial()
       {
          ConvertToLocalization(TissueLocation.Intracellular, MembraneLocation.Apical, IntracellularVascularEndoLocation.Interstitial)
-            .ShouldBeEqualTo(Localization.Intracellular | Localization.BloodCellsIntracellular | Localization.VascMembraneBasolateral);
+            .ShouldBeEqualTo(Localization.Intracellular | Localization.BloodCellsIntracellular | Localization.VascMembraneTissueSide);
       }
 
       [Observation]
       public void should_return_the_expected_localization_for_extracellular_membrane_with_membrane_location_apical()
       {
          ConvertToLocalization(TissueLocation.ExtracellularMembrane, MembraneLocation.Apical, IntracellularVascularEndoLocation.Interstitial)
-            .ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsMembrane | Localization.VascMembraneApical);
+            .ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsMembrane | Localization.VascMembranePlasmaSide);
       }
 
 
@@ -47,7 +47,7 @@ namespace PKSim.Core
       public void should_return_the_expected_localization_for_extracellular_membrane_with_membrane_location_basolateral()
       {
          ConvertToLocalization(TissueLocation.ExtracellularMembrane, MembraneLocation.Basolateral, IntracellularVascularEndoLocation.Interstitial)
-            .ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsMembrane | Localization.VascMembraneBasolateral);
+            .ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsMembrane | Localization.VascMembraneTissueSide);
       }
 
    }

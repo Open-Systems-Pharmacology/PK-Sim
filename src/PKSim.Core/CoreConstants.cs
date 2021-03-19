@@ -201,7 +201,7 @@ namespace PKSim.Core
          public static readonly string PARAM_F_EXP_BC_MEMBRANE = "PARAM_f_exp_bc_membrane";
          public static readonly string PARAM_F_EXP_VASC_TISSUE_SIDE = "PARAM_f_exp_vasc_tissue_side";
          public static readonly string PARAM_F_EXP_INTERSTITIAL = "PARAM_f_exp_interstitial";
-         public static readonly string PARAM_F_EXP_BASOLATERAL = "PARAM_f_exp_basolateral";
+         public static readonly string PARAM_F_EXP_TISSUE = "PARAM_f_exp_tissue";
          public static readonly string PARAM_F_EXP_BRN_TISSUE = "PARAM_f_exp_brn_tissue";
       }
 
@@ -1030,8 +1030,8 @@ namespace PKSim.Core
          public const string INITIAL_CONCENTRATION = "Initial concentration";
          public const string FRACTION_EXPRESSED_INTRACELLULAR = "Fraction expressed intracellular";
          public const string FRACTION_EXPRESSED_INTERSTITIAL = "Fraction expressed interstitial";
-         public const string FRACTION_EXPRESSED_APICAL = "Fraction expressed apical";
-         public const string FRACTION_EXPRESSED_BASOLATERAL = "Fraction expressed basolateral";
+         public const string FRACTION_EXPRESSED_EPITHELIAL = "Fraction expressed epithelial";
+         public const string FRACTION_EXPRESSED_IN_TISSUE = "Fraction expressed in tissue";
          public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
          public const string FRACTION_EXPRESSED_BRAIN_TISSUE = "Fraction expressed brain tissue";
 

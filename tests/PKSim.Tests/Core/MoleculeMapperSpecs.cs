@@ -219,7 +219,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_expected_molecule_with_the_matching_properties()
       {
-         _newMolecule.Localization.ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneBasolateral);
+         _newMolecule.Localization.ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneTissueSide);
       }
 
       [Observation]
