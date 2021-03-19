@@ -83,60 +83,30 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      
-      private bool repositoryExistsInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
-      {
-         foreach (var dataRepo in dataRepositoryList)
-         {
-            var result = true;
-            foreach (var keyValuePair in targetDataRepository.ExtendedProperties.KeyValues)
-            {
-               if (dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() != keyValuePair.Value.ValueAsObject.ToString())
-               {
-                  result = false;
-                  break;
-               }
-            }
-            if (result)
-               return true;
-         }
-         return false;
-      }
-       
-
-      private bool test(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
-      {
-         return dataRepositoryList.Select(dataRepo => targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => dataRepo.ExtendedProperties[keyValuePair.Key] == keyValuePair.Value)).Any(result => result);
-      }
-
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
       {
          var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, null, false, false);
-
-         var newDataSets = importedObservedData.Where(dataSet => !repositoryExistsInList(observedDataFromSameFile, dataSet));
-         var dataSetsToBeDeleted = observedDataFromSameFile.Where(dataSet => !repositoryExistsInList(importedObservedData, dataSet));
-
-
-         var overwrittenDataSets = importedObservedData.Except(newDataSets);
+         var dataSetsCache = _dataImporter.ReloadFromConfiguration(importedObservedData, observedDataFromSameFile);
 
 
 
-         foreach (var dataSet in newDataSets)
+
+         foreach (var dataSet in dataSetsCache[Constants.ImporterConstants.DATA_SETS_TO_BE_NEWLY_IMPORTED])
          {
             adjustMolWeight(dataSet);
             _observedDataTask.AddObservedDataToProject(dataSet);
             updateQuantityInfoInImportedColumns(dataSet);
          }
 
-         foreach (var dataSet in dataSetsToBeDeleted.ToArray())
+         foreach (var dataSet in dataSetsCache[Constants.ImporterConstants.DATA_SETS_TO_BE_DELETED].ToArray()) //TODO it should be checked if to array solves the deleting problem
          {
             _observedDataTask.Delete(dataSet);
          }
 
-         foreach (var dataSet in overwrittenDataSets)
+         foreach (var dataSet in dataSetsCache[Constants.ImporterConstants.DATA_SETS_TO_BE_OVERWRITTEN])
          {
-            //TODO this here should also be adjusted. it should get the dataset with the same metadata
-            var existingDataSet = observedDataFromSameFile.FirstOrDefault(x => x.Name.Equals(dataSet.Name));
+            //TODO this here should be tested
+            var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
 
             foreach (var column in dataSet.Columns)
             {
@@ -193,6 +163,12 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
+      private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
+      {
+         return (from dataRepo in dataRepositoryList let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString()) where result select dataRepo).FirstOrDefault();
+      }
+      
+
       private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool propmtUser,
          bool allowCompoundNameEdit)
       {
@@ -232,9 +208,9 @@ namespace PKSim.Infrastructure.Services
 
       private void updateQuantityInfoInImportedColumns(DataRepository observedData)
       {
-         var moleculeName = observedData.ExtendedPropertyValueFor(ObservedData.MOLECULE);
-         var organ = observedData.ExtendedPropertyValueFor(ObservedData.ORGAN);
-         var compartment = observedData.ExtendedPropertyValueFor(ObservedData.COMPARTMENT);
+         var moleculeName = observedData.ExtendedPropertyValueFor(ObservedData.Molecule);
+         var organ = observedData.ExtendedPropertyValueFor(ObservedData.Organ);
+         var compartment = observedData.ExtendedPropertyValueFor(ObservedData.Compartment);
 
          foreach (var col in observedData.AllButBaseGrid())
          {
@@ -329,10 +305,10 @@ namespace PKSim.Infrastructure.Services
 
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
-         if (string.Equals(name, ObservedData.ORGAN))
+         if (string.Equals(name, ObservedData.Organ))
             return predefinedOrgans;
 
-         if (string.Equals(name, ObservedData.COMPARTMENT))
+         if (string.Equals(name, ObservedData.Compartment))
             return predefinedCompartments;
 
          if (string.Equals(name, CoreConstants.ObservedData.SPECIES))
@@ -346,7 +322,7 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> {ObservedData.MOLECULE};
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> {ObservedData.Molecule};
 
       public bool MolWeightEditable => false;
 
@@ -374,11 +350,11 @@ namespace PKSim.Infrastructure.Services
          var speciesCategory = createMetaDataCategory<string>(CoreConstants.ObservedData.SPECIES, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedSpeciesValues);
          categories.Add(speciesCategory);
 
-         var organCategory = createMetaDataCategory<string>(ObservedData.ORGAN, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedOrganValues);
+         var organCategory = createMetaDataCategory<string>(ObservedData.Organ, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedOrganValues);
          organCategory.Description = ObservedData.ObservedDataOrganDescription;
          categories.Add(organCategory);
 
-         var compCategory = createMetaDataCategory<string>(ObservedData.COMPARTMENT, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedCompartmentValues);
+         var compCategory = createMetaDataCategory<string>(ObservedData.Compartment, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedCompartmentValues);
          compCategory.Description = ObservedData.ObservedDataCompartmentDescription;
          categories.Add(compCategory);
 
@@ -465,7 +441,7 @@ namespace PKSim.Infrastructure.Services
       {
          var nameCategory = new MetaDataCategory
          {
-            Name = ObservedData.MOLECULE,
+            Name = ObservedData.Molecule,
             DisplayName = PKSimConstants.UI.Molecule,
             Description = PKSimConstants.UI.MoleculeNameDescription,
             MetaDataType = typeof(string),

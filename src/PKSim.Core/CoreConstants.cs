@@ -1335,9 +1335,9 @@ namespace PKSim.Core
 
          public static IReadOnlyList<string> DefaultProperties = new List<string>
          {
-            OSPSuite.Assets.ObservedData.ORGAN,
-            OSPSuite.Assets.ObservedData.COMPARTMENT,
-            OSPSuite.Assets.ObservedData.MOLECULE,
+            OSPSuite.Assets.ObservedData.Organ,
+            OSPSuite.Assets.ObservedData.Compartment,
+            OSPSuite.Assets.ObservedData.Molecule,
             SPECIES,
             GENDER
          };
