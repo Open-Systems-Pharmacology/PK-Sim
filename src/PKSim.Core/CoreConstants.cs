@@ -1031,7 +1031,7 @@ namespace PKSim.Core
          public const string FRACTION_EXPRESSED_INTRACELLULAR = "Fraction expressed intracellular";
          public const string FRACTION_EXPRESSED_INTERSTITIAL = "Fraction expressed interstitial";
          public const string FRACTION_EXPRESSED_EPITHELIAL = "Fraction expressed epithelial";
-         public const string FRACTION_EXPRESSED_TISSUE = "Fraction expressed tissue";
+         public const string FRACTION_EXPRESSED_IN_TISSUE = "Fraction expressed in tissue";
          public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
          public const string FRACTION_EXPRESSED_BRAIN_TISSUE = "Fraction expressed brain tissue";
 

@@ -133,7 +133,7 @@ namespace PKSim.Core.Services
             organ.IsKidney() ? TransportDirectionId.ExcretionKidney : TransportDirectionId.ExcretionLiver;
 
          addContainerExpression(organ.Container(INTERSTITIAL), transporter, DefaultTissueDirectionFor(transporter.TransportType),
-            FractionParam(FRACTION_EXPRESSED_TISSUE, CoreConstants.Rate.PARAM_F_EXP_TISSUE, editable: false),
+            FractionParam(FRACTION_EXPRESSED_IN_TISSUE, CoreConstants.Rate.PARAM_F_EXP_TISSUE, editable: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
 
@@ -177,7 +177,7 @@ namespace PKSim.Core.Services
          addContainerExpression(organ.Container(INTERSTITIAL), transporter,
             TransportDirectionId.None,
             //We had the tissue side parameter to ensure that we can use the same formula. But this parameter is required only from a technical point of view
-            FractionParam(FRACTION_EXPRESSED_TISSUE, CoreConstants.Rate.ONE_RATE, editable: false, visible: false),
+            FractionParam(FRACTION_EXPRESSED_IN_TISSUE, CoreConstants.Rate.ONE_RATE, editable: false, visible: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }
