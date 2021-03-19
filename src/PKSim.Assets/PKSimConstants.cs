@@ -467,6 +467,9 @@ namespace PKSim.Assets
 
          public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
 
+         public static string CannotCreateIdentificationParameter(string parameterPath, string parameterIdentificationName)
+            => $"Cannot create identification parameter '{parameterPath}' for parameter identification '{parameterIdentificationName}'.";
+
          public static string ParameterIsRequired(string parameterName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
 
          public static string SimulationResultsFileDoesNotHaveTheExpectedFormat
@@ -2175,7 +2178,10 @@ namespace PKSim.Assets
          public static readonly string LoadPopulationAnalysisWorkflowFromTemplateDescription = "Load population analysis from template";
          public static readonly string SavePopulationAnalysisWorkflowToTemplateDescription = "Save population analysis to template";
          public static readonly string IsSmallMolecule = "Is small molecule";
-         public static readonly string ReallyRemoveObservedDataFromSimulation = string.Format("Really remove {0} from simulation?\nHint: {0} will not be deleted from project", ObjectTypes.ObservedData);
+
+         public static readonly string ReallyRemoveObservedDataFromSimulation =
+            $"Really remove {ObjectTypes.ObservedData} from simulation?\nHint: {ObjectTypes.ObservedData} will not be deleted from project";
+
          public static readonly string ExportSettings = "Export Settings";
          public static readonly string Administration = "Administration";
          public static readonly string CompoundConfiguration = "Compound Configuration";
@@ -2197,9 +2203,9 @@ namespace PKSim.Assets
          public static readonly string LocalizationInterstitial = "Interstitial";
          public static readonly string LocalizationBloodCellsIntracellular = "Blood cells intracellular";
          public static readonly string LocalizationBloodCellsMembrane = "Blood cells membrane";
-         public static readonly string LocalizationVascularEndosome = "Vascular endothelium endosome";
-         public static readonly string LocalizationVascularMembraneApical = "Vascular endothelium membrane plasma-side";
-         public static readonly string LocalizationVascularMembraneBasolateral = "Vascular endothelium membrane tissue-side";
+         public static readonly string LocalizationVascularEndosomes = "Vascular endothelium endosomes";
+         public static readonly string LocalizationVascularMembranePlasmaSide = "Vascular endothelium membrane plasma-side";
+         public static readonly string LocalizationVascularMembraneTissueSide = "Vascular endothelium membrane tissue-side";
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
@@ -2216,7 +2222,7 @@ namespace PKSim.Assets
          public static string IndividualExtractionNamingPatternDescription(string populationNamePattern, string individualIdPattern)
          {
             var sb = new StringBuilder();
-            sb.AppendLine("Automatically generates individual names replacing the occurence in the naming pattern of:");
+            sb.AppendLine("Automatically generates individual names replacing the occurrence in the naming pattern of:");
             sb.AppendLine($" -   <b>{populationNamePattern}</b> with the name of the population");
             sb.AppendLine($" -   <b>{individualIdPattern}</b> with the id of the individual");
             return sb.ToString();

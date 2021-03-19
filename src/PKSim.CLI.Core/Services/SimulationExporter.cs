@@ -150,7 +150,7 @@ namespace PKSim.CLI.Core.Services
       private async Task exportSimulationPkmlAsync(Simulation simulation, SimulationExportOptions simulationExportOptions)
       {
          var fileName = simulationExportOptions.TargetPathFor(simulation, Constants.Filter.PKML_EXTENSION);
-         await _moBiExportTask.SaveSimulationToFileAsync(simulation, fileName);
+         await _moBiExportTask.ExportSimulationToPkmlFileAsync(simulation, fileName);
          _logger.AddDebug($"Exporting simulation pkml to '{fileName}'", simulationExportOptions.LogCategory);
       }
 

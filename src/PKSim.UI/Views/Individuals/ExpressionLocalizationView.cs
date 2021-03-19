@@ -31,9 +31,9 @@ namespace PKSim.UI.Views.Individuals
          initializeLocalization(layoutItemInterstitial, PKSimConstants.UI.LocalizationInterstitial);
          initializeLocalization(layoutItemBloodCellsIntracellular, PKSimConstants.UI.LocalizationBloodCellsIntracellular);
          initializeLocalization(layoutItemBloodCellsMembrane, PKSimConstants.UI.LocalizationBloodCellsMembrane);
-         initializeLocalization(layoutItemVascEndosome, PKSimConstants.UI.LocalizationVascularEndosome);
-         initializeLocalization(layoutItemVascMembraneApical, PKSimConstants.UI.LocalizationVascularMembraneApical);
-         initializeLocalization(layoutItemVascMembraneBasolateral, PKSimConstants.UI.LocalizationVascularMembraneBasolateral);
+         initializeLocalization(layoutItemVascEndosome, PKSimConstants.UI.LocalizationVascularEndosomes);
+         initializeLocalization(layoutItemVascMembranePlasmaSide, PKSimConstants.UI.LocalizationVascularMembranePlasmaSide);
+         initializeLocalization(layoutItemVascMembraneTissueSide, PKSimConstants.UI.LocalizationVascularMembraneTissueSide);
       }
 
       private void initializeLocalization(LayoutControlItem layoutItem, string caption)
@@ -63,8 +63,8 @@ namespace PKSim.UI.Views.Individuals
          bind(x => x.IsBloodCellsIntracellular, chkBloodCellsIntracellular, Localization.BloodCellsIntracellular);
          bind(x => x.IsBloodCellsMembrane, chkBloodCellsMembrane, Localization.BloodCellsMembrane);
          bind(x => x.IsVascEndosome, chkVascEndosome, Localization.VascEndosome);
-         bind(x => x.IsVascMembraneApical, chkVascMembraneApical, Localization.VascMembraneApical);
-         bind(x => x.IsVascMembraneBasolateral, chkVascMembraneBasolateral, Localization.VascMembraneBasolateral);
+         bind(x => x.IsVascMembranePlasmaSide, chkVascMembranePlasmaSide, Localization.VascMembranePlasmaSide);
+         bind(x => x.IsVascMembraneTissueSide, chkVascMembraneTissueSide, Localization.VascMembraneTissueSide);
       }
 
       private void bind(Expression<Func<IndividualProtein, bool>> expression, CheckEdit control, Localization localization)

@@ -160,7 +160,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observerSet)).Returns(_observerSetSnapshot);
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).Returns(_simulationSnapshot);
          A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).Returns(_simulationComparisonSnapshot);
-         A.CallTo(() => _parameterIdentificationMapper.MapToSnapshot(_parameterIdentification, _project)).Returns(_parameterIdentificationSnapshot);
+         A.CallTo(() => _parameterIdentificationMapper.MapToSnapshot(_parameterIdentification)).Returns(_parameterIdentificationSnapshot);
          A.CallTo(() => _qualificationPlanMapper.MapToSnapshot(_qualificationPlan)).Returns(_qualificationPlanSnapshot);
 
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] {_observedDataClassificationSnapshot});

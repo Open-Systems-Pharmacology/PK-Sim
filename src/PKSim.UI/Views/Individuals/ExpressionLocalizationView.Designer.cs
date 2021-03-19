@@ -33,17 +33,17 @@
          this.chkBloodCellsIntracellular = new OSPSuite.UI.Controls.UxCheckEdit();
          this.chkBloodCellsMembrane = new OSPSuite.UI.Controls.UxCheckEdit();
          this.chkVascEndosome = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.chkVascMembraneApical = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.chkVascMembraneBasolateral = new OSPSuite.UI.Controls.UxCheckEdit();
+         this.chkVascMembranePlasmaSide = new OSPSuite.UI.Controls.UxCheckEdit();
+         this.chkVascMembraneTissueSide = new OSPSuite.UI.Controls.UxCheckEdit();
          this.chkIntracellular = new OSPSuite.UI.Controls.UxCheckEdit();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemInterstitial = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemIntracellular = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemVascMembraneBasolateral = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemVascMembraneTissueSide = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemVascEndosome = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemBloodCellsIntracellular = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemBloodCellsMembrane = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemVascMembraneApical = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemVascMembranePlasmaSide = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -51,17 +51,17 @@
          ((System.ComponentModel.ISupportInitialize)(this.chkBloodCellsIntracellular.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkBloodCellsMembrane.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkVascEndosome.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembraneApical.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembraneBasolateral.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembranePlasmaSide.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembraneTissueSide.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkIntracellular.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemInterstitial)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemIntracellular)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembraneBasolateral)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembraneTissueSide)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascEndosome)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBloodCellsIntracellular)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBloodCellsMembrane)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembraneApical)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembranePlasmaSide)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
@@ -71,8 +71,8 @@
          this.layoutControl.Controls.Add(this.chkBloodCellsIntracellular);
          this.layoutControl.Controls.Add(this.chkBloodCellsMembrane);
          this.layoutControl.Controls.Add(this.chkVascEndosome);
-         this.layoutControl.Controls.Add(this.chkVascMembraneApical);
-         this.layoutControl.Controls.Add(this.chkVascMembraneBasolateral);
+         this.layoutControl.Controls.Add(this.chkVascMembranePlasmaSide);
+         this.layoutControl.Controls.Add(this.chkVascMembraneTissueSide);
          this.layoutControl.Controls.Add(this.chkIntracellular);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
@@ -123,26 +123,26 @@
          this.chkVascEndosome.StyleController = this.layoutControl;
          this.chkVascEndosome.TabIndex = 7;
          // 
-         // chkVascMembraneApical
+         // chkVascMembranePlasmaSide
          // 
-         this.chkVascMembraneApical.AllowClicksOutsideControlArea = false;
-         this.chkVascMembraneApical.Location = new System.Drawing.Point(924, 26);
-         this.chkVascMembraneApical.Name = "chkVascMembraneApical";
-         this.chkVascMembraneApical.Properties.Caption = "chkVascMembraneApical";
-         this.chkVascMembraneApical.Size = new System.Drawing.Size(241, 20);
-         this.chkVascMembraneApical.StyleController = this.layoutControl;
-         this.chkVascMembraneApical.TabIndex = 6;
+         this.chkVascMembranePlasmaSide.AllowClicksOutsideControlArea = false;
+         this.chkVascMembranePlasmaSide.Location = new System.Drawing.Point(924, 26);
+         this.chkVascMembranePlasmaSide.Name = "chkVascMembranePlasmaSide";
+         this.chkVascMembranePlasmaSide.Properties.Caption = "chkVascMembranePlasmaSide";
+         this.chkVascMembranePlasmaSide.Size = new System.Drawing.Size(241, 20);
+         this.chkVascMembranePlasmaSide.StyleController = this.layoutControl;
+         this.chkVascMembranePlasmaSide.TabIndex = 6;
          // 
-         // chkVascMembraneBasolateral
+         // chkVascMembraneTissueSide
          // 
-         this.chkVascMembraneBasolateral.AllowClicksOutsideControlArea = false;
-         this.chkVascMembraneBasolateral.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-         this.chkVascMembraneBasolateral.Location = new System.Drawing.Point(924, 50);
-         this.chkVascMembraneBasolateral.Name = "chkVascMembraneBasolateral";
-         this.chkVascMembraneBasolateral.Properties.Caption = "chkVascMembraneBasolateral";
-         this.chkVascMembraneBasolateral.Size = new System.Drawing.Size(241, 20);
-         this.chkVascMembraneBasolateral.StyleController = this.layoutControl;
-         this.chkVascMembraneBasolateral.TabIndex = 5;
+         this.chkVascMembraneTissueSide.AllowClicksOutsideControlArea = false;
+         this.chkVascMembraneTissueSide.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+         this.chkVascMembraneTissueSide.Location = new System.Drawing.Point(924, 50);
+         this.chkVascMembraneTissueSide.Name = "chkVascMembraneTissueSide";
+         this.chkVascMembraneTissueSide.Properties.Caption = "chkVascMembraneTissueSide";
+         this.chkVascMembraneTissueSide.Size = new System.Drawing.Size(241, 20);
+         this.chkVascMembraneTissueSide.StyleController = this.layoutControl;
+         this.chkVascMembraneTissueSide.TabIndex = 5;
          // 
          // chkIntracellular
          // 
@@ -161,11 +161,11 @@
          this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemInterstitial,
             this.layoutItemIntracellular,
-            this.layoutItemVascMembraneBasolateral,
+            this.layoutItemVascMembraneTissueSide,
             this.layoutItemVascEndosome,
             this.layoutItemBloodCellsIntracellular,
             this.layoutItemBloodCellsMembrane,
-            this.layoutItemVascMembraneApical});
+            this.layoutItemVascMembranePlasmaSide});
          this.Root.Name = "Root";
          this.Root.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.Root.Size = new System.Drawing.Size(1167, 72);
@@ -187,13 +187,13 @@
          this.layoutItemIntracellular.Size = new System.Drawing.Size(348, 24);
          this.layoutItemIntracellular.TextSize = new System.Drawing.Size(177, 13);
          // 
-         // layoutItemVascMembraneBasolateral
+         // layoutItemVascMembraneTissueSide
          // 
-         this.layoutItemVascMembraneBasolateral.Control = this.chkVascMembraneBasolateral;
-         this.layoutItemVascMembraneBasolateral.Location = new System.Drawing.Point(742, 48);
-         this.layoutItemVascMembraneBasolateral.Name = "layoutItemVascMembraneBasolateral";
-         this.layoutItemVascMembraneBasolateral.Size = new System.Drawing.Size(425, 24);
-         this.layoutItemVascMembraneBasolateral.TextSize = new System.Drawing.Size(177, 13);
+         this.layoutItemVascMembraneTissueSide.Control = this.chkVascMembraneTissueSide;
+         this.layoutItemVascMembraneTissueSide.Location = new System.Drawing.Point(742, 48);
+         this.layoutItemVascMembraneTissueSide.Name = "layoutItemVascMembraneTissueSide";
+         this.layoutItemVascMembraneTissueSide.Size = new System.Drawing.Size(425, 24);
+         this.layoutItemVascMembraneTissueSide.TextSize = new System.Drawing.Size(177, 13);
          // 
          // layoutItemVascEndosome
          // 
@@ -219,13 +219,13 @@
          this.layoutItemBloodCellsMembrane.Size = new System.Drawing.Size(394, 48);
          this.layoutItemBloodCellsMembrane.TextSize = new System.Drawing.Size(177, 13);
          // 
-         // layoutItemVascMembraneApical
+         // layoutItemVascMembranePlasmaSide
          // 
-         this.layoutItemVascMembraneApical.Control = this.chkVascMembraneApical;
-         this.layoutItemVascMembraneApical.Location = new System.Drawing.Point(742, 24);
-         this.layoutItemVascMembraneApical.Name = "layoutItemVascMembraneApical";
-         this.layoutItemVascMembraneApical.Size = new System.Drawing.Size(425, 24);
-         this.layoutItemVascMembraneApical.TextSize = new System.Drawing.Size(177, 13);
+         this.layoutItemVascMembranePlasmaSide.Control = this.chkVascMembranePlasmaSide;
+         this.layoutItemVascMembranePlasmaSide.Location = new System.Drawing.Point(742, 24);
+         this.layoutItemVascMembranePlasmaSide.Name = "layoutItemVascMembranePlasmaSide";
+         this.layoutItemVascMembranePlasmaSide.Size = new System.Drawing.Size(425, 24);
+         this.layoutItemVascMembranePlasmaSide.TextSize = new System.Drawing.Size(177, 13);
          // 
          // ExpressionLocalizationView
          // 
@@ -241,17 +241,17 @@
          ((System.ComponentModel.ISupportInitialize)(this.chkBloodCellsIntracellular.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkBloodCellsMembrane.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkVascEndosome.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembraneApical.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembraneBasolateral.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembranePlasmaSide.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkVascMembraneTissueSide.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkIntracellular.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemInterstitial)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemIntracellular)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembraneBasolateral)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembraneTissueSide)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascEndosome)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBloodCellsIntracellular)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBloodCellsMembrane)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembraneApical)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemVascMembranePlasmaSide)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -264,12 +264,12 @@
       private OSPSuite.UI.Controls.UxCheckEdit chkBloodCellsIntracellular;
       private OSPSuite.UI.Controls.UxCheckEdit chkBloodCellsMembrane;
       private OSPSuite.UI.Controls.UxCheckEdit chkVascEndosome;
-      private OSPSuite.UI.Controls.UxCheckEdit chkVascMembraneApical;
-      private OSPSuite.UI.Controls.UxCheckEdit chkVascMembraneBasolateral;
+      private OSPSuite.UI.Controls.UxCheckEdit chkVascMembranePlasmaSide;
+      private OSPSuite.UI.Controls.UxCheckEdit chkVascMembraneTissueSide;
       private OSPSuite.UI.Controls.UxCheckEdit chkIntracellular;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemIntracellular;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemVascMembraneBasolateral;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemVascMembraneApical;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemVascMembraneTissueSide;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemVascMembranePlasmaSide;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemVascEndosome;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemBloodCellsMembrane;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemBloodCellsIntracellular;

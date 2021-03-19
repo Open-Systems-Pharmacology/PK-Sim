@@ -25,18 +25,18 @@ namespace PKSim.Core.Snapshots.Services
          switch (tissueLocation)
          {
             case TissueLocation.Interstitial:
-               return Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneBasolateral;
+               return Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneTissueSide;
 
             case TissueLocation.Intracellular:
                var vacEndoLocalization = vascularEndoLocation == IntracellularVascularEndoLocation.Endosomal
                   ? Localization.VascEndosome
-                  : Localization.VascMembraneBasolateral;
+                  : Localization.VascMembraneTissueSide;
                return Localization.Intracellular | Localization.BloodCellsIntracellular | vacEndoLocalization;
 
             case TissueLocation.ExtracellularMembrane:
                var membLocation = membraneLocation == MembraneLocation.Apical
-                  ? Localization.VascMembraneApical
-                  : Localization.VascMembraneBasolateral;
+                  ? Localization.VascMembranePlasmaSide
+                  : Localization.VascMembraneTissueSide;
                return Localization.Interstitial | Localization.BloodCellsMembrane | membLocation;
 
             default:
