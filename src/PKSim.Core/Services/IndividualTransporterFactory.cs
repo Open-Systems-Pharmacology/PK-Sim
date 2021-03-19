@@ -79,7 +79,7 @@ namespace PKSim.Core.Services
             var zone = liver.Compartment(zoneName);
             addContainerExpression(zone.Container(INTRACELLULAR), transporter, TransportDirectionId.ExcretionLiver,
                RelExpParam(REL_EXP, defaultValue: 1),
-               FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ONE_RATE),
+               FractionParam(FRACTION_EXPRESSED_EPITHELIAL, CoreConstants.Rate.ONE_RATE),
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
             );
          });
@@ -133,13 +133,13 @@ namespace PKSim.Core.Services
             organ.IsKidney() ? TransportDirectionId.ExcretionKidney : TransportDirectionId.ExcretionLiver;
 
          addContainerExpression(organ.Container(INTERSTITIAL), transporter, DefaultTissueDirectionFor(transporter.TransportType),
-            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable: false),
+            FractionParam(FRACTION_EXPRESSED_TISSUE, CoreConstants.Rate.PARAM_F_EXP_TISSUE, editable: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
 
          addContainerExpression(organ.Container(INTRACELLULAR), transporter, transportDirection,
             RelExpParam(REL_EXP),
-            FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_EPITHELIAL, CoreConstants.Rate.ZERO_RATE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
          );
       }
@@ -176,8 +176,8 @@ namespace PKSim.Core.Services
 
          addContainerExpression(organ.Container(INTERSTITIAL), transporter,
             TransportDirectionId.None,
-            //We had the basolateral parameter to ensure that we can use the same formula. But this parameter is required only from a technical point of view
-            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.ONE_RATE, editable: false, visible: false),
+            //We had the tissue side parameter to ensure that we can use the same formula. But this parameter is required only from a technical point of view
+            FractionParam(FRACTION_EXPRESSED_TISSUE, CoreConstants.Rate.ONE_RATE, editable: false, visible: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }

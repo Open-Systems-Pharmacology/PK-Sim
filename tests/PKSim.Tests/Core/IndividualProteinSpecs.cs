@@ -42,18 +42,18 @@ namespace PKSim.Core
          sut.InVascularEndothelium.ShouldBeFalse();
 
 
-         sut.IsVascMembraneBasolateral = true;
-         sut.IsVascMembraneBasolateral.ShouldBeTrue();
+         sut.IsVascMembraneTissueSide = true;
+         sut.IsVascMembraneTissueSide.ShouldBeTrue();
          sut.InVascularEndothelium.ShouldBeTrue();
-         sut.IsVascMembraneBasolateral = false;
-         sut.IsVascMembraneBasolateral.ShouldBeFalse();
+         sut.IsVascMembraneTissueSide = false;
+         sut.IsVascMembraneTissueSide.ShouldBeFalse();
          sut.InVascularEndothelium.ShouldBeFalse();
 
-         sut.IsVascMembraneApical = true;
-         sut.IsVascMembraneApical.ShouldBeTrue();
+         sut.IsVascMembranePlasmaSide = true;
+         sut.IsVascMembranePlasmaSide.ShouldBeTrue();
          sut.InVascularEndothelium.ShouldBeTrue();
-         sut.IsVascMembraneApical = false;
-         sut.IsVascMembraneApical.ShouldBeFalse();
+         sut.IsVascMembranePlasmaSide = false;
+         sut.IsVascMembranePlasmaSide.ShouldBeFalse();
          sut.InVascularEndothelium.ShouldBeFalse();
       }
    }

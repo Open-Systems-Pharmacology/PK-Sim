@@ -81,9 +81,9 @@ namespace PKSim.Presentation.Presenters.Individuals
                case FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
                   return _protein.IsVascEndosome;
                case FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE:
-                  return _protein.IsVascMembraneBasolateral;
+                  return _protein.IsVascMembraneTissueSide;
                case FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE:
-                  return _protein.IsVascMembraneApical;
+                  return _protein.IsVascMembranePlasmaSide;
             }
          }
 

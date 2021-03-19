@@ -43,16 +43,16 @@ namespace PKSim.Core.Snapshots.Services
          { 
             //Is there by construction
             var intracellular = transporterExpressionContainers.First(x => x.CompartmentName == INTRACELLULAR);
-            var fractionExpressedApical = intracellular.Parameter(FRACTION_EXPRESSED_APICAL);
+            var fractionExpressedEpithelial = intracellular.Parameter(FRACTION_EXPRESSED_EPITHELIAL);
             switch (membraneLocation)
             {
                //we need to set the value of f_expressed_apical to zero
                case MembraneLocation.Basolateral:
-                  fractionExpressedApical.Value = 0;
+                  fractionExpressedEpithelial.Value = 0;
                   return;
                //we need to set the value of f_bbb to 1
                case MembraneLocation.Apical:
-                  fractionExpressedApical.Value = 1;
+                  fractionExpressedEpithelial.Value = 1;
                   return;
             }
 
