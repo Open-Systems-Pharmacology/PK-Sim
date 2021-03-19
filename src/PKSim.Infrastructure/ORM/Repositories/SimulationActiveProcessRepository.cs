@@ -77,11 +77,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             throw new ArgumentException($"Cannot find compound process named '{compoundProcessName}'");
 
          var simulationProcessName = simulationProcessNameFrom(individualProcessName, compoundProcessName);
-         var process = _allSimulationActiveProcesses.FindByName(simulationProcessName).DowncastTo<PKSimTransport>();
-         if (process == null)
-            throw new PKSimException(PKSimConstants.Error.CannotCreateTransportProcessWithKinetic(individualProcessName, compoundProcess.KineticType));
-
-         return process;
+         return _allSimulationActiveProcesses.FindByName(simulationProcessName).DowncastTo<PKSimTransport>();
       }
 
       private string simulationProcessNameFrom(string compoundProcessName) => simulationProcessNameFrom(compoundProcessName, compoundProcessName);

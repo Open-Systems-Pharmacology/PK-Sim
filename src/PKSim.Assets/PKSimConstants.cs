@@ -901,8 +901,8 @@ namespace PKSim.Assets
             $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
 
 
-         public static string CannotCreateTransportProcessWithKinetic(string processName, string kineticType) =>
-            $"{kineticType} kinetic is not yet supported for process '{processName}'. Please select another process type in your compound.";
+         public static string CannotCreateTransportProcessWithKinetic(string processName, string compoundProcess) =>
+            $"The kinetic used in compound process '{compoundProcess}' cannot be used with '{processName}'. Please select another process type in your compound.";
 
       }
 

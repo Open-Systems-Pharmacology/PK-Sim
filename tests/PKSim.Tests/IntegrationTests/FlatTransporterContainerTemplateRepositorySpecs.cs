@@ -20,7 +20,7 @@ namespace PKSim.IntegrationTests
 
       public override void GlobalContext()
       {
- 	      base.GlobalContext();
+         base.GlobalContext();
          _flatProcessRepository = IoC.Resolve<IFlatProcessRepository>();
          _simulationProcessRepository = IoC.Resolve<ISimulationActiveProcessRepository>();
       }
@@ -34,11 +34,16 @@ namespace PKSim.IntegrationTests
             foreach (var flatTransportProcess in _flatProcessRepository.All().Where(p => p.IsActiveTransport()))
             {
                var simProcess = _simulationProcessRepository.TransportFor(transportProcess, flatTransportProcess.Name);
+             
+               //This combination is not supported yet and is explicitly excluded
+               if (transportProcess.Contains("BiDirectional") && flatTransportProcess.Name.Contains("_Hill"))
+                  continue;
+
                if (simProcess == null)
-                  error.Add(
-                     $"Could not find sim process for individual process '{transportProcess}' and compound process '{flatTransportProcess.Name}'");
+                  error.Add($"Could not find sim process for individual process '{transportProcess}' and compound process '{flatTransportProcess.Name}'");
             }
          }
+
          error.Count().ShouldBeEqualTo(0, error.ToString("\n"));
       }
    }

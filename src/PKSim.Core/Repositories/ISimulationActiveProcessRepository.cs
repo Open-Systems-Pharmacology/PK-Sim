@@ -22,7 +22,7 @@ namespace PKSim.Core.Repositories
       TActiveProcess ProcessFor<TActiveProcess>(string processName) where TActiveProcess : IPKSimProcess;
 
       /// <summary>
-      ///    Returns the transport compoundProcess for the given compound compoundProcess
+      ///    Returns the transport transport process for the given <paramref name="individualProcessName"/> and <paramref name="compoundProcessName"/>
       /// </summary>
       PKSimTransport TransportFor(string individualProcessName, string compoundProcessName);
    }
