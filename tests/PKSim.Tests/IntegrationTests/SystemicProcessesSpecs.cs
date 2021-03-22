@@ -186,9 +186,7 @@ namespace PKSim.IntegrationTests
          allProcessParameters.FindByName(ConverterConstants.Parameters.PlasmaClearance).Value.ShouldBeEqualTo(_liverClearance.Parameter(ConverterConstants.Parameters.PlasmaClearance).Value);
       }
 
-      //@TODO
       [Observation]
-      [Ignore("TODO this does not work anymore")]
       public void the_created_process_kinetic_should_reference_an_undefined_enzyme_in_liver_whose_start_concentration_is_set_to_1_by_f_cell()
       {
          var liver_periportal = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.PERIPORTAL);
