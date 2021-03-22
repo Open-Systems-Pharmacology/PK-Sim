@@ -10,24 +10,12 @@ namespace PKSim.CLI.Core.MinimalImplementations
 {
    public class CLIDataImporter : IDataImporter
    {
-      public (IReadOnlyList<DataRepository> DataRepositories, ImporterConfiguration Configuration) ImportDataSets(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos,
-         DataImporterSettings dataImporterSettings)
+      public (IReadOnlyList<DataRepository> DataRepositories, ImporterConfiguration Configuration) ImportDataSets(IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
       {
          throw new System.NotImplementedException();
       }
 
-      public IReadOnlyList<DataRepository> ImportFromConfiguration(ImporterConfiguration configuration, IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos,
-         DataImporterSettings dataImporterSettings)
-      {
-         throw new System.NotImplementedException();
-      }
-
-      Cache<string, IEnumerable<DataRepository>> IDataImporter.ReloadFromConfiguration(IEnumerable<DataRepository> dataSetsToImport, IEnumerable<DataRepository> existingDataSets)
-      {
-         throw new System.NotImplementedException();
-      }
-
-      public IList<MetaDataCategory> DefaultMetaDataCategories()
+      public IReadOnlyList<DataRepository> ImportFromConfiguration(ImporterConfiguration configuration, bool promptForConfirmation, IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
       {
          throw new System.NotImplementedException();
       }

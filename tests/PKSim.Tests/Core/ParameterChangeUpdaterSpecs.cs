@@ -47,7 +47,7 @@ namespace PKSim.Core
       {
          base.Context();
          _observedData = DomainHelperForSpecs.ObservedData();
-         _observedData.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.Molecule, Value = "C"});
+         _observedData.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.MOLECULE, Value = "C"});
          _observedData.AllButBaseGrid().Each(c => c.DataInfo.MolWeight = 100);
          _compounds.Add(_compound);
       }
@@ -77,11 +77,11 @@ namespace PKSim.Core
          A.CallTo(() => _buildingBockRetriever.BuildingBlockContaining(_parameter)).Returns(_compound);
 
          _observedDataForCompound = DomainHelperForSpecs.ObservedData();
-         _observedDataForCompound.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.Molecule, Value = "C"});
+         _observedDataForCompound.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.MOLECULE, Value = "C"});
          _observedDataForCompound.AllButBaseGrid().Each(c => c.DataInfo.MolWeight = 100);
 
          _observedDataForNotCompound = DomainHelperForSpecs.ObservedData();
-         _observedDataForNotCompound.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.Molecule, Value = "C2"});
+         _observedDataForNotCompound.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.MOLECULE, Value = "C2"});
          _observedDataForNotCompound.AllButBaseGrid().Each(c => c.DataInfo.MolWeight = 100);
 
          _observedDataList.AddRange(new[] {_observedDataForCompound, _observedDataForNotCompound});
@@ -117,7 +117,7 @@ namespace PKSim.Core
          A.CallTo(() => _buildingBockRetriever.BuildingBlockContaining(_parameter)).Returns(null);
 
          _observedData = DomainHelperForSpecs.ObservedData();
-         _observedData.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.Molecule, Value = "C"});
+         _observedData.ExtendedProperties.Add(new ExtendedProperty<string> {Name = ObservedData.MOLECULE, Value = "C"});
          _observedData.AllButBaseGrid().Each(c => c.DataInfo.MolWeight = 100);
 
 

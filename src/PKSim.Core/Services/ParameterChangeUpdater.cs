@@ -64,7 +64,7 @@ namespace PKSim.Core.Services
 
       private string moleculeNameFrom(DataRepository observedData)
       {
-         return observedData.ExtendedPropertyValueFor(ObservedData.Molecule);
+         return observedData.ExtendedPropertyValueFor(ObservedData.MOLECULE);
       }
 
       public void UpdateMolWeightIn(DataRepository observedData)

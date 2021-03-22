@@ -157,10 +157,10 @@ namespace PKSim.Presentation.Services
 
       private void renameMoleculeNameIn(DataRepository observedData, string oldBuildingBlockName, string newBuildingBlockName)
       {
-         if (!string.Equals(observedData.ExtendedPropertyValueFor(ObservedData.Molecule), oldBuildingBlockName))
+         if (!string.Equals(observedData.ExtendedPropertyValueFor(ObservedData.MOLECULE), oldBuildingBlockName))
             return;
 
-         observedData.ExtendedProperties[ObservedData.Molecule].ValueAsObject = newBuildingBlockName;
+         observedData.ExtendedProperties[ObservedData.MOLECULE].ValueAsObject = newBuildingBlockName;
       }
 
       private void renameUsageOfBuildingBlockInSimulations(IPKSimBuildingBlock templateBuildingBlock)

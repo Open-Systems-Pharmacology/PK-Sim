@@ -25,22 +25,18 @@ namespace PKSim.Infrastructure
       protected SimulationTransfer _result;
       protected PKSimProject _project;
       protected IJournalTask _journalTask;
-      private ICloneManagerForModel _cloneManagerForModel;
 
       protected override void Context()
       {
          _pkmlFile = "file";
          _project = new PKSimProject();
-         _dimensionFactory = A.Fake<IDimensionFactory>();
-         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _simulationPersister = A.Fake<ISimulationPersistor>();
          _projectRetriever = A.Fake<IProjectRetriever>();
          _journalTask = A.Fake<IJournalTask>();
-         _cloneManagerForModel = A.Fake<ICloneManagerForModel>();
-         sut = new SimulationTransferLoader(_dimensionFactory, _objectBaseFactory, _simulationPersister, _projectRetriever, _journalTask, _cloneManagerForModel);
+         sut = new SimulationTransferLoader( _simulationPersister, _projectRetriever, _journalTask);
          _simulationTransfer = new SimulationTransfer();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
-         A.CallTo(() => _simulationPersister.Load(_pkmlFile, _dimensionFactory, _objectBaseFactory, A<IWithIdRepository>._, _cloneManagerForModel)).Returns(_simulationTransfer);
+         A.CallTo(() => _simulationPersister.Load(_pkmlFile,  A<IWithIdRepository>._)).Returns(_simulationTransfer);
       }
 
       protected override void Because()
