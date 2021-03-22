@@ -94,6 +94,8 @@ namespace PKSim.Core.Model
          {
             case TransportType.Influx:
                return InfluxPlasmaToInterstitial;
+            case TransportType.BiDirectional:
+               return BiDirectionalPlasmaInterstitial;
             default:
                return EffluxInterstitialToPlasma;
          }
@@ -105,6 +107,8 @@ namespace PKSim.Core.Model
          {
             case TransportType.Influx:
                return InfluxPlasmaToBloodCells;
+            case TransportType.BiDirectional:
+               return BiDirectionalPlasmaBloodCells;
             default:
                return EffluxBloodCellsToPlasma;
          }
@@ -116,6 +120,8 @@ namespace PKSim.Core.Model
          {
             case TransportType.Influx:
                return InfluxLumenToMucosaIntracellular;
+            case TransportType.BiDirectional:
+               return BiDirectionalLumenMucosaIntracellular;
             case TransportType.PgpLike:
                return PgpMucosaIntracellularToLumen;
             default:
@@ -129,6 +135,8 @@ namespace PKSim.Core.Model
          {
             case TransportType.Influx:
                return InfluxInterstitialToIntracellular;
+            case TransportType.BiDirectional:
+               return BiDirectionalInterstitialIntracellular;
             case TransportType.PgpLike:
                return PgpIntracellularToInterstitial;
             default:
@@ -142,6 +150,8 @@ namespace PKSim.Core.Model
          {
             case TransportType.Influx:
                return InfluxBrainInterstitialToTissue;
+            case TransportType.BiDirectional:
+               return BiDirectionalBrainInterstitialTissue;
             case TransportType.PgpLike:
                return PgpBrainTissueToInterstitial;
             default:
@@ -155,6 +165,8 @@ namespace PKSim.Core.Model
          {
             case TransportType.Influx:
                return InfluxBrainPlasmaToInterstitial;
+            case TransportType.BiDirectional:
+               return BiDirectionalBrainPlasmaInterstitial;
             case TransportType.PgpLike:
                return PgpBrainInterstitialToPlasma;
             default:

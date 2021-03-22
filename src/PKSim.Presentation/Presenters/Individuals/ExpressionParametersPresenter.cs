@@ -37,7 +37,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          IExpressionParametersView<TExpressionParameterDTO> view,
          IEditParameterPresenterTask editParameterPresenterTask) : base(view, editParameterPresenterTask)
       {
-         //TODO probably in preferences
          _showInitialConcentration = false;
       }
 

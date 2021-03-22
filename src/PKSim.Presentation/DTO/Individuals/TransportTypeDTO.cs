@@ -12,6 +12,7 @@ namespace PKSim.Presentation.DTO.Individuals
 
       public static TransportTypeDTO Influx = addTransporterType(TransportType.Influx, PKSimConstants.UI.Influx, ApplicationIcons.Influx);
       public static TransportTypeDTO Efflux = addTransporterType(TransportType.Efflux, PKSimConstants.UI.Efflux, ApplicationIcons.Efflux);
+      public static TransportTypeDTO BiDirectional = addTransporterType(TransportType.BiDirectional, PKSimConstants.UI.BiDirectional, ApplicationIcons.BiDirectional);
       public static TransportTypeDTO PgpLike = addTransporterType(TransportType.PgpLike, PKSimConstants.UI.PgpLike,ApplicationIcons.Pgp);
 
       private static TransportTypeDTO addTransporterType(TransportType transporterType, string displayName, ApplicationIcon icon)

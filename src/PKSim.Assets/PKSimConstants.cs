@@ -1496,6 +1496,7 @@ namespace PKSim.Assets
          public static readonly string Schema = "Schema";
          public static readonly string Influx = "Influx";
          public static readonly string Efflux = "Efflux";
+         public static readonly string BiDirectional = "Bi-Directional";
          public static readonly string PgpLike = "Pgp-Like";
          public static readonly string EmptyName = "Empty";
          public static readonly string EmptyDescription = "<Empty>";
