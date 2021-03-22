@@ -59,6 +59,10 @@ namespace PKSim.Core
          _transporterExpressionContainer.WithParentContainer(_bone_cell);
          TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.InfluxInterstitialToIntracellular);
+
+         TransportDirections.DefaultDirectionFor(TransportType.BiDirectional, _transporterExpressionContainer)
+            .ShouldBeEqualTo(TransportDirectionId.BiDirectionalInterstitialIntracellular);
+         
          TransportDirections.DefaultDirectionFor(TransportType.Efflux, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.EffluxIntracellularToInterstitial);
       }
@@ -69,12 +73,20 @@ namespace PKSim.Core
          _transporterExpressionContainer.WithParentContainer(_brain_pls);
          TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.InfluxBrainPlasmaToInterstitial);
+
+         TransportDirections.DefaultDirectionFor(TransportType.BiDirectional, _transporterExpressionContainer)
+            .ShouldBeEqualTo(TransportDirectionId.BiDirectionalBrainPlasmaInterstitial);
+
          TransportDirections.DefaultDirectionFor(TransportType.Efflux, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.EffluxBrainInterstitialToPlasma);
-
+         
          _transporterExpressionContainer.WithParentContainer(_brain_cell);
          TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.InfluxBrainInterstitialToTissue);
+
+         TransportDirections.DefaultDirectionFor(TransportType.BiDirectional, _transporterExpressionContainer)
+            .ShouldBeEqualTo(TransportDirectionId.BiDirectionalBrainInterstitialTissue);
+         
          TransportDirections.DefaultDirectionFor(TransportType.Efflux, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.EffluxBrainTissueToInterstitial);
       }
@@ -85,12 +97,20 @@ namespace PKSim.Core
          _transporterExpressionContainer.WithParentContainer(_mucosaDuodenumInt);
          TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.InfluxInterstitialToIntracellular);
+
+         TransportDirections.DefaultDirectionFor(TransportType.BiDirectional, _transporterExpressionContainer)
+            .ShouldBeEqualTo(TransportDirectionId.BiDirectionalInterstitialIntracellular);
+         
          TransportDirections.DefaultDirectionFor(TransportType.Efflux, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.EffluxIntracellularToInterstitial);
 
          _transporterExpressionContainer.WithParentContainer(_mucosaDuodenumCell);
          TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.InfluxLumenToMucosaIntracellular);
+
+         TransportDirections.DefaultDirectionFor(TransportType.BiDirectional, _transporterExpressionContainer)
+            .ShouldBeEqualTo(TransportDirectionId.BiDirectionalLumenMucosaIntracellular);
+
          TransportDirections.DefaultDirectionFor(TransportType.Efflux, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.EffluxMucosaIntracellularToLumen);
       }
@@ -102,6 +122,7 @@ namespace PKSim.Core
          _transporterExpressionContainer.TransportDirection = TransportDirectionId.ExcretionLiver;
          TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.ExcretionLiver);
+
          TransportDirections.DefaultDirectionFor(TransportType.Efflux, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.ExcretionLiver);
 
@@ -109,6 +130,7 @@ namespace PKSim.Core
          _transporterExpressionContainer.TransportDirection = TransportDirectionId.ExcretionKidney;
          TransportDirections.DefaultDirectionFor(TransportType.Influx, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.ExcretionKidney);
+         
          TransportDirections.DefaultDirectionFor(TransportType.Efflux, _transporterExpressionContainer)
             .ShouldBeEqualTo(TransportDirectionId.ExcretionKidney);
       }
