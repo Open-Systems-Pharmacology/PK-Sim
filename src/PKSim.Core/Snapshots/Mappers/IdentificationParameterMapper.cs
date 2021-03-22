@@ -16,13 +16,13 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IIdentificationParameterFactory _identificationParameterFactory;
       private readonly IIdentificationParameterTask _identificationParameterTask;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
       public IdentificationParameterMapper(
          ParameterMapper parameterMapper,
          IIdentificationParameterFactory identificationParameterFactory,
          IIdentificationParameterTask identificationParameterTask,
-         IOSPLogger logger
+         IOSPSuiteLogger logger
       ) : base(parameterMapper)
       {
          _identificationParameterFactory = identificationParameterFactory;

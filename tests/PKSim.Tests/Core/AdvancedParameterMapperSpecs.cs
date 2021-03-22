@@ -24,14 +24,14 @@ namespace PKSim.Core
       protected Parameter _meanSnapshot;
       protected Parameter _deviationSnapshot;
       protected IEntityPathResolver _entityPathResolver;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected int _originalSeed;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _advancedParameterFactory = A.Fake<IAdvancedParameterFactory>();
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          _advancedParameter = new AdvancedParameter
          {

@@ -19,7 +19,7 @@ namespace PKSim.BatchTool.Presenters
       where TRunOptions : IWithInputAndOutputFolders, new()
    {
 
-      protected InputAndOutputBatchPresenter(IInputAndOutputBatchView<TRunOptions> view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IOSPLogger batchLogger, DirectoryMapSettings directoryMapSettings)
+      protected InputAndOutputBatchPresenter(IInputAndOutputBatchView<TRunOptions> view, TBatchRunner batchRunner, IDialogCreator dialogCreator, ILogPresenter logPresenter, IOSPSuiteLogger batchLogger, DirectoryMapSettings directoryMapSettings)
          : base(view, batchRunner, dialogCreator, logPresenter, batchLogger)
       {
          _runOptionsDTO.InputFolder = directoryMapSettings.UsedDirectories[CoreConstants.DirectoryKey.BATCH_INPUT].Path;

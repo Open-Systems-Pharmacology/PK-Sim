@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Data;
+using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Core.Comparison;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;

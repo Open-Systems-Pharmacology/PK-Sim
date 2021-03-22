@@ -14,9 +14,9 @@ namespace PKSim.Core.Services
 
    public abstract class QualificationStepRunner<T> : IQualificationStepRunner where T : IQualificationStep
    {
-      protected readonly IOSPLogger _logger;
+      protected readonly IOSPSuiteLogger _logger;
 
-      protected QualificationStepRunner(IOSPLogger logger)
+      protected QualificationStepRunner(IOSPSuiteLogger logger)
       {
          _logger = logger;
       }

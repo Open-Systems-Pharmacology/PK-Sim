@@ -87,7 +87,7 @@ namespace PKSim.CLI.Core.Services
    public class SimulationExporter : ISimulationExporter
    {
       private readonly ISimulationRunner _simulationRunner;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
       private readonly ISimulationResultsExporter _simulationResultsExporter;
       private readonly ISimulationExportTask _simulationExportTask;
       private readonly IPopulationExportTask _populationExportTask;
@@ -95,7 +95,7 @@ namespace PKSim.CLI.Core.Services
 
       public SimulationExporter(
          ISimulationRunner simulationRunner,
-         IOSPLogger logger,
+         IOSPSuiteLogger logger,
          ISimulationResultsExporter simulationResultsExporter,
          ISimulationExportTask simulationExportTask,
          IPopulationExportTask populationExportTask,

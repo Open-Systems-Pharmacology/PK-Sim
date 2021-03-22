@@ -35,7 +35,7 @@ namespace PKSim.Core
       protected ISimulationAnalysis _parameterIdentificationAnalysis;
       protected ParameterIdentificationAnalysis _snapshotParameterIdentificationAnalysis;
       protected IObjectBaseFactory _objectBaseFactory;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
@@ -44,7 +44,7 @@ namespace PKSim.Core
          _identificationParameterMapper = A.Fake<IdentificationParameterMapper>();
          _parameterIdentificationAnalysisMapper = A.Fake<ParameterIdentificationAnalysisMapper>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          _project = new PKSimProject();
          _simulation = new IndividualSimulation().WithName("S1");

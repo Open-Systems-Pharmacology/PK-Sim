@@ -24,7 +24,7 @@ namespace PKSim.Core
       protected ICloner _cloner;
       protected ISpeciesRepository _speciesRepository;
       protected ICompoundProcessTask _compoundProcessTask;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
@@ -34,7 +34,7 @@ namespace PKSim.Core
          _cloner = A.Fake<ICloner>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _compoundProcessTask = A.Fake<ICompoundProcessTask>();
-         _logger= A.Fake<IOSPLogger>();
+         _logger= A.Fake<IOSPSuiteLogger>();
 
 
          sut = new CompoundProcessMapper(_parameterMapper, _representationInfoRepository, _compoundProcessRepository, _cloner, _speciesRepository, _compoundProcessTask, _logger);

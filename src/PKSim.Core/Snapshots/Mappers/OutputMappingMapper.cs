@@ -14,9 +14,9 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class OutputMappingMapper : SnapshotMapperBase<ModelOutputMapping, SnapshotOutputMapping, ParameterIdentificationContext>
    {
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public OutputMappingMapper(IOSPLogger logger)
+      public OutputMappingMapper(IOSPSuiteLogger logger)
       {
          _logger = logger;
       }

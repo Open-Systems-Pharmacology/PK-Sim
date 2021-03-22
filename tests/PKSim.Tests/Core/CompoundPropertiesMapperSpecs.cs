@@ -42,7 +42,7 @@ namespace PKSim.Core
       protected EnzymaticProcess _enzymaticProcess;
       protected SpecificBindingPartialProcess _specificBindingProcess;
       protected SystemicProcess _gfrTransportProcess;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected Model.CompoundProperties _mappedCompoundProperties;
       private SystemicProcess _hepaticEnzymaticProcess;
       private SystemicProcessSelection _noEnzymaticSystemicProcessSelection;
@@ -55,7 +55,7 @@ namespace PKSim.Core
       {
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          _project = new PKSimProject();
          _calculationMethodSnapshot = new CalculationMethodCache();
          sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper, _processMappingMapper, _logger);

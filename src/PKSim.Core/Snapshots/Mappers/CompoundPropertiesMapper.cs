@@ -28,9 +28,9 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
       private readonly ProcessMappingMapper _processMappingMapper;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public CompoundPropertiesMapper(CalculationMethodCacheMapper calculationMethodCacheMapper, ProcessMappingMapper processMappingMapper, IOSPLogger logger)
+      public CompoundPropertiesMapper(CalculationMethodCacheMapper calculationMethodCacheMapper, ProcessMappingMapper processMappingMapper, IOSPSuiteLogger logger)
       {
          _calculationMethodCacheMapper = calculationMethodCacheMapper;
          _processMappingMapper = processMappingMapper;

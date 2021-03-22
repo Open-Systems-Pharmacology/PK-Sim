@@ -13,9 +13,9 @@ namespace PKSim.Core.Services
    public class QualiticationPlanRunner : IQualiticationPlanRunner
    {
       private readonly IQualificationStepRunnerFactory _qualificationStepRunnerFactory;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public QualiticationPlanRunner(IQualificationStepRunnerFactory qualificationStepRunnerFactory, IOSPLogger logger)
+      public QualiticationPlanRunner(IQualificationStepRunnerFactory qualificationStepRunnerFactory, IOSPSuiteLogger logger)
       {
          _qualificationStepRunnerFactory = qualificationStepRunnerFactory;
          _logger = logger;

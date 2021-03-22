@@ -12,7 +12,7 @@ namespace PKSim.Core
 {
    public abstract class concern_for_DescriptorConditionMapper : ContextSpecificationAsync<DescriptorConditionMapper>
    {
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected InContainerCondition _inContainer;
       protected MatchAllCondition _matchAllCondition;
       protected MatchTagCondition _notMatchCondition;
@@ -21,7 +21,7 @@ namespace PKSim.Core
 
       protected override Task Context()
       {
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          sut = new DescriptorConditionMapper(_logger);
 
          _inContainer = new InContainerCondition("CONT");

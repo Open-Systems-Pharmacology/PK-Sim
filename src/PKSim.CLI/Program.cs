@@ -61,7 +61,7 @@ namespace PKSim.CLI
             logger.AddInfo($"{command.Name} run finished");
       }
 
-      private static IOSPLogger initializeLogger(CLICommand runCommand)
+      private static IOSPSuiteLogger initializeLogger(CLICommand runCommand)
       {
 
          var loggerCreator = IoC.Resolve<ILoggerCreator>();
@@ -77,7 +77,7 @@ namespace PKSim.CLI
               builder
                 .AddFile(runCommand.LogFileFullPath)
             );
-         return IoC.Resolve<IOSPLogger>();
+         return IoC.Resolve<IOSPSuiteLogger>();
       }
    }
 }

@@ -15,12 +15,12 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly ICalculationMethodRepository _calculationMethodRepository;
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
       public CalculationMethodCacheMapper(
          ICalculationMethodRepository calculationMethodRepository, 
          ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
-         IOSPLogger logger)
+         IOSPSuiteLogger logger)
       {
          _calculationMethodRepository = calculationMethodRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;

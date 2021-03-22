@@ -4,8 +4,8 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Importer;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace PKSim.Presentation.Services
 {

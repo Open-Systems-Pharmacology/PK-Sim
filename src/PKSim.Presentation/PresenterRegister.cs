@@ -135,8 +135,6 @@ namespace PKSim.Presentation
          Captions.BottomCompartmentPath = PKSimConstants.UI.Compartment;
          Captions.NamePath = PKSimConstants.UI.Name;
          Captions.MoleculePath = PKSimConstants.UI.Molecule;
-
-         container.AddRegister(x=>x.FromType<OSPSuite.Presentation.Importer.PresentationImporterRegister>());
       }
 
       private static void registerSingleStartPresenters(IContainer container)

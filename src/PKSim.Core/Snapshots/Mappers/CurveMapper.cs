@@ -15,9 +15,9 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly CurveOptionsMapper _curveOptionsMapper;
       private readonly IDimensionFactory _dimensionFactory;
-      private readonly IOSPLogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public CurveMapper(CurveOptionsMapper curveOptionsMapper, IDimensionFactory dimensionFactory, IOSPLogger logger)
+      public CurveMapper(CurveOptionsMapper curveOptionsMapper, IDimensionFactory dimensionFactory, IOSPSuiteLogger logger)
       {
          _curveOptionsMapper = curveOptionsMapper;
          _dimensionFactory = dimensionFactory;

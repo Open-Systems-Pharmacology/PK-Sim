@@ -22,7 +22,7 @@ namespace PKSim.CLI
 {
    public abstract class concern_for_ExportSimulationRunner : ContextSpecificationAsync<ExportSimulationRunner>
    {
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected IWorkspacePersistor _workspacePersitor;
       protected ICoreWorkspace _workspace;
       protected ISimulationExporter _simulationExporter;
@@ -72,7 +72,7 @@ namespace PKSim.CLI
 
       protected override Task Context()
       {
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          _workspacePersitor = A.Fake<IWorkspacePersistor>();
          _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();

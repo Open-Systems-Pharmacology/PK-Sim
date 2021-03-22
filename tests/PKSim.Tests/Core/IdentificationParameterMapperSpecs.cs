@@ -27,7 +27,7 @@ namespace PKSim.Core
       protected ParameterSelection _parameterSelection1;
       protected ParameterSelection _parameterSelection2;
       protected IIdentificationParameterFactory _identificationParameterFactory;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected ParameterIdentificationContext _parameterIdentificationContext;
       private ParameterIdentification _parameterIdentification;
       private PKSimProject _project;
@@ -36,8 +36,8 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _identificationParameterFactory = A.Fake<IIdentificationParameterFactory>();
-         _logger = A.Fake<IOSPLogger>();
+         _identificationParameterFactory= A.Fake<IIdentificationParameterFactory>();
+         _logger= A.Fake<IOSPSuiteLogger>();
          _identificationParameterTask = A.Fake<IIdentificationParameterTask>();
          sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _identificationParameterTask, _logger);
 

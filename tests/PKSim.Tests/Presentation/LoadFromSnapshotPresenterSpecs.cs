@@ -23,7 +23,7 @@ namespace PKSim.Presentation
       protected ISnapshotTask _snapshotTask;
       protected IDialogCreator _dialogCreator;
       protected IObjectTypeResolver _objectTypeResolver;
-      protected IOSPLogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected IEventPublisher _eventPublisher;
       protected ILogPresenter _logPresenter;
       protected LoadFromSnapshotDTO _loadFromSnapshotDTO;
@@ -35,7 +35,7 @@ namespace PKSim.Presentation
          _snapshotTask = A.Fake<ISnapshotTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         _logger = A.Fake<IOSPLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          _eventPublisher = A.Fake<IEventPublisher>();
          _logPresenter = A.Fake<ILogPresenter>();
 
