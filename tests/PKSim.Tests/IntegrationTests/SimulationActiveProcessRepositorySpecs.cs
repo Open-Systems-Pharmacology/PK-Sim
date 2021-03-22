@@ -8,6 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core;
 using static PKSim.CoreConstantsForSpecs.ActiveTransport;
 
 namespace PKSim.IntegrationTests
@@ -40,6 +41,24 @@ namespace PKSim.IntegrationTests
          sut.TransportFor(ActiveEffluxSpecificIntracellularToInterstitial, "ActiveTransportSpecific_MM").Name.ShouldBeEqualTo(ActiveEffluxSpecificIntracellularToInterstitial_MM);
       }
    }
+
+
+   public class When_resolving_the_transport_process_for_a_combination_that_does_nto_exist : concern_for_SimulationActiveProcessRepository
+   {
+      private PKSimTransport _transporter;
+
+      protected override void Because()
+      {
+         _transporter = sut.TransportFor("ActiveBiDirectionalInterstitialIntracellular", "ActiveTransportSpecific_Hill");
+      }
+
+      [Observation]
+      public void should_return_null()
+      {
+         _transporter.ShouldBeNull();
+      }
+   }
+
 
    public class When_retrieving_all_process_defined_in_the_simulation_active_process_repository : concern_for_SimulationActiveProcessRepository
    {

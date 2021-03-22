@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -377,7 +378,11 @@ namespace PKSim.Core.Mappers
       private ITransportBuilder activeTransportFrom(CompoundProcess process, InducedProcess inducedProcess, IFormulaCache formulaCache)
       {
          //retrieve process for the simulation and create a clone
-         var activeTransport = _cloner.Clone(_simulationActiveProcessRepository.TransportFor(inducedProcess.Name, process.InternalName));
+         var simulationProcess = _simulationActiveProcessRepository.TransportFor(inducedProcess.Name, process.InternalName);
+         if (simulationProcess == null)
+            throw new PKSimException(PKSimConstants.Error.CannotCreateTransportProcessWithKinetic(inducedProcess.Name, process.Name));
+
+         var activeTransport = _cloner.Clone(simulationProcess);
          updateTransporterFormulaFromCache(activeTransport, formulaCache);
          //remove all parameters defined in the builder
          var allParameters = activeTransport.Parameters.ToList();

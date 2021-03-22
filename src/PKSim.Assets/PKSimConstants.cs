@@ -900,6 +900,10 @@ namespace PKSim.Assets
          public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
             $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
 
+
+         public static string CannotCreateTransportProcessWithKinetic(string processName, string compoundProcess) =>
+            $"The kinetic used in compound process '{compoundProcess}' cannot be used with '{processName}'. Please select another process type in your compound.";
+
       }
 
       public static class Information
@@ -2620,27 +2624,6 @@ namespace PKSim.Assets
          public static readonly string HideSettings = "Hide";
          public static readonly string Absent = "Absent";
          public static readonly string Present = "Present";
-      }
-
-      public static class TransportDirection
-      {
-         public const string None = "";
-         public const string Influx = "Influx";
-         public const string InfluxDescription = "InfluxDescription";
-         public const string Efflux = "Efflux";
-         public const string EffluxDescription = "EffluxDescription";
-         public const string PgpLike = "PgpLike";
-         public const string PgpLikeDescription = "PgpLikeDescription";
-         public const string CellsBiDirectional = "CellsBiDirectional";
-         public const string CellsBiDirectionalDescription = "CellsBiDirectionalDescription";
-         public const string Excretion = "Excretion";
-         public const string InExcretionDirection= "InExcretionDirection";
-         public const string PlasmaToInterstitial = "PlasmaToInterstitial";
-         public const string PlasmaToInterstitialDescription = "PlasmaToInterstitialDescription";
-         public const string InterstitialToPlasma = "InterstitialToPlasma";
-         public const string InterstitialToPlasmaDescription = "InterstitialToPlasmaDescription";
-         public const string VascEndoBiDirectional = "VascEndoBiDirectional";
-         public const string VascEndoBiDirectionalDescription = "VascEndoBiDirectionalDescription";
       }
    }
 }

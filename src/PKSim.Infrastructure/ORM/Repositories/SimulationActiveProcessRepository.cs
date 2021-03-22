@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -9,7 +10,6 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Mappers;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -71,17 +71,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (transport != null)
             return transport;
 
-         return ProcessFor<PKSimTransport>(simulationProcessNameFrom(individualProcessName, compoundProcessName));
+         var compoundProcess = _flatProcessesRepository.FindByName(compoundProcessName);
+         if (compoundProcess == null)
+            throw new ArgumentException($"Cannot find compound process named '{compoundProcessName}'");
+
+         var simulationProcessName = simulationProcessNameFrom(individualProcessName, compoundProcessName);
+         return _allSimulationActiveProcesses.FindByName(simulationProcessName).DowncastTo<PKSimTransport>();
       }
 
-   
       private string simulationProcessNameFrom(string compoundProcessName) => simulationProcessNameFrom(compoundProcessName, compoundProcessName);
 
       private string simulationProcessNameFrom(string simulationPrefix, string compoundProcessName)
       {
          var compoundProcess = _flatProcessesRepository.FindByName(compoundProcessName);
-         if (compoundProcess==null)
-            throw new ArgumentException($"Cannot find simulation process named '{compoundProcessName}'");
+         if (compoundProcess == null)
+            return string.Empty;
 
          //already a process in simulation. Nothing to do
          if (compoundProcess.GroupName == CoreConstants.Groups.SIMULATION_ACTIVE_PROCESS)
