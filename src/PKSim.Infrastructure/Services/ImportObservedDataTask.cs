@@ -213,9 +213,9 @@ namespace PKSim.Infrastructure.Services
 
       private void updateQuantityInfoInImportedColumns(DataRepository observedData)
       {
-         var moleculeName = observedData.ExtendedPropertyValueFor(ObservedData.MOLECULE);
-         var organ = observedData.ExtendedPropertyValueFor(ObservedData.ORGAN);
-         var compartment = observedData.ExtendedPropertyValueFor(ObservedData.COMPARTMENT);
+         var moleculeName = observedData.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
+         var organ = observedData.ExtendedPropertyValueFor(Constants.ObservedData.ORGAN);
+         var compartment = observedData.ExtendedPropertyValueFor(Constants.ObservedData.COMPARTMENT);
 
          foreach (var col in observedData.AllButBaseGrid())
          {
@@ -310,13 +310,13 @@ namespace PKSim.Infrastructure.Services
 
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
-         if (string.Equals(name, ObservedData.ORGAN))
+         if (string.Equals(name, Constants.ObservedData.ORGAN))
             return predefinedOrgans;
 
-         if (string.Equals(name, ObservedData.COMPARTMENT))
+         if (string.Equals(name, Constants.ObservedData.COMPARTMENT))
             return predefinedCompartments;
 
-         if (string.Equals(name, CoreConstants.ObservedData.SPECIES))
+         if (string.Equals(name, Constants.ObservedData.SPECIES))
             return predefinedSpecies;
 
          if (string.Equals(name, CoreConstants.ObservedData.GENDER))
@@ -327,7 +327,7 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> {ObservedData.MOLECULE};
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { Constants.ObservedData.MOLECULE};
 
       public bool MolWeightEditable => false;
 
@@ -355,11 +355,11 @@ namespace PKSim.Infrastructure.Services
          var speciesCategory = createMetaDataCategory<string>(CoreConstants.ObservedData.SPECIES, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedSpeciesValues);
          categories.Add(speciesCategory);
 
-         var organCategory = createMetaDataCategory<string>(ObservedData.ORGAN, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedOrganValues);
+         var organCategory = createMetaDataCategory<string>(Constants.ObservedData.ORGAN, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedOrganValues);
          organCategory.Description = ObservedData.ObservedDataOrganDescription;
          categories.Add(organCategory);
 
-         var compCategory = createMetaDataCategory<string>(ObservedData.COMPARTMENT, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedCompartmentValues);
+         var compCategory = createMetaDataCategory<string>(Constants.ObservedData.COMPARTMENT, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedCompartmentValues);
          compCategory.Description = ObservedData.ObservedDataCompartmentDescription;
          categories.Add(compCategory);
 
@@ -446,7 +446,7 @@ namespace PKSim.Infrastructure.Services
       {
          var nameCategory = new MetaDataCategory
          {
-            Name = ObservedData.MOLECULE,
+            Name = Constants.ObservedData.MOLECULE,
             DisplayName = PKSimConstants.UI.Molecule,
             Description = PKSimConstants.UI.MoleculeNameDescription,
             MetaDataType = typeof(string),

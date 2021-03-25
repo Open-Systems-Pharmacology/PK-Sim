@@ -131,7 +131,7 @@ namespace PKSim.Core.Services
          allPKAnalysis.AddRange(allColumns.Where(x => x.IsObservedData())
             .Select(obervedDataColumn =>
             {
-               var moleculeName = obervedDataColumn.Repository.ExtendedPropertyValueFor(ObservedData.MOLECULE);
+               var moleculeName = obervedDataColumn.Repository.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
                var observedDataPKOptions = _pkCalculationOptionsFactory.CreateForObservedData(simulations, moleculeName);
                return calculatePKFor(obervedDataColumn, moleculeName, observedDataPKOptions);
             }));
