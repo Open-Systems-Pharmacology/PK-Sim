@@ -103,7 +103,7 @@ namespace PKSim.Infrastructure.Services
 
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
       {
-         var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, null, false, false);
+         var importedObservedData = getObservedDataFromImporter(configuration, columnInfoConfiguration, null, false, false);
          var reloadDataSets = testReloadDataSets/*_dataImporter.CalculateReloadDataSetsFromConfiguration*/(importedObservedData.ToList(), observedDataFromSameFile.ToList());
          
          foreach (var dataSet in reloadDataSets.NewDataSets)
@@ -152,19 +152,19 @@ namespace PKSim.Infrastructure.Services
       public void AddObservedDataToProjectForCompound(Compound compound)
       {
          _executionContext.Load(compound);
-         addObservedData(importConfiguration, compound);
+         addObservedData(columnInfoConfiguration, compound);
       }
       
       public void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration)
       {
          _executionContext.Load(compound);
-         AddObservedDataFromConfiguration(configuration, importConfiguration, compound, true, null);
+         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, true, null);
       }
 
       private void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
       {
          _executionContext.Load(compound);
-         AddObservedDataFromConfiguration(configuration, importConfiguration, compound, false, dataRepositoryName);
+         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, false, dataRepositoryName);
       }
 
       private void AddObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool propmtUser = true, string dataRepositoryName = null, bool allowCompoundNameEdit = false)
@@ -187,15 +187,15 @@ namespace PKSim.Infrastructure.Services
       private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool propmtUser,
          bool allowCompoundNameEdit)
       {
-         var metaDataCategories = defaultMetaDataCategories().ToList();
-         metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
+         compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
 
          var dataImporterSettings = new DataImporterSettings
             {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
          dataImporterSettings.PromptForConfirmation = propmtUser;
-         var importedObservedData =_dataImporter.ImportFromConfiguration(configuration, metaDataCategories, importConfiguration(), dataImporterSettings);
+         var importedObservedData =_dataImporter.ImportFromConfiguration(configuration, (IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
          return importedObservedData;
       }
 
@@ -203,11 +203,13 @@ namespace PKSim.Infrastructure.Services
       {
          var dataImporterSettings = new DataImporterSettings {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
+         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
 
-         var metaDataCategories = defaultMetaDataCategories().ToList();
-         metaDataCategories.Insert(0, compoundNameCategory(compound, allowCompoundNameEdit));
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
+         compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
 
-         var importedObservedData = _dataImporter.ImportDataSets(metaDataCategories, importConfiguration(), dataImporterSettings);
+         var importedObservedData = _dataImporter.ImportDataSets((IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
 
          if (importedObservedData.Configuration == null) return;
 
@@ -244,7 +246,7 @@ namespace PKSim.Infrastructure.Services
       }
 
 
-      private IReadOnlyList<ColumnInfo> importConfiguration()
+      private IReadOnlyList<ColumnInfo> columnInfoConfiguration()
       {
          var columns = new List<ColumnInfo>();
          var timeColumn = createTimeColumn();
@@ -357,31 +359,6 @@ namespace PKSim.Infrastructure.Services
          return category.ListOfValues.Values;
       }
 
-      private IEnumerable<MetaDataCategory> defaultMetaDataCategories()
-      {
-         var categories = new List<MetaDataCategory>();
-
-         var speciesCategory = createMetaDataCategory<string>(CoreConstants.ObservedData.SPECIES, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedSpeciesValues);
-         categories.Add(speciesCategory);
-
-         var organCategory = createMetaDataCategory<string>(Constants.ObservedData.ORGAN, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedOrganValues);
-         organCategory.Description = ObservedData.ObservedDataOrganDescription;
-         categories.Add(organCategory);
-
-         var compCategory = createMetaDataCategory<string>(Constants.ObservedData.COMPARTMENT, isMandatory: true, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedCompartmentValues);
-         compCategory.Description = ObservedData.ObservedDataCompartmentDescription;
-         categories.Add(compCategory);
-
-         // Add non-mandatory metadata categories
-         categories.Add(createMetaDataCategory<string>(PKSimConstants.UI.StudyId));
-         categories.Add(createMetaDataCategory<string>(PKSimConstants.UI.Gender, isListOfValuesFixed: true, fixedValuesRetriever: addPredefinedGenderValues));
-         categories.Add(createMetaDataCategory<string>(PKSimConstants.UI.Dose));
-         categories.Add(createMetaDataCategory<string>(PKSimConstants.UI.Route));
-         categories.Add(createMetaDataCategory<string>(PKSimConstants.UI.PatientId));
-
-         return categories;
-      }
-
       private void addPredefinedGenderValues(MetaDataCategory genderMetaData)
       {
          addUndefinedValueTo(genderMetaData);
@@ -434,39 +411,17 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      private static MetaDataCategory createMetaDataCategory<T>(string descriptiveName, bool isMandatory = false, bool isListOfValuesFixed = false, Action<MetaDataCategory> fixedValuesRetriever = null)
+      private MetaDataCategory compoundNameCategory(MetaDataCategory nameCategory, Compound compound, bool canEditName)
       {
-         var category = new MetaDataCategory
-         {
-            Name = descriptiveName,
-            DisplayName = descriptiveName,
-            Description = descriptiveName,
-            MetaDataType = typeof(T),
-            IsMandatory = isMandatory,
-            IsListOfValuesFixed = isListOfValuesFixed
-         };
+         nameCategory.IsListOfValuesFixed = !canEditName;
 
-         fixedValuesRetriever?.Invoke(category);
-
-         return category;
-      }
-
-      private MetaDataCategory compoundNameCategory(Compound compound, bool canEditName)
-      {
-         var nameCategory = new MetaDataCategory
-         {
-            Name = Constants.ObservedData.MOLECULE,
-            DisplayName = PKSimConstants.UI.Molecule,
-            Description = PKSimConstants.UI.MoleculeNameDescription,
-            MetaDataType = typeof(string),
-            IsListOfValuesFixed = !canEditName,
-            IsMandatory = true,
-         };
-
+         nameCategory.ListOfValues.Clear();
          foreach (var existingCompound in _buildingBlockRepository.All<Compound>())
          {
             nameCategory.ListOfValues.Add(existingCompound.Name, existingCompound.Name);
          }
+         nameCategory.ShouldListOfValuesBeIncluded = true;
+         nameCategory.SelectDefaultValue = true;
 
          if (canEditName)
             nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
