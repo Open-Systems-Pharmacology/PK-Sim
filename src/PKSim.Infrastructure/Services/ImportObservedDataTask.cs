@@ -83,57 +83,70 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
+      private ReloadDataSets testReloadDataSets(IReadOnlyList<DataRepository> dataSetsToImport,
+         IReadOnlyList<DataRepository> existingDataSets)
+      {
+         var newDataSets = dataSetsToImport.Where(dataSet => !repositoryExistsInList(existingDataSets, dataSet));
+         var dataSetsToBeDeleted = existingDataSets.Where(dataSet => !repositoryExistsInList(dataSetsToImport, dataSet));
+         var overwrittenDataSets = dataSetsToImport.Except(newDataSets);
+
+
+         var result = new ReloadDataSets(newDataSets, overwrittenDataSets, dataSetsToBeDeleted);
+
+         return result;
+      }
+
+      private bool repositoryExistsInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
+      {
+         return dataRepositoryList.Any(dataRepo => targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString()));
+      }
+
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
       {
-         //TODO
-         // var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, null, false, false);
-         //
-         // var dataSetsCache = _dataImporter.ReloadFromConfiguration(importedObservedData, observedDataFromSameFile);
-         //
-         //
-         //
-         //
-         // foreach (var dataSet in dataSetsCache[Constants.ImporterConstants.DATA_SETS_TO_BE_NEWLY_IMPORTED])
-         // {
-         //    adjustMolWeight(dataSet);
-         //    _observedDataTask.AddObservedDataToProject(dataSet);
-         //    updateQuantityInfoInImportedColumns(dataSet);
-         // }
-         //
-         // foreach (var dataSet in dataSetsCache[Constants.ImporterConstants.DATA_SETS_TO_BE_DELETED].ToArray()) //TODO it should be checked if to array solves the deleting problem
-         // {
-         //    _observedDataTask.Delete(dataSet);
-         // }
-         //
-         // foreach (var dataSet in dataSetsCache[Constants.ImporterConstants.DATA_SETS_TO_BE_OVERWRITTEN])
-         // {
-         //    //TODO this here should be tested
-         //    var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
-         //
-         //    foreach (var column in dataSet.Columns)
-         //    {
-         //       var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
-         //       {
-         //          QuantityInfo = column.QuantityInfo,
-         //          DataInfo = column.DataInfo,
-         //          IsInternal = column.IsInternal,
-         //          Values = column.Values
-         //       };
-         //
-         //       if (column.IsBaseGrid())
-         //       {
-         //          existingDataSet.BaseGrid.Values = datacolumn.Values;
-         //       }
-         //       else
-         //       {
-         //          var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
-         //          if (existingColumn == null)
-         //             existingDataSet.Add(column);
-         //          else
-         //             existingColumn.Values = column.Values;
-         //       }
-         //    }
-         // }
+         var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, null, false, false);
+         var reloadDataSets = testReloadDataSets/*_dataImporter.CalculateReloadDataSetsFromConfiguration*/(importedObservedData.ToList(), observedDataFromSameFile.ToList());
+         
+         foreach (var dataSet in reloadDataSets.NewDataSets)
+         {
+            adjustMolWeight(dataSet);
+            _observedDataTask.AddObservedDataToProject(dataSet);
+            updateQuantityInfoInImportedColumns(dataSet);
+         }
+         
+         foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray())//toDo it should be checked if to array solves the deleting problem
+         {
+            _observedDataTask.Delete(dataSet);
+         }
+         
+         foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
+         {
+            //TODO this here should be tested
+            var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
+         
+            foreach (var column in dataSet.Columns)
+            {
+               var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
+               {
+                  QuantityInfo = column.QuantityInfo,
+                  DataInfo = column.DataInfo,
+                  IsInternal = column.IsInternal,
+                  Values = column.Values
+               };
+         
+               if (column.IsBaseGrid())
+               {
+                  existingDataSet.BaseGrid.Values = datacolumn.Values;
+               }
+               else
+               {
+                  var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
+                  if (existingColumn == null)
+                     existingDataSet.Add(column);
+                  else
+                     existingColumn.Values = column.Values;
+               }
+            }
+         }
       }
 
       public void AddObservedDataToProjectForCompound(Compound compound)
@@ -181,13 +194,9 @@ namespace PKSim.Infrastructure.Services
             {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-
-         // var importedObservedData =
-         //    _dataImporter.ImportFromConfiguration(configuration, metaDataCategories, importConfiguration(), dataImporterSettings);
-         // return importedObservedData;
-
-         //TODO
-         return null;
+         dataImporterSettings.PromptForConfirmation = propmtUser;
+         var importedObservedData =_dataImporter.ImportFromConfiguration(configuration, metaDataCategories, importConfiguration(), dataImporterSettings);
+         return importedObservedData;
       }
 
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
