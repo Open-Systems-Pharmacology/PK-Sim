@@ -211,7 +211,7 @@ namespace PKSim.Infrastructure.Services
 
          var importedObservedData = _dataImporter.ImportDataSets((IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
 
-         if (importedObservedData.Configuration == null) return;
+         if (importedObservedData.DataRepositories == null || importedObservedData.Configuration == null) return;
 
          _observedDataTask.AddImporterConfigurationToProject(importedObservedData.Configuration);
          foreach (var observedData in importedObservedData.DataRepositories)
