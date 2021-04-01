@@ -36,8 +36,6 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<DisableUIEvent>,
       IListener<ScreenActivatedEvent>,
       IListener<NoActiveScreenEvent>,
-      IListener<BuildingBlockAddedEvent>,
-      IListener<BuildingBlockRemovedEvent>,
       IListener<SimulationResultsUpdatedEvent>,
       IListener<EditJournalPageStartedEvent>,
       IListener<JournalLoadedEvent>,
@@ -193,12 +191,12 @@ namespace PKSim.Presentation.Presenters.Main
 
       private void updateLoadedProjectItem(ProjectEvent projectEvent)
       {
-         updateProjectItems(isEnabled: true, observedDataEnabled: compoundsAvailableIn(projectEvent.Project));
+         updateProjectItems(isEnabled: true);
       }
 
       public void Handle(ProjectClosedEvent eventToHandle)
       {
-         updateProjectItems(isEnabled: false, observedDataEnabled: false);
+         updateProjectItems(isEnabled: false);
          _menuBarItemRepository[MenuBarItemIds.JournalEditorView].Enabled = false;
          _simulationState.Reset();
       }
@@ -310,7 +308,7 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          enableDefaultItems();
-         updateProjectItems(isEnabled: true, observedDataEnabled: true);
+         updateProjectItems(isEnabled: true);
 
          updateSimulationItemsFor(eventToHandle.Simulation);
       }
@@ -329,7 +327,7 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsAccordingToSimulationState();
       }
 
-      private void updateProjectItems(bool isEnabled, bool observedDataEnabled)
+      private void updateProjectItems(bool isEnabled)
       {
          bool enabled = isEnabled && _enabled;
          updateSaveProjectButtons(enabled);
@@ -355,8 +353,8 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.LoadProtocol].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewObserverSet].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadObserverSet].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled && observedDataEnabled;
-         _menuBarItemRepository[MenuBarItemIds.AddObservedDataFromConfiguration].Enabled = enabled && observedDataEnabled;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedDataFromConfiguration].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparisonInAnalyze].Enabled = enabled;
@@ -397,7 +395,7 @@ namespace PKSim.Presentation.Presenters.Main
          _enabled = true;
          enableDefaultItems();
 
-         updateProjectItems(isEnabled: eventToHandle.ProjectLoaded, observedDataEnabled: compoundsAvailableIn(eventToHandle.Project));
+         updateProjectItems(isEnabled: eventToHandle.ProjectLoaded);
 
          updateSimulationItemsAccordingToSimulationState();
       }
@@ -413,23 +411,6 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(ProjectChangedEvent eventToHandle)
       {
          updateSaveProjectButtons(true);
-      }
-
-      public void Handle(BuildingBlockAddedEvent eventToHandle)
-      {
-         var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
-         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = projectHasCompound;
-      }
-
-      public void Handle(BuildingBlockRemovedEvent eventToHandle)
-      {
-         var projectHasCompound = compoundsAvailableIn(eventToHandle.Project);
-         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = projectHasCompound;
-      }
-
-      private bool compoundsAvailableIn(IProject project)
-      {
-         return project != null && project.DowncastTo<PKSimProject>().All<Compound>().Any();
       }
 
       private struct SimulationState
