@@ -14,7 +14,7 @@ namespace PKSim.Core.Model
 
       InfluxPlasmaToBloodCells,
       EffluxBloodCellsToPlasma,
-      BiDirectionalPlasmaBloodCells,
+      BiDirectionalBloodCellsPlasma,
 
       InfluxInterstitialToIntracellular,
       EffluxIntracellularToInterstitial,
@@ -53,7 +53,7 @@ namespace PKSim.Core.Model
       {
          InfluxPlasmaToBloodCells,
          EffluxBloodCellsToPlasma,
-         BiDirectionalPlasmaBloodCells
+         BiDirectionalBloodCellsPlasma
       };
 
       public static readonly TransportDirectionId[] MUCOSA_DIRECTIONS =
@@ -108,7 +108,7 @@ namespace PKSim.Core.Model
             case TransportType.Influx:
                return InfluxPlasmaToBloodCells;
             case TransportType.BiDirectional:
-               return BiDirectionalPlasmaBloodCells;
+               return BiDirectionalBloodCellsPlasma;
             default:
                return EffluxBloodCellsToPlasma;
          }
