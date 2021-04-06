@@ -17,7 +17,13 @@ using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.Populat
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, PKSimProject, PKSimProject>
+   public class SimulationContext
+   {
+      public  PKSimProject Project { get; set; }
+      public  bool Run { get; set; }
+   }
+
+   public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, SimulationContext, PKSimProject>
    {
       private readonly SolverSettingsMapper _solverSettingsMapper;
       private readonly OutputSchemaMapper _outputSchemaMapper;
@@ -242,8 +248,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return null;
       }
 
-      public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, PKSimProject project)
+      public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, SimulationContext simulationContext)
       {
+         var project = simulationContext.Project;
          _logger.AddDebug(PKSimConstants.Information.LoadingSimulation(snapshot.Name), project.Name);
 
          //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered 
@@ -268,7 +275,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
 
-         await runSimulation(snapshot, simulation);
+         if(simulationContext.Run)
+            await runSimulation(snapshot, simulation);
 
          simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, project));
          simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, project));

@@ -28,6 +28,7 @@ namespace PKSim.Core
       protected Parameter _parameterSnapshot;
       protected ISnapshotMapper _snapshotMapper;
       protected IObjectTypeResolver _objectTypeResolver;
+      protected ProjectMapper _projectMapper;
 
       protected override Task Context()
       {
@@ -36,7 +37,8 @@ namespace PKSim.Core
          _jsonSerializer = A.Fake<IJsonSerializer>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         sut = new SnapshotTask(_dialogCreator, _jsonSerializer, _snapshotMapper, _executionContext, _objectTypeResolver);
+         _projectMapper= A.Fake<ProjectMapper>();  
+         sut = new SnapshotTask(_dialogCreator, _jsonSerializer, _snapshotMapper, _executionContext, _objectTypeResolver, _projectMapper);
 
          _parameter = A.Fake<IParameter>();
          _parameter.Name = "Param";
@@ -93,7 +95,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_load_the_object_to_exprot()
+      public void should_load_the_object_to_export()
       {
          A.CallTo(() => _executionContext.Load(_parameter)).MustHaveHappened();
       }
@@ -178,7 +180,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_ask_the_user_to_select_the_file_containing_the_snapshot_to_laod()
+      public void should_ask_the_user_to_select_the_file_containing_the_snapshot_to_load()
       {
          A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, null, null)).MustHaveHappened();
       }
@@ -202,9 +204,8 @@ namespace PKSim.Core
          var projectSnapshot = new Project();
          var project = new PKSimProject();
 
-         A.CallTo(() => _snapshotMapper.SnapshotTypeFor<PKSimProject>()).Returns(snapshotType);
-         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, snapshotType)).Returns(new object[] {projectSnapshot,});
-         A.CallTo(() => _snapshotMapper.MapToModel(projectSnapshot)).Returns(project);
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, typeof(Project))).Returns(new object[] {projectSnapshot,});
+         A.CallTo(() => _projectMapper.MapToModel(projectSnapshot, A<ProjectContext>._)).Returns(project);
       }
 
       protected override async Task Because()

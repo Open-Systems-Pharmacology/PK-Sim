@@ -91,7 +91,7 @@ namespace PKSim.CLI.Core.Services
          }
 
          var begin = DateTime.UtcNow;
-         var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
+         var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot, runOptions.Run);
          _workspace.Project = project;
 
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);

@@ -16,7 +16,12 @@ using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentificatio
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ProjectMapper : SnapshotMapperBase<ModelProject, SnapshotProject>
+   public class ProjectContext
+   {
+      public bool RunSimulations { get; set; }
+   }
+
+   public class ProjectMapper : SnapshotMapperBase<ModelProject, SnapshotProject, ProjectContext>
    {
       private readonly SimulationMapper _simulationMapper;
       private readonly SimulationComparisonMapper _simulationComparisonMapper;
@@ -79,7 +84,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelProject> MapToModel(SnapshotProject snapshot)
+      public override async Task<ModelProject> MapToModel(SnapshotProject snapshot, ProjectContext projectContext)
       {
          _logger.AddDebug($"Loading project '{snapshot.Name}' from snapshot...", snapshot.Name);
 
@@ -89,6 +94,13 @@ namespace PKSim.Core.Snapshots.Mappers
             Description = snapshot.Description,
             Creation = _creationMetaDataFactory.Create()
          };
+
+         var simulationContext = new SimulationContext
+         {
+            Project = project,
+            Run = projectContext.RunSimulations
+         };
+
          project.Creation.InternalVersion = snapshot.Version;
          project.Creation.Version = ProjectVersions.FindBy(snapshot.Version)?.VersionDisplay;
 
@@ -98,7 +110,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await observedDataFrom(snapshot.ObservedData);
          observedData?.Each(repository => addObservedDataToProject(project, repository));
 
-         var allSimulations = await allSimulationsFrom(snapshot.Simulations, project);
+         var allSimulations = await allSimulationsFrom(snapshot.Simulations, simulationContext);
          allSimulations?.Each(simulation => addSimulationToProject(project, simulation));
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(snapshot.SimulationComparisons, project);
@@ -245,7 +257,7 @@ namespace PKSim.Core.Snapshots.Mappers
          project.GetOrCreateClassifiableFor<TClassifiableWrapper, TSubject>(subject);
       }
 
-      private async Task<IEnumerable<Model.Simulation>> allSimulationsFrom(Simulation[] snapshots, ModelProject project)
+      private async Task<IEnumerable<Model.Simulation>> allSimulationsFrom(Simulation[] snapshots, SimulationContext simulationContext)
       {
          var simulations = new List<Model.Simulation>();
 
@@ -257,7 +269,7 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             try
             {
-               var simulation = await _simulationMapper.MapToModel(snapshot, project);
+               var simulation = await _simulationMapper.MapToModel(snapshot, simulationContext);
                simulations.Add(simulation);
             }
             catch (Exception e)

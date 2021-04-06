@@ -308,8 +308,8 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
          A.CallTo(() => _snapshotMapper.MapToModel(_observerSetSnapshot)).Returns(_observerSet);
 
-         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<PKSimProject>._)).Returns(_simulation);
-         A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<PKSimProject>._)).Throws(new Exception());
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).Returns(_simulation);
+         A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<SimulationContext>._)).Throws(new Exception());
          A.CallTo(() => _simulationComparisonMapper.MapToModel(_simulationComparisonSnapshot, A<PKSimProject>._)).Returns(_simulationComparison);
          A.CallTo(() => _parameterIdentificationMapper.MapToModel(_parameterIdentificationSnapshot, A<PKSimProject>._)).Returns(_parameterIdentification);
          A.CallTo(() => _qualificationPlanMapper.MapToModel(_qualificationPlanSnapshot, A<PKSimProject>._)).Returns(_qualificationPlan);
@@ -317,7 +317,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot);
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext{RunSimulations = true});
       }
 
       [Observation]

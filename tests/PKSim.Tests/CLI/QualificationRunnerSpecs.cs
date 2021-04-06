@@ -106,6 +106,7 @@ namespace PKSim.CLI
       {
          await base.Context();
          _runOptions.ConfigurationFile = "XXX";
+         _runOptions.Run = true;
          A.CallTo(() => _jsonSerializer.Deserialize<QualifcationConfiguration>(_runOptions.ConfigurationFile)).Returns(_qualificationConfiguration);
          _qualificationConfiguration.Project = PROJECT_NAME;
          _qualificationConfiguration.OutputFolder = "c:/tests/outputs/";
@@ -119,7 +120,7 @@ namespace PKSim.CLI
          _projectSnapshot = new SnapshotProject().WithName(PROJECT_SNAPSHOT_NAME);
          _project = new PKSimProject().WithName(PROJECT_NAME);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot)).Returns(_project);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot, _runOptions.Run)).Returns(_project);
          FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile);
       }
    }
