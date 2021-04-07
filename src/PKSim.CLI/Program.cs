@@ -23,9 +23,11 @@ namespace PKSim.CLI
       static int Main(string[] args)
       {
 
+         var realArgs = new string[] {"qualification", "-i", "C:\\tests\\7.6\\Outputs\\temp\\Midazolam\\config.json" };
+
          ApplicationStartup.Initialize();
 
-         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
+         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(realArgs)
             .WithParsed<JsonRunCommand>(startCommand)
             .WithParsed<SnapshotRunCommand>(startCommand)
             .WithParsed<ExportRunCommand>(startCommand)
@@ -77,6 +79,7 @@ namespace PKSim.CLI
               builder
                 .AddFile(runCommand.LogFileFullPath)
             );
+
          return IoC.Resolve<IOSPSuiteLogger>();
       }
    }

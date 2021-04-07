@@ -16,8 +16,8 @@ namespace PKSim.CLI.Commands
       [Option('v', "validate", Required = false, HelpText = "Specifies a validation run. Default is false")]
       public bool Validate { get; set; }
 
-      [Option('r', "run", Required = false, HelpText = "Should the qualification runner also run the simulation or simply export the qualification report for further processing. Default is true")]
-      public bool Run { get; set; } = true;
+      [Option('r', "run", Required = false, HelpText = "Should the qualification runner also run the simulation or simply export the qualification report for further processing. Default is false")]
+      public bool Run { get; set; } = false;
 
       public override QualificationRunOptions ToRunOptions()
       {

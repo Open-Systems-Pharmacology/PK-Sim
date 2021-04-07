@@ -15,7 +15,6 @@ using PKSim.Core.Snapshots.Services;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 using Project = PKSim.Core.Snapshots.Project;
 
-
 namespace PKSim.Core
 {
    public abstract class concern_for_SnapshotTask : ContextSpecificationAsync<ISnapshotTask>
@@ -37,7 +36,7 @@ namespace PKSim.Core
          _jsonSerializer = A.Fake<IJsonSerializer>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         _projectMapper= A.Fake<ProjectMapper>();  
+         _projectMapper = A.Fake<ProjectMapper>();
          sut = new SnapshotTask(_dialogCreator, _jsonSerializer, _snapshotMapper, _executionContext, _objectTypeResolver, _projectMapper);
 
          _parameter = A.Fake<IParameter>();
@@ -200,7 +199,6 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         var snapshotType = typeof(PKSimProject);
          var projectSnapshot = new Project();
          var project = new PKSimProject();
 

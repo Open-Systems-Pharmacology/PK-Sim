@@ -278,8 +278,8 @@ namespace PKSim.Core.Snapshots.Mappers
          if(simulationContext.Run)
             await runSimulation(snapshot, simulation);
 
-         simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, project));
-         simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, project));
+         simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, simulationContext));
+         simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, simulationContext));
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
          return simulation;
@@ -337,23 +337,24 @@ namespace PKSim.Core.Snapshots.Mappers
          await _simulationRunner.RunSimulation(simulation);
       }
 
-      private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, PKSimProject project)
-      {
-         return analysesFrom(simulation, snapshotCharts, project, _simulationTimeProfileChartMapper.MapToModels);
+      private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, SimulationContext simulationContext)
+      { 
+         return analysesFrom(simulation, snapshotCharts, simulationContext, _simulationTimeProfileChartMapper.MapToModels);
       }
 
-      private Task<ModelPopulationAnalysisChart[]> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, PKSimProject project)
+      private Task<ModelPopulationAnalysisChart[]> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, SimulationContext simulationContext)
       {
-         return analysesFrom(simulation, snapshotPopulationAnalyses, project, _populationAnalysisChartMapper.MapToModels);
+         return analysesFrom(simulation, snapshotPopulationAnalyses, simulationContext, _populationAnalysisChartMapper.MapToModels);
       }
 
-      private Task<TAnalysis[]> analysesFrom<TAnalysis, TSnapshotAnalysis>(ModelSimulation simulation, TSnapshotAnalysis[] snapshotAnalyses, PKSimProject project,
+      private Task<TAnalysis[]> analysesFrom<TAnalysis, TSnapshotAnalysis>(ModelSimulation simulation, TSnapshotAnalysis[] snapshotAnalyses, SimulationContext simulationContext,
          Func<TSnapshotAnalysis[], SimulationAnalysisContext, Task<TAnalysis[]>> mapFunc)
       {
          if (snapshotAnalyses == null)
             return Task.FromResult(new List<TAnalysis>().ToArray());
 
-         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData);
+         var project = simulationContext.Project;
+         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData){RunSimulation = simulationContext.Run};
 
          var individualSimulation = simulation as IndividualSimulation;
          if (individualSimulation?.DataRepository != null)
