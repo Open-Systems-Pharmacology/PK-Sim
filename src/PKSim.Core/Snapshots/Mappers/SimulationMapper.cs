@@ -19,8 +19,8 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class SimulationContext
    {
-      public  PKSimProject Project { get; set; }
-      public  bool Run { get; set; }
+      public PKSimProject Project { get; set; }
+      public bool Run { get; set; }
    }
 
    public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, SimulationContext, PKSimProject>
@@ -275,7 +275,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
 
-         if(simulationContext.Run)
+         if (simulationContext.Run)
             await runSimulation(snapshot, simulation);
 
          simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, simulationContext));
@@ -338,7 +338,7 @@ namespace PKSim.Core.Snapshots.Mappers
       }
 
       private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, SimulationContext simulationContext)
-      { 
+      {
          return analysesFrom(simulation, snapshotCharts, simulationContext, _simulationTimeProfileChartMapper.MapToModels);
       }
 
@@ -354,7 +354,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return Task.FromResult(new List<TAnalysis>().ToArray());
 
          var project = simulationContext.Project;
-         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData){RunSimulation = simulationContext.Run};
+         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData) {RunSimulation = simulationContext.Run};
 
          var individualSimulation = simulation as IndividualSimulation;
          if (individualSimulation?.DataRepository != null)
@@ -396,7 +396,6 @@ namespace PKSim.Core.Snapshots.Mappers
          events?.Each(eventProperties.AddEventMapping);
          return eventProperties;
       }
-
 
       private async Task<ObserverSetProperties> mapObserverSetProperties(ObserverSetSelection[] snapshotObserverSet, PKSimProject project)
       {
