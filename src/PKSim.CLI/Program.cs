@@ -13,7 +13,7 @@ namespace PKSim.CLI
    enum ExitCodes
    {
       Success = 0,
-      Error = 1 << 0, 
+      Error = 1 << 0,
    }
 
    class Program
@@ -22,12 +22,9 @@ namespace PKSim.CLI
 
       static int Main(string[] args)
       {
-
-         var realArgs = new string[] {"qualification", "-i", "C:\\tests\\7.6\\Outputs\\temp\\Midazolam\\config.json" };
-
          ApplicationStartup.Initialize();
 
-         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(realArgs)
+         Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
             .WithParsed<JsonRunCommand>(startCommand)
             .WithParsed<SnapshotRunCommand>(startCommand)
             .WithParsed<ExportRunCommand>(startCommand)
@@ -35,9 +32,9 @@ namespace PKSim.CLI
             .WithNotParsed(err => _valid = false);
 
          if (!_valid)
-            return (int)ExitCodes.Error;
+            return (int) ExitCodes.Error;
 
-         return (int)ExitCodes.Success;
+         return (int) ExitCodes.Success;
       }
 
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
@@ -65,19 +62,18 @@ namespace PKSim.CLI
 
       private static IOSPSuiteLogger initializeLogger(CLICommand runCommand)
       {
-
          var loggerCreator = IoC.Resolve<ILoggerCreator>();
 
          loggerCreator.AddLoggingBuilderConfiguration(builder =>
-           builder
-             .SetMinimumLevel(runCommand.LogLevel)
-             .AddConsole()
+            builder
+               .SetMinimumLevel(runCommand.LogLevel)
+               .AddConsole()
          );
 
          if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
             loggerCreator.AddLoggingBuilderConfiguration(builder =>
-              builder
-                .AddFile(runCommand.LogFileFullPath)
+               builder
+                  .AddFile(runCommand.LogFileFullPath)
             );
 
          return IoC.Resolve<IOSPSuiteLogger>();
