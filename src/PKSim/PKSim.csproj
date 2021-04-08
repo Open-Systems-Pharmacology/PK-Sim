@@ -80,7 +80,6 @@
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.Presentation" Version="10.0.120" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.119" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" GeneratePathProperty="true" />
 
   </ItemGroup>
