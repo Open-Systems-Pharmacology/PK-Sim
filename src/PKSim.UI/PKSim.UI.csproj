@@ -56,10 +56,7 @@
     <PackageReference Include="OSPSuite.UI" Version="10.0.120" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.Core" Version="10.0.120" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.119" />
-    <PackageReference Include="OSPSuite.UI" Version="10.0.119" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.119" />
   </ItemGroup>
 
   <ItemGroup>
