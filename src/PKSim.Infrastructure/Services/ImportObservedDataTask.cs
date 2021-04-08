@@ -205,9 +205,9 @@ namespace PKSim.Infrastructure.Services
 
       private void updateQuantityInfoInImportedColumns(DataRepository observedData)
       {
-         var moleculeName = observedData.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
-         var organ = observedData.ExtendedPropertyValueFor(Constants.ObservedData.ORGAN);
-         var compartment = observedData.ExtendedPropertyValueFor(Constants.ObservedData.COMPARTMENT);
+         var moleculeName = observedData.ExtendedPropertyValueFor(ObservedData.MOLECULE);
+         var organ = observedData.ExtendedPropertyValueFor(ObservedData.ORGAN);
+         var compartment = observedData.ExtendedPropertyValueFor(ObservedData.COMPARTMENT);
 
          foreach (var col in observedData.AllButBaseGrid())
          {
@@ -302,13 +302,13 @@ namespace PKSim.Infrastructure.Services
 
       public IEnumerable<string> PredefinedValuesFor(string name)
       {
-         if (string.Equals(name, Constants.ObservedData.ORGAN))
+         if (string.Equals(name, ObservedData.ORGAN))
             return predefinedOrgans;
 
-         if (string.Equals(name, Constants.ObservedData.COMPARTMENT))
+         if (string.Equals(name, ObservedData.COMPARTMENT))
             return predefinedCompartments;
 
-         if (string.Equals(name, Constants.ObservedData.SPECIES))
+         if (string.Equals(name, CoreConstants.ObservedData.SPECIES))
             return predefinedSpecies;
 
          if (string.Equals(name, CoreConstants.ObservedData.GENDER))
@@ -319,7 +319,7 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { Constants.ObservedData.MOLECULE};
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> {ObservedData.MOLECULE};
 
       public bool MolWeightEditable => false;
 

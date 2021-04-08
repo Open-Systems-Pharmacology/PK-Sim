@@ -294,12 +294,12 @@ namespace PKSim.Presentation
          _compound = new Compound().WithName("NEW");
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          _observedData1 = new DataRepository("1");
-         _observedData1.ExtendedProperties.Add(Constants.ObservedData.MOLECULE, new ExtendedProperty<string>());
-         _observedData1.ExtendedProperties[Constants.ObservedData.MOLECULE].ValueAsObject = _oldName;
+         _observedData1.ExtendedProperties.Add(ObservedData.MOLECULE, new ExtendedProperty<string>());
+         _observedData1.ExtendedProperties[ObservedData.MOLECULE].ValueAsObject = _oldName;
 
          _observedData2 = new DataRepository("2");
-         _observedData2.ExtendedProperties.Add(Constants.ObservedData.MOLECULE, new ExtendedProperty<string>());
-         _observedData2.ExtendedProperties[Constants.ObservedData.MOLECULE].ValueAsObject = "NOT USING";
+         _observedData2.ExtendedProperties.Add(ObservedData.MOLECULE, new ExtendedProperty<string>());
+         _observedData2.ExtendedProperties[ObservedData.MOLECULE].ValueAsObject = "NOT USING";
          A.CallTo(() => _project.AllObservedData).Returns(new[] {_observedData1, _observedData2});
       }
 
@@ -311,8 +311,8 @@ namespace PKSim.Presentation
       [Observation]
       public void should_also_rename_the_molecule_meta_data_of_observed_data_imported_for_this_compound()
       {
-         _observedData1.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo(_compound.Name);
-         _observedData2.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo("NOT USING");
+         _observedData1.ExtendedPropertyValueFor(ObservedData.MOLECULE).ShouldBeEqualTo(_compound.Name);
+         _observedData2.ExtendedPropertyValueFor(ObservedData.MOLECULE).ShouldBeEqualTo("NOT USING");
       }
    }
 }
