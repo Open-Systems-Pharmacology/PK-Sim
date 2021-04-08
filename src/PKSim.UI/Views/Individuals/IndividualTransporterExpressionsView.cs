@@ -1,6 +1,5 @@
 ﻿using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
-using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -26,7 +25,6 @@ namespace PKSim.UI.Views.Individuals
          _imageListRetriever = imageListRetriever;
          InitializeComponent();
          _screenBinder = new ScreenBinder<IndividualTransporterDTO>();
-         panelWarning.Image = ApplicationIcons.Warning;
 
       }
 
@@ -51,13 +49,6 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.BindToSource(transporterExpressionDTO);
       }
 
-      public void ShowWarning(string warning)
-      {
-         layoutItemWarning.Visibility = LayoutVisibility.Always;
-         panelWarning.NoteText = warning;
-      }
-
-      public void HideWarning() => layoutItemWarning.Visibility = LayoutVisibility.Never;
 
       public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
 
@@ -71,8 +62,6 @@ namespace PKSim.UI.Views.Individuals
          base.InitializeResources();
          layoutItemTransporterDirection.Text = PKSimConstants.UI.DefaultTransporterDirection.FormatForLabel();
          cbTransporterType.SetImages(_imageListRetriever);
-         lblTransporterDirectionDescription.AsDescription();
-         lblTransporterDirectionDescription.Text = PKSimConstants.UI.TransporterDirectionDescription;
          layoutItemMoleculeProperties.TextVisible = false;
          layoutItemExpressionParameters.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;

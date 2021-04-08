@@ -1,10 +1,6 @@
 using System.Collections.Generic;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
-using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
@@ -15,9 +11,7 @@ using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IIndividualTransporterExpressionsPresenter : IIndividualMoleculeExpressionsPresenter, IEditParameterPresenter,
-      IListener<NoTranporterTemplateAvailableEvent>
-
+   public interface IIndividualTransporterExpressionsPresenter : IIndividualMoleculeExpressionsPresenter, IEditParameterPresenter
    {
       /// <summary>
       ///    Update the transport direction for the given transporter container
@@ -85,13 +79,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          rebind();
       }
 
-      public override void AddCommand(ICommand command)
-      {
-         base.AddCommand(command);
-         //always hide warning as soon as the user changes the default settings
-         _view.HideWarning();
-      }
-
       public IEnumerable<TransportTypeDTO> AllTransportTypes() => TransportTypes.All();
 
       public bool OntogenyVisible
@@ -110,21 +97,12 @@ namespace PKSim.Presentation.Presenters.Individuals
          _transporterExpressionDTO = _transporterExpressionDTOMapper.MapFrom(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
          _view.BindTo(_transporterExpressionDTO);
          rebind();
-         _view.HideWarning();
       }
 
       private void rebind()
       {
          _moleculePropertiesPresenter.Edit(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
          _transporterExpressionParametersPresenter.Edit(_transporterExpressionDTO.AllExpressionParameters);
-      }
-
-      public void Handle(NoTranporterTemplateAvailableEvent eventToHandle)
-      {
-         if (!Equals(_transporter, eventToHandle.Transporter))
-            return;
-
-         _view.ShowWarning(PKSimConstants.Warning.NoTransporterTemplateFoundForTransporter(_transporter.Name, _transporter.TransportType.ToString()));
       }
    }
 }

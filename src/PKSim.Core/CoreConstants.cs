@@ -1330,16 +1330,14 @@ namespace PKSim.Core
 
       public static class ObservedData
       {
-         public const string SPECIES = "Species";
-         public const string GENDER = "Gender";
-
+     
          public static IReadOnlyList<string> DefaultProperties = new List<string>
          {
-            OSPSuite.Assets.ObservedData.ORGAN,
-            OSPSuite.Assets.ObservedData.COMPARTMENT,
-            OSPSuite.Assets.ObservedData.MOLECULE,
-            SPECIES,
-            GENDER
+            Constants.ObservedData.ORGAN,
+            Constants.ObservedData.COMPARTMENT,
+            Constants.ObservedData.MOLECULE,
+            Constants.ObservedData.SPECIES,
+            Constants.ObservedData.GENDER
          };
       }
 

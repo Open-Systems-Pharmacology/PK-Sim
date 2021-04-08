@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure
          {
             try
             {
-               return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.MOBI_REG_PATH}{Version}", Constants.RegistryPaths.INSTALL_PATH, null);
+               return (string) Registry.GetValue($@"HKEY_LOCAL_MACHINE\SOFTWARE\{Constants.RegistryPaths.MOBI_REG_PATH}{Major}", Constants.RegistryPaths.INSTALL_PATH, null);
             }
             catch (Exception)
             {
