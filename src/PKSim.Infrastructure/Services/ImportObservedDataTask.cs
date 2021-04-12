@@ -396,18 +396,22 @@ namespace PKSim.Infrastructure.Services
       {
          nameCategory.IsListOfValuesFixed = !canEditName;
          nameCategory.ListOfValues.Clear();
+
          foreach (var existingCompound in _buildingBlockRepository.All<Compound>())
          {
-            nameCategory.ListOfValues.Add(existingCompound.Name, existingCompound.Name);
+            nameCategory.ListOfValues.Add(existingCompound.Name, existingCompound.MolWeight.ToString());
          }
-         nameCategory.ShouldListOfValuesBeIncluded = true;
-         nameCategory.SelectDefaultValue = true;
 
          if (canEditName)
             nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
 
          if (compound != null)
+         {
             nameCategory.DefaultValue = compound.Name;
+            nameCategory.SelectDefaultValue = true;
+         }
+
+         nameCategory.ShouldListOfValuesBeIncluded = true;
 
          return nameCategory;
       }
