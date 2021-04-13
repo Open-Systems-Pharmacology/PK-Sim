@@ -391,9 +391,8 @@ namespace PKSim.Infrastructure.Services
 
       private void addPredefinedMoleculeValues(MetaDataCategory moleculeCategory)
       {
-         var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
-         var organism = defaultIndividual.Organism;
          addUndefinedValueTo(moleculeCategory);
+         
          foreach (var existingCompound in _buildingBlockRepository.All<Compound>())
          {
             addInfoToCategory(moleculeCategory, existingCompound);
