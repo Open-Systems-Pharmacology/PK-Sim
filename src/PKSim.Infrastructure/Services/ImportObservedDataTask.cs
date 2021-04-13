@@ -315,12 +315,15 @@ namespace PKSim.Infrastructure.Services
          if (string.Equals(name, Constants.ObservedData.GENDER))
             return predefinedGenders;
 
+         if (string.Equals(name, Constants.ObservedData.MOLECULE))
+            return predefinedMolecules;
+
          return Enumerable.Empty<string>();
       }
 
       public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { Constants.ObservedData.MOLECULE};
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { };
 
       public bool MolWeightEditable => false;
 
@@ -333,6 +336,8 @@ namespace PKSim.Infrastructure.Services
       private IEnumerable<string> predefinedCompartments => predefinedValuesFor(addPredefinedCompartmentValues);
 
       private IEnumerable<string> predefinedOrgans => predefinedValuesFor(addPredefinedOrganValues);
+
+      private IEnumerable<string> predefinedMolecules => predefinedValuesFor(addPredefinedMoleculeValues);
 
       private IEnumerable<string> predefinedValuesFor(Action<MetaDataCategory> predefinedValuesRetriever)
       {
@@ -382,6 +387,16 @@ namespace PKSim.Infrastructure.Services
          foreach (var organ in organism.OrgansByType(OrganType.VascularSystem | OrganType.Tissue | OrganType.Lumen))
          {
             addInfoToCategory(organCategory, organ);
+         }
+      }
+
+      private void addPredefinedMoleculeValues(MetaDataCategory moleculeCategory)
+      {
+         addUndefinedValueTo(moleculeCategory);
+         
+         foreach (var existingCompound in _buildingBlockRepository.All<Compound>())
+         {
+            addInfoToCategory(moleculeCategory, existingCompound);
          }
       }
 
