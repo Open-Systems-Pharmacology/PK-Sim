@@ -83,7 +83,7 @@ namespace PKSim.Infrastructure.Services
 
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
       {
-         var importedObservedData = getObservedDataFromImporter(configuration, columnInfoConfiguration, null, false);
+         var importedObservedData = getObservedDataFromImporter(configuration, columnInfoConfiguration, null,false, false);
          var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
          
          foreach (var dataSet in reloadDataSets.NewDataSets)
@@ -138,7 +138,7 @@ namespace PKSim.Infrastructure.Services
       public void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration)
       {
          _executionContext.Load(compound);
-         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, null);
+         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, null, false,true);
       }
 
       private void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
@@ -147,9 +147,9 @@ namespace PKSim.Infrastructure.Services
          AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, dataRepositoryName);
       }
 
-      private void AddObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, string dataRepositoryName = null, bool allowCompoundNameEdit = false)
+      private void AddObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, string dataRepositoryName = null, bool allowCompoundNameEdit = false, bool propmtUser = false)
       {
-         var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, compound, allowCompoundNameEdit);
+         var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, compound, propmtUser, allowCompoundNameEdit);
          foreach (var observedData in string.IsNullOrEmpty(dataRepositoryName) ? importedObservedData : importedObservedData.Where(r => r.Name == dataRepositoryName))
          {
             adjustMolWeight(observedData);
@@ -164,7 +164,7 @@ namespace PKSim.Infrastructure.Services
       }
       
 
-      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound,
+      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool propmtUser,
          bool allowCompoundNameEdit)
       {
          var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
@@ -175,8 +175,9 @@ namespace PKSim.Infrastructure.Services
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
+         dataImporterSettings.PromptForConfirmation = propmtUser;
 
-         var importedObservedData =_dataImporter.ImportFromConfiguration(configuration, (IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
+       var importedObservedData =_dataImporter.ImportFromConfiguration(configuration, (IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
          return importedObservedData;
       }
 
