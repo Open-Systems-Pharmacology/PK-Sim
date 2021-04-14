@@ -727,9 +727,9 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string IndividualIdDoesNotMatchTheValueLength(int indiviudalId, int count)
+         public static string IndividualIdDoesNotMatchTheValueLength(int individualId, int count)
          {
-            return $"Individual Id '{indiviudalId}' does not match the expected number of individual '{count}'. A reason could be that the results were imported starting with an id of 1 instead of 0.";
+            return $"Individual Id '{individualId}' does not match the expected number of individual '{count}'. A reason could be that the results were imported starting with an id of 1 instead of 0.";
          }
 
          public static string GroupingCannotBeCreatedForField(string fieldName)

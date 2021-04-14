@@ -11,14 +11,14 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly ChartMapper _chartMapper;
       private readonly PopulationAnalysisMapper _populationAnalysisMapper;
-      private readonly ObservedDataCollectionMappper _observedDataCollectionMappper;
+      private readonly ObservedDataCollectionMappper _observedDataCollectionMapper;
       private readonly IPopulationAnalysisChartFactory _populationAnalysisChartFactory;
 
-      public PopulationAnalysisChartMapper(ChartMapper chartMapper, PopulationAnalysisMapper populationAnalysisMapper, ObservedDataCollectionMappper observedDataCollectionMappper, IPopulationAnalysisChartFactory populationAnalysisChartFactory)
+      public PopulationAnalysisChartMapper(ChartMapper chartMapper, PopulationAnalysisMapper populationAnalysisMapper, ObservedDataCollectionMappper observedDataCollectionMapper, IPopulationAnalysisChartFactory populationAnalysisChartFactory)
       {
          _chartMapper = chartMapper;
          _populationAnalysisMapper = populationAnalysisMapper;
-         _observedDataCollectionMappper = observedDataCollectionMappper;
+         _observedDataCollectionMapper = observedDataCollectionMapper;
          _populationAnalysisChartFactory = populationAnalysisChartFactory;
       }
 
@@ -34,7 +34,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await _chartMapper.MapToSnapshot(populationAnalysisChart, snapshot);
          snapshot.Analysis = await _populationAnalysisMapper.MapToSnapshot(populationAnalysisChart.BasePopulationAnalysis);
-         snapshot.ObservedDataCollection = await _observedDataCollectionMappper.MapToSnapshot(populationAnalysisChart.ObservedDataCollection);
+         snapshot.ObservedDataCollection = await _observedDataCollectionMapper.MapToSnapshot(populationAnalysisChart.ObservedDataCollection);
 
          return snapshot;
       }
@@ -50,7 +50,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await _chartMapper.MapToModel(snapshot, populationAnalysisChart);
          await _populationAnalysisMapper.MapToModel(snapshot.Analysis, populationAnalysisChart.BasePopulationAnalysis);
 
-         var observedDataCollection = await _observedDataCollectionMappper.MapToModel(snapshot.ObservedDataCollection, simulationAnalysisContext);
+         var observedDataCollection = await _observedDataCollectionMapper.MapToModel(snapshot.ObservedDataCollection, simulationAnalysisContext);
          populationAnalysisChart.ObservedDataCollection.UpdateFrom(observedDataCollection);
          return populationAnalysisChart;
       }

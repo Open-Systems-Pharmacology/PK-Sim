@@ -11,5 +11,10 @@
       ///    Specifies a validation run (e.g. no actual calculation will be performed.). Default is <c>false</c>
       /// </summary>
       public bool Validate { get; set; }
+
+      /// <summary>
+      ///    Should simulation be performed as part of the run?
+      /// </summary>
+      public bool Run { get; set; }
    }
 }
