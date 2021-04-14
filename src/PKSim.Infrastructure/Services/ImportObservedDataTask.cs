@@ -447,6 +447,8 @@ namespace PKSim.Infrastructure.Services
          compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
          organNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.ORGAN));
          genderNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.GENDER));
+         CompartmentNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.COMPARTMENT));
+         speciesNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.SPECIES));
       }
 
       private void compoundNameCategory(MetaDataCategory nameCategory, Compound compound, bool canEditName)
@@ -499,6 +501,42 @@ namespace PKSim.Infrastructure.Services
          {
             nameCategory.ListOfValues.Add(gender.Name, gender.Name);
          }
+
+         nameCategory.ShouldListOfValuesBeIncluded = true;
+      }
+
+      private void speciesNameCategory(MetaDataCategory nameCategory)
+      {
+         if (nameCategory == null) return;
+         nameCategory.ListOfValues.Clear();
+         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
+
+         foreach (var species in _speciesRepository.All().OrderBy(x => x.Name))
+         {
+            nameCategory.ListOfValues.Add(species.Name, species.Name);
+         }
+
+         nameCategory.ShouldListOfValuesBeIncluded = true;
+      }
+
+      private void CompartmentNameCategory(MetaDataCategory nameCategory)
+      {
+         if (nameCategory == null) return;
+         nameCategory.ListOfValues.Clear();
+         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
+
+         var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
+
+         foreach (var compartment in defaultIndividual.Organism.Organ(CoreConstants.Organ.MUSCLE).Compartments.Where(x => x.Visible))
+         {
+            nameCategory.ListOfValues.Add(compartment.Name, compartment.Name);
+         }
+         nameCategory.ListOfValues.Add(CoreConstants.Observer.TISSUE, CoreConstants.Observer.TISSUE);
+         nameCategory.ListOfValues.Add(CoreConstants.Observer.INTERSTITIAL_UNBOUND, CoreConstants.Observer.INTERSTITIAL_UNBOUND);
+         nameCategory.ListOfValues.Add(CoreConstants.Observer.INTRACELLULAR_UNBOUND, CoreConstants.Observer.INTRACELLULAR_UNBOUND);
+         nameCategory.ListOfValues.Add(CoreConstants.Observer.WHOLE_BLOOD, CoreConstants.Observer.WHOLE_BLOOD);
+         nameCategory.ListOfValues.Add(CoreConstants.Compartment.URINE, CoreConstants.Compartment.URINE);
+         nameCategory.ListOfValues.Add(CoreConstants.Compartment.FECES, CoreConstants.Compartment.FECES);
 
          nameCategory.ShouldListOfValuesBeIncluded = true;
       }
