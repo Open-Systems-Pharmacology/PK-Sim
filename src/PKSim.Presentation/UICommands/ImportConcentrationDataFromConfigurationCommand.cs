@@ -17,6 +17,7 @@ namespace PKSim.Presentation.UICommands
       protected override void PerformExecute()
       {
          var configuration = _observedDataTask.OpenXmlConfiguration();
+         if (configuration == null) return;
          _observedDataTask.AddObservedDataFromConfigurationToProjectForCompound(Subject, configuration);
       }
    }
