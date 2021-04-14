@@ -83,26 +83,26 @@ namespace PKSim.Infrastructure.Services
 
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
       {
-         var importedObservedData = getObservedDataFromImporter(configuration, columnInfoConfiguration, null,false, false);
+         var importedObservedData = getObservedDataFromImporter(configuration, columnInfoConfiguration, null, false, false);
          var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
-         
+
          foreach (var dataSet in reloadDataSets.NewDataSets)
          {
             adjustMolWeight(dataSet);
             _observedDataTask.AddObservedDataToProject(dataSet);
             updateQuantityInfoInImportedColumns(dataSet);
          }
-         
+
          foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray())//toDo it should be checked if to array solves the deleting problem
          {
             _observedDataTask.Delete(dataSet);
          }
-         
+
          foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
          {
             //TODO this here should be tested
             var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
-         
+
             foreach (var column in dataSet.Columns)
             {
                var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
@@ -112,7 +112,7 @@ namespace PKSim.Infrastructure.Services
                   IsInternal = column.IsInternal,
                   Values = column.Values
                };
-         
+
                if (column.IsBaseGrid())
                {
                   existingDataSet.BaseGrid.Values = datacolumn.Values;
@@ -134,11 +134,11 @@ namespace PKSim.Infrastructure.Services
          _executionContext.Load(compound);
          addObservedData(columnInfoConfiguration, compound);
       }
-      
+
       public void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration)
       {
          _executionContext.Load(compound);
-         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, null, false,true);
+         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, null, false, true);
       }
 
       private void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
@@ -198,28 +198,28 @@ namespace PKSim.Infrastructure.Services
          bool allowCompoundNameEdit)
       {
          var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
-         compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
+         populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
 
          var dataImporterSettings = new DataImporterSettings
-            {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
+         { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
          dataImporterSettings.PromptForConfirmation = propmtUser;
 
-       var importedObservedData =_dataImporter.ImportFromConfiguration(configuration, (IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
+         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, (IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
          return importedObservedData;
       }
 
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
       {
-         var dataImporterSettings = new DataImporterSettings {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
+         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
 
          var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
-         compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
+         populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
 
          var importedObservedData = _dataImporter.ImportDataSets((IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
 
@@ -244,12 +244,12 @@ namespace PKSim.Infrastructure.Services
          {
             //needs to match the path in simulation ROOT\ORGANISM\ORGAN\COMPARTMENT\MOLECULE\Name
             var colName = col.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            col.QuantityInfo = new QuantityInfo(col.Name, new[] {observedData.Name, CoreConstants.ContainerName.ObservedData, organ, compartment, moleculeName, colName}, QuantityType.Undefined);
+            col.QuantityInfo = new QuantityInfo(col.Name, new[] { observedData.Name, CoreConstants.ContainerName.ObservedData, organ, compartment, moleculeName, colName }, QuantityType.Undefined);
          }
 
          var baseGrid = observedData.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] {observedData.Name, baseGridName}, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] { observedData.Name, baseGridName }, QuantityType.Time);
       }
 
       private void adjustMolWeight(DataRepository observedData)
@@ -313,7 +313,7 @@ namespace PKSim.Infrastructure.Services
       private void addSupportedDimensionsTo(ColumnInfo column, IEnumerable<IDimension> supportedDimensions)
       {
          var mainDimension = column.DefaultDimension;
-         supportedDimensions.Select(dim => new DimensionInfo { Dimension = dim, IsMainDimension = Equals(dim, mainDimension)}).Each(column.DimensionInfos.Add);
+         supportedDimensions.Select(dim => new DimensionInfo { Dimension = dim, IsMainDimension = Equals(dim, mainDimension) }).Each(column.DimensionInfos.Add);
       }
 
       private ColumnInfo createTimeColumn()
@@ -327,7 +327,7 @@ namespace PKSim.Infrastructure.Services
             NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
-         timeColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Time, IsMainDimension = true});
+         timeColumn.DimensionInfos.Add(new DimensionInfo { Dimension = _dimensionRepository.Time, IsMainDimension = true });
          return timeColumn;
       }
 
@@ -423,7 +423,7 @@ namespace PKSim.Infrastructure.Services
       private void addPredefinedMoleculeValues(MetaDataCategory moleculeCategory)
       {
          addUndefinedValueTo(moleculeCategory);
-         
+
          foreach (var existingCompound in _buildingBlockRepository.All<Compound>())
          {
             addInfoToCategory(moleculeCategory, existingCompound);
@@ -438,8 +438,16 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      private MetaDataCategory compoundNameCategory(MetaDataCategory nameCategory, Compound compound, bool canEditName)
+      private void populateMetaDataLists(IList<MetaDataCategory> metaDataCategories, Compound compound, bool allowCompoundNameEdit)
       {
+         compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
+         organNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.ORGAN));
+         genderNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.GENDER));
+      }
+
+      private void compoundNameCategory(MetaDataCategory nameCategory, Compound compound, bool canEditName)
+      {
+         if (nameCategory == null) return;
          nameCategory.IsListOfValuesFixed = !canEditName;
          nameCategory.ListOfValues.Clear();
 
@@ -458,8 +466,37 @@ namespace PKSim.Infrastructure.Services
          }
 
          nameCategory.ShouldListOfValuesBeIncluded = true;
+      }
 
-         return nameCategory;
+      private void organNameCategory(MetaDataCategory nameCategory)
+      {
+         if (nameCategory == null) return;
+         nameCategory.ListOfValues.Clear();
+         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
+
+         var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
+         var organism = defaultIndividual.Organism;
+         foreach (var organ in organism.OrgansByType(OrganType.VascularSystem | OrganType.Tissue | OrganType.Lumen))
+         {
+            nameCategory.ListOfValues.Add(organ.Name, organ.Name);
+         }
+
+         nameCategory.ShouldListOfValuesBeIncluded = true;
+      }
+
+      private void genderNameCategory(MetaDataCategory nameCategory)
+      {
+         if (nameCategory == null) return;
+         nameCategory.ListOfValues.Clear();
+         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
+
+         var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
+         foreach (var gender in defaultIndividual.AvailableGenders())
+         {
+            nameCategory.ListOfValues.Add(gender.Name, gender.Name);
+         }
+
+         nameCategory.ShouldListOfValuesBeIncluded = true;
       }
 
       private void addInfoToCategory(MetaDataCategory metaDataCategory, IObjectBase objectBase)
