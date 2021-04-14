@@ -162,7 +162,37 @@ namespace PKSim.Infrastructure.Services
       {
          return (from dataRepo in dataRepositoryList let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString()) where result select dataRepo).FirstOrDefault();
       }
-      
+
+      private void addNamingPatterns(DataImporterSettings dataImporterSettings)
+      {
+         dataImporterSettings.AddNamingPatternMetaData(
+            Constants.FILE
+         );
+
+         dataImporterSettings.AddNamingPatternMetaData(
+            Constants.FILE,
+            Constants.SHEET
+         );
+
+         dataImporterSettings.AddNamingPatternMetaData(
+            Constants.ObservedData.MOLECULE,
+            Constants.ObservedData.SPECIES,
+            Constants.ObservedData.ORGAN,
+            Constants.ObservedData.COMPARTMENT
+         );
+
+         dataImporterSettings.AddNamingPatternMetaData(
+            Constants.ObservedData.MOLECULE,
+            Constants.ObservedData.SPECIES,
+            Constants.ObservedData.ORGAN,
+            Constants.ObservedData.COMPARTMENT,
+            Constants.ObservedData.STUDY_ID,
+            Constants.ObservedData.GENDER,
+            Constants.ObservedData.DOSE,
+            Constants.ObservedData.ROUTE,
+            Constants.ObservedData.PATIENT_ID
+         );
+      }
 
       private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool propmtUser,
          bool allowCompoundNameEdit)
@@ -172,7 +202,7 @@ namespace PKSim.Infrastructure.Services
 
          var dataImporterSettings = new DataImporterSettings
             {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
-         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+         addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
          dataImporterSettings.PromptForConfirmation = propmtUser;
@@ -184,7 +214,7 @@ namespace PKSim.Infrastructure.Services
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
       {
          var dataImporterSettings = new DataImporterSettings {Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName};
-         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
+         addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
 
