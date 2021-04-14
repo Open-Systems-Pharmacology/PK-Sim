@@ -85,7 +85,9 @@ namespace PKSim.Infrastructure.Services
       {
          var importedObservedData = getObservedDataFromImporter(configuration, columnInfoConfiguration, null,false, false);
          var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
-         
+
+         if (reloadDataSets == null) return;
+
          foreach (var dataSet in reloadDataSets.NewDataSets)
          {
             adjustMolWeight(dataSet);
@@ -150,6 +152,8 @@ namespace PKSim.Infrastructure.Services
       private void AddObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, string dataRepositoryName = null, bool allowCompoundNameEdit = false, bool propmtUser = false)
       {
          var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, compound, propmtUser, allowCompoundNameEdit);
+         if (importedObservedData == null) return;
+
          foreach (var observedData in string.IsNullOrEmpty(dataRepositoryName) ? importedObservedData : importedObservedData.Where(r => r.Name == dataRepositoryName))
          {
             adjustMolWeight(observedData);
