@@ -18,15 +18,13 @@ namespace PKSim.Presentation
       protected ICalculationMethodSelectionPresenterForCompound _calculationMethodSelectionPresenter;
       protected IOrganPermeabilityGroupPresenter _organPermeabilityGroupPresenter;
       protected IMultiplePanelView _multiplePanelView;
-      private ICompoundVSSPresenter _compoundVSSPresenter;
 
       protected override void Context()
       {
          _calculationMethodSelectionPresenter = A.Fake<ICalculationMethodSelectionPresenterForCompound>();
          _organPermeabilityGroupPresenter = A.Fake<IOrganPermeabilityGroupPresenter>();
          _multiplePanelView = A.Fake<IMultiplePanelView>();
-         _compoundVSSPresenter= A.Fake<ICompoundVSSPresenter>();
-         sut = new DistributionWithCalculationMethodGroupPresenter(_multiplePanelView, _organPermeabilityGroupPresenter, _calculationMethodSelectionPresenter,_compoundVSSPresenter);
+         sut = new DistributionWithCalculationMethodGroupPresenter(_multiplePanelView, _organPermeabilityGroupPresenter, _calculationMethodSelectionPresenter);
       }
    }
 

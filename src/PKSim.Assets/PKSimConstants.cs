@@ -19,7 +19,7 @@ namespace PKSim.Assets
          public const string PopulationFileFormatIsNotSupported = "Population file format is not supported.";
          public const string InhibitorClearanceMustBeDefinedSeparately = "Please note that for the mechanism-based inactivator no clearance process is defined via the inactivation process by default. In theory, for every inactivated target molecule, also one inactivator molecule is cleared; this must be separately defined by the user in form of additional clearance processes for the inhibitor.";
          public const string FractionAbsorbedSmallerThanOne = "Absorption seems to be incomplete or absorption process is not finished. Vd, Vss (or Vd/F and Vss/F), t1/2, MRT and AUC_inf should be compared with respective PK-parameters from an IV simulation.";
-         public const string ExpressionParametersWillBeReset = "TODO: Expression parameter will be reset";
+         public const string ExpressionParametersWillBeReset = "Some expression values will be reset. Do you want to continue?";
 
          public static string SystemicProcessAvailableInCompoundButWasNotSelected(string systemicProcessType)
          {
@@ -2170,7 +2170,6 @@ namespace PKSim.Assets
          public static readonly string ShowDiagram = "Show Diagram";
          public static readonly string HidePKAnalysis = "Hide PK-Analysis";
          public static readonly string CalculateVSSValues = "Calculate VSS Values";
-         public static readonly string PossibleVSSValuesForDefaultSpecies = "TODO PossibleVSSValuesForDefaultSpecies";
          public static readonly string DoYouWantToSaveCompoundMetaboliteAsTemplate = "Do you also want to save the metabolite(s) of this compound?";
          public static string DoYouWantToLoadReferencedTemplateAsWell(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
          public static readonly string LowerPercentile = "Lower Percentile";
