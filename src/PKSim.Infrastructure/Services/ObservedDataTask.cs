@@ -28,6 +28,8 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationController _applicationController;
       private readonly ITemplateTask _templateTask;
       private readonly IObservedDataPersistor _observedDataPersistor;
+      private readonly IParameterChangeUpdater _parameterChangeUpdater;
+
 
       public ObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -37,6 +39,7 @@ namespace PKSim.Infrastructure.Services
          IDataRepositoryExportTask dataRepositoryTask,
          ITemplateTask templateTask,
          IContainerTask containerTask,
+         IParameterChangeUpdater parameterChangeUpdater,
          IObservedDataPersistor observedDataPersistor,
          IObjectTypeResolver objectTypeResolver) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
       {
@@ -45,6 +48,7 @@ namespace PKSim.Infrastructure.Services
          _applicationController = applicationController;
          _templateTask = templateTask;
          _observedDataPersistor = observedDataPersistor;
+         _parameterChangeUpdater = parameterChangeUpdater;
       }
 
       public override void Rename(DataRepository observedData)
@@ -56,6 +60,11 @@ namespace PKSim.Infrastructure.Services
 
             _executionContext.AddToHistory(new RenameObservedDataCommand(observedData, renamePresenter.Name).Run(_executionContext));
          }
+      }
+
+      public override void UpdateMolWeight(DataRepository observedData)
+      {
+         _parameterChangeUpdater.UpdateMolWeightIn(observedData);
       }
 
       public void SaveToTemplate(DataRepository observedData)

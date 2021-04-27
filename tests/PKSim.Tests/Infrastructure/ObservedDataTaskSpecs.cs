@@ -37,6 +37,7 @@ namespace PKSim.Infrastructure
       private IPKSimProjectRetriever _projectRetriever;
       protected IObservedDataPersistor _observedDataPersistor;
       private IObjectTypeResolver _objectTypeResolver;
+      private IParameterChangeUpdater _parameterChangeUpdater;
       protected ISnapshotTask _snapshotTask;
 
       protected override void Context()
@@ -48,6 +49,7 @@ namespace PKSim.Infrastructure
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
+         _parameterChangeUpdater = A.Fake<IParameterChangeUpdater>();
          _project = new PKSimProject();
          _observedDataPersistor = A.Fake<IObservedDataPersistor>();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
@@ -55,7 +57,7 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver);
+            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _observedDataPersistor, _objectTypeResolver);
       }
    }
 

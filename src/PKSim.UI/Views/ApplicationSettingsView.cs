@@ -45,7 +45,7 @@ namespace PKSim.UI.Views
          layoutGroupWatermark.Text = PKSimConstants.UI.WatermarkProperties;
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.SytemSettings;
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.SystemSettings;
 
       public override void InitializeBinding()
       {
