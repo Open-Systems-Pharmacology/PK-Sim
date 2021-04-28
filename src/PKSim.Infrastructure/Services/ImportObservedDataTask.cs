@@ -481,7 +481,8 @@ namespace PKSim.Infrastructure.Services
 
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
          var organism = defaultIndividual.Organism;
-         foreach (var organ in organism.OrgansByType(OrganType.VascularSystem | OrganType.Tissue | OrganType.Lumen | OrganType.Unknown))
+         addInfoToCategory(nameCategory, organism.Organ(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD));
+         foreach (var organ in organism.OrgansByType(OrganType.VascularSystem | OrganType.Tissue | OrganType.Lumen))
          {
             nameCategory.ListOfValues.Add(organ.Name, organ.Name);
          }
