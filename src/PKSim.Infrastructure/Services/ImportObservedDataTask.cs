@@ -447,7 +447,7 @@ namespace PKSim.Infrastructure.Services
          compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
          organNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.ORGAN));
          genderNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.GENDER));
-         CompartmentNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.COMPARTMENT));
+         compartmentNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.COMPARTMENT));
          speciesNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.SPECIES));
       }
 
@@ -478,7 +478,6 @@ namespace PKSim.Infrastructure.Services
       {
          if (nameCategory == null) return;
          nameCategory.ListOfValues.Clear();
-         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
 
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
          var organism = defaultIndividual.Organism;
@@ -494,7 +493,6 @@ namespace PKSim.Infrastructure.Services
       {
          if (nameCategory == null) return;
          nameCategory.ListOfValues.Clear();
-         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
 
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
          foreach (var gender in defaultIndividual.AvailableGenders())
@@ -509,7 +507,6 @@ namespace PKSim.Infrastructure.Services
       {
          if (nameCategory == null) return;
          nameCategory.ListOfValues.Clear();
-         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
 
          foreach (var species in _speciesRepository.All().OrderBy(x => x.Name))
          {
@@ -519,11 +516,10 @@ namespace PKSim.Infrastructure.Services
          nameCategory.ShouldListOfValuesBeIncluded = true;
       }
 
-      private void CompartmentNameCategory(MetaDataCategory nameCategory)
+      private void compartmentNameCategory(MetaDataCategory nameCategory)
       {
          if (nameCategory == null) return;
          nameCategory.ListOfValues.Clear();
-         nameCategory.ListOfValues.Add(PKSimConstants.UI.Undefined, PKSimConstants.UI.Undefined);
 
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
 
