@@ -41,7 +41,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .AsGroupStarter();
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated)
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated.WithEllipsis())
             .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
             .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
             .WithIcon(ApplicationIcons.RefreshAll);
