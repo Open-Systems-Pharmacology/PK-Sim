@@ -264,49 +264,6 @@ namespace PKSim.CLI
       }
    }
 
-   public class When_running_the_export_simulation_runner_for_a_simulation_that_does_not_have_selected_output : concern_for_ExportSimulationRunner
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _exportRunOptions.ProjectFile = _projectFileName;
-         _project.AddBuildingBlock(_simulation1);
-         _simulation1.OutputSelections = new OutputSelections();
-      }
-
-      protected override Task Because()
-      {
-         return sut.RunBatchAsync(_exportRunOptions);
-      }
-
-      [Observation]
-      public void should_warn_the_user_that_the_simulation_to_export_does_not_have_any_output()
-      {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
-      }
-   }
-
-   public class When_running_the_export_simulation_runner_for_a_simulation_that_does_not_have_any_results : concern_for_ExportSimulationRunner
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _exportRunOptions.ProjectFile = _projectFileName;
-         _project.AddBuildingBlock(_simulation1);
-         _simulation1.DowncastTo<IndividualSimulation>().DataRepository = null;
-      }
-
-      protected override Task Because()
-      {
-         return sut.RunBatchAsync(_exportRunOptions);
-      }
-
-      [Observation]
-      public void should_warn_the_user_that_the_simulation_to_export_does_not_have_any_results()
-      {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
-      }
-   }
 
    public class When_running_the_export_simulation_runner_for_a_simulation_that_does_not_exist : concern_for_ExportSimulationRunner
    {

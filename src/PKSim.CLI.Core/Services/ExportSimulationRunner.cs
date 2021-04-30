@@ -129,23 +129,11 @@ namespace PKSim.CLI.Core.Services
             ProjectName = projectName,
          };
 
-         if (!simulation.OutputSelections.HasSelection)
-         {
-            _logger.AddWarning($"Simulation '{simulationName}' does not have any selected output and will not be exported", projectName);
-            return simulationExport;
-         }
-
          if (exportRunOptions.RunSimulation)
             await _simulationExporter.RunAndExport(simulation,  simulationRunOptions, simulationExportOptions);
 
-         else if (simulation.HasResults)
+         else 
             await _simulationExporter.Export(simulation,  simulationExportOptions);
-
-         else
-         {
-            _logger.AddWarning($"Simulation '{simulationName}' does not have any results and will not be exported", projectName);
-            return simulationExport;
-         }
 
          _logger.AddDebug($"Simulation '{simulationName}' exported to '{simulationFolder}'", projectName);
          return simulationExport;
