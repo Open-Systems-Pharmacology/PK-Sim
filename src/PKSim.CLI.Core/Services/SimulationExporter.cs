@@ -163,6 +163,12 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportResultsToJsonAsync(IndividualSimulation simulation, SimulationExportOptions simulationExportOptions)
       {
+         if (!simulation.HasResults)
+         {
+            _logger.AddWarning($"Simulation '{simulation.Name}' does not have any results and will not be exported to Json", simulationExportOptions.ProjectName);
+            return;
+         }
+
          var fileName = simulationExportOptions.TargetPathFor(simulation, Constants.Filter.JSON_EXTENSION);
          await _simulationResultsExporter.ExportToJsonAsync(simulation, simulation.DataRepository, fileName);
          _logger.AddDebug($"Exporting simulation results to '{fileName}'", simulationExportOptions.LogCategory);
@@ -186,6 +192,12 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportSimulationResultsToCsv(Simulation simulation, SimulationExportOptions simulationExportOptions)
       {
+         if (!simulation.HasResults)
+         {
+            _logger.AddWarning($"Simulation '{simulation.Name}' does not have any results and will not be exported to CSV", simulationExportOptions.ProjectName);
+            return;
+         }
+
          var resultFileName = CoreConstants.DefaultResultsExportNameFor(simulation.Name);
          var simulationResultFileFullPath = simulationExportOptions.TargetCSVPathFor(resultFileName);
          await _simulationExportTask.ExportResultsToCSVAsync(simulation, simulationResultFileFullPath);
@@ -194,6 +206,12 @@ namespace PKSim.CLI.Core.Services
 
       private async Task exportIndividualSimulationResultsToExcelAsync(IndividualSimulation simulation, SimulationExportOptions simulationExportOptions)
       {
+         if (!simulation.HasResults)
+         {
+            _logger.AddWarning($"Simulation '{simulation.Name}' does not have any results and will not be exported to Excel", simulationExportOptions.ProjectName);
+            return;
+         }
+
          var resultFileName = CoreConstants.DefaultResultsExportNameFor(simulation.Name);
          var simulationResultFileFullPath = simulationExportOptions.TargetPathFor(resultFileName, Constants.Filter.XLSX_EXTENSION);
          await _simulationExportTask.ExportResultsToExcelAsync(simulation, simulationResultFileFullPath, launchExcel:false);

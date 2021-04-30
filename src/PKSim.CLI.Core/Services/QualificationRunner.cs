@@ -101,7 +101,7 @@ namespace PKSim.CLI.Core.Services
          var exportRunOptions = new ExportRunOptions
          {
             OutputFolder = projectOutputFolder,
-            ExportMode = SimulationExportMode.Xml | SimulationExportMode.Csv
+            ExportMode = SimulationExportMode.Xml | SimulationExportMode.Csv | SimulationExportMode.Pkml
          };
 
          var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
