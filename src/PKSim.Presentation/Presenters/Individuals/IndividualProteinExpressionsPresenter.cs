@@ -57,12 +57,13 @@ namespace PKSim.Presentation.Presenters.Individuals
          if (_proteinDTO == null)
             return;
 
-         _proteinDTO.AllExpressionParameters.Each(x => { x.Visible = isParameterVisible(x); });
+         _proteinDTO.AllExpressionParameters.Each(x => { x.Visible = IsParameterVisible(x); });
 
          _expressionParametersPresenter.Edit(_proteinDTO.AllExpressionParameters);
       }
 
-      private bool isParameterVisible(ExpressionParameterDTO expressionParameterDTO)
+      //Internal to allow for testing 
+      internal bool IsParameterVisible(ExpressionParameterDTO expressionParameterDTO)
       {
          var parameter = expressionParameterDTO.Parameter;
 
@@ -79,11 +80,11 @@ namespace PKSim.Presentation.Presenters.Individuals
                case REL_EXP_VASCULAR_ENDOTHELIUM:
                   return _protein.InVascularEndothelium;
                case FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
-                  return _protein.IsVascEndosome;
+                  return _protein.IsVascEndosome && (_protein.IsVascMembraneTissueSide || _protein.IsVascMembranePlasmaSide);
                case FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE:
-                  return _protein.IsVascMembraneTissueSide;
+                  return _protein.IsVascMembraneTissueSide && (_protein.IsVascEndosome || _protein.IsVascMembranePlasmaSide);
                case FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE:
-                  return _protein.IsVascMembranePlasmaSide;
+                  return _protein.IsVascMembranePlasmaSide && (_protein.IsVascEndosome || _protein.IsVascMembraneTissueSide);
             }
          }
 
