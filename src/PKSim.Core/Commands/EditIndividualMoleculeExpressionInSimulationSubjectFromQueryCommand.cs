@@ -10,14 +10,14 @@ namespace PKSim.Core.Commands
       private IndividualMolecule _molecule;
       private QueryExpressionResults _queryExpressionResults;
 
-      public EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(IndividualMolecule originalMolecule, QueryExpressionResults queryExpressionResults, ISimulationSubject simulationSubject)
+      public EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(IndividualMolecule molecule, QueryExpressionResults queryExpressionResults, ISimulationSubject simulationSubject)
       {
-         _molecule = originalMolecule;
+         _molecule = molecule;
          _queryExpressionResults = queryExpressionResults;
          _simulationSubject = simulationSubject;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
          var containerName = string.IsNullOrEmpty(simulationSubject.Name) ? CoreConstants.ContainerName.NameTemplate : simulationSubject.Name;
-         Description = PKSimConstants.Command.AddEntityToContainer(ObjectType, originalMolecule.Name, PKSimConstants.ObjectTypes.Individual, containerName);
+         Description = PKSimConstants.Command.AddEntityToContainer(ObjectType, molecule.Name, PKSimConstants.ObjectTypes.Individual, containerName);
          ExtendedDescription = queryExpressionResults.Description;
       }
 
