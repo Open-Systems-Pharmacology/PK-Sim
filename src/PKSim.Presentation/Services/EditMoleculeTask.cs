@@ -1,5 +1,4 @@
-﻿using System;
-using OSPSuite.Core.Commands.Core;
+﻿using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Core;
 using PKSim.Assets;
 using PKSim.Core;
@@ -49,7 +48,6 @@ namespace PKSim.Presentation.Services
       /// <param name="simulationSubject">Simulation subject containing the molecule to be removed</param>
       ICommand RemoveMoleculeFrom(IndividualMolecule moleculeToRemove, TSimulationSubject simulationSubject);
 
-
       /// <summary>
       ///    Remove the given molecule from the simulationSubject
       /// </summary>
@@ -91,7 +89,7 @@ namespace PKSim.Presentation.Services
             return proteinFromQuery<TMolecule>(simulationSubject);
 
          //no database defined for the species. return the simple configuration
-         return simpleMolecule<TMolecule>(simulationSubject);
+         return AddDefaultMolecule<TMolecule>(simulationSubject);
       }
 
       public ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
@@ -113,7 +111,7 @@ namespace PKSim.Presentation.Services
             var editedProtein = _executionContext.Clone(molecule);
             var queryResults = presenter.GetQueryResults();
 
-             return _moleculeExpressionTask.EditMolecule(molecule, editedProtein, queryResults, simulationSubject);
+            return _moleculeExpressionTask.EditMolecule(molecule, editedProtein, queryResults, simulationSubject);
          }
       }
 

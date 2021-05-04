@@ -1,10 +1,10 @@
-﻿using PKSim.Assets;
+﻿using System.Drawing;
+using PKSim.Assets;
 using OSPSuite.Assets;
 using PKSim.Core;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -13,7 +13,7 @@ namespace PKSim.UI.Views.Individuals
       public CreateIndividualView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new System.Drawing.Size(CoreConstants.UI.INDIVIDUAL_VIEW_WIDTH, CoreConstants.UI.INDIVIDUAL_VIEW_HEIGHT);
+         ClientSize = new Size(CoreConstants.UI.INDIVIDUAL_VIEW_WIDTH, CoreConstants.UI.INDIVIDUAL_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ICreateIndividualPresenter presenter)

@@ -19,7 +19,8 @@ namespace PKSim.Core.Services
       ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule;
 
       /// <summary>
-      ///    Add a molecule of type to the given individual named after the <paramref name="molecule"/> template given as parameter
+      ///    Add a molecule of type to the given individual named after the <paramref name="molecule" /> template given as
+      ///    parameter
       /// </summary>
       /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
       /// <param name="moleculeTemplate">New Molecule will be added based on this parameter (type and name). </param>
@@ -58,7 +59,6 @@ namespace PKSim.Core.Services
       ///    transporter type is defined)
       /// </summary>
       ICommand SetTransporterTypeFor(IndividualTransporter transporter, TransportType transportType);
-
 
       ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults,
          TSimulationSubject simulationSubject);
@@ -135,7 +135,7 @@ namespace PKSim.Core.Services
 
       public ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject)
       {
-         return _simulationSubjectExpressionTask.RenameMolecule(molecule,  newName, simulationSubject);
+         return _simulationSubjectExpressionTask.RenameMolecule(molecule, newName, simulationSubject);
       }
 
       public ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule molecule, QueryExpressionResults queryResults)
@@ -152,9 +152,8 @@ namespace PKSim.Core.Services
 
       private ICommand addMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
-         var command = _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);
          setDefaultFor(molecule, simulationSubject, molecule.Name);
-         return command;
+         return _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);
       }
 
       public ICommand SetTransportDirection(TransporterExpressionContainer transporterContainer, TransportDirectionId transportDirection)
@@ -183,7 +182,7 @@ namespace PKSim.Core.Services
       {
          if (!(molecule is IndividualTransporter transporter)) return;
 
-         _transportContainerUpdater.SetDefaultSettingsForTransporter(simulationSubject, transporter,  moleculeName);
+         _transportContainerUpdater.SetDefaultSettingsForTransporter(simulationSubject, transporter, moleculeName);
       }
 
       private void setDefaultOntogeny(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)
