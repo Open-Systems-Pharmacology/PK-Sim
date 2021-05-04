@@ -198,8 +198,7 @@ namespace PKSim.Core.Commands
          {
             var (parameter, value) = x;
             var macroCommand = new PKSimMacroCommand();
-            var setParameterCommand = new SetParameterValueCommand(parameter, value);
-            macroCommand.Add(setParameterCommand);
+            macroCommand.Add(new SetParameterValueCommand(parameter, value));
             macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault:true) { ShouldChangeVersion = false, Visible = false});
             macroCommand.Add(new UpdateParameterValueOriginCommand(parameter, ValueOrigin.Undefined) { ShouldChangeVersion = false, Visible = false });
             macroCommand.Execute(context);
