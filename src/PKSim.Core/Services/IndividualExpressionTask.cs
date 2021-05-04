@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Commands.Core;
+﻿using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 
@@ -23,9 +24,9 @@ namespace PKSim.Core.Services
          return new AddMoleculeToIndividualCommand(molecule, individual, _executionContext).Run(_executionContext);
       }
 
-      public ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults, Individual individual)
+      public IOSPSuiteCommand EditMolecule(IndividualMolecule moleculeToEdit, QueryExpressionResults queryResults, Individual individual)
       {
-         return new EditIndividualMoleculeExpressionInIndividualFromQueryCommand(moleculeToEdit, editedMolecule, queryResults, individual).Run(_executionContext);
+         return new EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(moleculeToEdit, queryResults, individual).Run(_executionContext);
       }
 
       public ICommand AddMoleculeTo(IndividualMolecule molecule, Individual individual, QueryExpressionResults queryExpressionResults)

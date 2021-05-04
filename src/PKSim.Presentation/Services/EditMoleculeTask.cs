@@ -97,24 +97,6 @@ namespace PKSim.Presentation.Services
          return simpleMolecule<TMolecule>(simulationSubject);
       }
 
-      public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
-      {
-         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
-         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
-         {
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject));
-            presenter.Title = PKSimConstants.UI.EditProteinExpression;
-            bool proteinEdited = presenter.Start();
-            if (!proteinEdited)
-               return new PKSimEmptyCommand();
-
-            var editedProtein = _executionContext.Clone(molecule);
-            var queryResults = presenter.GetQueryResults();
-
-            return _moleculeExpressionTask.EditMolecule(molecule, editedProtein, queryResults, simulationSubject);
-         }
-      }
-
       public bool CanQueryProteinExpressionsFor(TSimulationSubject simulationSubject)
       {
          return _geneExpressionsDatabasePathManager.HasDatabaseFor(simulationSubject.Species);
@@ -139,6 +121,23 @@ namespace PKSim.Presentation.Services
                return new PKSimEmptyCommand();
 
             return _moleculeExpressionTask.AddMoleculeTo<TMolecule>(simulationSubject, presenter.MoleculeName);
+         }
+      }
+
+      public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
+      {
+         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
+         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
+         {
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject));
+            presenter.Title = PKSimConstants.UI.EditProteinExpression;
+            var success = presenter.Start();
+            if (!success)
+               return new PKSimEmptyCommand();
+
+            var queryResults = presenter.GetQueryResults();
+
+            return _moleculeExpressionTask.EditMolecule(molecule, queryResults, simulationSubject);
          }
       }
 
