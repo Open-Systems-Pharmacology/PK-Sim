@@ -166,7 +166,7 @@ namespace PKSim.Infrastructure.Services
       {
          return (from dataRepo in dataRepositoryList let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => 
             keyValuePair.Key == Constants.FILE ||
-            dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString()
+            Equals(dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject, keyValuePair.Value.ValueAsObject)
          ) where result select dataRepo).FirstOrDefault();
       }
 
