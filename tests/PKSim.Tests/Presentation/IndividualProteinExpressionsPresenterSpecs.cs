@@ -155,7 +155,6 @@ namespace PKSim.Presentation
          sut.IsParameterVisible(_expressionParameterDTO).ShouldBeFalse();
       }
 
-
       [Observation]
       public void should_return_visible_if_the_parameter_is_rel_exp_vasc_endo_and_the_enzyme_is_expressed_in_vasc_endothelium()
       {
@@ -172,7 +171,6 @@ namespace PKSim.Presentation
          sut.IsParameterVisible(_expressionParameterDTO).ShouldBeFalse();
       }
 
-
       [Observation]
       public void should_return_visible_if_the_parameter_is_fraction_exp_vasc_end_and_the_enzyme_is_expressed_in_all_vasc_end_locations()
       {
@@ -183,8 +181,6 @@ namespace PKSim.Presentation
 
          _parameter.Name = FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE;
          sut.IsParameterVisible(_expressionParameterDTO).ShouldBeTrue();
-
-
       }
 
       [Observation]
@@ -204,7 +200,7 @@ namespace PKSim.Presentation
 
 
          _enzyme.IsVascEndosome = false;
-         _enzyme.IsVascMembraneTissueSide = false ;
+         _enzyme.IsVascMembraneTissueSide = false;
          _enzyme.IsVascMembranePlasmaSide = true;
          _parameter.Name = FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE;
          sut.IsParameterVisible(_expressionParameterDTO).ShouldBeFalse();
