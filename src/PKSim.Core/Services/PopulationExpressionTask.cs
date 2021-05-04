@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -62,10 +63,9 @@ namespace PKSim.Core.Services
          return addMoleculeToPopulation(molecule, population, baseCommand);
       }
 
-      public ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults,
-         Population population)
+      public IOSPSuiteCommand EditMolecule(IndividualMolecule moleculeToEdit,  QueryExpressionResults queryResults, Population population)
       {
-         return new EditIndividualMoleculeExpressionInPopulationFromQueryCommand(moleculeToEdit, editedMolecule, queryResults, population)
+         return new EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(moleculeToEdit,  queryResults, population)
             .Run(_executionContext);
       }
 

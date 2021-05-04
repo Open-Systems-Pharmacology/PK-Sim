@@ -1,6 +1,7 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -60,7 +61,7 @@ namespace PKSim.Core.Services
       /// </summary>
       ICommand SetTransporterTypeFor(IndividualTransporter transporter, TransportType transportType);
 
-      ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults,
+      ICommand EditMolecule(IndividualMolecule moleculeToEdit, QueryExpressionResults queryResults,
          TSimulationSubject simulationSubject);
 
       ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject);
@@ -120,17 +121,22 @@ namespace PKSim.Core.Services
          return addMoleculeTo(molecule, simulationSubject);
       }
 
-      public ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults,
-         TSimulationSubject simulationSubject)
+      public ICommand EditMolecule(IndividualMolecule moleculeToEdit, QueryExpressionResults queryResults, TSimulationSubject simulationSubject)
       {
          //name has changed, needs to ensure unicity
-         if (!string.Equals(editedMolecule.Name, queryResults.ProteinName))
-            editedMolecule.Name = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
+         ICommand renameCommand = null;
+         if (!string.Equals(moleculeToEdit.Name, queryResults.ProteinName))
+         {
+            var newName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
+            renameCommand = RenameMolecule(moleculeToEdit, newName, simulationSubject);
+         }
 
-         editedMolecule.QueryConfiguration = queryResults.QueryConfiguration;
+         moleculeToEdit.QueryConfiguration = queryResults.QueryConfiguration;
+         var editCommand = _simulationSubjectExpressionTask.EditMolecule(moleculeToEdit, queryResults, simulationSubject);
+         if (renameCommand == null)
+            return editCommand;
 
-
-         return _simulationSubjectExpressionTask.EditMolecule(moleculeToEdit, editedMolecule, queryResults, simulationSubject);
+         return new PKSimMacroCommand(new[] {renameCommand, editCommand}).WithHistoryEntriesFrom(editCommand);
       }
 
       public ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject)

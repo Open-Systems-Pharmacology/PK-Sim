@@ -209,7 +209,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _proteinExpressionPresenter.Start()).Returns(true);
          A.CallTo(() => _proteinExpressionPresenter.GetQueryResults()).Returns(_queryResults);
          _editCommand = A.Fake<ICommand>();
-         A.CallTo(() => _moleculeExpressionTask.EditMolecule(_molecule, _clonedProtein, _queryResults, _individual)).Returns(_editCommand);
+         A.CallTo(() => _moleculeExpressionTask.EditMolecule(_molecule, _queryResults, _individual)).Returns(_editCommand);
       }
 
       protected override void Because()
