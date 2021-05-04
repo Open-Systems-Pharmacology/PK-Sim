@@ -18,6 +18,13 @@ namespace PKSim.Core.Services
       /// <param name="moleculeName">Name of the molecule to add</param>
       ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule;
 
+      /// <summary>
+      ///    Add a molecule of type to the given individual named after the <paramref name="molecule"/> template given as parameter
+      /// </summary>
+      /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
+      /// <param name="moleculeTemplate">New Molecule will be added based on this parameter (type and name). </param>
+      ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule moleculeTemplate);
+
       ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule molecule, QueryExpressionResults queryExpressionResults);
 
       /// <summary>
@@ -103,6 +110,13 @@ namespace PKSim.Core.Services
       {
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
          var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, moleculeName);
+         return addMoleculeTo(molecule, simulationSubject);
+      }
+
+      public ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule moleculeTemplate)
+      {
+         var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(moleculeTemplate);
+         var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, moleculeTemplate.Name);
          return addMoleculeTo(molecule, simulationSubject);
       }
 

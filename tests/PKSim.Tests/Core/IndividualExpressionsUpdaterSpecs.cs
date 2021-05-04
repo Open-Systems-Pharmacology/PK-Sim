@@ -5,6 +5,7 @@ using FakeItEasy;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core
 {
@@ -13,16 +14,20 @@ namespace PKSim.Core
       protected Individual _targetIndividual;
       protected Individual _sourceIndividual;
       protected IOntogenyTask<Individual> _ontogenyTask;
-      protected ICloner _cloner;
+      private IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
+      private IEntityPathResolver _entityPathResolver;
+      private ICloner _cloner;
+      private IParameterUpdater _parameterUpdater;
 
       protected override void Context()
       {
          _sourceIndividual = A.Fake<Individual>();
          _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
-         _cloner = A.Fake<ICloner>();
          _targetIndividual = DomainHelperForSpecs.CreateIndividual();
+         _moleculeExpressionTask= A.Fake<IMoleculeExpressionTask<Individual>>();
+         _entityPathResolver= A.Fake<IEntityPathResolver>();
 
-         sut = new IndividualExpressionsUpdater(_ontogenyTask, _cloner);
+         sut = new IndividualExpressionsUpdater(_ontogenyTask,_moleculeExpressionTask,_entityPathResolver,_cloner,_parameterUpdater );
       }
    }
 
@@ -53,10 +58,7 @@ namespace PKSim.Core
          _enzymeExpressionClone2.Ontogeny = new DatabaseOntogeny();
          _allEnzymesExpression = new List<IndividualMolecule> {_enzymeExpression1, _enzymeExpression2};
          A.CallTo(() => _sourceIndividual.AllMolecules()).Returns(_allEnzymesExpression);
-
-         A.CallTo(() => _cloner.Clone(_enzymeExpression1)).Returns(_enzymeExpressionClone1);
-         A.CallTo(() => _cloner.Clone(_enzymeExpression2)).Returns(_enzymeExpressionClone2);
-      }
+    }
 
       protected override void Because()
       {
