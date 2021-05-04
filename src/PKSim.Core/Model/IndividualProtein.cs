@@ -59,8 +59,8 @@ namespace PKSim.Core.Model
 
       public bool InVascularEndothelium => Localization.Is(Localization.InVascularEndothelium);
 
-      public bool IsBloodCellsMembrane
-      {
+         public bool IsBloodCellsMembrane
+         {
          get => Localization.Is(Localization.BloodCellsMembrane);
          set => setLocalizationFlag(Localization.BloodCellsMembrane, value);
       }
