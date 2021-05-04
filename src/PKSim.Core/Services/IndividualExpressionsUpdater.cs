@@ -52,8 +52,8 @@ namespace PKSim.Core.Services
             //Update all containers from source to target
             updatePathCache(sourceIndividual.AllMoleculeContainersFor(sourceMolecule), targetIndividual.AllMoleculeContainersFor(targetMolecule));
 
-            //Make sure parameters that user defined parameters are reset to default to ensure proper scaling
-            resetMoleculeParametersToDefault(targetMolecule);
+            //Make sure global parameters are reset to default to ensure proper scaling (they will be part of the scaling algorithm)
+            resetGlobalMoleculeParametersToDefault(targetMolecule);
 
             //we have to reset the ontogeny for the molecule based on the target individual properties
             _ontogenyTask.SetOntogenyForMolecule(targetMolecule, targetMolecule.Ontogeny, targetIndividual);
@@ -83,7 +83,7 @@ namespace PKSim.Core.Services
          _parameterUpdater.UpdateValue(sourceParam, targetParam);
       }
 
-      private void resetMoleculeParametersToDefault(IndividualMolecule molecule)
+      private void resetGlobalMoleculeParametersToDefault(IndividualMolecule molecule)
       {
          molecule.AllParameters()
             .Where(x => x.ValueDiffersFromDefault())
