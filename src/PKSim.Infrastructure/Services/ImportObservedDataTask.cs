@@ -164,10 +164,7 @@ namespace PKSim.Infrastructure.Services
 
       private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
       {
-         return (from dataRepo in dataRepositoryList let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => 
-            keyValuePair.Key == Constants.FILE ||
-            Equals(dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject, keyValuePair.Value.ValueAsObject)
-         ) where result select dataRepo).FirstOrDefault();
+         return (from dataRepo in dataRepositoryList let result = _dataImporter.AreFromSameSource(dataRepo, targetDataRepository) where result select dataRepo).FirstOrDefault();
       }
 
       private void addNamingPatterns(DataImporterSettings dataImporterSettings)
