@@ -16,17 +16,22 @@ namespace PKSim.CLI.Core.MinimalImplementations
 
       public IReadOnlyList<DataRepository> ImportFromConfiguration(ImporterConfiguration configuration, IReadOnlyList<MetaDataCategory> metaDataCategories, IReadOnlyList<ColumnInfo> columnInfos, DataImporterSettings dataImporterSettings)
       {
-         throw new System.NotImplementedException();
+         throw new NotImplementedException();
       }
 
       public ReloadDataSets CalculateReloadDataSetsFromConfiguration(IReadOnlyList<DataRepository> dataSetsToImport, IReadOnlyList<DataRepository> existingDataSets)
       {
-         throw new System.NotImplementedException();
+         throw new NotImplementedException();
       }
 
       public IList<MetaDataCategory> DefaultMetaDataCategories()
       {
-         throw new System.NotImplementedException();
+         throw new NotImplementedException();
+      }
+
+      public bool AreFromSameSource(DataRepository sourceDataRepository, DataRepository targetDataRepository)
+      {
+         throw new NotImplementedException();
       }
    }
 }
