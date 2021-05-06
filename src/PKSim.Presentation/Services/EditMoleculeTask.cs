@@ -1,5 +1,4 @@
-﻿using System;
-using OSPSuite.Core.Commands.Core;
+﻿using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Core;
 using PKSim.Assets;
 using PKSim.Core;
@@ -49,7 +48,6 @@ namespace PKSim.Presentation.Services
       /// <param name="simulationSubject">Simulation subject containing the molecule to be removed</param>
       ICommand RemoveMoleculeFrom(IndividualMolecule moleculeToRemove, TSimulationSubject simulationSubject);
 
-
       /// <summary>
       ///    Remove the given molecule from the simulationSubject
       /// </summary>
@@ -91,30 +89,12 @@ namespace PKSim.Presentation.Services
             return proteinFromQuery<TMolecule>(simulationSubject);
 
          //no database defined for the species. return the simple configuration
-         return simpleMolecule<TMolecule>(simulationSubject);
+         return AddDefaultMolecule<TMolecule>(simulationSubject);
       }
 
       public ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
          return simpleMolecule<TMolecule>(simulationSubject);
-      }
-
-      public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
-      {
-         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
-         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
-         {
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject));
-            presenter.Title = PKSimConstants.UI.EditProteinExpression;
-            bool proteinEdited = presenter.Start();
-            if (!proteinEdited)
-               return new PKSimEmptyCommand();
-
-            var editedProtein = _executionContext.Clone(molecule);
-            var queryResults = presenter.GetQueryResults();
-
-             return _moleculeExpressionTask.EditMolecule(molecule, editedProtein, queryResults, simulationSubject);
-         }
       }
 
       public bool CanQueryProteinExpressionsFor(TSimulationSubject simulationSubject)
@@ -141,6 +121,23 @@ namespace PKSim.Presentation.Services
                return new PKSimEmptyCommand();
 
             return _moleculeExpressionTask.AddMoleculeTo<TMolecule>(simulationSubject, presenter.MoleculeName);
+         }
+      }
+
+      public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
+      {
+         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
+         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
+         {
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject));
+            presenter.Title = PKSimConstants.UI.EditProteinExpression;
+            var success = presenter.Start();
+            if (!success)
+               return new PKSimEmptyCommand();
+
+            var queryResults = presenter.GetQueryResults();
+
+            return _moleculeExpressionTask.EditMolecule(molecule, queryResults, simulationSubject);
          }
       }
 

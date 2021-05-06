@@ -139,7 +139,7 @@ namespace PKSim.Core.Services
 
          addContainerExpression(organ.Container(INTRACELLULAR), transporter, transportDirection,
             RelExpParam(REL_EXP),
-            FractionParam(FRACTION_EXPRESSED_EPITHELIAL, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_EPITHELIAL, CoreConstants.Rate.ONE_RATE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
          );
       }

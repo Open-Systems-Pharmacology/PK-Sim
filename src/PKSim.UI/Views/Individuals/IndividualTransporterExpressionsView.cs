@@ -1,6 +1,4 @@
-﻿using DevExpress.XtraLayout.Utils;
-using OSPSuite.Assets;
-using OSPSuite.DataBinding;
+﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
@@ -25,20 +23,20 @@ namespace PKSim.UI.Views.Individuals
          _imageListRetriever = imageListRetriever;
          InitializeComponent();
          _screenBinder = new ScreenBinder<IndividualTransporterDTO>();
-
       }
 
       public override void InitializeBinding()
       {
          _screenBinder.Bind(x => x.TransportType)
             .To(cbTransporterType)
-            .WithImages(x=>x.Icon.Index)
+            .WithImages(x => x.Icon.Index)
             .WithValues(x => _presenter.AllTransportTypes())
             .AndDisplays(x => x.DisplayName)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.UpdateTransportType(e.NewValue.TransportType));
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
+
       public void AttachPresenter(IIndividualTransporterExpressionsPresenter presenter)
       {
          _presenter = presenter;
@@ -49,23 +47,21 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.BindToSource(transporterExpressionDTO);
       }
 
-
       public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
 
       public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, view);
 
       public override bool HasError => _screenBinder.HasError;
 
- 
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemTransporterDirection.Text = PKSimConstants.UI.DefaultTransporterDirection.FormatForLabel();
+         layoutItemTransporterDirection.TextVisible = false;
          cbTransporterType.SetImages(_imageListRetriever);
          layoutItemMoleculeProperties.TextVisible = false;
          layoutItemExpressionParameters.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
-         layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.TransportDirection;
+         layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.DefaultTransporterDirection;
       }
    }
 }
