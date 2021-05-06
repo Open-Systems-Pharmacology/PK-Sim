@@ -29,7 +29,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
          throw new NotImplementedException();
       }
 
-      public bool AreFromSameSource(DataRepository sourceDataRepository, DataRepository targetDataRepository)
+      public bool AreFromSameMetaDataCombination(DataRepository sourceDataRepository, DataRepository targetDataRepository)
       {
          throw new NotImplementedException();
       }
