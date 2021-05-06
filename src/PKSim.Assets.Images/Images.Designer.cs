@@ -63,29 +63,29 @@ namespace PKSim.Assets.Images {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Model4Comp {
-            get {
-                object obj = ResourceManager.GetObject("Model4Comp", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Model4Comp2Pores {
-            get {
-                object obj = ResourceManager.GetObject("Model4Comp2Pores", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap PKSim {
             get {
                 object obj = ResourceManager.GetObject("PKSim", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SmallMoleculesStructure {
+            get {
+                object obj = ResourceManager.GetObject("SmallMoleculesStructure", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TwoPoresModelStructure {
+            get {
+                object obj = ResourceManager.GetObject("TwoPoresModelStructure", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

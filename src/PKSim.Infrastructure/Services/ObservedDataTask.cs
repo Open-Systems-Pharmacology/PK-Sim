@@ -85,7 +85,7 @@ namespace PKSim.Infrastructure.Services
          using (var presenter = _applicationController.Start<ILoadFromSnapshotPresenter<DataRepository>>())
          {
             var observedData = presenter.LoadModelFromSnapshot();
-            observedData.Each(AddObservedDataToProject);
+            observedData?.Each(AddObservedDataToProject);
          }
       }
 
