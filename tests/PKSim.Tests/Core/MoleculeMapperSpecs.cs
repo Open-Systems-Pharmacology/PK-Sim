@@ -181,8 +181,10 @@ namespace PKSim.Core
          _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
          _snapshot.MembraneLocation = MembraneLocation.BloodBrainBarrier;
          _snapshot.TissueLocation = TissueLocation.Interstitial;
+         //Add expression container to simulate v9 format
+         _snapshot.Expression = new[] {_relativeExpressionContainerSnapshot1, _relativeExpressionContainerSnapshot2,};
          _relativeExpressionParameter1.Value = 0;
-         _relativeExpressionContainerSnapshot1.Value = 0.5;
+         _relativeExpressionContainerSnapshot1.Value = 1000;
          A.CallTo(() => _expressionContainerMapper.MapToModel(_relativeExpressionContainerSnapshot1, A<ExpressionContainerMapperContext>._))
             .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionContainerSnapshot1.Value.Value);
 
@@ -197,6 +199,9 @@ namespace PKSim.Core
          //Localization is now set in task. We override behavior here and pretend that command was executed
          A.CallTo(() => _moleculeExpressionTask.SetExpressionLocalizationFor(_enzyme, A<Localization>._, _individual))
             .Invokes(x => _enzyme.Localization = x.GetArgument<Localization>(1));
+
+         //Ensure that the parameter is at the right location so that it will be normalized
+         _enzyme.Add(_relativeExpressionParameter1);
       }
 
       protected override async Task Because()
@@ -227,6 +232,12 @@ namespace PKSim.Core
       {
          A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_newMolecule, _ontogeny, _individual)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_have_normalized_the_value_of_the_expression_parameters_for_a_v9_format()
+      {
+         _relativeExpressionParameter1.Value.ShouldBeEqualTo(1);
+      }
    }
 
    public class When_mapping_a_valid_transporter_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
@@ -243,7 +254,6 @@ namespace PKSim.Core
          //we need to add the molecule that is now added as part of the creation process of a molecule
          A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualTransporter>(_individual, _snapshot.Name))
             .Invokes(x => _individual.AddMolecule(_transporter));
-
       }
 
       protected override async Task Because()
@@ -282,7 +292,6 @@ namespace PKSim.Core
          //we need to add the molecule that is now added as part of the creation process of a molecule
          A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualOtherProtein>(_individual, _snapshot.Name))
             .Invokes(x => _individual.AddMolecule(_otherProtein));
-
       }
 
       protected override async Task Because()
