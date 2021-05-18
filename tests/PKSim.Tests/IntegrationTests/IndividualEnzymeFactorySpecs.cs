@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core;
@@ -56,6 +58,18 @@ namespace PKSim.IntegrationTests
       {
          _result.ReferenceConcentration.CanBeVaried.ShouldBeTrue();
          _result.ReferenceConcentration.CanBeVariedInPopulation.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_ensure_that_all_formula_have_different_ids()
+      {
+         var allInitialConcentrationParameters = _individual.AllMoleculeParametersFor(_result)
+            .Where(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION))
+            .ToList();
+
+         var allFormulaIds = new HashSet<string>(allInitialConcentrationParameters.Select(x => x.Formula.Id));
+
+         allInitialConcentrationParameters.Count.ShouldBeEqualTo(allFormulaIds.Count);
       }
    }
 
