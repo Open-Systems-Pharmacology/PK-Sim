@@ -3,6 +3,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots;
 
 namespace PKSim.Core.Commands
 {
@@ -58,13 +59,19 @@ namespace PKSim.Core.Commands
       {
          //Retrieve building block id in execute only since molecule might have been added in a macro command and bbid was not available in constructor
          BuildingBlockId = context.BuildingBlockIdContaining(_molecule);
-         var allExpressionParameters = _simulationSubject.AllExpressionParametersFor(_molecule);
-         if (!allExpressionParameters.Any()) 
+         NormalizeExpressions(_simulationSubject, _molecule);
+      }
+
+      public static void NormalizeExpressions(ISimulationSubject simulationSubject, IndividualMolecule molecule)
+      {
+         var allExpressionParameters = simulationSubject.AllExpressionParametersFor(molecule);
+         if (!allExpressionParameters.Any())
             return;
 
          var max = allExpressionParameters.Select(x => x.Value).Max();
 
          allExpressionParameters.Each(relExp => relExp.Value = (max == 0 ? 0 : relExp.Value / max));
-       }
+
+      }
    }
 }

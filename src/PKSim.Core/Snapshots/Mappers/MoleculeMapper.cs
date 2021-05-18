@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Assets;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
@@ -60,7 +61,6 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-
       public override async Task<IndividualMolecule> MapToModel(Molecule snapshot, ModelIndividual individual)
       {
          addMoleculeToIndividual(snapshot, individual);
@@ -83,6 +83,11 @@ namespace PKSim.Core.Snapshots.Mappers
          };
 
          await _expressionContainerMapper.MapToModels(snapshot.Expression, context);
+
+         //We need to normalize relative expressions when loading from old format
+         if (isV9Format(snapshot))
+            NormalizeRelativeExpressionCommand.NormalizeExpressions(individual, molecule);
+
          return molecule;
       }
 
@@ -105,8 +110,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Localization retrieveLocalizationFrom(Molecule snapshot)
       {
-         //new format
-         if (snapshot.Localization != null)
+         if (!isV9Format(snapshot))
             return ModelValueFor(snapshot.Localization);
 
          //reset ot ensure we update all parameters 
@@ -116,6 +120,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          return LocalizationConverter.ConvertToLocalization(tissueLocation, membraneLocation, intracellularVascularEndoLocation);
       }
+
+      private bool isV9Format(Molecule snapshot) => snapshot.Localization == null;
 
       private void addMoleculeToIndividual(Molecule molecule, ModelIndividual individual)
       {
