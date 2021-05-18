@@ -12,13 +12,12 @@ namespace PKSim.Core.Services
 
    public class IndividualOtherProteinFactory : IndividualProteinFactory<IndividualOtherProtein>, IIndividualOtherProteinFactory
    {
-      public IndividualOtherProteinFactory(
-         IObjectBaseFactory objectBaseFactory,
+      public IndividualOtherProteinFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
-         IIndividualPathWithRootExpander individualPathWithRootExpander) : base(objectBaseFactory, parameterFactory, objectPathFactory,
-         entityPathResolver, individualPathWithRootExpander)
+         IIndividualPathWithRootExpander individualPathWithRootExpander, IIdGenerator idGenerator) :
+         base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, individualPathWithRootExpander, idGenerator)
       {
       }
 

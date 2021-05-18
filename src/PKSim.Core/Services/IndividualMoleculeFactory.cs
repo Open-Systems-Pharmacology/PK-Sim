@@ -29,6 +29,7 @@ namespace PKSim.Core.Services
       where TMoleculeExpressionContainer : MoleculeExpressionContainer
    {
       protected readonly IEntityPathResolver _entityPathResolver;
+      private readonly IIdGenerator _idGenerator;
       protected readonly IObjectBaseFactory _objectBaseFactory;
       protected readonly IObjectPathFactory _objectPathFactory;
       protected readonly IParameterFactory _parameterFactory;
@@ -37,12 +38,14 @@ namespace PKSim.Core.Services
          IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
-         IEntityPathResolver entityPathResolver)
+         IEntityPathResolver entityPathResolver,
+         IIdGenerator idGenerator)
       {
          _objectBaseFactory = objectBaseFactory;
          _parameterFactory = parameterFactory;
          _objectPathFactory = objectPathFactory;
          _entityPathResolver = entityPathResolver;
+         _idGenerator = idGenerator;
       }
 
       public bool IsSatisfiedBy(Type item) => item.IsAnImplementationOf<TMolecule>();
@@ -128,7 +131,10 @@ namespace PKSim.Core.Services
          if (!string.IsNullOrEmpty(groupName))
             parameter.GroupName = groupName;
 
+         //Because we update the formula of the parameter, we need to make sure we also reset the formulaId so that it will appear as being unique
          parameter.Formula.ReplaceKeywordsInObjectPaths(new[] {ObjectPathKeywords.MOLECULE}, new[] {moleculeName});
+         parameter.Formula.Id = _idGenerator.NewId();
+
          //All constant parameters do not have default values
          parameter.DefaultValue = null;
          return parameter;
