@@ -41,6 +41,9 @@ namespace PKSim.Core.Services
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
             );
          });
+         _individualPathWithRootExpander.AddRootToPathIn(individual, undefinedLiver.Name);
+         individual.AddMolecule(undefinedLiver);
+
          return undefinedLiver;
       }
 
