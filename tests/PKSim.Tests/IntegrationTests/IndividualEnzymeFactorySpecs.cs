@@ -2,26 +2,28 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Infrastructure;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Container;
+using PKSim.Core;
+using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Infrastructure;
+using static PKSim.Core.CoreConstants.Compartment;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_IndividualEnzymeFactory : ContextForIntegration<IIndividualEnzymeFactory>
    {
       protected Individual _individual;
+
       public override void GlobalContext()
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          sut = IoC.Resolve<IIndividualEnzymeFactory>();
       }
-
    }
 
    public class When_creating_a_metabolism_expression_for_an_individual : concern_for_IndividualEnzymeFactory
@@ -49,8 +51,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_an_expression_containing_at_least_the_container_blood_cells_and_plasma()
       {
-         _allExpressionParameters.Contains(CoreConstants.Compartment.BLOOD_CELLS).ShouldBeTrue();
-         _allExpressionParameters.Contains(CoreConstants.Compartment.PLASMA).ShouldBeTrue();
+         _allExpressionParameters.Contains(BLOOD_CELLS).ShouldBeTrue();
+         _allExpressionParameters.Contains(PLASMA).ShouldBeTrue();
       }
 
       [Observation]
@@ -77,8 +79,11 @@ namespace PKSim.IntegrationTests
    {
       private IndividualEnzyme _undefined;
 
-      protected override void Because()
+      public override void GlobalContext()
       {
+         base.GlobalContext();
+
+         //add the molecule in global context otherwise it will be added twice
          _undefined = sut.AddUndefinedLiverTo(_individual);
       }
 
@@ -86,9 +91,18 @@ namespace PKSim.IntegrationTests
       public void should_add_the_relative_expression_to_periportal_and_pericentral_and_set_the_value_to_100()
       {
          var allExpressionsParameters = _individual.AllExpressionParametersFor(_undefined);
-         allExpressionsParameters[CoreConstants.Compartment.PERICENTRAL].Value.ShouldBeEqualTo(1);
-         allExpressionsParameters[CoreConstants.Compartment.PERIPORTAL].Value.ShouldBeEqualTo(1);
+         allExpressionsParameters[PERICENTRAL].Value.ShouldBeEqualTo(1);
+         allExpressionsParameters[PERIPORTAL].Value.ShouldBeEqualTo(1);
       }
 
+      [Observation]
+      public void should_have_enhanced_the_path_of_the_initial_concentration_to_be_start_with_root()
+      {
+         var liverIntracellularUndefined = _individual.EntityAt<IParameter>(Constants.ORGANISM, LIVER, PERIPORTAL, INTRACELLULAR, CoreConstants.Molecule.UndefinedLiver, "Initial concentration");
+         liverIntracellularUndefined.ShouldNotBeNull();
+
+         var objectPath = liverIntracellularUndefined.Formula.ObjectPaths.First(x => x.Alias == "RC");
+         objectPath[0].ShouldBeEqualTo(Constants.ROOT);
+      }
    }
 }

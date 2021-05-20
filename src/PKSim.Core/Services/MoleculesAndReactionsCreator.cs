@@ -265,8 +265,7 @@ namespace PKSim.Core.Services
          if (undefinedLiverTransporter != null)
             return;
 
-         undefinedLiverTransporter = _individualTransporterFactory.UndefinedLiverTransporterFor(_individual);
-         _individual.AddMolecule(undefinedLiverTransporter);
+         _individualTransporterFactory.AddUndefinedLiverTransporterTo(_individual);
       }
 
       private void addUndefinedLiver()
@@ -276,8 +275,7 @@ namespace PKSim.Core.Services
          if (undefinedLiver != null)
             return;
 
-         undefinedLiver = _individualEnzymeFactory.AddUndefinedLiverTo(_individual);
-         _individual.AddMolecule(undefinedLiver);
+         _individualEnzymeFactory.AddUndefinedLiverTo(_individual);
       }
 
       private void addMetabolismProcess(IMoleculeBuilder compoundBuilder, IReactionMapping compoundReactionMapping,
@@ -387,7 +385,7 @@ namespace PKSim.Core.Services
       {
          var compound = compoundProperties.Compound;
          var process = compound.ProcessByName(compoundProcessMapping.ProcessName);
-         
+
          //Passive transport added to the passive transport list
          if (isRenalClearance(compoundProcessMapping))
          {

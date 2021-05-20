@@ -13,7 +13,7 @@ namespace PKSim.Core.Services
 {
    public interface IIndividualTransporterFactory : IIndividualMoleculeFactory
    {
-      IndividualTransporter UndefinedLiverTransporterFor(Individual individual);
+      IndividualTransporter AddUndefinedLiverTransporterTo(Individual individual);
       IndividualTransporter CreateFor(ISimulationSubject simulationSubject, string moleculeName, TransportType transporterType);
    }
 
@@ -69,7 +69,7 @@ namespace PKSim.Core.Services
 
       protected override ApplicationIcon Icon => ApplicationIcons.Transporter;
 
-      public IndividualTransporter UndefinedLiverTransporterFor(Individual individual)
+      public IndividualTransporter AddUndefinedLiverTransporterTo(Individual individual)
       {
          var transporter = CreateMolecule(CoreConstants.Molecule.UndefinedLiverTransporter);
          transporter.TransportType = TransportType.Efflux;
@@ -83,6 +83,9 @@ namespace PKSim.Core.Services
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
             );
          });
+
+         _individualPathWithRootExpander.AddRootToPathIn(individual, transporter.Name);
+         individual.AddMolecule(transporter);
 
          return transporter;
       }

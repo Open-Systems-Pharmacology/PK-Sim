@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
    public abstract class IndividualProteinFactory<TMolecule> : IndividualMoleculeFactory<TMolecule, MoleculeExpressionContainer>
       where TMolecule : IndividualProtein
    {
-      private readonly IIndividualPathWithRootExpander _individualPathWithRootExpander;
+      protected readonly IIndividualPathWithRootExpander _individualPathWithRootExpander;
 
       protected IndividualProteinFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
