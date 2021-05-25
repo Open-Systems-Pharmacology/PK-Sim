@@ -219,9 +219,14 @@ namespace PKSim.Core
          public static readonly string COMPETITIVE_INHIBITION_I = "Ic";
          public static readonly string UNCOMPETITIVE_INHIBITION_I = "Iu";
          public static readonly string NON_COMPETITIVE_INHIBITION_I = "In";
+         public static readonly string MIXED_INHIBITION_I = "Im";
          public static readonly string MIXED_COMPETITIVE_INHIBITION_I = "Im";
          public static readonly string IRREVERSIBLE_INHIBITION_I = "IcTD";
-         public static readonly string K_WATER = "K_water";
+         public static readonly string COMPETITIVE_INHIBITION_K_WATER = "K_water_c";
+         public static readonly string UNCOMPETITIVE_INHIBITION_K_WATER = "K_water_u";
+         public static readonly string NON_COMPETITIVE_INHIBITION_K_WATER = "K_water_n";
+         public static readonly string MIXED_INHIBITION_K_WATER = "K_water_m";
+         public static readonly string IRREVERSIBLE_INHIBITION_K_WATER = "K_water_cTD";
       }
 
       public static class Application

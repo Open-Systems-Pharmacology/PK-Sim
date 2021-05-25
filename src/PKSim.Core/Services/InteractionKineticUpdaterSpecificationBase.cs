@@ -23,10 +23,11 @@ namespace PKSim.Core.Services
       private readonly string _kiDenominatorParameter;
       private readonly string _kiNumeratorAlias;
       private readonly string _kiDenominatorAlias;
+      private readonly string _kWaterAlias;
       private readonly string _inhibitorAlias;
 
       protected InteractionKineticUpdaterSpecificationBase(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask, InteractionType interactionType,
-         string kiNumeratorParameter, string kiDenominatorParameter, string kiNumeratorAlias, string kiDenominatorAlias, string inhibitorAlias)
+         string kiNumeratorParameter, string kiDenominatorParameter, string kiNumeratorAlias, string kiDenominatorAlias, string inhibitorAlias, string kWaterAlias)
       {
          _objectPathFactory = objectPathFactory;
          _dimensionRepository = dimensionRepository;
@@ -38,6 +39,7 @@ namespace PKSim.Core.Services
          _kiNumeratorAlias = kiNumeratorAlias;
          _kiDenominatorAlias = kiDenominatorAlias;
          _inhibitorAlias = inhibitorAlias;
+         _kWaterAlias = kWaterAlias;
       }
 
       public bool UpdateRequiredFor(string moleculeName, string compoundName, Simulation simulation)
@@ -97,12 +99,12 @@ namespace PKSim.Core.Services
             return string.Empty;
 
          var kiAliasBase = kiAliasFrom(kineticModification);
-         var inibitionTerms = new List<string>();
+         var inhibitionTerms = new List<string>();
 
          doOverAllInteractions(moleculeName, compoundName, simulation, kiAliasBase,
-            (interactionProcess, inhibitorAlias, kiAlias, kwaterAlias) => inibitionTerms.Add($"{kwaterAlias}*{inhibitorAlias}/{kiAlias}"));
+            (interactionProcess, inhibitorAlias, kiAlias, kwaterAlias) => inhibitionTerms.Add($"{kwaterAlias}*{inhibitorAlias}/{kiAlias}"));
 
-         return inibitionTerms.ToString(" + ");
+         return inhibitionTerms.ToString(" + ");
       }
 
       private void updateReferences(IUsingFormula usingFormula, string moleculeName, string compoundName, Simulation simulation,
@@ -120,7 +122,7 @@ namespace PKSim.Core.Services
             var inhibitor = interactionProcess.ParentCompound;
 
             if (formula.FormulaUsablePathBy(inhibitorAlias) == null)
-               formula.AddObjectPath(inhiborConcentrationPath(inhibitor, inhibitorAlias, processParameterContainer));
+               formula.AddObjectPath(inhibitorConcentrationPath(inhibitor, inhibitorAlias, processParameterContainer));
 
             if (formula.FormulaUsablePathBy(kwaterAlias) == null)
                formula.AddObjectPath(kwaterPath(inhibitor, kwaterAlias, processParameterContainer));
@@ -131,14 +133,14 @@ namespace PKSim.Core.Services
          });
       }
 
-      private void doOverAllInteractions(string moleculeName, string compoundName, Simulation simulation, string kiAliasBase, Action<InteractionProcess, string, string,string> action)
+      private void doOverAllInteractions(string moleculeName, string compoundName, Simulation simulation, string kiAliasBase, Action<InteractionProcess, string, string, string> action)
       {
          AllInteractionProcessesFor(moleculeName, compoundName, simulation).Each((interactionProcess, i) =>
          {
             var inhibitorIndex = i + 1;
-            var inhibitorAlias = string.Format("{0}{1}", _inhibitorAlias, inhibitorIndex);
-            var kiAlias = string.Format("{0}{1}", kiAliasBase, inhibitorIndex);
-            var kwaterAlias = string.Format("{0}{1}", CoreConstants.Alias.K_WATER, inhibitorIndex);
+            var inhibitorAlias = $"{_inhibitorAlias}{inhibitorIndex}";
+            var kiAlias = $"{kiAliasBase}{inhibitorIndex}";
+            var kwaterAlias = $"{_kWaterAlias}{inhibitorIndex}";
             action(interactionProcess, inhibitorAlias, kiAlias, kwaterAlias);
          });
       }
@@ -155,20 +157,20 @@ namespace PKSim.Core.Services
             .WithDimension(_dimensionRepository.MolarConcentration);
       }
 
-      private IFormulaUsablePath inhiborConcentrationPath(Compound inhibitor, string inhibitorAlias, IContainer processParameterContainer)
+      private IFormulaUsablePath inhibitorConcentrationPath(Compound inhibitor, string inhibitorAlias, IContainer processParameterContainer)
       {
-         return localInibitorParameterPath(inhibitor, Constants.Parameters.CONCENTRATION, inhibitorAlias, processParameterContainer, _dimensionRepository.MolarConcentration);
+         return localInhibitorParameterPath(inhibitor, Constants.Parameters.CONCENTRATION, inhibitorAlias, processParameterContainer, _dimensionRepository.MolarConcentration);
       }
 
       private IFormulaUsablePath kwaterPath(Compound inhibitor, string kwaterAlias, IContainer processParameterContainer)
       {
-         return localInibitorParameterPath(inhibitor, CoreConstants.Parameters.K_WATER, kwaterAlias, processParameterContainer, _dimensionRepository.NoDimension);
+         return localInhibitorParameterPath(inhibitor, CoreConstants.Parameters.K_WATER, kwaterAlias, processParameterContainer, _dimensionRepository.NoDimension);
       }
 
-      private IFormulaUsablePath localInibitorParameterPath(Compound inhibitor, string parameterName, string parametrAlias, IContainer processParameterContainer, IDimension dimension)
+      private IFormulaUsablePath localInhibitorParameterPath(Compound inhibitor, string parameterName, string parameterAlias, IContainer processParameterContainer, IDimension dimension)
       {
          var objectPath = _objectPathFactory.CreateFormulaUsablePathFrom(inhibitor.Name, parameterName)
-            .WithAlias(parametrAlias)
+            .WithAlias(parameterAlias)
             .WithDimension(dimension);
 
          return processParameterContainer.IsAnImplementationOf<IReactionBuilder>()
@@ -183,26 +185,26 @@ namespace PKSim.Core.Services
 
       private string kiAliasFrom(InteractionKineticModifications kineticModification)
       {
-         return kiInfoFrom(kineticModification).Item1;
+         return kiInfoFrom(kineticModification).kiAlias;
       }
 
       private string kiParameterFrom(InteractionKineticModifications kineticModification)
       {
-         return kiInfoFrom(kineticModification).Item2;
+         return kiInfoFrom(kineticModification).kiParameter;
       }
 
-      private Tuple<string, string> kiInfoFrom(InteractionKineticModifications kineticModification)
+      private (string kiAlias, string kiParameter) kiInfoFrom(InteractionKineticModifications kineticModification)
       {
          switch (kineticModification)
          {
             case InteractionKineticModifications.KmDenominator:
             case InteractionKineticModifications.KcatDenominator:
-               return new Tuple<string, string>(_kiDenominatorAlias, _kiDenominatorParameter);
+               return (_kiDenominatorAlias, _kiDenominatorParameter);
             case InteractionKineticModifications.KmNumerator:
             case InteractionKineticModifications.CLSpecDenominator:
-               return new Tuple<string, string>(_kiNumeratorAlias, _kiNumeratorParameter);
+               return (_kiNumeratorAlias, _kiNumeratorParameter);
             default:
-               throw new ArgumentOutOfRangeException("kineticModification");
+               throw new ArgumentOutOfRangeException(nameof(kineticModification));
          }
       }
    }
