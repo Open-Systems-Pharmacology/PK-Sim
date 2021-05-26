@@ -68,8 +68,7 @@ namespace PKSim.Core.Snapshots.Mappers
          ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
          IOSPSuiteLogger logger,
          IContainerTask containerTask,
-         IEntityPathResolver entityPathResolver
-      )
+         IEntityPathResolver entityPathResolver)
       {
          _solverSettingsMapper = solverSettingsMapper;
          _outputSchemaMapper = outputSchemaMapper;
@@ -100,8 +99,8 @@ namespace PKSim.Core.Snapshots.Mappers
             throw new OSPSuiteException(PKSimConstants.Error.OnlyPKSimSimulationCanBeExportedToSnapshot(simulation.Name, simulation.Origin.DisplayName));
 
          var snapshot = await SnapshotFrom(simulation);
-         snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation);
-         snapshot.Population = usedSimulationSubject<Model.Population>(simulation);
+         snapshot.Individual = usedSimulationSubject<Model.Individual>(simulation, project);
+         snapshot.Population = usedSimulationSubject<Model.Population>(simulation, project);
          snapshot.Compounds = await usedCompoundsFrom(simulation, project);
          snapshot.ObserverSets = await _observerSetMappingMapper.MapToSnapshots(simulation.ObserverSetProperties.ObserverSetMappings, project);
          snapshot.Model = simulation.ModelConfiguration.ModelName;
@@ -236,14 +235,23 @@ namespace PKSim.Core.Snapshots.Mappers
             .Select(x => x.Name).ToArray();
       }
 
-      private string usedSimulationSubject<T>(ModelSimulation simulation) where T : class, ISimulationSubject
+      private string usedSimulationSubject<T>(ModelSimulation simulation, PKSimProject project) where T : class, ISimulationSubject
       {
-         var name = simulation.BuildingBlock<T>()?.Name;
+         var usedBuildingBlock = simulation.UsedBuildingBlockInSimulation<T>();
+
+         //simulation is not using this building block. 
+         if (usedBuildingBlock == null)
+            return null;
+
+         var templateBuildingBlock = project.BuildingBlockById<T>(usedBuildingBlock.TemplateId);
+         if (templateBuildingBlock == null)
+            return null;
+
          if (typeof(T).IsAnImplementationOf<Model.Individual>() && simulation.IsAnImplementationOf<IndividualSimulation>())
-            return name;
+            return templateBuildingBlock.Name;
 
          if (typeof(T).IsAnImplementationOf<Model.Population>() && simulation.IsAnImplementationOf<PopulationSimulation>())
-            return name;
+            return templateBuildingBlock.Name;
 
          return null;
       }
