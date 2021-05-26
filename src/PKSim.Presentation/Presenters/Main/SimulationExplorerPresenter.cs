@@ -244,9 +244,11 @@ namespace PKSim.Presentation.Presenters.Main
       private void handleRenamedObservedData(RenamedEvent renamedEvent)
       {
          var observedData = renamedEvent.RenamedObject as DataRepository;
-         if (observedData == null) return;
+         if (observedData == null) 
+            return;
 
          _observedDataInSimulationManager.SimulationsUsing(observedData).Each(updateObservedDataForSimulation);
+         RefreshTreeAfterRename();
       }
 
       private void updateObservedDataForSimulation(Simulation simulationUsingObservedData)
@@ -257,12 +259,15 @@ namespace PKSim.Presentation.Presenters.Main
       private void handleRenamedBuildingBlock(RenamedEvent renamedEvent)
       {
          var buildingBlock = renamedEvent.RenamedObject as IPKSimBuildingBlock;
-         if (buildingBlock == null) return;
+         if (buildingBlock == null) 
+            return;
 
          if (buildingBlock.IsAnImplementationOf<Simulation>())
             updateSimulationNode(buildingBlock.DowncastTo<Simulation>());
          else
             _buildingBlockInSimulationManager.SimulationsUsing(buildingBlock).Each(updateSimulationNode);
+
+         RefreshTreeAfterRename();
       }
 
       private void updateSimulationNode(Simulation simulation)
