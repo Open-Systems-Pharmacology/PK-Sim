@@ -123,7 +123,7 @@ namespace PKSim.Core
          );
 
          _project = new PKSimProject();
-         _individual = new Individual {Name = "IND", Id = "IND"};
+         _individual = new Individual {Name = "IND", Id = "IndTemplateId"};
          _compound = new Compound {Name = "COMP", Id = "COMP"};
          _observerSet = new ObserverSet {Name = "OBS_SET", Id = "OBS_SET"};
          _protocol = new SimpleProtocol {Name = "PROT", Id = "PROT"};
@@ -132,7 +132,7 @@ namespace PKSim.Core
 
 
          _event = new PKSimEvent {Name = "Event"};
-         _population = new RandomPopulation() {Name = "POP"};
+         _population = new RandomPopulation() {Name = "POP", Id="PopTemplateId"};
          _observedData = new DataRepository("OBS_ID").WithName("OBS");
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
@@ -187,7 +187,7 @@ namespace PKSim.Core
          _populationSimulation.AddAnalysis(_populationSimulationAnalysisChart);
          _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
-            BuildingBlock = _individual
+            BuildingBlock = _individual,
          });
 
          _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
@@ -229,7 +229,6 @@ namespace PKSim.Core
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
             BuildingBlock = _individual,
-
             Altered = true
          });
 
@@ -302,7 +301,6 @@ namespace PKSim.Core
       private IParameter _protocolParameter;
 
       private LocalizedParameter[] _localizedParameters;
-      private Individual _individualTemplateBuildingBlock;
       private Protocol _protocolTemplateBuildingBlock;
 
       protected override async Task Context()
@@ -338,8 +336,6 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Matches(x => x.ContainsAll(new[] {_individualParameterChanged, _simulationParameter, _protocolParameter}))))
             .Returns(_localizedParameters);
 
-         _individualTemplateBuildingBlock = new Individual {Id = "IndTemplateId"};
-         _project.AddBuildingBlock(_individualTemplateBuildingBlock);
          A.CallTo(() => _executionContext.Get<IParameter>(_individualParameterChanged.Origin.ParameterId)).Returns(_individualParameterChangedTemplate);
          A.CallTo(() => _executionContext.Get<IParameter>(_individualParameter.Origin.ParameterId)).Returns(_individualParameterTemplate);
 
@@ -347,7 +343,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_protocolTemplateBuildingBlock);
 
          var allIndividualTemplateParameters = new PathCacheForSpecs<IParameter>();
-         A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(_individualTemplateBuildingBlock)).Returns(allIndividualTemplateParameters);
+         A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(_individual)).Returns(allIndividualTemplateParameters);
          allIndividualTemplateParameters.Add(_individualParameterTemplate.Name, _individualParameterTemplate);
          allIndividualTemplateParameters.Add(_individualParameterChangedTemplate.Name, _individualParameterChangedTemplate);
 
@@ -370,7 +366,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_name_of_the_individual_used_to_create_the_simulation()
       {
-         _snapshot.Individual.ShouldBeEqualTo("IND");
+         _snapshot.Individual.ShouldBeEqualTo(_individual.Name);
          _snapshot.Population.ShouldBeNull();
       }
 

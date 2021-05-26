@@ -179,7 +179,9 @@ namespace PKSim.Presentation.Services
 
       private void renameBuildingBlockInSimulation(IEnumerable<Simulation> allSimulationUsingBuildingBlocks, IPKSimBuildingBlock templateBuildingBlock)
       {
-         if (!buildingBlockIsDefinedAsContainerInSimulation(templateBuildingBlock)) return;
+         if (!buildingBlockIsDefinedAsContainerInSimulation(templateBuildingBlock)) 
+            return;
+
          allSimulationUsingBuildingBlocks.Each(s => renameContainerBuildingBlockInSimulation(s, templateBuildingBlock));
       }
 
