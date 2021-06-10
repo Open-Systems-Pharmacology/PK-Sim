@@ -104,28 +104,24 @@ namespace PKSim.Presentation.Services
          {
             DefaultDimension = _dimensionRepository.Time,
             Name = PKSimConstants.UI.Time,
-            Description = PKSimConstants.UI.Time,
             DisplayName = PKSimConstants.UI.Time,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
 
-         timeColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Time, IsMainDimension = true});
+         timeColumn.SupportedDimensions.Add(_dimensionRepository.Time);
          columns.Add(timeColumn);
 
          var fractionColumn = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.Fraction,
             Name = PKSimConstants.UI.Fraction,
-            Description = PKSimConstants.UI.Fraction,
             DisplayName = PKSimConstants.UI.Fraction,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name,
          };
 
-         fractionColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Fraction, IsMainDimension = true});
+         fractionColumn.SupportedDimensions.Add(_dimensionRepository.Fraction);
          columns.Add(fractionColumn);
 
          return columns;
