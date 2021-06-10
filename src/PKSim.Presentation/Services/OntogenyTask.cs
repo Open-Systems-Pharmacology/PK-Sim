@@ -157,6 +157,6 @@ namespace PKSim.Presentation.Services
          columns.Add(geoMean);
 
          return columns;
-      }
+      } 
    }
 }
