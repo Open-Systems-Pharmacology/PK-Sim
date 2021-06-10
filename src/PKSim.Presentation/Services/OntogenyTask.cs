@@ -124,45 +124,39 @@ namespace PKSim.Presentation.Services
          {
             DefaultDimension = _dimensionRepository.AgeInYears,
             Name = PKSimConstants.UI.PostMenstrualAge,
-            Description = PKSimConstants.UI.PostMenstrualAge,
             DisplayName = PKSimConstants.UI.PostMenstrualAge,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
 
-         ageColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.AgeInYears, IsMainDimension = true});
+         ageColumn.SupportedDimensions.Add(_dimensionRepository.AgeInYears);
          columns.Add(ageColumn);
 
          var ontogenyFactor = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.Fraction,
             Name = PKSimConstants.UI.OntogenyFactor,
-            Description = PKSimConstants.UI.OntogenyFactor,
             DisplayName = PKSimConstants.UI.OntogenyFactor,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = ageColumn.Name,
          };
-         ontogenyFactor.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Fraction, IsMainDimension = true});
+         ontogenyFactor.SupportedDimensions.Add(_dimensionRepository.Fraction);
          columns.Add(ontogenyFactor);
 
          var geoMean = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.NoDimension,
             Name = PKSimConstants.UI.StandardDeviation,
-            Description = PKSimConstants.UI.StandardDeviation,
             DisplayName = PKSimConstants.UI.StandardDeviation,
             IsMandatory = false,
-            NullValuesHandling = NullValuesHandlingType.Allowed,
             BaseGridName = ageColumn.Name,
             RelatedColumnOf = ontogenyFactor.Name
          };
 
-         geoMean.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.NoDimension, IsMainDimension = true});
+         geoMean.SupportedDimensions.Add(_dimensionRepository.NoDimension);
          columns.Add(geoMean);
 
          return columns;
-      }
+      } 
    }
 }

@@ -281,10 +281,8 @@ namespace PKSim.Infrastructure.Services
          var measurementInfo = new ColumnInfo
          {
             Name = PKSimConstants.UI.Measurement,
-            Description = PKSimConstants.UI.Measurement,
             DefaultDimension = supportedDimensions[0],
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name
          };
 
@@ -302,9 +300,7 @@ namespace PKSim.Infrastructure.Services
          {
             DefaultDimension = mainColumnInfo.DefaultDimension,
             Name = PKSimConstants.UI.Error,
-            Description = PKSimConstants.UI.Error,
             IsMandatory = false,
-            NullValuesHandling = NullValuesHandlingType.Allowed,
             BaseGridName = mainColumnInfo.BaseGridName,
             RelatedColumnOf = mainColumnInfo.Name
          };
@@ -316,8 +312,7 @@ namespace PKSim.Infrastructure.Services
 
       private void addSupportedDimensionsTo(ColumnInfo column, IEnumerable<IDimension> supportedDimensions)
       {
-         var mainDimension = column.DefaultDimension;
-         supportedDimensions.Select(dim => new DimensionInfo { Dimension = dim, IsMainDimension = Equals(dim, mainDimension) }).Each(column.DimensionInfos.Add);
+         supportedDimensions.Each(column.SupportedDimensions.Add);
       }
 
       private ColumnInfo createTimeColumn()
@@ -326,12 +321,10 @@ namespace PKSim.Infrastructure.Services
          {
             DefaultDimension = _dimensionRepository.Time,
             Name = PKSimConstants.UI.Time,
-            Description = PKSimConstants.UI.Time,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
-         timeColumn.DimensionInfos.Add(new DimensionInfo { Dimension = _dimensionRepository.Time, IsMainDimension = true });
+         timeColumn.SupportedDimensions.Add(_dimensionRepository.Time);
          return timeColumn;
       }
 

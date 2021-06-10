@@ -213,11 +213,10 @@ namespace PKSim.Core.Services
             DefaultDimension = _dimensionRepository.NoDimension,
             Name = PKSimConstants.UI.pH,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
 
-         phColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.NoDimension, IsMainDimension = true});
+         phColumn.SupportedDimensions.Add(_dimensionRepository.NoDimension);
          columns.Add(phColumn);
 
          var solubilityColumn = new ColumnInfo
@@ -225,11 +224,10 @@ namespace PKSim.Core.Services
             DefaultDimension = _dimensionRepository.MassConcentration,
             Name = PKSimConstants.UI.Solubility,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = phColumn.Name,
          };
 
-         solubilityColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MassConcentration, IsMainDimension = true});
+         solubilityColumn.SupportedDimensions.Add(_dimensionRepository.MassConcentration);
          columns.Add(solubilityColumn);
 
          return columns;
