@@ -14,7 +14,7 @@
    version="1.1"
    inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
    sodipodi:docname="TwoPoresModelStructure.svg"
-   inkscape:export-filename="D:\Documents\esqlabs GmbH\OSMOSES-Dev - Documents\General\Graphics Design\OrganStructure.png"
+   inkscape:export-filename="D:\Documents\esqlabs GmbH\OSMOSES-Dev - Documents\General\Graphics Design\TwoPores.png"
    inkscape:export-xdpi="150"
    inkscape:export-ydpi="150">
   <defs
@@ -5714,9 +5714,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35000002"
-     inkscape:cx="892.64716"
-     inkscape:cy="353.53896"
+     inkscape:zoom="0.24748739"
+     inkscape:cx="-8.8137246"
+     inkscape:cy="472.45751"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -5724,10 +5724,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="3840"
-     inkscape:window-height="2066"
-     inkscape:window-x="5749"
-     inkscape:window-y="-11"
+     inkscape:window-width="1920"
+     inkscape:window-height="1018"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
      inkscape:window-maximized="1"
      inkscape:document-rotation="0" />
   <metadata
@@ -5749,11 +5749,15 @@
      transform="translate(346.89514,10.667189)">
     <g
        id="g8331-6"
-       transform="matrix(0.35014758,0.24568311,-0.24568311,0.35014758,-195.84052,-224.20897)" />
+       transform="matrix(0.35014758,0.24568311,-0.24568311,0.35014758,-195.84052,-224.20897)"
+       inkscape:export-xdpi="150"
+       inkscape:export-ydpi="150" />
     <text
        xml:space="preserve"
        id="text2231"
-       style="line-height:1.25;font-family:sans-serif;font-size:13.33333333px;white-space:pre;shape-inside:url(#rect2233);" />
+       style="line-height:1.25;font-family:sans-serif;font-size:13.33333333px;white-space:pre;shape-inside:url(#rect2233);"
+       inkscape:export-xdpi="150"
+       inkscape:export-ydpi="150" />
     <rect
        style="opacity:1;fill:url(#linearGradient51397);fill-opacity:1;stroke:none"
        id="rect50575"
@@ -5930,13 +5934,13 @@
        inkscape:export-ydpi="150" />
     <path
        style="fill:#ececec;stroke:#ececec;stroke-width:3.63379;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker50683)"
-       d="M 143.71852,77.667918 H 78.114202"
+       d="M 145.71852,81.667918 H 80.114202"
        id="path50667"
        inkscape:export-xdpi="150"
        inkscape:export-ydpi="150" />
     <path
        style="fill:#ececec;stroke:#ececec;stroke-width:3.63379;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker50673)"
-       d="M 85.345422,96.324618 H 150.94974"
+       d="M 87.345422,100.32462 H 152.94974"
        id="path50669"
        inkscape:export-xdpi="150"
        inkscape:export-ydpi="150" />
@@ -5980,7 +5984,7 @@
     <g
        id="g54450"
        style="filter:url(#filter43451)"
-       transform="translate(-4.4432305e-4,-1157.9999)"
+       transform="translate(-4.0004443,-1159.9999)"
        inkscape:export-xdpi="150"
        inkscape:export-ydpi="150">
       <g

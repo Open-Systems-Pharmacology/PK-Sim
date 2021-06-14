@@ -185,34 +185,16 @@ namespace PKSim.Core.Services
          return standardFormula(formulaStringNumerator, formulaStringDenominator);
       }
 
-      private void removeEmptyTerms(List<string> formulaParts)
-      {
-         formulaParts.RemoveAll(string.IsNullOrEmpty);
-      }
+      private void removeEmptyTerms(List<string> formulaParts) => formulaParts.RemoveAll(string.IsNullOrEmpty);
 
-      private string standardFormula(IEnumerable<string> formulaStringNumeratorParts, IEnumerable<string> formulaStringDenominatorParts)
-      {
-         return string.Format("{0}/{1}", addOnePlusInParenthesis(formulaStringNumeratorParts), addOnePlusInParenthesis(formulaStringDenominatorParts));
-      }
+      private string standardFormula(IEnumerable<string> formulaStringNumeratorParts, IEnumerable<string> formulaStringDenominatorParts) => $"{addOnePlusInParenthesis(formulaStringNumeratorParts)}/{addOnePlusInParenthesis(formulaStringDenominatorParts)}";
 
-      private string denominatorOnly(IEnumerable<string> formulaStringDenominatorParts)
-      {
-         return string.Format("1/{0}", addOnePlusInParenthesis(formulaStringDenominatorParts));
-      }
+      private string denominatorOnly(IEnumerable<string> formulaStringDenominatorParts) => $"1/{addOnePlusInParenthesis(formulaStringDenominatorParts)}";
 
-      private string numeratorOnly(IEnumerable<string> formulaStringNumeratorParts)
-      {
-         return addOnePlus(formulaStringNumeratorParts);
-      }
+      private string numeratorOnly(IEnumerable<string> formulaStringNumeratorParts) => addOnePlus(formulaStringNumeratorParts);
 
-      private string addOnePlusInParenthesis(IEnumerable<string> formulaParts)
-      {
-         return string.Format("({0})", addOnePlus(formulaParts));
-      }
+      private string addOnePlusInParenthesis(IEnumerable<string> formulaParts) => $"({addOnePlus(formulaParts)})";
 
-      private string addOnePlus(IEnumerable<string> formulaParts)
-      {
-         return string.Format("1 + {0}", formulaParts.ToString(" + "));
-      }
+      private string addOnePlus(IEnumerable<string> formulaParts) => $"1 + {formulaParts.ToString(" + ")}";
    }
 }
