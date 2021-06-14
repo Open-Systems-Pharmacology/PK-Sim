@@ -58,7 +58,7 @@ namespace PKSim.IntegrationTests
          {
             //disable intestinal absorption and luminal flow to feces for easier mass balance checks
             MoleculeProperties(CoreConstants.Parameters.INTESTINAL_PERMEABILITY).Value = 0;
-            IntestinalTransitRateFor(CoreConstants.Compartment.Rectum).Value = 0;
+            IntestinalTransitRateFor(CoreConstants.Compartment.RECTUM).Value = 0;
          }
 
          //store initial drug mass
@@ -894,7 +894,7 @@ namespace PKSim.IntegrationTests
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
-         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.Rectum);
+         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.RECTUM);
       }
 
       [Observation]
@@ -907,7 +907,7 @@ namespace PKSim.IntegrationTests
       public void solid_drug_in_rectum_should_be_monotonically_increasing()
       {
          //due to solubility=0 and flow to the next segment=0 solid drug must increase over time
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.Rectum);
+         CheckSolidDrugIncreasing(CoreConstants.Compartment.RECTUM);
       }
 
       [Observation]
@@ -954,7 +954,7 @@ namespace PKSim.IntegrationTests
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
-         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.Rectum);
+         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.RECTUM);
       }
 
       [Observation]

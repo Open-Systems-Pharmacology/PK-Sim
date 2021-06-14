@@ -332,16 +332,16 @@ namespace PKSim.Core
          public static readonly string PERICENTRAL = "Pericentral";
          public static readonly string STOMACH = "Stomach";
          public static readonly string DUODENUM = "Duodenum";
-         public static readonly string UpperJejunum = "UpperJejunum";
-         public static readonly string LowerJejunum = "LowerJejunum";
-         public static readonly string UpperIleum = "UpperIleum";
-         public static readonly string LowerIleum = "LowerIleum";
-         public static readonly string Caecum = "Caecum";
-         public static readonly string ColonAscendens = "ColonAscendens";
-         public static readonly string ColonTransversum = "ColonTransversum";
-         public static readonly string ColonDescendens = "ColonDescendens";
-         public static readonly string ColonSigmoid = "ColonSigmoid";
-         public static readonly string Rectum = "Rectum";
+         public static readonly string UPPER_JEJUNUM = "UpperJejunum";
+         public static readonly string LOWER_JEJUNUM = "LowerJejunum";
+         public static readonly string UPPER_ILEUM = "UpperIleum";
+         public static readonly string LOWER_ILEUM = "LowerIleum";
+         public static readonly string CAECUM = "Caecum";
+         public static readonly string COLON_ASCENDENS = "ColonAscendens";
+         public static readonly string COLON_TRANSVERSUM = "ColonTransversum";
+         public static readonly string COLON_DESCENDENS = "ColonDescendens";
+         public static readonly string COLON_SIGMOID = "ColonSigmoid";
+         public static readonly string RECTUM = "Rectum";
          public static readonly string FECES = "Feces";
 
          public static readonly IReadOnlyList<string> LiverZones = new List<string>
@@ -362,24 +362,24 @@ namespace PKSim.Core
          public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToLowerIleum = new List<string>
          {
             DUODENUM,
-            UpperJejunum,
-            LowerJejunum,
-            UpperIleum,
-            LowerIleum
+            UPPER_JEJUNUM,
+            LOWER_JEJUNUM,
+            UPPER_ILEUM,
+            LOWER_ILEUM
          };
 
          public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToCaecum = new List<string>(LumenSegmentsDuodenumToLowerIleum)
          {
-            Caecum
+            CAECUM
          };
 
          public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToRectum = new List<string>(LumenSegmentsDuodenumToCaecum)
          {
-            ColonAscendens,
-            ColonTransversum,
-            ColonDescendens,
-            ColonSigmoid,
-            Rectum
+            COLON_ASCENDENS,
+            COLON_TRANSVERSUM,
+            COLON_DESCENDENS,
+            COLON_SIGMOID,
+            RECTUM
          };
 
          public static readonly IReadOnlyList<string> LumenSegmentsStomachToRectum =
@@ -807,6 +807,7 @@ namespace PKSim.Core
          public static readonly string STOMACH = "Stomach";
          public static readonly string VENOUS_BLOOD = "VenousBlood";
          public static readonly string PERIPHERAL_VENOUS_BLOOD = "PeripheralVenousBlood";
+         public static readonly string TISSUE_ORGAN = "TissueOrgan";
 
          public static readonly IReadOnlyList<string> StandardOrgans = new List<string>
          {

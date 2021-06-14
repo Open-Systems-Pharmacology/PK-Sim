@@ -11,6 +11,7 @@ using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static PKSim.Core.CoreConstants.Compartment;
 
 namespace PKSim.Core.Mappers
 {
@@ -184,6 +185,12 @@ namespace PKSim.Core.Mappers
       {
          var reaction = interactionReactionFrom(interactionProcess, protein, forbiddenNames, formulaCache);
          reaction.AddProduct(new ReactionPartnerBuilder(protein.Name, 1));
+
+         //Induction occurs only in Intracellular and Interstitial
+         reaction.ContainerCriteria.Add(new InContainerCondition(CoreConstants.Organ.TISSUE_ORGAN));
+         reaction.ContainerCriteria.Add(new NotMatchTagCondition(PLASMA));
+         reaction.ContainerCriteria.Add(new NotMatchTagCondition(BLOOD_CELLS));
+         reaction.ContainerCriteria.Add(new NotMatchTagCondition(ENDOSOME));
          return reaction;
       }
 
@@ -316,7 +323,7 @@ namespace PKSim.Core.Mappers
          transporterMoleculeContainer.Name = transporter.Name;
          return transporterMoleculeContainer;
       }
-         
+
       private IReadOnlyCollection<InducedProcess> allInducedProcessesFor(IndividualTransporter transporter, Individual individual)
       {
          var inducedProcessCache = new Cache<string, InducedProcess>(x => x.Name, x => null);
@@ -335,11 +342,11 @@ namespace PKSim.Core.Mappers
                .Where(x => x.TransportDirection == transporterContainer.TransportDirection);
 
             //a logical container is defined. We are dealing with a localized transporter
-            if (!string.IsNullOrEmpty(logicalContainer)){
+            if (!string.IsNullOrEmpty(logicalContainer))
+            {
                //For apical transport for Lumen => Mucosa, the compartment is the name of our mapping
                allTransportTemplates = allTransportTemplates
                   .Where(x => (x.SourceOrgan == logicalContainer || x.SourceCompartment == logicalContainer));
-
             }
 
             foreach (var transportTemplate in allTransportTemplates)
