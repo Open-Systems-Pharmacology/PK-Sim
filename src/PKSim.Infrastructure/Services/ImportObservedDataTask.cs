@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Castle.Core.Internal;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -11,16 +12,17 @@ using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using Constants = OSPSuite.Core.Domain.Constants;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
+using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -36,7 +38,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IObservedDataTask _observedDataTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IDialogCreator _dialogCreator;
-      private readonly OSPSuite.Utility.Container.IContainer _container;
+      private readonly IContainer _container;
       private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
 
       public ImportObservedDataTask(IDataImporter dataImporter, IExecutionContext executionContext,
@@ -227,7 +229,7 @@ namespace PKSim.Infrastructure.Services
 
          var importedObservedData = _dataImporter.ImportDataSets((IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
 
-         if (importedObservedData.DataRepositories == null || importedObservedData.Configuration == null) return;
+         if (importedObservedData.DataRepositories.IsNullOrEmpty() || importedObservedData.Configuration == null) return;
 
          _observedDataTask.AddImporterConfigurationToProject(importedObservedData.Configuration);
          foreach (var observedData in importedObservedData.DataRepositories)
@@ -350,7 +352,7 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { };
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string>();
 
       public bool MolWeightEditable => false;
 
