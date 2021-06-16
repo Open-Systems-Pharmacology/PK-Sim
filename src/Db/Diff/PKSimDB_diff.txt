@@ -1,6 +1,2 @@
-INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4907,4907,'COMPARTMENT','..',NULL);
-INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4908,4907,'COMPARTMENT','..',NULL);
-INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4909,4908,'COMPARTMENT','Intracellular',NULL);
-INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4910,4909,'GENERAL','<MOLECULE>','..\..\Intracellular\<MOLECULE>');
-DELETE FROM tab_rate_generic_molecules WHERE calculation_method='LinksCommon' AND formula_rate='Induction' AND path_id=372 AND molecule='DRUG';
-INSERT INTO tab_rate_generic_molecules(calculation_method,formula_rate,path_id,molecule,alias,use_amount) VALUES('LinksCommon','Induction',4910,'DRUG','IND',0);
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='LinksCommon' AND formula_rate='Induction' AND path_id=372 AND parameter_name='Partition coefficient (water/container)';
+INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('LinksCommon','Induction',4910,'Partition coefficient (water/container)','K_water');
