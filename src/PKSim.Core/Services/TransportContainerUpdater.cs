@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -58,7 +59,25 @@ namespace PKSim.Core.Services
          foreach (var transporterContainer in simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
             updateTransporterContainerFromTemplate(transporterContainer, null, transportType);
+            updateFractionExpressedEpithelial(transporterContainer, transportType);
          }
+      }
+
+      private void updateFractionExpressedEpithelial(TransporterExpressionContainer transporterContainer, TransportType transportType)
+      {
+         if (!transportType.IsOneOf(TransportType.Efflux, TransportType.Influx, TransportType.PgpLike))
+            return;
+         
+         var fractionExpressedEpithelial = transporterContainer.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_EPITHELIAL);
+         if (fractionExpressedEpithelial == null)
+            return;
+
+         //value was set by the user.
+         if (fractionExpressedEpithelial.Value != 0 && fractionExpressedEpithelial.Value != 1)
+            return;
+         
+         //Set the value according to the new transport type (Efflux one, all other 0)
+         fractionExpressedEpithelial.Value = transportType == TransportType.Efflux ? 1 : 0;
       }
 
       private void updateTransporterContainerFromTemplate(TransporterExpressionContainer expressionContainer,

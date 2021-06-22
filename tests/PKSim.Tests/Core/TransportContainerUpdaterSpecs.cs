@@ -16,6 +16,14 @@ namespace PKSim.Core
       protected ITransporterContainerTemplateRepository _repository;
       protected IEventPublisher _eventPublisher;
       protected ITransportDirectionRepository _transportDirectionRepository;
+      protected IParameter _fractionExpressedEpithelial;
+      protected ISimulationSubject _individual;
+      protected TransporterExpressionContainer _transporterWithTemplate;
+      protected TransporterExpressionContainer _transporterWithoutTemplate;
+      protected const string _species = "human";
+      protected readonly List<TransporterContainerTemplate> _allTransporterTemplates = new List<TransporterContainerTemplate>();
+      protected TransporterContainerTemplate _transporterContainerTemplate;
+      protected IndividualTransporter _transporter;
 
       protected override void Context()
       {
@@ -23,50 +31,38 @@ namespace PKSim.Core
          _eventPublisher = A.Fake<IEventPublisher>();
          _transportDirectionRepository = A.Fake<ITransportDirectionRepository>();
          sut = new TransportContainerUpdater(_repository, _eventPublisher);
-      }
-   }
-
-   public class When_asked_to_set_the_default_settings_for_a_transporter : concern_for_TransportContainerUpdater
-   {
-      private TransporterExpressionContainer _transporterWithTemplate;
-      private TransporterExpressionContainer _transporterWithoutTemplate;
-      private const string _species = "human";
-      private readonly List<TransporterContainerTemplate> _allTransporterTemplates = new List<TransporterContainerTemplate>();
-      private TransporterContainerTemplate _transporterContainerTemplate;
-      private IndividualTransporter _transporter;
-      private TransporterContainerTemplate _defaultTemplate;
-      private ISimulationSubject _individual;
-
-      protected override void Context()
-      {
-         base.Context();
+         _fractionExpressedEpithelial = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_EPITHELIAL);
          _individual = A.Fake<ISimulationSubject>();
          _individual.Species.Name = _species;
-         _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "toto"};
+         _transporter = new IndividualTransporter { TransportType = TransportType.Efflux, Name = "toto" };
          var organism = new Organism();
          var liver = new Container().WithName(CoreConstants.Organ.LIVER).WithParentContainer(organism);
          var liverCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(liver);
          var kidney = new Container().WithName(CoreConstants.Organ.KIDNEY).WithParentContainer(organism);
          var kidneyCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(kidney);
-         _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}
+         _transporterWithTemplate = new TransporterExpressionContainer { TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular }
             .WithParentContainer(liverCell);
          _transporterWithoutTemplate = new TransporterExpressionContainer
-               {TransportDirection = TransportDirectionId.EffluxIntracellularToInterstitial}
+         { TransportDirection = TransportDirectionId.EffluxIntracellularToInterstitial }
             .WithParentContainer(kidneyCell);
 
+         _transporterWithoutTemplate.Add(_fractionExpressedEpithelial);
          A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter))
-            .Returns(new[] {_transporterWithTemplate, _transporterWithoutTemplate,});
+            .Returns(new[] { _transporterWithTemplate, _transporterWithoutTemplate, });
 
-         _transporterContainerTemplate = new TransporterContainerTemplate {TransportType = TransportType.Influx};
-         _defaultTemplate = new TransporterContainerTemplate {TransportType = TransportType.Influx};
+         _transporterContainerTemplate = new TransporterContainerTemplate { TransportType = TransportType.Influx };
          _allTransporterTemplates.Add(_transporterContainerTemplate);
 
          A.CallTo(() => _repository.HasTransporterTemplateFor(_species, _transporter.Name)).Returns(true);
          A.CallTo(() => _repository.TransportTypeFor(_species, _transporter.Name)).Returns(TransportType.Influx);
          A.CallTo(() => _repository.TransportersFor(_species, liver.Name, _transporter.Name)).Returns(_allTransporterTemplates);
          A.CallTo(() => _repository.TransportersFor(_species, kidney.Name, _transporter.Name)).Returns(new List<TransporterContainerTemplate>());
-      }
 
+      }
+   }
+
+   public class When_asked_to_set_the_default_settings_for_a_transporter : concern_for_TransportContainerUpdater
+   {
       protected override void Because()
       {
          sut.SetDefaultSettingsForTransporter(_individual, _transporter, _transporter.Name);
@@ -97,19 +93,13 @@ namespace PKSim.Core
       }
    }
 
-   public class
-      When_asked_to_set_the_default_settings_for_a_transporter_for_which_template_does_not_exist_in_the_db : concern_for_TransportContainerUpdater
+   public class  When_asked_to_set_the_default_settings_for_a_transporter_for_which_template_does_not_exist_in_the_db : concern_for_TransportContainerUpdater
    {
-      private const string _species = "human";
       private const string _transporterName = "toto";
-      private IndividualTransporter _transporter;
-      private ISimulationSubject _individual;
 
       protected override void Context()
       {
          base.Context();
-         _individual = A.Fake<ISimulationSubject>();
-         _individual.Species.Name = _species;
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "aa"};
 
          A.CallTo(() => _repository.HasTransporterTemplateFor(_species, _transporterName)).Returns(false);
@@ -131,6 +121,67 @@ namespace PKSim.Core
       public void should_not_notify_that_a_template_was_not_found()
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<NoTranporterTemplateAvailableEvent>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_updating_the_transport_type_from_influx_to_efflux : concern_for_TransportContainerUpdater
+   {
+      protected override void Because()
+      {
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter,TransportType.Efflux);
+      }
+
+      [Observation]
+      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_one ()
+      {
+         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_updating_the_transport_type_from_efflux_to_influx : concern_for_TransportContainerUpdater
+   {
+      protected override void Because()
+      {
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter, TransportType.Influx);
+      }
+
+      [Observation]
+      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_zero()
+      {
+         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_updating_the_transport_type_from_efflux_to_influx_and_the_fraction_expressed_epithelial_was_changed_by_the_user: concern_for_TransportContainerUpdater
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _fractionExpressedEpithelial.Value = 0.5;
+      }
+      protected override void Because()
+      {
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter, TransportType.Influx);
+      }
+
+      [Observation]
+      public void should_not_update_the_value()
+      {
+         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(0.5);
+      }
+   }
+
+   public class When_updating_the_transport_type_from_a_type_that_is_not_influx_efflux_or_pgp : concern_for_TransportContainerUpdater
+   {
+      protected override void Because()
+      {
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter, TransportType.BiDirectional);
+      }
+
+      [Observation]
+      public void should_not_update_the_value()
+      {
+         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(1);
       }
    }
 }
