@@ -170,4 +170,18 @@ namespace PKSim.Core
          _fractionExpressedEpithelial.Value.ShouldBeEqualTo(0.5);
       }
    }
+
+   public class When_updating_the_transport_type_from_a_type_that_is_not_influx_efflux_or_pgp : concern_for_TransportContainerUpdater
+   {
+      protected override void Because()
+      {
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter, TransportType.BiDirectional);
+      }
+
+      [Observation]
+      public void should_not_update_the_value()
+      {
+         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(1);
+      }
+   }
 }

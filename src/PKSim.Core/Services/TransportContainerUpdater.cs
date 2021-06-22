@@ -65,7 +65,7 @@ namespace PKSim.Core.Services
 
       private void updateFractionExpressedEpithelial(TransporterExpressionContainer transporterContainer, TransportType transportType)
       {
-         if (!transportType.IsOneOf(TransportType.Efflux, TransportType.Influx))
+         if (!transportType.IsOneOf(TransportType.Efflux, TransportType.Influx, TransportType.PgpLike))
             return;
          
          var fractionExpressedEpithelial = transporterContainer.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_EPITHELIAL);
@@ -76,7 +76,7 @@ namespace PKSim.Core.Services
          if (fractionExpressedEpithelial.Value != 0 && fractionExpressedEpithelial.Value != 1)
             return;
          
-         //Set the value according to the new transport type
+         //Set the value according to the new transport type (Efflux one, all other 0)
          fractionExpressedEpithelial.Value = transportType == TransportType.Efflux ? 1 : 0;
       }
 
