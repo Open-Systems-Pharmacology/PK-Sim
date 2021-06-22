@@ -9,6 +9,7 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
@@ -46,8 +47,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          _converted = false;
-         element.DescendantsAndSelf("Individual").Each(convertIndividualProteinsIn);
-         element.DescendantsAndSelf("BaseIndividual").Each(convertIndividualProteinsIn);
+         element.DescendantsAndSelf("Individual").Each(convertIndividualProteinNodesIn);
+         element.DescendantsAndSelf("BaseIndividual").Each(convertIndividualProteinNodesIn);
          element.DescendantsAndSelf("UserSettings").Each(convertUserSettings);
 
          return (ProjectVersions.V10, _converted);
@@ -59,14 +60,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          _converted = true;
       }
 
-      private void convertIndividualProteinsIn(XElement individualElement)
+      private void convertIndividualProteinNodesIn(XElement individualElement)
       {
-         individualElement.Descendants("IndividualEnzyme").Each(convertIndividualProtein);
-         individualElement.Descendants("IndividualOtherProtein").Each(convertIndividualProtein);
-         individualElement.Descendants("IndividualTransporter").Each(convertIndividualTransporter);
+         individualElement.Descendants("IndividualEnzyme").Each(convertIndividualProteinNode);
+         individualElement.Descendants("IndividualOtherProtein").Each(convertIndividualProteinNode);
+         individualElement.Descendants("IndividualTransporter").Each(convertIndividualTransporterNode);
       }
 
-      private void convertIndividualProtein(XElement proteinNode)
+      private void convertIndividualProteinNode(XElement proteinNode)
       {
          var membraneLocation = EnumHelper.ParseValue<MembraneLocation>(proteinNode.GetAttribute("membraneLocation"));
          var tissueLocation = EnumHelper.ParseValue<TissueLocation>(proteinNode.GetAttribute("tissueLocation"));
@@ -78,7 +79,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          _converted = true;
       }
 
-      private void convertIndividualTransporter(XElement transporterNode)
+      private void convertIndividualTransporterNode(XElement transporterNode)
       {
          transporterNode.Descendants("TransporterExpressionContainer").Each(transporterContainerNode =>
          {
@@ -152,31 +153,60 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          if (newMolecule == null)
             return;
 
+         newMolecule.Ontogeny = moleculeToConvert.Ontogeny;
+
          var allExpressionParameters = individual.AllExpressionParametersFor(newMolecule);
-         moleculeToConvert.GetAllChildren<MoleculeExpressionContainer>().Each(x =>
-         {
-            convertParameter(x.RelativeExpressionParameter, allExpressionParameters[x.Name]);
-         });
+         moleculeToConvert.GetAllChildren<MoleculeExpressionContainer>().Each(x => { convertParameter(x.RelativeExpressionParameter, allExpressionParameters[x.Name]); });
 
-         moleculeToConvert.AllParameters().Each(p => { convertParameter(p, newMolecule.Parameter(p.Name)); });
+         moleculeToConvert.AllParameters().Each(p => convertParameter(p, newMolecule.Parameter(p.Name)));
 
-         if (!(newMolecule is IndividualTransporter transporter))
+         //Perform normalization
+         NormalizeRelativeExpressionCommand.NormalizeExpressions(individual, newMolecule);
+
+         //Do reset default value that may be set to 0
+         allExpressionParameters.Each(x => x.DefaultValue = null);
+
+         //molecule specific conversion
+         convertIndividualProtein(moleculeToConvert, newMolecule);
+
+         convertIndividualTransporter(moleculeToConvert, newMolecule, individual);
+      }
+
+      private void convertIndividualTransporter(IndividualMolecule moleculeToConvert, IndividualMolecule newMolecule, Individual individual)
+      {
+         var transporterToConvert = moleculeToConvert as IndividualTransporter;
+         var newTransporter = newMolecule as IndividualTransporter;
+
+         if (transporterToConvert == null || newTransporter == null)
             return;
 
-         var allTransporterExpressionContainers = individual.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter)
+         newTransporter.TransportType = transporterToConvert.TransportType;
+
+
+         var allTransporterExpressionContainers = individual.AllMoleculeContainersFor<TransporterExpressionContainer>(newTransporter)
             .Where(x => x.TransportDirection != TransportDirectionId.None).ToList();
 
-         moleculeToConvert.GetAllChildren<TransporterExpressionContainer>().Each(x =>
-         {
-            convertTransportContainer(x, allTransporterExpressionContainers, transporter);
-         });
+         //Ensure we update the default direction based on the selected transporter type
+         allTransporterExpressionContainers.Each(x=>x.TransportDirection = TransportDirections.DefaultDirectionFor(newTransporter.TransportType, x));
+
+         moleculeToConvert.GetAllChildren<TransporterExpressionContainer>().Each(x => convertTransportContainer(x, allTransporterExpressionContainers, newTransporter));
+      }
+
+      private void convertIndividualProtein(IndividualMolecule moleculeToConvert, IndividualMolecule newMolecule)
+      {
+         var proteinToConvert = moleculeToConvert as IndividualProtein;
+         var newProtein = newMolecule as IndividualProtein;
+         if (proteinToConvert == null || newProtein == null)
+            return;
+
+         newProtein.Localization = proteinToConvert.Localization;
       }
 
       private void convertTransportContainer(TransporterExpressionContainer expressionContainerToConvert,
          IReadOnlyList<TransporterExpressionContainer> allTransporterExpressionContainers, IndividualTransporter transporter)
       {
          //This should never happen as a tag was added in the xml conversion with the membrane location
-         if (expressionContainerToConvert.Tags.Any())
+         if (!expressionContainerToConvert.Tags.Any())
             return;
 
          var membraneLocation = EnumHelper.ParseValue<MembraneLocation>(expressionContainerToConvert.Tags.ElementAt(0).Value);
@@ -184,8 +214,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          var matchingContainers = allTransporterExpressionContainers
             .Where(x => x.LogicalContainerName == expressionContainerToConvert.Name || x.CompartmentName == expressionContainerToConvert.Name)
             .ToList();
-
-         matchingContainers.Each(x => x.TransportDirection = TransportDirections.DefaultDirectionFor(transporter.TransportType, x));
 
          //only one direction to take into consideration. all good, nothing else to do
          if (matchingContainers.Count == 1)
@@ -200,7 +228,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
             return;
 
          newParameter.Value = oldParameter.Value;
-         newParameter.DefaultValue = oldParameter.Value;
+         newParameter.DefaultValue = oldParameter.DefaultValue;
          newParameter.IsDefault = oldParameter.IsDefault;
          newParameter.ValueOrigin.UpdateAllFrom(oldParameter.ValueOrigin);
       }

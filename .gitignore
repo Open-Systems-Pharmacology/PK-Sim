@@ -254,6 +254,7 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+*pksim.lock
 /7.1_PKSim.exe.lnk
 /src/Db/PKSimDB - Kopie.mdb
 /src/Db/Transfer.mdb
