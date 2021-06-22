@@ -76,8 +76,8 @@ namespace PKSim.Core.Services
          if (fractionExpressedEpithelial.Value != 0 && fractionExpressedEpithelial.Value != 1)
             return;
          
-         //Set the value according to the new transport type (Efflux one, all other 0)
-         fractionExpressedEpithelial.Value = transportType == TransportType.Efflux ? 1 : 0;
+         //Set the value according to the new transport type (Efflux + pgp one, Influx 0)
+         fractionExpressedEpithelial.Value = transportType == TransportType.Influx ? 0 : 1;
       }
 
       private void updateTransporterContainerFromTemplate(TransporterExpressionContainer expressionContainer,

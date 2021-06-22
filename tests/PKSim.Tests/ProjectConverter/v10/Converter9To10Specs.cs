@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter.v10;
 using PKSim.IntegrationTests;
@@ -54,6 +55,58 @@ namespace PKSim.ProjectConverter.v10
             var allExpressionParameters = individual.AllExpressionParametersFor(m);
             allExpressionParameters.Count.ShouldBeGreaterThan(30);
          });
+      }
+   }
+
+   public class When_converting_the_v9_individual_project_to_10 : ContextWithLoadedProject<Converter9To10>
+   {
+      private Individual _individual;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("V9_Individual");
+         _individual = FindByName<Individual>("I1");
+      }
+
+      [Observation]
+      public void should_have_converted_the_transporter_as_expected()
+      {
+         var influx = _individual.MoleculeByName<IndividualTransporter>("T1_Influx");
+         influx.TransportType.ShouldBeEqualTo(TransportType.Influx);
+
+         //checking that it is not set to the default Efflux and that a conversion occurred
+         var allTransporterContainers = _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(influx);
+         allTransporterContainers.Any(x => x.TransportDirection.ToString().Contains("Efflux")).ShouldBeFalse();
+
+         var efflux_apical_bbb = _individual.MoleculeByName<IndividualTransporter>("T4_Efflux_Apical_BBB");
+         efflux_apical_bbb.TransportType.ShouldBeEqualTo(TransportType.Efflux);
+      }
+
+      [Observation]
+      public void should_have_converted_the_enzyme_as_expected()
+      {
+         var enzyme = _individual.MoleculeByName<IndividualEnzyme>("E1_Intracellular_Endosomal");
+         enzyme.Localization.Is(Localization.Intracellular).ShouldBeTrue();
+         enzyme.Localization.Is(Localization.VascEndosome).ShouldBeTrue();
+         enzyme.Localization.Is(Localization.BloodCellsIntracellular).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_normalized_the_expression()
+      {
+         var enzyme = _individual.MoleculeByName<IndividualEnzyme>("E1_Intracellular_Endosomal");
+         var allExpressionParameters = _individual.AllExpressionParametersFor(enzyme);
+         allExpressionParameters[CoreConstants.Compartment.VASCULAR_ENDOTHELIUM].Value.ShouldBeEqualTo(1);
+         allExpressionParameters[CoreConstants.Compartment.PLASMA].Value.ShouldBeEqualTo(2 / 3.0);
+         allExpressionParameters[CoreConstants.Compartment.BLOOD_CELLS].Value.ShouldBeEqualTo(1 / 3.0);
+      }
+
+      [Observation]
+      public void should_have_updated_the_ontogeny()
+      {
+         var enzyme = _individual.MoleculeByName<IndividualEnzyme>("E1_Intracellular_Endosomal");
+         enzyme.Ontogeny.Name.ShouldBeEqualTo("CYP2C18");
       }
    }
 }

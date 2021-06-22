@@ -86,8 +86,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return null;
 
          var isV9Format = !snapshot.TransportDirection.HasValue;
-
-
+         
          var expressionsContainers = expressionContainerParameters.OfType<TransporterExpressionContainer>()
             .Where(queryPredicate(isV9Format, snapshot))
             .Where(x => x.TransportDirection != TransportDirectionId.None)
