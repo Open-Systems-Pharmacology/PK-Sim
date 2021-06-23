@@ -68,7 +68,7 @@ namespace PKSim.Core.Services
          if (!transportType.IsOneOf(TransportType.Efflux, TransportType.Influx, TransportType.PgpLike))
             return;
          
-         var fractionExpressedEpithelial = transporterContainer.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_EPITHELIAL);
+         var fractionExpressedEpithelial = transporterContainer.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
          if (fractionExpressedEpithelial == null)
             return;
 
