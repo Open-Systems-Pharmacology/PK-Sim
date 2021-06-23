@@ -25,6 +25,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
    {
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
+      private readonly IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       private readonly ICloner _cloner;
       private readonly Converter90To100 _coreConverter90To100;
       private bool _converted;
@@ -34,12 +35,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
       public Converter9To10(
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
          IDefaultIndividualRetriever defaultIndividualRetriever,
+         IMoleculeExpressionTask<Individual> moleculeExpressionTask,
          ICloner cloner,
          Converter90To100 coreConverter90To100
       )
       {
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _defaultIndividualRetriever = defaultIndividualRetriever;
+         _moleculeExpressionTask = moleculeExpressionTask;
          _cloner = cloner;
          _coreConverter90To100 = coreConverter90To100;
       }
@@ -167,7 +170,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          allExpressionParameters.Each(x => x.DefaultValue = null);
 
          //molecule specific conversion
-         convertIndividualProtein(moleculeToConvert, newMolecule);
+         convertIndividualProtein(moleculeToConvert, newMolecule, individual);
 
          convertIndividualTransporter(moleculeToConvert, newMolecule, individual);
       }
@@ -189,10 +192,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          //Ensure we update the default direction based on the selected transporter type
          allTransporterExpressionContainers.Each(x=>x.TransportDirection = TransportDirections.DefaultDirectionFor(newTransporter.TransportType, x));
 
-         moleculeToConvert.GetAllChildren<TransporterExpressionContainer>().Each(x => convertTransportContainer(x, allTransporterExpressionContainers, newTransporter));
+         moleculeToConvert.GetAllChildren<TransporterExpressionContainer>().Each(x => convertTransportContainer(x, allTransporterExpressionContainers));
       }
 
-      private void convertIndividualProtein(IndividualMolecule moleculeToConvert, IndividualMolecule newMolecule)
+      private void convertIndividualProtein(IndividualMolecule moleculeToConvert, IndividualMolecule newMolecule, Individual individual)
       {
          var proteinToConvert = moleculeToConvert as IndividualProtein;
          var newProtein = newMolecule as IndividualProtein;
@@ -200,10 +203,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
             return;
 
          newProtein.Localization = proteinToConvert.Localization;
+         //Set set it first to none to ensure that it is set properly after reading from the snapshot file
+         newProtein.Localization = Localization.None;
+         _moleculeExpressionTask.SetExpressionLocalizationFor(newProtein, proteinToConvert.Localization, individual);
+
       }
 
-      private void convertTransportContainer(TransporterExpressionContainer expressionContainerToConvert,
-         IReadOnlyList<TransporterExpressionContainer> allTransporterExpressionContainers, IndividualTransporter transporter)
+      private void convertTransportContainer(TransporterExpressionContainer expressionContainerToConvert, IReadOnlyList<TransporterExpressionContainer> allTransporterExpressionContainers)
       {
          //This should never happen as a tag was added in the xml conversion with the membrane location
          if (!expressionContainerToConvert.Tags.Any())

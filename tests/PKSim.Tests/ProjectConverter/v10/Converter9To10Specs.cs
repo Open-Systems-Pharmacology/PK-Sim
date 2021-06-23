@@ -108,5 +108,55 @@ namespace PKSim.ProjectConverter.v10
          var enzyme = _individual.MoleculeByName<IndividualEnzyme>("E1_Intracellular_Endosomal");
          enzyme.Ontogeny.Name.ShouldBeEqualTo("CYP2C18");
       }
+
+      [Observation]
+      public void should_have_updated_the_fraction_expressed_intracellular_based_on_the_localization()
+      {
+         verifyFractionExpressedIntracellular("E1_Intracellular_Endosomal", 1);
+         verifyFractionExpressedIntracellular("E2_Intracellular_Interstitial", 1);
+         verifyFractionExpressedIntracellular("E3_Extracellular_Apical", 0);
+         verifyFractionExpressedIntracellular("E4_Extracellular_Basolateral", 0);
+         verifyFractionExpressedIntracellular("E5_Interstitial", 0);
+      }
+
+      [Observation]
+      public void should_have_updated_the_fraction_expressed_in_blood_cells_based_on_the_localization()
+      {
+         verifyFractionExpressedBloodCells("E1_Intracellular_Endosomal", 1);
+         verifyFractionExpressedBloodCells("E2_Intracellular_Interstitial", 1);
+         verifyFractionExpressedBloodCells("E3_Extracellular_Apical", 0);
+         verifyFractionExpressedBloodCells("E4_Extracellular_Basolateral", 0);
+         verifyFractionExpressedBloodCells("E5_Interstitial", 1);
+      }
+
+      [Observation]
+      public void should_have_updated_the_fraction_expressed_in_endosomes_based_on_the_localization()
+      {
+         verifyFractionExpressedEndosomes("E1_Intracellular_Endosomal", 1);
+         verifyFractionExpressedEndosomes("E2_Intracellular_Interstitial", 0);
+         verifyFractionExpressedEndosomes("E3_Extracellular_Apical", 0);
+         verifyFractionExpressedEndosomes("E4_Extracellular_Basolateral", 0);
+         verifyFractionExpressedEndosomes("E5_Interstitial", 0);
+      }
+
+      private void verifyFractionExpressedIntracellular(string moleculeName, double value)
+      {
+         var enzyme = _individual.MoleculeByName<IndividualEnzyme>(moleculeName);
+         var allEnzymeContainers = _individual.AllMoleculeContainersFor<MoleculeExpressionContainer>(enzyme);
+         var boneIntracellular = allEnzymeContainers.Find(x => x.LogicalContainerName == CoreConstants.Organ.BONE && x.CompartmentName == CoreConstants.Compartment.INTRACELLULAR);
+         boneIntracellular.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_INTRACELLULAR).Value.ShouldBeEqualTo(value);
+      }
+
+      private void verifyFractionExpressedBloodCells(string moleculeName, double value)
+      {
+         var enzyme = _individual.MoleculeByName<IndividualEnzyme>(moleculeName);
+         enzyme.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_BLOOD_CELLS).Value.ShouldBeEqualTo(value);
+      }
+
+      private void verifyFractionExpressedEndosomes(string moleculeName, double value)
+      {
+         var enzyme = _individual.MoleculeByName<IndividualEnzyme>(moleculeName);
+         enzyme.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME).Value.ShouldBeEqualTo(value);
+      }
    }
 }
