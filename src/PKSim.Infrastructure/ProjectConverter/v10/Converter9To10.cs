@@ -185,12 +185,11 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
 
          newTransporter.TransportType = transporterToConvert.TransportType;
 
-
          var allTransporterExpressionContainers = individual.AllMoleculeContainersFor<TransporterExpressionContainer>(newTransporter)
             .Where(x => x.TransportDirection != TransportDirectionId.None).ToList();
 
          //Ensure we update the default direction based on the selected transporter type
-         allTransporterExpressionContainers.Each(x=>x.TransportDirection = TransportDirections.DefaultDirectionFor(newTransporter.TransportType, x));
+         allTransporterExpressionContainers.Each(x => x.TransportDirection = TransportDirections.DefaultDirectionFor(newTransporter.TransportType, x));
 
          moleculeToConvert.GetAllChildren<TransporterExpressionContainer>().Each(x => convertTransportContainer(x, allTransporterExpressionContainers));
       }
@@ -202,11 +201,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          if (proteinToConvert == null || newProtein == null)
             return;
 
-         newProtein.Localization = proteinToConvert.Localization;
          //Set set it first to none to ensure that it is set properly after reading from the snapshot file
          newProtein.Localization = Localization.None;
          _moleculeExpressionTask.SetExpressionLocalizationFor(newProtein, proteinToConvert.Localization, individual);
-
       }
 
       private void convertTransportContainer(TransporterExpressionContainer expressionContainerToConvert, IReadOnlyList<TransporterExpressionContainer> allTransporterExpressionContainers)
