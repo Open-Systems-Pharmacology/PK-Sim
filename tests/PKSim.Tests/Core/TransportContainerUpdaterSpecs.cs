@@ -16,7 +16,7 @@ namespace PKSim.Core
       protected ITransporterContainerTemplateRepository _repository;
       protected IEventPublisher _eventPublisher;
       protected ITransportDirectionRepository _transportDirectionRepository;
-      protected IParameter _fractionExpressedEpithelial;
+      protected IParameter _fractionExpressedApical;
       protected ISimulationSubject _individual;
       protected TransporterExpressionContainer _transporterWithTemplate;
       protected TransporterExpressionContainer _transporterWithoutTemplate;
@@ -31,7 +31,7 @@ namespace PKSim.Core
          _eventPublisher = A.Fake<IEventPublisher>();
          _transportDirectionRepository = A.Fake<ITransportDirectionRepository>();
          sut = new TransportContainerUpdater(_repository, _eventPublisher);
-         _fractionExpressedEpithelial = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_EPITHELIAL);
+         _fractionExpressedApical = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
          _individual = A.Fake<ISimulationSubject>();
          _individual.Species.Name = _species;
          _transporter = new IndividualTransporter { TransportType = TransportType.Efflux, Name = "toto" };
@@ -46,7 +46,7 @@ namespace PKSim.Core
          { TransportDirection = TransportDirectionId.EffluxIntracellularToInterstitial }
             .WithParentContainer(kidneyCell);
 
-         _transporterWithoutTemplate.Add(_fractionExpressedEpithelial);
+         _transporterWithoutTemplate.Add(_fractionExpressedApical);
          A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter))
             .Returns(new[] { _transporterWithTemplate, _transporterWithoutTemplate, });
 
@@ -134,7 +134,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_value_of_the_fraction_expressed_epithelial_to_one ()
       {
-         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(1);
+         _fractionExpressedApical.Value.ShouldBeEqualTo(1);
       }
    }
 
@@ -148,7 +148,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_value_of_the_fraction_expressed_epithelial_to_zero()
       {
-         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(0);
+         _fractionExpressedApical.Value.ShouldBeEqualTo(0);
       }
    }
 
@@ -157,7 +157,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _fractionExpressedEpithelial.Value = 0.5;
+         _fractionExpressedApical.Value = 0.5;
       }
       protected override void Because()
       {
@@ -167,7 +167,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_update_the_value()
       {
-         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(0.5);
+         _fractionExpressedApical.Value.ShouldBeEqualTo(0.5);
       }
    }
 
@@ -181,7 +181,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_update_the_value()
       {
-         _fractionExpressedEpithelial.Value.ShouldBeEqualTo(1);
+         _fractionExpressedApical.Value.ShouldBeEqualTo(1);
       }
    }
 }
