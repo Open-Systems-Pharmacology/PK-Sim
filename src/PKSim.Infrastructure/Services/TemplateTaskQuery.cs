@@ -87,6 +87,11 @@ namespace PKSim.Infrastructure.Services
          foreach (DASDataRow row in dataTable)
          {
             var reference = loadTemplateBy(template.DatabaseType, row.StringAt(TemplateReferenceTable.Columns.REFERENCE_NAME), row.StringAt(TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE), connection);
+            //cannot be found...continue
+            if (reference == null)
+               continue;
+
+
             template.References.Add(reference);
 
             if (loadedReferenceNames.Contains(reference.Name))
@@ -109,7 +114,12 @@ namespace PKSim.Infrastructure.Services
                TemplateTable.Columns.DESCRIPTION, TemplateTable.NAME, templateType, _pName);
 
 
-            var row = connection.ExecuteQueryForSingleRow(sqlQuery);
+            var row = connection.ExecuteQueryForSingleRowOrNull(sqlQuery);
+
+            // somehow the reference cannot be found
+            if (row == null)
+               return null;
+
             return new Template
             {
                DatabaseType = templateDatabaseType,

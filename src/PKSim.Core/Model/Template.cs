@@ -47,7 +47,7 @@ namespace PKSim.Core.Model
       ///    List of <see cref="Template" /> referenced by current <see cref="Template" />.
       ///    A template should not reference itself!
       /// </summary>
-      public List<Template> References { get; private set; }
+      public List<Template> References { get; }
 
       public bool HasReferences => References.Any();
 
