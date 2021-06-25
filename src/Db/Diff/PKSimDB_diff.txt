@@ -1,1 +1,3 @@
 UPDATE tab_calculation_method_rates SET formula='Min(1 / (1 + (BindingPartner = Albumin ? AlbuminOntgenyFactor : (BindingPartner = Agp ? AgpOntogenyFactor : 1) ) * (1 - fu_ref) / fu_ref) * PlasmaProteinScaleFactor; 1)' WHERE calculation_method='DistributionInVitro_PKSim' AND formula_rate='PARAM_fu';
+UPDATE tab_parameters SET description='Half-life of the protein turnover in the intestine' WHERE parameter_name='t1/2 (intestine)';
+UPDATE tab_parameters SET description='Half-life of the protein turnover in the liver' WHERE parameter_name='t1/2 (liver)';
