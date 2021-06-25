@@ -392,7 +392,7 @@ namespace PKSim.Presentation.Services
       }
 
       /// <summary>
-      ///    Launch the create builing block presenter implementing TCreatePresenter and start the creation process
+      ///    Launch the create building block presenter implementing TCreatePresenter and start the creation process
       /// </summary>
       /// <typeparam name="TCreatePresenter">Type of presenter that will be started to create the new building block</typeparam>
       /// <returns>The created building block, if the action was confirmed by the user or cancel otherwise</returns>
@@ -402,7 +402,7 @@ namespace PKSim.Presentation.Services
       }
 
       /// <summary>
-      ///    Launch the create builing block presenter implementing TCreatePresenter and start the creation process
+      ///    Launch the create building block presenter implementing TCreatePresenter and start the creation process
       /// </summary>
       /// <typeparam name="TCreatePresenter">Type of presenter that will be started to create the new building block</typeparam>
       /// <param name="createFunction">Function of the presenter that will be called to launch the creation function</param>
@@ -429,7 +429,7 @@ namespace PKSim.Presentation.Services
                macroCommand.All().Each(_buildingBlockTask.AddCommandToHistory);
             }
 
-            //required since some subpresenter might still be registered and need to be released from event publisher
+            //required since some sub presenter might still be registered and need to be released from event publisher
             _applicationController.ReleasePresenter(presenter);
             return presenter.BuildingBlock;
          }
