@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
