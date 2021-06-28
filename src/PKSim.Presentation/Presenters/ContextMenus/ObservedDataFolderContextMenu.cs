@@ -43,8 +43,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          if (allCompounds.Any())
             _view.AddMenuItem(addObservedDataFor);
 
-         _view.AddMenuItem(repository[MenuBarItemIds.AddObservedDataFromConfiguration]);
-
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithCommand<LoadObservedDataFromTemplateUICommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate)
