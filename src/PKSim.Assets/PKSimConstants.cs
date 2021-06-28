@@ -1119,7 +1119,6 @@ namespace PKSim.Assets
          public static readonly string NewObservers = "Add &Observers...";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
-         public static readonly string AddObservedDataFromConfiguration = "Add &Observed Data from configuration";
          public static readonly string SaveAs = "Save As...";
          public static readonly string Scale = "Scale...";
          public static readonly string Extras = "&Extras";
@@ -1898,7 +1897,6 @@ namespace PKSim.Assets
          public static readonly string BuildingBlockExplorerViewDescription = "Show or hide the building block explorer";
          public static readonly string UndoDescription = "Undo the last action";
          public static readonly string AddObservedDataDescription = "Add observed data (concentration, amount, fraction) to the project...";
-         public static readonly string AddObservedDataFromConfigurationDescription = "Add observed data (concentration, amount, fraction) to the project using a specified configuration...";
          public static readonly string ExportHistoryToExcelDescription = "Export history to Excel file...";
          public static readonly string ExportHistoryToPDFDescription = "Export history to PDF file...";
          public static readonly string ProjectReportDescription = "Export project to a pdf file...";
