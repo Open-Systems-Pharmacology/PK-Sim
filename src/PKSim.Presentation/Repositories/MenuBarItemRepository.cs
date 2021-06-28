@@ -336,12 +336,6 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<ImportConcentrationDataCommand>()
             .WithIcon(ApplicationIcons.ObservedData);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddObservedDataFromConfiguration)
-            .WithId(MenuBarItemIds.AddObservedDataFromConfiguration)
-            .WithDescription(PKSimConstants.UI.AddObservedDataFromConfigurationDescription)
-            .WithCommand<ImportConcentrationDataFromConfigurationCommand>()
-            .WithIcon(ApplicationIcons.ObservedData);
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ProjectReport)
             .WithId(MenuBarItemIds.ProjectReport)
             .WithDescription(PKSimConstants.UI.ProjectReportDescription)
