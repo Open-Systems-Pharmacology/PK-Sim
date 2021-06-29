@@ -21,6 +21,8 @@ using PKSim.Core.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
+using OSPSuite.Core.Events;
+using OSPSuite.Utility.Events;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -36,14 +38,15 @@ namespace PKSim.Infrastructure.Services
       private readonly IObservedDataTask _observedDataTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IDialogCreator _dialogCreator;
-      private readonly OSPSuite.Utility.Container.IContainer _container;
+      private readonly IContainer _container;
       private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
+      private readonly IEventPublisher _eventPublisher;
 
       public ImportObservedDataTask(IDataImporter dataImporter, IExecutionContext executionContext,
          IDimensionRepository dimensionRepository, IBuildingBlockRepository buildingBlockRepository, ISpeciesRepository speciesRepository,
          IDefaultIndividualRetriever defaultIndividualRetriever, IRepresentationInfoRepository representationInfoRepository,
          IObservedDataTask observedDataTask, IParameterChangeUpdater parameterChangeUpdater, IDialogCreator dialogCreator, IContainer container,
-         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository)
+         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository, IEventPublisher eventPublisher)
       {
          _dataImporter = dataImporter;
          _executionContext = executionContext;
@@ -57,6 +60,7 @@ namespace PKSim.Infrastructure.Services
          _dialogCreator = dialogCreator;
          _container = container;
          _modelingXmlSerializerRepository = modelingXmlSerializerRepository;
+         _eventPublisher = eventPublisher;
       }
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
@@ -128,6 +132,7 @@ namespace PKSim.Infrastructure.Services
                      existingColumn.Values = column.Values;
                }
             }
+            _eventPublisher.PublishEvent(new ObservedDataValueChangedEvent(existingDataSet));
          }
       }
 
