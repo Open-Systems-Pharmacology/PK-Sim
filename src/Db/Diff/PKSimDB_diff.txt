@@ -1,3 +1,9 @@
-UPDATE tab_calculation_method_rates SET formula='Min(1 / (1 + (BindingPartner = Albumin ? AlbuminOntgenyFactor : (BindingPartner = Agp ? AgpOntogenyFactor : 1) ) * (1 - fu_ref) / fu_ref) * PlasmaProteinScaleFactor; 1)' WHERE calculation_method='DistributionInVitro_PKSim' AND formula_rate='PARAM_fu';
-UPDATE tab_parameters SET description='Half-life of the protein turnover in the intestine' WHERE parameter_name='t1/2 (intestine)';
-UPDATE tab_parameters SET description='Half-life of the protein turnover in the liver' WHERE parameter_name='t1/2 (liver)';
+UPDATE tab_container_names SET icon_name='Fetus' WHERE container_type='ORGAN' AND container_name='AmnioticFluid';
+UPDATE tab_container_names SET icon_name='ArterialBlood' WHERE container_type='ORGAN' AND container_name='ArterialBlood_UmbilicalCord';
+UPDATE tab_container_names SET icon_name='Breasts' WHERE container_type='ORGAN' AND container_name='Breasts';
+UPDATE tab_container_names SET icon_name='Endometrium' WHERE container_type='ORGAN' AND container_name='Endometrium';
+UPDATE tab_container_names SET icon_name='Fetus' WHERE container_type='ORGAN' AND container_name='Fetus';
+UPDATE tab_container_names SET icon_name='Myometrium' WHERE container_type='ORGAN' AND container_name='Myometrium';
+UPDATE tab_container_names SET icon_name='Placenta' WHERE container_type='ORGAN' AND container_name='PlacentaFetal';
+UPDATE tab_container_names SET icon_name='Placenta' WHERE container_type='ORGAN' AND container_name='PlacentaMaternal';
+UPDATE tab_container_names SET icon_name='VenousBlood' WHERE container_type='ORGAN' AND container_name='VenousBlood_UmbilicalCord';
