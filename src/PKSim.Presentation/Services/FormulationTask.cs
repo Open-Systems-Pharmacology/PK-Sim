@@ -16,6 +16,7 @@ using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -33,15 +34,17 @@ namespace PKSim.Presentation.Services
       private readonly IDataImporter _dataImporter;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IDialogCreator _dialogCreator;
 
       public FormulationTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController, IDataImporter dataImporter,
-         IDimensionRepository dimensionRepository, IFormulaFactory formulaFactory)
+         IDimensionRepository dimensionRepository, IFormulaFactory formulaFactory, IDialogCreator dialogCreator)
          : base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Formulation)
       {
          DimensionRepository = dimensionRepository;
          _dataImporter = dataImporter;
          _dimensionRepository = dimensionRepository;
          _formulaFactory = formulaFactory;
+         _dialogCreator = dialogCreator;
       }
 
       public override Formulation AddToProject()
@@ -76,7 +79,12 @@ namespace PKSim.Presentation.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).DataRepositories.FirstOrDefault();
+         var importedFormula = _dataImporter.ImportDataSets(
+            new List<MetaDataCategory>(), 
+            getColumnInfos(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         ).DataRepositories.FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 
