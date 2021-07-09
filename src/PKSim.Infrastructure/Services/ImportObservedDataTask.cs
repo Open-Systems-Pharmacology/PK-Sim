@@ -216,7 +216,13 @@ namespace PKSim.Infrastructure.Services
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
          dataImporterSettings.PromptForConfirmation = propmtUser;
 
-         var importedObservedData = _dataImporter.ImportFromConfiguration(configuration, (IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
+         var importedObservedData = _dataImporter.ImportFromConfiguration(
+            configuration, 
+            (IReadOnlyList<MetaDataCategory>)metaDataCategories, 
+            importConfiguration(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         );
          return importedObservedData;
       }
 
@@ -230,7 +236,12 @@ namespace PKSim.Infrastructure.Services
          var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
          populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
 
-         var importedObservedData = _dataImporter.ImportDataSets((IReadOnlyList<MetaDataCategory>)metaDataCategories, importConfiguration(), dataImporterSettings);
+         var importedObservedData = _dataImporter.ImportDataSets(
+            (IReadOnlyList<MetaDataCategory>)metaDataCategories, 
+            importConfiguration(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         );
 
          if (importedObservedData.DataRepositories == null || importedObservedData.Configuration == null) return;
 

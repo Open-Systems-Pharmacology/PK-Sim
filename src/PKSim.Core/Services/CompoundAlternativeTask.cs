@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
@@ -30,6 +31,7 @@ namespace PKSim.Core.Services
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IDataImporter _dataImporter;
+      private readonly IDialogCreator _dialogCreator;
 
       public CompoundAlternativeTask(
          IParameterAlternativeFactory parameterAlternativeFactory,
@@ -39,7 +41,8 @@ namespace PKSim.Core.Services
          IParameterTask parameterTask,
          IBuildingBlockRepository buildingBlockRepository,
          IDimensionRepository dimensionRepository,
-         IDataImporter dataImporter)
+         IDataImporter dataImporter,
+         IDialogCreator dialogCreator)
       {
          _parameterAlternativeFactory = parameterAlternativeFactory;
          _executionContext = executionContext;
@@ -49,6 +52,7 @@ namespace PKSim.Core.Services
          _buildingBlockRepository = buildingBlockRepository;
          _dimensionRepository = dimensionRepository;
          _dataImporter = dataImporter;
+         _dialogCreator = dialogCreator;
       }
 
       public ParameterAlternative CreateSolubilityTableAlternativeFor(ParameterAlternativeGroup solubilityAlternativeGroup, string name)
@@ -183,7 +187,12 @@ namespace PKSim.Core.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedFormula = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).DataRepositories.FirstOrDefault();
+         var importedFormula = _dataImporter.ImportDataSets(
+            new List<MetaDataCategory>(), 
+            getColumnInfos(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         ).DataRepositories.FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 

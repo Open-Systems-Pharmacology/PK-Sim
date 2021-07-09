@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
@@ -34,6 +35,7 @@ namespace PKSim.Presentation
       protected IBuildingBlockRepository _buildingBlockRepository;
       private IDimensionRepository _dimensionRepository;
       protected IDataImporter _dataImporter;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -45,9 +47,10 @@ namespace PKSim.Presentation
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _dataImporter = A.Fake<IDataImporter>();
          _compoundFactory = new CompoundFactoryForSpecs();
+         _dialogCreator = A.Fake<IDialogCreator>();
          sut = new CompoundAlternativeTask(_parameterAlternativeFactory,
             _executionContext, _compoundFactory, _formulaFactory, _parameterTask,
-            _buildingBlockRepository, _dimensionRepository, _dataImporter);
+            _buildingBlockRepository, _dimensionRepository, _dataImporter, _dialogCreator);
       }
 
       protected class CompoundFactoryForSpecs : ICompoundFactory
@@ -441,7 +444,11 @@ namespace PKSim.Presentation
          base.Context();
          _solubilityDataRepository = DomainHelperForSpecs.ObservedData("SolubilityTable");
          A.CallTo(() => _formulaFactory.CreateTableFormula(A<bool>._)).Returns(new TableFormula {UseDerivedValues = true});
-         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored)).Returns((new List<DataRepository>() { _solubilityDataRepository }, null));
+         A.CallTo(() => _dataImporter.ImportDataSets(
+            A<IReadOnlyList<MetaDataCategory>>.Ignored, 
+            A<IReadOnlyList<ColumnInfo>>.Ignored, 
+            A<DataImporterSettings>.Ignored,
+            A<string>.Ignored)).Returns((new List<DataRepository>() { _solubilityDataRepository }, null));
       }
 
       protected override void Because()

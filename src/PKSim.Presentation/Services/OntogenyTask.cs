@@ -16,6 +16,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -28,9 +29,10 @@ namespace PKSim.Presentation.Services
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IEntityTask _entityTask;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IDialogCreator _dialogCreator;
 
       protected OntogenyTask(IExecutionContext executionContext, IApplicationController applicationController, IDataImporter dataImporter,
-         IDimensionRepository dimensionRepository, IOntogenyRepository ontogenyRepository, IEntityTask entityTask, IFormulaFactory formulaFactory)
+         IDimensionRepository dimensionRepository, IOntogenyRepository ontogenyRepository, IEntityTask entityTask, IFormulaFactory formulaFactory, IDialogCreator dialogCreator)
       {
          _executionContext = executionContext;
          _applicationController = applicationController;
@@ -39,7 +41,8 @@ namespace PKSim.Presentation.Services
          _ontogenyRepository = ontogenyRepository;
          _entityTask = entityTask;
          _formulaFactory = formulaFactory;
-      }
+         _dialogCreator = dialogCreator;
+   }
 
       public abstract ICommand SetOntogenyForMolecule(IndividualMolecule molecule, Ontogeny ontogeny, TSimulationSubject simulationSubject);
 
@@ -62,7 +65,12 @@ namespace PKSim.Presentation.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var data = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings).DataRepositories.FirstOrDefault();
+         var data = _dataImporter.ImportDataSets(
+            new List<MetaDataCategory>(), 
+            getColumnInfos(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         ).DataRepositories.FirstOrDefault();
          if (data == null)
             return null;
 
