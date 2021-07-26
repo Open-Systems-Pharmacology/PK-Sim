@@ -85,6 +85,32 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_editing_an_analysis_for_a_simulation_population_comparison : concern_for_CreateTimeProfileAnalysisPresenter
+   {
+      private PopulationSimulationComparison _populationSimulationComparison;
+      private PopulationAnalysisCovariateField _simulationNameField;
+
+      protected override void Context()
+      {
+         base.Context();
+         _populationSimulationComparison = new PopulationSimulationComparison();
+         _simulationNameField = new PopulationAnalysisCovariateField {Name = CoreConstants.Covariates.SIMULATION_NAME};
+         _populationAnalysisChart.PopulationAnalysis.Add(_simulationNameField);
+         A.CallTo(() => _populationAnalysisFieldFactory.CreateFor(CoreConstants.Covariates.SIMULATION_NAME, _populationSimulationComparison)).Returns(_simulationNameField);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_populationSimulationComparison, _populationAnalysisChart);
+      }
+
+      [Observation]
+      public void should_not_add_the_simulation_analysis_field_if_it_already_exists()
+      {
+         A.CallTo(() => _populationAnalysisFieldFactory.CreateFor(CoreConstants.Covariates.SIMULATION_NAME, _populationSimulationComparison)).MustNotHaveHappened();
+      }
+   }
+
    public class When_creating_an_analysis_for_a_simulation_population : concern_for_CreateTimeProfileAnalysisPresenter
    {
       private PopulationSimulation _populationSimulation;
