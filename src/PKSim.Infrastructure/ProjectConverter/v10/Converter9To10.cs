@@ -246,7 +246,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
 
          userSettings.ChartBackColor = Color.White;
          _converted = true;
-
       }
    }
 }
