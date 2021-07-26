@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Xml.Linq;
 using OSPSuite.Core.Converters.v10;
@@ -13,6 +14,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation;
 
 namespace PKSim.Infrastructure.ProjectConverter.v10
 {
@@ -20,7 +22,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
       IVisitor<Individual>,
       IVisitor<Population>,
       IVisitor<Simulation>,
-      IVisitor<ParameterIdentification>
+      IVisitor<ParameterIdentification>,
+      IVisitor<IUserSettings>
 
    {
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
@@ -234,6 +237,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          newParameter.DefaultValue = oldParameter.DefaultValue;
          newParameter.IsDefault = oldParameter.IsDefault;
          newParameter.ValueOrigin.UpdateAllFrom(oldParameter.ValueOrigin);
+      }
+
+      public void Visit(IUserSettings userSettings)
+      {
+         if (userSettings.ChartBackColor != Color.Transparent)
+            return;
+
+         userSettings.ChartBackColor = Color.White;
+         _converted = true;
       }
    }
 }
