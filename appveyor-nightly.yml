@@ -12,7 +12,7 @@ dotnet_csproj:
   version: '$(ospsuite_version).$(build_number)'
   assembly_version: '$(ospsuite_version).$(build_number)'
   file_version: '$(ospsuite_version).$(build_number)'
-  informational_version: '$(ospsuite_version).$(build_number) - EAP'
+  informational_version: '$(ospsuite_version).$(build_number) - BETA'
 
 
 clone_depth: 1
