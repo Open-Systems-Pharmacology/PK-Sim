@@ -33,10 +33,10 @@
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.287" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.299" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="10.0.287" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.299" />
   </ItemGroup>
 
   <ItemGroup>
