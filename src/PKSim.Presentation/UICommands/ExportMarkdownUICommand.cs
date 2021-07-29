@@ -21,6 +21,9 @@ namespace PKSim.Presentation.UICommands
       protected override async void PerformExecute()
       {
          var file = _dialogCreator.AskForFileToSave("Select markdown file", Constants.Filter.FileFilter("Markdown File", CoreConstants.Filter.MARKDOWN_EXTENSION), Constants.DirectoryKey.REPORT, Subject.Name);
+         if (string.IsNullOrEmpty(file))
+            return;
+
          await _markdownReporterTask.SecureAwait(x => _markdownReporterTask.ExportToMarkdown(Subject, file));
       }
    }
