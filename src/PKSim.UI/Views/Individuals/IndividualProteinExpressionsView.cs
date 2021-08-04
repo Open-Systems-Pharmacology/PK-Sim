@@ -33,7 +33,9 @@ namespace PKSim.UI.Views.Individuals
          layoutItemPanelLocalization.TextVisible = false;
          layoutItemPanelExpressionParameters.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
+         layoutGroupMoleculeProperties.ExpandButtonVisible = true;
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.Localization;
+         layoutGroupMoleculeLocalization.ExpandButtonVisible = true;
       }
    }
 }
