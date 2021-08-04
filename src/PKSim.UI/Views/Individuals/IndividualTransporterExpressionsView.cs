@@ -1,6 +1,5 @@
 ﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -61,7 +60,9 @@ namespace PKSim.UI.Views.Individuals
          layoutItemMoleculeProperties.TextVisible = false;
          layoutItemExpressionParameters.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
+         layoutGroupMoleculeProperties.ExpandButtonVisible = true;
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.DefaultTransporterDirection;
+         layoutGroupMoleculeLocalization.ExpandButtonVisible = true;
       }
    }
 }
