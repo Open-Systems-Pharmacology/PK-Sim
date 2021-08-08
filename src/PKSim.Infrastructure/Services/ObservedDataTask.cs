@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
@@ -27,9 +28,8 @@ namespace PKSim.Infrastructure.Services
       private readonly IExecutionContext _executionContext;
       private readonly IApplicationController _applicationController;
       private readonly ITemplateTask _templateTask;
-      private readonly IObservedDataPersistor _observedDataPersistor;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
-
+      private readonly IPKMLPersistor _pkmlPersistor;
 
       public ObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -40,15 +40,15 @@ namespace PKSim.Infrastructure.Services
          ITemplateTask templateTask,
          IContainerTask containerTask,
          IParameterChangeUpdater parameterChangeUpdater,
-         IObservedDataPersistor observedDataPersistor,
+         IPKMLPersistor pkmlPersistor,
          IObjectTypeResolver objectTypeResolver) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
          _applicationController = applicationController;
          _templateTask = templateTask;
-         _observedDataPersistor = observedDataPersistor;
          _parameterChangeUpdater = parameterChangeUpdater;
+         _pkmlPersistor = pkmlPersistor;
       }
 
       public override void Rename(DataRepository observedData)
@@ -77,7 +77,7 @@ namespace PKSim.Infrastructure.Services
          var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportObservedDataToPkml, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, observedData.Name);
          if (string.IsNullOrEmpty(file)) return;
 
-         _observedDataPersistor.Save(observedData, file);
+         _pkmlPersistor.SaveToPKML(observedData, file);
       }
 
       public void LoadFromSnapshot()
