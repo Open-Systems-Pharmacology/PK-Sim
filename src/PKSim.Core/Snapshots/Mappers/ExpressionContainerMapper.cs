@@ -50,7 +50,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var snapshot = await SnapshotFrom(expressionContainer, x =>
          {
-            x.Name = expressionContainer.LogicalContainerName;
+            x.Name = string.IsNullOrEmpty(expressionContainer.LogicalContainerName) ? expressionContainer.Name : expressionContainer.LogicalContainerName;
             x.CompartmentName = expressionContainer.CompartmentName;
             x.TransportDirection = transportedExpressionContainer.TransportDirection;
          });
@@ -86,7 +86,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return null;
 
          var isV9Format = !snapshot.TransportDirection.HasValue;
-         
+
          var expressionsContainers = expressionContainerParameters.OfType<TransporterExpressionContainer>()
             .Where(queryPredicate(isV9Format, snapshot))
             .Where(x => x.TransportDirection != TransportDirectionId.None)
@@ -125,7 +125,10 @@ namespace PKSim.Core.Snapshots.Mappers
          if (isV9Format)
             return x => x.LogicalContainerName == snapshot.Name || x.CompartmentName == snapshot.Name;
 
-         return x => x.LogicalContainerName == snapshot.Name && x.CompartmentName == snapshot.CompartmentName;
+         //This is a real compartment
+         return x => (x.LogicalContainerName == snapshot.Name && x.CompartmentName == snapshot.CompartmentName) ||
+                     // this is a surrogate compartment. 
+                     (string.IsNullOrEmpty(x.LogicalContainerName) && x.Name == snapshot.Name);
       }
    }
 }

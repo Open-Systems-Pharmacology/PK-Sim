@@ -103,7 +103,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
                break;
             case IndividualTransporter transporter:
-               transporter.TransportType = ModelValueFor(snapshot.TransportType);
+               _moleculeExpressionTask.SetTransporterTypeFor(transporter, ModelValueFor(snapshot.TransportType));
                break;
          }
       }
