@@ -29,6 +29,7 @@ namespace PKSim.Core
       protected Individual _individual;
       protected ExpressionContainerMapperContext _expressionContainerMapperContext;
       protected IOSPSuiteLogger _logger;
+      protected TransporterExpressionContainer _bloodCellsExpressionContainer;
 
       protected override Task Context()
       {
@@ -48,16 +49,18 @@ namespace PKSim.Core
          _transporterExpressionContainer = new TransporterExpressionContainer().WithName("TRANS");
          _transporterExpressionContainer.TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular;
 
+         _bloodCellsExpressionContainer = new TransporterExpressionContainer().WithName(CoreConstants.Compartment.BLOOD_CELLS);
+         _bloodCellsExpressionContainer.TransportDirection = TransportDirectionId.BiDirectionalBloodCellsPlasma;
+
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 
          _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
-
          _expressionContainerMapperContext = new ExpressionContainerMapperContext
          {
          };
 
          _enzyme = new IndividualEnzyme {_moleculeExpressionContainer};
-         _transporter = new IndividualTransporter {_transporterExpressionContainer};
+         _transporter = new IndividualTransporter {_transporterExpressionContainer, _bloodCellsExpressionContainer };
          return _completed;
       }
    }
@@ -75,6 +78,34 @@ namespace PKSim.Core
          _snapshot.ShouldBeNull();
       }
    }
+
+   public class When_mapping_a_surrogate_compartment : concern_for_ExpressionContainerMapper
+   {
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_bloodCellsExpressionContainer);
+      }
+
+      [Observation]
+      public void should_set_the_name_to_the_name_of_the_container()
+      {
+         _snapshot.Name.ShouldBeEqualTo(_bloodCellsExpressionContainer.Name);
+      }
+
+      [Observation]
+      public void should_set_the_compartment_name_to_null()
+      {
+         _snapshot.CompartmentName.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_update_the_transport_direction()
+      {
+         _snapshot.TransportDirection.ShouldBeEqualTo(_bloodCellsExpressionContainer.TransportDirection);
+      }
+
+   }
+
 
    public class when_updating_a_undefined_expression_container_from_snapshot : concern_for_ExpressionContainerMapper
    {

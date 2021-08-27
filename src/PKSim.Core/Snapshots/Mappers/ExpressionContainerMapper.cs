@@ -48,10 +48,12 @@ namespace PKSim.Core.Snapshots.Mappers
          if (transportedExpressionContainer.TransportDirection == TransportDirectionId.None)
             return null;
 
+         var isSurrogate = string.IsNullOrEmpty(expressionContainer.LogicalContainerName);
          var snapshot = await SnapshotFrom(expressionContainer, x =>
          {
-            x.Name = string.IsNullOrEmpty(expressionContainer.LogicalContainerName) ? expressionContainer.Name : expressionContainer.LogicalContainerName;
-            x.CompartmentName = expressionContainer.CompartmentName;
+            x.Name = isSurrogate ? expressionContainer.Name : expressionContainer.LogicalContainerName;
+            // No compartment for surrogate container
+            x.CompartmentName = isSurrogate ? null :  expressionContainer.CompartmentName;
             x.TransportDirection = transportedExpressionContainer.TransportDirection;
          });
 
