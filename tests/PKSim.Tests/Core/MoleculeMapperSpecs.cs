@@ -276,7 +276,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_expected_transporter_with_the_matching_properties()
       {
-         _newTransporter.TransportType.ShouldBeEqualTo(TransportType.PgpLike);
+         A.CallTo(() => _moleculeExpressionTask.SetTransporterTypeFor(_newTransporter, TransportType.PgpLike)).MustHaveHappened();
       }
    }
 
