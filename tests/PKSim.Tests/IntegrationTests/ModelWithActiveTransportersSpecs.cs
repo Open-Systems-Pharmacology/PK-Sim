@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.IntegrationTests
 {
@@ -20,6 +20,8 @@ namespace PKSim.IntegrationTests
 
       protected abstract string CompoundTransportName { get; }
 
+      protected TransportType _transportType = TransportType.Passive;
+
       public override void GlobalContext()
       {
          base.GlobalContext();
@@ -28,7 +30,7 @@ namespace PKSim.IntegrationTests
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
          var transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
 
-         var transporter = transporterFactory.CreateFor(individual, transporterName, TransportType.Efflux);
+         var transporter = transporterFactory.CreateFor(individual, transporterName, _transportType);
          individual.AddMolecule(transporter);
 
          var compound = DomainFactoryForSpecs.CreateStandardCompound().WithName(_drugName);
@@ -70,9 +72,15 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_creating_a_model_with_active_transport_specific_MM : When_creating_a_model_with_active_transporter
+   public class When_creating_a_model_with_active_efflux_specific_MM : When_creating_a_model_with_active_transporter
    {
       protected override string CompoundTransportName => CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM;
+
+      public override void GlobalContext()
+      {
+         _transportType = TransportType.Efflux;
+         base.GlobalContext();
+      }
 
       [Observation]
       public void Sum_of_passive_processes_to_duodenum_cell_should_have_one_reference()
@@ -87,7 +95,6 @@ namespace PKSim.IntegrationTests
          var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of active process rates mucosa to lumen");
          formula.ObjectReferences.Count.ShouldBeEqualTo(1);
       }
-
 
       [Observation]
       public void Sum_of_active_processes_from_lumen_cell_should_have_zero_reference()
@@ -123,6 +130,66 @@ namespace PKSim.IntegrationTests
          NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificIntracellularToInterstitial_MM);
       }
    }
+
+   public class When_creating_a_model_with_active_influx_specific_MM : When_creating_a_model_with_active_transporter
+   {
+      protected override string CompoundTransportName => CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM;
+
+      public override void GlobalContext()
+      {
+         _transportType = TransportType.Influx;
+         base.GlobalContext();
+      }
+
+      [Observation]
+      public void Sum_of_passive_processes_to_duodenum_cell_should_have_one_reference()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of passive process rates");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void Sum_of_active_processes_to_duodenum_cell_should_have_zero_reference()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of active process rates mucosa to lumen");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void Sum_of_active_processes_from_lumen_cell_should_have_one_reference()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of active process rates lumen to mucosa");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void Sum_of_passive_processes_to_duodenum_plasma_should_have_one_reference()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_pls", "Sum of passive process rates");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void Sum_of_active_processes_to_duodenum_plasma_should_have_no_references()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_pls", "Sum of active process rates mucosa to lumen");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void Sum_of_active_processes_from_duodenum_plasma_should_have_no_references()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_pls", "Sum of active process rates lumen to mucosa");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void Should_create_active_influx_specific_transport_in_bone()
+      {
+         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveInfluxSpecificInterstitialToInterstitial_MM);
+      }
+   }
+
 
    public class When_creating_model_with_active_transporter_Hill : When_creating_a_model_with_active_transporter
    {
