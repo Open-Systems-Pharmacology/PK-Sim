@@ -213,7 +213,7 @@ namespace PKSim.Infrastructure.Services
          { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
-         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
+         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
          dataImporterSettings.PromptForConfirmation = propmtUser;
 
          var importedObservedData = _dataImporter.ImportFromConfiguration(
@@ -231,7 +231,7 @@ namespace PKSim.Infrastructure.Services
          var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
-         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULARWEIGHT;
+         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
 
          var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
          populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);

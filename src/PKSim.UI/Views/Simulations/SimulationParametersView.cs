@@ -1,10 +1,9 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
-using PKSim.Presentation.Presenters.Simulations;
-using OSPSuite.Presentation;
+﻿using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.Assets;
+using PKSim.Presentation.Presenters.Simulations;
 using ISimulationParametersView = PKSim.Presentation.Views.Simulations.ISimulationParametersView;
 
 namespace PKSim.UI.Views.Simulations
@@ -25,12 +24,8 @@ namespace PKSim.UI.Views.Simulations
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Parameters;
 
-      public void AddParametersView(IView view)
-      {
-         this.FillWith(view);
-      }
+      public void AddParametersView(IView view) => this.FillWith(view);
 
       public override string Caption => PKSimConstants.UI.Parameters;
-
    }
 }

@@ -34,7 +34,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
          throw new NotImplementedException();
       }
 
-      public ImporterConfiguration ConfigurationFromData(string dataPath, IReadOnlyList<ColumnInfo> columnInfos, IReadOnlyList<MetaDataCategory> metaDataCategories)
+      public ImporterConfiguration ConfigurationFromData(string dataPath, IReadOnlyList<ColumnInfo> columnInfos, IReadOnlyList<MetaDataCategory> metaDataCategories, string sheetName = null)
       {
          throw new NotImplementedException();
       }
