@@ -72,10 +72,7 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_a_model_with_active_transport_specific_MM : When_creating_a_model_with_active_transporter
    {
-      protected override string CompoundTransportName
-      {
-         get { return CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM; }
-      }
+      protected override string CompoundTransportName => CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM;
 
       [Observation]
       public void Sum_of_passive_processes_to_duodenum_cell_should_have_one_reference()
