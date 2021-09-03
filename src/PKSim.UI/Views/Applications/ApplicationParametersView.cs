@@ -1,28 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.UI;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Applications;
 using PKSim.Presentation.Presenters.Applications;
 using PKSim.Presentation.Views.Applications;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.UI.Binders;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
 using BaseView = DevExpress.XtraGrid.Views.Base.BaseView;
-using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.Applications
 {
@@ -49,10 +46,10 @@ namespace PKSim.UI.Views.Applications
          mainView.ShowColumnHeaders = false;
 
          gridViewParameters.OptionsView.ShowGroupPanel = false;
+         gridViewParameters.MultiSelect = false;
          gridViewParameters.SynchronizeClones = false;
          gridViewParameters.ShowColumnHeaders = true;
          gridViewParameters.ShowColumnChooser = false;
-
          gridViewParameters.HiddenEditor += (o, e) => { _comboBoxUnit.Visible = false; };
       }
 
@@ -78,12 +75,12 @@ namespace PKSim.UI.Views.Applications
          if (_cache.Contains(e.View))
             return;
 
-         var gridview = e.View.DowncastTo<GridView>();
+         var gridView = e.View.DowncastTo<GridView>();
          var dataSource = e.View.DataSource as IEnumerable<IParameterDTO>;
-         var binder = new GridViewBinder<IParameterDTO>(gridview) {BindingMode = BindingMode.OneWay};
+         var binder = new GridViewBinder<IParameterDTO>(gridView) {BindingMode = BindingMode.OneWay};
          initParameterBinding(binder);
          binder.BindToSource(dataSource);
-         _cache.Add(gridview, binder);
+         _cache.Add(gridView, binder);
       }
 
       public void ExpandAllRows(GridView view)
@@ -150,8 +147,8 @@ namespace PKSim.UI.Views.Applications
       public void BindTo(IEnumerable<ApplicationDTO> allApplications)
       {
          _gridApplicationsBinder.BindToSource(allApplications);
-         ExpandAllRows(mainView);
          mainView.RefreshData();
+         ExpandAllRows(mainView);
       }
 
       public bool ParameterNameEditable
