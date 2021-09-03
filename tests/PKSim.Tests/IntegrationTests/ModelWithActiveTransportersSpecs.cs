@@ -186,7 +186,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void Should_create_active_influx_specific_transport_in_bone()
       {
-         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveInfluxSpecificInterstitialToInterstitial_MM);
+         NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveInfluxSpecificInterstitialToIntracellular_MM);
       }
    }
 
