@@ -140,9 +140,13 @@ namespace PKSim.Core.Services
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
 
+         //By default, active transport in mucosa are always apical
+         var defaultExpressionApical = organ.IsInMucosa() ? CoreConstants.Rate.ONE_RATE :
+            transporter.TransportType == TransportType.Influx ? CoreConstants.Rate.ZERO_RATE : CoreConstants.Rate.ONE_RATE;
+
          addContainerExpression(organ.Container(INTRACELLULAR), transporter, transportDirection,
             RelExpParam(REL_EXP),
-            FractionParam(FRACTION_EXPRESSED_APICAL, transporter.TransportType==TransportType.Influx ? CoreConstants.Rate.ZERO_RATE :   CoreConstants.Rate.ONE_RATE),
+            FractionParam(FRACTION_EXPRESSED_APICAL, defaultExpressionApical),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
          );
       }

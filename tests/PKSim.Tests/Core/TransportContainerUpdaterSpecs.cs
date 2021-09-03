@@ -17,6 +17,7 @@ namespace PKSim.Core
       protected IEventPublisher _eventPublisher;
       protected ITransportDirectionRepository _transportDirectionRepository;
       protected IParameter _fractionExpressedApical;
+      protected IParameter _fractionExpressedApicalMucosa;
       protected ISimulationSubject _individual;
       protected TransporterExpressionContainer _transporterWithTemplate;
       protected TransporterExpressionContainer _transporterWithoutTemplate;
@@ -24,6 +25,7 @@ namespace PKSim.Core
       protected readonly List<TransporterContainerTemplate> _allTransporterTemplates = new List<TransporterContainerTemplate>();
       protected TransporterContainerTemplate _transporterContainerTemplate;
       protected IndividualTransporter _transporter;
+      private TransporterExpressionContainer _transporterInMucosa;
 
       protected override void Context()
       {
@@ -32,32 +34,37 @@ namespace PKSim.Core
          _transportDirectionRepository = A.Fake<ITransportDirectionRepository>();
          sut = new TransportContainerUpdater(_repository, _eventPublisher);
          _fractionExpressedApical = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
+         _fractionExpressedApicalMucosa = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
          _individual = A.Fake<ISimulationSubject>();
          _individual.Species.Name = _species;
-         _transporter = new IndividualTransporter { TransportType = TransportType.Efflux, Name = "toto" };
+         _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "toto"};
          var organism = new Organism();
+         var mucosa = new Container().WithName(CoreConstants.Compartment.MUCOSA).WithParentContainer(organism);
          var liver = new Container().WithName(CoreConstants.Organ.LIVER).WithParentContainer(organism);
          var liverCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(liver);
          var kidney = new Container().WithName(CoreConstants.Organ.KIDNEY).WithParentContainer(organism);
          var kidneyCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(kidney);
-         _transporterWithTemplate = new TransporterExpressionContainer { TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular }
+         _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}
             .WithParentContainer(liverCell);
          _transporterWithoutTemplate = new TransporterExpressionContainer
-         { TransportDirection = TransportDirectionId.EffluxIntracellularToInterstitial }
+               {TransportDirection = TransportDirectionId.EffluxIntracellularToInterstitial}
             .WithParentContainer(kidneyCell);
 
+         _transporterInMucosa = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}
+            .WithParentContainer(mucosa);
+         _transporterInMucosa.Add(_fractionExpressedApicalMucosa);
          _transporterWithoutTemplate.Add(_fractionExpressedApical);
-         A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter))
-            .Returns(new[] { _transporterWithTemplate, _transporterWithoutTemplate, });
 
-         _transporterContainerTemplate = new TransporterContainerTemplate { TransportType = TransportType.Influx };
+         A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter))
+            .Returns(new[] {_transporterWithTemplate, _transporterWithoutTemplate, _transporterInMucosa });
+
+         _transporterContainerTemplate = new TransporterContainerTemplate {TransportType = TransportType.Influx};
          _allTransporterTemplates.Add(_transporterContainerTemplate);
 
          A.CallTo(() => _repository.HasTransporterTemplateFor(_species, _transporter.Name)).Returns(true);
          A.CallTo(() => _repository.TransportTypeFor(_species, _transporter.Name)).Returns(TransportType.Influx);
          A.CallTo(() => _repository.TransportersFor(_species, liver.Name, _transporter.Name)).Returns(_allTransporterTemplates);
          A.CallTo(() => _repository.TransportersFor(_species, kidney.Name, _transporter.Name)).Returns(new List<TransporterContainerTemplate>());
-
       }
    }
 
@@ -93,7 +100,7 @@ namespace PKSim.Core
       }
    }
 
-   public class  When_asked_to_set_the_default_settings_for_a_transporter_for_which_template_does_not_exist_in_the_db : concern_for_TransportContainerUpdater
+   public class When_asked_to_set_the_default_settings_for_a_transporter_for_which_template_does_not_exist_in_the_db : concern_for_TransportContainerUpdater
    {
       private const string _transporterName = "toto";
 
@@ -128,11 +135,11 @@ namespace PKSim.Core
    {
       protected override void Because()
       {
-         sut.SetDefaultSettingsForTransporter(_individual, _transporter,TransportType.Efflux);
+         sut.SetDefaultSettingsForTransporter(_individual, _transporter, TransportType.Efflux);
       }
 
       [Observation]
-      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_one ()
+      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_one()
       {
          _fractionExpressedApical.Value.ShouldBeEqualTo(1);
       }
@@ -146,19 +153,26 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_zero()
+      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_zero_in_all_non_mucosa_compartment()
       {
          _fractionExpressedApical.Value.ShouldBeEqualTo(0);
       }
+
+      [Observation]
+      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_one_in_all_mucosa_compartment()
+      {
+         _fractionExpressedApicalMucosa.Value.ShouldBeEqualTo(1);
+      }
    }
 
-   public class When_updating_the_transport_type_from_efflux_to_influx_and_the_fraction_expressed_epithelial_was_changed_by_the_user: concern_for_TransportContainerUpdater
+   public class When_updating_the_transport_type_from_efflux_to_influx_and_the_fraction_expressed_epithelial_was_changed_by_the_user : concern_for_TransportContainerUpdater
    {
       protected override void Context()
       {
          base.Context();
          _fractionExpressedApical.Value = 0.5;
       }
+
       protected override void Because()
       {
          sut.SetDefaultSettingsForTransporter(_individual, _transporter, TransportType.Influx);

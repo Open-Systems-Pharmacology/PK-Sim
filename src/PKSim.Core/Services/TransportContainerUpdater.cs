@@ -4,6 +4,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
@@ -68,16 +69,16 @@ namespace PKSim.Core.Services
          if (!transportType.IsOneOf(TransportType.Efflux, TransportType.Influx, TransportType.PgpLike))
             return;
          
-         var fractionExpressedEpithelial = transporterContainer.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
-         if (fractionExpressedEpithelial == null)
+         var fractionExpressedApical = transporterContainer.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
+         if (fractionExpressedApical == null)
             return;
 
          //value was set by the user.
-         if (fractionExpressedEpithelial.Value != 0 && fractionExpressedEpithelial.Value != 1)
+         if (fractionExpressedApical.Value != 0 && fractionExpressedApical.Value != 1)
             return;
-         
-         //Set the value according to the new transport type (Efflux + pgp one, Influx 0)
-         fractionExpressedEpithelial.Value = transportType == TransportType.Influx ? 0 : 1;
+
+         //Set the value according to the new transport type (Efflux + pgp one, Influx 0) except in mucosa where it is always apical
+         fractionExpressedApical.Value = transporterContainer.IsInMucosa() ? 1 :  transportType == TransportType.Influx ? 0 : 1;
       }
 
       private void updateTransporterContainerFromTemplate(TransporterExpressionContainer expressionContainer,
