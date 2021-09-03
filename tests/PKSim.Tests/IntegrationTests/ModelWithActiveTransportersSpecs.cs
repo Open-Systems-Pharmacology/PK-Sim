@@ -78,28 +78,43 @@ namespace PKSim.IntegrationTests
       public void Sum_of_passive_processes_to_duodenum_cell_should_have_one_reference()
       {
          var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of passive process rates");
-         formula.ObjectReferences.Count().ShouldBeEqualTo(1);
+         formula.ObjectReferences.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
       public void Sum_of_active_processes_to_duodenum_cell_should_have_one_reference()
       {
-         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of active process rates");
-         formula.ObjectReferences.Count().ShouldBeEqualTo(1);
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of active process rates mucosa to lumen");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(1);
+      }
+
+
+      [Observation]
+      public void Sum_of_active_processes_from_lumen_cell_should_have_zero_reference()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_cell", "Sum of active process rates lumen to mucosa");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(0);
       }
 
       [Observation]
       public void Sum_of_passive_processes_to_duodenum_plasma_should_have_one_reference()
       {
          var formula = GetSumFormulaFor("Lumen_duo_Duodenum_pls", "Sum of passive process rates");
-         formula.ObjectReferences.Count().ShouldBeEqualTo(1);
+         formula.ObjectReferences.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
       public void Sum_of_active_processes_to_duodenum_plasma_should_have_no_references()
       {
-         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_pls", "Sum of active process rates");
-         formula.ObjectReferences.Count().ShouldBeEqualTo(0);
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_pls", "Sum of active process rates mucosa to lumen");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void Sum_of_active_processes_from_duodenum_plasma_should_have_no_references()
+      {
+         var formula = GetSumFormulaFor("Lumen_duo_Duodenum_pls", "Sum of active process rates lumen to mucosa");
+         formula.ObjectReferences.Count.ShouldBeEqualTo(0);
       }
 
       [Observation]
