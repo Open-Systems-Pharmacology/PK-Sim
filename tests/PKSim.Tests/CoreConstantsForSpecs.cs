@@ -6,6 +6,7 @@
       {
          public static readonly string ActiveEffluxSpecificIntracellularToInterstitial = "ActiveEffluxSpecificIntracellularToInterstitial";
          public static readonly string ActiveEffluxSpecificIntracellularToInterstitial_MM = "ActiveEffluxSpecificIntracellularToInterstitial_MM";
+         public static readonly string ActiveInfluxSpecificInterstitialToIntracellular_MM = "ActiveInfluxSpecificInterstitialToIntracellular_MM";
          public static readonly string ActiveEffluxSpecificWithCompetitiveInhibitionMM = "ActiveEffluxSpecific_CompetitiveInhibition_MM";
          public static readonly string ActiveEffluxSpecificIntracellularToInterstitial_Hill = "ActiveEffluxSpecificIntracellularToInterstitial_Hill";
       }
