@@ -2,4 +2,7 @@ INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) 
 INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Intracellular','SOURCE',1);
 INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Lumen','TARGET',1);
 INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Mucosa','SOURCE',1);
+DELETE FROM tab_process_descriptor_conditions WHERE process='ActiveBiDirectionalSpecificPlasmaInterstitial_MM' AND tag='VenousBlood' AND tag_type='SOURCE';
+DELETE FROM tab_process_descriptor_conditions WHERE process='ActiveInfluxSpecificPlasmaToInterstitial_Hill' AND tag='VenousBlood' AND tag_type='SOURCE';
+DELETE FROM tab_process_descriptor_conditions WHERE process='ActiveInfluxSpecificPlasmaToInterstitial_MM' AND tag='VenousBlood' AND tag_type='SOURCE';
 UPDATE tab_processes SET create_process_rate_parameter=1 WHERE process='ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM';
