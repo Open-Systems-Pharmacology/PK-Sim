@@ -23,6 +23,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          layoutGroupMoleculeParameters.Text = PKSimConstants.UI.Properties;
+         layoutGroupMoleculeParameters.ExpandButtonVisible = true;
          layoutItemMoleculeParameters.TextVisible = false;
          layoutItemExpressionParameters.TextVisible = false;
       }
