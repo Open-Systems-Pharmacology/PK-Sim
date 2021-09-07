@@ -102,9 +102,9 @@ namespace PKSim.UI.Views.Individuals
 
       protected virtual bool ShouldMergeCell(GridColumn column, TExpressionParameterDTO p1, TExpressionParameterDTO p2, bool representSameOrgan)
       {
-         //We only merge compartment values if they are empty (across organ) or if they represent the same organ
+         //We only merge compartment values if they represent the same organ
          if (Equals(column, _colCompartment.XtraColumn))
-            return string.IsNullOrEmpty(p1.CompartmentName) || representSameOrgan;
+            return  representSameOrgan;
 
          return true;
       }
