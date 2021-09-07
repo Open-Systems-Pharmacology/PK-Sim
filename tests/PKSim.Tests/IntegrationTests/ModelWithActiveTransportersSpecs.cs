@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -70,6 +71,26 @@ namespace PKSim.IntegrationTests
 
          activeTransports.ExistsByName(transportName).ShouldBeTrue();
       }
+
+      protected void MassAbsorbedSegmentShouldHaveCorrectFormula()
+      {
+         var expectedAliases = new[]
+         {
+            "PassiveRates_para", "PassiveRates_trans", 
+            "ActiveRates_para_IN", "ActiveRates_trans_IN",
+            "ActiveRates_para_OUT", "ActiveRates_trans_OUT"
+         };
+
+         var lumen= _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.LUMEN);
+         foreach (var segment in CoreConstants.Compartment.LumenSegmentsDuodenumToRectum)
+         {
+            var massAbsorbedSegmentParameter = lumen.Container(segment).Container(_drugName).Parameter("Oral mass absorbed segment");
+            massAbsorbedSegmentParameter.RHSFormula.ShouldNotBeNull();
+            var formula = massAbsorbedSegmentParameter.RHSFormula.DowncastTo<ExplicitFormula>();
+            formula.ShouldNotBeNull();
+            expectedAliases.Each(alias=> formula.FormulaString.Contains(alias).ShouldBeTrue());
+         }
+      }
    }
 
    public class When_creating_a_model_with_active_efflux_specific_MM : When_creating_a_model_with_active_transporter
@@ -128,6 +149,12 @@ namespace PKSim.IntegrationTests
       public void Should_create_active_efflux_specific_transport_in_bone()
       {
          NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificIntracellularToInterstitial_MM);
+      }
+
+      [Observation]
+      public void MassAbsorbed_for_each_GI_segment_should_have_correct_formula()
+      {
+         MassAbsorbedSegmentShouldHaveCorrectFormula();
       }
    }
 
@@ -188,6 +215,12 @@ namespace PKSim.IntegrationTests
       {
          NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveInfluxSpecificInterstitialToIntracellular_MM);
       }
+
+      [Observation]
+      public void MassAbsorbed_for_each_GI_segment_should_have_correct_formula()
+      {
+         MassAbsorbedSegmentShouldHaveCorrectFormula();
+      }
    }
 
 
@@ -199,6 +232,12 @@ namespace PKSim.IntegrationTests
       public void Should_create_active_efflux_specific_with_competitive_inhibition_transport_in_bone()
       {
          NeighborhoodShouldContainTransport("Bone_int_Bone_cell", CoreConstantsForSpecs.ActiveTransport.ActiveEffluxSpecificIntracellularToInterstitial_Hill);
+      }
+
+      [Observation]
+      public void MassAbsorbed_for_each_GI_segment_should_have_correct_formula()
+      {
+         MassAbsorbedSegmentShouldHaveCorrectFormula();
       }
    }
 }
