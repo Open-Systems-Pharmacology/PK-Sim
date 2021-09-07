@@ -1,1 +1,3 @@
-UPDATE tab_container_names SET icon_name='Endosome' WHERE container_type='COMPARTMENT' AND container_name='Endosome';
+UPDATE tab_calculation_method_parameter_rates SET group_name='PERMEABILITY_CALIBRATION', read_only=0, visible=1 WHERE parameter_id=228;
+UPDATE tab_calculation_method_parameter_rates SET group_name='PERMEABILITY_CALIBRATION', read_only=0, visible=1 WHERE parameter_id=230;
+INSERT INTO tab_groups(group_name,display_name,description,parent_group,icon_name,visible,sequence,is_advanced,unique_id,pop_display_name,full_name) VALUES('PERMEABILITY_CALIBRATION','Intestinal permeability calibration','Intestinal permeability calibration','PERMEABILITY',NULL,1,6,1,152,NULL,'Intestinal permeability calibration');
