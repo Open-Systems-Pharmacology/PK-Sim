@@ -1,5 +1,9 @@
-INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Feces','TARGET',0);
-INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Intracellular','SOURCE',1);
-INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Lumen','TARGET',1);
-INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Mucosa','SOURCE',1);
+ALTER TABLE tab_process_descriptor_conditions ADD COLUMN comment;
+INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have,comment) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Feces','TARGET',0,NULL);
+INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have,comment) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Intracellular','SOURCE',1,NULL);
+INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have,comment) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Lumen','TARGET',1,NULL);
+INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have,comment) VALUES('ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM','Mucosa','SOURCE',1,NULL);
+UPDATE tab_process_descriptor_conditions SET comment='we have nbhoods between Venous/Plasma and TissueOrgan/Interstitial in the protein model (and we only want active transports between plasma and interstitial of the same organ)' WHERE process='ActiveBiDirectionalSpecificPlasmaInterstitial_MM' AND tag='VenousBlood' AND tag_type='SOURCE';
+UPDATE tab_process_descriptor_conditions SET comment='we have nbhoods between Venous/Plasma and TissueOrgan/Interstitial in the protein model (and we only want active transports between plasma and interstitial of the same organ)' WHERE process='ActiveInfluxSpecificPlasmaToInterstitial_Hill' AND tag='VenousBlood' AND tag_type='SOURCE';
+UPDATE tab_process_descriptor_conditions SET comment='we have nbhoods between Venous/Plasma and TissueOrgan/Interstitial in the protein model (and we only want active transports between plasma and interstitial of the same organ)' WHERE process='ActiveInfluxSpecificPlasmaToInterstitial_MM' AND tag='VenousBlood' AND tag_type='SOURCE';
 UPDATE tab_processes SET create_process_rate_parameter=1 WHERE process='ActiveBiDirectionalSpecificLumenMucosaIntracellular_MM';
