@@ -69,6 +69,8 @@ namespace PKSim.R
 
    public class When_creating_an_individual_for_the_human_species_with_a_missing_age_parameter : concern_for_IndividualFactory
    {
+      private CreateIndividualResults _result;
+
       protected override void Context()
       {
          base.Context();
@@ -76,24 +78,18 @@ namespace PKSim.R
          {
             Species = CoreConstants.Species.HUMAN,
             Population = CoreConstants.Population.ICRP,
-            Weight = new Parameter
-            {
-               Value = 75,
-               Unit = "kg",
-            },
-            Height = new Parameter
-            {
-               Value = 175,
-               Unit = "cm",
-            },
-            Gender = CoreConstants.Gender.Male
          };
       }
 
-      [Observation]
-      public void should_throw_an_exception()
+      protected override void Because()
       {
-         The.Action(() => sut.CreateIndividual(_individualCharacteristics)).ShouldThrowAn<PKSimException>();
+         _result = sut.CreateIndividual(_individualCharacteristics);
+      }
+
+      [Observation]
+      public void should_use_the_default_age_parameter()
+      {
+         _result.ShouldNotBeNull();
       }
    }
 
@@ -123,7 +119,8 @@ namespace PKSim.R
                Value = 17.5,
                Unit = "dm",
             },
-            Gender = CoreConstants.Gender.Female
+            Gender = CoreConstants.Gender.Female,
+            Seed =  1234
          };
       }
 
@@ -138,6 +135,12 @@ namespace PKSim.R
       {
          _results.DistributedParameters.Length.ShouldBeGreaterThan(0);
          _results.DistributedParameters.Last().ParameterPath.Contains("CYP3A4").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_the_seed_used()
+      {
+         _results.Seed.ShouldBeEqualTo(_individualCharacteristics.Seed.GetValueOrDefault(0));
       }
 
       [Observation]

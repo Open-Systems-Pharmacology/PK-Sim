@@ -96,7 +96,7 @@ namespace PKSim.R.Services
          //add Ontogeny parameters
          distributedParameters.AddRange(ontogenyParameters);
 
-         return new CreateIndividualResults(distributedParameters.ToArray(), derivedParameters.ToArray());
+         return new CreateIndividualResults(distributedParameters.ToArray(), derivedParameters.ToArray(), individual.Seed);
       }
 
       public DistributedParameterValueWithUnit[] DistributionsFor(IndividualCharacteristics individualCharacteristics)
@@ -113,13 +113,7 @@ namespace PKSim.R.Services
 
       private OriginData originDataFrom(Core.Snapshots.OriginData originData)
       {
-         var coreOriginData = _originDataMapper.MapToModel(originData).Result;
-
-         if (coreOriginData.SpeciesPopulation.IsAgeDependent && originData.Age == null)
-            throw new PKSimException(PKSimConstants.Error.ParameterIsRequired(CoreConstants.Parameters.AGE));
-
-
-         return coreOriginData;
+         return _originDataMapper.MapToModel(originData).Result;
       }
 
       private ParameterValueWithUnit parameterValueFrom(IParameter parameter)
