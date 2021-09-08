@@ -6,11 +6,13 @@ namespace PKSim.R.Services
    {
       public ParameterValueWithUnit[] DistributedParameters { get;  }
       public ParameterValueWithUnit[] DerivedParameters { get;  }
+      public int Seed { get;  }
 
-      public CreateIndividualResults(ParameterValueWithUnit[] distributedParameters, ParameterValueWithUnit[] derivedParameters)
+      public CreateIndividualResults(ParameterValueWithUnit[] distributedParameters, ParameterValueWithUnit[] derivedParameters, int seed)
       {
          DistributedParameters = distributedParameters;
          DerivedParameters = derivedParameters;
+         Seed = seed;
       }
    }
 }
