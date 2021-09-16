@@ -200,5 +200,11 @@ namespace PKSim.Core
          _kmFactor.Formula.DowncastTo<ExplicitFormula>().FormulaString.ShouldBeEqualTo("(1 + C1/D1 + C2/D2)/(1 + E2/D2)");
          _vmaxFactor.Formula.DowncastTo<ExplicitFormula>().FormulaString.ShouldBeEqualTo("1/(1 + A1/B1)");
       }
+
+      [Observation]
+      public void should_used_the_name_of_the_transported_molecule_in_the_name_of_the_factor_formula()
+      {
+         _kmFactor.Formula.Name.Contains(_drugName).ShouldBeTrue();
+      }
    }
 }
