@@ -69,12 +69,12 @@ namespace PKSim.CLI.Core.Services
          if (!string.IsNullOrEmpty(errorMessage))
             throw new QualificationRunException(errorMessage);
 
-         _logger.AddDebug($"Loading project from snapshot file '{config.SnapshotFile}'...");
+         _logger.AddDebug($"Loading project from snapshot file '{config.SnapshotFile}'...", categoryName: config.Project);
          var snapshot = await snapshotProjectFromFile(config.SnapshotFile);
 
          //Ensures that the name of the snapshot is also the name of the project as defined in the configuration
          snapshot.Name = config.Project;
-         _logger.AddDebug($"Project {snapshot.Name} loaded from snapshot file '{config.SnapshotFile}'.");
+         _logger.AddDebug($"Project {snapshot.Name} loaded from snapshot file '{config.SnapshotFile}'.", categoryName: snapshot.Name);
 
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
@@ -86,7 +86,7 @@ namespace PKSim.CLI.Core.Services
 
          if (runOptions.Validate)
          {
-            _logger.AddInfo($"Validation run terminated for {snapshot.Name}");
+            _logger.AddInfo($"Validation run terminated for {snapshot.Name}", categoryName: snapshot.Name);
             return;
          }
 
