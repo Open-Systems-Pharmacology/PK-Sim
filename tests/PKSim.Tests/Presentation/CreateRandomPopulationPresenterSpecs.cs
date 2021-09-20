@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Services;
-using FakeItEasy;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -11,12 +14,10 @@ using PKSim.Presentation.DTO.Core;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_CreateRandomPopulationPresenter : ContextSpecification<ICreateRandomPopulationPresenter>
+   public abstract class concern_for_CreateRandomPopulationPresenter : ContextSpecificationAsync<ICreateRandomPopulationPresenter>
    {
       protected IObjectBaseDTOFactory _buildingBlockDTOFactory;
       protected ISubPresenterItemManager<IPopulationItemPresenter> _subPresenterManager;
@@ -29,7 +30,7 @@ namespace PKSim.Presentation
       private IBuildingBlockRepository _buildingBlockRepository;
       private IEnumerable<Individual> _allIndividuals;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _buildingBlockDTOFactory = A.Fake<IObjectBaseDTOFactory>();
          _subPresenterManager = SubPresenterHelper.Create<IPopulationItemPresenter>();
@@ -44,20 +45,23 @@ namespace PKSim.Presentation
          A.CallTo(() => _buildingBlockRepository.All<Individual>()).Returns(_allIndividuals);
          sut = new CreateRandomPopulationPresenter(_view, _subPresenterManager, _dialogCreator, _propertiesMapper, _buildingBlockDTOFactory, _buildingBlockRepository);
          sut.Initialize();
+
+         return _completed;
       }
    }
 
    public class When_the_create_population_presenter_is_told_to_create_a_population_that_was_already_created : concern_for_CreateRandomPopulationPresenter
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _popSettingsPresenter.PopulationCreated).Returns(true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.WizardNext(RamdomPopulationItems.Settings.Index);
+         return _completed;
       }
 
       [Observation]
@@ -71,17 +75,17 @@ namespace PKSim.Presentation
    {
       private RandomPopulation _population;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _population = A.Fake<RandomPopulation>();
          A.CallTo(() => _popSettingsPresenter.PopulationCreated).Returns(false);
          A.CallTo(() => _popSettingsPresenter.Population).Returns(_population);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.CreatePopulation();
+         await sut.CreatePopulation();
       }
 
       [Observation]
@@ -103,13 +107,13 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_presenter_is_beind_notified_that_the_population_was_created_successfuly : concern_for_CreateRandomPopulationPresenter
+   public class When_the_presenter_is_being_notified_that_the_population_was_created_successfuly : concern_for_CreateRandomPopulationPresenter
    {
       private RandomPopulation _population;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _population = A.Fake<RandomPopulation>();
          A.CallTo(() => _popSettingsPresenter.Population).Returns(_population);
          _popSettingsPresenter.PopulationCreationFinished += Raise.With(new PopulationCreationEventArgs(true, true));
@@ -139,21 +143,22 @@ namespace PKSim.Presentation
       private Individual _baseIndividual;
       private ObjectBaseDTO _populationDTO;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _baseIndividual = A.Fake<Individual>();
          _populationDTO = new ObjectBaseDTO();
          A.CallTo(() => _buildingBlockDTOFactory.CreateFor<Population>()).Returns(_populationDTO);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.CreatePopulation(_baseIndividual);
+         return _completed;
       }
 
       [Observation]
-      public void should_intialize_the_view_with_the_proeperties_derived_from_the_base_individual()
+      public void should_initialize_the_view_with_the_properties_derived_from_the_base_individual()
       {
          A.CallTo(() => _view.BindToProperties(_populationDTO)).MustHaveHappened();
       }
@@ -177,16 +182,16 @@ namespace PKSim.Presentation
    {
       private IPKSimCommand _result;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-
+         await base.Context();
          A.CallTo(() => _view.Canceled).Returns(true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _result = sut.Create();
+         return _completed;
       }
 
       [Observation]
@@ -202,9 +207,9 @@ namespace PKSim.Presentation
       private RandomPopulation _randomPopulation;
       private ObjectBaseDTO _buildingBlockDTO;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _buildingBlockDTO = new ObjectBaseDTO();
          _randomPopulation = A.Fake<RandomPopulation>();
          A.CallTo(() => _view.Canceled).Returns(false);
@@ -212,9 +217,10 @@ namespace PKSim.Presentation
          A.CallTo(() => _popSettingsPresenter.Population).Returns(_randomPopulation);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _result = sut.Create();
+         return _completed;
       }
 
       [Observation]
@@ -232,9 +238,10 @@ namespace PKSim.Presentation
 
    public class When_the_user_selects_the_next_button_and_moves_from_the_setting_tabs_to_the_advanced_parameter_tab : concern_for_CreateRandomPopulationPresenter
    {
-      protected override void Because()
+      protected override Task Because()
       {
          sut.WizardNext(RamdomPopulationItems.Settings.Index);
+         return _completed;
       }
 
       [Observation]
@@ -246,9 +253,9 @@ namespace PKSim.Presentation
 
    public class When_one_sub_presenter_of_the_create_random_population_presenter_notifies_a_status_change_and_no_error_is_found_in_any_sub_presenter : concern_for_CreateRandomPopulationPresenter
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
 
          //pop was created and all presenter have no error
          A.CallTo(() => _popSettingsPresenter.CanClose).Returns(true);
@@ -257,9 +264,10 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.HasError).Returns(false);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _popSettingsPresenter.StatusChanged += Raise.WithEmpty();
+         return _completed;
       }
 
       [Observation]
@@ -277,17 +285,18 @@ namespace PKSim.Presentation
 
    public class When_one_sub_presenter_of_the_create_random_population_presenter_notifies_a_status_change_and_one_error_is_found_in_at_least_one_sub_presenter : concern_for_CreateRandomPopulationPresenter
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
 
          A.CallTo(() => _subPresenterManager.CanClose).Returns(false);
          A.CallTo(() => _view.HasError).Returns(false);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _popSettingsPresenter.StatusChanged += Raise.WithEmpty();
+         return _completed;
       }
 
       [Observation]
@@ -305,15 +314,16 @@ namespace PKSim.Presentation
 
    public class When_the_create_population_presenter_is_being_notified_a_status_changed_and_a_population_was_created : concern_for_CreateRandomPopulationPresenter
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _popSettingsPresenter.PopulationCreated).Returns(true);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _popSettingsPresenter.StatusChanged += Raise.WithEmpty();
+         return _completed;
       }
 
       [Observation]
@@ -331,15 +341,16 @@ namespace PKSim.Presentation
 
    public class When_the_create_population_presenter_is_being_notified_a_status_changed_and_no_population_was_created_yet : concern_for_CreateRandomPopulationPresenter
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _popSettingsPresenter.PopulationCreated).Returns(false);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _popSettingsPresenter.StatusChanged += Raise.WithEmpty();
+         return _completed;
       }
 
       [Observation]

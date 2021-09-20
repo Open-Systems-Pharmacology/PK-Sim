@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -45,7 +46,7 @@ namespace PKSim.Presentation.Presenters.Populations
          _importPopulationSettingsDTO = new ImportPopulationSettingsDTO();
       }
 
-      public async void CreatePopulation()
+      public async Task CreatePopulation()
       {
          _cancellationTokenSource = new CancellationTokenSource();
          try
@@ -56,9 +57,11 @@ namespace PKSim.Presentation.Presenters.Populations
             this.DoWithinLatch(updateViewForPopulation);
             raisePopulationCreationFinish(success: Population.ImportSuccessful, hasWarningOrError: Population.ImportHasWarningOrError);
          }
-         catch (OperationCanceledException)
+         catch (Exception e)
          {
             raisePopulationCreationFinish(success: false, hasWarningOrError: false);
+            if (!(e is OperationCanceledException))
+               throw;
          }
          finally
          {

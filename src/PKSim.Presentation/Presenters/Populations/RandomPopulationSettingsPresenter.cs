@@ -1,13 +1,13 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-
 using PKSim.Presentation.DTO.Populations;
 using PKSim.Presentation.Views.Populations;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Populations
 {
@@ -21,14 +21,14 @@ namespace PKSim.Presentation.Presenters.Populations
       private readonly IPopulationSettingsDTOMapper _populationSettingsMapper;
       private readonly ILazyLoadTask _lazyLoadTask;
       private PopulationSettingsDTO _populationSettingsDTO;
-      private CancellationTokenSource _cancelationTokenSource;
+      private CancellationTokenSource _cancellationTokenSource;
       public bool PopulationCreated { get; private set; }
       public RandomPopulation Population { get; private set; }
       public event EventHandler<PopulationCreationEventArgs> PopulationCreationFinished = delegate { };
       public bool IsLatched { get; set; }
 
       public RandomPopulationSettingsPresenter(IRandomPopulationSettingsView view, IRandomPopulationFactory randomPopulationFactory, IPopulationSettingsDTOMapper populationSettingsMapper,
-                                               ILazyLoadTask lazyLoadTask)
+         ILazyLoadTask lazyLoadTask)
          : base(view)
       {
          _randomPopulationFactory = randomPopulationFactory;
@@ -36,32 +36,34 @@ namespace PKSim.Presentation.Presenters.Populations
          _lazyLoadTask = lazyLoadTask;
       }
 
-      public void PrepareForCreating(PKSim.Core.Model.Individual basedIndividual)
+      public void PrepareForCreating(Individual basedIndividual)
       {
          _lazyLoadTask.Load(basedIndividual);
          _populationSettingsDTO = _populationSettingsMapper.MapFrom(basedIndividual);
          this.DoWithinLatch(updateView);
       }
 
-      public void IndividualSelectionChanged(PKSim.Core.Model.Individual newIndividual)
+      public void IndividualSelectionChanged(Individual newIndividual)
       {
          if (IsLatched) return;
          PrepareForCreating(newIndividual);
       }
 
-      public async void CreatePopulation()
+      public async Task CreatePopulation()
       {
          _view.CreatingPopulation = true;
-         _cancelationTokenSource = new CancellationTokenSource();
+         _cancellationTokenSource = new CancellationTokenSource();
          try
          {
-            Population = await _randomPopulationFactory.CreateFor(_populationSettingsMapper.MapFrom(_populationSettingsDTO), _cancelationTokenSource.Token);
+            Population = await _randomPopulationFactory.CreateFor(_populationSettingsMapper.MapFrom(_populationSettingsDTO), _cancellationTokenSource.Token);
             PopulationCreated = true;
             raisePopulationCreationFinish(success: true);
          }
-         catch (OperationCanceledException)
+         catch (Exception e)
          {
             raisePopulationCreationFinish(success: false);
+            if (!(e is OperationCanceledException)) 
+               throw;
          }
          finally
          {
@@ -72,13 +74,12 @@ namespace PKSim.Presentation.Presenters.Populations
       private void raisePopulationCreationFinish(bool success)
       {
          //never error or warning
-         PopulationCreationFinished(this, new PopulationCreationEventArgs(success, hasWarningOrError:false));
+         PopulationCreationFinished(this, new PopulationCreationEventArgs(success, hasWarningOrError: false));
       }
 
       public void Cancel()
       {
-         if (_cancelationTokenSource == null) return;
-         _cancelationTokenSource.Cancel();
+         _cancellationTokenSource?.Cancel();
       }
 
       public override void ViewChanged()
