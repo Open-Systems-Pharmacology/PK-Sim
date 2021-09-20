@@ -101,7 +101,8 @@ namespace PKSim.CLI.Core.Services
          var exportRunOptions = new ExportRunOptions
          {
             OutputFolder = projectOutputFolder,
-            ExportMode = SimulationExportMode.Xml | SimulationExportMode.Csv | SimulationExportMode.Pkml
+            //We run the output, this is for the old matlab implementation where we need xml. Otherwise, we only need pkml export
+            ExportMode = runOptions.Run ?   SimulationExportMode.Xml | SimulationExportMode.Csv  :  SimulationExportMode.Pkml
          };
 
          var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
