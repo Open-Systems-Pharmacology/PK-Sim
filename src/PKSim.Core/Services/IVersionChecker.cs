@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using OSPSuite.Utility.Exceptions;
 
 namespace PKSim.Core.Services
 {

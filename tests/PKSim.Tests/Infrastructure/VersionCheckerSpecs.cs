@@ -117,22 +117,28 @@ namespace PKSim.Infrastructure
       }
    }
 
-// This test is only used to debug connection to version file on Github
-//   public class When_checking_the_real_version_for_debug_purpose : concern_for_VersionChecker
-//   {
-//      protected override void Context()
-//      {
-//         base.Context();
-//         sut.ProductName = CoreConstants.ProductName;
-//         sut.VersionFileUrl = CoreConstants.VersionFileUrl;
-//         sut.CurrentVersion = "1.1.1";
-//      }
-//
-//      [Observation]
-//      public void should_returns_that_the_software_has_indeed_no_newer_version()
-//      {
-//         var result = sut.NewVersionIsAvailable();
-//         result.ShouldBeFalse();
-//      }
-//   }
+//  This test is only used to debug connection to version file on Github
+   // public class When_checking_the_real_version_for_debug_purpose : concern_for_VersionChecker
+   // {
+   //    private bool _result;
+   //
+   //    protected override async Task Context()
+   //    {
+   //       await base.Context();
+   //       sut.ProductName = CoreConstants.PRODUCT_NAME;
+   //       sut.VersionFileUrl = CoreConstants.VERSION_FILE_URL;
+   //       sut.CurrentVersion = "8.0";
+   //    }
+   //
+   //    protected override async Task Because()
+   //    {
+   //       _result = await sut.NewVersionIsAvailableAsync();
+   //    }
+   //
+   //    [Observation]
+   //    public void should_returns_that_the_software_has_indeed_a_new_version()
+   //    {
+   //       _result.ShouldBeTrue();
+   //    }
+   // }
 }
