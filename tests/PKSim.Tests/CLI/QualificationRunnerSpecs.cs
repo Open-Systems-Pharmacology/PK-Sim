@@ -221,6 +221,7 @@ namespace PKSim.CLI
 
          _project.AddBuildingBlock(_individualSimulation);
          _qualificationConfiguration.Inputs = new[] {_input};
+         _runOptions.Run = true;
       }
 
       protected override Task Because()
@@ -250,7 +251,7 @@ namespace PKSim.CLI
       public void should_load_the_project_from_snapshot_and_export_its_simulations_to_the_output_folder()
       {
          _exportOptions.OutputFolder.ShouldBeEqualTo(_expectedOutputPath);
-         _exportOptions.ExportMode.ShouldBeEqualTo(SimulationExportMode.Csv | SimulationExportMode.Xml | SimulationExportMode.Pkml);
+         _exportOptions.ExportMode.ShouldBeEqualTo(SimulationExportMode.Csv | SimulationExportMode.Xml);
       }
 
       [Observation]
