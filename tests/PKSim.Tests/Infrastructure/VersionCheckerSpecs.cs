@@ -1,18 +1,19 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Exceptions;
 using PKSim.Core;
 using PKSim.Core.Services;
+using PKSim.Infrastructure.Serialization.Json;
 using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_VersionChecker : ContextSpecification<IVersionChecker>
+   public abstract class concern_for_VersionChecker : ContextSpecificationAsync<IVersionChecker>
    {
-      protected override void Context()
+      protected override Task Context()
       {
-         sut = new VersionChecker();
+         sut = new VersionChecker(new JsonSerializer());
+         return _completed;
       }
    }
 
@@ -20,17 +21,17 @@ namespace PKSim.Infrastructure
    {
       private bool _result;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          sut.ProductName = CoreConstants.PRODUCT_NAME;
-         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version1.1.1.xml");
-         sut.CurrentVersion = "1.0.0";
+         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version1.1.json");
+         sut.CurrentVersion = "1.0";
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _result = sut.NewVersionIsAvailable();
+         _result = await sut.NewVersionIsAvailableAsync();
       }
 
       [Observation]
@@ -42,7 +43,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_returns_the_newer_version()
       {
-         sut.LatestVersion.Version.ShouldBeEqualTo("1.1.1");
+         sut.LatestVersion.Version.ShouldBeEqualTo("1.1");
       }
    }
 
@@ -50,17 +51,17 @@ namespace PKSim.Infrastructure
    {
       private bool _result;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          sut.ProductName = CoreConstants.PRODUCT_NAME;
-         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version1.1.1.xml");
-         sut.CurrentVersion = "1.1.1";
+         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version1.1.json");
+         sut.CurrentVersion = "1.1";
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _result = sut.NewVersionIsAvailable();
+         _result = await sut.NewVersionIsAvailableAsync();
       }
 
       [Observation]
@@ -72,36 +73,47 @@ namespace PKSim.Infrastructure
 
    public class When_checking_if_a_new_version_is_available_from_a_corrupt_file : concern_for_VersionChecker
    {
-      protected override void Context()
+      private bool _result;
+
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          sut.ProductName = CoreConstants.PRODUCT_NAME;
-         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version2.1.1corrupt.xml");
-         sut.CurrentVersion = "1.1.1";
+         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version2.1corrupt.json");
+         sut.CurrentVersion = "1.1";
+      }
+
+      protected override async Task Because()
+      {
+         _result = await sut.NewVersionIsAvailableAsync();
       }
 
       [Observation]
-      public void should_returns_that_the_software_has_indeed_a_no_newer_version()
+      public void should_returns_that_the_software_has_indeed_no_newer_version()
       {
-         The.Action(() => sut.NewVersionIsAvailable()).ShouldThrowAn<OSPSuiteException>();
+         _result.ShouldBeFalse();
       }
    }
 
    public class When_checking_if_a_new_version_is_available_when_a_newer_version_is_available_asynchronously : concern_for_VersionChecker
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          sut.ProductName = CoreConstants.PRODUCT_NAME;
-         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version2.1.1.xml");
-         sut.CurrentVersion = "1.1.1";
+         sut.VersionFileUrl = DomainHelperForSpecs.DataFilePathFor("Version2.1.json");
+         sut.CurrentVersion = "1.1";
+      }
+
+      protected override async Task Because()
+      {
+         await sut.NewVersionIsAvailableAsync();
       }
 
       [Observation]
-      public async Task should_notify_a_new_version_event_containing_the_version()
+      public void should_notify_a_new_version_event_containing_the_version()
       {
-         await sut.NewVersionIsAvailableAsync();
-         sut.LatestVersion.Version.ShouldBeEqualTo("2.1.1");
+         sut.LatestVersion.Version.ShouldBeEqualTo("2.1");
       }
    }
 

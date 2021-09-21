@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using OSPSuite.Serializer.Xml.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Services;
 
@@ -11,43 +10,38 @@ namespace PKSim.Infrastructure.Services
 {
    public class VersionChecker : IVersionChecker
    {
+      private readonly IJsonSerializer _jsonSerializer;
       public string ProductName { get; set; }
       public string CurrentVersion { get; set; }
       public string VersionFileUrl { get; set; }
       public VersionInfo LatestVersion { get; private set; }
 
-      public Task<bool> NewVersionIsAvailableAsync()
+      public VersionChecker(IJsonSerializer jsonSerializer)
       {
-         return Task.Run(() =>
-            {
-               retrieveLatestVersion();
-               return newVersionIsAvailable();
-            });
+         _jsonSerializer = jsonSerializer;
       }
 
-      public bool NewVersionIsAvailable()
+      public async Task<bool> NewVersionIsAvailableAsync()
       {
-         if (LatestVersion != null)
-            return newVersionIsAvailable();
-
          try
          {
-            retrieveLatestVersion();
+            await retrieveLatestVersion();
             return newVersionIsAvailable();
+
          }
-         catch (Exception e)
+         catch (Exception)
          {
-            throw new OSPSuiteException($"Could not retrieve version information for {ProductName} at this time.", e);
+            return false;
          }
       }
 
-      private void retrieveLatestVersion()
+      private async Task retrieveLatestVersion()
       {
          using (var wc = new WebClient())
          {
-            var contentItemXmlText = wc.DownloadString(VersionFileUrl);
-            var doc = XDocument.Parse(contentItemXmlText);
-            LatestVersion = retrieveVersionFrom(doc);
+            var jsonContent = await wc.DownloadStringTaskAsync(VersionFileUrl);
+            var versions = await _jsonSerializer.DeserializeAsArrayFromString<VersionInfo>(jsonContent);
+            LatestVersion = retrieveVersionFrom(versions);
          }
       }
 
@@ -61,13 +55,13 @@ namespace PKSim.Infrastructure.Services
       }
 
 
-      private VersionInfo retrieveVersionFrom(XDocument xDocument)
+      private VersionInfo retrieveVersionFrom(IEnumerable<VersionInfo> allVersionInfos)
       {
-         var applicationNode = xDocument.Descendants("application").FirstOrDefault(e => string.Equals(e.GetAttribute("name"), ProductName));
-         if (applicationNode == null)
+         var versionInfo = allVersionInfos.FindByName(ProductName);
+         if (versionInfo == null)
             throw new OSPSuiteException($"{ProductName} node not available");
 
-         return new VersionInfo {Version = applicationNode.Element("version").Value};
+         return versionInfo;
       }
    }
 }
