@@ -78,7 +78,7 @@ namespace PKSim.Core
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
-      public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.xml";
+      public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.json";
       public static readonly string ISSUE_TRACKER_URL = "https://github.com/open-systems-pharmacology/pk-sim/issues";
 
       public static readonly string TEMPLATE_DATABASE_CONVERSION_WIKI_URL =

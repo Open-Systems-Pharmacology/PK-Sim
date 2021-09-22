@@ -44,7 +44,11 @@ namespace PKSim.Infrastructure.Serialization.Json
 
       public Task<object[]> DeserializeAsArrayFromString(string jsonString, Type objectType) =>
          Task.FromResult(deserializeAsArrayFromString(jsonString, objectType));
-     
+
+      public async Task<T[]> DeserializeAsArrayFromString<T>(string jsonString)
+      {
+         return (await DeserializeAsArrayFromString(jsonString, typeof(T))).OfType<T>().ToArray();
+      }
 
       private object[]  deserializeAsArrayFromString(string json, Type objectType)
       {
