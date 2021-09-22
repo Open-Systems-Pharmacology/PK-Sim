@@ -6,6 +6,7 @@ using OSPSuite.Infrastructure.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
+using PKSim.Core;
 
 namespace PKSim.CLI
 {
@@ -64,6 +65,9 @@ namespace PKSim.CLI
       {
          var loggerCreator = IoC.Resolve<ILoggerCreator>();
 
+         var logger = IoC.Resolve<IOSPSuiteLogger>();
+         logger.DefaultCategoryName = CoreConstants.PRODUCT_NAME;
+
          loggerCreator.AddLoggingBuilderConfiguration(builder =>
             builder
                .SetMinimumLevel(runCommand.LogLevel)
@@ -73,10 +77,11 @@ namespace PKSim.CLI
          if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
             loggerCreator.AddLoggingBuilderConfiguration(builder =>
                builder
-                  .AddFile(runCommand.LogFileFullPath)
+                  .SetMinimumLevel(runCommand.LogLevel)
+                  .AddFile(runCommand.LogFileFullPath, runCommand.LogLevel)
             );
 
-         return IoC.Resolve<IOSPSuiteLogger>();
+         return logger;
       }
    }
 }
