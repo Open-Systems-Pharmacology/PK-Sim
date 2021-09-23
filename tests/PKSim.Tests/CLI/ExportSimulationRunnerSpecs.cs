@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Qualification;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
@@ -112,7 +113,7 @@ namespace PKSim.CLI
 
    public class When_exporting_the_simulation_result_for_a_simulation_in_a_project : concern_for_ExportSimulationRunner
    {
-      private SimulationExport _export;
+      private SimulationMapping _export;
 
       protected override async Task Because()
       {

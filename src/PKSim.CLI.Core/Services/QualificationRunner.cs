@@ -105,8 +105,9 @@ namespace PKSim.CLI.Core.Services
             ExportMode = runOptions.Run ?   SimulationExportMode.Xml | SimulationExportMode.Csv  :  SimulationExportMode.Pkml
          };
 
-         var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
-         var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config)).ToArray();
+         //Using absolute path for simulation folder. We need them to be relative
+         var simulationMappings = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
+         simulationMappings.Each(x => x.Path = relativePath(x.Path, config.OutputFolder));
 
          var observedDataMappings = await exportAllObservedData(project, config);
 
@@ -165,14 +166,6 @@ namespace PKSim.CLI.Core.Services
             Project = snapshotProject.Name
          });
       }
-
-      private SimulationMapping simulationMappingFrom(SimulationExport simulationExport, QualifcationConfiguration configuration) =>
-         new SimulationMapping
-         {
-            Path = relativePath(simulationExport.SimulationFolder, configuration.OutputFolder),
-            Project = simulationExport.Project,
-            Simulation = simulationExport.Simulation
-         };
 
       private Task<ObservedDataMapping[]> exportAllObservedData(PKSimProject project, QualifcationConfiguration configuration)
       {
