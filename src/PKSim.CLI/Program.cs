@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CommandLine;
 using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Services;
@@ -74,12 +75,11 @@ namespace PKSim.CLI
                .AddConsole()
          );
 
-         if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
+         if (runCommand.LogFilesFullPath.Any())
             loggerCreator.AddLoggingBuilderConfiguration(builder =>
                builder
                   .SetMinimumLevel(runCommand.LogLevel)
-                  .AddFile(runCommand.LogFileFullPath, runCommand.LogLevel)
-            );
+                  .AddFile(runCommand.LogFilesFullPath.ElementAt(0), runCommand.LogLevel));
 
          return logger;
       }

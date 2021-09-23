@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using CommandLine;
 using Microsoft.Extensions.Logging;
 
@@ -10,8 +11,8 @@ namespace PKSim.CLI.Commands
 
       public virtual bool LogCommandName { get; } = true;
 
-      [Option('l', "log", Required = false, HelpText = "Optional. Full path of log file where log output will be written. A log file will not be created if this value is not provided.")]
-      public string LogFileFullPath { get; set; }
+      [Option('l', "log", Required = false, HelpText = "Optional. Full path of log files where log output will be written. A log file will not be created if this value is not provided.")]
+      public IEnumerable<string> LogFilesFullPath { get; set; } = new string[] { };
 
       [Option('a', "append", Required = false, HelpText = "Optional. true to append data to the file; false to overwrite the file (default). If the specified file does not exist, this parameter has no effect, and a new file is created. ")]
       public bool AppendToLog { get; set; }
@@ -21,7 +22,7 @@ namespace PKSim.CLI.Commands
 
       protected virtual void LogDefaultOptions(StringBuilder sb)
       {
-         sb.AppendLine($"Log file: {LogFileFullPath}");
+         sb.AppendLine($"Log file: {LogFilesFullPath}");
          sb.AppendLine($"Log level: {LogLevel}");
       }
    }
