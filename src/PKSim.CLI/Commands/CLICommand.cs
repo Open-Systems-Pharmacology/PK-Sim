@@ -2,6 +2,7 @@
 using System.Text;
 using CommandLine;
 using Microsoft.Extensions.Logging;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.CLI.Commands
 {
@@ -22,7 +23,7 @@ namespace PKSim.CLI.Commands
 
       protected virtual void LogDefaultOptions(StringBuilder sb)
       {
-         sb.AppendLine($"Log file: {LogFilesFullPath}");
+         LogFilesFullPath.Each(x => sb.AppendLine($"Log file: {x}"));
          sb.AppendLine($"Log level: {LogLevel}");
       }
    }
