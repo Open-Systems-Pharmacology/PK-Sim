@@ -176,8 +176,8 @@ namespace PKSim.CLI
       private string _deletedDirectory;
       private ExportRunOptions _exportOptions;
       private DataRepository _observedData;
-      private SimulationExport[] _simulationExports;
-      private SimulationExport _simulationExport;
+      private SimulationMapping[] _simulationExports;
+      private SimulationMapping _simulationExport;
       private string _expectedSimulationPath;
       private QualificationMapping _mapping;
       private string _simulationName;
@@ -202,7 +202,7 @@ namespace PKSim.CLI
          _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation, SectionLevel = 5};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
-         _simulationExport = new SimulationExport {Project = PROJECT_NAME, Simulation = _simulationName, SimulationFolder = _expectedSimulationPath};
+         _simulationExport = new SimulationMapping { Project = PROJECT_NAME, Simulation = _simulationName, Path = _expectedSimulationPath};
          _simulationExports = new[] {_simulationExport};
          A.CallTo(() => _exportSimulationRunner.ExportSimulationsIn(_project, A<ExportRunOptions>._))
             .Invokes(x => _exportOptions = x.GetArgument<ExportRunOptions>(1))

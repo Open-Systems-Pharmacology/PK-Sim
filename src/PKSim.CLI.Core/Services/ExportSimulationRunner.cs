@@ -15,22 +15,10 @@ using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
 {
-   public class SimulationExport : IReferencingSimulation
-   {
-      //Name of project where simulation belongs
-      public string Project { get; set; }
-
-      //Name of exported simulation
-      public string Simulation { get; set; }
-
-      //Folder where simulation will be exported
-      public string SimulationFolder { get; set; }
-   }
-
    public interface IExportSimulationRunner : IBatchRunner<ExportRunOptions>
    {
-      Task<SimulationExport[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions);
-      Task<SimulationExport> ExportSimulation(Simulation simulation, ExportRunOptions exportRunOptions, PKSimProject project);
+      Task<SimulationMapping[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions);
+      Task<SimulationMapping> ExportSimulation(Simulation simulation, ExportRunOptions exportRunOptions, PKSimProject project);
    }
 
    public class ExportSimulationRunner : IExportSimulationRunner
@@ -79,13 +67,13 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Project export for '{projectFile}' terminated");
       }
 
-      public async Task<SimulationExport[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions)
+      public async Task<SimulationMapping[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions)
       {
          var nameOfSimulationsToExport = (exportRunOptions.Simulations ?? Enumerable.Empty<string>()).ToList();
          if (!nameOfSimulationsToExport.Any())
             nameOfSimulationsToExport.AddRange(project.All<Simulation>().AllNames());
 
-         var simulationExports = new List<SimulationExport>();
+         var simulationExports = new List<SimulationMapping>();
 
          //sequential for now
          foreach (var simulationName in nameOfSimulationsToExport)
@@ -103,18 +91,20 @@ namespace PKSim.CLI.Core.Services
          return simulationExports.ToArray();
       }
 
-      public async Task<SimulationExport> ExportSimulation(Simulation simulation, ExportRunOptions exportRunOptions, PKSimProject project)
+      public async Task<SimulationMapping> ExportSimulation(Simulation simulation, ExportRunOptions exportRunOptions, PKSimProject project)
       {
          var projectName = project.Name;
          var simulationName = simulation.Name;
-         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, FileHelper.RemoveIllegalCharactersFrom(simulationName));
+         var simulationFile = FileHelper.RemoveIllegalCharactersFrom(simulationName);
+         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, simulationFile);
          DirectoryHelper.CreateDirectory(simulationFolder);
 
-         var simulationExport = new SimulationExport
+         var simulationExport = new SimulationMapping
          {
             Project = projectName,
-            SimulationFolder = simulationFolder,
-            Simulation = simulationName
+            Path = simulationFolder,
+            Simulation = simulationName,
+            SimulationFile = simulationFile
          };
 
          var simulationRunOptions = new SimulationRunOptions();
