@@ -79,7 +79,7 @@ namespace PKSim.CLI
             loggerCreator.AddLoggingBuilderConfiguration(builder =>
                builder
                   .SetMinimumLevel(runCommand.LogLevel)
-                  .AddFile(runCommand.LogFilesFullPath.ElementAt(0), runCommand.LogLevel));
+                  .AddFile(runCommand.LogFilesFullPath.ToArray(), runCommand.LogLevel, true));
 
          return logger;
       }
