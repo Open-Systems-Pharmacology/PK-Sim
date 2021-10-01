@@ -6,6 +6,7 @@ using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core;
 
 namespace PKSim.Presentation
 {
@@ -29,9 +30,9 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _mergedDimension = new Dimension();
+         _mergedDimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          _field = A.Fake<PopulationAnalysisNumericField>();
-         _field.Dimension = new Dimension();
+         _field.Dimension = DomainHelperForSpecs.FractionDimensionForSpecs();
          A.CallTo((_dimensionRepository)).WithReturnType<IDimension>().Returns(_mergedDimension);
       }
 

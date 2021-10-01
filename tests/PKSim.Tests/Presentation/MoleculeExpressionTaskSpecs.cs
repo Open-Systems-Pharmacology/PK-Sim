@@ -136,14 +136,13 @@ namespace PKSim.Presentation
       private QueryExpressionResults _queryExpressionResults;
       private ICommand _resultCommand;
       private readonly string _newName = "NEW_NAME";
-      private readonly string _renamedName = "RENAMED_NAME";
 
       protected override void Context()
       {
          base.Context();
          _queryExpressionResults = new QueryExpressionResults(new List<ExpressionResult>()) {QueryConfiguration = "CONFIG", ProteinName = _newName};
-         A.CallTo(() => _containerTask.CreateUniqueName(_individual, _newName, true)).Returns(_newName);
-      }
+            A.CallTo(() => _containerTask.CreateUniqueName(_individual, _newName, true)).Returns(_newName);
+         }
 
       protected override void Because()
       {
