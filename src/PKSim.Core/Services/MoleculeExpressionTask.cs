@@ -20,7 +20,7 @@ namespace PKSim.Core.Services
       ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule;
 
       /// <summary>
-      ///    Add a molecule of type to the given individual named after the <paramref name="molecule" /> template given as
+      ///    Add a molecule of type to the given individual named after the <paramref name="moleculeTemplate" /> template given as
       ///    parameter
       /// </summary>
       /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
