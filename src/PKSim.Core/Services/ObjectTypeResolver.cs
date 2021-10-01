@@ -1,7 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using PKSim.Assets;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -19,11 +19,11 @@ namespace PKSim.Core.Services
 {
    public class ObjectTypeResolver : IObjectTypeResolver
    {
-      private readonly ICache<Type, string> _typeCache;
+      //using a concurrent dictionary here as the service might be used by other services running in parallel
+      private readonly ConcurrentDictionary<Type, string> _typeCache = new ConcurrentDictionary<Type, string>();
 
       public ObjectTypeResolver()
       {
-         _typeCache = new Cache<Type, string>(t => t.Name);
          initializeCache();
       }
 
@@ -105,7 +105,7 @@ namespace PKSim.Core.Services
 
       private void addToCache<T>(string display)
       {
-         _typeCache.Add(typeof (T), display);
+         _typeCache.TryAdd(typeof (T), display);
       }
 
       public string TypeFor<T>(T objectRequiringType) where T : class
@@ -123,15 +123,21 @@ namespace PKSim.Core.Services
 
       private string typeFor(Type type)
       {
-         if (_typeCache.Contains(type))
-            return _typeCache[type];
+         //Can it be found in the list? return
+         if (_typeCache.TryGetValue(type, out var display))
+            return display;
 
          //This takes care of interface and implementation issues
-         var firstPossibleType = _typeCache.Keys.FirstOrDefault(type.IsAnImplementationOf);
-         if (firstPossibleType != null)
-            _typeCache[type] = _typeCache[firstPossibleType];
+         var firstPossibleType = _typeCache.Keys.ToList().FirstOrDefault(type.IsAnImplementationOf);
+         if (firstPossibleType != null) 
+            _typeCache.TryAdd(type, _typeCache[firstPossibleType]);
 
-         return _typeCache[type];
+         //Can we now find it in the list? return
+         if (_typeCache.TryGetValue(type, out display))
+            return display;
+
+         //nope.. let's return the name
+         return type.Name;
       }
    }
 }
