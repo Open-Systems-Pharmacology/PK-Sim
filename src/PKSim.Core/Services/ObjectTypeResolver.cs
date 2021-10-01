@@ -134,7 +134,7 @@ namespace PKSim.Core.Services
                return _typeCache[type];
 
             //This takes care of interface and implementation issues
-            var firstPossibleType = _typeCache.Keys.ToList().FirstOrDefault(type.IsAnImplementationOf);
+            var firstPossibleType = _typeCache.Keys.FirstOrDefault(type.IsAnImplementationOf);
             if (firstPossibleType != null)
                _typeCache[type] = _typeCache[firstPossibleType];
 
