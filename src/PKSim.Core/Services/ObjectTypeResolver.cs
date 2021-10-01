@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
+using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Chart.SensitivityAnalyses;
@@ -13,14 +9,20 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Services
 {
    public class ObjectTypeResolver : IObjectTypeResolver
    {
+      private readonly object _locker = new object();
+
       //using a concurrent dictionary here as the service might be used by other services running in parallel
-      private readonly ConcurrentDictionary<Type, string> _typeCache = new ConcurrentDictionary<Type, string>();
+      private readonly Cache<Type, string> _typeCache = new Cache<Type, string>(x => x.Name);
 
       public ObjectTypeResolver()
       {
@@ -103,9 +105,14 @@ namespace PKSim.Core.Services
          addToCache<IObserverBuilder>(ObjectTypes.ObserverBuilder);
       }
 
-      private void addToCache<T>(string display)
+      private void addToCache<T>(string display) => addToCache(typeof(T), display);
+
+      private void addToCache(Type type, string display)
       {
-         _typeCache.TryAdd(typeof (T), display);
+         lock (_locker)
+         {
+            _typeCache.Add(type, display);
+         }
       }
 
       public string TypeFor<T>(T objectRequiringType) where T : class
@@ -116,28 +123,23 @@ namespace PKSim.Core.Services
          return typeFor(objectRequiringType.GetType());
       }
 
-      public string TypeFor<T>()
-      {
-         return typeFor(typeof (T));
-      }
+      public string TypeFor<T>() => typeFor(typeof(T));
 
       private string typeFor(Type type)
       {
          //Can it be found in the list? return
-         if (_typeCache.TryGetValue(type, out var display))
-            return display;
+         lock (_locker)
+         {
+            if (_typeCache.Contains(type))
+               return _typeCache[type];
 
-         //This takes care of interface and implementation issues
-         var firstPossibleType = _typeCache.Keys.ToList().FirstOrDefault(type.IsAnImplementationOf);
-         if (firstPossibleType != null) 
-            _typeCache.TryAdd(type, _typeCache[firstPossibleType]);
+            //This takes care of interface and implementation issues
+            var firstPossibleType = _typeCache.Keys.ToList().FirstOrDefault(type.IsAnImplementationOf);
+            if (firstPossibleType != null)
+               _typeCache[type] = _typeCache[firstPossibleType];
 
-         //Can we now find it in the list? return
-         if (_typeCache.TryGetValue(type, out display))
-            return display;
-
-         //nope.. let's return the name
-         return type.Name;
+            return _typeCache[type];
+         }
       }
    }
 }
