@@ -64,10 +64,10 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_predefined_type_constant_for_that_entity()
       {
-         var types = new Type[] {typeof(string), typeof(bool), typeof(DBNull), typeof(DataFactory)};
+         var types = new[] {typeof(string), typeof(bool), typeof(DBNull), typeof(DataFactory)};
          Parallel.ForEach(types, t =>
          {
-            var display = sut.TypeFor(t);
+            sut.TypeFor(t);
          });
       }
    }
