@@ -1568,7 +1568,7 @@ namespace PKSim.Assets
          public static readonly string ShowUpdateNotification = "Show software update notification if available";
          public static readonly string ActiveSkin = "Active skin";
          public static readonly string DecimalPlace = "Decimal place";
-         public static readonly string IconSizes = "Icon Sizes";
+         public static readonly string IconSizes = "Icon Sizes (Application Restart Required)";
          public static readonly string IconSizeTab = "Tabs";
          public static readonly string IconSizeTreeView = "Tree view";
          public static readonly string IconSizeContextMenu = "Context menu";
