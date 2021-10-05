@@ -7,22 +7,22 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
-using OSPSuite.Core.Events;
-using OSPSuite.Utility.Events;
+using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -65,9 +65,9 @@ namespace PKSim.Infrastructure.Services
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
 
-      public void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, null);
+      public void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration) => addObservedDataFromConfigurationToProjectForCompound(null, configuration, null);
 
-      public void AddObservedDataFromConfigurationToProjectForDataRepository(ImporterConfiguration configuration, string dataRepositoryName) => AddObservedDataFromConfigurationToProjectForCompound(null, configuration, dataRepositoryName);
+      public void AddObservedDataFromConfigurationToProjectForDataRepository(ImporterConfiguration configuration, string dataRepositoryName) => addObservedDataFromConfigurationToProjectForCompound(null, configuration, dataRepositoryName);
 
       public ImporterConfiguration OpenXmlConfiguration()
       {
@@ -99,7 +99,7 @@ namespace PKSim.Infrastructure.Services
             updateQuantityInfoInImportedColumns(dataSet);
          }
 
-         foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray())//toDo it should be checked if to array solves the deleting problem
+         foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray()) //toDo it should be checked if to array solves the deleting problem
          {
             _observedDataTask.Delete(dataSet);
          }
@@ -132,6 +132,7 @@ namespace PKSim.Infrastructure.Services
                      existingColumn.Values = column.Values;
                }
             }
+
             _eventPublisher.PublishEvent(new ObservedDataValueChangedEvent(existingDataSet));
          }
       }
@@ -145,16 +146,16 @@ namespace PKSim.Infrastructure.Services
       public void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration)
       {
          _executionContext.Load(compound);
-         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, null, false, true);
+         addObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, null, false, true);
       }
 
-      private void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
+      private void addObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
       {
          _executionContext.Load(compound);
-         AddObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, dataRepositoryName);
+         addObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, dataRepositoryName);
       }
 
-      private void AddObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, string dataRepositoryName = null, bool allowCompoundNameEdit = false, bool propmtUser = false)
+      private void addObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, string dataRepositoryName = null, bool allowCompoundNameEdit = false, bool propmtUser = false)
       {
          var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, compound, propmtUser, allowCompoundNameEdit);
          if (importedObservedData == null) return;
@@ -203,23 +204,29 @@ namespace PKSim.Infrastructure.Services
          );
       }
 
-      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool propmtUser,
-         bool allowCompoundNameEdit)
+      private (IReadOnlyList<MetaDataCategory>, DataImporterSettings) initializeSettings(Compound compound = null, bool allowCompoundNameEdit = false)
       {
-         var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
-         populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
-
-         var dataImporterSettings = new DataImporterSettings
-         { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
+         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
-         dataImporterSettings.PromptForConfirmation = propmtUser;
+
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategories().ToList();
+         populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
+
+         return (metaDataCategories, dataImporterSettings);
+      }
+
+      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool promptUser,
+         bool allowCompoundNameEdit)
+      {
+         var (metaDataCategories, dataImporterSettings) = initializeSettings(compound, allowCompoundNameEdit);
+         dataImporterSettings.PromptForConfirmation = promptUser;
 
          var importedObservedData = _dataImporter.ImportFromConfiguration(
-            configuration, 
-            (IReadOnlyList<MetaDataCategory>)metaDataCategories, 
-            importConfiguration(), 
+            configuration,
+            metaDataCategories,
+            importConfiguration(),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
@@ -228,25 +235,20 @@ namespace PKSim.Infrastructure.Services
 
       private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
       {
-         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
-         addNamingPatterns(dataImporterSettings);
-         dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
-         dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
 
-         var metaDataCategories = _dataImporter.DefaultMetaDataCategories();
-         populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
-
-         var importedObservedData = _dataImporter.ImportDataSets(
-            (IReadOnlyList<MetaDataCategory>)metaDataCategories, 
-            importConfiguration(), 
+         var (metaDataCategories, dataImporterSettings) = initializeSettings(compound, allowCompoundNameEdit);
+         var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
+            metaDataCategories,
+            importConfiguration(),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
 
-         if (importedObservedData.DataRepositories == null || importedObservedData.Configuration == null) return;
+         if (dataRepositories == null || configuration == null)
+            return;
 
-         _observedDataTask.AddImporterConfigurationToProject(importedObservedData.Configuration);
-         foreach (var observedData in importedObservedData.DataRepositories)
+         _observedDataTask.AddImporterConfigurationToProject(configuration);
+         foreach (var observedData in dataRepositories)
          {
             adjustMolWeight(observedData);
             _observedDataTask.AddObservedDataToProject(observedData);
@@ -272,11 +274,12 @@ namespace PKSim.Infrastructure.Services
          baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] { observedData.Name, baseGridName }, QuantityType.Time);
       }
 
+
+
       private void adjustMolWeight(DataRepository observedData)
       {
          _parameterChangeUpdater.UpdateMolWeightIn(observedData);
       }
-
 
       private IReadOnlyList<ColumnInfo> columnInfoConfiguration()
       {
@@ -285,7 +288,8 @@ namespace PKSim.Infrastructure.Services
          columns.Add(timeColumn);
 
 
-         var supportedDimensions = new[] {
+         var supportedDimensions = new[]
+         {
             _dimensionRepository.MolarConcentration,
             _dimensionRepository.MassConcentration,
             _dimensionRepository.Amount,
@@ -453,11 +457,11 @@ namespace PKSim.Infrastructure.Services
 
       private void populateMetaDataLists(IList<MetaDataCategory> metaDataCategories, Compound compound, bool allowCompoundNameEdit)
       {
-         compoundNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
-         organNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.ORGAN));
-         genderNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.GENDER));
-         compartmentNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.COMPARTMENT));
-         speciesNameCategory(metaDataCategories.FirstOrDefault(md => md.Name == Constants.ObservedData.SPECIES));
+         compoundNameCategory(metaDataCategories.FindByName(Constants.ObservedData.MOLECULE), compound, allowCompoundNameEdit);
+         organNameCategory(metaDataCategories.FindByName(Constants.ObservedData.ORGAN));
+         genderNameCategory(metaDataCategories.FindByName(Constants.ObservedData.GENDER));
+         compartmentNameCategory(metaDataCategories.FindByName(Constants.ObservedData.COMPARTMENT));
+         speciesNameCategory(metaDataCategories.FindByName(Constants.ObservedData.SPECIES));
       }
 
       private void compoundNameCategory(MetaDataCategory nameCategory, Compound compound, bool canEditName)
@@ -537,6 +541,7 @@ namespace PKSim.Infrastructure.Services
          {
             nameCategory.ListOfValues.Add(compartment.Name, compartment.Name);
          }
+
          nameCategory.ListOfValues.Add(CoreConstants.Observer.TISSUE, CoreConstants.Observer.TISSUE);
          nameCategory.ListOfValues.Add(CoreConstants.Observer.INTERSTITIAL_UNBOUND, CoreConstants.Observer.INTERSTITIAL_UNBOUND);
          nameCategory.ListOfValues.Add(CoreConstants.Observer.INTRACELLULAR_UNBOUND, CoreConstants.Observer.INTRACELLULAR_UNBOUND);
