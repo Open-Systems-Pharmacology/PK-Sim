@@ -20,8 +20,6 @@ namespace PKSim.Presentation.Nodes
       public static readonly RootNodeType IndividualMetabolizingEnzymes = new RootNodeType(PKSimConstants.UI.MetabolizingEnzymes, ApplicationIcons.Enzyme);
       public static readonly RootNodeType IndividualProteinBindingPartners = new RootNodeType(PKSimConstants.UI.ProteinBindingPartners, ApplicationIcons.Protein);
       public static readonly RootNodeType IndividualTransportProteins = new RootNodeType(PKSimConstants.UI.TransportProteins, ApplicationIcons.Transporter);
-      public static readonly RootNodeType UserTemplates = new RootNodeType(PKSimConstants.UI.UserTemplates, ApplicationIcons.UserSettings);
-      public static readonly RootNodeType SystemTemplates = new RootNodeType(PKSimConstants.UI.SystemTemplates, ApplicationIcons.PKSim);
       public static readonly RootNodeType MetabolicProcesses = new RootNodeType(PKSimConstants.UI.MetabolicProcesses, ApplicationIcons.Metabolism);
       public static readonly RootNodeType SpecificBindingProcesses = new RootNodeType(PKSimConstants.UI.SpecificBindingProcesses, ApplicationIcons.SpecificBinding);
       public static readonly RootNodeType CompoundProteinBindingPartners = new RootNodeType(PKSimConstants.UI.ProteinBindingPartners, ApplicationIcons.Protein);

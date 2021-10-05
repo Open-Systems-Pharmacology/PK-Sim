@@ -42,7 +42,7 @@ namespace PKSim.Infrastructure.Services
          return _templateDatabase.DatabaseObject;
       }
 
-      public IEnumerable<Template> AllTemplatesFor(TemplateDatabaseType templateDatabaseType, TemplateType templateType)
+      public IReadOnlyList<Template> AllTemplatesFor(TemplateDatabaseType templateDatabaseType, TemplateType templateType)
       {
          var allTemplates = new List<Template>();
          using (establishConnection(templateDatabaseType))
@@ -186,7 +186,7 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public IEnumerable<Template> AllTemplatesFor(TemplateType templateType)
+      public IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType)
       {
          var buildingBlockTemplates = new List<Template>();
          buildingBlockTemplates.AddRange(AllTemplatesFor(TemplateDatabaseType.System, templateType));

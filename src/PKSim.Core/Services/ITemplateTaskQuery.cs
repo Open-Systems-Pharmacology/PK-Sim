@@ -9,14 +9,14 @@ namespace PKSim.Core.Services
       ///    Returns all available templates for the given <paramref name="templateType" />
       /// </summary>
       /// <param name="templateType">Type of template object for which the available templates should be retrieved</param>
-      IEnumerable<Template> AllTemplatesFor(TemplateType templateType);
+      IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType);
 
       /// <summary>
       ///    Returns all available templates of type <paramref name="templateDatabaseType"/> for the given <paramref name="templateType" />
       /// </summary>
       /// <param name="templateDatabaseType">Type of database template to search for.</param>
       /// <param name="templateType">Type of template object for which the available templates should be retrieved</param>
-      IEnumerable<Template> AllTemplatesFor(TemplateDatabaseType templateDatabaseType, TemplateType templateType);
+      IReadOnlyList<Template> AllTemplatesFor(TemplateDatabaseType templateDatabaseType, TemplateType templateType);
 
       /// <summary>
       ///    Returns a fully loaded building block from the database with the given <paramref name="template" />

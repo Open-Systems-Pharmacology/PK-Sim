@@ -31,10 +31,6 @@ namespace PKSim.Presentation.Presenters
       /// <returns>The loaded template if the user completed the action successfuly otherwise null</returns>
       IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType);
 
-      /// <summary>
-      ///    Returns all available building block meta data for the given type
-      /// </summary>
-      IEnumerable<Template> AllTemplates();
 
       /// <summary>
       ///    This method is called whenever a nodes are being selected in the view
@@ -48,7 +44,7 @@ namespace PKSim.Presentation.Presenters
       void Rename(Template template);
 
       /// <summary>
-      ///    Delete the building block template guven as parameter
+      ///    Delete the building block template given as parameter
       /// </summary>
       /// <param name="template">Building block template to delete</param>
       void Delete(Template template);
@@ -63,24 +59,27 @@ namespace PKSim.Presentation.Presenters
    {
       private readonly ITemplateTaskQuery _templateTaskQuery;
       private readonly IObjectTypeResolver _objectTypeResolver;
-      private readonly ITreeNodeFactory _treeNodeFactory;
       private readonly ITreeNodeContextMenuFactory _contextMenuFactory;
       private readonly IApplicationController _applicationController;
       private readonly IDialogCreator _dialogCreator;
-      private IEnumerable<Template> _availableBuildingBlocks;
+      private List<Template> _availableTemplates;
       private readonly List<Template> _selectedTemplates = new List<Template>();
       private bool _shouldAddItemIcons;
       private readonly IStartOptions _startOptions;
       private string _buildingBlockTypeString = string.Empty;
 
-      public TemplatePresenter(IBuildingBlockFromTemplateView view, ITemplateTaskQuery templateTaskQuery,
-         IObjectTypeResolver objectTypeResolver, ITreeNodeFactory treeNodeFactory,
-         ITreeNodeContextMenuFactory contextMenuFactory, IApplicationController applicationController, IDialogCreator dialogCreator, IStartOptions startOptions)
+      public TemplatePresenter(
+         IBuildingBlockFromTemplateView view, 
+         ITemplateTaskQuery templateTaskQuery,
+         IObjectTypeResolver objectTypeResolver, 
+         ITreeNodeContextMenuFactory contextMenuFactory, 
+         IApplicationController applicationController, 
+         IDialogCreator dialogCreator, 
+         IStartOptions startOptions)
          : base(view)
       {
          _templateTaskQuery = templateTaskQuery;
          _objectTypeResolver = objectTypeResolver;
-         _treeNodeFactory = treeNodeFactory;
          _contextMenuFactory = contextMenuFactory;
          _applicationController = applicationController;
          _dialogCreator = dialogCreator;
@@ -95,14 +94,9 @@ namespace PKSim.Presentation.Presenters
 
          updateIcon(templateType);
 
-         _availableBuildingBlocks = _templateTaskQuery.AllTemplatesFor(templateType);
-         if (!_availableBuildingBlocks.Any())
+         _availableTemplates = _templateTaskQuery.AllTemplatesFor(templateType).OrderBy(x => x.Name).ToList();
+         if (!_availableTemplates.Any())
             throw new NoBuildingBlockTemplateAvailableException(_buildingBlockTypeString);
-
-         var userTemplateNode = _treeNodeFactory.CreateFor(PKSimRootNodeTypes.UserTemplates);
-         var systemTemplateNode = _treeNodeFactory.CreateFor(PKSimRootNodeTypes.SystemTemplates);
-         addTemplatesTo(userTemplateNode, TemplateDatabaseType.User);
-         addTemplatesTo(systemTemplateNode, TemplateDatabaseType.System);
 
          updateView();
          _view.Display();
@@ -164,27 +158,17 @@ namespace PKSim.Presentation.Presenters
          var numberOfTemplateSelected = _selectedTemplates.Count;
          _view.OkEnabled = numberOfTemplateSelected > 0;
 
-         _view.Description =
-            numberOfTemplateSelected == 0 ? string.Empty :
-            numberOfTemplateSelected == 1 ? _selectedTemplates[0].Description :
-            PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _buildingBlockTypeString);
-      }
+         // _view.Description =
+         //    numberOfTemplateSelected == 0 ? string.Empty :
+         //    numberOfTemplateSelected == 1 ? _selectedTemplates[0].Description :
+         //    PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _buildingBlockTypeString);
 
-      private void addTemplatesTo(ITreeNode rootNode, TemplateDatabaseType templateDatabaseType)
-      {
-         foreach (var bb in _availableBuildingBlocks.Where(x => x.DatabaseType == templateDatabaseType).OrderBy(x => x.Name))
-         {
-            var node = _treeNodeFactory.CreateFor(bb).Under(rootNode);
-            if (_shouldAddItemIcons)
-               node.WithIcon(ApplicationIcons.IconByName(bb.TemplateType.ToString()));
-         }
-
-         _view.AddNode(rootNode);
+         _view.BindTo(_availableTemplates);
       }
 
       public IEnumerable<Template> AllTemplates()
       {
-         return _availableBuildingBlocks;
+         return _availableTemplates;
       }
 
       public void ActivateNodes(IReadOnlyList<ITreeNode> treeNodes)
@@ -213,7 +197,7 @@ namespace PKSim.Presentation.Presenters
             return;
 
          _templateTaskQuery.DeleteTemplate(template);
-         _view.DestroyNode(template.Id);
+         _availableTemplates.Remove(template);
          _selectedTemplates.Remove(template);
 
          var nextSelectedTemplate = _selectedTemplates.FirstOrDefault();
