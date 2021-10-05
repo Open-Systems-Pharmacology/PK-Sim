@@ -1,5 +1,2 @@
-UPDATE tab_calculation_method_parameter_rates SET group_name='PERMEABILITY_CALIBRATION', read_only=0, visible=1 WHERE parameter_id=228;
-UPDATE tab_calculation_method_parameter_rates SET group_name='PERMEABILITY_CALIBRATION', read_only=0, visible=1 WHERE parameter_id=230;
-INSERT INTO tab_groups(group_name,display_name,description,parent_group,icon_name,visible,sequence,is_advanced,unique_id,pop_display_name,full_name) VALUES('PERMEABILITY_CALIBRATION','Intestinal permeability calibration','Parameters used to correlate experimental with in-silico intestinal permeability. Please refer to permeability.open-systems-pharmacology.org for details.','PERMEABILITY',NULL,1,6,1,152,NULL,'Intestinal permeability calibration');
-UPDATE tab_parameters SET description='Parameter b for correlation of intestinal permeability (transcellular). Please refer to permeability.open-systems-pharmacology.org for details.' WHERE parameter_name='Parameter b for correlation of intestinal permeability (transcellular)';
-UPDATE tab_parameters SET description='Parameter m for correlation of intestinal permeability (transcellular). Please refer to permeability.open-systems-pharmacology.org for details.' WHERE parameter_name='Parameter m for correlation of intestinal permeability (transcellular)';
+UPDATE tab_populations SET display_name='Japanese (Schlender, 2015)', description='Japanese (Schlender, 2015)' WHERE population='Japanese_Population';
+UPDATE tab_populations SET display_name='Preterm (Claassen, 2015)', description='Preterm (Claassen, 2015)' WHERE population='Preterm';
