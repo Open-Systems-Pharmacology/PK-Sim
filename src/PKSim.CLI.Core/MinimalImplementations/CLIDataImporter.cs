@@ -24,7 +24,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
          throw new NotImplementedException();
       }
 
-      public IList<MetaDataCategory> DefaultMetaDataCategories()
+      public IReadOnlyList<MetaDataCategory> DefaultMetaDataCategories()
       {
          throw new NotImplementedException();
       }
