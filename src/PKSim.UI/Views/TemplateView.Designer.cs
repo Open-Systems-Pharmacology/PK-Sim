@@ -4,7 +4,7 @@ using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views
 {
-   partial class BuildingBlockFromTemplateView
+   partial class TemplateView
    {
       /// <summary>
       /// Required designer variable.
@@ -155,7 +155,7 @@ namespace PKSim.UI.Views
          this.Caption = "BuildingBlockFromTemplateView";
          this.ClientSize = new System.Drawing.Size(886, 711);
          this.Controls.Add(this.layoutControl);
-         this.Name = "BuildingBlockFromTemplateView";
+         this.Name = "TemplateView";
          this.Text = "BuildingBlockFromTemplateView";
          this.Controls.SetChildIndex(this.layoutControlBase, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);

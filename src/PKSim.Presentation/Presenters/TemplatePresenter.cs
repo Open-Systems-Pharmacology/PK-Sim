@@ -9,15 +9,13 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Nodes;
+using PKSim.Presentation.DTO;
 using PKSim.Presentation.Views;
-using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters
 {
@@ -28,14 +26,8 @@ namespace PKSim.Presentation.Presenters
       ///    <paramref name="templateType" />
       /// </summary>
       /// <param name="templateType">Type of object that should be loaded</param>
-      /// <returns>The loaded template if the user completed the action successfuly otherwise null</returns>
+      /// <returns>The loaded template if the user completed the action successfully otherwise null</returns>
       IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType);
-
-
-      /// <summary>
-      ///    This method is called whenever a nodes are being selected in the view
-      /// </summary>
-      void ActivateNodes(IReadOnlyList<ITreeNode> treeNodes);
 
       /// <summary>
       ///    Rename the building block template given as parameter
@@ -53,9 +45,11 @@ namespace PKSim.Presentation.Presenters
       ///    Returns true if the user can edit the given <paramref name="template" /> otherwise false
       /// </summary>
       bool CanEdit(Template template);
+
+      void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templates);
    }
 
-   public class TemplatePresenter : AbstractDisposablePresenter<IBuildingBlockFromTemplateView, ITemplatePresenter>, ITemplatePresenter
+   public class TemplatePresenter : AbstractDisposablePresenter<ITemplateView, ITemplatePresenter>, ITemplatePresenter
    {
       private readonly ITemplateTaskQuery _templateTaskQuery;
       private readonly IObjectTypeResolver _objectTypeResolver;
@@ -63,18 +57,18 @@ namespace PKSim.Presentation.Presenters
       private readonly IApplicationController _applicationController;
       private readonly IDialogCreator _dialogCreator;
       private List<Template> _availableTemplates;
-      private readonly List<Template> _selectedTemplates = new List<Template>();
       private bool _shouldAddItemIcons;
       private readonly IStartOptions _startOptions;
       private string _buildingBlockTypeString = string.Empty;
+      private readonly List<Template> _selectedTemplates = new List<Template>();
 
       public TemplatePresenter(
-         IBuildingBlockFromTemplateView view, 
+         ITemplateView view,
          ITemplateTaskQuery templateTaskQuery,
-         IObjectTypeResolver objectTypeResolver, 
-         ITreeNodeContextMenuFactory contextMenuFactory, 
-         IApplicationController applicationController, 
-         IDialogCreator dialogCreator, 
+         IObjectTypeResolver objectTypeResolver,
+         ITreeNodeContextMenuFactory contextMenuFactory,
+         IApplicationController applicationController,
+         IDialogCreator dialogCreator,
          IStartOptions startOptions)
          : base(view)
       {
@@ -134,15 +128,9 @@ namespace PKSim.Presentation.Presenters
          }
       }
 
-      private IReadOnlyList<T> loadSingleTemplate<T>()
-      {
-         return _selectedTemplates.Select(loadTemplate<T>).ToList();
-      }
+      private IReadOnlyList<T> loadSingleTemplate<T>() => _selectedTemplates.Select(loadTemplate<T>).ToList();
 
-      private T loadTemplate<T>(Template template)
-      {
-         return _templateTaskQuery.LoadTemplate<T>(template);
-      }
+      private T loadTemplate<T>(Template template) => _templateTaskQuery.LoadTemplate<T>(template);
 
       private void updateIcon(TemplateType templateType)
       {
@@ -153,7 +141,7 @@ namespace PKSim.Presentation.Presenters
             _view.SetIcon(icon);
       }
 
-      private void updateView()
+      private void refreshView()
       {
          var numberOfTemplateSelected = _selectedTemplates.Count;
          _view.OkEnabled = numberOfTemplateSelected > 0;
@@ -162,22 +150,17 @@ namespace PKSim.Presentation.Presenters
          //    numberOfTemplateSelected == 0 ? string.Empty :
          //    numberOfTemplateSelected == 1 ? _selectedTemplates[0].Description :
          //    PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _buildingBlockTypeString);
-
-         _view.BindTo(_availableTemplates);
       }
 
-      public IEnumerable<Template> AllTemplates()
+      private void updateView()
       {
-         return _availableTemplates;
+         refreshView();
+         var allTemplateDTOs = _availableTemplates.Select(x => new TemplateDTO(x)).ToList();
+         _view.BindTo(allTemplateDTOs);
+         _view.SelectTemplate(allTemplateDTOs.FirstOrDefault());
       }
 
-      public void ActivateNodes(IReadOnlyList<ITreeNode> treeNodes)
-      {
-         _selectedTemplates.Clear();
-         var templates = treeNodes.Select(x => x.TagAsObject).OfType<Template>();
-         _selectedTemplates.AddRange(templates);
-         updateView();
-      }
+      public IEnumerable<Template> AllTemplates() => _availableTemplates;
 
       public void Rename(Template template)
       {
@@ -200,16 +183,19 @@ namespace PKSim.Presentation.Presenters
          _availableTemplates.Remove(template);
          _selectedTemplates.Remove(template);
 
-         var nextSelectedTemplate = _selectedTemplates.FirstOrDefault();
-         if(nextSelectedTemplate!=null)
-            _view.SelectTemplate(nextSelectedTemplate);
-
          updateView();
       }
 
       public bool CanEdit(Template template)
       {
          return _startOptions.IsDeveloperMode || template.DatabaseType == TemplateDatabaseType.User;
+      }
+
+      public void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templateDTOs)
+      {
+         _selectedTemplates.Clear();
+         _selectedTemplates.AddRange(templateDTOs.Select(x => x.Template));
+         refreshView();
       }
 
       public void ShowContextMenu(ITreeNode nodeRequestingPopup, Point popupLocation)

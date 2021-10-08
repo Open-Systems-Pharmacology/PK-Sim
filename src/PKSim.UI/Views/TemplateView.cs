@@ -1,37 +1,40 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using OSPSuite.UI.Services;
-using OSPSuite.Assets;
 using DevExpress.XtraBars;
-using DevExpress.XtraTreeList;
-using NHibernate.Linq;
+using DevExpress.XtraEditors.Repository;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
-using PKSim.Core.Model;
 
 namespace PKSim.UI.Views
 {
-   public partial class BuildingBlockFromTemplateView : BaseModalView, IBuildingBlockFromTemplateView, IViewWithPopup
+   public partial class TemplateView : BaseModalView, ITemplateView, IViewWithPopup
    {
+      private readonly IImageListRetriever _imageListRetriever;
       private ITemplatePresenter _presenter;
-      private readonly GridViewBinder<Template> _gridViewBinder;
+      private readonly GridViewBinder<TemplateDTO> _gridViewBinder;
       public bool Updating { get; private set; }
 
-      public BuildingBlockFromTemplateView(IImageListRetriever imageListRetriever, Shell shell)
+      public TemplateView(IImageListRetriever imageListRetriever, Shell shell)
          : base(shell)
       {
+         _imageListRetriever = imageListRetriever;
          InitializeComponent();
-         _gridViewBinder = new GridViewBinder<Template>(gridView);
+         _gridViewBinder = new GridViewBinder<TemplateDTO>(gridView);
          gridView.MultiSelect = true;
+         gridView.OptionsView.ShowPreview = true;
+         gridView.OptionsView.AutoCalcPreviewLineCount = true;
          gridView.ShouldUseColorForDisabledCell = false;
+         gridView.GroupFormat = "[#image]{1}";
+         gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
+         gridView.SelectionChanged += (o, e) => OnEvent(onGridViewSelectionChanged);
          toolTipController.Initialize(imageListRetriever);
          PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
          // gridView.SelectionChanged += (o, e) => OnEvent(_presenter.SelectedParametersChanged);
@@ -41,17 +44,34 @@ namespace PKSim.UI.Views
          // treeView.OptionsSelection.MultiSelectMode = TreeListMultiSelectMode.RowSelect;
       }
 
+      private void onGridViewSelectionChanged() => _presenter.SelectedTemplatesChanged(SelectedTemplates);
+
+      public IReadOnlyList<TemplateDTO> SelectedTemplates => dtoListFrom(gridView.GetSelectedRows());
+
+      private IReadOnlyList<TemplateDTO> dtoListFrom(IEnumerable<int> rowHandles) => rowHandles.Select(_gridViewBinder.ElementAt).ToList();
+
       public override void InitializeBinding()
       {
          base.InitializeBinding();
          _gridViewBinder.AutoBind(x => x.Name)
             .AsReadOnly();
 
-         _gridViewBinder.AutoBind(x => x.DatabaseType)
+         var colDatabaseType = _gridViewBinder.AutoBind(x => x.DatabaseType)
+            .WithRepository(templateTypeRepository)
             .AsReadOnly();
 
-         _gridViewBinder.AutoBind(x => x.Description)
+         var colDescription = _gridViewBinder.AutoBind(x => x.Description)
             .AsReadOnly();
+
+         gridView.PreviewFieldName = colDescription.PropertyName;
+         colDescription.Visible = false;
+         colDatabaseType.XtraColumn.GroupIndex = 0;
+      }
+
+      private RepositoryItem templateTypeRepository(TemplateDTO template)
+      {
+         var templateRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
+         return templateRepository.AddItem(template.DatabaseType, template.Icon);
       }
       // private void nodeClick(MouseEventArgs e, ITreeNode selectedNode)
       // {
@@ -89,13 +109,17 @@ namespace PKSim.UI.Views
          Icon = icon;
       }
 
-      public void SelectTemplate(Template template)
-       {
-      //    var node = treeView.NodeById(template.Id);
-      //    treeView.SelectNode(node);
+      public void SelectTemplate(TemplateDTO templateDTO)
+      {
+         if (templateDTO == null)
+            return;
+
+         var rowHandle = _gridViewBinder.RowHandleFor(templateDTO);
+         gridView.SelectRow(rowHandle);
+         gridView.FocusedRowHandle = rowHandle;
       }
 
-      public void BindTo(IReadOnlyList<Template> availableTemplates)
+      public void BindTo(IReadOnlyList<TemplateDTO> availableTemplates)
       {
          _gridViewBinder.BindToSource(availableTemplates);
       }
@@ -106,7 +130,6 @@ namespace PKSim.UI.Views
       {
          gridView.BeginUpdate();
          Updating = true;
-
       }
 
       public void EndUpdate()
