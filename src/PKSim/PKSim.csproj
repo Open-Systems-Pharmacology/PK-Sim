@@ -50,6 +50,9 @@
     <Content Include="$(PkgOSPSuite_TeXReporting)\OSPSuite.TeXReporting\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\templates\templates.json" Link="templates.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

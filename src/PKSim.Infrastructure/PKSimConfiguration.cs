@@ -13,6 +13,7 @@ namespace PKSim.Infrastructure
       public string PKSimDbPath { get; set; }
       public string TemplateSystemDatabasePath { get; }
       public string TemplateUserDatabaseTemplatePath { get; }
+      public string RemoteTemplateSummaryPath { get; }
       public string DefaultTemplateUserDatabasePath { get; }
       public override string ProductName { get; } = CoreConstants.PRODUCT_NAME;
       public override int InternalVersion { get; } = ProjectVersions.Current;
@@ -32,6 +33,7 @@ namespace PKSim.Infrastructure
          PKSimDbPath = LocalOrAllUsersPathForFile(CoreConstants.PK_SIM_DB_FILE);
          TemplateSystemDatabasePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
          TemplateUserDatabaseTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE);
+         RemoteTemplateSummaryPath = LocalOrAllUsersPathForFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
          DefaultTemplateUserDatabasePath = CurrentUserFile(CoreConstants.TEMPLATE_USER_DATABASE);
       }
 

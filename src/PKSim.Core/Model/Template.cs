@@ -9,7 +9,8 @@ namespace PKSim.Core.Model
    public enum TemplateDatabaseType
    {
       User,
-      System
+      System,
+      Remote
    }
 
    [Flags]
@@ -56,9 +57,20 @@ namespace PKSim.Core.Model
       /// </summary>
       public string Version { get; set; } 
 
+      /// <summary>
+      /// Url for a remote snapshot or null otherwise
+      /// </summary>
+      public string Url { get; set; }
+
       public Template() : base(ShortGuid.NewGuid())
       {
          References = new List<Template>();
       }
+   }
+
+   public class RemoteTemplates
+   {
+      public string Version { get; set; }
+      public Template[] Templates { get; set; }
    }
 }

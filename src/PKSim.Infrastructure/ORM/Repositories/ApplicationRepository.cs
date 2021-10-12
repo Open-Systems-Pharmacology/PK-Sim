@@ -13,15 +13,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       private readonly IFlatContainerRepository _flatContainerRepository;
       private readonly IFlatContainerToApplicationMapper _applicationMapper;
-      private readonly IFlatApplicationRepository _flatApplicRepository;
+      private readonly IFlatApplicationRepository _flatApplicationRepository;
 
       private readonly ICache<CompositeKey, IApplicationBuilder> _applicationBuilders;
 
-      public ApplicationRepository(IFlatContainerRepository flatContainerRepository, IFlatContainerToApplicationMapper applicationMapper, IFlatApplicationRepository flatApplicRepository)
+      public ApplicationRepository(IFlatContainerRepository flatContainerRepository, IFlatContainerToApplicationMapper applicationMapper, IFlatApplicationRepository flatApplicationRepository)
       {
          _flatContainerRepository = flatContainerRepository;
          _applicationMapper = applicationMapper;
-         _flatApplicRepository = flatApplicRepository;
+         _flatApplicationRepository = flatApplicationRepository;
          _applicationBuilders = new Cache<CompositeKey, IApplicationBuilder>();
       }
 
@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private string applicationTypeFrom(FlatContainer flatApplicContainer)
       {
-         return (from flatApplication in _flatApplicRepository.All()
+         return (from flatApplication in _flatApplicationRepository.All()
                  where string.Equals(flatApplication.Name, flatApplicContainer.Name)
                  select flatApplication.ApplicationType).FirstOrDefault();
       }

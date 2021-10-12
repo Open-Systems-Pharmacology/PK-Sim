@@ -26,8 +26,13 @@ namespace PKSim.Infrastructure.Services
       private readonly IStringSerializer _stringSerializer;
       private const string _pName = "@PName";
 
-      public TemplateTaskQuery(ITemplateDatabase templateDatabase, IStringSerializer stringSerializer,
-         IObjectIdResetter objectIdResetter, IPKSimConfiguration pkSimConfiguration, ICoreUserSettings userSettings, ITemplateDatabaseConverter templateDatabaseConverter)
+      public TemplateTaskQuery(
+         ITemplateDatabase templateDatabase, 
+         IStringSerializer stringSerializer,
+         IObjectIdResetter objectIdResetter, 
+         IPKSimConfiguration pkSimConfiguration, 
+         ICoreUserSettings userSettings, 
+         ITemplateDatabaseConverter templateDatabaseConverter)
       {
          _objectIdResetter = objectIdResetter;
          _pkSimConfiguration = pkSimConfiguration;
