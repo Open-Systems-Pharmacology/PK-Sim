@@ -38,14 +38,14 @@ namespace PKSim.Presentation.Presenters
 
       protected void AddExistingTemplateNames(Template template, ObjectBaseDTO dto)
       {
-         var allTemplates = _templateTaskQuery.AllTemplatesFor(template.DatabaseType, template.TemplateType);
+         var allTemplates = _templateTaskQuery.AllTemplatesFor(template.DatabaseType, template.Type);
          dto.AddUsedNames(allTemplates.Select(x => x.Name));
          dto.ContainerType = PKSimConstants.UI.TemplateDatabase;
       }
 
       public bool NewName(string defaultName, TemplateType templateType)
       {
-         return Edit(new Template {Name = defaultName, TemplateType = templateType});
+         return Edit(new Template {Name = defaultName, Type = templateType});
       }
    }
 }

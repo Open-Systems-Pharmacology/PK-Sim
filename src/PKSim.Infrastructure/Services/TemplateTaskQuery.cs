@@ -9,6 +9,7 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Extensions;
 using PKSim.Infrastructure.ORM.Core;
@@ -21,6 +22,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IPKSimConfiguration _pkSimConfiguration;
       private readonly ICoreUserSettings _userSettings;
       private readonly ITemplateDatabaseConverter _templateDatabaseConverter;
+      private readonly IRemoteTemplateRepository _remoteTemplateRepository;
       private readonly IObjectIdResetter _objectIdResetter;
       private readonly ITemplateDatabase _templateDatabase;
       private readonly IStringSerializer _stringSerializer;
@@ -32,12 +34,14 @@ namespace PKSim.Infrastructure.Services
          IObjectIdResetter objectIdResetter, 
          IPKSimConfiguration pkSimConfiguration, 
          ICoreUserSettings userSettings, 
-         ITemplateDatabaseConverter templateDatabaseConverter)
+         ITemplateDatabaseConverter templateDatabaseConverter,
+         IRemoteTemplateRepository remoteTemplateRepository)
       {
          _objectIdResetter = objectIdResetter;
          _pkSimConfiguration = pkSimConfiguration;
          _userSettings = userSettings;
          _templateDatabaseConverter = templateDatabaseConverter;
+         _remoteTemplateRepository = remoteTemplateRepository;
          _templateDatabase = templateDatabase;
          _stringSerializer = stringSerializer;
       }
@@ -49,6 +53,9 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<Template> AllTemplatesFor(TemplateDatabaseType templateDatabaseType, TemplateType templateType)
       {
+         if (templateDatabaseType == TemplateDatabaseType.Remote)
+            return _remoteTemplateRepository.AllTemplatesFor(templateType);
+
          var allTemplates = new List<Template>();
          using (establishConnection(templateDatabaseType))
          {
@@ -68,6 +75,90 @@ namespace PKSim.Infrastructure.Services
          return allTemplates;
       }
 
+      public T LoadTemplate<T>(Template template)
+      {
+         if (template.DatabaseType == TemplateDatabaseType.Remote)
+            return _remoteTemplateRepository.LoadTemplate<T>(template);
+
+         using (establishConnection(template.DatabaseType))
+         {
+            var connection = databaseConnection();
+            try
+            {
+               addTemplateNameParameter(template.Name, connection);
+
+               var sqlQuery = $"SELECT t.{TemplateTable.Columns.XML} FROM {TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} IN ({typeFrom(template.Type)}) AND t.{TemplateTable.Columns.NAME} = {_pName}";
+
+               var table = new DASDataTable(connection);
+               connection.FillDataTable(table, sqlQuery);
+
+               if (table.Rows.Count() > 0)
+               {
+                  var serializationString = table.Rows.ItemByIndex(0)[TemplateTable.Columns.XML].ToString();
+                  var objectFromTemplate = _stringSerializer.Deserialize<T>(serializationString);
+                  _objectIdResetter.ResetIdFor(objectFromTemplate);
+
+                  //Rename the template according to the template name as the template might have been renamed
+                  var withName = objectFromTemplate as IWithName;
+                  if (withName != null)
+                     withName.Name = template.Name;
+
+                  return objectFromTemplate;
+               }
+            }
+            finally
+            {
+               removeNameParameter(connection);
+            }
+
+            return default;
+         }
+      }
+
+      public void RenameTemplate(Template buildingBlockTemplate, string newName)
+      {
+         using (establishConnection(buildingBlockTemplate.DatabaseType))
+         {
+            //Is there an user template with that name for given building block type
+            var template = createTemplateRow(buildingBlockTemplate);
+
+            //should never be the case when renaming
+            if (!template.ExistsInDB())
+               return;
+
+            template[TemplateTable.Columns.NAME] = newName;
+
+            //could crash if already exists with the same name
+            template.UpdateInDB();
+
+            //it worked! rename the bb as well
+            buildingBlockTemplate.Name = newName;
+         }
+      }
+
+      public void DeleteTemplate(Template templateToDelete)
+      {
+         using (establishConnection(templateToDelete.DatabaseType))
+         {
+            //Is there an user template with that name for given building block type
+            var template = createTemplateRow(templateToDelete);
+            if (!template.ExistsInDB())
+               return;
+
+            template.Delete();
+            template.DeleteFromDB();
+         }
+      }
+
+      public IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType)
+      {
+         var buildingBlockTemplates = new List<Template>();
+         buildingBlockTemplates.AddRange(AllTemplatesFor(TemplateDatabaseType.System, templateType));
+         buildingBlockTemplates.AddRange(AllTemplatesFor(TemplateDatabaseType.User, templateType));
+         buildingBlockTemplates.AddRange(AllTemplatesFor(TemplateDatabaseType.Remote, templateType));
+         return buildingBlockTemplates;
+      }
+      
       private void addReferencesToTemplate(Template template, DAS connection, List<string> loadedReferenceNames = null)
       {
          DASDataTable dataTable = null;
@@ -79,7 +170,7 @@ namespace PKSim.Infrastructure.Services
 
             var sqlQuery =
                $"SELECT ref.{TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE}, ref.{TemplateReferenceTable.Columns.REFERENCE_NAME}  FROM {TemplateReferenceTable.NAME} ref " +
-               $"WHERE ref.{TemplateReferenceTable.Columns.TEMPLATE_TYPE} = '{template.TemplateType}' AND ref.{TemplateReferenceTable.Columns.NAME}={_pName}";
+               $"WHERE ref.{TemplateReferenceTable.Columns.TEMPLATE_TYPE} = '{template.Type}' AND ref.{TemplateReferenceTable.Columns.NAME}={_pName}";
 
             dataTable = connection.ExecuteQueryForDataTable(sqlQuery);
          }
@@ -125,7 +216,7 @@ namespace PKSim.Infrastructure.Services
             return new Template
             {
                DatabaseType = templateDatabaseType,
-               TemplateType = EnumHelper.ParseValue<TemplateType>(templateType),
+               Type = EnumHelper.ParseValue<TemplateType>(templateType),
                Name = templateName,
                Version = row.StringAt(TemplateTable.Columns.VERSION),
                Description = row.StringAt(TemplateTable.Columns.DESCRIPTION)
@@ -153,86 +244,7 @@ namespace PKSim.Infrastructure.Services
       {
          return EnumHelper.AllValuesFor<TemplateType>();
       }
-
-      public void RenameTemplate(Template buildingBlockTemplate, string newName)
-      {
-         using (establishConnection(buildingBlockTemplate.DatabaseType))
-         {
-            //Is there an user template with that name for given building block type
-            var template = createTemplateRow(buildingBlockTemplate);
-
-            //should never be the case when renaming
-            if (!template.ExistsInDB())
-               return;
-
-            template[TemplateTable.Columns.NAME] = newName;
-
-            //could crash if already exists with the same name
-            template.UpdateInDB();
-
-            //it worked! rename the bb as well
-            buildingBlockTemplate.Name = newName;
-         }
-      }
-
-      public void DeleteTemplate(Template templateToDelete)
-      {
-         using (establishConnection(templateToDelete.DatabaseType))
-         {
-            //Is there an user template with that name for given building block type
-            var template = createTemplateRow(templateToDelete);
-            if (!template.ExistsInDB())
-               return;
-
-            template.Delete();
-            template.DeleteFromDB();
-         }
-      }
-
-      public IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType)
-      {
-         var buildingBlockTemplates = new List<Template>();
-         buildingBlockTemplates.AddRange(AllTemplatesFor(TemplateDatabaseType.System, templateType));
-         buildingBlockTemplates.AddRange(AllTemplatesFor(TemplateDatabaseType.User, templateType));
-         return buildingBlockTemplates;
-      }
-
-      public T LoadTemplate<T>(Template template)
-      {
-         using (establishConnection(template.DatabaseType))
-         {
-            var connection = databaseConnection();
-            try
-            {
-               addTemplateNameParameter(template.Name, connection);
-
-               var sqlQuery = $"SELECT t.{TemplateTable.Columns.XML} FROM {TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} IN ({typeFrom(template.TemplateType)}) AND t.{TemplateTable.Columns.NAME} = {_pName}";
-
-               var table = new DASDataTable(connection);
-               connection.FillDataTable(table, sqlQuery);
-
-               if (table.Rows.Count() > 0)
-               {
-                  var serializationString = table.Rows.ItemByIndex(0)[TemplateTable.Columns.XML].ToString();
-                  var objectFromTemplate = _stringSerializer.Deserialize<T>(serializationString);
-                  _objectIdResetter.ResetIdFor(objectFromTemplate);
-
-                  //Rename the template according to the template name as the template might have been renamed
-                  var withName = objectFromTemplate as IWithName;
-                  if (withName != null)
-                     withName.Name = template.Name;
-
-                  return objectFromTemplate;
-               }
-            }
-            finally
-            {
-               removeNameParameter(connection);
-            }
-
-            return default;
-         }
-      }
+      
 
       private static void addTemplateNameParameter(string templateName, DAS connection)
       {
@@ -246,7 +258,7 @@ namespace PKSim.Infrastructure.Services
 
       private DASDataRow createTemplateRow(Template buildingBlockTemplate)
       {
-         return createTemplateRow(buildingBlockTemplate.TemplateType, buildingBlockTemplate.Name);
+         return createTemplateRow(buildingBlockTemplate.Type, buildingBlockTemplate.Name);
       }
 
       private DASDataRow createTemplateRow(TemplateType templateType, string name)
@@ -277,9 +289,9 @@ namespace PKSim.Infrastructure.Services
       {
          var keys = new Cache<string, string>
          {
-            {TemplateReferenceTable.Columns.TEMPLATE_TYPE, templateItem.TemplateType.ToString()},
+            {TemplateReferenceTable.Columns.TEMPLATE_TYPE, templateItem.Type.ToString()},
             {TemplateReferenceTable.Columns.NAME, templateItem.Name},
-            {TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE, reference.TemplateType.ToString()},
+            {TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE, reference.Type.ToString()},
             {TemplateReferenceTable.Columns.REFERENCE_NAME, reference.Name},
          };
          return createNewRow(TemplateReferenceTable.NAME, keys);
@@ -313,10 +325,10 @@ namespace PKSim.Infrastructure.Services
          {
             foreach (var templateItem in templateItems)
             {
-               createBuildingBlockTypeIfMissing(templateItem.TemplateType);
+               createBuildingBlockTypeIfMissing(templateItem.Type);
 
                //Is there a user template with that name for given building block type
-               var newTemplate = createTemplateRow(templateItem.TemplateType, templateItem.Name);
+               var newTemplate = createTemplateRow(templateItem.Type, templateItem.Name);
                var xml = _stringSerializer.Serialize(templateItem.Object);
                newTemplate[TemplateTable.Columns.DESCRIPTION] = templateItem.Description;
                newTemplate[TemplateTable.Columns.VERSION] = templateItem.Version;

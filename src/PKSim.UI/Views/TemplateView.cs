@@ -121,31 +121,6 @@ namespace PKSim.UI.Views
          var templateRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
          return templateRepository.AddItem(template.DatabaseType, template.Icon);
       }
-      // private void nodeClick(MouseEventArgs e, ITreeNode selectedNode)
-      // {
-      //    if (e.Button == MouseButtons.Right)
-      //    {
-      //       selectNode(selectedNode);
-      //       _presenter.CreatePopupMenuFor(selectedNode).At(e.Location);
-      //    }
-      //    else
-      //    {
-      //       var treeNodes = treeView.Selection.Select(treeView.NodeFrom).ToList();
-      //       _presenter.ActivateNodes(treeNodes);
-      //    }
-      // }
-
-      // private void selectNode(ITreeNode nodeToSelect)
-      // {
-      //    treeView.Selection.Clear();
-      //
-      //    if (nodeToSelect == null)
-      //       return;
-      //
-      //    //Ensure we only have one node selected for context menu
-      //    treeView.FocusedNode = treeView.NodeFrom(nodeToSelect);
-      //    treeView.Selection.Add(treeView.FocusedNode);
-      // }
 
       public void AttachPresenter(ITemplatePresenter presenter)
       {

@@ -5,21 +5,21 @@
       "Type": "Individual",
       "Name": "European (P-gp modified, CYP3A4 36 h)",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json",
-      "Version": 1.1,
+      "Version": "1.1",
       "Description": "BlaBla"
     },
     {
       "Type": "Compound",
       "Name": "Rifampicin",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json",
-      "Version": 1.1,
+      "Version": "1.1",
       "Description": "BlaBla"
     },
     {
       "Type": "Compound",
       "Name": "Cimetidine",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Cimetidine-Model/v1.0/Cimetidine-Model.json",
-      "Version": 1.0,
+      "Version": "1.0",
       "Description": "BlaBla"
     }
   ]

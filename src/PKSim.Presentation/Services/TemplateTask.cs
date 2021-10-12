@@ -36,7 +36,7 @@ namespace PKSim.Presentation.Services
             {
                Name = namePresenter.Name,
                Description = namePresenter.Description,
-               TemplateType = templateType,
+               Type = templateType,
                Object = objectToSave,
                DatabaseType = TemplateDatabaseType.User,
             };

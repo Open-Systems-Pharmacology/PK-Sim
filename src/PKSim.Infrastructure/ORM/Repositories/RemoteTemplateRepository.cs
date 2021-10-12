@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -14,6 +18,17 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly List<Template> _allTemplates = new List<Template>();
       public string Version { get; private set; }
 
+      public IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType)
+      {
+         Start();
+         return _allTemplates.Where(x => x.Type.Is(templateType)).ToList();
+      }
+
+      public T LoadTemplate<T>(Template template)
+      {
+         throw new NotImplementedException();
+      }
+
       public RemoteTemplateRepository(IPKSimConfiguration configuration, IJsonSerializer jsonSerializer)
       {
          _configuration = configuration;
@@ -22,7 +37,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
-         var snapshots = _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath).Result;
+         var snapshots = Task.Run(() => _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath)).Result;
+         snapshots.Templates.Each(x => x.DatabaseType = TemplateDatabaseType.Remote);
          _allTemplates.AddRange(snapshots.Templates);
          Version = snapshots.Version;
       }
@@ -32,6 +48,5 @@ namespace PKSim.Infrastructure.ORM.Repositories
          Start();
          return _allTemplates;
       }
-
    }
 }

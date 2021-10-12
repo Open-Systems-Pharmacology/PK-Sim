@@ -94,7 +94,7 @@ namespace PKSim.Presentation
       {
          _templateItem.Name.ShouldBeEqualTo("NEW_NAME");
          _templateItem.Description.ShouldBeEqualTo("DESCRIPTION");
-         _templateItem.TemplateType.ShouldBeEqualTo(TemplateType.PopulationAnalysisField);
+         _templateItem.Type.ShouldBeEqualTo(TemplateType.PopulationAnalysisField);
       }
 
       [Observation]

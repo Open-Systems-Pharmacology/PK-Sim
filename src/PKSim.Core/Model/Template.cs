@@ -41,7 +41,7 @@ namespace PKSim.Core.Model
    public class Template : ObjectBase
    {
       public TemplateDatabaseType DatabaseType { get; set; }
-      public TemplateType TemplateType { get; set; }
+      public TemplateType Type { get; set; }
       public object Object { get; set; }
 
       /// <summary>

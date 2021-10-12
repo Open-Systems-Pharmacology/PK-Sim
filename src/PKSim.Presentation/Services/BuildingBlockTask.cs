@@ -228,7 +228,7 @@ namespace PKSim.Presentation.Services
             Name = buildingBlockName,
             Description = buildingBlockToSave.Description,
             Object = buildingBlockToSave,
-            TemplateType = templateType,
+            Type = templateType,
             DatabaseType = templateDatabaseType,
             Version = CoreConstants.DEFAULT_TEMPLATE_VERSION
          };

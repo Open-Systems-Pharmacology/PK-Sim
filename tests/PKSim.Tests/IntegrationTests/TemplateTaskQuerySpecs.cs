@@ -151,7 +151,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual().WithName("TOTO'");
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _individual.Name, Object = _individual, TemplateType = TemplateType.Individual};
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _individual.Name, Object = _individual, Type = TemplateType.Individual};
          sut.SaveToTemplate(_template);
       }
 
@@ -178,7 +178,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _observerSet = new ObserverSet {Name = "ObsSet"};
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _observerSet.Name, Object = _observerSet, TemplateType = TemplateType.ObserverSet};
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _observerSet.Name, Object = _observerSet, Type = TemplateType.ObserverSet};
          sut.SaveToTemplate(_template);
       }
 
@@ -208,8 +208,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound().WithName("DRUG");
          _metabolite = DomainFactoryForSpecs.CreateStandardCompound().WithName("METABOLITE");
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound};
-         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound};
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, Type = TemplateType.Compound};
+         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, Type = TemplateType.Compound};
          _template.References.Add(_reference);
          sut.SaveToTemplate(new[] {_template, _reference,});
       }
@@ -240,8 +240,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound().WithName("DRUG");
          _metabolite = DomainFactoryForSpecs.CreateStandardCompound().WithName("METABOLITE");
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound};
-         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound};
+         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, Type = TemplateType.Compound};
+         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, Type = TemplateType.Compound};
          _template.References.Add(_reference);
          sut.SaveToTemplate(new[] {_template, _reference,});
          sut.DeleteTemplate(_reference);
