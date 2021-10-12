@@ -49,12 +49,12 @@ namespace PKSim.Infrastructure.Services
          {
             var connection = databaseConnection();
 
-            var sqlQuery = string.Format("SELECT t.{0}, t.{1} FROM {2} t WHERE t.{0} IN ({3})",
-               TemplateTable.Columns.TEMPLATE_TYPE, TemplateTable.Columns.NAME, TemplateTable.NAME, typeFrom(templateType));
+            var sqlQuery = $"SELECT t.{TemplateTable.Columns.TEMPLATE_TYPE}, t.{TemplateTable.Columns.NAME} FROM " +
+                           $"{TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} IN ({typeFrom(templateType)})";
 
             foreach (DASDataRow row in connection.ExecuteQueryForDataTable(sqlQuery))
             {
-               var template = loadTemplateBy(templateDatabaseType, row.StringAt(TemplateTable.Columns.NAME), row.StringAt(TemplateTable.Columns.TEMPLATE_TYPE), connection);
+               var template = loadTemplateBy(templateDatabaseType, row.StringAt(TemplateTable.Columns.NAME), row.StringAt(TemplateTable.Columns.TEMPLATE_TYPE),  connection);
                addReferencesToTemplate(template, connection);
                allTemplates.Add(template);
             }
@@ -72,10 +72,9 @@ namespace PKSim.Infrastructure.Services
          {
             addTemplateNameParameter(template.Name, connection);
 
-            var sqlQuery = string.Format("SELECT ref.{2}, ref.{3}  FROM {4} ref WHERE ref.{0} = '{5}' AND ref.{1}={6}",
-               TemplateReferenceTable.Columns.TEMPLATE_TYPE, TemplateReferenceTable.Columns.NAME,
-               TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE, TemplateReferenceTable.Columns.REFERENCE_NAME,
-               TemplateReferenceTable.NAME, template.TemplateType, _pName);
+            var sqlQuery =
+               $"SELECT ref.{TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE}, ref.{TemplateReferenceTable.Columns.REFERENCE_NAME}  FROM {TemplateReferenceTable.NAME} ref " +
+               $"WHERE ref.{TemplateReferenceTable.Columns.TEMPLATE_TYPE} = '{template.TemplateType}' AND ref.{TemplateReferenceTable.Columns.NAME}={_pName}";
 
             dataTable = connection.ExecuteQueryForDataTable(sqlQuery);
          }
@@ -86,7 +85,7 @@ namespace PKSim.Infrastructure.Services
 
          foreach (DASDataRow row in dataTable)
          {
-            var reference = loadTemplateBy(template.DatabaseType, row.StringAt(TemplateReferenceTable.Columns.REFERENCE_NAME), row.StringAt(TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE), connection);
+            var reference = loadTemplateBy(template.DatabaseType, row.StringAt(TemplateReferenceTable.Columns.REFERENCE_NAME), row.StringAt(TemplateReferenceTable.Columns.REFERENCE_TEMPLATE_TYPE),  connection);
             //cannot be found...continue
             if (reference == null)
                continue;
@@ -109,9 +108,7 @@ namespace PKSim.Infrastructure.Services
          {
             addTemplateNameParameter(templateName, connection);
 
-            var sqlQuery = string.Format("SELECT t.{2} FROM {3} t WHERE t.{0} = '{4}' AND t.{1}={5}",
-               TemplateTable.Columns.TEMPLATE_TYPE, TemplateTable.Columns.NAME,
-               TemplateTable.Columns.DESCRIPTION, TemplateTable.NAME, templateType, _pName);
+            var sqlQuery = $"SELECT t.{TemplateTable.Columns.DESCRIPTION}, t.{TemplateTable.Columns.VERSION} FROM {TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} = '{templateType}' AND t.{TemplateTable.Columns.NAME}={_pName}";
 
 
             var row = connection.ExecuteQueryForSingleRowOrNull(sqlQuery);
@@ -125,6 +122,7 @@ namespace PKSim.Infrastructure.Services
                DatabaseType = templateDatabaseType,
                TemplateType = EnumHelper.ParseValue<TemplateType>(templateType),
                Name = templateName,
+               Version = row.StringAt(TemplateTable.Columns.VERSION),
                Description = row.StringAt(TemplateTable.Columns.DESCRIPTION)
             };
          }
@@ -316,6 +314,7 @@ namespace PKSim.Infrastructure.Services
                var newTemplate = createTemplateRow(templateItem.TemplateType, templateItem.Name);
                var xml = _stringSerializer.Serialize(templateItem.Object);
                newTemplate[TemplateTable.Columns.DESCRIPTION] = templateItem.Description;
+               newTemplate[TemplateTable.Columns.VERSION] = templateItem.Version;
                newTemplate[TemplateTable.Columns.XML] = xml;
 
                if (newTemplate.ExistsInDB())
@@ -372,6 +371,7 @@ namespace PKSim.Infrastructure.Services
             public const string NAME = "NAME";
             public const string DESCRIPTION = "DESCRIPTION";
             public const string XML = "XML";
+            public const string VERSION = "VERSION";
          }
       }
 

@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using DevExpress.XtraBars;
+using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
@@ -20,6 +26,8 @@ namespace PKSim.UI.Views
       private readonly IImageListRetriever _imageListRetriever;
       private ITemplatePresenter _presenter;
       private readonly GridViewBinder<TemplateDTO> _gridViewBinder;
+      private readonly RepositoryItemButtonEdit _editRemoveRepository;
+      private readonly RepositoryItemTextEdit _disabledRepository;
       public bool Updating { get; private set; }
 
       public TemplateView(IImageListRetriever imageListRetriever, Shell shell)
@@ -33,15 +41,20 @@ namespace PKSim.UI.Views
          gridView.OptionsView.AutoCalcPreviewLineCount = true;
          gridView.ShouldUseColorForDisabledCell = false;
          gridView.GroupFormat = "[#image]{1}";
+         gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, o, e);
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
          gridView.SelectionChanged += (o, e) => OnEvent(onGridViewSelectionChanged);
          toolTipController.Initialize(imageListRetriever);
          PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
-         // gridView.SelectionChanged += (o, e) => OnEvent(_presenter.SelectedParametersChanged);
-         // treeView.NodeClick += nodeClick;
-         // tbDescription.Enabled = false;
-         // treeView.OptionsSelection.MultiSelect = true;
-         // treeView.OptionsSelection.MultiSelectMode = TreeListMultiSelectMode.RowSelect;
+         _editRemoveRepository = createEditRemoveButtonRepository();
+         _disabledRepository = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
+      }
+
+      private void onShowingEditor(object sender, CancelEventArgs e)
+      {
+         var templateDTO = _gridViewBinder.FocusedElement;
+         if (templateDTO == null) return;
+         e.Cancel = !_presenter.CanEdit(templateDTO);
       }
 
       private void onGridViewSelectionChanged() => _presenter.SelectedTemplatesChanged(SelectedTemplates);
@@ -60,12 +73,47 @@ namespace PKSim.UI.Views
             .WithRepository(templateTypeRepository)
             .AsReadOnly();
 
+         _gridViewBinder.AutoBind(x => x.Version)
+            .AsReadOnly();
+
          var colDescription = _gridViewBinder.AutoBind(x => x.Description)
             .AsReadOnly();
+
+         _gridViewBinder.AddUnboundColumn()
+            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
+            .WithRepository(repositoryForTemplate)
+            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
          gridView.PreviewFieldName = colDescription.PropertyName;
          colDescription.Visible = false;
          colDatabaseType.XtraColumn.GroupIndex = 0;
+
+         _editRemoveRepository.ButtonClick += (o, e) => OnEvent(() => editRemoveRepositoryButtonClick(o, e, _gridViewBinder.FocusedElement));
+      }
+
+      private RepositoryItem repositoryForTemplate(TemplateDTO templateDTO)
+      {
+         return _presenter.CanEdit(templateDTO) ? _editRemoveRepository : _disabledRepository;
+      }
+
+      private RepositoryItemButtonEdit createEditRemoveButtonRepository()
+      {
+         var schemaItemButtonRepository = new RepositoryItemButtonEdit {TextEditStyle = TextEditStyles.HideTextEditor};
+         schemaItemButtonRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
+         schemaItemButtonRepository.Buttons[0].ToolTip = PKSimConstants.MenuNames.Rename;
+         schemaItemButtonRepository.Buttons.Add(new EditorButton(ButtonPredefines.Delete) {ToolTip = PKSimConstants.MenuNames.Delete});
+         return schemaItemButtonRepository;
+      }
+
+      private void editRemoveRepositoryButtonClick(object sender, ButtonPressedEventArgs e, TemplateDTO templateDTO)
+      {
+         var editor = (ButtonEdit) sender;
+         var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
+         if (buttonIndex == 0)
+            _presenter.Rename(templateDTO);
+         else
+            _presenter.Delete(templateDTO);
       }
 
       private RepositoryItem templateTypeRepository(TemplateDTO template)
@@ -115,8 +163,8 @@ namespace PKSim.UI.Views
             return;
 
          var rowHandle = _gridViewBinder.RowHandleFor(templateDTO);
-         gridView.SelectRow(rowHandle);
          gridView.FocusedRowHandle = rowHandle;
+         gridView.SelectRow(rowHandle);
       }
 
       public void BindTo(IReadOnlyList<TemplateDTO> availableTemplates)

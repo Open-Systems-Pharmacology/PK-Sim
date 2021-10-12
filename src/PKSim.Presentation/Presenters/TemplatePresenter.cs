@@ -33,18 +33,18 @@ namespace PKSim.Presentation.Presenters
       ///    Rename the building block template given as parameter
       /// </summary>
       /// <param name="template">Building block template to rename</param>
-      void Rename(Template template);
+      void Rename(TemplateDTO template);
 
       /// <summary>
       ///    Delete the building block template given as parameter
       /// </summary>
-      /// <param name="template">Building block template to delete</param>
-      void Delete(Template template);
+      /// <param name="templateDTO">Building block template to delete</param>
+      void Delete(TemplateDTO templateDTO);
 
       /// <summary>
       ///    Returns true if the user can edit the given <paramref name="template" /> otherwise false
       /// </summary>
-      bool CanEdit(Template template);
+      bool CanEdit(TemplateDTO template);
 
       void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templates);
    }
@@ -162,8 +162,9 @@ namespace PKSim.Presentation.Presenters
 
       public IEnumerable<Template> AllTemplates() => _availableTemplates;
 
-      public void Rename(Template template)
+      public void Rename(TemplateDTO templateDTO)
       {
+         var template = templateDTO.Template;
          using (var renamePresenter = _applicationController.Start<IRenameTemplatePresenter>())
          {
             if (!renamePresenter.Edit(template))
@@ -173,12 +174,13 @@ namespace PKSim.Presentation.Presenters
          }
       }
 
-      public void Delete(Template template)
+      public void Delete(TemplateDTO templateDTO)
       {
-         var result = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteTemplate(template.Name));
+         var result = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteTemplate(templateDTO.Name));
          if (result == ViewResult.No)
             return;
 
+         var template = templateDTO.Template;
          _templateTaskQuery.DeleteTemplate(template);
          _availableTemplates.Remove(template);
          _selectedTemplates.Remove(template);
@@ -186,7 +188,7 @@ namespace PKSim.Presentation.Presenters
          updateView();
       }
 
-      public bool CanEdit(Template template)
+      public bool CanEdit(TemplateDTO template)
       {
          return _startOptions.IsDeveloperMode || template.DatabaseType == TemplateDatabaseType.User;
       }

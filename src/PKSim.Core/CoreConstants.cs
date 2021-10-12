@@ -32,6 +32,8 @@ namespace PKSim.Core
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
       public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
+      public static readonly string DEFAULT_TEMPLATE_VERSION = "1.0";
+
       public const int NUMBER_OF_PKA_PARAMETERS = 3;
 
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};

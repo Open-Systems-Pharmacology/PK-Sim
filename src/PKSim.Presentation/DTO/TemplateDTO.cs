@@ -14,6 +14,7 @@ namespace PKSim.Presentation.DTO
       public TemplateDatabaseType DatabaseType => Template.DatabaseType;
       public string Name => Template.Name;
       public string Description => Template.Description;
+      public string Version => Template.Version;
       public Template Template { get; }
 
       public ApplicationIcon Icon

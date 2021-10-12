@@ -131,10 +131,8 @@ namespace PKSim.UI.Views.Parameters
 
       private void initRepositories()
       {
-         _repositoryForStandardParameter = new RepositoryItemTextEdit();
+         _repositoryForStandardParameter = new RepositoryItemTextEdit {ReadOnly = true, Enabled = false};
          _progressBarRepository = new RepositoryItemProgressBar {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
-         _repositoryForStandardParameter.ReadOnly = true;
-         _repositoryForStandardParameter.Enabled = false;
          _repositoryForStandardParameter.CustomDisplayText += (o, e) => { e.DisplayText = string.Empty; };
       }
 

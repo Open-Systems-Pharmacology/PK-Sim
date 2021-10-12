@@ -7,12 +7,9 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Presenters.Nodes;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
-using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
 
@@ -37,7 +34,7 @@ namespace PKSim.Presentation
          _applicationController = A.Fake<IApplicationController>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _startOptions = A.Fake<IStartOptions>();
-         sut = new TemplatePresenter(_view, _templateTaskQuery, _objectTypeResolver,  _contextMenuFactory, _applicationController, _dialogCreator, _startOptions);
+         sut = new TemplatePresenter(_view, _templateTaskQuery, _objectTypeResolver, _contextMenuFactory, _applicationController, _dialogCreator, _startOptions);
       }
    }
 
@@ -45,31 +42,35 @@ namespace PKSim.Presentation
    {
       private Template _userTemplate;
       private Template _systemTemplate;
+      private TemplateDTO _userTemplateDTO;
+      private TemplateDTO _systemTemplateDTO;
 
       protected override void Context()
       {
          base.Context();
          _userTemplate = new Template {DatabaseType = TemplateDatabaseType.User};
          _systemTemplate = new Template {DatabaseType = TemplateDatabaseType.System};
+         _userTemplateDTO = new TemplateDTO(_userTemplate);
+         _systemTemplateDTO = new TemplateDTO(_systemTemplate);
       }
 
       [Observation]
       public void should_return_true_if_the_template_is_a_user_template()
       {
-         sut.CanEdit(_userTemplate).ShouldBeTrue();
+         sut.CanEdit(_userTemplateDTO).ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_if_the_template_is_a_system_template()
       {
-         sut.CanEdit(_systemTemplate).ShouldBeFalse();
+         sut.CanEdit(_systemTemplateDTO).ShouldBeFalse();
       }
 
       [Observation]
       public void should_return_true_if_the_template_is_a_system_template_and_the_user_is_admin()
       {
          A.CallTo(() => _startOptions.IsDeveloperMode).Returns(true);
-         sut.CanEdit(_systemTemplate).ShouldBeTrue();
+         sut.CanEdit(_systemTemplateDTO).ShouldBeTrue();
       }
    }
 
@@ -134,7 +135,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.SelectedTemplatesChanged(new[] { new TemplateDTO(_template1), new TemplateDTO(_template2) });
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1), new TemplateDTO(_template2)});
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -166,6 +167,7 @@ namespace PKSim.Presentation
       private Compound _compound1;
       private Compound _compound2;
       private readonly string _templateType = "TEMPLATE TYPE";
+      private TemplateDTO _templateDTO1;
 
       protected override void Context()
       {
@@ -179,7 +181,8 @@ namespace PKSim.Presentation
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.SelectedTemplatesChanged(new[] { new TemplateDTO(_template1), new TemplateDTO(_template2) });
+         _templateDTO1 = new TemplateDTO(_template1);
+         sut.SelectedTemplatesChanged(new[] {_templateDTO1, new TemplateDTO(_template2)});
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
@@ -187,7 +190,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Delete(_template1);
+         sut.Delete(_templateDTO1);
       }
 
       [Observation]
@@ -205,6 +208,7 @@ namespace PKSim.Presentation
       private Compound _compound1;
       private Compound _compound2;
       private readonly string _templateType = "TEMPLATE TYPE";
+      private TemplateDTO _templateDTO1;
 
       protected override void Context()
       {
@@ -212,21 +216,23 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new Template { Name = "Template1", Id = "Id1" };
-         _template2 = new Template { Name = "Template2", Id = "Id2" };
+         _template1 = new Template {Name = "Template1", Id = "Id1"};
+         _template2 = new Template {Name = "Template2", Id = "Id2"};
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
-         _templates = new List<Template> { _template1, _template2 };
+         _templates = new List<Template> {_template1, _template2};
+         _templateDTO1 = new TemplateDTO(_template1);
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.SelectedTemplatesChanged(new[] { new TemplateDTO(_template1), new TemplateDTO(_template2) });
+         sut.SelectedTemplatesChanged(new[] {_templateDTO1, new TemplateDTO(_template2)});
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+         sut.LoadFromTemplate<Compound>(TemplateType.Compound);
       }
-      
+
       protected override void Because()
       {
-         sut.Delete(_template1);
+         sut.Delete(_templateDTO1);
       }
 
       [Observation]
@@ -238,8 +244,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_refresh_the_selected_node_from_the_view()
       {
-         A.CallTo(() => _view.SelectTemplate(_template2)).MustHaveHappened();
+         A.CallTo(() => _view.SelectTemplate(A<TemplateDTO>.That.Matches(x => Equals(x.Template, _template2)))).MustHaveHappened();
       }
    }
-
 }

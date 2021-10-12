@@ -51,6 +51,11 @@ namespace PKSim.Core.Model
 
       public bool HasReferences => References.Any();
 
+      /// <summary>
+      /// This will be the default version of a template
+      /// </summary>
+      public string Version { get; set; } 
+
       public Template() : base(ShortGuid.NewGuid())
       {
          References = new List<Template>();
