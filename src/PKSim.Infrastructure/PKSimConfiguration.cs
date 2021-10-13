@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.Win32;
 using OSPSuite.Assets;
 using OSPSuite.Core;
@@ -14,6 +15,7 @@ namespace PKSim.Infrastructure
       public string TemplateSystemDatabasePath { get; }
       public string TemplateUserDatabaseTemplatePath { get; }
       public string RemoteTemplateSummaryPath { get; }
+      public string RemoteTemplateFolderPath { get; }
       public string DefaultTemplateUserDatabasePath { get; }
       public override string ProductName { get; } = CoreConstants.PRODUCT_NAME;
       public override int InternalVersion { get; } = ProjectVersions.Current;
@@ -35,6 +37,9 @@ namespace PKSim.Infrastructure
          TemplateUserDatabaseTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE);
          RemoteTemplateSummaryPath = LocalOrAllUsersPathForFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
          DefaultTemplateUserDatabasePath = CurrentUserFile(CoreConstants.TEMPLATE_USER_DATABASE);
+         RemoteTemplateFolderPath = Path.Combine(CurrentUserFolderPath, CoreConstants.REMOTE_FOLDER_PATH); 
+         if (!DirectoryHelper.DirectoryExists(RemoteTemplateFolderPath))
+            DirectoryHelper.CreateDirectory(RemoteTemplateFolderPath);
       }
 
       private void createDefaultSettingsFolder()
@@ -44,6 +49,8 @@ namespace PKSim.Infrastructure
 
          if (!DirectoryHelper.DirectoryExists(AllUsersFolderPath))
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
+
+      
       }
 
       public string MoBiPath

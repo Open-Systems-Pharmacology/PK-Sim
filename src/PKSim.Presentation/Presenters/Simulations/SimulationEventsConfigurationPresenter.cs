@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
@@ -21,7 +22,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       void AddEventMapping();
       IEnumerable<PKSimEvent> AllEvents();
       void RemoveEventMapping(EventMappingDTO eventMappingDTO);
-      void LoadEventFor(EventMappingDTO eventMappingDTO);
+      Task LoadEventFor(EventMappingDTO eventMappingDTO);
       void CreateEventFor(EventMappingDTO eventMappingDTO);
    }
 
@@ -91,9 +92,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          OnStatusChanged();
       }
 
-      public void LoadEventFor(EventMappingDTO eventMappingDTO)
+      public async Task LoadEventFor(EventMappingDTO eventMappingDTO)
       {
-         updateEventInMapping(eventMappingDTO, _eventTask.LoadSingleFromTemplate());
+         updateEventInMapping(eventMappingDTO, await _eventTask.LoadSingleFromTemplate());
       }
 
       public void CreateEventFor(EventMappingDTO eventMappingDTO)

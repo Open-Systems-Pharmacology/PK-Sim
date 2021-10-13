@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
@@ -55,9 +56,9 @@ namespace PKSim.Presentation.Services
          _templateTask.SaveToTemplate(populationAnalysis, TemplateType.PopulationAnalysis, string.Empty);
       }
 
-      public void LoadPopulationAnalysisWorkflowInto(IPopulationDataCollector populationDataCollector)
+      public async Task LoadPopulationAnalysisWorkflowInto(IPopulationDataCollector populationDataCollector)
       {
-         var populationAnalysisWorkflow = _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow).FirstOrDefault();
+         var populationAnalysisWorkflow = (await _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).FirstOrDefault();
          if (populationAnalysisWorkflow == null)
             return;
 
@@ -66,7 +67,8 @@ namespace PKSim.Presentation.Services
          populationAnalysisWorkflow.AllAnalyses.Each(x => { _simulationAnalysisCreator.AddSimulationAnalysisTo(populationDataCollector, x); });
 
          var populationSimulation = populationDataCollector as PopulationSimulation;
-         if (populationSimulation == null) return;
+         if (populationSimulation == null) 
+            return;
 
          populationSimulation.OutputSelections.UpdatePropertiesFrom(populationAnalysisWorkflow.OutputSelections, _cloner);
       }
@@ -78,9 +80,9 @@ namespace PKSim.Presentation.Services
          _templateTask.SaveToTemplate(populationAnalysisWorkflow, TemplateType.PopulationSimulationAnalysisWorkflow);
       }
 
-      public PopulationAnalysisDerivedField LoadDerivedFieldFor(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField)
+      public async Task<PopulationAnalysisDerivedField> LoadDerivedFieldFor(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField)
       {
-         var field = _templateTask.LoadFromTemplate<PopulationAnalysisDerivedField>(TemplateType.PopulationAnalysisField).FirstOrDefault();
+         var field = (await _templateTask.LoadFromTemplate<PopulationAnalysisDerivedField>(TemplateType.PopulationAnalysisField)).FirstOrDefault();
          if (field == null)
             return null;
 
@@ -128,10 +130,10 @@ namespace PKSim.Presentation.Services
          return _entityTask.NewNameFor(field, populationAnalysis.AllFields.Select(x => x.Name), PKSimConstants.UI.Grouping);
       }
 
-      public TPopulationAnalysis LoadPopulationAnalysisFor<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new()
+      public async Task<TPopulationAnalysis> LoadPopulationAnalysisFor<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new()
       {
          //first load the template as basic population analysis.
-         var populationAnalysis = _templateTask.LoadFromTemplate<PopulationAnalysis>(TemplateType.PopulationAnalysis).FirstOrDefault();
+         var populationAnalysis = (await _templateTask.LoadFromTemplate<PopulationAnalysis>(TemplateType.PopulationAnalysis)).FirstOrDefault();
          if (populationAnalysis == null)
             return null;
 

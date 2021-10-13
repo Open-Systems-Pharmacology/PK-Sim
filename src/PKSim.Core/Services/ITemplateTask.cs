@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 
@@ -17,7 +18,7 @@ namespace PKSim.Core.Services
 
       /// <summary>
       ///    Starts the save to template  workflow asking the user to enter a name under which the
-      ///    <paramref name="objectToSave" /> shall be saved. The default name used willl bethe name of the  <paramref name="objectToSave"/>
+      ///    <paramref name="objectToSave" /> shall be saved. The default name used will bethe name of the  <paramref name="objectToSave"/>
       /// </summary>
       /// <param name="objectToSave">Object to be saved as template</param>
       /// <param name="templateType">Template type under which the <paramref name="objectToSave" /> will be categorized</param>
@@ -28,6 +29,6 @@ namespace PKSim.Core.Services
       ///    <paramref name="templateType" />
       /// </summary>
       /// <returns>Returns the selected template or an empty list if the action was cancelled by the user</returns>
-      IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType) where T : class;
+      Task<IReadOnlyList<T>> LoadFromTemplate<T>(TemplateType templateType) where T : class;
    }
 }

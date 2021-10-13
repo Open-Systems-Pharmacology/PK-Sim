@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
@@ -75,10 +76,10 @@ namespace PKSim.Infrastructure.Services
          return allTemplates;
       }
 
-      public T LoadTemplate<T>(Template template)
+      public Task<T> LoadTemplateAsync<T>(Template template)
       {
          if (template.DatabaseType == TemplateDatabaseType.Remote)
-            return _remoteTemplateRepository.LoadTemplate<T>(template);
+            return _remoteTemplateRepository.LoadTemplateAsync<T>(template);
 
          using (establishConnection(template.DatabaseType))
          {
@@ -103,7 +104,7 @@ namespace PKSim.Infrastructure.Services
                   if (withName != null)
                      withName.Name = template.Name;
 
-                  return objectFromTemplate;
+                  return Task.FromResult(objectFromTemplate);
                }
             }
             finally

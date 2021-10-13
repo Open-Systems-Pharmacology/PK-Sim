@@ -904,6 +904,8 @@ namespace PKSim.Assets
          public static string CannotCreateTransportProcessWithKinetic(string processName, string compoundProcess) =>
             $"The kinetic used in compound process '{compoundProcess}' cannot be used with '{processName}'. Please select another process type in your compound.";
 
+         public static string CannotDownloadTemplateLocatedAt(string url) =>
+            $"Cannot download template located at '{url}'";
       }
 
       public static class Information

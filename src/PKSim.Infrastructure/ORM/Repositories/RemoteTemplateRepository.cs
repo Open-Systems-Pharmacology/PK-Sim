@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -15,8 +22,19 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       private readonly IPKSimConfiguration _configuration;
       private readonly IJsonSerializer _jsonSerializer;
+      private readonly ISnapshotTask _snapshotTask;
       private readonly List<Template> _allTemplates = new List<Template>();
       public string Version { get; private set; }
+
+      public RemoteTemplateRepository(
+         IPKSimConfiguration configuration,
+         IJsonSerializer jsonSerializer,
+         ISnapshotTask snapshotTask)
+      {
+         _configuration = configuration;
+         _jsonSerializer = jsonSerializer;
+         _snapshotTask = snapshotTask;
+      }
 
       public IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType)
       {
@@ -24,15 +42,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _allTemplates.Where(x => x.Type.Is(templateType)).ToList();
       }
 
-      public T LoadTemplate<T>(Template template)
+      public async Task<T> LoadTemplateAsync<T>(Template template)
       {
-         throw new NotImplementedException();
-      }
+         var localFile = Path.Combine(_configuration.RemoteTemplateFolderPath, fileNameWithVersionFor(template));
+         if (!FileHelper.FileExists(localFile))
+            await downloadRemoteFile(template.Url, localFile);
 
-      public RemoteTemplateRepository(IPKSimConfiguration configuration, IJsonSerializer jsonSerializer)
-      {
-         _configuration = configuration;
-         _jsonSerializer = jsonSerializer;
+         var buildingBlockType = EnumHelper.ParseValue<PKSimBuildingBlockType>(template.Type.ToString());
+         var model = await _snapshotTask.LoadModelFromProjectFile<T>(localFile, buildingBlockType, template.Name);
+         return model;
       }
 
       protected override void DoStart()
@@ -47,6 +65,30 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          Start();
          return _allTemplates;
+      }
+
+      private string fileNameWithVersionFor(Template template)
+      {
+         var url = template.Url;
+         var fileName = new Uri(url).Segments.Last();
+         return $"{template.Version}_{fileName}";
+      }
+
+      private async Task downloadRemoteFile(string url, string destination)
+      {
+         using (var wc = new WebClient())
+         {
+            try
+            {
+               await wc.DownloadFileTaskAsync(url, destination);
+            }
+            catch (Exception e)
+            {
+               //It is required to delete the file that will be created with a size of zero
+               FileHelper.DeleteFile(destination);
+               throw new OSPSuiteException(PKSimConstants.Error.CannotDownloadTemplateLocatedAt(url), e);
+            }
+         }
       }
    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -194,7 +195,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _observerSetTask.LoadSingleFromTemplate()).Returns(null);
+         A.CallTo(() => _observerSetTask.LoadSingleFromTemplate()).Returns<Task<ObserverSet>>(null);
          sut.StatusChanged += (o, e) => { _statusChangedNotified = true; };
       }
 

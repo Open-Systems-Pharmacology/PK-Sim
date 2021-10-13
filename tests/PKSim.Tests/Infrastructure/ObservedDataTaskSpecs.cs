@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -24,7 +25,7 @@ using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_ObservedDataTask : ContextSpecification<IObservedDataTask>
+   public abstract class concern_for_ObservedDataTask : ContextSpecificationAsync<IObservedDataTask>
    {
       protected IExecutionContext _executionContext;
       protected IDialogCreator _dialogCreator;
@@ -40,7 +41,7 @@ namespace PKSim.Infrastructure
       protected ISnapshotTask _snapshotTask;
       protected IPKMLPersistor _pkmlPersistor;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _containerTask = A.Fake<IContainerTask>();
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
@@ -58,6 +59,8 @@ namespace PKSim.Infrastructure
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
             _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver);
+
+         return _completed;
       }
    }
 
@@ -65,18 +68,19 @@ namespace PKSim.Infrastructure
    {
       private DataRepository _mappedObservedData;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _mappedObservedData = new DataRepository();
          var loadFromSnapshotPresenter= A.Fake<ILoadFromSnapshotPresenter<DataRepository>>();
          A.CallTo(() => _applicationController.Start<ILoadFromSnapshotPresenter<DataRepository>>()).Returns(loadFromSnapshotPresenter);
          A.CallTo(() => loadFromSnapshotPresenter.LoadModelFromSnapshot()).Returns(new[] {_mappedObservedData});
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.LoadFromSnapshot();
+         return _completed;
       }
 
       [Observation]
@@ -92,9 +96,10 @@ namespace PKSim.Infrastructure
       private Simulation _sim1;
       private Simulation _sim2;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _dataRepository = DomainHelperForSpecs.ObservedData();
          _sim1 = new IndividualSimulation {Name = "Sim1"};
          _sim2 = new IndividualSimulation {Name = "Sim2"};
@@ -115,16 +120,18 @@ namespace PKSim.Infrastructure
       private Simulation _sim;
       private DataRepository _observedData;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _sim = new IndividualSimulation();
          _observedData = new DataRepository("toto");
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.AddObservedDataToAnalysable(new[] {_observedData}, _sim);
+         return _completed;
       }
 
       [Observation]
@@ -139,19 +146,20 @@ namespace PKSim.Infrastructure
       private DataRepository _newObservedData;
       private ICommand _command;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _newObservedData = new DataRepository("toto");
-         A.CallTo(_templateTask).WithReturnType<IReadOnlyList<DataRepository>>().Returns(new []{_newObservedData });
+         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<DataRepository>>>().Returns(new []{_newObservedData });
          A.CallTo(() => _containerTask.CreateUniqueName(_project.AllObservedData, _newObservedData.Name, true)).Returns("TOTO");
          A.CallTo(() => _executionContext.AddToHistory(A<ICommand>._))
             .Invokes(x => _command = x.GetArgument<ICommand>(0));
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.LoadObservedDataFromTemplate();
+         return sut.LoadObservedDataFromTemplate();
       }
 
       [Observation]
@@ -180,9 +188,10 @@ namespace PKSim.Infrastructure
       private Simulation _observedDataUser;
       private DataRepository _unUsedDataRepository;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _usedDataRepository = new DataRepository("id");
          _unUsedDataRepository = new DataRepository("anotherid");
          _observedDataUser = A.Fake<Simulation>();
@@ -194,9 +203,10 @@ namespace PKSim.Infrastructure
          _project.AddObservedData(_unUsedDataRepository);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.DeleteAll();
+         return _completed;
       }
 
       [Observation]
@@ -217,9 +227,10 @@ namespace PKSim.Infrastructure
       private DataRepository _dataRepository;
       private Simulation _observedDataUser;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
 
          _dataRepository = new DataRepository("id");
          _observedDataUser = A.Fake<Simulation>();
@@ -242,9 +253,10 @@ namespace PKSim.Infrastructure
       private DataRepository _dataRepository;
       private ParameterIdentification _parameterIdentification;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _simulation = new IndividualSimulation();
          _usedObservedData = new UsedObservedData {Id = "dataRepositoryId", Simulation = _simulation};
          _dataRepository = new DataRepository(_usedObservedData.Id);
@@ -259,9 +271,10 @@ namespace PKSim.Infrastructure
          _parameterIdentification.AddOutputMapping(outputMapping);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.RemoveUsedObservedDataFromSimulation(new[] {_usedObservedData});
+         return _completed;
       }
 
       [Observation]
@@ -278,9 +291,10 @@ namespace PKSim.Infrastructure
       private DataRepository _dataRepository;
       private ParameterIdentification _parameterIdentification;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _simulation = new IndividualSimulation();
          _usedObservedData = new UsedObservedData {Id = "dataRepositoryId", Simulation = _simulation};
          _dataRepository = new DataRepository(_usedObservedData.Id);
@@ -295,9 +309,10 @@ namespace PKSim.Infrastructure
          _parameterIdentification.AddOutputMapping(outputMapping);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.RemoveUsedObservedDataFromSimulation(new[] {_usedObservedData});
+         return _completed;
       }
 
       [Observation]
@@ -317,9 +332,10 @@ namespace PKSim.Infrastructure
       private Simulation _sim1;
       private Simulation _sim2;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _sim1 = new IndividualSimulation();
          _sim2 = new IndividualSimulation();
          _repo1 = new DataRepository("1");
@@ -338,9 +354,10 @@ namespace PKSim.Infrastructure
          _project.AddObservedData(_repo2);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.RemoveUsedObservedDataFromSimulation(new[] {_usedObservedData1, _usedObservedData2, _usedObservedData3});
+         return _completed;
       }
 
       [Observation]
@@ -350,7 +367,7 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void should_load_all_simulationn()
+      public void should_load_all_simulations()
       {
          A.CallTo(() => _executionContext.Load(_sim1)).MustHaveHappened();
          A.CallTo(() => _executionContext.Load(_sim2)).MustHaveHappened();
@@ -370,16 +387,18 @@ namespace PKSim.Infrastructure
    {
       private DataRepository _observedData;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _observedData = new DataRepository();
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(string.Empty);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.ExportToPkml(_observedData);
+         return _completed;
       }
 
       [Observation]
@@ -394,17 +413,19 @@ namespace PKSim.Infrastructure
       private DataRepository _observedData;
       private string _fileName;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
+
          _observedData = new DataRepository();
          _fileName = "XX";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.ExportToPkml(_observedData);
+         return  _completed;
       }
 
       [Observation]

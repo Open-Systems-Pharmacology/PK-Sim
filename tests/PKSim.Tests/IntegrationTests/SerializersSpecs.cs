@@ -75,6 +75,7 @@ namespace PKSim.IntegrationTests
          if (type.Name.Contains("Exception")) return true;
          if (type.Name.Contains("Factory")) return true;
          if (type.Equals(typeof (PKSimContainerType))) return true;
+         if (type.Equals(typeof (RemoteTemplates))) return true;
          if (type.Equals(typeof (PlasmaProteinBindingPartner))) return true;
          if (type.Equals(typeof (PivotArea))) return true;
          if (type.Equals(typeof (PopulationAgeSettings))) return true;

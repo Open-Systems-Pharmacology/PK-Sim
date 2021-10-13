@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
@@ -27,7 +29,7 @@ namespace PKSim.Presentation.Presenters
       /// </summary>
       /// <param name="templateType">Type of object that should be loaded</param>
       /// <returns>The loaded template if the user completed the action successfully otherwise null</returns>
-      IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType);
+      Task<IReadOnlyList<T>> LoadFromTemplate<T>(TemplateType templateType);
 
       /// <summary>
       ///    Rename the building block template given as parameter
@@ -80,7 +82,7 @@ namespace PKSim.Presentation.Presenters
          _startOptions = startOptions;
       }
 
-      public IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType)
+      public Task<IReadOnlyList<T>> LoadFromTemplate<T>(TemplateType templateType)
       {
          _buildingBlockTypeString = _objectTypeResolver.TypeFor<T>();
          _view.Caption = PKSimConstants.UI.LoadBuildingBlockFromTemplate(_buildingBlockTypeString);
@@ -96,7 +98,7 @@ namespace PKSim.Presentation.Presenters
          _view.Display();
 
          if (_view.Canceled)
-            return new List<T>();
+            return Task.FromResult<IReadOnlyList<T>>(Array.Empty<T>());
 
          return shouldLoadTemplateWithReferences() ? loadMultipleTemplate<T>() : loadSingleTemplate<T>();
       }
@@ -109,28 +111,42 @@ namespace PKSim.Presentation.Presenters
          return _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToLoadReferencedTemplateAsWell(_selectedTemplates.Count)) == ViewResult.Yes;
       }
 
-      private IReadOnlyList<T> loadMultipleTemplate<T>()
+      private async Task<IReadOnlyList<T>> loadMultipleTemplate<T>()
       {
          var allTemplates = new Cache<string, T>();
-         _selectedTemplates.Each(template => loadTemplateWithReferences(allTemplates, template));
+         foreach (var template in _selectedTemplates)
+         {
+            await loadTemplateWithReferences(allTemplates, template);
+         }
+
          return allTemplates.ToList();
       }
 
-      private void loadTemplateWithReferences<T>(Cache<string, T> allTemplates, Template template)
+      private async Task loadTemplateWithReferences<T>(Cache<string, T> allTemplates, Template template)
       {
          if (allTemplates.Contains(template.Name))
             return;
 
-         allTemplates.Add(template.Name, loadTemplate<T>(template));
+         
+         allTemplates.Add(template.Name, await loadTemplate<T>(template));
          foreach (var reference in template.References)
          {
-            loadTemplateWithReferences(allTemplates, reference);
+            await loadTemplateWithReferences(allTemplates, reference);
          }
       }
 
-      private IReadOnlyList<T> loadSingleTemplate<T>() => _selectedTemplates.Select(loadTemplate<T>).ToList();
+      private async Task<IReadOnlyList<T>> loadSingleTemplate<T>()
+      {
+         var allTemplates = new List<T>();
+         foreach (var template in _selectedTemplates)
+         {
+            allTemplates.Add(await loadTemplate<T>(template));
+         }
 
-      private T loadTemplate<T>(Template template) => _templateTaskQuery.LoadTemplate<T>(template);
+         return allTemplates;
+      } 
+
+      private Task<T> loadTemplate<T>(Template template) => _templateTaskQuery.LoadTemplateAsync<T>(template);
 
       private void updateIcon(TemplateType templateType)
       {

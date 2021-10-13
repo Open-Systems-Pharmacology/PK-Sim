@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -21,7 +22,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Returns a fully loaded building block from the database with the given <paramref name="template" />
       /// </summary>
-      T LoadTemplate<T>(Template template);
+      Task<T> LoadTemplateAsync<T>(Template template);
 
       /// <summary>
       ///    This method check whether a template already exists in the database for given building block type with given name.

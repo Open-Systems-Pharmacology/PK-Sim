@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -15,7 +16,7 @@ using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_TemplatePresenter : ContextSpecification<ITemplatePresenter>
+   public abstract class concern_for_TemplatePresenter : ContextSpecificationAsync<ITemplatePresenter>
    {
       protected ITemplateTaskQuery _templateTaskQuery;
       protected ITemplateView _view;
@@ -25,7 +26,7 @@ namespace PKSim.Presentation
       protected IDialogCreator _dialogCreator;
       protected IStartOptions _startOptions;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _view = A.Fake<ITemplateView>();
          _templateTaskQuery = A.Fake<ITemplateTaskQuery>();
@@ -35,6 +36,7 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _startOptions = A.Fake<IStartOptions>();
          sut = new TemplatePresenter(_view, _templateTaskQuery, _objectTypeResolver, _contextMenuFactory, _applicationController, _dialogCreator, _startOptions);
+         return _completed;
       }
    }
 
@@ -45,9 +47,9 @@ namespace PKSim.Presentation
       private TemplateDTO _userTemplateDTO;
       private TemplateDTO _systemTemplateDTO;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _userTemplate = new Template {DatabaseType = TemplateDatabaseType.User};
          _systemTemplate = new Template {DatabaseType = TemplateDatabaseType.System};
          _userTemplateDTO = new TemplateDTO(_userTemplate);
@@ -83,9 +85,9 @@ namespace PKSim.Presentation
       private Compound _compound1;
       private Compound _compound2;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _compound1 = new Compound();
          _compound2 = new Compound();
 
@@ -96,14 +98,14 @@ namespace PKSim.Presentation
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _allTemplates = sut.LoadFromTemplate<Compound>(TemplateType.Compound);
+         _allTemplates = await sut.LoadFromTemplate<Compound>(TemplateType.Compound);
       }
 
       [Observation]
@@ -123,9 +125,9 @@ namespace PKSim.Presentation
       private Compound _compound2;
       private readonly string _templateType = "TEMPLATE TYPE";
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _compound1 = new Compound();
          _compound2 = new Compound();
 
@@ -136,14 +138,14 @@ namespace PKSim.Presentation
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1), new TemplateDTO(_template2)});
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _allTemplates = sut.LoadFromTemplate<Compound>(TemplateType.Compound);
+         _allTemplates = await sut.LoadFromTemplate<Compound>(TemplateType.Compound);
       }
 
       [Observation]
@@ -169,9 +171,9 @@ namespace PKSim.Presentation
       private readonly string _templateType = "TEMPLATE TYPE";
       private TemplateDTO _templateDTO1;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _compound1 = new Compound();
          _compound2 = new Compound();
 
@@ -183,14 +185,15 @@ namespace PKSim.Presentation
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          _templateDTO1 = new TemplateDTO(_template1);
          sut.SelectedTemplatesChanged(new[] {_templateDTO1, new TemplateDTO(_template2)});
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Delete(_templateDTO1);
+         return _completed;
       }
 
       [Observation]
@@ -210,9 +213,9 @@ namespace PKSim.Presentation
       private readonly string _templateType = "TEMPLATE TYPE";
       private TemplateDTO _templateDTO1;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _compound1 = new Compound();
          _compound2 = new Compound();
 
@@ -224,15 +227,16 @@ namespace PKSim.Presentation
          _templateDTO1 = new TemplateDTO(_template1);
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          sut.SelectedTemplatesChanged(new[] {_templateDTO1, new TemplateDTO(_template2)});
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template1)).Returns(_compound1);
-         A.CallTo(() => _templateTaskQuery.LoadTemplate<Compound>(_template2)).Returns(_compound2);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
-         sut.LoadFromTemplate<Compound>(TemplateType.Compound);
+         await sut.LoadFromTemplate<Compound>(TemplateType.Compound);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Delete(_templateDTO1);
+         return  _completed;
       }
 
       [Observation]

@@ -33,6 +33,8 @@ namespace PKSim.Core
       /// Full path of the main file containing the list of all available templates
       /// </summary>
       string RemoteTemplateSummaryPath { get; }
+
+      string RemoteTemplateFolderPath { get; }
    }
 
 }

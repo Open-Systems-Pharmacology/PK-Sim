@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -29,7 +30,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       IListener<PopulationAnalysisChartSettingsChangedEvent>
    {
       void SaveAnalysis();
-      void LoadAnalysis();
+      Task LoadAnalysis();
 
       /// <summary>
       ///    Edits the given population Analysis chart. Returns true if the edit was confirmed otherwise false
@@ -177,9 +178,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _populationAnalysisTemplateTask.SavePopulationAnalysis(PopulationAnalysis);
       }
 
-      public void LoadAnalysis()
+      public async Task LoadAnalysis()
       {
-         var toLoad = _populationAnalysisTemplateTask.LoadPopulationAnalysisFor<TPopulationAnalysis>(_populationDataCollector);
+         var toLoad = await _populationAnalysisTemplateTask.LoadPopulationAnalysisFor<TPopulationAnalysis>(_populationDataCollector);
          if (toLoad == null) return;
          PopulationAnalysisChart.PopulationAnalysis = toLoad;
          InitializeSubPresentersForAnalysis();

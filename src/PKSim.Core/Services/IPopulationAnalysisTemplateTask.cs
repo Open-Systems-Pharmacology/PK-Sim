@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using System.Threading.Tasks;
+using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Services
@@ -10,11 +11,11 @@ namespace PKSim.Core.Services
       /// The derived field  is not added to the population. However the name of the derived field will be changed if required to ensure
       /// unicity in the <paramref name="populationAnalysis"/>
       /// </summary>
-      PopulationAnalysisDerivedField LoadDerivedFieldFor(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField);
+      Task<PopulationAnalysisDerivedField> LoadDerivedFieldFor(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField);
       void SaveDerivedField(PopulationAnalysisDerivedField derivedField);
-      TPopulationAnalysis LoadPopulationAnalysisFor<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new();
+      Task<TPopulationAnalysis> LoadPopulationAnalysisFor<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new();
       void SavePopulationAnalysis<TPopulationAnalysis>(TPopulationAnalysis populationAnalysis) where TPopulationAnalysis : PopulationAnalysis;
-      void LoadPopulationAnalysisWorkflowInto(IPopulationDataCollector populationDataCollector);
+      Task LoadPopulationAnalysisWorkflowInto(IPopulationDataCollector populationDataCollector);
       void SavePopulationAnalysisWorkflowFrom(IPopulationDataCollector populationDataCollector);
    }
 }

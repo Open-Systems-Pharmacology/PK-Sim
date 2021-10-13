@@ -85,7 +85,7 @@ namespace PKSim.IntegrationTests
          IList<T> buildingBlocks = new List<T>();
          foreach (var template in templates)
          {
-            buildingBlocks.Add(sut.LoadTemplate<T>(template));
+            buildingBlocks.Add(sut.LoadTemplateAsync<T>(template).Result);
          }
 
          return buildingBlocks;
@@ -164,7 +164,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_load_the_template_by_name()
       {
-         sut.LoadTemplate<Individual>(_template).ShouldNotBeNull();
+         sut.LoadTemplateAsync<Individual>(_template).ShouldNotBeNull();
       }
    }
 
@@ -191,7 +191,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_load_the_template_by_name()
       {
-         sut.LoadTemplate<ObserverSet>(_template).ShouldNotBeNull();
+         sut.LoadTemplateAsync<ObserverSet>(_template).ShouldNotBeNull();
       }
    }
 
@@ -250,7 +250,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_load_the_template_and_delete_the_referece()
       {
-         sut.LoadTemplate<Compound>(_template).ShouldNotBeNull();
+         sut.LoadTemplateAsync<Compound>(_template).ShouldNotBeNull();
          sut.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound).ShouldBeFalse();
       }
    }

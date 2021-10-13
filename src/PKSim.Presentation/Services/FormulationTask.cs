@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Extensions;
@@ -23,7 +24,7 @@ namespace PKSim.Presentation.Services
    public interface IFormulationTask : IBuildingBlockTask<Formulation>
    {
       Formulation CreateFormulationForRoute(string applicationRoute);
-      Formulation LoadFormulationForRoute(string applicationRoute);
+      Task<Formulation> LoadFormulationForRoute(string applicationRoute);
 
       TableFormula ImportTableFormula();
    }
@@ -58,9 +59,9 @@ namespace PKSim.Presentation.Services
          return AddToProject<ICreateFormulationPresenter>(x => x.CreateFormulation(applicationRoute));
       }
 
-      public Formulation LoadFormulationForRoute(string applicationRoute)
+      public async Task<Formulation> LoadFormulationForRoute(string applicationRoute)
       {
-         var formulation = LoadSingleFromTemplate();
+         var formulation = await LoadSingleFromTemplate();
          if (formulation == null)
             return null;
 
