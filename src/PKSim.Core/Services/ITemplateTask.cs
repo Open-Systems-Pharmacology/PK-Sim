@@ -29,6 +29,14 @@ namespace PKSim.Core.Services
       ///    <paramref name="templateType" />
       /// </summary>
       /// <returns>Returns the selected template or an empty list if the action was cancelled by the user</returns>
-      Task<IReadOnlyList<T>> LoadFromTemplate<T>(TemplateType templateType) where T : class;
+      Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType) where T : class;
+
+
+      /// <summary>
+      ///    Starts the load from template workflow allowing the user to select one template for the given
+      ///    <paramref name="templateType" />
+      /// </summary>
+      /// <returns>Returns the selected template or null</returns>
+      Task<T> LoadSingleFromTemplateAsync<T>(TemplateType templateType) where T : class;
    }
 }

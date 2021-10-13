@@ -56,9 +56,9 @@ namespace PKSim.Presentation.Services
          throw new NotSupportedException("Do not call Edit for a simulation subject. Use the dedicated method instead");
       }
 
-      public Task<IReadOnlyList<ISimulationSubject>> LoadFromTemplate()
+      public Task<IReadOnlyList<ISimulationSubject>> LoadFromTemplateAsync()
       {
-         return _buildingBlockTask.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+         return _buildingBlockTask.LoadFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
       }
 
       public IReadOnlyList<ISimulationSubject> LoadFromSnapshot()
@@ -66,7 +66,7 @@ namespace PKSim.Presentation.Services
          throw new NotSupportedException("Do not call LoadFromSnapshot for a simulation subject. Use the dedicated method instead");
       }
 
-      public Task<ISimulationSubject> LoadSingleFromTemplate() => _buildingBlockTask.LoadSingleFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+      public Task<ISimulationSubject> LoadSingleFromTemplateAsync() => _buildingBlockTask.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
 
       public void Load(ISimulationSubject buildingBlockToLoad)
       {

@@ -67,7 +67,8 @@ namespace PKSim.UI.Views
 
          _screenBinder.Changed += () => _presenter.ViewChanged();
          btnCreateBuildingBlock.Click += (o, e) => OnEvent(_presenter.CreateBuildingBlock);
-         btnLoadBuildingBlock.Click += (o, e) => OnEvent(_presenter.LoadBuildingBlock);
+         //TODO use the right overload
+         btnLoadBuildingBlock.Click += (o, e) => OnEvent(()=>_presenter.LoadBuildingBlockAsync());
       }
 
       public void BindTo(BuildingBlockSelectionDTO buildingBlockSelectionDTO)

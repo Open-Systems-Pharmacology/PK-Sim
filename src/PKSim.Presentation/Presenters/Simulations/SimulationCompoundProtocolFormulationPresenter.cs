@@ -17,7 +17,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       IEnumerable<FormulationSelectionDTO> AllFormulationsFor(FormulationMappingDTO formulationMappingDTO);
       void CreateFormulationFor(FormulationMappingDTO formulationMappingDTO);
-      Task LoadFormulationFor(FormulationMappingDTO formulationMappingDTO);
+      Task LoadFormulationForAsync(FormulationMappingDTO formulationMappingDTO);
       bool FormulationVisible { get; }
       void UpdateSelectedFormulation(Formulation templateFormulation);
    }
@@ -113,7 +113,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          updateFormulationInMapping(formulationMappingDTO, formulation);
       }
 
-      public async Task LoadFormulationFor(FormulationMappingDTO formulationMappingDTO)
+      public async Task LoadFormulationForAsync(FormulationMappingDTO formulationMappingDTO)
       {
          var formulation = await _formulationTask.LoadFormulationForRoute(formulationMappingDTO.Route);
          updateFormulationInMapping(formulationMappingDTO, formulation);

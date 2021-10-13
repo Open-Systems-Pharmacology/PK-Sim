@@ -195,7 +195,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _observerSetTask.LoadSingleFromTemplate()).Returns<Task<ObserverSet>>(null);
+         A.CallTo(() => _observerSetTask.LoadSingleFromTemplateAsync()).Returns<Task<ObserverSet>>(null);
          sut.StatusChanged += (o, e) => { _statusChangedNotified = true; };
       }
 
@@ -224,7 +224,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _observerSetTask.LoadSingleFromTemplate()).Returns(_observerSetTemplate2);
+         A.CallTo(() => _observerSetTask.LoadSingleFromTemplateAsync()).Returns(_observerSetTemplate2);
          sut.StatusChanged += (o, e) => { _statusChangedNotified = true; };
       }
 

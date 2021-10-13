@@ -47,12 +47,12 @@ namespace PKSim.Presentation
          _templatePresenter= A.Fake<ITemplatePresenter>();
          _template = A.Fake<IPopulationAnalysisField>();
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(() => _templatePresenter.LoadFromTemplate<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField)).Returns(new[]{_template});
+         A.CallTo(() => _templatePresenter.LoadFromTemplateAsync<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField)).Returns(new[]{_template});
       }
 
       protected override async Task Because()
       {
-         _field = (await sut.LoadFromTemplate<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField)).FirstOrDefault();
+         _field = (await sut.LoadFromTemplateAsync<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField)).FirstOrDefault();
       }
 
       [Observation]

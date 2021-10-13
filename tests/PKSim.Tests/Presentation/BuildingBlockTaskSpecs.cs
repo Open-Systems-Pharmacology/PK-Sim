@@ -412,7 +412,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _individual = await sut.LoadSingleFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+         _individual = await sut.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
       }
 
       [Observation]
@@ -449,7 +449,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _observerSet = await sut.LoadSingleFromTemplate<ObserverSet>(PKSimBuildingBlockType.ObserverSet);
+         _observerSet = await sut.LoadSingleFromTemplateAsync<ObserverSet>(PKSimBuildingBlockType.ObserverSet);
       }
 
       [Observation]
@@ -488,7 +488,7 @@ namespace PKSim.Presentation
 
       protected override Task Because()
       {
-         return sut.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+         return sut.LoadFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
       }
 
       [Observation]
@@ -525,7 +525,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _individual = await sut.LoadSingleFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+         _individual = await sut.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
       }
 
       [Observation]

@@ -11,11 +11,11 @@ namespace PKSim.Core.Services
       /// The derived field  is not added to the population. However the name of the derived field will be changed if required to ensure
       /// unicity in the <paramref name="populationAnalysis"/>
       /// </summary>
-      Task<PopulationAnalysisDerivedField> LoadDerivedFieldFor(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField);
+      Task<PopulationAnalysisDerivedField> LoadDerivedFieldForAsync(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField);
       void SaveDerivedField(PopulationAnalysisDerivedField derivedField);
-      Task<TPopulationAnalysis> LoadPopulationAnalysisFor<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new();
+      Task<TPopulationAnalysis> LoadPopulationAnalysisForAsync<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new();
       void SavePopulationAnalysis<TPopulationAnalysis>(TPopulationAnalysis populationAnalysis) where TPopulationAnalysis : PopulationAnalysis;
-      Task LoadPopulationAnalysisWorkflowInto(IPopulationDataCollector populationDataCollector);
+      Task LoadPopulationAnalysisWorkflowIntoAsync(IPopulationDataCollector populationDataCollector);
       void SavePopulationAnalysisWorkflowFrom(IPopulationDataCollector populationDataCollector);
    }
 }

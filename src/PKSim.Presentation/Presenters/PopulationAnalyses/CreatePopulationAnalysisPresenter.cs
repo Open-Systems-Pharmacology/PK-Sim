@@ -30,7 +30,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       IListener<PopulationAnalysisChartSettingsChangedEvent>
    {
       void SaveAnalysis();
-      Task LoadAnalysis();
+      Task LoadAnalysisTask();
 
       /// <summary>
       ///    Edits the given population Analysis chart. Returns true if the edit was confirmed otherwise false
@@ -178,10 +178,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _populationAnalysisTemplateTask.SavePopulationAnalysis(PopulationAnalysis);
       }
 
-      public async Task LoadAnalysis()
+      public async Task LoadAnalysisTask()
       {
-         var toLoad = await _populationAnalysisTemplateTask.LoadPopulationAnalysisFor<TPopulationAnalysis>(_populationDataCollector);
-         if (toLoad == null) return;
+         var toLoad = await _populationAnalysisTemplateTask.LoadPopulationAnalysisForAsync<TPopulationAnalysis>(_populationDataCollector);
+         if (toLoad == null) 
+            return;
+
          PopulationAnalysisChart.PopulationAnalysis = toLoad;
          InitializeSubPresentersForAnalysis();
       }

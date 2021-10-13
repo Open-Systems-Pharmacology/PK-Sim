@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -79,12 +80,12 @@ namespace PKSim.Presentation
          await base.Context();
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _templatePopulationAnalysis = new PopulationPivotAnalysis();
-         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<PopulationAnalysis>>>().Returns(new[] {_templatePopulationAnalysis});
+         A.CallTo(_templateTask).WithReturnType<Task<PopulationAnalysis>>().Returns(_templatePopulationAnalysis);
       }
 
       protected override async Task Because()
       {
-         _result = await sut.LoadPopulationAnalysisFor<PopulationPivotAnalysis>(_populationDataCollector);
+         _result = await sut.LoadPopulationAnalysisForAsync<PopulationPivotAnalysis>(_populationDataCollector);
       }
 
       [Observation]
@@ -115,7 +116,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _result = await sut.LoadPopulationAnalysisFor<PopulationPivotAnalysis>(_populationDataCollector);
+         _result = await sut.LoadPopulationAnalysisForAsync<PopulationPivotAnalysis>(_populationDataCollector);
       }
 
       [Observation]
@@ -151,7 +152,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _result = await sut.LoadPopulationAnalysisFor<PopulationPivotAnalysis>(_populationDataCollector);
+         _result = await sut.LoadPopulationAnalysisForAsync<PopulationPivotAnalysis>(_populationDataCollector);
       }
 
       [Observation]
@@ -184,7 +185,7 @@ namespace PKSim.Presentation
 
          _cache = new PathCacheForSpecs<IParameter> {{"P1", new PKSimParameter()}};
 
-         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<PopulationAnalysis>>>().Returns(new[] {_templatePopulationAnalysis});
+         A.CallTo(_templateTask).WithReturnType<Task<PopulationAnalysis>>().Returns(_templatePopulationAnalysis);
 
          A.CallTo(() => _entitiesInContainerRetriever.ParametersFrom(_populationDataCollector)).Returns(_cache);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -192,7 +193,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _result = await sut.LoadPopulationAnalysisFor<PopulationPivotAnalysis>(_populationDataCollector);
+         _result = await sut.LoadPopulationAnalysisForAsync<PopulationPivotAnalysis>(_populationDataCollector);
       }
 
       [Observation]
@@ -228,7 +229,7 @@ namespace PKSim.Presentation
          _templatePopulationAnalysis.Add(_covariateFound);
          _templatePopulationAnalysis.Add(_covariateNotFound);
 
-         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<PopulationAnalysis>>>().Returns(new[] {_templatePopulationAnalysis});
+         A.CallTo(_templateTask).WithReturnType<Task<PopulationAnalysis>>().Returns(_templatePopulationAnalysis);
 
          A.CallTo(() => _populationDataCollector.AllCovariateNames).Returns(new List<string> {_covariateFound.Covariate});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -236,7 +237,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _result = await sut.LoadPopulationAnalysisFor<PopulationPivotAnalysis>(_populationDataCollector);
+         _result = await sut.LoadPopulationAnalysisForAsync<PopulationPivotAnalysis>(_populationDataCollector);
       }
 
       [Observation]
@@ -287,7 +288,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _populationDataCollector.HasPKParameterFor("P2", "AUC")).Returns(false);
          A.CallTo(() => _populationDataCollector.HasPKParameterFor("P3", "AUC")).Returns(false);
 
-         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<PopulationAnalysis>>>().Returns(new[] {_templatePopulationAnalysis});
+         A.CallTo(_templateTask).WithReturnType<Task<PopulationAnalysis>>().Returns(_templatePopulationAnalysis);
 
          A.CallTo(() => _entitiesInContainerRetriever.OutputsFrom(_populationDataCollector)).Returns(_cache);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
@@ -299,7 +300,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _result = await sut.LoadPopulationAnalysisFor<PopulationPivotAnalysis>(_populationDataCollector);
+         _result = await sut.LoadPopulationAnalysisForAsync<PopulationPivotAnalysis>(_populationDataCollector);
       }
 
       [Observation]
@@ -328,7 +329,7 @@ namespace PKSim.Presentation
          _dataField = A.Fake<PopulationAnalysisDataField>().WithName("DATA");
          _derivedField = A.Fake<PopulationAnalysisDerivedField>().WithName("DERIVED");
 
-         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<PopulationAnalysisDerivedField>>>().Returns(new[] {_derivedField});
+         A.CallTo(_templateTask).WithReturnType<Task<PopulationAnalysisDerivedField>>().Returns(_derivedField);
          _populationAnalysis.Add(_dataField);
       }
    }
@@ -345,7 +346,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _derivedField = await sut.LoadDerivedFieldFor(_populationAnalysis, _dataField);
+         _derivedField = await sut.LoadDerivedFieldForAsync(_populationAnalysis, _dataField);
       }
 
       [Observation]
@@ -373,7 +374,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.LoadDerivedFieldFor(_populationAnalysis, _dataField)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.LoadDerivedFieldForAsync(_populationAnalysis, _dataField)).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -386,13 +387,13 @@ namespace PKSim.Presentation
          _derivedField = groupingField;
          A.CallTo(() => _derivedField.CanBeUsedFor(_dataField.DataType)).Returns(true);
          A.CallTo(() => groupingField.ReferencedFieldName).Returns("ANOTHER NAME");
-         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<PopulationAnalysisDerivedField>>>().Returns(new[] {_derivedField});
+         A.CallTo(_templateTask).WithReturnType<Task<PopulationAnalysisDerivedField>>().Returns(_derivedField);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }
 
       protected override async Task Because()
       {
-         _derivedField = await sut.LoadDerivedFieldFor(_populationAnalysis, _dataField);
+         _derivedField = await sut.LoadDerivedFieldForAsync(_populationAnalysis, _dataField);
       }
 
       [Observation]
@@ -417,13 +418,13 @@ namespace PKSim.Presentation
          _derivedField = groupingField;
          A.CallTo(() => _derivedField.CanBeUsedFor(_dataField.DataType)).Returns(true);
          A.CallTo(() => groupingField.ReferencedFieldName).Returns("ANOTHER NAME");
-         A.CallTo(_templateTask).WithReturnType<Task<IReadOnlyList<PopulationAnalysisDerivedField>>>().Returns(new[] {_derivedField});
+         A.CallTo(_templateTask).WithReturnType<Task<PopulationAnalysisDerivedField>>().Returns(_derivedField);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
       protected override async Task Because()
       {
-         _derivedField = await sut.LoadDerivedFieldFor(_populationAnalysis, _dataField);
+         _derivedField = await sut.LoadDerivedFieldForAsync(_populationAnalysis, _dataField);
       }
 
       [Observation]
@@ -448,12 +449,13 @@ namespace PKSim.Presentation
          await base.Context();
          _populationSimulation = new PopulationSimulation();
 
-         A.CallTo(() => _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).Returns(new List<SimulationAnalysisWorkflow>());
+         A.CallTo(() => _templateTask.LoadSingleFromTemplateAsync<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow))
+            .Returns((SimulationAnalysisWorkflow)null);
       }
 
       protected override Task Because()
       {
-         return sut.LoadPopulationAnalysisWorkflowInto(_populationSimulation);
+         return sut.LoadPopulationAnalysisWorkflowIntoAsync(_populationSimulation);
       }
 
       [Observation]
@@ -479,12 +481,12 @@ namespace PKSim.Presentation
          _workflow.Add(_analysis1);
          _workflow.Add(_analysis2);
          _populationSimulation = A.Fake<PopulationSimulation>();
-         A.CallTo(() => _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).Returns(new[] {_workflow});
+         A.CallTo(() => _templateTask.LoadSingleFromTemplateAsync<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).Returns(_workflow);
       }
 
       protected override Task Because()
       {
-         return sut.LoadPopulationAnalysisWorkflowInto(_populationSimulation);
+         return sut.LoadPopulationAnalysisWorkflowIntoAsync(_populationSimulation);
       }
 
       [Observation]

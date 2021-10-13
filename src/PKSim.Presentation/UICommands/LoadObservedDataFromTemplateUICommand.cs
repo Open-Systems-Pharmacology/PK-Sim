@@ -14,7 +14,7 @@ namespace PKSim.Presentation.UICommands
 
       public void Execute()
       {
-         _observedDataTask.LoadObservedDataFromTemplate();
+         _observedDataTask.LoadObservedDataFromTemplateAsync();
       }
    }
 }

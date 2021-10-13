@@ -20,7 +20,7 @@ namespace PKSim.Presentation.UICommands
 
       public async void Execute()
       {
-         await _buildingBlockTask.SecureAwait(x => x.LoadSingleFromTemplate());
+         await _buildingBlockTask.SecureAwait(x => x.LoadSingleFromTemplateAsync());
       }
    }
 

@@ -159,13 +159,13 @@ namespace PKSim.Infrastructure
 
       protected override Task Because()
       {
-         return sut.LoadObservedDataFromTemplate();
+         return sut.LoadObservedDataFromTemplateAsync();
       }
 
       [Observation]
       public void should_leverage_the_template_task_to_load_a_template_from_the_database()
       {
-         A.CallTo(() => _templateTask.LoadFromTemplate<DataRepository>(TemplateType.ObservedData)).MustHaveHappened();
+         A.CallTo(() => _templateTask.LoadFromTemplateAsync<DataRepository>(TemplateType.ObservedData)).MustHaveHappened();
       }
 
       [Observation]

@@ -168,9 +168,9 @@ namespace PKSim.Infrastructure.Services
          return _projectRetriever.CurrentProject.ObservedDataBy(usedObservedDatas.Id);
       }
 
-      public async Task LoadObservedDataFromTemplate()
+      public async Task LoadObservedDataFromTemplateAsync()
       {
-         var observedDataList = await _templateTask.LoadFromTemplate<DataRepository>(TemplateType.ObservedData);
+         var observedDataList = await _templateTask.LoadFromTemplateAsync<DataRepository>(TemplateType.ObservedData);
          observedDataList.Each(AddObservedDataToProject);
       }
    }

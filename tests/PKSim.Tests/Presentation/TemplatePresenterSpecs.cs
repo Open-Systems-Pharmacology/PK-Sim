@@ -105,7 +105,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _allTemplates = await sut.LoadFromTemplate<Compound>(TemplateType.Compound);
+         _allTemplates = await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
       }
 
       [Observation]
@@ -145,7 +145,7 @@ namespace PKSim.Presentation
 
       protected override async Task Because()
       {
-         _allTemplates = await sut.LoadFromTemplate<Compound>(TemplateType.Compound);
+         _allTemplates = await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
       }
 
       [Observation]
@@ -230,7 +230,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
-         await sut.LoadFromTemplate<Compound>(TemplateType.Compound);
+         await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
       }
 
       protected override Task Because()

@@ -135,7 +135,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadCompound()
       {
-         addToSelection(await _compoundTask.LoadSingleFromTemplate());
+         addToSelection(await _compoundTask.LoadSingleFromTemplateAsync());
       }
 
       public override void Initialize()

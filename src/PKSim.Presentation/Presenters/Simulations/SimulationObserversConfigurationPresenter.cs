@@ -96,7 +96,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadObserverSetFor(ObserverSetMappingDTO observerSetMappingDTO)
       {
-         updateObserverSetInMapping(observerSetMappingDTO, await _observerSetTask.LoadSingleFromTemplate());
+         updateObserverSetInMapping(observerSetMappingDTO, await _observerSetTask.LoadSingleFromTemplateAsync());
       }
 
       public void CreateObserverFor(ObserverSetMappingDTO observerSetMappingDTO)

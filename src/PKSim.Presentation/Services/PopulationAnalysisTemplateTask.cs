@@ -56,9 +56,9 @@ namespace PKSim.Presentation.Services
          _templateTask.SaveToTemplate(populationAnalysis, TemplateType.PopulationAnalysis, string.Empty);
       }
 
-      public async Task LoadPopulationAnalysisWorkflowInto(IPopulationDataCollector populationDataCollector)
+      public async Task LoadPopulationAnalysisWorkflowIntoAsync(IPopulationDataCollector populationDataCollector)
       {
-         var populationAnalysisWorkflow = (await _templateTask.LoadFromTemplate<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow)).FirstOrDefault();
+         var populationAnalysisWorkflow = await _templateTask.LoadSingleFromTemplateAsync<SimulationAnalysisWorkflow>(TemplateType.PopulationSimulationAnalysisWorkflow);
          if (populationAnalysisWorkflow == null)
             return;
 
@@ -80,9 +80,9 @@ namespace PKSim.Presentation.Services
          _templateTask.SaveToTemplate(populationAnalysisWorkflow, TemplateType.PopulationSimulationAnalysisWorkflow);
       }
 
-      public async Task<PopulationAnalysisDerivedField> LoadDerivedFieldFor(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField)
+      public async Task<PopulationAnalysisDerivedField> LoadDerivedFieldForAsync(PopulationAnalysis populationAnalysis, PopulationAnalysisDataField populationAnalysisDataField)
       {
-         var field = (await _templateTask.LoadFromTemplate<PopulationAnalysisDerivedField>(TemplateType.PopulationAnalysisField)).FirstOrDefault();
+         var field = await _templateTask.LoadSingleFromTemplateAsync<PopulationAnalysisDerivedField>(TemplateType.PopulationAnalysisField);
          if (field == null)
             return null;
 
@@ -130,10 +130,10 @@ namespace PKSim.Presentation.Services
          return _entityTask.NewNameFor(field, populationAnalysis.AllFields.Select(x => x.Name), PKSimConstants.UI.Grouping);
       }
 
-      public async Task<TPopulationAnalysis> LoadPopulationAnalysisFor<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new()
+      public async Task<TPopulationAnalysis> LoadPopulationAnalysisForAsync<TPopulationAnalysis>(IPopulationDataCollector populationDataCollector) where TPopulationAnalysis : PopulationAnalysis, new()
       {
          //first load the template as basic population analysis.
-         var populationAnalysis = (await _templateTask.LoadFromTemplate<PopulationAnalysis>(TemplateType.PopulationAnalysis)).FirstOrDefault();
+         var populationAnalysis = await _templateTask.LoadSingleFromTemplateAsync<PopulationAnalysis>(TemplateType.PopulationAnalysis);
          if (populationAnalysis == null)
             return null;
 

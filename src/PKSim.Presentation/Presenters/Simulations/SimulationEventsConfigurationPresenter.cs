@@ -94,7 +94,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadEventFor(EventMappingDTO eventMappingDTO)
       {
-         updateEventInMapping(eventMappingDTO, await _eventTask.LoadSingleFromTemplate());
+         updateEventInMapping(eventMappingDTO, await _eventTask.LoadSingleFromTemplateAsync());
       }
 
       public void CreateEventFor(EventMappingDTO eventMappingDTO)

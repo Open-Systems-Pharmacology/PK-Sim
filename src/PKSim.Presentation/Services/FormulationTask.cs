@@ -61,7 +61,7 @@ namespace PKSim.Presentation.Services
 
       public async Task<Formulation> LoadFormulationForRoute(string applicationRoute)
       {
-         var formulation = await LoadSingleFromTemplate();
+         var formulation = await LoadSingleFromTemplateAsync();
          if (formulation == null)
             return null;
 

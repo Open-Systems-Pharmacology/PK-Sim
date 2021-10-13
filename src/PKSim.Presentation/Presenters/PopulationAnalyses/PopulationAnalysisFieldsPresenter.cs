@@ -93,7 +93,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       /// <summary>
       ///    Loads a derived field from the template database for the input field <paramref name="populationAnalysisDataField" />
       /// </summary>
-      Task LoadDerivedFieldFromTemplateFor(PopulationAnalysisDataField populationAnalysisDataField);
+      Task LoadDerivedFieldFromTemplateForAsync(PopulationAnalysisDataField populationAnalysisDataField);
 
       void SaveDerivedFieldToTemplate(PopulationAnalysisDerivedField derivedField);
 
@@ -281,9 +281,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _eventPublisher.PublishEvent(new PopulationAnalysisChartSettingsChangedEvent(_populationAnalysis));
       }
 
-      public async Task LoadDerivedFieldFromTemplateFor(PopulationAnalysisDataField populationAnalysisDataField)
+      public async Task LoadDerivedFieldFromTemplateForAsync(PopulationAnalysisDataField populationAnalysisDataField)
       {
-         var newDerivedField = await _populationAnalysisTemplateTask.LoadDerivedFieldFor(_populationAnalysis, populationAnalysisDataField);
+         var newDerivedField = await _populationAnalysisTemplateTask.LoadDerivedFieldForAsync(_populationAnalysis, populationAnalysisDataField);
          if (newDerivedField == null)
             return;
 

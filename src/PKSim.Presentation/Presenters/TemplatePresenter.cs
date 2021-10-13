@@ -12,7 +12,6 @@ using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -29,7 +28,7 @@ namespace PKSim.Presentation.Presenters
       /// </summary>
       /// <param name="templateType">Type of object that should be loaded</param>
       /// <returns>The loaded template if the user completed the action successfully otherwise null</returns>
-      Task<IReadOnlyList<T>> LoadFromTemplate<T>(TemplateType templateType);
+      Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType);
 
       /// <summary>
       ///    Rename the building block template given as parameter
@@ -82,7 +81,7 @@ namespace PKSim.Presentation.Presenters
          _startOptions = startOptions;
       }
 
-      public Task<IReadOnlyList<T>> LoadFromTemplate<T>(TemplateType templateType)
+      public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType)
       {
          _buildingBlockTypeString = _objectTypeResolver.TypeFor<T>();
          _view.Caption = PKSimConstants.UI.LoadBuildingBlockFromTemplate(_buildingBlockTypeString);

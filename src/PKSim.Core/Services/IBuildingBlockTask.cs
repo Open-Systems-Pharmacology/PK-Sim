@@ -18,9 +18,9 @@ namespace PKSim.Core.Services
       bool Delete<TBuildingBlock>(TBuildingBlock buildingBlockToDelete) where TBuildingBlock : class, IPKSimBuildingBlock;
       bool Delete<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocksToDelete) where TBuildingBlock : class, IPKSimBuildingBlock;
       void Rename<TBuildingBlock>(TBuildingBlock buildingBlockToRename) where TBuildingBlock : class, IPKSimBuildingBlock;
-      Task<IReadOnlyList<TBuildingBlock>> LoadFromTemplate<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
+      Task<IReadOnlyList<TBuildingBlock>> LoadFromTemplateAsync<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
 
-      Task<TBuildingBlock> LoadSingleFromTemplate<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
+      Task<TBuildingBlock> LoadSingleFromTemplateAsync<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
 
       IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock;
 
@@ -73,8 +73,8 @@ namespace PKSim.Core.Services
       TBuildingBlock AddToProject();
       IPKSimCommand AddToProject(TBuildingBlock buildingBlock, bool editBuildingBlock = true, bool addToHistory = true);
       void Edit(TBuildingBlock buildingBlockToEdit);
-      Task<TBuildingBlock> LoadSingleFromTemplate();
-      Task<IReadOnlyList<TBuildingBlock>> LoadFromTemplate();
+      Task<TBuildingBlock> LoadSingleFromTemplateAsync();
+      Task<IReadOnlyList<TBuildingBlock>> LoadFromTemplateAsync();
       IReadOnlyList<TBuildingBlock> LoadFromSnapshot();
       void Load(TBuildingBlock buildingBlockToLoad);
       IEnumerable<TBuildingBlock> All();
