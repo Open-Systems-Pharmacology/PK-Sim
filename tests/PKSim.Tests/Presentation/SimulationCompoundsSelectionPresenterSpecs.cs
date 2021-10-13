@@ -97,7 +97,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.LoadCompound();
+         sut.LoadCompoundAsync();
       }
 
       [Observation]

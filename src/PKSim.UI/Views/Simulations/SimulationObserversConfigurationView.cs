@@ -96,7 +96,9 @@ namespace PKSim.UI.Views.Simulations
          btnAddObserverSet.Click += (o, e) => OnEvent(_presenter.AddObserverSet);
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveObserverSetMapping(_gridViewBinder.FocusedElement));
-         _loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadObserverSetFor(_gridViewBinder.FocusedElement));
+
+         //TODO event async
+         _loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadObserverSetForAsync(_gridViewBinder.FocusedElement));
          _createButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.CreateObserverFor(_gridViewBinder.FocusedElement));
 
          _gridViewBinder.Changed += NotifyViewChanged;

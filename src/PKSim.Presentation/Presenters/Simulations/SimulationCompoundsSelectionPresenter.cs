@@ -34,7 +34,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       /// <summary>
       ///    Loads a compound into the project
       /// </summary>
-      Task LoadCompound();
+      Task LoadCompoundAsync();
 
       /// <summary>
       ///    Returns the compounds selected by the user
@@ -133,7 +133,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _compoundSelectionDTOs.Add(mapFrom(compoundAdded, isSelected: true));
       }
 
-      public async Task LoadCompound()
+      public async Task LoadCompoundAsync()
       {
          addToSelection(await _compoundTask.LoadSingleFromTemplateAsync());
       }

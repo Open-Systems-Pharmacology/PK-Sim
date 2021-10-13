@@ -201,7 +201,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.LoadObserverSetFor(_observerSetMappingDTO);
+         sut.LoadObserverSetForAsync(_observerSetMappingDTO);
       }
 
       [Observation]
@@ -230,7 +230,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.LoadObserverSetFor(_observerSetMappingDTO);
+         sut.LoadObserverSetForAsync(_observerSetMappingDTO);
       }
 
       [Observation]

@@ -115,7 +115,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadFormulationForAsync(FormulationMappingDTO formulationMappingDTO)
       {
-         var formulation = await _formulationTask.LoadFormulationForRoute(formulationMappingDTO.Route);
+         var formulation = await _formulationTask.LoadFormulationForRouteAsync(formulationMappingDTO.Route);
          updateFormulationInMapping(formulationMappingDTO, formulation);
       }
 

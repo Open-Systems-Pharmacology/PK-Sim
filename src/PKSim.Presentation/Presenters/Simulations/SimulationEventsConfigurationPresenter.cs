@@ -22,7 +22,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       void AddEventMapping();
       IEnumerable<PKSimEvent> AllEvents();
       void RemoveEventMapping(EventMappingDTO eventMappingDTO);
-      Task LoadEventFor(EventMappingDTO eventMappingDTO);
+      Task LoadEventAsync(EventMappingDTO eventMappingDTO);
       void CreateEventFor(EventMappingDTO eventMappingDTO);
    }
 
@@ -92,7 +92,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          OnStatusChanged();
       }
 
-      public async Task LoadEventFor(EventMappingDTO eventMappingDTO)
+      public async Task LoadEventAsync(EventMappingDTO eventMappingDTO)
       {
          updateEventInMapping(eventMappingDTO, await _eventTask.LoadSingleFromTemplateAsync());
       }

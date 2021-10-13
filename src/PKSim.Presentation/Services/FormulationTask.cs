@@ -24,7 +24,7 @@ namespace PKSim.Presentation.Services
    public interface IFormulationTask : IBuildingBlockTask<Formulation>
    {
       Formulation CreateFormulationForRoute(string applicationRoute);
-      Task<Formulation> LoadFormulationForRoute(string applicationRoute);
+      Task<Formulation> LoadFormulationForRouteAsync(string applicationRoute);
 
       TableFormula ImportTableFormula();
    }
@@ -59,7 +59,7 @@ namespace PKSim.Presentation.Services
          return AddToProject<ICreateFormulationPresenter>(x => x.CreateFormulation(applicationRoute));
       }
 
-      public async Task<Formulation> LoadFormulationForRoute(string applicationRoute)
+      public async Task<Formulation> LoadFormulationForRouteAsync(string applicationRoute)
       {
          var formulation = await LoadSingleFromTemplateAsync();
          if (formulation == null)

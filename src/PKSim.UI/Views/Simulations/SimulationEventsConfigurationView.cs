@@ -82,7 +82,9 @@ namespace PKSim.UI.Views.Simulations
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;
          gridView.HiddenEditor += (o, e) => { _comboBoxUnit.Visible = false; };
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveEventMapping(_gridViewBinder.FocusedElement));
-         loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadEventFor(_gridViewBinder.FocusedElement));
+
+         //TODO EVENT Async
+         loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadEventAsync(_gridViewBinder.FocusedElement));
          createButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.CreateEventFor(_gridViewBinder.FocusedElement));
       }
 
