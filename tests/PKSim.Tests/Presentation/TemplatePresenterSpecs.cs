@@ -54,6 +54,7 @@ namespace PKSim.Presentation
          await base.Context();
          _userTemplate = new Template {DatabaseType = TemplateDatabaseType.User};
          _systemTemplate = new Template {DatabaseType = TemplateDatabaseType.System};
+         _remoteTemplate = new Template {DatabaseType = TemplateDatabaseType.Remote};
          _userTemplateDTO = new TemplateDTO(_userTemplate);
          _systemTemplateDTO = new TemplateDTO(_systemTemplate);
          _remoteTemplateDTO = new TemplateDTO(_remoteTemplate);
