@@ -29,7 +29,7 @@ namespace PKSim.UI.Views.Snapshots
             .To(buttonEditSelectSnapshot);
 
          buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(()=>_presenter.SelectFile());
-         buttonStart.Click += (o, e) => OnEvent(() => _presenter.Start());
+         buttonStart.Click += (o, e) => OnEvent(() => _presenter.StartAsync());
 
          RegisterValidationFor(_screenBinder);
       }

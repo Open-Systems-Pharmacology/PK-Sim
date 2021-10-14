@@ -44,8 +44,10 @@ namespace PKSim.Presentation
    {
       private Template _userTemplate;
       private Template _systemTemplate;
+      private Template _remoteTemplate;
       private TemplateDTO _userTemplateDTO;
       private TemplateDTO _systemTemplateDTO;
+      private TemplateDTO _remoteTemplateDTO;
 
       protected override async Task Context()
       {
@@ -54,6 +56,7 @@ namespace PKSim.Presentation
          _systemTemplate = new Template {DatabaseType = TemplateDatabaseType.System};
          _userTemplateDTO = new TemplateDTO(_userTemplate);
          _systemTemplateDTO = new TemplateDTO(_systemTemplate);
+         _remoteTemplateDTO = new TemplateDTO(_remoteTemplate);
       }
 
       [Observation]
@@ -73,6 +76,13 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _startOptions.IsDeveloperMode).Returns(true);
          sut.CanEdit(_systemTemplateDTO).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_false_if_the_template_is_a_remote_template_and_the_user_is_admin()
+      {
+         A.CallTo(() => _startOptions.IsDeveloperMode).Returns(true);
+         sut.CanEdit(_remoteTemplateDTO).ShouldBeFalse();
       }
    }
 

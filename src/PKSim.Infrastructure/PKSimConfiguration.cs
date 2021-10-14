@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure
       public override string UserSettingsFileName { get; } = "UserSettings.xml";
       public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = CoreConstants.ISSUE_TRACKER_URL;
-      protected override string[] LatestVersionWithOtherMajor { get; } = {"7.4", "6.3", "5.6"};
+      protected override string[] LatestVersionWithOtherMajor { get; } = {"10.0", "9.1", "9.0", "8.0"};
       public override string WatermarkOptionLocation { get; } = "Options -> Settings -> Application";
       public override string ApplicationFolderPathName { get; } = CoreConstants.APPLICATION_FOLDER_PATH;
 

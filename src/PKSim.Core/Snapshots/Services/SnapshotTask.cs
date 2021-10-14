@@ -19,30 +19,30 @@ namespace PKSim.Core.Snapshots.Services
       ///    Exports the given <paramref name="modelToExport" /> to snapshot. User will be ask to specify the file where the
       ///    snapshot will be exported
       /// </summary>
-      Task ExportModelToSnapshot<T>(T modelToExport) where T : class, IObjectBase;
+      Task ExportModelToSnapshotAsync<T>(T modelToExport) where T : class, IObjectBase;
 
       /// <summary>
       ///    Exports the given <paramref name="modelToExport" /> to snapshot file <paramref name="fileFullPath" />
       /// </summary>
-      Task ExportModelToSnapshot<T>(T modelToExport, string fileFullPath) where T : class, IObjectBase;
+      Task ExportModelToSnapshotAsync<T>(T modelToExport, string fileFullPath) where T : class, IObjectBase;
 
       /// <summary>
       ///    Exports the given <paramref name="snapshotObject" /> to file. <paramref name="snapshotObject" /> is already a
       ///    snapshot object and won't be mapped to snapshot
       /// </summary>
-      Task ExportSnapshot(IWithName snapshotObject);
+      Task ExportSnapshotAsync(IWithName snapshotObject);
 
-      Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>() where T : class, IObjectBase;
+      Task<IEnumerable<T>> LoadModelsFromSnapshotFileAsync<T>() where T : class, IObjectBase;
 
-      Task<IEnumerable<T>> LoadSnapshots<T>(string fileName);
+      Task<IEnumerable<T>> LoadSnapshotsAsync<T>(string fileName);
 
-      Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>(string fileName) where T : class;
+      Task<IEnumerable<T>> LoadModelsFromSnapshotFileAsync<T>(string fileName) where T : class;
 
-      Task<PKSimProject> LoadProjectFromSnapshotFile(string fileName);
+      Task<PKSimProject> LoadProjectFromSnapshotFileAsync(string fileName);
 
-      Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot, bool runSimulations);
+      Task<PKSimProject> LoadProjectFromSnapshotAsync(Project snapshot, bool runSimulations);
 
-      Task<T> LoadSnapshotFromFile<T>(string fileName) where T : IWithName;
+      Task<T> LoadSnapshotFromFileAsync<T>(string fileName) where T : IWithName;
 
       /// <summary>
       ///    Returns <c>true</c> if <paramref name="objectToExport" /> was created with a version of PK-Sim fully supporting
@@ -50,7 +50,7 @@ namespace PKSim.Core.Snapshots.Services
       /// </summary>
       bool IsVersionCompatibleWithSnapshotExport<T>(T objectToExport) where T : class, IWithCreationMetaData;
 
-      Task<T> LoadModelFromProjectFile<T>(string fileName, PKSimBuildingBlockType buildingBlockType, string buildingBlockName);
+      Task<T> LoadModelFromProjectFileAsync<T>(string fileName, PKSimBuildingBlockType buildingBlockType, string buildingBlockName);
    }
 
    public class SnapshotTask : ISnapshotTask
@@ -78,7 +78,7 @@ namespace PKSim.Core.Snapshots.Services
          _snapshotMapper = snapshotMapper;
       }
 
-      public async Task ExportModelToSnapshot<T>(T modelToExport) where T : class, IObjectBase
+      public async Task ExportModelToSnapshotAsync<T>(T modelToExport) where T : class, IObjectBase
       {
          if (modelToExport == null)
             return;
@@ -87,10 +87,10 @@ namespace PKSim.Core.Snapshots.Services
          if (string.IsNullOrEmpty(fileName))
             return;
 
-         await ExportModelToSnapshot(modelToExport, fileName);
+         await ExportModelToSnapshotAsync(modelToExport, fileName);
       }
 
-      public Task ExportModelToSnapshot<T>(T modelToExport, string fileFullPath) where T : class, IObjectBase
+      public Task ExportModelToSnapshotAsync<T>(T modelToExport, string fileFullPath) where T : class, IObjectBase
       {
          _executionContext.Load(modelToExport);
          return exportSnapshotFor(modelToExport, fileFullPath);
@@ -102,7 +102,7 @@ namespace PKSim.Core.Snapshots.Services
          return _dialogCreator.AskForFileToSave(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, objectToExport.Name);
       }
 
-      public async Task ExportSnapshot(IWithName snapshotObject)
+      public async Task ExportSnapshotAsync(IWithName snapshotObject)
       {
          var fileName = fileNameForExport(snapshotObject);
          if (string.IsNullOrEmpty(fileName))
@@ -111,10 +111,10 @@ namespace PKSim.Core.Snapshots.Services
          await saveSnapshotToFile(snapshotObject, fileName);
       }
 
-      public Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>() where T : class, IObjectBase
+      public Task<IEnumerable<T>> LoadModelsFromSnapshotFileAsync<T>() where T : class, IObjectBase
       {
          var fileName = fileNameForSnapshotImport<T>();
-         return LoadModelsFromSnapshotFile<T>(fileName);
+         return LoadModelsFromSnapshotFileAsync<T>(fileName);
       }
 
       private string fileNameForSnapshotImport<T>()
@@ -123,9 +123,9 @@ namespace PKSim.Core.Snapshots.Services
          return _dialogCreator.AskForFileToOpen(message, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT);
       }
 
-      public async Task<T> LoadSnapshotFromFile<T>(string fileName) where T : IWithName
+      public async Task<T> LoadSnapshotFromFileAsync<T>(string fileName) where T : IWithName
       {
-         var snapshots = await LoadSnapshots<T>(fileName);
+         var snapshots = await LoadSnapshotsAsync<T>(fileName);
          var snapshot = snapshots.FirstOrDefault();
 
          if (snapshot != null && string.IsNullOrEmpty(snapshot.Name))
@@ -134,7 +134,7 @@ namespace PKSim.Core.Snapshots.Services
          return snapshot;
       }
 
-      public async Task<IEnumerable<T>> LoadSnapshots<T>(string fileName)
+      public async Task<IEnumerable<T>> LoadSnapshotsAsync<T>(string fileName)
       {
          var snapshots = await loadSnapshot(fileName, typeof(T));
          return snapshots.OfType<T>();
@@ -148,15 +148,15 @@ namespace PKSim.Core.Snapshots.Services
          return await _jsonSerializer.DeserializeAsArray(fileName, snapshotType);
       }
 
-      public async Task<IEnumerable<T>> LoadModelsFromSnapshotFile<T>(string fileName) where T : class
+      public async Task<IEnumerable<T>> LoadModelsFromSnapshotFileAsync<T>(string fileName) where T : class
       {
          var snapshotType = _snapshotMapper.SnapshotTypeFor<T>();
          var snapshots = await loadSnapshot(fileName, snapshotType);
 
-         return await loadModelsFromSnapshots<T>(snapshots);
+         return await loadModelsFromSnapshotsAsync<T>(snapshots);
       }
 
-      private async Task<IEnumerable<T>> loadModelsFromSnapshots<T>(IEnumerable<object> snapshots) 
+      private async Task<IEnumerable<T>> loadModelsFromSnapshotsAsync<T>(IEnumerable<object> snapshots) 
       {
          if (snapshots == null)
             return Enumerable.Empty<T>();
@@ -171,18 +171,18 @@ namespace PKSim.Core.Snapshots.Services
          if (snapshot == null)
             return default(T);
 
-         var models = await loadModelsFromSnapshots<T>(new[] {snapshot});
+         var models = await loadModelsFromSnapshotsAsync<T>(new[] {snapshot});
          return models.FirstOrDefault();
       }
 
-      public async Task<PKSimProject> LoadProjectFromSnapshotFile(string fileName)
+      public async Task<PKSimProject> LoadProjectFromSnapshotFileAsync(string fileName)
       {
-         var projectSnapshot = await LoadSnapshotFromFile<Project>(fileName);
-         var project = await LoadProjectFromSnapshot(projectSnapshot, runSimulations: true);
+         var projectSnapshot = await LoadSnapshotFromFileAsync<Project>(fileName);
+         var project = await LoadProjectFromSnapshotAsync(projectSnapshot, runSimulations: true);
          return projectWithUpdatedProperties(project, FileHelper.FileNameFromFileFullPath(fileName));
       }
 
-      public async Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot, bool runSimulations)
+      public async Task<PKSimProject> LoadProjectFromSnapshotAsync(Project snapshot, bool runSimulations)
       {
          var project = await _projectMapper.MapToModel(snapshot, new ProjectContext {RunSimulations = runSimulations});
          return projectWithUpdatedProperties(project, snapshot?.Name);
@@ -207,9 +207,9 @@ namespace PKSim.Core.Snapshots.Services
          return projectCreationVersion >= ProjectVersions.V7_3_0;
       }
 
-      public async Task<T> LoadModelFromProjectFile<T>(string fileName, PKSimBuildingBlockType buildingBlockType, string buildingBlockName)
+      public async Task<T> LoadModelFromProjectFileAsync<T>(string fileName, PKSimBuildingBlockType buildingBlockType, string buildingBlockName)
       {
-         var projectSnapshot = await LoadSnapshotFromFile<Project>(fileName);
+         var projectSnapshot = await LoadSnapshotFromFileAsync<Project>(fileName);
          var snapshot = projectSnapshot.BuildingBlockByTypeAndName(buildingBlockType, buildingBlockName);
          return await loadModelFromSnapshot<T>(snapshot);
       }

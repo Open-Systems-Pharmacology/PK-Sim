@@ -82,8 +82,7 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder.Changed += NotifyViewChanged;
 
          btnCreateCompound.Click += (o, e) => OnEvent(_presenter.AddCompound);
-         //TODO Async
-         btnLoadCompound.Click += (o, e) => OnEvent(() => _presenter.LoadCompoundAsync());
+         btnLoadCompound.Click += (o, e) => OnEvent(_presenter.LoadCompoundAsync);
       }
 
       private RepositoryItem selectRepository(CompoundSelectionDTO dto)

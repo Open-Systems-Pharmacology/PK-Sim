@@ -49,7 +49,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             await downloadRemoteFile(template.Url, localFile);
 
          var buildingBlockType = EnumHelper.ParseValue<PKSimBuildingBlockType>(template.Type.ToString());
-         var model = await _snapshotTask.LoadModelFromProjectFile<T>(localFile, buildingBlockType, template.Name);
+         var model = await _snapshotTask.LoadModelFromProjectFileAsync<T>(localFile, buildingBlockType, template.Name);
          return model;
       }
 

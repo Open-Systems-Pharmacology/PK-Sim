@@ -119,8 +119,8 @@ namespace PKSim.CLI
 
          _projectSnapshot = new SnapshotProject().WithName(PROJECT_SNAPSHOT_NAME);
          _project = new PKSimProject().WithName(PROJECT_NAME);
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot, _runOptions.Run)).Returns(_project);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotAsync(_projectSnapshot, _runOptions.Run)).Returns(_project);
          FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile);
       }
    }
@@ -371,7 +371,7 @@ namespace PKSim.CLI
             SnapshotFile = "RefSnapshotPathDoesNotExist"
          };
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns((SnapshotProject) null);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns((SnapshotProject) null);
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
       }
 
@@ -399,7 +399,7 @@ namespace PKSim.CLI
 
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
          _refSnapshotProject = new SnapshotProject();
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -429,7 +429,7 @@ namespace PKSim.CLI
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
          _refIndividual = new Individual().WithName(_buildingBlockSwap.Name);
          _refSnapshotProject = new SnapshotProject {Individuals = new[] {_refIndividual}};
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -483,7 +483,7 @@ namespace PKSim.CLI
          _refIndividual = new Individual().WithName(_buildingBlockSwap.Name);
          _refSnapshotProject = new SnapshotProject {Individuals = new[] {_refIndividual}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       private Individual _originalIndividual;
@@ -529,7 +529,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
          _projectSnapshot.Simulations = new[] {_originalSimulation};
       }
 
@@ -572,7 +572,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -602,7 +602,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject();
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -634,7 +634,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]

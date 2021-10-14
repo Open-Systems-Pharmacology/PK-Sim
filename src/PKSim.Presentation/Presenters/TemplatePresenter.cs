@@ -127,7 +127,7 @@ namespace PKSim.Presentation.Presenters
             return;
 
          
-         allTemplates.Add(template.Name, await loadTemplate<T>(template));
+         allTemplates.Add(template.Name, await loadTemplateAsync<T>(template));
          foreach (var reference in template.References)
          {
             await loadTemplateWithReferences(allTemplates, reference);
@@ -139,13 +139,13 @@ namespace PKSim.Presentation.Presenters
          var allTemplates = new List<T>();
          foreach (var template in _selectedTemplates)
          {
-            allTemplates.Add(await loadTemplate<T>(template));
+            allTemplates.Add(await loadTemplateAsync<T>(template));
          }
 
          return allTemplates;
       } 
 
-      private Task<T> loadTemplate<T>(Template template) => _templateTaskQuery.LoadTemplateAsync<T>(template);
+      private Task<T> loadTemplateAsync<T>(Template template) => _templateTaskQuery.LoadTemplateAsync<T>(template);
 
       private void updateIcon(TemplateType templateType)
       {
@@ -205,7 +205,13 @@ namespace PKSim.Presentation.Presenters
 
       public bool CanEdit(TemplateDTO template)
       {
-         return _startOptions.IsDeveloperMode || template.DatabaseType == TemplateDatabaseType.User;
+         var databaseType = template.DatabaseType;
+         
+         //Remote templates cannot be edited, even by dev
+         if (databaseType == TemplateDatabaseType.Remote)
+            return false;
+
+         return _startOptions.IsDeveloperMode || databaseType == TemplateDatabaseType.User;
       }
 
       public void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templateDTOs)

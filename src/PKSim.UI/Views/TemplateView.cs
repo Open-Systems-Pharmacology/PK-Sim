@@ -61,7 +61,12 @@ namespace PKSim.UI.Views
 
       public IReadOnlyList<TemplateDTO> SelectedTemplates => dtoListFrom(gridView.GetSelectedRows());
 
-      private IReadOnlyList<TemplateDTO> dtoListFrom(IEnumerable<int> rowHandles) => rowHandles.Select(_gridViewBinder.ElementAt).ToList();
+      private IReadOnlyList<TemplateDTO> dtoListFrom(IEnumerable<int> rowHandles)
+      {
+         //Selecting header might select the same DTO twice so we use a hashset to get unique dtos only
+         var allSelectedDTO = new HashSet<TemplateDTO>(rowHandles.Select(_gridViewBinder.ElementAt));
+         return allSelectedDTO.ToList();
+      }
 
       public override void InitializeBinding()
       {

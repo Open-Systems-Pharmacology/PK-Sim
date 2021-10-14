@@ -55,9 +55,9 @@ namespace PKSim.Presentation
          _qualificationPlan = new QualificationPlan();
          _newProject.AddQualificationPlan(_qualificationPlan);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFile(_fileName)).Returns(_newProject);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_fileName)).Returns(_newProject);
          A.CallTo(() => _view.Display())
-            .Invokes(x => sut.Start().Wait());
+            .Invokes(x => sut.StartAsync().Wait());
       }
 
       protected override void Because()
@@ -66,7 +66,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_start_the_file_selection_immeditately()
+      public void should_start_the_file_selection_immediately()
       {
          A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.REPORT, null, null)).MustHaveHappened();
       }

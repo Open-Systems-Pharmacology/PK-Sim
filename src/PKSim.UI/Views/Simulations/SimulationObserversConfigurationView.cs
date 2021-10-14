@@ -2,8 +2,10 @@
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.Assets;
+using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI;
@@ -33,6 +35,9 @@ namespace PKSim.UI.Views.Simulations
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
       private readonly RepositoryItemButtonEdit _createButtonRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Create, PKSimConstants.UI.CreateBuildingBlockHint(PKSimConstants.ObjectTypes.ObserverSet));
       private readonly RepositoryItemButtonEdit _loadButtonRepository = new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.ObserverSet));
+      private IGridViewColumn _colCreateObserverSet;
+      private IGridViewColumn _colLoadObserverSet;
+      private IGridViewColumn _colRemoveObserverSet;
 
       public SimulationObserversConfigurationView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
       {
@@ -75,19 +80,19 @@ namespace PKSim.UI.Views.Simulations
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithCaption(PKSimConstants.ObjectTypes.ObserverSet);
 
-         _gridViewBinder.AddUnboundColumn()
+         _colCreateObserverSet =  _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => _createButtonRepository);
 
-         _gridViewBinder.AddUnboundColumn()
+         _colLoadObserverSet = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => _loadButtonRepository);
 
-         _gridViewBinder.AddUnboundColumn()
+         _colRemoveObserverSet = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
@@ -97,7 +102,6 @@ namespace PKSim.UI.Views.Simulations
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveObserverSetMapping(_gridViewBinder.FocusedElement));
 
-         //TODO event async
          _loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadObserverSetForAsync(_gridViewBinder.FocusedElement));
          _createButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.CreateObserverFor(_gridViewBinder.FocusedElement));
 
@@ -108,6 +112,12 @@ namespace PKSim.UI.Views.Simulations
       {
          _observerSetRepository.FillImageComboBoxRepositoryWith(_presenter.AllUnmappedObserverSets(observerSetMappingDTO), x => ApplicationIcons.Observer.Index, x => _presenter.DisplayNameFor(x));
          return _observerSetRepository;
+      }
+
+
+      protected override bool ColumnIsButton(GridColumn column)
+      {
+         return column.IsOneOf(_colCreateObserverSet.XtraColumn, _colLoadObserverSet.XtraColumn, _colRemoveObserverSet.XtraColumn);
       }
 
       public void BindTo(IEnumerable<ObserverSetMappingDTO> allObserverSetMappingDTOs)

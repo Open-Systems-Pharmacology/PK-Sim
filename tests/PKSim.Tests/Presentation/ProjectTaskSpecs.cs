@@ -879,7 +879,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_project)).MustHaveHappened();
       }
    }
 
@@ -901,7 +901,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_project)).MustHaveHappened();
       }
    }
 
@@ -923,7 +923,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustNotHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_project)).MustNotHaveHappened();
       }
    }
 
@@ -944,7 +944,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustNotHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_project)).MustNotHaveHappened();
       }
    }
 
@@ -966,7 +966,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_project)).MustHaveHappened();
       }
    }
 
@@ -988,7 +988,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_project)).MustHaveHappened();
       }
    }
 
@@ -1010,7 +1010,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_export_the_current_project_to_a_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_project)).MustNotHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_project)).MustNotHaveHappened();
       }
    }
 

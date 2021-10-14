@@ -253,6 +253,8 @@ namespace PKSim.Presentation.Services
 
       public IPKSimCommand AddToProject<TBuildingBlock>(TBuildingBlock buildingBlock, bool editBuildingBlock = false, bool addToHistory = true) where TBuildingBlock : class, IPKSimBuildingBlock
       {
+         System.Diagnostics.Debug.Print(buildingBlock.Name);
+
          if (!RenameBuildingBlockIfAlreadyUsed(buildingBlock))
             return new PKSimEmptyCommand();
 
@@ -297,11 +299,12 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IEnumerable<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
+      private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (buildingBlocks == null)
             return Enumerable.Empty<TBuildingBlock>();
 
+         System.Diagnostics.Debug.Print("HOLA");
          return from bb in buildingBlocks
             let command = AddToProject(bb, editBuildingBlock: false)
             where !command.IsEmpty()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -20,7 +21,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
       /// </summary>
       bool SelectFile();
 
-      Task Start();
+      Task StartAsync();
 
       bool ModelIsDefined { get; }
 
@@ -32,7 +33,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
    public interface ILoadFromSnapshotPresenter<T> : ILoadFromSnapshotPresenter where T : class, IObjectBase
    {
-      IEnumerable<T> LoadModelFromSnapshot();
+      IReadOnlyList<T> LoadModelFromSnapshot();
    }
 
    public class LoadFromSnapshotPresenter<T> : AbstractDisposablePresenter<ILoadFromSnapshotView, ILoadFromSnapshotPresenter>, ILoadFromSnapshotPresenter<T> where T : class, IObjectBase
@@ -67,14 +68,14 @@ namespace PKSim.Presentation.Presenters.Snapshots
          _view.BindTo(_loadFromSnapshotDTO);
       }
 
-      public IEnumerable<T> LoadModelFromSnapshot()
+      public IReadOnlyList<T> LoadModelFromSnapshot()
       {
          if (!SelectFile())
             return null;
 
          _view.Display();
          ClearModel(_model);
-         return _view.Canceled ? null : _model;
+         return _view.Canceled ? null : _model.ToList();
       }
 
       public bool SelectFile()
@@ -95,14 +96,14 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       private string typeToLoad => _objectTypeResolver.TypeFor<T>();
 
-      public async Task Start()
+      public async Task StartAsync()
       {
          try
          {
             _logPresenter.ClearLog();
             _view.EnableButtons(false);
             _logger.AddInfo(PKSimConstants.Information.LoadingSnapshot(_loadFromSnapshotDTO.SnapshotFile, typeToLoad));
-            await Task.Run(() => PerformLoad(_loadFromSnapshotDTO.SnapshotFile));
+            await Task.Run(() => PerformLoadAsync(_loadFromSnapshotDTO.SnapshotFile));
             _logger.AddInfo(PKSimConstants.Information.SnapshotLoaded(typeToLoad));
          }
          catch (Exception e)
@@ -119,7 +120,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       public string SnapshotFile => _loadFromSnapshotDTO.SnapshotFile;
 
-      protected async Task PerformLoad(string snapshotFile)
+      protected async Task PerformLoadAsync(string snapshotFile)
       {
          ClearModel(_model);
          _model = await LoadModelAsync(snapshotFile);
@@ -132,7 +133,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       protected virtual Task<IEnumerable<T>> LoadModelAsync(string snapshotFile)
       {
-         return _snapshotTask.LoadModelsFromSnapshotFile<T>(snapshotFile);
+         return _snapshotTask.LoadModelsFromSnapshotFileAsync<T>(snapshotFile);
       }
 
       protected override void Cleanup()
