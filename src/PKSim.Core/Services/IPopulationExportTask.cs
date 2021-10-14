@@ -99,7 +99,8 @@ namespace PKSim.Core.Services
 
       public void ExportToCSV(PopulationSimulation populationSimulation, string fileFullPath)
       {
-         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader: true), fileFullPath);
+         var fileSelection = new FileSelection {FilePath = fileFullPath};
+         ExportToCSV(populationSimulation, fileSelection);
       }
 
       private void exportVectorialParametersContainerToCSV<T>(T advancedParameterContainer, Func<T, DataTable> createData, FileSelection fileSelection) where T : IAdvancedParameterContainer
