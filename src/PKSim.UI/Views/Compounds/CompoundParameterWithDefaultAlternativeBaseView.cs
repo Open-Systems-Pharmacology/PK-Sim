@@ -111,7 +111,13 @@ namespace PKSim.UI.Views.Compounds
       {
          return Equals(_colButtons?.XtraColumn, column);
       }
-      
+
+
+      protected override bool ColumnIsCheckBox(GridColumn column)
+      {
+         return Equals(_colDefault?.XtraColumn, column);
+      }
+
       public override void InitializeResources()
       {
          base.InitializeResources();

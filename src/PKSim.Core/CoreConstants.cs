@@ -74,7 +74,7 @@ namespace PKSim.Core
       public static readonly string PK_SIM_DB_FILE = $"PKSimDB{Filter.MODEL_DB_EXTENSION}";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
       public const string PRODUCT_NAME = "PK-Sim";
-      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
+      public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-SimÂ®";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
@@ -125,18 +125,18 @@ namespace PKSim.Core
 
       public static class Units
       {
-         public static readonly string KgPerM2 = "kg/m²";
+         public static readonly string KgPerM2 = "kg/mÂ²";
          public static readonly string Kg = "kg";
          public static readonly string cm = "cm";
          public static readonly string mg = "mg";
-         public static readonly string MicroMolPerLiter = "µmol/l";
+         public static readonly string MicroMolPerLiter = "Âµmol/l";
          public static readonly string Percent = "%";
          public static readonly string Days = "day(s)";
          public static readonly string Weeks = "week(s)";
          public static readonly string Years = "year(s)";
          public static readonly string KgPerKg = "kg/kg";
          public static readonly string MgPerKg = "mg/kg";
-         public static readonly string MgPerM2 = "mg/m²";
+         public static readonly string MgPerM2 = "mg/mÂ²";
       }
 
       public static class Observer
