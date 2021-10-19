@@ -104,7 +104,7 @@ namespace PKSim.Infrastructure
          _results.AllPKParametersFor(_quantityPath1).Length.ShouldBeEqualTo(2);
          _results.AllPKParametersFor(_quantityPath2).Length.ShouldBeEqualTo(2);
       }
-
+      
       [Observation]
       public void should_calculate_the_pk_analyses_using_a_dose_per_body_weight_for_each_individual_and_each_curve()
       {

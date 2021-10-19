@@ -1,10 +1,7 @@
 ﻿using System.Windows.Forms;
 using DevExpress.Utils;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Drawing;
-using DevExpress.XtraEditors.ViewInfo;
 using DevExpress.XtraGrid.Columns;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Core
 {
@@ -15,7 +12,7 @@ namespace PKSim.UI.Views.Core
          InitializeComponent();
       }
 
-      protected void InitializeWithGrid(UxGridView gridView)
+      protected virtual void InitializeWithGrid(UxGridView gridView)
       {
          gridView.MouseDown += (sender, e) => OnGridViewMouseDown(gridView, e);
       }
@@ -36,7 +33,7 @@ namespace PKSim.UI.Views.Core
 
          if (ColumnIsButton(col))
          {
-            RaiseButtonClick(gridView, col, rowHandle, e);
+            gridView.RaiseButtonClick(e);
             return;
          }
 
@@ -53,24 +50,6 @@ namespace PKSim.UI.Views.Core
          }
 
          OnValueColumnMouseDown(gridView, col, rowHandle);
-      }
-
-      protected virtual void RaiseButtonClick(UxGridView gridView, GridColumn column, int rowHandle, MouseEventArgs e)
-      {
-         //Adapted from https://supportcenter.devexpress.com/ticket/details/t230842/grid-the-buttonclick-event-is-not-raised-immediately-when-multi-selection-is-enabled
-         gridView.FocusedRowHandle = rowHandle;
-         gridView.FocusedColumn = column;
-         gridView.ShowEditor();
-         //force button click  
-         var edit = gridView.ActiveEditor.DowncastTo<ButtonEdit>();
-         var p = gridView.GridControl.PointToScreen(e.Location);
-         p = edit.PointToClient(p);
-         EditHitInfo ehi = (edit.GetViewInfo() as ButtonEditViewInfo).CalcHitInfo(p);
-         if (ehi.HitTest == EditHitTest.Button)
-         {
-            edit.PerformClick(ehi.HitObject.DowncastTo<EditorButtonObjectInfoArgs>().Button);
-            ((DXMouseEventArgs)e).Handled = true;
-         }
       }
 
       protected virtual void RaiseCheckEditClick(UxGridView gridView, GridColumn column, int rowHandle, MouseEventArgs e)

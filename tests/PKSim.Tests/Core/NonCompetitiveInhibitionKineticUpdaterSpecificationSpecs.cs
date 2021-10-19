@@ -52,7 +52,7 @@ namespace PKSim.Core
 
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
-         sut = new NonCompetitiveInhibitionKineticUpdaterSpecification(_objectPathFactory, _dimensionRepository, _interactionTask   );
+         sut = new NonCompetitiveInhibitionKineticUpdaterSpecification(_objectPathFactory, _dimensionRepository, _interactionTask);
       }
    }
 
@@ -92,4 +92,4 @@ namespace PKSim.Core
          sut.CLSpecDenominatorTerm(_moleculeName, _drugName, _simulation).ShouldBeEqualTo("K_water_n1*In1/KnI1 + K_water_n2*In2/KnI2");
       }
    }
-}	
+}

@@ -87,15 +87,9 @@ namespace PKSim.UI.Views.Individuals
          activeEditor.FillComboBoxEditorWith(_presenter.AllScalingMethodsFor(parameterScalingDTO));
       }
 
-      public override string Caption
-      {
-         get { return PKSimConstants.UI.IndividualScalingConfiguration; }
-      }
+      public override string Caption => PKSimConstants.UI.IndividualScalingConfiguration;
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.ScaleIndividual; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.ScaleIndividual;
 
       public void BindTo(IEnumerable<ParameterScalingDTO> parameterScalingsDTO)
       {

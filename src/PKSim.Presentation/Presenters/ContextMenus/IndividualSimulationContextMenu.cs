@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using PKSim.Core.Model;
-using PKSim.Presentation.UICommands;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -67,17 +67,17 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithCommandFor<SimulationParameterExportToCsvCommand, Simulation>(simulation)
             .ForDeveloper();
 
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Save Snapshot"))
             .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation)
             .WithIcon(ApplicationIcons.SnapshotExport)
             .ForDeveloper();
 
+         yield return ExportMarkdownMenuFor(simulation);
       }
 
       protected IMenuBarItem CreateParameterIdentificationMenuItemFor(IndividualSimulation simulation)
       {
-         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] { simulation });
+         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] {simulation});
       }
 
       protected IMenuBarItem CreateSensitivityAnalysisMenuItemFor(IndividualSimulation simulation)

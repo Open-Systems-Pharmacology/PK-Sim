@@ -42,7 +42,7 @@ namespace PKSim.UI.Views.Parameters
       protected IGridViewColumn _columnValue;
       private IParameterSetPresenter _presenter;
       private UxRepositoryItemImageComboBox _discreteParameterRepository;
-      private readonly RepositoryItemTextEdit _stantdardParameterEditRepository = new RepositoryItemTextEdit();
+      private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       private readonly RepositoryItemButtonEdit _isFixedParameterEditRepository;
       private readonly UxRepositoryItemButtonEdit _editTableParameterRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Glyph);
       private readonly UxRepositoryItemButtonEdit _showTableParameterRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Glyph);
@@ -61,8 +61,8 @@ namespace PKSim.UI.Views.Parameters
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _toolTipController.Initialize(_imageListRetriever);
          PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
-         _stantdardParameterEditRepository.ConfigureWith(typeof(double));
-         _stantdardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
+         _standardParameterEditRepository.ConfigureWith(typeof(double));
+         _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
          _valueOriginBinder = valueOriginBinder;
       }
@@ -189,7 +189,7 @@ namespace PKSim.UI.Views.Parameters
          if (_presenter.IsSetByUser(parameterDTO))
             return _isFixedParameterEditRepository;
 
-         return _stantdardParameterEditRepository;
+         return _standardParameterEditRepository;
       }
 
       protected override bool ColumnIsValue(GridColumn gridColumn)

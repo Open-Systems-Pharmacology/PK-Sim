@@ -56,8 +56,8 @@ namespace PKSim.Core
             _pkAnalysisTask, _pkCalculationOptionsFactory, _vssCalculator, _interactionTask, _cloner);
 
          var baseGrid = new BaseGrid("time", A.Fake<IDimension>());
-         _peripheralVenousBloodPlasma = CalculationColumnFor(baseGrid, CoreConstants.Organ.PeripheralVenousBlood, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, _compoundName);
-         _venousBloodPlasma = CalculationColumnFor(baseGrid, CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, _compoundName);
+         _peripheralVenousBloodPlasma = CalculationColumnFor(baseGrid, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, _compoundName);
+         _venousBloodPlasma = CalculationColumnFor(baseGrid, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, _compoundName);
 
          _individual = A.Fake<Individual>();
          _species = new Species();

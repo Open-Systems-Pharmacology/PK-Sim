@@ -28,7 +28,7 @@ namespace PKSim.Core
       protected MoleculeList _moleculeListSnapshot;
       protected IObjectBaseFactory _objectBaseFactory;
       protected IDimensionRepository _dimensionRepository;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected OSPSuite.Core.Domain.Formulas.ExplicitFormula _newFormula;
       protected OSPSuite.Core.Domain.Builder.MoleculeList _newMoleculeList;
 
@@ -39,7 +39,7 @@ namespace PKSim.Core
          _moleculeListMapper= A.Fake<MoleculeListMapper>();
          _objectBaseFactory= A.Fake<IObjectBaseFactory>();
          _dimensionRepository= A.Fake<IDimensionRepository>();
-         _logger= A.Fake<ILogger>();   
+         _logger= A.Fake<IOSPSuiteLogger>();   
 
          _dimension = DomainHelperForSpecs.TimeDimensionForSpecs();
 

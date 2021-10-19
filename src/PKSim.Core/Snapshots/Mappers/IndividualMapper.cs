@@ -25,27 +25,25 @@ namespace PKSim.Core.Snapshots.Mappers
          _moleculeMapper = moleculeMapper;
          _individualFactory = individualFactory;
          _originDataMapper = originDataMapper;
-         _originDataMapper = originDataMapper;
       }
 
       public override async Task<SnapshotIndividual> MapToSnapshot(ModelIndividual individual)
       {
          var snapshot = await SnapshotFrom(individual, x => { x.Seed = individual.Seed; });
-
          snapshot.OriginData = await _originDataMapper.MapToSnapshot(individual.OriginData);
-         snapshot.Parameters = await allParametersChangedByUserFrom(individual);
          snapshot.Molecules = await allMoleculesFrom(individual);
+         snapshot.Parameters = await allParametersChangedByUserFrom(individual);
          return snapshot;
       }
 
       private Task<Molecule[]> allMoleculesFrom(ModelIndividual individual)
       {
-         return _moleculeMapper.MapToSnapshots(individual.AllDefinedMolecules());
+         return _moleculeMapper.MapToSnapshots(individual.AllDefinedMolecules(), individual);
       }
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
       {
-         var changedParameters = individual.Organism.GetAllChildren<IParameter>(x => x.ShouldExportToSnapshot());
+         var changedParameters = individual.GetAllChildren<IParameter>(x => x.ShouldExportToSnapshot());
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
@@ -54,16 +52,19 @@ namespace PKSim.Core.Snapshots.Mappers
          var originData = await _originDataMapper.MapToModel(individualSnapshot.OriginData);
          var individual = _individualFactory.CreateAndOptimizeFor(originData, individualSnapshot.Seed);
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
-         await updateIndividualParameters(individualSnapshot, individual);
-         individual.Icon = individual.Species.Icon;
+
+         //This needs to happen before loading model parameters as molecule parameters are saved with the rest of individuals parameters
          var molecules = await _moleculeMapper.MapToModels(individualSnapshot.Molecules, individual);
          molecules?.Each(individual.AddMolecule);
+         
+         await updateIndividualParameters(individualSnapshot, individual);
+         individual.Icon = individual.Species.Icon;
          return individual;
       }
 
       private Task updateIndividualParameters(SnapshotIndividual snapshot, ModelIndividual individual)
       {
-         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual.Organism);
+         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
       }
    }
 }

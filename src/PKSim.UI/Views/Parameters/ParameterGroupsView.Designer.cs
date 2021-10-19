@@ -36,7 +36,7 @@ namespace PKSim.UI.Views.Parameters
          this.splitContainer = new DevExpress.XtraEditors.SplitContainerControl();
          this.layoutControlTree = new OSPSuite.UI.Controls.UxLayoutControl();
          this._filterTreeView = new OSPSuite.UI.Controls.FilterTreeView();
-         this.cbGroupingMode = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbGroupingMode = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutGroupTrees = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemGroupingType = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -173,7 +173,7 @@ namespace PKSim.UI.Views.Parameters
       private DevExpress.XtraEditors.SplitContainerControl splitContainer;
       private DevExpress.XtraEditors.GroupControl groupParameters;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupTrees;
-      private DevExpress.XtraEditors.ComboBoxEdit cbGroupingMode;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbGroupingMode;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGroupingType;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControlTree;
       private DevExpress.Utils.ToolTipController _toolTipController;

@@ -30,7 +30,6 @@ using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 
-
 namespace PKSim.Core
 {
    public abstract class concern_for_SimulationMapper : ContextSpecificationAsync<SimulationMapper>
@@ -81,7 +80,7 @@ namespace PKSim.Core
       protected EventSelection _eventSelection;
       protected ObserverSetSelection _observerSetSelection;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected IContainerTask _containerTask;
       protected IEntityPathResolver _entityPathResolver;
       protected CompoundProcessSelection _noSelectionSnapshotInteraction;
@@ -98,7 +97,7 @@ namespace PKSim.Core
          _compoundPropertiesMapper = A.Fake<CompoundPropertiesMapper>();
          _advancedParameterMapper = A.Fake<AdvancedParameterMapper>();
          _eventMappingMapper = A.Fake<EventMappingMapper>();
-         _observerSetMappingMapper= A.Fake<ObserverSetMappingMapper>(); 
+         _observerSetMappingMapper = A.Fake<ObserverSetMappingMapper>();
          _curveChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
@@ -108,32 +107,32 @@ namespace PKSim.Core
          _modelPropertiesTask = A.Fake<IModelPropertiesTask>();
          _simulationRunner = A.Fake<ISimulationRunner>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
-         _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
-         _logger= A.Fake<ILogger>();
-         _containerTask= A.Fake<IContainerTask>();
-         _entityPathResolver= A.Fake<IEntityPathResolver>();
+         _simulationParameterOriginIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
+         _logger = A.Fake<IOSPSuiteLogger>();
+         _containerTask = A.Fake<IContainerTask>();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
-            _advancedParameterMapper, _eventMappingMapper, _observerSetMappingMapper,  _curveChartMapper,
+            _advancedParameterMapper, _eventMappingMapper, _observerSetMappingMapper, _curveChartMapper,
             _populationAnalysisChartMapper, _processMappingMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationRunner, _simulationParameterOriginIdUpdater,
-            _logger,_containerTask,_entityPathResolver
-            );
+            _logger, _containerTask, _entityPathResolver
+         );
 
          _project = new PKSimProject();
-         _individual = new Individual {Name = "IND", Id = "IND"};
-         _compound = new Compound {Name = "COMP", Id="COMP"};
+         _individual = new Individual {Name = "IND", Id = "IndTemplateId"};
+         _compound = new Compound {Name = "COMP", Id = "COMP"};
          _observerSet = new ObserverSet {Name = "OBS_SET", Id = "OBS_SET"};
-         _protocol = new SimpleProtocol {Name = "PROT", Id="PROT"};
+         _protocol = new SimpleProtocol {Name = "PROT", Id = "PROT"};
          _inductionProcess = new InductionProcess().WithName("Interaction process");
          _compound.AddProcess(_inductionProcess);
 
 
          _event = new PKSimEvent {Name = "Event"};
-         _population = new RandomPopulation() {Name = "POP"};
+         _population = new RandomPopulation() {Name = "POP", Id="PopTemplateId"};
          _observedData = new DataRepository("OBS_ID").WithName("OBS");
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
@@ -150,7 +149,7 @@ namespace PKSim.Core
             }
          };
          _interactionSelection = new InteractionSelection {ProcessName = _inductionProcess.Name};
-         _noInteractionSelection = new InteractionSelection { MoleculeName = "CYP2D6"};
+         _noInteractionSelection = new InteractionSelection {MoleculeName = "CYP2D6"};
 
          _simulationProperties.InteractionProperties.AddInteraction(_interactionSelection);
          _simulationProperties.InteractionProperties.AddInteraction(_noInteractionSelection);
@@ -188,7 +187,7 @@ namespace PKSim.Core
          _populationSimulation.AddAnalysis(_populationSimulationAnalysisChart);
          _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
-            BuildingBlock = _individual
+            BuildingBlock = _individual,
          });
 
          _snapshotPopulationAnalysisChart = new Snapshots.PopulationAnalysisChart();
@@ -230,7 +229,6 @@ namespace PKSim.Core
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
             BuildingBlock = _individual,
-
             Altered = true
          });
 
@@ -299,18 +297,17 @@ namespace PKSim.Core
       private IParameter _individualParameterChangedTemplate;
 
       private IParameter _simulationParameter;
-      
+
       private IParameter _protocolParameter;
-      
+
       private LocalizedParameter[] _localizedParameters;
-      private Individual _individualTemplateBuildingBlock;
       private Protocol _protocolTemplateBuildingBlock;
 
       protected override async Task Context()
       {
          await base.Context();
          _individualParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("IndParam");
-         _individualParameterTemplate  = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("IndParam");
+         _individualParameterTemplate = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("IndParam");
          _individualParameter.BuildingBlockType = PKSimBuildingBlockType.Individual;
          _individualParameter.Origin.BuilingBlockId = _individual.Id;
          _individualParameter.Origin.ParameterId = "IndParamTemplateId";
@@ -339,22 +336,21 @@ namespace PKSim.Core
          A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Matches(x => x.ContainsAll(new[] {_individualParameterChanged, _simulationParameter, _protocolParameter}))))
             .Returns(_localizedParameters);
 
-         _individualTemplateBuildingBlock = new Individual {Id = "IndTemplateId"};
-         _project.AddBuildingBlock(_individualTemplateBuildingBlock);
          A.CallTo(() => _executionContext.Get<IParameter>(_individualParameterChanged.Origin.ParameterId)).Returns(_individualParameterChangedTemplate);
          A.CallTo(() => _executionContext.Get<IParameter>(_individualParameter.Origin.ParameterId)).Returns(_individualParameterTemplate);
 
          _protocolTemplateBuildingBlock = new SimpleProtocol {Id = "ProtTemplateId"};
          _project.AddBuildingBlock(_protocolTemplateBuildingBlock);
 
-         var allIndividualTemplateParameters = new  PathCacheForSpecs<IParameter>();
-         A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(_individualTemplateBuildingBlock)).Returns(allIndividualTemplateParameters);
+         var allIndividualTemplateParameters = new PathCacheForSpecs<IParameter>();
+         A.CallTo(() => _containerTask.CacheAllChildren<IParameter>(_individual)).Returns(allIndividualTemplateParameters);
          allIndividualTemplateParameters.Add(_individualParameterTemplate.Name, _individualParameterTemplate);
          allIndividualTemplateParameters.Add(_individualParameterChangedTemplate.Name, _individualParameterChangedTemplate);
 
          A.CallTo(() => _entityPathResolver.PathFor(_individualParameterTemplate)).Returns(_individualParameterTemplate.Name);
          A.CallTo(() => _entityPathResolver.PathFor(_individualParameterChangedTemplate)).Returns(_individualParameterChangedTemplate.Name);
       }
+
       protected override async Task Because()
       {
          _snapshot = await sut.MapToSnapshot(_individualSimulation, _project);
@@ -370,7 +366,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_name_of_the_individual_used_to_create_the_simulation()
       {
-         _snapshot.Individual.ShouldBeEqualTo("IND");
+         _snapshot.Individual.ShouldBeEqualTo(_individual.Name);
          _snapshot.Population.ShouldBeNull();
       }
 
@@ -435,7 +431,6 @@ namespace PKSim.Core
          _snapshot.AlteredBuildingBlocks[0].Type.ShouldBeEqualTo(PKSimBuildingBlockType.Individual);
          _snapshot.AlteredBuildingBlocks[0].Name.ShouldBeEqualTo(_snapshot.Individual);
       }
-
    }
 
    public class When_mapping_a_population_simulation_to_snapshot : concern_for_SimulationMapper
@@ -542,7 +537,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, _project);
+         _simulation = await sut.MapToModel(_snapshot, new SimulationContext{Project = _project, Run = true});
       }
 
       [Observation]
@@ -614,7 +609,6 @@ namespace PKSim.Core
          _simulation.EventProperties.EventMappings.ShouldContain(_eventMapping);
       }
 
-
       [Observation]
       public void should_have_updated_the_observer_set_mapping()
       {
@@ -650,7 +644,7 @@ namespace PKSim.Core
             SimulationSettings = _settings,
             Model = _model
          };
-         
+
          populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndTemplateId", PKSimBuildingBlockType.Individual)
          {
             BuildingBlock = _individual
@@ -665,7 +659,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, _project);
+         _simulation = await sut.MapToModel(_snapshot, new SimulationContext {Project = _project, Run = false});
       }
 
       [Observation]

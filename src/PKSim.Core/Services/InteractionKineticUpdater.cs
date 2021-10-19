@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -24,12 +24,12 @@ namespace PKSim.Core.Services
       void UpdateReaction(IReactionBuilder reaction, string enzymeName, string compoundName, Simulation simulation, IFormulaCache formulaCache);
 
       /// <summary>
-      ///    Updates the given transport process <paramref name="transporterMoleculeContainer" /> triggerd by the
-      ///    <paramref name="compoundName" />  and the <paramref name="transportedMolecule" /> (e.g. Drug) with the required
+      ///    Updates the given transport process <paramref name="transporterMoleculeContainer" /> triggered by the
+      ///    <paramref name="transporterName" />  and the <paramref name="transportedMolecule" /> (e.g. Drug) with the required
       ///    interaction terms
       ///    based on the interaction defined in the <paramref name="simulation" />
       /// </summary>
-      void UpdateTransport(TransporterMoleculeContainer transporterMoleculeContainer, string compoundName, string transportedMolecule, Simulation simulation, IFormulaCache formulaCache);
+      void UpdateTransport(TransporterMoleculeContainer transporterMoleculeContainer, string transporterName, string transportedMolecule, Simulation simulation, IFormulaCache formulaCache);
    }
 
    public class InteractionKineticUpdater : IInteractionKineticUpdater
@@ -48,15 +48,15 @@ namespace PKSim.Core.Services
          updateProcess(reaction, enzymeName, compoundName, simulation, formulaCache);
       }
 
-      public void UpdateTransport(TransporterMoleculeContainer transporterMoleculeContainer, string compoundName, string transportedMolecule, Simulation simulation, IFormulaCache formulaCache)
+      public void UpdateTransport(TransporterMoleculeContainer transporterMoleculeContainer, string transporterName, string transportedMolecule, Simulation simulation, IFormulaCache formulaCache)
       {
-         updateProcess(transporterMoleculeContainer, compoundName, transportedMolecule, simulation, formulaCache);
+         updateProcess(transporterMoleculeContainer, transporterName, transportedMolecule, simulation, formulaCache);
       }
 
       private void updateProcess(IContainer processParameterContainer, string moleculeName, string compoundName, Simulation simulation, IFormulaCache formulaCache)
       {
          var allUpdatingKinetics = _allKineticUpdaterSpecifications.Where(x => x.UpdateRequiredFor(moleculeName, compoundName, simulation)).ToList();
-         updateModifiers(processParameterContainer, moleculeName, compoundName, simulation, allUpdatingKinetics);
+         updateModifiers(processParameterContainer, allUpdatingKinetics, moleculeName, compoundName, simulation);
          updateKmFactor(processParameterContainer, allUpdatingKinetics, moleculeName, compoundName, simulation, formulaCache);
          updateKcatFactor(processParameterContainer, allUpdatingKinetics, moleculeName, compoundName, simulation, formulaCache);
          updateCLSpecFactor(processParameterContainer, allUpdatingKinetics, moleculeName, compoundName, simulation, formulaCache);
@@ -64,7 +64,7 @@ namespace PKSim.Core.Services
          updateKKinactHalfFactor(processParameterContainer, allUpdatingKinetics, moleculeName, compoundName, simulation, formulaCache);
       }
 
-      private void updateModifiers(IContainer processParameterContainer, string moleculeName, string compoundName, Simulation simulation, IEnumerable<IInteractionKineticUpdaterSpecification> allUpdatingKinetics)
+      private void updateModifiers(IContainer processParameterContainer, IEnumerable<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string compoundName, Simulation simulation)
       {
          var reaction = processParameterContainer as IReactionBuilder;
          if (reaction == null)
@@ -83,10 +83,10 @@ namespace PKSim.Core.Services
          updateKmLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameters.K_KINACT_HALF_INTERACTION_FACTOR);
       }
 
-      private void updateKmLikeFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, 
+      private void updateKmLikeFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName,
          string activatedMolecule, Simulation simulation, IFormulaCache formulaCache, string kmLikeParameterName)
       {
-         updateInteractionFactor(processParameterContainer, moleculeName, allUpdatingKinetics, formulaCache,
+         updateInteractionFactor(processParameterContainer, activatedMolecule, allUpdatingKinetics, formulaCache,
             kmLikeParameterName, kmLikeFactor =>
             {
                var formulaStringNumerator = new List<string>();
@@ -113,10 +113,10 @@ namespace PKSim.Core.Services
          updateKcatLikeFactor(processParameterContainer, allUpdatingKinetics, moleculeName, activatedMolecule, simulation, formulaCache, CoreConstants.Parameters.KINACT_INTERACTION_FACTOR);
       }
 
-      private void updateKcatLikeFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, 
+      private void updateKcatLikeFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName,
          string activatedMolecule, Simulation simulation, IFormulaCache formulaCache, string kcatLikeParameterName)
       {
-         updateInteractionFactor(processParameterContainer, moleculeName, allUpdatingKinetics, formulaCache,
+         updateInteractionFactor(processParameterContainer, activatedMolecule, allUpdatingKinetics, formulaCache,
             kcatLikeParameterName, kcatLikeFactor =>
             {
                var formulaStringDenominator = new List<string>();
@@ -133,7 +133,7 @@ namespace PKSim.Core.Services
 
       private void updateCLSpecFactor(IContainer processParameterContainer, IReadOnlyList<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string activatedMolecule, Simulation simulation, IFormulaCache formulaCache)
       {
-         updateInteractionFactor(processParameterContainer, moleculeName, allUpdatingKinetics, formulaCache,
+         updateInteractionFactor(processParameterContainer, activatedMolecule, allUpdatingKinetics, formulaCache,
             CoreConstants.Parameters.CL_SPEC_PER_ENZYME_INTERACTION_FACTOR, CL_spec_factor =>
             {
                var formulaStringDenominator = new List<string>();
@@ -147,14 +147,17 @@ namespace PKSim.Core.Services
             });
       }
 
-      private void updateInteractionFactor(IContainer processParameterContainer, string moleculeName, IEnumerable<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, IFormulaCache formulaCache, string parameterName, Func<IParameter, string> createFormulaAction)
+      private void updateInteractionFactor(IContainer processParameterContainer, string compoundName,
+         IEnumerable<IInteractionKineticUpdaterSpecification> allUpdatingKinetics,
+         IFormulaCache formulaCache,
+         string parameterName, Func<IParameter, string> createFormulaAction)
       {
          var interactionFactor = processParameterContainer.Parameter(parameterName);
-         if (!allUpdatingKinetics.Any() || interactionFactor == null) return;
+         if (!allUpdatingKinetics.Any() || interactionFactor == null)
+            return;
 
-         var formulaName = CoreConstants.CompositeNameFor(processParameterContainer.Name, moleculeName, parameterName);
-         var formula = formulaCache.FindByName(formulaName) as ExplicitFormula;
-         if (formula != null)
+         var formulaName = CoreConstants.CompositeNameFor(processParameterContainer.Name, compoundName, parameterName);
+         if (formulaCache.FindByName(formulaName) is ExplicitFormula formula)
          {
             interactionFactor.Formula = formula;
             return;
@@ -186,34 +189,16 @@ namespace PKSim.Core.Services
          return standardFormula(formulaStringNumerator, formulaStringDenominator);
       }
 
-      private void removeEmptyTerms(List<string> formulaParts)
-      {
-         formulaParts.RemoveAll(string.IsNullOrEmpty);
-      }
+      private void removeEmptyTerms(List<string> formulaParts) => formulaParts.RemoveAll(string.IsNullOrEmpty);
 
-      private string standardFormula(IEnumerable<string> formulaStringNumeratorParts, IEnumerable<string> formulaStringDenominatorParts)
-      {
-         return string.Format("{0}/{1}", addOnePlusInParenthesis(formulaStringNumeratorParts), addOnePlusInParenthesis(formulaStringDenominatorParts));
-      }
+      private string standardFormula(IEnumerable<string> formulaStringNumeratorParts, IEnumerable<string> formulaStringDenominatorParts) => $"{addOnePlusInParenthesis(formulaStringNumeratorParts)}/{addOnePlusInParenthesis(formulaStringDenominatorParts)}";
 
-      private string denominatorOnly(IEnumerable<string> formulaStringDenominatorParts)
-      {
-         return string.Format("1/{0}", addOnePlusInParenthesis(formulaStringDenominatorParts));
-      }
+      private string denominatorOnly(IEnumerable<string> formulaStringDenominatorParts) => $"1/{addOnePlusInParenthesis(formulaStringDenominatorParts)}";
 
-      private string numeratorOnly(IEnumerable<string> formulaStringNumeratorParts)
-      {
-         return addOnePlus(formulaStringNumeratorParts);
-      }
+      private string numeratorOnly(IEnumerable<string> formulaStringNumeratorParts) => addOnePlus(formulaStringNumeratorParts);
 
-      private string addOnePlusInParenthesis(IEnumerable<string> formulaParts)
-      {
-         return string.Format("({0})", addOnePlus(formulaParts));
-      }
+      private string addOnePlusInParenthesis(IEnumerable<string> formulaParts) => $"({addOnePlus(formulaParts)})";
 
-      private string addOnePlus(IEnumerable<string> formulaParts)
-      {
-         return string.Format("1 + {0}", formulaParts.ToString(" + "));
-      }
+      private string addOnePlus(IEnumerable<string> formulaParts) => $"1 + {formulaParts.ToString(" + ")}";
    }
 }

@@ -37,7 +37,7 @@ namespace PKSim.ProjectConverter.v7_4
       public void should_have_set_the_parameter_tablet_time_delay_factor_to_variable_and_not_readonly_in_the_oral_simulations()
       {
          var oralSimulation = _allSimulations.FindByName("S1");
-         var allParameters = oralSimulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameter.TabletTimeDelayFactor)).ToList();
+         var allParameters = oralSimulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.TabletTimeDelayFactor)).ToList();
          allParameters.Count.ShouldBeGreaterThan(0);
          allParameters.Each(p =>
          {

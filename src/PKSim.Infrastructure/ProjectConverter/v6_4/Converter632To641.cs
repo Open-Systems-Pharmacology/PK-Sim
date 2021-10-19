@@ -47,9 +47,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_4
          if (individual == null) return;
 
          // create hidden Renal Aging factor-parameter and set it to 1
-         var kidney = individual.Organism.Organ(CoreConstants.Organ.Kidney);
+         var kidney = individual.Organism.Organ(CoreConstants.Organ.KIDNEY);
 
-         var renalAgingParameter = _parameterFactory.CreateFor(ConverterConstants.Parameter.RenalAgingScaleFactor, 1.0, PKSimBuildingBlockType.Individual);
+         var renalAgingParameter = _parameterFactory.CreateFor(ConverterConstants.Parameters.RenalAgingScaleFactor, 1.0, PKSimBuildingBlockType.Individual);
          renalAgingParameter.CanBeVaried = false;
          renalAgingParameter.CanBeVariedInPopulation = false;
          renalAgingParameter.Editable = false;

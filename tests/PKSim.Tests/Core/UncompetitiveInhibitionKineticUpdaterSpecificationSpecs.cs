@@ -29,13 +29,13 @@ namespace PKSim.Core
       {
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          _dimensionRepository = A.Fake<IDimensionRepository>();
-         _interactionTask =new InteractionTask();
+         _interactionTask = new InteractionTask();
          sut = new UncompetitiveInhibitionKineticUpdaterSpecification(_objectPathFactory, _dimensionRepository, _interactionTask);
 
          _simulation = A.Fake<Simulation>();
-         _competitiveInhibition = new InhibitionProcess {InteractionType = InteractionType.CompetitiveInhibition}.WithName("CompetitiveInhibition");
-         _uncompetitiveInhibition1 = new InhibitionProcess {InteractionType = InteractionType.UncompetitiveInhibition}.WithName("UncompetitiveInhibition1");
-         _uncompetitiveInhibition2 = new InhibitionProcess {InteractionType = InteractionType.UncompetitiveInhibition}.WithName("UncompetitiveInhibition2");
+         _competitiveInhibition = new InhibitionProcess { InteractionType = InteractionType.CompetitiveInhibition }.WithName("CompetitiveInhibition");
+         _uncompetitiveInhibition1 = new InhibitionProcess { InteractionType = InteractionType.UncompetitiveInhibition }.WithName("UncompetitiveInhibition1");
+         _uncompetitiveInhibition2 = new InhibitionProcess { InteractionType = InteractionType.UncompetitiveInhibition }.WithName("UncompetitiveInhibition2");
 
          _interactionProperties = new InteractionProperties();
          A.CallTo(() => _simulation.InteractionProperties).Returns(_interactionProperties);
@@ -48,11 +48,11 @@ namespace PKSim.Core
          _compound2.AddProcess(_uncompetitiveInhibition2);
 
 
-         A.CallTo(() => _simulation.Compounds).Returns(new[] {_compound1, _compound2});
+         A.CallTo(() => _simulation.Compounds).Returns(new[] { _compound1, _compound2 });
 
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _competitiveInhibition.Name, CompoundName = _compound1.Name});
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition1.Name, CompoundName = _compound2.Name});
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition2.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _competitiveInhibition.Name, CompoundName = _compound1.Name });
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition1.Name, CompoundName = _compound2.Name });
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition2.Name, CompoundName = _compound2.Name });
       }
    }
 
@@ -103,12 +103,12 @@ namespace PKSim.Core
          _compound2 = new Compound().WithName("Compound2");
          _compound2.AddProcess(_uncompetitiveInhibition2);
 
-         A.CallTo(() => _simulation.Compounds).Returns(new[] {_compound1, _compound2});
+         A.CallTo(() => _simulation.Compounds).Returns(new[] { _compound1, _compound2 });
 
          _interactionProperties.ClearInteractions();
 
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition1.Name, CompoundName = _compound1.Name});
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition2.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition1.Name, CompoundName = _compound1.Name });
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition2.Name, CompoundName = _compound2.Name });
       }
 
       [Observation]
@@ -138,13 +138,13 @@ namespace PKSim.Core
          _compound2 = new Compound().WithName("Compound2");
          _compound2.AddProcess(_uncompetitiveInhibition2);
 
-         A.CallTo(() => _simulation.Compounds).Returns(new[] {_compound1, _compound2});
+         A.CallTo(() => _simulation.Compounds).Returns(new[] { _compound1, _compound2 });
 
          _kmFactor = new Parameter().WithFormula(new ExplicitFormula());
          _reaction = new ReactionBuilder();
          _interactionProperties.ClearInteractions();
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition1.Name, CompoundName = _compound1.Name});
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition2.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition1.Name, CompoundName = _compound1.Name });
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition2.Name, CompoundName = _compound2.Name });
       }
 
       protected override void Because()

@@ -7,7 +7,9 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Importer;
+using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Commands;
@@ -29,6 +31,7 @@ namespace PKSim.Core.Services
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IDataImporter _dataImporter;
+      private readonly IDialogCreator _dialogCreator;
 
       public CompoundAlternativeTask(
          IParameterAlternativeFactory parameterAlternativeFactory,
@@ -38,7 +41,8 @@ namespace PKSim.Core.Services
          IParameterTask parameterTask,
          IBuildingBlockRepository buildingBlockRepository,
          IDimensionRepository dimensionRepository,
-         IDataImporter dataImporter)
+         IDataImporter dataImporter,
+         IDialogCreator dialogCreator)
       {
          _parameterAlternativeFactory = parameterAlternativeFactory;
          _executionContext = executionContext;
@@ -48,6 +52,7 @@ namespace PKSim.Core.Services
          _buildingBlockRepository = buildingBlockRepository;
          _dimensionRepository = dimensionRepository;
          _dataImporter = dataImporter;
+         _dialogCreator = dialogCreator;
       }
 
       public ParameterAlternative CreateSolubilityTableAlternativeFor(ParameterAlternativeGroup solubilityAlternativeGroup, string name)
@@ -180,8 +185,14 @@ namespace PKSim.Core.Services
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportSolubilityTable}",
             IconName = ApplicationIcons.Compound.IconName
          };
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedFormula = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);
+         var importedFormula = _dataImporter.ImportDataSets(
+            new List<MetaDataCategory>(), 
+            getColumnInfos(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         ).DataRepositories.FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 
@@ -211,11 +222,10 @@ namespace PKSim.Core.Services
             DefaultDimension = _dimensionRepository.NoDimension,
             Name = PKSimConstants.UI.pH,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
 
-         phColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.NoDimension, IsMainDimension = true});
+         phColumn.SupportedDimensions.Add(_dimensionRepository.NoDimension);
          columns.Add(phColumn);
 
          var solubilityColumn = new ColumnInfo
@@ -223,11 +233,10 @@ namespace PKSim.Core.Services
             DefaultDimension = _dimensionRepository.MassConcentration,
             Name = PKSimConstants.UI.Solubility,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = phColumn.Name,
          };
 
-         solubilityColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.MassConcentration, IsMainDimension = true});
+         solubilityColumn.SupportedDimensions.Add(_dimensionRepository.MassConcentration);
          columns.Add(solubilityColumn);
 
          return columns;

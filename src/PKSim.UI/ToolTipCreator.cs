@@ -20,6 +20,8 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Assets;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Mappers;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.UI
 {
@@ -27,7 +29,7 @@ namespace PKSim.UI
    {
       SuperToolTip ToolTipFor(IParameterDTO parameterDTO);
       SuperToolTip ToolTipFor(SystemicProcessDTO systemicProcessDTO);
-      SuperToolTip ToolTipFor(TransporterExpressionContainerDTO transporterExpressionContainerDTO);
+      SuperToolTip ToolTipFor(TransporterExpressionParameterDTO transporterExpressionContainerDTO);
       SuperToolTip ToolTipFor(CategoryCategoryItemDTO categoryCalculationMethodDTO);
       SuperToolTip ToolTipForPKAnalysis(string parameterDisplayName, string displayValue, string warning);
       SuperToolTip CreateToolTip(string content, string title);
@@ -43,6 +45,7 @@ namespace PKSim.UI
       SuperToolTip ToolTipFor<TX, TY>(CurveData<TX, TY> curveData, double xDisplayValue, double yDisplayValue)
          where TX : IXValue
          where TY : IYValue;
+
    }
 
    public class ToolTipCreator : OSPSuite.UI.Services.ToolTipCreator, IToolTipCreator
@@ -71,9 +74,22 @@ namespace PKSim.UI
          return CreateToolTip(systemicProcessDTO.Description);
       }
 
-      public SuperToolTip ToolTipFor(TransporterExpressionContainerDTO containerDTO)
+      public SuperToolTip ToolTipFor(TransporterExpressionParameterDTO containerDTO)
       {
-         return CreateToolTip($"{containerDTO.ContainerPathDTO.DisplayName} ({containerDTO.MembraneLocation})", containerDTO.ContainerName);
+         var transportDirection = containerDTO.TransportDirection.Id;
+         if (transportDirection == TransportDirectionId.None)
+            return null;
+
+         var path = new List<string>();
+         if(!string.IsNullOrEmpty(containerDTO.ContainerName))
+            path.Add(containerDTO.ContainerName);
+
+         if (!string.IsNullOrEmpty(containerDTO.CompartmentName))
+            path.Add(containerDTO.CompartmentName);
+
+         var containerDisplay = path.ToString(" - ");
+         var info = _representationInfoRepository.InfoFor(RepresentationObjectType.TRANSPORT_DIRECTION, transportDirection.ToString());
+         return CreateToolTip(info.Description, containerDisplay, ApplicationIcons.IconByName(info.IconName));
       }
 
       public SuperToolTip WarningToolTip(string warning)

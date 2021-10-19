@@ -46,7 +46,7 @@ namespace PKSim.Core.Model
          {
             foreach (var organ in OrgansByType(OrganType.TissueOrgansNotInGiTract))
             {
-               if (organ.IsNamed(CoreConstants.Organ.Liver))
+               if (organ.IsNamed(CoreConstants.Organ.LIVER))
                {
                   foreach (var liverZone in CoreConstants.Compartment.LiverZones)
                   {

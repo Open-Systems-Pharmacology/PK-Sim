@@ -20,6 +20,7 @@ namespace PKSim.Core
       protected IParameterSetUpdater _parameterSetUpdater;
       protected IObjectBaseFactory _objectBaseFactory;
       private IParameterContainerTask _parameterContainerTask;
+      private ITransportTemplateRepository _transportTemplateRepository;
 
       protected override void Context()
       {
@@ -28,11 +29,12 @@ namespace PKSim.Core
          _parameterSetUpdater = A.Fake<IParameterSetUpdater>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _parameterContainerTask = A.Fake<IParameterContainerTask>();
-         sut = new ProcessToProcessBuilderMapper(_cloneManager, _simulationActiveProcessRepository, _parameterSetUpdater, _objectBaseFactory, _parameterContainerTask);
+         _transportTemplateRepository= A.Fake<ITransportTemplateRepository>();
+         sut = new ProcessToProcessBuilderMapper(_cloneManager,_transportTemplateRepository, _simulationActiveProcessRepository, _parameterSetUpdater, _objectBaseFactory, _parameterContainerTask);
       }
    }
 
-   public class when_mapping_tempalte_reaction_builder_to_a_reaction_builder : concern_for_ProcessToProcessBuilderMapper
+   public class when_mapping_template_reaction_builder_to_a_reaction_builder : concern_for_ProcessToProcessBuilderMapper
    {
       protected IReactionBuilder _reaction;
       protected string _compoundName = "Aspirin";
@@ -180,7 +182,7 @@ namespace PKSim.Core
          _enzymeName = "P1";
          _formulaCache = new FormulaCache();
          _kinetic = new ExplicitFormula().WithId("trala");
-         _kinetic.AddObjectPath(new FormulaUsablePath(new[] {"Organism", CoreConstants.KeyWords.Molecule}));
+         _kinetic.AddObjectPath(new FormulaUsablePath("Organism", CoreConstants.KeyWords.Molecule));
          _kinetic.AddObjectPath(new FormulaUsablePath(new[] {"Organism", CoreConstants.KeyWords.Protein}));
          _parameterFormula = new ExplicitFormula();
          _parameterFormula.AddObjectPath(new FormulaUsablePath(new[] {"Liver", CoreConstants.KeyWords.Molecule}));

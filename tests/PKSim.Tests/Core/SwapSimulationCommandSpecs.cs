@@ -135,7 +135,7 @@ namespace PKSim.Core
 
    public class The_inverse_of_the_swap_simulation_command : concern_for_SwapSimulationCommand
    {
-      private IReversibleCommand<IExecutionContext> _result;
+      private ICommand<IExecutionContext> _result;
 
       protected override void Because()
       {
@@ -149,7 +149,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_beeen_marked_as_inverse_for_the_swap_simulation_command()
+      public void should_have_been_marked_as_inverse_for_the_swap_simulation_command()
       {
          _result.IsInverseFor(sut).ShouldBeTrue();
       }

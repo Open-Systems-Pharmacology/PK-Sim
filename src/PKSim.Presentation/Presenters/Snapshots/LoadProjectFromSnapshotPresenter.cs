@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
          ISnapshotTask snapshotTask, 
          IDialogCreator dialogCreator, 
          IObjectTypeResolver objectTypeResolver, 
-         ILogger logger, 
+         IOSPSuiteLogger logger, 
          IEventPublisher eventPublisher,
          IQualiticationPlanRunner qualificationPlanRunner,
          IRegistrationTask registrationTask) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)

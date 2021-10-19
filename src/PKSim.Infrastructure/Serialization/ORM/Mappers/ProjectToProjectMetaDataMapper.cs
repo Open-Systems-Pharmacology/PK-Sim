@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using OSPSuite.Core.Import;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 {

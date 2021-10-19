@@ -27,10 +27,10 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _fourCompSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.FourComp);
+         _fourCompSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.FOUR_COMP);
          _fourComp = _fourCompSim.Model.Root.Container(Constants.ORGANISM);
 
-         _twoPoresSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.TwoPores);
+         _twoPoresSim = DomainFactoryForSpecs.CreateDefaultSimulationForModel(CoreConstants.Model.TWO_PORES);
          _twoPores = _twoPoresSim.Model.Root.Container(Constants.ORGANISM);
 
          _organisms = new List<IContainer> {_fourComp, _twoPores};
@@ -51,20 +51,20 @@ namespace PKSim.IntegrationTests
       {
          foreach (var organism in _organisms)
          {
-            organism.Container(CoreConstants.Organ.PeripheralVenousBlood).ShouldNotBeNull();
+            organism.Container(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD).ShouldNotBeNull();
          }
       }
 
       [Observation]
       public void skin_muscle_fat_and_bone_should_contain_the_parameter_peripheral_blood_flow_fraction()
       {
-         var organNames = new[] {CoreConstants.Organ.Skin, CoreConstants.Organ.Muscle, CoreConstants.Organ.Fat, CoreConstants.Organ.Bone, CoreConstants.Organ.ArterialBlood};
+         var organNames = new[] {CoreConstants.Organ.SKIN, CoreConstants.Organ.MUSCLE, CoreConstants.Organ.FAT, CoreConstants.Organ.BONE, CoreConstants.Organ.ARTERIAL_BLOOD};
          var errorList = new List<string>();
          foreach (var organism in _organisms)
          {
             foreach (var organ in organism.GetChildren<IContainer>(x => x.NameIsOneOf(organNames)))
             {
-               var parameter = organ.Parameter(ConverterConstants.Parameter.PeripheralBloodFlowFraction);
+               var parameter = organ.Parameter(ConverterConstants.Parameters.PeripheralBloodFlowFraction);
                if (parameter != null)
                   return;
 
@@ -82,7 +82,7 @@ namespace PKSim.IntegrationTests
          var iv = applicationRepository.ApplicationFrom(ApplicationTypes.Intravenous.Name, CoreConstants.Formulation.EMPTY_FORMULATION);
          var transport = iv.Transports.First();
          var targetTags = transport.TargetCriteria.Cast<MatchTagCondition>().Select(x => x.Tag);
-         targetTags.ShouldOnlyContain(CoreConstants.Organ.VenousBlood, CoreConstants.Compartment.Plasma);
+         targetTags.ShouldOnlyContain(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA);
       }
    }
 }

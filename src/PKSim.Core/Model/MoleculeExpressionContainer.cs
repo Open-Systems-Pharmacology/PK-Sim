@@ -1,35 +1,9 @@
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Model
 {
    public class MoleculeExpressionContainer : Container
    {
-      /// <summary>
-      ///    Path to organ  where the reaction induced by the protein should take place
-      /// </summary>
-      public IObjectPath OrganPath { get; set; }
-
-      /// <summary>
-      ///    Name of the parent container of the compartment (for organ, name of organ, for segemnt either lumen or segment name)
-      /// </summary>
-      public string GroupName { get; set; }
-
-      /// <summary>
-      ///    Name of the physical container where the expression will be defined(Organ or segment).
-      /// </summary>
-      public string ContainerName { get; set; }
-
-      public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
-      {
-         base.UpdatePropertiesFrom(sourceObject, cloneManager);
-         if (!(sourceObject is MoleculeExpressionContainer moleculeExpressionContainer)) return;
-
-         OrganPath = moleculeExpressionContainer.OrganPath.Clone<IObjectPath>();
-         GroupName = moleculeExpressionContainer.GroupName;
-         ContainerName = moleculeExpressionContainer.ContainerName;
-      }
-
       /// <summary>
       ///    relative expression value for the container
       /// </summary>
@@ -40,35 +14,40 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    relative expression value normalized to all other expressions value for the container
-      /// </summary>
-      public double RelativeExpressionNorm
-      {
-         get => RelativeExpressionNormParameter.Value;
-         set => RelativeExpressionNormParameter.Value = value;
-      }
-
-      /// <summary>
       ///    Parameter representing the relative expression value for this container
       /// </summary>
       public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameters.REL_EXP);
 
-      /// <summary>
-      ///    Parameter representing the relative expression normalized value for this container
-      /// </summary>
-      public IParameter RelativeExpressionNormParameter => this.Parameter(CoreConstants.Parameters.REL_EXP_NORM);
 
       /// <summary>
-      ///    Return the path of the compartment where the protein will be defined
+      ///    Returns the logical container where the expression container is defined.
+      ///    The parent is typically a compartment so we go one level up (parent.parent) 
       /// </summary>
-      public IObjectPath CompartmentPath(string compartmentName)
+      public IContainer LogicalContainer => ParentContainer?.ParentContainer;
+
+      /// <summary>
+      ///    Returns the name of the logical container where the expression container is defined.
+      ///    The parent is typically a compartment so we go one level up (parent.parent) and get its name.
+      /// </summary>
+      public string LogicalContainerName
       {
-         return OrganPath.Clone<IObjectPath>().AndAdd(compartmentName);
+         get
+         {
+            var name = LogicalContainer?.Name;
+            //We do not want to return any name for surrogate container such as BloodCells or VascularEndothelium
+            if (string.Equals(name, Constants.ROOT))
+               return string.Empty;
+
+            return name ?? string.Empty;
+         }
       }
 
       /// <summary>
-      ///    returns true if the container represents a lumen segment otherwise false
+      ///    Returns the name of the physical container where the expression container is defined.
+      ///    The parent is typically a compartment 
       /// </summary>
-      public bool IsLumen => string.Equals(GroupName, CoreConstants.Groups.GI_LUMEN);
+      public string CompartmentName => ParentContainer?.Name ?? string.Empty;
+
+      public override string ToString() => $"{LogicalContainerName} - {CompartmentName} - {Name}";
    }
 }

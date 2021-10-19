@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Serialization.Extensions;
 using OSPSuite.Serializer;
 using OSPSuite.Serializer.Attributes;
 using OSPSuite.Serializer.Xml;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -38,12 +39,12 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new IconSizeAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new DosingIntervalXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new LabelGenerationStrategyXmlAttributeMapper());
+         AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<TransportDirectionId, SerializationContext>());
+         AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<Localization, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<OrganType, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<BuildingBlockStatus, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<ProtocolMode, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<MembraneLocation, SerializationContext>());
-         AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<TissueLocation, SerializationContext>());
-         AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<IntracellularVascularEndoLocation, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<PivotArea, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<StatisticalAggregationType, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<NotificationType, SerializationContext>());

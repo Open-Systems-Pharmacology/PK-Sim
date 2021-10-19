@@ -35,10 +35,10 @@ namespace PKSim.UI.Views.Simulations
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.lblReferenceDescription = new DevExpress.XtraEditors.LabelControl();
-         this.cbSymbol = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbSymbol = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.colorSelection = new UxColorPickEditWithHistory();
          this.tbLabel = new DevExpress.XtraEditors.TextEdit();
-         this.cbReferenceSimulation = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbReferenceSimulation = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new PKSim.UI.Views.Core.UxGridView();
@@ -325,10 +325,10 @@ namespace PKSim.UI.Views.Simulations
       private DevExpress.XtraLayout.LayoutControlItem layoutItemGridView;
       private DevExpress.XtraEditors.LabelControl lblDescription;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
-      private DevExpress.XtraEditors.ComboBoxEdit cbSymbol;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbSymbol;
       private UxColorPickEditWithHistory colorSelection;
       private DevExpress.XtraEditors.TextEdit tbLabel;
-      private DevExpress.XtraEditors.ComboBoxEdit cbReferenceSimulation;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbReferenceSimulation;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemReferenceSimulation;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemLabel;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemColorSelection;

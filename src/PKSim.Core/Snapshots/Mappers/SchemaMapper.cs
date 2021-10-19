@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -23,6 +24,13 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshot = await SnapshotFrom(modelSchema);
          snapshot.SchemaItems = await _schemaItemMapper.MapToSnapshots(modelSchema.SchemaItems);
          return snapshot;
+      }
+
+      protected override bool ShouldExportParameterToSnapshot(IParameter parameter)
+      {
+         //we want to ensure that start time and end time are always exported
+         return parameter.NameIsOneOf(Constants.Parameters.START_TIME, CoreConstants.Parameters.NUMBER_OF_REPETITIONS,
+            CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS) || base.ShouldExportParameterToSnapshot(parameter);
       }
 
       public override async Task<ModelSchema> MapToModel(SnapshotSchema snapshot)

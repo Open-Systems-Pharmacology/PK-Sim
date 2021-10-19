@@ -132,7 +132,7 @@ namespace PKSim.Infrastructure.Services
          _objectIdResetter.ResetIdFor(modelCoreSimulation);
       }
 
-      public Task SaveSimulationToFileAsync(Simulation simulation, string fileName)
+      public Task ExportSimulationToPkmlFileAsync(Simulation simulation, string fileName)
       {
          return Task.Run(() => ExportSimulationToPkmlFile(simulation, fileName));
       }

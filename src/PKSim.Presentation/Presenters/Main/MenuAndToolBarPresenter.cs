@@ -193,12 +193,12 @@ namespace PKSim.Presentation.Presenters.Main
 
       private void updateLoadedProjectItem(ProjectEvent projectEvent)
       {
-         updateProjectItems(isEnabled: true, observedDataEnabled: compoundsAvailableIn(projectEvent.Project));
+         updateProjectItems(isEnabled: true);
       }
 
       public void Handle(ProjectClosedEvent eventToHandle)
       {
-         updateProjectItems(isEnabled: false, observedDataEnabled: false);
+         updateProjectItems(isEnabled: false);
          _menuBarItemRepository[MenuBarItemIds.JournalEditorView].Enabled = false;
          _simulationState.Reset();
       }
@@ -206,12 +206,12 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(NoActiveScreenEvent eventToHandle)
       {
          disableSimulationItems();
-         hideAllDyamicCategories();
+         hideAllDynamicCategories();
       }
 
       public void Handle(ScreenActivatedEvent eventToHandle)
       {
-         hideAllDyamicCategories();
+         hideAllDynamicCategories();
          var subject = eventToHandle.Presenter.Subject;
          eventToHandle.Presenter.Activated();
          if (subject == null) return;
@@ -224,17 +224,17 @@ namespace PKSim.Presentation.Presenters.Main
          _view.SetPageCategoryVisibility(_dynamicRibbonPageCache[matchingPage], true);
       }
 
-      private void hideAllDyamicCategories()
+      private void hideAllDynamicCategories()
       {
          PKSimConstants.RibbonCategories.AllDynamicCategories().Each(x => _view.SetPageCategoryVisibility(x, visible: false));
       }
 
       private void updateSimulationStateFrom(Simulation simulation, bool isActiveSimulation)
       {
-         var isIndivividualSimulation = simulation.IsAnImplementationOf<IndividualSimulation>();
+         var isIndividualSimulation = simulation.IsAnImplementationOf<IndividualSimulation>();
          _simulationState.IsActivated = isActiveSimulation;
          _simulationState.HasResult = simulationHasResults(simulation);
-         _simulationState.IsIndividual = isIndivividualSimulation;
+         _simulationState.IsIndividual = isIndividualSimulation;
          _simulationState.IsImported = simulation.IsImported;
       }
 
@@ -310,7 +310,7 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          enableDefaultItems();
-         updateProjectItems(isEnabled: true, observedDataEnabled: true);
+         updateProjectItems(isEnabled: true);
 
          updateSimulationItemsFor(eventToHandle.Simulation);
       }
@@ -329,7 +329,7 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsAccordingToSimulationState();
       }
 
-      private void updateProjectItems(bool isEnabled, bool observedDataEnabled)
+      private void updateProjectItems(bool isEnabled)
       {
          bool enabled = isEnabled && _enabled;
          updateSaveProjectButtons(enabled);
@@ -355,7 +355,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.LoadProtocol].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewObserverSet].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadObserverSet].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled && observedDataEnabled;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled ;
          _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparisonInAnalyze].Enabled = enabled;
@@ -396,7 +396,7 @@ namespace PKSim.Presentation.Presenters.Main
          _enabled = true;
          enableDefaultItems();
 
-         updateProjectItems(isEnabled: eventToHandle.ProjectLoaded, observedDataEnabled: compoundsAvailableIn(eventToHandle.Project));
+         updateProjectItems(isEnabled: eventToHandle.ProjectLoaded);
 
          updateSimulationItemsAccordingToSimulationState();
       }
@@ -508,22 +508,22 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
-         updateParameterIdentifcationItems(parameterIdentification);
+         updateParameterIdentificationItems(parameterIdentification);
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
          _parameterIdentificationRunning = true;
-         updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
+         updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
       {
          _parameterIdentificationRunning = false;
-         updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
+         updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
-      private void updateParameterIdentifcationItems(ParameterIdentification parameterIdentification)
+      private void updateParameterIdentificationItems(ParameterIdentification parameterIdentification)
       {
          var hasResult = !_parameterIdentificationRunning && parameterIdentification.HasResults;
          _menuBarItemRepository[MenuBarItemIds.RunParameterIdentification].Enabled = !_parameterIdentificationRunning;

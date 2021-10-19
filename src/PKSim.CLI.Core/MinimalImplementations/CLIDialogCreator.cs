@@ -6,9 +6,9 @@ namespace PKSim.CLI.Core.MinimalImplementations
 {
    public class CLIDialogCreator : IDialogCreator
    {
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public CLIDialogCreator(ILogger logger)
+      public CLIDialogCreator(IOSPSuiteLogger logger)
       {
          _logger = logger;
       }

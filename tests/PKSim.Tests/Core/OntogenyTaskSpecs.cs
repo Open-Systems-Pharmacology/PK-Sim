@@ -8,8 +8,9 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Importer;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Core
 {
@@ -22,6 +23,7 @@ namespace PKSim.Core
       private IOntogenyRepository _ontogenyRepository;
       private IEntityTask _entityTask;
       private IFormulaFactory _formulaFactory;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -32,7 +34,8 @@ namespace PKSim.Core
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          _entityTask = A.Fake<IEntityTask>();
          _formulaFactory = A.Fake<IFormulaFactory>();
-         sut = new IndividualOntogenyTask(_context, _applicationController, _dataImporter, _dimensionRepository, _ontogenyRepository, _entityTask, _formulaFactory);
+         _dialogCreator = A.Fake<IDialogCreator>();
+         sut = new IndividualOntogenyTask(_context, _applicationController, _dataImporter, _dimensionRepository, _ontogenyRepository, _entityTask, _formulaFactory, _dialogCreator);
       }
    }
 

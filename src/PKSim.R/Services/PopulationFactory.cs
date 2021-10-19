@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using FluentNHibernate.Testing.Values;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
@@ -17,7 +15,7 @@ namespace PKSim.R.Services
 {
    public interface IPopulationFactory
    {
-      IndividualValuesCache CreatePopulation(PopulationCharacteristics populationCharacteristics);
+      CreatePopulationResults CreatePopulation(PopulationCharacteristics populationCharacteristics);
    }
 
    public class PopulationFactory : IPopulationFactory
@@ -42,11 +40,11 @@ namespace PKSim.R.Services
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
       }
 
-      public IndividualValuesCache CreatePopulation(PopulationCharacteristics populationCharacteristics)
+      public CreatePopulationResults CreatePopulation(PopulationCharacteristics populationCharacteristics)
       {
          var populationSettings = _populationSettingsMapper.MapToModel(populationCharacteristics).Result;
          validate(populationSettings);
-         var population = _randomPopulationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
+         var population = _randomPopulationFactory.CreateFor(populationSettings, new CancellationToken(), seed: populationCharacteristics.Seed).Result;
 
          foreach (var moleculeOntogeny in populationCharacteristics.MoleculeOntogenies)
          {
@@ -66,7 +64,7 @@ namespace PKSim.R.Services
 
          _ontogenyVariabilityUpdater.UpdateAllOntogenies(population);
 
-         return population.IndividualValuesCache;
+         return new CreatePopulationResults(population.IndividualValuesCache, population.Seed);
       }
 
       private void validate(RandomPopulationSettings populationSettings)

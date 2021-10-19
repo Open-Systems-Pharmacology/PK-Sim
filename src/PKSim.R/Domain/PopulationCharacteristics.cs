@@ -4,7 +4,7 @@ using PKSim.Core.Snapshots;
 namespace PKSim.R.Domain
 {
    /// <summary>
-   /// Wrapper object for .net that encapsulates population settings and molecule ontogenies
+   ///    Wrapper object for .net that encapsulates population settings and molecule ontogenies
    /// </summary>
    public class PopulationCharacteristics : PopulationSettings
    {
@@ -32,5 +32,10 @@ namespace PKSim.R.Domain
          set => Individual.OriginData.Population = value;
       }
 
+      public int? Seed
+      {
+         get => Individual.Seed;
+         set => Individual.Seed = value;
+      }
    }
 }

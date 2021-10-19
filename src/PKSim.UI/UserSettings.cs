@@ -68,7 +68,7 @@ namespace PKSim.UI
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
 
       private string _templateDatabasePath;
-      private bool _layoutWasExplicitelyReset;
+      private bool _layoutWasExplicitlyReset;
 
       public UserSettings(DockManager dockManager, RibbonBarManager ribbonManager, INumericFormatterOptions numericFormatterOptions,
          ISkinManager skinManager, IPKSimConfiguration configuration, DirectoryMapSettings directoryMapSettings)
@@ -89,7 +89,7 @@ namespace PKSim.UI
          ParameterIdentificationFeedbackEditorSettings = new ParameterIdentificationFeedbackEditorSettings();
          SensitivityAnalysisFeedbackEditorSettings = new SensitivityAnalysisFeedbackEditorSettings();
          ResetToDefault();
-         _layoutWasExplicitelyReset = false;
+         _layoutWasExplicitlyReset = false;
       }
 
       public void ResetToDefault()
@@ -137,7 +137,7 @@ namespace PKSim.UI
       public void ResetLayout()
       {
          resetLayout();
-         _layoutWasExplicitelyReset = true;
+         _layoutWasExplicitlyReset = true;
       }
 
       private void resetLayout()
@@ -160,7 +160,7 @@ namespace PKSim.UI
       public void SaveLayout()
       {
          LayoutVersion = CoreConstants.LAYOUT_VERSION;
-         if (_layoutWasExplicitelyReset)
+         if (_layoutWasExplicitlyReset)
             return;
 
          var streamMainView = new MemoryStream();
@@ -174,19 +174,19 @@ namespace PKSim.UI
 
       public uint DecimalPlace
       {
-         get { return _numericFormatterOptions.DecimalPlace; }
-         set { _numericFormatterOptions.DecimalPlace = value; }
+         get => _numericFormatterOptions.DecimalPlace;
+         set => _numericFormatterOptions.DecimalPlace = value;
       }
 
       public bool AllowsScientifcNotation
       {
-         get { return _numericFormatterOptions.AllowsScientificNotation; }
-         set { _numericFormatterOptions.AllowsScientificNotation = value; }
+         get => _numericFormatterOptions.AllowsScientificNotation;
+         set => _numericFormatterOptions.AllowsScientificNotation = value;
       }
 
       public string ActiveSkin
       {
-         get { return _activeSkin; }
+         get => _activeSkin;
          set
          {
             if (_activeSkin == value)
@@ -199,7 +199,7 @@ namespace PKSim.UI
 
       public string TemplateDatabasePath
       {
-         get { return _templateDatabasePath; }
+         get => _templateDatabasePath;
          set
          {
             _templateDatabasePath = value;
@@ -209,7 +209,7 @@ namespace PKSim.UI
 
       public IconSize IconSizeTab
       {
-         get { return UIConstants.ICON_SIZE_TAB; }
+         get => UIConstants.ICON_SIZE_TAB;
          set
          {
             UIConstants.ICON_SIZE_TAB = value;
@@ -219,7 +219,7 @@ namespace PKSim.UI
 
       public IconSize IconSizeTreeView
       {
-         get { return UIConstants.ICON_SIZE_TREE_VIEW; }
+         get => UIConstants.ICON_SIZE_TREE_VIEW;
          set
          {
             UIConstants.ICON_SIZE_TREE_VIEW = value;
@@ -229,7 +229,7 @@ namespace PKSim.UI
 
       public IconSize IconSizeContextMenu
       {
-         get { return UIConstants.ICON_SIZE_CONTEXT_MENU; }
+         get => UIConstants.ICON_SIZE_CONTEXT_MENU;
          set
          {
             UIConstants.ICON_SIZE_CONTEXT_MENU = value;
@@ -239,7 +239,7 @@ namespace PKSim.UI
 
       public Color ChangedColor
       {
-         get { return PKSimColors.Changed; }
+         get => PKSimColors.Changed;
          set
          {
             PKSimColors.Changed = value;
@@ -249,7 +249,7 @@ namespace PKSim.UI
 
       public Color FormulaColor
       {
-         get { return PKSimColors.Formula; }
+         get => PKSimColors.Formula;
          set
          {
             PKSimColors.Formula = value;
@@ -259,7 +259,7 @@ namespace PKSim.UI
 
       public Color ChartBackColor
       {
-         get { return PKSimColors.ChartBack; }
+         get => PKSimColors.ChartBack;
          set
          {
             PKSimColors.ChartBack = value;
@@ -269,7 +269,7 @@ namespace PKSim.UI
 
       public Color ChartDiagramBackColor
       {
-         get { return PKSimColors.ChartDiagramBack; }
+         get => PKSimColors.ChartDiagramBack;
          set
          {
             PKSimColors.ChartDiagramBack = value;
@@ -279,7 +279,7 @@ namespace PKSim.UI
 
       public Color DisabledColor
       {
-         get { return PKSimColors.Disabled; }
+         get => PKSimColors.Disabled;
          set
          {
             PKSimColors.Disabled = value;

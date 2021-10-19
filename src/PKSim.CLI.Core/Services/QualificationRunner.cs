@@ -30,7 +30,7 @@ namespace PKSim.CLI.Core.Services
       private readonly IJsonSerializer _jsonSerializer;
       private readonly ICoreWorkspace _workspace;
       private readonly IWorkspacePersistor _workspacePersistor;
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
       private readonly IExportSimulationRunner _exportSimulationRunner;
       private readonly IDataRepositoryExportTask _dataRepositoryExportTask;
       private readonly IMarkdownReporterTask _markdownReporterTask;
@@ -43,7 +43,7 @@ namespace PKSim.CLI.Core.Services
          IExportSimulationRunner exportSimulationRunner,
          IDataRepositoryExportTask dataRepositoryExportTask,
          IMarkdownReporterTask markdownReporterTask,
-         ILogger logger
+         IOSPSuiteLogger logger
       )
       {
          _snapshotTask = snapshotTask;
@@ -69,12 +69,12 @@ namespace PKSim.CLI.Core.Services
          if (!string.IsNullOrEmpty(errorMessage))
             throw new QualificationRunException(errorMessage);
 
-         _logger.AddDebug($"Loading project from snapshot file '{config.SnapshotFile}'...");
+         _logger.AddDebug($"Loading project from snapshot file '{config.SnapshotFile}'...", categoryName: config.Project);
          var snapshot = await snapshotProjectFromFile(config.SnapshotFile);
 
          //Ensures that the name of the snapshot is also the name of the project as defined in the configuration
          snapshot.Name = config.Project;
-         _logger.AddDebug($"Project {snapshot.Name} loaded from snapshot file '{config.SnapshotFile}'.");
+         _logger.AddDebug($"Project {snapshot.Name} loaded from snapshot file '{config.SnapshotFile}'.", categoryName: snapshot.Name);
 
          await performBuildingBlockSwap(snapshot, config.BuildingBlocks);
 
@@ -86,12 +86,12 @@ namespace PKSim.CLI.Core.Services
 
          if (runOptions.Validate)
          {
-            _logger.AddInfo($"Validation run terminated for {snapshot.Name}");
+            _logger.AddInfo($"Validation run terminated for {snapshot.Name}", categoryName: snapshot.Name);
             return;
          }
 
          var begin = DateTime.UtcNow;
-         var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot);
+         var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot, runOptions.Run);
          _workspace.Project = project;
 
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
@@ -101,11 +101,13 @@ namespace PKSim.CLI.Core.Services
          var exportRunOptions = new ExportRunOptions
          {
             OutputFolder = projectOutputFolder,
-            ExportMode = SimulationExportMode.Xml | SimulationExportMode.Csv
+            //We run the output, this is for the old matlab implementation where we need xml. Otherwise, we only need pkml export
+            ExportMode = runOptions.Run ?   SimulationExportMode.Xml | SimulationExportMode.Csv  :  SimulationExportMode.Pkml
          };
 
-         var simulationExports = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
-         var simulationMappings = simulationExports.Select(x => simulationMappingFrom(x, config)).ToArray();
+         //Using absolute path for simulation folder. We need them to be relative
+         var simulationMappings = await _exportSimulationRunner.ExportSimulationsIn(project, exportRunOptions);
+         simulationMappings.Each(x => x.Path = relativePath(x.Path, config.OutputFolder));
 
          var observedDataMappings = await exportAllObservedData(project, config);
 
@@ -164,14 +166,6 @@ namespace PKSim.CLI.Core.Services
             Project = snapshotProject.Name
          });
       }
-
-      private SimulationMapping simulationMappingFrom(SimulationExport simulationExport, QualifcationConfiguration configuration) =>
-         new SimulationMapping
-         {
-            Path = relativePath(simulationExport.SimulationFolder, configuration.OutputFolder),
-            Project = simulationExport.Project,
-            Simulation = simulationExport.Simulation
-         };
 
       private Task<ObservedDataMapping[]> exportAllObservedData(PKSimProject project, QualifcationConfiguration configuration)
       {

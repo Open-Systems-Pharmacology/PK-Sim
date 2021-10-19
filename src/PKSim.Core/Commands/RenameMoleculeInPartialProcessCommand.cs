@@ -44,7 +44,7 @@ namespace PKSim.Core.Commands
          _partialProcess = context.Get<PKSim.Core.Model.PartialProcess>(_partialPocessId);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RenameMoleculeInPartialProcessCommand(_partialProcess, _oldMoleculeName, context).AsInverseFor(this);
       }

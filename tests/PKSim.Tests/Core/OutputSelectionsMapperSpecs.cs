@@ -9,7 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using OutputSelections = OSPSuite.Core.Domain.OutputSelections;
 using Parameter = OSPSuite.Core.Domain.Parameter;
 
@@ -24,12 +24,12 @@ namespace PKSim.Core
       protected IEntitiesInContainerRetriever _entitiesInContainerRetriever;
       protected IndividualSimulation _simulation;
       protected PathCache<IQuantity> _allQuantities;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
          _entitiesInContainerRetriever = A.Fake<IEntitiesInContainerRetriever>();
-         _logger= A.Fake<ILogger>();
+         _logger= A.Fake<IOSPSuiteLogger>();
          sut = new OutputSelectionsMapper(_entitiesInContainerRetriever, _logger);
 
          _quantitySelection1 = new QuantitySelection("PATH1", QuantityType.Drug);

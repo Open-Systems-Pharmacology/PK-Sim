@@ -17,9 +17,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.TissueLocation);
-         Map(x => x.IntracellularVascularEndoLocation);
-         Map(x => x.MembraneLocation);
+         Map(x => x.Localization);
       }
    }
 
@@ -40,15 +38,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
    {
    }
 
-   public abstract class ExpressionContainerXmlSerializerBase<TProteinExpressionContainer> : PKSimContainerXmlSerializer<TProteinExpressionContainer> where TProteinExpressionContainer : MoleculeExpressionContainer
+   public abstract class ExpressionContainerXmlSerializerBase<TProteinExpressionContainer> : PKSimContainerXmlSerializer<TProteinExpressionContainer>
+      where TProteinExpressionContainer : MoleculeExpressionContainer
    {
-      public override void PerformMapping()
-      {
-         base.PerformMapping();
-         Map(x => x.OrganPath);
-         Map(x => x.GroupName);
-         Map(x => x.ContainerName);
-      }
    }
 
    public class ProteinExpressionContainerXmlSerializer : ExpressionContainerXmlSerializerBase<MoleculeExpressionContainer>
@@ -60,9 +52,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.MembraneLocation);
-         Map(x => x.CompartmentName);
-         MapEnumerable(x => x.ProcessNames, x => x.AddProcessName);
+         Map(x => x.TransportDirection);
       }
    }
 }

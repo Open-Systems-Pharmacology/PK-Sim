@@ -1,24 +1,20 @@
 configuration: Debug
 image: Visual Studio 2019
 
-# hack until donet patching works with PR
+version: '{build}'
+
 init:
-  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
-
-environment:
-  app_version: "9.1"
-  APPVEYOR_BLOCK_DOTNETCORE_TESTS_AUTORUN: true
-
-version: "$(app_version).{build}"
+- ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
 
 clone_depth: 1
 
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  assembly_version: "$(app_version).$(build_number)"
-  file_version: "$(app_version).$(build_number)"
-  informational_version: "$(app_version).$(build_number)"
+  version: '$(ospsuite_version).$(build_number)'
+  assembly_version: '$(ospsuite_version).$(build_number)'
+  file_version: '$(ospsuite_version).$(build_number)'
+  informational_version: '$(ospsuite_version).$(build_number)'
 
 skip_branch_with_pr: true
 
@@ -61,13 +57,7 @@ test:
       - ProjectConverter
       - NightlyOnly
 
-notifications:
-  - provider: Slack
-    incoming_webhook:
-      secure: 4MH9Em6TtrKalq6808dhPOqypTfYBJvVlqPaa9akNyFEAs8X080yIO8g1FLt3tNfBN4OpeBnkgrXzf7AqNKV5561x7Coux3ByGrHmsL1sCo=
-
-install:
-  - cmd: git submodule update --init --recursive
+install: 
   - ps: >-
       (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
 

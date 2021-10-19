@@ -1,13 +1,15 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Assets;
+﻿using System.Drawing;
 using DevExpress.XtraTab;
-using PKSim.Assets;
-using PKSim.Presentation.Presenters.Individuals;
-using PKSim.Presentation.Views.Individuals;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -18,6 +20,7 @@ namespace PKSim.UI.Views.Individuals
       public ScaleIndividualView(Shell shell) : base(shell)
       {
          InitializeComponent();
+         ClientSize = new Size(CoreConstants.UI.INDIVIDUAL_VIEW_WIDTH, CoreConstants.UI.INDIVIDUAL_VIEW_HEIGHT);
       }
 
       public override void InitializeBinding()

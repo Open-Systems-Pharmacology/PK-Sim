@@ -15,6 +15,6 @@ namespace PKSim.Core.Model
 
       public bool IsTableWithXArgumentFormula => Rate.StartsWith(CoreConstants.Rate.TableFormulaWithXArgumentPrefix);
 
-      public bool IsDynamicSumFormula => CalculationMethod.Equals(CoreConstants.CalculationMethod.DynamicSumFormulas);
+      public bool IsDynamicSumFormula => CalculationMethod.Equals(CoreConstants.CalculationMethod.DYNAMIC_SUM_FORMULAS);
    }
 }

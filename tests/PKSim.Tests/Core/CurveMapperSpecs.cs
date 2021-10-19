@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
@@ -22,14 +23,14 @@ namespace PKSim.Core
       protected DataRepository _dataRepository;
       protected CurveOptionsMapper _curveOptionsMapper;
       protected Snapshots.CurveOptions _snapshotCurveOptions;
-      private ILogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _curveOptionsMapper = A.Fake<CurveOptionsMapper>();
          _dataRepository = DomainHelperForSpecs.ObservedData();
-         _logger= A.Fake<ILogger>();
+         _logger= A.Fake<IOSPSuiteLogger>();
          sut = new CurveMapper(_curveOptionsMapper, _dimensionFactory, _logger);
 
          _curve = new Curve
@@ -121,6 +122,39 @@ namespace PKSim.Core
       public void should_update_curve_option_properties()
       {
          _newCurve.Color.ShouldBeEqualTo(_newModelCurveOptions.Color);
+      }
+   }
+
+   public class When_mapping_a_snapshot_curve_to_curve_using_base_grid_as_x_axis_but_the_outputs_where_not_calculated : concern_for_CurveMapper
+   {
+      private SimulationAnalysisContext _context;
+      private Curve _newCurve;
+      private CurveOptions _newModelCurveOptions;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_curve);
+         _context = new SimulationAnalysisContext(){ RunSimulation =false};
+         _newModelCurveOptions = new CurveOptions { Color = Color.Aqua };
+         A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions)).Returns(_newModelCurveOptions);
+      }
+
+      protected override async Task Because()
+      {
+         _newCurve = await sut.MapToModel(_snapshot, _context);
+      }
+
+      [Observation]
+      public void should_return_null()
+      {
+         _newCurve.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_not_log_a_warning()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Warning, A<string>._)).MustNotHaveHappened();
       }
    }
 

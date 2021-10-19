@@ -13,21 +13,11 @@ namespace PKSim.Presentation.Presenters.Compounds
    //see YT issue 47-6691 Hide VSS Calculation for all species as feature was not specified properly
    public class DistributionWithCalculationMethodGroupPresenter : PermeabilityWithCalculationMethodsGroupPresenter<IOrganPermeabilityGroupPresenter>, IDistributionWithCalculationMethodGroupPresenter
    {
-//      private readonly ICompoundVSSPresenter _compoundVSSPresenter;
 
-      public DistributionWithCalculationMethodGroupPresenter(IMultiplePanelView view, IOrganPermeabilityGroupPresenter organPermeabilityGroupPresenter, ICalculationMethodSelectionPresenterForCompound calculationMethodSelectionPresenter, ICompoundVSSPresenter compoundVSSPresenter)
+      public DistributionWithCalculationMethodGroupPresenter(IMultiplePanelView view, IOrganPermeabilityGroupPresenter organPermeabilityGroupPresenter, ICalculationMethodSelectionPresenterForCompound calculationMethodSelectionPresenter)
          : base(view, calculationMethodSelectionPresenter, organPermeabilityGroupPresenter)
       {
-//         _compoundVSSPresenter = compoundVSSPresenter;
-//         AddSubPresenters(_compoundVSSPresenter);
-//         _view.ActivateView(_compoundVSSPresenter.BaseView);
          _view.AddEmptyPlaceHolder();
-      }
-
-      public override void EditCompound(Compound compound)
-      {
-         base.EditCompound(compound);
-//         _compoundVSSPresenter.EditCompound(compound);
       }
 
       protected override bool CategoryPredicate(CalculationMethodCategory calculationMethodCategory)

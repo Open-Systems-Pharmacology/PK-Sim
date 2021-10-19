@@ -39,7 +39,7 @@ namespace PKSim.Core.Commands
          _simpleProtocol = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetProtocolDosingIntervalCommand(_simpleProtocol, _oldDosingInterval, context).AsInverseFor(this);
       }

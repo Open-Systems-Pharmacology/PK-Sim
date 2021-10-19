@@ -133,7 +133,7 @@ namespace PKSim.Core.Services
          });
       }
 
-      private void doOverAllInteractions(string moleculeName, string compoundName, Simulation simulation, string kiAliasBase, Action<InteractionProcess, string, string,string> action)
+      private void doOverAllInteractions(string moleculeName, string compoundName, Simulation simulation, string kiAliasBase, Action<InteractionProcess, string, string, string> action)
       {
          AllInteractionProcessesFor(moleculeName, compoundName, simulation).Each((interactionProcess, i) =>
          {

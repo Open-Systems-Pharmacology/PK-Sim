@@ -1,7 +1,9 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Infrastructure;
 
 namespace PKSim.IntegrationTests
@@ -23,21 +25,16 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _undefined = sut.UndefinedLiverTransporterFor(_individual);
+         _undefined = sut.AddUndefinedLiverTransporterTo(_individual);
       }
 
+     
       [Observation]
-      public void should_add_the_relative_expression_to_periportal_and_pericentral_and_set_the_value_to_100()
+      public void should_add_the_relative_expression_to_periportal_and_pericentral_and_set_the_value_to_1()
       {
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Pericentral).RelativeExpression.ShouldBeEqualTo(100);
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Periportal).RelativeExpression.ShouldBeEqualTo(100);
-      }
-
-      [Observation]
-      public void should_add_the_relative_expression_norm_to_periportal_and_pericentral_and_set_the_value_to_1()
-      {
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Pericentral).RelativeExpressionNorm.ShouldBeEqualTo(1);
-         _undefined.ExpressionContainer(CoreConstants.Compartment.Periportal).RelativeExpressionNorm.ShouldBeEqualTo(1);
+         var allTransporterContainers = _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_undefined);
+         allTransporterContainers.Count.ShouldBeEqualTo(2);
+         allTransporterContainers.Each(x=>x.RelativeExpressionParameter.Value.ShouldBeEqualTo(1));
       }
    }
 }

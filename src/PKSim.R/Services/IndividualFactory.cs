@@ -55,7 +55,7 @@ namespace PKSim.R.Services
       {
          var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
-         var individual = _individualFactory.CreateAndOptimizeFor(originData);
+         var individual = _individualFactory.CreateAndOptimizeFor(originData, individualCharacteristics.Seed);
          var individualProperties = _individualValuesMapper.MapFrom(individual);
          var allIndividualParameters = individualProperties.ParameterValues;
          var ontogenyParameters = _ontogenyFactorsRetriever.FactorsFor(originData, moleculeOntogenies).Select(x => new ParameterValueWithUnit(x));
@@ -96,14 +96,14 @@ namespace PKSim.R.Services
          //add Ontogeny parameters
          distributedParameters.AddRange(ontogenyParameters);
 
-         return new CreateIndividualResults(distributedParameters.ToArray(), derivedParameters.ToArray());
+         return new CreateIndividualResults(distributedParameters.ToArray(), derivedParameters.ToArray(), individual.Seed);
       }
 
       public DistributedParameterValueWithUnit[] DistributionsFor(IndividualCharacteristics individualCharacteristics)
       {
          var originData = originDataFrom(individualCharacteristics);
          var moleculeOntogenies = individualCharacteristics.MoleculeOntogenies;
-         var individual = _individualFactory.CreateAndOptimizeFor(originData);
+         var individual = _individualFactory.CreateAndOptimizeFor(originData, individualCharacteristics.Seed);
          var distributedParameters = individual.GetAllChildren<IDistributedParameter>().Select(distributedParameterValueFrom).ToList();
          //Ontogeny factors have no units
          distributedParameters.AddRange(_ontogenyFactorsRetriever.DistributionFactorsFor(originData, moleculeOntogenies)
@@ -113,13 +113,7 @@ namespace PKSim.R.Services
 
       private OriginData originDataFrom(Core.Snapshots.OriginData originData)
       {
-         var coreOriginData = _originDataMapper.MapToModel(originData).Result;
-
-         if (coreOriginData.SpeciesPopulation.IsAgeDependent && originData.Age == null)
-            throw new PKSimException(PKSimConstants.Error.ParameterIsRequired(CoreConstants.Parameters.AGE));
-
-
-         return coreOriginData;
+         return _originDataMapper.MapToModel(originData).Result;
       }
 
       private ParameterValueWithUnit parameterValueFrom(IParameter parameter)

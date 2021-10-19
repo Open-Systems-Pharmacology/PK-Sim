@@ -42,7 +42,7 @@ namespace PKSim.Core.Commands
          base.ResetParameter(parameter);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetParameterUnitCommand(_parameter, _oldDisplayUnit).AsInverseFor(this);
       }

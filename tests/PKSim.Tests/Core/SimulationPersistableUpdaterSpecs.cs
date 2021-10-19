@@ -31,10 +31,10 @@ namespace PKSim.Core
       {
          base.Context();
          var organsim = new Container().WithName(Constants.ORGANISM);
-         var venousBlood = new Container().WithName(CoreConstants.Organ.VenousBlood).WithParentContainer(organsim);
-         var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PeripheralVenousBlood).WithParentContainer(organsim);
-         var lumen = new Container().WithName(CoreConstants.Organ.Lumen).WithParentContainer(organsim);
-         var plasma = new Container().WithName(CoreConstants.Compartment.Plasma);
+         var venousBlood = new Container().WithName(CoreConstants.Organ.VENOUS_BLOOD).WithParentContainer(organsim);
+         var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD).WithParentContainer(organsim);
+         var lumen = new Container().WithName(CoreConstants.Organ.LUMEN).WithParentContainer(organsim);
+         var plasma = new Container().WithName(CoreConstants.Compartment.PLASMA);
          var moleculeVenousBlood = new Container().WithName("DRUG")
             .WithParentContainer(plasma.WithParentContainer(venousBlood));
 
@@ -100,11 +100,11 @@ namespace PKSim.Core
       {
          base.Context();
          var organsim = new Container().WithName(Constants.ORGANISM);
-         var kidney = new Container().WithName(CoreConstants.Organ.Kidney).WithParentContainer(organsim);
+         var kidney = new Container().WithName(CoreConstants.Organ.KIDNEY).WithParentContainer(organsim);
          var urine = new Container().WithName(CoreConstants.Compartment.URINE).WithParentContainer(kidney);
-         var lumen = new Container().WithName(CoreConstants.Organ.Lumen).WithParentContainer(organsim);
+         var lumen = new Container().WithName(CoreConstants.Organ.LUMEN).WithParentContainer(organsim);
          var feces = new Container().WithName(CoreConstants.Compartment.FECES).WithParentContainer(lumen);
-         var gallBladder = new Container().WithName(CoreConstants.Organ.Gallbladder).WithParentContainer(organsim);
+         var gallBladder = new Container().WithName(CoreConstants.Organ.GALLBLADDER).WithParentContainer(organsim);
 
          _moleculeUrine = new MoleculeAmount().WithName("DRUG")
             .WithParentContainer(urine);

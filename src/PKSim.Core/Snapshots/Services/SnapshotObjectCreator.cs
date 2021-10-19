@@ -13,7 +13,7 @@ namespace PKSim.Core.Snapshots.Services
       public Population Population { get; set; }
       public Compound[] Compounds { get; set; }
       public Protocol[] Protocols { get; set; }
-      public string ModelName { get; set; } = CoreConstants.Model.FourComp;
+      public string ModelName { get; set; } = CoreConstants.Model.FOUR_COMP;
       public string SimulationName { get; set; } = "S";
       public bool AllowAging { get; set; }
    }
@@ -135,10 +135,10 @@ namespace PKSim.Core.Snapshots.Services
             Protocols = simulationConstruction.Protocols,
          };
 
-         var snapshotsimulation = await SnapshotSimulationFor(simulationConstruction);
-         project.Simulations = new[] {snapshotsimulation};
+         var snapshotSimulation = await SnapshotSimulationFor(simulationConstruction);
+         project.Simulations = new[] {snapshotSimulation};
 
-         var pksimProject = await _projectMapper.MapToModel(project);
+         var pksimProject = await _projectMapper.MapToModel(project, new ProjectContext {RunSimulations = false});
          return pksimProject.BuildingBlockByName<Model.Simulation>(simulationConstruction.SimulationName);
       }
    }

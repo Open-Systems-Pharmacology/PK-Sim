@@ -16,13 +16,13 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IIdentificationParameterFactory _identificationParameterFactory;
       private readonly IIdentificationParameterTask _identificationParameterTask;
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
       public IdentificationParameterMapper(
          ParameterMapper parameterMapper,
          IIdentificationParameterFactory identificationParameterFactory,
          IIdentificationParameterTask identificationParameterTask,
-         ILogger logger
+         IOSPSuiteLogger logger
       ) : base(parameterMapper)
       {
          _identificationParameterFactory = identificationParameterFactory;
@@ -54,6 +54,12 @@ namespace PKSim.Core.Snapshots.Mappers
          var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, context.Project));
 
          var identificationParameter = _identificationParameterFactory.CreateFor(parameterSelections, context.ParameterIdentification);
+         if (identificationParameter == null)
+         {
+            _logger.AddWarning(PKSimConstants.Error.CannotCreateIdentificationParameter(snapshot.LinkedParameters[0], context.ParameterIdentification.Name));
+            return null;
+         }
+
          MapSnapshotPropertiesToModel(snapshot, identificationParameter);
          identificationParameter.IsFixed = ModelValueFor(snapshot.IsFixed);
          identificationParameter.UseAsFactor = ModelValueFor(snapshot.UseAsFactor);

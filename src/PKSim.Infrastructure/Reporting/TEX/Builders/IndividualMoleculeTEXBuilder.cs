@@ -38,7 +38,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          //specific part
          AddMoleculeSpecificReportPart(molecule, buildTracker);
 
-         _builderRepository.Report(PKSimConstants.UI.NormalizedExpressionLevels, buildTracker);
+         _builderRepository.Report(PKSimConstants.UI.ExpressionLevels, buildTracker);
          _builderRepository.Report(ExpressionLevelParameters(molecule), buildTracker);
       }
 
@@ -46,18 +46,18 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       protected DataTable ExpressionLevelParameters(TMolecule molecule)
       {
-         var dataTable = new DataTable {TableName = PKSimConstants.UI.NormalizedExpressionLevels};
-         var parameterColumn = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, CoreConstants.Parameters.REL_EXP_NORM);
+         var dataTable = new DataTable {TableName = PKSimConstants.UI.ExpressionLevels };
+         var parameterColumn = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, CoreConstants.Parameters.REL_EXP);
          dataTable.Columns.Add(parameterColumn, typeof (string));
+         dataTable.Columns.Add(PKSimConstants.UI.Name, typeof (string));
          dataTable.Columns.Add(PKSimConstants.UI.Value, typeof (string));
-         dataTable.Columns.Add(PKSimConstants.UI.Percentage, typeof (string));
 
-         foreach (var parameter in molecule.GetAllChildren<IParameter>(p => p.IsExpressionNorm() && p.Value > 0))
+         foreach (var parameter in molecule.GetAllChildren<IParameter>(p => p.IsExpression() && p.Value > 0))
          {
             var row = dataTable.NewRow();
             row[parameterColumn] = ExpressionContainerDisplayNameFor(parameter);
-            row[PKSimConstants.UI.Value] = ParameterMessages.DisplayValueFor(parameter);
-            row[PKSimConstants.UI.Percentage] = _formatter.Format(parameter.Value * 100);
+            row[PKSimConstants.UI.Name] = ParameterMessages.DisplayValueFor(parameter);
+            row[PKSimConstants.UI.Value] = _formatter.Format(parameter.Value);
             dataTable.Rows.Add(row);
          }
 

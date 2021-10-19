@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Core.Services;
-using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.PopulationAnalyses;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -56,13 +56,13 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       protected abstract string AnalysisType { get; }
 
       protected CreatePopulationAnalysisPresenter(
-         ICreatePopulationAnalysisView view, 
+         ICreatePopulationAnalysisView view,
          ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager,
-         IReadOnlyList<ISubPresenterItem> subPresenterItems, 
-         IDialogCreator dialogCreator, 
+         IReadOnlyList<ISubPresenterItem> subPresenterItems,
+         IDialogCreator dialogCreator,
          IPopulationAnalysisTemplateTask populationAnalysisTemplateTask,
-         IPopulationAnalysisChartFactory populationAnalysisChartFactory, 
-         IPopulationAnalysisTask populationAnalysisTask, 
+         IPopulationAnalysisChartFactory populationAnalysisChartFactory,
+         IPopulationAnalysisTask populationAnalysisTask,
          IPopulationAnalysisFieldFactory populationAnalysisFieldFactory)
          : base(view, subPresenterItemManager, subPresenterItems, dialogCreator)
       {
@@ -125,15 +125,18 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       protected virtual void AddDefaultAnalysisField()
       {
-        //Add grouping by simulation name when comparing simulations as it is a step that is always required in order to display something meaningful
-        if (!_populationDataCollector.IsAnImplementationOf<PopulationSimulationComparison>())
-           return;
+         //Add grouping by simulation name when comparing simulations as it is a step that is always required in order to display something meaningful
+         if (!_populationDataCollector.IsAnImplementationOf<PopulationSimulationComparison>())
+            return;
 
-        var simulationNameField = _populationAnalysisFieldFactory.CreateFor(CoreConstants.Covariates.SIMULATION_NAME, _populationDataCollector);
-        PopulationAnalysisChart.PopulationAnalysis.Add(simulationNameField);
+         if (PopulationAnalysis.Has(CoreConstants.Covariates.SIMULATION_NAME))
+            return;
 
-        var pivotPopulationAnalysis = PopulationAnalysis as PopulationPivotAnalysis;
-        pivotPopulationAnalysis?.SetPosition(simulationNameField, PivotArea.ColorArea);
+         var simulationNameField = _populationAnalysisFieldFactory.CreateFor(CoreConstants.Covariates.SIMULATION_NAME, _populationDataCollector);
+         PopulationAnalysis.Add(simulationNameField);
+
+         var pivotPopulationAnalysis = PopulationAnalysis as PopulationPivotAnalysis;
+         pivotPopulationAnalysis?.SetPosition(simulationNameField, PivotArea.ColorArea);
       }
 
       protected override void UpdateControls(int currentIndex)

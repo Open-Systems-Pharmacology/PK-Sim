@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Snapshots
 {
@@ -9,10 +10,13 @@ namespace PKSim.Core.Snapshots
       [Required]
       public QuantityType Type { get; set; }
 
-      //Proteins only
+      //Proteins only for compatibility with old snapshots
       public MembraneLocation? MembraneLocation { get; set; }
       public TissueLocation? TissueLocation { get; set; }
       public IntracellularVascularEndoLocation? IntracellularVascularEndoLocation { get; set; }
+
+      //Proteins only 
+      public Localization? Localization { get; set; }
 
       //Transporters only
       public TransportType? TransportType { get; set; }

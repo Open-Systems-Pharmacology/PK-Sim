@@ -2,11 +2,10 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Presentation.Core;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 
@@ -26,8 +25,8 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _optimizedParameterValue1 = new OptimizedParameterValue("P1", 10,11);
-         _optimizedParameterValue2 = new OptimizedParameterValue("P2", 20, 21);
+         _optimizedParameterValue1 = new OptimizedParameterValue("P1", 10,11, 5, 100, Scalings.Log);
+         _optimizedParameterValue2 = new OptimizedParameterValue("P2", 20, 211, 5, 100, Scalings.Linear);
 
          _parameterIdentificationRunResult = new ParameterIdentificationRunResult();
 
@@ -57,7 +56,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_deserialize_the_given_parameter_identificaiton_result()
+      public void should_be_able_to_deserialize_the_given_parameter_identification_result()
       {
          _deserializedParameterIdentificationRunResult.ShouldNotBeNull();
       }
@@ -66,8 +65,20 @@ namespace PKSim.IntegrationTests
       public void should_have_the_expected_parameter_values()
       {
          _deserializedParameterIdentificationRunResult.BestResult.Values.Count.ShouldBeEqualTo(2);
-         _deserializedParameterIdentificationRunResult.BestResult.Values[0].Name.ShouldBeEqualTo(_optimizedParameterValue1.Name);
-         _deserializedParameterIdentificationRunResult.BestResult.Values[1].Name.ShouldBeEqualTo(_optimizedParameterValue2.Name);
+         var deserializeParameterValue1 = _deserializedParameterIdentificationRunResult.BestResult.Values[0];
+         var deserializeParameterValue2 = _deserializedParameterIdentificationRunResult.BestResult.Values[1];
+         deserializeParameterValue1.Name.ShouldBeEqualTo(_optimizedParameterValue1.Name);
+         deserializeParameterValue1.Value.ShouldBeEqualTo(_optimizedParameterValue1.Value);
+         deserializeParameterValue1.StartValue.ShouldBeEqualTo(_optimizedParameterValue1.StartValue);
+         deserializeParameterValue1.Min.ShouldBeEqualTo(_optimizedParameterValue1.Min);
+         deserializeParameterValue1.Max.ShouldBeEqualTo(_optimizedParameterValue1.Max);
+         deserializeParameterValue1.Scaling.ShouldBeEqualTo(_optimizedParameterValue1.Scaling);
+         deserializeParameterValue2.Name.ShouldBeEqualTo(_optimizedParameterValue2.Name);
+         deserializeParameterValue2.Value.ShouldBeEqualTo(_optimizedParameterValue2.Value);
+         deserializeParameterValue2.StartValue.ShouldBeEqualTo(_optimizedParameterValue2.StartValue);
+         deserializeParameterValue2.Min.ShouldBeEqualTo(_optimizedParameterValue2.Min);
+         deserializeParameterValue2.Max.ShouldBeEqualTo(_optimizedParameterValue2.Max);
+         deserializeParameterValue2.Scaling.ShouldBeEqualTo(_optimizedParameterValue2.Scaling);
          _deserializedParameterIdentificationRunResult.Duration.Days.ShouldBeEqualTo(1);
          _deserializedParameterIdentificationRunResult.Duration.Hours.ShouldBeEqualTo(2);
          _deserializedParameterIdentificationRunResult.Duration.Minutes.ShouldBeEqualTo(3);

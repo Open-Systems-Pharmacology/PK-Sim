@@ -8,7 +8,7 @@ namespace PKSim.Core.Services
    {
       private readonly ISimulationRunner _simulationRunner;
 
-      public RunSimulationQualificationStepRunner(ISimulationRunner simulationRunner, ILogger logger) : base(logger)
+      public RunSimulationQualificationStepRunner(ISimulationRunner simulationRunner, IOSPSuiteLogger logger) : base(logger)
       {
          _simulationRunner = simulationRunner;
       }

@@ -16,5 +16,11 @@ namespace PKSim.Infrastructure.Extensions
       {
          return ExecuteQueryForDataTable(connection, query).Rows.ItemByIndex(0);
       }
+
+      public static DataRow ExecuteQueryForSingleRowOrNull(this DAS connection, string query)
+      {
+         var rows = ExecuteQueryForDataTable(connection, query).Rows;
+         return rows.Count() > 0 ? rows.ItemByIndex(0) : null;
+      }
    }
 }

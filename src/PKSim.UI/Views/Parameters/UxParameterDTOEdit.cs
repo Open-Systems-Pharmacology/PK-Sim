@@ -44,7 +44,8 @@ namespace PKSim.UI.Views.Parameters
 
          _valueElementBinder.OnValueUpdating += (o, e) => ValueChanged(o, e.NewValue);
 
-         _screenBinder.Bind(p => p.DisplayUnit).To(cbUnit)
+         _screenBinder.Bind(p => p.DisplayUnit)
+            .To(cbUnit)
             .WithValues(p => p.AllUnits)
             .OnValueUpdating += (o, e) => UnitChanged(o, e.NewValue);
 
@@ -92,7 +93,7 @@ namespace PKSim.UI.Views.Parameters
       public string ToolTip
       {
          set => tbValue.ToolTip = value;
-         get { return tbValue.ToolTip; }
+         get => tbValue.ToolTip;
       }
 
       public override void InitializeResources()
@@ -102,7 +103,7 @@ namespace PKSim.UI.Views.Parameters
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
       }
 
-      public void RegisterEditParameterEvents(IEditParameterPresenter editParameterPresenter)
+      public void RegisterEditParameterEvents(IParameterValuePresenter editParameterPresenter)
       {
          ValueChanged += (o, e) => OnEvent(() => editParameterPresenter.SetParameterValue(o, e));
          UnitChanged += (o, e) => OnEvent(() => editParameterPresenter.SetParameterUnit(o, e));

@@ -13,7 +13,7 @@ namespace PKSim.Core.Commands
       {
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetParameterValueStructureChangeCommand(_parameter, _oldValue).AsInverseFor(this);
       }

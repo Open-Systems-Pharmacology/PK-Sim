@@ -8,6 +8,8 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly List<ModelDataRepository> _dataRepositories = new List<ModelDataRepository>();
 
+      public bool RunSimulation { get; set; }
+
       public IReadOnlyList<ModelDataRepository> DataRepositories => _dataRepositories;
 
       public SimulationAnalysisContext()

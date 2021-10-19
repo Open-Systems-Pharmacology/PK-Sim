@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.Core.Services;
 using PKSim.Core;
@@ -11,7 +12,7 @@ namespace PKSim.Presentation.Presenters
 {
    public interface IAboutPresenter : IDisposablePresenter
    {
-      void CheckForUpdate();
+      Task CheckForUpdate();
    }
 
    public class AboutPresenter : AbstractDisposablePresenter<IAboutView, IAboutPresenter>, IAboutPresenter
@@ -35,9 +36,11 @@ namespace PKSim.Presentation.Presenters
          _view.Display();
       }
 
-      public void CheckForUpdate()
+      public async Task CheckForUpdate()
       {
-         if (_versionChecker.NewVersionIsAvailable())
+         var newVersionAvailable = await _versionChecker.NewVersionIsAvailableAsync();
+
+         if (newVersionAvailable)
             _dialogCreator.MessageBoxInfo(PKSimConstants.Information.NewVersionIsAvailable(_versionChecker.LatestVersion, Constants.PRODUCT_SITE_DOWNLOAD).RemoveHtml());
          else
             _dialogCreator.MessageBoxInfo(PKSimConstants.UI.ProductIsUptodate(CoreConstants.PRODUCT_NAME_WITH_TRADEMARK));

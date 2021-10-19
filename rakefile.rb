@@ -26,9 +26,7 @@ task :cover do
   Coverage.cover(filter, targetProjects)
 end
 
-task :create_setup, [:product_version, :configuration, :smart_xls_package, :smart_xls_version] do |t, args|
-	update_smart_xls(args)
-
+task :create_setup, [:product_version, :configuration] do |t, args|
 	src_dir = src_dir_for(args.configuration)
 	relative_src_dir = relative_src_dir_for(args.configuration)
 
@@ -113,7 +111,7 @@ task :postclean do |t, args|
 	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '9.0')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '10.0')
 
 	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
@@ -140,15 +138,6 @@ task :db_pre_commit do
 end
 
 private
-
-def update_smart_xls(args) 
-	require_relative 'scripts/smartxls'
-	if (!args.smart_xls_package || !args.smart_xls_version)
-		return
-	end
-	src_dir = src_dir_for(args.configuration)
-	SmartXls.update_smart_xls src_dir, args.smart_xls_package, args.smart_xls_version
-end
 
 def relative_src_dir_for(configuration)
 	File.join( 'src', 'PKSim', 'bin', configuration, 'net472')

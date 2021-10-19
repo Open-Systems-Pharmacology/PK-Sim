@@ -40,7 +40,7 @@ namespace PKSim.Core.Commands
          _schemaItem = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetSchemaItemFormulationKeyCommand(_schemaItem, _oldFormulationKey, context).AsInverseFor(this);
       }

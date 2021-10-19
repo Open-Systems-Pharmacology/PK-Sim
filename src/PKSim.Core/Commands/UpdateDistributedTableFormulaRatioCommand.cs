@@ -20,7 +20,7 @@ namespace PKSim.Core.Commands
          Description = ParameterMessages.UpdateTableParameterFormula(context.DisplayNameFor(_parameter));
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new UpdateDistributedTableFormulaRatioCommand(_parameter, 1 / _ratio).AsInverseFor(this);
       }

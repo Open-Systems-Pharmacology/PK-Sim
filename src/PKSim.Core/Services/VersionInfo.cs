@@ -1,9 +1,11 @@
+using OSPSuite.Core.Domain;
+
 namespace PKSim.Core.Services
 {
-   public class VersionInfo
+   public class VersionInfo : IWithName
    {
       public string Version { get; set; }
-      public string Description { get; set; }
+      public string Name { get; set; }
 
       public static implicit operator string(VersionInfo versionInfo)
       {

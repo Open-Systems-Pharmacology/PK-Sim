@@ -19,9 +19,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly TableFormulaMapper _tableFormulaMapper;
       private readonly ValueOriginMapper _valueOriginMapper;
       private readonly IEntityPathResolver _entityPathResolver;
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public ParameterMapper(TableFormulaMapper tableFormulaMapper, ValueOriginMapper valueOriginMapper, IEntityPathResolver entityPathResolver, ILogger logger)
+      public ParameterMapper(TableFormulaMapper tableFormulaMapper, ValueOriginMapper valueOriginMapper, IEntityPathResolver entityPathResolver, IOSPSuiteLogger logger)
       {
          _tableFormulaMapper = tableFormulaMapper;
          _valueOriginMapper = valueOriginMapper;

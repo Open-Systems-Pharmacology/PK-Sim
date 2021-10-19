@@ -17,6 +17,7 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core.Snapshots.Services;
 using EntityRules = PKSim.Core.Model.EntityRules;
 
 namespace PKSim.IntegrationTests
@@ -146,18 +147,20 @@ namespace PKSim.IntegrationTests
          if (type.Equals(typeof (BinInterval))) return true;
          if (type.Equals(typeof (ContinuousDistributionData))) return true;
          if (type.Equals(typeof (DiscreteDistributionData))) return true;
+         if (type.Equals(typeof (TransportDirection))) return true;
+         if (type.Equals(typeof (TransportTemplate))) return true;
 
          //enum are created on the fly
+         if (type.Equals(typeof (TransportDirectionId))) return true;
          if (type.Equals(typeof (OrganType))) return true;
          if (type.Equals(typeof(InteractionType))) return true;
          if (type.Equals(typeof (ProtocolMode))) return true;
          if (type.Equals(typeof (BuildingBlockStatus))) return true;
          if (type.Equals(typeof (TemplateDatabaseType))) return true;
-         if (type.Equals(typeof (TissueLocation))) return true;
-         if (type.Equals(typeof (IntracellularVascularEndoLocation))) return true;
          if (type.Equals(typeof (MembraneLocation))) return true;
          if (type.Equals(typeof(ClassificationType))) return true;
          if (type.Equals(typeof(PopulationAnalysisType))) return true;
+         if (type.Equals(typeof(Localization))) return true;
 
          //TODO not serialized yet
          if (type.Equals(typeof(QualificationPlan))) return true;

@@ -1,64 +1,58 @@
-using PKSim.Assets;
+﻿using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
    public class SetTransportTypeCommand : BuildingBlockStructureChangeCommand
    {
-      private TransporterExpressionContainer _transporterContainer;
-      private readonly MembraneLocation _membraneLocationToUse;
-      private readonly string _transporterContainerId;
-      private readonly TransportType _newTransportType;
-      private readonly TransportType _oldTransportType;
-      private MembraneLocation _oldMembraneLocation;
+      private IndividualTransporter _individualTransporter;
+      private readonly TransportType _transportType;
+      private TransportType _oldTransportType;
+      private readonly string _transporterId;
       private Individual _individual;
 
-      public SetTransportTypeCommand(TransporterExpressionContainer transporterContainer, TransportType oldTransportType, TransportType newTransportType, MembraneLocation membraneLocationToUse, IExecutionContext context)
+      public SetTransportTypeCommand(IndividualTransporter individualTransporter, TransportType transportType, IExecutionContext context)
       {
-         _transporterContainer = transporterContainer;
-         _membraneLocationToUse = membraneLocationToUse;
-         _transporterContainerId = _transporterContainer.Id;
-         _individual = context.BuildingBlockContaining(transporterContainer).DowncastTo<Individual>();
-         BuildingBlockId = _individual.Id;
-         _newTransportType = newTransportType;
-         _oldTransportType = oldTransportType;
+         var individual = context.BuildingBlockContaining(individualTransporter).DowncastTo<Individual>();
+         _individualTransporter = individualTransporter;
+         _transportType = transportType;
+         BuildingBlockId = individual.Id;
+         _individual = individual;
+         _transporterId = _individualTransporter.Id;
          ObjectType = PKSimConstants.ObjectTypes.Transporter;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildingBlockPropertiesInCommand(this, _individual);
-         Visible = false;
+         context.UpdateBuildingBlockPropertiesInCommand(this, individual);
       }
 
       protected override void ClearReferences()
       {
-         _transporterContainer = null;
+         _individualTransporter = null;
          _individual = null;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new SetTransportTypeCommand(_transporterContainer, _newTransportType, _oldTransportType, _oldMembraneLocation, context).AsInverseFor(this);
+         return new SetTransportTypeCommand(_individualTransporter, _oldTransportType, context).AsInverseFor(this);
+      }
+
+      protected override void PerformExecuteWith(IExecutionContext context)
+      {
+         _oldTransportType = _individualTransporter.TransportType;
+         _individualTransporter.TransportType = _transportType;
+         var transportContainerUpdater = context.Resolve<ITransportContainerUpdater>();
+         transportContainerUpdater.SetDefaultSettingsForTransporter(_individual, _individualTransporter, _transportType);
+         Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_individualTransporter.Name, _oldTransportType.ToString(), _transportType.ToString());
       }
 
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
+         _individualTransporter = context.Get<IndividualTransporter>(_transporterId);
          _individual = context.Get<Individual>(BuildingBlockId);
-         _transporterContainer = context.Get<TransporterExpressionContainer>(_transporterContainerId);
-      }
-
-      protected override void PerformExecuteWith(IExecutionContext context)
-      {
-         var transportContainerUpdater = context.Resolve<ITransportContainerUpdater>();
-         Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_transporterContainer.Name, _oldTransportType.ToString(), _newTransportType.ToString());
-         //Update required membrane location before updating transport type
-         _oldMembraneLocation = _transporterContainer.MembraneLocation;
-         _transporterContainer.MembraneLocation = _membraneLocationToUse;
-
-         transportContainerUpdater.UpdateTransporterFromTemplate(_transporterContainer, _individual.Species.Name, _transporterContainer.MembraneLocation, _newTransportType);
       }
    }
 }

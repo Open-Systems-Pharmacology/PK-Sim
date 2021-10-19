@@ -12,7 +12,15 @@ namespace PKSim.R
 
       public static void InitializeOnce()
       {
-         _container = ApplicationStartup.Initialize();
+         try
+         {
+           _container = ApplicationStartup.Initialize();
+         }
+         catch (System.Reflection.ReflectionTypeLoadException e)
+         {
+            e.LoaderExceptions?.Each(x=>Console.WriteLine(e.FullMessage()));
+            throw;
+         }
       }
 
       public static IIndividualFactory GetIndividualFactory() => resolveTask<IIndividualFactory>();

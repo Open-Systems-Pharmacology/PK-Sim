@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core;
 using PKSim.Core.Snapshots;
@@ -51,7 +50,7 @@ namespace PKSim.R
 
    public class When_creating_a_non_preterm_population_from_r : concern_for_PopulationFactory
    {
-      private IndividualValuesCache _result;
+      private CreatePopulationResults _result;
 
       protected override void Context()
       {
@@ -73,7 +72,8 @@ namespace PKSim.R
                Unit = "kg",
             },
             NumberOfIndividuals = 10,
-            ProportionOfFemales = 70
+            ProportionOfFemales = 70,
+            Seed = 2
          };
 
          _populationCharacteristics.AddMoleculeOntogeny(new MoleculeOntogeny {Molecule = "CYP3A4", Ontogeny = "CYP3A4"});
@@ -88,13 +88,19 @@ namespace PKSim.R
       [Observation]
       public void should_be_able_to_generate_a_basic_population()
       {
-         _result.AllParameterValues.First().Values.Count.ShouldBeEqualTo(_populationCharacteristics.NumberOfIndividuals);
+         _result.IndividualValuesCache.AllParameterValues.First().Values.Count.ShouldBeEqualTo(_populationCharacteristics.NumberOfIndividuals);
+      }
+
+      [Observation]
+      public void should_set_the_seed_for_the_returned_population()
+      {
+         _result.Seed.ShouldBeEqualTo(_populationCharacteristics.Seed.GetValueOrDefault(0));
       }
 
       [Observation]
       public void should_return_enzyme_ontogenies()
       {
-         var parameterPaths = _result.AllParameterPaths().ToArray();
+         var parameterPaths = _result.IndividualValuesCache.AllParameterPaths().ToArray();
          foreach (var moleculeOntogeny in _populationCharacteristics.MoleculeOntogenies)
          {
             parameterPaths.ShouldContain($"{moleculeOntogeny.Molecule}|{CoreConstants.Parameters.ONTOGENY_FACTOR}");
@@ -105,7 +111,7 @@ namespace PKSim.R
 
    public class When_creating_a_preterm_population_from_r : concern_for_PopulationFactory
    {
-      private IndividualValuesCache _result;
+      private CreatePopulationResults _result;
 
       protected override void Context()
       {
@@ -146,7 +152,13 @@ namespace PKSim.R
       [Observation]
       public void should_be_able_to_generate_a_basic_population()
       {
-         _result.AllParameterValues.First().Values.Count.ShouldBeEqualTo(_populationCharacteristics.NumberOfIndividuals);
+         _result.IndividualValuesCache.AllParameterValues.First().Values.Count.ShouldBeEqualTo(_populationCharacteristics.NumberOfIndividuals);
+      }
+
+      [Observation]
+      public void should_set_a_seed_automatically()
+      {
+         _result.Seed.ShouldBeGreaterThan(0);
       }
    }
 }

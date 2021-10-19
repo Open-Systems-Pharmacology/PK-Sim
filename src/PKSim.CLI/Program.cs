@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Linq;
 using CommandLine;
 using Microsoft.Extensions.Logging;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
 using PKSim.CLI.Core.Services;
-using PKSim.CLI.Services;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using PKSim.Core;
 
 namespace PKSim.CLI
 {
@@ -23,7 +24,6 @@ namespace PKSim.CLI
 
       static int Main(string[] args)
       {
-
          ApplicationStartup.Initialize();
 
          Parser.Default.ParseArguments<JsonRunCommand, SnapshotRunCommand, ExportRunCommand, QualificationRunCommand>(args)
@@ -42,7 +42,7 @@ namespace PKSim.CLI
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
          var logger = initializeLogger(command);
-         if(command.LogCommandName)
+         if (command.LogCommandName)
             logger.AddInfo($"Starting {command.Name.ToLower()} run");
 
          logger.AddDebug($"Arguments:\n{command}");
@@ -62,17 +62,26 @@ namespace PKSim.CLI
             logger.AddInfo($"{command.Name} run finished");
       }
 
-      private static ILogger initializeLogger(CLICommand runCommand)
+      private static IOSPSuiteLogger initializeLogger(CLICommand runCommand)
       {
-         var loggerFactory = IoC.Resolve<ILoggerFactory>();
+         var loggerCreator = IoC.Resolve<ILoggerCreator>();
 
-         loggerFactory
-            .AddConsole(runCommand.LogLevel);
+         var logger = IoC.Resolve<IOSPSuiteLogger>();
+         logger.DefaultCategoryName = CoreConstants.PRODUCT_NAME;
 
-         if (!string.IsNullOrEmpty(runCommand.LogFileFullPath))
-            loggerFactory.AddFile(runCommand.LogFileFullPath, runCommand.LogLevel, runCommand.AppendToLog);
+         loggerCreator.AddLoggingBuilderConfiguration(builder =>
+            builder
+               .SetMinimumLevel(runCommand.LogLevel)
+               .AddConsole()
+         );
 
-         return IoC.Resolve<ILogger>();
+         if (runCommand.LogFilesFullPath.Any())
+            loggerCreator.AddLoggingBuilderConfiguration(builder =>
+               builder
+                  .SetMinimumLevel(runCommand.LogLevel)
+                  .AddFile(runCommand.LogFilesFullPath.ToArray(), runCommand.LogLevel, true));
+
+         return logger;
       }
    }
 }

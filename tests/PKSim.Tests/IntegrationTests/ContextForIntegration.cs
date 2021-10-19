@@ -7,6 +7,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
@@ -52,6 +53,7 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IChartTemplatingTask>());
             container.RegisterImplementationOf(A.Fake<IPresentationSettingsTask>());
             container.RegisterImplementationOf(A.Fake<IJournalDiagramManagerFactory>());
+            container.RegisterImplementationOf(A.Fake<IDataImporter>());
 
             container.AddRegister(x =>
             {

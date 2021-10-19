@@ -80,13 +80,13 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _parameter = A.Fake<IParameter>();
+         _parameter = new PKSimParameter {IsDefault = true};
       }
 
       [Observation]
       public void should_return_true_if_the_types_is_individual_and_the_parameter_has_a_constant_formula()
       {
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Individual);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Individual;
          _parameter.Formula = new ConstantFormula();
          _parameter.NeedsDefault().ShouldBeTrue();
       }
@@ -94,7 +94,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_if_the_types_is_individual_and_the_parameter_has_a_distributed_formula()
       {
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Individual);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Individual;
          _parameter.Formula = new LogNormalDistributionFormula();
          _parameter.NeedsDefault().ShouldBeTrue();
       }
@@ -102,7 +102,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_if_the_types_is_simulation_and_the_parameter_has_a_constant_formula()
       {
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Simulation);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
          _parameter.Formula = new ConstantFormula();
          _parameter.NeedsDefault().ShouldBeTrue();
       }
@@ -110,7 +110,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_if_the_types_is_simulation_and_the_parameter_does_not_have_a_constant_formula()
       {
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Simulation);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
          _parameter.Formula = new ExplicitFormula();
          _parameter.NeedsDefault().ShouldBeFalse();
       }
@@ -118,7 +118,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_if_the_types_is_population_and_the_parameter_has_a_constant_formula()
       {
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Population);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Population;
          _parameter.Formula = new ConstantFormula();
          _parameter.NeedsDefault().ShouldBeTrue();
       }
@@ -127,20 +127,20 @@ namespace PKSim.Core
       public void should_return_false_if_the_parameter_is_named_after_a_distribution_parameter()
       {
          _parameter.Name = Constants.Distribution.GEOMETRIC_DEVIATION;
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Individual);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Individual;
          _parameter.NeedsDefault().ShouldBeFalse();
       }
 
       [Observation]
       public void should_return_false_otherwise()
       {
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Compound);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Compound;
          _parameter.NeedsDefault().ShouldBeFalse();
 
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Event);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Event;
          _parameter.NeedsDefault().ShouldBeFalse();
 
-         A.CallTo(() => _parameter.BuildingBlockType).Returns(PKSimBuildingBlockType.Protocol);
+         _parameter.BuildingBlockType = PKSimBuildingBlockType.Protocol;
          _parameter.NeedsDefault().ShouldBeFalse();
       }
    }

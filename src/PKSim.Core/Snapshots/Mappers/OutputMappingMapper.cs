@@ -14,9 +14,9 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class OutputMappingMapper : SnapshotMapperBase<ModelOutputMapping, SnapshotOutputMapping, ParameterIdentificationContext>
    {
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public OutputMappingMapper(ILogger logger)
+      public OutputMappingMapper(IOSPSuiteLogger logger)
       {
          _logger = logger;
       }
@@ -67,7 +67,6 @@ namespace PKSim.Core.Snapshots.Mappers
          return Task.FromResult(outputMapping);
       }
 
-      //TODO Define in core
       private void updateWeights(float[] weights, float[] snapshotWeights)
       {
          for (int index = 0; index < weights.Length; ++index)

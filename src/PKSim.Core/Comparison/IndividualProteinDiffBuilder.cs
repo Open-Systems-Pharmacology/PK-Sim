@@ -16,9 +16,7 @@ namespace PKSim.Core.Comparison
       public override void Compare(IComparison<IndividualProtein> comparison)
       {
          _containerDiffBuilder.Compare(comparison);
-         CompareValues(x => x.TissueLocation, PKSimConstants.UI.LocalizationInTissue, comparison);
-         CompareValues(x => x.IntracellularVascularEndoLocation, PKSimConstants.UI.IntracellularVascularEndoLocation, comparison);
-         CompareValues(x => x.MembraneLocation, PKSimConstants.UI.LocationOnVascularEndo, comparison);
+         CompareValues(x => x.Localization, PKSimConstants.UI.Localization, comparison);
       }
    }
 }

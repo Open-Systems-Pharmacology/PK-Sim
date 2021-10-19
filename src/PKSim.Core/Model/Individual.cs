@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -23,6 +26,8 @@ namespace PKSim.Core.Model
          Seed = Environment.TickCount;
       }
 
+      Individual ISimulationSubject.Individual => this;
+
       public virtual Organism Organism => this.GetSingleChild<Organism>();
 
       public virtual IContainer Neighborhoods => this.GetSingleChildByName<IContainer>(Constants.NEIGHBORHOODS);
@@ -35,10 +40,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    all available organs in the individual
       /// </summary>
-      public virtual IEnumerable<Organ> AllOrgans()
-      {
-         return Organism.OrgansByType(OrganType.Tissue | OrganType.VascularSystem);
-      }
+      public virtual IEnumerable<Organ> AllOrgans() => Organism.OrgansByType(OrganType.Tissue | OrganType.VascularSystem);
 
       /// <summary>
       ///    Returns the available genders defined for the population in which the individual belongs
@@ -85,7 +87,12 @@ namespace PKSim.Core.Model
 
       public virtual void AddMolecule(IndividualMolecule molecule) => Add(molecule);
 
-      public virtual void RemoveMolecule(IndividualMolecule molecule) => RemoveChild(molecule);
+      public virtual void RemoveMolecule(IndividualMolecule molecule)
+      {
+         RemoveChild(molecule);
+         var allMoleculeBuildingBlocks = GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name));
+         allMoleculeBuildingBlocks.Each(x => x.ParentContainer.RemoveChild(x));
+      }
 
       /// <summary>
       ///    Return the protein with the name <paramref name="name" /> if defined in the individual, otherwise null
@@ -153,19 +160,13 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns <c>true</c> if at least one molecule is defined in the individual otherwise false
       /// </summary>
-      public bool HasMolecules()
-      {
-         return HasMolecules<IndividualMolecule>();
-      }
+      public bool HasMolecules() => HasMolecules<IndividualMolecule>();
 
       /// <summary>
       ///    Returns <c>true</c> if at least one molecule of type <typeparamref name="TIndividualMolecule" />is defined in the
       ///    individual otherwise false
       /// </summary>
-      public bool HasMolecules<TIndividualMolecule>() where TIndividualMolecule : IndividualMolecule
-      {
-         return AllMolecules<TIndividualMolecule>().Any();
-      }
+      public bool HasMolecules<TIndividualMolecule>() where TIndividualMolecule : IndividualMolecule => AllMolecules<TIndividualMolecule>().Any();
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
@@ -175,6 +176,55 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(individual, cloneManager);
          OriginData = individual.OriginData.Clone();
          Seed = individual.Seed;
+      }
+
+      /// <summary>
+      ///    Returns all possible (physical) containers of the organism in which <paramref name="molecule" /> will be defined or
+      ///    an empty array if the organism is not defined
+      /// </summary>
+      public virtual IReadOnlyList<IContainer> AllPhysicalContainersWithMoleculeFor(IndividualMolecule molecule) =>
+         Organism?.GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).Select(x => x.ParentContainer).ToArray() ?? Array.Empty<IContainer>();
+
+      /// <summary>
+      ///    Returns all possible molecule parameters defined for <paramref name="molecule" /> in the individual.
+      ///    This also returns the global molecule parameters
+      /// </summary>
+      public virtual IReadOnlyList<IParameter> AllMoleculeParametersFor(IndividualMolecule molecule) =>
+         GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name)).SelectMany(x => x.AllParameters()).ToList();
+
+      /// <summary>
+      ///    Returns all possible molecule containers of the individual in which <paramref name="molecule" /> will be defined.
+      ///    This also returns global container under the global molecule named after <paramref name="molecule" />
+      /// </summary>
+      public virtual IReadOnlyList<MoleculeExpressionContainer> AllMoleculeContainersFor(IndividualMolecule molecule) =>
+         AllMoleculeContainersFor<MoleculeExpressionContainer>(molecule);
+
+      /// <summary>
+      ///    Returns all possible molecule containers of the individual in which <paramref name="molecule" /> will be defined.
+      ///    This also returns global container under the global molecule named after <paramref name="molecule" />
+      /// </summary>
+      public IReadOnlyList<T> AllMoleculeContainersFor<T>(IndividualMolecule molecule) where T : MoleculeExpressionContainer =>
+         GetAllChildren<T>(x => x.IsNamed(molecule.Name) || x.ParentContainer.IsNamed(molecule.Name));
+
+      public virtual ICache<string, IParameter> AllExpressionParametersFor(IndividualMolecule molecule)
+      {
+         var cache = new Cache<string, IParameter>(onMissingKey: x => null);
+         var allExpressionParameters = GetAllChildren<IParameter>(x => x.IsExpression() && x.ParentContainer.IsNamed(molecule.Name));
+         allExpressionParameters.Each(p =>
+         {
+            if (p.IsGlobalExpression())
+               cache[CoreConstants.ContainerName.GlobalExpressionContainerNameFor(p.Name)] = p;
+            else
+            {
+               var container = p.ParentContainer.ParentContainer;
+               var key = container.IsNamed(CoreConstants.Compartment.INTRACELLULAR) ? container.ParentContainer.Name : container.Name;
+               if (p.IsInLumen())
+                  key = CoreConstants.ContainerName.LumenSegmentNameFor(key);
+
+               cache[key] = p;
+            }
+         });
+         return cache;
       }
    }
 }

@@ -54,25 +54,25 @@ namespace PKSim.Presentation.UICommands
          compound.Name = "Standard Molecule";
          project.Compounds = new[] {compound};
 
-         var intrevanousBolusMgPerKg = await _snapshotObjectCreator.SimpleProtocol(dose: 1, doseUnit: "mg/kg", applicationType: ApplicationTypes.IntravenousBolus);
-         var intrevanousBolusMg = await _snapshotObjectCreator.SimpleProtocol(dose: 1, doseUnit: "mg", applicationType: ApplicationTypes.IntravenousBolus);
-         project.Protocols = new[] {intrevanousBolusMgPerKg, intrevanousBolusMg};
+         var intravenousBolusMgPerKg = await _snapshotObjectCreator.SimpleProtocol(dose: 1, doseUnit: "mg/kg", applicationType: ApplicationTypes.IntravenousBolus);
+         var intravenousBolusMg = await _snapshotObjectCreator.SimpleProtocol(dose: 1, doseUnit: "mg", applicationType: ApplicationTypes.IntravenousBolus);
+         project.Protocols = new[] {intravenousBolusMgPerKg, intravenousBolusMg};
 
          var snapshotConfiguration = new SimulationConstruction
          {
             Individual = individual,
             Compounds = new[] {compound},
-            Protocols = new[] {intrevanousBolusMgPerKg},
-            ModelName = CoreConstants.Model.FourComp,
+            Protocols = new[] {intravenousBolusMgPerKg},
+            ModelName = CoreConstants.Model.FOUR_COMP,
          };
 
          var fourCompIvBolusMgPerKg = await configurationFrom(snapshotConfiguration);
 
-         snapshotConfiguration.ModelName = CoreConstants.Model.TwoPores;
+         snapshotConfiguration.ModelName = CoreConstants.Model.TWO_PORES;
          var twoPore = await configurationFrom(snapshotConfiguration);
 
-         snapshotConfiguration.Protocols = new[] {intrevanousBolusMg};
-         snapshotConfiguration.ModelName = CoreConstants.Model.FourComp;
+         snapshotConfiguration.Protocols = new[] {intravenousBolusMg};
+         snapshotConfiguration.ModelName = CoreConstants.Model.FOUR_COMP;
          var fourCompIvBolusMg = await configurationFrom(snapshotConfiguration);
 
 

@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Version>9.0.0</Version>
-    <PackageVersion>9.0.0</PackageVersion>
-    <AssemblyVersion>9.0.0</AssemblyVersion>
-    <FileVersion>9.0.0</FileVersion>
-    <InformationalVersion>9.0.0</InformationalVersion>
+    <Version>10.0.0</Version>
+    <PackageVersion>10.0.0</PackageVersion>
+    <AssemblyVersion>10.0.0</AssemblyVersion>
+    <FileVersion>10.0.0</FileVersion>
+    <InformationalVersion>10.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -35,23 +35,38 @@
     <None Remove="packages.config" />
   </ItemGroup>
 
+  
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
-    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="19.2.4.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="9.0.137" />
-    <PackageReference Include="OSPSuite.UI" Version="9.0.137" />
-    <PackageReference Include="OSPSuite.UI.Importer" Version="9.0.137" />
+    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="5.0.0.1" />
+    <PackageReference Include="OSPSuite.DevExpress" Version="20.1.6" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="9.0.137" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
+    <PackageReference Include="OSPSuite.Presentation" Version="10.0.368" />
+    <PackageReference Include="OSPSuite.UI" Version="10.0.368" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.368" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

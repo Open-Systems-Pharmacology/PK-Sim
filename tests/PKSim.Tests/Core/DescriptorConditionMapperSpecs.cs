@@ -6,13 +6,13 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Descriptors;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_DescriptorConditionMapper : ContextSpecificationAsync<DescriptorConditionMapper>
    {
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected InContainerCondition _inContainer;
       protected MatchAllCondition _matchAllCondition;
       protected MatchTagCondition _notMatchCondition;
@@ -21,7 +21,7 @@ namespace PKSim.Core
 
       protected override Task Context()
       {
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          sut = new DescriptorConditionMapper(_logger);
 
          _inContainer = new InContainerCondition("CONT");

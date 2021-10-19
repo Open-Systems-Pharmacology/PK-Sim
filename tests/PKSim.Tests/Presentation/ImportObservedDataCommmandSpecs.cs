@@ -5,14 +5,14 @@ using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_ImportObservedDataCommmand : ContextSpecification<ImportConcentrationDataCommmand>
+   public abstract class concern_for_ImportObservedDataCommmand : ContextSpecification<ImportConcentrationDataCommand>
    {
       protected IImportObservedDataTask _observedDataTask;
 
       protected override void Context()
       {
          _observedDataTask = A.Fake<IImportObservedDataTask>();
-         sut = new ImportConcentrationDataCommmand(_observedDataTask);
+         sut = new ImportConcentrationDataCommand(_observedDataTask);
       }
    }
 

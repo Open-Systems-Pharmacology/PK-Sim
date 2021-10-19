@@ -40,7 +40,7 @@ namespace PKSim.Core.Snapshots.Services
 
       Task<PKSimProject> LoadProjectFromSnapshotFile(string fileName);
 
-      Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot);
+      Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot, bool runSimulations);
 
       Task<T> LoadSnapshotFromFile<T>(string fileName) where T : IWithName;
 
@@ -56,14 +56,22 @@ namespace PKSim.Core.Snapshots.Services
       private readonly IDialogCreator _dialogCreator;
       private readonly IExecutionContext _executionContext;
       private readonly IObjectTypeResolver _objectTypeResolver;
+      private readonly ProjectMapper _projectMapper;
       private readonly IJsonSerializer _jsonSerializer;
       private readonly ISnapshotMapper _snapshotMapper;
 
-      public SnapshotTask(IDialogCreator dialogCreator, IJsonSerializer jsonSerializer, ISnapshotMapper snapshotMapper, IExecutionContext executionContext, IObjectTypeResolver objectTypeResolver)
+      public SnapshotTask(
+         IDialogCreator dialogCreator,
+         IJsonSerializer jsonSerializer,
+         ISnapshotMapper snapshotMapper,
+         IExecutionContext executionContext,
+         IObjectTypeResolver objectTypeResolver,
+         ProjectMapper projectMapper)
       {
          _dialogCreator = dialogCreator;
          _executionContext = executionContext;
          _objectTypeResolver = objectTypeResolver;
+         _projectMapper = projectMapper;
          _jsonSerializer = jsonSerializer;
          _snapshotMapper = snapshotMapper;
       }
@@ -158,13 +166,14 @@ namespace PKSim.Core.Snapshots.Services
 
       public async Task<PKSimProject> LoadProjectFromSnapshotFile(string fileName)
       {
-         var project = (await LoadModelsFromSnapshotFile<PKSimProject>(fileName)).FirstOrDefault();
+         var projectSnapshot = (await LoadSnapshots<Project>(fileName)).FirstOrDefault();
+         var project = await LoadProjectFromSnapshot(projectSnapshot, runSimulations: true);
          return projectWithUpdatedProperties(project, FileHelper.FileNameFromFileFullPath(fileName));
       }
 
-      public async Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot)
+      public async Task<PKSimProject> LoadProjectFromSnapshot(Project snapshot, bool runSimulations)
       {
-         var project = (await loadModelsFromSnapshots<PKSimProject>(new[] {snapshot})).FirstOrDefault();
+         var project = await _projectMapper.MapToModel(snapshot, new ProjectContext {RunSimulations = runSimulations});
          return projectWithUpdatedProperties(project, snapshot?.Name);
       }
 

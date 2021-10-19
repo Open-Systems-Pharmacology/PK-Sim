@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -16,7 +15,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatProteinSynonymRepository _flatProteinSynonymRepository;
       private readonly IList<TransporterContainerTemplate> _allTemplates;
 
-      public TransporterContainerTemplateRepository(IFlatTransporterContainerTemplateRepository flatTransporterContainerTemplateRepository, IFlatProteinSynonymRepository flatProteinSynonymRepository)
+      public TransporterContainerTemplateRepository(IFlatTransporterContainerTemplateRepository flatTransporterContainerTemplateRepository,
+         IFlatProteinSynonymRepository flatProteinSynonymRepository)
       {
          _flatTransporterContainerTemplateRepository = flatTransporterContainerTemplateRepository;
          _flatProteinSynonymRepository = flatProteinSynonymRepository;
@@ -35,10 +35,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private IEnumerable<TransporterContainerTemplate> allTransporterTemplates(string speciesName, string geneName)
       {
-         return from t in All()
-            where t.Species.Equals(speciesName)
-            where t.IsTemplateFor(geneName)
-            select t;
+         return All().Where(t => t.Species == speciesName).Where(t => t.IsTemplateFor(geneName));
       }
 
       public bool HasTransporterTemplateFor(string speciesName, string transporterName)
@@ -55,7 +52,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IEnumerable<TransporterContainerTemplate> TransportersFor(string speciesName, string containerName)
       {
-         return TransportersFor(speciesName, containerName, CoreConstants.ActiveTransport.VALID_FOR_ALL_GENES);
+         return All().Where(t => t.Species == speciesName).Where(t => t.OrganName == containerName);
       }
 
       public override IEnumerable<TransporterContainerTemplate> All()
@@ -86,14 +83,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
          {
             CompartmentName = flatTemplate.CompartmentName,
             Gene = flatTemplate.Gene,
-            MembraneLocation = flatTemplate.MembraneLocation,
-            MembraneLocationDisplayName = flatTemplate.MembraneLocationDisplayName,
             OrganName = flatTemplate.OrganName,
             Species = flatTemplate.Species,
-            TransportType = flatTemplate.TransportType
+            TransportType = flatTemplate.TransportType,
+            // TransportDirection = flatTemplate.TransportDirection
          };
 
-         flatTemplatesGroupByKeys.Select(x => x.ProcessName).Each(template.AddProcessName);
          _flatProteinSynonymRepository.AddSynonymsTo(template);
 
          return template;

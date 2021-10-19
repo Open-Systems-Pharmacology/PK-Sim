@@ -76,8 +76,6 @@ namespace PKSim.Core.Model
          get { return _allSimulations.Aggregate(true, (upToDate, s) => upToDate && s.HasUpToDateResults); }
       }
 
-// TODO      public virtual IReadOnlyList<SpeciesPopulation> AllRaces => concatenateValues(x => x.AllRaces);
-
       private IReadOnlyList<T> concatenateValues<T>(Func<PopulationSimulation, IReadOnlyList<T>> simulationValuesRetriever)
       {
          var values = new List<T>();

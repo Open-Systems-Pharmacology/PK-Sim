@@ -6,7 +6,7 @@ namespace PKSim.Core.Reporting
 {
    public class ReportPart
    {
-      private readonly IList<ReportPart> _subParts;
+      private readonly List<ReportPart> _subParts;
       private readonly StringBuilder _sbContent;
       private string _title;
 
@@ -63,7 +63,7 @@ namespace PKSim.Core.Reporting
       /// </summary>
       public virtual string Content => _sbContent.ToString();
 
-      public IEnumerable<ReportPart> SubParts => _subParts;
+      public IReadOnlyList<ReportPart> SubParts => _subParts;
 
       public override string ToString()
       {

@@ -18,6 +18,6 @@ namespace PKSim.Core.Services
             inhibitorAlias: CoreConstants.Alias.MIXED_INHIBITION_I,
             kWaterAlias: CoreConstants.Alias.MIXED_INHIBITION_K_WATER)
       {
-      }  
+      }
    }
 }

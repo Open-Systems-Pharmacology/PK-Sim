@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
          OldPercentile = tableParameter.Formula.DowncastTo<DistributedTableFormula>().Percentile;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new UpdateDistributedTableFormulaPercentileCommand(_parameter, OldPercentile).AsInverseFor(this);
       }

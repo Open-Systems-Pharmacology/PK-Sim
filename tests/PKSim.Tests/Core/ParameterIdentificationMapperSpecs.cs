@@ -9,7 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using IdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using OutputMapping = OSPSuite.Core.Domain.ParameterIdentifications.OutputMapping;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -35,7 +35,7 @@ namespace PKSim.Core
       protected ISimulationAnalysis _parameterIdentificationAnalysis;
       protected ParameterIdentificationAnalysis _snapshotParameterIdentificationAnalysis;
       protected IObjectBaseFactory _objectBaseFactory;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
@@ -44,7 +44,7 @@ namespace PKSim.Core
          _identificationParameterMapper = A.Fake<IdentificationParameterMapper>();
          _parameterIdentificationAnalysisMapper = A.Fake<ParameterIdentificationAnalysisMapper>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          _project = new PKSimProject();
          _simulation = new IndividualSimulation().WithName("S1");
@@ -89,7 +89,7 @@ namespace PKSim.Core
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_parameterIdentification, _project);
+         _snapshot = await sut.MapToSnapshot(_parameterIdentification);
       }
 
       [Observation]
@@ -117,7 +117,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_mapped_the_parameter_identificaiton_analysis()
+      public void should_have_mapped_the_parameter_identification_analysis()
       {
          _snapshot.Analyses.ShouldContain(_snapshotParameterIdentificationAnalysis);
       }
@@ -130,7 +130,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_parameterIdentification, _project);
+         _snapshot = await sut.MapToSnapshot(_parameterIdentification);
          A.CallTo(() => _outputMappingMapper.MapToModel(_snapshotOutputMapping, A<ParameterIdentificationContext>._)).Returns(_outputMapping);
          A.CallTo(() => _identificationParameterMapper.MapToModel(_snapshotIdentificationParameter, A<ParameterIdentificationContext>._)).Returns(_identificationParameter);
          A.CallTo(() => _parameterIdentificationAnalysisMapper.MapToModel(_snapshotParameterIdentificationAnalysis, A<ParameterIdentificationContext>._)).Returns(_parameterIdentificationAnalysis);
@@ -168,7 +168,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_mapped_the_parameter_identificaiton_analysis()
+      public void should_have_mapped_the_parameter_identification_analysis()
       {
          _newParameterIdentification.Analyses.ShouldContain(_parameterIdentificationAnalysis);
       }
@@ -176,14 +176,14 @@ namespace PKSim.Core
 
    public class When_mapping_a_parameter_identification_snapshot_referencing_an_unknown_simulation_to_parameter_identification : concern_for_ParameterIdentificationMapper
    {
-      private string _unkownSimulation;
+      private string _unknownSimulation;
 
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_parameterIdentification, _project);
-         _unkownSimulation = "UNKOWN";
-         _snapshot.Simulations = new[] {_unkownSimulation};
+         _snapshot = await sut.MapToSnapshot(_parameterIdentification);
+         _unknownSimulation = "UNKOWN";
+         _snapshot.Simulations = new[] {_unknownSimulation};
       }
 
       protected override Task Because()
@@ -194,7 +194,7 @@ namespace PKSim.Core
       [Observation]
       public void should_log_the_fact_that_a_simulation_is_unknown()
       {
-         A.CallTo(() => _logger.AddToLog(PKSimConstants.Error.CouldNotFindSimulation(_unkownSimulation), LogLevel.Warning, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(PKSimConstants.Error.CouldNotFindSimulation(_unknownSimulation), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 }

@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Qualification;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
@@ -15,14 +16,14 @@ using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI
 {
    public abstract class concern_for_ExportSimulationRunner : ContextSpecificationAsync<ExportSimulationRunner>
    {
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected IWorkspacePersistor _workspacePersitor;
       protected ICoreWorkspace _workspace;
       protected ISimulationExporter _simulationExporter;
@@ -72,7 +73,7 @@ namespace PKSim.CLI
 
       protected override Task Context()
       {
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          _workspacePersitor = A.Fake<IWorkspacePersistor>();
          _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();
@@ -112,7 +113,7 @@ namespace PKSim.CLI
 
    public class When_exporting_the_simulation_result_for_a_simulation_in_a_project : concern_for_ExportSimulationRunner
    {
-      private SimulationExport _export;
+      private SimulationMapping _export;
 
       protected override async Task Because()
       {
@@ -264,49 +265,6 @@ namespace PKSim.CLI
       }
    }
 
-   public class When_running_the_export_simulation_runner_for_a_simulation_that_does_not_have_selected_output : concern_for_ExportSimulationRunner
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _exportRunOptions.ProjectFile = _projectFileName;
-         _project.AddBuildingBlock(_simulation1);
-         _simulation1.OutputSelections = new OutputSelections();
-      }
-
-      protected override Task Because()
-      {
-         return sut.RunBatchAsync(_exportRunOptions);
-      }
-
-      [Observation]
-      public void should_warn_the_user_that_the_simulation_to_export_does_not_have_any_output()
-      {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
-      }
-   }
-
-   public class When_running_the_export_simulation_runner_for_a_simulation_that_does_not_have_any_results : concern_for_ExportSimulationRunner
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _exportRunOptions.ProjectFile = _projectFileName;
-         _project.AddBuildingBlock(_simulation1);
-         _simulation1.DowncastTo<IndividualSimulation>().DataRepository = null;
-      }
-
-      protected override Task Because()
-      {
-         return sut.RunBatchAsync(_exportRunOptions);
-      }
-
-      [Observation]
-      public void should_warn_the_user_that_the_simulation_to_export_does_not_have_any_results()
-      {
-         A.CallTo(() => _logger.AddToLog(A<string>.That.Contains(_simulation1Name), LogLevel.Warning, A<string>._)).MustHaveHappened();
-      }
-   }
 
    public class When_running_the_export_simulation_runner_for_a_simulation_that_does_not_exist : concern_for_ExportSimulationRunner
    {

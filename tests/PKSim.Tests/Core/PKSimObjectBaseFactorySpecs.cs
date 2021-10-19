@@ -27,7 +27,7 @@ namespace PKSim.Core
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _creationMetaDataFactory= A.Fake<ICreationMetaDataFactory>();
          var dimensionFactory = A.Fake<IDimensionFactory>();
-         A.CallTo(() => dimensionFactory.NoDimension).Returns(new Dimension());
+         A.CallTo(() => dimensionFactory.NoDimension).Returns(Constants.Dimension.NO_DIMENSION);
          A.CallTo(() => _dimensionRepository.DimensionFactory).Returns(dimensionFactory);
          A.CallTo(() => _ioC.Resolve<IParameter>()).Returns(_parameter);
          sut = new PKSimObjectBaseFactory(_ioC, _dimensionRepository, _idGenerator, _creationMetaDataFactory);
@@ -35,7 +35,7 @@ namespace PKSim.Core
    }
 
    
-   public class When_creating_an_object_for_an_inteface_without_any_specified_id : concern_for_PKSimObjectBaseFactory
+   public class When_creating_an_object_for_an_interface_without_any_specified_id : concern_for_PKSimObjectBaseFactory
    {
       private IParameter _result;
       private string _id;

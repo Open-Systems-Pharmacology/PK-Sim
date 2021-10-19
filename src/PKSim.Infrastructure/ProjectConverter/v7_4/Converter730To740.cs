@@ -57,7 +57,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v7_4
 
       private void convertSimulation(Simulation simulation)
       {
-         var allTabletTimeDelayFactorParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameter.TabletTimeDelayFactor));
+         var allTabletTimeDelayFactorParameters = simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.TabletTimeDelayFactor));
          allTabletTimeDelayFactorParameters.Each(convertTabletTimeDelayFactorParameter);
 
          var allSimulationMolecules = simulation.Model.Root.GetChildren<IContainer>(c => c.ContainerType == ContainerType.Molecule);

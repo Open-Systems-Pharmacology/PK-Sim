@@ -14,7 +14,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          _representationInfoRepository= A.Fake<IRepresentationInfoRepository>();
-         sut = new TablePart("Parameter");
+         sut = new TablePart("Parameters");
       }
    }
 

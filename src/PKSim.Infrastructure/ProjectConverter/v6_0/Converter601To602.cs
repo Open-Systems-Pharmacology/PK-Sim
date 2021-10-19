@@ -63,15 +63,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          //We find the old mapping for the organ liver 
          foreach (DataRow row in mappingTable.Rows)
          {
-            if (row[DatabaseConfiguration.MappingColumns.COL_CONTAINER].ToString() == CoreConstants.Organ.Liver)
+            if (row[DatabaseConfiguration.MappingColumns.COL_CONTAINER].ToString() == CoreConstants.Organ.LIVER)
             {
                //store a new row for Periportal that will be added in the mapping
                var periportalRow = mappingTable.NewRow();
-               periportalRow[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.Periportal;
+               periportalRow[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.PERIPORTAL;
                periportalRow[DatabaseConfiguration.MappingColumns.COL_TISSUE] = row[DatabaseConfiguration.MappingColumns.COL_TISSUE];
 
                //this becomes now pericentral
-               row[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.Pericentral;
+               row[DatabaseConfiguration.MappingColumns.COL_CONTAINER] = CoreConstants.Compartment.PERICENTRAL;
 
                periporalRows.Add(periportalRow);
             }
@@ -96,10 +96,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
       private void convertIndividual(Individual individual)
       {
          if (individual == null) return;
-
-         individual.AllMolecules().SelectMany(m => m.AllExpressionsContainers())
-            .Select(c => c.RelativeExpressionParameter)
-            .Each(p => p.Dimension = Constants.Dimension.NO_DIMENSION);
 
          individual.AllMolecules().Where(x => x.HasQuery())
             .Each(updateDatabaseQueryStringToLiverZones);

@@ -15,7 +15,7 @@ namespace PKSim.Core.Model.Extensions
 
       public static bool IsInMucosa(this IEntity entity)
       {
-         if (entity.HasAncestorNamed(CoreConstants.Compartment.Mucosa))
+         if (entity.HasAncestorNamed(CoreConstants.Compartment.MUCOSA))
             return true;
 
          var neighborhood = entity.NeighborhoodAncestor();
@@ -27,9 +27,10 @@ namespace PKSim.Core.Model.Extensions
             IsInMucosa(neighborhood.SecondNeighbor);
       }
 
+
       public static bool IsInLumen(this IEntity entity)
       {
-         if (entity.HasAncestorNamed(CoreConstants.Organ.Lumen))
+         if (entity.HasAncestorNamed(CoreConstants.Organ.LUMEN))
             return true;
 
          var neighborhood = entity.NeighborhoodAncestor();

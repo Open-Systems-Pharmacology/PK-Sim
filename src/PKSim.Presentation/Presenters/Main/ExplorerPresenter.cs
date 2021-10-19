@@ -1,9 +1,5 @@
 using System.Collections.Generic;
 using System.Drawing;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -14,6 +10,10 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Services;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Main

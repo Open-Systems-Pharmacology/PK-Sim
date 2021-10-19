@@ -54,12 +54,14 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          var parameters = new[] {molecule.ReferenceConcentration, molecule.HalfLifeLiver, molecule.HalfLifeIntestine};
          _moleculeParametersPresenter.Edit(parameters);
-         _ontogenySelectionPresenter.Edit(molecule, simulationSubject);
+         _ontogenySelectionPresenter.Edit(molecule, simulationSubject);     
+         RefreshView();
       }
 
       public void RefreshView()
       {
          _ontogenySelectionPresenter.RefreshView();
+         _moleculeParametersPresenter.View.AdjustHeight();
          _view.AdjustHeight();
       }
    }

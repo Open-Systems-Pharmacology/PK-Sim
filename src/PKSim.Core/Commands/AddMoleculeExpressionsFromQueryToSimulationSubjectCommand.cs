@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
@@ -29,20 +30,24 @@ namespace PKSim.Core.Commands
          //First add the protein expression to the individual so that undo will be available
          Add(AddMoleculeToSimulationSubjectCommand(_molecule, _simulationSubject, context));
 
+         var allExpressions = _simulationSubject.AllExpressionParametersFor(_molecule);
          //Then update the new expression values
          foreach (var expressionResult in _queryExpressionResults.ExpressionResults)
          {
-            Add(new SetRelativeExpressionCommand(_molecule.GetRelativeExpressionParameterFor(expressionResult.ContainerName), expressionResult.RelativeExpression));
+            Add(new SetRelativeExpressionCommand(allExpressions[expressionResult.ContainerName], expressionResult.RelativeExpression));
          }
 
-         Add(new NormalizeRelativeExpressionCommand(_molecule, context));
+         Add(new NormalizeRelativeExpressionCommand(_molecule, _simulationSubject, context));
 
          //update properties from first command
          this.UpdatePropertiesFrom(All().FirstOrDefault());
 
          base.Execute(context);
 
-         //clear references
+         //Now notify a refresh event to ensure that the user interface can update
+         context.PublishEvent(new RefreshMoleculeInSimulationSubjectEvent<TSimulationSubject>{Container = _simulationSubject, Entity = _molecule});
+
+          //clear references
          _molecule = null;
          _queryExpressionResults = null;
          _simulationSubject = null;

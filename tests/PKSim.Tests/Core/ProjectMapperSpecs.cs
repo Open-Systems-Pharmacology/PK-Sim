@@ -16,7 +16,7 @@ using Compound = PKSim.Core.Model.Compound;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Event = PKSim.Core.Snapshots.Event;
 using Formulation = PKSim.Core.Model.Formulation;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using Individual = PKSim.Core.Model.Individual;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
 using Population = PKSim.Core.Model.Population;
@@ -70,7 +70,7 @@ namespace PKSim.Core
       protected QualificationPlanMapper _qualificationPlanMapper;
       protected QualificationPlan _qualificationPlan;
       protected Snapshots.QualificationPlan _qualificationPlanSnapshot;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected ICreationMetaDataFactory _creationMetaDataFactory;
       protected Snapshots.ObserverSet _observerSetSnapshot;
 
@@ -86,7 +86,7 @@ namespace PKSim.Core
          _classificationSnapshotTask = A.Fake<IClassificationSnapshotTask>();
          _qualificationPlanMapper = A.Fake<QualificationPlanMapper>();
          _creationMetaDataFactory= A.Fake<ICreationMetaDataFactory>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -160,7 +160,7 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToSnapshot(_observerSet)).Returns(_observerSetSnapshot);
          A.CallTo(() => _simulationMapper.MapToSnapshot(_simulation, _project)).Returns(_simulationSnapshot);
          A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).Returns(_simulationComparisonSnapshot);
-         A.CallTo(() => _parameterIdentificationMapper.MapToSnapshot(_parameterIdentification, _project)).Returns(_parameterIdentificationSnapshot);
+         A.CallTo(() => _parameterIdentificationMapper.MapToSnapshot(_parameterIdentification)).Returns(_parameterIdentificationSnapshot);
          A.CallTo(() => _qualificationPlanMapper.MapToSnapshot(_qualificationPlan)).Returns(_qualificationPlanSnapshot);
 
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] {_observedDataClassificationSnapshot});
@@ -308,8 +308,8 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
          A.CallTo(() => _snapshotMapper.MapToModel(_observerSetSnapshot)).Returns(_observerSet);
 
-         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<PKSimProject>._)).Returns(_simulation);
-         A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<PKSimProject>._)).Throws(new Exception());
+         A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).Returns(_simulation);
+         A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<SimulationContext>._)).Throws(new Exception());
          A.CallTo(() => _simulationComparisonMapper.MapToModel(_simulationComparisonSnapshot, A<PKSimProject>._)).Returns(_simulationComparison);
          A.CallTo(() => _parameterIdentificationMapper.MapToModel(_parameterIdentificationSnapshot, A<PKSimProject>._)).Returns(_parameterIdentification);
          A.CallTo(() => _qualificationPlanMapper.MapToModel(_qualificationPlanSnapshot, A<PKSimProject>._)).Returns(_qualificationPlan);
@@ -317,7 +317,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot);
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext{RunSimulations = true});
       }
 
       [Observation]

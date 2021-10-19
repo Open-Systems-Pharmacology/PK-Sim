@@ -28,7 +28,7 @@ namespace PKSim.Core.Commands
          _formulaToSet = context.Deserialize<TableFormula>(_serializationStream);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetParameterFormulaCommand(_parameter, _formulaToSet).AsInverseFor(this);
       }

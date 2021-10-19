@@ -162,9 +162,6 @@ namespace PKSim.Core.Services
          if (updateParameterOriginId)
             _parameterIdUpdater.UpdateParameterId(sourceParameter, targetParameter);
 
-         if (parameterShouldBeExcludedFromBulkUpdate(targetParameter))
-            return new PKSimEmptyCommand();
-
           return withUpdatedValueOrigin(_parameterUpdater.UpdateValue(sourceParameter, targetParameter), sourceParameter, targetParameter);
       }
 
@@ -182,7 +179,5 @@ namespace PKSim.Core.Services
          macroCommand.Add(updateValueOriginCommand);
          return macroCommand;
       }
-
-      private bool parameterShouldBeExcludedFromBulkUpdate(IParameter parameter) => parameter.IsExpressionNorm();
    }
 }

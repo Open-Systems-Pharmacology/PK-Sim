@@ -37,8 +37,8 @@
               </Extension>
             </ProgId>
 
-            <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\PK-Sim\$(var.ProductReleaseVersion)" Name="InstallPath" Type="string" KeyPath="no" Value="[INSTALLDIR]PKSim.exe" />
-            <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\PK-Sim\$(var.ProductReleaseVersion)" Name="InstallDir" Type="string" KeyPath="no" Value="[INSTALLDIR]" />
+            <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\PK-Sim\$(var.SuiteVersion)" Name="InstallPath" Type="string" KeyPath="no" Value="[INSTALLDIR]PKSim.exe" />
+            <RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)\PK-Sim\$(var.SuiteVersion)" Name="InstallDir" Type="string" KeyPath="no" Value="[INSTALLDIR]" />
           </Component>
 
           <Component Id="OSPSuiteLicense" Guid="CBB85B48-B261-4366-9B90-55CAAB5DD263">
@@ -132,7 +132,7 @@
 
       <!--Start menu Programms -->
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="OSPSuiteMenuDir" Name="$(var.SuiteName) $(var.ProductReleaseVersion)">
+        <Directory Id="OSPSuiteMenuDir" Name="$(var.SuiteName) $(var.SuiteVersion)">
           <Component Id="OSPSuiteMenuDir" Guid="5D07DE39-0070-487B-94F4-C0ADB6118BF0" Win64="yes">
             <RemoveFolder Id="OSPSuiteMenuDir" On="uninstall" />
             <RegistryValue Root="HKMU" Key="Software\[Manufacturer]\[ProductName]\OSP" Type="string" Value="" KeyPath="yes" />

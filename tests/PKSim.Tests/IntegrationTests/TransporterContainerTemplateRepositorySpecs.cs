@@ -18,13 +18,13 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_correct_type_for_ABCB1()
       {
-         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "ABCB1").ShouldBeEqualTo(TransportType.PgpLike);
+         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "ABCB1").ShouldBeEqualTo(TransportType.Efflux);
       }
 
       [Observation]
       public void should_return_correct_type_for_ABCB1_written_in_lower_case()
       {
-         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "abcb1").ShouldBeEqualTo(TransportType.PgpLike);
+         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "abcb1").ShouldBeEqualTo(TransportType.Efflux);
       }
 
       [Observation]
@@ -42,7 +42,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_correcty_type_for_MDR1_defined_as_synonym_of_ABCB1()
       {
-         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "MDR1").ShouldBeEqualTo(TransportType.PgpLike);
+         sut.TransportTypeFor(CoreConstants.Species.HUMAN, "MDR1").ShouldBeEqualTo(TransportType.Efflux);
       }
 
       [Observation]
@@ -58,21 +58,6 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_retrieving_all_transporter_templates_from_the_repository_for_human_kidney : concern_for_TransporterContainerTemplateRepository
-   {
-      private IEnumerable<TransporterContainerTemplate> _result;
-
-      protected override void Because()
-      {
-         _result = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Organ.Kidney);
-      }
-
-      [Observation]
-      public void should_return_at_least_one_element()
-      {
-         _result.Count().ShouldBeGreaterThan(0);
-      }
-   }
 
    public class When_retrieving_all_predefined_transport_processes_for_pericentral_and_periportal_from_the_database : concern_for_TransporterContainerTemplateRepository
    {
@@ -81,8 +66,8 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _pericentrals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.Pericentral).ToList();
-         _periportals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.Periportal).ToList();
+         _pericentrals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.PERICENTRAL).ToList();
+         _periportals = sut.TransportersFor(CoreConstants.Species.HUMAN, CoreConstants.Compartment.PERIPORTAL).ToList();
       }
 
       [Observation]
@@ -101,7 +86,6 @@ namespace PKSim.IntegrationTests
       {
          return
             transporter1.Gene == transporter2.Gene &&
-            transporter1.MembraneLocation == transporter2.MembraneLocation &&
             transporter1.TransportType == transporter2.TransportType;
 
       }

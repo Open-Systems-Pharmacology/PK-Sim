@@ -5,9 +5,9 @@ using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Extensions;
-using PKSim.UI.Views.Core;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -35,10 +35,7 @@ namespace PKSim.UI.Views.Simulations
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public void AttachPresenter(ISimulationCompoundProtocolPresenter presenter)
       {

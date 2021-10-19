@@ -87,11 +87,20 @@ namespace PKSim.Core.Services
       public void ExportToCSV(PopulationSimulation populationSimulation, FileSelection fileSelection)
       {
          exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader: true), fileSelection);
+         
+         //Also export all aging data
+         var agingData = populationSimulation.AgingData.ToDataTable();
+         if (agingData.Rows.Count== 0)
+            return;
+
+         var agingDataFile = fileSelection.AddSuffixToFileName(CoreConstants.Population.AGING_PARAMETER_EXPORT);
+         agingData.ExportToCSV(agingDataFile.FilePath, comments: CreateProjectMetaInfoFrom(agingDataFile.Description));
       }
 
       public void ExportToCSV(PopulationSimulation populationSimulation, string fileFullPath)
       {
-         exportVectorialParametersContainerToCSV(populationSimulation, x => CreatePopulationDataFor(x, includeUnitsInHeader: true), fileFullPath);
+         var fileSelection = new FileSelection {FilePath = fileFullPath};
+         ExportToCSV(populationSimulation, fileSelection);
       }
 
       private void exportVectorialParametersContainerToCSV<T>(T advancedParameterContainer, Func<T, DataTable> createData, FileSelection fileSelection) where T : IAdvancedParameterContainer

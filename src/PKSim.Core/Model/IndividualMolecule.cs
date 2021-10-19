@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using PKSim.Assets;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -33,22 +34,10 @@ namespace PKSim.Core.Model
 
       public IParameter OntogenyFactorGIParameter => this.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI);
 
-      public virtual bool HasContainerNamed(string expressionContainerName)
-      {
-         return ExpressionContainer(expressionContainerName) != null;
-      }
-         
-      public virtual MoleculeExpressionContainer ExpressionContainer(string expressionContainerName)
-      {
-         return AllExpressionsContainers().FindByName(expressionContainerName);
-      }
-
       public virtual bool HasQuery()
       {
          return !string.IsNullOrEmpty(QueryConfiguration);
       }
-
-      public virtual IReadOnlyList<MoleculeExpressionContainer> AllExpressionsContainers() => GetAllChildren<MoleculeExpressionContainer>();
 
       public virtual IParameter ReferenceConcentration => this.Parameter(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
 
@@ -56,22 +45,18 @@ namespace PKSim.Core.Model
 
       public virtual IParameter HalfLifeIntestine => this.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
 
-      public virtual IParameter GetRelativeExpressionParameterFor(string expressionContainerName)
-      {
-         return ExpressionContainer(expressionContainerName)?.RelativeExpressionParameter;
-      }
+      public IReadOnlyList<IParameter> AllGlobalMoleculeParameters => new[] {ReferenceConcentration, HalfLifeLiver, HalfLifeIntestine};
 
-      public virtual IParameter GetRelativeExpressionNormParameterFor(string expressionContainerName)
-      {
-         return ExpressionContainer(expressionContainerName)?.RelativeExpressionNormParameter;
-      }
+      public IReadOnlyList<IParameter> AllOntogenyParameters => new[] {OntogenyFactorParameter, OntogenyFactorGIParameter};
+
+      public IReadOnlyList<IParameter> AllGlobalExpressionParameters => this.AllParameters().Except(AllGlobalMoleculeParameters).Except(AllOntogenyParameters).ToList();
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceMolecule = sourceObject as IndividualMolecule;
          if (sourceMolecule == null) return;
-         
+
          QueryConfiguration = sourceMolecule.QueryConfiguration;
          MoleculeType = sourceMolecule.MoleculeType;
          var sourceOntogeny = sourceMolecule.Ontogeny;

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using DevExpress.XtraLayout;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
-using DevExpress.XtraLayout;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.UI.Views.Simulations
 {

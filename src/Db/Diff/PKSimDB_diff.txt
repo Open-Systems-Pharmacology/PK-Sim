@@ -1,2 +1,2 @@
-UPDATE tab_calculation_method_rates SET formula='(Q*(1-HCT))*C_pls' WHERE calculation_method='MassTransferLink_forTwoPores' AND formula_rate='PARAM_MassTransferIntestineToMucosaPlasma';
-DELETE FROM tab_rate_generic_parameters WHERE calculation_method='MassTransferLink_forTwoPores' AND formula_rate='PARAM_MassTransferIntestineToMucosaPlasma' AND path_id=1524 AND parameter_name='Lymph flow rate';
+UPDATE tab_populations SET display_name='Japanese (Schlender, 2015)', description='Japanese (Schlender, 2015)' WHERE population='Japanese_Population';
+UPDATE tab_populations SET display_name='Preterm (Claassen, 2015)', description='Preterm (Claassen, 2015)' WHERE population='Preterm';

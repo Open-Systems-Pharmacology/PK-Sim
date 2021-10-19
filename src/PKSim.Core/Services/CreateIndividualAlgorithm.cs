@@ -377,10 +377,10 @@ namespace PKSim.Core.Services
             _organDensity[iOrganIndex] = organ.Parameter(CoreConstants.Parameters.DENSITY).Value;
             organVolumes[iOrganIndex] = generateVolumeFunction(muSigma, randomGenerator);
 
-            if (organ.IsNamed(CoreConstants.Organ.Skin))
+            if (organ.IsNamed(CoreConstants.Organ.SKIN))
                _skinIndex = iOrganIndex;
 
-            if (organ.IsNamed(CoreConstants.Organ.Fat))
+            if (organ.IsNamed(CoreConstants.Organ.FAT))
                _fatIndex = iOrganIndex;
 
             iOrganIndex++;
@@ -405,10 +405,10 @@ namespace PKSim.Core.Services
             organVolumes[iOrganIndex] = organ.Parameter(Constants.Parameters.VOLUME).Value;
 
 
-            if (organ.IsNamed(CoreConstants.Organ.Skin))
+            if (organ.IsNamed(CoreConstants.Organ.SKIN))
                _skinIndex = iOrganIndex;
 
-            if (organ.IsNamed(CoreConstants.Organ.Fat))
+            if (organ.IsNamed(CoreConstants.Organ.FAT))
                _fatIndex = iOrganIndex;
 
             iOrganIndex++;

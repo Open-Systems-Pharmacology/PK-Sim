@@ -13,7 +13,7 @@ namespace PKSim.Core.Commands
          Description = PKSimConstants.Command.RemoveSimulationIntervalFromSimulationOutputDescription;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new AddSimulationIntervalToSimulationOutputCommand(_entityToRemove, _parentContainer, context).AsInverseFor(this);
       }

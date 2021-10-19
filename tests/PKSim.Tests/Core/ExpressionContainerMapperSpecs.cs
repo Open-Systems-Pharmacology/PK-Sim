@@ -4,11 +4,14 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Core.Snapshots.Services;
 using Individual = PKSim.Core.Model.Individual;
+using OriginData = PKSim.Core.Model.OriginData;
 
 namespace PKSim.Core
 {
@@ -25,35 +28,39 @@ namespace PKSim.Core
       protected ITransportContainerUpdater _transportContainerUpdater;
       protected Individual _individual;
       protected ExpressionContainerMapperContext _expressionContainerMapperContext;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
+      protected TransporterExpressionContainer _bloodCellsExpressionContainer;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
-         _logger= A.Fake<ILogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          sut = new ExpressionContainerMapper(_parameterMapper, _transportContainerUpdater, _logger);
 
-         _relativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault:true).WithName(CoreConstants.Parameters.REL_EXP);
+         _relativeExpressionParameter =
+            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
          _moleculeExpressionContainer = new MoleculeExpressionContainer().WithName("EXP");
          _moleculeExpressionContainer.Add(_relativeExpressionParameter);
 
-         _transporterRelativeExpressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
+         _transporterRelativeExpressionParameter =
+            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
          _transporterExpressionContainer = new TransporterExpressionContainer().WithName("TRANS");
-         _transporterExpressionContainer.MembraneLocation = MembraneLocation.Apical;
+         _transporterExpressionContainer.TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular;
+
+         _bloodCellsExpressionContainer = new TransporterExpressionContainer().WithName(CoreConstants.Compartment.BLOOD_CELLS);
+         _bloodCellsExpressionContainer.TransportDirection = TransportDirectionId.BiDirectionalBloodCellsPlasma;
 
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 
-         _individual = new Individual {OriginData = new  Model.OriginData {Species = new Species().WithName("Human")}};
-
+         _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
          _expressionContainerMapperContext = new ExpressionContainerMapperContext
          {
-            SimulationSubject = _individual
          };
 
          _enzyme = new IndividualEnzyme {_moleculeExpressionContainer};
-         _transporter = new IndividualTransporter {_transporterExpressionContainer};
+         _transporter = new IndividualTransporter {_transporterExpressionContainer, _bloodCellsExpressionContainer };
          return _completed;
       }
    }
@@ -72,46 +79,33 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_transport_molecule_expression_container_with_a_default_value_to_snapshot : concern_for_ExpressionContainerMapper
+   public class When_mapping_a_surrogate_compartment : concern_for_ExpressionContainerMapper
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_transporterExpressionContainer);
+         _snapshot = await sut.MapToSnapshot(_bloodCellsExpressionContainer);
       }
 
       [Observation]
-      public void should_return_null()
+      public void should_set_the_name_to_the_name_of_the_container()
       {
-         _snapshot.ShouldBeNull();
+         _snapshot.Name.ShouldBeEqualTo(_bloodCellsExpressionContainer.Name);
       }
+
+      [Observation]
+      public void should_set_the_compartment_name_to_null()
+      {
+         _snapshot.CompartmentName.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_update_the_transport_direction()
+      {
+         _snapshot.TransportDirection.ShouldBeEqualTo(_bloodCellsExpressionContainer.TransportDirection);
+      }
+
    }
 
-   public class When_mappign_a_expression_container_with_a_changed_value : concern_for_ExpressionContainerMapper
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _relativeExpressionParameter.Value = 5;
-         _relativeExpressionParameter.IsDefault = false;
-      }
-
-      protected override async Task Because()
-      {
-         _snapshot = await sut.MapToSnapshot(_moleculeExpressionContainer);
-      }
-
-      [Observation]
-      public void should_update_the_parameter_value_from_expression_parameter()
-      {
-         A.CallTo(() => _parameterMapper.UpdateSnapshotFromParameter(_snapshot, _relativeExpressionParameter)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_have_set_the_name_of_the_expression_container_to_the_name_of_the_container()
-      {
-         _snapshot.Name.ShouldBeEqualTo(_moleculeExpressionContainer.Name);
-      }
-   }
 
    public class when_updating_a_undefined_expression_container_from_snapshot : concern_for_ExpressionContainerMapper
    {
@@ -131,10 +125,9 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _relativeExpressionParameter.Value = 5;
-         _relativeExpressionParameter.IsDefault = false;
-         _snapshot = await sut.MapToSnapshot(_moleculeExpressionContainer);
+         _snapshot = new ExpressionContainer {Name = "Plasma", Value = 5};
          _expressionContainerMapperContext.Molecule = _enzyme;
+         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter> {{_snapshot.Name, _relativeExpressionParameter}};
       }
 
       protected override Task Because()
@@ -149,7 +142,6 @@ namespace PKSim.Core
       }
    }
 
-
    public class When_updating_a_transporter_expression_container_from_snapshot : concern_for_ExpressionContainerMapper
    {
       protected override async Task Context()
@@ -159,7 +151,11 @@ namespace PKSim.Core
          _transporterRelativeExpressionParameter.IsDefault = false;
          _snapshot = await sut.MapToSnapshot(_transporterExpressionContainer);
          _snapshot.MembraneLocation = MembraneLocation.Basolateral;
+         _snapshot.Value = 10;
          _expressionContainerMapperContext.Molecule = _transporter;
+         _expressionContainerMapperContext.ExpressionParameters = new Cache<string, IParameter>
+            {{_snapshot.Name, _transporterRelativeExpressionParameter}};
+         _expressionContainerMapperContext.MoleculeExpressionContainers = new[] {_transporterExpressionContainer};
       }
 
       protected override Task Because()
@@ -171,12 +167,6 @@ namespace PKSim.Core
       public void should_update_the_expression_container_with_the_expected_value()
       {
          A.CallTo(() => _parameterMapper.MapToModel(_snapshot, _transporterRelativeExpressionParameter)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_update_the_transporter_container_properties()
-      {
-         A.CallTo(() => _transportContainerUpdater.UpdateTransporterFromTemplate(_transporterExpressionContainer, _individual.Species.Name, _snapshot.MembraneLocation.Value, _transporter.TransportType)).MustHaveHappened();
       }
    }
 }

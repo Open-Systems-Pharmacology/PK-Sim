@@ -47,7 +47,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return ExportSnapshotMenuFor(buildingBlock);
 
          yield return ExportMarkdownMenuFor(buildingBlock);
-
       }
 
       protected IEnumerable<IMenuBarItem> ExportContextMenusFor(TBuildingBlock buildingBlock)

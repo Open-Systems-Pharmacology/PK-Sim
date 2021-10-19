@@ -37,7 +37,7 @@ namespace PKSim.IntegrationTests
       {
          var compoundName = "Aspirin";
 
-         var moleculeNames = sut.MoleculeNamesFor(CoreConstants.Model.TwoPores, "TwoPoresTransportLink", new[]{compoundName});
+         var moleculeNames = sut.MoleculeNamesFor(CoreConstants.Model.TWO_PORES, "TwoPoresTransportLink", new[]{compoundName});
          moleculeNames.ShouldNotBeNull();
 
          moleculeNames.MoleculeNamesToExclude.ShouldContain(CoreConstants.Molecule.FcRn, 

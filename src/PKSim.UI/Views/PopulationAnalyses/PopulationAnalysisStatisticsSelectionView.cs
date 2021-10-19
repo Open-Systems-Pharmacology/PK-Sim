@@ -11,7 +11,6 @@ using PKSim.Assets;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -27,7 +26,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          InitializeComponent();
          gridView.AllowsFiltering = false;
          _gridViewBinder = new GridViewBinder<StatisticalAggregation>(gridView);
-         _lineStyleRepository = new UxLineStylesComboBoxRepository(gridView, removeLineStyleNone: true);
+         _lineStyleRepository = new UxRepositoryItemLineStyles(gridView, removeLineStyleNone: true);
          _selectionRepository = new UxRepositoryItemCheckEdit(gridView);
       }
 

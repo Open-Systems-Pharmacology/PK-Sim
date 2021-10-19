@@ -33,7 +33,7 @@ namespace PKSim.CLI
       protected ICoreWorkspace _workspace;
       protected IWorkspacePersistor _workspacePersistor;
       protected IExportSimulationRunner _exportSimulationRunner;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected QualificationRunOptions _runOptions;
       protected QualifcationConfiguration _qualificationConfiguration;
       private Func<string, string> _oldCreateDirectory;
@@ -65,7 +65,7 @@ namespace PKSim.CLI
          _workspace = A.Fake<ICoreWorkspace>();
          _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _exportSimulationRunner = A.Fake<IExportSimulationRunner>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _markdownReporterTask = A.Fake<IMarkdownReporterTask>();
 
@@ -106,6 +106,7 @@ namespace PKSim.CLI
       {
          await base.Context();
          _runOptions.ConfigurationFile = "XXX";
+         _runOptions.Run = true;
          A.CallTo(() => _jsonSerializer.Deserialize<QualifcationConfiguration>(_runOptions.ConfigurationFile)).Returns(_qualificationConfiguration);
          _qualificationConfiguration.Project = PROJECT_NAME;
          _qualificationConfiguration.OutputFolder = "c:/tests/outputs/";
@@ -119,7 +120,7 @@ namespace PKSim.CLI
          _projectSnapshot = new SnapshotProject().WithName(PROJECT_SNAPSHOT_NAME);
          _project = new PKSimProject().WithName(PROJECT_NAME);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot)).Returns(_project);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot, _runOptions.Run)).Returns(_project);
          FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile);
       }
    }
@@ -175,8 +176,8 @@ namespace PKSim.CLI
       private string _deletedDirectory;
       private ExportRunOptions _exportOptions;
       private DataRepository _observedData;
-      private SimulationExport[] _simulationExports;
-      private SimulationExport _simulationExport;
+      private SimulationMapping[] _simulationExports;
+      private SimulationMapping _simulationExport;
       private string _expectedSimulationPath;
       private QualificationMapping _mapping;
       private string _simulationName;
@@ -201,7 +202,7 @@ namespace PKSim.CLI
          _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation, SectionLevel = 5};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
-         _simulationExport = new SimulationExport {Project = PROJECT_NAME, Simulation = _simulationName, SimulationFolder = _expectedSimulationPath};
+         _simulationExport = new SimulationMapping { Project = PROJECT_NAME, Simulation = _simulationName, Path = _expectedSimulationPath};
          _simulationExports = new[] {_simulationExport};
          A.CallTo(() => _exportSimulationRunner.ExportSimulationsIn(_project, A<ExportRunOptions>._))
             .Invokes(x => _exportOptions = x.GetArgument<ExportRunOptions>(1))
@@ -220,6 +221,7 @@ namespace PKSim.CLI
 
          _project.AddBuildingBlock(_individualSimulation);
          _qualificationConfiguration.Inputs = new[] {_input};
+         _runOptions.Run = true;
       }
 
       protected override Task Because()

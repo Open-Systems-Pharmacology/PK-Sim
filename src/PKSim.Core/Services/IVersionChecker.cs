@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using OSPSuite.Utility.Exceptions;
 
 namespace PKSim.Core.Services
 {
@@ -29,12 +28,5 @@ namespace PKSim.Core.Services
       ///    Returns true if a new version was found otherwise false. The latest version can be retrieved from LatestVersion
       /// </summary>
       Task<bool> NewVersionIsAvailableAsync();
-
-      /// <summary>
-      ///    Returns true if a new version was found otherwise false. The latest version can be retrieved from LatestVersion
-      ///    NewVersionIsAvailableAsync should have been called when initializing the service
-      /// </summary>
-      /// <exception cref="OSPSuiteException">is thrown if the version cannot be retrieved</exception>
-      bool NewVersionIsAvailable();
    }
 }

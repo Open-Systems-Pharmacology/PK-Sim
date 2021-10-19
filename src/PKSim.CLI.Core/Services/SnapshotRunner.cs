@@ -35,7 +35,7 @@ namespace PKSim.CLI.Core.Services
       private readonly ICoreWorkspace _workspace;
       private readonly ISnapshotTask _snapshotTask;
       private readonly IWorkspacePersistor _workspacePersistor;
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
       //For testing purposes only
       public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
@@ -46,7 +46,7 @@ namespace PKSim.CLI.Core.Services
          ICoreWorkspace workspace,
          ISnapshotTask snapshotTask,
          IWorkspacePersistor workspacePersistor,
-         ILogger logger)
+         IOSPSuiteLogger logger)
       {
          _workspace = workspace;
          _snapshotTask = snapshotTask;

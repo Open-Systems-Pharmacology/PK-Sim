@@ -10,9 +10,9 @@ namespace PKSim.CLI.Core.MinimalImplementations
    {
       private readonly IEntityValidator _entityValidator;
       private readonly IExecutionContext _executionContext;
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public CLIEntityValidationTask(IEntityValidator entityValidator, IExecutionContext executionContext, ILogger logger)
+      public CLIEntityValidationTask(IEntityValidator entityValidator, IExecutionContext executionContext, IOSPSuiteLogger logger)
       {
          _entityValidator = entityValidator;
          _executionContext = executionContext;

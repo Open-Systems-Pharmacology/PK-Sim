@@ -33,7 +33,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
          ISnapshotTask snapshotTask,
          IDialogCreator dialogCreator,
          IObjectTypeResolver objectTypeResolver,
-         ILogger logger,
+         IOSPSuiteLogger logger,
          IEventPublisher eventPublisher,
          SimulationMapper simulationMapper,
          IPKSimProjectRetriever projectRetriever
@@ -52,7 +52,12 @@ namespace PKSim.Presentation.Presenters.Snapshots
       protected override async Task<IEnumerable<Simulation>> LoadModelAsync(string snapshotFile)
       {
          var snapshots = await _snapshotTask.LoadSnapshots<PKSim.Core.Snapshots.Simulation>(snapshotFile);
-         var tasks = snapshots.Select(x => _simulationMapper.MapToModel(x, _projectRetriever.Current));
+         var simulationContext = new SimulationContext
+         {
+            Project = _projectRetriever.Current,
+            Run = true
+         };
+         var tasks = snapshots.Select(x => _simulationMapper.MapToModel(x, simulationContext));
          return await Task.WhenAll(tasks);
       }
    }

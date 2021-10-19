@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Exceptions;
@@ -17,7 +18,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Extensions;
-using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
@@ -35,9 +35,10 @@ namespace PKSim.Infrastructure
       protected ITemplateTask _templateTask;
       protected PKSimProject _project;
       private IPKSimProjectRetriever _projectRetriever;
-      protected IObservedDataPersistor _observedDataPersistor;
       private IObjectTypeResolver _objectTypeResolver;
+      private IParameterChangeUpdater _parameterChangeUpdater;
       protected ISnapshotTask _snapshotTask;
+      protected IPKMLPersistor _pkmlPersistor;
 
       protected override void Context()
       {
@@ -48,14 +49,15 @@ namespace PKSim.Infrastructure
          _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
+         _parameterChangeUpdater = A.Fake<IParameterChangeUpdater>();
+         _pkmlPersistor= A.Fake<IPKMLPersistor>(); 
          _project = new PKSimProject();
-         _observedDataPersistor = A.Fake<IObservedDataPersistor>();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _observedDataPersistor, _objectTypeResolver);
+            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver);
       }
    }
 
@@ -383,7 +385,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_not_export_the_data()
       {
-         A.CallTo(() => _observedDataPersistor.Save(_observedData, A<string>._)).MustNotHaveHappened();
+         A.CallTo(() => _pkmlPersistor.SaveToPKML(_observedData, A<string>._)).MustNotHaveHappened();
       }
    }
 
@@ -408,7 +410,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_export_the_data()
       {
-         A.CallTo(() => _observedDataPersistor.Save(_observedData, _fileName)).MustHaveHappened();
+         A.CallTo(() => _pkmlPersistor.SaveToPKML( _observedData, _fileName)).MustHaveHappened();
       }
    }
 }

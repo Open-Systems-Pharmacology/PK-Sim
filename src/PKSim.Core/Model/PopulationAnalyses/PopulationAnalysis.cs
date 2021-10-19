@@ -42,10 +42,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          populationAnalysis?.AllFields.Each(f => Add(cloneManager.Clone(f)));
       }
 
-      public virtual bool Has(string fieldName)
-      {
-         return FieldByName(fieldName) != null;
-      }
+      public virtual bool Has(string fieldName) => FieldByName(fieldName) != null;
 
       public virtual void Remove(IPopulationAnalysisField populationAnalysisField)
       {

@@ -19,26 +19,21 @@ namespace PKSim.Assets
          public const string PopulationFileFormatIsNotSupported = "Population file format is not supported.";
          public const string InhibitorClearanceMustBeDefinedSeparately = "Please note that for the mechanism-based inactivator no clearance process is defined via the inactivation process by default. In theory, for every inactivated target molecule, also one inactivator molecule is cleared; this must be separately defined by the user in form of additional clearance processes for the inhibitor.";
          public const string FractionAbsorbedSmallerThanOne = "Absorption seems to be incomplete or absorption process is not finished. Vd, Vss (or Vd/F and Vss/F), t1/2, MRT and AUC_inf should be compared with respective PK-parameters from an IV simulation.";
+         public const string ExpressionParametersWillBeReset = "Some expression values will be reset. Do you want to continue?";
 
          public static string SystemicProcessAvailableInCompoundButWasNotSelected(string systemicProcessType)
          {
             return $"{systemicProcessType} is available in compound but was not activated.";
          }
 
-         public static string ProteinAvailableButProcessNotSelected(string name)
-         {
-            return $"No compound process selected for protein '{name}'.";
-         }
+         public static string ProteinAvailableButProcessNotSelected(string name) => $"No compound process selected for protein '{name}'.";
 
          public static string NoTransporterTemplateFoundForTransporter(string transporterName, string transportType)
          {
             return $"The transporter '{transporterName}' was not found in the database. The transport direction is therefore set to the default setting '{transportType}'";
          }
 
-         public static string ParameterWithPathNotFoundInBaseIndividual(string parameterPath)
-         {
-            return $"Parameter '{parameterPath}' was not found in individual and will be ignored.";
-         }
+         public static string ParameterWithPathNotFoundInBaseIndividual(string parameterPath) => $"Parameter '{parameterPath}' was not found in individual and will be ignored.";
 
          public static string PKParameterAlreadyExistsAndWillBeOverwritten(string name, string quantityPath)
          {
@@ -50,10 +45,7 @@ namespace PKSim.Assets
             return $"Grouping field was defined for '{referencedFieldName}'. However you are trying to use it for '{dataField}'. Do you want to continue?";
          }
 
-         public static string ParameterPathNotFoundInSimulationAndWillBeIgnored(string parameterPath)
-         {
-            return $"Parameter '{parameterPath}' was not found in simulation and will be ignored";
-         }
+         public static string ParameterPathNotFoundInSimulationAndWillBeIgnored(string parameterPath) => $"Parameter '{parameterPath}' was not found in simulation and will be ignored";
 
          public static string MissingSimulationParametersWereOverwritten(IEnumerable<string> missingParameters)
          {
@@ -71,7 +63,7 @@ namespace PKSim.Assets
 
          public static string StaticInhibitionRemovedFromSimulationMapping(IEnumerable<string> processes)
          {
-            var sb = new StringBuilder("WARNING: Static inhibition was removed with version 5.6 of the software. The following processe(s) won't be used when cloning or configuring the simulation.\n");
+            var sb = new StringBuilder("WARNING: Static inhibition was removed with version 5.6 of the software. The following process(es) won't be used when cloning or configuring the simulation.\n");
             sb.AppendLine();
             sb.AppendLine(processes.ToString("\n"));
             sb.AppendLine();
@@ -294,9 +286,9 @@ namespace PKSim.Assets
             return $"Transporter type for '{transporterName}' was changed from '{oldTransporterType}' to '{newTransporterType}'";
          }
 
-         public static string SetMembraneTypeCommandDescription(string transporterName, string containerName, string oldMembraneType, string newMembraneType)
+         public static string SetTransportDirectionCommandDescription(string transporterName, string containerName, string oldTransportDirection, string newTransportDirection)
          {
-            return $"Membrane location for '{transporterName}' in '{containerName}' was changed from '{oldMembraneType}' to '{newMembraneType}'";
+            return $"Transport direction for '{transporterName}' in '{containerName}' was changed from '{oldTransportDirection}' to '{newTransportDirection}'";
          }
 
          public static string SetCompartmentTypeInAllContainerCommandDescription(string proteinName, string oldCompartmentName, string newCompartmentName)
@@ -474,6 +466,9 @@ namespace PKSim.Assets
          public static string TableFormulationRequiresAtLeastOnePoint(string formulation) => $"Table formulation '{formulation}' requires at least one point to be used in a simulation.";
 
          public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
+
+         public static string CannotCreateIdentificationParameter(string parameterPath, string parameterIdentificationName)
+            => $"Cannot create identification parameter '{parameterPath}' for parameter identification '{parameterIdentificationName}'.";
 
          public static string ParameterIsRequired(string parameterName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
 
@@ -732,9 +727,9 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string IndividualIdDoesNotMatchTheValueLength(int indiviudalId, int count)
+         public static string IndividualIdDoesNotMatchTheValueLength(int individualId, int count)
          {
-            return $"Individual Id '{indiviudalId}' does not match the expected number of individual '{count}'. A reason could be that the results were imported starting with an id of 1 instead of 0.";
+            return $"Individual Id '{individualId}' does not match the expected number of individual '{count}'. A reason could be that the results were imported starting with an id of 1 instead of 0.";
          }
 
          public static string GroupingCannotBeCreatedForField(string fieldName)
@@ -904,6 +899,10 @@ namespace PKSim.Assets
 
          public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
             $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
+
+
+         public static string CannotCreateTransportProcessWithKinetic(string processName, string compoundProcess) =>
+            $"The kinetic used in compound process '{compoundProcess}' cannot be used with '{processName}'. Please select another process type in your compound.";
 
       }
 
@@ -1147,6 +1146,7 @@ namespace PKSim.Assets
          public static readonly string ExportToExcelMenu = $"Export to {UI.Excel}";
          public static readonly string ExportToPDFMenu = "Export to PDF";
          public static readonly string ExportToPKML = "Export to pkml...";
+         public static readonly string ReloadAllRelated = "Reload all under same settings";
          public static readonly string ExportSimulationToPDFMenu = "PDF";
          public static readonly string ProjectReport = "Project Report";
          public static readonly string Report = "Report";
@@ -1495,6 +1495,7 @@ namespace PKSim.Assets
          public static readonly string Schema = "Schema";
          public static readonly string Influx = "Influx";
          public static readonly string Efflux = "Efflux";
+         public static readonly string BiDirectional = "Bi-Directional";
          public static readonly string PgpLike = "Pgp-Like";
          public static readonly string EmptyName = "Empty";
          public static readonly string EmptyDescription = "<Empty>";
@@ -1512,7 +1513,7 @@ namespace PKSim.Assets
          public static readonly string Core = "Core";
          public static readonly string UpdatingSimulation = "Updating Simulation...";
          public static readonly string PerformingSimulationClone = "Cloning Simulation...";
-         public static readonly string TransporterType = "Transporter Type";
+         public static readonly string DefaultTransporterDirection = "Default Transporter Direction";
          public static readonly string None = "<None>";
          public static readonly string Unknown = "Unknown";
          public static readonly string NoSystemicProcessAvailable = "Not available in compound";
@@ -1551,6 +1552,7 @@ namespace PKSim.Assets
          public static readonly string ObserversFolder = "Observers";
          public static readonly string AdministrationProtocolFolder = "Administration Protocols";
          public const string Value = "Value";
+         public const string TransportDirection = "Direction";
          public static readonly string Percentage = "Percentage";
          public static readonly string Container = "Container";
          public static readonly string Percentile = "Percentile";
@@ -1564,10 +1566,9 @@ namespace PKSim.Assets
          public static readonly string AllowsScientificNotation = "Allows scientific notation";
          public static readonly string ShouldRestoreWorkspaceLayout = "Restore opened view when loading project";
          public static readonly string ShowUpdateNotification = "Show software update notification if available";
-         public static readonly string HideImmediatelyOnAutoHide = "Immediatly hide panel on auto hide (no animaton)";
          public static readonly string ActiveSkin = "Active skin";
          public static readonly string DecimalPlace = "Decimal place";
-         public static readonly string IconSizes = "Icon Sizes";
+         public static readonly string IconSizes = "Icon Sizes (Application Restart Required)";
          public static readonly string IconSizeTab = "Tabs";
          public static readonly string IconSizeTreeView = "Tree view";
          public static readonly string IconSizeContextMenu = "Context menu";
@@ -1622,10 +1623,6 @@ namespace PKSim.Assets
          public static readonly string HalfLife = "Half life";
          public static readonly string HalfLifeLiver = "Half life (liver)";
          public static readonly string HalfLifeIntestine = "Half life (intestine)";
-         public static readonly string LocalizationInTissue = "Localization in tissue";
-         public static readonly string LocalizationOnMembrane = "Localization on membrane";
-         public static readonly string IntracellularVascularEndoLocation = "Localization in vasc. endothelium";
-         public static readonly string LocationOnVascularEndo = "Localization on vasc. endothelium";
          public static readonly string OntogenyVariabilityLike = "Ontogeny/Variability like";
          public static readonly string Ontogeny = "Ontogeny";
          public static readonly string OntogenyFactor = "Ontogeny factor";
@@ -2024,7 +2021,7 @@ namespace PKSim.Assets
          public static readonly string CompoundBindingProcess = "Binding process";
          public static readonly string FavoritesToolTip = "Add as favorite";
          public static readonly string NoParameter = "No parameter";
-         public static readonly string TransporterTypeDescription = "<B>Note:</B> Always verify localization of the defined transporter in tissues displaying apico-basal polarity (liver, kidney, intestine, brain). Apical (or basolateral) localization is tissue dependent and may not be consistent in all polarized cell types.";
+         public static readonly string TransporterDirectionDescription = "<B>Note:</B> Always verify localization of the defined transporter in tissues displaying apico-basal polarity (liver, kidney, intestine, brain). Apical (or basolateral) localization is tissue dependent and may not be consistent in all polarized cell types.";
          public static readonly string VisitUs = "Visit us";
          public static readonly string FilePath = "File Path";
          public static readonly string ExportDirectory = "Export Directory";
@@ -2061,7 +2058,7 @@ namespace PKSim.Assets
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
          public static readonly string TargetBodyWeight = "Target Weight";
-         public static readonly string NormalizedExpressionLevels = "Normalized Expression Levels";
+         public static readonly string ExpressionLevels = "Expression Levels";
          public static readonly string ModelStructure = "Model Structure";
          public static readonly string OntogenyDescription = "The shown variability consists of a combined reported variability in maturation as well as enzyme activity and is based on experimental data from the following tissues:";
          public static readonly string MoleculeNotDefined = "None";
@@ -2171,7 +2168,6 @@ namespace PKSim.Assets
          public static readonly string ShowDiagram = "Show Diagram";
          public static readonly string HidePKAnalysis = "Hide PK-Analysis";
          public static readonly string CalculateVSSValues = "Calculate VSS Values";
-         public static readonly string PossibleVSSValuesForDefaultSpecies = "TODO PossibleVSSValuesForDefaultSpecies";
          public static readonly string DoYouWantToSaveCompoundMetaboliteAsTemplate = "Do you also want to save the metabolite(s) of this compound?";
          public static string DoYouWantToLoadReferencedTemplateAsWell(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
          public static readonly string LowerPercentile = "Lower Percentile";
@@ -2184,7 +2180,10 @@ namespace PKSim.Assets
          public static readonly string LoadPopulationAnalysisWorkflowFromTemplateDescription = "Load population analysis from template";
          public static readonly string SavePopulationAnalysisWorkflowToTemplateDescription = "Save population analysis to template";
          public static readonly string IsSmallMolecule = "Is small molecule";
-         public static readonly string ReallyRemoveObservedDataFromSimulation = string.Format("Really remove {0} from simulation?\nHint: {0} will not be deleted from project", ObjectTypes.ObservedData);
+
+         public static readonly string ReallyRemoveObservedDataFromSimulation =
+            $"Really remove {ObjectTypes.ObservedData} from simulation?\nHint: {ObjectTypes.ObservedData} will not be deleted from project";
+
          public static readonly string ExportSettings = "Export Settings";
          public static readonly string Administration = "Administration";
          public static readonly string CompoundConfiguration = "Compound Configuration";
@@ -2202,6 +2201,14 @@ namespace PKSim.Assets
          public static readonly string MoleculeExcludeList = "For All Molecules Except";
          public static readonly string MoleculeIncludeList = "For Molecules";
          public static readonly string Type = "Type";
+         public static readonly string LocalizationIntracellular = "Intracellular";
+         public static readonly string LocalizationInterstitial = "Interstitial";
+         public static readonly string LocalizationBloodCellsIntracellular = "Blood cells intracellular";
+         public static readonly string LocalizationBloodCellsMembrane = "Blood cells membrane";
+         public static readonly string LocalizationVascularEndosomes = "Vascular endothelium endosomes";
+         public static readonly string LocalizationVascularMembranePlasmaSide = "Vascular endothelium membrane plasma-side";
+         public static readonly string LocalizationVascularMembraneTissueSide = "Vascular endothelium membrane tissue-side";
+         public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 
@@ -2217,7 +2224,7 @@ namespace PKSim.Assets
          public static string IndividualExtractionNamingPatternDescription(string populationNamePattern, string individualIdPattern)
          {
             var sb = new StringBuilder();
-            sb.AppendLine("Automatically generates individual names replacing the occurence in the naming pattern of:");
+            sb.AppendLine("Automatically generates individual names replacing the occurrence in the naming pattern of:");
             sb.AppendLine($" -   <b>{populationNamePattern}</b> with the name of the population");
             sb.AppendLine($" -   <b>{individualIdPattern}</b> with the id of the individual");
             return sb.ToString();
@@ -2589,7 +2596,7 @@ namespace PKSim.Assets
          public static readonly string SimulationType= "Simulation Type";
       }
 
-      public class PKAnalysis
+      public static class PKAnalysis
       {
          public static readonly string Compound = ObjectTypes.Compound;
          public static readonly string ParameterDisplayName = ObjectTypes.Parameter;
@@ -2601,7 +2608,7 @@ namespace PKSim.Assets
          public static readonly string Warning = "Warning";
       }
 
-      public class Comparison
+      public static class Comparison
       {
          public static readonly string RelativeTolerance = "Relative Tolerance";
          public static readonly string FormulaComparisonMode = "Formula Comparision";

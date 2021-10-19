@@ -10,7 +10,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
 
@@ -24,14 +24,14 @@ namespace PKSim.Core
       protected Parameter _meanSnapshot;
       protected Parameter _deviationSnapshot;
       protected IEntityPathResolver _entityPathResolver;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
       protected int _originalSeed;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _advancedParameterFactory = A.Fake<IAdvancedParameterFactory>();
-         _logger = A.Fake<ILogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          _advancedParameter = new AdvancedParameter
          {

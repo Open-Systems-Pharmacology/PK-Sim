@@ -40,7 +40,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.SetDefaulMoleculeParameters(_molecule, _moleculeName);
+         sut.SetDefaultMoleculeParameters(_molecule, _moleculeName);
       }
 
       [Observation]

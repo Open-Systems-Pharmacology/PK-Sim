@@ -29,9 +29,9 @@ namespace PKSim.Core
       protected override void Context()
       {
          _simulation = A.Fake<Simulation>();
-         _competitiveInhibition1 = new InhibitionProcess {InteractionType = InteractionType.CompetitiveInhibition}.WithName("CompetitiveInhibition1");
-         _competitiveInhibition2 = new InhibitionProcess {InteractionType = InteractionType.CompetitiveInhibition}.WithName("CompetitiveInhibition2");
-         _uncompetitiveInhibition = new InhibitionProcess {InteractionType = InteractionType.UncompetitiveInhibition}.WithName("UncompetitiveInhibition");
+         _competitiveInhibition1 = new InhibitionProcess { InteractionType = InteractionType.CompetitiveInhibition }.WithName("CompetitiveInhibition1");
+         _competitiveInhibition2 = new InhibitionProcess { InteractionType = InteractionType.CompetitiveInhibition }.WithName("CompetitiveInhibition2");
+         _uncompetitiveInhibition = new InhibitionProcess { InteractionType = InteractionType.UncompetitiveInhibition }.WithName("UncompetitiveInhibition");
          _compound1 = new Compound().WithName("Compound1");
          _compound1.AddProcess(_competitiveInhibition1);
          _compound1.AddProcess(_uncompetitiveInhibition);
@@ -41,16 +41,16 @@ namespace PKSim.Core
 
          _interactionProperties = new InteractionProperties();
          A.CallTo(() => _simulation.InteractionProperties).Returns(_interactionProperties);
-         A.CallTo(() => _simulation.Compounds).Returns(new[] {_compound1, _compound2});
+         A.CallTo(() => _simulation.Compounds).Returns(new[] { _compound1, _compound2 });
 
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          _dimensionRepository = A.Fake<IDimensionRepository>();
-         _interactionTask=new InteractionTask();
+         _interactionTask = new InteractionTask();
          sut = new CompetitiveInhibitionsKineticUpdaterSpecification(_objectPathFactory, _dimensionRepository, _interactionTask);
 
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _competitiveInhibition1.Name, CompoundName = _compound1.Name});
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name});
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _competitiveInhibition1.Name, CompoundName = _compound1.Name });
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name });
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition.Name, CompoundName = _compound2.Name });
       }
    }
 
@@ -124,14 +124,14 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_if_the_simulation_contains_any_competitive_inhibition_interaction()
       {
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name });
          sut.UpdateRequiredFor(_moleculeName, _drugName, _simulation).ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_otherwise()
       {
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _uncompetitiveInhibition.Name, CompoundName = _compound2.Name });
          sut.UpdateRequiredFor(_moleculeName, _drugName, _simulation).ShouldBeFalse();
       }
    }
@@ -147,7 +147,7 @@ namespace PKSim.Core
          _kmFactor = new Parameter().WithFormula(new ExplicitFormula());
          _reaction = new ReactionBuilder();
          _interactionProperties.ClearInteractions();
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name });
       }
 
       protected override void Because()
@@ -189,7 +189,7 @@ namespace PKSim.Core
          _clSpecFactor = new Parameter().WithFormula(new ExplicitFormula());
          _reaction = new ReactionBuilder();
          _interactionProperties.ClearInteractions();
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name });
       }
 
       protected override void Because()
@@ -231,7 +231,7 @@ namespace PKSim.Core
          _clSpecFactor = new Parameter().WithFormula(new ExplicitFormula());
          _transporterMoleculeContainer = new TransporterMoleculeContainer();
          _interactionProperties.ClearInteractions();
-         _interactionProperties.AddInteraction(new InteractionSelection {MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name});
+         _interactionProperties.AddInteraction(new InteractionSelection { MoleculeName = _moleculeName, ProcessName = _competitiveInhibition2.Name, CompoundName = _compound2.Name });
       }
 
       protected override void Because()

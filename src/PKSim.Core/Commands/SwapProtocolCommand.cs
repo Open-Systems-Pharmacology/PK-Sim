@@ -18,7 +18,7 @@ namespace PKSim.Core.Commands
 
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SwapProtocolCommand(_newBuildingBlock, _oldBuildingBlock, context).AsInverseFor(this);
       }

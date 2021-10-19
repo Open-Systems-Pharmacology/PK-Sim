@@ -14,7 +14,9 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Importer;
+using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -32,15 +34,17 @@ namespace PKSim.Presentation.Services
       private readonly IDataImporter _dataImporter;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IDialogCreator _dialogCreator;
 
       public FormulationTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController, IDataImporter dataImporter,
-         IDimensionRepository dimensionRepository, IFormulaFactory formulaFactory)
+         IDimensionRepository dimensionRepository, IFormulaFactory formulaFactory, IDialogCreator dialogCreator)
          : base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Formulation)
       {
          DimensionRepository = dimensionRepository;
          _dataImporter = dataImporter;
          _dimensionRepository = dimensionRepository;
          _formulaFactory = formulaFactory;
+         _dialogCreator = dialogCreator;
       }
 
       public override Formulation AddToProject()
@@ -73,8 +77,14 @@ namespace PKSim.Presentation.Services
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportFormulation}",
             IconName = ApplicationIcons.Formulation.IconName
          };
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedFormula = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);
+         var importedFormula = _dataImporter.ImportDataSets(
+            new List<MetaDataCategory>(), 
+            getColumnInfos(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         ).DataRepositories.FirstOrDefault();
          return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 
@@ -102,28 +112,24 @@ namespace PKSim.Presentation.Services
          {
             DefaultDimension = _dimensionRepository.Time,
             Name = PKSimConstants.UI.Time,
-            Description = PKSimConstants.UI.Time,
             DisplayName = PKSimConstants.UI.Time,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
 
-         timeColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Time, IsMainDimension = true});
+         timeColumn.SupportedDimensions.Add(_dimensionRepository.Time);
          columns.Add(timeColumn);
 
          var fractionColumn = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.Fraction,
             Name = PKSimConstants.UI.Fraction,
-            Description = PKSimConstants.UI.Fraction,
             DisplayName = PKSimConstants.UI.Fraction,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = timeColumn.Name,
          };
 
-         fractionColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Fraction, IsMainDimension = true});
+         fractionColumn.SupportedDimensions.Add(_dimensionRepository.Fraction);
          columns.Add(fractionColumn);
 
          return columns;

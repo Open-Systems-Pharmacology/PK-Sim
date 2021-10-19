@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
          parameter.IsDefault = true;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          //inverse of a reset command set the previous value back into the parameter
          return new SetParameterValueCommand(_parameter, _oldValue).AsInverseFor(this);

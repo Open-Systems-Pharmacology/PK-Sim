@@ -12,6 +12,7 @@ namespace PKSim.Presentation.DTO.Individuals
 
       public static TransportTypeDTO Influx = addTransporterType(TransportType.Influx, PKSimConstants.UI.Influx, ApplicationIcons.Influx);
       public static TransportTypeDTO Efflux = addTransporterType(TransportType.Efflux, PKSimConstants.UI.Efflux, ApplicationIcons.Efflux);
+      public static TransportTypeDTO BiDirectional = addTransporterType(TransportType.BiDirectional, PKSimConstants.UI.BiDirectional, ApplicationIcons.BiDirectional);
       public static TransportTypeDTO PgpLike = addTransporterType(TransportType.PgpLike, PKSimConstants.UI.PgpLike,ApplicationIcons.Pgp);
 
       private static TransportTypeDTO addTransporterType(TransportType transporterType, string displayName, ApplicationIcon icon)
@@ -26,17 +27,14 @@ namespace PKSim.Presentation.DTO.Individuals
          return _allTransporterTypes[transporterType];
       }
 
-      public static IEnumerable<TransportTypeDTO> All()
-      {
-         return _allTransporterTypes;
-      }
+      public static IReadOnlyCollection<TransportTypeDTO> All() => _allTransporterTypes;
    }
 
    public class TransportTypeDTO
    {
-      public TransportType TransportType { get; private set; }
-      public string DisplayName { get; private  set; }
-      public ApplicationIcon Icon { get; private set; }
+      public TransportType TransportType { get; }
+      public string DisplayName { get; }
+      public ApplicationIcon Icon { get; }
 
       public TransportTypeDTO(TransportType transporterType, string displayName, ApplicationIcon icon)
       {

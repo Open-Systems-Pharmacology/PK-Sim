@@ -33,7 +33,7 @@
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.splitContainer = new DevExpress.XtraEditors.SplitContainerControl();
          this.listBoxContainer = new DevExpress.XtraEditors.ListBoxControl();
-         this.cbOntogeny = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.cbOntogeny = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutControl = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemOntogeny = new DevExpress.XtraLayout.LayoutControlItem();
@@ -238,7 +238,7 @@
       private DevExpress.XtraLayout.LayoutControlGroup layoutControl;
       private DevExpress.XtraEditors.SplitContainerControl splitContainer;
       private DevExpress.XtraEditors.ListBoxControl listBoxContainer;
-      private DevExpress.XtraEditors.ComboBoxEdit cbOntogeny;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbOntogeny;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemOntogeny;
       private DevExpress.XtraEditors.LabelControl lblDescription;

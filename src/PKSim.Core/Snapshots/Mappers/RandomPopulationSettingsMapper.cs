@@ -51,7 +51,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<RandomPopulationSettings> MapToModel(PopulationSettings snapshot)
       {
-         var individual = await _individualMapper.MapToModel(snapshot.Individual);
+           var individual = await _individualMapper.MapToModel(snapshot.Individual);
          var settings = _populationSettingsMapper.MapFrom(individual);
          settings.NumberOfIndividuals = snapshot.NumberOfIndividuals;
          updateGenderRatios(settings, snapshot);

@@ -1,9 +1,12 @@
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
+using PKSim.Core.Repositories;
 
 namespace PKSim.Core
 {
@@ -11,17 +14,19 @@ namespace PKSim.Core
    {
       protected IndividualProtein _protein;
       protected QueryExpressionSettings _result;
-      protected IProteinExpressionContainerToExpressionContainerInfoMapper _expressionContainerMapper;
+      protected IRepresentationInfoRepository _representationInfoRepository;
+      protected Individual _individual;
 
       protected override void Context()
       {
-         _expressionContainerMapper = A.Fake<IProteinExpressionContainerToExpressionContainerInfoMapper>();
-         sut = new MoleculeToQueryExpressionSettingsMapper(_expressionContainerMapper);
+         _individual= A.Fake<Individual>();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>(); 
+         sut = new MoleculeToQueryExpressionSettingsMapper(_representationInfoRepository);
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_protein);
+         _result = sut.MapFrom(_protein, _individual);
       }
    }
 
@@ -30,8 +35,8 @@ namespace PKSim.Core
       private double _proteinContent;
       private MoleculeExpressionContainer _exp1;
       private MoleculeExpressionContainer _exp2;
-      private ExpressionContainerInfo _expInfo1;
-      private ExpressionContainerInfo _expInfo2;
+      private IParameter _relExp1;
+      private IParameter _relExp2;
 
       protected override void Context()
       {
@@ -40,19 +45,23 @@ namespace PKSim.Core
          _protein.QueryConfiguration = "toto";
          _exp1 = new MoleculeExpressionContainer().WithName("exp1");
          _exp2 = new MoleculeExpressionContainer().WithName("exp2");
-         _expInfo1 = A.Fake<ExpressionContainerInfo>();
-         _expInfo2 = A.Fake<ExpressionContainerInfo>();
-         A.CallTo(() => _protein.AllExpressionsContainers()).Returns(new[] {_exp1, _exp2});
-         _proteinContent = 10;
+         _relExp1 = DomainHelperForSpecs.ConstantParameterWithValue(1);
+         _relExp2 = DomainHelperForSpecs.ConstantParameterWithValue(2);
+         var allExpressions = new Cache<string, IParameter> {{_exp1.Name, _relExp1}, {_exp2.Name, _relExp2}};
+         A.CallTo(() => _individual.AllExpressionParametersFor(_protein)).Returns(allExpressions);
+
+      _proteinContent = 10;
          A.CallTo(() => _protein.ReferenceConcentration).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_proteinContent));
-         A.CallTo(() => _expressionContainerMapper.MapFrom(_exp1)).Returns(_expInfo1);
-         A.CallTo(() => _expressionContainerMapper.MapFrom(_exp2)).Returns(_expInfo2);
+         A.CallTo(() => _representationInfoRepository.ContainerInfoFor(_exp1.Name)).Returns( new RepresentationInfo{DisplayName = "disp1"});
+         A.CallTo(() => _representationInfoRepository.ContainerInfoFor(_exp2.Name)).Returns(new RepresentationInfo { DisplayName = "disp2" });
       }
 
       [Observation]
       public void should_return_a_query_settings_initialized_with_one_container()
       {
-         _result.ExpressionContainers.ShouldOnlyContainInOrder(_expInfo1, _expInfo2);
+         _result.ExpressionContainers.Count().ShouldBeEqualTo(2);
+         _result.ExpressionContainers.ElementAt(0).ContainerDisplayName.ShouldBeEqualTo("disp1");
+         _result.ExpressionContainers.ElementAt(1).ContainerDisplayName.ShouldBeEqualTo("disp2");
       }
 
       [Observation]

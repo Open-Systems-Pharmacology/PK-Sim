@@ -8,6 +8,7 @@ namespace PKSim.Core.Services
       Task Serialize(object objectToSerialize, string fileName);
       Task<object[]> DeserializeAsArray(string fileName, Type objectType);
       Task<object[]> DeserializeAsArrayFromString(string jsonString, Type objectType);
+      Task<T[]> DeserializeAsArrayFromString<T>(string jsonString);
       Task<object> Deserialize(string fileName, Type objectType);
       Task<T> Deserialize<T>(string fileName) where T : class;
       Task<object> DeserializeFromString(string jsonString, Type objectType);

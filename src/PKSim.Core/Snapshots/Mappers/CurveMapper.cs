@@ -15,9 +15,9 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly CurveOptionsMapper _curveOptionsMapper;
       private readonly IDimensionFactory _dimensionFactory;
-      private readonly ILogger _logger;
+      private readonly IOSPSuiteLogger _logger;
 
-      public CurveMapper(CurveOptionsMapper curveOptionsMapper, IDimensionFactory dimensionFactory, ILogger logger)
+      public CurveMapper(CurveOptionsMapper curveOptionsMapper, IDimensionFactory dimensionFactory, IOSPSuiteLogger logger)
       {
          _curveOptionsMapper = curveOptionsMapper;
          _dimensionFactory = dimensionFactory;
@@ -45,7 +45,10 @@ namespace PKSim.Core.Snapshots.Mappers
          var yData = findCurveWithPath(snapshot.Y, simulationAnalysisContext.DataRepositories);
          if (yData == null)
          {
-            _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.Y));
+            //Only show a warning if the output were already calculated. Otherwise curves will not be generated
+            if (simulationAnalysisContext.RunSimulation) 
+               _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.Y));
+
             return null;
          }
 
@@ -57,7 +60,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (xData == null)
          {
-            _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.X));
+            if (simulationAnalysisContext.RunSimulation)
+               _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(snapshot.X));
+   
             return null;
          }
 

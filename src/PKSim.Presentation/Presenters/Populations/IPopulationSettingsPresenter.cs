@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using OSPSuite.Utility;
 
 namespace PKSim.Presentation.Presenters.Populations
@@ -18,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Populations
    public interface IPopulationSettingsPresenter : IPopulationItemPresenter, ILatchable
    {
       /// <summary>
-      ///    Intialize presenter in order to create a new population
+      ///    Initialize presenter in order to create a new population
       /// </summary>
       void PrepareForCreating(PKSim.Core.Model.Individual basedIndividual);
 
@@ -30,7 +31,7 @@ namespace PKSim.Presentation.Presenters.Populations
       /// <summary>
       ///    Create the population based on the settings defined by the user
       /// </summary>
-      void CreatePopulation();
+      Task CreatePopulation();
 
       /// <summary>
       ///    Returns true if the population with the defined settings was created, otherwise false

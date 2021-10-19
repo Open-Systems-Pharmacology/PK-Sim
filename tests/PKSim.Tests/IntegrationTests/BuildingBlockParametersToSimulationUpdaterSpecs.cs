@@ -40,7 +40,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR);
+         var templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.LIVER).Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR);
          templateParameter.Value = 3;
       }
 
@@ -53,7 +53,7 @@ namespace PKSim.IntegrationTests
       public void should_have_updated_the_parameter_values_in_the_simulation_and_in_the_simulation_building_block_according_to_the_value_in_the_template()
       {
          var simIndividual = _simulation.Individual;
-         var parameter = simIndividual.Organism.Organ(CoreConstants.Organ.Liver).Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR);
+         var parameter = simIndividual.Organism.Organ(CoreConstants.Organ.LIVER).Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR);
          parameter.Value.ShouldBeEqualTo(3);
 
          //now parameter in simulation

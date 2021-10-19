@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -29,7 +31,7 @@ namespace PKSim.Presentation.Presenters.Populations
    {
       IPKSimCommand CreatePopulation(Individual basedIndividual);
 
-      void CreatePopulation();
+      Task CreatePopulation();
    }
 
    public abstract class CreatePopulationPresenter<TView, TPresenter, TPopulation> : PKSimWizardPresenter<TView, TPresenter, IPopulationItemPresenter>, ICreatePopulationPresenter<TPopulation>
@@ -104,14 +106,14 @@ namespace PKSim.Presentation.Presenters.Populations
          _propertiesMapper.MapProperties(_populationPropertiesDTO, BuildingBlock);
       }
 
-      public void CreatePopulation()
+      public async Task CreatePopulation()
       {
          //reset commands before generating a new population
          _macroCommand.Clear();
 
          _view.CancelEnabled = false;
          _view.NextEnabled = false;
-         _populationSettingsPresenter.CreatePopulation();
+         await _populationSettingsPresenter.SecureAwait(x => x.CreatePopulation());
       }
 
       public TPopulation BuildingBlock => _populationSettingsPresenter.Population;
@@ -135,13 +137,13 @@ namespace PKSim.Presentation.Presenters.Populations
          _distributionPresenter.EditPopulation(BuildingBlock);
       }
 
-      public override void WizardNext(int previousIndex)
+      public override async void WizardNext(int previousIndex)
       {
          if (previousIndex == SettingPresenterItem.Index)
          {
             if (!_populationSettingsPresenter.PopulationCreated)
             {
-               CreatePopulation();
+               await CreatePopulation();
                return;
             }
          }

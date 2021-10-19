@@ -26,7 +26,7 @@ namespace PKSim.Core.Mappers
       {
          _representationInfoRepository = representationInfoRepository;
          //Format is (Fraction of dose-DRUG_NAME)-Liver-COMPARTMENT
-         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{CoreConstants.Observer.FRACTION_OF_DOSE}{CoreConstants.COMPOSITE_SEPARATOR}\w*){CoreConstants.COMPOSITE_SEPARATOR}{CoreConstants.Organ.Liver}{CoreConstants.COMPOSITE_SEPARATOR}\w*";
+         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{CoreConstants.Observer.FRACTION_OF_DOSE}{CoreConstants.COMPOSITE_SEPARATOR}\w*){CoreConstants.COMPOSITE_SEPARATOR}{CoreConstants.Organ.LIVER}{CoreConstants.COMPOSITE_SEPARATOR}\w*";
          _fractionOfDoseLiverRegex = new Regex(fractionOfDoseLiverObserverPattern);
       }
 
@@ -125,10 +125,10 @@ namespace PKSim.Core.Mappers
 
       private void adjustDisplayPathForQuantity(PathElements pathElements, IQuantity quantity)
       {
-         if (quantity.HasAncestorNamed(CoreConstants.Organ.Gallbladder))
+         if (quantity.HasAncestorNamed(CoreConstants.Organ.GALLBLADDER))
             adjustDisplayPathForGallBladder(pathElements, quantity);
 
-         else if (quantity.HasAncestorNamed(CoreConstants.Organ.Lumen))
+         else if (quantity.HasAncestorNamed(CoreConstants.Organ.LUMEN))
             adjustDisplayPathForLumen(pathElements, quantity);
 
          else if (quantity.IsNamed(CoreConstants.Observer.PLASMA_UNBOUND))

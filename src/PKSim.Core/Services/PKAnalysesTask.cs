@@ -128,12 +128,12 @@ namespace PKSim.Core.Services
          }
 
          //last but not least, add observed data that do not belong to any simulation
-         allPKAnalysis.AddRange(allColumns.Where(x => x.IsObservedData())
-            .Select(obervedDataColumn =>
+         allPKAnalysis.AddRange(allColumns.Where(x => x.IsObservation())
+            .Select(observedDataColumn =>
             {
-               var moleculeName = obervedDataColumn.Repository.ExtendedPropertyValueFor(ObservedData.MOLECULE);
+               var moleculeName = observedDataColumn.Repository.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
                var observedDataPKOptions = _pkCalculationOptionsFactory.CreateForObservedData(simulations, moleculeName);
-               return calculatePKFor(obervedDataColumn, moleculeName, observedDataPKOptions);
+               return calculatePKFor(observedDataColumn, moleculeName, observedDataPKOptions);
             }));
 
          return allPKAnalysis;

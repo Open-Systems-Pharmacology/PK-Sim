@@ -11,7 +11,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using CalculationMethodCache = OSPSuite.Core.Domain.CalculationMethodCache;
-using ILogger = OSPSuite.Core.Services.ILogger;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Core
 {
@@ -26,13 +26,13 @@ namespace PKSim.Core
       protected CalculationMethodCategory _singleCategory;
       protected CalculationMethodCategory _multipleCategory;
       protected CalculationMethod _anotherCalculationMethodInMultipleOptions;
-      protected ILogger _logger;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
          _calculationMethodRepository = A.Fake<ICalculationMethodRepository>();
          _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
-         _logger= A.Fake<ILogger>();
+         _logger= A.Fake<IOSPSuiteLogger>();
 
          sut = new CalculationMethodCacheMapper(_calculationMethodRepository, _calculationMethodCategoryRepository,_logger);
          _singleCategory = new CalculationMethodCategory {Name = "Multiple"};

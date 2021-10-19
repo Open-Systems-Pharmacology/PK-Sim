@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PKSim.Assets;
@@ -11,9 +12,11 @@ using PKSim.Presentation.Presenters.Individuals;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Importer;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
+using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation.Services
 {
@@ -26,9 +29,10 @@ namespace PKSim.Presentation.Services
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IEntityTask _entityTask;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IDialogCreator _dialogCreator;
 
       protected OntogenyTask(IExecutionContext executionContext, IApplicationController applicationController, IDataImporter dataImporter,
-         IDimensionRepository dimensionRepository, IOntogenyRepository ontogenyRepository, IEntityTask entityTask, IFormulaFactory formulaFactory)
+         IDimensionRepository dimensionRepository, IOntogenyRepository ontogenyRepository, IEntityTask entityTask, IFormulaFactory formulaFactory, IDialogCreator dialogCreator)
       {
          _executionContext = executionContext;
          _applicationController = applicationController;
@@ -37,7 +41,8 @@ namespace PKSim.Presentation.Services
          _ontogenyRepository = ontogenyRepository;
          _entityTask = entityTask;
          _formulaFactory = formulaFactory;
-      }
+         _dialogCreator = dialogCreator;
+   }
 
       public abstract ICommand SetOntogenyForMolecule(IndividualMolecule molecule, Ontogeny ontogeny, TSimulationSubject simulationSubject);
 
@@ -58,8 +63,14 @@ namespace PKSim.Presentation.Services
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportOntogeny}",
             IconName = ApplicationIcons.Excel.IconName
          };
+         dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var data = _dataImporter.ImportDataSet(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings);
+         var data = _dataImporter.ImportDataSets(
+            new List<MetaDataCategory>(), 
+            getColumnInfos(), 
+            dataImporterSettings,
+            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+         ).DataRepositories.FirstOrDefault();
          if (data == null)
             return null;
 
@@ -121,45 +132,39 @@ namespace PKSim.Presentation.Services
          {
             DefaultDimension = _dimensionRepository.AgeInYears,
             Name = PKSimConstants.UI.PostMenstrualAge,
-            Description = PKSimConstants.UI.PostMenstrualAge,
             DisplayName = PKSimConstants.UI.PostMenstrualAge,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
          };
 
 
-         ageColumn.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.AgeInYears, IsMainDimension = true});
+         ageColumn.SupportedDimensions.Add(_dimensionRepository.AgeInYears);
          columns.Add(ageColumn);
 
          var ontogenyFactor = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.Fraction,
             Name = PKSimConstants.UI.OntogenyFactor,
-            Description = PKSimConstants.UI.OntogenyFactor,
             DisplayName = PKSimConstants.UI.OntogenyFactor,
             IsMandatory = true,
-            NullValuesHandling = NullValuesHandlingType.DeleteRow,
             BaseGridName = ageColumn.Name,
          };
-         ontogenyFactor.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.Fraction, IsMainDimension = true});
+         ontogenyFactor.SupportedDimensions.Add(_dimensionRepository.Fraction);
          columns.Add(ontogenyFactor);
 
          var geoMean = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.NoDimension,
             Name = PKSimConstants.UI.StandardDeviation,
-            Description = PKSimConstants.UI.StandardDeviation,
             DisplayName = PKSimConstants.UI.StandardDeviation,
             IsMandatory = false,
-            NullValuesHandling = NullValuesHandlingType.Allowed,
             BaseGridName = ageColumn.Name,
             RelatedColumnOf = ontogenyFactor.Name
          };
 
-         geoMean.DimensionInfos.Add(new DimensionInfo {Dimension = _dimensionRepository.NoDimension, IsMainDimension = true});
+         geoMean.SupportedDimensions.Add(_dimensionRepository.NoDimension);
          columns.Add(geoMean);
 
          return columns;
-      }
+      } 
    }
 }

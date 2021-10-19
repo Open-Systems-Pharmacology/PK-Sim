@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
          _oldDisplayUnit = _parameter.Dimension.Unit(_oldDisplayUnitName);
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new SetParameterDisplayUnitCommand(_parameter, _oldDisplayUnit).AsInverseFor(this);
       }

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -27,7 +29,8 @@ using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 namespace PKSim.Presentation.Presenters.Main
 {
    public interface IBuildingBlockExplorerPresenter : IExplorerPresenter,
-      IListener<SwapBuildingBlockEvent>
+      IListener<SwapBuildingBlockEvent>,
+      IListener<RenamedEvent>
    {
    }
 
@@ -35,7 +38,8 @@ namespace PKSim.Presentation.Presenters.Main
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
 
-      public BuildingBlockExplorerPresenter(IBuildingBlockExplorerView view, ITreeNodeFactory treeNodeFactory, ITreeNodeContextMenuFactory treeNodeContextMenuFactory, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IBuildingBlockIconRetriever buildingBlockIconRetriever, IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, IToolTipPartCreator toolTipPartCreator, IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IObservedDataInExplorerPresenter observedDataInExplorerPresenter)
+      public BuildingBlockExplorerPresenter(IBuildingBlockExplorerView view, ITreeNodeFactory treeNodeFactory, ITreeNodeContextMenuFactory treeNodeContextMenuFactory, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IBuildingBlockIconRetriever buildingBlockIconRetriever,
+         IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, IToolTipPartCreator toolTipPartCreator, IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IObservedDataInExplorerPresenter observedDataInExplorerPresenter)
          : base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.BuildingBlockExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _observedDataInExplorerPresenter = observedDataInExplorerPresenter;
@@ -140,8 +144,35 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SwapBuildingBlockEvent eventToHandle)
       {
-         //need to remove the node of the old protocol when a protocal swap is happening as the nomral remove building block event is not triggered
+         //need to remove the node of the old protocol when a protocol swap is happening as the normal remove building block event is not triggered
          RemoveNodeFor(eventToHandle.OldBuildingBlock);
+      }
+
+      public void Handle(RenamedEvent renamedEvent)
+      {
+         handleRenamedBuildingBlock(renamedEvent);
+         handleRenamedObservedData(renamedEvent);
+      }
+
+      private void handleRenamedObservedData(RenamedEvent renamedEvent)
+      {
+         var observedData = renamedEvent.RenamedObject as DataRepository;
+         if (observedData == null)
+            return;
+
+         RefreshTreeAfterRename();
+      }
+
+      private void handleRenamedBuildingBlock(RenamedEvent renamedEvent)
+      {
+         var buildingBlock = renamedEvent.RenamedObject as IPKSimBuildingBlock;
+         if (buildingBlock == null)
+            return;
+
+         if (buildingBlock.IsAnImplementationOf<Simulation>())
+            return;
+
+         RefreshTreeAfterRename();
       }
    }
 }

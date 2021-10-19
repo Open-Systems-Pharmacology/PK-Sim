@@ -1,7 +1,7 @@
-﻿using PKSim.Assets;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Assets;
 
 namespace PKSim.Core.Extensions
 {
@@ -16,6 +16,14 @@ namespace PKSim.Core.Extensions
          return tableFormula;
       }
 
+      public static void ReplaceKeywordInObjectPaths(
+         this IFormula formula,
+         string keyword,
+         string replacementValue)
+
+      {
+         ReplaceKeywordsInObjectPaths(formula, new []{keyword}, new []{replacementValue});
+      }
       /// <summary>
       /// In each object path: replaces path entries from <paramref name="keywords"/> with entries from <paramref name="replacementValues"/>
       /// </summary>

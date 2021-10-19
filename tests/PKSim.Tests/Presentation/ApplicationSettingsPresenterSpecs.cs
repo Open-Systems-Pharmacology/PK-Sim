@@ -174,6 +174,8 @@ namespace PKSim.Presentation
          return new RepresentationInfo {DisplayName = objectBase.Name};
       }
 
+      public PathElement PathElementFor(RepresentationObjectType objectType, string objectName) => InfoFor(objectType, objectName).ToPathElement();
+
       public string DisplayNameFor(IObjectBase objectBase)
       {
          return objectBase.Name;

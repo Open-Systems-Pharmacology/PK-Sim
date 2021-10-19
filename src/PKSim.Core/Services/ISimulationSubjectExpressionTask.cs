@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Commands.Core;
+﻿using OSPSuite.Core.Commands;
+using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -7,7 +8,8 @@ namespace PKSim.Core.Services
    {
       ICommand RemoveMoleculeFrom(IndividualMolecule molecule, TSimulationSubject simulationSubject);
       ICommand AddMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject);
-      ICommand EditMolecule(IndividualMolecule moleculeToEdit, IndividualMolecule editedMolecule, QueryExpressionResults queryResults, TSimulationSubject simulationSubject);
+      IOSPSuiteCommand EditMolecule(IndividualMolecule moleculeToEdit, QueryExpressionResults queryResults, TSimulationSubject simulationSubject);
       ICommand AddMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject, QueryExpressionResults queryExpressionResults);
+      ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject);
    }
 }

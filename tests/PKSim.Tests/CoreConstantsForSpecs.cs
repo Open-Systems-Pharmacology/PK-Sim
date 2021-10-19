@@ -4,9 +4,11 @@
    {
       public static class ActiveTransport
       {
-         public static readonly string ActiveEffluxSpecificMM = "ActiveEffluxSpecific_MM";
+         public static readonly string ActiveEffluxSpecificIntracellularToInterstitial = "ActiveEffluxSpecificIntracellularToInterstitial";
+         public static readonly string ActiveEffluxSpecificIntracellularToInterstitial_MM = "ActiveEffluxSpecificIntracellularToInterstitial_MM";
+         public static readonly string ActiveInfluxSpecificInterstitialToIntracellular_MM = "ActiveInfluxSpecificInterstitialToIntracellular_MM";
          public static readonly string ActiveEffluxSpecificWithCompetitiveInhibitionMM = "ActiveEffluxSpecific_CompetitiveInhibition_MM";
-         public static readonly string ActiveEffluxSpecificHill = "ActiveEffluxSpecific_Hill";
+         public static readonly string ActiveEffluxSpecificIntracellularToInterstitial_Hill = "ActiveEffluxSpecificIntracellularToInterstitial_Hill";
       }
 
       public static class Process

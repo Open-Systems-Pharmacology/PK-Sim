@@ -15,7 +15,7 @@ namespace PKSim.Core.Commands
          ShouldChangeVersion = false;
       }
 
-      protected override IReversibleCommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
          return new RemoveParameterAlternativeCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
       }

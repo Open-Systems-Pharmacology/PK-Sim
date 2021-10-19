@@ -18,9 +18,19 @@ namespace PKSim.Core.Model
 
       public static void SetPercentile(this IParameter parameter, double percentile)
       {
-         var distributedParameter = parameter as IDistributedParameter;
-         if (distributedParameter == null) return;
+         if (!(parameter is IDistributedParameter distributedParameter))
+            return;
+
          distributedParameter.Percentile = percentile;
+      }
+
+      public static bool IsGlobalExpression(this IParameter parameter)
+      {
+         if (parameter == null)
+            return false;
+
+         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
+            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
       }
 
       public static bool IsExpression(this IParameter parameter)
@@ -28,11 +38,7 @@ namespace PKSim.Core.Model
          if (parameter == null)
             return false;
 
-         if (parameter.IsExpressionNorm())
-            return true;
-
-         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP, CoreConstants.Parameters.REL_EXP_BLOOD_CELL,
-            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASC_ENDO);
+         return parameter.IsGlobalExpression() || parameter.IsNamed(CoreConstants.Parameters.REL_EXP);
       }
 
       public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
@@ -51,29 +57,18 @@ namespace PKSim.Core.Model
          return IsExpressionOrOntogenyFactor(parameter) || IsIndividualMoleculeGlobal(parameter);
       }
 
-      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) => CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
+      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
+         CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
       public static bool IsStructural(this IParameter parameter)
       {
          return CoreConstants.Parameters.ParticleDistributionStructuralParameters.Contains(parameter.Name);
       }
 
-      public static bool IsExpressionNorm(this IParameter parameter)
-      {
-         if (parameter == null) return false;
-         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_NORM, CoreConstants.Parameters.REL_EXP_BLOOD_CELL_NORM,
-            CoreConstants.Parameters.REL_EXP_PLASMA_NORM, CoreConstants.Parameters.REL_EXP_VASC_ENDO_NORM);
-      }
-
       public static bool IsOrganVolume(this IParameter parameter)
       {
          return parameter.IsNamed(Constants.Parameters.VOLUME) &&
                 parameter.ParentContainer.IsAnImplementationOf<Organ>();
-      }
-
-      public static bool CanBeDisplayedInAllView(this IParameter parameter)
-      {
-         return !parameter.IsExpressionNorm();
       }
 
       public static TParameter WithInfo<TParameter>(this TParameter parameter, ParameterInfo info) where TParameter : IParameter
@@ -87,12 +82,17 @@ namespace PKSim.Core.Model
          if (parameter.NameIsOneOf(CoreConstants.Parameters.AllDistributionParameters))
             return false;
 
-         if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population, PKSimBuildingBlockType.Simulation))
+         if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population,
+            PKSimBuildingBlockType.Simulation))
             return false;
 
          if (parameter.Formula == null)
             return false;
 
+         if (!parameter.IsDefault)
+            return false;
+
+         // Default only for constant parameter or distribute parameters
          return parameter.Formula.IsConstant() || parameter.Formula.IsDistributed();
       }
 
@@ -112,6 +112,13 @@ namespace PKSim.Core.Model
 
       public static bool ShouldExportToSnapshot(this IParameter parameter)
       {
+         if (parameter == null)
+            return false;
+
+         //For a molecule, we export all global parameters to ensure that they do not get out of sync when loading from snapshot 
+         if (parameter.IsIndividualMoleculeGlobal())
+            return true;
+
          if (parameter.IsDefault)
             return false;
 
@@ -171,15 +178,19 @@ namespace PKSim.Core.Model
          return parameter.CanBeVariedInPopulation && !parameter.IsChangedByCreateIndividual;
       }
 
-      public static IReadOnlyList<IParameter> AllRelatedRelativeExpressionParameters(this IParameter relativeExpressionParameter)
+      public static IReadOnlyList<IParameter> AllGlobalMoleculeParameters(this IEnumerable<IParameter> parameters)
       {
-         var moleculeContainer = relativeExpressionParameter.ParentContainer;
-         var rootContainer = relativeExpressionParameter.RootContainer;
-         return rootContainer.GetAllChildren<IParameter>(x => string.Equals(x.GroupName, CoreConstants.Groups.RELATIVE_EXPRESSION))
-            .Where(x => x.BuildingBlockType == PKSimBuildingBlockType.Individual)
-            .Where(x => moleculeContainer.IsNamed(x.ParentContainer.Name))
-            .Where(x => x.IsExpression())
-            .Where(x => x.Formula.IsConstant()).ToList();
+         return parameters.Where(x => x.NameIsOneOf(
+            CoreConstants.Parameters.REFERENCE_CONCENTRATION,
+            CoreConstants.Parameters.HALF_LIFE_LIVER,
+            CoreConstants.Parameters.HALF_LIFE_INTESTINE)
+         ).ToList();
+      }
+
+      public static IReadOnlyList<IParameter> AllExpressionParameters(this IEnumerable<IParameter> parameters)
+      {
+         var allParameters = parameters.ToList();
+         return allParameters.Except(AllGlobalMoleculeParameters(allParameters)).ToList();
       }
    }
 }

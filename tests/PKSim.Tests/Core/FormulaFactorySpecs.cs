@@ -48,7 +48,7 @@ namespace PKSim.Core
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          _dynamicFormulaCriteriaRepo = A.Fake<IDynamicFormulaCriteriaRepository>();
 
-         _dynamicSumFormulaRateKey = new RateKey(CoreConstants.CalculationMethod.DynamicSumFormulas, "SomeFormula");
+         _dynamicSumFormulaRateKey = new RateKey(CoreConstants.CalculationMethod.DYNAMIC_SUM_FORMULAS, "SomeFormula");
 
          _sumFormulaCriteria = new DescriptorCriteria();
          _sumFormulaCriteria.Add(new MatchTagCondition("xxx"));

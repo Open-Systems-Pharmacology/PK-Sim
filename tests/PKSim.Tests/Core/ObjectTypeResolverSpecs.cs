@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -54,6 +56,19 @@ namespace PKSim.Core
       public void should_return_the_predefined_type_constant_for_that_entity()
       {
          sut.TypeFor(new PKSimDistributedParameter()).ShouldBeEqualTo(PKSimConstants.ObjectTypes.DistributedParameter);
+      }
+   }
+
+   public class When_resolving_the_type_for_a_distributed_parameters_in_parallel : concern_for_ObjectTypeResolver
+   {
+      [Observation]
+      public void should_return_the_predefined_type_constant_for_that_entity()
+      {
+         var types = new[] {typeof(string), typeof(bool), typeof(DBNull), typeof(DataFactory)};
+         Parallel.ForEach(types, t =>
+         {
+            sut.TypeFor(t);
+         });
       }
    }
 }

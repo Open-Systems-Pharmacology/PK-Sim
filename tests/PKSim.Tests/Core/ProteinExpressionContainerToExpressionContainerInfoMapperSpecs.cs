@@ -49,7 +49,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_an_expression_container_info_initialized_with_the_display_name_of_the_container()
       {
-         _result.ContainerDiplayName.ShouldBeEqualTo(_displayName);
+         _result.ContainerDisplayName.ShouldBeEqualTo(_displayName);
       }
 
       [Observation]

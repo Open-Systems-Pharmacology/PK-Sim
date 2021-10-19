@@ -8,6 +8,7 @@ namespace PKSim.Core.Services
    {
       IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>();
       IIndividualMoleculeFactory FactoryFor(Type individualMoleculeType);
+      IIndividualMoleculeFactory FactoryFor(IndividualMolecule individualMolecule);
    }
 
    public class IndividualMoleculeFactoryResolver : IIndividualMoleculeFactoryResolver
@@ -17,11 +18,6 @@ namespace PKSim.Core.Services
       public IndividualMoleculeFactoryResolver(IRepository<IIndividualMoleculeFactory> enzymeExpressionFactoryRepository)
       {
          _enzymeExpressionFactoryRepository = enzymeExpressionFactoryRepository;
-      }
-
-      public IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>()
-      {
-         return FactoryFor(typeof(TIndividualMolecule));
       }
 
       public IIndividualMoleculeFactory FactoryFor(Type individualMoleculeType)
@@ -34,5 +30,9 @@ namespace PKSim.Core.Services
 
          throw new IndividualProteinFactoryNotFoundException(individualMoleculeType);
       }
+
+      public IIndividualMoleculeFactory FactoryFor<TIndividualMolecule>() => FactoryFor(typeof(TIndividualMolecule));
+
+      public IIndividualMoleculeFactory FactoryFor(IndividualMolecule individualMolecule) => FactoryFor(individualMolecule.GetType());
    }
 }

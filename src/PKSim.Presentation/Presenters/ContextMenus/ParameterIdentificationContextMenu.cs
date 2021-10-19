@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using PKSim.Assets;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -16,7 +20,19 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(ParameterIdentification parameterIdentification)
       {
-         return ParameterIdentificationContextMenuItems.ContextMenuItemsFor(parameterIdentification);
+         return new List<IMenuBarItem>(ParameterIdentificationContextMenuItems.ContextMenuItemsFor(parameterIdentification))
+         {
+            exportParameterIdentificationToR(parameterIdentification)
+         };
+      }
+
+      private IMenuBarItem exportParameterIdentificationToR(ParameterIdentification parameterIdentification)
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Export for R®"))
+            .WithCommandFor<ExportParameterIdentificationToRUICommand, ParameterIdentification>(parameterIdentification)
+            .WithIcon(ApplicationIcons.R)
+            .AsGroupStarter()
+            .ForDeveloper();
       }
    }
 

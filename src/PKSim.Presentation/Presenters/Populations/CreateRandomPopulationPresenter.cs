@@ -26,24 +26,12 @@ namespace PKSim.Presentation.Presenters.Populations
          return PresenterAt(RamdomPopulationItems.Settings);
       }
 
-      protected override ISubPresenterItem SettingPresenterItem
-      {
-         get { return RamdomPopulationItems.Settings; }
-      }
+      protected override ISubPresenterItem SettingPresenterItem => RamdomPopulationItems.Settings;
 
-      protected override ISubPresenterItem<IPopulationAdvancedParametersPresenter> AdvancedParametersPresenterItem
-      {
-         get { return RamdomPopulationItems.AdvancedParameters; }
-      }
+      protected override ISubPresenterItem<IPopulationAdvancedParametersPresenter> AdvancedParametersPresenterItem => RamdomPopulationItems.AdvancedParameters;
 
-      protected override ISubPresenterItem<IPopulationMoleculesPresenter> MoleculesPresenterItem
-      {
-         get { return RamdomPopulationItems.Molecules; }
-      }
+      protected override ISubPresenterItem<IPopulationMoleculesPresenter> MoleculesPresenterItem => RamdomPopulationItems.Molecules;
 
-      protected override ISubPresenterItem<IPopulationAdvancedParameterDistributionPresenter> DistributionPresenterItem
-      {
-         get { return RamdomPopulationItems.ParameterDistribution; }
-      }
+      protected override ISubPresenterItem<IPopulationAdvancedParameterDistributionPresenter> DistributionPresenterItem => RamdomPopulationItems.ParameterDistribution;
    }
 }
