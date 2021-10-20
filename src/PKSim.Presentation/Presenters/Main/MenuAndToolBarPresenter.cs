@@ -67,6 +67,7 @@ namespace PKSim.Presentation.Presenters.Main
       private SimulationState _simulationState;
       private List<string> _activePIs;
       private string _currentlyActivePI;
+      private readonly IEventPublisher _eventPublisher;
 
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
@@ -75,7 +76,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
          IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider,
-         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever) : base(view, menuBarItemRepository, mruProvider)
+         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever, IEventPublisher eventPublisher) : base(view, menuBarItemRepository, mruProvider)
       {
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;
@@ -85,6 +86,7 @@ namespace PKSim.Presentation.Presenters.Main
          _activeSubjectRetriever = activeSubjectRetriever;
          _enabled = true;
          _activePIs = new List<string>();
+         _eventPublisher = eventPublisher;
       }
 
       protected override void AddRibbonPages()
@@ -515,6 +517,7 @@ namespace PKSim.Presentation.Presenters.Main
          _currentlyActivePI = parameterIdentification.Id;
          _parameterIdentificationRunning = _activePIs.Contains(parameterIdentification.Id);
          updateParameterIdentificationItems(parameterIdentification);
+         _eventPublisher.PublishEvent(new ParameterIdentificationSelectedEvent(parameterIdentification));
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
