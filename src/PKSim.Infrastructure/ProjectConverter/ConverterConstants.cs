@@ -36,7 +36,6 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string RESIDUAL_FRACTION = "Residual fraction";
          public static readonly string ScalingExponentForFluidRecircFlowRate = "Scaling exponent for fluid recirculation flow rate";
          public static readonly string TabletTimeDelayFactor = "Tablet time delay factor";
-         public static readonly string REL_EXP_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP);
          public static readonly string FRACTION_ENDOSOMAL = "Fraction endosomal";
          public static readonly string NORM_SUFFIX = " (normalized)";
 
@@ -45,6 +44,10 @@ namespace PKSim.Infrastructure.ProjectConverter
             return $"{parameter}{NORM_SUFFIX}";
          }
 
+         public static readonly string REL_EXP_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP);
+         public static readonly string REL_EXP_BLOOD_CELLS_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS);
+         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_PLASMA);
+         public static readonly string REL_EXP_VASCULAR_ENDOTHELIUM_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
 
          public static IList<string> DistributedParametersWithOnlyOneSupportingPoint => new List<string>
          {
