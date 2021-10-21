@@ -108,7 +108,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
 
       public void Visit(Population population) => convertIndividual(population.FirstIndividual);
 
-      public void Visit(Simulation simulation) => convertIndividual(simulation.BuildingBlock<Individual>());
+      public void Visit(Simulation simulation)
+      {
+         convertIndividual(simulation.BuildingBlock<Individual>());
+
+         //Also hide all relative expression normalized parameters (and we make sure they cannot be edited)
+         var allRelExpNormalized = simulation.Model?.Root?.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.REL_EXP_NORM)).ToList();
+         allRelExpNormalized.Each(x =>
+         {
+            x.Visible = false;
+            x.Editable = false;
+         });
+      }
 
       public void Visit(ParameterIdentification parameterIdentification)
       {

@@ -1,16 +1,44 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Castle.MicroKernel.SubSystems.Conversion;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v10;
 using PKSim.IntegrationTests;
 
 namespace PKSim.ProjectConverter.v10
 {
+   public class When_converting_the_9_1_P1_project_to_10 : ContextWithLoadedProject<Converter9To10>
+   {
+      private List<Simulation> _allSimulations;
+      private Simulation _simulation;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("9.1_P1");
+         _allSimulations = All<Simulation>().ToList();
+         _allSimulations.Each(Load);
+         _simulation = _allSimulations.First();
+      }
+
+      [Observation]
+      public void should_make_all_normalized_parameter_readonly()
+      {
+         var allRelExpNorms = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.REL_EXP_NORM));
+         allRelExpNorms.Any().ShouldBeTrue();
+         allRelExpNorms.Each(x=>x.Visible.ShouldBeFalse());
+         allRelExpNorms.Each(x => x.Editable.ShouldBeFalse());
+      }
+   }
+
+
+
    public class When_converting_the_simple_project_730_project_to_10 : ContextWithLoadedProject<Converter9To10>
    {
       private List<PopulationSimulation> _allSimulations;

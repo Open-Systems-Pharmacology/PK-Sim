@@ -1,7 +1,9 @@
 ﻿using System.Windows.Forms;
 using DevExpress.Utils;
+using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
 using OSPSuite.UI.Controls;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Views.Core
 {
