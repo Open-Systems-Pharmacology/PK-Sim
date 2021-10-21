@@ -28,12 +28,26 @@ namespace PKSim.ProjectConverter.v10
       }
 
       [Observation]
-      public void should_make_all_normalized_parameter_readonly()
+      public void should_make_all_normalized_parameter_readonly_and_hidden()
       {
          var allRelExpNorms = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.REL_EXP_NORM));
          allRelExpNorms.Any().ShouldBeTrue();
          allRelExpNorms.Each(x=>x.Visible.ShouldBeFalse());
          allRelExpNorms.Each(x => x.Editable.ShouldBeFalse());
+      }
+
+
+      [Observation]
+      public void should_make_all_global_normalized_parameter_readonly_and_hidden()
+      {
+         var allGlobalRelExpNorms = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.NameIsOneOf(
+            ConverterConstants.Parameters.REL_EXP_BLOOD_CELLS_NORM,
+            ConverterConstants.Parameters.REL_EXP_PLASMA_NORM,
+            ConverterConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM_NORM
+            ));
+         allGlobalRelExpNorms.Any().ShouldBeTrue();
+         allGlobalRelExpNorms.Each(x => x.Visible.ShouldBeFalse());
+         allGlobalRelExpNorms.Each(x => x.Editable.ShouldBeFalse());
       }
    }
 
