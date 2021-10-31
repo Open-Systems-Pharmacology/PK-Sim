@@ -44,7 +44,7 @@ namespace PKSim.Core.Model
       public TemplateType Type { get; set; }
       public object Object { get; set; }
 
-      public abstract bool HasReferences { get; }
+      public abstract bool HasReferences { get; set; }
 
       /// <summary>
       /// This will be the default version of a template
@@ -65,23 +65,27 @@ namespace PKSim.Core.Model
       /// </summary>
       public List<Template> References { get; }   = new List<Template>();
 
-      public override bool HasReferences =>  References.Any();
+      public override bool HasReferences
+      {
+         get => References.Any();
+         set
+         {
+            /*nothing to do here*/
+         }
+      }
    }
 
    public class RemoteTemplate : Template
    {
-      private bool _hasReferences;
-
    
       /// <summary>
       /// Url for a remote snapshot or null otherwise
       /// </summary>
       public string Url { get; set; }
 
-      public override bool HasReferences => _hasReferences;
-
-      public bool SetHasReference(bool hasReference) => _hasReferences = hasReference;
+      public override bool HasReferences { get; set; }
    }
+
 
    public class RemoteTemplates
    {

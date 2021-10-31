@@ -54,7 +54,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return model;
       }
 
-      public IReadOnlyList<RemoteTemplate> AllReferenceTemplatesFor(RemoteTemplate remoteTemplate)
+      public Task<IReadOnlyList<RemoteTemplate>> AllReferenceTemplatesForAsync<T>(T loadedTemplate)
       {
          throw new NotImplementedException();
       }

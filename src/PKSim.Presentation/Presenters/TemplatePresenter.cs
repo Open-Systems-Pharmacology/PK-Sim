@@ -126,9 +126,11 @@ namespace PKSim.Presentation.Presenters
       {
          if (allTemplates.Contains(template.Name))
             return;
-         
-         allTemplates.Add(template.Name, await loadTemplateAsync<T>(template));
-         foreach (var reference in _templateTaskQuery.AllReferenceTemplatesFor(template))
+
+         var loadedTemplate = await loadTemplateAsync<T>(template);
+         allTemplates.Add(template.Name, loadedTemplate);
+         var references = await _templateTaskQuery.AllReferenceTemplatesForAsync(template, loadedTemplate);
+         foreach (var reference in references)
          {
             await loadTemplateWithReferences<T>(allTemplates, reference);
          }
@@ -143,7 +145,7 @@ namespace PKSim.Presentation.Presenters
          }
 
          return allTemplates;
-      } 
+      }
 
       private Task<T> loadTemplateAsync<T>(Template template) => _templateTaskQuery.LoadTemplateAsync<T>(template);
 
@@ -206,7 +208,7 @@ namespace PKSim.Presentation.Presenters
       public bool CanEdit(TemplateDTO template)
       {
          var databaseType = template.DatabaseType;
-         
+
          //Remote templates cannot be edited, even by dev
          if (databaseType == TemplateDatabaseType.Remote)
             return false;

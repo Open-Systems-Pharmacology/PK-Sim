@@ -404,7 +404,7 @@ namespace PKSim.Presentation
          _templatePresenter = A.Fake<ITemplatePresenter>();
          _templateIndividual = new Individual();
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<ISimulationSubject>>>().Returns(new[] {_templateIndividual});
+         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<IPKSimBuildingBlock>>>().Returns(new[] {_templateIndividual});
 
          A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
             .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));
@@ -441,7 +441,7 @@ namespace PKSim.Presentation
          _templatePresenter = A.Fake<ITemplatePresenter>();
          _templateObserverSet = new ObserverSet();
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<ObserverSet>>>().Returns(new[] {_templateObserverSet});
+         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<IPKSimBuildingBlock>>>().Returns(new[] {_templateObserverSet});
 
          A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
             .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));
@@ -479,7 +479,7 @@ namespace PKSim.Presentation
          _templateIndividual = new Individual().WithName("Existing");
          _existingIndividual = new Individual().WithName("ExiStIng");
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<ISimulationSubject>>>().Returns(new[] {_templateIndividual});
+         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<IPKSimBuildingBlock>>>().Returns(new[] {_templateIndividual});
          A.CallTo(() => _project.All(_templateIndividual.BuildingBlockType)).Returns(new[] {_existingIndividual});
 
          A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))

@@ -22,12 +22,34 @@
       "Version": "1.0",
       "Description": "BlaBla"
     },
-     {
+    {
       "Type": "Compound",
       "Name": "Itraconazole",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Itraconazole-Model/v1.0/Itraconazole-Model.json",
       "Version": "1.0",
-      "Description": "Itraconazole model (fake used for testing)"
+      "Description": "Itraconazole model (fake used for testing)",
+      "HasReferences": true
+    },
+    {
+      "Type": "Compound",
+      "Name": "Hydroxy-Itraconazole",
+      "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Itraconazole-Model/v1.0/Itraconazole-Model.json",
+      "Version": "1.0",
+      "Description": "Hydroxy-Itraconazole model (fake used for testing)"
+    },
+    {
+      "Type": "Compound",
+      "Name": "Keto-Itraconazole",
+      "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Itraconazole-Model/v1.0/Itraconazole-Model.json",
+      "Version": "1.0",
+      "Description": "Keto-Itraconazole model (fake used for testing)"
+    },
+    {
+      "Type": "Compound",
+      "Name": "Hydroxy-Itraconazole",
+      "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Itraconazole-Model/v1.0/Itraconazole-Model.json",
+      "Version": "1.0",
+      "Description": "Hydroxy-Itraconazole model (fake used for testing)"
     }
   ]
 }

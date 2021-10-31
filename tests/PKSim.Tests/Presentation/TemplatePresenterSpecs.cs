@@ -52,8 +52,8 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         _userTemplate = new LocalTemplate { DatabaseType = TemplateDatabaseType.User};
-         _systemTemplate = new LocalTemplate { DatabaseType = TemplateDatabaseType.System};
+         _userTemplate = new LocalTemplate {DatabaseType = TemplateDatabaseType.User};
+         _systemTemplate = new LocalTemplate {DatabaseType = TemplateDatabaseType.System};
          _remoteTemplate = new RemoteTemplate {DatabaseType = TemplateDatabaseType.Remote};
          _userTemplateDTO = new TemplateDTO(_userTemplate);
          _systemTemplateDTO = new TemplateDTO(_systemTemplate);
@@ -102,8 +102,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
          _templates = new List<Template> {_template1, _template2};
@@ -111,6 +111,9 @@ namespace PKSim.Presentation
          sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
+
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesForAsync(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesForAsync(_template2, _compound2)).Returns(new[] {_template1});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
@@ -120,7 +123,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_not_load_thee_same_reference_twice()
+      public void should_not_load_the_same_reference_twice()
       {
          _allTemplates.ShouldOnlyContain(_compound1, _compound2);
       }
@@ -142,8 +145,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
@@ -188,8 +191,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
@@ -230,8 +233,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
@@ -247,7 +250,7 @@ namespace PKSim.Presentation
       protected override Task Because()
       {
          sut.Delete(_templateDTO1);
-         return  _completed;
+         return _completed;
       }
 
       [Observation]
