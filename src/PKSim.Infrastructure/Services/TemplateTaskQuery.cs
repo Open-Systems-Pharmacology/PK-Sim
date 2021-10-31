@@ -79,7 +79,7 @@ namespace PKSim.Infrastructure.Services
       public Task<T> LoadTemplateAsync<T>(Template template)
       {
          if (template.DatabaseType == TemplateDatabaseType.Remote)
-            return _remoteTemplateRepository.LoadTemplateAsync<T>(template);
+            return _remoteTemplateRepository.LoadTemplateAsync<T>(template.DowncastTo<RemoteTemplate>());
 
          using (establishConnection(template.DatabaseType))
          {
@@ -137,6 +137,19 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
+      public IReadOnlyList<Template> AllReferenceTemplatesFor(Template template)
+      {
+         switch (template)
+         {
+            case LocalTemplate localTemplate:
+               return localTemplate.References;
+            case RemoteTemplate remoteTemplate:
+               return _remoteTemplateRepository.AllReferenceTemplatesFor(template.DowncastTo<RemoteTemplate>());
+            default:
+               throw new ArgumentOutOfRangeException(nameof(template));
+         }
+      }
+
       public void DeleteTemplate(Template templateToDelete)
       {
          using (establishConnection(templateToDelete.DatabaseType))
@@ -160,7 +173,7 @@ namespace PKSim.Infrastructure.Services
          return buildingBlockTemplates;
       }
       
-      private void addReferencesToTemplate(Template template, DAS connection, List<string> loadedReferenceNames = null)
+      private void addReferencesToTemplate(LocalTemplate template, DAS connection, List<string> loadedReferenceNames = null)
       {
          DASDataTable dataTable = null;
          loadedReferenceNames = loadedReferenceNames ?? new List<string>();
@@ -199,7 +212,7 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      private Template loadTemplateBy(TemplateDatabaseType templateDatabaseType, string templateName, string templateType, DAS connection)
+      private LocalTemplate loadTemplateBy(TemplateDatabaseType templateDatabaseType, string templateName, string templateType, DAS connection)
       {
          try
          {
@@ -214,7 +227,7 @@ namespace PKSim.Infrastructure.Services
             if (row == null)
                return null;
 
-            return new Template
+            return new LocalTemplate
             {
                DatabaseType = templateDatabaseType,
                Type = EnumHelper.ParseValue<TemplateType>(templateType),
@@ -317,7 +330,7 @@ namespace PKSim.Infrastructure.Services
          return row;
       }
 
-      public void SaveToTemplate(IReadOnlyList<Template> templateItems)
+      public void SaveToTemplate(IReadOnlyList<LocalTemplate> templateItems)
       {
          if (!templateItems.Any()) return;
          var templateDatabaseType = templateItems[0].DatabaseType;
@@ -355,7 +368,7 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public void SaveToTemplate(Template templateItem)
+      public void SaveToTemplate(LocalTemplate templateItem)
       {
          SaveToTemplate(new[] {templateItem});
       }

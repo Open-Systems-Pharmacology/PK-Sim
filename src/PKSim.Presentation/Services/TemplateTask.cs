@@ -34,7 +34,7 @@ namespace PKSim.Presentation.Services
             if (!namePresenter.NewName(defaultName, templateType))
                return;
 
-            var templateItem = new Template
+            var templateItem = new LocalTemplate
             {
                Name = namePresenter.Name,
                Description = namePresenter.Description,

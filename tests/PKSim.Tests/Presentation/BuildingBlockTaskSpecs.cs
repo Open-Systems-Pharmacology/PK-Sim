@@ -488,7 +488,7 @@ namespace PKSim.Presentation
 
       protected override Task Because()
       {
-         return sut.LoadFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+         return sut.LoadFromTemplateAsync(PKSimBuildingBlockType.SimulationSubject);
       }
 
       [Observation]
@@ -546,7 +546,7 @@ namespace PKSim.Presentation
       protected ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> _cache;
       protected IPKSimBuildingBlock _compound;
       protected IPKSimBuildingBlock _metabolite;
-      protected IReadOnlyList<Template> _allTemplateItems;
+      protected IReadOnlyList<LocalTemplate> _allTemplateItems;
 
       protected override async Task Context()
       {
@@ -558,8 +558,8 @@ namespace PKSim.Presentation
             [_compound] = new List<IPKSimBuildingBlock> {_metabolite}
          };
 
-         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<IReadOnlyList<Template>>._))
-            .Invokes(x => _allTemplateItems = x.GetArgument<IReadOnlyList<Template>>(0));
+         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<IReadOnlyList<LocalTemplate>>._))
+            .Invokes(x => _allTemplateItems = x.GetArgument<IReadOnlyList<LocalTemplate>>(0));
       }
 
       protected override Task Because()

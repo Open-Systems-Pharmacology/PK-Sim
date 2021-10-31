@@ -38,39 +38,54 @@ namespace PKSim.Core.Model
       }
    }
 
-   public class Template : ObjectBase
+   public abstract class Template : ObjectBase
    {
       public TemplateDatabaseType DatabaseType { get; set; }
       public TemplateType Type { get; set; }
       public object Object { get; set; }
 
-      /// <summary>
-      ///    List of <see cref="Template" /> referenced by current <see cref="Template" />.
-      ///    A template should not reference itself!
-      /// </summary>
-      public List<Template> References { get; }
-
-      public bool HasReferences => References.Any();
+      public abstract bool HasReferences { get; }
 
       /// <summary>
       /// This will be the default version of a template
       /// </summary>
-      public string Version { get; set; } 
+      public string Version { get; set; }
 
+
+      protected Template() : base(ShortGuid.NewGuid())
+      {
+      }
+   }
+
+   public class LocalTemplate : Template
+   {
+      /// <summary>
+      ///    List of <see cref="Template" /> referenced by current <see cref="Template" />.
+      ///    A template should not reference itself!
+      /// </summary>
+      public List<Template> References { get; }   = new List<Template>();
+
+      public override bool HasReferences =>  References.Any();
+   }
+
+   public class RemoteTemplate : Template
+   {
+      private bool _hasReferences;
+
+   
       /// <summary>
       /// Url for a remote snapshot or null otherwise
       /// </summary>
       public string Url { get; set; }
 
-      public Template() : base(ShortGuid.NewGuid())
-      {
-         References = new List<Template>();
-      }
+      public override bool HasReferences => _hasReferences;
+
+      public bool SetHasReference(bool hasReference) => _hasReferences = hasReference;
    }
 
    public class RemoteTemplates
    {
       public string Version { get; set; }
-      public Template[] Templates { get; set; }
+      public RemoteTemplate[] Templates { get; set; }
    }
 }

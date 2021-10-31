@@ -5,10 +5,11 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Repositories
 {
-   public interface IRemoteTemplateRepository : IStartableRepository<Template>
+   public interface IRemoteTemplateRepository : IStartableRepository<RemoteTemplate>
    {
       string Version { get; }
-      IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType);
-      Task<T> LoadTemplateAsync<T>(Template template);
+      IReadOnlyList<RemoteTemplate> AllTemplatesFor(TemplateType templateType);
+      Task<T> LoadTemplateAsync<T>(RemoteTemplate remoteTemplate);
+      IReadOnlyList<RemoteTemplate> AllReferenceTemplatesFor(RemoteTemplate remoteTemplate);
    }
 }

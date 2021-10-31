@@ -13,7 +13,8 @@ namespace PKSim.Core.Services
       IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType);
 
       /// <summary>
-      ///    Returns all available templates of type <paramref name="templateDatabaseType"/> for the given <paramref name="templateType" />
+      ///    Returns all available templates of type <paramref name="templateDatabaseType" /> for the given
+      ///    <paramref name="templateType" />
       /// </summary>
       /// <param name="templateDatabaseType">Type of database template to search for.</param>
       /// <param name="templateType">Type of template object for which the available templates should be retrieved</param>
@@ -29,21 +30,20 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="templateDatabaseType">Type of template to search for.</param>
       /// <param name="name">Name to search for.</param>
-      /// <param name="templateType">Ttype to search for.</param>
+      /// <param name="templateType">Type to search for.</param>
       /// <returns>True, is there is already a template defined with that name</returns>
       bool Exists(TemplateDatabaseType templateDatabaseType, string name, TemplateType templateType);
 
       /// <summary>
       ///    Save the given <paramref name="templateItem" /> in the template database
       /// </summary>
-      void SaveToTemplate(Template templateItem);
+      void SaveToTemplate(LocalTemplate templateItem);
 
       /// <summary>
       ///    Save the given <paramref name="templateItems" /> in the template database/>
       /// </summary>
-      void SaveToTemplate(IReadOnlyList<Template> templateItems);
+      void SaveToTemplate(IReadOnlyList<LocalTemplate> templateItems);
 
- 
       /// <summary>
       ///    Deletes the  template identified by <paramref name="templateToDelete" /> .
       /// </summary>
@@ -60,5 +60,7 @@ namespace PKSim.Core.Services
       /// <param name="buildingBlockTemplate">Building block template to rename</param>
       /// <param name="newName">New name</param>
       void RenameTemplate(Template buildingBlockTemplate, string newName);
+
+      IReadOnlyList<Template> AllReferenceTemplatesFor(Template template);
    }
 }

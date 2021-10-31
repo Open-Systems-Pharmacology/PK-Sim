@@ -45,7 +45,7 @@ namespace PKSim.Presentation.Presenters
 
       public bool NewName(string defaultName, TemplateType templateType)
       {
-         return Edit(new Template {Name = defaultName, Type = templateType});
+         return Edit(new LocalTemplate { Name = defaultName, Type = templateType});
       }
    }
 }

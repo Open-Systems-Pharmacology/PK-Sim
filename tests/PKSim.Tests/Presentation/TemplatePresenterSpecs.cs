@@ -52,9 +52,9 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         _userTemplate = new Template {DatabaseType = TemplateDatabaseType.User};
-         _systemTemplate = new Template {DatabaseType = TemplateDatabaseType.System};
-         _remoteTemplate = new Template {DatabaseType = TemplateDatabaseType.Remote};
+         _userTemplate = new LocalTemplate { DatabaseType = TemplateDatabaseType.User};
+         _systemTemplate = new LocalTemplate { DatabaseType = TemplateDatabaseType.System};
+         _remoteTemplate = new RemoteTemplate {DatabaseType = TemplateDatabaseType.Remote};
          _userTemplateDTO = new TemplateDTO(_userTemplate);
          _systemTemplateDTO = new TemplateDTO(_systemTemplate);
          _remoteTemplateDTO = new TemplateDTO(_remoteTemplate);
@@ -91,8 +91,8 @@ namespace PKSim.Presentation
    {
       private IReadOnlyList<Compound> _allTemplates;
       private List<Template> _templates;
-      private Template _template1;
-      private Template _template2;
+      private LocalTemplate _template1;
+      private LocalTemplate _template2;
       private Compound _compound1;
       private Compound _compound2;
 
@@ -102,8 +102,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new Template {Name = "Template1", Id = "Id1"};
-         _template2 = new Template {Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
          _templates = new List<Template> {_template1, _template2};
@@ -142,8 +142,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new Template {Name = "Template1", Id = "Id1"};
-         _template2 = new Template {Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
@@ -188,8 +188,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new Template {Name = "Template1", Id = "Id1"};
-         _template2 = new Template {Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
@@ -230,8 +230,8 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new Template {Name = "Template1", Id = "Id1"};
-         _template2 = new Template {Name = "Template2", Id = "Id2"};
+         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2"};
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};

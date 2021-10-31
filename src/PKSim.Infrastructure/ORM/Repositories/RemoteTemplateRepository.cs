@@ -18,12 +18,12 @@ using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public class RemoteTemplateRepository : StartableRepository<Template>, IRemoteTemplateRepository
+   public class RemoteTemplateRepository : StartableRepository<RemoteTemplate>, IRemoteTemplateRepository
    {
       private readonly IPKSimConfiguration _configuration;
       private readonly IJsonSerializer _jsonSerializer;
       private readonly ISnapshotTask _snapshotTask;
-      private readonly List<Template> _allTemplates = new List<Template>();
+      private readonly List<RemoteTemplate> _allTemplates = new List<RemoteTemplate>();
       public string Version { get; private set; }
 
       public RemoteTemplateRepository(
@@ -36,21 +36,27 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _snapshotTask = snapshotTask;
       }
 
-      public IReadOnlyList<Template> AllTemplatesFor(TemplateType templateType)
+      public IReadOnlyList<RemoteTemplate> AllTemplatesFor(TemplateType templateType)
       {
          Start();
          return _allTemplates.Where(x => x.Type.Is(templateType)).ToList();
       }
 
-      public async Task<T> LoadTemplateAsync<T>(Template template)
+      public async Task<T> LoadTemplateAsync<T>(RemoteTemplate remoteTemplate)
       {
-         var localFile = Path.Combine(_configuration.RemoteTemplateFolderPath, fileNameWithVersionFor(template));
+         
+         var localFile = Path.Combine(_configuration.RemoteTemplateFolderPath, fileNameWithVersionFor(remoteTemplate));
          if (!FileHelper.FileExists(localFile))
-            await downloadRemoteFile(template.Url, localFile);
+            await downloadRemoteFile(remoteTemplate.Url, localFile);
 
-         var buildingBlockType = EnumHelper.ParseValue<PKSimBuildingBlockType>(template.Type.ToString());
-         var model = await _snapshotTask.LoadModelFromProjectFileAsync<T>(localFile, buildingBlockType, template.Name);
+         var buildingBlockType = EnumHelper.ParseValue<PKSimBuildingBlockType>(remoteTemplate.Type.ToString());
+         var model = await _snapshotTask.LoadModelFromProjectFileAsync<T>(localFile, buildingBlockType, remoteTemplate.Name);
          return model;
+      }
+
+      public IReadOnlyList<RemoteTemplate> AllReferenceTemplatesFor(RemoteTemplate remoteTemplate)
+      {
+         throw new NotImplementedException();
       }
 
       protected override void DoStart()
@@ -61,13 +67,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
          Version = snapshots.Version;
       }
 
-      public override IEnumerable<Template> All()
+      public override IEnumerable<RemoteTemplate> All()
       {
          Start();
          return _allTemplates;
       }
 
-      private string fileNameWithVersionFor(Template template)
+      private string fileNameWithVersionFor(RemoteTemplate template)
       {
          var url = template.Url;
          var fileName = new Uri(url).Segments.Last();

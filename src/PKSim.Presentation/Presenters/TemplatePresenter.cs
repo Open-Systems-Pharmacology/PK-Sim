@@ -83,7 +83,8 @@ namespace PKSim.Presentation.Presenters
 
       public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType)
       {
-         _buildingBlockTypeString = _objectTypeResolver.TypeFor<T>();
+         //TODO get type?
+         _buildingBlockTypeString = templateType.ToString();
          _view.Caption = PKSimConstants.UI.LoadBuildingBlockFromTemplate(_buildingBlockTypeString);
          _shouldAddItemIcons = !_templateTaskQuery.IsPrimitiveType(templateType);
 
@@ -115,7 +116,7 @@ namespace PKSim.Presentation.Presenters
          var allTemplates = new Cache<string, T>();
          foreach (var template in _selectedTemplates)
          {
-            await loadTemplateWithReferences(allTemplates, template);
+            await loadTemplateWithReferences<T>(allTemplates, template);
          }
 
          return allTemplates.ToList();
@@ -125,12 +126,11 @@ namespace PKSim.Presentation.Presenters
       {
          if (allTemplates.Contains(template.Name))
             return;
-
          
          allTemplates.Add(template.Name, await loadTemplateAsync<T>(template));
-         foreach (var reference in template.References)
+         foreach (var reference in _templateTaskQuery.AllReferenceTemplatesFor(template))
          {
-            await loadTemplateWithReferences(allTemplates, reference);
+            await loadTemplateWithReferences<T>(allTemplates, reference);
          }
       }
 

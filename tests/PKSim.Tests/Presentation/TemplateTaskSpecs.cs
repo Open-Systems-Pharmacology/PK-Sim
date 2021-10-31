@@ -77,8 +77,8 @@ namespace PKSim.Presentation
          A.CallTo(() => _namePresenter.Name).Returns("NEW_NAME");
          A.CallTo(() => _namePresenter.Description).Returns("DESCRIPTION");
          A.CallTo(() => _applicationController.Start<INameTemplatePresenter>()).Returns(_namePresenter);
-         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<Template>._))
-            .Invokes(x => _templateItem = x.GetArgument<Template>(0));
+         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<LocalTemplate>._))
+            .Invokes(x => _templateItem = x.GetArgument<LocalTemplate>(0));
 
       }
 
