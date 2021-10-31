@@ -9,7 +9,8 @@ namespace PKSim.Core.Repositories
    {
       string Version { get; }
       IReadOnlyList<RemoteTemplate> AllTemplatesFor(TemplateType templateType);
+      RemoteTemplate TemplateBy(TemplateType templateType, string name);
       Task<T> LoadTemplateAsync<T>(RemoteTemplate remoteTemplate);
-      Task<IReadOnlyList<RemoteTemplate>> AllReferenceTemplatesForAsync<T>(T loadedTemplate);
+      IReadOnlyList<RemoteTemplate> AllReferenceTemplatesFor<T>(RemoteTemplate remoteTemplate, T loadedTemplate);
    }
 }

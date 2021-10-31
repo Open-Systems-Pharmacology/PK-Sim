@@ -2171,7 +2171,9 @@ namespace PKSim.Assets
          public static readonly string HidePKAnalysis = "Hide PK-Analysis";
          public static readonly string CalculateVSSValues = "Calculate VSS Values";
          public static readonly string DoYouWantToSaveCompoundMetaboliteAsTemplate = "Do you also want to save the metabolite(s) of this compound?";
-         public static string DoYouWantToLoadReferencedTemplateAsWell(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
+         public static string DoYouWantToLoadMetabolites(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
+         public static string DoYouWantToLoadExpressionProfiles(int numberOfSelectedItems) => 
+            $"Do you also want to load the expression profiles(s) of the selected {"individual".PluralizeIf(numberOfSelectedItems)} or {"population".PluralizeIf(numberOfSelectedItems)}?";
          public static readonly string LowerPercentile = "Lower Percentile";
          public static readonly string UpperPercentile = "Upper Percentile";
          public static readonly string LowerValue= "Lower Value";

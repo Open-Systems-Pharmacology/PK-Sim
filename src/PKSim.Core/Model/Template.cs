@@ -36,6 +36,11 @@ namespace PKSim.Core.Model
       {
          return (templateType & typeToCompare) != 0;
       }
+
+      public static bool SupportsReference(this TemplateType templateType) =>
+         templateType.Is(TemplateType.Individual) ||
+         templateType.Is(TemplateType.Population) ||
+         templateType.Is(TemplateType.Compound);
    }
 
    public abstract class Template : ObjectBase
@@ -44,7 +49,6 @@ namespace PKSim.Core.Model
       public TemplateType Type { get; set; }
       public object Object { get; set; }
 
-      public abstract bool HasReferences { get; set; }
 
       /// <summary>
       /// This will be the default version of a template
@@ -65,14 +69,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public List<Template> References { get; }   = new List<Template>();
 
-      public override bool HasReferences
-      {
-         get => References.Any();
-         set
-         {
-            /*nothing to do here*/
-         }
-      }
+      public bool HasReferences => References.Any();
    }
 
    public class RemoteTemplate : Template
@@ -83,7 +80,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public string Url { get; set; }
 
-      public override bool HasReferences { get; set; }
    }
 
 

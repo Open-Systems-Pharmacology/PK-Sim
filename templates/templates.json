@@ -27,8 +27,7 @@
       "Name": "Itraconazole",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Itraconazole-Model/v1.0/Itraconazole-Model.json",
       "Version": "1.0",
-      "Description": "Itraconazole model (fake used for testing)",
-      "HasReferences": true
+      "Description": "Itraconazole model (fake used for testing)"
     },
     {
       "Type": "Compound",
@@ -46,10 +45,10 @@
     },
     {
       "Type": "Compound",
-      "Name": "Hydroxy-Itraconazole",
+      "Name": "N-desalkyl-Itraconazole",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Itraconazole-Model/v1.0/Itraconazole-Model.json",
       "Version": "1.0",
-      "Description": "Hydroxy-Itraconazole model (fake used for testing)"
+      "Description": "N-desalkyl-Itraconazole model (fake used for testing)"
     }
   ]
 }

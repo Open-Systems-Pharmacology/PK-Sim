@@ -112,8 +112,8 @@ namespace PKSim.Presentation
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
 
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesForAsync(_template1, _compound1)).Returns(new[] {_template2});
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesForAsync(_template2, _compound2)).Returns(new[] {_template1});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 

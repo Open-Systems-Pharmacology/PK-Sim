@@ -137,14 +137,14 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public async Task<IReadOnlyList<Template>> AllReferenceTemplatesForAsync<T>(Template template, T loadedTemplate)
+      public IReadOnlyList<Template> AllReferenceTemplatesFor<T>(Template template, T loadedTemplate)
       {
          switch (template)
          {
             case LocalTemplate localTemplate:
                return localTemplate.References;
             case RemoteTemplate remoteTemplate:
-               return await _remoteTemplateRepository.AllReferenceTemplatesForAsync(remoteTemplate);
+               return _remoteTemplateRepository.AllReferenceTemplatesFor(remoteTemplate, loadedTemplate);
             default:
                throw new ArgumentOutOfRangeException(nameof(template));
          }

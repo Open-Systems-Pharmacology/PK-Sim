@@ -61,6 +61,6 @@ namespace PKSim.Core.Services
       /// <param name="newName">New name</param>
       void RenameTemplate(Template buildingBlockTemplate, string newName);
 
-      Task<IReadOnlyList<Template>> AllReferenceTemplatesForAsync<T>(Template template, T loadedTemplate);
+      IReadOnlyList<Template> AllReferenceTemplatesFor<T>(Template template, T loadedTemplate);
    }
 }

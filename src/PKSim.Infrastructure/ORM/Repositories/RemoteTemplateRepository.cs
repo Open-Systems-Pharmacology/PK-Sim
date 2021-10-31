@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Exceptions;
@@ -42,21 +43,47 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _allTemplates.Where(x => x.Type.Is(templateType)).ToList();
       }
 
+      public RemoteTemplate TemplateBy(TemplateType templateType, string name) => AllTemplatesFor(templateType).FindByName(name);
+
       public async Task<T> LoadTemplateAsync<T>(RemoteTemplate remoteTemplate)
       {
-         
          var localFile = Path.Combine(_configuration.RemoteTemplateFolderPath, fileNameWithVersionFor(remoteTemplate));
          if (!FileHelper.FileExists(localFile))
             await downloadRemoteFile(remoteTemplate.Url, localFile);
 
          var buildingBlockType = EnumHelper.ParseValue<PKSimBuildingBlockType>(remoteTemplate.Type.ToString());
-         var model = await _snapshotTask.LoadModelFromProjectFileAsync<T>(localFile, buildingBlockType, remoteTemplate.Name);
-         return model;
+         return await _snapshotTask.LoadModelFromProjectFileAsync<T>(localFile, buildingBlockType, remoteTemplate.Name);
       }
 
-      public Task<IReadOnlyList<RemoteTemplate>> AllReferenceTemplatesForAsync<T>(T loadedTemplate)
+      public IReadOnlyList<RemoteTemplate> AllReferenceTemplatesFor<T>(RemoteTemplate remoteTemplate, T loadedTemplate)
       {
-         throw new NotImplementedException();
+         //We only have reference templates for very specific building block types. So we filter for those
+         switch (loadedTemplate)
+         {
+            case Compound compound:
+               return metabolitesFor(compound);
+            case Individual individual:
+               return expressionProfileFor(remoteTemplate, individual);
+            default:
+               return Array.Empty<RemoteTemplate>();
+         }
+      }
+
+      private IReadOnlyList<RemoteTemplate> expressionProfileFor(RemoteTemplate remoteTemplate, Individual individual)
+      {
+         //TODO Not implemented yet. It will be done with the profile defined for individual as separate building block
+         return Array.Empty<RemoteTemplate>();
+      }
+
+      private IReadOnlyList<RemoteTemplate> metabolitesFor(Compound compound)
+      {
+         return compound.AllProcesses<EnzymaticProcess>()
+            .Select(x => x.MetaboliteName)
+            .Where(x => x.StringIsNotEmpty())
+            .Distinct()
+            .Select(meta => TemplateBy(TemplateType.Compound, meta))
+            .Where(x => x != null)
+            .ToList();
       }
 
       protected override void DoStart()

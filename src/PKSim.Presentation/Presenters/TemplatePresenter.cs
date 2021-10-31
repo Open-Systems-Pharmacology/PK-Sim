@@ -100,15 +100,41 @@ namespace PKSim.Presentation.Presenters
          if (_view.Canceled)
             return Task.FromResult<IReadOnlyList<T>>(Array.Empty<T>());
 
-         return shouldLoadTemplateWithReferences() ? loadMultipleTemplate<T>() : loadSingleTemplate<T>();
+         return shouldLoadTemplateWithReferences(templateType) ? loadMultipleTemplate<T>() : loadSingleTemplate<T>();
       }
 
-      private bool shouldLoadTemplateWithReferences()
+      private bool shouldLoadTemplateWithReferences(TemplateType templateType)
       {
-         if (!_selectedTemplates.Any(x => x.HasReferences))
+         if (!selectionSupportsReference(templateType))
             return false;
 
-         return _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.DoYouWantToLoadReferencedTemplateAsWell(_selectedTemplates.Count)) == ViewResult.Yes;
+         var message = getMessageForLoadWithReference(templateType);
+         return _dialogCreator.MessageBoxYesNo(message) == ViewResult.Yes;
+      }
+
+      private string getMessageForLoadWithReference(TemplateType templateType)
+      {
+         switch (templateType)
+         {
+            case TemplateType.Compound:
+               return PKSimConstants.UI.DoYouWantToLoadMetabolites(_selectedTemplates.Count);
+            default:
+               return PKSimConstants.UI.DoYouWantToLoadExpressionProfiles(_selectedTemplates.Count);
+         }
+      }
+
+      private bool selectionSupportsReference(TemplateType templateType)
+      {
+         //Type does not even supports reference. Nothing to load
+         if (!templateType.SupportsReference())
+            return false;
+
+         //At least one remote and reference are supported, so we ask the user as we have no way to know before loading the whole template
+         if (_selectedTemplates.Any(x => x.DatabaseType == TemplateDatabaseType.Remote))
+            return true;
+
+         //only local or system. We can check for references 
+         return _selectedTemplates.OfType<LocalTemplate>().Any(x => x.HasReferences);
       }
 
       private async Task<IReadOnlyList<T>> loadMultipleTemplate<T>()
@@ -128,8 +154,14 @@ namespace PKSim.Presentation.Presenters
             return;
 
          var loadedTemplate = await loadTemplateAsync<T>(template);
+
+         //This can be the case for instance if a reference is not found.
+         //It can happen easily with remote templates
+         if (loadedTemplate == null)
+            return;
+
          allTemplates.Add(template.Name, loadedTemplate);
-         var references = await _templateTaskQuery.AllReferenceTemplatesForAsync(template, loadedTemplate);
+         var references = _templateTaskQuery.AllReferenceTemplatesFor(template, loadedTemplate);
          foreach (var reference in references)
          {
             await loadTemplateWithReferences<T>(allTemplates, reference);
