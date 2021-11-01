@@ -93,6 +93,10 @@
                 <File Name='OSPSuite.PKParameters.xml' Id='OSPSuite.PKParameters' Source='$(var.DeployDir)/OSPSuite.PKParameters.xml' KeyPath='yes' />
               </Component>
 
+              <Component Id='templates' Guid='EF33C51B-BCE8-40BA-A7AB-035B22BBFF4D'>
+                <File Name='templates.json' Id='templates' Source='$(var.DeployDir)/templates.json' KeyPath='yes' />
+              </Component>
+
               <Component Id="PKSimTemplateDBSystem" Guid="DF39FF9D-DAB8-4A6A-9E3E-FEFD68489F3C">
                 <File Name="PKSimTemplateDBSystem.templateDbSystem" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.templateDbSystem" KeyPath="yes" />
               </Component>
@@ -178,6 +182,7 @@
       <ComponentRef Id="ExampleFolderShortCut" />
       <ComponentRef Id="OSPSuite.Dimensions" />
       <ComponentRef Id="OSPSuite.PKParameters" />
+      <ComponentRef Id="templates" />
 
       <MergeRef Id="msxml4sys32" />
       <MergeRef Id="msxml4sxs32" />

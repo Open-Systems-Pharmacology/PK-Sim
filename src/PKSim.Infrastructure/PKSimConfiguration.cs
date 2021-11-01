@@ -35,11 +35,17 @@ namespace PKSim.Infrastructure
          PKSimDbPath = LocalOrAllUsersPathForFile(CoreConstants.PK_SIM_DB_FILE);
          TemplateSystemDatabasePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
          TemplateUserDatabaseTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE);
-         RemoteTemplateSummaryPath = LocalOrAllUsersPathForFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
          DefaultTemplateUserDatabasePath = CurrentUserFile(CoreConstants.TEMPLATE_USER_DATABASE);
-         RemoteTemplateFolderPath = Path.Combine(CurrentUserFolderPath, CoreConstants.REMOTE_FOLDER_PATH); 
+         
+         RemoteTemplateFolderPath = Path.Combine(CurrentUserFolderPath, CoreConstants.REMOTE_FOLDER_PATH);
          if (!DirectoryHelper.DirectoryExists(RemoteTemplateFolderPath))
             DirectoryHelper.CreateDirectory(RemoteTemplateFolderPath);
+
+         //The summary file is installed in All user paths but needs to be copied in current user to be updated 
+         var installTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
+         RemoteTemplateSummaryPath = CurrentUserFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
+         if (!FileHelper.FileExists(RemoteTemplateSummaryPath))
+            FileHelper.Copy(installTemplatePath, RemoteTemplateSummaryPath);
       }
 
       private void createDefaultSettingsFolder()
@@ -49,8 +55,6 @@ namespace PKSim.Infrastructure
 
          if (!DirectoryHelper.DirectoryExists(AllUsersFolderPath))
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
-
-      
       }
 
       public string MoBiPath

@@ -170,6 +170,7 @@ namespace PKSim.UI.Views
          _gridViewBinder.BindToSource(availableTemplates);
          _colUrl.Visible = availableTemplates.Any(x => x.Url.StringIsNotEmpty());
          _colVersion.Visible = availableTemplates.Any(x => x.Version.StringIsNotEmpty());
+         gridView.BestFitColumns();
       }
 
       public string Description

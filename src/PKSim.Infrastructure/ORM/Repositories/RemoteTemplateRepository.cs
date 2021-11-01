@@ -89,15 +89,22 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected override void DoStart()
       {
          var snapshots = Task.Run(() => _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath)).Result;
-         snapshots.Templates.Each(x => x.RepositoryUrl = getRepositoryUrlFor(x.Url));
+         
+         snapshots.Templates.Each(x =>
+         {
+            var (version, repositoryUrl) = extraDataFromUrl(x.Url);
+            x.Version = version;
+            x.RepositoryUrl = repositoryUrl;
+         });
          _allTemplates.AddRange(snapshots.Templates);
          Version = snapshots.Version;
       }
 
-      private string getRepositoryUrlFor(string url)
+      private (string version, string repositoryUrl) extraDataFromUrl(string url)
       {
+         var invalidUrl = (CoreConstants.DEFAULT_TEMPLATE_VERSION, url);
          if (string.IsNullOrEmpty(url))
-            return url;
+            return invalidUrl;
 
          //a Url looks like so (5 segments, 1, 2 and 3 of interest for our use case)
          //https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json
@@ -105,9 +112,17 @@ namespace PKSim.Infrastructure.ORM.Repositories
          //www.github.com/Open-Systems-Pharmacology/Rifampicin-Model/tree/v1.1
 
          var segments = new Uri(url).Segments;
-
          //The url does not respect the expected format. Returned the default raw url
-         return segments.Length != 5 ? url : $"https://github.com/{segments[1]}{segments[2]}tree/{segments[3]}";
+         if(segments.Length != 5)
+            return invalidUrl;
+
+         var versionSegment = segments[3];
+         if(!versionSegment.StartsWith("v") || !versionSegment.EndsWith("/"))
+            return invalidUrl;
+
+         //Removes the v at the beginning end the "/" at the ned
+         var version = versionSegment.Substring(1, versionSegment.Length -2);
+         return (version, $"https://github.com/{segments[1]}{segments[2]}tree/{versionSegment}");
       }
 
       public override IEnumerable<RemoteTemplate> All()

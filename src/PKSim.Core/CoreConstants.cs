@@ -30,6 +30,7 @@ namespace PKSim.Core
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
+      public static readonly string DEFAULT_TEMPLATE_VERSION = "1.0";
       public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
 

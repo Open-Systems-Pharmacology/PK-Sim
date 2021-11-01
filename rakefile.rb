@@ -34,7 +34,8 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 	harvest_ignored_files = [
 		'PKSim.exe',
 		'PKSimDB.sqlite',
-		'PKSimTemplateDBSystem.TemplateDBSystem'
+		'PKSimTemplateDBSystem.TemplateDBSystem',
+		'templates.json'
 	]
 
 	#Files required for setup creation only and that will not be harvested automatically
