@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -25,7 +25,7 @@ namespace PKSim.Presentation
       private IApplicationController _applicationController;
       protected IDialogCreator _dialogCreator;
       protected IStartOptions _startOptions;
-      private IApplicationConfiguration _configuration;
+      protected IApplicationConfiguration _configuration;
 
       protected override Task Context()
       {
@@ -171,6 +171,40 @@ namespace PKSim.Presentation
       public void should_have_update_the_view_with_the_number_of_selected_templates()
       {
          _view.Description.ShouldBeEqualTo(PKSimConstants.UI.NumberOfTemplatesSelectedIs(2, TemplateType.Compound.ToString()));
+      }
+   }
+
+   public class When_loading_templates_from_local_and_remote_locations : concern_for_TemplatePresenter
+   {
+      private List<Template> _templates;
+      private Template _template1;
+      private Template _remoteTemplateValid;
+      private RemoteTemplate _remoteTemplateInvalid;
+      private IReadOnlyList<TemplateDTO> _allTemplateDTOs;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _remoteTemplateInvalid = new RemoteTemplate {MinVersion = "13.0"};
+         _remoteTemplateValid = new RemoteTemplate {Name = "Template2", Id = "Id2"};
+         A.CallTo(() => _configuration.Version).Returns("12.0");
+         _templates = new List<Template> {_template1, _remoteTemplateValid, _remoteTemplateInvalid};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<TemplateDTO>>._))
+            .Invokes(x => _allTemplateDTOs = x.GetArgument<IReadOnlyList<TemplateDTO>>(0));
+      }
+
+      protected override async Task Because()
+      {
+         await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_filter_out_templates_that_are_not_valid_for_this_version()
+      {
+         _allTemplateDTOs.Select(x => x.Template).ShouldOnlyContain(_template1, _remoteTemplateValid);
       }
    }
 
