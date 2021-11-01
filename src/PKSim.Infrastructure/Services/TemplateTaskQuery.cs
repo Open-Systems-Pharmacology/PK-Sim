@@ -218,7 +218,7 @@ namespace PKSim.Infrastructure.Services
          {
             addTemplateNameParameter(templateName, connection);
 
-            var sqlQuery = $"SELECT t.{TemplateTable.Columns.DESCRIPTION}, t.{TemplateTable.Columns.VERSION} FROM {TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} = '{templateType}' AND t.{TemplateTable.Columns.NAME}={_pName}";
+            var sqlQuery = $"SELECT t.{TemplateTable.Columns.DESCRIPTION} FROM {TemplateTable.NAME} t WHERE t.{TemplateTable.Columns.TEMPLATE_TYPE} = '{templateType}' AND t.{TemplateTable.Columns.NAME}={_pName}";
 
 
             var row = connection.ExecuteQueryForSingleRowOrNull(sqlQuery);
@@ -232,7 +232,6 @@ namespace PKSim.Infrastructure.Services
                DatabaseType = templateDatabaseType,
                Type = EnumHelper.ParseValue<TemplateType>(templateType),
                Name = templateName,
-               Version = row.StringAt(TemplateTable.Columns.VERSION),
                Description = row.StringAt(TemplateTable.Columns.DESCRIPTION)
             };
          }
@@ -345,7 +344,6 @@ namespace PKSim.Infrastructure.Services
                var newTemplate = createTemplateRow(templateItem.Type, templateItem.Name);
                var xml = _stringSerializer.Serialize(templateItem.Object);
                newTemplate[TemplateTable.Columns.DESCRIPTION] = templateItem.Description;
-               newTemplate[TemplateTable.Columns.VERSION] = templateItem.Version;
                newTemplate[TemplateTable.Columns.XML] = xml;
 
                if (newTemplate.ExistsInDB())
@@ -402,7 +400,6 @@ namespace PKSim.Infrastructure.Services
             public const string NAME = "NAME";
             public const string DESCRIPTION = "DESCRIPTION";
             public const string XML = "XML";
-            public const string VERSION = "VERSION";
          }
       }
 

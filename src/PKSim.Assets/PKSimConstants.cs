@@ -1657,6 +1657,7 @@ namespace PKSim.Assets
          public static readonly string ExportForClusterSimulationTitle = "Export for Cluster Simulation...";
          public static readonly string UserTemplates = "User Templates";
          public static readonly string SystemTemplates = "Predefined Templates";
+         public static readonly string RemoteTemplates = "GitHub Templates";
          public static readonly string EditDescription = "Edit Description";
          public static readonly string EditValueDescription = "Edit Value Description";
          public static readonly string ShowPKAnalysis = "Show PK-Analysis";
@@ -2213,6 +2214,7 @@ namespace PKSim.Assets
          public static readonly string LocalizationVascularMembranePlasmaSide = "Vascular endothelium membrane plasma-side";
          public static readonly string LocalizationVascularMembraneTissueSide = "Vascular endothelium membrane tissue-side";
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
+         public static readonly string TemplateSource = "Template Source";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 
@@ -2554,9 +2556,9 @@ namespace PKSim.Assets
 
          public static readonly string ChartYScale = "Chart Y Scale";
 
-         public static string  SelectSnapshotExportFile(string objectName, string ojectType) => $"Export snapshot for {ojectType.ToLowerInvariant()} '{objectName}'";
+         public static string  SelectSnapshotExportFile(string objectName, string objectType) => $"Export snapshot for {objectType.ToLowerInvariant()} '{objectName}'";
 
-         public static string  LoadObjectFromSnapshot(string ojectType) => $"Load {ojectType.ToLowerInvariant()} from snapshot";
+         public static string  LoadObjectFromSnapshot(string objectType) => $"Load {objectType.ToLowerInvariant()} from snapshot";
 
          public static string LoadFromSnapshot => "Load Snapshot";
 
@@ -2566,7 +2568,7 @@ namespace PKSim.Assets
             $"The template database located at\n\t\t'{userTemplateDatabasePath}'\n\nuses a file format that is not supported anymore. Please refer to\n\t\t'{wikiPageUrl}'\n\nto learn how to convert your database.";
 
          private static readonly string[] _reallyClearUnusedContent = {
-            "Removing unused content could permamently corrupt your project.",
+            "Removing unused content could permanently corrupt your project.",
             "You should make a backup of your project before proceeding.",
             "If you don't make a backup, you will be the only one to blame!"
          };

@@ -50,11 +50,6 @@ namespace PKSim.Core.Model
       public TemplateType Type { get; set; }
       public object Object { get; set; }
 
-      /// <summary>
-      ///    This will be the default version of a template
-      /// </summary>
-      public string Version { get; set; }
-
       protected Template() : base(ShortGuid.NewGuid())
       {
       }
@@ -79,9 +74,19 @@ namespace PKSim.Core.Model
    public class RemoteTemplate : Template
    {
       /// <summary>
-      ///    Url for a remote snapshot
+      ///    Version of the template (not the software version)
+      /// </summary>
+      public string Version { get; set; }
+
+      /// <summary>
+      ///    Url for a remote snapshot (raw json file)
       /// </summary>
       public string Url { get; set; }
+
+      /// <summary>
+      ///    Actual repository URL inferred from the raw Url
+      /// </summary>
+      public string RepositoryUrl { get; set; }
 
       /// <summary>
       ///    Optional minimum version of the software required to use this template. For instance, if the template requires at

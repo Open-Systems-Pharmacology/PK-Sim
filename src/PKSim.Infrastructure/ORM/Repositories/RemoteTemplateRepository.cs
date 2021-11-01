@@ -89,8 +89,27 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected override void DoStart()
       {
          var snapshots = Task.Run(() => _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath)).Result;
+         snapshots.Templates.Each(x => x.RepositoryUrl = getRepositoryUrlFor(x.Url));
          _allTemplates.AddRange(snapshots.Templates);
          Version = snapshots.Version;
+      }
+
+      private string getRepositoryUrlFor(string url)
+      {
+         if (string.IsNullOrEmpty(url))
+            return url;
+
+         //a Url looks like so 
+         //https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json
+         //and we want to create something like this
+         //www.github.com/Open-Systems-Pharmacology/Rifampicin-Model/tree/v1.1
+
+         var segments = new Uri(url).Segments;
+         //The url does not respect the expected format. Returned the default raw url
+         if (segments.Length != 5)
+            return url;
+
+         return $"www.github.com/{segments[1]}{segments[2]}tree/{segments[3]}";
       }
 
       public override IEnumerable<RemoteTemplate> All()

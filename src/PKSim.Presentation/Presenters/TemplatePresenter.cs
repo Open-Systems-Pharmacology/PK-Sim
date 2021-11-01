@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility;
@@ -22,7 +19,7 @@ using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters
 {
-   public interface ITemplatePresenter : IDisposablePresenter, IPresenterWithContextMenu<ITreeNode>
+   public interface ITemplatePresenter : IDisposablePresenter
    {
       /// <summary>
       ///    Allows the user to select a template to be loaded from the template database for the given
@@ -92,7 +89,7 @@ namespace PKSim.Presentation.Presenters
          updateIcon(templateType);
 
          _availableTemplates = _templateTaskQuery.AllTemplatesFor(templateType)
-            .Where(x=>x.IsSupportedByCurrentVersion(_configuration.Version))
+            .Where(x => x.IsSupportedByCurrentVersion(_configuration.Version))
             .OrderBy(x => x.Name)
             .ToList();
 
@@ -199,18 +196,14 @@ namespace PKSim.Presentation.Presenters
       {
          var numberOfTemplateSelected = _selectedTemplates.Count;
          _view.OkEnabled = numberOfTemplateSelected > 0;
-
-         _view.Description =
-            numberOfTemplateSelected == 0 ? string.Empty :
-            PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _templateTypeDisplay);
+         _view.Description = PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _templateTypeDisplay);
       }
 
       private void updateView()
       {
          refreshView();
          var allTemplateDTOs = _availableTemplates.Select(x => new TemplateDTO(x)).ToList();
-         _selectedTemplates.Clear();
-         this.DoWithinLatch(()=> _view.BindTo(allTemplateDTOs));
+         this.DoWithinLatch(() => _view.BindTo(allTemplateDTOs));
       }
 
       public IEnumerable<Template> AllTemplates() => _availableTemplates;
@@ -258,12 +251,6 @@ namespace PKSim.Presentation.Presenters
          _selectedTemplates.Clear();
          _selectedTemplates.AddRange(templateDTOs.Select(x => x.Template));
          refreshView();
-      }
-
-      public void ShowContextMenu(ITreeNode nodeRequestingPopup, Point popupLocation)
-      {
-         var contextMenu = _contextMenuFactory.CreateFor(nodeRequestingPopup, this);
-         contextMenu.Show(_view, popupLocation);
       }
 
       public bool IsLatched { get; set; }

@@ -255,9 +255,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_refresh_the_selected_node_from_the_view()
+      public void should_rebind_to_the_view()
       {
-         A.CallTo(() => _view.SelectTemplate(A<TemplateDTO>.That.Matches(x => Equals(x.Template, _template2)))).MustHaveHappened();
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<TemplateDTO>>._)).MustHaveHappened();
       }
    }
 }

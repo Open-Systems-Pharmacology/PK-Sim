@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid;
 using OSPSuite.Assets;
+using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI;
@@ -21,14 +22,17 @@ using PKSim.Presentation.Views;
 
 namespace PKSim.UI.Views
 {
-   public partial class TemplateView : BaseModalView, ITemplateView, IViewWithPopup
+   public partial class TemplateView : BaseModalView, ITemplateView
    {
       private readonly IImageListRetriever _imageListRetriever;
       private ITemplatePresenter _presenter;
       private readonly GridViewBinder<TemplateDTO> _gridViewBinder;
       private readonly RepositoryItemButtonEdit _editRemoveRepository;
       private readonly RepositoryItemTextEdit _disabledRepository;
-      public bool Updating { get; private set; }
+      private readonly RepositoryItemHyperLinkEdit _urlRepository;
+      private IGridViewColumn _colVersion;
+      private IGridViewColumn _colUrl;
+      private IGridViewColumn _colButtons;
 
       public TemplateView(IImageListRetriever imageListRetriever, Shell shell)
          : base(shell)
@@ -40,21 +44,30 @@ namespace PKSim.UI.Views
          gridView.OptionsView.ShowPreview = true;
          gridView.OptionsView.AutoCalcPreviewLineCount = true;
          gridView.ShouldUseColorForDisabledCell = false;
+         // Prevent the focused cell from being highlighted.
+         gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+         // Draw a dotted focus rectangle around the entire row.
+         gridView.FocusRectStyle = DrawFocusRectStyle.None;
          gridView.GroupFormat = "[#image]{1}";
          gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, o, e);
          gridView.EndGrouping += (o, e) => gridView.ExpandAllGroups();
          gridView.SelectionChanged += (o, e) => OnEvent(onGridViewSelectionChanged);
          toolTipController.Initialize(imageListRetriever);
-         PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
-         _editRemoveRepository = createEditRemoveButtonRepository();
          _disabledRepository = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
+         _editRemoveRepository = createEditRemoveButtonRepository();
+         _urlRepository = new RepositoryItemHyperLinkEdit {TextEditStyle = TextEditStyles.DisableTextEditor, SingleClick = true};
          lblDescription.AsDescription();
       }
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {
+         if (gridView.FocusedColumn != _colButtons.XtraColumn)
+            return;
+
          var templateDTO = _gridViewBinder.FocusedElement;
-         if (templateDTO == null) return;
+         if (templateDTO == null)
+            return;
+
          e.Cancel = !_presenter.CanEdit(templateDTO);
       }
 
@@ -75,17 +88,21 @@ namespace PKSim.UI.Views
          _gridViewBinder.AutoBind(x => x.Name)
             .AsReadOnly();
 
-         var colDatabaseType = _gridViewBinder.AutoBind(x => x.DatabaseType)
+         var colDatabaseType = _gridViewBinder.AutoBind(x => x.DatabaseTypeDisplay)
             .WithRepository(templateTypeRepository)
+            .WithCaption(PKSimConstants.UI.TemplateSource)
             .AsReadOnly();
 
-         _gridViewBinder.AutoBind(x => x.Version)
+         _colVersion = _gridViewBinder.AutoBind(x => x.Version)
             .AsReadOnly();
+
+         _colUrl = _gridViewBinder.AutoBind(x => x.Url)
+            .WithRepository(x => _urlRepository);
 
          var colDescription = _gridViewBinder.AutoBind(x => x.Description)
             .AsReadOnly();
 
-         _gridViewBinder.AddUnboundColumn()
+         _colButtons = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(repositoryForTemplate)
@@ -125,7 +142,7 @@ namespace PKSim.UI.Views
       private RepositoryItem templateTypeRepository(TemplateDTO template)
       {
          var templateRepository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
-         return templateRepository.AddItem(template.DatabaseType, template.Icon);
+         return templateRepository.AddItem(template.DatabaseTypeDisplay, template.Icon);
       }
 
       public void AttachPresenter(ITemplatePresenter presenter)
@@ -151,26 +168,14 @@ namespace PKSim.UI.Views
       public void BindTo(IReadOnlyList<TemplateDTO> availableTemplates)
       {
          _gridViewBinder.BindToSource(availableTemplates);
+         _colUrl.Visible = availableTemplates.Any(x => x.Url.StringIsNotEmpty());
+         _colVersion.Visible = availableTemplates.Any(x => x.Version.StringIsNotEmpty());
       }
 
       public string Description
       {
          get => lblDescription.Text;
          set => lblDescription.Text = value;
-      }
-
-      public BarManager PopupBarManager { get; }
-
-      public void BeginUpdate()
-      {
-         gridView.BeginUpdate();
-         Updating = true;
-      }
-
-      public void EndUpdate()
-      {
-         gridView.EndUpdate();
-         Updating = false;
       }
    }
 }
