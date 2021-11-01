@@ -22,3 +22,6 @@
 [submodule "examples/Caffeine"]
 	path = examples/Caffeine
 	url = https://github.com/Open-Systems-Pharmacology/Example_Caffeine.git
+[submodule "templates"]
+	path = templates
+	url = https://github.com/Open-Systems-Pharmacology/OSPSuite.BuildingBlockTemplates.git
