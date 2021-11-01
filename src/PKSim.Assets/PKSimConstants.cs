@@ -589,7 +589,7 @@ namespace PKSim.Assets
 
          public static string FileIsNotASimulationFile(string simulationFile, string productName) => $"File '{simulationFile}' is not a {productName} simulation file.";
 
-         public static string NoTemplateAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
+         public static string NoTemplateAvailableForType(string templateType) => $"No template '{templateType}' available in the template databases.";
 
          public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
