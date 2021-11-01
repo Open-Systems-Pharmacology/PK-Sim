@@ -99,17 +99,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (string.IsNullOrEmpty(url))
             return url;
 
-         //a Url looks like so 
+         //a Url looks like so (5 segments, 1, 2 and 3 of interest for our use case)
          //https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json
          //and we want to create something like this
          //www.github.com/Open-Systems-Pharmacology/Rifampicin-Model/tree/v1.1
 
          var segments = new Uri(url).Segments;
-         //The url does not respect the expected format. Returned the default raw url
-         if (segments.Length != 5)
-            return url;
 
-         return $"www.github.com/{segments[1]}{segments[2]}tree/{segments[3]}";
+         //The url does not respect the expected format. Returned the default raw url
+         return segments.Length != 5 ? url : $"https://github.com/{segments[1]}{segments[2]}tree/{segments[3]}";
       }
 
       public override IEnumerable<RemoteTemplate> All()
