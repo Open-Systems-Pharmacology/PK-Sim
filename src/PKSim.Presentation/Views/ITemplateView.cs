@@ -11,5 +11,6 @@ namespace PKSim.Presentation.Views
       void SetIcon(ApplicationIcon icon);
       void SelectTemplate(TemplateDTO template);
       void BindTo(IReadOnlyList<TemplateDTO> availableTemplates);
+      string Description { get; set; }
    }
 }

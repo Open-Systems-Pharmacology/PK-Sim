@@ -107,7 +107,7 @@ namespace PKSim.UI.Views.Simulations
 
       private RepositoryItemButtonEdit loadFormulationButtonRepository()
       {
-         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.Formulation));
+         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplate(PKSimConstants.ObjectTypes.Formulation));
       }
 
       private void configureFormulation(BaseEdit baseEdit, FormulationMappingDTO formulationMappingDTO)

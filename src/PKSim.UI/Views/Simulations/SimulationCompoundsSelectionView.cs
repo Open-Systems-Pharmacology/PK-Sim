@@ -108,7 +108,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          initButton(btnCreateCompound, ApplicationIcons.Create, PKSimConstants.UI.CreateBuildingBlockHint);
-         initButton(btnLoadCompound, ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockHint);
+         initButton(btnLoadCompound, ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplateHint);
 
          layoutItemAddCompound.AdjustButtonSizeWithImageOnly();
          layoutItemLoadCompound.AdjustButtonSizeWithImageOnly();

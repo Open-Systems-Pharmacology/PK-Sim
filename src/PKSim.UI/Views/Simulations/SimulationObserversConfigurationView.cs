@@ -34,7 +34,7 @@ namespace PKSim.UI.Views.Simulations
 
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRemoveButtonRepository();
       private readonly RepositoryItemButtonEdit _createButtonRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Create, PKSimConstants.UI.CreateBuildingBlockHint(PKSimConstants.ObjectTypes.ObserverSet));
-      private readonly RepositoryItemButtonEdit _loadButtonRepository = new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.ObserverSet));
+      private readonly RepositoryItemButtonEdit _loadButtonRepository = new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplate(PKSimConstants.ObjectTypes.ObserverSet));
       private IGridViewColumn _colCreateObserverSet;
       private IGridViewColumn _colLoadObserverSet;
       private IGridViewColumn _colRemoveObserverSet;

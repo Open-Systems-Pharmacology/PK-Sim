@@ -48,6 +48,7 @@ namespace PKSim.UI.Views
          PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
          _editRemoveRepository = createEditRemoveButtonRepository();
          _disabledRepository = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
+         lblDescription.AsDescription();
       }
 
       private void onShowingEditor(object sender, CancelEventArgs e)
@@ -150,6 +151,12 @@ namespace PKSim.UI.Views
       public void BindTo(IReadOnlyList<TemplateDTO> availableTemplates)
       {
          _gridViewBinder.BindToSource(availableTemplates);
+      }
+
+      public string Description
+      {
+         get => lblDescription.Text;
+         set => lblDescription.Text = value;
       }
 
       public BarManager PopupBarManager { get; }

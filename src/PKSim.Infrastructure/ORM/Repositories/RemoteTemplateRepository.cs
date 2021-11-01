@@ -89,7 +89,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected override void DoStart()
       {
          var snapshots = Task.Run(() => _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath)).Result;
-         snapshots.Templates.Each(x => x.DatabaseType = TemplateDatabaseType.Remote);
          _allTemplates.AddRange(snapshots.Templates);
          Version = snapshots.Version;
       }

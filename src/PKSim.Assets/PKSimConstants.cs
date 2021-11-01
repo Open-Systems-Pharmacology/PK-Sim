@@ -589,7 +589,7 @@ namespace PKSim.Assets
 
          public static string FileIsNotASimulationFile(string simulationFile, string productName) => $"File '{simulationFile}' is not a {productName} simulation file.";
 
-         public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
+         public static string NoTemplateAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
 
          public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
@@ -2487,13 +2487,13 @@ namespace PKSim.Assets
 
          public static string ReallyDeleteObjectOfType(string type, params string[] names) => ReallyDeleteObjectOfType(type, names.ToList());
 
-         public static string RegisterAssembly(string assemblyname) => $"Loading {assemblyname.ToLower()}";
+         public static string RegisterAssembly(string assemblyName) => $"Loading {assemblyName.ToLower()}";
 
-         public static string CreateBuildingBlockHint(string buildingblockType) => $"Create new {buildingblockType}...";
+         public static string CreateBuildingBlockHint(string buildingBlockType) => $"Create new {buildingBlockType}...";
 
-         public static string LoadBuildingBlockHint(string buildingblockType) => $"Load {buildingblockType} from template...";
+         public static string LoadItemFromTemplateHint(string templateType) => $"Load {templateType} from template...";
 
-         public static string LoadBuildingBlockFromTemplate(string buildingBlock) => $"Load {buildingBlock} from template";
+         public static string LoadItemFromTemplate(string templateType) => $"Load {templateType} from template";
 
          public static string TemplateWithNameAlreadyExistsInTheDatabase(string name, string buildingBlockType) => $"A template for {buildingBlockType} named '{name}' already exists.";
 

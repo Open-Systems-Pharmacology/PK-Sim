@@ -11,7 +11,9 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -50,49 +52,52 @@ namespace PKSim.Presentation.Presenters
       void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templates);
    }
 
-   public class TemplatePresenter : AbstractDisposablePresenter<ITemplateView, ITemplatePresenter>, ITemplatePresenter
+   public class TemplatePresenter : AbstractDisposablePresenter<ITemplateView, ITemplatePresenter>, ITemplatePresenter, ILatchable
    {
       private readonly ITemplateTaskQuery _templateTaskQuery;
-      private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ITreeNodeContextMenuFactory _contextMenuFactory;
       private readonly IApplicationController _applicationController;
       private readonly IDialogCreator _dialogCreator;
       private List<Template> _availableTemplates;
       private bool _shouldAddItemIcons;
       private readonly IStartOptions _startOptions;
-      private string _buildingBlockTypeString = string.Empty;
+      private readonly IApplicationConfiguration _configuration;
+      private string _templateTypeDisplay = string.Empty;
       private readonly List<Template> _selectedTemplates = new List<Template>();
 
       public TemplatePresenter(
          ITemplateView view,
          ITemplateTaskQuery templateTaskQuery,
-         IObjectTypeResolver objectTypeResolver,
          ITreeNodeContextMenuFactory contextMenuFactory,
          IApplicationController applicationController,
          IDialogCreator dialogCreator,
-         IStartOptions startOptions)
+         IStartOptions startOptions,
+         IApplicationConfiguration configuration)
          : base(view)
       {
          _templateTaskQuery = templateTaskQuery;
-         _objectTypeResolver = objectTypeResolver;
          _contextMenuFactory = contextMenuFactory;
          _applicationController = applicationController;
          _dialogCreator = dialogCreator;
          _startOptions = startOptions;
+         _configuration = configuration;
       }
 
       public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType)
       {
-         //TODO get type?
-         _buildingBlockTypeString = templateType.ToString();
-         _view.Caption = PKSimConstants.UI.LoadBuildingBlockFromTemplate(_buildingBlockTypeString);
+         _templateTypeDisplay = templateType.ToString();
+         _view.Caption = PKSimConstants.UI.LoadItemFromTemplate(_templateTypeDisplay);
          _shouldAddItemIcons = !_templateTaskQuery.IsPrimitiveType(templateType);
 
          updateIcon(templateType);
 
-         _availableTemplates = _templateTaskQuery.AllTemplatesFor(templateType).OrderBy(x => x.Name).ToList();
+         _availableTemplates = _templateTaskQuery.AllTemplatesFor(templateType)
+            .Where(x=>x.IsSupportedByCurrentVersion(_configuration.Version))
+            .OrderBy(x => x.Name)
+            .ToList();
+
          if (!_availableTemplates.Any())
-            throw new NoBuildingBlockTemplateAvailableException(_buildingBlockTypeString);
+            throw new NoTemplateAvailableException(_templateTypeDisplay);
 
          updateView();
          _view.Display();
@@ -195,18 +200,17 @@ namespace PKSim.Presentation.Presenters
          var numberOfTemplateSelected = _selectedTemplates.Count;
          _view.OkEnabled = numberOfTemplateSelected > 0;
 
-         // _view.Description =
-         //    numberOfTemplateSelected == 0 ? string.Empty :
-         //    numberOfTemplateSelected == 1 ? _selectedTemplates[0].Description :
-         //    PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _buildingBlockTypeString);
+         _view.Description =
+            numberOfTemplateSelected == 0 ? string.Empty :
+            PKSimConstants.UI.NumberOfTemplatesSelectedIs(numberOfTemplateSelected, _templateTypeDisplay);
       }
 
       private void updateView()
       {
          refreshView();
          var allTemplateDTOs = _availableTemplates.Select(x => new TemplateDTO(x)).ToList();
-         _view.BindTo(allTemplateDTOs);
-         _view.SelectTemplate(allTemplateDTOs.FirstOrDefault());
+         _selectedTemplates.Clear();
+         this.DoWithinLatch(()=> _view.BindTo(allTemplateDTOs));
       }
 
       public IEnumerable<Template> AllTemplates() => _availableTemplates;
@@ -250,6 +254,7 @@ namespace PKSim.Presentation.Presenters
 
       public void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templateDTOs)
       {
+         if (IsLatched) return;
          _selectedTemplates.Clear();
          _selectedTemplates.AddRange(templateDTOs.Select(x => x.Template));
          refreshView();
@@ -260,5 +265,7 @@ namespace PKSim.Presentation.Presenters
          var contextMenu = _contextMenuFactory.CreateFor(nodeRequestingPopup, this);
          contextMenu.Show(_view, popupLocation);
       }
+
+      public bool IsLatched { get; set; }
    }
 }

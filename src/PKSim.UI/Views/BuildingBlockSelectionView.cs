@@ -74,7 +74,7 @@ namespace PKSim.UI.Views
       {
          _screenBinder.BindToSource(buildingBlockSelectionDTO);
          btnCreateBuildingBlock.ToolTip = PKSimConstants.UI.CreateBuildingBlockHint(buildingBlockSelectionDTO.BuildingBockType);
-         btnLoadBuildingBlock.ToolTip = PKSimConstants.UI.LoadBuildingBlockHint(buildingBlockSelectionDTO.BuildingBockType);
+         btnLoadBuildingBlock.ToolTip = PKSimConstants.UI.LoadItemFromTemplateHint(buildingBlockSelectionDTO.BuildingBockType);
          _presenter.ViewChanged();
       }
 

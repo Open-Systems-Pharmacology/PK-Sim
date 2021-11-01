@@ -110,7 +110,7 @@ namespace PKSim.UI.Views.Simulations
 
       private RepositoryItemButtonEdit loadEventButtonRepository()
       {
-         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.Event));
+         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplate(PKSimConstants.ObjectTypes.Event));
       }
 
       private void setParameterValue(IParameterDTO parameterDTO, double newValue)

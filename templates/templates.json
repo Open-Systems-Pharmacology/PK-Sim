@@ -6,14 +6,24 @@
       "Name": "European (P-gp modified, CYP3A4 36 h)",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json",
       "Version": "1.1",
-      "Description": "BlaBla"
+      "Description": "BlaBla",
+      "MinVersion": "10.0"
     },
     {
       "Type": "Compound",
       "Name": "Rifampicin",
       "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json",
       "Version": "1.1",
-      "Description": "BlaBla"
+      "Description": "BlaBla",
+      "MinVersion": "10.0"
+    },
+     {
+      "Type": "Compound",
+      "Name": "Rifampicin of future",
+      "Url": "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Rifampicin-Model/v1.1/Rifampicin-Model.json",
+      "Version": "1.1",
+      "Description": "BlaBla",
+      "MinVersion": "12.0"
     },
     {
       "Type": "Compound",

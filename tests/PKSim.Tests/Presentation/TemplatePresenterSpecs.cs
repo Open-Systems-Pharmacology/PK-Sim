@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
@@ -20,22 +21,22 @@ namespace PKSim.Presentation
    {
       protected ITemplateTaskQuery _templateTaskQuery;
       protected ITemplateView _view;
-      protected IObjectTypeResolver _objectTypeResolver;
       private ITreeNodeContextMenuFactory _contextMenuFactory;
       private IApplicationController _applicationController;
       protected IDialogCreator _dialogCreator;
       protected IStartOptions _startOptions;
+      private IApplicationConfiguration _configuration;
 
       protected override Task Context()
       {
          _view = A.Fake<ITemplateView>();
          _templateTaskQuery = A.Fake<ITemplateTaskQuery>();
-         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _contextMenuFactory = A.Fake<ITreeNodeContextMenuFactory>();
          _applicationController = A.Fake<IApplicationController>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _startOptions = A.Fake<IStartOptions>();
-         sut = new TemplatePresenter(_view, _templateTaskQuery, _objectTypeResolver, _contextMenuFactory, _applicationController, _dialogCreator, _startOptions);
+         _configuration = A.Fake<IApplicationConfiguration>();
+         sut = new TemplatePresenter(_view, _templateTaskQuery, _contextMenuFactory, _applicationController, _dialogCreator, _startOptions, _configuration);
          return _completed;
       }
    }
@@ -54,7 +55,7 @@ namespace PKSim.Presentation
          await base.Context();
          _userTemplate = new LocalTemplate {DatabaseType = TemplateDatabaseType.User};
          _systemTemplate = new LocalTemplate {DatabaseType = TemplateDatabaseType.System};
-         _remoteTemplate = new RemoteTemplate {DatabaseType = TemplateDatabaseType.Remote};
+         _remoteTemplate = new RemoteTemplate();
          _userTemplateDTO = new TemplateDTO(_userTemplate);
          _systemTemplateDTO = new TemplateDTO(_systemTemplate);
          _remoteTemplateDTO = new TemplateDTO(_remoteTemplate);
@@ -137,7 +138,6 @@ namespace PKSim.Presentation
       private Template _template2;
       private Compound _compound1;
       private Compound _compound2;
-      private readonly string _templateType = "TEMPLATE TYPE";
 
       protected override async Task Context()
       {
@@ -148,7 +148,6 @@ namespace PKSim.Presentation
          _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
          _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
 
-         A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1), new TemplateDTO(_template2)});
@@ -168,11 +167,11 @@ namespace PKSim.Presentation
          _allTemplates.ShouldOnlyContain(_compound1, _compound2);
       }
 
-      // [Observation]
-      // public void should_have_update_the_view_with_the_number_of_selected_templates()
-      // {
-      //    _view.Description.ShouldBeEqualTo(PKSimConstants.UI.NumberOfTemplatesSelectedIs(2, _templateType));
-      // }
+      [Observation]
+      public void should_have_update_the_view_with_the_number_of_selected_templates()
+      {
+         _view.Description.ShouldBeEqualTo(PKSimConstants.UI.NumberOfTemplatesSelectedIs(2, TemplateType.Compound.ToString()));
+      }
    }
 
    public class When_deleting_the_selected_template_and_the_user_decided_to_not_delete_the_template_after_all : concern_for_TemplatePresenter
@@ -182,7 +181,6 @@ namespace PKSim.Presentation
       private Template _template2;
       private Compound _compound1;
       private Compound _compound2;
-      private readonly string _templateType = "TEMPLATE TYPE";
       private TemplateDTO _templateDTO1;
 
       protected override async Task Context()
@@ -194,7 +192,6 @@ namespace PKSim.Presentation
          _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
          _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
 
-         A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          _templateDTO1 = new TemplateDTO(_template1);
@@ -224,7 +221,6 @@ namespace PKSim.Presentation
       private Template _template2;
       private Compound _compound1;
       private Compound _compound2;
-      private readonly string _templateType = "TEMPLATE TYPE";
       private TemplateDTO _templateDTO1;
 
       protected override async Task Context()
@@ -236,7 +232,6 @@ namespace PKSim.Presentation
          _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
          _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
 
-         A.CallTo(() => _objectTypeResolver.TypeFor<Compound>()).Returns(_templateType);
          _templates = new List<Template> {_template1, _template2};
          _templateDTO1 = new TemplateDTO(_template1);
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
