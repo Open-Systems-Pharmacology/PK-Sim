@@ -1,2 +1,2 @@
-INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('LinksCommon','MucosaActiveInfluxFromLumen_Hill',2690,'Effective concentration in lumen','EffectiveLumenConcentration');
-DELETE FROM tab_rate_generic_parameters WHERE calculation_method='LinksCommon' AND formula_rate='MucosaActiveInfluxFromLumen_Hill' AND path_id=2704 AND parameter_name='Effective concentration in lumen';
+UPDATE tab_container_parameters SET can_be_varied_in_population=0 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Initial concentration';
+UPDATE tab_container_parameters SET can_be_varied_in_population=0 WHERE container_id=5941 AND container_type='GENERAL' AND container_name='TRANSPORTER' AND parameter_name='Initial concentration';
