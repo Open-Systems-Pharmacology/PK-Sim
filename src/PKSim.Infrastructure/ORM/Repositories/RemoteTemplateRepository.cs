@@ -61,28 +61,33 @@ namespace PKSim.Infrastructure.ORM.Repositories
          switch (loadedTemplate)
          {
             case Compound compound:
-               return metabolitesFor(compound);
-            case Individual individual:
-               return expressionProfileFor(remoteTemplate, individual);
+               return metabolitesFor(remoteTemplate, compound);
+            case ISimulationSubject simulationSubject:
+               return expressionProfileFor(remoteTemplate, simulationSubject);
             default:
                return Array.Empty<RemoteTemplate>();
          }
       }
 
-      private IReadOnlyList<RemoteTemplate> expressionProfileFor(RemoteTemplate remoteTemplate, Individual individual)
+      private IReadOnlyList<RemoteTemplate> expressionProfileFor(RemoteTemplate remoteTemplate, ISimulationSubject simulationSubject)
       {
          //TODO Not implemented yet. It will be done with the profile defined for individual as separate building block
          return Array.Empty<RemoteTemplate>();
       }
 
-      private IReadOnlyList<RemoteTemplate> metabolitesFor(Compound compound)
+      private IReadOnlyList<RemoteTemplate> metabolitesFor(RemoteTemplate remoteTemplate, Compound compound)
       {
+         //This will for now assume that the metabolite template are in the same file
          return compound.AllProcesses<EnzymaticProcess>()
             .Select(x => x.MetaboliteName)
             .Where(x => x.StringIsNotEmpty())
             .Distinct()
-            .Select(meta => TemplateBy(TemplateType.Compound, meta))
-            .Where(x => x != null)
+            .Select(meta => new RemoteTemplate
+            {
+               Url = remoteTemplate.Url,
+               Type = TemplateType.Compound,
+               Name = meta
+            })
             .ToList();
       }
 
@@ -92,7 +97,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          
          snapshots.Templates.Each(x =>
          {
-            var (version, repositoryUrl) = extraDataFromUrl(x.Url);
+            var (version, repositoryUrl) = extractDataFromUrl(x.Url);
             x.Version = version;
             x.RepositoryUrl = repositoryUrl;
          });
@@ -100,7 +105,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          Version = snapshots.Version;
       }
 
-      private (string version, string repositoryUrl) extraDataFromUrl(string url)
+      private (string version, string repositoryUrl) extractDataFromUrl(string url)
       {
          var invalidUrl = (CoreConstants.DEFAULT_TEMPLATE_VERSION, url);
          if (string.IsNullOrEmpty(url))

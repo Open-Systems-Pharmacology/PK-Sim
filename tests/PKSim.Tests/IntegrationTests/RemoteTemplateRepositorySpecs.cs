@@ -3,8 +3,10 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Infrastructure;
 
 namespace PKSim.IntegrationTests
 {
@@ -35,6 +37,21 @@ namespace PKSim.IntegrationTests
             x.Version.ShouldNotBeEmpty();
             x.RepositoryUrl.ShouldNotBeEmpty();
          });
+      }
+
+      [Observation]
+      public void should_be_able_to_return_the_reference_templates_for_a_compound_with_metabolism()
+      {
+         var firstCompoundTemplate = sut.AllTemplatesFor(TemplateType.Compound).First();
+         var compound = DomainFactoryForSpecs.CreateStandardCompound();
+         var enzymaticProcess = new EnzymaticProcess {MoleculeName = "CYP3A4", MetaboliteName = "Meta"};
+         compound.AddProcess(enzymaticProcess);
+         var references = sut.AllReferenceTemplatesFor(firstCompoundTemplate, compound);
+         references.Count.ShouldBeEqualTo(1);
+         var reference = references[0];
+         reference.Url.ShouldBeEqualTo(firstCompoundTemplate.Url);
+         reference.Name.ShouldBeEqualTo(enzymaticProcess.MetaboliteName);
+         reference.Type.ShouldBeEqualTo(TemplateType.Compound);
       }
    }
 }
