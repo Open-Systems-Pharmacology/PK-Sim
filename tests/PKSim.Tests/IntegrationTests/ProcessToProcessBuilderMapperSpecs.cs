@@ -43,11 +43,11 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         LoadProject("Mucosa_MultipleTransportDirections");
+         LoadProject("MucosaInflux_Hill");
       }
    }
 
-   public class When_creating_a_simulation_using_mucoa_influx_hill_kinetic : concern_for_MucosaInflux_Hill
+   public class When_creating_a_simulation_using_mucosa_influx_hill_kinetic : concern_for_MucosaInflux_Hill
    {
       private Simulation _simulation;
 
