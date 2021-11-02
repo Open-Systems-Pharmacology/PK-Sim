@@ -1,7 +1,9 @@
 ﻿using System.Windows.Forms;
 using DevExpress.Utils;
+using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
 using OSPSuite.UI.Controls;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Views.Core
 {
@@ -37,6 +39,12 @@ namespace PKSim.UI.Views.Core
             return;
          }
 
+         if (ColumnIsCheckBox(col))
+         {
+            RaiseCheckEditClick(gridView, col, rowHandle, e);
+            return;
+         }
+
          if (!ColumnIsValue(col))
          {
             gridView.EditorShowMode = EditorShowMode.Default;
@@ -46,12 +54,22 @@ namespace PKSim.UI.Views.Core
          OnValueColumnMouseDown(gridView, col, rowHandle);
       }
 
-
-      protected virtual bool ColumnIsButton(GridColumn column)
+      protected virtual void RaiseCheckEditClick(UxGridView gridView, GridColumn column, int rowHandle, MouseEventArgs e)
       {
-         return false;
+         //Adapted from https://supportcenter.devexpress.com/ticket/details/t230842/grid-the-buttonclick-event-is-not-raised-immediately-when-multi-selection-is-enabled
+         gridView.FocusedRowHandle = rowHandle;
+         gridView.FocusedColumn = column;
+         gridView.ShowEditor();
+         //force button click  
+         var edit = gridView.ActiveEditor.DowncastTo<CheckEdit>();
+         edit.Toggle();
+         ((DXMouseEventArgs) e).Handled = true;
       }
-      
+
+      protected virtual bool ColumnIsButton(GridColumn column) => false;
+
+      protected virtual bool ColumnIsCheckBox(GridColumn column) => false;
+
       protected virtual void OnValueColumnMouseDown(UxGridView gridView, GridColumn col, int rowHandle)
       {
          gridView.EditorShowMode = EditorShowMode.MouseUp;

@@ -15,6 +15,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation;
+using static PKSim.Infrastructure.ProjectConverter.ConverterConstants.Parameters;
 
 namespace PKSim.Infrastructure.ProjectConverter.v10
 {
@@ -108,7 +109,32 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
 
       public void Visit(Population population) => convertIndividual(population.FirstIndividual);
 
-      public void Visit(Simulation simulation) => convertIndividual(simulation.BuildingBlock<Individual>());
+      public void Visit(Simulation simulation)
+      {
+         convertIndividual(simulation.BuildingBlock<Individual>());
+
+         var root = simulation.Model?.Root;
+         //This can be the case for instance for a MoBi simulation 
+         if (root == null)
+            return;
+
+         //Also hide all relative expression normalized parameters (and we make sure they cannot be edited)
+         var allRelExpNormalized = root.GetAllChildren<IParameter>(x => x.IsNamed(REL_EXP_NORM)).ToList();
+         allRelExpNormalized.Each(hideNormalizedExpression);
+
+         var allGlobalRelExpNormalized = root.GetAllChildren<IParameter>(x => x.NameIsOneOf(
+            REL_EXP_BLOOD_CELLS_NORM,
+            REL_EXP_PLASMA_NORM,
+            REL_EXP_VASCULAR_ENDOTHELIUM_NORM
+         ));
+         allGlobalRelExpNormalized.Each(hideNormalizedExpression);
+
+         void hideNormalizedExpression(IParameter x)
+         {
+            x.Visible = false;
+            x.Editable = false;
+         }
+      }
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
@@ -131,7 +157,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
       {
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
          var allFractionEndosomalParameters =
-            defaultHuman.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.FRACTION_ENDOSOMAL));
+            defaultHuman.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_ENDOSOMAL));
 
          allFractionEndosomalParameters.Each(x =>
          {
