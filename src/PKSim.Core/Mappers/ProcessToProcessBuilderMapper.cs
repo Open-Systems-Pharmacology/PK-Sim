@@ -369,11 +369,6 @@ namespace PKSim.Core.Mappers
          return inducedProcessCache;
       }
 
-      private void addAsNotMatchToCriteria(DescriptorCriteria criteria, IEnumerable<string> list)
-      {
-         list.Each(x => criteria.Add(new NotMatchTagCondition(x)));
-      }
-
       private void updateTransporterTagsFor(ITransportBuilder transporterBuilder, InducedProcess inducedProcess)
       {
          var sourceCriteria = transporterBuilder.SourceCriteria;
@@ -402,6 +397,9 @@ namespace PKSim.Core.Mappers
 
          addAsNotMatchToCriteria(sourceCriteria, inducedProcess.OrgansToExclude);
       }
+
+      private void addAsNotMatchToCriteria(DescriptorCriteria criteria, IEnumerable<string> list)
+         => list.Each(x => criteria.Add(new NotMatchTagCondition(x)));
 
       private ITransportBuilder activeTransportFrom(CompoundProcess process, InducedProcess inducedProcess, IFormulaCache formulaCache)
       {
