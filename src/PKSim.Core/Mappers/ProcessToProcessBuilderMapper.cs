@@ -12,6 +12,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using static PKSim.Core.CoreConstants.Compartment;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.Core.Mappers
 {
@@ -187,7 +188,7 @@ namespace PKSim.Core.Mappers
          reaction.AddProduct(new ReactionPartnerBuilder(protein.Name, 1));
 
          //Induction occurs only in Intracellular and Interstitial
-         reaction.ContainerCriteria.Add(new InContainerCondition(CoreConstants.Organ.TISSUE_ORGAN));
+         reaction.ContainerCriteria.Add(new InContainerCondition(TISSUE_ORGAN));
          reaction.ContainerCriteria.Add(new NotMatchTagCondition(PLASMA));
          reaction.ContainerCriteria.Add(new NotMatchTagCondition(BLOOD_CELLS));
          reaction.ContainerCriteria.Add(new NotMatchTagCondition(ENDOSOME));
@@ -359,8 +360,9 @@ namespace PKSim.Core.Mappers
                   inducedProcessCache.Add(inducedProcess);
                }
 
-               inducedProcess.AddSourceOrgan(transportTemplate.SourceOrgan);
-               inducedProcess.AddTargetOrgan(transportTemplate.TargetOrgan);
+               // For lumen transport. The source organ or target organ is in fact defined as a compartment
+               inducedProcess.AddSourceOrgan(transportTemplate.SourceOrgan.IsLumen() ? transportTemplate.SourceCompartment : transportTemplate.SourceOrgan);
+               inducedProcess.AddTargetOrgan(transportTemplate.TargetOrgan.IsLumen() ? transportTemplate.TargetCompartment : transportTemplate.TargetOrgan);
             }
          }
 
@@ -369,18 +371,35 @@ namespace PKSim.Core.Mappers
 
       private void updateTransporterTagsFor(ITransportBuilder transporterBuilder, InducedProcess inducedProcess)
       {
-         var allSourceTags = transporterBuilder.SourceCriteria.OfType<TagCondition>()
-            .Select(x => x.Tag).ToList();
+         var sourceCriteria = transporterBuilder.SourceCriteria;
+         var allSourceTags = sourceCriteria.OfType<MatchTagCondition>().Select(x => x.Tag).ToList();
+         var (sourceIsLumen, sourceIsMucosa) = (allSourceTags.Contains(LUMEN), allSourceTags.Contains(MUCOSA));
 
-         //More than one tag coming from the database => This is a specific transport and we do not need to do anything
+         var targetCriteria = transporterBuilder.TargetCriteria;
+         var allTargetTags = targetCriteria.OfType<MatchTagCondition>().Select(x => x.Tag).ToList();
+         var (targetIsLumen, targetIsMucosa) = (allTargetTags.Contains(LUMEN), allTargetTags.Contains(MUCOSA));
+
+         var isLumen = sourceIsLumen || targetIsLumen;
+         var isMucosa = sourceIsMucosa || targetIsMucosa;
+
+         if (isLumen && isMucosa)
+         {
+            //We just want to remove GI segments from the include list as we know, that the transport is between Lumen and Mucosa in this case
+            var segmentToDeletes = inducedProcess.OrgansToExclude.Intersect(LumenSegmentsDuodenumToRectum).ToList();
+            var criteria = sourceIsLumen ? sourceCriteria : targetCriteria;
+            addAsNotMatchToCriteria(criteria, segmentToDeletes);
+            return;
+         }
+
+         // This is a specific transport and we do not need to do anything
          if (allSourceTags.Count > 1)
             return;
 
-         foreach (var organName in inducedProcess.OrgansToExclude)
-         {
-            transporterBuilder.SourceCriteria.Add(new NotMatchTagCondition(organName));
-         }
+         addAsNotMatchToCriteria(sourceCriteria, inducedProcess.OrgansToExclude);
       }
+
+      private void addAsNotMatchToCriteria(DescriptorCriteria criteria, IEnumerable<string> list)
+         => list.Each(x => criteria.Add(new NotMatchTagCondition(x)));
 
       private ITransportBuilder activeTransportFrom(CompoundProcess process, InducedProcess inducedProcess, IFormulaCache formulaCache)
       {
