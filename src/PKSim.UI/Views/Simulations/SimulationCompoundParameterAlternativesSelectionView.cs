@@ -29,12 +29,10 @@ namespace PKSim.UI.Views.Simulations
       {
          InitializeComponent();
          _repositoryForParameterAlternatives = new UxRepositoryItemComboBox(gridView);
-         _repositoryItemDisabled = new RepositoryItemTextEdit();
+         _repositoryItemDisabled = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
          _gridViewBinder = new GridViewBinder<CompoundParameterSelectionDTO>(gridView);
          gridView.RowStyle += rowStyle;
          gridView.HorzScrollVisibility=ScrollVisibility.Never;
-         _repositoryItemDisabled.Enabled = false;
-         _repositoryItemDisabled.ReadOnly = true;
          _repositoryForParameterAlternatives.AllowDropDownWhenReadOnly = DefaultBoolean.False;
       }
 

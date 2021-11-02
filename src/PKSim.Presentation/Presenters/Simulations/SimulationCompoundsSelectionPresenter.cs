@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Collections;
@@ -33,7 +34,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       /// <summary>
       ///    Loads a compound into the project
       /// </summary>
-      void LoadCompound();
+      Task LoadCompoundAsync();
 
       /// <summary>
       ///    Returns the compounds selected by the user
@@ -132,9 +133,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          _compoundSelectionDTOs.Add(mapFrom(compoundAdded, isSelected: true));
       }
 
-      public void LoadCompound()
+      public async Task LoadCompoundAsync()
       {
-         addToSelection(_compoundTask.LoadSingleFromTemplate());
+         addToSelection(await _compoundTask.LoadSingleFromTemplateAsync());
       }
 
       public override void Initialize()

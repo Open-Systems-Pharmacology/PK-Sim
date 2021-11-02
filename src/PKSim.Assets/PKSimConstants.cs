@@ -589,7 +589,7 @@ namespace PKSim.Assets
 
          public static string FileIsNotASimulationFile(string simulationFile, string productName) => $"File '{simulationFile}' is not a {productName} simulation file.";
 
-         public static string NoTemplateBuildingBlockAvailableForType(string buildingBlockType) => $"No template '{buildingBlockType}' available in the template database.";
+         public static string NoTemplateAvailableForType(string templateType) => $"No template '{templateType}' available in the template databases.";
 
          public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
@@ -904,6 +904,8 @@ namespace PKSim.Assets
          public static string CannotCreateTransportProcessWithKinetic(string processName, string compoundProcess) =>
             $"The kinetic used in compound process '{compoundProcess}' cannot be used with '{processName}'. Please select another process type in your compound.";
 
+         public static string CannotDownloadTemplateLocatedAt(string url) =>
+            $"Cannot download template located at '{url}'";
       }
 
       public static class Information
@@ -1655,6 +1657,7 @@ namespace PKSim.Assets
          public static readonly string ExportForClusterSimulationTitle = "Export for Cluster Simulation...";
          public static readonly string UserTemplates = "User Templates";
          public static readonly string SystemTemplates = "Predefined Templates";
+         public static readonly string RemoteTemplates = "GitHub Templates";
          public static readonly string EditDescription = "Edit Description";
          public static readonly string EditValueDescription = "Edit Value Description";
          public static readonly string ShowPKAnalysis = "Show PK-Analysis";
@@ -2169,7 +2172,9 @@ namespace PKSim.Assets
          public static readonly string HidePKAnalysis = "Hide PK-Analysis";
          public static readonly string CalculateVSSValues = "Calculate VSS Values";
          public static readonly string DoYouWantToSaveCompoundMetaboliteAsTemplate = "Do you also want to save the metabolite(s) of this compound?";
-         public static string DoYouWantToLoadReferencedTemplateAsWell(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
+         public static string DoYouWantToLoadMetabolites(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
+         public static string DoYouWantToLoadExpressionProfiles(int numberOfSelectedItems) => 
+            $"Do you also want to load the expression profiles(s) of the selected {"individual".PluralizeIf(numberOfSelectedItems)} or {"population".PluralizeIf(numberOfSelectedItems)}?";
          public static readonly string LowerPercentile = "Lower Percentile";
          public static readonly string UpperPercentile = "Upper Percentile";
          public static readonly string LowerValue= "Lower Value";
@@ -2209,6 +2214,7 @@ namespace PKSim.Assets
          public static readonly string LocalizationVascularMembranePlasmaSide = "Vascular endothelium membrane plasma-side";
          public static readonly string LocalizationVascularMembraneTissueSide = "Vascular endothelium membrane tissue-side";
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
+         public static readonly string TemplateSource = "Template Source";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 
@@ -2483,13 +2489,13 @@ namespace PKSim.Assets
 
          public static string ReallyDeleteObjectOfType(string type, params string[] names) => ReallyDeleteObjectOfType(type, names.ToList());
 
-         public static string RegisterAssembly(string assemblyname) => $"Loading {assemblyname.ToLower()}";
+         public static string RegisterAssembly(string assemblyName) => $"Loading {assemblyName.ToLower()}";
 
-         public static string CreateBuildingBlockHint(string buildingblockType) => $"Create new {buildingblockType}...";
+         public static string CreateBuildingBlockHint(string buildingBlockType) => $"Create new {buildingBlockType}...";
 
-         public static string LoadBuildingBlockHint(string buildingblockType) => $"Load {buildingblockType} from template...";
+         public static string LoadItemFromTemplateHint(string templateType) => $"Load {templateType} from template...";
 
-         public static string LoadBuildingBlockFromTemplate(string buildingBlock) => $"Load {buildingBlock} from template";
+         public static string LoadItemFromTemplate(string templateType) => $"Load {templateType} from template";
 
          public static string TemplateWithNameAlreadyExistsInTheDatabase(string name, string buildingBlockType) => $"A template for {buildingBlockType} named '{name}' already exists.";
 
@@ -2550,9 +2556,9 @@ namespace PKSim.Assets
 
          public static readonly string ChartYScale = "Chart Y Scale";
 
-         public static string  SelectSnapshotExportFile(string objectName, string ojectType) => $"Export snapshot for {ojectType.ToLowerInvariant()} '{objectName}'";
+         public static string  SelectSnapshotExportFile(string objectName, string objectType) => $"Export snapshot for {objectType.ToLowerInvariant()} '{objectName}'";
 
-         public static string  LoadObjectFromSnapshot(string ojectType) => $"Load {ojectType.ToLowerInvariant()} from snapshot";
+         public static string  LoadObjectFromSnapshot(string objectType) => $"Load {objectType.ToLowerInvariant()} from snapshot";
 
          public static string LoadFromSnapshot => "Load Snapshot";
 
@@ -2562,7 +2568,7 @@ namespace PKSim.Assets
             $"The template database located at\n\t\t'{userTemplateDatabasePath}'\n\nuses a file format that is not supported anymore. Please refer to\n\t\t'{wikiPageUrl}'\n\nto learn how to convert your database.";
 
          private static readonly string[] _reallyClearUnusedContent = {
-            "Removing unused content could permamently corrupt your project.",
+            "Removing unused content could permanently corrupt your project.",
             "You should make a backup of your project before proceeding.",
             "If you don't make a backup, you will be the only one to blame!"
          };

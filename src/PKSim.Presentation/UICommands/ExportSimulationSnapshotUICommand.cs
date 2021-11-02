@@ -34,7 +34,7 @@ namespace PKSim.Presentation.UICommands
 
          var snapshotObject = await _simulationMapper.MapToSnapshot(Subject, _projectRetriever.Current);
 
-         await _snapshotTask.ExportSnapshot(snapshotObject);
+         await _snapshotTask.ExportSnapshotAsync(snapshotObject);
       }
    }
 }

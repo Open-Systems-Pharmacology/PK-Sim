@@ -30,8 +30,10 @@ namespace PKSim.Core
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
+      public static readonly string DEFAULT_TEMPLATE_VERSION = "1.0";
       public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
       public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
+
       public const int NUMBER_OF_PKA_PARAMETERS = 3;
 
       public static readonly double[] DEFAULT_STATISTIC_PERCENTILES = {10, 25, 30, 37, 50, 63, 70, 75, 90};
@@ -68,11 +70,13 @@ namespace PKSim.Core
       }
 
       public static readonly string APPLICATION_FOLDER_PATH = @"Open Systems Pharmacology\PK-Sim";
+      public static readonly string REMOTE_FOLDER_PATH = "Templates";
 
       public static readonly string TEMPLATE_SYSTEM_DATABASE = $"PKSimTemplateDBSystem{Filter.SYSTEM_TEMPLATE_DB_EXTENSION}";
       public static readonly string TEMPLATE_USER_DATABASE = $"PKSimTemplateDBUser{Filter.USER_TEMPLATE_DB_EXTENSION}";
       public static readonly string PK_SIM_DB_FILE = $"PKSimDB{Filter.MODEL_DB_EXTENSION}";
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
+      public static readonly string REMOTE_TEMPLATE_SUMMARY = "templates.json";
       public const string PRODUCT_NAME = "PK-Sim";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -14,20 +15,23 @@ using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_TemplateTask : ContextSpecification<ITemplateTask>
+   public abstract class concern_for_TemplateTask : ContextSpecificationAsync<ITemplateTask>
    {
       protected IDialogCreator _dialogCreator;
       protected ITemplateTaskQuery _templateTaskQuery;
       protected IApplicationController _applicationController;
       protected IObjectTypeResolver _objectTypeResolver;
 
-      protected override void Context()
+
+      protected override Task Context()
       {
          _dialogCreator= A.Fake<IDialogCreator>();
          _templateTaskQuery = A.Fake<ITemplateTaskQuery>();
          _applicationController= A.Fake<IApplicationController>();
          _objectTypeResolver= A.Fake<IObjectTypeResolver>();
          sut = new TemplateTask(_templateTaskQuery,_applicationController,_objectTypeResolver,_dialogCreator);
+
+         return _completed;
       }
    }
 
@@ -37,18 +41,18 @@ namespace PKSim.Presentation
       private ITemplatePresenter _templatePresenter;
       private IPopulationAnalysisField _template;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _templatePresenter= A.Fake<ITemplatePresenter>();
          _template = A.Fake<IPopulationAnalysisField>();
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(() => _templatePresenter.LoadFromTemplate<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField)).Returns(new[]{_template});
+         A.CallTo(() => _templatePresenter.LoadFromTemplateAsync<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField)).Returns(new[]{_template});
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _field = sut.LoadFromTemplate<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField).FirstOrDefault();
+         _field = (await sut.LoadFromTemplateAsync<IPopulationAnalysisField>(TemplateType.PopulationAnalysisField)).FirstOrDefault();
       }
 
       [Observation]
@@ -64,23 +68,24 @@ namespace PKSim.Presentation
       private INameTemplatePresenter _namePresenter;
       private Template _templateItem;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _field = A.Fake<IPopulationAnalysisField>();
          _namePresenter= A.Fake<INameTemplatePresenter>();
          A.CallTo(_namePresenter).WithReturnType<bool>().Returns(true);
          A.CallTo(() => _namePresenter.Name).Returns("NEW_NAME");
          A.CallTo(() => _namePresenter.Description).Returns("DESCRIPTION");
          A.CallTo(() => _applicationController.Start<INameTemplatePresenter>()).Returns(_namePresenter);
-         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<Template>._))
-            .Invokes(x => _templateItem = x.GetArgument<Template>(0));
+         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<LocalTemplate>._))
+            .Invokes(x => _templateItem = x.GetArgument<LocalTemplate>(0));
 
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveToTemplate(_field,TemplateType.PopulationAnalysisField,"TOTO");
+         return _completed;
       }
 
       [Observation]
@@ -94,7 +99,7 @@ namespace PKSim.Presentation
       {
          _templateItem.Name.ShouldBeEqualTo("NEW_NAME");
          _templateItem.Description.ShouldBeEqualTo("DESCRIPTION");
-         _templateItem.TemplateType.ShouldBeEqualTo(TemplateType.PopulationAnalysisField);
+         _templateItem.Type.ShouldBeEqualTo(TemplateType.PopulationAnalysisField);
       }
 
       [Observation]
@@ -109,18 +114,19 @@ namespace PKSim.Presentation
       private IPopulationAnalysisField _field;
       private INameTemplatePresenter _namePresenter;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _field = A.Fake<IPopulationAnalysisField>();
          _namePresenter = A.Fake<INameTemplatePresenter>();
          A.CallTo(_namePresenter).WithReturnType<bool>().Returns(false);
          A.CallTo(() => _applicationController.Start<INameTemplatePresenter>()).Returns(_namePresenter);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveToTemplate(_field, TemplateType.PopulationAnalysisField, "TOTO");
+         return _completed;
       }
 
       [Observation]

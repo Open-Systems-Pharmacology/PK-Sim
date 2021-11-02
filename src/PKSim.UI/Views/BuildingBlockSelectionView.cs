@@ -67,14 +67,14 @@ namespace PKSim.UI.Views
 
          _screenBinder.Changed += () => _presenter.ViewChanged();
          btnCreateBuildingBlock.Click += (o, e) => OnEvent(_presenter.CreateBuildingBlock);
-         btnLoadBuildingBlock.Click += (o, e) => OnEvent(_presenter.LoadBuildingBlock);
+         btnLoadBuildingBlock.Click += (o, e) => OnEvent(_presenter.LoadBuildingBlockAsync);
       }
 
       public void BindTo(BuildingBlockSelectionDTO buildingBlockSelectionDTO)
       {
          _screenBinder.BindToSource(buildingBlockSelectionDTO);
          btnCreateBuildingBlock.ToolTip = PKSimConstants.UI.CreateBuildingBlockHint(buildingBlockSelectionDTO.BuildingBockType);
-         btnLoadBuildingBlock.ToolTip = PKSimConstants.UI.LoadBuildingBlockHint(buildingBlockSelectionDTO.BuildingBockType);
+         btnLoadBuildingBlock.ToolTip = PKSimConstants.UI.LoadItemFromTemplateHint(buildingBlockSelectionDTO.BuildingBockType);
          _presenter.ViewChanged();
       }
 

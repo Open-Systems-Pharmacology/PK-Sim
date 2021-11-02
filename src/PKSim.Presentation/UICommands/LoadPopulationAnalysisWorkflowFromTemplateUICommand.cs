@@ -1,7 +1,8 @@
-﻿using PKSim.Core.Model;
-using PKSim.Core.Services;
+﻿using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation.UICommands
 {
@@ -9,14 +10,14 @@ namespace PKSim.Presentation.UICommands
    {
       private readonly IPopulationAnalysisTemplateTask _populationAnalysisTemplateTask;
 
-      public LoadPopulationAnalysisWorkflowFromTemplateUICommand(IActiveSubjectRetriever activeSubjectRetriever,IPopulationAnalysisTemplateTask populationAnalysisTemplateTask) : base(activeSubjectRetriever)
+      public LoadPopulationAnalysisWorkflowFromTemplateUICommand(IActiveSubjectRetriever activeSubjectRetriever, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask) : base(activeSubjectRetriever)
       {
          _populationAnalysisTemplateTask = populationAnalysisTemplateTask;
       }
 
-      protected override void PerformExecute()
+      protected override async void PerformExecute()
       {
-         _populationAnalysisTemplateTask.LoadPopulationAnalysisWorkflowInto(Subject);
+         await _populationAnalysisTemplateTask.SecureAwait(x => x.LoadPopulationAnalysisWorkflowIntoAsync(Subject));
       }
    }
 }

@@ -85,7 +85,7 @@ namespace PKSim.IntegrationTests
          IList<T> buildingBlocks = new List<T>();
          foreach (var template in templates)
          {
-            buildingBlocks.Add(sut.LoadTemplate<T>(template));
+            buildingBlocks.Add(sut.LoadTemplateAsync<T>(template).Result);
          }
 
          return buildingBlocks;
@@ -144,14 +144,14 @@ namespace PKSim.IntegrationTests
    public class When_saving_a_building_block_to_the_database : concern_for_TemplateTaskQuery
    {
       private Individual _individual;
-      private Template _template;
+      private LocalTemplate _template;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual().WithName("TOTO'");
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _individual.Name, Object = _individual, TemplateType = TemplateType.Individual};
+         _template = new LocalTemplate { DatabaseType = TemplateDatabaseType.User, Name = _individual.Name, Object = _individual, Type = TemplateType.Individual};
          sut.SaveToTemplate(_template);
       }
 
@@ -164,21 +164,21 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_load_the_template_by_name()
       {
-         sut.LoadTemplate<Individual>(_template).ShouldNotBeNull();
+         sut.LoadTemplateAsync<Individual>(_template).ShouldNotBeNull();
       }
    }
 
    public class When_saving_an_observer_set_building_block_to_the_database : concern_for_TemplateTaskQuery
    {
       private ObserverSet _observerSet;
-      private Template _template;
+      private LocalTemplate _template;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _observerSet = new ObserverSet {Name = "ObsSet"};
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _observerSet.Name, Object = _observerSet, TemplateType = TemplateType.ObserverSet};
+         _template = new LocalTemplate { DatabaseType = TemplateDatabaseType.User, Name = _observerSet.Name, Object = _observerSet, Type = TemplateType.ObserverSet};
          sut.SaveToTemplate(_template);
       }
 
@@ -191,16 +191,16 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_load_the_template_by_name()
       {
-         sut.LoadTemplate<ObserverSet>(_template).ShouldNotBeNull();
+         sut.LoadTemplateAsync<ObserverSet>(_template).ShouldNotBeNull();
       }
    }
 
    public class When_saving_a_building_block_with_references_to_the_template_database : concern_for_TemplateTaskQuery
    {
       private Compound _compound;
-      private Template _template;
+      private LocalTemplate _template;
       private Compound _metabolite;
-      private Template _reference;
+      private LocalTemplate _reference;
 
       public override void GlobalContext()
       {
@@ -208,8 +208,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound().WithName("DRUG");
          _metabolite = DomainFactoryForSpecs.CreateStandardCompound().WithName("METABOLITE");
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound};
-         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound};
+         _template = new LocalTemplate { DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, Type = TemplateType.Compound};
+         _reference = new LocalTemplate { DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, Type = TemplateType.Compound};
          _template.References.Add(_reference);
          sut.SaveToTemplate(new[] {_template, _reference,});
       }
@@ -230,9 +230,9 @@ namespace PKSim.IntegrationTests
    public class When_deleting_the_reference_to_another_template : concern_for_TemplateTaskQuery
    {
       private Compound _compound;
-      private Template _template;
+      private LocalTemplate _template;
       private Compound _metabolite;
-      private Template _reference;
+      private LocalTemplate _reference;
 
       public override void GlobalContext()
       {
@@ -240,8 +240,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound().WithName("DRUG");
          _metabolite = DomainFactoryForSpecs.CreateStandardCompound().WithName("METABOLITE");
 
-         _template = new Template {DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, TemplateType = TemplateType.Compound};
-         _reference = new Template {DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, TemplateType = TemplateType.Compound};
+         _template = new LocalTemplate { DatabaseType = TemplateDatabaseType.User, Name = _compound.Name, Object = _compound, Type = TemplateType.Compound};
+         _reference = new LocalTemplate { DatabaseType = TemplateDatabaseType.User, Name = _metabolite.Name, Object = _metabolite, Type = TemplateType.Compound};
          _template.References.Add(_reference);
          sut.SaveToTemplate(new[] {_template, _reference,});
          sut.DeleteTemplate(_reference);
@@ -250,7 +250,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_load_the_template_and_delete_the_referece()
       {
-         sut.LoadTemplate<Compound>(_template).ShouldNotBeNull();
+         sut.LoadTemplateAsync<Compound>(_template).ShouldNotBeNull();
          sut.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound).ShouldBeFalse();
       }
    }

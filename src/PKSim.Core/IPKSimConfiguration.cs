@@ -28,5 +28,13 @@ namespace PKSim.Core
       ///    Full path to MoBi application exe. This path is read from the registry entry
       /// </summary>
       string MoBiPath { get; }
+
+      /// <summary>
+      /// Full path of the main file containing the list of all available templates
+      /// </summary>
+      string RemoteTemplateSummaryPath { get; }
+
+      string RemoteTemplateFolderPath { get; }
    }
+
 }

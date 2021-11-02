@@ -4,7 +4,7 @@ using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views
 {
-   partial class BuildingBlockFromTemplateView
+   partial class TemplateView
    {
       /// <summary>
       /// Required designer variable.
@@ -21,6 +21,7 @@ namespace PKSim.UI.Views
          {
             components.Dispose();
          }
+         _gridViewBinder.Dispose();
          base.Dispose(disposing);
       }
 
@@ -34,12 +35,13 @@ namespace PKSim.UI.Views
       {
          this.components = new System.ComponentModel.Container();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
-         this.treeView = new OSPSuite.UI.Controls.UxImageTreeView();
-         this.tbDescription = new DevExpress.XtraEditors.MemoEdit();
+         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
+         this.gridView = new PKSim.UI.Views.Core.UxGridView();
          this.layoutMainGroup = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.toolTipController = new DevExpress.Utils.ToolTipController(this.components);
+         this.lblDescription = new DevExpress.XtraEditors.LabelControl();
+         this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
          this.layoutControlBase.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
@@ -50,108 +52,88 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
-         this.splitContainerControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.treeView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbDescription.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutMainGroup)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).BeginInit();
          this.SuspendLayout();
          // 
          // btnCancel
          // 
-         this.btnCancel.Location = new System.Drawing.Point(434, 12);
-         this.btnCancel.Size = new System.Drawing.Size(89, 22);
+         this.btnCancel.Location = new System.Drawing.Point(721, 12);
+         this.btnCancel.Size = new System.Drawing.Size(153, 22);
          // 
          // btnOk
          // 
-         this.btnOk.Location = new System.Drawing.Point(325, 12);
-         this.btnOk.Size = new System.Drawing.Size(105, 22);
+         this.btnOk.Location = new System.Drawing.Point(538, 12);
+         this.btnOk.Size = new System.Drawing.Size(179, 22);
          // 
          // layoutControlBase
          // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 572);
-         this.layoutControlBase.Size = new System.Drawing.Size(535, 46);
+         this.layoutControlBase.Location = new System.Drawing.Point(0, 665);
+         this.layoutControlBase.Size = new System.Drawing.Size(886, 46);
          this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
          this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
          this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
          // 
          // btnExtra
          // 
-         this.btnExtra.Size = new System.Drawing.Size(153, 22);
+         this.btnExtra.Size = new System.Drawing.Size(260, 22);
          // 
          // layoutControlGroupBase
          // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(535, 46);
+         this.layoutControlGroupBase.Size = new System.Drawing.Size(886, 46);
          // 
          // layoutItemOK
          // 
-         this.layoutItemOK.Location = new System.Drawing.Point(313, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(109, 26);
+         this.layoutItemOK.Location = new System.Drawing.Point(526, 0);
+         this.layoutItemOK.Size = new System.Drawing.Size(183, 26);
          // 
          // layoutItemCancel
          // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(422, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(93, 26);
+         this.layoutItemCancel.Location = new System.Drawing.Point(709, 0);
+         this.layoutItemCancel.Size = new System.Drawing.Size(157, 26);
          // 
          // emptySpaceItemBase
          // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(157, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(156, 26);
+         this.emptySpaceItemBase.Location = new System.Drawing.Point(264, 0);
+         this.emptySpaceItemBase.Size = new System.Drawing.Size(262, 26);
          // 
          // layoutItemExtra
          // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(157, 26);
+         this.layoutItemExtra.Size = new System.Drawing.Size(264, 26);
          // 
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.splitContainerControl);
+         this.layoutControl.Controls.Add(this.lblDescription);
+         this.layoutControl.Controls.Add(this.gridControl);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.layoutMainGroup;
-         this.layoutControl.Size = new System.Drawing.Size(535, 572);
+         this.layoutControl.Size = new System.Drawing.Size(886, 665);
          this.layoutControl.TabIndex = 34;
          this.layoutControl.Text = "layoutControl1";
          // 
-         // splitContainerControl
+         // gridControl
          // 
-         this.splitContainerControl.Horizontal = false;
-         this.splitContainerControl.Location = new System.Drawing.Point(12, 12);
-         this.splitContainerControl.Name = "splitContainerControl";
-         this.splitContainerControl.Panel1.Controls.Add(this.treeView);
-         this.splitContainerControl.Panel1.Text = "Panel1";
-         this.splitContainerControl.Panel2.Controls.Add(this.tbDescription);
-         this.splitContainerControl.Panel2.Text = "Panel2";
-         this.splitContainerControl.Size = new System.Drawing.Size(511, 548);
-         this.splitContainerControl.SplitterPosition = 337;
-         this.splitContainerControl.TabIndex = 5;
-         this.splitContainerControl.Text = "splitContainerControl1";
+         this.gridControl.Location = new System.Drawing.Point(12, 29);
+         this.gridControl.MainView = this.gridView;
+         this.gridControl.Name = "gridControl";
+         this.gridControl.Size = new System.Drawing.Size(862, 624);
+         this.gridControl.TabIndex = 4;
+         this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView});
          // 
-         // treeView
+         // gridView
          // 
-         this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.treeView.IsLatched = false;
-         this.treeView.Location = new System.Drawing.Point(0, 0);
-         this.treeView.Name = "treeView";
-         this.treeView.OptionsBehavior.Editable = false;
-         this.treeView.OptionsView.ShowColumns = false;
-         this.treeView.OptionsView.ShowHorzLines = false;
-         this.treeView.OptionsView.ShowIndicator = false;
-         this.treeView.OptionsView.ShowVertLines = false;
-         this.treeView.Size = new System.Drawing.Size(511, 337);
-         this.treeView.TabIndex = 1;
-         this.treeView.ToolTipForNode = null;
-         this.treeView.UseLazyLoading = false;
-         // 
-         // tbDescription
-         // 
-         this.tbDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tbDescription.Location = new System.Drawing.Point(0, 0);
-         this.tbDescription.Name = "tbDescription";
-         this.tbDescription.Size = new System.Drawing.Size(511, 206);
-         this.tbDescription.TabIndex = 0;
+         this.gridView.AllowsFiltering = true;
+         this.gridView.EnableColumnContextMenu = true;
+         this.gridView.GridControl = this.gridControl;
+         this.gridView.MultiSelect = false;
+         this.gridView.Name = "gridView";
          // 
          // layoutMainGroup
          // 
@@ -159,30 +141,47 @@ namespace PKSim.UI.Views
          this.layoutMainGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutMainGroup.GroupBordersVisible = false;
          this.layoutMainGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem2});
-         this.layoutMainGroup.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1,
+            this.layoutItemDescription});
          this.layoutMainGroup.Name = "layoutMainGroup";
-         this.layoutMainGroup.Size = new System.Drawing.Size(535, 572);
+         this.layoutMainGroup.Size = new System.Drawing.Size(886, 665);
          this.layoutMainGroup.TextVisible = false;
          // 
-         // layoutControlItem2
+         // layoutControlItem1
          // 
-         this.layoutControlItem2.Control = this.splitContainerControl;
-         this.layoutControlItem2.CustomizationFormText = "layoutControlItem2";
-         this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Size = new System.Drawing.Size(515, 552);
-         this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem2.TextVisible = false;
+         this.layoutControlItem1.Control = this.gridControl;
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 17);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(866, 628);
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
          // 
-         // BuildingBlockFromTemplateView
+         // lblDescription
+         // 
+         this.lblDescription.Location = new System.Drawing.Point(12, 12);
+         this.lblDescription.Name = "lblDescription";
+         this.lblDescription.Size = new System.Drawing.Size(63, 13);
+         this.lblDescription.StyleController = this.layoutControl;
+         this.lblDescription.TabIndex = 5;
+         this.lblDescription.Text = "lblDescription";
+         // 
+         // layoutItemDescription
+         // 
+         this.layoutItemDescription.Control = this.lblDescription;
+         this.layoutItemDescription.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemDescription.Name = "layoutItemDescription";
+         this.layoutItemDescription.Size = new System.Drawing.Size(866, 17);
+         this.layoutItemDescription.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemDescription.TextVisible = false;
+         // 
+         // TemplateView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "BuildingBlockFromTemplateView";
-         this.ClientSize = new System.Drawing.Size(535, 618);
+         this.ClientSize = new System.Drawing.Size(886, 711);
          this.Controls.Add(this.layoutControl);
-         this.Name = "BuildingBlockFromTemplateView";
+         this.Name = "TemplateView";
          this.Text = "BuildingBlockFromTemplateView";
          this.Controls.SetChildIndex(this.layoutControlBase, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);
@@ -196,12 +195,11 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
-         this.splitContainerControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.treeView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbDescription.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutMainGroup)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -212,9 +210,10 @@ namespace PKSim.UI.Views
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutMainGroup;
       private DevExpress.Utils.ToolTipController toolTipController;
-      private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
-      private UxImageTreeView treeView;
-      private DevExpress.XtraEditors.MemoEdit tbDescription;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
+      private OSPSuite.UI.Controls.UxGridControl gridControl;
+      private PKSim.UI.Views.Core.UxGridView gridView;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+      private DevExpress.XtraEditors.LabelControl lblDescription;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
    }
 }

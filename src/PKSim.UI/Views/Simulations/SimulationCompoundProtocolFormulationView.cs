@@ -97,7 +97,7 @@ namespace PKSim.UI.Views.Simulations
 
          _gridViewBinder.Changed += () => _presenter.ViewChanged();
          createFormulationButton.ButtonClick += (o, e) => OnEvent(() => _presenter.CreateFormulationFor(_gridViewBinder.FocusedElement));
-         loadFormulationButton.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadFormulationFor(_gridViewBinder.FocusedElement));
+         loadFormulationButton.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadFormulationForAsync(_gridViewBinder.FocusedElement));
       }
 
       private RepositoryItemButtonEdit createdFormulationButtonRepository()
@@ -107,7 +107,7 @@ namespace PKSim.UI.Views.Simulations
 
       private RepositoryItemButtonEdit loadFormulationButtonRepository()
       {
-         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.Formulation));
+         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplate(PKSimConstants.ObjectTypes.Formulation));
       }
 
       private void configureFormulation(BaseEdit baseEdit, FormulationMappingDTO formulationMappingDTO)

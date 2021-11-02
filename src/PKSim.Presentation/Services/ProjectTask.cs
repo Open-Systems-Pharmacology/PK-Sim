@@ -256,7 +256,7 @@ namespace PKSim.Presentation.Services
          if (exitIf(!anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersion))
             return Task.CompletedTask;
 
-         return _snapshotTask.ExportModelToSnapshot(project);
+         return _snapshotTask.ExportModelToSnapshotAsync(project);
       }
 
       private bool exitIf(bool condition, string message)
@@ -268,7 +268,7 @@ namespace PKSim.Presentation.Services
          return (proceed == ViewResult.No);
       }
 
-      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFile(snapshotFileFullPath);
+      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFileFullPath);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {

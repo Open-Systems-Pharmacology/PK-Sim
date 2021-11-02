@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <Version>10.0.0</Version>
-    <PackageVersion>10.0.0</PackageVersion>
-    <AssemblyVersion>10.0.0</AssemblyVersion>
-    <FileVersion>10.0.0</FileVersion>
-    <InformationalVersion>10.0.0</InformationalVersion>
+    <Version>11.0.0</Version>
+    <PackageVersion>11.0.0</PackageVersion>
+    <AssemblyVersion>11.0.0</AssemblyVersion>
+    <FileVersion>11.0.0</FileVersion>
+    <InformationalVersion>11.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <Authors>Open-Systems-Pharmacology</Authors>
@@ -50,6 +50,9 @@
     <Content Include="$(PkgOSPSuite_TeXReporting)\OSPSuite.TeXReporting\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\templates\templates.json" Link="templates.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -73,13 +76,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="10.0.368" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.1" />
     <PackageReference Include="OSPSuite.DevExpress" Version="20.1.6" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.50" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.45" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.Presentation" Version="10.0.368" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.1" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" GeneratePathProperty="true" />
 
   </ItemGroup>

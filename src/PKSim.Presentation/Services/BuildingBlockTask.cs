@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -31,7 +32,6 @@ namespace PKSim.Presentation.Services
       private readonly ITemplateTaskQuery _templateTaskQuery;
       private readonly ISingleStartPresenterTask _singleStartPresenterTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
@@ -56,7 +56,6 @@ namespace PKSim.Presentation.Services
          _templateTaskQuery = templateTaskQuery;
          _singleStartPresenterTask = singleStartPresenterTask;
          _buildingBlockRepository = buildingBlockRepository;
-         _lazyLoadTask = lazyLoadTask;
          _presentationSettingsTask = presentationSettingsTask;
          _simulationReferenceUpdater = simulationReferenceUpdater;
       }
@@ -172,7 +171,7 @@ namespace PKSim.Presentation.Services
 
       public void SaveAsTemplate(ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> buildingBlocksWithReferenceToSave, TemplateDatabaseType templateDatabaseType)
       {
-         var templates = new Cache<IPKSimBuildingBlock, Template>();
+         var templates = new Cache<IPKSimBuildingBlock, LocalTemplate>();
 
          var allBuildingBlocksToSave = buildingBlocksWithReferenceToSave.Keys.Union(buildingBlocksWithReferenceToSave.SelectMany(x => x)).ToList();
          //First pass. Save the template item corresponding to the specific building blocks
@@ -197,7 +196,7 @@ namespace PKSim.Presentation.Services
          _dialogCreator.MessageBoxInfo(PKSimConstants.UI.TemplatesSuccessfullySaved(templates.Select(x => x.Name).ToList()));
       }
 
-      private Template templateItemFor(IPKSimBuildingBlock buildingBlockToSave, TemplateDatabaseType templateDatabaseType)
+      private LocalTemplate templateItemFor(IPKSimBuildingBlock buildingBlockToSave, TemplateDatabaseType templateDatabaseType)
       {
          string buildingBlockName = buildingBlockToSave.Name;
          string buildingBlockType = TypeFor(buildingBlockToSave);
@@ -223,12 +222,12 @@ namespace PKSim.Presentation.Services
          }
 
          Load(buildingBlockToSave);
-         return new Template
+         return new LocalTemplate
          {
             Name = buildingBlockName,
             Description = buildingBlockToSave.Description,
             Object = buildingBlockToSave,
-            TemplateType = templateType,
+            Type = templateType,
             DatabaseType = templateDatabaseType
          };
       }
@@ -271,14 +270,19 @@ namespace PKSim.Presentation.Services
          _executionContext.Load(buildingBlockToLoad);
       }
 
-      public IReadOnlyList<TBuildingBlock> LoadFromTemplate<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
+      public async Task<IReadOnlyList<IPKSimBuildingBlock>> LoadFromTemplateAsync(PKSimBuildingBlockType buildingBlockType)
       {
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
-            var buildingBlocks = presenter.LoadFromTemplate<TBuildingBlock>(typeFrom(buildingBlockType));
+            var buildingBlocks = await presenter.LoadFromTemplateAsync<IPKSimBuildingBlock>(typeFrom(buildingBlockType));
 
             return addBuildingBlocksToProject(buildingBlocks).ToList();
          }
+      }
+
+      public async Task<TBuildingBlock> LoadSingleFromTemplateAsync<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
+      {
+         return (await LoadFromTemplateAsync(buildingBlockType)).OfType<TBuildingBlock>().FirstOrDefault();
       }
 
       public IReadOnlyList<TBuildingBlock> LoadFromSnapshot<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
@@ -290,7 +294,7 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IEnumerable<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
+      private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (buildingBlocks == null)
             return Enumerable.Empty<TBuildingBlock>();
@@ -344,40 +348,17 @@ namespace PKSim.Presentation.Services
 
       public abstract TBuildingBlock AddToProject();
 
-      public TBuildingBlock LoadSingleFromTemplate()
-      {
-         return LoadFromTemplate().FirstOrDefault();
-      }
+      public Task<TBuildingBlock> LoadSingleFromTemplateAsync() => _buildingBlockTask.LoadSingleFromTemplateAsync<TBuildingBlock>(_buildingBlockType);
 
-      public IReadOnlyList<TBuildingBlock> LoadFromTemplate()
-      {
-         return LoadFromTemplate(_buildingBlockType);
-      }
+      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot() => LoadFromSnapshot(_buildingBlockType);
 
-      public IReadOnlyList<TBuildingBlock> LoadFromSnapshot()
-      {
-         return LoadFromSnapshot(_buildingBlockType);
-      }
+      public void Load(TBuildingBlock buildingBlockToLoad) => _buildingBlockTask.Load(buildingBlockToLoad);
 
-      public void Load(TBuildingBlock buildingBlockToLoad)
-      {
-         _buildingBlockTask.Load(buildingBlockToLoad);
-      }
+      public IEnumerable<TBuildingBlock> All() => _buildingBlockTask.All<TBuildingBlock>();
 
-      public IEnumerable<TBuildingBlock> All()
-      {
-         return _buildingBlockTask.All<TBuildingBlock>();
-      }
+      public void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave) => SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.User);
 
-      public void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave)
-      {
-         SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.User);
-      }
-
-      public void SaveAsSystemTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave)
-      {
-         SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.System);
-      }
+      public void SaveAsSystemTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave) => SaveAsTemplate(buildingBlocksToSave, TemplateDatabaseType.System);
 
       protected virtual void SaveAsTemplate(IReadOnlyList<TBuildingBlock> buildingBlocksToSave, TemplateDatabaseType templateDatabaseType)
       {
@@ -386,10 +367,7 @@ namespace PKSim.Presentation.Services
          _buildingBlockTask.SaveAsTemplate(cache, templateDatabaseType);
       }
 
-      public virtual void Edit(TBuildingBlock buildingBlockToEdit)
-      {
-         _buildingBlockTask.Edit(buildingBlockToEdit);
-      }
+      public virtual void Edit(TBuildingBlock buildingBlockToEdit) => _buildingBlockTask.Edit(buildingBlockToEdit);
 
       /// <summary>
       ///    Launch the create building block presenter implementing TCreatePresenter and start the creation process
@@ -446,10 +424,10 @@ namespace PKSim.Presentation.Services
          return _buildingBlockTask.AddToProject(buildingBlock, editBuildingBlock, addToHistory);
       }
 
-      protected virtual IReadOnlyList<TBuildingBlock> LoadFromTemplate(PKSimBuildingBlockType buildingBlockType)
+      /*protected virtual Task<IReadOnlyList<TBuildingBlock>> LoadFromTemplateAsync(PKSimBuildingBlockType buildingBlockType)
       {
-         return _buildingBlockTask.LoadFromTemplate<TBuildingBlock>(buildingBlockType);
-      }
+         return _buildingBlockTask.LoadFromTemplateAsync(buildingBlockType)
+      }*/
 
       protected virtual IReadOnlyList<TBuildingBlock> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
       {

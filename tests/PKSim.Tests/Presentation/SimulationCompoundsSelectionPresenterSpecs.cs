@@ -92,12 +92,12 @@ namespace PKSim.Presentation
       {
          base.Context();
          _newCompound = new Compound().WithName("NEW COMPOUND");
-         A.CallTo(() => _compoundTask.LoadSingleFromTemplate()).Returns(_newCompound);
+         A.CallTo(() => _compoundTask.LoadSingleFromTemplateAsync()).Returns(_newCompound);
       }
 
       protected override void Because()
       {
-         sut.LoadCompound();
+         sut.LoadCompoundAsync();
       }
 
       [Observation]

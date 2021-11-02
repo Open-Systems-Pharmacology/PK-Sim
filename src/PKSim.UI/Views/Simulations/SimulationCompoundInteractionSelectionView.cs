@@ -24,7 +24,6 @@ namespace PKSim.UI.Views.Simulations
       private readonly GridViewBinder<SimulationInteractionProcessSelectionDTO> _gridViewBinder;
       private readonly UxRepositoryItemComboBox _compoundProcessRepository;
       private readonly UxRepositoryItemComboBox _individualMoleculeRepository;
-      private readonly RepositoryItemTextEdit _repositoryItemDisabled = new RepositoryItemTextEdit();
       private readonly UxRepositoryItemButtonEdit _removeField;
 
       public SimulationCompoundInteractionSelectionView()
@@ -35,8 +34,6 @@ namespace PKSim.UI.Views.Simulations
          _individualMoleculeRepository = new UxRepositoryItemComboBox(gridView);
          gridView.AllowsFiltering = false;
          gridView.ShowRowIndicator = false;
-         _repositoryItemDisabled.Enabled = false;
-         _repositoryItemDisabled.ReadOnly = true;
          _removeField = new UxRemoveButtonRepository();
       }
 

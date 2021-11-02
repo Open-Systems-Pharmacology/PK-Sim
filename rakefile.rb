@@ -34,7 +34,8 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 	harvest_ignored_files = [
 		'PKSim.exe',
 		'PKSimDB.sqlite',
-		'PKSimTemplateDBSystem.TemplateDBSystem'
+		'PKSimTemplateDBSystem.TemplateDBSystem',
+		'templates.json'
 	]
 
 	#Files required for setup creation only and that will not be harvested automatically
@@ -111,7 +112,7 @@ task :postclean do |t, args|
 	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '10.0')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '11.0')
 
 	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml

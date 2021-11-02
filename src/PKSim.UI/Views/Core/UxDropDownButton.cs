@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Exceptions;
 
 namespace PKSim.UI.Views.Core
 {
@@ -28,6 +33,22 @@ namespace PKSim.UI.Views.Core
       public void AddMenu(string caption, Action action, ApplicationIcon icon = null)
       {
          _popupMenu.Items.Add(new DXMenuItem(caption, (o, e) => this.DoWithinExceptionHandler(action), imageFrom(icon)));
+      }
+
+      public void AddMenu(string caption, Func<Task> action, ApplicationIcon icon = null)
+      {
+         async void executeAction()
+         {
+            try
+            {
+               await action();
+            }
+            catch (Exception e)
+            {
+               IoC.Resolve<IExceptionManager>().LogException(e);
+            }
+         }
+         _popupMenu.Items.Add(new DXMenuItem(caption, (o, e) => executeAction(), imageFrom(icon)));
       }
 
       private Image imageFrom(ApplicationIcon icon)

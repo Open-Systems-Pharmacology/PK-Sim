@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.DTO;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters
@@ -28,7 +27,7 @@ namespace PKSim.Presentation.Presenters
       void Edit(IPKSimBuildingBlock buildingBlock);
       void CreateBuildingBlock();
       ApplicationIcon IconFor(IPKSimBuildingBlock buildingBlock);
-      void LoadBuildingBlock();
+      Task LoadBuildingBlockAsync();
       string DisplayFor(IPKSimBuildingBlock buildingBlock);
       IEnumerable<ToolTipPart> ToolTipPartsFor(int selectedIndex);
       bool AllowEmptySelection { set; }
@@ -137,10 +136,10 @@ namespace PKSim.Presentation.Presenters
          return _buildingBlockSelectionDisplayer.IconFor(buildingBlock, _emptySelection);
       }
 
-      public void LoadBuildingBlock()
+      public async Task LoadBuildingBlockAsync()
       {
          var buildingBlockTask = _container.Resolve<IBuildingBlockTask<TBuildingBlock>>();
-         buildingBlockTask.LoadSingleFromTemplate();
+         await buildingBlockTask.LoadSingleFromTemplateAsync();
          Edit(_buildingBlockRepository.All<TBuildingBlock>().LastOrDefault());
       }
 
@@ -154,6 +153,5 @@ namespace PKSim.Presentation.Presenters
          var buildingBlock = AllAvailableBlocks.ElementAtOrDefault(selectedIndex) as TBuildingBlock;
          return _buildingBlockSelectionDisplayer.ToolTipFor(buildingBlock);
       }
-
    }
 }

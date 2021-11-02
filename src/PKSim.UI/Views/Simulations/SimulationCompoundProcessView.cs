@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Assets;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.UI;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
 using UxGridView = PKSim.UI.Views.Core.UxGridView;
 
 namespace PKSim.UI.Views.Simulations
@@ -31,7 +31,7 @@ namespace PKSim.UI.Views.Simulations
       private readonly UxRepositoryItemComboBox _compoundMoleculeRepository;
       private readonly RepositoryItemPictureEdit _statusIconRepository;
       private readonly UxRepositoryItemComboBox _systemicProcessRepository;
-      private readonly RepositoryItemTextEdit _repositoryItemDisabled = new RepositoryItemTextEdit();
+      private readonly RepositoryItemTextEdit _repositoryItemDisabled = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
       protected readonly GridViewBinder<TPartialProcessDTO> _gridViewPartialBinder;
       private readonly GridViewBinder<SimulationSystemicProcessSelectionDTO> _gridViewSystemicBinder;
       protected ISimulationCompoundProcessPresenter<TPartialProcess, TPartialProcessDTO> _presenter;
@@ -45,8 +45,6 @@ namespace PKSim.UI.Views.Simulations
          _compoundMoleculeRepository = new UxRepositoryItemComboBox(gridViewPartialProcesses);
          _systemicProcessRepository = new UxRepositoryItemComboBox(gridViewSystemicProcesses);
          _statusIconRepository = new RepositoryItemPictureEdit();
-         _repositoryItemDisabled.Enabled = false;
-         _repositoryItemDisabled.ReadOnly = true;
          gridViewSystemicProcesses.AllowsFiltering = false;
          gridViewSystemicProcesses.HorzScrollVisibility = ScrollVisibility.Never;
          gridViewPartialProcesses.AllowsFiltering = false;

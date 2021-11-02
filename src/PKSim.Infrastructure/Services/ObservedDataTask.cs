@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
@@ -167,9 +168,9 @@ namespace PKSim.Infrastructure.Services
          return _projectRetriever.CurrentProject.ObservedDataBy(usedObservedDatas.Id);
       }
 
-      public void LoadObservedDataFromTemplate()
+      public async Task LoadObservedDataFromTemplateAsync()
       {
-         var observedDataList = _templateTask.LoadFromTemplate<DataRepository>(TemplateType.ObservedData);
+         var observedDataList = await _templateTask.LoadFromTemplateAsync<DataRepository>(TemplateType.ObservedData);
          observedDataList.Each(AddObservedDataToProject);
       }
    }
