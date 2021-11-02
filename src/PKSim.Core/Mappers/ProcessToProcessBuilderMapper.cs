@@ -369,11 +369,11 @@ namespace PKSim.Core.Mappers
 
       private void updateTransporterTagsFor(ITransportBuilder transporterBuilder, InducedProcess inducedProcess)
       {
-         var allSourceTags = transporterBuilder.SourceCriteria.OfType<TagCondition>()
-            .Select(x => x.Tag).ToList();
+         var allSourceTags = transporterBuilder.SourceCriteria.OfType<MatchTagCondition>().Select(x=>x.Tag).ToList();
 
-         //More than one tag coming from the database => This is a specific transport and we do not need to do anything
-         if (allSourceTags.Count > 1)
+         // More than one match tag coming from the database and at least one tag in an organ
+         // This is a specific transport and we do not need to do anything
+         if (allSourceTags.Count > 1 && inducedProcess.SourceOrgans.Intersect(allSourceTags).Any())
             return;
 
          foreach (var organName in inducedProcess.OrgansToExclude)
