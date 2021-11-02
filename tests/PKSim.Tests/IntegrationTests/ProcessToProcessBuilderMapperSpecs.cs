@@ -8,7 +8,7 @@ using PKSim.Infrastructure;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_ProcessToProcessBuilderMapper : ContextWithLoadedProject<IProcessToProcessBuilderMapper>
+   public abstract class concern_for_Mucosa_MultipleTransportDirections : ContextWithLoadedProject<IProcessToProcessBuilderMapper>
    {
       public override void GlobalContext()
       {
@@ -17,7 +17,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_creating_a_simulation_using_transport_in_multiple_mucosa_directions : concern_for_ProcessToProcessBuilderMapper
+   public class When_creating_a_simulation_using_transport_in_multiple_mucosa_directions : concern_for_Mucosa_MultipleTransportDirections
    {
       private Simulation _simulation;
 
@@ -37,4 +37,36 @@ namespace PKSim.IntegrationTests
          transportInLumenToMucosa.GetChildren<IContainer>(x => x.ContainerType == ContainerType.Transport).Count().ShouldBeEqualTo(1);
       }
    }
+
+   public abstract class concern_for_MucosaInflux_Hill : ContextWithLoadedProject<IProcessToProcessBuilderMapper>
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("Mucosa_MultipleTransportDirections");
+      }
+   }
+
+   public class When_creating_a_simulation_using_mucoa_influx_hill_kinetic : concern_for_MucosaInflux_Hill
+   {
+      private Simulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         var ind = FindByName<Individual>("I1");
+         var comp = FindByName<Compound>("C1");
+         var prot = FindByName<Protocol>("IV");
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(ind, comp, prot);
+
+      }
+
+      [Observation]
+      public void should_be_able_to_create_a_simulation()
+      {
+         _simulation.ShouldNotBeNull();
+      }
+   }
+
+   
 }
