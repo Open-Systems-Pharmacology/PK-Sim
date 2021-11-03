@@ -5,14 +5,14 @@ using FakeItEasy;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_NewSimulationCommand : ContextSpecification<NewSimulationCommand>
+   public abstract class concern_for_NewSimulationCommand : ContextSpecification<AddSimulationCommand>
    {
       protected ISimulationTask _simulationTask;
 
       protected override void Context()
       {
          _simulationTask = A.Fake<ISimulationTask>();
-         sut = new NewSimulationCommand(_simulationTask);
+         sut = new AddSimulationCommand(_simulationTask);
       }
    }
 
