@@ -17,7 +17,7 @@ namespace PKSim.Presentation.Nodes
       public static readonly RootNodeType PopulationFolder = new RootNodeType(PKSimConstants.UI.PopulationFolder, ApplicationIcons.PopulationFolder);
       public static readonly RootNodeType EventFolder = new RootNodeType(PKSimConstants.UI.EventFolder, ApplicationIcons.EventFolder);
       public static readonly RootNodeType ObserverSetFolder = new RootNodeType(PKSimConstants.UI.ObserverSetFolder, ApplicationIcons.ObserverFolder);
-      public static readonly RootNodeType ExpressionProfileFolder = new RootNodeType(PKSimConstants.UI.ExpressionProfileFolder, ApplicationIcons.Folder);
+      public static readonly RootNodeType ExpressionProfileFolder = new RootNodeType(PKSimConstants.UI.ExpressionProfileFolder, ApplicationIcons.ExpressionProfileFolder);
       public static readonly RootNodeType IndividualMetabolizingEnzymes = new RootNodeType(PKSimConstants.UI.MetabolizingEnzymes, ApplicationIcons.Enzyme);
       public static readonly RootNodeType IndividualProteinBindingPartners = new RootNodeType(PKSimConstants.UI.ProteinBindingPartners, ApplicationIcons.Protein);
       public static readonly RootNodeType IndividualTransportProteins = new RootNodeType(PKSimConstants.UI.TransportProteins, ApplicationIcons.Transporter);

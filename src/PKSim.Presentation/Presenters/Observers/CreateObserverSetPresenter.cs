@@ -5,7 +5,6 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Core;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.Observers;

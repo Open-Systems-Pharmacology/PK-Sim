@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters.ExpressionProfiles
 {
    public interface IExpressionProfileItemPresenter : ISubPresenter
    {
+      void Edit(ExpressionProfile expressionProfile);
    }
 
    public class ExpressionProfileItems
