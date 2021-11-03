@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using FluentNHibernate.Utils;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -72,6 +73,17 @@ namespace PKSim.IntegrationTests
          var allFormulaIds = new HashSet<string>(allInitialConcentrationParameters.Select(x => x.Formula.Id));
 
          allInitialConcentrationParameters.Count.ShouldBeEqualTo(allFormulaIds.Count);
+      }
+
+      [Observation]
+      public void should_have_set_all_initial_concentration_parameters_as_not_Variable()
+      {
+         var allInitialConcentrationParameters = _individual.AllMoleculeParametersFor(_result)
+            .Where(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION))
+            .ToList();
+
+
+         allInitialConcentrationParameters.Each(x => x.CanBeVariedInPopulation.ShouldBeFalse());
       }
    }
 

@@ -97,7 +97,7 @@ namespace PKSim.Core.Services
             CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             CanBeVaried = true,
-            CanBeVariedInPopulation = true,
+            CanBeVariedInPopulation = false,
             Dimension = MOLAR_CONCENTRATION,
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             MinValue = 0,
