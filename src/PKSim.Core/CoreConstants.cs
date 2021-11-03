@@ -1333,8 +1333,8 @@ namespace PKSim.Core
          public const int PROTOCOL_VIEW_WIDTH = 700;
          public const int PROTOCOL_VIEW_HEIGHT = 760;
 
-         public const int EXPRESSION_PROFILE_VIEW_HEIGHT = 760;
-         public const int EXPRESSION_PROFILE_VIEW_WIDTH = 650;
+         public const int EXPRESSION_PROFILE_VIEW_HEIGHT = 990;
+         public const int EXPRESSION_PROFILE_VIEW_WIDTH = 660;
 
       }
 

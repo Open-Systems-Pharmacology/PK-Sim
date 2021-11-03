@@ -4,7 +4,9 @@ namespace PKSim.Core.Model
 {
    public class ExpressionProfile : PKSimBuildingBlock
    {
-      public ExpressionProfile():base(PKSimBuildingBlockType.ExpressionProfile)
+      public virtual Species Species { get; set; }
+
+      public ExpressionProfile() : base(PKSimBuildingBlockType.ExpressionProfile)
       {
       }
    }
