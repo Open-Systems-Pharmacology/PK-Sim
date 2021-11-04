@@ -63,6 +63,7 @@ namespace PKSim.UI
       public JournalPageEditorSettings JournalPageEditorSettings { get; set; }
       public string LastIgnoredVersion { get; set; }
       public OutputSelections OutputSelections { get; set; }
+      public bool ColorGroupObservedDataFromSameFolder { get; set; }
       public DisplayUnitsManager DisplayUnits { get; set; }
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }

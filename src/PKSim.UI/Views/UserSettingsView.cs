@@ -52,6 +52,10 @@ namespace PKSim.UI.Views
          _screenBinder.Bind(x => x.ShowUpdateNotification)
             .To(chkShowUpdateNotification)
             .WithCaption(PKSimConstants.UI.ShowUpdateNotification);
+            
+         _screenBinder.Bind(x => x.ColorGroupObservedDataFromSameFolder)
+            .To(chckColorGroupObservedData)
+            .WithCaption(PKSimConstants.UI.ShouldColorGroupObservedData);        
 
          _screenBinder.Bind(x => x.ActiveSkin)
             .To(cbActiveSkin)
