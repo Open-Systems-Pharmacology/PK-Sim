@@ -84,7 +84,7 @@ namespace PKSim.Presentation
          _individualFolderNode = new RootNode(PKSimRootNodeTypes.IndividualFolder);
          _formulationFolderNode = new RootNode(PKSimRootNodeTypes.FormulationFolder);
          _protocolFolderNode = new RootNode(PKSimRootNodeTypes.ProtocolFolder);
-         _observersFolderNode = new RootNode(PKSimRootNodeTypes.ObserversFolder);
+         _observersFolderNode = new RootNode(PKSimRootNodeTypes.ObserverSetFolder);
          _populationFolderNode = new RootNode(PKSimRootNodeTypes.PopulationFolder);
          _eventRootNode = new RootNode(PKSimRootNodeTypes.EventFolder);
          _simulationNode = new SimulationNode(new ClassifiableSimulation {Subject = new IndividualSimulation {Id = "1"}});
@@ -94,7 +94,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.CompoundFolder)).Returns(_compoundFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.IndividualFolder)).Returns(_individualFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.ProtocolFolder)).Returns(_protocolFolderNode);
-         A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.ObserversFolder)).Returns(_observersFolderNode);
+         A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.ObserverSetFolder)).Returns(_observersFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.FormulationFolder)).Returns(_formulationFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(PKSimRootNodeTypes.PopulationFolder)).Returns(_populationFolderNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder)).Returns(_observationRootNode);
@@ -105,7 +105,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.CompoundFolder.Id)).Returns(_compoundFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.IndividualFolder.Id)).Returns(_individualFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.ProtocolFolder.Id)).Returns(_protocolFolderNode);
-         A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.ObserversFolder.Id)).Returns(_observersFolderNode);
+         A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.ObserverSetFolder.Id)).Returns(_observersFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.FormulationFolder.Id)).Returns(_formulationFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.PopulationFolder.Id)).Returns(_populationFolderNode);
          A.CallTo(() => _view.TreeView.NodeById(RootNodeTypes.ObservedDataFolder.Id)).Returns(_observationRootNode);

@@ -5,14 +5,14 @@ using OSPSuite.BDDHelper;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_NewFormulationCommand : ContextSpecification<NewFormulationCommand>
+   public abstract class concern_for_NewFormulationCommand : ContextSpecification<AddFormulationCommand>
    {
       protected IFormulationTask _formulationTask;
 
       protected override void Context()
       {
          _formulationTask =A.Fake<IFormulationTask>();
-         sut = new NewFormulationCommand(_formulationTask);
+         sut = new AddFormulationCommand(_formulationTask);
       }
    }
 

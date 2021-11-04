@@ -48,23 +48,25 @@ namespace PKSim.Presentation.Presenters.Main
 
       protected override ITreeNode AddBuildingBlockToTree(IPKSimBuildingBlock buildingBlock)
       {
-         switch (buildingBlock.BuildingBlockType)
+         switch (buildingBlock)
          {
-            case PKSimBuildingBlockType.Compound:
-               return addCompoundToTree(buildingBlock.DowncastTo<Compound>());
-            case PKSimBuildingBlockType.Formulation:
-               return addFormulationToTree(buildingBlock.DowncastTo<Formulation>());
-            case PKSimBuildingBlockType.Protocol:
-               return addProtocolToTree(buildingBlock.DowncastTo<Protocol>());
-            case PKSimBuildingBlockType.Individual:
-               return addIndividualToTree(buildingBlock.DowncastTo<Individual>());
-            case PKSimBuildingBlockType.Population:
-               return addPopulationToTree(buildingBlock.DowncastTo<Population>());
-            case PKSimBuildingBlockType.Event:
-               return addEventToTree(buildingBlock.DowncastTo<PKSimEvent>());
-            case PKSimBuildingBlockType.ObserverSet:
-               return addObserversToTree(buildingBlock.DowncastTo<ObserverSet>());
-            case PKSimBuildingBlockType.Simulation:
+            case Compound compound:
+               return addCompoundToTree(compound);
+            case Formulation formulation:
+               return addFormulationToTree(formulation);
+            case Protocol protocol:
+               return addProtocolToTree(protocol);
+            case Individual individual:
+               return addIndividualToTree(individual);
+            case Population population:
+               return addPopulationToTree(population);
+            case PKSimEvent pksimEvent:
+               return addEventToTree(pksimEvent);
+            case ObserverSet observerSet:
+               return addObserverSetToTree(observerSet);
+            case ExpressionProfile expressionProfile:
+               return addExpressionProfileToTree(expressionProfile);
+            case Simulation _:
                return null;
             default:
                throw new ArgumentOutOfRangeException();
@@ -77,13 +79,14 @@ namespace PKSim.Presentation.Presenters.Main
          {
             _view.DestroyNodes();
 
+            _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.ExpressionProfileFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.IndividualFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.PopulationFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.CompoundFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.FormulationFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.ProtocolFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.EventFolder));
-            _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.ObserversFolder));
+            _view.AddNode(_treeNodeFactory.CreateFor(PKSimRootNodeTypes.ObserverSetFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
 
             var pksimProject = project.DowncastTo<PKSimProject>();
@@ -105,7 +108,9 @@ namespace PKSim.Presentation.Presenters.Main
 
       private ITreeNode addProtocolToTree(Protocol protocol) => addBuildingBlockToTree(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
 
-      private ITreeNode addObserversToTree(ObserverSet observers) => addBuildingBlockToTree(observers, PKSimRootNodeTypes.ObserversFolder, ApplicationIcons.Observer);
+      private ITreeNode addObserverSetToTree(ObserverSet observerSet) => addBuildingBlockToTree(observerSet, PKSimRootNodeTypes.ObserverSetFolder, ApplicationIcons.Observer);
+      
+      private ITreeNode addExpressionProfileToTree(ExpressionProfile expressionProfile) => addBuildingBlockToTree(expressionProfile, PKSimRootNodeTypes.ExpressionProfileFolder, ApplicationIcons.ProteinExpression);
 
       private ITreeNode addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType, ApplicationIcon icon) where TBuildingBlock : class, IPKSimBuildingBlock
       {

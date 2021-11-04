@@ -11,7 +11,6 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Core.Import;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 {
@@ -35,7 +34,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       IVisitor<RandomPopulation>,
       IVisitor<PKSimEvent>,
       IVisitor<ImportPopulation>,
-      IVisitor<ObserverSet>
+      IVisitor<ObserverSet>,
+      IVisitor<ExpressionProfile>
    {
       private readonly ICompressedSerializationManager _serializationManager;
       private readonly ISimulationToSimulationMetaDataMapper _simulationMetaDataMapper;
@@ -239,6 +239,10 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          _metaData.Properties.Data = _serializationManager.Serialize(importPopulation.Settings);
       }
 
-    
+      public void Visit(ExpressionProfile expressionProfile)
+      {
+         _metaData = new ExpressionProfileMetaData();
+         serializeContentFor(expressionProfile);
+      }
    }
 }

@@ -1119,6 +1119,7 @@ namespace PKSim.Assets
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string NewObservers = "Add &Observers...";
+         public static readonly string NewExpressionProfile = "Add &Expression Profile...";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
@@ -1359,6 +1360,7 @@ namespace PKSim.Assets
          public static readonly string ImportSimulation = "&Import Simulation";
          public static readonly string Protocol = "&Administration Protocol";
          public static readonly string Event = "&Event";
+         public static readonly string ExpressionProfile = "Exp&ression Profile";
          public static readonly string Observers = "O&bservers";
          public static readonly string SimulationSettings = "Si&mulation Settings";
          public static readonly string Formulation = "&Formulation";
@@ -1551,7 +1553,8 @@ namespace PKSim.Assets
          public static readonly string PopulationFolder = "Populations";
          public static readonly string Events = "Events";
          public static readonly string EventFolder = Events;
-         public static readonly string ObserversFolder = "Observers";
+         public static readonly string ObserverSetFolder = "Observers";
+         public static readonly string ExpressionProfileFolder = "Expression Profiles";
          public static readonly string AdministrationProtocolFolder = "Administration Protocols";
          public const string Value = "Value";
          public const string TransportDirection = "Direction";
@@ -1700,6 +1703,7 @@ namespace PKSim.Assets
          public static readonly string Rename = "Rename";
          public static readonly string CreateFormulation = "Create Formulation";
          public static readonly string CreateObserverSet = "Create Observer Set";
+         public static readonly string CreateExpressionProfile = "Create Expression Profile";
          public static readonly string CreateEvent = "Create Event";
          public static readonly string Expression = "Expression";
          public static readonly string Demographics = "Demographics";
@@ -1879,6 +1883,7 @@ namespace PKSim.Assets
          public static readonly string NewFormulationDescription = "Create a new formulation...";
          public static readonly string NewEventDescription = "Create a new event...";
          public static readonly string NewObserversDescription = "Create a new observer list...";
+         public static readonly string NewExpressionProfileDescription = "Create a new expression profile...";
          public static readonly string NewCompoundDescription = "Create a new compound...";
          public static readonly string OptionsDescription = "Manage the options for the application and the current user...";
          public static readonly string ExitDescription = "Exit the application";
@@ -2423,6 +2428,8 @@ namespace PKSim.Assets
          public static string EditCompound(string name) => $"Compound: '{name}'";
 
          public static string EditObserverSet(string name) => $"Observer Set: '{name}'";
+
+         public static string EditExpressionProfile(string name) => $"Expression Profile: '{name}'";
 
          public static string EditPopulation(string name) => $"Population: '{name}'";
 

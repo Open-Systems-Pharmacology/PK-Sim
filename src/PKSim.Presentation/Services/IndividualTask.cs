@@ -18,10 +18,7 @@ namespace PKSim.Presentation.Services
       {
       }
 
-      public override Individual AddToProject()
-      {
-         return AddToProject<ICreateIndividualPresenter>();
-      }
+      public override Individual AddToProject() => AddToProject<ICreateIndividualPresenter>();
 
       public void ScaleIndividual(Individual individualToScale)
       {
