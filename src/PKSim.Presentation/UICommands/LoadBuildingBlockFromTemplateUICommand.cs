@@ -77,4 +77,11 @@ namespace PKSim.Presentation.UICommands
       {
       }
    }
+
+   public class LoadExpressionProfileCommand : LoadBuildingBlockFromTemplateUICommand<ExpressionProfile, IExpressionProfileTask>
+   {
+      public LoadExpressionProfileCommand(IExpressionProfileTask expressionProfileTask) : base(expressionProfileTask)
+      {
+      }
+   }
 }

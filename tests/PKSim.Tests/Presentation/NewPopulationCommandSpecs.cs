@@ -5,14 +5,14 @@ using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_NewPopulationCommand : ContextSpecification<NewRandomPopulationCommand>
+   public abstract class concern_for_NewPopulationCommand : ContextSpecification<AddRandomPopulationCommand>
    {
       protected IPopulationTask _populationTask;
 
       protected override void Context()
       {
          _populationTask = A.Fake<IPopulationTask>();
-         sut = new NewRandomPopulationCommand(_populationTask);
+         sut = new AddRandomPopulationCommand(_populationTask);
       }
    }
 
