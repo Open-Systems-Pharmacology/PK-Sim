@@ -1,7 +1,9 @@
 ﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.ExpressionProfiles;
@@ -29,7 +31,19 @@ namespace PKSim.UI.Views.ExpressionProfiles
 
       public void BindTo(ExpressionProfileDTO expressionProfileDTO)
       {
+         cbMoleculeName.FillWith(expressionProfileDTO.AllMolecules);
+         layoutItemMoleculeName.Text = expressionProfileDTO.MoleculeType.FormatForLabel();
          _screenBinder.BindToSource(expressionProfileDTO);
+      }
+
+      public void AddExpressionView(IView view)
+      {
+         panelExpression.FillWith(view);
+      }
+
+      public void DisableSettings()
+      {
+         layoutGroupProperties.Enabled = false;
       }
 
       public override void InitializeBinding()
@@ -39,15 +53,28 @@ namespace PKSim.UI.Views.ExpressionProfiles
          _screenBinder.Bind(dto => dto.Species)
             .To(cbSpecies)
             .WithImages(species => _imageListRetriever.ImageIndex(species.Icon))
-            .WithValues(dto => _presenter.AllSpecies())
+            .WithValues(dto => dto.AllSpecies)
             .AndDisplays(species => species.DisplayName)
             .Changed += () => _presenter.SpeciesChanged();
+
+         _screenBinder.Bind(dto => dto.MoleculeName)
+            .To(cbMoleculeName);
+
+         _screenBinder.Bind(dto => dto.Category)
+            .To(tbCategory);
+
+         RegisterValidationFor(_screenBinder, statusChangingNotify: NotifyViewChanged);
       }
 
       public override void InitializeResources()
       {
          base.InitializeResources();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
+         layoutItemCategory.Text = PKSimConstants.UI.Category.FormatForLabel();
+         layoutGroupProperties.Text = PKSimConstants.UI.Settings;
+         layoutGroupProperties.ExpandButtonVisible = true;
       }
+
+      public override bool HasError => _screenBinder.HasError || base.HasError;
    }
 }

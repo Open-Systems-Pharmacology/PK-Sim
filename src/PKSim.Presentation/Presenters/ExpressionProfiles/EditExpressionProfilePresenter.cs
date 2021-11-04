@@ -1,4 +1,5 @@
-﻿using OSPSuite.Presentation.Core;
+﻿using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -23,6 +24,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       protected override void UpdateCaption()
       {
          _view.Caption = PKSimConstants.UI.EditExpressionProfile(_expressionProfile.Name);
+         _view.ApplicationIcon = ApplicationIcons.IconByName(_expressionProfile.Icon);
       }
 
       public override object Subject => _expressionProfile;
@@ -31,6 +33,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       {
          _expressionProfile = expressionProfile;
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(_expressionProfile));
+         _subPresenterItemManager.PresenterAt(ExpressionProfileItems.Molecules).DisableSettings();
          UpdateCaption();
          _view.Display();
       }

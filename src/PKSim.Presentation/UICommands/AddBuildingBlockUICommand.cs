@@ -16,7 +16,7 @@ namespace PKSim.Presentation.UICommands
          _buildingBlockTask = buildingBlockTask;
       }
 
-      public void Execute()
+      public virtual void Execute()
       {
          _buildingBlockTask.AddToProject();
       }
@@ -29,10 +29,18 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-   public class AddExpressionProfileCommand : AddBuildingBlockUICommand<ExpressionProfile, IExpressionProfileTask>
+   public class AddExpressionProfileCommand<TMolecule>:IUICommand where TMolecule : IndividualMolecule
    {
-      public AddExpressionProfileCommand(IExpressionProfileTask buildingBlockTask) : base(buildingBlockTask)
+      private readonly IExpressionProfileTask _expressionProfileTask;
+
+      public AddExpressionProfileCommand(IExpressionProfileTask expressionProfileTask) 
       {
+         _expressionProfileTask = expressionProfileTask;
+      }
+
+      public void Execute()
+      {
+         _expressionProfileTask.AddForMoleculeToProject<TMolecule>();
       }
    }
 

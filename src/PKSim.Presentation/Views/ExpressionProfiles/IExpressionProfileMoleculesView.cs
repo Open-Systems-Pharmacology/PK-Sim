@@ -7,5 +7,7 @@ namespace PKSim.Presentation.Views.ExpressionProfiles
    public interface IExpressionProfileMoleculesView : IView<IExpressionProfileMoleculesPresenter>
    {
       void BindTo(ExpressionProfileDTO expressionProfileDTO);
+      void AddExpressionView(IView view);
+      void DisableSettings();
    }
 }

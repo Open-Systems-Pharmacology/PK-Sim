@@ -6,6 +6,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.UICommands;
 
@@ -173,12 +174,32 @@ namespace PKSim.Presentation.Repositories
             .WithId(MenuBarItemIds.LoadObserverSet)
             .WithCommand<LoadObserverSetCommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate);
-         
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewExpressionProfile)
-            .WithId(MenuBarItemIds.NewExpressionProfile)
-            .WithCommand<AddExpressionProfileCommand>()
+
+         var newExpressionProfile = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.NewExpressionProfile)
+            .WithIcon(ApplicationIcons.ExpressionProfile)
             .WithDescription(PKSimConstants.UI.NewExpressionProfileDescription)
-            .WithIcon(ApplicationIcons.ProteinExpression);
+            .WithId(MenuBarItemIds.NewExpressionProfile);
+
+         var newEnzyme = CreateMenuButton.WithCaption(PKSimConstants.UI.AddMetabolizingEnzyme)
+            .WithId(MenuBarItemIds.NewExpressionProfileEnzyme)
+            .WithCommand<AddExpressionProfileCommand<IndividualEnzyme>>()
+            .WithIcon(ApplicationIcons.Enzyme);
+
+         var newTransporter = CreateMenuButton.WithCaption(PKSimConstants.UI.AddTransportProtein)
+            .WithId(MenuBarItemIds.NewExpressionProfileTransporter)
+            .WithCommand<AddExpressionProfileCommand<IndividualTransporter>>()
+            .WithIcon(ApplicationIcons.Transporter);
+
+         var newSpecificBinding = CreateMenuButton.WithCaption(PKSimConstants.UI.AddSpecificBindingPartner)
+            .WithId(MenuBarItemIds.NewExpressionProfileSpecificBindingPartner)
+            .WithCommand<AddExpressionProfileCommand<IndividualOtherProtein>>()
+            .WithIcon(ApplicationIcons.SpecificBinding);
+
+         newExpressionProfile.AddItem(newEnzyme);
+         newExpressionProfile.AddItem(newTransporter);
+         newExpressionProfile.AddItem(newSpecificBinding);
+
+         yield return newExpressionProfile;
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithId(MenuBarItemIds.LoadExpressionProfile)

@@ -29,6 +29,10 @@ namespace PKSim.UI.Views.ExpressionProfiles
       /// </summary>
       private void InitializeComponent()
       {
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.panel = new DevExpress.XtraEditors.PanelControl();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
          this.layoutControlBase.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
@@ -37,6 +41,11 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panel)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
          // 
          // btnCancel
@@ -84,15 +93,55 @@ namespace PKSim.UI.Views.ExpressionProfiles
          // 
          this.layoutItemExtra.Size = new System.Drawing.Size(296, 26);
          // 
+         // layoutControl
+         // 
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.panel);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(992, 631);
+         this.layoutControl.TabIndex = 38;
+         this.layoutControl.Text = "uxLayoutControl1";
+         // 
+         // Root
+         // 
+         this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         this.Root.GroupBordersVisible = false;
+         this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1});
+         this.Root.Name = "Root";
+         this.Root.Size = new System.Drawing.Size(992, 631);
+         this.Root.TextVisible = false;
+         // 
+         // panel
+         // 
+         this.panel.Location = new System.Drawing.Point(12, 12);
+         this.panel.Name = "panel";
+         this.panel.Size = new System.Drawing.Size(968, 607);
+         this.panel.TabIndex = 4;
+         // 
+         // layoutControlItem1
+         // 
+         this.layoutControlItem1.Control = this.panel;
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(972, 611);
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
+         // 
          // CreateExpressionProfileView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "CreateExpressionProfileView";
          this.ClientSize = new System.Drawing.Size(992, 677);
+         this.Controls.Add(this.layoutControl);
          this.Name = "CreateExpressionProfileView";
          this.Text = "CreateExpressionProfileView";
          this.Controls.SetChildIndex(this.layoutControlBase, 0);
+         this.Controls.SetChildIndex(this.layoutControl, 0);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
          this.layoutControlBase.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
@@ -101,11 +150,21 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panel)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
       }
 
       #endregion
+
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
+      private DevExpress.XtraEditors.PanelControl panel;
+      private DevExpress.XtraLayout.LayoutControlGroup Root;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
    }
 }

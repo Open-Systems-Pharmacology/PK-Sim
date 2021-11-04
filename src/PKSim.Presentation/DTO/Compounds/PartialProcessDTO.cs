@@ -20,11 +20,7 @@ namespace PKSim.Presentation.DTO.Compounds
       public virtual string MoleculeName
       {
          get => _moleculeName;
-         set
-         {
-            _moleculeName = value.TrimmedValue();
-            OnPropertyChanged(() => MoleculeName);
-         }
+         set => SetProperty(ref _moleculeName, value.TrimmedValue());
       }
 
       public override string Name => createName(MoleculeName, DataSource);

@@ -109,8 +109,8 @@ namespace PKSim.Presentation.Presenters.Main
       private ITreeNode addProtocolToTree(Protocol protocol) => addBuildingBlockToTree(protocol, PKSimRootNodeTypes.ProtocolFolder, ApplicationIcons.Protocol);
 
       private ITreeNode addObserverSetToTree(ObserverSet observerSet) => addBuildingBlockToTree(observerSet, PKSimRootNodeTypes.ObserverSetFolder, ApplicationIcons.Observer);
-      
-      private ITreeNode addExpressionProfileToTree(ExpressionProfile expressionProfile) => addBuildingBlockToTree(expressionProfile, PKSimRootNodeTypes.ExpressionProfileFolder, ApplicationIcons.ProteinExpression);
+
+      private ITreeNode addExpressionProfileToTree(ExpressionProfile expressionProfile) => addBuildingBlockToTree(expressionProfile, PKSimRootNodeTypes.ExpressionProfileFolder, ApplicationIcons.IconByName(expressionProfile.Icon));
 
       private ITreeNode addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType, ApplicationIcon icon) where TBuildingBlock : class, IPKSimBuildingBlock
       {

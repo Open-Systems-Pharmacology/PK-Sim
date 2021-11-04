@@ -398,6 +398,7 @@ namespace PKSim.Assets
          public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown.";
          public const string NameIsRequired = "Name is required.";
          public const string MoleculeIsRequired = "Molecule is required.";
+         public const string CategoryIsRequired = "Category is required.";
          public const string DataSourceIsRequired = "Data source is required.";
          public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'.";
          public const string RenameSameNameError = "The new name is the same as the original one.";
@@ -1536,6 +1537,7 @@ namespace PKSim.Assets
          public static readonly string BuildingBlockExplorer = "Building Blocks";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string ChartSettings = "Chart Options";
+         public static readonly string Settings = "Settings";
          public static readonly string Localization = "Localization";
          public const string Properties = "Properties";
          public const string Property = "Property";

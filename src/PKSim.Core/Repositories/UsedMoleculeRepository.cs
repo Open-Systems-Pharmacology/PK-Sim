@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -24,6 +23,7 @@ namespace PKSim.Core.Repositories
       {
          return allMoleculesDefinedInIndividuals()
             .Union(allMoleculesDefinedInCompounds())
+            .Union(allExpressionProfiles())
             .OrderBy(x => x);
       }
 
@@ -40,6 +40,13 @@ namespace PKSim.Core.Repositories
          return allLoadedBuildingBlocks<Individual>()
             .SelectMany(x => x.AllMolecules())
             .Select(x => x.Name)
+            .Distinct();
+      }
+
+      private IEnumerable<string> allExpressionProfiles()
+      {
+         return allLoadedBuildingBlocks<ExpressionProfile>()
+            .Select(x => x.MoleculeName)
             .Distinct();
       }
 
