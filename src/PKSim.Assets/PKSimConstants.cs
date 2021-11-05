@@ -1188,15 +1188,9 @@ namespace PKSim.Assets
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
          public static readonly string RemoveUnusedContent = "Remove Unused Content";
 
-         public static string CompareBuildingBlocks(string buildingBlockType)
-         {
-            return $"Compare {buildingBlockType}s";  
-         }
+         public static string CompareBuildingBlocks(string buildingBlockType) => $"Compare {buildingBlockType}s";
 
-         public static string AddProteinDefault(string addProteinCaption)
-         {
-            return $"{addProteinCaption} (Default)";
-         }
+         public static string AddProteinDefault(string addProteinCaption) => $"{addProteinCaption} (Default)";
 
          public static string AddProteinQuery(string addProteinCaption, bool isDefined)
          {
@@ -1204,19 +1198,17 @@ namespace PKSim.Assets
             return $"{addProteinCaption} ({hint})";
          }
 
-         public static string AddObservedDataToSimulation(string simulationName)
-         {
-            return $"Add to {ObjectTypes.Simulation} '{simulationName}'";
-         }
+         public static string AddObservedDataToSimulation(string simulationName) => $"Add to {ObjectTypes.Simulation} '{simulationName}'";
       }
 
       public static class QualificationSteps
       {
          public static string RunParameterIdentification(string parameterIdentificationName) => $"Run {OSPSuite.Assets.ObjectTypes.ParameterIdentification.ToLower()} {parameterIdentificationName}";
 
-         public static string RunSimulation(string simulationName) => $"Run {OSPSuite.Assets.ObjectTypes.Simulation.ToLower()} {simulationName}";
+         public static string RunSimulation(string simulationName) => $"Run {ObjectTypes.Simulation.ToLower()} {simulationName}";
 
-         public static string ParameterIdentificationResultsTransferredToSimulations(string parameterIdentificationName) => OSPSuite.Assets.Captions.ParameterIdentification.ParameterIdentificationTransferredToSimulations(parameterIdentificationName);
+         public static string ParameterIdentificationResultsTransferredToSimulations(string parameterIdentificationName) => 
+            OSPSuite.Assets.Captions.ParameterIdentification.ParameterIdentificationTransferredToSimulations(parameterIdentificationName);
       }
 
       public static class ObjectTypes

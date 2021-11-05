@@ -2,10 +2,12 @@
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
 namespace PKSim.Presentation.Presenters.ExpressionProfiles
@@ -23,6 +25,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       private readonly IExpressionProfileFactory _expressionProfileFactory;
       private readonly IApplicationController _applicationController;
       private readonly IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
+      private readonly IEditMoleculeTask<Individual> _editMoleculeTask;
       private IIndividualMoleculeExpressionsPresenter _moleculeExpressionsPresenter;
       private ExpressionProfileDTO _expressionProfileDTO;
       private ExpressionProfile _expressionProfile;
@@ -31,11 +34,13 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          IExpressionProfileMoleculesView view,
          IExpressionProfileFactory expressionProfileFactory,
          IApplicationController applicationController,
-         IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper) : base(view)
+         IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper,
+         IEditMoleculeTask<Individual> editMoleculeTask) : base(view)
       {
          _expressionProfileFactory = expressionProfileFactory;
          _applicationController = applicationController;
          _expressionProfileDTOMapper = expressionProfileDTOMapper;
+         _editMoleculeTask = editMoleculeTask;
       }
 
       public void SpeciesChanged()
@@ -54,7 +59,11 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
 
       public void LoadExpressionFromDatabaseQuery()
       {
-         throw new NotImplementedException();
+         if (!_editMoleculeTask.CanQueryProteinExpressionsFor(_expressionProfile.Individual))
+            throw new OSPSuiteException("ERROR!!");
+
+         AddCommand(_editMoleculeTask.EditMolecule(_expressionProfile.Molecule, _expressionProfile.Individual, _expressionProfileDTO.MoleculeName));
+         refreshExpression();
       }
 
       private void refreshExpression()

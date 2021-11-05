@@ -10,7 +10,7 @@ namespace PKSim.Core.Model
 
       private string _category;
       private string _moleculeName;
-      public virtual Species Species { get; set; }
+      public virtual Species Species => Individual?.Species;
 
       public ExpressionProfile() : base(PKSimBuildingBlockType.ExpressionProfile)
       {
@@ -71,7 +71,6 @@ namespace PKSim.Core.Model
          if (sourceExpressionProfile == null) return;
          MoleculeName = sourceExpressionProfile.MoleculeName;
          Category = sourceExpressionProfile.Category;
-         Species = sourceExpressionProfile.Species;
          Individual = cloneManager.Clone(sourceExpressionProfile.Individual);
       }
    }

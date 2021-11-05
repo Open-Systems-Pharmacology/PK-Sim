@@ -43,7 +43,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutGroupMoleculeName = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemMoleculeName = new DevExpress.XtraLayout.LayoutControlItem();
          this.btnLoadFromDatabase = new OSPSuite.UI.Controls.UxSimpleButton();
-         this.layoutButtonLoadFromDatabase = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemLoadFromDatabase = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -58,7 +58,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemExpression)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeName)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeName)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutButtonLoadFromDatabase)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemLoadFromDatabase)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
@@ -164,7 +164,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          // 
          this.layoutGroupMoleculeName.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemMoleculeName,
-            this.layoutButtonLoadFromDatabase});
+            this.layoutItemLoadFromDatabase});
          this.layoutGroupMoleculeName.Location = new System.Drawing.Point(0, 93);
          this.layoutGroupMoleculeName.Name = "layoutGroupMoleculeName";
          this.layoutGroupMoleculeName.Size = new System.Drawing.Size(843, 71);
@@ -190,12 +190,12 @@ namespace PKSim.UI.Views.ExpressionProfiles
          // 
          // layoutButtonLoadFromDatabase
          // 
-         this.layoutButtonLoadFromDatabase.Control = this.btnLoadFromDatabase;
-         this.layoutButtonLoadFromDatabase.Location = new System.Drawing.Point(693, 0);
-         this.layoutButtonLoadFromDatabase.Name = "layoutButtonLoadFromDatabase";
-         this.layoutButtonLoadFromDatabase.Size = new System.Drawing.Size(126, 26);
-         this.layoutButtonLoadFromDatabase.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutButtonLoadFromDatabase.TextVisible = false;
+         this.layoutItemLoadFromDatabase.Control = this.btnLoadFromDatabase;
+         this.layoutItemLoadFromDatabase.Location = new System.Drawing.Point(693, 0);
+         this.layoutItemLoadFromDatabase.Name = "layoutItemLoadFromDatabase";
+         this.layoutItemLoadFromDatabase.Size = new System.Drawing.Size(126, 26);
+         this.layoutItemLoadFromDatabase.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemLoadFromDatabase.TextVisible = false;
          // 
          // ExpressionProfileMoleculesView
          // 
@@ -218,7 +218,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemExpression)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupMoleculeName)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeName)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutButtonLoadFromDatabase)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemLoadFromDatabase)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -238,6 +238,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
       private DevExpress.XtraLayout.LayoutControlItem layoutItemExpression;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupMoleculeName;
       private OSPSuite.UI.Controls.UxSimpleButton btnLoadFromDatabase;
-      private DevExpress.XtraLayout.LayoutControlItem layoutButtonLoadFromDatabase;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemLoadFromDatabase;
    }
 }

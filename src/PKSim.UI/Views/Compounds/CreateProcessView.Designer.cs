@@ -53,7 +53,7 @@ namespace PKSim.UI.Views.Compounds
          this.emptySpaceItem4 = new DevExpress.XtraLayout.EmptySpaceItem();
          this.emptySpaceProcess = new DevExpress.XtraLayout.EmptySpaceItem();
          this.layoutItemSystemicProcessType = new DevExpress.XtraLayout.LayoutControlItem();
-         this.cbProteinName = new PKSim.UI.Views.Core.UxMRUEdit();
+         this.cbProteinName = new OSPSuite.UI.Controls.UxMRUEdit();
          this.layoutItemProtein = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
          this.layoutControlBase.SuspendLayout();
@@ -477,6 +477,6 @@ namespace PKSim.UI.Views.Compounds
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceDataSource;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceSpecies;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem4;
-      protected PKSim.UI.Views.Core.UxMRUEdit cbProteinName;
+      protected OSPSuite.UI.Controls.UxMRUEdit cbProteinName;
    }
 }

@@ -82,6 +82,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          layoutGroupReferencePopulation.ExpandButtonVisible = true;
          layoutGroupMoleculeName.ExpandButtonVisible = true;
          btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, PKSimConstants.UI.LoadExpressionFromDatabase);
+         layoutItemLoadFromDatabase.AdjustLongButtonSize();
       }
 
       public override bool HasError => _screenBinder.HasError || base.HasError;

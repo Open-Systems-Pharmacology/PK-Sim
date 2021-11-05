@@ -8,7 +8,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          base.PerformMapping();
          Map(x => x.Individual);
-         Map(x => x.Species);
          Map(x => x.Category);
       }
    }

@@ -16,7 +16,7 @@ namespace PKSim.Core.Model
       Individual CreateAndOptimizeFor(OriginData originData, int? seed = null);
 
       Individual CreateStandardFor(OriginData originData);
-      Individual CreateParameterLessIndividual();
+      Individual CreateParameterLessIndividual(Species species = null);
    }
 
    public class IndividualFactory : IIndividualFactory
@@ -31,12 +31,12 @@ namespace PKSim.Core.Model
       private readonly IGenderRepository _genderRepository;
 
       public IndividualFactory(
-         IIndividualModelTask individualModelTask, 
-         IObjectBaseFactory objectBaseFactory, 
+         IIndividualModelTask individualModelTask,
+         IObjectBaseFactory objectBaseFactory,
          ICreateIndividualAlgorithm createIndividualAlgorithm,
-         ISpeciesRepository speciesRepository, 
-         IEntityValidator entityValidator, 
-         IReportGenerator reportGenerator, 
+         ISpeciesRepository speciesRepository,
+         IEntityValidator entityValidator,
+         IReportGenerator reportGenerator,
          IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater,
          IGenderRepository genderRepository)
       {
@@ -66,15 +66,15 @@ namespace PKSim.Core.Model
          return createStandardIndividual(originData, x => x.CreateModelFor);
       }
 
-      public Individual CreateParameterLessIndividual()
+      public Individual CreateParameterLessIndividual(Species species = null)
       {
-         var species = _speciesRepository.FindByName(CoreConstants.Species.HUMAN);
+         var speciesToUse = species ?? _speciesRepository.FindByName(CoreConstants.Species.HUMAN);
 
          var originData = new OriginData
          {
-            Species = species,
-            Gender = species.IsHuman ? _genderRepository.Female : null,
-            SpeciesPopulation = species.PopulationByName(CoreConstants.Population.ICRP)
+            Species = speciesToUse,
+            Gender = speciesToUse.IsHuman ? _genderRepository.Female : null,
+            SpeciesPopulation = speciesToUse.DefaultPopulation
          };
          return createStandardIndividual(originData, x => x.CreateModelStructureFor);
       }

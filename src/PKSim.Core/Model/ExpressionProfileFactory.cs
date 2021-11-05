@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
@@ -51,9 +50,7 @@ namespace PKSim.Core.Model
       private void updateSpecies(ExpressionProfile expressionProfile, Species species, Type individualMoleculeType)
       {
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(individualMoleculeType);
-         //TODO use species?
-         expressionProfile.Individual = _individualFactory.CreateParameterLessIndividual();
-         expressionProfile.Species = species;
+         expressionProfile.Individual = _individualFactory.CreateParameterLessIndividual(species);
          moleculeFactory.AddMoleculeTo(expressionProfile.Individual, ExpressionProfile.MOLECULE_NAME);
       }
    }
