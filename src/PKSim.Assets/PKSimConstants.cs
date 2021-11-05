@@ -1565,7 +1565,6 @@ namespace PKSim.Assets
          public static readonly string ScaleButton = "Scale";
          public static readonly string AllowsScientificNotation = "Allows scientific notation";
          public static readonly string ShouldRestoreWorkspaceLayout = "Restore opened view when loading project";
-         public static readonly string ShouldColorGroupObservedData = "Color group observed data from same folder when dropping to chart";
          public static readonly string ShowUpdateNotification = "Show software update notification if available";
          public static readonly string ActiveSkin = "Active skin";
          public static readonly string DecimalPlace = "Decimal place";
@@ -1896,7 +1895,6 @@ namespace PKSim.Assets
          public static readonly string ComparisonViewDescription = "Show or hide the comparison";
          public static readonly string SimulationExplorerViewDescription = "Show or hide the simulation explorer";
          public static readonly string BuildingBlockExplorerViewDescription = "Show or hide the building block explorer";
-         public static readonly string ColorGroupObservedDataContextMenu = "Color group when adding to chart";
          public static readonly string UndoDescription = "Undo the last action";
          public static readonly string AddObservedDataDescription = "Add observed data (concentration, amount, fraction) to the project...";
          public static readonly string ExportHistoryToExcelDescription = "Export history to Excel file...";

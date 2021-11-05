@@ -55,7 +55,7 @@ namespace PKSim.UI.Views
             
          _screenBinder.Bind(x => x.ColorGroupObservedDataFromSameFolder)
             .To(chckColorGroupObservedData)
-            .WithCaption(PKSimConstants.UI.ShouldColorGroupObservedData);        
+            .WithCaption(Captions.ShouldColorGroupObservedData);        
 
          _screenBinder.Bind(x => x.ActiveSkin)
             .To(cbActiveSkin)
