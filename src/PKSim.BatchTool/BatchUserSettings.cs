@@ -34,6 +34,7 @@ namespace PKSim.BatchTool
       public Color FormulaColor { get; set; }
       public Color ChartBackColor { get; set; }
       public Color ChartDiagramBackColor { get; set; }
+      public bool ColorGroupObservedDataFromSameFolder { get; set; }
       public DisplayUnitsManager DisplayUnits { get; set; } = new DisplayUnitsManager();
       public Color DisabledColor { get; set; }
       public ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }

@@ -35,8 +35,8 @@ namespace PKSim.Presentation.Presenters.Charts
       ISimulationAnalysisPresenter<IndividualSimulation>
 
    {
-      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdateTask) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false)
+      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdateTask, IUserSettings userSettings) :
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false, userSettings)
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
       }
