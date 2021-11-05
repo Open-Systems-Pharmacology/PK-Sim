@@ -1,4 +1,5 @@
-﻿using OSPSuite.DataBinding;
+﻿using OSPSuite.Assets;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
@@ -31,9 +32,11 @@ namespace PKSim.UI.Views.ExpressionProfiles
 
       public void BindTo(ExpressionProfileDTO expressionProfileDTO)
       {
+         ActiveControl = cbMoleculeName;
          cbMoleculeName.FillWith(expressionProfileDTO.AllMolecules);
          layoutItemMoleculeName.Text = expressionProfileDTO.MoleculeType.FormatForLabel();
          _screenBinder.BindToSource(expressionProfileDTO);
+         NotifyViewChanged();
       }
 
       public void AddExpressionView(IView view)
@@ -43,7 +46,9 @@ namespace PKSim.UI.Views.ExpressionProfiles
 
       public void DisableSettings()
       {
-         layoutGroupProperties.Enabled = false;
+         layoutItemSpecies.Enabled = false;
+         layoutItemCategory.Enabled = false;
+         layoutItemMoleculeName.Enabled = false;
       }
 
       public override void InitializeBinding()
@@ -63,6 +68,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          _screenBinder.Bind(dto => dto.Category)
             .To(tbCategory);
 
+         btnLoadFromDatabase.Click += (ot, e) => OnEvent(_presenter.LoadExpressionFromDatabaseQuery);
          RegisterValidationFor(_screenBinder, statusChangingNotify: NotifyViewChanged);
       }
 
@@ -70,9 +76,12 @@ namespace PKSim.UI.Views.ExpressionProfiles
       {
          base.InitializeResources();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
-         layoutItemCategory.Text = PKSimConstants.UI.Category.FormatForLabel();
-         layoutGroupProperties.Text = PKSimConstants.UI.Settings;
-         layoutGroupProperties.ExpandButtonVisible = true;
+         layoutItemCategory.Text = PKSimConstants.UI.Phenotype.FormatForLabel();
+         layoutGroupReferencePopulation.Text = PKSimConstants.UI.ReferencePopulation;
+         layoutGroupMoleculeName.Text = PKSimConstants.UI.Molecule;
+         layoutGroupReferencePopulation.ExpandButtonVisible = true;
+         layoutGroupMoleculeName.ExpandButtonVisible = true;
+         btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, PKSimConstants.UI.LoadExpressionFromDatabase);
       }
 
       public override bool HasError => _screenBinder.HasError || base.HasError;

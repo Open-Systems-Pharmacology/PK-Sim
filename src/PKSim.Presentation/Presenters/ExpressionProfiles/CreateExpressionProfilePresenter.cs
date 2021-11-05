@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Services;
+﻿using OSPSuite.Assets;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
@@ -23,6 +24,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       {
          ExpressionProfile = _expressionProfileFactory.Create<TMolecule>();
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(ExpressionProfile));
+         _view.ApplicationIcon = ApplicationIcons.IconByName(ExpressionProfile.Icon);
          _view.Display();
 
          if (_view.Canceled)

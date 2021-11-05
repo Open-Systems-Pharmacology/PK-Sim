@@ -25,12 +25,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public override string Name => createName(MoleculeName, DataSource);
 
-      private string createName(string proteinName, string dataSource)
-      {
-         var trimProteinName = string.IsNullOrEmpty(proteinName) ? proteinName : proteinName.Trim();
-         var trimDataSource = string.IsNullOrEmpty(dataSource) ? dataSource : dataSource.Trim();
-         return CoreConstants.ContainerName.PartialProcessName(trimProteinName, trimDataSource);
-      }
+      private string createName(string proteinName, string dataSource) => CoreConstants.CompositeNameFor(proteinName, dataSource);
 
       private static class PartialProcessRules
       {

@@ -28,9 +28,17 @@ namespace PKSim.Core.Model
       private readonly IEntityValidator _entityValidator;
       private readonly IReportGenerator _reportGenerator;
       private readonly IMoleculeOntogenyVariabilityUpdater _ontogenyVariabilityUpdater;
+      private readonly IGenderRepository _genderRepository;
 
-      public IndividualFactory(IIndividualModelTask individualModelTask, IObjectBaseFactory objectBaseFactory, ICreateIndividualAlgorithm createIndividualAlgorithm,
-         ISpeciesRepository speciesRepository, IEntityValidator entityValidator, IReportGenerator reportGenerator, IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater)
+      public IndividualFactory(
+         IIndividualModelTask individualModelTask, 
+         IObjectBaseFactory objectBaseFactory, 
+         ICreateIndividualAlgorithm createIndividualAlgorithm,
+         ISpeciesRepository speciesRepository, 
+         IEntityValidator entityValidator, 
+         IReportGenerator reportGenerator, 
+         IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater,
+         IGenderRepository genderRepository)
       {
          _individualModelTask = individualModelTask;
          _objectBaseFactory = objectBaseFactory;
@@ -39,6 +47,7 @@ namespace PKSim.Core.Model
          _entityValidator = entityValidator;
          _reportGenerator = reportGenerator;
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
+         _genderRepository = genderRepository;
       }
 
       public Individual CreateAndOptimizeFor(OriginData originData, int? seed = null)
@@ -60,9 +69,11 @@ namespace PKSim.Core.Model
       public Individual CreateParameterLessIndividual()
       {
          var species = _speciesRepository.FindByName(CoreConstants.Species.HUMAN);
+
          var originData = new OriginData
          {
             Species = species,
+            Gender = species.IsHuman ? _genderRepository.Female : null,
             SpeciesPopulation = species.PopulationByName(CoreConstants.Population.ICRP)
          };
          return createStandardIndividual(originData, x => x.CreateModelStructureFor);

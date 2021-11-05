@@ -1120,7 +1120,7 @@ namespace PKSim.Assets
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string NewObservers = "Add &Observers...";
-         public static readonly string NewExpressionProfile = "Add &Expression Profile...";
+         public static readonly string NewExpressionProfile = "Add &Expression Profile";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
@@ -1274,6 +1274,7 @@ namespace PKSim.Assets
          public static readonly string QualificationPlan = "Qualification Plan";
          public static readonly string Snapshot = "Snapshot";
          public static readonly string ObserverSet = "Observers";
+         public static readonly string ExpressionProfile = "Expression Profile";
       }
 
       public static class ProteinExpressions
@@ -1721,6 +1722,8 @@ namespace PKSim.Assets
          public static readonly string Gender = "Gender";
          public static readonly string SubPopulation = "Sub Population";
          public static readonly string CalculationMethods = "Calculation methods";
+         public static readonly string ReferencePopulation = "Reference Population";
+         public static readonly string Phenotype = "Phenotype";
          public static readonly string Category = "Category";
          public static readonly string CreateIndividual = "Create Individual";
          public static readonly string CreateSimulationSettings = "Create Simulation Settings";
@@ -2100,14 +2103,14 @@ namespace PKSim.Assets
          public static readonly string NumberOfBins = "Number Of Bins";
          public static readonly string NumberOfIndividualsPerBin = "Number Of Individuals Per Bins";
          public static readonly string NamingPattern = "Naming Pattern";
-         public static readonly string NaimingPatternStrategy = "Template";
+         public static readonly string NamingPatternStrategy = "Template";
          public static readonly string GeneratedLabels = "Generated Labels";
          public static readonly string LabelGenerationNumeric = "Numeric (1, 2, 3, 4, ...)";
          public static readonly string LabelGenerationRoman = "Roman (I, II, III, IV, ...)";
          public static readonly string LabelGenerationAlpha = "Alpha (A, B, C, D, ...)";
          public static readonly string LoadFromTemplate = "Load from Template...";
          public static readonly string SaveAsTemplate = "Save as Template...";
-         public static readonly string UsePopulationBuidlingBlock = "Use a population building block (typically for PK-Sim)";
+         public static readonly string UsePopulationBuildingBlock = "Use a population building block (typically for PK-Sim)";
          public static readonly string UsePopulationFileCSV = "Load a population from file (typically for MoBi)";
          public static readonly string NewPopulationFromSize = "Only allocate the number of individuals (typically for MoBi)";
          public static readonly string UseHistogramInReport = "Use in report";
@@ -2222,6 +2225,7 @@ namespace PKSim.Assets
          public static readonly string LocalizationVascularMembraneTissueSide = "Vascular endothelium membrane tissue-side";
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
          public static readonly string TemplateSource = "Template Source";
+         public static readonly string LoadExpressionFromDatabase = "Database Query";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

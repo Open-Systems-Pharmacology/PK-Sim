@@ -8,6 +8,7 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 using FakeItEasy;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation
@@ -18,15 +19,17 @@ namespace PKSim.Presentation
       protected IExecutionContext _executionContext;
       protected IEntity _entity;
       protected IRenameObjectPresenter _renamePresenter;
+      private IRenameObjectDTOFactory _renameObjectFactory;
 
       protected override void Context()
       {
          _applicationController = A.Fake<IApplicationController>();
          _executionContext = A.Fake<IExecutionContext>();
          _entity = A.Fake<IEntity>();
+         _renameObjectFactory= A.Fake<IRenameObjectDTOFactory>();
          _renamePresenter = A.Fake<IRenameObjectPresenter>();
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renamePresenter);
-         sut = new EntityTask(_applicationController, _executionContext);
+         sut = new EntityTask(_applicationController, _executionContext, _renameObjectFactory);
       }
    }
 

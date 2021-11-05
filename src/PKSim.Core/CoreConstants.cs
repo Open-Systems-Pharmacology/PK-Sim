@@ -112,7 +112,7 @@ namespace PKSim.Core
          var nonEmptyNames = names.ToList();
          nonEmptyNames.RemoveAll(string.IsNullOrEmpty);
 
-         return nonEmptyNames.ToString($"{COMPOSITE_SEPARATOR}");
+         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{COMPOSITE_SEPARATOR}");
       }
 
       public static IReadOnlyList<string> NamesFromCompositeName(string compositeName)
@@ -1333,8 +1333,8 @@ namespace PKSim.Core
          public const int PROTOCOL_VIEW_WIDTH = 700;
          public const int PROTOCOL_VIEW_HEIGHT = 760;
 
-         public const int EXPRESSION_PROFILE_VIEW_HEIGHT = 660;
-         public const int EXPRESSION_PROFILE_VIEW_WIDTH = 990;
+         public const int EXPRESSION_PROFILE_VIEW_HEIGHT = 900;
+         public const int EXPRESSION_PROFILE_VIEW_WIDTH = 760;
 
       }
 

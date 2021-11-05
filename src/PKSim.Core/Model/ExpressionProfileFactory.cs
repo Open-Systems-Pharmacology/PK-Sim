@@ -54,7 +54,7 @@ namespace PKSim.Core.Model
          //TODO use species?
          expressionProfile.Individual = _individualFactory.CreateParameterLessIndividual();
          expressionProfile.Species = species;
-         moleculeFactory.AddMoleculeTo(expressionProfile.Individual, ExpressionProfile.DUMMY_MOLECULE_NAME);
+         moleculeFactory.AddMoleculeTo(expressionProfile.Individual, ExpressionProfile.MOLECULE_NAME);
       }
    }
 }

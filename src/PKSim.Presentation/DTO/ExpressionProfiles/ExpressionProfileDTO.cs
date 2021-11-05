@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.ExpressionProfiles
 {
    public class ExpressionProfileDTO : ValidatableDTO
    {
+      public ApplicationIcon Icon { get; set; }
       private string _category;
       private string _moleculeName;
 
@@ -33,10 +36,19 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
       }
 
       public IEnumerable<Species> AllSpecies { get; set; }
-      
+
       public IEnumerable<string> AllMolecules { get; set; }
 
       public string MoleculeType { get; set; }
+
+      public List<string> AllExistingExpressionProfileNames { get; set; } = new List<string>();
+
+      private bool moleculeCategoryValid(string moleculeName, string category)
+      {
+         return !AllExistingExpressionProfileNames.Contains(CoreConstants.CompositeNameFor(moleculeName, category));
+      }
+
+      public string Name => CoreConstants.CompositeNameFor(MoleculeName, Category);
 
       private static class ExpressionProfileRules
       {
@@ -44,38 +56,35 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
          private static IBusinessRule dataSourceNotEmpty { get; } = GenericRules.NonEmptyRule<ExpressionProfileDTO>(x => x.Category, PKSimConstants.Error.CategoryIsRequired);
 
-         // private static IBusinessRule moleculeNameValid
-         // {
-         //    get
-         //    {
-         //       return CreateRule.For<ExpressionProfileDTO>()
-         //          .Property(item => item.MoleculeName)
-         //          .WithRule((dto, proteinName) => dto.proteinDataSourceValid(proteinName, dto.DataSource))
-         //          .WithError((dto, proteinName) => PKSimConstants.Error.NameAlreadyExistsInContainerType(proteinName, PKSimConstants.ObjectTypes.Compound));
-         //    }
-         // }
-         //
-         // private static IBusinessRule dataSourceValid
-         // {
-         //    get
-         //    {
-         //       return CreateRule.For<ExpressionProfileDTO>()
-         //          .Property(item => item.DataSource)
-         //          .WithRule((dto, dataSource) => dto.proteinDataSourceValid(dto.MoleculeName, dataSource))
-         //          .WithError((dto, dataSource) => PKSimConstants.Error.NameAlreadyExistsInContainerType(dataSource, PKSimConstants.ObjectTypes.Compound));
-         //    }
-         // }
+         private static IBusinessRule moleculeNameValid
+         {
+            get
+            {
+               return CreateRule.For<ExpressionProfileDTO>()
+                  .Property(item => item.MoleculeName)
+                  .WithRule((dto, moleculeName) => dto.moleculeCategoryValid(moleculeName, dto.Category))
+                  .WithError((dto, moleculeName) => PKSimConstants.Error.NameAlreadyExistsInContainerType(moleculeName, PKSimConstants.ObjectTypes.Project));
+            }
+         }
+
+         private static IBusinessRule categoryValid
+         {
+            get
+            {
+               return CreateRule.For<ExpressionProfileDTO>()
+                  .Property(item => item.Category)
+                  .WithRule((dto, category) => dto.moleculeCategoryValid(dto.MoleculeName, category))
+                  .WithError((dto, category) => PKSimConstants.Error.NameAlreadyExistsInContainerType(category, PKSimConstants.ObjectTypes.Project));
+            }
+         }
 
          internal static IEnumerable<IBusinessRule> All()
          {
             yield return moleculeNotEmpty;
-            // yield return moleculeNameValid;
+            yield return moleculeNameValid;
             yield return dataSourceNotEmpty;
-            // yield return dataSourceValid;
+            yield return categoryValid;
          }
       }
-
    }
-
-
 }

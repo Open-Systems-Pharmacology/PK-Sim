@@ -24,6 +24,7 @@ namespace PKSim.Core
       protected IParameter _height;
       protected IParameter _weight;
       protected IParameter _bmi;
+      private IGenderRepository _genderRepository;
 
       protected override void Context()
       {
@@ -33,8 +34,12 @@ namespace PKSim.Core
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _entityValidator = A.Fake<IEntityValidator>();
          _reportGenerator = A.Fake<IReportGenerator>();
+         _genderRepository= A.Fake<IGenderRepository>(); 
          _moleculeOntogenyVariabilityUpdater = A.Fake<IMoleculeOntogenyVariabilityUpdater>();
-         sut = new IndividualFactory(_individualModelTask, _entityBaseFactory, _createIndvidualAlgorithm, _speciesRepository, _entityValidator, _reportGenerator, _moleculeOntogenyVariabilityUpdater);
+         sut = new IndividualFactory(
+            _individualModelTask, _entityBaseFactory, _createIndvidualAlgorithm, 
+            _speciesRepository, _entityValidator, _reportGenerator, _moleculeOntogenyVariabilityUpdater,_genderRepository
+            );
 
          _age = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.AGE);
          _gestationalAge = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.GESTATIONAL_AGE);

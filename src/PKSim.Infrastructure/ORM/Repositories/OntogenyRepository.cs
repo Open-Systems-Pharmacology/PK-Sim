@@ -176,6 +176,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private double postmenstrualAgeInYearsFor(double? ageInYears, double? gestationalAge)
       {
+         if (!ageInYears.HasValue || !gestationalAge.HasValue)
+            return double.NaN;
+
          //get interpolated value for age. Age is given in year. 
          var gaOffset = gestationalAge.GetValueOrDefault(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS);
          return ageInYears.Value + inYears(gaOffset);

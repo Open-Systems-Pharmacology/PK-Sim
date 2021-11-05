@@ -3,9 +3,8 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using PKSim.Presentation.DTO.ExpressionProfiles;
+using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
@@ -16,32 +15,27 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       void SpeciesChanged();
       void Save();
       void DisableSettings();
+      void LoadExpressionFromDatabaseQuery();
    }
 
    public class ExpressionProfileMoleculesPresenter : AbstractSubPresenter<IExpressionProfileMoleculesView, IExpressionProfileMoleculesPresenter>, IExpressionProfileMoleculesPresenter
    {
-      private readonly ISpeciesRepository _speciesRepository;
-      private readonly IUsedMoleculeRepository _usedMoleculeRepository;
       private readonly IExpressionProfileFactory _expressionProfileFactory;
-      private readonly IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       private readonly IApplicationController _applicationController;
+      private readonly IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
       private IIndividualMoleculeExpressionsPresenter _moleculeExpressionsPresenter;
       private ExpressionProfileDTO _expressionProfileDTO;
       private ExpressionProfile _expressionProfile;
 
       public ExpressionProfileMoleculesPresenter(
          IExpressionProfileMoleculesView view,
-         ISpeciesRepository speciesRepository,
-         IUsedMoleculeRepository usedMoleculeRepository,
          IExpressionProfileFactory expressionProfileFactory,
-         IMoleculeExpressionTask<Individual> moleculeExpressionTask,
-         IApplicationController applicationController) : base(view)
+         IApplicationController applicationController,
+         IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper) : base(view)
       {
-         _speciesRepository = speciesRepository;
-         _usedMoleculeRepository = usedMoleculeRepository;
          _expressionProfileFactory = expressionProfileFactory;
-         _moleculeExpressionTask = moleculeExpressionTask;
          _applicationController = applicationController;
+         _expressionProfileDTOMapper = expressionProfileDTOMapper;
       }
 
       public void SpeciesChanged()
@@ -52,12 +46,16 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
 
       public void Save()
       {
-         _moleculeExpressionTask.RenameMolecule(_expressionProfile.Molecule, _expressionProfileDTO.MoleculeName, _expressionProfile.Individual);
          _expressionProfile.Category = _expressionProfileDTO.Category;
-
+         _expressionProfile.MoleculeName = _expressionProfileDTO.MoleculeName;
       }
 
       public void DisableSettings() => _view.DisableSettings();
+
+      public void LoadExpressionFromDatabaseQuery()
+      {
+         throw new NotImplementedException();
+      }
 
       private void refreshExpression()
       {
@@ -68,10 +66,9 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       public void Edit(ExpressionProfile expressionProfile)
       {
          _expressionProfile = expressionProfile;
-         _expressionProfileDTO = dtoFrom(expressionProfile);
+         _expressionProfileDTO = _expressionProfileDTOMapper.MapFrom(expressionProfile);
          _view.BindTo(_expressionProfileDTO);
          activateMoleculeExpressionPresenter();
-         OnStatusChanged();
       }
 
       private void activateMoleculeExpressionPresenter()
@@ -83,7 +80,6 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          _view.AddExpressionView(_moleculeExpressionsPresenter.BaseView);
          refreshExpression();
       }
-
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -105,22 +101,5 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
                throw new ArgumentOutOfRangeException(nameof(molecule));
          }
       }
-
-      private ExpressionProfileDTO dtoFrom(ExpressionProfile expressionProfile)
-      {
-         var moleculeName = expressionProfile.MoleculeName == ExpressionProfile.DUMMY_MOLECULE_NAME ? "" : expressionProfile.MoleculeName;
-         return new ExpressionProfileDTO
-         {
-            Species = expressionProfile.Species,
-            Category = expressionProfile.Category,
-            MoleculeName = moleculeName,
-            AllMolecules = _usedMoleculeRepository.All(),
-            AllSpecies = _speciesRepository.All(),
-            //TODO
-            MoleculeType = expressionProfile.Molecule.MoleculeType.ToString()
-         };
-      }
-
-
    }
 }
