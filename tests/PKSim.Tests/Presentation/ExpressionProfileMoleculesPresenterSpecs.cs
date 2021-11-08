@@ -166,6 +166,11 @@ namespace PKSim.Presentation
             .Returns(_command);
       }
 
+      protected override void Because()
+      {
+         sut.LoadExpressionFromDatabaseQuery();
+      }
+
       [Observation]
       public void should_add_the_resulting_edit_as_command()
       {

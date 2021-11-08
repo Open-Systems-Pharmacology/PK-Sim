@@ -107,9 +107,11 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
+
          _renameExpressionProfilePresenter = A.Fake<IRenameExpressionProfilePresenter>();
          A.CallTo(() => _applicationController.Start<IRenameExpressionProfilePresenter>()).Returns(_renameExpressionProfilePresenter);
          _expressionProfile = new ExpressionProfile();
+         A.CallTo(() => _renameObjectFactory.CreateFor(_expressionProfile)).Returns(_renameDTO);
       }
 
       protected override void Because()
