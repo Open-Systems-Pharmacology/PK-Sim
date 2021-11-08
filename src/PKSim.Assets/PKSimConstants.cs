@@ -907,6 +907,9 @@ namespace PKSim.Assets
 
          public static string CannotDownloadTemplateLocatedAt(string url) =>
             $"Cannot download template located at '{url}'";
+
+         public static string NoProteinExpressionDatabaseAssociatedTo(string speciesName) =>
+            $"No protein expression database available for species '{speciesName}'";
       }
 
       public static class Information

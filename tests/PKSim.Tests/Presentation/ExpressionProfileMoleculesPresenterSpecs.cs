@@ -1,7 +1,9 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.ExpressionProfiles;
@@ -130,6 +132,44 @@ namespace PKSim.Presentation
       {
          _expressionProfile.MoleculeName.ShouldBeEqualTo(_expressionProfileDTO.MoleculeName);
          _expressionProfile.Category.ShouldBeEqualTo(_expressionProfileDTO.Category);
+      }
+   }
+
+   public class When_loading_the_expression_profile_from_the_database_for_a_species_for_which_no_database_is_connected : concern_for_ExpressionProfileMoleculesPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_expressionProfile);
+         A.CallTo(() => _editMoleculeTask.CanQueryProteinExpressionsFor(_expressionProfile.Individual)).Returns(false);
+      }
+
+      [Observation]
+      public void should_throw_an_exception_warning_the_user_that_no_database_is_connected()
+      {
+         The.Action(() => sut.LoadExpressionFromDatabaseQuery()).ShouldThrowAn<OSPSuiteException>();
+      }
+   }
+
+   public class When_loading_the_expression_profile_from_the_database_for_a_species_for_which_a_database_is_connected : concern_for_ExpressionProfileMoleculesPresenter
+   {
+      private ICommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = A.Fake<IPKSimCommand>();
+         sut.Edit(_expressionProfile);
+         _expressionProfileDTO.MoleculeName = "MOLECULE";
+         A.CallTo(() => _editMoleculeTask.CanQueryProteinExpressionsFor(_expressionProfile.Individual)).Returns(true);
+         A.CallTo(() => _editMoleculeTask.EditMolecule(_expressionProfile.Molecule, _expressionProfile.Individual, _expressionProfileDTO.MoleculeName))
+            .Returns(_command);
+      }
+
+      [Observation]
+      public void should_add_the_resulting_edit_as_command()
+      {
+         sut.CommandCollector.All().ShouldContain(_command);;
       }
    }
 }

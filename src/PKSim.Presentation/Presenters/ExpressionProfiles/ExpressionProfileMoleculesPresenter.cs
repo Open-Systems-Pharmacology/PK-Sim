@@ -3,6 +3,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.DTO.Mappers;
@@ -68,7 +69,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       public void LoadExpressionFromDatabaseQuery()
       {
          if (!_editMoleculeTask.CanQueryProteinExpressionsFor(_expressionProfile.Individual))
-            throw new OSPSuiteException("ERROR!!");
+            throw new OSPSuiteException(PKSimConstants.Error.NoProteinExpressionDatabaseAssociatedTo(_expressionProfile.Species.Name));
 
          AddCommand(_editMoleculeTask.EditMolecule(_expressionProfile.Molecule, _expressionProfile.Individual, _expressionProfileDTO.MoleculeName));
          refreshExpression();

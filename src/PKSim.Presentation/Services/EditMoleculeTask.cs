@@ -49,6 +49,7 @@ namespace PKSim.Presentation.Services
       /// </summary>
       bool CanQueryProteinExpressionsFor(TSimulationSubject simulationSubject);
 
+
       /// <summary>
       ///    Remove the given molecule from the simulationSubject
       /// </summary>
