@@ -14,6 +14,12 @@ namespace PKSim.Presentation.Services
       {
       }
 
-      public override ExpressionProfile AddToProject() => AddToProject<ICreateExpressionProfilePresenter>();
+      public override ExpressionProfile AddToProject() => AddForMoleculeToProject<IndividualEnzyme>();
+
+
+      public ExpressionProfile AddForMoleculeToProject<TMolecule>() where TMolecule : IndividualMolecule
+      {
+         return AddToProject<ICreateExpressionProfilePresenter>(x => x.Create<TMolecule>());
+      }
    }
 }

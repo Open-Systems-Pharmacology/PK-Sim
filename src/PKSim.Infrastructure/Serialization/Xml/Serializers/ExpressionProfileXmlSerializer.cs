@@ -7,7 +7,8 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
-         Map(x => x.Species);
+         Map(x => x.Individual);
+         Map(x => x.Category);
       }
    }
 }

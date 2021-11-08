@@ -123,20 +123,21 @@ namespace PKSim.Core.Services
 
       public ICommand EditMolecule(IndividualMolecule moleculeToEdit, QueryExpressionResults queryResults, TSimulationSubject simulationSubject)
       {
+         //TODO
          //name has changed, needs to ensure unicity
-         ICommand renameCommand = null;
-         if (!string.Equals(moleculeToEdit.Name, queryResults.ProteinName))
-         {
-            var newName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
-            renameCommand = RenameMolecule(moleculeToEdit, newName, simulationSubject);
-         }
+         // ICommand renameCommand = null;
+         // if (!string.Equals(moleculeToEdit.Name, queryResults.ProteinName))
+         // {
+         //    var newName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
+         //    renameCommand = RenameMolecule(moleculeToEdit, newName, simulationSubject);
+         // }
 
          moleculeToEdit.QueryConfiguration = queryResults.QueryConfiguration;
          var editCommand = _simulationSubjectExpressionTask.EditMolecule(moleculeToEdit, queryResults, simulationSubject);
-         if (renameCommand == null)
+         // if (renameCommand == null)
             return editCommand;
 
-         return new PKSimMacroCommand(new[] {renameCommand, editCommand}).WithHistoryEntriesFrom(editCommand);
+         // return new PKSimMacroCommand(new[] {renameCommand, editCommand}).WithHistoryEntriesFrom(editCommand);
       }
 
       public ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject)

@@ -39,7 +39,7 @@ namespace PKSim.Presentation
          _dynamicParameterPresenter = A.Fake<IMultiParameterEditPresenter>();
          _simpleProtocolToSimpleProtocolDTOMapper = A.Fake<ISimpleProtocolToSimpleProtocolDTOMapper>();
          _individual = DomainHelperForSpecs.CreateIndividual();
-         A.CallTo(() => _individualFactory.CreateParameterLessIndividual()).Returns(_individual);
+         A.CallTo(() => _individualFactory.CreateParameterLessIndividual(null)).Returns(_individual);
          sut = new SimpleProtocolPresenter(_view, _dynamicParameterPresenter, _simpleProtocolToSimpleProtocolDTOMapper,
                                            _protocolTask, _parameterTask, _individualFactory, _representationInfoRepository);
          sut.InitializeWith(A.Fake<ICommandCollector>());
