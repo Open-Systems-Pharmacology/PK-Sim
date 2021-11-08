@@ -4,10 +4,8 @@ using PKSim.Presentation.Presenters.ExpressionProfiles;
 
 namespace PKSim.Presentation.Views.ExpressionProfiles
 {
-   public interface IExpressionProfileMoleculesView : IView<IExpressionProfileMoleculesPresenter>
+   public interface IRenameExpressionProfileView : IModalView<IRenameExpressionProfilePresenter>
    {
       void BindTo(ExpressionProfileDTO expressionProfileDTO);
-      void AddExpressionView(IView view);
-      void DisableSettings();
    }
 }

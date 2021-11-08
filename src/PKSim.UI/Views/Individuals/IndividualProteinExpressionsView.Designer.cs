@@ -70,23 +70,23 @@
          // 
          // panelExpressionParameters
          // 
-         this.panelExpressionParameters.Location = new System.Drawing.Point(200, 252);
+         this.panelExpressionParameters.Location = new System.Drawing.Point(190, 251);
          this.panelExpressionParameters.Name = "panelExpressionParameters";
-         this.panelExpressionParameters.Size = new System.Drawing.Size(598, 279);
+         this.panelExpressionParameters.Size = new System.Drawing.Size(618, 290);
          this.panelExpressionParameters.TabIndex = 8;
          // 
          // panelMoleculeLocalization
          // 
-         this.panelMoleculeLocalization.Location = new System.Drawing.Point(212, 144);
+         this.panelMoleculeLocalization.Location = new System.Drawing.Point(200, 136);
          this.panelMoleculeLocalization.Name = "panelMoleculeLocalization";
-         this.panelMoleculeLocalization.Size = new System.Drawing.Size(574, 92);
+         this.panelMoleculeLocalization.Size = new System.Drawing.Size(598, 101);
          this.panelMoleculeLocalization.TabIndex = 6;
          // 
          // panelMoleculeProperties
          // 
-         this.panelMoleculeProperties.Location = new System.Drawing.Point(212, 45);
+         this.panelMoleculeProperties.Location = new System.Drawing.Point(200, 33);
          this.panelMoleculeProperties.Name = "panelMoleculeProperties";
-         this.panelMoleculeProperties.Size = new System.Drawing.Size(574, 50);
+         this.panelMoleculeProperties.Size = new System.Drawing.Size(598, 58);
          this.panelMoleculeProperties.TabIndex = 4;
          // 
          // Root
@@ -98,6 +98,7 @@
             this.layoutGroupMoleculeLocalization,
             this.layoutItemPanelExpressionParameters});
          this.Root.Name = "Root";
+         this.Root.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.Root.Size = new System.Drawing.Size(810, 543);
          this.Root.TextVisible = false;
          // 
@@ -107,38 +108,40 @@
             this.layoutItemMoleculeProperties});
          this.layoutGroupMoleculeProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupMoleculeProperties.Name = "layoutGroupMoleculeProperties";
-         this.layoutGroupMoleculeProperties.Size = new System.Drawing.Size(790, 99);
+         this.layoutGroupMoleculeProperties.Size = new System.Drawing.Size(810, 103);
          // 
          // layoutItemMoleculeProperties
          // 
          this.layoutItemMoleculeProperties.Control = this.panelMoleculeProperties;
          this.layoutItemMoleculeProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutItemMoleculeProperties.Name = "layoutItemMoleculeProperties";
-         this.layoutItemMoleculeProperties.Size = new System.Drawing.Size(766, 54);
+         this.layoutItemMoleculeProperties.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
+         this.layoutItemMoleculeProperties.Size = new System.Drawing.Size(786, 58);
          this.layoutItemMoleculeProperties.TextSize = new System.Drawing.Size(185, 13);
          // 
          // layoutGroupMoleculeLocalization
          // 
          this.layoutGroupMoleculeLocalization.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemPanelLocalization});
-         this.layoutGroupMoleculeLocalization.Location = new System.Drawing.Point(0, 99);
+         this.layoutGroupMoleculeLocalization.Location = new System.Drawing.Point(0, 103);
          this.layoutGroupMoleculeLocalization.Name = "layoutGroupMoleculeLocalization";
-         this.layoutGroupMoleculeLocalization.Size = new System.Drawing.Size(790, 141);
+         this.layoutGroupMoleculeLocalization.Size = new System.Drawing.Size(810, 146);
          // 
          // layoutItemPanelLocalization
          // 
          this.layoutItemPanelLocalization.Control = this.panelMoleculeLocalization;
          this.layoutItemPanelLocalization.Location = new System.Drawing.Point(0, 0);
          this.layoutItemPanelLocalization.Name = "layoutItemPanelLocalization";
-         this.layoutItemPanelLocalization.Size = new System.Drawing.Size(766, 96);
+         this.layoutItemPanelLocalization.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
+         this.layoutItemPanelLocalization.Size = new System.Drawing.Size(786, 101);
          this.layoutItemPanelLocalization.TextSize = new System.Drawing.Size(185, 13);
          // 
          // layoutItemPanelExpressionParameters
          // 
          this.layoutItemPanelExpressionParameters.Control = this.panelExpressionParameters;
-         this.layoutItemPanelExpressionParameters.Location = new System.Drawing.Point(0, 240);
+         this.layoutItemPanelExpressionParameters.Location = new System.Drawing.Point(0, 249);
          this.layoutItemPanelExpressionParameters.Name = "layoutItemPanelExpressionParameters";
-         this.layoutItemPanelExpressionParameters.Size = new System.Drawing.Size(790, 283);
+         this.layoutItemPanelExpressionParameters.Size = new System.Drawing.Size(810, 294);
          this.layoutItemPanelExpressionParameters.TextSize = new System.Drawing.Size(185, 13);
          // 
          // IndividualProteinExpressionsView

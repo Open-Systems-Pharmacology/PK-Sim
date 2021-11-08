@@ -112,7 +112,7 @@ namespace PKSim.Core
          var nonEmptyNames = names.ToList();
          nonEmptyNames.RemoveAll(string.IsNullOrEmpty);
 
-         return nonEmptyNames.ToString($"{COMPOSITE_SEPARATOR}");
+         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{COMPOSITE_SEPARATOR}");
       }
 
       public static IReadOnlyList<string> NamesFromCompositeName(string compositeName)
@@ -429,20 +429,13 @@ namespace PKSim.Core
             return $"{buildingBlockName} [{simulationName}]";
          }
 
-         public static string LumenSegmentNameFor(string segmentName)
-         {
-            return CompositeNameFor(Organ.LUMEN, segmentName);
-         }
+         public static string LumenSegmentNameFor(string segmentName) => CompositeNameFor(Organ.LUMEN, segmentName);
 
-         public static string MucosaSegmentNameFor(string segmentName)
-         {
-            return CompositeNameFor(Compartment.MUCOSA, segmentName);
-         }
+         public static string MucosaSegmentNameFor(string segmentName) => CompositeNameFor(Compartment.MUCOSA, segmentName);
 
-         public static string PartialProcessName(string proteinName, string dataSource)
-         {
-            return CompositeNameFor(proteinName, dataSource);
-         }
+         public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
+
+         public static string ExpressionProfileName(string moleculeName, string category) => CompositeNameFor(moleculeName, category);
 
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {
@@ -1337,8 +1330,8 @@ namespace PKSim.Core
          public const int PROTOCOL_VIEW_WIDTH = 700;
          public const int PROTOCOL_VIEW_HEIGHT = 760;
 
-         public const int EXPRESSION_PROFILE_VIEW_HEIGHT = 660;
-         public const int EXPRESSION_PROFILE_VIEW_WIDTH = 990;
+         public const int EXPRESSION_PROFILE_VIEW_HEIGHT = 900;
+         public const int EXPRESSION_PROFILE_VIEW_WIDTH = 760;
 
       }
 

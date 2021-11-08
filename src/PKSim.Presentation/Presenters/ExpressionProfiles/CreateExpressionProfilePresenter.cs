@@ -1,13 +1,10 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Assets;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Core;
-using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
 namespace PKSim.Presentation.Presenters.ExpressionProfiles
@@ -15,46 +12,47 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
    public interface ICreateExpressionProfilePresenter : ICreateBuildingBlockPresenter<ExpressionProfile>, IContainerPresenter
    {
       ExpressionProfile ExpressionProfile { get; }
+      IPKSimCommand Create<TMolecule>() where TMolecule : IndividualMolecule;
    }
 
    public class CreateExpressionProfilePresenter : AbstractSubPresenterContainerPresenter<ICreateExpressionProfileView, ICreateExpressionProfilePresenter, IExpressionProfileItemPresenter>, ICreateExpressionProfilePresenter
    {
-      private readonly IBuildingBlockPropertiesMapper _propertiesMapper;
-      private readonly IObjectBaseDTOFactory _buildingBlockDTOFactory;
-      private readonly IObjectBaseFactory _objectBaseFactory;
-      private ObjectBaseDTO _expressionProfileDTO;
+      private readonly IExpressionProfileFactory _expressionProfileFactory;
       public ExpressionProfile ExpressionProfile { get; private set; }
+
 
       public CreateExpressionProfilePresenter(
          ICreateExpressionProfileView view,
          ISubPresenterItemManager<IExpressionProfileItemPresenter> subPresenterItemManager,
          IDialogCreator dialogCreator,
-         IBuildingBlockPropertiesMapper propertiesMapper,
-         IObjectBaseDTOFactory buildingBlockDTOFactory,
-         IObjectBaseFactory objectBaseFactory) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
+         IExpressionProfileFactory expressionProfileFactory) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
       {
-         _propertiesMapper = propertiesMapper;
-         _buildingBlockDTOFactory = buildingBlockDTOFactory;
-         _objectBaseFactory = objectBaseFactory;
+         _expressionProfileFactory = expressionProfileFactory;
       }
 
-      public IPKSimCommand Create()
+
+      public IPKSimCommand Create<TMolecule>() where TMolecule : IndividualMolecule
       {
-         _expressionProfileDTO = _buildingBlockDTOFactory.CreateFor<ExpressionProfile>();
-         ExpressionProfile = _objectBaseFactory.Create<ExpressionProfile>();
-         ExpressionProfile.IsLoaded = true;
-         _view.BindToProperties(_expressionProfileDTO);
+         ExpressionProfile = _expressionProfileFactory.Create<TMolecule>();
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(ExpressionProfile));
+         _view.ApplicationIcon = ApplicationIcons.IconByName(ExpressionProfile.Icon);
          _view.Display();
 
          if (_view.Canceled)
             return new PKSimEmptyCommand();
 
-         _propertiesMapper.MapProperties(_expressionProfileDTO, ExpressionProfile);
-
-         return new PKSimMacroCommand();
+         return _macroCommand;
       }
 
+      public IPKSimCommand Create() => Create<IndividualEnzyme>();
+
+
       public ExpressionProfile BuildingBlock => ExpressionProfile;
+
+      public override void ViewChanged()
+      {
+         base.ViewChanged();
+         View.OkEnabled = CanClose;
+      }
    }
 }

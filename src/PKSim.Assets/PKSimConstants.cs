@@ -398,6 +398,7 @@ namespace PKSim.Assets
          public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown.";
          public const string NameIsRequired = "Name is required.";
          public const string MoleculeIsRequired = "Molecule is required.";
+         public const string CategoryIsRequired = "Category is required.";
          public const string DataSourceIsRequired = "Data source is required.";
          public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'.";
          public const string RenameSameNameError = "The new name is the same as the original one.";
@@ -906,6 +907,9 @@ namespace PKSim.Assets
 
          public static string CannotDownloadTemplateLocatedAt(string url) =>
             $"Cannot download template located at '{url}'";
+
+         public static string NoProteinExpressionDatabaseAssociatedTo(string speciesName) =>
+            $"No protein expression database available for species '{speciesName}'";
       }
 
       public static class Information
@@ -1119,7 +1123,7 @@ namespace PKSim.Assets
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string NewObservers = "Add &Observers...";
-         public static readonly string NewExpressionProfile = "Add &Expression Profile...";
+         public static readonly string NewExpressionProfile = "Add &Expression Profile";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
@@ -1187,15 +1191,9 @@ namespace PKSim.Assets
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
          public static readonly string RemoveUnusedContent = "Remove Unused Content";
 
-         public static string CompareBuildingBlocks(string buildingBlockType)
-         {
-            return $"Compare {buildingBlockType}s";  
-         }
+         public static string CompareBuildingBlocks(string buildingBlockType) => $"Compare {buildingBlockType}s";
 
-         public static string AddProteinDefault(string addProteinCaption)
-         {
-            return $"{addProteinCaption} (Default)";
-         }
+         public static string AddProteinDefault(string addProteinCaption) => $"{addProteinCaption} (Default)";
 
          public static string AddProteinQuery(string addProteinCaption, bool isDefined)
          {
@@ -1203,19 +1201,17 @@ namespace PKSim.Assets
             return $"{addProteinCaption} ({hint})";
          }
 
-         public static string AddObservedDataToSimulation(string simulationName)
-         {
-            return $"Add to {ObjectTypes.Simulation} '{simulationName}'";
-         }
+         public static string AddObservedDataToSimulation(string simulationName) => $"Add to {ObjectTypes.Simulation} '{simulationName}'";
       }
 
       public static class QualificationSteps
       {
          public static string RunParameterIdentification(string parameterIdentificationName) => $"Run {OSPSuite.Assets.ObjectTypes.ParameterIdentification.ToLower()} {parameterIdentificationName}";
 
-         public static string RunSimulation(string simulationName) => $"Run {OSPSuite.Assets.ObjectTypes.Simulation.ToLower()} {simulationName}";
+         public static string RunSimulation(string simulationName) => $"Run {ObjectTypes.Simulation.ToLower()} {simulationName}";
 
-         public static string ParameterIdentificationResultsTransferredToSimulations(string parameterIdentificationName) => OSPSuite.Assets.Captions.ParameterIdentification.ParameterIdentificationTransferredToSimulations(parameterIdentificationName);
+         public static string ParameterIdentificationResultsTransferredToSimulations(string parameterIdentificationName) => 
+            OSPSuite.Assets.Captions.ParameterIdentification.ParameterIdentificationTransferredToSimulations(parameterIdentificationName);
       }
 
       public static class ObjectTypes
@@ -1273,6 +1269,7 @@ namespace PKSim.Assets
          public static readonly string QualificationPlan = "Qualification Plan";
          public static readonly string Snapshot = "Snapshot";
          public static readonly string ObserverSet = "Observers";
+         public static readonly string ExpressionProfile = "Expression Profile";
       }
 
       public static class ProteinExpressions
@@ -1536,6 +1533,7 @@ namespace PKSim.Assets
          public static readonly string BuildingBlockExplorer = "Building Blocks";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string ChartSettings = "Chart Options";
+         public static readonly string Settings = "Settings";
          public static readonly string Localization = "Localization";
          public const string Properties = "Properties";
          public const string Property = "Property";
@@ -1719,6 +1717,8 @@ namespace PKSim.Assets
          public static readonly string Gender = "Gender";
          public static readonly string SubPopulation = "Sub Population";
          public static readonly string CalculationMethods = "Calculation methods";
+         public static readonly string ReferencePopulation = "Reference Population";
+         public static readonly string Phenotype = "Phenotype";
          public static readonly string Category = "Category";
          public static readonly string CreateIndividual = "Create Individual";
          public static readonly string CreateSimulationSettings = "Create Simulation Settings";
@@ -2098,14 +2098,14 @@ namespace PKSim.Assets
          public static readonly string NumberOfBins = "Number Of Bins";
          public static readonly string NumberOfIndividualsPerBin = "Number Of Individuals Per Bins";
          public static readonly string NamingPattern = "Naming Pattern";
-         public static readonly string NaimingPatternStrategy = "Template";
+         public static readonly string NamingPatternStrategy = "Template";
          public static readonly string GeneratedLabels = "Generated Labels";
          public static readonly string LabelGenerationNumeric = "Numeric (1, 2, 3, 4, ...)";
          public static readonly string LabelGenerationRoman = "Roman (I, II, III, IV, ...)";
          public static readonly string LabelGenerationAlpha = "Alpha (A, B, C, D, ...)";
          public static readonly string LoadFromTemplate = "Load from Template...";
          public static readonly string SaveAsTemplate = "Save as Template...";
-         public static readonly string UsePopulationBuidlingBlock = "Use a population building block (typically for PK-Sim)";
+         public static readonly string UsePopulationBuildingBlock = "Use a population building block (typically for PK-Sim)";
          public static readonly string UsePopulationFileCSV = "Load a population from file (typically for MoBi)";
          public static readonly string NewPopulationFromSize = "Only allocate the number of individuals (typically for MoBi)";
          public static readonly string UseHistogramInReport = "Use in report";
@@ -2220,6 +2220,7 @@ namespace PKSim.Assets
          public static readonly string LocalizationVascularMembraneTissueSide = "Vascular endothelium membrane tissue-side";
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
          public static readonly string TemplateSource = "Template Source";
+         public static readonly string LoadExpressionFromDatabase = "Database Query";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

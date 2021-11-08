@@ -1,5 +1,4 @@
-﻿using OSPSuite.Assets;
-using OSPSuite.Presentation.Core;
+﻿using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
@@ -24,7 +23,5 @@ namespace PKSim.UI.Views.ExpressionProfiles
       {
          _presenter = presenter;
       }
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.ExpressionProfile;
    }
 }

@@ -8,7 +8,7 @@ namespace PKSim.Core.Mappers
 {
    public interface IMoleculeToQueryExpressionSettingsMapper
    {
-      QueryExpressionSettings MapFrom(IndividualMolecule molecule, ISimulationSubject simulationSubject);
+      QueryExpressionSettings MapFrom(IndividualMolecule molecule, ISimulationSubject simulationSubject, string moleculeName);
    }
 
    public class MoleculeToQueryExpressionSettingsMapper : IMoleculeToQueryExpressionSettingsMapper
@@ -20,12 +20,12 @@ namespace PKSim.Core.Mappers
          _representationInfoRepository = representationInfoRepository;
       }
 
-      public QueryExpressionSettings MapFrom(IndividualMolecule molecule, ISimulationSubject simulationSubject)
+      public QueryExpressionSettings MapFrom(IndividualMolecule molecule, ISimulationSubject simulationSubject, string moleculeName)
       {
          var expressionContainer =
             new List<ExpressionContainerInfo>(simulationSubject.AllExpressionParametersFor(molecule).KeyValues
                .Select(x => mapFrom(x.Key, x.Value)));
-         return new QueryExpressionSettings(expressionContainer, molecule.QueryConfiguration);
+         return new QueryExpressionSettings(expressionContainer, molecule.QueryConfiguration, moleculeName);
       }
 
       private ExpressionContainerInfo mapFrom(string containerName, IParameter relExpParameter)

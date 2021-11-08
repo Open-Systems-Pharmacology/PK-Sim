@@ -1,5 +1,9 @@
 ﻿using System.Drawing;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
@@ -8,8 +12,10 @@ using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.ExpressionProfiles
 {
-   public partial class CreateExpressionProfileView : BuildingBlockContainerView, ICreateExpressionProfileView
+   public partial class CreateExpressionProfileView : BaseModalContainerView, ICreateExpressionProfileView
    {
+      private ICreateExpressionProfilePresenter _presenter;
+
       public CreateExpressionProfileView(Shell shell) : base(shell)
       {
          InitializeComponent();
@@ -27,5 +33,11 @@ namespace PKSim.UI.Views.ExpressionProfiles
          Icon = ApplicationIcons.ExpressionProfile.WithSize(IconSizes.Size16x16);
          Caption = PKSimConstants.UI.CreateExpressionProfile;
       }
+
+      public override void AddSubItemView(ISubPresenterItem subPresenterItem, IView viewToAdd)
+      {
+         panel.FillWith(viewToAdd);
+      }
+
    }
 }

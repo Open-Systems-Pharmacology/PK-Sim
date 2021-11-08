@@ -30,7 +30,7 @@
       private void InitializeComponent()
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbProteinName = new PKSim.UI.Views.Core.UxMRUEdit();
+         this.cbProteinName = new OSPSuite.UI.Controls.UxMRUEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemName = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
@@ -124,6 +124,6 @@
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemName;
-      private PKSim.UI.Views.Core.UxMRUEdit cbProteinName;
+      private OSPSuite.UI.Controls.UxMRUEdit cbProteinName;
    }
 }

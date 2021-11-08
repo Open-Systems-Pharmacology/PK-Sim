@@ -27,6 +27,14 @@ namespace PKSim.Presentation.Services
       ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject);
 
       /// <summary>
+      ///    Edit the given molecule defined in the simulationSubject
+      /// </summary>
+      /// <param name="molecule">Edited molecule</param>
+      /// <param name="simulationSubject">Simulation subject  containing the edited molecule</param>
+      /// <param name="moleculeName">Predefined name for the query</param>
+      ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName);
+
+      /// <summary>
       ///    Add a default molecule of type <typeparamref name="TMolecule" /> to the given <paramref name="simulationSubject" />
       ///    bypassing the expression
       ///    database
@@ -40,6 +48,7 @@ namespace PKSim.Presentation.Services
       ///    false
       /// </summary>
       bool CanQueryProteinExpressionsFor(TSimulationSubject simulationSubject);
+
 
       /// <summary>
       ///    Remove the given molecule from the simulationSubject
@@ -124,12 +133,30 @@ namespace PKSim.Presentation.Services
          }
       }
 
+      public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName)
+      {
+         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
+         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
+         {
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject, moleculeName));
+            presenter.Title = PKSimConstants.UI.EditProteinExpression;
+            var success = presenter.Start();
+            if (!success)
+               return new PKSimEmptyCommand();
+
+            var queryResults = presenter.GetQueryResults();
+
+            return _moleculeExpressionTask.EditMolecule(molecule, queryResults, simulationSubject);
+         }
+      }
+
+
       public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
          using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
          using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
          {
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject));
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(molecule, simulationSubject, molecule.Name));
             presenter.Title = PKSimConstants.UI.EditProteinExpression;
             var success = presenter.Start();
             if (!success)
@@ -148,7 +175,7 @@ namespace PKSim.Presentation.Services
          {
             var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
             var newMolecule = moleculeFactory.AddMoleculeTo(simulationSubject, "%TEMP%");
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule, simulationSubject));
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule, simulationSubject, ""));
             presenter.Title = PKSimConstants.UI.AddProteinExpression(_executionContext.TypeFor(newMolecule));
             if (!presenter.Start())
             {

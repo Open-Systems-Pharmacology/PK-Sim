@@ -154,7 +154,7 @@ namespace PKSim.UI.Views.Simulations
          layoutControlGroupSimulationFileSelection.Text = PKSimConstants.ObjectTypes.Simulation;
          layoutControlGroupPopulationSelection.Text = PKSimConstants.ObjectTypes.Population;
 
-         rbBuildingBockSelection.Text = PKSimConstants.UI.UsePopulationBuidlingBlock;
+         rbBuildingBockSelection.Text = PKSimConstants.UI.UsePopulationBuildingBlock;
          rbPopulationFileSelection.Text = PKSimConstants.UI.UsePopulationFileCSV;
          rbPopulationSizeSelection.Text = PKSimConstants.UI.NewPopulationFromSize;
 

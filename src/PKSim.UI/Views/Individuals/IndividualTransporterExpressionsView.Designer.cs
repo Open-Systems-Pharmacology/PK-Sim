@@ -71,25 +71,25 @@ namespace PKSim.UI.Views.Individuals
          // 
          // panelExpressionParameters
          // 
-         this.panelExpressionParameters.Location = new System.Drawing.Point(174, 182);
+         this.panelExpressionParameters.Location = new System.Drawing.Point(164, 176);
          this.panelExpressionParameters.Name = "panelExpressionParameters";
-         this.panelExpressionParameters.Size = new System.Drawing.Size(624, 349);
+         this.panelExpressionParameters.Size = new System.Drawing.Size(644, 365);
          this.panelExpressionParameters.TabIndex = 17;
          // 
          // panelMoleculeProperties
          // 
-         this.panelMoleculeProperties.Location = new System.Drawing.Point(186, 45);
+         this.panelMoleculeProperties.Location = new System.Drawing.Point(174, 33);
          this.panelMoleculeProperties.Name = "panelMoleculeProperties";
-         this.panelMoleculeProperties.Size = new System.Drawing.Size(600, 50);
+         this.panelMoleculeProperties.Size = new System.Drawing.Size(624, 58);
          this.panelMoleculeProperties.TabIndex = 16;
          // 
          // cbTransporterType
          // 
-         this.cbTransporterType.Location = new System.Drawing.Point(186, 144);
+         this.cbTransporterType.Location = new System.Drawing.Point(176, 138);
          this.cbTransporterType.Name = "cbTransporterType";
          this.cbTransporterType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbTransporterType.Size = new System.Drawing.Size(600, 20);
+         this.cbTransporterType.Size = new System.Drawing.Size(620, 20);
          this.cbTransporterType.StyleController = this.layoutControl;
          this.cbTransporterType.TabIndex = 11;
          // 
@@ -103,6 +103,7 @@ namespace PKSim.UI.Views.Individuals
             this.layoutGroupMoleculeLocalization,
             this.layoutItemExpressionParameters});
          this.layoutControlGroup1.Name = "layoutControlGroup1";
+         this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(810, 543);
          this.layoutControlGroup1.TextVisible = false;
          // 
@@ -113,7 +114,7 @@ namespace PKSim.UI.Views.Individuals
             this.layoutItemMoleculeProperties});
          this.layoutGroupMoleculeProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupMoleculeProperties.Name = "layoutGroupMoleculeProperties";
-         this.layoutGroupMoleculeProperties.Size = new System.Drawing.Size(790, 99);
+         this.layoutGroupMoleculeProperties.Size = new System.Drawing.Size(810, 103);
          // 
          // layoutItemMoleculeProperties
          // 
@@ -121,7 +122,8 @@ namespace PKSim.UI.Views.Individuals
          this.layoutItemMoleculeProperties.CustomizationFormText = "layoutMoleculeProperties";
          this.layoutItemMoleculeProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutItemMoleculeProperties.Name = "layoutItemMoleculeProperties";
-         this.layoutItemMoleculeProperties.Size = new System.Drawing.Size(766, 54);
+         this.layoutItemMoleculeProperties.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
+         this.layoutItemMoleculeProperties.Size = new System.Drawing.Size(786, 58);
          this.layoutItemMoleculeProperties.TextSize = new System.Drawing.Size(159, 13);
          // 
          // layoutGroupMoleculeLocalization
@@ -129,9 +131,9 @@ namespace PKSim.UI.Views.Individuals
          this.layoutGroupMoleculeLocalization.CustomizationFormText = "layoutGroupMoleculeLocalization";
          this.layoutGroupMoleculeLocalization.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemTransporterDirection});
-         this.layoutGroupMoleculeLocalization.Location = new System.Drawing.Point(0, 99);
+         this.layoutGroupMoleculeLocalization.Location = new System.Drawing.Point(0, 103);
          this.layoutGroupMoleculeLocalization.Name = "layoutGroupMoleculeLocalization";
-         this.layoutGroupMoleculeLocalization.Size = new System.Drawing.Size(790, 71);
+         this.layoutGroupMoleculeLocalization.Size = new System.Drawing.Size(810, 71);
          // 
          // layoutItemTransporterDirection
          // 
@@ -141,16 +143,16 @@ namespace PKSim.UI.Views.Individuals
          this.layoutItemTransporterDirection.MaxSize = new System.Drawing.Size(0, 26);
          this.layoutItemTransporterDirection.MinSize = new System.Drawing.Size(191, 26);
          this.layoutItemTransporterDirection.Name = "layoutItemTransporterDirection";
-         this.layoutItemTransporterDirection.Size = new System.Drawing.Size(766, 26);
+         this.layoutItemTransporterDirection.Size = new System.Drawing.Size(786, 26);
          this.layoutItemTransporterDirection.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemTransporterDirection.TextSize = new System.Drawing.Size(159, 13);
          // 
          // layoutItemExpressionParameters
          // 
          this.layoutItemExpressionParameters.Control = this.panelExpressionParameters;
-         this.layoutItemExpressionParameters.Location = new System.Drawing.Point(0, 170);
+         this.layoutItemExpressionParameters.Location = new System.Drawing.Point(0, 174);
          this.layoutItemExpressionParameters.Name = "layoutItemExpressionParameters";
-         this.layoutItemExpressionParameters.Size = new System.Drawing.Size(790, 353);
+         this.layoutItemExpressionParameters.Size = new System.Drawing.Size(810, 369);
          this.layoutItemExpressionParameters.TextSize = new System.Drawing.Size(159, 13);
          // 
          // IndividualTransporterExpressionsView
