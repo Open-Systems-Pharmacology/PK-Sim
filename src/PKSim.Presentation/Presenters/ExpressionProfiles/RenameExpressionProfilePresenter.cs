@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;

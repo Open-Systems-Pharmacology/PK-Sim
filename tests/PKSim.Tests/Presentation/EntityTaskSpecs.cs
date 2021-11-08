@@ -1,17 +1,18 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using PKSim.Core;
-using PKSim.Core.Commands;
-using PKSim.Core.Services;
-using PKSim.Presentation.Services;
-using FakeItEasy;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation
 {
@@ -29,19 +30,17 @@ namespace PKSim.Presentation
          _applicationController = A.Fake<IApplicationController>();
          _executionContext = A.Fake<IExecutionContext>();
          _entity = A.Fake<IEntity>();
-         _renameObjectFactory= A.Fake<IRenameObjectDTOFactory>();
+         _renameObjectFactory = A.Fake<IRenameObjectDTOFactory>();
          _renamePresenter = A.Fake<IRenameObjectPresenter>();
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renamePresenter);
          sut = new EntityTask(_applicationController, _executionContext, _renameObjectFactory);
 
          _renameDTO = new RenameObjectDTO(_entity.Name);
-         _renameDTO.AddUsedNames(new[] { "A", "B" });
+         _renameDTO.AddUsedNames(new[] {"A", "B"});
          A.CallTo(() => _renameObjectFactory.CreateFor(_entity)).Returns(_renameDTO);
-
       }
    }
 
-   
    public class When_renaming_an_entity : concern_for_EntityTask
    {
       protected override void Because()
@@ -56,7 +55,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_rename_operation_was_canceled_by_the_user : concern_for_EntityTask
    {
       private ICommand _command;
@@ -79,7 +77,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_the_rename_operation_was_confirmed_by_the_user : concern_for_EntityTask
    {
       private ICommand _command;
@@ -102,21 +99,28 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_renaming_an_expression_profile : concern_for_EntityTask
+   public class When_starting_the_rename_expression_profile_action : concern_for_EntityTask
    {
       private IRenameExpressionProfilePresenter _renameExpressionProfilePresenter;
+      private IEntity _expressionProfile;
 
       protected override void Context()
       {
          base.Context();
          _renameExpressionProfilePresenter = A.Fake<IRenameExpressionProfilePresenter>();
          A.CallTo(() => _applicationController.Start<IRenameExpressionProfilePresenter>()).Returns(_renameExpressionProfilePresenter);
-
+         _expressionProfile = new ExpressionProfile();
       }
+
+      protected override void Because()
+      {
+         sut.Rename(_expressionProfile);
+      }
+
       [Observation]
       public void should_use_the_rename_expression_profile_presenter_to_perform_the_rename()
       {
-         A.CallTo(() => _renameExpressionProfilePresenter.NewNameFrom(_entity, _renameDTO.UsedNames, _renameDTO.ContainerType)).MustHaveHappened();
+         A.CallTo(() => _renameExpressionProfilePresenter.NewNameFrom(_expressionProfile, _renameDTO.UsedNames, _renameDTO.ContainerType)).MustHaveHappened();
       }
    }
 }
