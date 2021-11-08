@@ -20,6 +20,17 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       private readonly IExpressionProfileFactory _expressionProfileFactory;
       public ExpressionProfile ExpressionProfile { get; private set; }
 
+
+      public CreateExpressionProfilePresenter(
+         ICreateExpressionProfileView view,
+         ISubPresenterItemManager<IExpressionProfileItemPresenter> subPresenterItemManager,
+         IDialogCreator dialogCreator,
+         IExpressionProfileFactory expressionProfileFactory) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
+      {
+         _expressionProfileFactory = expressionProfileFactory;
+      }
+
+
       public IPKSimCommand Create<TMolecule>() where TMolecule : IndividualMolecule
       {
          ExpressionProfile = _expressionProfileFactory.Create<TMolecule>();
@@ -30,18 +41,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          if (_view.Canceled)
             return new PKSimEmptyCommand();
 
-         _subPresenterItemManager.PresenterAt(ExpressionProfileItems.Molecules).Save();
-
          return _macroCommand;
-      }
-
-      public CreateExpressionProfilePresenter(
-         ICreateExpressionProfileView view,
-         ISubPresenterItemManager<IExpressionProfileItemPresenter> subPresenterItemManager,
-         IDialogCreator dialogCreator,
-         IExpressionProfileFactory expressionProfileFactory) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
-      {
-         _expressionProfileFactory = expressionProfileFactory;
       }
 
       public IPKSimCommand Create() => Create<IndividualEnzyme>();

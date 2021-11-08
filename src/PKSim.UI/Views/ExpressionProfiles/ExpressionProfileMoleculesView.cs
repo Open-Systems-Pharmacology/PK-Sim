@@ -63,10 +63,12 @@ namespace PKSim.UI.Views.ExpressionProfiles
             .Changed += () => _presenter.SpeciesChanged();
 
          _screenBinder.Bind(dto => dto.MoleculeName)
-            .To(cbMoleculeName);
+            .To(cbMoleculeName)
+            .Changed += () => _presenter.Save();
 
          _screenBinder.Bind(dto => dto.Category)
-            .To(tbCategory);
+            .To(tbCategory)
+            .Changed += () => _presenter.Save();
 
          btnLoadFromDatabase.Click += (ot, e) => OnEvent(_presenter.LoadExpressionFromDatabaseQuery);
          RegisterValidationFor(_screenBinder, statusChangingNotify: NotifyViewChanged);

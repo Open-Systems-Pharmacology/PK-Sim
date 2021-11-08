@@ -43,6 +43,14 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          _editMoleculeTask = editMoleculeTask;
       }
 
+      public void Edit(ExpressionProfile expressionProfile)
+      {
+         _expressionProfile = expressionProfile;
+         _expressionProfileDTO = _expressionProfileDTOMapper.MapFrom(expressionProfile);
+         _view.BindTo(_expressionProfileDTO);
+         activateMoleculeExpressionPresenter();
+      }
+
       public void SpeciesChanged()
       {
          _expressionProfileFactory.UpdateSpecies(_expressionProfile, _expressionProfileDTO.Species);
@@ -70,14 +78,6 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       {
          _moleculeExpressionsPresenter.SimulationSubject = _expressionProfile.Individual;
          _moleculeExpressionsPresenter.ActivateMolecule(_expressionProfile.Molecule);
-      }
-
-      public void Edit(ExpressionProfile expressionProfile)
-      {
-         _expressionProfile = expressionProfile;
-         _expressionProfileDTO = _expressionProfileDTOMapper.MapFrom(expressionProfile);
-         _view.BindTo(_expressionProfileDTO);
-         activateMoleculeExpressionPresenter();
       }
 
       private void activateMoleculeExpressionPresenter()

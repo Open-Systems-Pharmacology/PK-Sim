@@ -429,20 +429,13 @@ namespace PKSim.Core
             return $"{buildingBlockName} [{simulationName}]";
          }
 
-         public static string LumenSegmentNameFor(string segmentName)
-         {
-            return CompositeNameFor(Organ.LUMEN, segmentName);
-         }
+         public static string LumenSegmentNameFor(string segmentName) => CompositeNameFor(Organ.LUMEN, segmentName);
 
-         public static string MucosaSegmentNameFor(string segmentName)
-         {
-            return CompositeNameFor(Compartment.MUCOSA, segmentName);
-         }
+         public static string MucosaSegmentNameFor(string segmentName) => CompositeNameFor(Compartment.MUCOSA, segmentName);
 
-         public static string PartialProcessName(string proteinName, string dataSource)
-         {
-            return CompositeNameFor(proteinName, dataSource);
-         }
+         public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
+
+         public static string ExpressionProfileName(string moleculeName, string category) => CompositeNameFor(moleculeName, category);
 
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {

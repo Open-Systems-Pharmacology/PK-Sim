@@ -32,7 +32,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
       public ExpressionProfileDTO MapFrom(ExpressionProfile expressionProfile)
       {
-         return new ExpressionProfileDTO
+         var  dto =  new ExpressionProfileDTO
          {
             Icon = ApplicationIcons.IconByName(expressionProfile.Icon),
             Species = expressionProfile.Species,
@@ -41,8 +41,10 @@ namespace PKSim.Presentation.DTO.Mappers
             AllMolecules = _usedMoleculeRepository.All(),
             AllSpecies = _speciesRepository.All(),
             MoleculeType = moleculeTypeDisplayFor(expressionProfile.Molecule.MoleculeType),
-            AllExistingExpressionProfileNames = _projectRetriever.Current.All(PKSimBuildingBlockType.ExpressionProfile).AllNames().Except(new[] {expressionProfile.Name}).ToList()
          };
+
+         dto.AddExistingExpressionProfileNames(_projectRetriever.Current.All(PKSimBuildingBlockType.ExpressionProfile).AllNames().Except(new[] {expressionProfile.Name}));
+         return dto;
       }
 
       private string moleculeTypeDisplayFor(QuantityType moleculeType)

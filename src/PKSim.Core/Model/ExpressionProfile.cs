@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using static PKSim.Core.CoreConstants.ContainerName;
 
 namespace PKSim.Core.Model
 {
@@ -55,11 +56,11 @@ namespace PKSim.Core.Model
 
       public Individual Individual { get; set; }
 
-      public IndividualMolecule Molecule => Individual?.MoleculeByName(MOLECULE_NAME) ?? new NullIndividualMolecule();
+      public virtual IndividualMolecule Molecule => Individual?.MoleculeByName(MOLECULE_NAME) ?? new NullIndividualMolecule();
 
       public virtual void RefreshName()
       {
-         Name = CoreConstants.CompositeNameFor(MoleculeName, Category);
+         Name = ExpressionProfileName(MoleculeName, Category);
       }
 
       public override string Icon => Molecule?.Icon ?? "";

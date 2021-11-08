@@ -78,17 +78,10 @@ namespace PKSim.Presentation.DTO.Parameters
       {
          get
          {
-            try
-            {
-               return Parameter.ValueInDisplayUnit;
-            }
-            catch (Exception exception)
-            {
-               Debug.Write(exception.Message);
-               //Maybe implement a way to ask if a value can be computed instead of catching exception
-               //Permeability cannot be read in compound as references cannot be resolved
-               return double.NaN;
-            }
+            var success = Parameter.TryGetValueInDisplayUnit(out var result);
+            //Permeability cannot be read in compound as references cannot be resolved
+            return success ? result : double.NaN;
+
          }
          set
          {

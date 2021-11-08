@@ -17,6 +17,7 @@ namespace PKSim.Core
       private Compound _compound2;
       private Individual _individual1;
       private Individual _individual2;
+      private ExpressionProfile _expressionProfile;
 
       protected override void Context()
       {
@@ -37,10 +38,16 @@ namespace PKSim.Core
          _individual2.AddMolecule(new IndividualEnzyme().WithName("B"));
          _individual2.AddMolecule(new IndividualEnzyme().WithName("D"));
 
+         _expressionProfile = new ExpressionProfile
+         {
+            MoleculeName = "E",
+            IsLoaded = true,
+         };
          _project.AddBuildingBlock(_compound1);
          _project.AddBuildingBlock(_compound2);
          _project.AddBuildingBlock(_individual1);
          _project.AddBuildingBlock(_individual2);
+         _project.AddBuildingBlock(_expressionProfile);
          sut = new UsedMoleculeRepository(_projectRetriever);
       }
    }
@@ -55,9 +62,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_the_distinct_molecule_names_defined_in_loaded_compounds_and_individuals()
+      public void should_return_the_distinct_molecule_names_defined_in_loaded_compounds_individuals_and_expression_profile()
       {
-         _moleculeNames.ShouldOnlyContainInOrder("A", "B", "C", "D");
+         _moleculeNames.ShouldOnlyContainInOrder("A", "B", "C", "D", "E");
       }
    }
 }

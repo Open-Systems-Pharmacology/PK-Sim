@@ -44,7 +44,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void all_ontogenie_values_in_liver_should_be_greater_than_0()
+      public void all_ontogenies_values_in_liver_should_be_greater_than_0()
       {
          foreach (var ontogeny in _result)
          {
@@ -54,7 +54,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_retrieving_the_ontogenie_for_a_given_origin_data : concern_for_OntogenyRepository
+   public class When_retrieving_the_ontogeny_for_a_given_origin_data : concern_for_OntogenyRepository
    {
       private OriginData _originData;
       private Ontogeny CYP3A4;
@@ -86,7 +86,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_retrieving_the_ontogenie_for_a_given_origin_data_with_random_values : concern_for_OntogenyRepository
+   public class When_retrieving_the_ontogeny_for_a_given_origin_data_with_random_values : concern_for_OntogenyRepository
    {
       private OriginData _originData;
       private Ontogeny CYP3A4;
@@ -112,7 +112,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_retrieving_the_ontogenie_for_a_non_existing_ongoteny : concern_for_OntogenyRepository
+   public class When_retrieving_the_ontogeny_for_a_non_existing_ontogeny : concern_for_OntogenyRepository
    {
       private OriginData _originData;
       private RandomGenerator _randomGenerator;
@@ -131,7 +131,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_retrieving_the_ontogeny_for_an_imported_ontogeny_table_containg_a_first_value_resulting_in_an_undefined_percentile : concern_for_OntogenyRepository
+   public class When_retrieving_the_ontogeny_for_an_imported_ontogeny_table_containing_a_first_value_resulting_in_an_undefined_percentile : concern_for_OntogenyRepository
    {
       private OriginData _originData;
       private RandomGenerator _randomGenerator;
@@ -162,8 +162,11 @@ namespace PKSim.IntegrationTests
       protected override void Context()
       {
          base.Context();
-         _adultOriginData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}};
-         _adultOriginData.Age = 30;
+         _adultOriginData = new OriginData
+         {
+            Species = new Species {Name = CoreConstants.Species.HUMAN}, 
+            Age = 30
+         };
       }
 
       [Observation]
@@ -177,7 +180,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_retreving_all_ontogenie_factor_for_a_protein_strict_bigger_than_a_given_PMA_using_a_random_factor : concern_for_OntogenyRepository
+   public class When_retrieving_all_ontogeny_factors_for_a_protein_strict_bigger_than_a_given_PMA_using_a_random_factor : concern_for_OntogenyRepository
    {
       private readonly RandomGenerator _randomGenerator = new RandomGenerator();
       private readonly OriginData _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}, GestationalAge = 25, Age = 0};

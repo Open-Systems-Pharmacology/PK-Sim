@@ -24,6 +24,7 @@ namespace PKSim.Core.Repositories
          return allMoleculesDefinedInIndividuals()
             .Union(allMoleculesDefinedInCompounds())
             .Union(allExpressionProfiles())
+            .Distinct()
             .OrderBy(x => x);
       }
 
@@ -31,23 +32,20 @@ namespace PKSim.Core.Repositories
       {
          return allLoadedBuildingBlocks<Compound>()
             .SelectMany(comp => comp.AllProcesses<PartialProcess>())
-            .Select(proc => proc.MoleculeName)
-            .Distinct();
+            .Select(proc => proc.MoleculeName);
       }
 
       private IEnumerable<string> allMoleculesDefinedInIndividuals()
       {
          return allLoadedBuildingBlocks<Individual>()
             .SelectMany(x => x.AllMolecules())
-            .Select(x => x.Name)
-            .Distinct();
+            .Select(x => x.Name);
       }
 
       private IEnumerable<string> allExpressionProfiles()
       {
          return allLoadedBuildingBlocks<ExpressionProfile>()
-            .Select(x => x.MoleculeName)
-            .Distinct();
+            .Select(x => x.MoleculeName);
       }
 
       private IEnumerable<TBuildingBlock> allLoadedBuildingBlocks<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock

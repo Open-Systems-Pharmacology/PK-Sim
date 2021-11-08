@@ -88,7 +88,7 @@ namespace PKSim.Presentation
          _proteinFactory = A.Fake<IIndividualMoleculeFactory>();
          A.CallTo(() => _moleculeFactoryResolver.FactoryFor<IndividualProtein>()).Returns(_proteinFactory);
          _tempProtein = new IndividualEnzyme();
-         A.CallTo(() => _querySettingsMapper.MapFrom(_tempProtein, _individual)).Returns(_querySettings);
+         A.CallTo(() => _querySettingsMapper.MapFrom(_tempProtein, _individual, _tempProtein.Name)).Returns(_querySettings);
          A.CallTo(() => _proteinFactory.AddMoleculeTo(_individual, "%TEMP%")).Returns(_tempProtein);
          A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo(_individual, _tempProtein, _queryResults)).Returns(_addCommand);
       }
@@ -205,7 +205,7 @@ namespace PKSim.Presentation
          _querySettings = A.Fake<QueryExpressionSettings>();
          _queryResults = A.Fake<QueryExpressionResults>();
          A.CallTo(() => _executionContext.Clone(_molecule)).Returns(_clonedProtein);
-         A.CallTo(() => _querySettingsMapper.MapFrom(_molecule, _individual)).Returns(_querySettings);
+         A.CallTo(() => _querySettingsMapper.MapFrom(_molecule, _individual, _molecule.Name)).Returns(_querySettings);
          A.CallTo(() => _proteinExpressionPresenter.Start()).Returns(true);
          A.CallTo(() => _proteinExpressionPresenter.GetQueryResults()).Returns(_queryResults);
          _editCommand = A.Fake<ICommand>();

@@ -7,6 +7,7 @@ using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
+using static PKSim.Core.CoreConstants.ContainerName;
 
 namespace PKSim.Presentation.DTO.ExpressionProfiles
 {
@@ -41,11 +42,11 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
       public string MoleculeType { get; set; }
 
-      public List<string> AllExistingExpressionProfileNames { get; set; } = new List<string>();
+      private readonly List<string> _allExistingExpressionProfileNames = new List<string>();
 
       private bool moleculeCategoryValid(string moleculeName, string category)
       {
-         return !AllExistingExpressionProfileNames.Contains(CoreConstants.CompositeNameFor(moleculeName, category));
+         return !_allExistingExpressionProfileNames.Contains(ExpressionProfileName(moleculeName, category));
       }
 
       public string Name => CoreConstants.CompositeNameFor(MoleculeName, Category);
@@ -56,27 +57,15 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
          private static IBusinessRule dataSourceNotEmpty { get; } = GenericRules.NonEmptyRule<ExpressionProfileDTO>(x => x.Category, PKSimConstants.Error.CategoryIsRequired);
 
-         private static IBusinessRule moleculeNameValid
-         {
-            get
-            {
-               return CreateRule.For<ExpressionProfileDTO>()
-                  .Property(item => item.MoleculeName)
-                  .WithRule((dto, moleculeName) => dto.moleculeCategoryValid(moleculeName, dto.Category))
-                  .WithError((dto, moleculeName) => PKSimConstants.Error.NameAlreadyExistsInContainerType(moleculeName, PKSimConstants.ObjectTypes.Project));
-            }
-         }
+         private static IBusinessRule moleculeNameValid { get; } = CreateRule.For<ExpressionProfileDTO>()
+            .Property(item => item.MoleculeName)
+            .WithRule((dto, moleculeName) => dto.moleculeCategoryValid(moleculeName, dto.Category))
+            .WithError((dto, moleculeName) => PKSimConstants.Error.NameAlreadyExistsInContainerType(moleculeName, PKSimConstants.ObjectTypes.Project));
 
-         private static IBusinessRule categoryValid
-         {
-            get
-            {
-               return CreateRule.For<ExpressionProfileDTO>()
-                  .Property(item => item.Category)
-                  .WithRule((dto, category) => dto.moleculeCategoryValid(dto.MoleculeName, category))
-                  .WithError((dto, category) => PKSimConstants.Error.NameAlreadyExistsInContainerType(category, PKSimConstants.ObjectTypes.Project));
-            }
-         }
+         private static IBusinessRule categoryValid { get; } = CreateRule.For<ExpressionProfileDTO>()
+            .Property(item => item.Category)
+            .WithRule((dto, category) => dto.moleculeCategoryValid(dto.MoleculeName, category))
+            .WithError((dto, category) => PKSimConstants.Error.NameAlreadyExistsInContainerType(category, PKSimConstants.ObjectTypes.Project));
 
          internal static IEnumerable<IBusinessRule> All()
          {
@@ -85,6 +74,11 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
             yield return dataSourceNotEmpty;
             yield return categoryValid;
          }
+      }
+
+      public void AddExistingExpressionProfileNames(IEnumerable<string> existingNames)
+      {
+         _allExistingExpressionProfileNames.AddRange(existingNames);
       }
    }
 }

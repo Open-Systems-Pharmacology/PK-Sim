@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -10,6 +11,7 @@ using FakeItEasy;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Presentation.Presenters.ExpressionProfiles;
 
 namespace PKSim.Presentation
 {
@@ -19,7 +21,8 @@ namespace PKSim.Presentation
       protected IExecutionContext _executionContext;
       protected IEntity _entity;
       protected IRenameObjectPresenter _renamePresenter;
-      private IRenameObjectDTOFactory _renameObjectFactory;
+      protected IRenameObjectDTOFactory _renameObjectFactory;
+      protected RenameObjectDTO _renameDTO;
 
       protected override void Context()
       {
@@ -30,6 +33,11 @@ namespace PKSim.Presentation
          _renamePresenter = A.Fake<IRenameObjectPresenter>();
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renamePresenter);
          sut = new EntityTask(_applicationController, _executionContext, _renameObjectFactory);
+
+         _renameDTO = new RenameObjectDTO(_entity.Name);
+         _renameDTO.AddUsedNames(new[] { "A", "B" });
+         A.CallTo(() => _renameObjectFactory.CreateFor(_entity)).Returns(_renameDTO);
+
       }
    }
 
@@ -44,7 +52,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_retrieve_the_rename_presenter_and_start_it()
       {
-         A.CallTo(() => _renamePresenter.Edit(_entity)).MustHaveHappened();
+         A.CallTo(() => _renamePresenter.NewNameFrom(_entity, _renameDTO.UsedNames, _renameDTO.ContainerType)).MustHaveHappened();
       }
    }
 
@@ -56,7 +64,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _renamePresenter.Edit(_entity)).Returns(false);
+         A.CallTo(() => _renamePresenter.NewNameFrom(_entity, A<IEnumerable<string>>._, A<string>._)).Returns("");
       }
 
       protected override void Because()
@@ -79,7 +87,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _renamePresenter.Edit(_entity)).Returns(true);
+         A.CallTo(() => _renamePresenter.NewNameFrom(_entity, A<IEnumerable<string>>._, A<string>._)).Returns("NEW_NAME");
       }
 
       protected override void Because()
@@ -91,6 +99,24 @@ namespace PKSim.Presentation
       public void should_return_a_rename_entity_command()
       {
          _command.ShouldBeAnInstanceOf<RenameEntityCommand>();
+      }
+   }
+
+   public class When_renaming_an_expression_profile : concern_for_EntityTask
+   {
+      private IRenameExpressionProfilePresenter _renameExpressionProfilePresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _renameExpressionProfilePresenter = A.Fake<IRenameExpressionProfilePresenter>();
+         A.CallTo(() => _applicationController.Start<IRenameExpressionProfilePresenter>()).Returns(_renameExpressionProfilePresenter);
+
+      }
+      [Observation]
+      public void should_use_the_rename_expression_profile_presenter_to_perform_the_rename()
+      {
+         A.CallTo(() => _renameExpressionProfilePresenter.NewNameFrom(_entity, _renameDTO.UsedNames, _renameDTO.ContainerType)).MustHaveHappened();
       }
    }
 }

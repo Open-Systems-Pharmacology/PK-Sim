@@ -176,7 +176,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private double postmenstrualAgeInYearsFor(double? ageInYears, double? gestationalAge)
       {
-         if (!ageInYears.HasValue || !gestationalAge.HasValue)
+         if (!ageInYears.HasValue)
             return double.NaN;
 
          //get interpolated value for age. Age is given in year. 
