@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Domain;
+﻿using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
 using static PKSim.Core.CoreConstants.ContainerName;
@@ -7,7 +8,6 @@ namespace PKSim.Core.Model
 {
    public class ExpressionProfile : PKSimBuildingBlock
    {
-      public const string MOLECULE_NAME = "<MOLECULE>";
 
       private string _category;
       private string _moleculeName;
@@ -59,7 +59,7 @@ namespace PKSim.Core.Model
       }
 
 
-      public virtual IndividualMolecule Molecule => Individual.MoleculeByName(MOLECULE_NAME) ?? new NullIndividualMolecule();
+      public virtual IndividualMolecule Molecule => Individual.AllMolecules().FirstOrDefault() ?? new NullIndividualMolecule();
 
       public virtual void RefreshName()
       {
@@ -90,7 +90,8 @@ namespace PKSim.Core.Model
          set
          {
             base.HasChanged = value;
-            Individual.HasChanged = value;
+            if(Individual!=null)
+               Individual.HasChanged = value;
          }
       }
    }

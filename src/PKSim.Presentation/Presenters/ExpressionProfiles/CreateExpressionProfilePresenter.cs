@@ -5,6 +5,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
 namespace PKSim.Presentation.Presenters.ExpressionProfiles
@@ -18,6 +19,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
    public class CreateExpressionProfilePresenter : AbstractSubPresenterContainerPresenter<ICreateExpressionProfileView, ICreateExpressionProfilePresenter, IExpressionProfileItemPresenter>, ICreateExpressionProfilePresenter
    {
       private readonly IExpressionProfileFactory _expressionProfileFactory;
+      private readonly IExpressionProfileTask _expressionProfileTask;
       public ExpressionProfile ExpressionProfile { get; private set; }
 
 
@@ -25,9 +27,11 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          ICreateExpressionProfileView view,
          ISubPresenterItemManager<IExpressionProfileItemPresenter> subPresenterItemManager,
          IDialogCreator dialogCreator,
-         IExpressionProfileFactory expressionProfileFactory) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
+         IExpressionProfileFactory expressionProfileFactory,
+         IExpressionProfileTask expressionProfileTask) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
       {
          _expressionProfileFactory = expressionProfileFactory;
+         _expressionProfileTask = expressionProfileTask;
       }
 
 
@@ -41,6 +45,8 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          if (_view.Canceled)
             return new PKSimEmptyCommand();
 
+         //We need to rename molecule in the expression profile to match the new name
+         _expressionProfileTask.UpdateMoleculeName(ExpressionProfile);
          return _macroCommand;
       }
 

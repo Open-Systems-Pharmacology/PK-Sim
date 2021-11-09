@@ -7,6 +7,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
@@ -20,15 +21,17 @@ namespace PKSim.Presentation
       protected IExpressionProfileFactory _expressionProfileFactory;
       protected IExpressionProfileMoleculesPresenter _moleculesPresenter;
       protected ExpressionProfile _expressionProfile;
+      protected IExpressionProfileTask _expressionProfileTask;
 
       protected override void Context()
       {
          _view = A.Fake<ICreateExpressionProfileView>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
+         _expressionProfileTask= A.Fake<IExpressionProfileTask>();
          _subPresenterManager = SubPresenterHelper.Create<IExpressionProfileItemPresenter>();
          _moleculesPresenter = _subPresenterManager.CreateFake(ExpressionProfileItems.Molecules);
-         sut = new CreateExpressionProfilePresenter(_view, _subPresenterManager, _dialogCreator, _expressionProfileFactory);
+         sut = new CreateExpressionProfilePresenter(_view, _subPresenterManager, _dialogCreator, _expressionProfileFactory, _expressionProfileTask);
 
          _expressionProfile = A.Fake<ExpressionProfile>();
          A.CallTo(() => _expressionProfile.Icon).Returns(ApplicationIcons.Enzyme.IconName);

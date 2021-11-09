@@ -27,26 +27,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       IPresenterWithContextMenu<ITreeNode>
    {
       /// <summary>
-      ///    rename the given protein
-      /// </summary>
-      void RenameMolecule(IndividualMolecule molecule);
-
-      /// <summary>
-      ///    Can we perform an edit on the protein (edit using the protein expression database)
-      /// </summary>
-      bool EditConfigurationEnabledFor(IndividualMolecule molecule);
-
-      /// <summary>
-      ///    Can we perform an edit on the individual (edit using the protein expression database)
-      /// </summary>
-      bool QueryConfigurationEnabled { get; }
-
-      /// <summary>
-      ///    Launch the protein edition
-      /// </summary>
-      void EditMolecule(IndividualMolecule molecule);
-
-      /// <summary>
       ///    Remove the given protein
       /// </summary>
       void RemoveMolecule(IndividualMolecule molecule);
@@ -142,12 +122,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          contextMenu.Show(_view, popupLocation);
       }
 
-      public bool QueryConfigurationEnabled => _editMoleculeTask.CanQueryProteinExpressionsFor(_simulationSubject);
-
-      public bool EditConfigurationEnabledFor(IndividualMolecule molecule)
-      {
-         return QueryConfigurationEnabled && molecule.HasQuery();
-      }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -209,23 +183,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          return moleculeNode?.TagAsObject as IndividualMolecule;
       }
 
-      public void RenameMolecule(IndividualMolecule molecule)
-      {
-         var newName = _entityTask.NewNameFor(molecule, _simulationSubject.AllMolecules().AllNames());
-         if(string.IsNullOrEmpty(newName))
-            return;
-         
-         AddCommand(_editMoleculeTask.RenameMolecule(molecule, newName, _simulationSubject));
-         editMolecule(molecule);
-      }
-
-      public void EditMolecule(IndividualMolecule molecule)
-      {
-         if (!EditConfigurationEnabledFor(molecule))
-            return;
-
-         AddCommand(_editMoleculeTask.EditMolecule(molecule, _simulationSubject));
-      }
 
       private void editMolecule(IndividualMolecule molecule)
       {

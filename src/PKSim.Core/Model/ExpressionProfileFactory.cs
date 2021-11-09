@@ -16,6 +16,7 @@ namespace PKSim.Core.Model
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IPKSimObjectBaseFactory _objectBaseFactory;
       private readonly IIndividualFactory _individualFactory;
+      private const string DEFAULT_MOLECULE_NAME = "<MOLECULE>";
 
       public ExpressionProfileFactory(
          ISpeciesRepository speciesRepository,
@@ -51,7 +52,7 @@ namespace PKSim.Core.Model
       {
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(individualMoleculeType);
          expressionProfile.Individual = _individualFactory.CreateParameterLessIndividual(species);
-         moleculeFactory.AddMoleculeTo(expressionProfile.Individual, ExpressionProfile.MOLECULE_NAME);
+         moleculeFactory.AddMoleculeTo(expressionProfile.Individual, DEFAULT_MOLECULE_NAME);
       }
    }
 }
