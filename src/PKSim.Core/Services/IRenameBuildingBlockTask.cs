@@ -14,7 +14,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Update build the building block names of simulation using the given building block;
       /// </summary>
-      void RenameUsageOfBuildingBlockInProject(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName);
+      void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName);
 
       /// <summary>
       ///    Change the name of the compound used in the simulation. The <paramref name="targetSimulation"/> was created using the compound

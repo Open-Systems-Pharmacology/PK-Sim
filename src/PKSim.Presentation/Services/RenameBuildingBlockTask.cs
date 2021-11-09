@@ -33,11 +33,21 @@ namespace PKSim.Presentation.Services
       private readonly IParameterIdentificationSimulationPathUpdater _simulationPathUpdater;
       private readonly IDataRepositoryNamer _dataRepositoryNamer;
       private readonly ICurveNamer _curveNamer;
+      private readonly IExpressionProfileTask _expressionProfileTask;
 
-      public RenameBuildingBlockTask(IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         IApplicationController applicationController, ILazyLoadTask lazyLoadTask, IContainerTask containerTask,
-         IHeavyWorkManager heavyWorkManager, IRenameAbsolutePathVisitor renameAbsolutePathVisitor, IObjectReferencingRetriever objectReferencingRetriever,
-         IProjectRetriever projectRetriever, IParameterIdentificationSimulationPathUpdater simulationPathUpdater, IDataRepositoryNamer dataRepositoryNamer, ICurveNamer curveNamer)
+      public RenameBuildingBlockTask(
+         IBuildingBlockTask buildingBlockTask, 
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IApplicationController applicationController, 
+         ILazyLoadTask lazyLoadTask, IContainerTask containerTask,
+         IHeavyWorkManager heavyWorkManager, 
+         IRenameAbsolutePathVisitor renameAbsolutePathVisitor, 
+         IObjectReferencingRetriever objectReferencingRetriever,
+         IProjectRetriever projectRetriever, 
+         IParameterIdentificationSimulationPathUpdater simulationPathUpdater, 
+         IDataRepositoryNamer dataRepositoryNamer, 
+         ICurveNamer curveNamer, 
+         IExpressionProfileTask expressionProfileTask)
       {
          _buildingBlockTask = buildingBlockTask;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
@@ -51,6 +61,7 @@ namespace PKSim.Presentation.Services
          _simulationPathUpdater = simulationPathUpdater;
          _dataRepositoryNamer = dataRepositoryNamer;
          _curveNamer = curveNamer;
+         _expressionProfileTask = expressionProfileTask;
       }
 
       public void RenameSimulation(Simulation simulation, string newName)
@@ -141,10 +152,20 @@ namespace PKSim.Presentation.Services
          return quantity != null && quantity.QuantityType.Is(QuantityType.Drug);
       }
 
-      public void RenameUsageOfBuildingBlockInProject(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
+      public void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
       {
          renameUsageOfBuildingBlockInSimulations(templateBuildingBlock);
          renameUsageOfBuildingBlockInObservedData(templateBuildingBlock, oldBuildingBlockName);
+         renameExpressionProfile(templateBuildingBlock);
+      }
+
+      private void renameExpressionProfile(IPKSimBuildingBlock templateBuildingBlock)
+      {
+         var expressionProfile = templateBuildingBlock as ExpressionProfile;
+         if(expressionProfile==null)
+            return;
+
+         _expressionProfileTask.UpdateMoleculeName(expressionProfile);
       }
 
       private void renameUsageOfBuildingBlockInObservedData(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)

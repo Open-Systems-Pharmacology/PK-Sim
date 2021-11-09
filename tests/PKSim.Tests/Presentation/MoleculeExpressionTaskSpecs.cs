@@ -35,6 +35,8 @@ namespace PKSim.Presentation
       protected ISimulationSubjectExpressionTask<Individual> _subjectExpressionTask;
       protected IOntogenyTask<Individual> _ontogenyTask;
       protected IMoleculeParameterTask _moleculeParameterTask;
+      private IEntityPathResolver _entityPathResolver;
+      private IParameterSetUpdater _parameterSetUpdater;
 
       protected override void Context()
       {
@@ -52,6 +54,8 @@ namespace PKSim.Presentation
          _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          var proteinFactory = A.Fake<IIndividualMoleculeFactory>();
+         _entityPathResolver= A.Fake<IEntityPathResolver>();
+         _parameterSetUpdater = A.Fake<IParameterSetUpdater>();
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
          _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
@@ -68,10 +72,17 @@ namespace PKSim.Presentation
          _subjectExpressionTask = new IndividualExpressionTask(_executionContext);
 
          _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
-         sut = new MoleculeExpressionTask<Individual>(_executionContext,
+         sut = new MoleculeExpressionTask<Individual>(
+            _executionContext,
             _individualMoleculeFactoryResolver,
             _containerTask,
-            _ontogenyRepository, _transportContainerUpdater, _subjectExpressionTask, _ontogenyTask, _moleculeParameterTask);
+            _ontogenyRepository, 
+            _transportContainerUpdater, 
+            _subjectExpressionTask, 
+            _ontogenyTask, 
+            _moleculeParameterTask,
+            _entityPathResolver,
+            _parameterSetUpdater);
       }
    }
 

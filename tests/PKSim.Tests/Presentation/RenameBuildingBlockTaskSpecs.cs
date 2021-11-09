@@ -42,6 +42,7 @@ namespace PKSim.Presentation
       protected string _initialSimulationName;
       protected IDataRepositoryNamer _dataRepositoryNamer;
       protected ICurveNamer _curveNamer;
+      private IExpressionProfileTask _expressionProfileTask;
 
       protected override void Context()
       {
@@ -58,9 +59,22 @@ namespace PKSim.Presentation
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
          _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
          _curveNamer = A.Fake<ICurveNamer>();
+         _expressionProfileTask= A.Fake<IExpressionProfileTask>();   
 
-         sut = new RenameBuildingBlockTask(_buildingBlockTask, _buildingBlockInSimulationManager, _applicationController, _lazyloadTask,
-            _containerTask, _heavyWorkManager, _renameAbsolutePathVisitor, _objectReferencingRetriever, _projectRetriever, _parameterIdentificationSimulationPathUpdater, _dataRepositoryNamer, _curveNamer);
+         sut = new RenameBuildingBlockTask(
+            _buildingBlockTask, 
+            _buildingBlockInSimulationManager, 
+            _applicationController, 
+            _lazyloadTask,
+            _containerTask, 
+            _heavyWorkManager, 
+            _renameAbsolutePathVisitor, 
+            _objectReferencingRetriever, 
+            _projectRetriever, 
+            _parameterIdentificationSimulationPathUpdater, 
+            _dataRepositoryNamer, 
+            _curveNamer,
+            _expressionProfileTask);
 
          _initialSimulationName = "S";
          _individualSimulation = new IndividualSimulation().WithName(_initialSimulationName);
@@ -305,7 +319,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.RenameUsageOfBuildingBlockInProject(_compound, _oldName);
+         sut.RenameBuildingBlock(_compound, _oldName);
       }
 
       [Observation]
