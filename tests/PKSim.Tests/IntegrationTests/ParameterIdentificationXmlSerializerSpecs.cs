@@ -166,16 +166,6 @@ namespace PKSim.IntegrationTests
 
    public class When_serializing_a_parameter_identification : duplicated_parameter_identification_comparison_test
    {
-      // public override ParameterIdentification SerializeAndDeserialize(ParameterIdentification source, SerializationContext serializationContext = null)
-      // {
-      //    var stream = _serializationManager.Serialize(source);
-      //    var serializationContextFactory = IoC.Resolve<ISerializationContextFactory>();
-      //    using (var context = serializationContextFactory.Create())
-      //    {
-      //       return _serializationManager.Deserialize<ParameterIdentification>(stream, context);
-      //    }
-      // }
-
       protected override void GlobalBecause()
       {
          _duplicatedParameterIdentification = SerializeAndDeserialize(_parameterIdentification);
