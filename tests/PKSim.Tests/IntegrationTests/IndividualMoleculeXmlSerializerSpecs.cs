@@ -6,7 +6,6 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
 
 namespace PKSim.IntegrationTests
 {

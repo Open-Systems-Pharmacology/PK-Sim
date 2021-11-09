@@ -10,6 +10,7 @@ using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.IntegrationTests
 {
@@ -122,7 +123,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_deserialize_the_identifcation_parameters_and_their_linked_parameters()
+      public void should_be_able_to_deserialize_the_identification_parameters_and_their_linked_parameters()
       {
          _duplicatedParameterIdentification.AllIdentificationParameters.Count.ShouldBeEqualTo(1);
          var deserializedIdentificationParameter = _duplicatedParameterIdentification.AllIdentificationParameters[0];
@@ -165,15 +166,15 @@ namespace PKSim.IntegrationTests
 
    public class When_serializing_a_parameter_identification : duplicated_parameter_identification_comparison_test
    {
-      public override ParameterIdentification SerializeAndDeserialize(ParameterIdentification source)
-      {
-         var stream = _serializationManager.Serialize(source);
-         var serializationContectFactory = IoC.Resolve<ISerializationContextFactory>();
-         using (var context = serializationContectFactory.Create())
-         {
-            return _serializationManager.Deserialize<ParameterIdentification>(stream, context);
-         }
-      }
+      // public override ParameterIdentification SerializeAndDeserialize(ParameterIdentification source, SerializationContext serializationContext = null)
+      // {
+      //    var stream = _serializationManager.Serialize(source);
+      //    var serializationContextFactory = IoC.Resolve<ISerializationContextFactory>();
+      //    using (var context = serializationContextFactory.Create())
+      //    {
+      //       return _serializationManager.Deserialize<ParameterIdentification>(stream, context);
+      //    }
+      // }
 
       protected override void GlobalBecause()
       {

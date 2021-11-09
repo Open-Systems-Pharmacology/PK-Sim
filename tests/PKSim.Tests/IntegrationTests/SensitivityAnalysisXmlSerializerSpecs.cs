@@ -7,6 +7,7 @@ using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
+using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.IntegrationTests
 {
@@ -53,15 +54,15 @@ namespace PKSim.IntegrationTests
          _deserializedSensitivityAnalysis = SerializeAndDeserialize(_sensitivityAnalysis);
       }
 
-      public override SensitivityAnalysis SerializeAndDeserialize(SensitivityAnalysis sensitivityAnalysis)
-      {
-         var stream = _serializationManager.Serialize(sensitivityAnalysis);
-         var serializationContectFactory = IoC.Resolve<ISerializationContextFactory>();
-         using (var context = serializationContectFactory.Create())
-         {
-            return _serializationManager.Deserialize<SensitivityAnalysis>(stream, context);
-         }
-      }
+      // public override SensitivityAnalysis SerializeAndDeserialize(SensitivityAnalysis sensitivityAnalysis, SerializationContext serializationContext = null)
+      // {
+      //    var stream = _serializationManager.Serialize(sensitivityAnalysis);
+      //    var serializationContextFactory = IoC.Resolve<ISerializationContextFactory>();
+      //    using (var context = serializationContextFactory.Create())
+      //    {
+      //       return _serializationManager.Deserialize<SensitivityAnalysis>(stream, context);
+      //    }
+      // }
 
       [Observation]
       public void should_be_able_to_deserialize_the_sensitivity_analysis_and_retrieve_the_simulation_used()

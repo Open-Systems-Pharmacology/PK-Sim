@@ -22,6 +22,12 @@ namespace PKSim.Infrastructure.Serialization.Xml.Extensions
          return serializerRepository.CreateObjectReferenceListElement(withObservedData, x => x.AllObservedData(), CoreConstants.Serialization.ObservedDataList, CoreConstants.Serialization.ObservedData);
       }
 
+
+      public static XElement CreateExpressionProfileReferenceListElement(this IXmlSerializerRepository<SerializationContext> serializerRepository, ISimulationSubject simulationSubject)
+      {
+         return serializerRepository.CreateObjectReferenceListElement(simulationSubject, x => x.AllExpressionProfiles(), CoreConstants.Serialization.ExpressionProfileList, CoreConstants.Serialization.ExpressionProfile);
+      }
+
       public static void AddReferencedSimulations<TSimulation>(this XElement comparisonElement, ISimulationComparison<TSimulation> simulationComparison, IWithIdRepository withIdRepository, ILazyLoadTask lazyLoadTask) where TSimulation : Simulation
       {
          comparisonElement.AddReferencedObject<ISimulationComparison<TSimulation>, TSimulation>(
@@ -33,5 +39,12 @@ namespace PKSim.Infrastructure.Serialization.Xml.Extensions
          withObservedDataElement.AddReferencedObject<IWithObservedData, DataRepository>(
             withObservedData, x => x.AddObservedData, withIdRepository, null, CoreConstants.Serialization.ObservedData);
       }
+
+      public static void AddReferencedExpressionProfiles(this XElement simulationSubjectElement, ISimulationSubject simulationSubject, IWithIdRepository withIdRepository, ILazyLoadTask lazyLoadTask)
+      {
+         simulationSubjectElement.AddReferencedObject<ISimulationSubject, ExpressionProfile>(
+            simulationSubject, x => x.AddExpressionProfile, withIdRepository, lazyLoadTask, CoreConstants.Serialization.ExpressionProfile);
+      }
+
    }
 }
