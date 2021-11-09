@@ -57,11 +57,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       void AddMolecule<TMolecule>() where TMolecule : IndividualMolecule;
 
       /// <summary>
-      ///    Add a default protein using the default construct
-      /// </summary>
-      void AddDefaultMolecule<TMolecule>() where TMolecule : IndividualMolecule;
-
-      /// <summary>
       ///    The node given as parameter was selected
       /// </summary>
       void ActivateNode(ITreeNode node);
@@ -152,11 +147,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       public bool EditConfigurationEnabledFor(IndividualMolecule molecule)
       {
          return QueryConfigurationEnabled && molecule.HasQuery();
-      }
-
-      public void AddDefaultMolecule<TMolecule>() where TMolecule : IndividualMolecule
-      {
-         AddCommand(_editMoleculeTask.AddDefaultMolecule<TMolecule>(_simulationSubject));
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)

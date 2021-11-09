@@ -1193,14 +1193,6 @@ namespace PKSim.Assets
 
          public static string CompareBuildingBlocks(string buildingBlockType) => $"Compare {buildingBlockType}s";
 
-         public static string AddProteinDefault(string addProteinCaption) => $"{addProteinCaption} (Default)";
-
-         public static string AddProteinQuery(string addProteinCaption, bool isDefined)
-         {
-            var hint = $"Database {(isDefined ? "query" : "not available")}";
-            return $"{addProteinCaption} ({hint})";
-         }
-
          public static string AddObservedDataToSimulation(string simulationName) => $"Add to {ObjectTypes.Simulation} '{simulationName}'";
       }
 
@@ -1963,9 +1955,10 @@ namespace PKSim.Assets
          public static readonly string CreateMetabolizingEnzyme = $"Add {MetabolizingEnzyme}...";
          public static readonly string CreateProteinBindingPartner = $"Add {ProteinBindingPartner}...";
          public static readonly string CreateTransportProtein = $"Create {TransportProtein} ...";
-         public static readonly string AddMetabolizingEnzyme = $"Add {MetabolizingEnzyme}...";
-         public static readonly string AddTransportProtein = $"Add {TransportProtein}...";
-         public static readonly string AddSpecificBindingPartner = $"Add {ProteinBindingPartner}...";
+         public static string AddMolecule(string moleculeType) => $"Add {moleculeType}...";
+         public static readonly string AddMetabolizingEnzyme = AddMolecule(MetabolizingEnzyme);
+         public static readonly string AddTransportProtein = AddMolecule(TransportProtein);
+         public static readonly string AddSpecificBindingPartner = AddMolecule(ProteinBindingPartner);
          public static readonly string SpecificBindingProcesses = "Specific Binding";
          public static readonly string TransportAndExcretionProcesses = "Transport & Excretion";
          public static readonly string BiliaryClearance = "Biliary Clearance";
@@ -2569,6 +2562,7 @@ namespace PKSim.Assets
          public static string  LoadObjectFromSnapshot(string objectType) => $"Load {objectType.ToLowerInvariant()} from snapshot";
 
          public static string LoadFromSnapshot => "Load Snapshot";
+         public static string SelectExpressionProfile => "Select an expression profile";
 
          public static string NumberOfTemplatesSelectedIs(int number, string templateType) => $"{number} {templateType.PluralizeIf(number).ToLowerInvariant()} selected";
 

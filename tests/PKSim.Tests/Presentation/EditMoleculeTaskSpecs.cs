@@ -10,6 +10,7 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ProjectConverter;
+using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Services;
 
@@ -24,7 +25,7 @@ namespace PKSim.Presentation
       protected IApplicationController _applicationController;
       protected IIndividualMoleculeFactoryResolver _moleculeFactoryResolver;
       protected IProteinExpressionsPresenter _proteinExpressionPresenter;
-      protected ISimpleMoleculePresenter _simpleMoleculePresenter;
+      protected IExpressionProfileSelectionPresenter _expressionProfileSelectionPresenter;
       protected MoleculeExpressionContainer _moleculeContainer1;
       protected MoleculeExpressionContainer _moleculeContainer2;
       protected IndividualMolecule _molecule;
@@ -43,10 +44,10 @@ namespace PKSim.Presentation
             _geneExpressionsDatabasePathManager, _applicationController, _moleculeFactoryResolver);
 
          _proteinExpressionPresenter = A.Fake<IProteinExpressionsPresenter>();
-         _simpleMoleculePresenter = A.Fake<ISimpleMoleculePresenter>();
+         _expressionProfileSelectionPresenter = A.Fake<IExpressionProfileSelectionPresenter>();
 
          A.CallTo(() => _applicationController.Start<IProteinExpressionsPresenter>()).Returns(_proteinExpressionPresenter);
-         A.CallTo(() => _applicationController.Start<ISimpleMoleculePresenter>()).Returns(_simpleMoleculePresenter);
+         A.CallTo(() => _applicationController.Start<IExpressionProfileSelectionPresenter>()).Returns(_expressionProfileSelectionPresenter);
 
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
          _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
@@ -117,58 +118,19 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_asked_to_add_a_default_protein_to_an_individual : concern_for_EditMoleculeTask
+   public class When_asked_to_add_an_expression_profile_to_an_individual : concern_for_EditMoleculeTask
    {
       private ICommand _resultCommand;
       private ICommand _addCommand;
+      private ExpressionProfile _expressionProfile;
 
       protected override void Context()
       {
          base.Context();
          _addCommand = A.Fake<ICommand>();
-         A.CallTo(() => _simpleMoleculePresenter.CreateMoleculeFor<IndividualProtein>(_individual)).Returns(true);
-         A.CallTo(() => _simpleMoleculePresenter.MoleculeName).Returns("MOLECULE");
-         _molecule.Name = _simpleMoleculePresenter.MoleculeName;
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualProtein>(_individual, "MOLECULE")).Returns(_addCommand);
-      }
-
-      protected override void Because()
-      {
-         _resultCommand = sut.AddDefaultMolecule<IndividualProtein>(_individual);
-      }
-
-      [Observation]
-      public void should_generate_a_default_protein_bypassing_the_expression_database()
-      {
-         A.CallTo(() => _simpleMoleculePresenter.CreateMoleculeFor<IndividualProtein>(_individual)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_update_the_default_parameters_in_the_newly_added_molecule()
-      {
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualProtein>(_individual, "MOLECULE")).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_resulting_command_should_be_an_instance_of_add_protein_to_individual_command()
-      {
-         _resultCommand.ShouldBeEqualTo(_addCommand);
-      }
-   }
-
-   public class When_asked_to_add_a_protein_to_an_individual_for_which_no_database_has_been_defined : concern_for_EditMoleculeTask
-   {
-      private ICommand _resultCommand;
-      private ICommand _addCommand;
-
-      protected override void Context()
-      {
-         base.Context();
-         _addCommand = A.Fake<ICommand>();
-         A.CallTo(() => _geneExpressionsDatabasePathManager.HasDatabaseFor(_individual.Species)).Returns(false);
-         A.CallTo(() => _simpleMoleculePresenter.CreateMoleculeFor<IndividualProtein>(_individual)).Returns(true);
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualProtein>(_individual, _simpleMoleculePresenter.MoleculeName))
-            .Returns(_addCommand);
+         _expressionProfile = new ExpressionProfile {MoleculeName = "MOLECULE"};
+         A.CallTo(() => _expressionProfileSelectionPresenter.SelectExpressionProfile<IndividualProtein>(_individual)).Returns(_expressionProfile);
+         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile<IndividualProtein>(_individual, _expressionProfile)).Returns(_addCommand);
       }
 
       protected override void Because()
@@ -177,13 +139,19 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_start_the_simple_protein_presenter_to_retrieve_the_minimal_info_required_to_create_a_protein()
+      public void should_ask_the_user_to_select_an_expression_profile()
       {
-         A.CallTo(() => _simpleMoleculePresenter.CreateMoleculeFor<IndividualProtein>(_individual)).MustHaveHappened();
+         A.CallTo(() => _expressionProfileSelectionPresenter.SelectExpressionProfile<IndividualProtein>(_individual)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_leverage_the_molecule_task_to_add_the_molecule_to_the_individual()
+      public void should_update_the_default_parameters_in_the_newly_added_molecule()
+      {
+         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile<IndividualProtein>(_individual, _expressionProfile)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_resulting_command_should_be_an_instance_of_add_protein_to_individual_command()
       {
          _resultCommand.ShouldBeEqualTo(_addCommand);
       }

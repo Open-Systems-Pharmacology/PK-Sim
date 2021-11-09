@@ -1,7 +1,8 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -18,6 +19,14 @@ namespace PKSim.Core.Services
       /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
       /// <param name="moleculeName">Name of the molecule to add</param>
       ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule;
+
+      /// <summary>
+      ///    Add a molecule of type <typeparamref name="TMolecule" /> to the given individual named based on the <paramref name="expressionProfile"/>
+      /// </summary>
+      /// <typeparam name="TMolecule">Type of molecule to add. The molecule will be created depending on this type </typeparam>
+      /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
+      /// <param name="expressionProfile">Expression profile to add to the simulation subject</param>
+      ICommand AddExpressionProfile<TMolecule>(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile) where TMolecule : IndividualMolecule;
 
       /// <summary>
       ///    Add a molecule of type to the given individual named after the <paramref name="moleculeTemplate" /> template given as
@@ -77,6 +86,8 @@ namespace PKSim.Core.Services
       private readonly ISimulationSubjectExpressionTask<TSimulationSubject> _simulationSubjectExpressionTask;
       private readonly IOntogenyTask<TSimulationSubject> _ontogenyTask;
       private readonly IMoleculeParameterTask _moleculeParameterTask;
+      private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IParameterSetUpdater _parameterSetUpdater;
 
       public MoleculeExpressionTask(IExecutionContext executionContext,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
@@ -85,7 +96,9 @@ namespace PKSim.Core.Services
          ITransportContainerUpdater transportContainerUpdater,
          ISimulationSubjectExpressionTask<TSimulationSubject> simulationSubjectExpressionTask,
          IOntogenyTask<TSimulationSubject> ontogenyTask,
-         IMoleculeParameterTask moleculeParameterTask)
+         IMoleculeParameterTask moleculeParameterTask,
+         IEntityPathResolver entityPathResolver,
+         IParameterSetUpdater parameterSetUpdater)
       {
          _executionContext = executionContext;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
@@ -95,6 +108,8 @@ namespace PKSim.Core.Services
          _simulationSubjectExpressionTask = simulationSubjectExpressionTask;
          _ontogenyTask = ontogenyTask;
          _moleculeParameterTask = moleculeParameterTask;
+         _entityPathResolver = entityPathResolver;
+         _parameterSetUpdater = parameterSetUpdater;
       }
 
       public ICommand SetRelativeExpressionFor(IParameter relativeExpressionParameter, double value)
@@ -112,6 +127,30 @@ namespace PKSim.Core.Services
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
          var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, moleculeName);
          return addMoleculeTo(molecule, simulationSubject);
+      }
+
+      public ICommand AddExpressionProfile<TMolecule>(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile) where TMolecule : IndividualMolecule
+      {
+          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+         var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, expressionProfile.MoleculeName);
+         simulationSubject.AddExpressionProfile(expressionProfile);
+         _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);
+         return updateFromExpressionProfile(simulationSubject, expressionProfile);
+      }
+
+      private ICommand updateFromExpressionProfile(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile)
+      {
+         var molecule = simulationSubject.MoleculeByName(expressionProfile.MoleculeName);
+         var allMoleculeParameters = simulationSubject.Individual.AllMoleculeParametersFor(molecule);
+         var allExpressionProfileMoleculeParameters = expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule);
+         var allMoleculeParametersPathCache = new PathCache<IParameter>(_entityPathResolver).For(allMoleculeParameters);
+         var allExpressionProfileMoleculeParametersCache = new Cache<string, IParameter>(x => _entityPathResolver.PathFor(x).Replace(expressionProfile.Molecule.Name, expressionProfile.MoleculeName));
+         allExpressionProfileMoleculeParameters.Each(x => allExpressionProfileMoleculeParametersCache.Add(x));
+         molecule.Ontogeny = expressionProfile.Molecule.Ontogeny;
+         _ontogenyTask.SetOntogenyForMolecule(molecule, molecule.Ontogeny, simulationSubject);
+         updateTransporterDirections(molecule, simulationSubject, expressionProfile);
+         updateGlobalMoleculeSettings(molecule, expressionProfile.Molecule);
+         return _parameterSetUpdater.UpdateValues(allExpressionProfileMoleculeParametersCache, allMoleculeParametersPathCache);
       }
 
       public ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule moleculeTemplate)
@@ -197,6 +236,32 @@ namespace PKSim.Core.Services
          var ontogeny = _ontogenyRepository.AllFor(simulationSubject.Species.Name).FindByName(moleculeName);
          if (ontogeny == null) return;
          _ontogenyTask.SetOntogenyForMolecule(molecule, ontogeny, simulationSubject);
+      }
+
+      private void updateTransporterDirections(IndividualMolecule molecule, TSimulationSubject simulationSubject, ExpressionProfile expressionProfile)
+      {
+         var transporter = expressionProfile.Molecule as IndividualTransporter;
+         if (transporter == null)
+            return;
+
+         var allExpressionProfileTransporterContainer = expressionProfile.Individual.AllMoleculeContainersFor<TransporterExpressionContainer>(expressionProfile.Molecule);
+         var allIndividualTransporterContainer = simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(molecule);
+      }
+
+      private void updateGlobalMoleculeSettings(IndividualMolecule molecule, IndividualMolecule expressionProfileMolecule)
+      {
+         switch (molecule)
+         {
+            case IndividualProtein protein:
+               var expressionProfileProtein = expressionProfileMolecule.DowncastTo<IndividualProtein>();
+               protein.Localization = expressionProfileProtein.Localization;
+               break;
+            case IndividualTransporter transporter:
+               var expressionProfileTransporter = expressionProfileMolecule.DowncastTo<IndividualTransporter>();
+               transporter.TransportType = expressionProfileTransporter.TransportType;
+               break;
+
+         }
       }
    }
 }

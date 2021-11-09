@@ -1,12 +1,10 @@
 ﻿using System.Linq;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.ExpressionProfiles;
-using static PKSim.Assets.PKSimConstants.UI;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -19,47 +17,35 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IUsedMoleculeRepository _usedMoleculeRepository;
       private readonly IPKSimProjectRetriever _projectRetriever;
+      private readonly IMoleculePropertiesMapper _moleculePropertiesMapper;
 
       public ExpressionProfileToExpressionProfileDTOMapper(
          ISpeciesRepository speciesRepository,
          IUsedMoleculeRepository usedMoleculeRepository,
-         IPKSimProjectRetriever projectRetriever)
+         IPKSimProjectRetriever projectRetriever,
+         IMoleculePropertiesMapper moleculePropertiesMapper)
       {
          _speciesRepository = speciesRepository;
          _usedMoleculeRepository = usedMoleculeRepository;
          _projectRetriever = projectRetriever;
+         _moleculePropertiesMapper = moleculePropertiesMapper;
       }
 
       public ExpressionProfileDTO MapFrom(ExpressionProfile expressionProfile)
       {
-         var  dto =  new ExpressionProfileDTO
+         var dto = new ExpressionProfileDTO
          {
-            Icon = ApplicationIcons.IconByName(expressionProfile.Icon),
+            Icon = _moleculePropertiesMapper.MoleculeIconFor(expressionProfile.Molecule),
             Species = expressionProfile.Species,
             Category = expressionProfile.Category,
             MoleculeName = expressionProfile.MoleculeName,
             AllMolecules = _usedMoleculeRepository.All(),
             AllSpecies = _speciesRepository.All(),
-            MoleculeType = moleculeTypeDisplayFor(expressionProfile.Molecule.MoleculeType),
+            MoleculeType = _moleculePropertiesMapper.MoleculeDisplayFor(expressionProfile.Molecule),
          };
 
          dto.AddExistingExpressionProfileNames(_projectRetriever.Current.All(PKSimBuildingBlockType.ExpressionProfile).AllNames().Except(new[] {expressionProfile.Name}));
          return dto;
-      }
-
-      private string moleculeTypeDisplayFor(QuantityType moleculeType)
-      {
-         switch (moleculeType)
-         {
-            case QuantityType.Transporter:
-               return TransportProtein;
-            case QuantityType.Enzyme:
-               return MetabolizingEnzyme;
-            case QuantityType.OtherProtein:
-               return ProteinBindingPartner;
-            default:
-               return moleculeType.ToString();
-         }
       }
    }
 }

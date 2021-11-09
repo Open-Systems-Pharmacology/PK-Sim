@@ -31,16 +31,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private IEnumerable<IMenuBarItem> allMenuItemsFor(IMoleculesPresenter presenter)
       {
          yield return
-            CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddProteinDefault(_addProteinCaption))
-               .WithActionCommand(presenter.AddDefaultMolecule<TMolecule>)
+            CreateMenuButton.WithCaption(_addProteinCaption)
+               .WithActionCommand(presenter.AddMolecule<TMolecule>)
                .WithIcon(_addProteinIcon);
 
-         var databaseEnabled = presenter.QueryConfigurationEnabled;
-         yield return
-            CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddProteinQuery(_addProteinCaption, databaseEnabled))
-               .WithActionCommand(presenter.AddMolecule<TMolecule>)
-               .WithEnabled(databaseEnabled)
-               .WithIcon(_addProteinIcon);
       }
    }
 

@@ -188,6 +188,7 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(individual, cloneManager);
          OriginData = individual.OriginData.Clone();
          Seed = individual.Seed;
+         individual.AllExpressionProfiles().Each(AddExpressionProfile);
       }
 
       /// <summary>

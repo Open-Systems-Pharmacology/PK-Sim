@@ -51,8 +51,8 @@ namespace PKSim.UI.Views.Simulations
 
       public bool AllowAgingVisible
       {
-         set { layoutItemAllowAging.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
-         get { return LayoutVisibilityConvertor.ToBoolean(layoutItemAllowAging.Visibility); }
+         set => layoutItemAllowAging.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         get => LayoutVisibilityConvertor.ToBoolean(layoutItemAllowAging.Visibility);
       }
 
       public override void InitializeResources()

@@ -3,11 +3,8 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Infrastructure.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.IntegrationTests
 {

@@ -21,17 +21,13 @@ namespace PKSim.Presentation.DTO
 
       public IPKSimBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
-         set
-         {
-            _buildingBlock = value;
-            OnPropertyChanged(() => BuildingBlock);
-         }
+         get => _buildingBlock;
+         set => SetProperty(ref _buildingBlock, value);
       }
 
       public bool ValidateBuildingBlock
       {
-         get { return _validateBuildingBlock; }
+         get => _validateBuildingBlock;
          set
          {
             _validateBuildingBlock = value;
@@ -42,16 +38,10 @@ namespace PKSim.Presentation.DTO
 
       private static class AllRules
       {
-         private static IBusinessRule buildingBlockNotNull
-         {
-            get
-            {
-               return CreateRule.For<BuildingBlockSelectionDTO>()
-                  .Property(item => item.BuildingBlock)
-                  .WithRule((dto, block) => !dto.ValidateBuildingBlock || block != null)
-                  .WithError((dto, block) => PKSimConstants.Error.BuildingBlockNotDefined(dto.BuildingBockType));
-            }
-         }
+         private static IBusinessRule buildingBlockNotNull { get; } = CreateRule.For<BuildingBlockSelectionDTO>()
+            .Property(item => item.BuildingBlock)
+            .WithRule((dto, block) => !dto.ValidateBuildingBlock || block != null)
+            .WithError((dto, block) => PKSimConstants.Error.BuildingBlockNotDefined(dto.BuildingBockType));
 
          internal static IEnumerable<IBusinessRule> All()
          {

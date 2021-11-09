@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Visitor;
 using static PKSim.Core.CoreConstants.ContainerName;
 
 namespace PKSim.Core.Model
@@ -11,7 +11,11 @@ namespace PKSim.Core.Model
 
       private string _category;
       private string _moleculeName;
-      public virtual Species Species => Individual?.Species;
+
+      //Individual is set in factory and we can assume it will never be null
+      public Individual Individual { get; set; }
+
+      public virtual Species Species => Individual.Species;
 
       public ExpressionProfile() : base(PKSimBuildingBlockType.ExpressionProfile)
       {
@@ -54,9 +58,8 @@ namespace PKSim.Core.Model
          }
       }
 
-      public Individual Individual { get; set; }
 
-      public virtual IndividualMolecule Molecule => Individual?.MoleculeByName(MOLECULE_NAME) ?? new NullIndividualMolecule();
+      public virtual IndividualMolecule Molecule => Individual.MoleculeByName(MOLECULE_NAME) ?? new NullIndividualMolecule();
 
       public virtual void RefreshName()
       {
@@ -73,6 +76,22 @@ namespace PKSim.Core.Model
          MoleculeName = sourceExpressionProfile.MoleculeName;
          Category = sourceExpressionProfile.Category;
          Individual = cloneManager.Clone(sourceExpressionProfile.Individual);
+      }
+
+      public override void AcceptVisitor(IVisitor visitor)
+      {
+         base.AcceptVisitor(visitor);
+         Individual.AcceptVisitor(visitor);  
+      }
+
+      public override bool HasChanged
+      {
+         get => base.HasChanged || Individual.HasChanged;
+         set
+         {
+            base.HasChanged = value;
+            Individual.HasChanged = value;
+         }
       }
    }
 }
