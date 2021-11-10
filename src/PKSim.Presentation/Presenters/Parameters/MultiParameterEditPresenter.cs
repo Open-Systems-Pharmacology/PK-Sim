@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using DevExpress.Office.Utils;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -142,6 +143,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       ///    Event is raised whenever the selection of parameters in the UI has changed
       /// </summary>
       event Action OnSelectedParametersChanged;
+
+      void DisableEdit();
    }
 
    public class MultiParameterEditPresenter : ParameterSetPresenter<IMultiParameterEditView, IMultiParameterEditPresenter>, IMultiParameterEditPresenter
@@ -359,6 +362,12 @@ namespace PKSim.Presentation.Presenters.Parameters
          base.AddCommand(command);
          RefreshData();
       }
+
+      public void DisableEdit()
+      {
+         _view.ReadOnly = false;
+      }
+
 
       public void ShowContextMenu(IParameterDTO parameterDTO, Point popupLocation)
       {

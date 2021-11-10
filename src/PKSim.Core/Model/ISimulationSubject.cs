@@ -46,6 +46,11 @@ namespace PKSim.Core.Model
       IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule;
 
       /// <summary>
+      /// Returns the expression profile associated with the <paramref name="molecule"/>
+      /// </summary>
+      ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule);
+
+      /// <summary>
       ///    Adds a <paramref name="expressionProfile" /> reference to the underlying subject
       /// </summary>
       /// <param name="expressionProfile"> Expression profile to add </param>

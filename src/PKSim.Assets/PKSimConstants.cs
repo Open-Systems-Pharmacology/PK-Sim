@@ -399,6 +399,7 @@ namespace PKSim.Assets
          public const string NameIsRequired = "Name is required.";
          public const string MoleculeIsRequired = "Molecule is required.";
          public const string CategoryIsRequired = "Category is required.";
+         public const string SpeciesIsRequired = "Species is required.";
          public const string DataSourceIsRequired = "Data source is required.";
          public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'.";
          public const string RenameSameNameError = "The new name is the same as the original one.";
@@ -2578,6 +2579,7 @@ namespace PKSim.Assets
          public static readonly string ReallyClearUnusedContent = DoYouWantToProceed(_reallyClearUnusedContent);
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
+         public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
       }
 
       public static class Reporting

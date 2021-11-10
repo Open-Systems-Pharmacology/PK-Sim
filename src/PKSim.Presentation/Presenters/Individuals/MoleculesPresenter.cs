@@ -139,17 +139,22 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.GroupCaption = node.FullPath(PKSimConstants.UI.DisplayPathSeparator);
          if (nodeRepresentsMoleculeFolder(node))
          {
+            _view.LinkedExpressionProfileCaption = string.Empty;
             _view.ActivateView(_noItemInSelectionPresenter.BaseView);
             return;
          }
 
          var rootNode = node.ParentNode.DowncastTo<RootNode>();
+         var molecule = moleculeFrom(node);
+         var expressionProfile = _simulationSubject.ExpressionProfileFor(molecule);
+         _view.LinkedExpressionProfileCaption = PKSimConstants.UI.LinkedExpressionProfileIs(expressionProfile.Name);
          _activePresenter = presenterFor(rootNode);
          //needs to be done as soon as the view is available to allow proper resizing
          _view.ActivateView(_activePresenter.BaseView);
+         _activePresenter.DisableEdit();
          _activePresenter.OntogenyVisible = _simulationSubject.IsAgeDependent;
          _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>();
-         _activePresenter.ActivateMolecule(moleculeFrom(node));
+         _activePresenter.ActivateMolecule(molecule);
       }
 
       public void NodeDoubleClicked(ITreeNode node)

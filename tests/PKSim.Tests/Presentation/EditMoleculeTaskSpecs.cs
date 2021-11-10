@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -9,7 +8,6 @@ using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Services;
@@ -54,67 +52,12 @@ namespace PKSim.Presentation
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
          _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
 
-         _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
+         _individual = new Individual {OriginData = new OriginData {Species = new Species{Name = "Human", DisplayName = "Human"}}};
 
 
          _molecule = new IndividualEnzyme {Name = "CYP3A4"};
          _molecule.Add(_moleculeContainer1);
          _molecule.Add(_moleculeContainer2);
-      }
-   }
-
-   public class When_asked_to_add_a_protein_to_an_individual_for_which_an_expression_database_has_been_defined : concern_for_EditMoleculeTask
-   {
-      private ICommand _resultCommand;
-      private QueryExpressionResults _queryResults;
-      private QueryExpressionSettings _querySettings;
-      private IIndividualMoleculeFactory _proteinFactory;
-      private IndividualMolecule _tempProtein;
-      private ICommand _addCommand;
-      private const string _queryConfiguration = "blalal";
-      private const string _moleculeName = "toto";
-      private const string _renamedName = "aaa";
-
-      protected override void Context()
-      {
-         base.Context();
-         _addCommand = A.Fake<ICommand>();
-         _querySettings = A.Fake<QueryExpressionSettings>();
-         _queryResults = new QueryExpressionResults(new List<ExpressionResult>()) {ProteinName = _moleculeName};
-         A.CallTo(() => _geneExpressionsDatabasePathManager.HasDatabaseFor(_individual.Species)).Returns(true);
-         A.CallTo(() => _proteinExpressionPresenter.Start()).Returns(true);
-         A.CallTo(() => _proteinExpressionPresenter.GetQueryResults()).Returns(_queryResults);
-         _queryResults.QueryConfiguration = _queryConfiguration;
-         A.CallTo(() => _executionContext.BuildingBlockContaining(_molecule)).Returns(_individual);
-         _proteinFactory = A.Fake<IIndividualMoleculeFactory>();
-         A.CallTo(() => _moleculeFactoryResolver.FactoryFor<IndividualProtein>()).Returns(_proteinFactory);
-         _tempProtein = new IndividualEnzyme();
-         A.CallTo(() => _querySettingsMapper.MapFrom(_tempProtein, _individual, _tempProtein.Name)).Returns(_querySettings);
-         A.CallTo(() => _proteinFactory.AddMoleculeTo(_individual, "%TEMP%")).Returns(_tempProtein);
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo(_individual, _tempProtein, _queryResults)).Returns(_addCommand);
-      }
-
-      protected override void Because()
-      {
-         _resultCommand = sut.AddMoleculeTo<IndividualProtein>(_individual);
-      }
-
-      [Observation]
-      public void should_initialize_the_query_expression_presenter_with_the_default_query_settings_for_the_temp_protein_created_for_the_edit()
-      {
-         A.CallTo(() => _proteinExpressionPresenter.InitializeSettings(_querySettings)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_start_the_query_expression_presenter()
-      {
-         A.CallTo(() => _proteinExpressionPresenter.Start()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_resulting_command_should_be_an_instance_of_add_protein_from_query_to_individual_command()
-      {
-         _resultCommand.ShouldBeEqualTo(_addCommand);
       }
    }
 
@@ -128,7 +71,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _addCommand = A.Fake<ICommand>();
-         _expressionProfile = new ExpressionProfile {MoleculeName = "MOLECULE"};
+         _expressionProfile = new ExpressionProfile {MoleculeName = "MOLECULE", Individual = _individual };
          A.CallTo(() => _expressionProfileSelectionPresenter.SelectExpressionProfile<IndividualProtein>(_individual)).Returns(_expressionProfile);
          A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile<IndividualProtein>(_individual, _expressionProfile)).Returns(_addCommand);
       }

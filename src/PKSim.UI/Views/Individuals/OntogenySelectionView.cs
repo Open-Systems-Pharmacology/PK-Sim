@@ -41,6 +41,15 @@ namespace PKSim.UI.Views.Individuals
          set => btnShowOntogeny.Enabled = value;
       }
 
+      public bool ReadOnly
+      {
+         set
+         {
+            cbOntogey.ReadOnly = value;
+            btnLoadOntogenyFromFile.Enabled = !value;
+         }
+      }
+
       public override void InitializeBinding()
       {
          _screenBinder = new ScreenBinder<IndividualMolecule> {BindingMode = BindingMode.OneWay};

@@ -41,6 +41,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _mapper.MapFrom(_expressionProfile)).Returns(_expressionProfileDTO);
          _expressionProfileDTO.MoleculeName = "MOLECULE";
          _expressionProfileDTO.Category = "NEW_CATEGORY";
+         _expressionProfileDTO.Species = new Species{DisplayName = "Human"};
       }
 
       protected override void Because()

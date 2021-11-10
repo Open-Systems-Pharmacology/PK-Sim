@@ -35,6 +35,7 @@ namespace PKSim.Presentation.Presenters.Individuals
    public interface IOntogenySelectionPresenter<TSimulationSubject> : IOntogenySelectionPresenter where TSimulationSubject : ISimulationSubject
    {
       void Edit(IndividualMolecule individualMolecule, TSimulationSubject simulationSubject);
+      void DisableEdit();
    }
 
    public class OntogenySelectionPresenter<TSimulationSubject> : AbstractCommandCollectorPresenter<IOntogenySelectionView, IOntogenySelectionPresenter>, IOntogenySelectionPresenter<TSimulationSubject> where TSimulationSubject : ISimulationSubject
@@ -56,6 +57,11 @@ namespace PKSim.Presentation.Presenters.Individuals
          _simulationSubject = simulationSubject;
          _individualMolecule = individualMolecule;
          rebind();
+      }
+
+      public void DisableEdit()
+      {
+         _view.ReadOnly = true;
       }
 
       public void SelectedOntogenyIs(Ontogeny ontogeny)

@@ -49,11 +49,11 @@ namespace PKSim.Core.Model
                return;
 
             var names = CoreConstants.NamesFromCompositeName(value);
-            if (names.Count != 2)
+            if (names.Count != 3)
                return;
 
             _moleculeName = names[0];
-            _category = names[1];
+            _category = names[2];
             base.Name = value;
          }
       }
@@ -63,7 +63,7 @@ namespace PKSim.Core.Model
 
       public virtual void RefreshName()
       {
-         Name = ExpressionProfileName(MoleculeName, Category);
+         Name = ExpressionProfileName(MoleculeName, Species, Category);
       }
 
       public override string Icon => Molecule?.Icon ?? "";

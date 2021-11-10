@@ -167,6 +167,8 @@ namespace PKSim.Core.Model
          return FirstIndividual?.AllMolecules<TMolecules>() ?? Enumerable.Empty<TMolecules>();
       }
 
+      public ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule) => FirstIndividual?.ExpressionProfileFor(molecule);
+
       public void AddExpressionProfile(ExpressionProfile expressionProfile) => FirstIndividual?.AddExpressionProfile(expressionProfile);
 
       public void RemoveExpressionProfile(ExpressionProfile expressionProfile) => FirstIndividual?.RemoveExpressionProfile(expressionProfile);

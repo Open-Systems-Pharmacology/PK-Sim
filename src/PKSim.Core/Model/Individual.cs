@@ -84,6 +84,8 @@ namespace PKSim.Core.Model
       /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
       public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
 
+      public ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule) => AllExpressionProfiles().Find(x => string.Equals(x.MoleculeName, molecule.Name));
+
       public void AddExpressionProfile(ExpressionProfile expressionProfile) => _allExpressionProfiles.Add(expressionProfile);
 
       public void RemoveExpressionProfile(ExpressionProfile expressionProfile) => _allExpressionProfiles.Remove(expressionProfile);

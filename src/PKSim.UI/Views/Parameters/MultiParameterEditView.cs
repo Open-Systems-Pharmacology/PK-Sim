@@ -259,7 +259,16 @@ namespace PKSim.UI.Views.Parameters
             }
          }
 
-      public void SaveEditor()
+         public bool ReadOnly
+         {
+            set
+            {
+               _columnValue.ReadOnly = value;
+               //TODO retreieve column from binder
+            }
+         }
+
+         public void SaveEditor()
       {
          gridView.PostEditor();
       }

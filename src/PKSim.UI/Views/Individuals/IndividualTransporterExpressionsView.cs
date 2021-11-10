@@ -50,6 +50,11 @@ namespace PKSim.UI.Views.Individuals
 
       public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, view);
 
+      public bool ReadOnly
+      {
+         set => layoutItemTransporterDirection.Enabled = !value;
+      }
+
       public override bool HasError => _screenBinder.HasError;
 
       public override void InitializeResources()

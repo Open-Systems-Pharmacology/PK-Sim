@@ -9,5 +9,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       bool MoleculeParametersVisible { set; }
       ISimulationSubject SimulationSubject { get; set; }
       void ActivateMolecule(IndividualMolecule molecule);
+      void DisableEdit();
    }
 }
