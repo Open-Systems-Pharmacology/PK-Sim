@@ -38,11 +38,10 @@ namespace PKSim.Core
          _individual2.AddMolecule(new IndividualEnzyme().WithName("B"));
          _individual2.AddMolecule(new IndividualEnzyme().WithName("D"));
 
-         _expressionProfile = new ExpressionProfile
-         {
-            MoleculeName = "E",
-            IsLoaded = true,
-         };
+         _expressionProfile = A.Fake<ExpressionProfile>();
+         _expressionProfile.IsLoaded = true;
+         _expressionProfile.MoleculeName = "E";
+
          _project.AddBuildingBlock(_compound1);
          _project.AddBuildingBlock(_compound2);
          _project.AddBuildingBlock(_individual1);

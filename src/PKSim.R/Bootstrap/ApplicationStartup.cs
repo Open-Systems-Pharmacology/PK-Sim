@@ -78,6 +78,7 @@ namespace PKSim.R.Bootstrap
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IOntogenyTask<Individual>, CLIIndividualOntogenyTask>();
          container.Register<IExceptionManager, CLIExceptionManager>();
+         container.Register<IDialogCreator, CLIDialogCreator>();
       }
 
       private static void redirectAssemblies()

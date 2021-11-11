@@ -21,10 +21,11 @@ namespace PKSim.Core.Model
          {
             _individual = value;
             _individual.OwnedBy = this;
+            RefreshName();
          }
       }
 
-      public virtual Species Species => Individual.Species;
+      public virtual Species Species => Individual?.Species;
 
       public ExpressionProfile() : base(PKSimBuildingBlockType.ExpressionProfile)
       {

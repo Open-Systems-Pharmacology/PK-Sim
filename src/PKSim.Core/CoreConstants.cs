@@ -436,7 +436,7 @@ namespace PKSim.Core
          public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
 
          public static string ExpressionProfileName(string moleculeName, Core.Model.Species species,  string category) 
-            => CompositeNameFor(moleculeName, species.DisplayName, category);
+            => CompositeNameFor(moleculeName, species?.DisplayName, category);
 
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {
