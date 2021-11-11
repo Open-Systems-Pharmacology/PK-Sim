@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
@@ -116,41 +115,6 @@ namespace PKSim.Presentation.Services
          renameSimulation(individualSimulation, newName);
       }
 
-      private bool pathContains(List<string> path, string oldCompoundName)
-      {
-         if (!path.Any()) return false;
-         return path.LastIndexOf(oldCompoundName) > 0;
-      }
-
-      public void SynchronizeCompoundNameIn(Simulation targetSimulation, string oldCompoundName, string newCompoundName)
-      {
-         //the cache will be referencing quantity by path using the newCompoundName
-         var quantityCache = _containerTask.CacheAllChildren<IQuantity>(targetSimulation.Model.Root);
-
-         //all results with a possible entry equal to the old compound name
-         var allQuantityResults = targetSimulation.Results
-            .SelectMany(x => x.AllValues)
-            .Where(x => pathContains(x.PathList.ToList(), oldCompoundName));
-
-         foreach (var quantityValues in allQuantityResults)
-         {
-            //check if the quantity exists for the give path
-            var newPath = new List<string>(quantityValues.PathList);
-            //uses last so that we do not rename simulation name that could be the same as the compound name
-            newPath[newPath.LastIndexOf(oldCompoundName)] = newCompoundName;
-
-            var quantity = quantityCache[newPath.ToPathString()];
-            if (!quantityIsCompound(quantity))
-               continue;
-
-            quantityValues.PathList = newPath;
-         }
-      }
-
-      private static bool quantityIsCompound(IQuantity quantity)
-      {
-         return quantity != null && quantity.QuantityType.Is(QuantityType.Drug);
-      }
 
       public void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
       {
