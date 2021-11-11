@@ -13,25 +13,24 @@ namespace PKSim.Core.Commands
       private readonly TransportType _transportType;
       private TransportType _oldTransportType;
       private readonly string _transporterId;
-      private Individual _individual;
+      private ExpressionProfile _expressionProfile;
 
       public SetTransportTypeCommand(IndividualTransporter individualTransporter, TransportType transportType, IExecutionContext context)
       {
-         var individual = context.BuildingBlockContaining(individualTransporter).DowncastTo<Individual>();
+         _expressionProfile = context.BuildingBlockContaining(individualTransporter).DowncastTo<ExpressionProfile>();
          _individualTransporter = individualTransporter;
          _transportType = transportType;
-         BuildingBlockId = individual.Id;
-         _individual = individual;
+         BuildingBlockId = _expressionProfile.Id;
          _transporterId = _individualTransporter.Id;
          ObjectType = PKSimConstants.ObjectTypes.Transporter;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildingBlockPropertiesInCommand(this, individual);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _expressionProfile);
       }
 
       protected override void ClearReferences()
       {
          _individualTransporter = null;
-         _individual = null;
+         _expressionProfile = null;
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
@@ -44,15 +43,17 @@ namespace PKSim.Core.Commands
          _oldTransportType = _individualTransporter.TransportType;
          _individualTransporter.TransportType = _transportType;
          var transportContainerUpdater = context.Resolve<ITransportContainerUpdater>();
-         transportContainerUpdater.SetDefaultSettingsForTransporter(_individual, _individualTransporter, _transportType);
+         transportContainerUpdater.SetDefaultSettingsForTransporter(_expressionProfile.Individual, _individualTransporter, _transportType);
          Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_individualTransporter.Name, _oldTransportType.ToString(), _transportType.ToString());
+         var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
+         expressionProfileUpdater.SynchronizeExpressionProfileInAllIndividuals(_expressionProfile);
       }
 
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
          _individualTransporter = context.Get<IndividualTransporter>(_transporterId);
-         _individual = context.Get<Individual>(BuildingBlockId);
+         _expressionProfile = context.Get<ExpressionProfile>(BuildingBlockId);
       }
    }
 }

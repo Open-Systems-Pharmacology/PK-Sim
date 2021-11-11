@@ -50,12 +50,8 @@ namespace PKSim.Core.Commands
          base.Execute(context);
 
          // update depending object
-         var expressionProfile = _simulationSubject.OwnedBy as ExpressionProfile;
-         if (expressionProfile != null)
-         {
-            var updateTask = context.Resolve<IExpressionProfileUpdater>();
-            updateTask.SynchronizeExpressionProfileInAllIndividuals(expressionProfile);
-         }
+         var updateTask = context.Resolve<IExpressionProfileUpdater>();
+         updateTask.SynchronizeExpressionProfileInAllIndividuals(_simulationSubject);
 
          //clear references
          _molecule = null;

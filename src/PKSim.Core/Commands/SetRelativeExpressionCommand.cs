@@ -1,6 +1,6 @@
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -31,7 +31,7 @@ namespace PKSim.Core.Commands
             return;
 
          var expressionProfile = context.BuildingBlockContaining(parameter) as ExpressionProfile;
-         if(expressionProfile==null) return;
+         if (expressionProfile == null) return;
          var updateTask = context.Resolve<IExpressionProfileUpdater>();
          updateTask.SynchronizeExpressionProfileInAllIndividuals(expressionProfile);
       }

@@ -2,6 +2,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
@@ -9,7 +10,7 @@ namespace PKSim.Core.Commands
    {
       private TransporterExpressionContainer _transporterContainer;
       private readonly TransportDirectionId _newTransportDirection;
-      private Individual _individual;
+      private ExpressionProfile _expressionProfile;
       private readonly string _transporterContainerId;
       private readonly TransportDirectionId _oldTransportDirection;
 
@@ -19,18 +20,18 @@ namespace PKSim.Core.Commands
          _transporterContainer = transporterContainer;
          _newTransportDirection = newTransportDirection;
          _transporterContainerId = _transporterContainer.Id;
-         _individual = context.BuildingBlockContaining(_transporterContainer).DowncastTo<Individual>();
-         BuildingBlockId = _individual.Id;
+         _expressionProfile = context.BuildingBlockContaining(_transporterContainer).DowncastTo<ExpressionProfile>();
+         BuildingBlockId = _expressionProfile.Id;
          _oldTransportDirection = _transporterContainer.TransportDirection;
          ObjectType = PKSimConstants.ObjectTypes.Transporter;
          CommandType = PKSimConstants.Command.CommandTypeEdit;
-         context.UpdateBuildingBlockPropertiesInCommand(this, _individual);
+         context.UpdateBuildingBlockPropertiesInCommand(this, _expressionProfile);
       }
 
       protected override void ClearReferences()
       {
          _transporterContainer = null;
-         _individual = null;
+         _expressionProfile = null;
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
@@ -45,12 +46,14 @@ namespace PKSim.Core.Commands
 
 
          _transporterContainer.TransportDirection = _newTransportDirection;
+         var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
+         expressionProfileUpdater.SynchronizeExpressionProfileInAllIndividuals(_expressionProfile);
       }
 
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
-         _individual = context.Get<Individual>(BuildingBlockId);
+         _expressionProfile = context.Get<ExpressionProfile>(BuildingBlockId);
          _transporterContainer = context.Get<TransporterExpressionContainer>(_transporterContainerId);
       }
    }
