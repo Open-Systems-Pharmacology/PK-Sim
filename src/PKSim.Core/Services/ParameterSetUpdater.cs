@@ -39,7 +39,7 @@ namespace PKSim.Core.Services
       ///    Update all parameters defined in the target cache with the value of the same parameter in the source cache
       ///    <paramref name="sourceParameters" />. Same parameter is defined as being registered with the same key in the cache.
       /// </summary>
-      IOSPSuiteCommand UpdateValues(ICache<string, IParameter> sourceParameters, ICache<string, IParameter> targetParameters, bool updateParameterOriginId = true);
+      IOSPSuiteCommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, bool updateParameterOriginId = true);
 
       /// <summary>
       ///    Update all parameters defined in the target container with the value of the same parameter in the source container
@@ -58,7 +58,7 @@ namespace PKSim.Core.Services
       ICommand UpdateValuesByName(IEnumerable<IParameter> sourceParameters, IEnumerable<IParameter> targetParameters);
 
       /// <summary>
-      ///    Update all prameters defined in the target enumeration with the value of the same parameter in the source container
+      ///    Update all parameters defined in the target enumeration with the value of the same parameter in the source container
       ///    if available. Same parameter is defined as "have the same name"
       /// </summary>
       /// <param name="sourceContainer">container from which the value should be taken</param>
@@ -113,7 +113,7 @@ namespace PKSim.Core.Services
          return UpdateValues(sourceParameters, allTargetParameters);
       }
 
-      public IOSPSuiteCommand UpdateValues(ICache<string, IParameter> sourceParameters, ICache<string, IParameter> targetParameters, bool updateParameterOriginId = true)
+      public IOSPSuiteCommand UpdateValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters, bool updateParameterOriginId = true)
       {
          var updateCommands = new PKSimMacroCommand {CommandType = PKSimConstants.Command.CommandTypeEdit, ObjectType = PKSimConstants.ObjectTypes.Parameter};
          //should update non distributed parameter first and then distributed parameter
