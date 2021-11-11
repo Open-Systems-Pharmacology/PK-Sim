@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
@@ -57,14 +58,15 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          //Observed data needs to be loaded first into project
          projectMetaData.AllObservedData.Each(x => project.AddObservedData(mapFrom(x)));
 
+         //First load high priority objects
          projectMetaData.BuildingBlocks.Each(x => project.AddBuildingBlock(mapFrom(x)));
+
 
          //we need a shared context for all object referencing observed data and simulations
          using (var context = _serializationContextFactory.Create(project.AllObservedData, project.All<ISimulation>()))
          {
-            var localContext = context;
-            projectMetaData.ParameterIdentifications.Each(x => project.AddParameterIdentification(mapFrom(x, localContext)));
-            projectMetaData.SensitivityAnalyses.Each(x => project.AddSensitivityAnalysis(mapFrom(x, localContext)));
+            projectMetaData.ParameterIdentifications.Each(x => project.AddParameterIdentification(mapFrom(x, context)));
+            projectMetaData.SensitivityAnalyses.Each(x => project.AddSensitivityAnalysis(mapFrom(x)));
          }
 
          projectMetaData.SimulationComparisons.Each(x => project.AddSimulationComparison(mapFrom(x)));
@@ -95,7 +97,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          };
       }
 
-      private SensitivityAnalysis mapFrom(SensitivityAnalysisMetaData sensitivityAnalysisMetaData, SerializationContext context)
+      private SensitivityAnalysis mapFrom(SensitivityAnalysisMetaData sensitivityAnalysisMetaData)
       {
          return new SensitivityAnalysis
          {
@@ -149,17 +151,10 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          }
       }
 
-      private void deserialize(BuildingBlockMetaData buildingBlockMetaData)
-      {
-         _serializationManager.Deserialize(_buildingBlock, buildingBlockMetaData.Content.Data);
-      }
+      private void deserialize(BuildingBlockMetaData buildingBlockMetaData) => _serializationManager.Deserialize(_buildingBlock, buildingBlockMetaData.Content.Data);
 
-      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock)
-      {
-         return buildingBlock.BuildingBlockType == PKSimBuildingBlockType.Simulation ||
-                buildingBlock.BuildingBlockType == PKSimBuildingBlockType.Population ||
-                buildingBlock.BuildingBlockType == PKSimBuildingBlockType.Individual;
-      }
+      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock) 
+         => buildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation, PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population);
 
       private T deserializeProperty<T>(IMetaDataWithProperties metaData, SerializationContext serializationContext = null)
       {

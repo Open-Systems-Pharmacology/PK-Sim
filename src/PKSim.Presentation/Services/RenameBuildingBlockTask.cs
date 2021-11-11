@@ -33,7 +33,7 @@ namespace PKSim.Presentation.Services
       private readonly IParameterIdentificationSimulationPathUpdater _simulationPathUpdater;
       private readonly IDataRepositoryNamer _dataRepositoryNamer;
       private readonly ICurveNamer _curveNamer;
-      private readonly IExpressionProfileTask _expressionProfileTask;
+      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
 
       public RenameBuildingBlockTask(
          IBuildingBlockTask buildingBlockTask, 
@@ -47,7 +47,7 @@ namespace PKSim.Presentation.Services
          IParameterIdentificationSimulationPathUpdater simulationPathUpdater, 
          IDataRepositoryNamer dataRepositoryNamer, 
          ICurveNamer curveNamer, 
-         IExpressionProfileTask expressionProfileTask)
+         IExpressionProfileUpdater expressionProfileUpdater)
       {
          _buildingBlockTask = buildingBlockTask;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
@@ -61,7 +61,7 @@ namespace PKSim.Presentation.Services
          _simulationPathUpdater = simulationPathUpdater;
          _dataRepositoryNamer = dataRepositoryNamer;
          _curveNamer = curveNamer;
-         _expressionProfileTask = expressionProfileTask;
+         _expressionProfileUpdater = expressionProfileUpdater;
       }
 
       public void RenameSimulation(Simulation simulation, string newName)
@@ -165,7 +165,7 @@ namespace PKSim.Presentation.Services
          if(expressionProfile==null)
             return;
 
-         _expressionProfileTask.UpdateMoleculeName(expressionProfile);
+         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile);
       }
 
       private void renameUsageOfBuildingBlockInObservedData(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)

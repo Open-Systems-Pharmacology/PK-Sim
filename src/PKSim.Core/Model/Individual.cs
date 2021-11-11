@@ -86,7 +86,10 @@ namespace PKSim.Core.Model
 
       public ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule) => AllExpressionProfiles().Find(x => string.Equals(x.MoleculeName, molecule.Name));
 
-      public void AddExpressionProfile(ExpressionProfile expressionProfile) => _allExpressionProfiles.Add(expressionProfile);
+      public void AddExpressionProfile(ExpressionProfile expressionProfile)
+      {
+         _allExpressionProfiles.Add(expressionProfile);
+      }
 
       public void RemoveExpressionProfile(ExpressionProfile expressionProfile) => _allExpressionProfiles.Remove(expressionProfile);
 

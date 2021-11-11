@@ -14,10 +14,10 @@ namespace PKSim.Core.Commands
          _ratio = ratio;
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
          UpdateParameter(context);
-         Description = ParameterMessages.UpdateTableParameterFormula(context.DisplayNameFor(_parameter));
+         Description = ParameterMessages.UpdateTableParameterFormula(context.DisplayNameFor(parameter));
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

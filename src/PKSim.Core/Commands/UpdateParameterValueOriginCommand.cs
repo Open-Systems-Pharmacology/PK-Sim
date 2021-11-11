@@ -19,11 +19,11 @@ namespace PKSim.Core.Commands
          return new UpdateParameterValueOriginCommand(_parameter, _oldValueOrigin).AsInverseFor(this);
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
-         _oldValueOrigin = _parameter.ValueOrigin.Clone();
+         _oldValueOrigin = parameter.ValueOrigin.Clone();
          UpdateParameter(context);
-         Description = Command.UpdateValueOriginFrom(_oldValueOrigin.ToString(), _valueOrigin.ToString(), ObjectType, context.DisplayNameFor(_parameter), BuildingBlockType, BuildingBlockName);
+         Description = Command.UpdateValueOriginFrom(_oldValueOrigin.ToString(), _valueOrigin.ToString(), ObjectType, context.DisplayNameFor(parameter), BuildingBlockType, BuildingBlockName);
       }
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)

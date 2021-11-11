@@ -365,7 +365,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public void DisableEdit()
       {
-         _view.ReadOnly = false;
+         _view.ReadOnly = true;
       }
 
 

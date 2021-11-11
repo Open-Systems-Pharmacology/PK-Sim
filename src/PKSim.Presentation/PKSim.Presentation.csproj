@@ -29,8 +29,8 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.0.7" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.7" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.8" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.8" />
   </ItemGroup>
 
   <ItemGroup>

@@ -35,8 +35,7 @@ namespace PKSim.Presentation
       protected ISimulationSubjectExpressionTask<Individual> _subjectExpressionTask;
       protected IOntogenyTask<Individual> _ontogenyTask;
       protected IMoleculeParameterTask _moleculeParameterTask;
-      private IEntityPathResolver _entityPathResolver;
-      private IParameterSetUpdater _parameterSetUpdater;
+      protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
       {
@@ -54,8 +53,7 @@ namespace PKSim.Presentation
          _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          var proteinFactory = A.Fake<IIndividualMoleculeFactory>();
-         _entityPathResolver= A.Fake<IEntityPathResolver>();
-         _parameterSetUpdater = A.Fake<IParameterSetUpdater>();
+         _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
          _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
@@ -81,34 +79,8 @@ namespace PKSim.Presentation
             _subjectExpressionTask, 
             _ontogenyTask, 
             _moleculeParameterTask,
-            _entityPathResolver,
-            _parameterSetUpdater);
-      }
-   }
-
-   public class When_asked_to_set_a_relative_expression_value : concern_for_MoleculeExpressionTask
-   {
-      private ICommand _result;
-      private double _relativeVMaxValue;
-      private IParameter _relExp;
-
-      protected override void Context()
-      {
-         base.Context();
-         _relativeVMaxValue = 25;
-         _relExp = DomainHelperForSpecs.ConstantParameterWithValue(10);
-         A.CallTo(() => _executionContext.BuildingBlockContaining(_relExp)).Returns(_individual);
-      }
-
-      protected override void Because()
-      {
-         _result = sut.SetRelativeExpressionFor(_relExp, _relativeVMaxValue);
-      }
-
-      [Observation]
-      public void should_return_the_underlying_command_used_to_set_the_relative_expression_value()
-      {
-         _result.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
+            _expressionProfileUpdater
+            );
       }
    }
 
@@ -139,43 +111,6 @@ namespace PKSim.Presentation
       public void the_resulting_command_should_be_an_instance_of_remove_protein_from_individual_command()
       {
          _resultCommand.ShouldBeAnInstanceOf<RemoveMoleculeFromIndividualCommand>();
-      }
-   }
-
-   public class When_adding_a_molecule_to_an_individual_from_the_protein_expression_database : concern_for_MoleculeExpressionTask
-   {
-      private QueryExpressionResults _queryExpressionResults;
-      private ICommand _resultCommand;
-      private readonly string _newName = "NEW_NAME";
-
-      protected override void Context()
-      {
-         base.Context();
-         _queryExpressionResults = new QueryExpressionResults(new List<ExpressionResult>()) {QueryConfiguration = "CONFIG", ProteinName = _newName};
-            A.CallTo(() => _containerTask.CreateUniqueName(_individual, _newName, true)).Returns(_newName);
-         }
-
-      protected override void Because()
-      {
-         _resultCommand = sut.AddMoleculeTo(_individual, _molecule, _queryExpressionResults);
-      }
-
-      [Observation]
-      public void should_have_created_a_unique_name_in_the_individual_for_the_protein_based_on_the_selected_protein()
-      {
-        _molecule.Name.ShouldBeEqualTo(_newName);
-      }
-
-      [Observation]
-      public void should_save_the_query_string_into_the_protein()
-      {
-         _molecule.QueryConfiguration.ShouldBeEqualTo(_queryExpressionResults.QueryConfiguration);
-      }
-
-      [Observation]
-      public void the_resulting_command_should_be_an_instance_of_add_protein_from_query_to_individual_command()
-      {
-         _resultCommand.ShouldBeAnInstanceOf<AddMoleculeExpressionsFromQueryToIndividualCommand>();
       }
    }
 }

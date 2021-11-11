@@ -42,7 +42,7 @@ namespace PKSim.Presentation
       protected string _initialSimulationName;
       protected IDataRepositoryNamer _dataRepositoryNamer;
       protected ICurveNamer _curveNamer;
-      private IExpressionProfileTask _expressionProfileTask;
+      private IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
       {
@@ -59,7 +59,7 @@ namespace PKSim.Presentation
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
          _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
          _curveNamer = A.Fake<ICurveNamer>();
-         _expressionProfileTask= A.Fake<IExpressionProfileTask>();   
+         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();   
 
          sut = new RenameBuildingBlockTask(
             _buildingBlockTask, 
@@ -74,7 +74,7 @@ namespace PKSim.Presentation
             _parameterIdentificationSimulationPathUpdater, 
             _dataRepositoryNamer, 
             _curveNamer,
-            _expressionProfileTask);
+            _expressionProfileUpdater);
 
          _initialSimulationName = "S";
          _individualSimulation = new IndividualSimulation().WithName(_initialSimulationName);

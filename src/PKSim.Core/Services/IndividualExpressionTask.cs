@@ -29,10 +29,6 @@ namespace PKSim.Core.Services
          return new EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(moleculeToEdit, queryResults, individual).Run(_executionContext);
       }
 
-      public ICommand AddMoleculeTo(IndividualMolecule molecule, Individual individual, QueryExpressionResults queryExpressionResults)
-      {
-         return new AddMoleculeExpressionsFromQueryToIndividualCommand(molecule, queryExpressionResults, individual).Run(_executionContext);
-      }
 
       public ICommand RenameMolecule(IndividualMolecule molecule, string newName, Individual simulationSubject)
       {

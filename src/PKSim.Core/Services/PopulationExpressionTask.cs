@@ -69,11 +69,6 @@ namespace PKSim.Core.Services
             .Run(_executionContext);
       }
 
-      public ICommand AddMoleculeTo(IndividualMolecule molecule, Population population, QueryExpressionResults queryExpressionResults)
-      {
-         var baseCommand = new AddMoleculeExpressionsFromQueryToPopulationCommand(molecule, queryExpressionResults, population);
-         return addMoleculeToPopulation(molecule, population, baseCommand);
-      }
 
       public ICommand RenameMolecule(IndividualMolecule molecule, string newName, Population simulationSubject)
       {

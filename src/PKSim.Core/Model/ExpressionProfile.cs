@@ -11,9 +11,18 @@ namespace PKSim.Core.Model
 
       private string _category;
       private string _moleculeName;
+      private Individual _individual;
 
       //Individual is set in factory and we can assume it will never be null
-      public Individual Individual { get; set; }
+      public Individual Individual
+      {
+         get => _individual;
+         set
+         {
+            _individual = value;
+            _individual.OwnedBy = this;
+         }
+      }
 
       public virtual Species Species => Individual.Species;
 

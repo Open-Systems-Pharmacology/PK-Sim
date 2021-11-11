@@ -26,10 +26,10 @@ namespace PKSim.Core.Commands
          _oldDisplayUnit = null;
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
          UpdateParameter(context);
-         Description = ParameterMessages.SetParameterDisplayUnit(context.DisplayNameFor(_parameter), _oldDisplayUnit, _displayUnit);
+         Description = ParameterMessages.SetParameterDisplayUnit(context.DisplayNameFor(parameter), _oldDisplayUnit, _displayUnit);
       }
 
       public override void RestoreExecutionData(IExecutionContext context)
