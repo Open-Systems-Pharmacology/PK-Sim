@@ -41,6 +41,7 @@ namespace PKSim.Presentation
       protected ISnapshotTask _snapshotTask;
       protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
       protected Simulation _simulation;
+      protected ILazyLoadTask _lazyLoadTask;
 
       public override Task GlobalContext()
       {
@@ -55,6 +56,7 @@ namespace PKSim.Presentation
          _journalRetriever = A.Fake<IJournalRetriever>();
          _snapshotTask = A.Fake<ISnapshotTask>();
          _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _lazyLoadTask= A.Fake<ILazyLoadTask>();
          _workspace.Project = _project;
          _workspace.WorkspaceLayout = new WorkspaceLayout();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
@@ -65,7 +67,7 @@ namespace PKSim.Presentation
 
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings,
-            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
+            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager, _lazyLoadTask);
 
          _oldFileExitst = FileHelper.FileExists;
 
@@ -271,7 +273,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager, _lazyLoadTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -625,7 +627,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager, _lazyLoadTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
