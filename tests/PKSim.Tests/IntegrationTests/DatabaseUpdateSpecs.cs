@@ -280,13 +280,6 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_remove_species_cattle_and_cat()
-      {
-         var speciesNames = from species in _speciesRepository.All() select species.Name;
-         speciesNames.ShouldNotContain("Cat", "Cattle");
-      }
-
-      [Observation]
       public void should_remove_intestinal_permeability_MPTC()
       {
          var calcMethodNames = from cm in _calculationMethodRepository.All() select cm.Name;
