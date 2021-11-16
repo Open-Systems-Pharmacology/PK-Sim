@@ -12,7 +12,7 @@ namespace PKSim.Core.Snapshots.Mappers
    public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ModelIndividual, ModelIndividual>
    {
       private readonly ExpressionContainerMapper _expressionContainerMapper;
-      private readonly IOntogenyTask<ModelIndividual> _ontogenyTask;
+      private readonly IOntogenyTask _ontogenyTask;
       private readonly IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
       private readonly OntogenyMapper _ontogenyMapper;
 
@@ -20,7 +20,7 @@ namespace PKSim.Core.Snapshots.Mappers
          ParameterMapper parameterMapper,
          ExpressionContainerMapper expressionContainerMapper,
          OntogenyMapper ontogenyMapper,
-         IOntogenyTask<ModelIndividual> ontogenyTask,
+         IOntogenyTask ontogenyTask,
          IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask
       ) : base(parameterMapper)
       {

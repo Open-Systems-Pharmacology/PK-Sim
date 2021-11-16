@@ -68,29 +68,26 @@ namespace PKSim.Core.Services
 
    public class MoleculeExpressionTask<TSimulationSubject> : IMoleculeExpressionTask<TSimulationSubject> where TSimulationSubject : ISimulationSubject
    {
-      private readonly IContainerTask _containerTask;
       private readonly IExecutionContext _executionContext;
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
       private readonly ISimulationSubjectExpressionTask<TSimulationSubject> _simulationSubjectExpressionTask;
-      private readonly IOntogenyTask<TSimulationSubject> _ontogenyTask;
+      private readonly IOntogenyTask _ontogenyTask;
       private readonly IMoleculeParameterTask _moleculeParameterTask;
       private readonly IExpressionProfileUpdater _expressionProfileUpdater;
 
       public MoleculeExpressionTask(IExecutionContext executionContext,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
-         IContainerTask containerTask,
          IOntogenyRepository ontogenyRepository,
          ITransportContainerUpdater transportContainerUpdater,
          ISimulationSubjectExpressionTask<TSimulationSubject> simulationSubjectExpressionTask,
-         IOntogenyTask<TSimulationSubject> ontogenyTask,
+         IOntogenyTask ontogenyTask,
          IMoleculeParameterTask moleculeParameterTask,
          IExpressionProfileUpdater expressionProfileUpdater)
       {
          _executionContext = executionContext;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
-         _containerTask = containerTask;
          _ontogenyRepository = ontogenyRepository;
          _transportContainerUpdater = transportContainerUpdater;
          _simulationSubjectExpressionTask = simulationSubjectExpressionTask;

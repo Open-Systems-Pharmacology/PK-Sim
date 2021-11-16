@@ -30,29 +30,27 @@ namespace PKSim.Presentation.Presenters.Individuals
       ///    Load a user defined ontogeny from file
       /// </summary>
       void LoadOntogeny();
-   }
 
-   public interface IOntogenySelectionPresenter<TSimulationSubject> : IOntogenySelectionPresenter where TSimulationSubject : ISimulationSubject
-   {
-      void Edit(IndividualMolecule individualMolecule, TSimulationSubject simulationSubject);
+      void Edit(IndividualMolecule individualMolecule, ISimulationSubject simulationSubject);
       void DisableEdit();
    }
 
-   public class OntogenySelectionPresenter<TSimulationSubject> : AbstractCommandCollectorPresenter<IOntogenySelectionView, IOntogenySelectionPresenter>, IOntogenySelectionPresenter<TSimulationSubject> where TSimulationSubject : ISimulationSubject
+   public class OntogenySelectionPresenter : AbstractCommandCollectorPresenter<IOntogenySelectionView, IOntogenySelectionPresenter>,
+      IOntogenySelectionPresenter
    {
-      private readonly IOntogenyTask<TSimulationSubject> _ontogenyTask;
+      private readonly IOntogenyTask _ontogenyTask;
       private IndividualMolecule _individualMolecule;
       private readonly IEnumerable<Ontogeny> _allOntogenies;
-      private TSimulationSubject _simulationSubject;
+      private ISimulationSubject _simulationSubject;
 
-      public OntogenySelectionPresenter(IOntogenySelectionView view, IOntogenyRepository ontogenyRepository, IOntogenyTask<TSimulationSubject> ontogenyTask)
+      public OntogenySelectionPresenter(IOntogenySelectionView view, IOntogenyRepository ontogenyRepository, IOntogenyTask ontogenyTask)
          : base(view)
       {
          _ontogenyTask = ontogenyTask;
          _allOntogenies = ontogenyRepository.AllFor(CoreConstants.Species.HUMAN);
       }
 
-      public void Edit(IndividualMolecule individualMolecule, TSimulationSubject simulationSubject)
+      public void Edit(IndividualMolecule individualMolecule, ISimulationSubject simulationSubject)
       {
          _simulationSubject = simulationSubject;
          _individualMolecule = individualMolecule;

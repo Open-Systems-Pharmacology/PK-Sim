@@ -21,13 +21,13 @@ namespace PKSim.Presentation.Presenters.Individuals
 
    public class IndividualMoleculePropertiesPresenter<TSimulationSubject> : EditParameterPresenter<IIndividualMoleculePropertiesView, IIndividualMoleculePropertiesPresenter>, IIndividualMoleculePropertiesPresenter<TSimulationSubject> where TSimulationSubject : ISimulationSubject
    {
-      private readonly IOntogenySelectionPresenter<TSimulationSubject> _ontogenySelectionPresenter;
+      private readonly IOntogenySelectionPresenter _ontogenySelectionPresenter;
       private readonly IMultiParameterEditPresenter _moleculeParametersPresenter;
 
       public IndividualMoleculePropertiesPresenter(
          IIndividualMoleculePropertiesView view,
          IEditParameterPresenterTask editParameterPresenterTask,
-         IOntogenySelectionPresenter<TSimulationSubject> ontogenySelectionPresenter,
+         IOntogenySelectionPresenter ontogenySelectionPresenter,
          IMultiParameterEditPresenter moleculeParametersPresenter)
          : base(view, editParameterPresenterTask)
       {

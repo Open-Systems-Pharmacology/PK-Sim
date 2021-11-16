@@ -24,7 +24,6 @@ namespace PKSim.Presentation
       protected IMoleculeToQueryExpressionSettingsMapper _querySettingsMapper;
       protected IApplicationController _applicationController;
       private IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
-      protected IContainerTask _containerTask;
       protected IGeneExpressionsDatabasePathManager _geneExpressionsDatabasePathManager;
       protected IndividualMolecule _molecule;
       protected MoleculeExpressionContainer _moleculeContainer1;
@@ -33,22 +32,19 @@ namespace PKSim.Presentation
       protected Ontogeny _ontogeny;
       private ITransportContainerUpdater _transportContainerUpdater;
       protected ISimulationSubjectExpressionTask<Individual> _subjectExpressionTask;
-      protected IOntogenyTask<Individual> _ontogenyTask;
+      protected IOntogenyTask _ontogenyTask;
       protected IMoleculeParameterTask _moleculeParameterTask;
       protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
       {
-         _individual = new Individual();
-         _individual.OriginData = new OriginData();
-         _individual.OriginData.Species = new Species().WithName("Human");
+         _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
          _ontogeny = new DatabaseOntogeny {Name = "toto"};
          _executionContext = A.Fake<IExecutionContext>();
          _querySettingsMapper = A.Fake<IMoleculeToQueryExpressionSettingsMapper>();
          _applicationController = A.Fake<IApplicationController>();
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
          _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
-         _containerTask = A.Fake<IContainerTask>();
          _geneExpressionsDatabasePathManager = A.Fake<IGeneExpressionsDatabasePathManager>();
          _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
@@ -69,11 +65,10 @@ namespace PKSim.Presentation
 
          _subjectExpressionTask = new IndividualExpressionTask(_executionContext);
 
-         _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
+         _ontogenyTask = A.Fake<IOntogenyTask>();
          sut = new MoleculeExpressionTask<Individual>(
             _executionContext,
             _individualMoleculeFactoryResolver,
-            _containerTask,
             _ontogenyRepository, 
             _transportContainerUpdater, 
             _subjectExpressionTask, 

@@ -20,7 +20,7 @@ namespace PKSim.Core.Services
       private readonly ISimulationSubjectExpressionTask<Individual> _individualExpressionTask;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IContainerTask _containerTask;
-      private readonly IOntogenyTask<Individual> _ontogenyTask;
+      private readonly IOntogenyTask _ontogenyTask;
       private readonly ICloner _cloner;
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly ILazyLoadTask _lazyLoadTask;
@@ -29,7 +29,7 @@ namespace PKSim.Core.Services
          ISimulationSubjectExpressionTask<Individual> individualExpressionTask,
          IParameterSetUpdater parameterSetUpdater,
          IContainerTask containerTask,
-         IOntogenyTask<Individual> ontogenyTask,
+         IOntogenyTask ontogenyTask,
          ICloner cloner,
          IPKSimProjectRetriever projectRetriever,
          ILazyLoadTask lazyLoadTask)
