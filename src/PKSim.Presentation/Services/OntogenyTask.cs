@@ -76,7 +76,7 @@ namespace PKSim.Presentation.Services
 
          var ontogeny = new UserDefinedOntogeny {Table = formulaFrom(data), Name = data.Name};
 
-         //only first formulation will be imported
+         //only first ontogeny will be imported
          if (_ontogenyRepository.AllNames().Contains(ontogeny.Name))
          {
             var name = _entityTask.NewNameFor(ontogeny, _ontogenyRepository.AllNames());
@@ -99,8 +99,10 @@ namespace PKSim.Presentation.Services
          {
             meanColumn = valueColumns[0];
             //dummy deviation filled with 1 since this was not defined in the import action
-            deviationColumn = new DataColumn(Constants.Distribution.DEVIATION, _dimensionRepository.NoDimension, baseGrid);
-            deviationColumn.Values = new float[baseGrid.Count].InitializeWith(1f);
+            deviationColumn = new DataColumn(Constants.Distribution.DEVIATION, _dimensionRepository.NoDimension, baseGrid)
+            {
+               Values = new float[baseGrid.Count].InitializeWith(1f)
+            };
          }
          else
          {
