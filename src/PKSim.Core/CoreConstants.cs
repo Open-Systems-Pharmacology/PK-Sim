@@ -1235,8 +1235,6 @@ namespace PKSim.Core
          public static readonly string RootNode = "RootNode";
          public static readonly string ObservedDataList = "ObservedDataList";
          public static readonly string ObservedData = "ObservedData";
-         public static readonly string ExpressionProfileList = "ExpressionProfileList";
-         public static readonly string ExpressionProfile = "ExpressionProfile";
          public static readonly string ProjectFile = "ProjectFile";
          public static readonly string Parameter = "Para";
          public static readonly string DistributedParameter = "DistPara";

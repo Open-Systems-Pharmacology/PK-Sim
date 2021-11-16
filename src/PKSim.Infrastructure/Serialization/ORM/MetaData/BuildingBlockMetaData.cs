@@ -11,7 +11,9 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
    {
       public virtual int Version { get; set; }
       public virtual int StructureVersion { get; set; }
+
       public virtual string Icon { get; set; }
+
       //High number by default to signify that loading does not matter
       public virtual int LoadOrder { get; set; } = 1000;
 
@@ -25,22 +27,34 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
       }
    }
 
-   public class IndividualMetaData : BuildingBlockMetaData
+   public abstract class SimulationSubjectMetaData : BuildingBlockMetaData
    {
       /// <summary>
-      /// String concatenation of all Ids
+      ///    String concatenation of all Ids
       /// </summary>
       public virtual string ExpressionProfileIds { get; set; }
 
       public override void UpdateFrom(BuildingBlockMetaData sourceChild, ISession session)
       {
          base.UpdateFrom(sourceChild, session);
-         var sourceIndividualMetaData = sourceChild as IndividualMetaData;
-         if (sourceIndividualMetaData == null)
+         var sourceSimulationSubjectMetaData = sourceChild as SimulationSubjectMetaData;
+         if (sourceSimulationSubjectMetaData == null)
             return;
 
-         ExpressionProfileIds = sourceIndividualMetaData.ExpressionProfileIds;
+         ExpressionProfileIds = sourceSimulationSubjectMetaData.ExpressionProfileIds;
       }
+   }
+
+   public class IndividualMetaData : SimulationSubjectMetaData
+   {
+   }
+
+   public class RandomPopulationMetaData : SimulationSubjectMetaData
+   {
+   }
+
+   public class ImportPopulationMetaData : SimulationSubjectMetaData
+   {
    }
 
    public class ExpressionProfileMetaData : BuildingBlockMetaData
@@ -83,14 +97,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
 
          FormulationType = sourceFormulationMetaData.FormulationType;
       }
-   }
-
-   public class RandomPopulationMetaData : BuildingBlockMetaData
-   {
-   }
-
-   public class ImportPopulationMetaData : BuildingBlockMetaData
-   {
    }
 
    public class ProtocolMetaData : BuildingBlockMetaData

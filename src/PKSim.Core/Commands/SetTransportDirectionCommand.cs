@@ -47,7 +47,7 @@ namespace PKSim.Core.Commands
 
          _transporterContainer.TransportDirection = _newTransportDirection;
          var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
-         expressionProfileUpdater.SynchronizeExpressionProfileInAllIndividuals(_expressionProfile);
+         expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(_expressionProfile);
       }
 
       public override void RestoreExecutionData(IExecutionContext context)

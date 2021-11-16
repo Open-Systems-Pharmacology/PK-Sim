@@ -47,7 +47,7 @@ namespace PKSim.Presentation.Services
 
       public ICommand SetOntogenyForMolecule(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject)
       {
-         return new SetOntogenyInMoleculeCommand(molecule, ontogeny, simulationSubject.Individual, _executionContext).Run(_executionContext);
+         return new SetOntogenyInMoleculeCommand(molecule, ontogeny, simulationSubject, _executionContext).Run(_executionContext);
       }
 
       public void ShowOntogenyData(Ontogeny ontogeny)

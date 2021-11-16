@@ -15,20 +15,10 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 
    public class RandomPopulationXmlSerializer : PopulationXmlSerializer<RandomPopulation>
    {
-      public override void PerformMapping()
-      {
-         base.PerformMapping();
-         Map(x => x.Settings);
-      }
    }
 
    public class ImportPopulationXmlSerializer : PopulationXmlSerializer<ImportPopulation>
    {
-      public override void PerformMapping()
-      {
-         base.PerformMapping();
-         Map(x => x.Settings);
-      }
    }
 
    public class MoBiPopulationXmlSerializer : PopulationXmlSerializer<MoBiPopulation>
@@ -39,5 +29,4 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.NumberOfItems);
       }
    }
-
 }

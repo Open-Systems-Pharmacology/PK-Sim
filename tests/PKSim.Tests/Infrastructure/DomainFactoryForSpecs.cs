@@ -69,9 +69,11 @@ namespace PKSim.Infrastructure
       public static ExpressionProfile CreateExpressionProfile<TMolecule>(string moleculeName = "CYP3A4") where TMolecule:IndividualMolecule
       {
          var expressionProfileFactory = IoC.Resolve<IExpressionProfileFactory>();
+         var expressionProfileUpdater = IoC.Resolve<IExpressionProfileUpdater>();
          var expressionProfile = expressionProfileFactory.Create<TMolecule>();
          expressionProfile.MoleculeName = moleculeName;
          expressionProfile.Category = "Standard";
+         expressionProfileUpdater.UpdateMoleculeName(expressionProfile);
          return expressionProfile;
       }
 

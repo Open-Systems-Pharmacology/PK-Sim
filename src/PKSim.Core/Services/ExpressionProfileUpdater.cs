@@ -10,9 +10,9 @@ namespace PKSim.Core.Services
    public interface IExpressionProfileUpdater
    {
       ICommand UpdateMoleculeName(ExpressionProfile expressionProfile);
-      void SynchronizeExpressionProfile(Individual individual, ExpressionProfile expressionProfile);
-      void SynchronizeExpressionProfileInAllIndividuals(ExpressionProfile expressionProfile);
-      void SynchronizeExpressionProfileInAllIndividuals(ISimulationSubject internalSimulationSubject);
+      void SynchronizeExpressionProfile(ISimulationSubject simulationSubject, ExpressionProfile expressionProfile);
+      void SynchronizeExpressionProfileInAllSimulationSubjects(ExpressionProfile expressionProfile);
+      void SynchronizeExpressionProfileInAllSimulationSubjects(ISimulationSubject internalSimulationSubject);
    }
 
    public class ExpressionProfileUpdater : IExpressionProfileUpdater
@@ -48,24 +48,24 @@ namespace PKSim.Core.Services
          return _individualExpressionTask.RenameMolecule(expressionProfile.Molecule, expressionProfile.MoleculeName, expressionProfile.Individual);
       }
 
-      public void SynchronizeExpressionProfile(Individual individual, ExpressionProfile expressionProfile)
+      public void SynchronizeExpressionProfile(ISimulationSubject simulationSubject, ExpressionProfile expressionProfile)
       {
-         _lazyLoadTask.Load(individual);
-         var molecule = individual.MoleculeByName(expressionProfile.MoleculeName);
+         _lazyLoadTask.Load(simulationSubject);
+         var molecule = simulationSubject.MoleculeByName(expressionProfile.MoleculeName);
          
          //Global settings for molecule
-         updateGlobalMoleculeSettings(molecule, expressionProfile, individual);
+         updateGlobalMoleculeSettings(molecule, expressionProfile, simulationSubject);
 
          //All molecule parameters
-         updateMoleculeParameters(molecule, expressionProfile, individual);
+         updateMoleculeParameters(molecule, expressionProfile, simulationSubject);
          
          //Molecule containers
-         updateTransporterDirections(molecule, expressionProfile, individual);
+         updateTransporterDirections(molecule, expressionProfile, simulationSubject);
       }
 
-      private void updateMoleculeParameters(IndividualMolecule molecule, ExpressionProfile expressionProfile, Individual individual)
+      private void updateMoleculeParameters(IndividualMolecule molecule, ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)
       {
-         var allMoleculeParametersPathCache = allMoleculeParametersFor(individual, molecule);
+         var allMoleculeParametersPathCache = allMoleculeParametersFor(simulationSubject, molecule);
          var allExpressionProfileMoleculeParametersCache = allMoleculeParametersFor(expressionProfile.Individual, expressionProfile.Molecule);
 
 
@@ -73,33 +73,33 @@ namespace PKSim.Core.Services
          _parameterSetUpdater.UpdateValues(allExpressionProfileMoleculeParametersCache, allMoleculeParametersPathCache, updateParameterOriginId: false);
       }
 
-      public void SynchronizeExpressionProfileInAllIndividuals(ExpressionProfile expressionProfile)
+      public void SynchronizeExpressionProfileInAllSimulationSubjects(ExpressionProfile expressionProfile)
       {
          var allSimulationSubjectsForProfile = _projectRetriever.Current.All<ISimulationSubject>()
             .Where(x => x.Uses(expressionProfile))
             .ToList();
 
-         allSimulationSubjectsForProfile.Each(x => SynchronizeExpressionProfile(x.Individual, expressionProfile));
+         allSimulationSubjectsForProfile.Each(x => SynchronizeExpressionProfile(x, expressionProfile));
       }
 
-      public void SynchronizeExpressionProfileInAllIndividuals(ISimulationSubject internalSimulationSubject)
+      public void SynchronizeExpressionProfileInAllSimulationSubjects(ISimulationSubject internalSimulationSubject)
       {
          var expressionProfile = internalSimulationSubject.OwnedBy as ExpressionProfile;
          if (expressionProfile == null) return;
-         SynchronizeExpressionProfileInAllIndividuals(expressionProfile);
+         SynchronizeExpressionProfileInAllSimulationSubjects(expressionProfile);
       }
 
-      private PathCache<IParameter> allMoleculeParametersFor(Individual individual, IndividualMolecule molecule) 
-         => _containerTask.PathCacheFor(individual.AllMoleculeParametersFor(molecule));
+      private PathCache<IParameter> allMoleculeParametersFor(ISimulationSubject simulationSubject, IndividualMolecule molecule) 
+         => _containerTask.PathCacheFor(simulationSubject.Individual.AllMoleculeParametersFor(molecule));
 
-      private void updateTransporterDirections(IndividualMolecule molecule, ExpressionProfile expressionProfile, Individual individual)
+      private void updateTransporterDirections(IndividualMolecule molecule, ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)
       {
          var transporter = expressionProfile.Molecule as IndividualTransporter;
          if (transporter == null)
             return;
 
          var allExpressionProfileTransporterContainer = allTransporterExpressionContainerFor(expressionProfile.Individual, expressionProfile.Molecule);
-         var allIndividualTransporterContainer = allTransporterExpressionContainerFor(individual, molecule);
+         var allIndividualTransporterContainer = allTransporterExpressionContainerFor(simulationSubject.Individual, molecule);
 
          foreach (var keyValuePair in allExpressionProfileTransporterContainer.KeyValues)
          {
@@ -115,10 +115,10 @@ namespace PKSim.Core.Services
          return _containerTask.PathCacheFor(allTransporterExpressionContainer);
       }
 
-      private void updateGlobalMoleculeSettings(IndividualMolecule molecule, ExpressionProfile expressionProfile, Individual individual)
+      private void updateGlobalMoleculeSettings(IndividualMolecule molecule, ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)
       {
          molecule.UpdatePropertiesFrom(expressionProfile.Molecule, _cloner);
-         _ontogenyTask.SetOntogenyForMolecule(molecule, molecule.Ontogeny, individual);
+         _ontogenyTask.SetOntogenyForMolecule(molecule, molecule.Ontogeny, simulationSubject);
       }
    }
 }

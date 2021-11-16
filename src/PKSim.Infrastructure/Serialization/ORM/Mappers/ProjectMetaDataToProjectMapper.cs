@@ -180,20 +180,42 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       public void Visit(IndividualMetaData individualMetaData)
       {
-         var allExpressionProfileIds = individualMetaData.ExpressionProfileIds?.Split('|') ?? Array.Empty<string>();
-
          var individual = new Individual
          {
             OriginData = deserializeProperty<OriginData>(individualMetaData)
          };
+         updateExpressionProfiles(individual, individualMetaData);
+         _buildingBlock = individual;
+      }
+
+      public void Visit(RandomPopulationMetaData randomPopulationMetaData)
+      {
+         var population = new RandomPopulation
+         {
+            Settings = _serializationManager.Deserialize<RandomPopulationSettings>(randomPopulationMetaData.Properties.Data)
+         };
+         updateExpressionProfiles(population, randomPopulationMetaData);
+         _buildingBlock = population;
+      }
+
+      public void Visit(ImportPopulationMetaData importPopulation)
+      {
+         var population = new ImportPopulation();
+         _serializationManager.Deserialize(population.Settings, importPopulation.Properties.Data);
+         updateExpressionProfiles(population, importPopulation);
+         _buildingBlock = population;
+      }
+
+      private void updateExpressionProfiles(ISimulationSubject simulationSubject, SimulationSubjectMetaData simulationSubjectMetaData)
+      {
+         var allExpressionProfileIds = simulationSubjectMetaData.ExpressionProfileIds?.Split('|') ?? Array.Empty<string>();
+
          allExpressionProfileIds.Each(id =>
          {
             var expressionProfile = _project.BuildingBlockById<ExpressionProfile>(id);
             if (expressionProfile != null)
-               individual.AddExpressionProfile(expressionProfile);
+               simulationSubject.AddExpressionProfile(expressionProfile);
          });
-         _buildingBlock = individual;
-         ;
       }
 
       public void Visit(SimulationMetaData simulationMetaData)
@@ -221,24 +243,9 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          _buildingBlock = new Formulation {FormulationType = formulationMetaData.FormulationType};
       }
 
-      public void Visit(RandomPopulationMetaData randomPopulationMetaData)
-      {
-         _buildingBlock = new RandomPopulation
-         {
-            Settings = _serializationManager.Deserialize<RandomPopulationSettings>(randomPopulationMetaData.Properties.Data)
-         };
-      }
-
       public void Visit(EventMetaData objToVisit)
       {
          _buildingBlock = new PKSimEvent();
-      }
-
-      public void Visit(ImportPopulationMetaData importPopulation)
-      {
-         var population = new ImportPopulation();
-         _serializationManager.Deserialize(population.Settings, importPopulation.Properties.Data);
-         _buildingBlock = population;
       }
 
       public void Visit(ObserverSetMetaData observerSetMetaData)

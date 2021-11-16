@@ -88,6 +88,9 @@ namespace PKSim.Core.Model
 
       public void AddExpressionProfile(ExpressionProfile expressionProfile)
       {
+         if (Uses(expressionProfile))
+            return;
+
          _allExpressionProfiles.Add(expressionProfile);
       }
 
