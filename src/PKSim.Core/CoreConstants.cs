@@ -1286,6 +1286,10 @@ namespace PKSim.Core
          public static readonly string RAT = "Rat";
          public static readonly string MOUSE = "Mouse";
          public static readonly string RABBIT = "Rabbit";
+         public static readonly string CAT = "Cat";
+         public static readonly string CATTLE = "Cattle";
+         public static readonly string BEAGLE = "Beagle";
+         public static readonly string MINIPIG = "Minipig";
 
          public static IEnumerable<string> SpeciesUsingVenousBlood = new List<string>
          {
