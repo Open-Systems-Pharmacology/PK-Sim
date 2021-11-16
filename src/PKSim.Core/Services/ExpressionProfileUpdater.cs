@@ -23,6 +23,7 @@ namespace PKSim.Core.Services
       private readonly IOntogenyTask<Individual> _ontogenyTask;
       private readonly ICloner _cloner;
       private readonly IPKSimProjectRetriever _projectRetriever;
+      private readonly ILazyLoadTask _lazyLoadTask;
 
       public ExpressionProfileUpdater(
          ISimulationSubjectExpressionTask<Individual> individualExpressionTask,
@@ -30,7 +31,8 @@ namespace PKSim.Core.Services
          IContainerTask containerTask,
          IOntogenyTask<Individual> ontogenyTask,
          ICloner cloner,
-         IPKSimProjectRetriever projectRetriever)
+         IPKSimProjectRetriever projectRetriever,
+         ILazyLoadTask lazyLoadTask)
       {
          _individualExpressionTask = individualExpressionTask;
          _parameterSetUpdater = parameterSetUpdater;
@@ -38,6 +40,7 @@ namespace PKSim.Core.Services
          _ontogenyTask = ontogenyTask;
          _cloner = cloner;
          _projectRetriever = projectRetriever;
+         _lazyLoadTask = lazyLoadTask;
       }
 
       public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile)
@@ -47,6 +50,7 @@ namespace PKSim.Core.Services
 
       public void SynchronizeExpressionProfile(Individual individual, ExpressionProfile expressionProfile)
       {
+         _lazyLoadTask.Load(individual);
          var molecule = individual.MoleculeByName(expressionProfile.MoleculeName);
          
          //Global settings for molecule

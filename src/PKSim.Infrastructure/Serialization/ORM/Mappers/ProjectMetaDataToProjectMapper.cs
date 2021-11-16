@@ -39,6 +39,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       private readonly ICompressedSerializationManager _serializationManager;
       private readonly ISerializationContextFactory _serializationContextFactory;
       private IPKSimBuildingBlock _buildingBlock;
+      private PKSimProject _project;
 
       public ProjectMetaDataToProjectMapper(ISimulationMetaDataToSimulationMapper simulationMapper, ICompressedSerializationManager serializationManager, ISerializationContextFactory serializationContextFactory)
       {
@@ -49,36 +50,42 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       public PKSimProject MapFrom(ProjectMetaData projectMetaData)
       {
-         var project = new PKSimProject
+         try
          {
-            Name = projectMetaData.Name,
-            Description = projectMetaData.Description
-         };
+            _project = new PKSimProject
+            {
+               Name = projectMetaData.Name,
+               Description = projectMetaData.Description
+            };
 
-         //Observed data needs to be loaded first into project
-         projectMetaData.AllObservedData.Each(x => project.AddObservedData(mapFrom(x)));
+            //Observed data needs to be loaded first into project
+            projectMetaData.AllObservedData.Each(x => _project.AddObservedData(mapFrom(x)));
 
-         //First load high priority objects
-         projectMetaData.BuildingBlocks.Each(x => project.AddBuildingBlock(mapFrom(x)));
+            projectMetaData.BuildingBlocks.OrderBy(x => x.LoadOrder).Each(x => _project.AddBuildingBlock(mapFrom(x)));
 
+            //we need a shared context for all object referencing observed data and simulations
+            using (var context = _serializationContextFactory.Create(_project.AllObservedData, _project.All<ISimulation>()))
+            {
+               projectMetaData.ParameterIdentifications.Each(x => _project.AddParameterIdentification(mapFrom(x, context)));
+               projectMetaData.SensitivityAnalyses.Each(x => _project.AddSensitivityAnalysis(mapFrom(x)));
+            }
 
-         //we need a shared context for all object referencing observed data and simulations
-         using (var context = _serializationContextFactory.Create(project.AllObservedData, project.All<ISimulation>()))
-         {
-            projectMetaData.ParameterIdentifications.Each(x => project.AddParameterIdentification(mapFrom(x, context)));
-            projectMetaData.SensitivityAnalyses.Each(x => project.AddSensitivityAnalysis(mapFrom(x)));
+            projectMetaData.SimulationComparisons.Each(x => _project.AddSimulationComparison(mapFrom(x)));
+
+            //Once reference to dynamic meta data was added, deserialize the project itself
+            _serializationManager.Deserialize(_project, projectMetaData.Content.Data);
+
+            //if the project DB Version is the same as the current project, the project did not change
+            if (projectMetaData.Version == ProjectVersions.Current)
+               _project.HasChanged = false;
+
+            return _project;
          }
-
-         projectMetaData.SimulationComparisons.Each(x => project.AddSimulationComparison(mapFrom(x)));
-
-         //Once reference to dynamic meta data was added, deserialize the project itself
-         _serializationManager.Deserialize(project, projectMetaData.Content.Data);
-
-         //if the project DB Version is the same as the current project, the project did not change
-         if (projectMetaData.Version == ProjectVersions.Current)
-            project.HasChanged = false;
-
-         return project;
+         finally
+         {
+            _project = null;
+            _buildingBlock = null;
+         }
       }
 
       private DataRepository mapFrom(ObservedDataMetaData observedDataMetaData)
@@ -153,7 +160,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       private void deserialize(BuildingBlockMetaData buildingBlockMetaData) => _serializationManager.Deserialize(_buildingBlock, buildingBlockMetaData.Content.Data);
 
-      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock) 
+      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock)
          => buildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation, PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population);
 
       private T deserializeProperty<T>(IMetaDataWithProperties metaData, SerializationContext serializationContext = null)
@@ -173,10 +180,20 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       public void Visit(IndividualMetaData individualMetaData)
       {
-         _buildingBlock = new Individual
+         var allExpressionProfileIds = individualMetaData.ExpressionProfileIds?.Split('|') ?? Array.Empty<string>();
+
+         var individual = new Individual
          {
             OriginData = deserializeProperty<OriginData>(individualMetaData)
          };
+         allExpressionProfileIds.Each(id =>
+         {
+            var expressionProfile = _project.BuildingBlockById<ExpressionProfile>(id);
+            if (expressionProfile != null)
+               individual.AddExpressionProfile(expressionProfile);
+         });
+         _buildingBlock = individual;
+         ;
       }
 
       public void Visit(SimulationMetaData simulationMetaData)

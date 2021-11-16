@@ -1,9 +1,5 @@
-﻿using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

@@ -12,6 +12,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
       public virtual int Version { get; set; }
       public virtual int StructureVersion { get; set; }
       public virtual string Icon { get; set; }
+      //High number by default to signify that loading does not matter
+      public virtual int LoadOrder { get; set; } = 1000;
 
       public override void UpdateFrom(BuildingBlockMetaData sourceChild, ISession session)
       {
@@ -19,15 +21,34 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
          Icon = sourceChild.Icon;
          Version = sourceChild.Version;
          StructureVersion = sourceChild.StructureVersion;
+         LoadOrder = sourceChild.LoadOrder;
       }
    }
 
    public class IndividualMetaData : BuildingBlockMetaData
    {
+      /// <summary>
+      /// String concatenation of all Ids
+      /// </summary>
+      public virtual string ExpressionProfileIds { get; set; }
+
+      public override void UpdateFrom(BuildingBlockMetaData sourceChild, ISession session)
+      {
+         base.UpdateFrom(sourceChild, session);
+         var sourceIndividualMetaData = sourceChild as IndividualMetaData;
+         if (sourceIndividualMetaData == null)
+            return;
+
+         ExpressionProfileIds = sourceIndividualMetaData.ExpressionProfileIds;
+      }
    }
 
    public class ExpressionProfileMetaData : BuildingBlockMetaData
    {
+      public ExpressionProfileMetaData()
+      {
+         LoadOrder = 1;
+      }
    }
 
    public class ObserverSetMetaData : BuildingBlockMetaData
@@ -57,7 +78,9 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
       {
          base.UpdateFrom(sourceChild, session);
          var sourceFormulationMetaData = sourceChild as FormulationMetaData;
-         if (sourceFormulationMetaData == null) return;
+         if (sourceFormulationMetaData == null)
+            return;
+
          FormulationType = sourceFormulationMetaData.FormulationType;
       }
    }

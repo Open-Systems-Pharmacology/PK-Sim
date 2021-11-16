@@ -264,7 +264,7 @@ namespace PKSim.UI.Views.Parameters
             set
             {
                _columnValue.ReadOnly = value;
-               //TODO retreieve column from binder
+               _valueOriginBinder.ValueOriginColumn.ReadOnly = value;
             }
          }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
@@ -164,7 +165,10 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       public void Visit(Individual individual)
       {
-         _metaData = new IndividualMetaData();
+         _metaData = new IndividualMetaData
+         {
+            ExpressionProfileIds =  individual.AllExpressionProfiles().Select(x=>x.Id).ToString("|")
+         };
          serializeContentFor(individual);
          _metaData.Properties.Data = _serializationManager.Serialize(individual.OriginData);
       }

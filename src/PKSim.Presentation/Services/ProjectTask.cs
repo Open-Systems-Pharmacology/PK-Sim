@@ -12,7 +12,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -49,7 +48,6 @@ namespace PKSim.Presentation.Services
       private readonly IJournalRetriever _journalRetriever;
       private readonly ISnapshotTask _snapshotTask;
       private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
-      private readonly ILazyLoadTask _lazyLoadTask;
 
       public ProjectTask(IWorkspace workspace,
          IApplicationController applicationController,
@@ -61,9 +59,8 @@ namespace PKSim.Presentation.Services
          IJournalTask journalTask,
          IJournalRetriever journalRetriever,
          ISnapshotTask snapshotTask,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         ILazyLoadTask lazyLoadTask
-         )
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager 
+      )
       {
          _workspace = workspace;
          _applicationController = applicationController;
@@ -76,7 +73,6 @@ namespace PKSim.Presentation.Services
          _journalRetriever = journalRetriever;
          _snapshotTask = snapshotTask;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
-         _lazyLoadTask = lazyLoadTask;
       }
 
       public void NewProject()
@@ -272,7 +268,7 @@ namespace PKSim.Presentation.Services
          return (proceed == ViewResult.No);
       }
 
-      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFileFullPath);
+      public Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFileFullPath);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {
@@ -329,7 +325,6 @@ namespace PKSim.Presentation.Services
          void openProject()
          {
             _workspace.OpenProject(projectFile);
-            loadRequiredBuildingBlocks(_workspace.Project);
          }
 
          try
@@ -349,8 +344,6 @@ namespace PKSim.Presentation.Services
 
             if (_userSettings.ShouldRestoreWorkspaceLayout)
                _workspaceLayoutUpdater.RestoreLayout();
-
-            loadRequiredBuildingBlocks(_workspace.Project);
          }
          catch (Exception)
          {
@@ -361,18 +354,6 @@ namespace PKSim.Presentation.Services
          {
             _executionContext.PublishEvent(new EnableUIEvent(_workspace.Project, _workspace.ProjectLoaded));
          }
-      }
-
-      private void loadRequiredBuildingBlocks(PKSimProject project)
-      {
-         loadBuildingBlocks<ExpressionProfile>(project);
-         loadBuildingBlocks<Individual>(project);
-         loadBuildingBlocks<Population>(project);
-      }
-
-      private void loadBuildingBlocks<T>(PKSimProject project) where T : class, IPKSimBuildingBlock
-      {
-         project.All<T>().Each(_lazyLoadTask.Load);
       }
 
       private void checkFileExtension(string projectFile)

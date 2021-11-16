@@ -9,6 +9,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mapping
       {
          Table("INDIVIDUALS");
          KeyColumn("IndividualId");
+         Map(x => x.ExpressionProfileIds);
       }
    }
 }
