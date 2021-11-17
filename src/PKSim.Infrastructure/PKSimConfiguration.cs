@@ -42,10 +42,25 @@ namespace PKSim.Infrastructure
             DirectoryHelper.CreateDirectory(RemoteTemplateFolderPath);
 
          //The summary file is installed in All user paths but needs to be copied in current user to be updated 
-         var installTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
          RemoteTemplateSummaryPath = CurrentUserFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
-         if (!FileHelper.FileExists(RemoteTemplateSummaryPath))
+         tryCopyRemoteTemplate();
+      }
+
+      private void tryCopyRemoteTemplate()
+      {
+         var installTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
+
+         if (FileHelper.FileExists(RemoteTemplateSummaryPath))
+            return;
+
+         try
+         {
             FileHelper.Copy(installTemplatePath, RemoteTemplateSummaryPath);
+         }
+         catch (IOException )
+         {
+            //the file is probably used by the process, happens in parallel unit testing
+         }
       }
 
       private void createDefaultSettingsFolder()
