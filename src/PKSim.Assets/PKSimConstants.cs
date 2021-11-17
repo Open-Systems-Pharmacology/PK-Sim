@@ -75,6 +75,11 @@ namespace PKSim.Assets
          {
             return $"Unit '{unit}' not found for parameter {parameterName} with dimension '{dimension}'";
          }
+
+         public static string CannotUseExpressionProfilesDefinedForAnotherSpecies(string sourceIndividualSpecies, string targetIndividualSpecies)
+         {
+            return $"Expression profiles defined for '{sourceIndividualSpecies}' cannot be used for '{targetIndividualSpecies}' and will be removed.";
+         }
       }
 
       public static class Command

@@ -7,6 +7,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
@@ -30,23 +31,24 @@ namespace PKSim.Presentation.Presenters.Individuals
    public class ExpressionProfileSelectionPresenter : AbstractDisposablePresenter<IExpressionProfileSelectionView, IExpressionProfileSelectionPresenter>, IExpressionProfileSelectionPresenter
    {
       private readonly IMoleculePropertiesMapper _moleculePropertiesMapper;
-      private readonly IPKSimProjectRetriever _projectRetriever;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IExpressionProfileTask _expressionProfileTask;
       private readonly ExpressionProfileSelectionDTO _expressionProfileSelectionDTO;
       private Type _moleculeType;
       private Action _createExpressionProfileAction;
       private Func<Task>_loadExpressionProfileAsync;
-      private List<ExpressionProfile> _allExpressionProfilesForMoleculeType;
+      private IReadOnlyCollection<ExpressionProfile> _allExpressionProfilesForMoleculeType;
+      private Species _species;
 
       public ExpressionProfileSelectionPresenter(
          IExpressionProfileSelectionView view, 
          IMoleculePropertiesMapper moleculePropertiesMapper,
-         IPKSimProjectRetriever projectRetriever,
+         IBuildingBlockRepository buildingBlockRepository,
          IExpressionProfileTask expressionProfileTask)
          : base(view)
       {
          _moleculePropertiesMapper = moleculePropertiesMapper;
-         _projectRetriever = projectRetriever;
+         _buildingBlockRepository = buildingBlockRepository;
          _expressionProfileTask = expressionProfileTask;
          _expressionProfileSelectionDTO = new ExpressionProfileSelectionDTO();
       }
@@ -54,7 +56,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public ExpressionProfile SelectExpressionProfile<TMolecule>(ISimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
          _moleculeType = typeof(TMolecule);
-
+         _species = simulationSubject.Species;
          _createExpressionProfileAction = () =>
          {
             _expressionProfileTask.AddForMoleculeToProject<TMolecule>();
@@ -86,10 +88,11 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private void refreshExpressionProfilesForMolecule()
       {
-         _allExpressionProfilesForMoleculeType = _projectRetriever.Current.All<ExpressionProfile>().Where(canSelect).ToList();
+         _allExpressionProfilesForMoleculeType = _buildingBlockRepository.All<ExpressionProfile>(canSelect);
       }
 
-      private bool canSelect(ExpressionProfile expressionProfile) => expressionProfile.Molecule.IsAnImplementationOf(_moleculeType);
+      private bool canSelect(ExpressionProfile expressionProfile) =>
+         expressionProfile.Molecule.IsAnImplementationOf(_moleculeType) && Equals(expressionProfile.Species, _species);
 
       public IEnumerable<ExpressionProfile> AllExpressionProfiles() => _allExpressionProfilesForMoleculeType;
 
