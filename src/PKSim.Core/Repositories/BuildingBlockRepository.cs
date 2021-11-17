@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
@@ -9,7 +10,8 @@ namespace PKSim.Core.Repositories
 {
    public interface IBuildingBlockRepository : IRepository<IPKSimBuildingBlock>
    {
-      IEnumerable<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock;
+      IReadOnlyCollection<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock;
+      IReadOnlyCollection<TBuildingBlock> All<TBuildingBlock>(Func<TBuildingBlock, bool> predicate) where TBuildingBlock : class, IPKSimBuildingBlock;
       TBuildingBlock ById<TBuildingBlock>(string templateId) where TBuildingBlock : class, IPKSimBuildingBlock;
       IPKSimBuildingBlock ById(string templateId);
       TBuildingBlock FirstOrDefault<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -29,23 +31,19 @@ namespace PKSim.Core.Repositories
          return All<IPKSimBuildingBlock>();
       }
 
-      public IEnumerable<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock
+      public IReadOnlyCollection<TBuildingBlock> All<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock => All<TBuildingBlock>(x => true);
+
+      public IReadOnlyCollection<TBuildingBlock> All<TBuildingBlock>(Func<TBuildingBlock, bool> predicate) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (_projectRetriever.Current == null)
             return new List<TBuildingBlock>();
 
-         return _projectRetriever.Current.All<TBuildingBlock>();
+         return _projectRetriever.Current.All(predicate);
       }
 
-      public TBuildingBlock ById<TBuildingBlock>(string templateId) where TBuildingBlock : class, IPKSimBuildingBlock
-      {
-         return All<TBuildingBlock>().FindById(templateId);
-      }
+      public TBuildingBlock ById<TBuildingBlock>(string templateId) where TBuildingBlock : class, IPKSimBuildingBlock => All<TBuildingBlock>().FindById(templateId);
 
-      public IPKSimBuildingBlock ById(string templateId)
-      {
-         return ById<IPKSimBuildingBlock>(templateId);
-      }
+      public IPKSimBuildingBlock ById(string templateId) => ById<IPKSimBuildingBlock>(templateId);
 
       public TBuildingBlock FirstOrDefault<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock
       {

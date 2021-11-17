@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;

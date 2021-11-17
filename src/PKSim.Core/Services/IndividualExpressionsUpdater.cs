@@ -1,6 +1,5 @@
 using System.Linq;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -34,8 +33,7 @@ namespace PKSim.Core.Services
             _dialogCreator.MessageBoxInfo(PKSimConstants.Warning.CannotUseExpressionProfilesDefinedForAnotherSpecies(sourceSpecies.DisplayName, targetSpecies.DisplayName));
             return;
          }
-            
-
+         
          sourceIndividual.AllExpressionProfiles().Each(x => _moleculeExpressionTask.AddExpressionProfile(targetIndividual, x));
       }
    }
