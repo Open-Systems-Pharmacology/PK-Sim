@@ -69,12 +69,12 @@ namespace PKSim.Core
          return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
       }
 
-      public static Individual CreateIndividual()
+      public static Individual CreateIndividual(string speciesName = "Species")
       {
          var originData = new OriginData
          {
             SubPopulation = new SubPopulation(),
-            Species = new Species().WithName("Species"),
+            Species = new Species{DisplayName = speciesName }.WithName(speciesName),
             Gender = new Gender().WithName("Gender"),
             SpeciesPopulation = new SpeciesPopulation().WithName("Population"),
          };

@@ -111,7 +111,7 @@ namespace PKSim.Presentation.Services
             if (expressionProfile == null)
                return new PKSimEmptyCommand();
 
-            return _moleculeExpressionTask.AddExpressionProfile<TMolecule>(simulationSubject, expressionProfile);
+            return _moleculeExpressionTask.AddExpressionProfile(simulationSubject, expressionProfile);
          }
       }
 
