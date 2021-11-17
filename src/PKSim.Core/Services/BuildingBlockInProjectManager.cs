@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Events;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Events;
 
 namespace PKSim.Core.Services
 {
-   public interface IBuildingBlockInSimulationManager
+   public interface IBuildingBlockInProjectManager
    {
       /// <summary>
       ///    Each simulation using the given building block will notify a status update
@@ -17,15 +17,22 @@ namespace PKSim.Core.Services
       void UpdateStatusForSimulationUsing(IPKSimBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Returns all <see cref="Simulation"/> using the given <paramref name="buildingBlock"/>
+      ///    Returns all <see cref="Simulation" /> using the given <paramref name="buildingBlock" />
       /// </summary>
       /// <param name="buildingBlock">building block used to filter the simulation</param>
-      IEnumerable<Simulation> SimulationsUsing(IPKSimBuildingBlock buildingBlock);
+      IReadOnlyList<Simulation> SimulationsUsing(IPKSimBuildingBlock buildingBlock);
+
+      /// <summary>
+      ///    Returns all <see cref="IPKSimBuildingBlock" /> using the given <paramref name="buildingBlock" />.
+      ///    For instance Individual using a given expression profile. This also returns Simulation using the
+      ///    <paramref name="buildingBlock" />
+      /// </summary>
+      IReadOnlyList<IPKSimBuildingBlock> BuildingBlockUsing(IPKSimBuildingBlock buildingBlock);
 
       /// <summary>
       ///    Returns the status for the used building block given as parameter
       /// </summary>
-      /// <param name="usedBuildingBlock">Used building block for which the status shoul be retrieved</param>
+      /// <param name="usedBuildingBlock">Used building block for which the status should be retrieved</param>
       BuildingBlockStatus StatusFor(UsedBuildingBlock usedBuildingBlock);
 
       /// <summary>
@@ -66,7 +73,7 @@ namespace PKSim.Core.Services
       ///    Returns the template building block used to create <paramref name="buildingBlockInSimulation" /> used by
       ///    <paramref name="simulation" />.
       ///    If the template used in the simulation is the same as one available in the template building block repository,
-      ///    returns the template buidling block
+      ///    returns the template building block
       ///    otherwise returns the <paramref name="buildingBlockInSimulation" />
       /// </summary>
       TBuildingBlock TemplateBuildingBlockUsedBy<TBuildingBlock>(Simulation simulation, TBuildingBlock buildingBlockInSimulation) where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -77,17 +84,18 @@ namespace PKSim.Core.Services
       void UpdateStatusForSimulation(Simulation simulation);
 
       /// <summary>
-      /// Returns the <see cref="Simulation"/> using the given <paramref name="usedBuildingBlock"/> or <c>null</c> if not found
+      ///    Returns the <see cref="Simulation" /> using the given <paramref name="usedBuildingBlock" /> or <c>null</c> if not
+      ///    found
       /// </summary>
       Simulation SimulationUsing(UsedBuildingBlock usedBuildingBlock);
    }
 
-   public class BuildingBlockInSimulationManager : IBuildingBlockInSimulationManager
+   public class BuildingBlockInProjectManager : IBuildingBlockInProjectManager
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IEventPublisher _eventPublisher;
 
-      public BuildingBlockInSimulationManager(IBuildingBlockRepository buildingBlockRepository, IEventPublisher eventPublisher)
+      public BuildingBlockInProjectManager(IBuildingBlockRepository buildingBlockRepository, IEventPublisher eventPublisher)
       {
          _buildingBlockRepository = buildingBlockRepository;
          _eventPublisher = eventPublisher;
@@ -110,10 +118,25 @@ namespace PKSim.Core.Services
             .FirstOrDefault(x => x.UsedBuildingBlockById(usedBuildingBlock.Id) != null);
       }
 
-      public IEnumerable<Simulation> SimulationsUsing(IPKSimBuildingBlock buildingBlock)
+      public IReadOnlyList<Simulation> SimulationsUsing(IPKSimBuildingBlock buildingBlock)
       {
-         return allSimulationUsingBuildingBlockWithId(buildingBlock.Id);
+         return allSimulationUsingBuildingBlockWithId(buildingBlock.Id).ToList();
       }
+
+      public IReadOnlyList<IPKSimBuildingBlock> BuildingBlockUsing(IPKSimBuildingBlock buildingBlock)
+      {
+         IReadOnlyList<IPKSimBuildingBlock> simulations = SimulationsUsing(buildingBlock);
+         switch (buildingBlock)
+         {
+            case ExpressionProfile expressionProfile:
+               return simulations.Union(allSimulationSubjectsUsing(expressionProfile)).ToList();
+            default:
+               return simulations;
+         }
+      }
+
+      private IEnumerable<IPKSimBuildingBlock> allSimulationSubjectsUsing(ExpressionProfile expressionProfile)
+         => _buildingBlockRepository.All<ISimulationSubject>(x => x.Uses(expressionProfile));
 
       private IEnumerable<Simulation> allSimulationUsingBuildingBlockWithId(string buildingBlockId)
       {
@@ -150,6 +173,7 @@ namespace PKSim.Core.Services
                   return BuildingBlockStatus.Red;
             }
          }
+
          return BuildingBlockStatus.Green;
       }
 

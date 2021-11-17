@@ -21,7 +21,7 @@ namespace PKSim.Presentation.Services
    public class RenameBuildingBlockTask : IRenameBuildingBlockTask
    {
       private readonly IBuildingBlockTask _buildingBlockTask;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IApplicationController _applicationController;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IContainerTask _containerTask;
@@ -36,7 +36,7 @@ namespace PKSim.Presentation.Services
 
       public RenameBuildingBlockTask(
          IBuildingBlockTask buildingBlockTask, 
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IBuildingBlockInProjectManager buildingBlockInProjectManager,
          IApplicationController applicationController, 
          ILazyLoadTask lazyLoadTask, IContainerTask containerTask,
          IHeavyWorkManager heavyWorkManager, 
@@ -49,7 +49,7 @@ namespace PKSim.Presentation.Services
          IExpressionProfileUpdater expressionProfileUpdater)
       {
          _buildingBlockTask = buildingBlockTask;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _applicationController = applicationController;
          _lazyLoadTask = lazyLoadTask;
          _containerTask = containerTask;
@@ -84,7 +84,7 @@ namespace PKSim.Presentation.Services
 
          _renameAbsolutePathVisitor.RenameAllAbsolutePathIn(simulation, oldName);
 
-         _buildingBlockInSimulationManager.UpdateBuildingBlockNamesUsedIn(simulation);
+         _buildingBlockInProjectManager.UpdateBuildingBlockNamesUsedIn(simulation);
 
          _simulationPathUpdater.UpdatePathsForRenamedSimulation(simulation, oldName, newName);
 
@@ -150,7 +150,7 @@ namespace PKSim.Presentation.Services
 
       private void renameUsageOfBuildingBlockInSimulations(IPKSimBuildingBlock templateBuildingBlock)
       {
-         var allSimulationUsingBuildingBlocks = _buildingBlockInSimulationManager.SimulationsUsing(templateBuildingBlock).ToList();
+         var allSimulationUsingBuildingBlocks = _buildingBlockInProjectManager.SimulationsUsing(templateBuildingBlock).ToList();
 
          //only starts heavywork manager if one simulation is not loaded
          if (allSimulationUsingBuildingBlocks.Any(x => !x.IsLoaded))
@@ -159,7 +159,7 @@ namespace PKSim.Presentation.Services
             renameBuildingBlockInSimulation(allSimulationUsingBuildingBlocks, templateBuildingBlock);
 
          //needs to be done out of the heavy work manager to avoid cross threading issues
-         allSimulationUsingBuildingBlocks.Each(s => _buildingBlockInSimulationManager.UpdateBuildingBlockNamesUsedIn(s));
+         allSimulationUsingBuildingBlocks.Each(s => _buildingBlockInProjectManager.UpdateBuildingBlockNamesUsedIn(s));
       }
 
       private void renameBuildingBlockInSimulation(IEnumerable<Simulation> allSimulationUsingBuildingBlocks, IPKSimBuildingBlock templateBuildingBlock)

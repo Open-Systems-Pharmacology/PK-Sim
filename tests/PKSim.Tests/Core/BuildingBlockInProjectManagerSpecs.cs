@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Events;
 using FakeItEasy;
-using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -12,7 +12,7 @@ using OSPSuite.Core.Events;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_BuildingBlockInSimulationManager : ContextSpecification<IBuildingBlockInSimulationManager>
+   public abstract class concern_for_BuildingBlockInProjectManager : ContextSpecification<IBuildingBlockInProjectManager>
    {
       protected IEventPublisher _eventPublisher;
       protected Simulation _simulation1;
@@ -35,11 +35,11 @@ namespace PKSim.Core
          _templateBuildingBlock = A.Fake<IPKSimBuildingBlock>().WithId(_id);
          _usedBuildingBlock = new UsedBuildingBlock(_templateBuildingBlock.Id, _templateBuildingBlock.BuildingBlockType);
          A.CallTo(() => _buildingBlockRepository.ById(_templateBuildingBlock.Id)).Returns(_templateBuildingBlock);
-         sut = new BuildingBlockInSimulationManager(_buildingBlockRepository, _eventPublisher);
+         sut = new BuildingBlockInProjectManager(_buildingBlockRepository, _eventPublisher);
       }
    }
 
-   public class When_updating_the_simulation_status_for_simulations_using_a_given_building_block : concern_for_BuildingBlockInSimulationManager
+   public class When_updating_the_simulation_status_for_simulations_using_a_given_building_block : concern_for_BuildingBlockInProjectManager
    {
       private List<SimulationStatusChangedEvent> _events;
 
@@ -70,7 +70,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_updating_the_simulation_status_for_a_simulation : concern_for_BuildingBlockInSimulationManager
+   public class When_updating_the_simulation_status_for_a_simulation : concern_for_BuildingBlockInProjectManager
    {
       private Simulation _simulation;
       private IList<SimulationStatusChangedEvent> _events;
@@ -97,7 +97,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_the_simulation_using_building_block_retriever_is_asked_to_retrieve_all_simulations_using_a_building_block : concern_for_BuildingBlockInSimulationManager
+   public class When_the_simulation_using_building_block_retriever_is_asked_to_retrieve_all_simulations_using_a_building_block : concern_for_BuildingBlockInProjectManager
    {
       private IPKSimBuildingBlock _bb1;
       private IPKSimBuildingBlock _bb2;
@@ -128,7 +128,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_building_block_status_for_a_building_block_id_whose_version_has_changed : concern_for_BuildingBlockInSimulationManager
+   public class When_retrieving_the_building_block_status_for_a_building_block_id_whose_version_has_changed : concern_for_BuildingBlockInProjectManager
    {
       protected override void Context()
       {
@@ -144,7 +144,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_building_block_status_for_a_building_block_id_whose_template_does_not_exist : concern_for_BuildingBlockInSimulationManager
+   public class When_retrieving_the_building_block_status_for_a_building_block_id_whose_template_does_not_exist : concern_for_BuildingBlockInProjectManager
    {
       protected override void Context()
       {
@@ -161,7 +161,7 @@ namespace PKSim.Core
    }
 
    public class When_retrieving_the_building_block_status_for_a_building_block_id_whose_version_is_the_same_as_the_building_block_and_that_was_not_alterd_in_the_simulation :
-      concern_for_BuildingBlockInSimulationManager
+      concern_for_BuildingBlockInProjectManager
    {
       private BuildingBlockStatus _result;
 
@@ -184,7 +184,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_building_block_status_for_a_building_block_id_that_was_not_alterd_in_the_simulation : concern_for_BuildingBlockInSimulationManager
+   public class When_retrieving_the_building_block_status_for_a_building_block_id_that_was_not_alterd_in_the_simulation : concern_for_BuildingBlockInProjectManager
    {
       private BuildingBlockStatus _resultWithSameVersion;
       private BuildingBlockStatus _resultWithDifferentVersion;
@@ -211,7 +211,7 @@ namespace PKSim.Core
       }
    }
 
-   public abstract class concern_for_building_block_status_retriever_for_simulation : concern_for_BuildingBlockInSimulationManager
+   public abstract class concern_for_building_block_status_retriever_for_simulation : concern_for_BuildingBlockInProjectManager
    {
       protected BuildingBlockStatus _result;
       protected Simulation _simulation;
@@ -251,7 +251,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_status_of_an_imported_simulation : concern_for_BuildingBlockInSimulationManager
+   public class When_retrieving_the_status_of_an_imported_simulation : concern_for_BuildingBlockInProjectManager
    {
       private Simulation _simulation;
 
@@ -329,7 +329,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_template_building_block_used_to_create_a_simulation_for_a_given_building_block : concern_for_BuildingBlockInSimulationManager
+   public class When_retrieving_the_template_building_block_used_to_create_a_simulation_for_a_given_building_block : concern_for_BuildingBlockInProjectManager
    {
       private IPKSimBuildingBlock _buildingBlockInSimulation;
 
@@ -356,7 +356,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_simulation_using_a_given_used_building_block : concern_for_BuildingBlockInSimulationManager
+   public class When_retrieving_the_simulation_using_a_given_used_building_block : concern_for_BuildingBlockInProjectManager
    {
       protected override void Context()
       {
@@ -376,6 +376,44 @@ namespace PKSim.Core
       public void should_return_null_if_no_simulation_was_found_using_the_given_used_building_block()
       {
          sut.SimulationUsing(new UsedBuildingBlock("Temp", PKSimBuildingBlockType.Individual){Id = "xxx"}).ShouldBeNull();
+      }
+   }
+
+   public class When_retrieving_all_building_block_using_a_given_building_block : concern_for_BuildingBlockInProjectManager
+   {
+      private ExpressionProfile _expressionProfile;
+      private IReadOnlyList<IPKSimBuildingBlock> _result;
+      private Individual _individual;
+
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _individual = DomainHelperForSpecs.CreateIndividual();
+         _individual.AddExpressionProfile(_expressionProfile);
+         _usedBuildingBlock = new UsedBuildingBlock(_expressionProfile.Id, _expressionProfile.BuildingBlockType);
+         _simulation1.AddUsedBuildingBlock(_usedBuildingBlock);
+         A.CallTo(() => _buildingBlockRepository.All(A<Func<ISimulationSubject, bool>>._))
+            .Returns(new[] { _individual });
+      }
+
+      protected override void Because()
+      {
+         _result = sut.BuildingBlockUsing(_expressionProfile);
+      }
+
+      [Observation]
+      public void should_return_the_simulation_using_the_building_block()
+      {
+         _result.ShouldContain(_simulation1);
+         _result.ShouldNotContain(_simulation2);
+         _result.ShouldNotContain(_simulation3);
+      }
+
+      [Observation]
+      public void should_return_the_building_block_using_the_building_block()
+      {
+         _result.ShouldContain(_individual);
       }
    }
 }
