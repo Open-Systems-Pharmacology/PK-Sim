@@ -26,6 +26,11 @@ namespace PKSim.UI.Views.Individuals
 
       public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemPanelExpressionParameters, view);
 
+      public bool ReadOnly
+      {
+         set => layoutItemPanelLocalization.Enabled = !value;
+      }
+
       public override void InitializeResources()
       {
          base.InitializeResources();

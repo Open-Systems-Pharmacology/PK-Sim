@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Forms;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.Core;
@@ -50,6 +51,12 @@ namespace PKSim.UI.Binders
       {
          //always perform update to source
          return true;
+      }
+
+      public BuildingBlockSelectionEditBinder<TObjectType, TBuildingBlock> WithFilter(Func<TBuildingBlock, bool> filter)
+      {
+         _buildingBlockSelection.ExtraFilter = x => filter(x.DowncastTo<TBuildingBlock>());
+         return this;
       }
    }
 }

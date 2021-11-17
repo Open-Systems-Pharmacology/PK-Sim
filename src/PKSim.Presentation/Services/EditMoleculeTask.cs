@@ -6,6 +6,7 @@ using PKSim.Core.Commands;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Presenters.ProteinExpression;
 
 namespace PKSim.Presentation.Services
@@ -35,20 +36,10 @@ namespace PKSim.Presentation.Services
       ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject, string moleculeName);
 
       /// <summary>
-      ///    Add a default molecule of type <typeparamref name="TMolecule" /> to the given <paramref name="simulationSubject" />
-      ///    bypassing the expression
-      ///    database
-      /// </summary>
-      /// <typeparam name="TMolecule">Type of molecule to add. The molecule will be created depending on this type </typeparam>
-      /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
-      ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule;
-
-      /// <summary>
       ///    return true if a protein expression database was defined for the <paramref name="simulationSubject" />, otherwise
       ///    false
       /// </summary>
       bool CanQueryProteinExpressionsFor(TSimulationSubject simulationSubject);
-
 
       /// <summary>
       ///    Remove the given molecule from the simulationSubject
@@ -93,16 +84,7 @@ namespace PKSim.Presentation.Services
 
       public ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
-         //database was defined for this species
-         if (CanQueryProteinExpressionsFor(simulationSubject))
-            return proteinFromQuery<TMolecule>(simulationSubject);
-
          //no database defined for the species. return the simple configuration
-         return AddDefaultMolecule<TMolecule>(simulationSubject);
-      }
-
-      public ICommand AddDefaultMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
-      {
          return simpleMolecule<TMolecule>(simulationSubject);
       }
 
@@ -123,13 +105,13 @@ namespace PKSim.Presentation.Services
 
       private ICommand simpleMolecule<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
-         using (var presenter = _applicationController.Start<ISimpleMoleculePresenter>())
+         using (var presenter = _applicationController.Start<IExpressionProfileSelectionPresenter>())
          {
-            bool proteinCreated = presenter.CreateMoleculeFor<TMolecule>(simulationSubject);
-            if (!proteinCreated)
+            var expressionProfile = presenter.SelectExpressionProfile<TMolecule>(simulationSubject);
+            if (expressionProfile == null)
                return new PKSimEmptyCommand();
 
-            return _moleculeExpressionTask.AddMoleculeTo<TMolecule>(simulationSubject, presenter.MoleculeName);
+            return _moleculeExpressionTask.AddExpressionProfile<TMolecule>(simulationSubject, expressionProfile);
          }
       }
 
@@ -150,7 +132,6 @@ namespace PKSim.Presentation.Services
          }
       }
 
-
       public ICommand EditMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
          using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
@@ -168,25 +149,26 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      private ICommand proteinFromQuery<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
-      {
-         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
-         using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
-         {
-            var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
-            var newMolecule = moleculeFactory.AddMoleculeTo(simulationSubject, "%TEMP%");
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule, simulationSubject, ""));
-            presenter.Title = PKSimConstants.UI.AddProteinExpression(_executionContext.TypeFor(newMolecule));
-            if (!presenter.Start())
-            {
-               //needs to remove the molecule that was added previously
-               simulationSubject.RemoveMolecule(newMolecule);
-               return new PKSimEmptyCommand();
-            }
-
-            var queryResults = presenter.GetQueryResults();
-            return _moleculeExpressionTask.AddMoleculeTo(simulationSubject, newMolecule, queryResults);
-         }
-      }
+      //
+      // private ICommand proteinFromQuery<TMolecule>(TSimulationSubject simulationSubject) where TMolecule : IndividualMolecule
+      // {
+      //    using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(simulationSubject.Species))
+      //    using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
+      //    {
+      //       var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+      //       var newMolecule = moleculeFactory.AddMoleculeTo(simulationSubject, "%TEMP%");
+      //       presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(newMolecule, simulationSubject, ""));
+      //       presenter.Title = PKSimConstants.UI.AddProteinExpression(_executionContext.TypeFor(newMolecule));
+      //       if (!presenter.Start())
+      //       {
+      //          //needs to remove the molecule that was added previously
+      //          simulationSubject.RemoveMolecule(newMolecule);
+      //          return new PKSimEmptyCommand();
+      //       }
+      //
+      //       var queryResults = presenter.GetQueryResults();
+      //       return _moleculeExpressionTask.AddMoleculeTo(simulationSubject, newMolecule, queryResults);
+      //    }
+      // }
    }
 }

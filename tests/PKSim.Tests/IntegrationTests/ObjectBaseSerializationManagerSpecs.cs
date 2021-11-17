@@ -102,6 +102,8 @@ namespace PKSim.IntegrationTests
       }
    }
 
+
+
    public class When_deserializing_a_serialized_compound : When_serializing_two_building_blocks<Compound>
    {
       protected override void Context()

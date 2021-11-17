@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility.Container;
+﻿using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility.Container;
 using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
@@ -17,10 +18,10 @@ namespace PKSim.IntegrationTests
       {
       }
 
-      public virtual T SerializeAndDeserialize(T source)
+      public virtual T SerializeAndDeserialize(T source, SerializationContext serializationContext = null)
       {
          var stream = _serializationManager.Serialize(source);
-         return _serializationManager.Deserialize<T>(stream);
+         return _serializationManager.Deserialize<T>(stream, serializationContext);
       }
    }
 }

@@ -13,11 +13,11 @@ namespace PKSim.Core.Commands
       {
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
          _oldValue = _parameter.Value;
          UpdateParameter(context);
-         Description = ParameterMessages.ResetParameterValue(_parameter, context.DisplayNameFor(_parameter), _oldValue);
+         Description = ParameterMessages.ResetParameterValue(parameter, context.DisplayNameFor(parameter), _oldValue);
       }
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)

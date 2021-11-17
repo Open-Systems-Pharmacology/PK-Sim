@@ -20,10 +20,10 @@ namespace PKSim.Core.Commands
          return new SetParameterDefaultStateCommand(_parameter, _oldIsDefault).AsInverseFor(this);
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
          UpdateParameter(context);
-         Description = PKSimConstants.Command.SetParameterDefaultStateFrom(context.DisplayNameFor(_parameter), _oldIsDefault, _isDefault);
+         Description = PKSimConstants.Command.SetParameterDefaultStateFrom(context.DisplayNameFor(parameter), _oldIsDefault, _isDefault);
       }
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)

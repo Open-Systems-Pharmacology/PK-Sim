@@ -14,7 +14,7 @@ using OSPSuite.Core.Services;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_OntogenyTask : ContextSpecification<IOntogenyTask<Individual>>
+   public abstract class concern_for_OntogenyTask : ContextSpecification<IOntogenyTask>
    {
       private IExecutionContext _context;
       protected IApplicationController _applicationController;
@@ -35,11 +35,11 @@ namespace PKSim.Core
          _entityTask = A.Fake<IEntityTask>();
          _formulaFactory = A.Fake<IFormulaFactory>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         sut = new IndividualOntogenyTask(_context, _applicationController, _dataImporter, _dimensionRepository, _ontogenyRepository, _entityTask, _formulaFactory, _dialogCreator);
+         sut = new OntogenyTask(_context, _applicationController, _dataImporter, _dimensionRepository, _ontogenyRepository, _entityTask, _formulaFactory, _dialogCreator);
       }
    }
 
-   public class When_the_ontogeny_task_is_aksed_to_show_the_data_for_an_undefined_ontogeny : concern_for_OntogenyTask
+   public class When_the_ontogeny_task_is_asked_to_show_the_data_for_an_undefined_ontogeny : concern_for_OntogenyTask
    {
       protected override void Because()
       {
@@ -53,7 +53,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_the_ontogeny_task_is_aksed_to_show_the_data_for_an_defined_ontogeny : concern_for_OntogenyTask
+   public class When_the_ontogeny_task_is_asked_to_show_the_data_for_an_defined_ontogeny : concern_for_OntogenyTask
    {
       private IShowOntogenyDataPresenter _presenter;
       private Ontogeny _ontogeny;

@@ -99,6 +99,12 @@ namespace PKSim.Presentation.Presenters.Individuals
          rebind();
       }
 
+      public void DisableEdit()
+      {
+         _transporterExpressionParametersPresenter.DisableEdit();
+         _view.ReadOnly = false;
+      }
+
       private void rebind()
       {
          _moleculePropertiesPresenter.Edit(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());

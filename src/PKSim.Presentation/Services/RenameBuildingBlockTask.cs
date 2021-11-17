@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.Assets;
+using System.Linq; 
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
@@ -33,11 +32,21 @@ namespace PKSim.Presentation.Services
       private readonly IParameterIdentificationSimulationPathUpdater _simulationPathUpdater;
       private readonly IDataRepositoryNamer _dataRepositoryNamer;
       private readonly ICurveNamer _curveNamer;
+      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
 
-      public RenameBuildingBlockTask(IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
-         IApplicationController applicationController, ILazyLoadTask lazyLoadTask, IContainerTask containerTask,
-         IHeavyWorkManager heavyWorkManager, IRenameAbsolutePathVisitor renameAbsolutePathVisitor, IObjectReferencingRetriever objectReferencingRetriever,
-         IProjectRetriever projectRetriever, IParameterIdentificationSimulationPathUpdater simulationPathUpdater, IDataRepositoryNamer dataRepositoryNamer, ICurveNamer curveNamer)
+      public RenameBuildingBlockTask(
+         IBuildingBlockTask buildingBlockTask, 
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IApplicationController applicationController, 
+         ILazyLoadTask lazyLoadTask, IContainerTask containerTask,
+         IHeavyWorkManager heavyWorkManager, 
+         IRenameAbsolutePathVisitor renameAbsolutePathVisitor, 
+         IObjectReferencingRetriever objectReferencingRetriever,
+         IProjectRetriever projectRetriever, 
+         IParameterIdentificationSimulationPathUpdater simulationPathUpdater, 
+         IDataRepositoryNamer dataRepositoryNamer, 
+         ICurveNamer curveNamer, 
+         IExpressionProfileUpdater expressionProfileUpdater)
       {
          _buildingBlockTask = buildingBlockTask;
          _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
@@ -51,6 +60,7 @@ namespace PKSim.Presentation.Services
          _simulationPathUpdater = simulationPathUpdater;
          _dataRepositoryNamer = dataRepositoryNamer;
          _curveNamer = curveNamer;
+         _expressionProfileUpdater = expressionProfileUpdater;
       }
 
       public void RenameSimulation(Simulation simulation, string newName)
@@ -105,46 +115,21 @@ namespace PKSim.Presentation.Services
          renameSimulation(individualSimulation, newName);
       }
 
-      private bool pathContains(List<string> path, string oldCompoundName)
-      {
-         if (!path.Any()) return false;
-         return path.LastIndexOf(oldCompoundName) > 0;
-      }
 
-      public void SynchronizeCompoundNameIn(Simulation targetSimulation, string oldCompoundName, string newCompoundName)
-      {
-         //the cache will be referencing quantity by path using the newCompoundName
-         var quantityCache = _containerTask.CacheAllChildren<IQuantity>(targetSimulation.Model.Root);
-
-         //all results with a possible entry equal to the old compound name
-         var allQuantityResults = targetSimulation.Results
-            .SelectMany(x => x.AllValues)
-            .Where(x => pathContains(x.PathList.ToList(), oldCompoundName));
-
-         foreach (var quantityValues in allQuantityResults)
-         {
-            //check if the quantity exists for the give path
-            var newPath = new List<string>(quantityValues.PathList);
-            //uses last so that we do not rename simulation name that could be the same as the compound name
-            newPath[newPath.LastIndexOf(oldCompoundName)] = newCompoundName;
-
-            var quantity = quantityCache[newPath.ToPathString()];
-            if (!quantityIsCompound(quantity))
-               continue;
-
-            quantityValues.PathList = newPath;
-         }
-      }
-
-      private static bool quantityIsCompound(IQuantity quantity)
-      {
-         return quantity != null && quantity.QuantityType.Is(QuantityType.Drug);
-      }
-
-      public void RenameUsageOfBuildingBlockInProject(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
+      public void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
       {
          renameUsageOfBuildingBlockInSimulations(templateBuildingBlock);
          renameUsageOfBuildingBlockInObservedData(templateBuildingBlock, oldBuildingBlockName);
+         renameExpressionProfile(templateBuildingBlock);
+      }
+
+      private void renameExpressionProfile(IPKSimBuildingBlock templateBuildingBlock)
+      {
+         var expressionProfile = templateBuildingBlock as ExpressionProfile;
+         if(expressionProfile==null)
+            return;
+
+         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile);
       }
 
       private void renameUsageOfBuildingBlockInObservedData(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
