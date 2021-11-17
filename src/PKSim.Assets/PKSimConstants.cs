@@ -78,7 +78,7 @@ namespace PKSim.Assets
 
          public static string CannotUseExpressionProfilesDefinedForAnotherSpecies(string sourceIndividualSpecies, string targetIndividualSpecies)
          {
-            return $"Expression profiles defined for '{sourceIndividualSpecies}' cannot be used '{targetIndividualSpecies}' and will be removed.";
+            return $"Expression profiles defined for '{sourceIndividualSpecies}' cannot be used for '{targetIndividualSpecies}' and will be removed.";
          }
       }
 

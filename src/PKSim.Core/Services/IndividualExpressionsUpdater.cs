@@ -1,4 +1,5 @@
 using System.Linq;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -14,21 +15,26 @@ namespace PKSim.Core.Services
    public class IndividualExpressionsUpdater : IIndividualExpressionsUpdater
    {
       private readonly IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
+      private readonly IDialogCreator _dialogCreator;
 
-      public IndividualExpressionsUpdater(IMoleculeExpressionTask<Individual> moleculeExpressionTask)
+      public IndividualExpressionsUpdater(IMoleculeExpressionTask<Individual> moleculeExpressionTask, IDialogCreator dialogCreator)
       {
          _moleculeExpressionTask = moleculeExpressionTask;
+         _dialogCreator = dialogCreator;
       }
 
       public void Update(Individual sourceIndividual, Individual targetIndividual)
       {
          var sourceSpecies = sourceIndividual.Species;
-         var targetSpecies = sourceIndividual.Species;
+         var targetSpecies = targetIndividual.Species;
 
          //Uses expression profile but not the same species. We show a warning
          if (sourceIndividual.AllExpressionProfiles().Any() && !Equals(sourceSpecies, targetSpecies))
-            throw new OSPSuiteException(PKSimConstants.Warning.CannotUseExpressionProfilesDefinedForAnotherSpecies(sourceSpecies.DisplayName, targetSpecies.DisplayName));
-
+         {
+            _dialogCreator.MessageBoxInfo(PKSimConstants.Warning.CannotUseExpressionProfilesDefinedForAnotherSpecies(sourceSpecies.DisplayName, targetSpecies.DisplayName));
+            return;
+         }
+            
 
          sourceIndividual.AllExpressionProfiles().Each(x => _moleculeExpressionTask.AddExpressionProfile(targetIndividual, x));
       }

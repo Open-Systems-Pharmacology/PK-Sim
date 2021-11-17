@@ -1,6 +1,7 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -14,6 +15,7 @@ namespace PKSim.Core
       protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       protected Individual _targetIndividualOtherSpecies;
       protected ExpressionProfile _expressionProfile1;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -22,17 +24,16 @@ namespace PKSim.Core
          _expressionProfile1 = new ExpressionProfile();
          _targetIndividualOtherSpecies = DomainHelperForSpecs.CreateIndividual(speciesName: "OTHER_SPECIES");
          _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
-
-         sut = new IndividualExpressionsUpdater(_moleculeExpressionTask);
+         _dialogCreator= A.Fake<IDialogCreator>();
+         sut = new IndividualExpressionsUpdater(_moleculeExpressionTask, _dialogCreator);
 
          _sourceIndividual.AddExpressionProfile(_expressionProfile1);
-
       }
    }
 
    public class When_updating_the_expression_profile_from_one_individual_to_another_using_the_same_species : concern_for_IndividualExpressionsUpdater
    {
- protected override void Because()
+      protected override void Because()
       {
          sut.Update(_sourceIndividual, _targetIndividual);
       }
@@ -44,7 +45,6 @@ namespace PKSim.Core
       }
    }
 
-
    public class When_updating_the_expression_profile_from_one_individual_to_another_using_the_different_species : concern_for_IndividualExpressionsUpdater
    {
       protected override void Because()
@@ -53,9 +53,15 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_throw_an_exception()
+      public void should_warn_the_user_that_the_expression_won_t_be_used()
       {
-         The.Action(()=> sut.Update(_sourceIndividual, _targetIndividualOtherSpecies)).ShouldThrowAn<OSPSuiteException>();
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_add_the_same_expression_profile_to_the_target_individual()
+      {
+         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile(_targetIndividual, _expressionProfile1)).MustNotHaveHappened();
       }
    }
 }
