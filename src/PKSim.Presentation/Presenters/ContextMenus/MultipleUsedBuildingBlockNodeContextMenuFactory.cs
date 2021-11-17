@@ -32,12 +32,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class MultipleUsedBuildingBlockNodeContextMenuFactory : MultipleNodeContextMenuFactory<UsedBuildingBlock>
    {
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IExecutionContext _executionContext;
 
-      public MultipleUsedBuildingBlockNodeContextMenuFactory(IBuildingBlockInSimulationManager buildingBlockInSimulationManager, IExecutionContext executionContext)
+      public MultipleUsedBuildingBlockNodeContextMenuFactory(IBuildingBlockInProjectManager buildingBlockInProjectManager, IExecutionContext executionContext)
       {
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _executionContext = executionContext;
       }
 
@@ -52,7 +52,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          var loadedBuildingBlocks = new List<NamedBuildingBlock<IPKSimBuildingBlock>>();
          foreach (var usedBuildingBlock in usedBuildingBlocks)
          {
-            var simulation = _buildingBlockInSimulationManager.SimulationUsing(usedBuildingBlock);
+            var simulation = _buildingBlockInProjectManager.SimulationUsing(usedBuildingBlock);
             _executionContext.Load(simulation);
             var buildingBlock = simulation.UsedBuildingBlockById(usedBuildingBlock.Id).BuildingBlock;
             var name = CoreConstants.ContainerName.BuildingBlockInSimulationNameFor(buildingBlock.Name, simulation.Name);

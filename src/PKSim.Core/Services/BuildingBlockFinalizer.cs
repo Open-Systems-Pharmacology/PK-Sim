@@ -16,19 +16,19 @@ namespace PKSim.Core.Services
       private readonly IReferencesResolver _referencesResolver;
       private readonly IKeywordReplacerTask _keywordReplacerTask;
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IIndividualPathWithRootExpander _individualPathWithRootExpander;
       private readonly IFormulaTask _formulaTask;
 
       public BuildingBlockFinalizer(IReferencesResolver referencesResolver, IKeywordReplacerTask keywordReplacerTask,
-         INeighborhoodFinalizer neighborhoodFinalizer, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         INeighborhoodFinalizer neighborhoodFinalizer, IBuildingBlockInProjectManager buildingBlockInProjectManager,
          IIndividualPathWithRootExpander individualPathWithRootExpander,
          IFormulaTask formulaTask)
       {
          _referencesResolver = referencesResolver;
          _keywordReplacerTask = keywordReplacerTask;
          _neighborhoodFinalizer = neighborhoodFinalizer;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _individualPathWithRootExpander = individualPathWithRootExpander;
          _formulaTask = formulaTask;
       }
@@ -49,7 +49,7 @@ namespace PKSim.Core.Services
       {
          if (simulation == null) return;
          _referencesResolver.ResolveReferencesIn(simulation.Model);
-         _buildingBlockInSimulationManager.UpdateBuildingBlockNamesUsedIn(simulation);
+         _buildingBlockInProjectManager.UpdateBuildingBlockNamesUsedIn(simulation);
          finalizeIndividual(simulation.Individual);
       }
 

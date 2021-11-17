@@ -21,12 +21,12 @@ namespace PKSim.Presentation.Services
 
    public class BuildingBlockIconRetriever : IBuildingBlockIconRetriever
    {
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public BuildingBlockIconRetriever(IBuildingBlockInSimulationManager buildingBlockInSimulationManager, IBuildingBlockRepository buildingBlockRepository)
+      public BuildingBlockIconRetriever(IBuildingBlockInProjectManager buildingBlockInProjectManager, IBuildingBlockRepository buildingBlockRepository)
       {
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _buildingBlockRepository = buildingBlockRepository;
       }
 
@@ -41,7 +41,7 @@ namespace PKSim.Presentation.Services
          if (simulation.AllowAging)
             iconName = $"Aging{iconName}";
 
-         return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(simulation));
+         return retrieveIconForStatus(iconName, _buildingBlockInProjectManager.StatusFor(simulation));
       }
 
       public ApplicationIcon IconFor(UsedBuildingBlock usedBuildingBlock)
@@ -58,7 +58,7 @@ namespace PKSim.Presentation.Services
                break;
          }
 
-         return retrieveIconForStatus(iconName, _buildingBlockInSimulationManager.StatusFor(usedBuildingBlock));
+         return retrieveIconForStatus(iconName, _buildingBlockInProjectManager.StatusFor(usedBuildingBlock));
       }
 
       public ApplicationIcon IconFor(ISimulationComparison simulationComparison)

@@ -16,15 +16,15 @@ namespace PKSim.Presentation.DTO.Mappers
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IParameterToParameterDTOInContainerMapper<EventMappingDTO> _parameterDTOMapper;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       public EventMappingToEventMappingDTOMapper(IBuildingBlockRepository buildingBlockRepository,
          IParameterToParameterDTOInContainerMapper<EventMappingDTO> parameterDTOMapper,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager)
+         IBuildingBlockInProjectManager buildingBlockInProjectManager)
       {
          _buildingBlockRepository = buildingBlockRepository;
          _parameterDTOMapper = parameterDTOMapper;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
       }
 
       public EventMappingDTO MapFrom(EventMapping eventMapping, Simulation simulation)
@@ -36,7 +36,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var usedEvent = simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId);
          //simulation was already using an event based on template. Retrieved the building block used
          if (usedEvent != null)
-            templateEvent = _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy<PKSimEvent>(usedEvent);
+            templateEvent = _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<PKSimEvent>(usedEvent);
 
          eventMappingDTO.Event = templateEvent;
          return eventMappingDTO;

@@ -11,17 +11,17 @@ namespace PKSim.Presentation.Services
    public class CloneSimulationTask : ICloneSimulationTask
    {
       private readonly IBuildingBlockTask _buildingBlockTask;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly ISimulationResultsTask _simulationResultsTask;
       private readonly IApplicationController _applicationController;
       private readonly IRenameBuildingBlockTask _renameBuildingBlockTask;
 
-      public CloneSimulationTask(IBuildingBlockTask buildingBlockTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+      public CloneSimulationTask(IBuildingBlockTask buildingBlockTask, IBuildingBlockInProjectManager buildingBlockInProjectManager,
          ISimulationSettingsRetriever simulationSettingsRetriever, ISimulationResultsTask simulationResultsTask, IApplicationController applicationController, IRenameBuildingBlockTask renameBuildingBlockTask)
       {
          _buildingBlockTask = buildingBlockTask;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationResultsTask = simulationResultsTask;
          _applicationController = applicationController;
@@ -30,7 +30,7 @@ namespace PKSim.Presentation.Services
 
       public void Clone(Simulation simulationToClone)
       {
-         if (_buildingBlockInSimulationManager.StatusFor(simulationToClone) != BuildingBlockStatus.Green)
+         if (_buildingBlockInProjectManager.StatusFor(simulationToClone) != BuildingBlockStatus.Green)
             throw new PKSimException(PKSimConstants.Error.SimulationCloneOnlyAvailableWhenBuildingBlocksAreUptodate);
 
          _buildingBlockTask.Load(simulationToClone);

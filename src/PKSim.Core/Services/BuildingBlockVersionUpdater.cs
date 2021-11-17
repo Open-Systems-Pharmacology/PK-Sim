@@ -11,11 +11,11 @@ namespace PKSim.Core.Services
 
    public class BuildingBlockVersionUpdater : IBuildingBlockVersionUpdater
    {
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
-      public BuildingBlockVersionUpdater(IBuildingBlockInSimulationManager buildingBlockInSimulationManager)
+      public BuildingBlockVersionUpdater(IBuildingBlockInProjectManager buildingBlockInProjectManager)
       {
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
       }
 
       public void UpdateBuildingBlockVersion(IBuildingBlockChangeCommand buildingBlockChangeCommand, IPKSimBuildingBlock buildingBlock)
@@ -39,9 +39,9 @@ namespace PKSim.Core.Services
 
          var simulation = buildingBlock as Simulation;
          if (simulation != null)
-            _buildingBlockInSimulationManager.UpdateStatusForSimulation(simulation);
+            _buildingBlockInProjectManager.UpdateStatusForSimulation(simulation);
          else
-            _buildingBlockInSimulationManager.UpdateStatusForSimulationUsing(buildingBlock);
+            _buildingBlockInProjectManager.UpdateStatusForSimulationUsing(buildingBlock);
       }
    }
 }

@@ -27,7 +27,7 @@ namespace PKSim.Presentation
    {
       protected IApplicationController _applicationController;
       protected IBuildingBlockTask _buildingBlockTask;
-      private IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private ILazyLoadTask _lazyloadTask;
       private IHeavyWorkManager _heavyWorkManager;
       protected IObjectPathFactory _objectPathFactory;
@@ -48,7 +48,7 @@ namespace PKSim.Presentation
       {
          _applicationController = A.Fake<IApplicationController>();
          _buildingBlockTask = A.Fake<IBuildingBlockTask>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _lazyloadTask = A.Fake<ILazyLoadTask>();
          _heavyWorkManager = A.Fake<IHeavyWorkManager>();
          _containerTask = A.Fake<IContainerTask>();
@@ -63,7 +63,7 @@ namespace PKSim.Presentation
 
          sut = new RenameBuildingBlockTask(
             _buildingBlockTask, 
-            _buildingBlockInSimulationManager, 
+            _buildingBlockInProjectManager, 
             _applicationController, 
             _lazyloadTask,
             _containerTask, 
