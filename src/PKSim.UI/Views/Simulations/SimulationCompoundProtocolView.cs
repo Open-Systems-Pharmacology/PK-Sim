@@ -56,8 +56,8 @@ namespace PKSim.UI.Views.Simulations
 
       public bool AllowEmptyProtocolSelection
       {
-         set { uxProtocolSelection.AllowEmptySelection = value; }
-         get { return uxProtocolSelection.AllowEmptySelection; }
+         set => uxProtocolSelection.AllowEmptySelection = value;
+         get => uxProtocolSelection.AllowEmptySelection;
       }
 
       protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, IResizableView view, int height)
@@ -68,19 +68,14 @@ namespace PKSim.UI.Views.Simulations
 
       public void AdjustHeight()
       {
-         if (_resizableView == null) return;
-         _resizableView.AdjustHeight();
+         _resizableView?.AdjustHeight();
       }
 
       public void Repaint()
       {
-         if (_resizableView == null) return;
-         _resizableView.Repaint();
+         _resizableView?.Repaint();
       }
 
-      public int OptimalHeight
-      {
-         get { return layoutControlGroup.Height; }
-      }
+      public int OptimalHeight => layoutControlGroup.Height;
    }
 }

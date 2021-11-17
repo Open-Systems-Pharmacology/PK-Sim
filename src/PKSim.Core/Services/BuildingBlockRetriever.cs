@@ -35,10 +35,7 @@ namespace PKSim.Core.Services
          _withIdRepository = withIdRepository;
       }
 
-      public IPKSimBuildingBlock BuildingBlockContaining(IEntity entity)
-      {
-         return findBuildingBlockFor(entity);
-      }
+      public IPKSimBuildingBlock BuildingBlockContaining(IEntity entity) => findBuildingBlockFor(entity);
 
       public IPKSimBuildingBlock BuildingBlockWithId(string buildingBlockId)
       {
@@ -63,7 +60,10 @@ namespace PKSim.Core.Services
       {
          if (entity == null) return null;
          var buildingBlock = entity as IPKSimBuildingBlock;
-         return buildingBlock ?? findBuildingBlockFor(entity.ParentContainer);
+         if (buildingBlock == null)
+            return findBuildingBlockFor(entity.ParentContainer);
+
+         return buildingBlock.OwnedBy ?? buildingBlock;
       }
    }
 }

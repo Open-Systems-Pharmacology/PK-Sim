@@ -17,10 +17,11 @@ using OSPSuite.Assets;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Core.Services;
+using PKSim.Core.Commands;
 
 namespace PKSim.Presentation.Services
 {
-   public abstract class OntogenyTask<TSimulationSubject> : IOntogenyTask<TSimulationSubject> where TSimulationSubject : ISimulationSubject
+   public class OntogenyTask : IOntogenyTask
    {
       protected readonly IExecutionContext _executionContext;
       private readonly IApplicationController _applicationController;
@@ -31,7 +32,7 @@ namespace PKSim.Presentation.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IDialogCreator _dialogCreator;
 
-      protected OntogenyTask(IExecutionContext executionContext, IApplicationController applicationController, IDataImporter dataImporter,
+      public OntogenyTask(IExecutionContext executionContext, IApplicationController applicationController, IDataImporter dataImporter,
          IDimensionRepository dimensionRepository, IOntogenyRepository ontogenyRepository, IEntityTask entityTask, IFormulaFactory formulaFactory, IDialogCreator dialogCreator)
       {
          _executionContext = executionContext;
@@ -44,7 +45,10 @@ namespace PKSim.Presentation.Services
          _dialogCreator = dialogCreator;
    }
 
-      public abstract ICommand SetOntogenyForMolecule(IndividualMolecule molecule, Ontogeny ontogeny, TSimulationSubject simulationSubject);
+      public ICommand SetOntogenyForMolecule(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject)
+      {
+         return new SetOntogenyInMoleculeCommand(molecule, ontogeny, simulationSubject, _executionContext).Run(_executionContext);
+      }
 
       public void ShowOntogenyData(Ontogeny ontogeny)
       {
@@ -56,7 +60,7 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      public ICommand LoadOntogenyForMolecule(IndividualMolecule molecule, TSimulationSubject simulationSubject)
+      public ICommand LoadOntogenyForMolecule(IndividualMolecule molecule, ISimulationSubject simulationSubject)
       {
          var dataImporterSettings = new DataImporterSettings
          {
@@ -76,7 +80,7 @@ namespace PKSim.Presentation.Services
 
          var ontogeny = new UserDefinedOntogeny {Table = formulaFrom(data), Name = data.Name};
 
-         //only first formulation will be imported
+         //only first ontogeny will be imported
          if (_ontogenyRepository.AllNames().Contains(ontogeny.Name))
          {
             var name = _entityTask.NewNameFor(ontogeny, _ontogenyRepository.AllNames());
@@ -99,8 +103,10 @@ namespace PKSim.Presentation.Services
          {
             meanColumn = valueColumns[0];
             //dummy deviation filled with 1 since this was not defined in the import action
-            deviationColumn = new DataColumn(Constants.Distribution.DEVIATION, _dimensionRepository.NoDimension, baseGrid);
-            deviationColumn.Values = new float[baseGrid.Count].InitializeWith(1f);
+            deviationColumn = new DataColumn(Constants.Distribution.DEVIATION, _dimensionRepository.NoDimension, baseGrid)
+            {
+               Values = new float[baseGrid.Count].InitializeWith(1f)
+            };
          }
          else
          {

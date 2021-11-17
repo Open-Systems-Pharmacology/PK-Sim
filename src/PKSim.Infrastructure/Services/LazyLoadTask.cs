@@ -21,9 +21,14 @@ namespace PKSim.Infrastructure.Services
       private readonly IParameterIdentificationContentLoader _parameterIdentificationContentLoader;
       private readonly ISensitivityAnalysisContentLoader _sensitivityAnalysisContentLoader;
 
-      public LazyLoadTask(IContentLoader contentLoader, ISimulationResultsLoader simulationResultsLoader, ISimulationChartsLoader simulationChartsLoader,
-         ISimulationComparisonContentLoader simulationComparisonContentLoader, ISimulationAnalysesLoader simulationAnalysesLoader,
-         IParameterIdentificationContentLoader parameterIdentificationContentLoader, ISensitivityAnalysisContentLoader sensitivityAnalysisContentLoader,
+      public LazyLoadTask(
+         IContentLoader contentLoader, 
+         ISimulationResultsLoader simulationResultsLoader, 
+         ISimulationChartsLoader simulationChartsLoader,
+         ISimulationComparisonContentLoader simulationComparisonContentLoader, 
+         ISimulationAnalysesLoader simulationAnalysesLoader,
+         IParameterIdentificationContentLoader parameterIdentificationContentLoader, 
+         ISensitivityAnalysisContentLoader sensitivityAnalysisContentLoader,
          IRegistrationTask registrationTask,
          IProgressManager progressManager)
       {

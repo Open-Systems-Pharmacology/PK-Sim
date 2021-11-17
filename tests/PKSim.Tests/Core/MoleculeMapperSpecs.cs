@@ -34,7 +34,7 @@ namespace PKSim.Core
       protected Ontogeny _ontogeny;
       protected Snapshots.Ontogeny _snapshotOntogeny;
       protected ExpressionContainerMapper _expressionContainerMapper;
-      protected IOntogenyTask<Individual> _ontogenyTask;
+      protected IOntogenyTask _ontogenyTask;
       protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       protected override Task Context()
@@ -42,7 +42,7 @@ namespace PKSim.Core
          _parameterMapper = A.Fake<ParameterMapper>();
          _expressionContainerMapper = A.Fake<ExpressionContainerMapper>();
          _ontogenyMapper = A.Fake<OntogenyMapper>();
-         _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
+         _ontogenyTask = A.Fake<IOntogenyTask>();
          _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
          sut = new MoleculeMapper(_parameterMapper, _expressionContainerMapper, _ontogenyMapper, _ontogenyTask, _moleculeExpressionTask);
 

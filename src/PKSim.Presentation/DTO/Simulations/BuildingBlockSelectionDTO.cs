@@ -9,12 +9,8 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public TBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
-         set
-         {
-            _buildingBlock = value;
-            OnPropertyChanged(() => BuildingBlock);
-         }
+         get => _buildingBlock;
+         set => SetProperty(ref _buildingBlock, value);
       }
    }
 
@@ -28,12 +24,8 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public bool AllowAging
       {
-         get { return _allowAging; }
-         set
-         {
-            _allowAging = value;
-            OnPropertyChanged(() => AllowAging);
-         }
+         get => _allowAging;
+         set => SetProperty(ref _allowAging, value);
       }
    }
 
@@ -45,11 +37,7 @@ namespace PKSim.Presentation.DTO.Simulations
       public bool Selected
       {
          get => _selected;
-         set
-         {
-            _selected = value;
-            OnPropertyChanged(() => Selected);
-         }
+         set => SetProperty(ref _selected, value);
       }
    }
 

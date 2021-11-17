@@ -54,5 +54,10 @@ namespace PKSim.Presentation.Views.Parameters
       ///    Returns or set parameters selected in the view.
       /// </summary>
       IReadOnlyList<ParameterDTO> SelectedParameters { get; set; }
+
+      /// <summary>
+      /// Is the view readonly or not
+      /// </summary>
+      bool ReadOnly { set; }
    }
 }

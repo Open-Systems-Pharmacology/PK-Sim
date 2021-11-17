@@ -62,7 +62,7 @@ namespace PKSim.CLI
          container.Register<IDiagramModel, CLIDiagramModel>();
          container.Register<IDataImporter, CLIDataImporter>();
          container.Register<IEntityValidationTask, CLIEntityValidationTask>();
-         container.Register<IOntogenyTask<Individual>, CLIIndividualOntogenyTask>();
+         container.Register<IOntogenyTask, CLIIndividualOntogenyTask>();
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>(LifeStyle.Singleton);
          container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);

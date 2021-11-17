@@ -33,11 +33,11 @@ namespace PKSim.Core.Commands
          _tableFormula = context.Deserialize<TableFormula>(_serializationStream);
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
-         _serializationStream = context.Serialize(_parameter.Formula);
+         _serializationStream = context.Serialize(parameter.Formula);
          UpdateParameter(context);
-         Description = ParameterMessages.UpdateTableParameterFormula(context.DisplayNameFor(_parameter));
+         Description = ParameterMessages.UpdateTableParameterFormula(context.DisplayNameFor(parameter));
       }
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)

@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using PKSim.Assets;
 using PKSim.Core.Commands;
-using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
@@ -59,7 +58,7 @@ namespace PKSim.Core.Services
       ICommand UpdateValuesByName(IEnumerable<IParameter> sourceParameters, IEnumerable<IParameter> targetParameters);
 
       /// <summary>
-      ///    Update all prameters defined in the target enumeration with the value of the same parameter in the source container
+      ///    Update all parameters defined in the target enumeration with the value of the same parameter in the source container
       ///    if available. Same parameter is defined as "have the same name"
       /// </summary>
       /// <param name="sourceContainer">container from which the value should be taken</param>

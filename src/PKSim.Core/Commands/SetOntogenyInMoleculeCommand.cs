@@ -1,18 +1,20 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Commands.Core;
+using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public abstract class SetOntogenyInMoleculeCommand<TSimulationSubject> : BuildingBlockChangeCommand where TSimulationSubject : class, ISimulationSubject
+   public class SetOntogenyInMoleculeCommand : BuildingBlockChangeCommand 
    {
       private readonly string _moleculeId;
-      protected readonly Ontogeny _newOntogeny;
-      protected readonly Ontogeny _oldOntogeny;
+      private readonly Ontogeny _newOntogeny;
+      private readonly Ontogeny _oldOntogeny;
 
-      protected TSimulationSubject _simulationSubject;
-      protected IndividualMolecule _molecule;
+      private ISimulationSubject _simulationSubject;
+      private IndividualMolecule _molecule;
 
-      protected SetOntogenyInMoleculeCommand(IndividualMolecule molecule, Ontogeny newOntogeny, TSimulationSubject simulationSubject, IExecutionContext context)
+      public SetOntogenyInMoleculeCommand(IndividualMolecule molecule, Ontogeny newOntogeny, ISimulationSubject simulationSubject, IExecutionContext context)
       {
          _molecule = molecule;
          _oldOntogeny = molecule.Ontogeny ?? new NullOntogeny();
@@ -28,6 +30,16 @@ namespace PKSim.Core.Commands
          context.UpdateBuildingBlockPropertiesInCommand(this, simulationSubject);
       }
 
+
+      protected override void PerformExecuteWith(IExecutionContext context)
+      {
+         var moleculeOntogenyVariabilityUpdater = context.Resolve<IMoleculeOntogenyVariabilityUpdater>();
+         moleculeOntogenyVariabilityUpdater.UpdateMoleculeOntogeny(_molecule, _newOntogeny, _simulationSubject);
+
+         var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
+         expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(_simulationSubject);
+      }
+
       protected override void ClearReferences()
       {
          //do not clear ontogeny that are needed to be restored for rollback
@@ -38,8 +50,13 @@ namespace PKSim.Core.Commands
       public override void RestoreExecutionData(IExecutionContext context)
       {
          base.RestoreExecutionData(context);
-         _simulationSubject = context.Get<TSimulationSubject>(BuildingBlockId);
+         _simulationSubject = context.Get<ISimulationSubject>(BuildingBlockId);
          _molecule = context.Get<IndividualMolecule>(_moleculeId);
+      }
+
+      protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+      {
+         return new SetOntogenyInMoleculeCommand(_molecule, _oldOntogeny, _simulationSubject, context).AsInverseFor(this);
       }
    }
 }

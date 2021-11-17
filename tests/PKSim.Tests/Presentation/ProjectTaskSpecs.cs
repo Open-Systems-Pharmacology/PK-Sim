@@ -266,7 +266,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_asked_to_close_a_project_that_has_changed_and_the_save_action_is_not_successfull : concern_for_ProjectTask
+   public class When_asked_to_close_a_project_that_has_changed_and_the_save_action_is_not_successful : concern_for_ProjectTask
    {
       protected override Task Context()
       {

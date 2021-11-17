@@ -35,7 +35,8 @@ namespace PKSim.Infrastructure
          IRegistrationTask registrationTask,
          IWorkspacePersistor workspacePersistor,
          IMRUProvider mruProvider,
-         IHistoryManagerFactory historyManagerFactory) : base(eventPublisher,  fileLocker)
+         IHistoryManagerFactory historyManagerFactory
+         ) : base(eventPublisher,  fileLocker)
       {
          _eventPublisher = eventPublisher;
          _journalSession = journalSession;
@@ -108,7 +109,7 @@ namespace PKSim.Infrastructure
             projectLoadAction();
             if (Project == null)
                return;
-
+            
             _eventPublisher.PublishEvent(new ProjectCreatedEvent(Project));
             _eventPublisher.PublishEvent(new ProjectLoadedEvent(Project));
          }
@@ -132,6 +133,8 @@ namespace PKSim.Infrastructure
       {
          LoadProject(() => Project = project);
       }
+
+   
 
       public bool ProjectLoaded => Project != null;
 

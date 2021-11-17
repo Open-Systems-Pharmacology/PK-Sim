@@ -42,6 +42,7 @@ namespace PKSim.Presentation
       protected string _initialSimulationName;
       protected IDataRepositoryNamer _dataRepositoryNamer;
       protected ICurveNamer _curveNamer;
+      private IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
       {
@@ -58,9 +59,22 @@ namespace PKSim.Presentation
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
          _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
          _curveNamer = A.Fake<ICurveNamer>();
+         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();   
 
-         sut = new RenameBuildingBlockTask(_buildingBlockTask, _buildingBlockInSimulationManager, _applicationController, _lazyloadTask,
-            _containerTask, _heavyWorkManager, _renameAbsolutePathVisitor, _objectReferencingRetriever, _projectRetriever, _parameterIdentificationSimulationPathUpdater, _dataRepositoryNamer, _curveNamer);
+         sut = new RenameBuildingBlockTask(
+            _buildingBlockTask, 
+            _buildingBlockInSimulationManager, 
+            _applicationController, 
+            _lazyloadTask,
+            _containerTask, 
+            _heavyWorkManager, 
+            _renameAbsolutePathVisitor, 
+            _objectReferencingRetriever, 
+            _projectRetriever, 
+            _parameterIdentificationSimulationPathUpdater, 
+            _dataRepositoryNamer, 
+            _curveNamer,
+            _expressionProfileUpdater);
 
          _initialSimulationName = "S";
          _individualSimulation = new IndividualSimulation().WithName(_initialSimulationName);
@@ -232,52 +246,6 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_renaming_the_compound_used_in_a_simulation : concern_for_RenameBuildingBlockTask
-   {
-      private IndividualResults _individualResults;
-      private PathCache<IQuantity> _quantityCache;
-
-      protected override void Context()
-      {
-         base.Context();
-         var results = new SimulationResults {Time = new QuantityValues {ColumnId = "0", QuantityPath = "baseGrid"}};
-
-         _individualResults = new IndividualResults {IndividualId = 1};
-         results.Add(_individualResults);
-
-         _quantityCache = new PathCacheForSpecs<IQuantity>
-         {
-            {"C|Liver|Cell|C2", new MoleculeAmount {QuantityType = QuantityType.Drug}},
-            {"C|Liver|Cell|Meta", new MoleculeAmount {QuantityType = QuantityType.Metabolite}}
-         };
-
-         _individualResults.Add(new QuantityValues {ColumnId = "1", PathList = new[] {"C", "Liver", "Cell", "C"}.ToList()});
-         _individualResults.Add(new QuantityValues {ColumnId = "3", PathList = new[] {"C", "Liver", "Cell", "Meta"}.ToList()});
-         _individualResults.Add(new QuantityValues {ColumnId = "4", PathList = new[] {"S", "Liver", "Cell"}.ToList()});
-
-         A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(_quantityCache);
-         _individualSimulation.Results = results;
-      }
-
-      protected override void Because()
-      {
-         sut.SynchronizeCompoundNameIn(_individualSimulation, "C", "C2");
-      }
-
-      [Observation]
-      public void should_have_renamed_all_entry_containing_the_compound_name_for_a_calcualted_drug()
-      {
-         _individualResults.ValuesFor("C|Liver|Cell|C2").ShouldNotBeNull();
-      }
-
-      [Observation]
-      public void should_have_kept_the_other_values_untouched()
-      {
-         _individualResults.ValuesFor("C|Liver|Cell|Meta").ShouldNotBeNull();
-         _individualResults.ValuesFor("S|Liver|Cell").ShouldNotBeNull();
-      }
-   }
-
    public class When_renaming_a_compound : concern_for_RenameBuildingBlockTask
    {
       private string _oldName;
@@ -305,7 +273,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.RenameUsageOfBuildingBlockInProject(_compound, _oldName);
+         sut.RenameBuildingBlock(_compound, _oldName);
       }
 
       [Observation]

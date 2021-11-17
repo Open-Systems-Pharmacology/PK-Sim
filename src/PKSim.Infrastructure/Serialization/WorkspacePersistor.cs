@@ -131,6 +131,7 @@ namespace PKSim.Infrastructure.Serialization
                   // The workspace layout may be null if the workspace was created via CLI. In that case, we simply initialize the workspace layout
                   if (workspace is IWithWorkspaceLayout withWorkspaceLayout)
                      withWorkspaceLayout.WorkspaceLayout = workspaceLayout ?? new WorkspaceLayout();
+
                }
             }
             catch (Exception)

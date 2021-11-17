@@ -1,7 +1,7 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -20,23 +20,22 @@ namespace PKSim.Core.Services
       ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule;
 
       /// <summary>
-      ///    Add a molecule of type to the given individual named after the <paramref name="moleculeTemplate" /> template given as
+      ///    Add a molecule of type <typeparamref name="TMolecule" /> to the given individual named based on the
+      ///    <paramref name="expressionProfile" />
+      /// </summary>
+      /// <typeparam name="TMolecule">Type of molecule to add. The molecule will be created depending on this type </typeparam>
+      /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
+      /// <param name="expressionProfile">Expression profile to add to the simulation subject</param>
+      ICommand AddExpressionProfile<TMolecule>(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile) where TMolecule : IndividualMolecule;
+
+      /// <summary>
+      ///    Add a molecule of type to the given individual named after the <paramref name="moleculeTemplate" /> template given
+      ///    as
       ///    parameter
       /// </summary>
       /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
       /// <param name="moleculeTemplate">New Molecule will be added based on this parameter (type and name). </param>
       ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule moleculeTemplate);
-
-      ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule molecule, QueryExpressionResults queryExpressionResults);
-
-      /// <summary>
-      ///    Set the value of the relative expression for  <paramref name="relativeExpressionParameter" />
-      /// </summary>
-      /// <param name="relativeExpressionParameter">
-      ///    Relative expression parameter
-      /// </param>
-      /// <param name="value">relative expression</param>
-      ICommand SetRelativeExpressionFor(IParameter relativeExpressionParameter, double value);
 
       /// <summary>
       ///    Remove the given molecule from the simulationSubject
@@ -69,38 +68,34 @@ namespace PKSim.Core.Services
 
    public class MoleculeExpressionTask<TSimulationSubject> : IMoleculeExpressionTask<TSimulationSubject> where TSimulationSubject : ISimulationSubject
    {
-      private readonly IContainerTask _containerTask;
       private readonly IExecutionContext _executionContext;
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly ITransportContainerUpdater _transportContainerUpdater;
       private readonly ISimulationSubjectExpressionTask<TSimulationSubject> _simulationSubjectExpressionTask;
-      private readonly IOntogenyTask<TSimulationSubject> _ontogenyTask;
+      private readonly IOntogenyTask _ontogenyTask;
       private readonly IMoleculeParameterTask _moleculeParameterTask;
+      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
 
       public MoleculeExpressionTask(IExecutionContext executionContext,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
-         IContainerTask containerTask,
          IOntogenyRepository ontogenyRepository,
          ITransportContainerUpdater transportContainerUpdater,
          ISimulationSubjectExpressionTask<TSimulationSubject> simulationSubjectExpressionTask,
-         IOntogenyTask<TSimulationSubject> ontogenyTask,
-         IMoleculeParameterTask moleculeParameterTask)
+         IOntogenyTask ontogenyTask,
+         IMoleculeParameterTask moleculeParameterTask,
+         IExpressionProfileUpdater expressionProfileUpdater)
       {
          _executionContext = executionContext;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
-         _containerTask = containerTask;
          _ontogenyRepository = ontogenyRepository;
          _transportContainerUpdater = transportContainerUpdater;
          _simulationSubjectExpressionTask = simulationSubjectExpressionTask;
          _ontogenyTask = ontogenyTask;
          _moleculeParameterTask = moleculeParameterTask;
+         _expressionProfileUpdater = expressionProfileUpdater;
       }
 
-      public ICommand SetRelativeExpressionFor(IParameter relativeExpressionParameter, double value)
-      {
-         return new SetRelativeExpressionCommand(relativeExpressionParameter, value).Run(_executionContext);
-      }
 
       public ICommand RemoveMoleculeFrom(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
@@ -113,6 +108,16 @@ namespace PKSim.Core.Services
          var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, moleculeName);
          return addMoleculeTo(molecule, simulationSubject);
       }
+
+      public ICommand AddExpressionProfile<TMolecule>(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile) where TMolecule : IndividualMolecule
+      {
+         var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+         var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, expressionProfile.MoleculeName);
+         simulationSubject.AddExpressionProfile(expressionProfile);
+         _expressionProfileUpdater.SynchronizeExpressionProfile(simulationSubject, expressionProfile);
+         return _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);       
+      }
+
 
       public ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule moleculeTemplate)
       {
@@ -135,7 +140,7 @@ namespace PKSim.Core.Services
          moleculeToEdit.QueryConfiguration = queryResults.QueryConfiguration;
          var editCommand = _simulationSubjectExpressionTask.EditMolecule(moleculeToEdit, queryResults, simulationSubject);
          // if (renameCommand == null)
-            return editCommand;
+         return editCommand;
 
          // return new PKSimMacroCommand(new[] {renameCommand, editCommand}).WithHistoryEntriesFrom(editCommand);
       }
@@ -143,18 +148,6 @@ namespace PKSim.Core.Services
       public ICommand RenameMolecule(IndividualMolecule molecule, string newName, TSimulationSubject simulationSubject)
       {
          return _simulationSubjectExpressionTask.RenameMolecule(molecule, newName, simulationSubject);
-      }
-
-      public ICommand AddMoleculeTo(TSimulationSubject simulationSubject, IndividualMolecule molecule, QueryExpressionResults queryResults)
-      {
-         var moleculeName = _containerTask.CreateUniqueName(simulationSubject, queryResults.ProteinName, true);
-         //Required to rename here as we created a temp molecule earlier to create the structure;
-         _simulationSubjectExpressionTask.RenameMolecule(molecule, moleculeName, simulationSubject);
-         molecule.QueryConfiguration = queryResults.QueryConfiguration;
-
-         var command = _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject, queryResults);
-         setDefaultFor(molecule, simulationSubject, queryResults.ProteinName);
-         return command;
       }
 
       private ICommand addMoleculeTo(IndividualMolecule molecule, TSimulationSubject simulationSubject)
@@ -198,5 +191,6 @@ namespace PKSim.Core.Services
          if (ontogeny == null) return;
          _ontogenyTask.SetOntogenyForMolecule(molecule, ontogeny, simulationSubject);
       }
+
    }
 }

@@ -45,6 +45,11 @@ namespace PKSim.UI.Views.Individuals
       private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       public bool EmphasisRelativeExpressionParameters { get; set; } = false;
 
+      public virtual bool ReadOnly
+      {
+         set => _colParameterValue.ReadOnly = value;
+      }
+
       private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar
          {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
 

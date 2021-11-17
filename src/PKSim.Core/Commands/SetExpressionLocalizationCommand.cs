@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using static PKSim.Core.Model.Localization;
 
 namespace PKSim.Core.Commands
@@ -99,9 +100,13 @@ namespace PKSim.Core.Commands
          if (_localization.Is(InTissue))
             AddRange(updateTissueExpressionParameters(context));
 
+         var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
+         expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(_simulationSubject);
+
          _protein = null;
          _simulationSubject = null;
 
+         
          //update properties from first command
          this.UpdatePropertiesFrom(setLocationCommand);
       }

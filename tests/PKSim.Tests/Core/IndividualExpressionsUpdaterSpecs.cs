@@ -13,7 +13,7 @@ namespace PKSim.Core
    {
       protected Individual _targetIndividual;
       protected Individual _sourceIndividual;
-      protected IOntogenyTask<Individual> _ontogenyTask;
+      protected IOntogenyTask _ontogenyTask;
       protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       private IEntityPathResolver _entityPathResolver;
       private ICloner _cloner;
@@ -22,7 +22,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          _sourceIndividual = DomainHelperForSpecs.CreateIndividual();
-         _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
+         _ontogenyTask = A.Fake<IOntogenyTask>();
          _targetIndividual = DomainHelperForSpecs.CreateIndividual();
          _moleculeExpressionTask= A.Fake<IMoleculeExpressionTask<Individual>>();
          _entityPathResolver=new EntityPathResolverForSpecs();

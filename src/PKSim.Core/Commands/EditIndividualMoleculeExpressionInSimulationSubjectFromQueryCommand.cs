@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
@@ -36,16 +37,21 @@ namespace PKSim.Core.Commands
             if (expressionParameter.Value == expressionResult.RelativeExpression)
                continue;
 
-            Add(new SetRelativeExpressionCommand(expressionParameter, expressionResult.RelativeExpression));
+            Add(new SetRelativeExpressionCommand(expressionParameter, expressionResult.RelativeExpression, updateIndividuals:false));
          }
 
          Add(new NormalizeRelativeExpressionCommand(_molecule, _simulationSubject, context));
+
 
          //update properties from first command
          this.UpdatePropertiesFrom(All().FirstOrDefault());
 
 
          base.Execute(context);
+
+         // update depending object
+         var updateTask = context.Resolve<IExpressionProfileUpdater>();
+         updateTask.SynchronizeExpressionProfileInAllSimulationSubjects(_simulationSubject);
 
          //clear references
          _molecule = null;

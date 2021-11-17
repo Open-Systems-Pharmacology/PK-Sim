@@ -59,8 +59,8 @@ namespace PKSim.Presentation.Services
          IJournalTask journalTask,
          IJournalRetriever journalRetriever,
          ISnapshotTask snapshotTask,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager
-         )
+         IBuildingBlockInSimulationManager buildingBlockInSimulationManager 
+      )
       {
          _workspace = workspace;
          _applicationController = applicationController;
@@ -268,7 +268,7 @@ namespace PKSim.Presentation.Services
          return (proceed == ViewResult.No);
       }
 
-      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFileFullPath);
+      public Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFileFullPath);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {
@@ -322,6 +322,11 @@ namespace PKSim.Presentation.Services
          if (projectNeedsToBeConvertedFromVersion4(projectFile))
             throw new PKSimException(PKSimConstants.Error.ProjectFileVersion4IsNotSupportedAnymore(projectFile));
 
+         void openProject()
+         {
+            _workspace.OpenProject(projectFile);
+         }
+
          try
          {
             if (!tryLockFile(projectFile))
@@ -330,12 +335,12 @@ namespace PKSim.Presentation.Services
             _executionContext.PublishEvent(new DisableUIEvent());
             if (shouldStartWorker)
             {
-               var success = _heavyWorkManager.Start(() => _workspace.OpenProject(projectFile), PKSimConstants.UI.LoadingProject);
+               var success = _heavyWorkManager.Start(openProject, PKSimConstants.UI.LoadingProject);
                if (!success)
                   createNewProject();
             }
             else
-               _workspace.OpenProject(projectFile);
+               openProject();
 
             if (_userSettings.ShouldRestoreWorkspaceLayout)
                _workspaceLayoutUpdater.RestoreLayout();

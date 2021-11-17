@@ -14,14 +14,14 @@ namespace PKSim.Core.Services
 
    public class IndividualExpressionsUpdater : IIndividualExpressionsUpdater
    {
-      private readonly IOntogenyTask<Individual> _ontogenyTask;
+      private readonly IOntogenyTask _ontogenyTask;
       private readonly IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly ICloner _cloner;
       private readonly IParameterUpdater _parameterUpdater;
 
       public IndividualExpressionsUpdater(
-         IOntogenyTask<Individual> ontogenyTask, 
+         IOntogenyTask ontogenyTask, 
          IMoleculeExpressionTask<Individual> moleculeExpressionTask, 
          IEntityPathResolver entityPathResolver,
          ICloner cloner, 
