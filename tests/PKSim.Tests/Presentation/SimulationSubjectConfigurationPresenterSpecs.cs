@@ -19,7 +19,7 @@ namespace PKSim.Presentation
       protected ICreateSimulationPresenter _simulationPresenter;
       protected ISimulationFactory _simulationFactory;
       protected ILazyLoadTask _lazyLoadTask;
-      private IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected SimulationSubjectDTO _simulationSubjectDTO;
       protected ISimulationSubject _subject;
 
@@ -28,10 +28,10 @@ namespace PKSim.Presentation
          _simulationPresenter = A.Fake<ICreateSimulationPresenter>();
          _view = A.Fake<ISimulationSubjectConfigurationView>();
          _simulationFactory = A.Fake<ISimulationFactory>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _simulation = A.Fake<Simulation>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
-         sut = new SimulationSubjectConfigurationPresenter(_view, _lazyLoadTask, _buildingBlockInSimulationManager);
+         sut = new SimulationSubjectConfigurationPresenter(_view, _lazyLoadTask, _buildingBlockInProjectManager);
          A.CallTo(() => _view.BindTo(A<SimulationSubjectDTO>._))
             .Invokes(x => _simulationSubjectDTO = x.GetArgument<SimulationSubjectDTO>(0));
 

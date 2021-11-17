@@ -16,7 +16,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_CloneSimulationTask : ContextSpecification<ICloneSimulationTask>
    {
       protected IBuildingBlockTask _buildingBlockTask;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected ISimulationSettingsRetriever _simulationSettingsRetriever;
       protected ISimulationResultsTask _simulationResultsTask;
       protected IApplicationController _applicationController;
@@ -25,12 +25,12 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _buildingBlockTask = A.Fake<IBuildingBlockTask>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _simulationResultsTask = A.Fake<ISimulationResultsTask>();
          _applicationController= A.Fake<IApplicationController>();
          _renameBuildingBlockTask = A.Fake<IRenameBuildingBlockTask>();
-         sut = new CloneSimulationTask(_buildingBlockTask,  _buildingBlockInSimulationManager, _simulationSettingsRetriever, _simulationResultsTask, _applicationController, _renameBuildingBlockTask);
+         sut = new CloneSimulationTask(_buildingBlockTask,  _buildingBlockInProjectManager, _simulationSettingsRetriever, _simulationResultsTask, _applicationController, _renameBuildingBlockTask);
       }
    }
 
@@ -52,7 +52,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _applicationController.Start<ICloneSimulationPresenter>()).Returns(_cloneSimulationPresenter);
          A.CallTo(() => _cloneSimulationPresenter.CloneSimulation(_simulationToClone)).Returns(_command);
          A.CallTo(() => _cloneSimulationPresenter.Simulation).Returns(_clonedSimulation);
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulationToClone)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulationToClone)).Returns(BuildingBlockStatus.Green);
          A.CallTo(() => _cloneSimulationPresenter.CloneName).Returns("NEW");
       }
 
@@ -112,7 +112,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _simulationToClone = A.Fake<Simulation>();
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulationToClone)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulationToClone)).Returns(BuildingBlockStatus.Red);
       }
 
       [Observation]

@@ -47,7 +47,7 @@ namespace PKSim.Presentation.Services
       private readonly IJournalTask _journalTask;
       private readonly IJournalRetriever _journalRetriever;
       private readonly ISnapshotTask _snapshotTask;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       public ProjectTask(IWorkspace workspace,
          IApplicationController applicationController,
@@ -59,7 +59,7 @@ namespace PKSim.Presentation.Services
          IJournalTask journalTask,
          IJournalRetriever journalRetriever,
          ISnapshotTask snapshotTask,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager 
+         IBuildingBlockInProjectManager buildingBlockInProjectManager 
       )
       {
          _workspace = workspace;
@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Services
          _journalTask = journalTask;
          _journalRetriever = journalRetriever;
          _snapshotTask = snapshotTask;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
       }
 
       public void NewProject()
@@ -244,7 +244,7 @@ namespace PKSim.Presentation.Services
       public Task ExportCurrentProjectToSnapshot()
       {
          var project = _workspace.Project;
-         var anySimulationInChangedState = project.All<Simulation>().Any(x => _buildingBlockInSimulationManager.StatusFor(x) == BuildingBlockStatus.Red);
+         var anySimulationInChangedState = project.All<Simulation>().Any(x => _buildingBlockInProjectManager.StatusFor(x) == BuildingBlockStatus.Red);
          var projectExportWillCreateNoise = !_snapshotTask.IsVersionCompatibleWithSnapshotExport(project);
 
          if (exitIf(anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation))

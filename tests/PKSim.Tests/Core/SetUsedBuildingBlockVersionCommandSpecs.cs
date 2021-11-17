@@ -15,7 +15,7 @@ namespace PKSim.Core
       protected UsedBuildingBlock _usedBuildingBlock;
       protected int _version;
       protected IExecutionContext _context;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       protected override void Context()
       {
@@ -23,8 +23,8 @@ namespace PKSim.Core
          _usedBuildingBlock = A.Fake<UsedBuildingBlock>();
          _version = 3;
          _context = A.Fake<IExecutionContext>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
-         A.CallTo(() => _context.Resolve<IBuildingBlockInSimulationManager>()).Returns(_buildingBlockInSimulationManager);
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
+         A.CallTo(() => _context.Resolve<IBuildingBlockInProjectManager>()).Returns(_buildingBlockInProjectManager);
          sut = new SetUsedBuildingBlockVersionCommand(_simulation, _usedBuildingBlock, _version, _context);
       }
    }
@@ -45,7 +45,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_building_block_names_used_in_the_simulation()
       {
-         A.CallTo(() => _buildingBlockInSimulationManager.UpdateBuildingBlockNamesUsedIn(_simulation)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockInProjectManager.UpdateBuildingBlockNamesUsedIn(_simulation)).MustHaveHappened();
       }
    }
 
