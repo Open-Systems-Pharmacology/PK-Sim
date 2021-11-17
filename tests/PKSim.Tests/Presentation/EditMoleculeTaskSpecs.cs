@@ -73,7 +73,7 @@ namespace PKSim.Presentation
          _addCommand = A.Fake<ICommand>();
          _expressionProfile = new ExpressionProfile {MoleculeName = "MOLECULE", Individual = _individual };
          A.CallTo(() => _expressionProfileSelectionPresenter.SelectExpressionProfile<IndividualProtein>(_individual)).Returns(_expressionProfile);
-         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile<IndividualProtein>(_individual, _expressionProfile)).Returns(_addCommand);
+         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfile)).Returns(_addCommand);
       }
 
       protected override void Because()
@@ -90,7 +90,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_default_parameters_in_the_newly_added_molecule()
       {
-         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile<IndividualProtein>(_individual, _expressionProfile)).MustHaveHappened();
+         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfile)).MustHaveHappened();
       }
 
       [Observation]

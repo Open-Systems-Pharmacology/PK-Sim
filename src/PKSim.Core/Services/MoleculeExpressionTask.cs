@@ -1,7 +1,5 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -20,13 +18,12 @@ namespace PKSim.Core.Services
       ICommand AddMoleculeTo<TMolecule>(TSimulationSubject simulationSubject, string moleculeName) where TMolecule : IndividualMolecule;
 
       /// <summary>
-      ///    Add a molecule of type <typeparamref name="TMolecule" /> to the given individual named based on the
+      ///    Add an expression profile to the given individual named based on the
       ///    <paramref name="expressionProfile" />
       /// </summary>
-      /// <typeparam name="TMolecule">Type of molecule to add. The molecule will be created depending on this type </typeparam>
       /// <param name="simulationSubject">Simulation subject where the molecule will be added</param>
       /// <param name="expressionProfile">Expression profile to add to the simulation subject</param>
-      ICommand AddExpressionProfile<TMolecule>(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile) where TMolecule : IndividualMolecule;
+      ICommand AddExpressionProfile(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile);
 
       /// <summary>
       ///    Add a molecule of type to the given individual named after the <paramref name="moleculeTemplate" /> template given
@@ -109,9 +106,9 @@ namespace PKSim.Core.Services
          return addMoleculeTo(molecule, simulationSubject);
       }
 
-      public ICommand AddExpressionProfile<TMolecule>(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile) where TMolecule : IndividualMolecule
+      public ICommand AddExpressionProfile(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile) 
       {
-         var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor<TMolecule>();
+         var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(expressionProfile.Molecule);
          var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, expressionProfile.MoleculeName);
          simulationSubject.AddExpressionProfile(expressionProfile);
          _expressionProfileUpdater.SynchronizeExpressionProfile(simulationSubject, expressionProfile);

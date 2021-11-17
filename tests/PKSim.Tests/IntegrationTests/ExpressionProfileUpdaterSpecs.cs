@@ -30,12 +30,12 @@ namespace PKSim.IntegrationTests
          _ontogenyRepository = IoC.Resolve<IOntogenyRepository>();
 
          _expressionProfileForEnzyme = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>();
-         _moleculeExpressionTask.AddExpressionProfile<IndividualEnzyme>(_individual, _expressionProfileForEnzyme);
+         _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfileForEnzyme);
          _individualEnzyme = _individual.MoleculeByName<IndividualEnzyme>(_expressionProfileForEnzyme.MoleculeName);
          _expressionProfileEnzyme = _expressionProfileForEnzyme.Molecule.DowncastTo<IndividualEnzyme>();
 
          _expressionProfileForTransporter = DomainFactoryForSpecs.CreateExpressionProfile<IndividualTransporter>(moleculeName: "TRANS");
-         _moleculeExpressionTask.AddExpressionProfile<IndividualTransporter>(_individual, _expressionProfileForTransporter);
+         _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfileForTransporter);
          _individualTransporter = _individual.MoleculeByName<IndividualTransporter>(_expressionProfileForTransporter.MoleculeName);
          _expressionProfileTransporter = _expressionProfileForTransporter.Molecule.DowncastTo<IndividualTransporter>();
       }

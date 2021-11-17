@@ -28,7 +28,7 @@ namespace PKSim.Presentation
       protected IPopulationAdvancedParameterDistributionPresenter _popDistributionPresenter;
       private IDialogCreator _dialogCreator;
       private IBuildingBlockRepository _buildingBlockRepository;
-      private IEnumerable<Individual> _allIndividuals;
+      private List<Individual> _allIndividuals;
 
       protected override Task Context()
       {
