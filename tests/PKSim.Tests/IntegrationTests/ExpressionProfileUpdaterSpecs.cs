@@ -54,7 +54,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         sut.SynchronizeExpressionProfile(_individual, _expressionProfileForEnzyme);
+         sut.SynchroniseSimulationSubjectWithExpressionProfile(_individual, _expressionProfileForEnzyme);
       }
 
       [Observation]
@@ -95,7 +95,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         sut.SynchronizeExpressionProfile(_individual, _expressionProfileForTransporter);
+         sut.SynchroniseSimulationSubjectWithExpressionProfile(_individual, _expressionProfileForTransporter);
       }
 
       [Observation]

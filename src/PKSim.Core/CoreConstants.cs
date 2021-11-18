@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NPOI.HSSF.Record.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
@@ -104,7 +105,9 @@ namespace PKSim.Core
 
       public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
 
-      public static string CompositeNameFor(params string[] names)
+      public static string CompositeNameFor(params string[] names) => compositeNameFor(COMPOSITE_SEPARATOR, names);
+
+      private static string compositeNameFor(char separator, params string[] names)
       {
          if (names == null || names.Length == 0)
             return string.Empty;
@@ -112,12 +115,12 @@ namespace PKSim.Core
          var nonEmptyNames = names.ToList();
          nonEmptyNames.RemoveAll(string.IsNullOrEmpty);
 
-         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{COMPOSITE_SEPARATOR}");
+         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{separator}");
       }
 
-      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName)
+      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName, char separator= COMPOSITE_SEPARATOR)
       {
-         return compositeName.Split(COMPOSITE_SEPARATOR);
+         return compositeName.Split(separator);
       }
 
       public static class DirectoryKey
@@ -175,10 +178,7 @@ namespace PKSim.Core
          public static IReadOnlyCollection<string> MoBiForAll => new[]
             {CONCENTRATION_IN_CONTAINER, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
 
-         public static string ObserverNameFrom(string observerName, string compoundName)
-         {
-            return CompositeNameFor(observerName, compoundName);
-         }
+         public static string ObserverNameFrom(string observerName, string compoundName) => CompositeNameFor(observerName, compoundName);
       }
 
       public static class Rate
@@ -436,7 +436,7 @@ namespace PKSim.Core
          public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
 
          public static string ExpressionProfileName(string moleculeName, Core.Model.Species species,  string category) 
-            => CompositeNameFor(moleculeName, species?.DisplayName, category);
+            => compositeNameFor(char.Parse(ObjectPath.PATH_DELIMITER),  moleculeName, species?.DisplayName, category);
 
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {

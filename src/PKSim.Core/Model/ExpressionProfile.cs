@@ -58,7 +58,7 @@ namespace PKSim.Core.Model
             if (string.Equals(Name, value))
                return;
 
-            var names = CoreConstants.NamesFromCompositeName(value);
+            var names = CoreConstants.NamesFromCompositeName(value, char.Parse(ObjectPath.PATH_DELIMITER));
             if (names.Count != 3)
                return;
 
