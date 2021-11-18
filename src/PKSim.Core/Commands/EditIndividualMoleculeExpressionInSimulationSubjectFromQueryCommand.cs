@@ -5,7 +5,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand : PKSimMacroCommand
+   public class EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand : PKSimMacroCommand, IExpressionProfileCommand
    {
       private ISimulationSubject _simulationSubject;
       private IndividualMolecule _molecule;
@@ -37,7 +37,7 @@ namespace PKSim.Core.Commands
             if (expressionParameter.Value == expressionResult.RelativeExpression)
                continue;
 
-            Add(new SetRelativeExpressionCommand(expressionParameter, expressionResult.RelativeExpression, updateIndividuals:false));
+            Add(new SetExpressionProfileValueCommand(expressionParameter, expressionResult.RelativeExpression, updateSimulationSubjects:false));
          }
 
          Add(new NormalizeRelativeExpressionCommand(_molecule, _simulationSubject, context));

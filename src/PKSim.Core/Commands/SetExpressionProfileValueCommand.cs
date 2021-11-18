@@ -6,14 +6,14 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class SetRelativeExpressionCommand : SetParameterValueCommand
+   public class SetExpressionProfileValueCommand : SetParameterValueCommand, IExpressionProfileCommand
    {
-      private readonly bool _updateIndividuals;
+      private readonly bool _updateSimulationSubjects;
 
-      public SetRelativeExpressionCommand(IParameter parameter, double valueToSet, bool updateIndividuals = true)
+      public SetExpressionProfileValueCommand(IParameter parameter, double valueToSet, bool updateSimulationSubjects = true)
          : base(parameter, valueToSet)
       {
-         _updateIndividuals = updateIndividuals;
+         _updateSimulationSubjects = updateSimulationSubjects;
          ObjectType = PKSimConstants.ObjectTypes.Molecule;
       }
 
@@ -27,7 +27,7 @@ namespace PKSim.Core.Commands
       protected override void UpdateDependenciesOnParameter(IParameter parameter, IExecutionContext context)
       {
          base.UpdateDependenciesOnParameter(parameter, context);
-         if (!_updateIndividuals)
+         if (!_updateSimulationSubjects)
             return;
 
          var expressionProfile = context.BuildingBlockContaining(parameter) as ExpressionProfile;
@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new SetRelativeExpressionCommand(_parameter, _oldValue).AsInverseFor(this);
+         return new SetExpressionProfileValueCommand(_parameter, _oldValue).AsInverseFor(this);
       }
    }
 }

@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Model
 {
@@ -29,16 +30,19 @@ namespace PKSim.Core.Model
          if (parameter == null)
             return false;
 
-         return parameter.NameIsOneOf(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS,
-            CoreConstants.Parameters.REL_EXP_PLASMA, CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
+         return AllGlobalRelExpParameters.Contains(parameter.Name);
       }
+
+      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
+         CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
+
 
       public static bool IsExpression(this IParameter parameter)
       {
          if (parameter == null)
             return false;
 
-         return parameter.IsGlobalExpression() || parameter.IsNamed(CoreConstants.Parameters.REL_EXP);
+         return parameter.IsGlobalExpression() || parameter.IsNamed(REL_EXP);
       }
 
       public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
@@ -46,23 +50,24 @@ namespace PKSim.Core.Model
          if (parameter.IsExpression())
             return true;
 
-         if (CoreConstants.Parameters.OntogenyFactors.Contains(parameter.Name))
+         if (OntogenyFactors.Contains(parameter.Name))
             return true;
 
          return false;
       }
 
-      public static bool IsIndividualMolecule(this IParameter parameter)
+      public static bool IsExpressionProfile(this IParameter parameter)
       {
-         return IsExpressionOrOntogenyFactor(parameter) || IsIndividualMoleculeGlobal(parameter);
+         return IsExpressionOrOntogenyFactor(parameter) ||
+                IsIndividualMoleculeGlobal(parameter) ||
+                parameter.IsNamed(INITIAL_CONCENTRATION) ||
+                parameter.Name.StartsWith(FRACTION_EXPRESSED_PREFIX);
       }
 
-      public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
-         CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
-
+     
       public static bool IsStructural(this IParameter parameter)
       {
-         return CoreConstants.Parameters.ParticleDistributionStructuralParameters.Contains(parameter.Name);
+         return ParticleDistributionStructuralParameters.Contains(parameter.Name);
       }
 
       public static bool IsOrganVolume(this IParameter parameter)
@@ -79,7 +84,7 @@ namespace PKSim.Core.Model
 
       public static bool NeedsDefault(this IParameter parameter)
       {
-         if (parameter.NameIsOneOf(CoreConstants.Parameters.AllDistributionParameters))
+         if (parameter.NameIsOneOf(AllDistributionParameters))
             return false;
 
          if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population,
@@ -181,9 +186,9 @@ namespace PKSim.Core.Model
       public static IReadOnlyList<IParameter> AllGlobalMoleculeParameters(this IEnumerable<IParameter> parameters)
       {
          return parameters.Where(x => x.NameIsOneOf(
-            CoreConstants.Parameters.REFERENCE_CONCENTRATION,
-            CoreConstants.Parameters.HALF_LIFE_LIVER,
-            CoreConstants.Parameters.HALF_LIFE_INTESTINE)
+            REFERENCE_CONCENTRATION,
+            HALF_LIFE_LIVER,
+            HALF_LIFE_INTESTINE)
          ).ToList();
       }
 

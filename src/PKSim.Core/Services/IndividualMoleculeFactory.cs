@@ -172,8 +172,7 @@ namespace PKSim.Core.Services
          bool canBeVaried = true,
          bool canBeVariedInPopulation = true,
          bool visible = true,
-         string displayUnit = null,
-         PKSimBuildingBlockType buildingBlockType = PKSimBuildingBlockType.Individual)
+         string displayUnit = null)
       {
          var parameterValue = new ParameterValueMetaData
          {
@@ -185,7 +184,7 @@ namespace PKSim.Core.Services
             CanBeVariedInPopulation = canBeVariedInPopulation,
             Visible = visible,
             DefaultUnit = displayUnit,
-            BuildingBlockType = buildingBlockType
+            BuildingBlockType = PKSimBuildingBlockType.Individual
          };
 
          return CreateConstantParameterIn(parameterContainer, parameterValue);
