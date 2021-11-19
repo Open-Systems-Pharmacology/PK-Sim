@@ -1,4 +1,5 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Linq;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
@@ -41,6 +42,12 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
+      public void should_not_have_added_the_ontogeny_parameter_into_the_individual_for_the_enzyme()
+      {
+         _expressionProfile.Molecule.AllOntogenyParameters.Where(x => x != null).ShouldBeEmpty();
+      }
+
+      [Observation]
       public void should_return_a_loaded_building_block()
       {
          _expressionProfile.IsLoaded.ShouldBeTrue();
@@ -55,8 +62,8 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          _expressionProfile = sut.Create<IndividualTransporter>();
-
       }
+
       protected override void Because()
       {
          sut.UpdateSpecies(_expressionProfile, _speciesRepository.FindByName(CoreConstants.Species.MOUSE));
