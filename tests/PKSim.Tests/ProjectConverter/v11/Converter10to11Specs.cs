@@ -39,7 +39,7 @@ namespace PKSim.ProjectConverter.v11
       }
    }
 
-   public class When_converting_the_simple_project_expression_v9_project_to_11 : ContextWithLoadedProject<Converter10to11>
+   public class When_converting_the_expression_v9_project_to_11 : ContextWithLoadedProject<Converter10to11>
    {
       private List<PopulationSimulation> _allSimulations;
       private List<Population> _allPopulations;
@@ -73,6 +73,36 @@ namespace PKSim.ProjectConverter.v11
          var cyp3A4 = pop.MoleculeByName<IndividualEnzyme>("CYP3A4");
          var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species, pop.Name));
          expressionProfile.ShouldNotBeNull();
+      }
+   }
+
+   public class When_converting_the_expression_v10_project_to_11 : ContextWithLoadedProject<Converter10to11>
+   {
+      private List<Population> _allPopulations;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("expression_v10");
+         _allPopulations = All<Population>().ToList();
+         _allPopulations.Each(Load);
+      }
+
+      [Observation]
+      public void should_have_created_an_expression_profile_for_the_population()
+      {
+         var pop = _allPopulations.FindByName("Pop");
+         var cyp3A4 = pop.MoleculeByName<IndividualEnzyme>("CYP3A4");
+         var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species, pop.Name));
+         expressionProfile.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void  should_have_set_the_initial_concentration_parameter_to_not_variable_in_population()
+      {
+         var pop = _allPopulations.FindByName("Pop");
+         var allInitialConcentrationParameters = pop.FirstIndividual.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION));
+         allInitialConcentrationParameters.Each(x=>x.CanBeVariedInPopulation.ShouldBeFalse());
       }
    }
 }

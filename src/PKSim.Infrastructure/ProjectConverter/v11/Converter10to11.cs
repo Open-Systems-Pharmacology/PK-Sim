@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Events;
@@ -57,6 +58,13 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       public void Visit(Population population)
       {
          addExpressionProfilesUsedBySimulationSubjectToProject(population);
+         makeInitialConcentrationParametersNotVariableInPopulation(population);
+      }
+
+      private void makeInitialConcentrationParametersNotVariableInPopulation(Population population)
+      {
+         population?.FirstIndividual?.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION))
+            .Each(x => x.CanBeVariedInPopulation = false);
       }
 
       private void addExpressionProfilesUsedBySimulationSubjectToProject(ISimulationSubject simulationSubject)
