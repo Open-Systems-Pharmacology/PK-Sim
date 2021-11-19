@@ -1026,18 +1026,20 @@ namespace PKSim.Core
          public const string EMAX = "Emax";
          public const string EC50 = "EC50";
          public const string WEIGHT_TISSUE = "Weight (tissue)";
+         public const string FRACTION_EXPRESSED_PREFIX = "Fraction expressed";
          public const string FRACTION_EXPRESSED_BLOOD_CELLS = "Fraction expressed in blood cells";
          public const string FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE = "Fraction expressed in blood cells membrane";
          public const string FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE = "Fraction expressed on plasma-side membrane of vascular endothelium";
          public const string FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE = "Fraction expressed on tissue-side membrane of vascular endothelium";
          public const string FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME = "Fraction expressed in endosomes";
-         public const string INITIAL_CONCENTRATION = "Initial concentration";
          public const string FRACTION_EXPRESSED_INTRACELLULAR = "Fraction expressed intracellular";
          public const string FRACTION_EXPRESSED_INTERSTITIAL = "Fraction expressed interstitial";
          public const string FRACTION_EXPRESSED_APICAL = "Fraction expressed apical";
          public const string FRACTION_EXPRESSED_BASOLATERAL = "Fraction expressed basolateral";
          public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
          public const string FRACTION_EXPRESSED_BRAIN_TISSUE = "Fraction expressed brain tissue";
+         public const string INITIAL_CONCENTRATION = "Initial concentration";
+
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {

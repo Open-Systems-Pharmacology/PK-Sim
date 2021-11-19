@@ -11,14 +11,16 @@ namespace PKSim.Core.Services
    {
       ICommand UpdateMoleculeName(ExpressionProfile expressionProfile);
       /// <summary>
-      /// Updates the value from the <paramref name="expressionProfile"/> into the <paramref name="simulationSubject"/>
+      /// Updates the value from the <paramref name="expressionProfile"/> into the <paramref name="simulationSubject"/>.
+      /// ExpressionProfile => SimulationSubject
       /// </summary>
       /// <param name="simulationSubject">Simulation subject to update</param>
       /// <param name="expressionProfile">Expression profile used as source</param>
       void SynchroniseSimulationSubjectWithExpressionProfile(ISimulationSubject simulationSubject, ExpressionProfile expressionProfile);
 
       /// <summary>
-      /// Updates the value from the <paramref name="simulationSubject"/> into the <paramref name="expressionProfile"/>
+      /// Updates the value from the <paramref name="simulationSubject"/> into the <paramref name="expressionProfile"/>.
+      /// SimulationSubject => ExpressionProfile 
       /// </summary>
       /// <param name="expressionProfile">Expression profile to update</param>
       /// <param name="simulationSubject">Simulation subject used as source</param>
@@ -61,14 +63,14 @@ namespace PKSim.Core.Services
          return _individualExpressionTask.RenameMolecule(expressionProfile.Molecule, expressionProfile.MoleculeName, expressionProfile.Individual);
       }
 
-      private void synchronizeExpressionProfiles(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject)
+      private void synchronizeExpressionProfiles(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)
       {
 
          //Global settings for molecule
          updateGlobalMoleculeSettings(sourceMolecule, targetMolecule, targetSimulationSubject);
 
          //All molecule parameters
-         updateMoleculeParameters(sourceMolecule, sourceSimulationSubject, targetMolecule, targetSimulationSubject);
+         updateMoleculeParameters(sourceMolecule, sourceSimulationSubject, targetMolecule, targetSimulationSubject, updateParameterOriginId);
 
          //Molecule containers
          updateTransporterDirections(sourceMolecule, sourceSimulationSubject, targetMolecule, targetSimulationSubject);
@@ -78,24 +80,26 @@ namespace PKSim.Core.Services
       {
          _lazyLoadTask.Load(simulationSubject);
          var moleculeInIndividual = simulationSubject.MoleculeByName(expressionProfile.MoleculeName);
-         synchronizeExpressionProfiles(expressionProfile.Molecule, expressionProfile.Individual, moleculeInIndividual, simulationSubject);
+
+         // ExpressionProfile => SimulationSubject, we want to make sure that the parameters in simulation subject are linked to their expression profile origin parameters
+         synchronizeExpressionProfiles(expressionProfile.Molecule, expressionProfile.Individual, moleculeInIndividual, simulationSubject, updateParameterOriginId:true);
       }
 
       public void SynchronizeExpressionProfileWithSimulationSubject(ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)
       {
          var moleculeInIndividual = simulationSubject.MoleculeByName(expressionProfile.MoleculeName);
-         synchronizeExpressionProfiles(moleculeInIndividual, simulationSubject, expressionProfile.Molecule, expressionProfile.Individual);
+         // SimulationSubject To ExpressionProfile. We do not update the parameter origin id in the expression profile
+         synchronizeExpressionProfiles(moleculeInIndividual, simulationSubject, expressionProfile.Molecule, expressionProfile.Individual, updateParameterOriginId: false);
 
       }
 
-      private void updateMoleculeParameters(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject)
+      private void updateMoleculeParameters(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)
       {
          var allTargetMoleculeParameters= allMoleculeParametersFor(targetSimulationSubject, targetMolecule);
          var allSourceMoleculeParameters = allMoleculeParametersFor(sourceSimulationSubject, sourceMolecule);
 
 
-         //Updates between two building blocks. We do not update parameter origin
-         _parameterSetUpdater.UpdateValues(allSourceMoleculeParameters, allTargetMoleculeParameters, updateParameterOriginId: false);
+         _parameterSetUpdater.UpdateValues(allSourceMoleculeParameters, allTargetMoleculeParameters, updateParameterOriginId);
       }
 
       public void SynchronizeExpressionProfileInAllSimulationSubjects(ExpressionProfile expressionProfile)
