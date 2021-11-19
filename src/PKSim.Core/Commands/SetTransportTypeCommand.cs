@@ -7,7 +7,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class SetTransportTypeCommand : BuildingBlockStructureChangeCommand, IExpressionProfileCommand
+   public class SetTransportTypeCommand : BuildingBlockStructureChangeCommand
    {
       private IndividualTransporter _individualTransporter;
       private readonly TransportType _transportType;

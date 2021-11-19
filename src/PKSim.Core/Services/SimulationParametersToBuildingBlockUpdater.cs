@@ -45,7 +45,8 @@ namespace PKSim.Core.Services
          //Update the building block in the simulation based on the same template
          var usedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(templateBuildingBlock.Id);
          //Template was not used in the simulation...return
-         if (usedBuildingBlock == null) return null;
+         if (usedBuildingBlock == null) 
+            return null;
 
          var buildingBlockType = _executionContext.TypeFor(templateBuildingBlock);
          var templateParameters = parametersToUpdateFrom(templateBuildingBlock);
@@ -86,8 +87,7 @@ namespace PKSim.Core.Services
             return new PKSimEmptyCommand();
 
          var allExpressionProfileParameterValueCommand = updateTemplateParametersCommand.All()
-            .OfType<IExpressionProfileCommand>()
-            .OfType<EditParameterCommand>()
+            .OfType<SetExpressionProfileValueCommand>()
             .ToList();
 
          if (!allExpressionProfileParameterValueCommand.Any())

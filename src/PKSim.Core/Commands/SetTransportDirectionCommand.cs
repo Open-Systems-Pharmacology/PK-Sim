@@ -6,7 +6,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class SetTransportDirectionCommand : BuildingBlockStructureChangeCommand, IExpressionProfileCommand
+   public class SetTransportDirectionCommand : BuildingBlockStructureChangeCommand
    {
       private TransporterExpressionContainer _transporterContainer;
       private readonly TransportDirectionId _newTransportDirection;

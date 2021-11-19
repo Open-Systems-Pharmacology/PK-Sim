@@ -22,6 +22,12 @@ namespace PKSim.Core.Services
       IndividualMolecule CreateEmpty();
 
       IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
+
+      /// <summary>
+      ///    Add all predefined ontogeny parameters to the global molecule. This is only required for actual SimulationSubject
+      /// </summary>
+      /// <param name="individualMolecule"></param>
+      void AddOntogenyParameterTo(IndividualMolecule individualMolecule);
    }
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
@@ -52,9 +58,18 @@ namespace PKSim.Core.Services
 
       protected abstract ApplicationIcon Icon { get; }
 
-      public virtual IndividualMolecule CreateEmpty() => CreateMolecule(string.Empty);
+      public virtual IndividualMolecule CreateEmpty(){
+         var molecule = CreateMolecule(string.Empty);
+         AddOntogenyParameterTo(molecule);
+         return molecule;
+      }
 
       public abstract IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
+
+      protected bool HasAgeParameter(ISimulationSubject simulationSubject)
+      {
+         return simulationSubject?.Individual?.AgeParameter != null;
+      }
 
       protected ParameterValueMetaData RelExpParam(string paramName, double defaultValue = 0) => new ParameterValueMetaData
       {
@@ -104,7 +119,6 @@ namespace PKSim.Core.Services
             MinIsAllowed = true
          };
 
-
       protected TMolecule CreateMolecule(string moleculeName)
       {
          var molecule = _objectBaseFactory.Create<TMolecule>().WithIcon(Icon.IconName).WithName(moleculeName);
@@ -112,11 +126,14 @@ namespace PKSim.Core.Services
          CreateMoleculeParameterIn(molecule, HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN, TIME);
          CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN, TIME);
 
-         OntogenyFactors.Each(parameterName => CreateMoleculeParameterIn(molecule, parameterName, 1, DIMENSIONLESS,
-            CoreConstants.Groups.ONTOGENY_FACTOR,
-            canBeVariedInPopulation: false));
-
          return molecule;
+      }
+
+      public void AddOntogenyParameterTo(IndividualMolecule molecule)
+      {
+         OntogenyFactors.Each(x =>
+            CreateMoleculeParameterIn(molecule, x, 1, DIMENSIONLESS, CoreConstants.Groups.ONTOGENY_FACTOR, canBeVariedInPopulation: false)
+         );
       }
 
       protected IParameter CreateFormulaParameterIn(
@@ -204,6 +221,5 @@ namespace PKSim.Core.Services
          parameters.Each(p => AddParameterIn(expressionContainer, p, moleculeName));
          return expressionContainer;
       }
-
    }
 }

@@ -6,7 +6,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class SetExpressionProfileValueCommand : SetParameterValueCommand, IExpressionProfileCommand
+   public class SetExpressionProfileValueCommand : SetParameterValueCommand
    {
       private readonly bool _updateSimulationSubjects;
 

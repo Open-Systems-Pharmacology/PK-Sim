@@ -5,7 +5,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand : PKSimMacroCommand, IExpressionProfileCommand
+   public class EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand : PKSimMacroCommand
    {
       private ISimulationSubject _simulationSubject;
       private IndividualMolecule _molecule;

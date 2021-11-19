@@ -58,7 +58,7 @@ namespace PKSim.Core.Model
 
       public static bool IsExpressionProfile(this IParameter parameter)
       {
-         return IsExpressionOrOntogenyFactor(parameter) ||
+         return IsExpression(parameter) ||
                 IsIndividualMoleculeGlobal(parameter) ||
                 parameter.IsNamed(INITIAL_CONCENTRATION) ||
                 parameter.Name.StartsWith(FRACTION_EXPRESSED_PREFIX);

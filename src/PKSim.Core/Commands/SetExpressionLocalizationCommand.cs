@@ -65,7 +65,7 @@ namespace PKSim.Core.Commands
       }
    }
 
-   public class SetExpressionLocalizationCommand : PKSimMacroCommand, IExpressionProfileCommand
+   public class SetExpressionLocalizationCommand : PKSimMacroCommand
    {
       private IndividualProtein _protein;
       private ISimulationSubject _simulationSubject;
