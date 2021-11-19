@@ -150,6 +150,39 @@ namespace PKSim.Core
       }
    }
 
+   public class When_updating_the_parameter_ids_of_parameter_defined_in_parameter_cache : concern_for_ParameterIdUpdater
+   {
+      private PathCache<IParameter> _sourceParameters;
+      private PathCache<IParameter> _targetParameters;
+      private IParameter _sourceParameter;
+      private IParameter _targetParameter;
+      private IParameter _targetParameter2;
+
+      protected override void Context()
+      {
+         base.Context();
+         _sourceParameters = new PathCacheForSpecs<IParameter>();
+         _targetParameters = new PathCacheForSpecs<IParameter>();
+         _sourceParameter = new PKSimParameter().WithName("toto").WithId("1").WithParentContainer(new Container().WithName("Cont"));
+         _targetParameter = new PKSimParameter().WithName("toto").WithId("10").WithParentContainer(new Container().WithName("Cont"));
+         _targetParameter2 = new PKSimParameter().WithName("titi").WithId("20").WithParentContainer(new Container().WithName("Cont"));
+         _sourceParameters.Add(_sourceParameter);
+         _targetParameters.Add(_targetParameter);
+         _targetParameters.Add(_targetParameter2);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParameterIds(_sourceParameters, _targetParameters);
+      }
+
+      [Observation]
+      public void should_update_the_parameter_id_of_parameter_having_the_same_path()
+      {
+         _targetParameter.Origin.ParameterId.ShouldBeEqualTo(_sourceParameter.Id);
+      }
+   }
+
    public class When_updating_the_simulation_id_in_a_simulation : concern_for_ParameterIdUpdater
    {
       private Simulation _simulation;
@@ -172,7 +205,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_delegate_to_the_core_simulaion_id_updater_to_update_the_simulation()
+      public void should_delegate_to_the_core_simulation_id_updater_to_update_the_simulation()
       {
          A.CallTo(() => _simulationParameterOriginIdUpdater.UpdateSimulationId(_simulation)).MustHaveHappened();
       }
