@@ -73,8 +73,8 @@ namespace PKSim.ProjectConverter.v10
       [Observation]
       public void should_have_converted_the_individual_enzyme_and_protein_to_use_the_new_localization_concept()
       {
-         verifyIndividuals(_allSimulations.Select(x => x.BuildingBlock<Individual>()));
          verifyIndividuals(_allIndividuals);
+         verifyIndividuals(_allSimulations.Select(x => x.BuildingBlock<Individual>()));
          verifyIndividuals(_allPopulations.Select(x => x.FirstIndividual));
 
          var ind = _allIndividuals.FindByName("Human");
