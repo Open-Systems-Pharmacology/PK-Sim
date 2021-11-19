@@ -45,7 +45,7 @@ namespace PKSim.Core.Services
          //Update the building block in the simulation based on the same template
          var usedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(templateBuildingBlock.Id);
          //Template was not used in the simulation...return
-         if (usedBuildingBlock == null) 
+         if (usedBuildingBlock == null)
             return null;
 
          var buildingBlockType = _executionContext.TypeFor(templateBuildingBlock);
@@ -74,7 +74,7 @@ namespace PKSim.Core.Services
 
          //now make sure that the used building block is updated with the template building block info
          updateCommands.Add(new UpdateUsedBuildingBlockInfoCommand(simulation, usedBuildingBlock, templateBuildingBlock, _executionContext).Run(_executionContext));
-       
+
          _executionContext.PublishEvent(new BuildingBlockUpdatedEvent(templateBuildingBlock));
          return updateCommands;
       }
@@ -115,9 +115,8 @@ namespace PKSim.Core.Services
 
             expressionProfilesToUpdate.Add(expressionProfile);
 
-
             //We do not update the simulation subject. It will be done at the end of the loop
-            var command =  new SetExpressionProfileValueCommand(expressionProfileParameter, simulationSubjectParameter.Value, updateSimulationSubjects: false);
+            var command = new SetExpressionProfileValueCommand(expressionProfileParameter, simulationSubjectParameter.Value, updateSimulationSubjects: false);
             macroCommand.Add(command);
          }
 
@@ -128,7 +127,6 @@ namespace PKSim.Core.Services
          expressionProfilesToUpdate.Each(x => _expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(x));
 
          return macroCommand;
-         
       }
 
       private IPKSimMacroCommand updateParameterValues(PathCache<IParameter> simulationParameters, PathCache<IParameter> templateParameters)
