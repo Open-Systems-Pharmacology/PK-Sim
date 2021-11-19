@@ -36,7 +36,6 @@ namespace PKSim.Core.Model
       public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
          CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
-
       public static bool IsExpression(this IParameter parameter)
       {
          if (parameter == null)
@@ -64,7 +63,6 @@ namespace PKSim.Core.Model
                 parameter.Name.StartsWith(FRACTION_EXPRESSED_PREFIX);
       }
 
-     
       public static bool IsStructural(this IParameter parameter)
       {
          return ParticleDistributionStructuralParameters.Contains(parameter.Name);
@@ -183,19 +181,19 @@ namespace PKSim.Core.Model
          return parameter.CanBeVariedInPopulation && !parameter.IsChangedByCreateIndividual;
       }
 
-      public static IReadOnlyList<IParameter> AllGlobalMoleculeParameters(this IEnumerable<IParameter> parameters)
+      public static IReadOnlyList<IParameter> AllGlobalMoleculeParameters(this IReadOnlyList<IParameter> parameters)
       {
-         return parameters.Where(x => x.NameIsOneOf(
-            REFERENCE_CONCENTRATION,
-            HALF_LIFE_LIVER,
-            HALF_LIFE_INTESTINE)
-         ).ToList();
+         return new[]
+         {
+            parameters.FindByName(REFERENCE_CONCENTRATION),
+            parameters.FindByName(HALF_LIFE_LIVER),
+            parameters.FindByName(HALF_LIFE_INTESTINE)
+         }.Where(x => x != null).ToList();
       }
 
-      public static IReadOnlyList<IParameter> AllExpressionParameters(this IEnumerable<IParameter> parameters)
+      public static IReadOnlyList<IParameter> AllExpressionParameters(this IReadOnlyList<IParameter> parameters)
       {
-         var allParameters = parameters.ToList();
-         return allParameters.Except(AllGlobalMoleculeParameters(allParameters)).ToList();
+         return parameters.Except(AllGlobalMoleculeParameters(parameters)).ToList();
       }
    }
 }
