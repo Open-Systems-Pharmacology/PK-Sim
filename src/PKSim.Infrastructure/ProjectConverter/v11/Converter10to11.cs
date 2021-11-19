@@ -17,19 +17,22 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       private readonly IExpressionProfileUpdater _expressionProfileUpdater;
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IEventPublisher _eventPublisher;
+      private readonly IRegistrationTask _registrationTask;
       private bool _converted;
 
       public Converter10to11(
          IExpressionProfileFactory expressionProfileFactory,
          IExpressionProfileUpdater expressionProfileUpdater,
          IPKSimProjectRetriever projectRetriever,
-         IEventPublisher eventPublisher
+         IEventPublisher eventPublisher,
+         IRegistrationTask registrationTask
       )
       {
          _expressionProfileFactory = expressionProfileFactory;
          _expressionProfileUpdater = expressionProfileUpdater;
          _projectRetriever = projectRetriever;
          _eventPublisher = eventPublisher;
+         _registrationTask = registrationTask;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V10;
@@ -71,6 +74,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
             //only add at the end once the expression profile has been updated
             simulationSubject.AddExpressionProfile(expressionProfile);
             _projectRetriever.Current.AddBuildingBlock(expressionProfile);
+            _registrationTask.Register(expressionProfile);
             _eventPublisher.PublishEvent(new BuildingBlockAddedEvent(expressionProfile, _projectRetriever.Current));
          }
 
