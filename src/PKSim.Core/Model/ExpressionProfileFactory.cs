@@ -7,6 +7,8 @@ namespace PKSim.Core.Model
    public interface IExpressionProfileFactory
    {
       ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule;
+      ExpressionProfile CreateFor(Type moleculeType);
+      ExpressionProfile CreateFor(Type moleculeType, Species species);
       void UpdateSpecies(ExpressionProfile expressionProfile, Species species);
    }
 
@@ -30,11 +32,15 @@ namespace PKSim.Core.Model
          _individualFactory = individualFactory;
       }
 
-      public ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule
+      public ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule => CreateFor(typeof(TMolecule));
+
+      public ExpressionProfile CreateFor(Type moleculeType) => CreateFor(moleculeType, _speciesRepository.DefaultSpecies);
+
+      public ExpressionProfile CreateFor(Type moleculeType, Species species)
       {
          var expressionProfile = _objectBaseFactory.Create<ExpressionProfile>();
          expressionProfile.IsLoaded = true;
-         updateSpecies(expressionProfile, _speciesRepository.DefaultSpecies, typeof(TMolecule));
+         updateSpecies(expressionProfile, species, moleculeType);
          return expressionProfile;
       }
 

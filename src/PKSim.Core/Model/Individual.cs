@@ -178,6 +178,11 @@ namespace PKSim.Core.Model
       public virtual IParameter WeightParameter => Organism.Parameter(CoreConstants.Parameters.WEIGHT);
 
       /// <summary>
+      ///    Actual age of the individual
+      /// </summary>
+      public virtual IParameter AgeParameter => Organism.Parameter(CoreConstants.Parameters.AGE);
+
+      /// <summary>
       ///    Returns <c>true</c> if at least one molecule is defined in the individual otherwise false
       /// </summary>
       public bool HasMolecules() => HasMolecules<IndividualMolecule>();

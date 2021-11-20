@@ -24,7 +24,7 @@ namespace PKSim.Infrastructure
          var defaultIndividualRetriever = IoC.Resolve<IDefaultIndividualRetriever>();
          var populationRepository = IoC.Resolve<IPopulationRepository>();
          var cloneManager = IoC.Resolve<ICloneManagerForBuildingBlock>();
-         return cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache());
+         return cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache()).WithName("Individual");
       }
 
       public static Compound CreateStandardCompound()

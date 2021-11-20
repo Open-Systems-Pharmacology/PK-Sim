@@ -43,6 +43,11 @@ namespace PKSim.Core.Model
       /// </summary>
       IndividualMolecule MoleculeByName(string moleculeName);
 
+      /// <summary>
+      ///    Returns the molecule named <paramref name="moleculeName" /> or NULL if not found
+      /// </summary>
+      TMolecules MoleculeByName<TMolecules>(string moleculeName) where TMolecules : IndividualMolecule;
+
       IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule;
 
       /// <summary>

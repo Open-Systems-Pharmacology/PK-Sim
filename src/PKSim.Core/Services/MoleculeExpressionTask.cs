@@ -111,7 +111,7 @@ namespace PKSim.Core.Services
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(expressionProfile.Molecule);
          var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, expressionProfile.MoleculeName);
          simulationSubject.AddExpressionProfile(expressionProfile);
-         _expressionProfileUpdater.SynchronizeExpressionProfile(simulationSubject, expressionProfile);
+         _expressionProfileUpdater.SynchroniseSimulationSubjectWithExpressionProfile(simulationSubject, expressionProfile);
          return _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);       
       }
 

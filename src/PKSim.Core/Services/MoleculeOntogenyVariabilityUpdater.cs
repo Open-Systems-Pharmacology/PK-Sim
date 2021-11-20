@@ -78,6 +78,10 @@ namespace PKSim.Core.Services
 
       private void updateOntogenyParameter(IParameter parameter, double value)
       {
+         //this can be the case if the parameter is defined in an expression profile
+         if (parameter == null)
+            return;
+
          parameter.DefaultValue = value;
          parameter.Value = parameter.DefaultValue.Value;
       }
