@@ -9,7 +9,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SetRelativeExpressionCommand : ContextSpecification<SetRelativeExpressionCommand>
+   public abstract class concern_for_SetRelativeExpressionCommand : ContextSpecification<SetExpressionProfileValueCommand>
    {
       protected IExecutionContext _context;
       protected double _value = 5;
@@ -20,7 +20,7 @@ namespace PKSim.Core
          _context = A.Fake<IExecutionContext>();
          _parameterExpression = DomainHelperForSpecs.ConstantParameterWithValue(2);
          A.CallTo(() => _context.BuildingBlockContaining(_parameterExpression)).Returns(A.Fake<IPKSimBuildingBlock>());
-         sut = new SetRelativeExpressionCommand(_parameterExpression,_value);
+         sut = new SetExpressionProfileValueCommand(_parameterExpression,_value);
       }
    }
 

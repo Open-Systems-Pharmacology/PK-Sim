@@ -38,9 +38,10 @@ namespace PKSim.Core.Services
          //Update the building block in the simulation based on the same template
          var usedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(templateBuildingBlock.Id);
          //Template was not used in the simulation...return
-         if (usedBuildingBlock == null) return null;
+         if (usedBuildingBlock == null) 
+            return null;
 
-         string buildingBlockType = _executionContext.TypeFor(templateBuildingBlock);
+         var buildingBlockType = _executionContext.TypeFor(templateBuildingBlock);
          var templateParameters = parametersToUpdateFrom(templateBuildingBlock);
          var usedBuildingBlockParameters = parametersToUpdateFrom(usedBuildingBlock.BuildingBlock);
          var updateCommands = new PKSimMacroCommand();
@@ -68,7 +69,7 @@ namespace PKSim.Core.Services
       }
 
       /// <summary>
-      ///    Update parameter values from the used building block into the simulationm
+      ///    Update parameter values from the used building block into the simulation
       /// </summary>
       /// <param name="usedBuildingBlockParameters">All used building blocks parameters</param>
       /// <param name="simulation">simulation for which parameters should be updated</param>

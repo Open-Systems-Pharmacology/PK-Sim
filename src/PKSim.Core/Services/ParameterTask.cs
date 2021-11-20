@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -30,13 +29,6 @@ namespace PKSim.Core.Services
       /// <param name="parameter">Parameter</param>
       /// <param name="enumValue">Enumeration value that will be converted to a double</param>
       ICommand SetParameterDisplayValue(IParameter parameter, Enum enumValue);
-
-      /// <summary>
-      ///    Sets the value in the parameter. Value will be converted in kernel unit
-      /// </summary>
-      /// <param name="parameter">Parameter</param>
-      /// <param name="value">Boolean value that will be converted to 1 if value==true or 0 otherwise </param>
-      ICommand SetParameterDisplayValue(IParameter parameter, bool value);
 
       /// <summary>
       ///    Sets the value in the parameter. Value will be converted in kernel unit
@@ -270,13 +262,6 @@ namespace PKSim.Core.Services
          return command;
       }
 
-      public ICommand SetParameterDisplayValue(IParameter parameter, bool value)
-      {
-         var oldValue = (parameter.Value == 1);
-         var command = SetParameterDisplayValue(parameter, value ? 1 : 0);
-         return commandWithUpdatedDescription(command, parameter, oldValue, value);
-      }
-
       public ICommand SetParameterDisplayValueAsStructureChange(IParameter parameter, double valueToSetInGuiUnit)
       {
          return SetParameterValueAsStructureChange(parameter, parameter.ConvertToBaseUnit(valueToSetInGuiUnit));
@@ -301,20 +286,13 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterValue(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)
       {
-         const bool shouldChangeVersion = true;
-
-         if (parameter.IsExpression())
-            return withUpdatedDefaultStateAndValue(commandForRelativeExpressionParameter(parameter, value).Run(_executionContext), parameter, shouldChangeVersion, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
+         if (parameter.IsExpressionProfile())
+            return setExpressionProfileCommand(parameter, value, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
 
          if (parameter.IsStructural())
             return SetParameterValueAsStructureChange(parameter, value, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
 
-         return setParameterValue(parameter, value, shouldChangeVersion, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
-      }
-
-      private IPKSimCommand commandForRelativeExpressionParameter(IParameter parameter, double value)
-      {
-         return new SetRelativeExpressionCommand(parameter, value);
+         return setParameterValue(parameter, value, shouldChangeVersion: true, shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
       private IOSPSuiteCommand setParameterValue(IParameter parameter, double value, bool shouldChangeVersion, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
@@ -326,9 +304,22 @@ namespace PKSim.Core.Services
             shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
+      private IOSPSuiteCommand setExpressionProfileCommand(IParameter parameter, double value, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
+      {
+         return executeAndUpdatedDefaultStateAndValue(
+            new SetExpressionProfileValueCommand(parameter, value),
+            parameter,
+            shouldChangeVersion: true,
+            shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
+      }
+
       public ICommand SetParameterDisplayUnit(IParameter parameter, Unit displayUnit, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
       {
-         return executeAndUpdatedDefaultStateAndValue(new SetParameterDisplayUnitCommand(parameter, displayUnit), parameter, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
+         return executeAndUpdatedDefaultStateAndValue(
+            new SetParameterDisplayUnitCommand(parameter, displayUnit),
+            parameter,
+            shouldChangeVersion: true,
+            shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
       private IOSPSuiteCommand executeAndUpdatedDefaultStateAndValue(BuildingBlockChangeCommand commandToExecute, IParameter parameter, bool shouldChangeVersion = true, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter = true)

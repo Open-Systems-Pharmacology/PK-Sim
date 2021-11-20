@@ -1,9 +1,4 @@
-using System.Xml.Linq;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Serialization.Xml;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure.Serialization.Xml.Extensions;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {

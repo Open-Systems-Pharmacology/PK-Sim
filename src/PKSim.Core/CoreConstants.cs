@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using NPOI.HSSF.Record.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
@@ -104,7 +105,9 @@ namespace PKSim.Core
 
       public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
 
-      public static string CompositeNameFor(params string[] names)
+      public static string CompositeNameFor(params string[] names) => compositeNameFor(COMPOSITE_SEPARATOR, names);
+
+      private static string compositeNameFor(char separator, params string[] names)
       {
          if (names == null || names.Length == 0)
             return string.Empty;
@@ -112,12 +115,12 @@ namespace PKSim.Core
          var nonEmptyNames = names.ToList();
          nonEmptyNames.RemoveAll(string.IsNullOrEmpty);
 
-         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{COMPOSITE_SEPARATOR}");
+         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{separator}");
       }
 
-      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName)
+      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName, char separator= COMPOSITE_SEPARATOR)
       {
-         return compositeName.Split(COMPOSITE_SEPARATOR);
+         return compositeName.Split(separator);
       }
 
       public static class DirectoryKey
@@ -175,10 +178,7 @@ namespace PKSim.Core
          public static IReadOnlyCollection<string> MoBiForAll => new[]
             {CONCENTRATION_IN_CONTAINER, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
 
-         public static string ObserverNameFrom(string observerName, string compoundName)
-         {
-            return CompositeNameFor(observerName, compoundName);
-         }
+         public static string ObserverNameFrom(string observerName, string compoundName) => CompositeNameFor(observerName, compoundName);
       }
 
       public static class Rate
@@ -436,7 +436,7 @@ namespace PKSim.Core
          public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
 
          public static string ExpressionProfileName(string moleculeName, Core.Model.Species species,  string category) 
-            => CompositeNameFor(moleculeName, species?.DisplayName, category);
+            => compositeNameFor(char.Parse(ObjectPath.PATH_DELIMITER),  moleculeName, species?.DisplayName, category);
 
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {
@@ -1026,18 +1026,20 @@ namespace PKSim.Core
          public const string EMAX = "Emax";
          public const string EC50 = "EC50";
          public const string WEIGHT_TISSUE = "Weight (tissue)";
+         public const string FRACTION_EXPRESSED_PREFIX = "Fraction expressed";
          public const string FRACTION_EXPRESSED_BLOOD_CELLS = "Fraction expressed in blood cells";
          public const string FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE = "Fraction expressed in blood cells membrane";
          public const string FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE = "Fraction expressed on plasma-side membrane of vascular endothelium";
          public const string FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE = "Fraction expressed on tissue-side membrane of vascular endothelium";
          public const string FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME = "Fraction expressed in endosomes";
-         public const string INITIAL_CONCENTRATION = "Initial concentration";
          public const string FRACTION_EXPRESSED_INTRACELLULAR = "Fraction expressed intracellular";
          public const string FRACTION_EXPRESSED_INTERSTITIAL = "Fraction expressed interstitial";
          public const string FRACTION_EXPRESSED_APICAL = "Fraction expressed apical";
          public const string FRACTION_EXPRESSED_BASOLATERAL = "Fraction expressed basolateral";
          public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
          public const string FRACTION_EXPRESSED_BRAIN_TISSUE = "Fraction expressed brain tissue";
+         public const string INITIAL_CONCENTRATION = "Initial concentration";
+
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
          {

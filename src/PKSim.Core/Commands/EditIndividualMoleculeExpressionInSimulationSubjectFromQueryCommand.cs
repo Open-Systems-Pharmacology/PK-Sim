@@ -37,7 +37,7 @@ namespace PKSim.Core.Commands
             if (expressionParameter.Value == expressionResult.RelativeExpression)
                continue;
 
-            Add(new SetRelativeExpressionCommand(expressionParameter, expressionResult.RelativeExpression, updateIndividuals:false));
+            Add(new SetExpressionProfileValueCommand(expressionParameter, expressionResult.RelativeExpression, updateSimulationSubjects:false));
          }
 
          Add(new NormalizeRelativeExpressionCommand(_molecule, _simulationSubject, context));

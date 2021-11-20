@@ -301,7 +301,7 @@ namespace PKSim.Presentation
          _buildingBlock.Id = "toto";
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
-         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new[] {_simulation1});
+         A.CallTo(() => _buildingBlockInProjectManager.BuildingBlockUsing(_buildingBlock)).Returns(new[] {_simulation1});
       }
 
       [Observation]

@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Services
       ///    update the given template building block into the simulation
       /// </summary>
       /// <typeparam name="TBuildingBlock">Type of building block</typeparam>
-      /// <param name="templateBuildingBlock">tempalte building block used as source of the update</param>
+      /// <param name="templateBuildingBlock">Template building block used as source of the update</param>
       /// <param name="usedBuildingBlock">used building block whose value/structure will be updated</param>
       /// <param name="simulation">simulation containing the used building block</param>
       void UpdateUsedBuildingBlockInSimulation<TBuildingBlock>(TBuildingBlock templateBuildingBlock, UsedBuildingBlock usedBuildingBlock, Simulation simulation) where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -28,7 +28,7 @@ namespace PKSim.Presentation.Services
       ///    Save the change made in the used building block belonging in the simulation into the given template building block
       /// </summary>
       /// <typeparam name="TBuildingBlock">Type of building block</typeparam>
-      /// <param name="templateBuildingBlock">Tempalte building block that will be updated</param>
+      /// <param name="templateBuildingBlock">Template building block that will be updated</param>
       /// <param name="usedBuildingBlock">used building block from which the values will be taken</param>
       /// <param name="simulation">simulation containing the used building block</param>
       void CommitBuildingBlockToRepository<TBuildingBlock>(TBuildingBlock templateBuildingBlock, UsedBuildingBlock usedBuildingBlock, Simulation simulation) where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -37,7 +37,7 @@ namespace PKSim.Presentation.Services
       ///    Shows the difference between the template building block and the building block used in the simulation
       /// </summary>
       /// <typeparam name="TBuildingBlock">Type of building block</typeparam>
-      /// <param name="templateBuildingBlock">Tempalte building block </param>
+      /// <param name="templateBuildingBlock">Template building block </param>
       /// <param name="usedBuildingBlock">used building block</param>
       /// <param name="simulation">containing the used building block</param>
       void ShowDifferencesBetween<TBuildingBlock>(TBuildingBlock templateBuildingBlock, UsedBuildingBlock usedBuildingBlock, Simulation simulation) where TBuildingBlock : class, IPKSimBuildingBlock;
@@ -89,7 +89,7 @@ namespace PKSim.Presentation.Services
          _buildingBlockTask.Load(templateBuildingBlock);
          _buildingBlockTask.Load(simulation);
 
-         //check if quick update possible. if yes =>performe quick update
+         //check if quick update possible. if yes =>perform quick update
          if (_simulationBuildingBlockUpdater.QuickUpdatePossibleFor(templateBuildingBlock, usedBuildingBlock))
          {
             var updateCommand = _blockParametersToSimulationUpdater.UpdateParametersFromBuildingBlockInSimulation(templateBuildingBlock, simulation);

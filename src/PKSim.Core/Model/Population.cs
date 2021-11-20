@@ -162,6 +162,9 @@ namespace PKSim.Core.Model
 
       public IndividualMolecule MoleculeByName(string moleculeName) => FirstIndividual?.MoleculeByName(moleculeName);
 
+      public TMolecules MoleculeByName<TMolecules>(string moleculeName) where TMolecules : IndividualMolecule
+         => FirstIndividual?.MoleculeByName<TMolecules>(moleculeName);
+
       public IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule
       {
          return FirstIndividual?.AllMolecules<TMolecules>() ?? Enumerable.Empty<TMolecules>();
