@@ -77,7 +77,12 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot, Model.OriginData originData, ModelIndividual individual, PKSimProject project)
       {
          var expressionProfilesSnapshot = individualSnapshot.Molecules;
-         expressionProfilesSnapshot.Each(x => x.Species = originData.Species.Name);
+         expressionProfilesSnapshot.Each(x =>
+         {
+            x.Species = originData.Species.Name;
+            x.Category = individualSnapshot.Name;
+            x.Molecule = x.Name;
+         });
 
          var expressionProfiles = await _expressionProfileMapper.MapToModels(individualSnapshot.Molecules);
          foreach (var expressionProfile in expressionProfiles)
