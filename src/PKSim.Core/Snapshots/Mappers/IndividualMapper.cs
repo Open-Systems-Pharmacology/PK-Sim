@@ -1,29 +1,34 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using SnapshotIndividual = PKSim.Core.Snapshots.Individual;
 using ModelIndividual = PKSim.Core.Model.Individual;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class IndividualMapper : ObjectBaseSnapshotMapperBase<ModelIndividual, SnapshotIndividual>
+   public class IndividualMapper : ObjectBaseSnapshotMapperBase<ModelIndividual, SnapshotIndividual, PKSimProject>, ISnapshotMapperWithProjectAsContext<ModelIndividual, SnapshotIndividual>
    {
       private readonly ParameterMapper _parameterMapper;
-      private readonly MoleculeMapper _moleculeMapper;
+      private readonly ExpressionProfileMapper _expressionProfileMapper;
       private readonly IIndividualFactory _individualFactory;
+      private readonly IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
       private readonly OriginDataMapper _originDataMapper;
 
       public IndividualMapper(
-         ParameterMapper parameterMapper, 
-         MoleculeMapper moleculeMapper,
+         ParameterMapper parameterMapper,
+         ExpressionProfileMapper expressionProfileMapper,
          OriginDataMapper originDataMapper,
-         IIndividualFactory individualFactory
-         )
+         IIndividualFactory individualFactory,
+         IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask
+      )
       {
          _parameterMapper = parameterMapper;
-         _moleculeMapper = moleculeMapper;
+         _expressionProfileMapper = expressionProfileMapper;
          _individualFactory = individualFactory;
+         _moleculeExpressionTask = moleculeExpressionTask;
          _originDataMapper = originDataMapper;
       }
 
@@ -31,14 +36,14 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var snapshot = await SnapshotFrom(individual, x => { x.Seed = individual.Seed; });
          snapshot.OriginData = await _originDataMapper.MapToSnapshot(individual.OriginData);
-         snapshot.Molecules = await allMoleculesFrom(individual);
+         snapshot.ExpressionProfiles = allExpressionProfilesFrom(individual);
          snapshot.Parameters = await allParametersChangedByUserFrom(individual);
          return snapshot;
       }
 
-      private Task<Molecule[]> allMoleculesFrom(ModelIndividual individual)
+      private string[] allExpressionProfilesFrom(ModelIndividual individual)
       {
-         return _moleculeMapper.MapToSnapshots(individual.AllDefinedMolecules(), individual);
+         return individual.AllExpressionProfiles().AllNames().ToArray();
       }
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
@@ -47,24 +52,51 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
-      public override async Task<ModelIndividual> MapToModel(SnapshotIndividual individualSnapshot)
+      public override async Task<ModelIndividual> MapToModel(SnapshotIndividual individualSnapshot, PKSimProject project)
       {
          var originData = await _originDataMapper.MapToModel(individualSnapshot.OriginData);
          var individual = _individualFactory.CreateAndOptimizeFor(originData, individualSnapshot.Seed);
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
 
-         //This needs to happen before loading model parameters as molecule parameters are saved with the rest of individuals parameters
-         var molecules = await _moleculeMapper.MapToModels(individualSnapshot.Molecules, individual);
-         molecules?.Each(individual.AddMolecule);
-         
+         //For a v10 format and earlier, some molecules parameters will be defined in the individual. 
          await updateIndividualParameters(individualSnapshot, individual);
+
+         if (isV10Format(individualSnapshot))
+         {
+            await convertMoleculesToExpressionProfiles(individualSnapshot, originData, individual, project);
+         }
+
+         individualSnapshot.ExpressionProfiles?.Each(x =>
+         {
+            var expressionProfile = project.BuildingBlockByName<Model.ExpressionProfile>(x);
+            _moleculeExpressionTask.AddExpressionProfile(individual, expressionProfile);
+         });
+
          individual.Icon = individual.Species.Icon;
          return individual;
       }
 
+      private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot, Model.OriginData originData, ModelIndividual individual, PKSimProject project)
+      {
+         var expressionProfilesSnapshot = individualSnapshot.Molecules;
+         expressionProfilesSnapshot.Each(x => x.Species = originData.Species.Name);
+
+         var expressionProfiles = await _expressionProfileMapper.MapToModels(individualSnapshot.Molecules);
+         foreach (var expressionProfile in expressionProfiles)
+         {
+            project.AddBuildingBlock(expressionProfile);
+            //this needs to happen here since molecule parameters were defined in individual in v10
+            await updateIndividualParameters(individualSnapshot, individual);
+         }
+
+         individualSnapshot.ExpressionProfiles = expressionProfiles.AllNames().ToArray();
+      }
+
+      private bool isV10Format(SnapshotIndividual snapshot) => snapshot.Molecules != null;
+
       private Task updateIndividualParameters(SnapshotIndividual snapshot, ModelIndividual individual)
       {
-         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
+         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, showParameterNotFoundWarning: !isV10Format(snapshot));
       }
    }
 }

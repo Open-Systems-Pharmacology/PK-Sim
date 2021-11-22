@@ -6,8 +6,10 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using SnapshotIndividual = PKSim.Core.Snapshots.Individual;
 using ModelIndividual = PKSim.Core.Model.Individual;
 using OriginData = PKSim.Core.Snapshots.OriginData;
@@ -23,25 +25,27 @@ namespace PKSim.Core
       protected IParameter _parameterKidney;
       protected string _parameterKidneyPath = "ParameterKidneyPath";
       protected IDimensionRepository _dimensionRepository;
-      protected IndividualEnzyme _enzyme;
-      protected IndividualTransporter _transporter;
-      protected MoleculeMapper _moleculeMapper;
-      protected Molecule _enzymeSnapshot;
-      protected Molecule _transporterSnapshot;
+      protected ExpressionProfileMapper _expressionProfileMapper;
+      protected ExpressionProfile _enzymeExressionSnapshot;
+      protected ExpressionProfile _transporterExpressionSnapshot;
       protected LocalizedParameter _localizedParameterKidney;
       protected IIndividualFactory _individualFactory;
       protected OriginDataMapper _originDataMapper;
       protected OriginData _originDataSnapshot;
+      private IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
+      public Model.ExpressionProfile _expressionProfile1;
+      public Model.ExpressionProfile _expressionProfile2;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _moleculeMapper = A.Fake<MoleculeMapper>();
+         _expressionProfileMapper = A.Fake<ExpressionProfileMapper>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _individualFactory = A.Fake<IIndividualFactory>();
          _originDataMapper = A.Fake<OriginDataMapper>();
+         _moleculeExpressionTask= A.Fake<IMoleculeExpressionTask<ModelIndividual>>();  
 
-         sut = new IndividualMapper(_parameterMapper, _moleculeMapper, _originDataMapper, _individualFactory);
+         sut = new IndividualMapper(_parameterMapper, _expressionProfileMapper, _originDataMapper, _individualFactory,_moleculeExpressionTask);
 
          _individual = DomainHelperForSpecs.CreateIndividual();
          _individual.Name = "Ind";
@@ -56,24 +60,16 @@ namespace PKSim.Core
          _parameterKidney.Value = 40;
          _parameterKidney.ValueDiffersFromDefault().ShouldBeTrue();
 
-         _enzyme = new IndividualEnzyme
-         {
-            Name = "Enz",
-         };
-         _individual.AddMolecule(_enzyme);
+         _expressionProfile1 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "Enz");
+         _expressionProfile2 = DomainHelperForSpecs.CreateExpressionProfile<IndividualTransporter>(moleculeName: "Trans");
+         _individual.AddExpressionProfile(_expressionProfile1);
+         _individual.AddExpressionProfile(_expressionProfile2);
+         
+         _enzymeExressionSnapshot = new ExpressionProfile {Type = QuantityType.Enzyme, Species = _expressionProfile1.Species.Name};
+         _transporterExpressionSnapshot = new ExpressionProfile {Type = QuantityType.Transporter, Species = _expressionProfile1.Species.Name };
 
-         _transporter = new IndividualTransporter
-         {
-            Name = "Trans",
-         };
-
-         _individual.AddMolecule(_transporter);
-
-         _enzymeSnapshot = new Molecule {Type = QuantityType.Enzyme};
-         _transporterSnapshot = new Molecule {Type = QuantityType.Transporter};
-
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_enzyme, _individual)).Returns(_enzymeSnapshot);
-         A.CallTo(() => _moleculeMapper.MapToSnapshot(_transporter, _individual)).Returns(_transporterSnapshot);
+         A.CallTo(() => _expressionProfileMapper.MapToSnapshot(_expressionProfile1)).Returns(_enzymeExressionSnapshot);
+         A.CallTo(() => _expressionProfileMapper.MapToSnapshot(_expressionProfile2)).Returns(_transporterExpressionSnapshot);
 
          _originDataSnapshot = new OriginData();
          A.CallTo(() => _originDataMapper.MapToSnapshot(_individual.OriginData)).Returns(_originDataSnapshot);
@@ -114,15 +110,13 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_individual_molecules()
       {
-         _snapshot.Molecules.ShouldOnlyContain(_enzymeSnapshot, _transporterSnapshot);
+         _snapshot.Molecules.ShouldOnlyContain(_enzymeExressionSnapshot, _transporterExpressionSnapshot);
       }
    }
 
    public class When_mapping_a_valid_individual_snapshot_to_an_individual : concern_for_IndividualMapper
    {
       private ModelIndividual _newIndividual;
-      private IndividualMolecule _molecule1;
-      private IndividualMolecule _molecule2;
       private Model.OriginData _newOriginData;
 
       protected override async Task Context()
@@ -135,17 +129,17 @@ namespace PKSim.Core
          _snapshot.Description = "The description that will be deserialized";
 
          //clear enzyme before mapping them again
-         _individual.RemoveMolecule(_enzyme);
-         _individual.RemoveMolecule(_transporter);
+         _individual.RemoveExpressionProfile(_expressionProfile1);
+         _individual.RemoveExpressionProfile(_expressionProfile2);
 
          //reset parameter
          _parameterKidney.ResetToDefault();
 
-         _molecule1 = new IndividualEnzyme().WithName("Mol1");
-         _molecule2 = new IndividualEnzyme().WithName("Mol2");
+         _expressionProfile1 = new Model.ExpressionProfile().WithName("Exp1");
+         _expressionProfile2 = new Model.ExpressionProfile().WithName("Exp2");
 
-         A.CallTo(() => _moleculeMapper.MapToModel(_enzymeSnapshot, _individual)).Returns(_molecule1);
-         A.CallTo(() => _moleculeMapper.MapToModel(_transporterSnapshot, _individual)).Returns(_molecule2);
+         A.CallTo(() => _expressionProfileMapper.MapToModel(_enzymeExressionSnapshot)).Returns(_expressionProfile1);
+         A.CallTo(() => _expressionProfileMapper.MapToModel(_transporterExpressionSnapshot)).Returns(_expressionProfile2);
 
          _newOriginData = new Model.OriginData();
          A.CallTo(() => _originDataMapper.MapToModel(_snapshot.OriginData)).Returns(_newOriginData);
@@ -176,13 +170,13 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_the_expected_molecules()
       {
-         _newIndividual.AllMolecules().ShouldOnlyContain(_molecule1, _molecule2);
+         _newIndividual.AllExpressionProfiles().ShouldOnlyContain(_expressionProfile1, _expressionProfile2);
       }
 
       [Observation]
       public void should_have_updated_the_parameter_previously_set_by_the_user()
       {
-         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual, true)).MustHaveHappened();
       }
    }
 }

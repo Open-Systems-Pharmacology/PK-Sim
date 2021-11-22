@@ -8,7 +8,6 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Snapshots.Mappers
@@ -26,16 +25,13 @@ namespace PKSim.Core.Snapshots.Mappers
    public class ExpressionContainerMapper : SnapshotMapperBase<MoleculeExpressionContainer, ExpressionContainer, ExpressionContainerMapperContext>
    {
       private readonly ParameterMapper _parameterMapper;
-      private readonly ITransportContainerUpdater _transportContainerUpdater;
       private readonly IOSPSuiteLogger _logger;
 
       public ExpressionContainerMapper(
          ParameterMapper parameterMapper,
-         ITransportContainerUpdater transportContainerUpdater,
          IOSPSuiteLogger logger)
       {
          _parameterMapper = parameterMapper;
-         _transportContainerUpdater = transportContainerUpdater;
          _logger = logger;
       }
 

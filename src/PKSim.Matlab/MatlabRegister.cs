@@ -8,7 +8,6 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Matlab.Mappers;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Matlab
@@ -24,7 +23,6 @@ namespace PKSim.Matlab
          container.Register<IExceptionManager, CLIExceptionManager>();
          container.Register<IProgressUpdater, NoneProgressUpdater>();
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
-         container.Register<IMatlabPopulationSettingsToPopulationSettingsMapper, MatlabPopulationSettingsToPopulationSettingsMapper>();
          container.Register<ILazyLoadTask, MatlabLazyLoadTask>(LifeStyle.Singleton);
          container.Register<IOntogenyTask, CLIIndividualOntogenyTask>();
       }

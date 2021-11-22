@@ -5,10 +5,21 @@ using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Snapshots
 {
-   public class Molecule : ParameterContainerSnapshotBase
+   public class ExpressionProfile : SnapshotBase, IBuildingBlockSnapshot
    {
       [Required]
       public QuantityType Type { get; set; }
+
+      [Required]
+      public string Species { get; set; }
+
+      [Required]
+      public string Molecule { get; set; }
+
+      [Required]
+      public string Category { get; set; }
+
+      public LocalizedParameter[] Parameters { get; set; }
 
       //Proteins only for compatibility with old snapshots
       public MembraneLocation? MembraneLocation { get; set; }
@@ -23,5 +34,7 @@ namespace PKSim.Core.Snapshots
 
       public ExpressionContainer[] Expression { get; set; }
       public Ontogeny Ontogeny { get; set; }
+
+      public PKSimBuildingBlockType BuildingBlockType { get; } =PKSimBuildingBlockType.ExpressionProfile;
    }
 }

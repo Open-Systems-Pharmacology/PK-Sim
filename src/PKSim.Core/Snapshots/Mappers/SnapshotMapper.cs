@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Utility.Collections;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -35,6 +36,29 @@ namespace PKSim.Core.Snapshots.Mappers
       ///    model type <typeparamref name="T"/>
       /// </exception>
       Type SnapshotTypeFor<T>();
+
+      /// <summary>
+      /// Returns the mapper associated with a given <paramref name="modelOrSnapshotType"/>
+      /// <exception cref="SnapshotNotFoundException">Is thrown if no mapper could be found for the given type</exception>
+      /// </summary>
+      ISnapshotMapper MapperFor(object modelOrSnapshotType);
+      /// <summary>
+      /// Returns the mapper associated with a given <paramref name="modelOrSnapshotType"/>
+      /// <exception cref="SnapshotNotFoundException">Is thrown if no mapper could be found for the given type</exception>
+      /// </summary>
+      ISnapshotMapper MapperFor(Type modelOrSnapshotType);
+   }
+
+   public interface ISnapshotMapperWithProjectAsContext<TModel, TSnapshot>
+   {
+      /// <summary>
+      ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="project"/> as context
+      /// </summary>
+      /// <exception cref="SnapshotNotFoundException">
+      ///    is thrown if a snapshot could not be found for the given
+      ///    <paramref name="snapshot" />
+      /// </exception>
+      Task<TModel> MapToModel(TSnapshot snapshot, PKSimProject project );
    }
 
    public class SnapshotMapper : ISnapshotMapper
@@ -46,25 +70,19 @@ namespace PKSim.Core.Snapshots.Mappers
          _allMappers = snapshotMapperRepository.All().ToList();
       }
 
-      public Task<object> MapToSnapshot(object model)
-      {
-         var modelType = model.GetType();
-         return mapperFor(modelType).MapToSnapshot(model);
-      }
+      public Task<object> MapToSnapshot(object model) => MapperFor(model).MapToSnapshot(model);
 
-      public Task<object> MapToModel(object snapshot)
-      {
-         var snapshotType = snapshot.GetType();
-         return mapperFor(snapshotType).MapToModel(snapshot);
-      }
+      public Task<object> MapToModel(object snapshot) => MapperFor(snapshot).MapToModel(snapshot);
 
       public Type SnapshotTypeFor<T>()
       {
          var modelType = typeof(T);
-         return mapperFor(modelType).SnapshotTypeFor<T>();
+         return MapperFor(modelType).SnapshotTypeFor<T>();
       }
 
-      private ISnapshotMapper mapperFor(Type modelOrSnapshotType)
+      public ISnapshotMapper MapperFor(object modelOrSnapshotObject) => MapperFor(modelOrSnapshotObject.GetType());
+
+      public ISnapshotMapper MapperFor(Type modelOrSnapshotType)
       {
          var mapper =  _allMappers.FirstOrDefault(x => x.IsSatisfiedBy(modelOrSnapshotType));
          if (mapper != null)
