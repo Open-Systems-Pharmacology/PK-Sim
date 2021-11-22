@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
@@ -27,7 +26,9 @@ namespace PKSim.IntegrationTests
          _expressionProfileEnzyme.ShouldNotBeNull();
          var (enzyme, individual) = _expressionProfileEnzyme;
          enzyme.Ontogeny.Name.ShouldBeEqualTo("CYP3A4");
-         enzyme.HalfLifeLiver.Value.ShouldBeEqualTo(22);
+         enzyme.HalfLifeLiver.ValueInDisplayUnit.ShouldBeEqualTo(22);
+         var expressionInBone = individual.Organism.EntityAt<TransporterExpressionContainer>("Bone", "Intracellular", enzyme.Name);
+         expressionInBone.RelativeExpressionParameter.Value.ShouldBeEqualTo(0.04749);
       }
 
       [Observation]
