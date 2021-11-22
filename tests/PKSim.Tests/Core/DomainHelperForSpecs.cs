@@ -69,13 +69,14 @@ namespace PKSim.Core
          return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
       }
 
-      public static ExpressionProfile CreateExpressionProfile<TMolecule>(string speciesName = "Species", string moleculeName = "CYP3A4") where TMolecule : IndividualMolecule, new()
+      public static ExpressionProfile CreateExpressionProfile<TMolecule>(string speciesName = "Species", string moleculeName = "CYP3A4", string category = "Healthy") where TMolecule : IndividualMolecule, new()
       {
          var expressionProfile = new ExpressionProfile();
          var individual = CreateIndividual(speciesName);
          individual.AddMolecule(new TMolecule().WithName(moleculeName));
          expressionProfile.Individual = individual;
          expressionProfile.MoleculeName = moleculeName;
+         expressionProfile.Category = category;
          return expressionProfile;
       }
 

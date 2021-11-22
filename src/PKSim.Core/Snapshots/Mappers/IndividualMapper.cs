@@ -61,10 +61,8 @@ namespace PKSim.Core.Snapshots.Mappers
          //For a v10 format and earlier, some molecules parameters will be defined in the individual. 
          await updateIndividualParameters(individualSnapshot, individual);
 
-         if (isV10Format(individualSnapshot))
-         {
+         if (isV10Format(individualSnapshot)) 
             await convertMoleculesToExpressionProfiles(individualSnapshot, originData, individual, project);
-         }
 
          individualSnapshot.ExpressionProfiles?.Each(x =>
          {

@@ -285,11 +285,10 @@ namespace PKSim.Core
 
          _localParameter = new LocalizedParameter
          {
-            Path = "LOCALIZED_PATH",
+            Path = "ORG|P1",
             Value = 5,
             Unit = _parameter.DisplayUnit.Name
          };
-         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_localParameter.Path);
       }
 
       protected override async Task Because()
@@ -316,7 +315,7 @@ namespace PKSim.Core
 
          _localParameter = new LocalizedParameter
          {
-            Path = "UNKNOW_PATH",
+            Path = "UNKNOWN_PATH",
          };
       }
 
@@ -363,7 +362,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_snaphsot_parameter_by_name_that_is_not_found_in_the_container : concern_for_ParameterMapper
+   public class When_mapping_a_snapshot_parameter_by_name_that_is_not_found_in_the_container : concern_for_ParameterMapper
    {
       private Container _container;
       private SnapshotParameter _snapshot;

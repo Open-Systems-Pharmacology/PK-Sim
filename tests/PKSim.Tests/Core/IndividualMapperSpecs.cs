@@ -26,13 +26,11 @@ namespace PKSim.Core
       protected string _parameterKidneyPath = "ParameterKidneyPath";
       protected IDimensionRepository _dimensionRepository;
       protected ExpressionProfileMapper _expressionProfileMapper;
-      protected ExpressionProfile _enzymeExressionSnapshot;
-      protected ExpressionProfile _transporterExpressionSnapshot;
       protected LocalizedParameter _localizedParameterKidney;
       protected IIndividualFactory _individualFactory;
       protected OriginDataMapper _originDataMapper;
       protected OriginData _originDataSnapshot;
-      private IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
+      protected IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
       public Model.ExpressionProfile _expressionProfile1;
       public Model.ExpressionProfile _expressionProfile2;
 
@@ -65,11 +63,6 @@ namespace PKSim.Core
          _individual.AddExpressionProfile(_expressionProfile1);
          _individual.AddExpressionProfile(_expressionProfile2);
          
-         _enzymeExressionSnapshot = new ExpressionProfile {Type = QuantityType.Enzyme, Species = _expressionProfile1.Species.Name};
-         _transporterExpressionSnapshot = new ExpressionProfile {Type = QuantityType.Transporter, Species = _expressionProfile1.Species.Name };
-
-         A.CallTo(() => _expressionProfileMapper.MapToSnapshot(_expressionProfile1)).Returns(_enzymeExressionSnapshot);
-         A.CallTo(() => _expressionProfileMapper.MapToSnapshot(_expressionProfile2)).Returns(_transporterExpressionSnapshot);
 
          _originDataSnapshot = new OriginData();
          A.CallTo(() => _originDataMapper.MapToSnapshot(_individual.OriginData)).Returns(_originDataSnapshot);
@@ -110,7 +103,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_individual_molecules()
       {
-         _snapshot.Molecules.ShouldOnlyContain(_enzymeExressionSnapshot, _transporterExpressionSnapshot);
+         _snapshot.ExpressionProfiles.ShouldOnlyContain(_expressionProfile1.Name, _expressionProfile2.Name);
       }
    }
 
@@ -118,13 +111,15 @@ namespace PKSim.Core
    {
       private ModelIndividual _newIndividual;
       private Model.OriginData _newOriginData;
+      private PKSimProject _project;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_individual);
+         _project = new PKSimProject();
 
-   
+
          _snapshot.Name = "New individual";
          _snapshot.Description = "The description that will be deserialized";
 
@@ -135,11 +130,8 @@ namespace PKSim.Core
          //reset parameter
          _parameterKidney.ResetToDefault();
 
-         _expressionProfile1 = new Model.ExpressionProfile().WithName("Exp1");
-         _expressionProfile2 = new Model.ExpressionProfile().WithName("Exp2");
-
-         A.CallTo(() => _expressionProfileMapper.MapToModel(_enzymeExressionSnapshot)).Returns(_expressionProfile1);
-         A.CallTo(() => _expressionProfileMapper.MapToModel(_transporterExpressionSnapshot)).Returns(_expressionProfile2);
+         _project.AddBuildingBlock(_expressionProfile1);
+         _project.AddBuildingBlock(_expressionProfile2);
 
          _newOriginData = new Model.OriginData();
          A.CallTo(() => _originDataMapper.MapToModel(_snapshot.OriginData)).Returns(_newOriginData);
@@ -151,7 +143,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newIndividual = await sut.MapToModel(_snapshot);
+         _newIndividual = await sut.MapToModel(_snapshot, _project);
       }
 
       [Observation]
@@ -170,7 +162,8 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_the_expected_molecules()
       {
-         _newIndividual.AllExpressionProfiles().ShouldOnlyContain(_expressionProfile1, _expressionProfile2);
+         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile(_newIndividual, _expressionProfile1)).MustHaveHappened();
+         A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile(_newIndividual, _expressionProfile2)).MustHaveHappened();
       }
 
       [Observation]

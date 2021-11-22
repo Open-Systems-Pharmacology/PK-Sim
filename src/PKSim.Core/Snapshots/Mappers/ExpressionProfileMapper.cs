@@ -41,7 +41,7 @@ namespace PKSim.Core.Snapshots.Mappers
       }
 
       public override async Task<SnapshotExpressionProfile> MapToSnapshot(ModelExpressionProfile expressionProfile)
-      {
+      { 
          var (molecule, individual) = expressionProfile;
          //We do not use the base method here as we want to save the name differently using the composite part of the name
          var snapshot = new SnapshotExpressionProfile
