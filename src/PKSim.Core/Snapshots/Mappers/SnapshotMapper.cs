@@ -49,7 +49,7 @@ namespace PKSim.Core.Snapshots.Mappers
       ISnapshotMapper MapperFor(Type modelOrSnapshotType);
    }
 
-   public interface ISnapshotMapperWithProjectAsContext<TModel, TSnapshot>
+   public interface ISnapshotMapperWithProjectAsContext<TModel, TSnapshot>: ISnapshotMapper
    {
       /// <summary>
       ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="project"/> as context
