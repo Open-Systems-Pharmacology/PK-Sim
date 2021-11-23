@@ -9,7 +9,16 @@ namespace PKSim.Core.Services
 {
    public interface IExpressionProfileUpdater
    {
+      /// <summary>
+      /// Update the molecule name in <paramref name="expressionProfile"/> to be <paramref name="moleculeName"/>
+      /// </summary>
+      ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string moleculeName);
+
+      /// <summary>
+      /// Update the molecule name in <paramref name="expressionProfile"/> to be synchronized with the MoleculeName propoerty
+      /// </summary>
       ICommand UpdateMoleculeName(ExpressionProfile expressionProfile);
+
       /// <summary>
       /// Updates the value from the <paramref name="expressionProfile"/> into the <paramref name="simulationSubject"/>.
       /// ExpressionProfile => SimulationSubject
@@ -19,6 +28,15 @@ namespace PKSim.Core.Services
       void SynchroniseSimulationSubjectWithExpressionProfile(ISimulationSubject simulationSubject, ExpressionProfile expressionProfile);
 
       /// <summary>
+      /// Updates the value from the <paramref name="expressionProfile"/> into all simulation subjects defined in the project
+      /// referencing <paramref name="expressionProfile"/>.  ExpressionProfile => All SimulationSubject in Project using it
+      /// </summary>
+      /// <param name="expressionProfile">Expression profile used as source</param>
+      void SynchronizeAllSimulationSubjectsWithExpressionProfile(ExpressionProfile expressionProfile);
+
+      void SynchronizeAllSimulationSubjectsWithExpressionProfile(ISimulationSubject internalSimulationSubject);
+
+      /// <summary>
       /// Updates the value from the <paramref name="simulationSubject"/> into the <paramref name="expressionProfile"/>.
       /// SimulationSubject => ExpressionProfile. This is typically called for project conversion. 
       /// </summary>
@@ -26,8 +44,14 @@ namespace PKSim.Core.Services
       /// <param name="simulationSubject">Simulation subject used as source</param>
       void SynchronizeExpressionProfileWithSimulationSubject(ExpressionProfile expressionProfile, ISimulationSubject simulationSubject);
 
-      void SynchronizeExpressionProfileInAllSimulationSubjects(ExpressionProfile expressionProfile);
-      void SynchronizeExpressionProfileInAllSimulationSubjects(ISimulationSubject internalSimulationSubject);
+
+      /// <summary>
+      /// Updates the value from the <paramref name="sourceExpressionProfile"/> into the <paramref name="targetExpressionProfile"/>.
+      /// ExpressionProfile => ExpressionProfile. This is typically called when cloning an expression profile
+      /// </summary>
+      /// <param name="sourceExpressionProfile">Expression profile to update used as source</param>
+      /// <param name="targetExpressionProfile">Expression profile to update</param>
+      void SynchronizeExpressionProfileWithExpressionProfile(ExpressionProfile sourceExpressionProfile, ExpressionProfile targetExpressionProfile);
    }
 
    public class ExpressionProfileUpdater : IExpressionProfileUpdater
@@ -61,6 +85,12 @@ namespace PKSim.Core.Services
          _parameterIdUpdater = parameterIdUpdater;
       }
 
+      public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string moleculeName)
+      {
+         expressionProfile.MoleculeName = moleculeName;
+         return UpdateMoleculeName(expressionProfile);
+      }
+
       public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile)
       {
          return _individualExpressionTask.RenameMolecule(expressionProfile.Molecule, expressionProfile.MoleculeName, expressionProfile.Individual);
@@ -83,35 +113,45 @@ namespace PKSim.Core.Services
       {
          _lazyLoadTask.Load(simulationSubject);
          var moleculeInIndividual = simulationSubject.MoleculeByName(expressionProfile.MoleculeName);
-
+         var (sourceMolecule, sourceIndividual) = expressionProfile;
          // ExpressionProfile => SimulationSubject, we want to make sure that the parameters in simulation subject are linked to their expression profile origin parameters
-         synchronizeExpressionProfiles(expressionProfile.Molecule, expressionProfile.Individual, moleculeInIndividual, simulationSubject, updateParameterOriginId:true);
+         synchronizeExpressionProfiles(sourceMolecule, sourceIndividual, moleculeInIndividual, simulationSubject, updateParameterOriginId:true);
       }
 
       public void SynchronizeExpressionProfileWithSimulationSubject(ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)
       {
          var moleculeInIndividual = simulationSubject.MoleculeByName(expressionProfile.MoleculeName);
+         var (targetMolecule, targetIndividual) = expressionProfile;
+
          // SimulationSubject To ExpressionProfile. We do not update the parameter origin id in the target entities (expression profile)
-         synchronizeExpressionProfiles(moleculeInIndividual, simulationSubject, expressionProfile.Molecule, expressionProfile.Individual, updateParameterOriginId: false);
+         synchronizeExpressionProfiles(moleculeInIndividual, simulationSubject, targetMolecule, targetIndividual, updateParameterOriginId: false);
 
          //however we need to make sure that we reference the expression profile parameter in the source individual
-
-         var allExpressionProfileParameters = allMoleculeParametersFor(expressionProfile.Individual, expressionProfile.Molecule);
+         var allExpressionProfileParameters = allMoleculeParametersFor(targetIndividual, targetMolecule);
          var allIndividualParameters = allMoleculeParametersFor(simulationSubject, moleculeInIndividual);
 
          _parameterIdUpdater.UpdateParameterIds(allExpressionProfileParameters, allIndividualParameters);
+      }
+
+      public void SynchronizeExpressionProfileWithExpressionProfile(ExpressionProfile sourceExpressionProfile, ExpressionProfile targetExpressionProfile)
+      {
+         var (sourceMolecule, sourceIndividual) = sourceExpressionProfile;
+         var (targetMolecule, targetIndividual) = targetExpressionProfile;
+
+         // ExpressionProfile To ExpressionProfile. We do not update the parameter origin id in the target entities as we are updating one building block from another one
+         synchronizeExpressionProfiles(sourceMolecule, sourceIndividual, targetMolecule, targetIndividual, updateParameterOriginId: false);
+
       }
 
       private void updateMoleculeParameters(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)
       {
          var allTargetMoleculeParameters= allMoleculeParametersFor(targetSimulationSubject, targetMolecule);
          var allSourceMoleculeParameters = allMoleculeParametersFor(sourceSimulationSubject, sourceMolecule);
-
-
+         
          _parameterSetUpdater.UpdateValues(allSourceMoleculeParameters, allTargetMoleculeParameters, updateParameterOriginId);
       }
 
-      public void SynchronizeExpressionProfileInAllSimulationSubjects(ExpressionProfile expressionProfile)
+      public void SynchronizeAllSimulationSubjectsWithExpressionProfile(ExpressionProfile expressionProfile)
       {
          //this can happen when loading from snapshot for instance
          if (_projectRetriever.Current == null)
@@ -124,11 +164,11 @@ namespace PKSim.Core.Services
          allSimulationSubjectsForProfile.Each(x => SynchroniseSimulationSubjectWithExpressionProfile(x, expressionProfile));
       }
 
-      public void SynchronizeExpressionProfileInAllSimulationSubjects(ISimulationSubject internalSimulationSubject)
+      public void SynchronizeAllSimulationSubjectsWithExpressionProfile(ISimulationSubject internalSimulationSubject)
       {
          var expressionProfile = internalSimulationSubject.OwnedBy as ExpressionProfile;
          if (expressionProfile == null) return;
-         SynchronizeExpressionProfileInAllSimulationSubjects(expressionProfile);
+         SynchronizeAllSimulationSubjectsWithExpressionProfile(expressionProfile);
       }
 
       private PathCache<IParameter> allMoleculeParametersFor(ISimulationSubject simulationSubject, IndividualMolecule molecule) 

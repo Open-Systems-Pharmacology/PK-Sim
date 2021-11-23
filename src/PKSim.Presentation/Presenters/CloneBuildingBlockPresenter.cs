@@ -8,7 +8,7 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters
 {
-   public interface ICloneBuildingBlockPresenter : IObjectBasePresenter
+   public interface ICloneBuildingBlockPresenter : IDisposablePresenter
    {
       IPKSimBuildingBlock CreateCloneFor(IPKSimBuildingBlock buildingBlockToClone);
    }
@@ -17,7 +17,12 @@ namespace PKSim.Presentation.Presenters
    {
       private readonly ICloner _cloner;
 
-      public CloneBuildingBlockPresenter(IObjectBaseView view, IObjectTypeResolver objectTypeResolver, IRenameObjectDTOFactory renameObjectBaseDTOFactory, ICloner cloner, IOSPSuiteExecutionContext executionContext)
+      public CloneBuildingBlockPresenter(
+         IObjectBaseView view, 
+         IObjectTypeResolver objectTypeResolver, 
+         IRenameObjectDTOFactory renameObjectBaseDTOFactory, 
+         ICloner cloner, 
+         IOSPSuiteExecutionContext executionContext)
          : base(view, objectTypeResolver, renameObjectBaseDTOFactory, executionContext)
       {
          _cloner = cloner;

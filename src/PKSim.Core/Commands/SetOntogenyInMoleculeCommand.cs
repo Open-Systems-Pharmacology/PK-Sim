@@ -37,7 +37,7 @@ namespace PKSim.Core.Commands
          moleculeOntogenyVariabilityUpdater.UpdateMoleculeOntogeny(_molecule, _newOntogeny, _simulationSubject);
 
          var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
-         expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(_simulationSubject);
+         expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(_simulationSubject);
       }
 
       protected override void ClearReferences()
