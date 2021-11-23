@@ -13,7 +13,7 @@ namespace PKSim.Presentation.Presenters
       IPKSimBuildingBlock CreateCloneFor(IPKSimBuildingBlock buildingBlockToClone);
    }
 
-   public class CloneBuildingBlockPresenter : AbstractClonePresenter<IPKSimBuildingBlock>, ICloneBuildingBlockPresenter
+   public class CloneBuildingBlockPresenter : AbstractClonePresenter<IPKSimBuildingBlock>, ICloneBuildingBlockPresenter, IObjectBasePresenter
    {
       private readonly ICloner _cloner;
 

@@ -34,7 +34,7 @@ namespace PKSim.Presentation
 
          _expressionProfile1 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>("DOG", "CYP3A4", "Sick");
 
-         A.CallTo(() => _projectRetriever.Current.All<ExpressionProfile>()).Returns(new []{_expressionProfile1});
+         A.CallTo(() => _projectRetriever.Current.All<ExpressionProfile>()).Returns(new[] {_expressionProfile1});
       }
    }
 
@@ -112,7 +112,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName:CoreConstants.DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME);
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: CoreConstants.DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME);
       }
 
       protected override void Because()
@@ -126,5 +126,4 @@ namespace PKSim.Presentation
          _dto.MoleculeName.ShouldBeNullOrEmpty();
       }
    }
-
 }
