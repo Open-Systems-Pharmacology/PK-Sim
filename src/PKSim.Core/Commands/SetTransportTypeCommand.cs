@@ -46,7 +46,7 @@ namespace PKSim.Core.Commands
          transportContainerUpdater.SetDefaultSettingsForTransporter(_expressionProfile.Individual, _individualTransporter, _transportType);
          Description = PKSimConstants.Command.SetTransportTypeCommandDescription(_individualTransporter.Name, _oldTransportType.ToString(), _transportType.ToString());
          var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
-         expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(_expressionProfile);
+         expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(_expressionProfile);
       }
 
       public override void RestoreExecutionData(IExecutionContext context)

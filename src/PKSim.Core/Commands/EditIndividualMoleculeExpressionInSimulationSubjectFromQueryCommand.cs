@@ -51,7 +51,7 @@ namespace PKSim.Core.Commands
 
          // update depending object
          var updateTask = context.Resolve<IExpressionProfileUpdater>();
-         updateTask.SynchronizeExpressionProfileInAllSimulationSubjects(_simulationSubject);
+         updateTask.SynchronizeAllSimulationSubjectsWithExpressionProfile(_simulationSubject);
 
          //clear references
          _molecule = null;

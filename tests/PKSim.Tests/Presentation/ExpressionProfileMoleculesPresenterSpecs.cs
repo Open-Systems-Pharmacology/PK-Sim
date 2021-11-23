@@ -6,6 +6,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
@@ -26,6 +27,7 @@ namespace PKSim.Presentation
       protected ExpressionProfileDTO _expressionProfileDTO;
       protected IndividualMolecule _enzyme;
       protected IIndividualEnzymeExpressionsPresenter<Individual> _enzymePresenter;
+      protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
       {
@@ -35,7 +37,8 @@ namespace PKSim.Presentation
          _mapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
          _editMoleculeTask = A.Fake<IEditMoleculeTask<Individual>>();
          _enzymePresenter = A.Fake<IIndividualEnzymeExpressionsPresenter<Individual>>();
-         sut = new ExpressionProfileMoleculesPresenter(_view, _expressionProfileFactory, _applicationController, _mapper, _editMoleculeTask);
+         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();
+         sut = new ExpressionProfileMoleculesPresenter(_view, _expressionProfileFactory, _applicationController, _mapper, _editMoleculeTask, _expressionProfileUpdater);
 
          sut.InitializeWith(new PKSimMacroCommand());
          _expressionProfile = A.Fake<ExpressionProfile>();
@@ -112,7 +115,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_saving_the_properties_in_the_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
+   public class When_notified_that_the_molecule_name_was_changed_in_the_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
    {
       protected override void Context()
       {
@@ -124,13 +127,34 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Save();
+         sut.MoleculeNameChanged();
+      }
+
+      [Observation]
+      public void should_molecule_name_as_defined_by_the_user()
+      {
+         A.CallTo(() => _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfileDTO.MoleculeName)).MustHaveHappened();
+      }
+   }
+
+   public class When_notified_that_the_category_was_changed_in_the_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfileDTO.MoleculeName = "MOLECULE";
+         _expressionProfileDTO.Category = "CATEGORY";
+         sut.Edit(_expressionProfile);
+      }
+
+      protected override void Because()
+      {
+         sut.CategoryChanged();
       }
 
       [Observation]
       public void should_save_the_category_and_molecule_name_as_defined_by_the_user()
       {
-         _expressionProfile.MoleculeName.ShouldBeEqualTo(_expressionProfileDTO.MoleculeName);
          _expressionProfile.Category.ShouldBeEqualTo(_expressionProfileDTO.Category);
       }
    }

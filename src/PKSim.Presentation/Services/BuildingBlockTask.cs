@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Services
       public void Clone<TBuildingBlock>(TBuildingBlock buildingBlockToClone) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          Load(buildingBlockToClone);
-         using (var clonePresenter = _applicationController.Start<ICloneBuildingBlockPresenter>())
+         using (var clonePresenter = getCloneBuildingBlockPresenter(buildingBlockToClone))
          {
             var clone = clonePresenter.CreateCloneFor(buildingBlockToClone);
             if (clone == null) return;
@@ -88,6 +88,18 @@ namespace PKSim.Presentation.Services
             AddCommandToHistory(addCommand);
          }
       }
+
+      private ICloneBuildingBlockPresenter getCloneBuildingBlockPresenter(IPKSimBuildingBlock buildingBlockToClone)
+      {
+         switch (buildingBlockToClone)
+         {
+            case ExpressionProfile _:
+               return _applicationController.Start<ICloneExpressionProfilePresenter>();
+            default:
+               return _applicationController.Start<ICloneBuildingBlockPresenter>();
+         }
+      }
+
 
       public bool Delete<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocksToDelete) where TBuildingBlock : class, IPKSimBuildingBlock
       {

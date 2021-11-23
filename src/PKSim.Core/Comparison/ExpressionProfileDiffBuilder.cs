@@ -16,7 +16,7 @@ namespace PKSim.Core.Comparison
       public override void Compare(IComparison<ExpressionProfile> comparison)
       {
          CompareValues(x => x.Category, PKSimConstants.UI.ExpressionProfileCategory, comparison);
-         CompareValues(x => x.Species, PKSimConstants.UI.Species, comparison);
+         //Species not required since it will be compared with the underlying individual
          _comparer.Compare(comparison.ChildComparison(x => x.Individual));
       }
    }

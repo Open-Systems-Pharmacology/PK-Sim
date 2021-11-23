@@ -31,7 +31,7 @@ namespace PKSim.Presentation
          _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();
          _subPresenterManager = SubPresenterHelper.Create<IExpressionProfileItemPresenter>();
          _moleculesPresenter = _subPresenterManager.CreateFake(ExpressionProfileItems.Molecules);
-         sut = new CreateExpressionProfilePresenter(_view, _subPresenterManager, _dialogCreator, _expressionProfileFactory, _expressionProfileUpdater);
+         sut = new CreateExpressionProfilePresenter(_view, _subPresenterManager, _dialogCreator, _expressionProfileFactory);
 
          _expressionProfile = A.Fake<ExpressionProfile>();
          A.CallTo(() => _expressionProfile.Icon).Returns(ApplicationIcons.Enzyme.IconName);
