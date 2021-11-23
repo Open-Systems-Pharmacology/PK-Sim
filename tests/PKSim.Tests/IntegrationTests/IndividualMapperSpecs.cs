@@ -27,8 +27,8 @@ namespace PKSim.IntegrationTests
          var (enzyme, individual) = _expressionProfileEnzyme;
          enzyme.Ontogeny.Name.ShouldBeEqualTo("CYP3A4");
          enzyme.HalfLifeLiver.ValueInDisplayUnit.ShouldBeEqualTo(22);
-         var expressionInBone = individual.Organism.EntityAt<TransporterExpressionContainer>("Bone", "Intracellular", enzyme.Name);
-         expressionInBone.RelativeExpressionParameter.Value.ShouldBeEqualTo(0.04749);
+         var expressionInBone = individual.Organism.EntityAt<MoleculeExpressionContainer>("Bone", "Intracellular", enzyme.Name);
+         expressionInBone.RelativeExpressionParameter.Value.ShouldBeEqualTo(0.04749, 1e-2);
       }
 
       [Observation]
@@ -39,7 +39,7 @@ namespace PKSim.IntegrationTests
          transporter.Ontogeny.Name.ShouldBeEqualTo("UGT1A1");
          var expressionInBone = individual.Organism.EntityAt<TransporterExpressionContainer>("Bone", "Intracellular", transporter.Name);
          expressionInBone.ShouldNotBeNull();
-         expressionInBone.RelativeExpressionParameter.Value.ShouldBeEqualTo(0.04442);
+         expressionInBone.RelativeExpressionParameter.Value.ShouldBeEqualTo(0.04442, 1e-2);
       }
 
       [Observation]

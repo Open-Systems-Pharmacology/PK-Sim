@@ -58,7 +58,6 @@ namespace PKSim.Core.Snapshots.Mappers
          var individual = _individualFactory.CreateAndOptimizeFor(originData, individualSnapshot.Seed);
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
 
-         //For a v10 format and earlier, some molecules parameters will be defined in the individual. 
          await updateIndividualParameters(individualSnapshot, individual);
 
          if (isV10Format(individualSnapshot)) 
@@ -89,7 +88,7 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             project.AddBuildingBlock(expressionProfile);
             //this needs to happen here since molecule parameters were defined in individual in v10
-            await updateIndividualParameters(individualSnapshot, individual);
+            await updateIndividualParameters(individualSnapshot, expressionProfile.Individual);
          }
 
          individualSnapshot.ExpressionProfiles = expressionProfiles.AllNames().ToArray();
@@ -99,6 +98,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task updateIndividualParameters(SnapshotIndividual snapshot, ModelIndividual individual)
       {
+         //We do not show warning for v10 format as we will FOR SURE have missing parameters
          return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, showParameterNotFoundWarning: !isV10Format(snapshot));
       }
    }
