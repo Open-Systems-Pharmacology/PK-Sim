@@ -42,7 +42,7 @@ namespace PKSim.Presentation
       protected string _initialSimulationName;
       protected IDataRepositoryNamer _dataRepositoryNamer;
       protected ICurveNamer _curveNamer;
-      private IExpressionProfileUpdater _expressionProfileUpdater;
+      protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
       {
@@ -281,6 +281,29 @@ namespace PKSim.Presentation
       {
          _observedData1.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo(_compound.Name);
          _observedData2.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo("NOT USING");
+      }
+   }
+
+   public class When_renaming_an_expression_profile_molecule : concern_for_RenameBuildingBlockTask
+   {
+      private ExpressionProfile _expressionProfile;
+      private string _oldExpressionProfileName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _oldExpressionProfileName = CoreConstants.ContainerName.ExpressionProfileName("CYP", _expressionProfile.Species, "SICK");
+
+      }
+      protected override void Because()
+      {
+         sut.RenameBuildingBlock(_expressionProfile, _oldExpressionProfileName);
+      }
+      [Observation]
+      public void should_also_rename_all_associated_simulation_subject()
+      {
+         A.CallTo(() => _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfile.MoleculeName, "CYP")).MustHaveHappened();
       }
    }
 }

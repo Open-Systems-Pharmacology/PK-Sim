@@ -1,11 +1,11 @@
-﻿
-using System;
+﻿using System;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Individuals;
@@ -17,7 +17,8 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
    public interface IExpressionProfileMoleculesPresenter : IExpressionProfileItemPresenter
    {
       void SpeciesChanged();
-      void Save();
+      void CategoryChanged();
+      void MoleculeNameChanged();
       void DisableSettings();
       void LoadExpressionFromDatabaseQuery();
    }
@@ -28,6 +29,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       private readonly IApplicationController _applicationController;
       private readonly IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
       private readonly IEditMoleculeTask<Individual> _editMoleculeTask;
+      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
       private IIndividualMoleculeExpressionsPresenter _moleculeExpressionsPresenter;
       private ExpressionProfileDTO _expressionProfileDTO;
       private ExpressionProfile _expressionProfile;
@@ -37,12 +39,14 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          IExpressionProfileFactory expressionProfileFactory,
          IApplicationController applicationController,
          IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper,
-         IEditMoleculeTask<Individual> editMoleculeTask) : base(view)
+         IEditMoleculeTask<Individual> editMoleculeTask,
+         IExpressionProfileUpdater expressionProfileUpdater) : base(view)
       {
          _expressionProfileFactory = expressionProfileFactory;
          _applicationController = applicationController;
          _expressionProfileDTOMapper = expressionProfileDTOMapper;
          _editMoleculeTask = editMoleculeTask;
+         _expressionProfileUpdater = expressionProfileUpdater;
       }
 
       public void Edit(ExpressionProfile expressionProfile)
@@ -59,10 +63,14 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          refreshExpression();
       }
 
-      public void Save()
+      public void CategoryChanged()
       {
          _expressionProfile.Category = _expressionProfileDTO.Category;
-         _expressionProfile.MoleculeName = _expressionProfileDTO.MoleculeName;
+      }
+
+      public void MoleculeNameChanged()
+      {
+         _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfileDTO.MoleculeName);
       }
 
       public void DisableSettings() => _view.DisableSettings();

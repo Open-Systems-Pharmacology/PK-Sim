@@ -17,7 +17,6 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOntogenyTask _ontogenyTask;
       private readonly IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
       private readonly IExpressionProfileFactory _expressionProfileFactory;
-      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
       private readonly OntogenyMapper _ontogenyMapper;
 
       public ExpressionProfileMapper(
@@ -26,8 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
          OntogenyMapper ontogenyMapper,
          IOntogenyTask ontogenyTask,
          IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask,
-         IExpressionProfileFactory expressionProfileFactory,
-         IExpressionProfileUpdater expressionProfileUpdater
+         IExpressionProfileFactory expressionProfileFactory
       ) 
       {
          _parameterMapper = parameterMapper;
@@ -35,7 +33,6 @@ namespace PKSim.Core.Snapshots.Mappers
          _ontogenyTask = ontogenyTask;
          _moleculeExpressionTask = moleculeExpressionTask;
          _expressionProfileFactory = expressionProfileFactory;
-         _expressionProfileUpdater = expressionProfileUpdater;
 
          _ontogenyMapper = ontogenyMapper;
       }
@@ -88,11 +85,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot)
       {
-         var expressionProfile = _expressionProfileFactory.CreateFor(snapshot.Type, snapshot.Species);
+         var expressionProfile = _expressionProfileFactory.Create(snapshot.Type, snapshot.Species, snapshot.Molecule);
          expressionProfile.Description = snapshot.Description;
-         expressionProfile.MoleculeName = snapshot.Molecule;
          expressionProfile.Category = snapshot.Category;
-         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile);
 
          var (molecule, individual) = expressionProfile;
          await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);

@@ -33,7 +33,7 @@ namespace PKSim.Core.Commands
          var expressionProfile = context.BuildingBlockContaining(parameter) as ExpressionProfile;
          if (expressionProfile == null) return;
          var updateTask = context.Resolve<IExpressionProfileUpdater>();
-         updateTask.SynchronizeExpressionProfileInAllSimulationSubjects(expressionProfile);
+         updateTask.SynchronizeAllSimulationSubjectsWithExpressionProfile(expressionProfile);
       }
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)

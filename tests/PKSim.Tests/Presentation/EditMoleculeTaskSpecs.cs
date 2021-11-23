@@ -71,7 +71,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _addCommand = A.Fake<ICommand>();
-         _expressionProfile = new ExpressionProfile {MoleculeName = "MOLECULE", Individual = _individual };
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
          A.CallTo(() => _expressionProfileSelectionPresenter.SelectExpressionProfile<IndividualProtein>(_individual)).Returns(_expressionProfile);
          A.CallTo(() => _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfile)).Returns(_addCommand);
       }

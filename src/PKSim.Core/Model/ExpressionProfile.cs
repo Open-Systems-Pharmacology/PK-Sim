@@ -8,9 +8,7 @@ namespace PKSim.Core.Model
 {
    public class ExpressionProfile : PKSimBuildingBlock
    {
-
       private string _category;
-      private string _moleculeName;
       private Individual _individual;
 
       //Individual is set in factory and we can assume it will never be null
@@ -31,15 +29,7 @@ namespace PKSim.Core.Model
       {
       }
 
-      public virtual string MoleculeName
-      {
-         get => _moleculeName;
-         set
-         {
-            _moleculeName = value;
-            RefreshName();
-         }
-      }
+      public virtual string MoleculeName => Molecule?.Name;
 
       public virtual string Category
       {
@@ -58,16 +48,19 @@ namespace PKSim.Core.Model
             if (string.Equals(Name, value))
                return;
 
-            var names = CoreConstants.NamesFromCompositeName(value, char.Parse(ObjectPath.PATH_DELIMITER));
-            if (names.Count != 3)
+            var (moleculeName, _, category) = NamesFromExpressionProfileName(value);
+            if (string.IsNullOrEmpty(moleculeName))
                return;
 
-            _moleculeName = names[0];
-            _category = names[2];
+            _category = category;
+
+            //This can happen when for instance the Molecule has not been deserialized yet
+            if (Molecule != null)
+               Molecule.Name = moleculeName;
+
             base.Name = value;
          }
       }
-
 
       public void Deconstruct(out IndividualMolecule molecule, out Individual individual)
       {
@@ -75,7 +68,7 @@ namespace PKSim.Core.Model
          individual = Individual;
       }
 
-      public virtual IndividualMolecule Molecule => Individual.AllMolecules().FirstOrDefault() ?? new NullIndividualMolecule();
+      public virtual IndividualMolecule Molecule => Individual?.AllMolecules().FirstOrDefault() ?? new NullIndividualMolecule();
 
       public virtual void RefreshName()
       {
@@ -89,7 +82,6 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceExpressionProfile = sourceObject as ExpressionProfile;
          if (sourceExpressionProfile == null) return;
-         MoleculeName = sourceExpressionProfile.MoleculeName;
          Category = sourceExpressionProfile.Category;
          Individual = cloneManager.Clone(sourceExpressionProfile.Individual);
       }
@@ -97,7 +89,7 @@ namespace PKSim.Core.Model
       public override void AcceptVisitor(IVisitor visitor)
       {
          base.AcceptVisitor(visitor);
-         Individual.AcceptVisitor(visitor);  
+         Individual.AcceptVisitor(visitor);
       }
 
       public override bool HasChanged
@@ -106,7 +98,7 @@ namespace PKSim.Core.Model
          set
          {
             base.HasChanged = value;
-            if(Individual!=null)
+            if (Individual != null)
                Individual.HasChanged = value;
          }
       }

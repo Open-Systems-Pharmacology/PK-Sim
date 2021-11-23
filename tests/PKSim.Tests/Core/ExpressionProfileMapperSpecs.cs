@@ -39,7 +39,6 @@ namespace PKSim.Core
       protected Model.ExpressionProfile _expressionProfileEnzyme;
       protected Model.ExpressionProfile _expressionProfileTransporter;
       protected Model.ExpressionProfile _expressionProfileOtherProtein;
-      protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override Task Context()
       {
@@ -48,7 +47,6 @@ namespace PKSim.Core
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
          _ontogenyMapper = A.Fake<OntogenyMapper>();
          _ontogenyTask = A.Fake<IOntogenyTask>();
-         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();   
          _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
          sut = new ExpressionProfileMapper(
             _parameterMapper, 
@@ -56,8 +54,7 @@ namespace PKSim.Core
             _ontogenyMapper, 
             _ontogenyTask, 
             _moleculeExpressionTask, 
-            _expressionProfileFactory,
-            _expressionProfileUpdater);
+            _expressionProfileFactory);
 
          _ontogeny = new DatabaseOntogeny
          {
@@ -183,7 +180,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_expressionProfileEnzyme);
          _newExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
-         A.CallTo(() => _expressionProfileFactory.CreateFor(_snapshot.Type, _snapshot.Species))
+         A.CallTo(() => _expressionProfileFactory.Create(_snapshot.Type, _snapshot.Species, _snapshot.Molecule))
             .Returns(_newExpressionProfile);
 
          _snapshot.Localization = null;
@@ -248,7 +245,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_expressionProfileTransporter);
          _newTransporterExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualTransporter>();
-         A.CallTo(() => _expressionProfileFactory.CreateFor(_snapshot.Type, _snapshot.Species))
+         A.CallTo(() => _expressionProfileFactory.Create(_snapshot.Type, _snapshot.Species, _snapshot.Molecule))
             .Returns(_newTransporterExpressionProfile);
          _snapshot.TransportType = TransportType.PgpLike;
       }
@@ -280,7 +277,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_expressionProfileOtherProtein);
          _newOtherProteinExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualOtherProtein>();
-         A.CallTo(() => _expressionProfileFactory.CreateFor(_snapshot.Type, _snapshot.Species))
+         A.CallTo(() => _expressionProfileFactory.Create(_snapshot.Type, _snapshot.Species, _snapshot.Molecule))
             .Returns(_newOtherProteinExpressionProfile);
       }
 

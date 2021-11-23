@@ -75,7 +75,6 @@ namespace PKSim.Core
          var individual = CreateIndividual(speciesName);
          individual.AddMolecule(new TMolecule().WithName(moleculeName));
          expressionProfile.Individual = individual;
-         expressionProfile.MoleculeName = moleculeName;
          expressionProfile.Category = category;
          return expressionProfile;
       }

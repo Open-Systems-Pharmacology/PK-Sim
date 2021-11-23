@@ -124,7 +124,7 @@ namespace PKSim.Core.Services
          _executionContext.UpdateBuildingBlockPropertiesInCommand(macroCommand, templateBuildingBlock);
 
          //Now that our expression profile are updated, we need to trigger the synchronization in all building blocks
-         expressionProfilesToUpdate.Each(x => _expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(x));
+         expressionProfilesToUpdate.Each(x => _expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(x));
 
          return macroCommand;
       }

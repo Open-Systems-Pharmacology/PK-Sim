@@ -31,9 +31,10 @@ namespace PKSim.Core
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
       public const double DEFAULT_MIN_PERCENTILE = 0.0001;
       public const double DEFAULT_MAX_PERCENTILE = 0.9999;
-      public static readonly string DEFAULT_TEMPLATE_VERSION = "1.0";
-      public static readonly string DEFAULT_FORMULATION_KEY = "Formulation";
-      public static readonly string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
+      public const string DEFAULT_TEMPLATE_VERSION = "1.0";
+      public const string DEFAULT_FORMULATION_KEY = "Formulation";
+      public const string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
+      public const string DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME = "<MOLECULE>";
 
       public const int NUMBER_OF_PKA_PARAMETERS = 3;
 
@@ -107,6 +108,7 @@ namespace PKSim.Core
 
       public static string CompositeNameFor(params string[] names) => compositeNameFor(COMPOSITE_SEPARATOR, names);
 
+
       private static string compositeNameFor(char separator, params string[] names)
       {
          if (names == null || names.Length == 0)
@@ -118,7 +120,7 @@ namespace PKSim.Core
          return nonEmptyNames.Select(x=>x.Trim()).ToString($"{separator}");
       }
 
-      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName, char separator= COMPOSITE_SEPARATOR)
+      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName, char separator = COMPOSITE_SEPARATOR)
       {
          return compositeName.Split(separator);
       }
@@ -437,6 +439,15 @@ namespace PKSim.Core
 
          public static string ExpressionProfileName(string moleculeName, Core.Model.Species species,  string category) 
             => compositeNameFor(char.Parse(ObjectPath.PATH_DELIMITER),  moleculeName, species?.DisplayName, category);
+
+         public static (string moleculeName, string speciesName, string category) NamesFromExpressionProfileName(string expressionProfileName)
+         {
+            var names =  NamesFromCompositeName(expressionProfileName, char.Parse(ObjectPath.PATH_DELIMITER));
+            if (names.Count != 3)
+               return (string.Empty, string.Empty, string.Empty);
+
+            return (names[0], names[1], names[2]);
+         }
 
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {

@@ -101,7 +101,7 @@ namespace PKSim.Core.Commands
             AddRange(updateTissueExpressionParameters(context));
 
          var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
-         expressionProfileUpdater.SynchronizeExpressionProfileInAllSimulationSubjects(_simulationSubject);
+         expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(_simulationSubject);
 
          _protein = null;
          _simulationSubject = null;

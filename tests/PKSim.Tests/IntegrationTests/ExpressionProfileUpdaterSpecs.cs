@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -79,6 +80,38 @@ namespace PKSim.IntegrationTests
       public void should_not_synchronize_other_expression_profiles_properties()
       {
          _individualTransporter.TransportType.ShouldNotBeEqualTo(TransportType.BiDirectional);
+      }
+   }
+
+   public class When_renaming_en_expression_profile_used_a_simulation_subject : concern_for_ExpressionProfileUpdater
+   {
+      private ICoreWorkspace _workspace;
+      private PKSimProject _oldProject;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _workspace = IoC.Resolve<ICoreWorkspace>();
+         _oldProject = _workspace.Project;
+         _workspace.Project = new PKSimProject();
+         _workspace.Project.AddBuildingBlock(_individual);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateMoleculeName(_expressionProfileForEnzyme, "TOTO", _expressionProfileForEnzyme.MoleculeName);
+      }
+
+      [Observation]
+      public void should_update_the_name_in_the_individual()
+      {
+         _individualEnzyme.Name.ShouldBeEqualTo("TOTO");
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         _workspace.Project = _oldProject;
       }
    }
 

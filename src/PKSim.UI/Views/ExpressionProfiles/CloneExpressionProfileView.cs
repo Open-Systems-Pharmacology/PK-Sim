@@ -4,29 +4,32 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.ExpressionProfiles;
-using PKSim.Presentation.Presenters.ExpressionProfiles;
+using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
 namespace PKSim.UI.Views.ExpressionProfiles
 {
-   public partial class RenameExpressionProfileView : BaseModalView, IRenameExpressionProfileView
+   public partial class CloneExpressionProfileView : BaseModalView, ICloneExpressionProfileView
    {
+      private readonly IImageListRetriever _imageListRetriever;
       private readonly ScreenBinder<ExpressionProfileDTO> _screenBinder = new ScreenBinder<ExpressionProfileDTO>();
 
       //only for design time
-      public RenameExpressionProfileView() : this(null)
+      public CloneExpressionProfileView() : this(null, null)
       {
       }
 
-      public RenameExpressionProfileView(IShell shell):base(shell)
+      public CloneExpressionProfileView(IShell shell, IImageListRetriever imageListRetriever) : base(shell)
       {
+         _imageListRetriever = imageListRetriever;
          InitializeComponent();
       }
 
-      public void AttachPresenter(IRenameExpressionProfilePresenter presenter)
+      public void AttachPresenter(ICloneExpressionProfilePresenter presenter)
       {
       }
 
@@ -41,13 +44,19 @@ namespace PKSim.UI.Views.ExpressionProfiles
       public override void InitializeBinding()
       {
          base.InitializeBinding();
+         _screenBinder.Bind(dto => dto.Species)
+            .To(cbSpecies)
+            .WithImages(species => _imageListRetriever.ImageIndex(species.Icon))
+            .WithValues(dto => dto.AllSpecies)
+            .AndDisplays(species => species.DisplayName);
+
          _screenBinder.Bind(x => x.MoleculeName)
             .To(cbMoleculeName);
 
          _screenBinder.Bind(x => x.Category)
             .To(tbCategory);
 
-         RegisterValidationFor(_screenBinder);
+         RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
       public override bool HasError => _screenBinder.HasError;
@@ -56,6 +65,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
       {
          base.InitializeResources();
          layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
+         layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
       }
    }
 }

@@ -10,7 +10,8 @@ namespace PKSim.Core.Comparison
       {
          CompareValues(x => x.Species, PKSimConstants.UI.Species, comparison, Equals, (o, s) => s.DisplayName);
          CompareValues(x => x.SpeciesPopulation, PKSimConstants.UI.Population, comparison, Equals, (o, p) => p.DisplayName);
-         CompareValues(x => x.Gender, PKSimConstants.UI.Gender, comparison, Equals, (o, g) => g.DisplayName);
+         //Gender can be undefined when comparing different species
+         CompareValues(x => x.Gender, PKSimConstants.UI.Gender, comparison, Equals, (o, g) => g?.DisplayName);
       }
    }
 }

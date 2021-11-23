@@ -5,7 +5,6 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
 namespace PKSim.Presentation.Presenters.ExpressionProfiles
@@ -19,21 +18,16 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
    public class CreateExpressionProfilePresenter : AbstractSubPresenterContainerPresenter<ICreateExpressionProfileView, ICreateExpressionProfilePresenter, IExpressionProfileItemPresenter>, ICreateExpressionProfilePresenter
    {
       private readonly IExpressionProfileFactory _expressionProfileFactory;
-      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
       public ExpressionProfile ExpressionProfile { get; private set; }
-
 
       public CreateExpressionProfilePresenter(
          ICreateExpressionProfileView view,
          ISubPresenterItemManager<IExpressionProfileItemPresenter> subPresenterItemManager,
          IDialogCreator dialogCreator,
-         IExpressionProfileFactory expressionProfileFactory,
-         IExpressionProfileUpdater expressionProfileUpdater) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
+         IExpressionProfileFactory expressionProfileFactory) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
       {
          _expressionProfileFactory = expressionProfileFactory;
-         _expressionProfileUpdater = expressionProfileUpdater;
       }
-
 
       public IPKSimCommand Create<TMolecule>() where TMolecule : IndividualMolecule
       {
@@ -45,13 +39,10 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          if (_view.Canceled)
             return new PKSimEmptyCommand();
 
-         //We need to rename molecule in the expression profile to match the new name
-         _expressionProfileUpdater.UpdateMoleculeName(ExpressionProfile);
          return _macroCommand;
       }
 
       public IPKSimCommand Create() => Create<IndividualEnzyme>();
-
 
       public ExpressionProfile BuildingBlock => ExpressionProfile;
 
