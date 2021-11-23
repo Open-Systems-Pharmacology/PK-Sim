@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -33,6 +34,8 @@ namespace PKSim.Core
       protected IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
       public Model.ExpressionProfile _expressionProfile1;
       public Model.ExpressionProfile _expressionProfile2;
+      protected IParameter _parameterKidneyRelExp;
+      protected List<IParameter> _mappedParameters;
 
       protected override Task Context()
       {
@@ -48,15 +51,20 @@ namespace PKSim.Core
          _individual = DomainHelperForSpecs.CreateIndividual();
          _individual.Name = "Ind";
          _individual.Description = "Model Description";
-
+         var kidney = _individual.EntityAt<IContainer>(Constants.ORGANISM, CoreConstants.Organ.KIDNEY);
          _parameterLiver = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LIVER, "PLiver");
          _parameterKidney = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.KIDNEY, "PKidney");
+         _parameterKidneyRelExp = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.REL_EXP);
+         _parameterKidneyRelExp.DefaultValue = 10;
+         kidney.Add(_parameterKidneyRelExp);
 
          _parameterLiver.ValueDiffersFromDefault().ShouldBeFalse();
          _parameterKidney.ValueDiffersFromDefault().ShouldBeFalse();
 
          _parameterKidney.Value = 40;
          _parameterKidney.ValueDiffersFromDefault().ShouldBeTrue();
+         _parameterKidneyRelExp.Value = 50;
+         _parameterKidneyRelExp.ValueDiffersFromDefault().ShouldBeTrue();
 
          _expressionProfile1 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "Enz");
          _expressionProfile2 = DomainHelperForSpecs.CreateExpressionProfile<IndividualTransporter>(moleculeName: "Trans");
@@ -68,7 +76,9 @@ namespace PKSim.Core
          A.CallTo(() => _originDataMapper.MapToSnapshot(_individual.OriginData)).Returns(_originDataSnapshot);
 
          _localizedParameterKidney = new LocalizedParameter {Path = "Organism|Kidney|PKidney"};
-         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>.That.Contains(_parameterKidney))).Returns(new[] {_localizedParameterKidney});
+         A.CallTo(() => _parameterMapper.LocalizedParametersFrom(A<IEnumerable<IParameter>>._))
+            .Invokes(x=> _mappedParameters = x.GetArgument<IEnumerable<IParameter>>(0).ToList())
+            .Returns(new[] {_localizedParameterKidney});
 
          return _completed;
       }
@@ -86,6 +96,13 @@ namespace PKSim.Core
       {
          _snapshot.Name.ShouldBeEqualTo(_individual.Name);
          _snapshot.Description.ShouldBeEqualTo(_individual.Description);
+      }
+
+      [Observation]
+      public void should_only_saved_parameter_that_have_changed_and_that_are_not_relative_expression_parameters()
+      {
+         _mappedParameters.ShouldContain(_parameterKidney);
+         _mappedParameters.ShouldNotContain(_parameterKidneyRelExp);
       }
 
       [Observation]

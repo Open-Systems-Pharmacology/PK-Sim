@@ -48,7 +48,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
       {
-         var changedParameters = individual.GetAllChildren<IParameter>(x => x.ShouldExportToSnapshot());
+         //Expression profile parameters are exported now in the expression profile building block
+         var changedParameters = individual.GetAllChildren<IParameter>(x => !x.IsExpressionProfile() && x.ShouldExportToSnapshot());
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
@@ -60,8 +61,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await updateIndividualParameters(individualSnapshot, individual);
 
-         if (isV10Format(individualSnapshot)) 
-            await convertMoleculesToExpressionProfiles(individualSnapshot, originData, individual, project);
+         if (isV10Format(individualSnapshot))
+            await convertMoleculesToExpressionProfiles(individualSnapshot,   project);
 
          individualSnapshot.ExpressionProfiles?.Each(x =>
          {
@@ -73,12 +74,12 @@ namespace PKSim.Core.Snapshots.Mappers
          return individual;
       }
 
-      private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot, Model.OriginData originData, ModelIndividual individual, PKSimProject project)
+      private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot,   PKSimProject project)
       {
          var expressionProfilesSnapshot = individualSnapshot.Molecules;
          expressionProfilesSnapshot.Each(x =>
          {
-            x.Species = originData.Species.Name;
+            x.Species = individualSnapshot.OriginData.Species;
             x.Category = individualSnapshot.Name;
             x.Molecule = x.Name;
          });
