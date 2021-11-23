@@ -104,10 +104,12 @@ namespace PKSim.Core
       private GenderRatio _maleRatio;
       private GenderRatio _femaleRatio;
       private readonly int _proportionOfFemale = 30;
+      private PKSimProject _project;
 
       protected override async Task Context()
       {
          await base.Context();
+         _project = new PKSimProject();
          _newIndividual = new Individual();
          _newAgeRange = new ParameterRange {ParameterName = CoreConstants.Parameters.AGE};
          _newWeightRange = new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_WEIGHT};
@@ -118,7 +120,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newAgeRange)).Returns(_newAgeRange);
          A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newWeightRange)).Returns(_newWeightRange);
-         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual)).Returns(_newIndividual);
+         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _project)).Returns(_newIndividual);
 
          _mappedSettings = new RandomPopulationSettings();
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);
@@ -140,7 +142,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSettings = await sut.MapToModel(_snapshot);
+         _newSettings = await sut.MapToModel(_snapshot, _project);
       }
 
       [Observation]
@@ -170,15 +172,17 @@ namespace PKSim.Core
       private RandomPopulationSettings _newSettings;
       private RandomPopulationSettings _mappedSettings;
       private GenderRatio _unknownGender;
+      private PKSimProject _project;
 
       protected override async Task Context()
       {
          await base.Context();
          _newIndividual = new Individual();
+         _project = new PKSimProject();
 
          _snapshot = await sut.MapToSnapshot(_randomPopulationSettings);
          _snapshot.ProportionOfFemales = null;
-         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual)).Returns(_newIndividual);
+         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _project)).Returns(_newIndividual);
 
          _mappedSettings = new RandomPopulationSettings();
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);
@@ -192,7 +196,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSettings = await sut.MapToModel(_snapshot);
+         _newSettings = await sut.MapToModel(_snapshot, _project);
       }
 
       [Observation]

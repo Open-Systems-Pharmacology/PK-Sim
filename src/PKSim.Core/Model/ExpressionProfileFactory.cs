@@ -1,4 +1,7 @@
 ﻿using System;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Exceptions;
+using PKSim.Assets;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
@@ -7,8 +10,10 @@ namespace PKSim.Core.Model
    public interface IExpressionProfileFactory
    {
       ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule;
+      ExpressionProfile Create<TMolecule>(Species species) where TMolecule : IndividualMolecule;
       ExpressionProfile CreateFor(Type moleculeType);
       ExpressionProfile CreateFor(Type moleculeType, Species species);
+      ExpressionProfile CreateFor(QuantityType moleculeType, string speciesName);
       void UpdateSpecies(ExpressionProfile expressionProfile, Species species);
    }
 
@@ -34,6 +39,8 @@ namespace PKSim.Core.Model
 
       public ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule => CreateFor(typeof(TMolecule));
 
+      public ExpressionProfile Create<TMolecule>(Species species) where TMolecule : IndividualMolecule => CreateFor(typeof(TMolecule), species);
+
       public ExpressionProfile CreateFor(Type moleculeType) => CreateFor(moleculeType, _speciesRepository.DefaultSpecies);
 
       public ExpressionProfile CreateFor(Type moleculeType, Species species)
@@ -42,6 +49,22 @@ namespace PKSim.Core.Model
          expressionProfile.IsLoaded = true;
          updateSpecies(expressionProfile, species, moleculeType);
          return expressionProfile;
+      }
+
+      public ExpressionProfile CreateFor(QuantityType moleculeType, string speciesName)
+      {
+         var species = _speciesRepository.FindByName(speciesName);
+         switch (moleculeType)
+         {
+            case QuantityType.Enzyme:
+               return Create<IndividualEnzyme>(species);
+            case QuantityType.OtherProtein:
+               return Create<IndividualOtherProtein>(species);
+            case QuantityType.Transporter:
+               return Create<IndividualTransporter>(species);
+            default:
+               throw new OSPSuiteException(PKSimConstants.Error.MoleculeTypeNotSupported(moleculeType.ToString()));
+         }
       }
 
       public void UpdateSpecies(ExpressionProfile expressionProfile, Species species)

@@ -64,6 +64,7 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Description = SnapshotValueFor(project.Description);
          });
 
+         snapshot.ExpressionProfiles = await mapBuildingBlocksToSnapshots<ExpressionProfile>(project.All<Model.ExpressionProfile>());
          snapshot.Individuals = await mapBuildingBlocksToSnapshots<Individual>(project.All<Model.Individual>());
          snapshot.Compounds = await mapBuildingBlocksToSnapshots<Compound>(project.All<Model.Compound>());
          snapshot.Events = await mapBuildingBlocksToSnapshots<Event>(project.All<PKSimEvent>());
@@ -104,8 +105,7 @@ namespace PKSim.Core.Snapshots.Mappers
          project.Creation.InternalVersion = snapshot.Version;
          project.Creation.Version = ProjectVersions.FindBy(snapshot.Version)?.VersionDisplay;
 
-         var buildingBlocks = await allBuidingBlocksFrom(snapshot);
-         buildingBlocks?.Each(project.AddBuildingBlock);
+         await allBuildingBlocksFrom(snapshot, project);
 
          var observedData = await observedDataFrom(snapshot.ObservedData);
          observedData?.Each(repository => addObservedDataToProject(project, repository));
@@ -282,19 +282,23 @@ namespace PKSim.Core.Snapshots.Mappers
          return simulations;
       }
 
-      private async Task<IEnumerable<IPKSimBuildingBlock>> allBuidingBlocksFrom(SnapshotProject snapshot)
+      private async Task allBuildingBlocksFrom(SnapshotProject snapshot, ModelProject project)
       {
+         //Expression profile needs to be added first
+         var expressionProfiles = await mapSnapshotToBuildingBlocks<Model.ExpressionProfile, ExpressionProfile>(snapshot.ExpressionProfiles, project);
+         expressionProfiles.Each(project.AddBuildingBlock);
+
+         //other can be loaded independently
          var buildingBlocks = new List<IPKSimBuildingBlock>();
+         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks<Model.Individual, Individual>(snapshot.Individuals, project));
+         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks<Model.Compound, Compound>(snapshot.Compounds, project));
+         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks<PKSimEvent, Event>(snapshot.Events, project));
+         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks<Model.Formulation, Formulation>(snapshot.Formulations, project));
+         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks<Model.Protocol, Protocol>(snapshot.Protocols, project));
+         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks<Model.Population, Population>(snapshot.Populations, project));
+         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks<Model.ObserverSet, ObserverSet>(snapshot.ObserverSets, project));
 
-         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks(snapshot.Individuals));
-         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks(snapshot.Compounds));
-         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks(snapshot.Events));
-         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks(snapshot.Formulations));
-         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks(snapshot.Protocols));
-         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks(snapshot.Populations));
-         buildingBlocks.AddRange(await mapSnapshotToBuildingBlocks(snapshot.ObserverSets));
-
-         return buildingBlocks;
+         buildingBlocks.Each(project.AddBuildingBlock);
       }
 
       private async Task<T[]> awaitAs<T>(IEnumerable<Task<object>> tasks)
@@ -312,7 +316,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshots.Select(snapshotMapper.MapToModel);
       }
 
-      private async Task<IEnumerable<IPKSimBuildingBlock>> mapSnapshotToBuildingBlocks<TSnapshot>(IEnumerable<TSnapshot> snapshots)
+      private async Task<IEnumerable<IPKSimBuildingBlock>> mapSnapshotToBuildingBlocks<TModel, TSnapshot>(IEnumerable<TSnapshot> snapshots, ModelProject project) where TModel : IPKSimBuildingBlock
       {
          var buildingBlocks = new List<IPKSimBuildingBlock>();
 
@@ -322,11 +326,28 @@ namespace PKSim.Core.Snapshots.Mappers
          //do not run tasks in parallel as the same mapper instance may be used concurrently to load two different snapshots
          foreach (var snapshot in snapshots)
          {
-            var buildingBlock = await snapshotMapper.MapToModel(snapshot);
-            buildingBlocks.Add(buildingBlock.DowncastTo<IPKSimBuildingBlock>());
+            var buildingBlock = await mapSnapshotToBuildingBlock<TModel, TSnapshot>(snapshot, project);
+            if (buildingBlock != null)
+               buildingBlocks.Add(buildingBlock);
          }
 
          return buildingBlocks;
+      }
+
+      private async Task<IPKSimBuildingBlock> mapSnapshotToBuildingBlock<TModel, TSnapshot>(TSnapshot snapshot, ModelProject project) where TModel : IPKSimBuildingBlock
+      {
+         if (snapshot == null)
+            return null;
+
+         var mapper = snapshotMapper.MapperFor(snapshot);
+         switch (mapper)
+         {
+            case ISnapshotMapperWithProjectAsContext<TModel, TSnapshot> mapperWithProject:
+               return await mapperWithProject.MapToModel(snapshot, project);
+            default:
+               var buildingBlock = await mapper.MapToModel(snapshot);
+               return buildingBlock.DowncastTo<IPKSimBuildingBlock>();
+         }
       }
 
       private ISnapshotMapper snapshotMapper => _snapshotMapper.Value;

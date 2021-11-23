@@ -113,6 +113,10 @@ namespace PKSim.Core.Services
 
       public void SynchronizeExpressionProfileInAllSimulationSubjects(ExpressionProfile expressionProfile)
       {
+         //this can happen when loading from snapshot for instance
+         if (_projectRetriever.Current == null)
+            return;
+
          var allSimulationSubjectsForProfile = _projectRetriever.Current.All<ISimulationSubject>()
             .Where(x => x.Uses(expressionProfile))
             .ToList();

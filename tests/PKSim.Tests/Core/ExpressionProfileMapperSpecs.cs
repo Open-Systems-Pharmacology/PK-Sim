@@ -3,24 +3,23 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
+using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_MoleculeMapper : ContextSpecificationAsync<MoleculeMapper>
+   public abstract class concern_for_ExpressionProfileMapper : ContextSpecificationAsync<ExpressionProfileMapper>
    {
       protected ParameterMapper _parameterMapper;
-      protected IndividualEnzyme _enzyme;
-      protected IndividualTransporter _transporter;
-      protected IndividualOtherProtein _otherProtein;
-      protected Molecule _snapshot;
+      protected ExpressionProfile _snapshot;
       private IParameter _enzymeGlobalParameter;
       protected Parameter _enzymeGlobalParameterSnapshot;
       private MoleculeExpressionContainer _expressionContainer1;
@@ -36,39 +35,43 @@ namespace PKSim.Core
       protected ExpressionContainerMapper _expressionContainerMapper;
       protected IOntogenyTask _ontogenyTask;
       protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
+      protected IExpressionProfileFactory _expressionProfileFactory;
+      protected Model.ExpressionProfile _expressionProfileEnzyme;
+      protected Model.ExpressionProfile _expressionProfileTransporter;
+      protected Model.ExpressionProfile _expressionProfileOtherProtein;
+      protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _expressionContainerMapper = A.Fake<ExpressionContainerMapper>();
+         _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
          _ontogenyMapper = A.Fake<OntogenyMapper>();
          _ontogenyTask = A.Fake<IOntogenyTask>();
+         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();   
          _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
-         sut = new MoleculeMapper(_parameterMapper, _expressionContainerMapper, _ontogenyMapper, _ontogenyTask, _moleculeExpressionTask);
+         sut = new ExpressionProfileMapper(
+            _parameterMapper, 
+            _expressionContainerMapper, 
+            _ontogenyMapper, 
+            _ontogenyTask, 
+            _moleculeExpressionTask, 
+            _expressionProfileFactory,
+            _expressionProfileUpdater);
 
          _ontogeny = new DatabaseOntogeny
          {
             Name = "Ontogeny"
          };
 
-         _enzyme = new IndividualEnzyme
-         {
-            Name = "Enzyme",
-            Description = "Help",
-            Ontogeny = _ontogeny,
-         };
+         _expressionProfileEnzyme = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>("Enzyme");
+         _expressionProfileEnzyme.Molecule.Ontogeny = _ontogeny;
+         _expressionProfileEnzyme.Description = "Help";
 
-         _transporter = new IndividualTransporter
-         {
-            Name = "Transporter",
-            Description = "Help"
-         };
+         _expressionProfileTransporter = DomainHelperForSpecs.CreateExpressionProfile<IndividualTransporter>("Transporter");
+         _expressionProfileTransporter.Description = "Help";
 
-         _otherProtein = new IndividualOtherProtein
-         {
-            Name = "OtherProtein",
-            Description = "Help"
-         };
+         _expressionProfileOtherProtein = DomainHelperForSpecs.CreateExpressionProfile<IndividualOtherProtein>("OtherProtein");
 
          _enzymeGlobalParameter = DomainHelperForSpecs.ConstantParameterWithValue(5, isDefault: true)
             .WithName(CoreConstants.Parameters.HALF_LIFE_LIVER);
@@ -78,8 +81,8 @@ namespace PKSim.Core
 
          _expressionContainer1 = new MoleculeExpressionContainer {Name = "Exp Container1"};
          _expressionContainer2 = new MoleculeExpressionContainer {Name = "Exp Container2"};
-         _enzyme.AddChildren(_expressionContainer1, _expressionContainer2, _enzymeGlobalParameter);
-         _enzyme.Localization = Localization.Intracellular | Localization.BloodCellsMembrane;
+         _expressionProfileEnzyme.Individual.AddChildren(_expressionContainer1, _expressionContainer2, _enzymeGlobalParameter);
+         _expressionProfileEnzyme.Molecule.DowncastTo<IndividualEnzyme>().Localization = Localization.Intracellular | Localization.BloodCellsMembrane;
 
          _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.REL_EXP);
          _expressionContainer1.Add(_relativeExpressionParameter1);
@@ -101,18 +104,22 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_an_individual_enzyme_to_snapshot : concern_for_MoleculeMapper
+   public class When_mapping_an_individual_enzyme_to_snapshot : concern_for_ExpressionProfileMapper
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_enzyme, _individual);
+         _snapshot = await sut.MapToSnapshot(_expressionProfileEnzyme);
       }
 
       [Observation]
       public void should_return_a_snapshot_having_the_expected_properties_set_for_enzyme()
       {
-         _snapshot.Name.ShouldBeEqualTo(_enzyme.Name);
-         _snapshot.Description.ShouldBeEqualTo(_enzyme.Description);
+         _snapshot.Name.ShouldBeNull();
+         _snapshot.Molecule.ShouldBeEqualTo(_expressionProfileEnzyme.Molecule.Name);
+         _snapshot.Type.ShouldBeEqualTo(QuantityType.Enzyme);
+         _snapshot.Category.ShouldBeEqualTo(_expressionProfileEnzyme.Category);
+         _snapshot.Species.ShouldBeEqualTo(_expressionProfileEnzyme.Species.Name);
+         _snapshot.Description.ShouldBeEqualTo(_expressionProfileEnzyme.Description);
       }
 
       [Observation]
@@ -127,7 +134,7 @@ namespace PKSim.Core
          _snapshot.IntracellularVascularEndoLocation.ShouldBeNull();
          _snapshot.MembraneLocation.ShouldBeNull();
          _snapshot.TissueLocation.ShouldBeNull();
-         _snapshot.Localization.ShouldBeEqualTo(_enzyme.Localization);
+         _snapshot.Localization.ShouldBeEqualTo(_expressionProfileEnzyme.Molecule.DowncastTo<IndividualEnzyme>().Localization);
          _snapshot.TransportType.ShouldBeNull();
       }
 
@@ -138,44 +145,46 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_also_not_saved_parameters_that_are_now_saved_in_the_individual()
+      public void should_save_parameters_that_are_now_saved_in_the_individual()
       {
-         _snapshot.Parameters.ShouldBeNull();
+         _snapshot.Parameters.ShouldNotBeNull();
       }
    }
 
-   public class When_mapping_an_individual_transporter_to_snapshot : concern_for_MoleculeMapper
+   public class When_mapping_an_individual_transporter_to_snapshot : concern_for_ExpressionProfileMapper
    {
       protected override async Task Because()
       {
-         _snapshot = await sut.MapToSnapshot(_transporter, _individual);
+         _snapshot = await sut.MapToSnapshot(_expressionProfileTransporter);
       }
 
       [Observation]
       public void should_return_a_snapshot_having_the_expected_properties_set_for_transporter()
       {
-         _snapshot.Name.ShouldBeEqualTo(_transporter.Name);
-         _snapshot.Description.ShouldBeEqualTo(_transporter.Description);
+         _snapshot.Description.ShouldBeEqualTo(_expressionProfileTransporter.Description);
       }
 
       [Observation]
       public void should_have_saved_transporter_specific_properties()
       {
-         _snapshot.TransportType.ShouldBeEqualTo(_transporter.TransportType);
+         _snapshot.TransportType.ShouldBeEqualTo(_expressionProfileTransporter.Molecule.DowncastTo<IndividualTransporter>().TransportType);
          _snapshot.MembraneLocation.ShouldBeNull();
          _snapshot.TissueLocation.ShouldBeNull();
          _snapshot.IntracellularVascularEndoLocation.ShouldBeNull();
       }
    }
 
-   public class When_mapping_a_valid_enzyme_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
+   public class When_mapping_a_valid_enzyme_expression_profile_snapshot_to_a_expression_profile : concern_for_ExpressionProfileMapper
    {
-      private IndividualEnzyme _newMolecule;
+      private Model.ExpressionProfile _newExpressionProfile;
 
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_enzyme, _individual);
+         _snapshot = await sut.MapToSnapshot(_expressionProfileEnzyme);
+         _newExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         A.CallTo(() => _expressionProfileFactory.CreateFor(_snapshot.Type, _snapshot.Species))
+            .Returns(_newExpressionProfile);
 
          _snapshot.Localization = null;
          _snapshot.IntracellularVascularEndoLocation = IntracellularVascularEndoLocation.Interstitial;
@@ -188,49 +197,39 @@ namespace PKSim.Core
          A.CallTo(() => _expressionContainerMapper.MapToModel(_relativeExpressionContainerSnapshot1, A<ExpressionContainerMapperContext>._))
             .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionContainerSnapshot1.Value.Value);
 
-         _enzyme.Ontogeny = null;
-         A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _individual)).Returns(_ontogeny);
+         _newExpressionProfile.Molecule.Ontogeny = null;
+         A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _newExpressionProfile.Individual)).Returns(_ontogeny);
 
-         //we need to add the molecule that is now added as part of the creation process of a molecule
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualEnzyme>(_individual, _snapshot.Name))
-            .Invokes(x => _individual.AddMolecule(_enzyme));
-
-
+         var enzyme = _newExpressionProfile.Molecule.DowncastTo<IndividualEnzyme>();
          //Localization is now set in task. We override behavior here and pretend that command was executed
-         A.CallTo(() => _moleculeExpressionTask.SetExpressionLocalizationFor(_enzyme, A<Localization>._, _individual))
-            .Invokes(x => _enzyme.Localization = x.GetArgument<Localization>(1));
+         A.CallTo(() => _moleculeExpressionTask.SetExpressionLocalizationFor(enzyme, A<Localization>._, _newExpressionProfile.Individual))
+            .Invokes(x => enzyme.Localization = x.GetArgument<Localization>(1));
 
          //Ensure that the parameter is at the right location so that it will be normalized
-         _enzyme.Add(_relativeExpressionParameter1);
+         enzyme.Add(_relativeExpressionParameter1);
       }
 
       protected override async Task Because()
       {
-         _newMolecule = await sut.MapToModel(_snapshot, _individual) as IndividualEnzyme;
-      }
-
-      [Observation]
-      public void should_have_added_molecule_to_the_individual()
-      {
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualEnzyme>(_individual, _snapshot.Name)).MustHaveHappened();
+         _newExpressionProfile = await sut.MapToModel(_snapshot);
       }
 
       [Observation]
       public void should_return_a_molecule_having_the_expected_type()
       {
-         _newMolecule.ShouldNotBeNull();
+         _newExpressionProfile.ShouldNotBeNull();
       }
 
       [Observation]
       public void should_return_the_expected_molecule_with_the_matching_properties()
       {
-         _newMolecule.Localization.ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneTissueSide);
+         _newExpressionProfile.Molecule.DowncastTo<IndividualEnzyme>().Localization.ShouldBeEqualTo(Localization.Interstitial | Localization.BloodCellsIntracellular | Localization.VascMembraneTissueSide);
       }
 
       [Observation]
       public void should_have_restored_the_ontogeny()
       {
-         A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_newMolecule, _ontogeny, _individual)).MustHaveHappened();
+         A.CallTo(() => _ontogenyTask.SetOntogenyForMolecule(_newExpressionProfile.Molecule, _ontogeny, _newExpressionProfile.Individual)).MustHaveHappened();
       }
 
       [Observation]
@@ -240,75 +239,60 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_valid_transporter_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
+   public class When_mapping_a_valid_transporter_expression_profile_snapshot_to_a_expression_profile : concern_for_ExpressionProfileMapper
    {
-      private IndividualTransporter _newTransporter;
+      private Model.ExpressionProfile _newTransporterExpressionProfile;
 
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_transporter, _individual);
-
+         _snapshot = await sut.MapToSnapshot(_expressionProfileTransporter);
+         _newTransporterExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualTransporter>();
+         A.CallTo(() => _expressionProfileFactory.CreateFor(_snapshot.Type, _snapshot.Species))
+            .Returns(_newTransporterExpressionProfile);
          _snapshot.TransportType = TransportType.PgpLike;
-
-         //we need to add the molecule that is now added as part of the creation process of a molecule
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualTransporter>(_individual, _snapshot.Name))
-            .Invokes(x => _individual.AddMolecule(_transporter));
       }
 
       protected override async Task Because()
       {
-         _newTransporter = await sut.MapToModel(_snapshot, _individual) as IndividualTransporter;
-      }
-
-      [Observation]
-      public void should_have_added_molecule_to_the_individual()
-      {
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualTransporter>(_individual, _snapshot.Name)).MustHaveHappened();
+         _newTransporterExpressionProfile = await sut.MapToModel(_snapshot);
       }
 
       [Observation]
       public void should_return_a_molecule_having_the_expected_type()
       {
-         _newTransporter.ShouldNotBeNull();
+         _newTransporterExpressionProfile.ShouldNotBeNull();
       }
 
       [Observation]
       public void should_return_the_expected_transporter_with_the_matching_properties()
       {
-         A.CallTo(() => _moleculeExpressionTask.SetTransporterTypeFor(_newTransporter, TransportType.PgpLike)).MustHaveHappened();
+         A.CallTo(() => _moleculeExpressionTask.SetTransporterTypeFor(_newTransporterExpressionProfile.Molecule.DowncastTo<IndividualTransporter>(), TransportType.PgpLike)).MustHaveHappened();
       }
    }
 
-   public class When_mapping_a_valid_other_protein_molecule_snapshot_to_a_molecule : concern_for_MoleculeMapper
+   public class When_mapping_a_valid_other_protein_expression_profile_snapshot_to_a_expression_profile : concern_for_ExpressionProfileMapper
    {
-      private IndividualOtherProtein _newOtherProtein;
+      private Model.ExpressionProfile _newOtherProteinExpressionProfile;
 
       protected override async Task Context()
       {
          await base.Context();
-         _snapshot = await sut.MapToSnapshot(_otherProtein, _individual);
-
-         //we need to add the molecule that is now added as part of the creation process of a molecule
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualOtherProtein>(_individual, _snapshot.Name))
-            .Invokes(x => _individual.AddMolecule(_otherProtein));
+         _snapshot = await sut.MapToSnapshot(_expressionProfileOtherProtein);
+         _newOtherProteinExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualOtherProtein>();
+         A.CallTo(() => _expressionProfileFactory.CreateFor(_snapshot.Type, _snapshot.Species))
+            .Returns(_newOtherProteinExpressionProfile);
       }
 
       protected override async Task Because()
       {
-         _newOtherProtein = await sut.MapToModel(_snapshot, _individual) as IndividualOtherProtein;
-      }
-
-      [Observation]
-      public void should_have_added_molecule_to_the_individual()
-      {
-         A.CallTo(() => _moleculeExpressionTask.AddMoleculeTo<IndividualOtherProtein>(_individual, _snapshot.Name)).MustHaveHappened();
+         _newOtherProteinExpressionProfile = await sut.MapToModel(_snapshot);
       }
 
       [Observation]
       public void should_return_a_molecule_having_the_expected_type()
       {
-         _newOtherProtein.ShouldNotBeNull();
+         _newOtherProteinExpressionProfile.ShouldNotBeNull();
       }
    }
 }

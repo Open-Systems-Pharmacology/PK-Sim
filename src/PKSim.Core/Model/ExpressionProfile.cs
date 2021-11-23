@@ -69,6 +69,12 @@ namespace PKSim.Core.Model
       }
 
 
+      public void Deconstruct(out IndividualMolecule molecule, out Individual individual)
+      {
+         molecule = Molecule;
+         individual = Individual;
+      }
+
       public virtual IndividualMolecule Molecule => Individual.AllMolecules().FirstOrDefault() ?? new NullIndividualMolecule();
 
       public virtual void RefreshName()
