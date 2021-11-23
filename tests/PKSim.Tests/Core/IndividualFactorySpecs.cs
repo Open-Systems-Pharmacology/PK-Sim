@@ -227,11 +227,11 @@ namespace PKSim.Core
       [Observation]
       public void should_return_an_individual_for_the_given_species_without_parameters()
       {
-         A.CallTo(() => _individualModelTask.CreateModelStructureFor(_individual)).MustHaveHappened();
+         A.CallTo(() => _individualModelTask.CreateOrganStructureFor(_individual)).MustHaveHappened();
       }
    }
 
-   public class When_creating_an_individual_for_the_predefined_origine_data_that_is_not_valid : concern_for_IndividualFactory
+   public class When_creating_an_individual_for_the_predefined_origin_data_that_is_not_valid : concern_for_IndividualFactory
    {
       private OriginData _originData;
       private Individual _individual;

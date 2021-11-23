@@ -78,7 +78,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
       {
          base.InitializeResources();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
-         layoutItemCategory.Text = PKSimConstants.UI.Phenotype.FormatForLabel();
+         layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
          layoutGroupReferencePopulation.Text = PKSimConstants.UI.ReferencePopulation;
          layoutGroupMoleculeName.Text = PKSimConstants.UI.Molecule;
          layoutGroupReferencePopulation.ExpandButtonVisible = true;
