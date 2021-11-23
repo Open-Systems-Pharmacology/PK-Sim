@@ -99,7 +99,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_only_saved_parameter_that_have_changed_and_that_are_not_relative_expression_parameters()
+      public void should_only_saved_parameter_that_have_changed_and_that_are_not_expression_profile_parameters()
       {
          _mappedParameters.ShouldContain(_parameterKidney);
          _mappedParameters.ShouldNotContain(_parameterKidneyRelExp);
