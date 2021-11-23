@@ -40,7 +40,7 @@ namespace PKSim.Core
 
          _expressionProfile = A.Fake<ExpressionProfile>();
          _expressionProfile.IsLoaded = true;
-         _expressionProfile.MoleculeName = "E";
+         A.CallTo(() => _expressionProfile.MoleculeName).Returns("E");
 
          _project.AddBuildingBlock(_compound1);
          _project.AddBuildingBlock(_compound2);

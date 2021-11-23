@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -38,14 +39,19 @@ namespace PKSim.Presentation.DTO.Mappers
             Icon = _moleculePropertiesMapper.MoleculeIconFor(expressionProfile.Molecule),
             Species = expressionProfile.Species,
             Category = expressionProfile.Category,
-            MoleculeName = expressionProfile.MoleculeName,
+            MoleculeName = moleculeNameFor(expressionProfile),
             AllMolecules = _usedMoleculeRepository.All(),
             AllSpecies = _speciesRepository.All(),
             MoleculeType = _moleculePropertiesMapper.MoleculeDisplayFor(expressionProfile.Molecule),
          };
 
-         dto.AddExistingExpressionProfileNames(_projectRetriever.Current.All(PKSimBuildingBlockType.ExpressionProfile).AllNames().Except(new[] {expressionProfile.Name}));
+         dto.AddExistingExpressionProfileNames(_projectRetriever.Current.All<ExpressionProfile>().AllNames().Except(new[] {expressionProfile.Name}));
          return dto;
+      }
+
+      private string moleculeNameFor(ExpressionProfile expressionProfile)
+      {
+         return string.Equals(expressionProfile.MoleculeName, CoreConstants.DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME) ? string.Empty : expressionProfile.MoleculeName;
       }
    }
 }

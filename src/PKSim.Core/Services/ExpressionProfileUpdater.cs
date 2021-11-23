@@ -14,12 +14,7 @@ namespace PKSim.Core.Services
       /// </summary>
       ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string moleculeName);
 
-      /// <summary>
-      /// Update the molecule name in <paramref name="expressionProfile"/> to be synchronized with the MoleculeName propoerty
-      /// </summary>
-      ICommand UpdateMoleculeName(ExpressionProfile expressionProfile);
-
-      /// <summary>
+     /// <summary>
       /// Updates the value from the <paramref name="expressionProfile"/> into the <paramref name="simulationSubject"/>.
       /// ExpressionProfile => SimulationSubject
       /// </summary>
@@ -87,13 +82,7 @@ namespace PKSim.Core.Services
 
       public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string moleculeName)
       {
-         expressionProfile.MoleculeName = moleculeName;
-         return UpdateMoleculeName(expressionProfile);
-      }
-
-      public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile)
-      {
-         return _individualExpressionTask.RenameMolecule(expressionProfile.Molecule, expressionProfile.MoleculeName, expressionProfile.Individual);
+         return _individualExpressionTask.RenameMolecule(expressionProfile.Molecule, moleculeName, expressionProfile.Individual);
       }
 
       private void synchronizeExpressionProfiles(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)

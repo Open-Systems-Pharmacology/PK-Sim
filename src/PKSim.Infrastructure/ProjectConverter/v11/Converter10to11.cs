@@ -71,7 +71,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       {
          foreach (var molecule in simulationSubject.AllMolecules())
          {
-            var expressionProfile = _expressionProfileFactory.CreateFor(molecule.GetType(), simulationSubject.Species, molecule.Name);
+            var expressionProfile = _expressionProfileFactory.Create(molecule.GetType(), simulationSubject.Species, molecule.Name);
 
             //Make sure the name does not have our separator
             expressionProfile.Category = simulationSubject.Name;

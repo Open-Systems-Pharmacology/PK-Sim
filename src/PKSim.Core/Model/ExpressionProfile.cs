@@ -10,7 +10,6 @@ namespace PKSim.Core.Model
    {
 
       private string _category;
-      private string _moleculeName;
       private Individual _individual;
 
       //Individual is set in factory and we can assume it will never be null
@@ -31,15 +30,7 @@ namespace PKSim.Core.Model
       {
       }
 
-      public virtual string MoleculeName
-      {
-         get => _moleculeName;
-         set
-         {
-            _moleculeName = value;
-            RefreshName();
-         }
-      }
+      public virtual string MoleculeName => Molecule?.Name;
 
       public virtual string Category
       {
@@ -62,8 +53,10 @@ namespace PKSim.Core.Model
             if (names.Count != 3)
                return;
 
-            _moleculeName = names[0];
             _category = names[2];
+            //This can happen when for instance the Molecule has not been deserialized yet
+            if(Molecule!=null)
+               Molecule.Name = names[0];
             base.Name = value;
          }
       }
@@ -75,7 +68,7 @@ namespace PKSim.Core.Model
          individual = Individual;
       }
 
-      public virtual IndividualMolecule Molecule => Individual.AllMolecules().FirstOrDefault() ?? new NullIndividualMolecule();
+      public virtual IndividualMolecule Molecule => Individual?.AllMolecules().FirstOrDefault() ?? new NullIndividualMolecule();
 
       public virtual void RefreshName()
       {
@@ -89,7 +82,6 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceExpressionProfile = sourceObject as ExpressionProfile;
          if (sourceExpressionProfile == null) return;
-         MoleculeName = sourceExpressionProfile.MoleculeName;
          Category = sourceExpressionProfile.Category;
          Individual = cloneManager.Clone(sourceExpressionProfile.Individual);
       }

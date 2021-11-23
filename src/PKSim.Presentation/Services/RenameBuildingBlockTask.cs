@@ -129,7 +129,7 @@ namespace PKSim.Presentation.Services
          if(expressionProfile==null)
             return;
 
-         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile);
+         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile, expressionProfile.MoleculeName);
       }
 
       private void renameUsageOfBuildingBlockInObservedData(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)

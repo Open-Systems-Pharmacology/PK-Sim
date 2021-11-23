@@ -85,9 +85,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot)
       {
-         var expressionProfile = _expressionProfileFactory.CreateFor(snapshot.Type, snapshot.Species, snapshot.Molecule);
+         var expressionProfile = _expressionProfileFactory.Create(snapshot.Type, snapshot.Species, snapshot.Molecule);
          expressionProfile.Description = snapshot.Description;
-         expressionProfile.MoleculeName = snapshot.Molecule;
          expressionProfile.Category = snapshot.Category;
 
          var (molecule, individual) = expressionProfile;

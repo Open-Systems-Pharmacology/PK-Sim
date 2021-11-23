@@ -4,6 +4,7 @@ using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static PKSim.Core.CoreConstants;
 
 namespace PKSim.Core.Model
 {
@@ -11,9 +12,10 @@ namespace PKSim.Core.Model
    {
       ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule;
       ExpressionProfile Create<TMolecule>(Species species, string moleculeName) where TMolecule : IndividualMolecule;
-      ExpressionProfile CreateFor(Type moleculeType);
-      ExpressionProfile CreateFor(Type moleculeType, Species species, string moleculeName);
-      ExpressionProfile CreateFor(QuantityType moleculeType, string speciesName, string moleculeName);
+      ExpressionProfile Create<TMolecule>(string moleculeName) where TMolecule : IndividualMolecule;
+      ExpressionProfile Create(Type moleculeType);
+      ExpressionProfile Create(Type moleculeType, Species species, string moleculeName);
+      ExpressionProfile Create(QuantityType moleculeType, string speciesName, string moleculeName);
       void UpdateSpecies(ExpressionProfile expressionProfile, Species species);
    }
 
@@ -23,7 +25,6 @@ namespace PKSim.Core.Model
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IPKSimObjectBaseFactory _objectBaseFactory;
       private readonly IIndividualFactory _individualFactory;
-      private const string DEFAULT_MOLECULE_NAME = "<MOLECULE>";
 
       public ExpressionProfileFactory(
          ISpeciesRepository speciesRepository,
@@ -37,13 +38,15 @@ namespace PKSim.Core.Model
          _individualFactory = individualFactory;
       }
 
-      public ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule => CreateFor(typeof(TMolecule));
+      public ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule => Create(typeof(TMolecule));
 
-      public ExpressionProfile Create<TMolecule>(Species species, string moleculeName) where TMolecule : IndividualMolecule => CreateFor(typeof(TMolecule), species, moleculeName);
+      public ExpressionProfile Create<TMolecule>(Species species, string moleculeName) where TMolecule : IndividualMolecule => Create(typeof(TMolecule), species, moleculeName);
 
-      public ExpressionProfile CreateFor(Type moleculeType) => CreateFor(moleculeType, _speciesRepository.DefaultSpecies, DEFAULT_MOLECULE_NAME);
+      public ExpressionProfile Create<TMolecule>(string moleculeName) where TMolecule : IndividualMolecule => Create<TMolecule>(_speciesRepository.DefaultSpecies, moleculeName);
 
-      public ExpressionProfile CreateFor(Type moleculeType, Species species, string moleculeName)
+      public ExpressionProfile Create(Type moleculeType) => Create(moleculeType, _speciesRepository.DefaultSpecies, DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME);
+
+      public ExpressionProfile Create(Type moleculeType, Species species, string moleculeName)
       {
          var expressionProfile = _objectBaseFactory.Create<ExpressionProfile>();
          expressionProfile.IsLoaded = true;
@@ -51,7 +54,7 @@ namespace PKSim.Core.Model
          return expressionProfile;
       }
 
-      public ExpressionProfile CreateFor(QuantityType moleculeType, string speciesName, string moleculeName)
+      public ExpressionProfile Create(QuantityType moleculeType, string speciesName, string moleculeName)
       {
          var species = _speciesRepository.FindByName(speciesName);
          switch (moleculeType)
@@ -81,7 +84,6 @@ namespace PKSim.Core.Model
       {
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(individualMoleculeType);
          expressionProfile.Individual = _individualFactory.CreateParameterLessIndividual(species);
-         expressionProfile.MoleculeName = moleculeName;
          moleculeFactory.AddMoleculeTo(expressionProfile.Individual, moleculeName);
       }
    }

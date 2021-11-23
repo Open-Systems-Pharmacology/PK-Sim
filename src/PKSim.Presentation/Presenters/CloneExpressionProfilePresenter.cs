@@ -45,7 +45,7 @@ namespace PKSim.Presentation.Presenters
             return null;
 
          //create a new expression profile using the same molecule name as the original so that we can update the values. Then we rename
-         var newExpressionProfile = _expressionProfileFactory.CreateFor(molecule.MoleculeType, expressionProfileDTO.Species.Name, molecule.Name);
+         var newExpressionProfile = _expressionProfileFactory.Create(molecule.MoleculeType, expressionProfileDTO.Species.Name, molecule.Name);
          newExpressionProfile.Category = expressionProfileDTO.Category;
 
          //synchronize values
