@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
@@ -11,6 +11,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -35,17 +36,17 @@ namespace PKSim.Presentation.Services
       private readonly IExpressionProfileUpdater _expressionProfileUpdater;
 
       public RenameBuildingBlockTask(
-         IBuildingBlockTask buildingBlockTask, 
+         IBuildingBlockTask buildingBlockTask,
          IBuildingBlockInProjectManager buildingBlockInProjectManager,
-         IApplicationController applicationController, 
+         IApplicationController applicationController,
          ILazyLoadTask lazyLoadTask, IContainerTask containerTask,
-         IHeavyWorkManager heavyWorkManager, 
-         IRenameAbsolutePathVisitor renameAbsolutePathVisitor, 
+         IHeavyWorkManager heavyWorkManager,
+         IRenameAbsolutePathVisitor renameAbsolutePathVisitor,
          IObjectReferencingRetriever objectReferencingRetriever,
-         IProjectRetriever projectRetriever, 
-         IParameterIdentificationSimulationPathUpdater simulationPathUpdater, 
-         IDataRepositoryNamer dataRepositoryNamer, 
-         ICurveNamer curveNamer, 
+         IProjectRetriever projectRetriever,
+         IParameterIdentificationSimulationPathUpdater simulationPathUpdater,
+         IDataRepositoryNamer dataRepositoryNamer,
+         ICurveNamer curveNamer,
          IExpressionProfileUpdater expressionProfileUpdater)
       {
          _buildingBlockTask = buildingBlockTask;
@@ -115,21 +116,21 @@ namespace PKSim.Presentation.Services
          renameSimulation(individualSimulation, newName);
       }
 
-
       public void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
       {
          renameUsageOfBuildingBlockInSimulations(templateBuildingBlock);
          renameUsageOfBuildingBlockInObservedData(templateBuildingBlock, oldBuildingBlockName);
-         renameExpressionProfile(templateBuildingBlock);
+         renameExpressionProfile(templateBuildingBlock, oldBuildingBlockName);
       }
 
-      private void renameExpressionProfile(IPKSimBuildingBlock templateBuildingBlock)
+      private void renameExpressionProfile(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
       {
          var expressionProfile = templateBuildingBlock as ExpressionProfile;
-         if(expressionProfile==null)
+         if (expressionProfile == null)
             return;
 
-         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile, expressionProfile.MoleculeName);
+         var (oldMoleculeName, _, _) = CoreConstants.ContainerName.NamesFromExpressionProfileName(oldBuildingBlockName);
+         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile, expressionProfile.MoleculeName, oldMoleculeName);
       }
 
       private void renameUsageOfBuildingBlockInObservedData(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
@@ -164,7 +165,7 @@ namespace PKSim.Presentation.Services
 
       private void renameBuildingBlockInSimulation(IEnumerable<Simulation> allSimulationUsingBuildingBlocks, IPKSimBuildingBlock templateBuildingBlock)
       {
-         if (!buildingBlockIsDefinedAsContainerInSimulation(templateBuildingBlock)) 
+         if (!buildingBlockIsDefinedAsContainerInSimulation(templateBuildingBlock))
             return;
 
          allSimulationUsingBuildingBlocks.Each(s => renameContainerBuildingBlockInSimulation(s, templateBuildingBlock));
@@ -204,7 +205,7 @@ namespace PKSim.Presentation.Services
             var objectPath = formulaUsablePathReferencing(usingFormula, reference);
 
             //Reference is always found by construction and this should never happen
-            if (objectPath==null)
+            if (objectPath == null)
                return;
 
             //The reference is used. The path needs to be updated only if it is a path referencing the old name

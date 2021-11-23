@@ -8,7 +8,6 @@ namespace PKSim.Core.Model
 {
    public class ExpressionProfile : PKSimBuildingBlock
    {
-
       private string _category;
       private Individual _individual;
 
@@ -49,18 +48,19 @@ namespace PKSim.Core.Model
             if (string.Equals(Name, value))
                return;
 
-            var names = CoreConstants.NamesFromCompositeName(value, char.Parse(ObjectPath.PATH_DELIMITER));
-            if (names.Count != 3)
+            var (moleculeName, _, category) = NamesFromExpressionProfileName(value);
+            if (string.IsNullOrEmpty(moleculeName))
                return;
 
-            _category = names[2];
+            _category = category;
+
             //This can happen when for instance the Molecule has not been deserialized yet
-            if(Molecule!=null)
-               Molecule.Name = names[0];
+            if (Molecule != null)
+               Molecule.Name = moleculeName;
+
             base.Name = value;
          }
       }
-
 
       public void Deconstruct(out IndividualMolecule molecule, out Individual individual)
       {
@@ -89,7 +89,7 @@ namespace PKSim.Core.Model
       public override void AcceptVisitor(IVisitor visitor)
       {
          base.AcceptVisitor(visitor);
-         Individual.AcceptVisitor(visitor);  
+         Individual.AcceptVisitor(visitor);
       }
 
       public override bool HasChanged
@@ -98,7 +98,7 @@ namespace PKSim.Core.Model
          set
          {
             base.HasChanged = value;
-            if(Individual!=null)
+            if (Individual != null)
                Individual.HasChanged = value;
          }
       }
