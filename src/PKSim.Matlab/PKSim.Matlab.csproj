@@ -43,4 +43,8 @@
     <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+  </ItemGroup>
+
 </Project>

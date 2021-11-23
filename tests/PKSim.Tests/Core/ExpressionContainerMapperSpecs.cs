@@ -25,7 +25,6 @@ namespace PKSim.Core
       protected ExpressionContainer _snapshot;
       protected ParameterMapper _parameterMapper;
       protected IndividualTransporter _transporter;
-      protected ITransportContainerUpdater _transportContainerUpdater;
       protected Individual _individual;
       protected ExpressionContainerMapperContext _expressionContainerMapperContext;
       protected IOSPSuiteLogger _logger;
@@ -34,10 +33,9 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
          _logger = A.Fake<IOSPSuiteLogger>();
 
-         sut = new ExpressionContainerMapper(_parameterMapper, _transportContainerUpdater, _logger);
+         sut = new ExpressionContainerMapper(_parameterMapper,  _logger);
 
          _relativeExpressionParameter =
             DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);

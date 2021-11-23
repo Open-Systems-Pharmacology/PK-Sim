@@ -1,45 +1,70 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using ModelIndividual = PKSim.Core.Model.Individual;
+using ModelExpressionProfile = PKSim.Core.Model.ExpressionProfile;
+using SnapshotExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class MoleculeMapper : ParameterContainerSnapshotMapperBase<IndividualMolecule, Molecule, ModelIndividual, ModelIndividual>
+   public class ExpressionProfileMapper : ObjectBaseSnapshotMapperBase<ModelExpressionProfile, SnapshotExpressionProfile>
    {
+      private readonly ParameterMapper _parameterMapper;
       private readonly ExpressionContainerMapper _expressionContainerMapper;
       private readonly IOntogenyTask _ontogenyTask;
       private readonly IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
+      private readonly IExpressionProfileFactory _expressionProfileFactory;
+      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
       private readonly OntogenyMapper _ontogenyMapper;
 
-      public MoleculeMapper(
+      public ExpressionProfileMapper(
          ParameterMapper parameterMapper,
          ExpressionContainerMapper expressionContainerMapper,
          OntogenyMapper ontogenyMapper,
          IOntogenyTask ontogenyTask,
-         IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask
-      ) : base(parameterMapper)
+         IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask,
+         IExpressionProfileFactory expressionProfileFactory,
+         IExpressionProfileUpdater expressionProfileUpdater
+      ) 
       {
+         _parameterMapper = parameterMapper;
          _expressionContainerMapper = expressionContainerMapper;
          _ontogenyTask = ontogenyTask;
          _moleculeExpressionTask = moleculeExpressionTask;
+         _expressionProfileFactory = expressionProfileFactory;
+         _expressionProfileUpdater = expressionProfileUpdater;
+
          _ontogenyMapper = ontogenyMapper;
       }
 
-      public override async Task<Molecule> MapToSnapshot(IndividualMolecule molecule, ModelIndividual individual)
-      {
-         //We do not save parameters anymore for molecule. Those parameters are now saved as part of the individual.
-         var snapshot = new Molecule();
-         MapModelPropertiesToSnapshot(molecule, snapshot);
-         snapshot.Type = molecule.MoleculeType;
-         snapshot.Ontogeny = await _ontogenyMapper.MapToSnapshot(molecule.Ontogeny);
-         snapshot.Expression = await expressionFor(molecule, individual);
+      public override async Task<SnapshotExpressionProfile> MapToSnapshot(ModelExpressionProfile expressionProfile)
+      { 
+         var (molecule, individual) = expressionProfile;
+         //We do not use the base method here as we want to save the name differently using the composite part of the name
+         var snapshot = new SnapshotExpressionProfile
+         {
+            Type = molecule.MoleculeType,
+            Species = individual.Species.Name,
+            Category = expressionProfile.Category,
+            Molecule = molecule.Name,
+            Description = SnapshotValueFor(expressionProfile.Description),
+            Ontogeny = await _ontogenyMapper.MapToSnapshot(molecule.Ontogeny),
+            Expression = await expressionFor(molecule, individual),
+            Parameters = await allParametersChangedByUserFrom(individual)
+         };
+
          updateMoleculeSpecificPropertiesToSnapshot(snapshot, molecule);
          return snapshot;
+         
+      }
+
+      private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
+      {
+         var changedParameters = individual.GetAllChildren<IParameter>(x => x.ShouldExportToSnapshot());
+         return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
       private Task<ExpressionContainer[]> expressionFor(IndividualMolecule molecule, ModelIndividual individual)
@@ -48,7 +73,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return _expressionContainerMapper.MapToSnapshots(allExpressionContainers);
       }
 
-      private void updateMoleculeSpecificPropertiesToSnapshot(Molecule snapshot, IndividualMolecule molecule)
+      private void updateMoleculeSpecificPropertiesToSnapshot(SnapshotExpressionProfile snapshot, IndividualMolecule molecule)
       {
          switch (molecule)
          {
@@ -61,19 +86,21 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      public override async Task<IndividualMolecule> MapToModel(Molecule snapshot, ModelIndividual individual)
+      public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot)
       {
-         addMoleculeToIndividual(snapshot, individual);
-         var molecule = individual.MoleculeByName(snapshot.Name);
-         MapSnapshotPropertiesToModel(snapshot, molecule);
+         var expressionProfile = _expressionProfileFactory.CreateFor(snapshot.Type, snapshot.Species);
+         expressionProfile.Description = snapshot.Description;
+         expressionProfile.MoleculeName = snapshot.Molecule;
+         expressionProfile.Category = snapshot.Category;
+         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile);
 
-         await UpdateParametersFromSnapshot(snapshot, molecule, snapshot.Type.ToString());
+         var (molecule, individual) = expressionProfile;
+         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
 
          updateMoleculePropertiesToMolecule(molecule, snapshot, individual);
 
          var ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, individual);
          _ontogenyTask.SetOntogenyForMolecule(molecule, ontogeny, individual);
-
 
          var context = new ExpressionContainerMapperContext
          {
@@ -88,10 +115,10 @@ namespace PKSim.Core.Snapshots.Mappers
          if (isV9Format(snapshot))
             NormalizeRelativeExpressionCommand.NormalizeExpressions(individual, molecule);
 
-         return molecule;
+         return expressionProfile;
       }
 
-      private void updateMoleculePropertiesToMolecule(IndividualMolecule molecule, Molecule snapshot, ModelIndividual individual)
+      private void updateMoleculePropertiesToMolecule(IndividualMolecule molecule, SnapshotExpressionProfile snapshot, ModelIndividual individual)
       {
          switch (molecule)
          {
@@ -108,7 +135,7 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      private Localization retrieveLocalizationFrom(Molecule snapshot)
+      private Localization retrieveLocalizationFrom(SnapshotExpressionProfile snapshot)
       {
          if (!isV9Format(snapshot))
             return ModelValueFor(snapshot.Localization);
@@ -121,25 +148,6 @@ namespace PKSim.Core.Snapshots.Mappers
          return LocalizationConverter.ConvertToLocalization(tissueLocation, membraneLocation, intracellularVascularEndoLocation);
       }
 
-      private bool isV9Format(Molecule snapshot) => snapshot.Localization == null;
-
-      private void addMoleculeToIndividual(Molecule molecule, ModelIndividual individual)
-      {
-         var moleculeType = molecule.Type;
-         switch (moleculeType)
-         {
-            case QuantityType.Enzyme:
-               _moleculeExpressionTask.AddMoleculeTo<IndividualEnzyme>(individual, molecule.Name);
-               return;
-            case QuantityType.OtherProtein:
-               _moleculeExpressionTask.AddMoleculeTo<IndividualOtherProtein>(individual, molecule.Name);
-               return;
-            case QuantityType.Transporter:
-               _moleculeExpressionTask.AddMoleculeTo<IndividualTransporter>(individual, molecule.Name);
-               return;
-            default:
-               throw new SnapshotOutdatedException(PKSimConstants.Error.MoleculeTypeNotSupported(moleculeType.ToString()));
-         }
-      }
+      private bool isV9Format(SnapshotExpressionProfile snapshot) => snapshot.Localization == null;
    }
 }
