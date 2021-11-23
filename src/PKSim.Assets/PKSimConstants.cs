@@ -1716,7 +1716,7 @@ namespace PKSim.Assets
          public static readonly string SubPopulation = "Sub Population";
          public static readonly string CalculationMethods = "Calculation methods";
          public static readonly string ReferencePopulation = "Reference Population";
-         public static readonly string Phenotype = "Phenotype";
+         public static readonly string ExpressionProfileCategory = "Phenotype";
          public static readonly string Category = "Category";
          public static readonly string CreateIndividual = "Create Individual";
          public static readonly string CreateSimulationSettings = "Create Simulation Settings";
