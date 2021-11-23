@@ -49,7 +49,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemCategory.Text = PKSimConstants.UI.Phenotype.FormatForLabel();
+         layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
       }
    }
 }
