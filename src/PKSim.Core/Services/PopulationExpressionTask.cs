@@ -63,18 +63,6 @@ namespace PKSim.Core.Services
          return addMoleculeToPopulation(molecule, population, baseCommand);
       }
 
-      public IOSPSuiteCommand EditMolecule(IndividualMolecule moleculeToEdit,  QueryExpressionResults queryResults, Population population)
-      {
-         return new EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(moleculeToEdit,  queryResults, population)
-            .Run(_executionContext);
-      }
-
-
-      public IOSPSuiteCommand RenameMolecule(IndividualMolecule molecule, string newName, Population simulationSubject)
-      {
-         return new RenameMoleculeInSimulationSubjectCommand(molecule, simulationSubject, newName, _executionContext).Run(_executionContext);
-      }
-
       private IOSPSuiteCommand addMoleculeToPopulation(IndividualMolecule molecule, Population population, ICommand<IExecutionContext> baseCommand)
       {
          return macroCommandFrom(population,

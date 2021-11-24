@@ -1,11 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Commands;
@@ -13,7 +11,6 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Infrastructure.ProjectConverter;
 
 namespace PKSim.Presentation
 {
@@ -21,19 +18,13 @@ namespace PKSim.Presentation
    {
       protected Individual _individual;
       protected IExecutionContext _executionContext;
-      protected IMoleculeToQueryExpressionSettingsMapper _querySettingsMapper;
-      protected IApplicationController _applicationController;
       private IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
-      protected IGeneExpressionsDatabasePathManager _geneExpressionsDatabasePathManager;
       protected IndividualMolecule _molecule;
       protected MoleculeExpressionContainer _moleculeContainer1;
       protected MoleculeExpressionContainer _moleculeContainer2;
       protected IOntogenyRepository _ontogenyRepository;
       protected Ontogeny _ontogeny;
-      private ITransportContainerUpdater _transportContainerUpdater;
       protected ISimulationSubjectExpressionTask<Individual> _subjectExpressionTask;
-      protected IOntogenyTask _ontogenyTask;
-      protected IMoleculeParameterTask _moleculeParameterTask;
       protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
@@ -41,12 +32,7 @@ namespace PKSim.Presentation
          _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
          _ontogeny = new DatabaseOntogeny {Name = "toto"};
          _executionContext = A.Fake<IExecutionContext>();
-         _querySettingsMapper = A.Fake<IMoleculeToQueryExpressionSettingsMapper>();
-         _applicationController = A.Fake<IApplicationController>();
          _individualMoleculeFactoryResolver = A.Fake<IIndividualMoleculeFactoryResolver>();
-         _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
-         _geneExpressionsDatabasePathManager = A.Fake<IGeneExpressionsDatabasePathManager>();
-         _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          var proteinFactory = A.Fake<IIndividualMoleculeFactory>();
          _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
@@ -65,15 +51,10 @@ namespace PKSim.Presentation
 
          _subjectExpressionTask = new IndividualExpressionTask(_executionContext);
 
-         _ontogenyTask = A.Fake<IOntogenyTask>();
          sut = new MoleculeExpressionTask<Individual>(
             _executionContext,
             _individualMoleculeFactoryResolver,
-            _ontogenyRepository, 
-            _transportContainerUpdater, 
             _subjectExpressionTask, 
-            _ontogenyTask, 
-            _moleculeParameterTask,
             _expressionProfileUpdater
             );
       }
@@ -93,7 +74,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _resultCommand = sut.RemoveMoleculeFrom(_proteinToRemove, _individual);
+         _resultCommand = sut.RemoveExpressionProfileFor(_proteinToRemove, _individual);
       }
 
       [Observation]

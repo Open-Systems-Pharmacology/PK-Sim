@@ -39,6 +39,8 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          if (_view.Canceled)
             return new PKSimEmptyCommand();
 
+         //Make sure we save all information that was edited by the user
+         _subPresenterItemManager.AllSubPresenters.Each(x => x.Save());
          return _macroCommand;
       }
 

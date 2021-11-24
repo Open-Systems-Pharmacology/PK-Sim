@@ -22,12 +22,13 @@ namespace PKSim.Presentation
       protected IExpressionProfileFactory _expressionProfileFactory;
       protected IApplicationController _applicationController;
       protected IExpressionProfileToExpressionProfileDTOMapper _mapper;
-      protected IEditMoleculeTask<Individual> _editMoleculeTask;
       protected ExpressionProfile _expressionProfile;
       protected ExpressionProfileDTO _expressionProfileDTO;
       protected IndividualMolecule _enzyme;
       protected IIndividualEnzymeExpressionsPresenter<Individual> _enzymePresenter;
       protected IExpressionProfileUpdater _expressionProfileUpdater;
+      protected IExpressionProfileProteinDatabaseTask _expressionProfileProteinDatabaseTask;
+      protected IMoleculeParameterTask _moleculeParameterTask;
 
       protected override void Context()
       {
@@ -35,10 +36,18 @@ namespace PKSim.Presentation
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
          _applicationController = A.Fake<IApplicationController>();
          _mapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
-         _editMoleculeTask = A.Fake<IEditMoleculeTask<Individual>>();
          _enzymePresenter = A.Fake<IIndividualEnzymeExpressionsPresenter<Individual>>();
-         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();
-         sut = new ExpressionProfileMoleculesPresenter(_view, _expressionProfileFactory, _applicationController, _mapper, _editMoleculeTask, _expressionProfileUpdater);
+         _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
+         _expressionProfileProteinDatabaseTask = A.Fake<IExpressionProfileProteinDatabaseTask>();
+         _moleculeParameterTask= A.Fake<IMoleculeParameterTask>();
+         sut = new ExpressionProfileMoleculesPresenter(
+            _view, 
+            _expressionProfileFactory, 
+            _applicationController, 
+            _mapper, 
+            _expressionProfileProteinDatabaseTask, 
+            _expressionProfileUpdater,
+            _moleculeParameterTask);
 
          sut.InitializeWith(new PKSimMacroCommand());
          _expressionProfile = A.Fake<ExpressionProfile>();
@@ -111,11 +120,11 @@ namespace PKSim.Presentation
       public void should_refresh_the_expression_for_the_underlying_molecule_again()
       {
          //Once in edit and once after species changed
-         A.CallTo(() => _enzymePresenter.ActivateMolecule(_enzyme)).MustHaveHappened(timesOption: Times.Exactly, numberOfTimes:2);
+         A.CallTo(() => _enzymePresenter.ActivateMolecule(_enzyme)).MustHaveHappened(timesOption: Times.Exactly, numberOfTimes: 2);
       }
    }
 
-   public class When_notified_that_the_molecule_name_was_changed_in_the_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
+   public class When_notified_to_save_the_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
    {
       protected override void Context()
       {
@@ -127,29 +136,13 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.MoleculeNameChanged();
+         sut.Save();
       }
 
       [Observation]
       public void should_molecule_name_as_defined_by_the_user()
       {
          A.CallTo(() => _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfileDTO.MoleculeName)).MustHaveHappened();
-      }
-   }
-
-   public class When_notified_that_the_category_was_changed_in_the_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         _expressionProfileDTO.MoleculeName = "MOLECULE";
-         _expressionProfileDTO.Category = "CATEGORY";
-         sut.Edit(_expressionProfile);
-      }
-
-      protected override void Because()
-      {
-         sut.CategoryChanged();
       }
 
       [Observation]
@@ -165,7 +158,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          sut.Edit(_expressionProfile);
-         A.CallTo(() => _editMoleculeTask.CanQueryProteinExpressionsFor(_expressionProfile.Individual)).Returns(false);
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile)).Returns(false);
       }
 
       [Observation]
@@ -175,19 +168,23 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_loading_the_expression_profile_from_the_database_for_a_species_for_which_a_database_is_connected : concern_for_ExpressionProfileMoleculesPresenter
+   public class When_loading_the_expression_profile_from_the_database_for_a_species_for_which_a_database_is_connected_in_create_mode : concern_for_ExpressionProfileMoleculesPresenter
    {
+      private QueryExpressionResults _result;
       private ICommand _command;
 
       protected override void Context()
       {
          base.Context();
+         sut.IsEditMode = false;
          _command = A.Fake<IPKSimCommand>();
+         _result = new QueryExpressionResults(new ExpressionResult[] { }) {ProteinName = "NEW_NAME"};
          sut.Edit(_expressionProfile);
          _expressionProfileDTO.MoleculeName = "MOLECULE";
-         A.CallTo(() => _editMoleculeTask.CanQueryProteinExpressionsFor(_expressionProfile.Individual)).Returns(true);
-         A.CallTo(() => _editMoleculeTask.EditMolecule(_expressionProfile.Molecule, _expressionProfile.Individual, _expressionProfileDTO.MoleculeName))
-            .Returns(_command);
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile)).Returns(true);
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.QueryDatabase(_expressionProfile, _expressionProfileDTO.MoleculeName))
+            .Returns(_result);
+         A.CallTo(() => _expressionProfileUpdater.UpdateExpressionFromQuery(_expressionProfile, _result)).Returns(_command);
       }
 
       protected override void Because()
@@ -198,7 +195,51 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_resulting_edit_as_command()
       {
-         sut.CommandCollector.All().ShouldContain(_command);;
+         sut.CommandCollector.All().ShouldContain(_command);
+      }
+
+      [Observation]
+      public void should_have_updated_the_name_based_on_the_query()
+      {
+         _expressionProfileDTO.MoleculeName.ShouldBeEqualTo("NEW_NAME");
+      }
+
+      [Observation]
+      public void should_update_the_default_molecule_parameters()
+      {
+         A.CallTo(() => _moleculeParameterTask.SetDefaultFor(_expressionProfile, _expressionProfileDTO.MoleculeName)).MustHaveHappened();
+      }
+   }
+
+   public class When_querying_the_expression_database_for_an_expression_profile_in_edit_mode : concern_for_ExpressionProfileMoleculesPresenter
+   {
+      private QueryExpressionResults _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.IsEditMode = true;
+         _expressionProfileDTO.MoleculeName = "MOLECULE";
+         _result = new QueryExpressionResults(new ExpressionResult[] { }) { ProteinName = "NEW_NAME" };
+
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile)).Returns(true);
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.QueryDatabase(_expressionProfile, _expressionProfileDTO.MoleculeName))
+            .Returns(_result);
+
+
+      }
+
+      [Observation]
+      public void should_not_update_the_molecule_name()
+      {
+         _expressionProfileDTO.MoleculeName.ShouldBeEqualTo("MOLECULE");
+
+      }
+
+      [Observation]
+      public void should_not_update_the_default_molecule_parameters()
+      {
+         A.CallTo(() => _moleculeParameterTask.SetDefaultFor(_expressionProfile, A<string>._)).MustNotHaveHappened();
       }
    }
 }

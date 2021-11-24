@@ -206,7 +206,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public virtual void AddMolecule<TMolecule>() where TMolecule : IndividualMolecule
       {
-         AddCommand(_editMoleculeTask.AddMoleculeTo<TMolecule>(_simulationSubject));
+         AddCommand(_editMoleculeTask.AddExpressionProfile<TMolecule>(_simulationSubject));
       }
 
       public void Handle(AddMoleculeToSimulationSubjectEvent<TSimulationSubject> eventToHandle)

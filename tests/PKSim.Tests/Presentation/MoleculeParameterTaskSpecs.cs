@@ -13,11 +13,18 @@ namespace PKSim.Presentation
    {
       protected IMoleculeParameterRepository _moleculeParameterRepository;
       protected IndividualEnzyme _molecule;
+      private ITransportContainerUpdater _transportContainerUpdater;
+      private IOntogenyRepository _ontogenyRepository;
+      private IOntogenyTask _ontogenyTask;
 
       protected override void Context()
       {
+         _transportContainerUpdater = A.Fake<ITransportContainerUpdater>();
+         _ontogenyRepository = A.Fake<IOntogenyRepository>();
+         _ontogenyTask = A.Fake<IOntogenyTask>();
          _moleculeParameterRepository = A.Fake<IMoleculeParameterRepository>();
-         sut = new MoleculeParameterTask(_moleculeParameterRepository);
+
+         sut = new MoleculeParameterTask(_moleculeParameterRepository, _transportContainerUpdater, _ontogenyRepository, _ontogenyTask);
          _molecule = new IndividualEnzyme {Name = "CYP3A4"};
          _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION));
          _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName(CoreConstants.Parameters.HALF_LIFE_LIVER));
