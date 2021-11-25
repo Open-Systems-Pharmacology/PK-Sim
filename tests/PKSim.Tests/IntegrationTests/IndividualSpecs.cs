@@ -56,6 +56,7 @@ namespace PKSim.IntegrationTests
       {
          sut.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_Mosteller);
       }
+
    }
 
    public class When_creating_an_individual_for_each_population_defined_in_the_database :   concern_for_Individual
@@ -75,8 +76,12 @@ namespace PKSim.IntegrationTests
          {
             var individual = DomainFactoryForSpecs.CreateStandardIndividual(population: x.Name);
             individual.ShouldNotBeNull();
+
+            //check that the sum of the organ weights is equal to the input weight
+            individual.InputWeight.ShouldBeEqualTo(individual.WeightParameter.Value, 1e-5, x.Name);
          });
       }
+
    }
 
    public class When_creating_rabbit : concern_for_Individual
