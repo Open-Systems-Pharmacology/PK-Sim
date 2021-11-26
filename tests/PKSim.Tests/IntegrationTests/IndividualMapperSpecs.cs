@@ -92,4 +92,26 @@ namespace PKSim.IntegrationTests
          _individual.AllExpressionProfiles().ShouldContain(_expressionProfileEnzyme, _expressionProfileTransporter);
       }
    }
+
+   public class When_loading_human_irreversible_created_in_v10 : ContextWithLoadedSnapshot
+   {
+      private ExpressionProfile _expressionProfileEnzyme;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadSnapshot("Human_IrreversibleInhibition");
+         _expressionProfileEnzyme = FindByName<ExpressionProfile>("CYP3A4|Human|Ind");
+      }
+
+      [Observation]
+      public void should_have_created_an_expression_profile_with_the_expected_global_molecule_parameters()
+      {
+         _expressionProfileEnzyme.ShouldNotBeNull();
+         var (enzyme, _) = _expressionProfileEnzyme;
+         enzyme.ReferenceConcentration.ValueInDisplayUnit.ShouldBeEqualTo(4.32);
+         enzyme.HalfLifeLiver.ValueInDisplayUnit.ShouldBeEqualTo(37);
+         enzyme.HalfLifeIntestine.ValueInDisplayUnit.ShouldBeEqualTo(16);
+      }
+   }
 }
