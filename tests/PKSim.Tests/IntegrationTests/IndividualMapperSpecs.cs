@@ -101,7 +101,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          LoadSnapshot("Human_IrreversibleInhibition");
-         _expressionProfileEnzyme = FindByName<ExpressionProfile>("CYP3A4|Human|Ind");
+         _expressionProfileEnzyme = FindByName<ExpressionProfile>("CYP3A4|Human|Individual");
       }
 
       [Observation]
