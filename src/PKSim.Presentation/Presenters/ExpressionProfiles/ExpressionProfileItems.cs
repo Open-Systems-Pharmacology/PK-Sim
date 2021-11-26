@@ -8,6 +8,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
    public interface IExpressionProfileItemPresenter : ISubPresenter
    {
       void Edit(ExpressionProfile expressionProfile);
+      void Save();
    }
 
    public class ExpressionProfileItems

@@ -124,7 +124,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _command = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _editMoleculeTask.AddMoleculeTo<IndividualEnzyme>(_individual)).Returns(_command);
+         A.CallTo(() => _editMoleculeTask.AddExpressionProfile<IndividualEnzyme>(_individual)).Returns(_command);
          sut.EditIndividual(_individual);
       }
 
@@ -136,7 +136,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_protein_expression_task_to_add_a_protein_for_the_individual()
       {
-         A.CallTo(() => _editMoleculeTask.AddMoleculeTo<IndividualEnzyme>(_individual)).MustHaveHappened();
+         A.CallTo(() => _editMoleculeTask.AddExpressionProfile<IndividualEnzyme>(_individual)).MustHaveHappened();
       }
 
       [Observation]
@@ -154,7 +154,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _command = A.Fake<IPKSimCommand>();
-         A.CallTo(() => _editMoleculeTask.AddMoleculeTo<IndividualEnzyme>(_individual)).Returns(_command);
+         A.CallTo(() => _editMoleculeTask.AddExpressionProfile<IndividualEnzyme>(_individual)).Returns(_command);
          sut.EditIndividual(_individual);
       }
 
@@ -166,7 +166,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_protein_expression_task_to_add_a_default_protein_for_the_individual()
       {
-         A.CallTo(() => _editMoleculeTask.AddMoleculeTo<IndividualEnzyme>(_individual)).MustHaveHappened();
+         A.CallTo(() => _editMoleculeTask.AddExpressionProfile<IndividualEnzyme>(_individual)).MustHaveHappened();
       }
 
       [Observation]

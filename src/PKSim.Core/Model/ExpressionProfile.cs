@@ -19,7 +19,6 @@ namespace PKSim.Core.Model
          {
             _individual = value;
             _individual.OwnedBy = this;
-            RefreshName();
          }
       }
 
@@ -34,15 +33,12 @@ namespace PKSim.Core.Model
       public virtual string Category
       {
          get => _category;
-         set
-         {
-            _category = value;
-            RefreshName();
-         }
+         set => _category = value;
       }
 
       public override string Name
       {
+         get => ExpressionProfileName(MoleculeName, Species, Category);
          set
          {
             if (string.Equals(Name, value))
@@ -58,7 +54,7 @@ namespace PKSim.Core.Model
             if (Molecule != null)
                Molecule.Name = moleculeName;
 
-            base.Name = value;
+            OnPropertyChanged();
          }
       }
 
@@ -69,11 +65,6 @@ namespace PKSim.Core.Model
       }
 
       public virtual IndividualMolecule Molecule => Individual?.AllMolecules().FirstOrDefault() ?? new NullIndividualMolecule();
-
-      public virtual void RefreshName()
-      {
-         Name = ExpressionProfileName(MoleculeName, Species, Category);
-      }
 
       public override string Icon => Molecule?.Icon ?? "";
 
