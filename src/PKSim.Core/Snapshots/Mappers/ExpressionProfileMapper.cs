@@ -83,6 +83,16 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
+      private Task mapParameters(SnapshotExpressionProfile snapshot, ModelExpressionProfile expressionProfile)
+      {
+         var (molecule, individual) = expressionProfile;
+         //V9 format. Global parameter were saved directly under the molecule
+         if (isV9Format(snapshot))
+            return _parameterMapper.MapParameters(snapshot.Parameters, molecule, molecule.Name);
+
+         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
+      }
+
       public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot)
       {
          var expressionProfile = _expressionProfileFactory.Create(snapshot.Type, snapshot.Species, snapshot.Molecule);
@@ -90,7 +100,7 @@ namespace PKSim.Core.Snapshots.Mappers
          expressionProfile.Category = snapshot.Category;
 
          var (molecule, individual) = expressionProfile;
-         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
+         await mapParameters(snapshot, expressionProfile);
 
          updateMoleculePropertiesToMolecule(molecule, snapshot, individual);
 
