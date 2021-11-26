@@ -17,9 +17,10 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
    public interface IExpressionProfileMoleculesPresenter : IExpressionProfileItemPresenter
    {
       void SpeciesChanged();
-      void CategoryChanged();
-      void MoleculeNameChanged();
-      void DisableSettings();
+      /// <summary>
+      /// Are we in "Edit" mode ore "Creation" mode. 
+      /// </summary>
+      bool IsEditMode { get; set; }
       void LoadExpressionFromDatabaseQuery();
    }
 
@@ -28,25 +29,30 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       private readonly IExpressionProfileFactory _expressionProfileFactory;
       private readonly IApplicationController _applicationController;
       private readonly IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
-      private readonly IEditMoleculeTask<Individual> _editMoleculeTask;
+      private readonly IExpressionProfileProteinDatabaseTask _expressionProfileProteinDatabaseTask;
       private readonly IExpressionProfileUpdater _expressionProfileUpdater;
+      private readonly IMoleculeParameterTask _moleculeParameterTask;
       private IIndividualMoleculeExpressionsPresenter _moleculeExpressionsPresenter;
       private ExpressionProfileDTO _expressionProfileDTO;
       private ExpressionProfile _expressionProfile;
+      private bool _isEditMode = false;
+
 
       public ExpressionProfileMoleculesPresenter(
          IExpressionProfileMoleculesView view,
          IExpressionProfileFactory expressionProfileFactory,
          IApplicationController applicationController,
          IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper,
-         IEditMoleculeTask<Individual> editMoleculeTask,
-         IExpressionProfileUpdater expressionProfileUpdater) : base(view)
+         IExpressionProfileProteinDatabaseTask expressionProfileProteinDatabaseTask,
+         IExpressionProfileUpdater expressionProfileUpdater,
+         IMoleculeParameterTask moleculeParameterTask) : base(view)
       {
          _expressionProfileFactory = expressionProfileFactory;
          _applicationController = applicationController;
          _expressionProfileDTOMapper = expressionProfileDTOMapper;
-         _editMoleculeTask = editMoleculeTask;
+         _expressionProfileProteinDatabaseTask = expressionProfileProteinDatabaseTask;
          _expressionProfileUpdater = expressionProfileUpdater;
+         _moleculeParameterTask = moleculeParameterTask;
       }
 
       public void Edit(ExpressionProfile expressionProfile)
@@ -57,30 +63,49 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          activateMoleculeExpressionPresenter();
       }
 
+      public void Save()
+      {
+         _expressionProfile.Category = _expressionProfileDTO.Category;
+         _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfileDTO.MoleculeName);
+      }
+
       public void SpeciesChanged()
       {
          _expressionProfileFactory.UpdateSpecies(_expressionProfile, _expressionProfileDTO.Species);
          refreshExpression();
       }
 
-      public void CategoryChanged()
+      public bool IsEditMode
       {
-         _expressionProfile.Category = _expressionProfileDTO.Category;
+         get => _isEditMode;
+         set
+         {
+            _isEditMode = value;
+            //Edit vs Create. We can only change naming settings when CREATING an Expression Profile
+            if(_isEditMode)
+               _view.DisableSettings();
+
+         }
       }
 
-      public void MoleculeNameChanged()
-      {
-         _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfileDTO.MoleculeName);
-      }
-
-      public void DisableSettings() => _view.DisableSettings();
-
+      
       public void LoadExpressionFromDatabaseQuery()
       {
-         if (!_editMoleculeTask.CanQueryProteinExpressionsFor(_expressionProfile.Individual))
+         if (!_expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile))
             throw new OSPSuiteException(PKSimConstants.Error.NoProteinExpressionDatabaseAssociatedTo(_expressionProfile.Species.Name));
 
-         AddCommand(_editMoleculeTask.EditMolecule(_expressionProfile.Molecule, _expressionProfile.Individual, _expressionProfileDTO.MoleculeName));
+         var queryResults = _expressionProfileProteinDatabaseTask.QueryDatabase(_expressionProfile, _expressionProfileDTO.MoleculeName);
+         if (queryResults == null)
+            return;
+
+         if (!IsEditMode)
+         {
+            _expressionProfileDTO.MoleculeName = queryResults.ProteinName;
+            _moleculeParameterTask.SetDefaultFor(_expressionProfile, _expressionProfileDTO.MoleculeName);
+         }
+
+         AddCommand(_expressionProfileUpdater.UpdateExpressionFromQuery(_expressionProfile, queryResults));
+
          refreshExpression();
       }
 

@@ -63,12 +63,10 @@ namespace PKSim.UI.Views.ExpressionProfiles
             .Changed += () => _presenter.SpeciesChanged();
 
          _screenBinder.Bind(dto => dto.MoleculeName)
-            .To(cbMoleculeName)
-            .Changed += () => _presenter.MoleculeNameChanged();
+            .To(cbMoleculeName);
 
          _screenBinder.Bind(dto => dto.Category)
-            .To(tbCategory)
-            .Changed += () => _presenter.CategoryChanged();
+            .To(tbCategory);
 
 
          btnLoadFromDatabase.Click += (ot, e) => OnEvent(_presenter.LoadExpressionFromDatabaseQuery);

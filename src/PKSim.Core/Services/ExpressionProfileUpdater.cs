@@ -13,13 +13,16 @@ namespace PKSim.Core.Services
 {
    public interface IExpressionProfileUpdater
    {
+      ICommand UpdateExpressionFromQuery(ExpressionProfile expressionProfile, QueryExpressionResults queryResults);
+
       /// <summary>
       ///    Update the molecule name in <paramref name="expressionProfile" /> to be <paramref name="newMoleculeName" />
       /// </summary>
       ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName);
 
       /// <summary>
-      ///    Update the molecule name in <paramref name="expressionProfile" /> to be <paramref name="newMoleculeName" /> from <paramref name="oldMoleculeName"/>
+      ///    Update the molecule name in <paramref name="expressionProfile" /> to be <paramref name="newMoleculeName" /> from
+      ///    <paramref name="oldMoleculeName" />
       /// </summary>
       ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName, string oldMoleculeName);
 
@@ -60,7 +63,6 @@ namespace PKSim.Core.Services
 
    public class ExpressionProfileUpdater : IExpressionProfileUpdater
    {
-      private readonly ISimulationSubjectExpressionTask<Individual> _individualExpressionTask;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IContainerTask _containerTask;
       private readonly IOntogenyTask _ontogenyTask;
@@ -68,18 +70,18 @@ namespace PKSim.Core.Services
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IParameterIdUpdater _parameterIdUpdater;
+      private readonly IExecutionContext _executionContext;
 
       public ExpressionProfileUpdater(
-         ISimulationSubjectExpressionTask<Individual> individualExpressionTask,
          IParameterSetUpdater parameterSetUpdater,
          IContainerTask containerTask,
          IOntogenyTask ontogenyTask,
          ICloner cloner,
          IPKSimProjectRetriever projectRetriever,
          ILazyLoadTask lazyLoadTask,
-         IParameterIdUpdater parameterIdUpdater)
+         IParameterIdUpdater parameterIdUpdater,
+         IExecutionContext executionContext)
       {
-         _individualExpressionTask = individualExpressionTask;
          _parameterSetUpdater = parameterSetUpdater;
          _containerTask = containerTask;
          _ontogenyTask = ontogenyTask;
@@ -87,6 +89,15 @@ namespace PKSim.Core.Services
          _projectRetriever = projectRetriever;
          _lazyLoadTask = lazyLoadTask;
          _parameterIdUpdater = parameterIdUpdater;
+         _executionContext = executionContext;
+      }
+
+      public ICommand UpdateExpressionFromQuery(ExpressionProfile expressionProfile, QueryExpressionResults queryResults)
+      {
+         var (molecule, individual) = expressionProfile;
+         molecule.QueryConfiguration = queryResults.QueryConfiguration;
+         return new EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(molecule, queryResults, individual)
+            .Run(_executionContext);
       }
 
       public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName)
@@ -96,8 +107,13 @@ namespace PKSim.Core.Services
 
       public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName, string oldMoleculeName)
       {
-         var (molecule, individual) = expressionProfile;
          var command = new PKSimMacroCommand();
+
+         //we are not renaming anything
+         if (string.Equals(newMoleculeName, oldMoleculeName))
+            return command;
+
+         var (molecule, individual) = expressionProfile;
          var mainCommand = renameMolecule(molecule, individual, newMoleculeName);
          command.Add(mainCommand);
          command.UpdatePropertiesFrom(mainCommand);
@@ -112,7 +128,7 @@ namespace PKSim.Core.Services
 
       private IOSPSuiteCommand renameMolecule(IndividualMolecule molecule, ISimulationSubject simulationSubject, string newMoleculeName)
       {
-         return _individualExpressionTask.RenameMolecule(molecule, newMoleculeName, simulationSubject.Individual);
+         return new RenameMoleculeInSimulationSubjectCommand(molecule, simulationSubject, newMoleculeName, _executionContext).Run(_executionContext);
       }
 
       private void synchronizeExpressionProfiles(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)
