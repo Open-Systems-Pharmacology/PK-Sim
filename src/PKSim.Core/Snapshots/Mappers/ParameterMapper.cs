@@ -143,9 +143,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return mapParameters(localizedParameters, x => allParameters[x.Path], x => x.Path, container.Name, showParameterNotFoundWarning);
       }
 
-      public virtual Task MapParameters(IReadOnlyList<SnapshotParameter> snapshots, IContainer container, string containerDescriptor)
+      public virtual Task MapParameters(IReadOnlyList<SnapshotParameter> snapshots, IContainer container, string containerDescriptor, bool showParameterNotFoundWarning = true)
       {
-         return mapParameters(snapshots, x => container.Parameter(x.Name), x => x.Name, containerDescriptor);
+         return mapParameters(snapshots, x => container.Parameter(x.Name), x => x.Name, containerDescriptor, showParameterNotFoundWarning);
       }
 
       private Task mapParameters<T>(IReadOnlyList<T> snapshots, Func<T, IParameter> parameterRetrieverFunc, Func<T, string> parameterIdentifierFunc, string containerDescriptor, bool showParameterNotFoundWarning = true) where T : SnapshotParameter

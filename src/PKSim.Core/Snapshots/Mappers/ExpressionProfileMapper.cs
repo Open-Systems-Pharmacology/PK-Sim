@@ -83,14 +83,15 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      private Task mapParameters(SnapshotExpressionProfile snapshot, ModelExpressionProfile expressionProfile)
+      private async Task mapParameters(SnapshotExpressionProfile snapshot, ModelExpressionProfile expressionProfile)
       {
          var (molecule, individual) = expressionProfile;
          //V9 format. Global parameter were saved directly under the molecule
          if (isV9Format(snapshot))
-            return _parameterMapper.MapParameters(snapshot.Parameters, molecule, molecule.Name);
+            await _parameterMapper.MapParameters(snapshot.Parameters, molecule, molecule.Name, showParameterNotFoundWarning:false);
 
-         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
+         //at any rate, we need to do this to ensure that we are loading the new parameters
+         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
       }
 
       public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot)
