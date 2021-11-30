@@ -13,14 +13,14 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_CloneExpressionProfilePresenter : ContextSpecification<ICloneExpressionProfilePresenter>
    {
-      protected ICloneExpressionProfileView _view;
+      protected ICreateExpressionProfileView _view;
       protected IExpressionProfileToExpressionProfileDTOMapper _mapper;
       protected IExpressionProfileUpdater _expressionProfileUpdater;
       protected IExpressionProfileFactory _expressionProfileFactory;
 
       protected override void Context()
       {
-         _view = A.Fake<ICloneExpressionProfileView>();
+         _view = A.Fake<ICreateExpressionProfileView>();
          _mapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
          _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();

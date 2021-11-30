@@ -1,47 +1,60 @@
-﻿using OSPSuite.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
+﻿using System;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO.ExpressionProfiles;
+using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
 namespace PKSim.Presentation.Presenters.ExpressionProfiles
 {
-   public interface ICreateExpressionProfilePresenter : ICreateBuildingBlockPresenter<ExpressionProfile>, IContainerPresenter
+   public interface ICreateExpressionProfilePresenter : ICreateBuildingBlockPresenter<ExpressionProfile>
    {
       ExpressionProfile ExpressionProfile { get; }
       IPKSimCommand Create<TMolecule>() where TMolecule : IndividualMolecule;
    }
 
-   public class CreateExpressionProfilePresenter : AbstractSubPresenterContainerPresenter<ICreateExpressionProfileView, ICreateExpressionProfilePresenter, IExpressionProfileItemPresenter>, ICreateExpressionProfilePresenter
+   public class CreateExpressionProfilePresenter : AbstractDisposableCommandCollectorPresenter<ICreateExpressionProfileView, ICreateExpressionProfilePresenter>, ICreateExpressionProfilePresenter
    {
       private readonly IExpressionProfileFactory _expressionProfileFactory;
+      private readonly IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
+      private readonly IMoleculeParameterTask _moleculeParameterTask;
+      private ExpressionProfileDTO _dto;
       public ExpressionProfile ExpressionProfile { get; private set; }
 
       public CreateExpressionProfilePresenter(
          ICreateExpressionProfileView view,
-         ISubPresenterItemManager<IExpressionProfileItemPresenter> subPresenterItemManager,
-         IDialogCreator dialogCreator,
-         IExpressionProfileFactory expressionProfileFactory) : base(view, subPresenterItemManager, ExpressionProfileItems.All, dialogCreator)
+         IExpressionProfileFactory expressionProfileFactory,
+         IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper, 
+         IMoleculeParameterTask moleculeParameterTask) : base(view)
       {
          _expressionProfileFactory = expressionProfileFactory;
+         _expressionProfileDTOMapper = expressionProfileDTOMapper;
+         _moleculeParameterTask = moleculeParameterTask;
       }
 
       public IPKSimCommand Create<TMolecule>() where TMolecule : IndividualMolecule
       {
+         //Just for edit
          ExpressionProfile = _expressionProfileFactory.Create<TMolecule>();
-         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(ExpressionProfile));
-         _view.ApplicationIcon = ApplicationIcons.IconByName(ExpressionProfile.Icon);
+         _dto = _expressionProfileDTOMapper.MapFrom(ExpressionProfile);
+         _view.Caption = PKSimConstants.UI.CreateExpressionProfile;
+         _view.BindTo(_dto);
          _view.Display();
-
-         if (_view.Canceled)
+         if(_view.Canceled)   
             return new PKSimEmptyCommand();
 
-         //Make sure we save all information that was edited by the user
-         _subPresenterItemManager.AllSubPresenters.Each(x => x.Save());
-         return _macroCommand;
+         //we create a new one with all new features
+         ExpressionProfile = _expressionProfileFactory.Create<TMolecule>(_dto.Species, _dto.MoleculeName);
+         ExpressionProfile.Category = _dto.Category;
+
+         _moleculeParameterTask.SetDefaultFor(ExpressionProfile);
+
+         //Action 
+         return new PKSimMacroCommand();
       }
 
       public IPKSimCommand Create() => Create<IndividualEnzyme>();

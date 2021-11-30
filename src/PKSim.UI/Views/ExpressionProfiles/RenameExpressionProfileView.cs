@@ -57,5 +57,10 @@ namespace PKSim.UI.Views.ExpressionProfiles
          base.InitializeResources();
          layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
       }
+
+      protected override void SetActiveControl()
+      {
+         ActiveControl = cbMoleculeName;
+      }
    }
 }

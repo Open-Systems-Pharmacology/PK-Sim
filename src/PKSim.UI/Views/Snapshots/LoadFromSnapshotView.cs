@@ -17,7 +17,12 @@ namespace PKSim.UI.Views.Snapshots
       private ILoadFromSnapshotPresenter _presenter;
       private readonly ScreenBinder<LoadFromSnapshotDTO> _screenBinder = new ScreenBinder<LoadFromSnapshotDTO>();
 
-      public LoadFromSnapshotView()
+      //only for design time
+      public LoadFromSnapshotView() : this(null)
+      {
+      }
+
+      public LoadFromSnapshotView(IShell shell) : base(shell)
       {
          InitializeComponent();
       }
@@ -28,7 +33,7 @@ namespace PKSim.UI.Views.Snapshots
          _screenBinder.Bind(x => x.SnapshotFile)
             .To(buttonEditSelectSnapshot);
 
-         buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(()=>_presenter.SelectFile());
+         buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(() => _presenter.SelectFile());
          buttonStart.Click += (o, e) => OnEvent(() => _presenter.StartAsync());
 
          RegisterValidationFor(_screenBinder);

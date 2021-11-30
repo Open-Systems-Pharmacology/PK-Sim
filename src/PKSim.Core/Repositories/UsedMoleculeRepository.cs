@@ -13,19 +13,28 @@ namespace PKSim.Core.Repositories
    public class UsedMoleculeRepository : IUsedMoleculeRepository
    {
       private readonly IPKSimProjectRetriever _projectRetriever;
+      private readonly IOntogenyRepository _ontogenyRepository;
+      private readonly IMoleculeParameterRepository _moleculeParameterRepository;
 
-      public UsedMoleculeRepository(IPKSimProjectRetriever projectRetriever)
+      public UsedMoleculeRepository(
+         IPKSimProjectRetriever projectRetriever, 
+         IOntogenyRepository ontogenyRepository,
+         IMoleculeParameterRepository moleculeParameterRepository)
       {
          _projectRetriever = projectRetriever;
+         _ontogenyRepository = ontogenyRepository;
+         _moleculeParameterRepository = moleculeParameterRepository;
       }
 
       public IEnumerable<string> All()
       {
-         return allMoleculesDefinedInIndividuals()
-            .Union(allMoleculesDefinedInCompounds())
+         //First add User defined molecules
+         return allMoleculesDefinedInCompounds()
             .Union(allExpressionProfiles())
-            .Distinct()
-            .OrderBy(x => x);
+            .OrderBy(x => x)
+            //Then predefined molecules
+            .Union(allPredefinedMolecules())
+            .Distinct();
       }
 
       private IEnumerable<string> allMoleculesDefinedInCompounds()
@@ -35,19 +44,20 @@ namespace PKSim.Core.Repositories
             .Select(proc => proc.MoleculeName);
       }
 
-      private IEnumerable<string> allMoleculesDefinedInIndividuals()
-      {
-         return allLoadedBuildingBlocks<Individual>()
-            .SelectMany(x => x.AllMolecules())
-            .Select(x => x.Name);
-      }
-
       private IEnumerable<string> allExpressionProfiles()
       {
-         return allLoadedBuildingBlocks<ExpressionProfile>()
-            .Select(x => x.MoleculeName);
+         return allLoadedBuildingBlocks<ExpressionProfile>().Select(x => x.MoleculeName);
       }
 
+      private IEnumerable<string> allPredefinedMolecules()
+      {
+         //We use human as it has the most predefined molecules in the DB
+         return _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN)
+            .Select(x => x.Name)
+            .Union(_moleculeParameterRepository.All()
+               .Select(x => x.MoleculeName))
+            .OrderBy(x => x);
+      }
       private IEnumerable<TBuildingBlock> allLoadedBuildingBlocks<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock
       {
          return _projectRetriever.Current.All<TBuildingBlock>(x => x.IsLoaded);
