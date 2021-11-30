@@ -1,13 +1,14 @@
 ﻿using FakeItEasy;
-using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
+using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Presentation.DTO.ExpressionProfiles;
+using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
@@ -16,26 +17,35 @@ namespace PKSim.Presentation
    public abstract class concern_for_CreateExpressionProfilePresenter : ContextSpecification<ICreateExpressionProfilePresenter>
    {
       protected ICreateExpressionProfileView _view;
-      protected ISubPresenterItemManager<IExpressionProfileItemPresenter> _subPresenterManager;
-      protected IDialogCreator _dialogCreator;
       protected IExpressionProfileFactory _expressionProfileFactory;
-      protected IExpressionProfileMoleculesPresenter _moleculesPresenter;
       protected ExpressionProfile _expressionProfile;
-      protected IExpressionProfileUpdater _expressionProfileUpdater;
+      protected IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
+      protected IMoleculeParameterTask _moleculeParameterTask;
+      protected ExpressionProfileDTO _expressionProfileDTO;
+      protected ExpressionProfile _updatedExpressionProfile;
 
       protected override void Context()
       {
          _view = A.Fake<ICreateExpressionProfileView>();
-         _dialogCreator = A.Fake<IDialogCreator>();
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
-         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();
-         _subPresenterManager = SubPresenterHelper.Create<IExpressionProfileItemPresenter>();
-         _moleculesPresenter = _subPresenterManager.CreateFake(ExpressionProfileItems.Molecules);
-         sut = new CreateExpressionProfilePresenter(_view, _subPresenterManager, _dialogCreator, _expressionProfileFactory);
+         _expressionProfileDTOMapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
+         _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
+         sut = new CreateExpressionProfilePresenter(_view, _expressionProfileFactory, _expressionProfileDTOMapper, _moleculeParameterTask);
 
-         _expressionProfile = A.Fake<ExpressionProfile>();
-         A.CallTo(() => _expressionProfile.Icon).Returns(ApplicationIcons.Enzyme.IconName);
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _updatedExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _expressionProfileDTO = new ExpressionProfileDTO
+         {
+            Species = new Species(),
+            MoleculeName = "TOTO"
+         };
+
          A.CallTo(() => _expressionProfileFactory.Create<IndividualEnzyme>()).Returns(_expressionProfile);
+
+         A.CallTo(() => _expressionProfileDTOMapper.MapFrom(_expressionProfile)).Returns(_expressionProfileDTO);
+
+         A.CallTo(() => _expressionProfileFactory.Create<IndividualEnzyme>(_expressionProfileDTO.Species, _expressionProfileDTO.MoleculeName))
+            .Returns(_updatedExpressionProfile);
       }
    }
 
@@ -53,21 +63,21 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_create_a_new_expression_profile_and_edit_the_newly_created_expression_profile_in_all_sub_presenters()
+      public void should_update_the_view_with_the_expected_caption()
       {
-         A.CallTo(() => _moleculesPresenter.Edit(_expressionProfile)).MustHaveHappened();
+         _view.Caption.ShouldBeEqualTo(PKSimConstants.UI.CreateExpressionProfile);
       }
 
       [Observation]
-      public void should_update_the_icon_used_in_the_view_to_reflect_the_enzyme_type()
+      public void should_bind_the_expression_dto_to_edit_to_the_view()
       {
-         _view.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.Enzyme);
+         A.CallTo(() => _view.BindTo(_expressionProfileDTO)).MustHaveHappened();
       }
 
       [Observation]
       public void the_returned_building_block_should_be_the_expression_profile_created()
       {
-         sut.BuildingBlock.ShouldBeEqualTo(_expressionProfile);
+         sut.BuildingBlock.ShouldBeEqualTo(_updatedExpressionProfile);
       }
    }
 
@@ -77,6 +87,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          sut.Create<IndividualEnzyme>();
+         A.CallTo(() => _view.HasError).Returns(true);
       }
 
       protected override void Because()
@@ -85,9 +96,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_refresh_the_ok_button_enable_state()
+      public void should_update_the_ok_button_state()
       {
-         _view.OkEnabled.ShouldBeEqualTo(_subPresenterManager.CanClose);
+         _view.OkEnabled.ShouldBeFalse();
       }
    }
 

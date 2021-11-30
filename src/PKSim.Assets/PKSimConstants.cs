@@ -1656,7 +1656,7 @@ namespace PKSim.Assets
          public static readonly string ExportForClusterSimulationTitle = "Export for Cluster Simulation...";
          public static readonly string UserTemplates = "User Templates";
          public static readonly string SystemTemplates = "Predefined Templates";
-         public static readonly string RemoteTemplates = "GitHub Templates";
+         public static readonly string RemoteTemplates = "Open Systems Pharmacology - Cloud Templates (GitHub)";
          public static readonly string EditDescription = "Edit Description";
          public static readonly string EditValueDescription = "Edit Value Description";
          public static readonly string ShowPKAnalysis = "Show PK-Analysis";

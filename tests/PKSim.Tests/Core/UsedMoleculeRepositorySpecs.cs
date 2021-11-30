@@ -2,7 +2,6 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -15,9 +14,9 @@ namespace PKSim.Core
       private PKSimProject _project;
       private Compound _compound1;
       private Compound _compound2;
-      private Individual _individual1;
-      private Individual _individual2;
       private ExpressionProfile _expressionProfile;
+      private IOntogenyRepository _ontogenyRepository;
+      private IMoleculeParameterRepository _moleculeParameterRepository;
 
       protected override void Context()
       {
@@ -28,26 +27,28 @@ namespace PKSim.Core
          _compound1 = A.Fake<Compound>();
          _compound1.IsLoaded = false;
          _compound2 = new Compound {IsLoaded = true};
-         _compound2.AddProcess(new EnzymaticProcess {MoleculeName = "A", Name = "P1"});
-         _compound2.AddProcess(new EnzymaticProcess {MoleculeName = "C", Name = "P2"});
-         _compound2.AddProcess(new EnzymaticProcess {MoleculeName = "B", Name = "P3"});
+         _compound2.AddProcess(new EnzymaticProcess {MoleculeName = "ProjA", Name = "P1"});
+         _compound2.AddProcess(new EnzymaticProcess {MoleculeName = "ProjC", Name = "P2"});
+         _compound2.AddProcess(new EnzymaticProcess {MoleculeName = "ProjB", Name = "P3"});
 
-         _individual1 = A.Fake<Individual>();
-         _individual1.IsLoaded = false;
-         _individual2 = new Individual {IsLoaded = true};
-         _individual2.AddMolecule(new IndividualEnzyme().WithName("B"));
-         _individual2.AddMolecule(new IndividualEnzyme().WithName("D"));
+
+         _ontogenyRepository = A.Fake<IOntogenyRepository>();
+         _moleculeParameterRepository = A.Fake<IMoleculeParameterRepository>();
 
          _expressionProfile = A.Fake<ExpressionProfile>();
          _expressionProfile.IsLoaded = true;
-         A.CallTo(() => _expressionProfile.MoleculeName).Returns("E");
+         A.CallTo(() => _expressionProfile.MoleculeName).Returns("ProjE");
 
          _project.AddBuildingBlock(_compound1);
          _project.AddBuildingBlock(_compound2);
-         _project.AddBuildingBlock(_individual1);
-         _project.AddBuildingBlock(_individual2);
          _project.AddBuildingBlock(_expressionProfile);
-         sut = new UsedMoleculeRepository(_projectRetriever);
+         sut = new UsedMoleculeRepository(_projectRetriever, _ontogenyRepository, _moleculeParameterRepository);
+
+         var molParam1 = new MoleculeParameter {MoleculeName = "DbB"};
+         var molParam2 = new MoleculeParameter {MoleculeName = "DbA"};
+         A.CallTo(() => _moleculeParameterRepository.All()).Returns(new[] {molParam1, molParam2});
+
+         A.CallTo(() => _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN)).Returns(new[] {new DatabaseOntogeny {Name = "OntoC"}});
       }
    }
 
@@ -61,9 +62,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_the_distinct_molecule_names_defined_in_loaded_compounds_individuals_and_expression_profile()
+      public void should_return_the_distinct_molecule_names_defined_in_loaded_compounds_and_expression_profile_first_followed_by_the_predefined_molecule_names()
       {
-         _moleculeNames.ShouldOnlyContainInOrder("A", "B", "C", "D", "E");
+         _moleculeNames.ShouldOnlyContainInOrder("ProjA", "ProjB", "ProjC", "ProjE", "DbA", "DbB", "OntoC");
       }
    }
 }

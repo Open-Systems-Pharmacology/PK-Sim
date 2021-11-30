@@ -13,14 +13,14 @@ namespace PKSim.Presentation.Presenters
    {
    }
 
-   public class CloneExpressionProfilePresenter : AbstractDisposablePresenter<ICloneExpressionProfileView, ICloneExpressionProfilePresenter>, ICloneExpressionProfilePresenter
+   public class CloneExpressionProfilePresenter : AbstractDisposablePresenter<ICreateExpressionProfileView, ICloneExpressionProfilePresenter>, ICloneExpressionProfilePresenter
    {
       private readonly IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
       private readonly IExpressionProfileUpdater _expressionProfileUpdater;
       private readonly IExpressionProfileFactory _expressionProfileFactory;
 
       public CloneExpressionProfilePresenter(
-         ICloneExpressionProfileView view,
+         ICreateExpressionProfileView view,
          IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper, 
          IExpressionProfileUpdater expressionProfileUpdater, 
          IExpressionProfileFactory expressionProfileFactory) : base(view)
