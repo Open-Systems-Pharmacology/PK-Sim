@@ -646,7 +646,8 @@ namespace PKSim.UI.Views.ProteinExpression
          return ret;
       }
 
-      private ISeriesPoint[] customSummary(Series series, object argument, string[] functionArguments, 
+
+      private SeriesPoint[] customSummary(Series series, object argument, string[] functionArguments, 
          DataSourceValues[] values, object[] colors)
       {
          double sumCount = 0;
@@ -710,8 +711,7 @@ namespace PKSim.UI.Views.ProteinExpression
          const string STR_CUSTOM_SUMMARY_FUNCTION_NAME = "WeightedAverage";
          const string STR_CUSTOM_SUMMARY_FUNCTION_DISPLAY_NAME = "WeightedAverage";
          chart.RegisterSummaryFunction(STR_CUSTOM_SUMMARY_FUNCTION_NAME, STR_CUSTOM_SUMMARY_FUNCTION_DISPLAY_NAME, 1,
-                                       new[] {argument1Description, argument2Description},
-                                       customSummary);
+            new[] {argument1Description, argument2Description}, customSummary);
 
          chart.SeriesTemplate.NumericSummaryOptions.SummaryFunction = 
             $"{STR_CUSTOM_SUMMARY_FUNCTION_NAME}([{_fieldNormValue.FieldName + "_" + _fieldNormValue.SummaryType}],[{_fieldNormValue2.FieldName + "_" + _fieldNormValue2.SummaryType}])";
@@ -752,7 +752,7 @@ namespace PKSim.UI.Views.ProteinExpression
          chart.ObjectHotTracked += onChartControlObjectHotTracked;
       }
 
-     
+    
 
       private static void onChartControlObjectSelected(object sender, HotTrackEventArgs e)
       {
