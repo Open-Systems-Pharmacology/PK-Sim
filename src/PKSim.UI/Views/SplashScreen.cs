@@ -31,12 +31,12 @@ namespace PKSim.UI.Views
 
       public string StatusInfo
       {
-         set { lblProgress.Text = string.Format("\t{0}", value); }
+         set => lblProgress.Text = $"\t{value}";
       }
 
       public double ProgressValue
       {
-         set { progressBar.EditValue = value; }
+         set => progressBar.EditValue = value;
       }
 
       public void AttachPresenter(ISplashViewPresenter presenter)

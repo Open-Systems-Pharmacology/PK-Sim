@@ -4,10 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Services;
 using OSPSuite.Presentation.Core;
@@ -28,7 +26,6 @@ using PKSim.Infrastructure;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views;
 using PKSim.UI.Views.Core;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -103,12 +100,8 @@ namespace PKSim.UI.BootStrapping
 
       private SynchronizationContext getCurrentContext()
       {
-         var context = SynchronizationContext.Current;
-         if (context == null)
-         {
-            context = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(context);
-         }
+         var context = new WindowsFormsSynchronizationContext();
+         SynchronizationContext.SetSynchronizationContext(context);
          return SynchronizationContext.Current;
       }
 
@@ -160,7 +153,7 @@ namespace PKSim.UI.BootStrapping
          container.Resolve<IExportToPDFInvoker>();
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
-         container.RegisterImplementationOf((IChangePropagator)mainPresenter);
+         container.RegisterImplementationOf((IChangePropagator) mainPresenter);
 
          //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
          container.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
