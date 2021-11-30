@@ -111,6 +111,7 @@ namespace PKSim.Presentation.Repositories
          .WithId(ButtonGroupIds.ExportProject);
 
       private IButtonGroup createButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Create)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExpressionProfile)).WithCaption(PKSimConstants.Ribbons.ExpressionProfile))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(PKSimConstants.Ribbons.Individual))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewPopulation)).WithCaption(PKSimConstants.Ribbons.Population))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewCompound)).WithCaption(PKSimConstants.Ribbons.Compound))

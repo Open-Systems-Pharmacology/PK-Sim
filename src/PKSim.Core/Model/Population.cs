@@ -162,20 +162,29 @@ namespace PKSim.Core.Model
 
       public IndividualMolecule MoleculeByName(string moleculeName) => FirstIndividual?.MoleculeByName(moleculeName);
 
+      public TMolecules MoleculeByName<TMolecules>(string moleculeName) where TMolecules : IndividualMolecule
+         => FirstIndividual?.MoleculeByName<TMolecules>(moleculeName);
+
       public IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule
       {
          return FirstIndividual?.AllMolecules<TMolecules>() ?? Enumerable.Empty<TMolecules>();
       }
 
-      public void AddMolecule(IndividualMolecule molecule)
-      {
-         FirstIndividual?.AddMolecule(molecule);
-      }
+      public ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule) => FirstIndividual?.ExpressionProfileFor(molecule);
 
-      public void RemoveMolecule(IndividualMolecule molecule)
-      {
-         FirstIndividual?.RemoveMolecule(molecule);
-      }
+      public void AddExpressionProfile(ExpressionProfile expressionProfile) => FirstIndividual?.AddExpressionProfile(expressionProfile);
+
+      public void RemoveExpressionProfile(ExpressionProfile expressionProfile) => FirstIndividual?.RemoveExpressionProfile(expressionProfile);
+
+      public IReadOnlyList<ExpressionProfile> AllExpressionProfiles() => FirstIndividual?.AllExpressionProfiles() ?? Array.Empty<ExpressionProfile>();
+
+      public IndividualMolecule MoleculeFor(ExpressionProfile expressionProfile) => FirstIndividual?.MoleculeFor(expressionProfile);
+
+      public bool Uses(ExpressionProfile expressionProfile) => FirstIndividual?.Uses(expressionProfile) ?? false;
+
+      public void AddMolecule(IndividualMolecule molecule) => FirstIndividual?.AddMolecule(molecule);
+
+      public void RemoveMolecule(IndividualMolecule molecule) => FirstIndividual?.RemoveMolecule(molecule);
 
       Individual ISimulationSubject.Individual => FirstIndividual;
 
@@ -191,10 +200,7 @@ namespace PKSim.Core.Model
          return AllVectorialParameters(entityPathResolver).Where(p => !p.IsChangedByCreateIndividual);
       }
 
-      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters)
-      {
-         Add(advancedParameters);
-      }
+      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters) => Add(advancedParameters);
 
       private AdvancedParameterCollection advancedParameterCollection
       {

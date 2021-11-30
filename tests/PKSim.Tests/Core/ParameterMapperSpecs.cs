@@ -21,6 +21,7 @@ namespace PKSim.Core
       protected IOSPSuiteLogger _logger;
       protected ValueOriginMapper _valueOriginMapper;
       protected ValueOrigin _snapshotValueOrigin;
+      private IContainerTask _containerTask;
 
       protected override Task Context()
       {
@@ -28,8 +29,8 @@ namespace PKSim.Core
          _valueOriginMapper = A.Fake<ValueOriginMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _logger = A.Fake<IOSPSuiteLogger>();
-
-         sut = new ParameterMapper(_tableFormulaMapper, _valueOriginMapper, _entityPathResolver, _logger);
+         _containerTask = new ContainerTaskForSpecs();
+         sut = new ParameterMapper(_tableFormulaMapper, _valueOriginMapper, _entityPathResolver, _logger, _containerTask);
 
          //5 mm is the value
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10)
@@ -284,11 +285,10 @@ namespace PKSim.Core
 
          _localParameter = new LocalizedParameter
          {
-            Path = "LOCALIZED_PATH",
+            Path = "ORG|P1",
             Value = 5,
             Unit = _parameter.DisplayUnit.Name
          };
-         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_localParameter.Path);
       }
 
       protected override async Task Because()
@@ -315,7 +315,7 @@ namespace PKSim.Core
 
          _localParameter = new LocalizedParameter
          {
-            Path = "UNKNOW_PATH",
+            Path = "UNKNOWN_PATH",
          };
       }
 
@@ -362,7 +362,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_snaphsot_parameter_by_name_that_is_not_found_in_the_container : concern_for_ParameterMapper
+   public class When_mapping_a_snapshot_parameter_by_name_that_is_not_found_in_the_container : concern_for_ParameterMapper
    {
       private Container _container;
       private SnapshotParameter _snapshot;

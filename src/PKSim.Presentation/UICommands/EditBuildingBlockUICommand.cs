@@ -76,6 +76,13 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
+   public class EditExpressionProfileCommand : EditBuildingBlockUICommand<ExpressionProfile, IExpressionProfileTask>
+   {
+      public EditExpressionProfileCommand(IExpressionProfileTask expressionProfileTask) : base(expressionProfileTask)
+      {
+      }
+   }
+
    public class EditPopulationCommand : EditBuildingBlockUICommand<Population, IPopulationTask>
    {
       public EditPopulationCommand(IPopulationTask populationTask) : base(populationTask)

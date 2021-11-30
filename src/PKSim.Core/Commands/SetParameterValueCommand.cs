@@ -22,28 +22,28 @@ namespace PKSim.Core.Commands
       {
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
          _oldValue = retrieveValue();
 
-         if (_parameter.IsFixedValue && _fixedValueSetHere)
+         if (parameter.IsFixedValue && _fixedValueSetHere)
          {
             //Inverse command need to reset the value as it was before the execution
-            var bbParameter = OriginParameterFor(_parameter, context);
-            ResetParameter(_parameter);
+            var bbParameter = OriginParameterFor(parameter, context);
+            ResetParameter(parameter);
             ResetParameter(bbParameter);
             _fixedValueSetHere = false;
          }
          else
          {
-            if (_parameter.IsFixedValue == false)
+            if (parameter.IsFixedValue == false)
                _fixedValueSetHere = true;
 
             UpdateParameter(context);
          }
 
 
-         Description = ParameterMessages.SetParameterValue(_parameter, context.DisplayNameFor(_parameter), _oldValue, _valueToSet);
+         Description = ParameterMessages.SetParameterValue(parameter, context.DisplayNameFor(parameter), _oldValue, _valueToSet);
       }
 
       private double retrieveValue()

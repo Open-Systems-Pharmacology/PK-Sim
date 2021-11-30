@@ -33,13 +33,13 @@ namespace PKSim.Presentation.Services
       private readonly ISingleStartPresenterTask _singleStartPresenterTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly ISimulationReferenceUpdater _simulationReferenceUpdater;
 
       public BuildingBlockTask(IExecutionContext executionContext,
          IApplicationController applicationController,
          IDialogCreator dialogCreator,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IBuildingBlockInProjectManager buildingBlockInProjectManager,
          IEntityTask entityTask,
          ITemplateTaskQuery templateTaskQuery,
          ISingleStartPresenterTask singleStartPresenterTask,
@@ -51,7 +51,7 @@ namespace PKSim.Presentation.Services
          _executionContext = executionContext;
          _applicationController = applicationController;
          _dialogCreator = dialogCreator;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _entityTask = entityTask;
          _templateTaskQuery = templateTaskQuery;
          _singleStartPresenterTask = singleStartPresenterTask;
@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Services
       public void Clone<TBuildingBlock>(TBuildingBlock buildingBlockToClone) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          Load(buildingBlockToClone);
-         using (var clonePresenter = _applicationController.Start<ICloneBuildingBlockPresenter>())
+         using (var clonePresenter = getCloneBuildingBlockPresenter(buildingBlockToClone))
          {
             var clone = clonePresenter.CreateCloneFor(buildingBlockToClone);
             if (clone == null) return;
@@ -89,6 +89,18 @@ namespace PKSim.Presentation.Services
          }
       }
 
+      private ICloneBuildingBlockPresenter getCloneBuildingBlockPresenter(IPKSimBuildingBlock buildingBlockToClone)
+      {
+         switch (buildingBlockToClone)
+         {
+            case ExpressionProfile _:
+               return _applicationController.Start<ICloneExpressionProfilePresenter>();
+            default:
+               return _applicationController.Start<ICloneBuildingBlockPresenter>();
+         }
+      }
+
+
       public bool Delete<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocksToDelete) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (!buildingBlocksToDelete.Any())
@@ -98,9 +110,9 @@ namespace PKSim.Presentation.Services
 
          foreach (var buildingBlockToDelete in buildingBlocksToDelete)
          {
-            var simulationsUsingBuildingBlockToDelete = _buildingBlockInSimulationManager.SimulationsUsing(buildingBlockToDelete).ToList();
-            if (simulationsUsingBuildingBlockToDelete.Any())
-               throw new CannotDeleteBuildingBlockException(buildingBlockToDelete.Name, buildingBlockType, simulationsUsingBuildingBlockToDelete);
+            var buildingBlockUsingBuildingBlockToDelete = _buildingBlockInProjectManager.BuildingBlockUsing(buildingBlockToDelete).ToList();
+            if (buildingBlockUsingBuildingBlockToDelete.Any())
+               throw new CannotDeleteBuildingBlockException(buildingBlockToDelete.Name, buildingBlockType, buildingBlockUsingBuildingBlockToDelete);
          }
 
          var viewResult = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(buildingBlockType, buildingBlocksToDelete.AllNames().ToArray()));
@@ -153,7 +165,7 @@ namespace PKSim.Presentation.Services
       {
          if (buildingBlockToRename.IsAnImplementationOf<Compound>())
          {
-            var simulationsUsingBuildingBlockToDelete = _buildingBlockInSimulationManager.SimulationsUsing(buildingBlockToRename).ToList();
+            var simulationsUsingBuildingBlockToDelete = _buildingBlockInProjectManager.SimulationsUsing(buildingBlockToRename).ToList();
             if (simulationsUsingBuildingBlockToDelete.Any())
                throw new CannotRenameCompoundException(buildingBlockToRename.Name, simulationsUsingBuildingBlockToDelete);
          }

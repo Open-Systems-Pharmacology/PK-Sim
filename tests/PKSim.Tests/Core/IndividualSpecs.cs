@@ -87,14 +87,14 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_true_if_the_underying_species_is_human()
+      public void should_return_true_if_the_underlying_species_is_human()
       {
          _originData.Species = _human;
          sut.IsHuman.ShouldBeTrue();
       }
 
       [Observation]
-      public void should_return_false_if_the_underying_species_is_not_human()
+      public void should_return_false_if_the_underlying_species_is_not_human()
       {
          _originData.Species = _notHuman;
          sut.IsHuman.ShouldBeFalse();

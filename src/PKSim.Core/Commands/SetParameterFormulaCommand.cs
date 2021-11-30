@@ -33,11 +33,11 @@ namespace PKSim.Core.Commands
          return new SetParameterFormulaCommand(_parameter, _formulaToSet).AsInverseFor(this);
       }
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
-         _serializationStream = context.Serialize(_parameter.Formula);
+         _serializationStream = context.Serialize(parameter.Formula);
          UpdateParameter(context);
-         Description = ParameterMessages.SetParameterFormula(context.DisplayNameFor(_parameter));
+         Description = ParameterMessages.SetParameterFormula(context.DisplayNameFor(parameter));
       }
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)

@@ -37,7 +37,7 @@ namespace PKSim.Core.Commands
       {
          _oldAltered = _usedBuildingBlock.Altered;
          _usedBuildingBlock.Altered = _altered;
-         var buildingBlockInSimulationManager = context.Resolve<IBuildingBlockInSimulationManager>();
+         var buildingBlockInSimulationManager = context.Resolve<IBuildingBlockInProjectManager>();
          buildingBlockInSimulationManager.UpdateBuildingBlockNamesUsedIn(_simulation);
 
          context.PublishEvent(new SimulationStatusChangedEvent(_simulation));

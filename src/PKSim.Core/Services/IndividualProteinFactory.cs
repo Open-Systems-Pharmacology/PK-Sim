@@ -27,6 +27,9 @@ namespace PKSim.Core.Services
       {
          var molecule = CreateMolecule(moleculeName);
 
+         if(HasAgeParameter(simulationSubject))
+            AddOntogenyParameterTo(molecule);
+
          //default localization
          molecule.Localization = Localization.Intracellular;
 

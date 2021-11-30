@@ -63,7 +63,7 @@ namespace PKSim.UI.Views
             if (_presenter != null)
                _presenter.AllowEmptySelection = _allowEmptySelection;
          }
-         get { return _allowEmptySelection; }
+         get => _allowEmptySelection;
       }
 
       public void BindTo<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : IPKSimBuildingBlock
@@ -76,5 +76,15 @@ namespace PKSim.UI.Views
       public string BuildingBlockType => _presenter.BuildingBlockType;
 
       public override bool HasError => !_presenter.CanClose;
+
+      public Func<IPKSimBuildingBlock, bool> ExtraFilter
+      {
+         set
+         {
+            if(_presenter!=null)
+               _presenter.ExtraFilter = value;
+
+         }
+      }
    }
 }

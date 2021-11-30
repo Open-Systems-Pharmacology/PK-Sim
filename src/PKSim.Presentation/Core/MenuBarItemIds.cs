@@ -46,6 +46,11 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId LoadProtocol = createMenuBarItemId("LoadProtocol");
       public static MenuBarItemId NewObserverSet = createMenuBarItemId("NewObserverSet");
       public static MenuBarItemId LoadObserverSet = createMenuBarItemId("LoadObserverSet");
+      public static MenuBarItemId NewExpressionProfile = createMenuBarItemId("NewExpressionProfile");
+      public static MenuBarItemId NewExpressionProfileEnzyme = createMenuBarItemId("NewExpressionProfileEnzyme");
+      public static MenuBarItemId NewExpressionProfileTransporter = createMenuBarItemId("NewExpressionProfileTransporter");
+      public static MenuBarItemId NewExpressionProfileSpecificBindingPartner = createMenuBarItemId("NewExpressionProfileSpecificBindingPartner");
+      public static MenuBarItemId LoadExpressionProfile = createMenuBarItemId("LoadExpressionProfile");
       public static MenuBarItemId NewFormulation = createMenuBarItemId("NewFormulation");
       public static MenuBarItemId LoadFormulationFromTemplate = createMenuBarItemId("LoadFormulationFromTemplate");
       public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");

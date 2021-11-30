@@ -9,7 +9,18 @@ namespace PKSim.Core.Services
    public interface IIndividualModelTask
    {
       void CreateModelFor(Individual individual);
+      /// <summary>
+      /// Creates the model structure (containers and neighborhoods)
+      /// </summary>
+      /// <param name="individual"></param>
       void CreateModelStructureFor(Individual individual);
+
+      /// <summary>
+      /// Creates the organ structure (containers only)
+      /// </summary>
+      /// <param name="individual"></param>
+      void CreateOrganStructureFor(Individual individual);
+      
       IParameter MeanAgeFor(OriginData originData);
       IParameter MeanGestationalAgeFor(OriginData originData);
       IParameter MeanWeightFor(OriginData originData);
@@ -51,6 +62,11 @@ namespace PKSim.Core.Services
          addModelStructureTo(individual.Neighborhoods, individual.OriginData, addParameter: true);
 
          _buildingBlockFinalizer.Finalize(individual);
+      }
+
+      public void CreateOrganStructureFor(Individual individual)
+      {
+         addModelStructureTo(individual.Organism, individual.OriginData, addParameter: false);
       }
 
       public void CreateModelStructureFor(Individual individual)

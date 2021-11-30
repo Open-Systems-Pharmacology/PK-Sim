@@ -17,11 +17,11 @@ namespace PKSim.Core.Commands
 
       private IDistributedParameter distributedParameter => _parameter.DowncastTo<IDistributedParameter>();
 
-      protected override void ExecuteUpdateParameter(IExecutionContext context)
+      protected override void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context)
       {
          _oldPercentile = distributedParameter.Percentile;
          UpdateParameter(context);
-         Description = ParameterMessages.SetParameterPercentile(context.DisplayNameFor(_parameter), _oldPercentile, _percentile);
+         Description = ParameterMessages.SetParameterPercentile(context.DisplayNameFor(parameter), _oldPercentile, _percentile);
       }
 
       protected override void UpdateParameter(IParameter parameter, IExecutionContext context)

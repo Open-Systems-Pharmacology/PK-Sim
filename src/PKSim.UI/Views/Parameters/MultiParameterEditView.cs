@@ -238,26 +238,26 @@ namespace PKSim.UI.Views.Parameters
 
       public IEnumerable<ParameterDTO> AllVisibleParameters => gridView.DataController.GetAllFilteredAndSortedRows().Cast<ParameterDTO>();
 
-         public IReadOnlyList<ParameterDTO> SelectedParameters
+      public IReadOnlyList<ParameterDTO> SelectedParameters
+      {
+         get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
+         set
          {
-            get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
-            set
-            {
-               if (!value.Any())
-                  return;
+            if (!value.Any())
+               return;
 
-               //Need to clear selection before setting another one programatically. Otherwise they overlap
-               gridView.ClearSelection();
+            //Need to clear selection before setting another one programatically. Otherwise they overlap
+            gridView.ClearSelection();
 
-               var firstRowHandle = _gridViewBinder.RowHandleFor(value.First());
-               var lastRowHandle = _gridViewBinder.RowHandleFor(value.Last());
-               gridView.SelectRows(firstRowHandle, lastRowHandle);
+            var firstRowHandle = _gridViewBinder.RowHandleFor(value.First());
+            var lastRowHandle = _gridViewBinder.RowHandleFor(value.Last());
+            gridView.SelectRows(firstRowHandle, lastRowHandle);
 
-               //Required to ensure that the background is still selected
-               if (firstRowHandle == lastRowHandle)
-                  gridView.FocusedRowHandle = firstRowHandle;
-            }
+            //Required to ensure that the background is still selected
+            if (firstRowHandle == lastRowHandle)
+               gridView.FocusedRowHandle = firstRowHandle;
          }
+      }
 
       public void SaveEditor()
       {

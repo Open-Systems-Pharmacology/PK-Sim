@@ -63,16 +63,16 @@
          // 
          // panelExpressionParameters
          // 
-         this.panelExpressionParameters.Location = new System.Drawing.Point(164, 98);
+         this.panelExpressionParameters.Location = new System.Drawing.Point(162, 96);
          this.panelExpressionParameters.Name = "panelExpressionParameters";
-         this.panelExpressionParameters.Size = new System.Drawing.Size(258, 320);
+         this.panelExpressionParameters.Size = new System.Drawing.Size(262, 324);
          this.panelExpressionParameters.TabIndex = 10;
          // 
          // panelMoleculeParameters
          // 
-         this.panelMoleculeParameters.Location = new System.Drawing.Point(176, 35);
+         this.panelMoleculeParameters.Location = new System.Drawing.Point(167, 26);
          this.panelMoleculeParameters.Name = "panelMoleculeParameters";
-         this.panelMoleculeParameters.Size = new System.Drawing.Size(234, 47);
+         this.panelMoleculeParameters.Size = new System.Drawing.Size(252, 65);
          this.panelMoleculeParameters.TabIndex = 9;
          // 
          // layoutControlGroup1
@@ -94,6 +94,7 @@
             this.layoutItemMoleculeParameters});
          this.layoutGroupMoleculeParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupMoleculeParameters.Name = "layoutGroupMoleculeParameters";
+         this.layoutGroupMoleculeParameters.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutGroupMoleculeParameters.Size = new System.Drawing.Size(424, 96);
          // 
          // layoutItemMoleculeParameters
@@ -101,7 +102,7 @@
          this.layoutItemMoleculeParameters.Control = this.panelMoleculeParameters;
          this.layoutItemMoleculeParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutItemMoleculeParameters.Name = "layoutItemMoleculeParameters";
-         this.layoutItemMoleculeParameters.Size = new System.Drawing.Size(400, 51);
+         this.layoutItemMoleculeParameters.Size = new System.Drawing.Size(418, 69);
          this.layoutItemMoleculeParameters.TextSize = new System.Drawing.Size(159, 13);
          // 
          // layoutItemExpressionParameters
@@ -109,6 +110,7 @@
          this.layoutItemExpressionParameters.Control = this.panelExpressionParameters;
          this.layoutItemExpressionParameters.Location = new System.Drawing.Point(0, 96);
          this.layoutItemExpressionParameters.Name = "layoutItemExpressionParameters";
+         this.layoutItemExpressionParameters.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutItemExpressionParameters.Size = new System.Drawing.Size(424, 324);
          this.layoutItemExpressionParameters.TextSize = new System.Drawing.Size(159, 13);
          // 

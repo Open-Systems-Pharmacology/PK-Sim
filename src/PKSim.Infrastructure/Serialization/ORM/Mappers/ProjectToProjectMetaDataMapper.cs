@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
@@ -11,7 +12,6 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Core.Import;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 {
@@ -35,7 +35,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       IVisitor<RandomPopulation>,
       IVisitor<PKSimEvent>,
       IVisitor<ImportPopulation>,
-      IVisitor<ObserverSet>
+      IVisitor<ObserverSet>,
+      IVisitor<ExpressionProfile>
    {
       private readonly ICompressedSerializationManager _serializationManager;
       private readonly ISimulationToSimulationMetaDataMapper _simulationMetaDataMapper;
@@ -164,10 +165,38 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       public void Visit(Individual individual)
       {
-         _metaData = new IndividualMetaData();
+         _metaData = new IndividualMetaData
+         {
+            ExpressionProfileIds = expressionProfileIdsFor(individual)
+         };
          serializeContentFor(individual);
          _metaData.Properties.Data = _serializationManager.Serialize(individual.OriginData);
       }
+
+      public void Visit(RandomPopulation randomPopulation)
+      {
+         _metaData = new RandomPopulationMetaData
+         {
+            ExpressionProfileIds = expressionProfileIdsFor(randomPopulation)
+         };
+         //no need to compress population data. This is mostly only double arrays
+         serializeContentFor(randomPopulation, compress: false);
+         _metaData.Properties.Data = _serializationManager.Serialize(randomPopulation.Settings);
+      }
+
+      public void Visit(ImportPopulation importPopulation)
+      {
+         _metaData = new ImportPopulationMetaData
+         {
+            ExpressionProfileIds = expressionProfileIdsFor(importPopulation)
+         };
+         //no need to compress population data. This is mostly only double arrays
+         serializeContentFor(importPopulation, compress: false);
+         _metaData.Properties.Data = _serializationManager.Serialize(importPopulation.Settings);
+      }
+
+      private string expressionProfileIdsFor(ISimulationSubject simulationSubject)
+         => simulationSubject.AllExpressionProfiles().Select(x => x.Id).ToString("|");
 
       private void serializeContentFor(IPKSimBuildingBlock buildingBlock, bool compress = true)
       {
@@ -211,14 +240,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          serializeContentFor(formulation);
       }
 
-      public void Visit(RandomPopulation randomPopulation)
-      {
-         _metaData = new RandomPopulationMetaData();
-         //no need to compress population data. This is mostly only double arrays
-         serializeContentFor(randomPopulation, compress: false);
-         _metaData.Properties.Data = _serializationManager.Serialize(randomPopulation.Settings);
-      }
-
+   
       public void Visit(PKSimEvent pkSimEvent)
       {
          _metaData = new EventMetaData();
@@ -231,14 +253,11 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          serializeContentFor(observerSet);
       }
 
-      public void Visit(ImportPopulation importPopulation)
-      {
-         _metaData = new ImportPopulationMetaData();
-         //no need to compress population data. This is mostly only double arrays
-         serializeContentFor(importPopulation, compress: false);
-         _metaData.Properties.Data = _serializationManager.Serialize(importPopulation.Settings);
-      }
 
-    
+      public void Visit(ExpressionProfile expressionProfile)
+      {
+         _metaData = new ExpressionProfileMetaData();
+         serializeContentFor(expressionProfile);
+      }
    }
 }

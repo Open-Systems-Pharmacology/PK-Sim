@@ -12,6 +12,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -235,6 +236,8 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          {
             _view.ActivateControl(ExpressionItems.ProteinSelection);
             PresenterAt(ExpressionItems.ProteinSelection).ActualizeSelection();
+            if(querySettings.MoleculeName.StringIsNotEmpty())
+               PresenterAt(ExpressionItems.ProteinSelection).InitWithProteinName(querySettings.MoleculeName);
             SetWizardButtonEnabled(ExpressionItems.ProteinSelection);
          }
       }

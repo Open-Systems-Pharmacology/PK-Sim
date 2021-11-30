@@ -53,17 +53,17 @@ namespace PKSim.Presentation.Presenters.Simulations
    public class SimulationCompoundsSelectionPresenter : AbstractSubPresenter<ISimulationCompoundsSelectionView, ISimulationCompoundsSelectionPresenter>, ISimulationCompoundsSelectionPresenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly ICompoundTask _compoundTask;
       private readonly IBuildingBlockSelectionDisplayer _buildingBlockSelectionDisplayer;
       private readonly NotifyList<CompoundSelectionDTO> _compoundSelectionDTOs;
 
       public SimulationCompoundsSelectionPresenter(ISimulationCompoundsSelectionView view, IBuildingBlockRepository buildingBlockRepository,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager, ICompoundTask compoundTask, IBuildingBlockSelectionDisplayer buildingBlockSelectionDisplayer)
+         IBuildingBlockInProjectManager buildingBlockInProjectManager, ICompoundTask compoundTask, IBuildingBlockSelectionDisplayer buildingBlockSelectionDisplayer)
          : base(view)
       {
          _buildingBlockRepository = buildingBlockRepository;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _compoundTask = compoundTask;
          _buildingBlockSelectionDisplayer = buildingBlockSelectionDisplayer;
          _compoundSelectionDTOs = new NotifyList<CompoundSelectionDTO>();
@@ -73,7 +73,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void EditSimulation(Simulation simulation, CreationMode creationMode)
       {
-         bindToCompounds(_buildingBlockInSimulationManager.TemplateBuildingBlocksUsedBy<Compound>(simulation));
+         bindToCompounds(_buildingBlockInProjectManager.TemplateBuildingBlocksUsedBy<Compound>(simulation));
       }
 
       public void UpdateSelectedCompound(Compound templateCompound)

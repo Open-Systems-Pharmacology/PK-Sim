@@ -22,7 +22,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       private readonly ISimulationCompoundProtocolFormulationPresenter _simulationCompoundProtocolFormulationPresenter;
       private readonly ILazyLoadTask _lazyLoadTask;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private Simulation _simulation;
       private ProtocolSelectionDTO _protocolSelectionDTO;
       private ProtocolProperties _protocolProperties;
@@ -32,12 +32,12 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public SimulationCompoundProtocolPresenter(ISimulationCompoundProtocolView view,
          ISimulationCompoundProtocolFormulationPresenter simulationCompoundProtocolFormulationPresenter,
-         ILazyLoadTask lazyLoadTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager)
+         ILazyLoadTask lazyLoadTask, IBuildingBlockInProjectManager buildingBlockInProjectManager)
          : base(view)
       {
          _simulationCompoundProtocolFormulationPresenter = simulationCompoundProtocolFormulationPresenter;
          _lazyLoadTask = lazyLoadTask;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _view.AddFormulationMappingView(_simulationCompoundProtocolFormulationPresenter.View);
          _simulationCompoundProtocolFormulationPresenter.StatusChanged += onFormulationChanged;
       }
@@ -53,7 +53,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _simulation = simulation;
          Compound = compound;
          _protocolProperties = simulation.CompoundPropertiesFor(compound).ProtocolProperties;
-         var templateProtocol = _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy(_simulation,_protocolProperties.Protocol);
+         var templateProtocol = _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy(_simulation,_protocolProperties.Protocol);
          _protocolSelectionDTO = new ProtocolSelectionDTO { BuildingBlock = templateProtocol };
          _view.BindTo(_protocolSelectionDTO);
          updateActiveProtcol();

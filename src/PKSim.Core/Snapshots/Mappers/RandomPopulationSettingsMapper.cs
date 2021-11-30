@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class RandomPopulationSettingsMapper : SnapshotMapperBase<RandomPopulationSettings, PopulationSettings>
+   public class RandomPopulationSettingsMapper : SnapshotMapperBase<RandomPopulationSettings, PopulationSettings, PKSimProject>, ISnapshotMapperWithProjectAsContext<RandomPopulationSettings, PopulationSettings>
    {
       private readonly ParameterRangeMapper _parameterRangeMapper;
       private readonly IGenderRepository _genderRepository;
@@ -49,9 +50,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterRangeMapper.MapToModel(parameterRange, randomPopulationSettings.ParameterRange(parameterName));
       }
 
-      public override async Task<RandomPopulationSettings> MapToModel(PopulationSettings snapshot)
+      public override async Task<RandomPopulationSettings> MapToModel(PopulationSettings snapshot, PKSimProject project)
       {
-           var individual = await _individualMapper.MapToModel(snapshot.Individual);
+         var individual = await _individualMapper.MapToModel(snapshot.Individual, project);
          var settings = _populationSettingsMapper.MapFrom(individual);
          settings.NumberOfIndividuals = snapshot.NumberOfIndividuals;
          updateGenderRatios(settings, snapshot);
@@ -82,5 +83,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var female = _genderRepository.Female;
          return randomPopulationSettings.GenderRatio(female)?.Ratio;
       }
+
+    
    }
 }

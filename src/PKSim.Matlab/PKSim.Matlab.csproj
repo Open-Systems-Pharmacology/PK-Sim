@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.3" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.16" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +41,10 @@
     <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj" />
     <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mappers\" />
   </ItemGroup>
 
 </Project>

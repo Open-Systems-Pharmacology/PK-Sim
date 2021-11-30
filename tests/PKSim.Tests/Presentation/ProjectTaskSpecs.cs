@@ -39,7 +39,7 @@ namespace PKSim.Presentation
       protected IJournalTask _journalTask;
       protected IJournalRetriever _journalRetriever;
       protected ISnapshotTask _snapshotTask;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected Simulation _simulation;
 
       public override Task GlobalContext()
@@ -54,7 +54,7 @@ namespace PKSim.Presentation
          _journalTask = A.Fake<IJournalTask>();
          _journalRetriever = A.Fake<IJournalRetriever>();
          _snapshotTask = A.Fake<ISnapshotTask>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _workspace.Project = _project;
          _workspace.WorkspaceLayout = new WorkspaceLayout();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
@@ -65,7 +65,7 @@ namespace PKSim.Presentation
 
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings,
-            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
+            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager);
 
          _oldFileExitst = FileHelper.FileExists;
 
@@ -266,12 +266,12 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_asked_to_close_a_project_that_has_changed_and_the_save_action_is_not_successfull : concern_for_ProjectTask
+   public class When_asked_to_close_a_project_that_has_changed_and_the_save_action_is_not_successful : concern_for_ProjectTask
    {
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -625,7 +625,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInSimulationManager);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -867,7 +867,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
          A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(true);
       }
 
@@ -888,7 +888,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
          A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(true);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
@@ -910,7 +910,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
          A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(true);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }
@@ -953,7 +953,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Green);
          A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(false);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
@@ -975,7 +975,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
          A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(false);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
@@ -997,7 +997,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
+         A.CallTo(() => _buildingBlockInProjectManager.StatusFor(_simulation)).Returns(BuildingBlockStatus.Red);
          A.CallTo(() => _snapshotTask.IsVersionCompatibleWithSnapshotExport(_project)).Returns(false);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }

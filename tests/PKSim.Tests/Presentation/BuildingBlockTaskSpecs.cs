@@ -33,7 +33,7 @@ namespace PKSim.Presentation
       protected IRenameObjectPresenter _renamePresenter;
       protected IDialogCreator _dialogCreator;
       protected PKSimProject _project;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected IEntityTask _entityTask;
       protected ITemplateTaskQuery _templateTaskQuery;
       protected ISingleStartPresenterTask _singleStartPresenterTask;
@@ -50,7 +50,7 @@ namespace PKSim.Presentation
          _executionContext = A.Fake<IExecutionContext>();
          A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
          _applicationController = A.Fake<IApplicationController>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _clonePresenter = A.Fake<ICloneBuildingBlockPresenter>();
          _renamePresenter = A.Fake<IRenameObjectPresenter>();
@@ -64,7 +64,7 @@ namespace PKSim.Presentation
             _executionContext,
             _applicationController,
             _dialogCreator,
-            _buildingBlockInSimulationManager,
+            _buildingBlockInProjectManager,
             _entityTask,
             _templateTaskQuery,
             _singleStartPresenterTask,
@@ -166,7 +166,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
          A.CallTo(() => _buildingBlock.Name).Returns("toto");
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
@@ -199,7 +199,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
          _buildingBlock.Id = "toto";
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
@@ -236,7 +236,7 @@ namespace PKSim.Presentation
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
          A.CallTo(() => _executionContext.Load(_buildingBlock)).Throws(new OSPSuiteException());
       }
@@ -301,7 +301,7 @@ namespace PKSim.Presentation
          _buildingBlock.Id = "toto";
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new[] {_simulation1});
+         A.CallTo(() => _buildingBlockInProjectManager.BuildingBlockUsing(_buildingBlock)).Returns(new[] {_simulation1});
       }
 
       [Observation]

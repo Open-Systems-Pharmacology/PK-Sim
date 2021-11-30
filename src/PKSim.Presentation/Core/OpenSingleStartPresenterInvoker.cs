@@ -33,6 +33,7 @@ namespace PKSim.Presentation.Core
       IVisitor<ParameterIdentification>,
       IVisitor<SensitivityAnalysis>,
       IVisitor<ObserverSet>,
+      IVisitor<ExpressionProfile>,
       IVisitor<IEnumerable<DataRepository>>,
       IStrictVisitor
    {
@@ -46,11 +47,11 @@ namespace PKSim.Presentation.Core
          _commandCollector = commandCollector;
       }
 
-      public ISingleStartPresenter OpenPresenterFor<T>(T suject)
+      public ISingleStartPresenter OpenPresenterFor<T>(T subject)
       {
          try
          {
-            this.Visit(suject);
+            this.Visit(subject);
             return _presenter;
          }
          finally
@@ -64,84 +65,38 @@ namespace PKSim.Presentation.Core
          _presenter = _applicationController.Open(objectToVisit, _commandCollector);
       }
 
-      public void Visit(Individual objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(Individual objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(Compound objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(Compound objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(Protocol objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(Protocol objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(IndividualSimulation objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(IndividualSimulation objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(PopulationSimulation objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(PopulationSimulation objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(RandomPopulation objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(RandomPopulation objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(Formulation objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(Formulation objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(PKSimEvent objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(PKSimEvent objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(IndividualSimulationComparison objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(IndividualSimulationComparison objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(ImportPopulation objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(ImportPopulation objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(PopulationSimulationComparison objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(PopulationSimulationComparison objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(DataRepository objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(DataRepository objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(IEnumerable<DataRepository> objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(IEnumerable<DataRepository> objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(ParameterIdentification objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(ParameterIdentification objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(SensitivityAnalysis objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(SensitivityAnalysis objToVisit) => openPresenter(objToVisit);
 
-      public void Visit(ObserverSet objToVisit)
-      {
-         openPresenter(objToVisit);
-      }
+      public void Visit(ObserverSet objToVisit) => openPresenter(objToVisit);
+
+      public void Visit(ExpressionProfile objToVisit) => openPresenter(objToVisit);
    }
 }

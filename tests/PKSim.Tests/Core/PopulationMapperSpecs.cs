@@ -105,14 +105,16 @@ namespace PKSim.Core
       private RandomPopulation _newPopulation;
       private RandomPopulation _randomPopulation;
       private RandomPopulationSettings _newPopulationSettings;
+      private PKSimProject _project;
 
       protected override async Task Context()
       {
          await base.Context();
+         _project = new PKSimProject();
          _randomPopulation = CreateRandomPopulation();
          _newPopulationSettings = new RandomPopulationSettings();
          _snapshot = await sut.MapToSnapshot(_randomPopulation);
-         A.CallTo(() => _randomPopulationSettingsMapper.MapToModel(_snapshot.Settings)).Returns(_newPopulationSettings);
+         A.CallTo(() => _randomPopulationSettingsMapper.MapToModel(_snapshot.Settings, _project)).Returns(_newPopulationSettings);
          var mappedPopulation = A.Fake<RandomPopulation>();
          mappedPopulation.SetAdvancedParameters(new AdvancedParameterCollection());
          A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed, false)).Returns(mappedPopulation);
@@ -120,11 +122,11 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newPopulation = await sut.MapToModel(_snapshot) as RandomPopulation;
+         _newPopulation = await sut.MapToModel(_snapshot, _project) as RandomPopulation;
       }
 
       [Observation]
-      public void should_use_the_snapshot_seed_and_seettings_to_create_the_population()
+      public void should_use_the_snapshot_seed_and_settings_to_create_the_population()
       {
          A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed,false)).MustHaveHappened();
       }

@@ -57,7 +57,7 @@ namespace PKSim.Presentation.DTO
                case TemplateDatabaseType.System:
                   return ApplicationIcons.Settings;
                case TemplateDatabaseType.Remote:
-                  return ApplicationIcons.Up;
+                  return ApplicationIcons.OSPSuite;
                default:
                   throw new ArgumentOutOfRangeException();
             }

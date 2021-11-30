@@ -11,6 +11,8 @@ namespace PKSim.Core.Model
 {
    public class Individual : PKSimBuildingBlock, ISimulationSubject
    {
+      private readonly List<ExpressionProfile> _allExpressionProfiles = new List<ExpressionProfile>();
+
       /// <summary>
       ///    Seed used to initialize the random generator while creating the individual
       /// </summary>
@@ -45,10 +47,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the available genders defined for the population in which the individual belongs
       /// </summary>
-      public virtual IEnumerable<Gender> AvailableGenders()
-      {
-         return OriginData.SpeciesPopulation.Genders;
-      }
+      public virtual IEnumerable<Gender> AvailableGenders() => OriginData.SpeciesPopulation.Genders;
 
       public virtual bool IsAgeDependent => OriginData.SpeciesPopulation.IsAgeDependent;
 
@@ -84,6 +83,27 @@ namespace PKSim.Core.Model
       /// </summary>
       /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
       public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
+
+      public ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule) => AllExpressionProfiles().Find(x => string.Equals(x.MoleculeName, molecule.Name));
+
+      public void AddExpressionProfile(ExpressionProfile expressionProfile)
+      {
+         if (Uses(expressionProfile))
+            return;
+
+         _allExpressionProfiles.Add(expressionProfile);
+      }
+
+      public void RemoveExpressionProfile(ExpressionProfile expressionProfile) => _allExpressionProfiles.Remove(expressionProfile);
+
+      public IReadOnlyList<ExpressionProfile> AllExpressionProfiles() => _allExpressionProfiles;
+
+      public IndividualMolecule MoleculeFor(ExpressionProfile expressionProfile)
+      {
+         return MoleculeByName(expressionProfile.MoleculeName);
+      }
+
+      public bool Uses(ExpressionProfile expressionProfile) => _allExpressionProfiles.Contains(expressionProfile);
 
       public virtual void AddMolecule(IndividualMolecule molecule) => Add(molecule);
 
@@ -158,6 +178,11 @@ namespace PKSim.Core.Model
       public virtual IParameter WeightParameter => Organism.Parameter(CoreConstants.Parameters.WEIGHT);
 
       /// <summary>
+      ///    Actual age of the individual
+      /// </summary>
+      public virtual IParameter AgeParameter => Organism.Parameter(CoreConstants.Parameters.AGE);
+
+      /// <summary>
       ///    Returns <c>true</c> if at least one molecule is defined in the individual otherwise false
       /// </summary>
       public bool HasMolecules() => HasMolecules<IndividualMolecule>();
@@ -176,6 +201,7 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(individual, cloneManager);
          OriginData = individual.OriginData.Clone();
          Seed = individual.Seed;
+         individual.AllExpressionProfiles().Each(AddExpressionProfile);
       }
 
       /// <summary>

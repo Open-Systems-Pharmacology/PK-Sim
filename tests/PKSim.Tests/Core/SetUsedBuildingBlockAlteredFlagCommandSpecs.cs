@@ -17,7 +17,7 @@ namespace PKSim.Core
       protected string _buildingBlockId;
       protected IExecutionContext _context;
       protected UsedBuildingBlock _usedBuildingBlock;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       protected override void Context()
       {
@@ -25,13 +25,13 @@ namespace PKSim.Core
          _buildingBlock = A.Fake<IPKSimBuildingBlock>();
          _context = A.Fake<IExecutionContext>();
          _usedBuildingBlock = A.Fake<UsedBuildingBlock>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _buildingBlockId = "toto";
          A.CallTo(() => _simulation.UsedBuildingBlockById(_buildingBlockId)).Returns(_usedBuildingBlock);
          _buildingBlock.Id = _buildingBlockId;
          _altered = false;
          A.CallTo(() => _simulation.GetAltered(_buildingBlockId)).Returns(true);
-         A.CallTo(() => _context.Resolve<IBuildingBlockInSimulationManager>()).Returns(_buildingBlockInSimulationManager);
+         A.CallTo(() => _context.Resolve<IBuildingBlockInProjectManager>()).Returns(_buildingBlockInProjectManager);
          sut = new SetUsedBuildingBlockAlteredFlagCommand(_simulation, _usedBuildingBlock, _altered, _context);
       }
    }
@@ -52,7 +52,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_building_block_names_used_in_the_simulation()
       {
-         A.CallTo(() => _buildingBlockInSimulationManager.UpdateBuildingBlockNamesUsedIn(_simulation)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockInProjectManager.UpdateBuildingBlockNamesUsedIn(_simulation)).MustHaveHappened();
       }
    }
 

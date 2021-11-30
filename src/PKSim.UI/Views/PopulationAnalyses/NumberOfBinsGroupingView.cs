@@ -88,7 +88,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          lblNamingPatternDescription.AsDescription();
          lblNamingPatternDescription.Text = _presenter.NamingPatternDescription.FormatForDescription();
          layoutControlGroupLabels.Text = PKSimConstants.UI.GeneratedLabels;
-         layoutItemGenerationStrategie.Text = PKSimConstants.UI.NaimingPatternStrategy.FormatForLabel();
+         layoutItemGenerationStrategie.Text = PKSimConstants.UI.NamingPatternStrategy.FormatForLabel();
          layoutItemStartColor.Text = PKSimConstants.UI.StartColor.FormatForLabel();
          layoutItemEndColor.Text = PKSimConstants.UI.EndColor.FormatForLabel();
          layoutItemSymbol.Text = PKSimConstants.UI.Symbol.FormatForLabel();
