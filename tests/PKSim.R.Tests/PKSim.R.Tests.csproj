@@ -15,13 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="6.2.1" />
-    <PackageReference Include="nunit" Version="3.12.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="FakeItEasy" Version="7.2.0" />
+    <PackageReference Include="nunit" Version="3.13.2" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
     <PackageReference Include="OSPSuite.Core" Version="11.0.18" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.50" GeneratePathProperty="true" />
