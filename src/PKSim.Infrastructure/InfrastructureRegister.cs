@@ -106,6 +106,13 @@ namespace PKSim.Infrastructure
       {
          RegisterSerializationDependencies(container);
          LoadDefaultEntities(container);
+
+
+         var configuration = container.Resolve<IPKSimConfiguration>();
+         var versionChecker = container.Resolve<IVersionChecker>();
+         versionChecker.VersionFileUrl = CoreConstants.VERSION_FILE_URL;
+         versionChecker.CurrentVersion = configuration.Version;
+         versionChecker.ProductName = CoreConstants.PRODUCT_NAME;
       }
 
       public static void RegisterSerializationDependencies(IContainer container)
@@ -242,12 +249,6 @@ namespace PKSim.Infrastructure
          container.AddRegister(x => x.FromType<InfrastructureReportingRegister>());
          container.AddRegister(x => x.FromType<InfrastructureExportRegister>());
          container.AddRegister(x => x.FromType<InfrastructureImportRegister>());
-
-         var configuration = container.Resolve<IPKSimConfiguration>();
-         var versionChecker = container.Resolve<IVersionChecker>();
-         versionChecker.VersionFileUrl = CoreConstants.VERSION_FILE_URL;
-         versionChecker.CurrentVersion = configuration.Version;
-         versionChecker.ProductName = CoreConstants.PRODUCT_NAME;
       }
 
       private static void registerReportBuilders(IContainer container)
