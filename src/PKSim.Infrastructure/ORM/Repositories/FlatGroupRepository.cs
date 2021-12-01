@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatGroupRepository : MetaDataRepository<FlatGroup>, IFlatGroupRepository
    {
       public FlatGroupRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatGroup> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewGroups)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_GROUPS)
       {
       }
    }

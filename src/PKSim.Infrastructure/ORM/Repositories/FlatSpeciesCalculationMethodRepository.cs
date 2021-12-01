@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatSpeciesCalculationMethodRepository : MetaDataRepository<FlatSpeciesCalculationMethod>, IFlatSpeciesCalculationMethodRepository
    {
       public FlatSpeciesCalculationMethodRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatSpeciesCalculationMethod> mapper) :
-         base(dbGateway, mapper, CoreConstants.ORM.ViewSpeciesCalculationMethods)
+         base(dbGateway, mapper, CoreConstants.ORM.VIEW_SPECIES_CALCULATION_METHODS)
       {
       }
 

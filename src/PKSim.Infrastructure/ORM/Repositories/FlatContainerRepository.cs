@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly ICache<int, FlatContainer> _flatContainersCachedById= new Cache<int, FlatContainer>(x=>x.Id,x=>null);
       private readonly ICache<string, FlatContainer> _flatContainersCachedByPath = new Cache<string, FlatContainer>(x=>x.ContainerPath,x=>null);
 
-      public FlatContainerRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatContainer> mapper) : base(dbGateway, mapper, CoreConstants.ORM.ViewContainers)
+      public FlatContainerRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatContainer> mapper) : base(dbGateway, mapper, CoreConstants.ORM.VIEW_CONTAINERS)
       {
       }
 

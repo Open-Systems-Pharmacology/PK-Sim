@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatParameterValueRepository : MetaDataRepository<ParameterValueMetaData>, IFlatParameterValueRepository
    {
       public FlatParameterValueRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<ParameterValueMetaData> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewParameterValues)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_PARAMETER_VALUES)
       {
       }
    }

@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly string _nanString;
 
       public RateFormulaRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<RateFormula> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewCalculationMethodRateFormula)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_CALCULATION_METHOD_RATE_FORMULA)
       {
          _allFormula = new Cache<RateKey, string>();
          _formulaDimensions = new Cache<RateKey, string>();

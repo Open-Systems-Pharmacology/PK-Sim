@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatParameterRateRepository : MetaDataRepository<ParameterRateMetaData>, IFlatParameterRateRepository
    {
       public FlatParameterRateRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<ParameterRateMetaData> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewParameterRates)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_PARAMETER_RATES)
       {
       }
    }

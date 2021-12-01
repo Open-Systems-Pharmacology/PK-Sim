@@ -105,7 +105,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
       private void addReactionPartnerTo(PKSimReaction reaction, FlatReactionPartner flatReactionPartner)
       {
-         if (flatReactionPartner.Direction.Equals(CoreConstants.ORM.ProcessMoleculeDirectionModifier))
+         if (flatReactionPartner.Direction.Equals(CoreConstants.ORM.PROCESS_MOLECULE_DIRECTION_MODIFIER))
          {
             //---- not Educt/Product, just a modifier
             reaction.AddModifier(flatReactionPartner.Molecule);
@@ -119,13 +119,13 @@ namespace PKSim.Infrastructure.ORM.Mappers
             StoichiometricCoefficient = flatReactionPartner.StoichCoeff
          };
 
-         if (flatReactionPartner.Direction.Equals(CoreConstants.ORM.ProcessMoleculeDirectionIn))
+         if (flatReactionPartner.Direction.Equals(CoreConstants.ORM.PROCESS_MOLECULE_DIRECTION_IN))
          {
             reaction.AddEduct(reactionPartner);
             return;
          }
 
-         if (flatReactionPartner.Direction.Equals(CoreConstants.ORM.ProcessMoleculeDirectionOut))
+         if (flatReactionPartner.Direction.Equals(CoreConstants.ORM.PROCESS_MOLECULE_DIRECTION_OUT))
          {
             reaction.AddProduct(reactionPartner);
             return;

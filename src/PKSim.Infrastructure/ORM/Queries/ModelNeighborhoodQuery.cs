@@ -63,13 +63,13 @@ namespace PKSim.Infrastructure.ORM.Queries
             //neighborhood available in model but not in individual (species)
             //Reaction depends on usage in individual flag
 
-            if (flatNeighborhoodContainer.UsageInIndividual == CoreConstants.ORM.UsageInIndividualRequired)
+            if (flatNeighborhoodContainer.UsageInIndividual == CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED)
                throw new ArgumentException(PKSimConstants.Error.ModelContainerNotAvailable(flatNeighborhoodContainer.Name));
 
-            if (flatNeighborhoodContainer.UsageInIndividual == CoreConstants.ORM.UsageInIndividualOptional)
+            if (flatNeighborhoodContainer.UsageInIndividual == CoreConstants.ORM.USAGE_IN_INDIVIDUAL_OPTIONAL)
                continue;
 
-            if (flatNeighborhoodContainer.UsageInIndividual == CoreConstants.ORM.UsageInIndividualExtended)
+            if (flatNeighborhoodContainer.UsageInIndividual == CoreConstants.ORM.USAGE_IN_INDIVIDUAL_EXTENDED)
             {
                throw new ArgumentException(PKSimConstants.Error.ExtendedNeighborhoodNotAllowed(flatNeighborhoodContainer.Name));
             }

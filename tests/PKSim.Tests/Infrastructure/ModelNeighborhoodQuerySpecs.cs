@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.UsageInIndividualRequired;
+         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED;
       }
 
       [Observation]
@@ -85,7 +85,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.UsageInIndividualOptional;
+         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_OPTIONAL;
       }
 
       protected override void Because()
@@ -116,7 +116,7 @@ namespace PKSim.Infrastructure
          _individualNeighborhoods.Add(new Container().WithName(_flatNeighborhoodFor3Comp.Name));
          _neighborhoodBuilder = A.Fake<INeighborhoodBuilder>();
          _flatNeighborhood = new FlatNeighborhood { Name = "tralala" };
-         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.UsageInIndividualRequired;
+         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED;
          A.CallTo(() => _neighborhoodRepository.NeighborhoodFrom(_flatNeighborhoodFor3Comp.Id)).Returns(_flatNeighborhood);
          A.CallTo(() => _neighborhoodBuilderFactory.Create()).Returns(_neighborhoodBuilder);
       }

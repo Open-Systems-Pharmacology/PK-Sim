@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatEventChangedObjectRepository : MetaDataRepository<FlatEventChangedObject>, IFlatEventChangedObjectRepository
    {
       public FlatEventChangedObjectRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatEventChangedObject> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewEventChangedObjects)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_EVENT_CHANGED_OBJECTS)
       {
       }
 

@@ -20,7 +20,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatPopulationRepository(IDbGateway dbGateway,
                                       IDataTableToMetaDataMapper<FlatPopulation> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewPopulations)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_POPULATIONS)
       {
       }
    }

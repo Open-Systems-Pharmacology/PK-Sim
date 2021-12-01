@@ -19,7 +19,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public FlatModelObserverRepository(IDbGateway dbGateway,
          IDataTableToMetaDataMapper<FlatModelObserver> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewModelObservers)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_MODEL_OBSERVERS)
       {
          _observersSortedByModel = new Cache<string, ICache<string, FlatModelObserver>>();
       }

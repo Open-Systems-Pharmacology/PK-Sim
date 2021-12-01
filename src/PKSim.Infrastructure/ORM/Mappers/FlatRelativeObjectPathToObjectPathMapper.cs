@@ -29,14 +29,14 @@ namespace PKSim.Infrastructure.ORM.Mappers
          var relativePath = new List<string>();
 
          //first entry
-         if (flatObjectPath.ContainerName != CoreConstants.ORM.ContainerMe)
+         if (flatObjectPath.ContainerName != CoreConstants.ORM.CONTAINER_ME)
             relativePath.Add(flatObjectPath.ContainerName);
 
          while (flatObjectPath.PathId != flatObjectPath.ParentPathId)
          {
             flatObjectPath = _flatObjectPathRepo.FlatRelativeObjectPathFor(flatObjectPath.ParentPathId);
 
-            if (flatObjectPath.ContainerName != CoreConstants.ORM.ContainerMe)
+            if (flatObjectPath.ContainerName != CoreConstants.ORM.CONTAINER_ME)
                relativePath.Add(flatObjectPath.ContainerName);
          }
          relativePath.Reverse();

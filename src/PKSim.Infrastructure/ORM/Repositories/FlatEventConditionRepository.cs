@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatEventConditionRepository(IDbGateway dbGateway,
                                           IDataTableToMetaDataMapper<FlatEventCondition> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewEventConditions)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_EVENT_CONDITIONS)
       {
       }
 

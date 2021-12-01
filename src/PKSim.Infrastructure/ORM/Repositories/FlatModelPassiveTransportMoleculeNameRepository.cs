@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatModelPassiveTransportMoleculeNameRepository : MetaDataRepository<FlatModelPassiveTransportMoleculeName>, IFlatModelPassiveTransportMoleculeNameRepository
    {
       public FlatModelPassiveTransportMoleculeNameRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatModelPassiveTransportMoleculeName> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewModelPassiveTransportMoleculeNames)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_MODEL_PASSIVE_TRANSPORT_MOLECULE_NAMES)
       {
       }
    }
