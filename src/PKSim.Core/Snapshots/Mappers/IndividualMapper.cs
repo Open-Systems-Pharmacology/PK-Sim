@@ -87,9 +87,10 @@ namespace PKSim.Core.Snapshots.Mappers
          var expressionProfiles = await _expressionProfileMapper.MapToModels(individualSnapshot.Molecules);
          foreach (var expressionProfile in expressionProfiles)
          {
+            var (molecule, individual) = expressionProfile;
             project.AddBuildingBlock(expressionProfile);
             //this needs to happen here since molecule parameters were defined in individual in v10
-            await updateIndividualParameters(individualSnapshot, expressionProfile.Individual);
+            await updateIndividualParameters(individualSnapshot, individual);
          }
 
          individualSnapshot.ExpressionProfiles = expressionProfiles.AllNames().ToArray();
@@ -102,5 +103,6 @@ namespace PKSim.Core.Snapshots.Mappers
          //We do not show warning for v10 format as we will FOR SURE have missing parameters
          return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, showParameterNotFoundWarning: !isV10Format(snapshot));
       }
+
    }
 }

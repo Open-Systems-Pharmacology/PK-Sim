@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 using SnapshotTableFormula = PKSim.Core.Snapshots.TableFormula;
@@ -136,7 +137,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public virtual Task MapLocalizedParameters(IReadOnlyList<LocalizedParameter> localizedParameters, IContainer container, bool showParameterNotFoundWarning = true)
       {
-         if (localizedParameters == null || !localizedParameters.Any())
+         //undefined or empty or actually not localized parameters (coming from conversions probably)
+         if (localizedParameters == null || !localizedParameters.Any() || localizedParameters.All(x=> x.Path.IsNullOrEmpty()))
             return Task.FromResult(false);
 
          var allParameters = _containerTask.CacheAllChildren<IParameter>(container);

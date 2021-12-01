@@ -108,9 +108,18 @@ namespace PKSim.Core.Snapshots.Mappers
 
          //We need to normalize relative expressions when loading from old format
          if (isV9Format(snapshot))
+         {
+            //Global parameters were saved directly under the snapshot parameter 
+            await updateGlobalMoleculeParameters(snapshot, molecule);
             NormalizeRelativeExpressionCommand.NormalizeExpressions(individual, molecule);
+         }
 
          return expressionProfile;
+      }
+
+      private Task updateGlobalMoleculeParameters(SnapshotExpressionProfile snapshot, IndividualMolecule molecule)
+      {
+         return _parameterMapper.MapParameters(snapshot.Parameters, molecule, molecule.Name);
       }
 
       private void updateMoleculePropertiesToMolecule(IndividualMolecule molecule, SnapshotExpressionProfile snapshot, ModelIndividual individual)
