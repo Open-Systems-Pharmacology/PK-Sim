@@ -646,7 +646,7 @@ namespace PKSim.UI.Views.ProteinExpression
          return ret;
       }
 
-      private ISeriesPoint[] customSummary(Series series, object argument, string[] functionArguments, 
+      private SeriesPoint[] customSummary(Series series, object argument, string[] functionArguments, 
          DataSourceValues[] values, object[] colors)
       {
          double sumCount = 0;
