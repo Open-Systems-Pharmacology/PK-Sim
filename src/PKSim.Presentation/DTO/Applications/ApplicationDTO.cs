@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 
@@ -22,10 +21,7 @@ namespace PKSim.Presentation.DTO.Applications
          }
       }
 
-      public List<IParameterDTO> Parameters
-      {
-         get { return _parameters; }
-      }
+      public List<IParameterDTO> Parameters => _parameters;
 
       public void AddParameter(IParameterDTO parameterToAdd)
       {
