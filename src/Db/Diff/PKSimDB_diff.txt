@@ -1,3 +1,10 @@
+INSERT INTO tab_categories(category,display_name,description,category_type,icon_name) VALUES('DiseaseStates','Disease States','Disease state parameters','Individual',NULL);
+INSERT INTO tab_container_names(container_type,container_name,display_name,description,extension,sequence,icon_name) VALUES('DISEASE_STATE','CKD','CKD Parameter container','CKD Parameter container',NULL,1,NULL);
+INSERT INTO tab_container_parameter_values(parameter_value_version,species,container_id,container_type,container_name,parameter_name,default_value,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES('DiseaseStates','Human',5954,'DISEASE_STATE','CKD','InputGFR',60.0,0.0,1,60.0,1,92);
+INSERT INTO tab_container_parameters(container_id,container_type,container_name,parameter_name,can_be_varied,read_only,visible,can_be_varied_in_population,group_name,sequence,build_mode,building_block_type,is_input) VALUES(5954,'DISEASE_STATE','CKD','InputGFR',0,0,1,0,'BODY_ANATOMY',1,'LOCAL','INDIVIDUAL',1);
+INSERT INTO tab_container_types(container_type,display_name,description) VALUES('DISEASE_STATE','Disease State','Disease state container');
+INSERT INTO tab_containers(container_id,container_type,container_name,parent_container_id,parent_container_type,parent_container_name,visible,is_logical) VALUES(5954,'DISEASE_STATE','CKD',NULL,NULL,NULL,1,1);
+INSERT INTO tab_dimensions(dimension,kernel_unit) VALUES('Flow per surface area','l/min/1.73m²');
 CREATE TABLE tab_disease_states
 (
     disease_state  text not null
@@ -14,6 +21,8 @@ CREATE UNIQUE INDEX tab_disease_states_disease_state_uindex
     on tab_disease_states (disease_state);
 CREATE UNIQUE INDEX tab_disease_states_display_name_uindex
     on tab_disease_states (display_name);
+INSERT INTO tab_parameter_value_versions(parameter_value_version,display_name,description,category) VALUES('DiseaseStates','Diseases States','Disease states parameters','DiseaseStates');
+INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('InputGFR','InputGFR TODO','InputGFR TODO','Flow per surface area',NULL);
 CREATE TABLE tab_population_disease_states
 (
     population    text not null
@@ -28,3 +37,6 @@ CREATE TABLE tab_population_disease_states
         primary key (population, disease_state)
 );
 INSERT INTO tab_population_disease_states(population,disease_state) VALUES('European_ICRP_2002','CKD');
+INSERT INTO tab_references(reference) VALUES('Paul R.V. Malik, Cindy H.T. Yeung, Shams Ismaeil, Urooj Advani, Sebastian Djie, Andrea N. Edginton. A Physiological Approach to Pharmacokinetics in Chronic Kidney Disease https://accp1.onlinelibrary.wiley.com/doi/full/10.1002/jcph.1713');
+INSERT INTO tab_species_parameter_value_versions(species,parameter_value_version) VALUES('Human','DiseaseStates');
+INSERT INTO tab_value_origins(id,description,source,method) VALUES(92,'Paul R.V. Malik, Cindy H.T. Yeung, Shams Ismaeil, Urooj Advani, Sebastian Djie, Andrea N. Edginton. A Physiological Approach to Pharmacokinetics in Chronic Kidney Disease https://accp1.onlinelibrary.wiley.com/doi/full/10.1002/jcph.1713','Publication','Undefined');
