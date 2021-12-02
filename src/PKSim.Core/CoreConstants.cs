@@ -644,7 +644,7 @@ namespace PKSim.Core
          public static readonly string USER_DEFINED = "USER_DEFFINED";
          public static readonly string COMPOUNDPROCESS_SIMULATION_PARAMETERS = "COMPOUNDPROCESS_SIMULATION_PARAMETERS";
          public static readonly string COMPOUNDPROCESS_CALCULATION_PARAMETERS = "COMPOUNDPROCESS_CALCULATION_PARAMETERS";
-         public static readonly string DISEASE_STATE = "DISEASE_STATE";
+         public static readonly string DISEASE_STATES = "DISEASE_STATES";
 
          public static readonly IReadOnlyList<string> GroupsWithCalculatedAlternative = new[]
          {

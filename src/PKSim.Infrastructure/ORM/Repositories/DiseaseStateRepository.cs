@@ -50,6 +50,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _allDiseaseSates;
       }
 
-      public IReadOnlyList<DiseaseState> AllFor(SpeciesPopulation population) => _allDiseaseStatePerPopulation[population];
+      public IReadOnlyList<DiseaseState> AllFor(SpeciesPopulation population)
+      {
+         Start();
+         return _allDiseaseStatePerPopulation[population];
+      }
    }
 }

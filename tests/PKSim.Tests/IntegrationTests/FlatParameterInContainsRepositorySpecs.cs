@@ -69,7 +69,7 @@ namespace PKSim.IntegrationTests
          var parameters = _allParameters.Where(x => x.Visible)
             .Where(x => !x.ReadOnly)
             .Where(x => !x.CanBeVaried)
-            .Where(x => x.GroupName != CoreConstants.Groups.DISEASE_STATE)
+            .Where(x => x.GroupName != CoreConstants.Groups.DISEASE_STATES)
             .Where(x => x.ParameterName != Constants.Parameters.MOL_WEIGHT).ToList();
 
          parameters.Any().ShouldBeFalse(ErrorMessageFor(parameters));
