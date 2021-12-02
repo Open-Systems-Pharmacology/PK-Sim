@@ -24,7 +24,6 @@ CREATE UNIQUE INDEX tab_disease_states_disease_state_uindex
 CREATE UNIQUE INDEX tab_disease_states_display_name_uindex
     on tab_disease_states (display_name);
 INSERT INTO tab_groups(group_name,display_name,description,parent_group,icon_name,visible,sequence,is_advanced,unique_id,pop_display_name,full_name) VALUES('DISEASE_STATES','Disease states','Disease states parameters',NULL,NULL,1,1,0,153,NULL,'Disease States');
-INSERT INTO tab_parameter_value_versions(parameter_value_version,display_name,description,category) VALUES('DiseaseStates','Diseases States','Disease states parameters','DiseaseStates');
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('InputGFR','InputGFR TODO','InputGFR TODO','Flow per body surface area',NULL);
 CREATE TABLE tab_population_disease_states
 (
