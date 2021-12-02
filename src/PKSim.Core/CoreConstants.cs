@@ -274,31 +274,42 @@ namespace PKSim.Core
 
       public static class CalculationMethod
       {
-         public static readonly string LinksCommon = "LinksCommon";
+         public static readonly string LINKS_COMMON = "LinksCommon";
          public static readonly string DISTRIBUTION_IN_VITRO_PKSIM = "DistributionInVitro_PKSim";
-         public static readonly string ApplicationParameter = "ApplicationParameter";
-         public static readonly string ApplicationParameter_Human = "ApplicationParameter_Human";
-         public static readonly string SchemaItemParameter = "SchemaItemParameter";
+         public static readonly string APPLICATION_PARAMETER = "ApplicationParameter";
+         public static readonly string APPLICATION_PARAMETER_HUMAN = "ApplicationParameter_Human";
+         public static readonly string SCHEMA_ITEM_PARAMETER = "SchemaItemParameter";
          public static readonly string COMPOUND_COMMON = "CompoundCommon";
          public static readonly string COMPOUND_MW_PKSIM = "CompoundMW_PKSim";
          public static readonly string COMPOUND_ACID_BASE_PKSIM = "CompoundAcidBase_PKSim";
          public static readonly string PLASMA_CLEARANCE_PKSIM = "PlasmaClearance_PKSim";
          public static readonly string DIFFUSION_COMMON_PKSIM = "DiffusionCommon_PKSim";
          public static readonly string INTESTINAL_PERMEABILITY_COMMON_PKSIM = "IntestinalPermeabilityCommon_PKSim";
-         public static readonly string Formulation = "Formulation";
-         public static readonly string SpecificClearance = "SpecificClearance_PKSim";
-         public static readonly string Events = "Events";
-         public static readonly string Individual = "Individual";
-         public static readonly string ActiveProcess = "ActiveProcess_PKSim";
-         public static readonly string FormulationParticles = "FormulationParticles";
-         public static readonly string BlackBox = "BlackBox_CalculationMethod";
+         public static readonly string FORMULATION = "Formulation";
+         public static readonly string SPECIFIC_CLEARANCE = "SpecificClearance_PKSim";
+         public static readonly string EVENTS = "Events";
+         public static readonly string INDIVIDUAL = "Individual";
+         public static readonly string ACTIVE_PROCESS = "ActiveProcess_PKSim";
+         public static readonly string FORMULATION_PARTICLES = "FormulationParticles";
+         public static readonly string BLACK_BOX = "BlackBox_CalculationMethod";
          public static readonly string DYNAMIC_SUM_FORMULAS = "DynamicSumFormulas";
-         public static readonly string RodgerAndRowland = "Cellular partition coefficient method - Rodgers and Rowland";
-         public static readonly string RenalAgingHuman = "Renal_Aging_Human";
-         public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
+         public static readonly string RODGER_AND_ROWLAND = "Cellular partition coefficient method - Rodgers and Rowland";
+         public static readonly string RENAL_AGING_HUMAN = "Renal_Aging_Human";
+         public static readonly string RENAL_AGING_ANIMALS = "Renal_Aging_Animals";
          public static readonly string EXPRESSION_PARAMETERS = "ExpressionParameters";
+         public static readonly string DISEASE_STATES = "DiseaseStates";
 
-         public static readonly IReadOnlyList<string> ForProcesses = new List<string> {LinksCommon, SpecificClearance, DISTRIBUTION_IN_VITRO_PKSIM};
+         public static readonly IReadOnlyList<string> ForDiseaseStates = new List<string>
+         {
+            DISEASE_STATES
+         };
+
+         public static readonly IReadOnlyList<string> ForProcesses = new List<string>
+         {
+            LINKS_COMMON, 
+            SPECIFIC_CLEARANCE, 
+            DISTRIBUTION_IN_VITRO_PKSIM
+         };
 
          public static readonly IReadOnlyList<string> ForCompounds = new List<string>
          {
@@ -313,14 +324,14 @@ namespace PKSim.Core
             EXPRESSION_PARAMETERS
          };
 
-         public static readonly IReadOnlyList<string> ForEvents = new List<string> {Events};
+         public static readonly IReadOnlyList<string> ForEvents = new List<string> {EVENTS};
 
-         public static readonly IReadOnlyList<string> ForFormulations = new List<string> {Formulation, FormulationParticles};
+         public static readonly IReadOnlyList<string> ForFormulations = new List<string> {FORMULATION, FORMULATION_PARTICLES};
 
-         public static readonly IReadOnlyList<string> ForSchemaItems = new List<string> {SchemaItemParameter};
+         public static readonly IReadOnlyList<string> ForSchemaItems = new List<string> {SCHEMA_ITEM_PARAMETER};
 
          public static readonly IReadOnlyList<string> ForApplications = new List<string>
-            {Formulation, ApplicationParameter, SchemaItemParameter, ApplicationParameter_Human};
+            {FORMULATION, APPLICATION_PARAMETER, SCHEMA_ITEM_PARAMETER, APPLICATION_PARAMETER_HUMAN};
       }
 
       public static class Compartment
@@ -473,16 +484,17 @@ namespace PKSim.Core
 
       public static class ContainerType
       {
-         public static readonly string Compartment = "COMPARTMENT";
-         public static readonly string Organ = "ORGAN";
-         public static readonly string Application = "APPLICATION";
-         public static readonly string Formulation = "FORMULATION";
-         public static readonly string Neighborhood = "NEIGHBORHOOD";
-         public static readonly string General = "GENERAL";
-         public static readonly string Event = "EVENT";
-         public static readonly string Process = "PROCESS";
-         public static readonly string EventGroup = "EVENTGROUP";
-         public static readonly string Compound = "COMPOUND";
+         public static readonly string COMPARTMENT = "COMPARTMENT";
+         public static readonly string ORGAN = "ORGAN";
+         public static readonly string APPLICATION = "APPLICATION";
+         public static readonly string FORMULATION = "FORMULATION";
+         public static readonly string NEIGHBORHOOD = "NEIGHBORHOOD";
+         public static readonly string GENERAL = "GENERAL";
+         public static readonly string EVENT = "EVENT";
+         public static readonly string PROCESS = "PROCESS";
+         public static readonly string EVENT_GROUP = "EVENTGROUP";
+         public static readonly string COMPOUND = "COMPOUND";
+         public static readonly string DISEASE_STATE = "DISEASE_STATE";
       }
 
       public static class Dimension
@@ -632,6 +644,7 @@ namespace PKSim.Core
          public static readonly string USER_DEFINED = "USER_DEFFINED";
          public static readonly string COMPOUNDPROCESS_SIMULATION_PARAMETERS = "COMPOUNDPROCESS_SIMULATION_PARAMETERS";
          public static readonly string COMPOUNDPROCESS_CALCULATION_PARAMETERS = "COMPOUNDPROCESS_CALCULATION_PARAMETERS";
+         public static readonly string DISEASE_STATE = "DISEASE_STATE";
 
          public static readonly IReadOnlyList<string> GroupsWithCalculatedAlternative = new[]
          {

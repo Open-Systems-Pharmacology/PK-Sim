@@ -9,7 +9,7 @@ namespace PKSim.Core.Model
       {
       }
 
-      public bool IsBlackBoxFormula => CalculationMethod.Equals(CoreConstants.CalculationMethod.BlackBox);
+      public bool IsBlackBoxFormula => CalculationMethod.Equals(CoreConstants.CalculationMethod.BLACK_BOX);
 
       public bool IsTableWithOffsetFormula => Rate.StartsWith(CoreConstants.Rate.TableFormulaWithOffsetPrefix);
 

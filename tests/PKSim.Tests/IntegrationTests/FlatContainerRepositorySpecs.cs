@@ -36,7 +36,7 @@ namespace PKSim.IntegrationTests
       public void should_return_organ_from_path()
       {
          var organContainer = sut.ContainerFrom(_entityPathResolver.PathFor(_organ));
-         organContainer.Type.ShouldBeEqualTo(CoreConstants.ContainerType.Organ);
+         organContainer.Type.ShouldBeEqualTo(CoreConstants.ContainerType.ORGAN);
          organContainer.Name.ShouldBeEqualTo(_organ.Name);
       }
 

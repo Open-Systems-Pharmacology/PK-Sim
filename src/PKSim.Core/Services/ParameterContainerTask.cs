@@ -24,6 +24,7 @@ namespace PKSim.Core.Services
       void AddSchemaItemParametersTo(ISchemaItem schemaItem);
       void AddEventParametersTo(IContainer container);
       void AddCompoundParametersTo(Compound compound);
+      void AddDiseaseStateParametersTo(DiseaseState diseaseState);
 
       void AddModelParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer;
       void AddApplicationTransportParametersTo(ITransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache);
@@ -49,6 +50,11 @@ namespace PKSim.Core.Services
       {
          addParametersTo(parameterContainer, originData, originData.AllCalculationMethods().Select(cm => cm.Name),
             param => param.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(param.ParameterName, parameterName));
+      }
+
+      public void AddDiseaseStateParametersTo(DiseaseState diseaseState)
+      {
+         addParametersTo(diseaseState, null, CoreConstants.CalculationMethod.ForDiseaseStates);
       }
 
       public void AddModelParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer
@@ -138,9 +144,9 @@ namespace PKSim.Core.Services
          compound.Root.Name = oldName;
       }
 
-      private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods) where T : IContainer
+      private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods = null) where T : IContainer
       {
-         addParametersTo(parameterContainer, originData, calculationMethods, x => true);
+         addParametersTo(parameterContainer, originData, calculationMethods ?? Enumerable.Empty<string>(), x => true);
       }
 
       private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods, Func<ParameterMetaData, bool> predicate, IFormulaCache formulaCache = null)

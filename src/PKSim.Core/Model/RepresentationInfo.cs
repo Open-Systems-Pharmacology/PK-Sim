@@ -26,6 +26,7 @@ namespace PKSim.Core.Model
       EVENT,
       CURVE_SELECTION,
       TRANSPORT_DIRECTION,
+      DISEASE_STATE,
       UNKNOWN,
    }
 

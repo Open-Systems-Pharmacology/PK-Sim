@@ -36,8 +36,8 @@ namespace PKSim.Infrastructure
          _modelProperties.ModelConfiguration.ModelName = "3Comp";
          _allFlatNeighborhoods = new List<FlatModelContainer>();
          A.CallTo(() => _modelContainerRepository.All()).Returns(_allFlatNeighborhoods);
-         _flatNeighborhoodFor3Comp = new FlatModelContainer {Model = "3Comp", Type = CoreConstants.ContainerType.Neighborhood, Id = 1};
-         _flatNeighborhoodFor4Comp = new FlatModelContainer {Model = "4Comp", Type = CoreConstants.ContainerType.Neighborhood, Id = 2};
+         _flatNeighborhoodFor3Comp = new FlatModelContainer {Model = "3Comp", Type = CoreConstants.ContainerType.NEIGHBORHOOD, Id = 1};
+         _flatNeighborhoodFor4Comp = new FlatModelContainer {Model = "4Comp", Type = CoreConstants.ContainerType.NEIGHBORHOOD, Id = 2};
          _allFlatNeighborhoods.Add(_flatNeighborhoodFor3Comp);
          _allFlatNeighborhoods.Add(_flatNeighborhoodFor4Comp);
          sut = new ModelNeighborhoodQuery(_modelContainerRepository,_neighborhoodBuilderFactory);

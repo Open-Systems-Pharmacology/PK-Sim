@@ -48,7 +48,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          IEnumerable<FlatModelContainer> allNeighborhoodContainersForModel =
             from flatModelContainer in _modelContainerRepository.All()
             where flatModelContainer.Model == modelName
-            where flatModelContainer.Type == CoreConstants.ContainerType.Neighborhood
+            where flatModelContainer.Type == CoreConstants.ContainerType.NEIGHBORHOOD
             select flatModelContainer;
 
          foreach (FlatModelContainer flatNeighborhoodContainer in allNeighborhoodContainersForModel)
