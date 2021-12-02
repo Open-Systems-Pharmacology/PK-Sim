@@ -140,12 +140,12 @@ namespace PKSim.Core.Model
       public virtual double Age => OriginData.Age ?? 0;
 
       /// <summary>
-      ///    Input height of the individual.
+      ///    Input Weight of the individual.
       /// </summary>
       public virtual double InputWeight => OriginData.Weight;
 
       /// <summary>
-      ///    Input Weight of the individual.
+      ///    Input Height of the individual.
       /// </summary>
       public virtual double InputHeight => OriginData.Height ?? 0;
 

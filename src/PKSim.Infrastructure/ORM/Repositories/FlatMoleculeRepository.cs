@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatMoleculeRepository : MetaDataRepository<FlatMolecule>, IFlatMoleculeRepository
    {
       public FlatMoleculeRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatMolecule> mapper) : base(dbGateway, mapper,
-         CoreConstants.ORM.ViewMolecules)
+         CoreConstants.ORM.VIEW_MOLECULES)
       {
       }
 

@@ -274,31 +274,42 @@ namespace PKSim.Core
 
       public static class CalculationMethod
       {
-         public static readonly string LinksCommon = "LinksCommon";
+         public static readonly string LINKS_COMMON = "LinksCommon";
          public static readonly string DISTRIBUTION_IN_VITRO_PKSIM = "DistributionInVitro_PKSim";
-         public static readonly string ApplicationParameter = "ApplicationParameter";
-         public static readonly string ApplicationParameter_Human = "ApplicationParameter_Human";
-         public static readonly string SchemaItemParameter = "SchemaItemParameter";
+         public static readonly string APPLICATION_PARAMETER = "ApplicationParameter";
+         public static readonly string APPLICATION_PARAMETER_HUMAN = "ApplicationParameter_Human";
+         public static readonly string SCHEMA_ITEM_PARAMETER = "SchemaItemParameter";
          public static readonly string COMPOUND_COMMON = "CompoundCommon";
          public static readonly string COMPOUND_MW_PKSIM = "CompoundMW_PKSim";
          public static readonly string COMPOUND_ACID_BASE_PKSIM = "CompoundAcidBase_PKSim";
          public static readonly string PLASMA_CLEARANCE_PKSIM = "PlasmaClearance_PKSim";
          public static readonly string DIFFUSION_COMMON_PKSIM = "DiffusionCommon_PKSim";
          public static readonly string INTESTINAL_PERMEABILITY_COMMON_PKSIM = "IntestinalPermeabilityCommon_PKSim";
-         public static readonly string Formulation = "Formulation";
-         public static readonly string SpecificClearance = "SpecificClearance_PKSim";
-         public static readonly string Events = "Events";
-         public static readonly string Individual = "Individual";
-         public static readonly string ActiveProcess = "ActiveProcess_PKSim";
-         public static readonly string FormulationParticles = "FormulationParticles";
-         public static readonly string BlackBox = "BlackBox_CalculationMethod";
+         public static readonly string FORMULATION = "Formulation";
+         public static readonly string SPECIFIC_CLEARANCE = "SpecificClearance_PKSim";
+         public static readonly string EVENTS = "Events";
+         public static readonly string INDIVIDUAL = "Individual";
+         public static readonly string ACTIVE_PROCESS = "ActiveProcess_PKSim";
+         public static readonly string FORMULATION_PARTICLES = "FormulationParticles";
+         public static readonly string BLACK_BOX = "BlackBox_CalculationMethod";
          public static readonly string DYNAMIC_SUM_FORMULAS = "DynamicSumFormulas";
-         public static readonly string RodgerAndRowland = "Cellular partition coefficient method - Rodgers and Rowland";
-         public static readonly string RenalAgingHuman = "Renal_Aging_Human";
-         public static readonly string RenalAgingAnimals = "Renal_Aging_Animals";
+         public static readonly string RODGER_AND_ROWLAND = "Cellular partition coefficient method - Rodgers and Rowland";
+         public static readonly string RENAL_AGING_HUMAN = "Renal_Aging_Human";
+         public static readonly string RENAL_AGING_ANIMALS = "Renal_Aging_Animals";
          public static readonly string EXPRESSION_PARAMETERS = "ExpressionParameters";
+         public static readonly string DISEASE_STATES = "DiseaseStates";
 
-         public static readonly IReadOnlyList<string> ForProcesses = new List<string> {LinksCommon, SpecificClearance, DISTRIBUTION_IN_VITRO_PKSIM};
+         public static readonly IReadOnlyList<string> ForDiseaseStates = new List<string>
+         {
+            DISEASE_STATES
+         };
+
+         public static readonly IReadOnlyList<string> ForProcesses = new List<string>
+         {
+            LINKS_COMMON, 
+            SPECIFIC_CLEARANCE, 
+            DISTRIBUTION_IN_VITRO_PKSIM
+         };
 
          public static readonly IReadOnlyList<string> ForCompounds = new List<string>
          {
@@ -313,14 +324,14 @@ namespace PKSim.Core
             EXPRESSION_PARAMETERS
          };
 
-         public static readonly IReadOnlyList<string> ForEvents = new List<string> {Events};
+         public static readonly IReadOnlyList<string> ForEvents = new List<string> {EVENTS};
 
-         public static readonly IReadOnlyList<string> ForFormulations = new List<string> {Formulation, FormulationParticles};
+         public static readonly IReadOnlyList<string> ForFormulations = new List<string> {FORMULATION, FORMULATION_PARTICLES};
 
-         public static readonly IReadOnlyList<string> ForSchemaItems = new List<string> {SchemaItemParameter};
+         public static readonly IReadOnlyList<string> ForSchemaItems = new List<string> {SCHEMA_ITEM_PARAMETER};
 
          public static readonly IReadOnlyList<string> ForApplications = new List<string>
-            {Formulation, ApplicationParameter, SchemaItemParameter, ApplicationParameter_Human};
+            {FORMULATION, APPLICATION_PARAMETER, SCHEMA_ITEM_PARAMETER, APPLICATION_PARAMETER_HUMAN};
       }
 
       public static class Compartment
@@ -473,16 +484,17 @@ namespace PKSim.Core
 
       public static class ContainerType
       {
-         public static readonly string Compartment = "COMPARTMENT";
-         public static readonly string Organ = "ORGAN";
-         public static readonly string Application = "APPLICATION";
-         public static readonly string Formulation = "FORMULATION";
-         public static readonly string Neighborhood = "NEIGHBORHOOD";
-         public static readonly string General = "GENERAL";
-         public static readonly string Event = "EVENT";
-         public static readonly string Process = "PROCESS";
-         public static readonly string EventGroup = "EVENTGROUP";
-         public static readonly string Compound = "COMPOUND";
+         public static readonly string COMPARTMENT = "COMPARTMENT";
+         public static readonly string ORGAN = "ORGAN";
+         public static readonly string APPLICATION = "APPLICATION";
+         public static readonly string FORMULATION = "FORMULATION";
+         public static readonly string NEIGHBORHOOD = "NEIGHBORHOOD";
+         public static readonly string GENERAL = "GENERAL";
+         public static readonly string EVENT = "EVENT";
+         public static readonly string PROCESS = "PROCESS";
+         public static readonly string EVENT_GROUP = "EVENTGROUP";
+         public static readonly string COMPOUND = "COMPOUND";
+         public static readonly string DISEASE_STATE = "DISEASE_STATE";
       }
 
       public static class Dimension
@@ -632,6 +644,7 @@ namespace PKSim.Core
          public static readonly string USER_DEFINED = "USER_DEFFINED";
          public static readonly string COMPOUNDPROCESS_SIMULATION_PARAMETERS = "COMPOUNDPROCESS_SIMULATION_PARAMETERS";
          public static readonly string COMPOUNDPROCESS_CALCULATION_PARAMETERS = "COMPOUNDPROCESS_CALCULATION_PARAMETERS";
+         public static readonly string DISEASE_STATES = "DISEASE_STATES";
 
          public static readonly IReadOnlyList<string> GroupsWithCalculatedAlternative = new[]
          {
@@ -724,70 +737,73 @@ namespace PKSim.Core
 
       public static class ORM
       {
-         public const string CompoundActiveProcessPrefix = "COMPOUND_";
-         public const string ViewEventConditions = "VIEW_EVENT_CONDITIONS";
-         public const string ViewEventChangedObjects = "VIEW_EVENT_CHANGED_OBJECTS";
-         public const string ViewApplicationProcesses = "VIEW_APPLICATION_PROCESSES";
-         public const string ViewApplications = "VIEW_APPLICATIONS";
-         public const string ViewMolecules = "VIEW_MOLECULES";
-         public const string ViewProcessDescriptorConditions = "VIEW_PROCESS_DESCRIPTOR_CONDITIONS";
-         public const string ViewContainerTags = "VIEW_CONTAINER_TAGS";
-         public const string ViewParameterRates = "VIEW_PARAMETER_RATES";
-         public const string ViewParameterValues = "VIEW_PARAMETER_VALUES";
-         public const string ViewParameterDistributions = "VIEW_PARAMETER_DISTRIBUTIONS";
-         public const string ViewParametersInContainers = "VIEW_PARAMETERS_IN_CONTAINERS";
-         public const string ViewGroups = "VIEW_GROUPS";
-         public const string ViewPopulationGenders = "VIEW_POPULATION_GENDERS";
-         public const string ViewPopulations = "VIEW_POPULATIONS";
-         public const string ViewPopulationAge = "VIEW_POPULATION_AGE";
-         public const string ViewGenders = "VIEW_GENDERS";
-         public const string ViewSpecies = "VIEW_SPECIES";
-         public const string ViewParameterValueVersions = "VIEW_PARAMETER_VALUE_VERSIONS";
-         public const string ViewPopulationContainers = "VIEW_POPULATION_CONTAINERS";
-         public const string ViewContainers = "VIEW_CONTAINERS";
-         public const string ViewRepresentationInfos = "VIEW_REPRESENTATION_DATA";
-         public const string ViewRateObjectPaths = "VIEW_RATE_OBJECT_PATHS";
-         public const string ViewCalculationMethodRateFormula = "VIEW_CALCULATION_METHOD_RATE_FORMULA";
-         public const string ViewModelContainers = "VIEW_MODEL_CONTAINERS";
-         public const string ViewModelProcesses = "VIEW_MODEL_PROCESSES";
-         public const string ViewSchemaItems = "VIEW_SCHEMA_ITEM_CONTAINERS";
-         public const string ViewObservers = "VIEW_OBSERVERS";
-         public const string ViewObserverDescriptorConditions = "VIEW_OBSERVER_DESCRIPTOR_CONDITIONS";
-         public const string ViewIndividualActiveTransports = "VIEW_INDIVIDUAL_ACTIVE_TRANSPORTS";
-         public const string ViewProteinSynonyms = "VIEW_PROTEIN_SYNONYMS";
-         public const string ViewParameterRHS = "VIEW_PARAMETER_RHS";
-         public const string UsageInIndividualRequired = "REQUIRED";
-         public const string UsageInIndividualOptional = "OPTIONAL";
-         public const string UsageInIndividualExtended = "EXTENDED";
-         public const string ViewCalculationMethods = "VIEW_CALCULATION_METHODS";
-         public const string ViewModels = "VIEW_MODELS";
-         public const string ViewModelSpecies = "VIEW_MODEL_SPECIES";
-         public const string ViewModelCalculationMethods = "VIEW_MODEL_CALCULATION_METHODS";
-         public const string ViewProcesses = "VIEW_PROCESSES";
-         public const string ViewObjectPaths = "VIEW_OBJECT_PATHS";
-         public const string ViewNeighborhoods = "VIEW_NEIGHBORHOODS";
-         public const string ContainerMe = ".";
-         public const string ProcessMoleculeDirectionIn = "IN";
-         public const string ProcessMoleculeDirectionOut = "OUT";
-         public const string ProcessMoleculeDirectionModifier = "MODIFIER";
-         public const string ViewModelObservers = "VIEW_MODEL_OBSERVERS";
-         public const string ViewFormulationRoutes = "VIEW_FORMULATION_ROUTES";
-         public const string ViewOrganTypes = "VIEW_ORGAN_TYPES";
-         public const string ViewSpeciesCalculationMethods = "VIEW_SPECIES_CALCULATION_METHODS";
-         public const string ViewCompoundProcessParameterMappings = "VIEW_COMPOUND_PROCESS_PARAMETER_MAPPING";
-         public const string ViewMoleculeStartFormulas = "VIEW_MOLECULE_START_FORMULAS";
-         public const string ViewOntogenies = "VIEW_ONTOGENIES";
-         public const string ViewCategory = "VIEW_CATEGORIES";
-         public const string ViewCalculationMethodParameterRates = "VIEW_CALCULATION_METHOD_PARAMETER_RATES";
-         public const string ViewCalculationMethodParameterDescriptorConditions = "VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS";
-         public const string ViewDynamicFormulaCriteriaRepository = "VIEW_CALCULATION_METHOD_RATE_DESCRIPTOR_CONDITIONS";
-         public const string ViewModelPassiveTransportMoleculeNames = "VIEW_MODEL_TRANSPORT_MOLECULE_NAMES";
-         public const string ViewModelContainerMolecules = "VIEW_MODEL_CONTAINER_MOLECULES";
-         public const string ViewReactionPartners = "VIEW_REACTION_PARTNERS";
-         public const string ViewMoleculeParameters = "VIEW_MOLECULE_PARAMETERS";
-         public const string ViewValueOrigin = "VIEW_VALUE_ORIGINS";
-         public const string ViewTransportDirections = "VIEW_TRANSPORT_DIRECTIONS";
-         public const string ViewTransports = "VIEW_TRANSPORTS";
+         public const string COMPOUND_ACTIVE_PROCESS_PREFIX = "COMPOUND_";
+         public const string USAGE_IN_INDIVIDUAL_REQUIRED = "REQUIRED";
+         public const string USAGE_IN_INDIVIDUAL_OPTIONAL = "OPTIONAL";
+         public const string USAGE_IN_INDIVIDUAL_EXTENDED = "EXTENDED";
+         public const string CONTAINER_ME = ".";
+         public const string PROCESS_MOLECULE_DIRECTION_IN = "IN";
+         public const string PROCESS_MOLECULE_DIRECTION_OUT = "OUT";
+         public const string PROCESS_MOLECULE_DIRECTION_MODIFIER = "MODIFIER";
+
+         public const string VIEW_EVENT_CONDITIONS = "VIEW_EVENT_CONDITIONS";
+         public const string VIEW_EVENT_CHANGED_OBJECTS = "VIEW_EVENT_CHANGED_OBJECTS";
+         public const string VIEW_APPLICATION_PROCESSES = "VIEW_APPLICATION_PROCESSES";
+         public const string VIEW_APPLICATIONS = "VIEW_APPLICATIONS";
+         public const string VIEW_MOLECULES = "VIEW_MOLECULES";
+         public const string VIEW_PROCESS_DESCRIPTOR_CONDITIONS = "VIEW_PROCESS_DESCRIPTOR_CONDITIONS";
+         public const string VIEW_CONTAINER_TAGS = "VIEW_CONTAINER_TAGS";
+         public const string VIEW_PARAMETER_RATES = "VIEW_PARAMETER_RATES";
+         public const string VIEW_PARAMETER_VALUES = "VIEW_PARAMETER_VALUES";
+         public const string VIEW_PARAMETER_DISTRIBUTIONS = "VIEW_PARAMETER_DISTRIBUTIONS";
+         public const string VIEW_PARAMETERS_IN_CONTAINERS = "VIEW_PARAMETERS_IN_CONTAINERS";
+         public const string VIEW_GROUPS = "VIEW_GROUPS";
+         public const string VIEW_POPULATION_GENDERS = "VIEW_POPULATION_GENDERS";
+         public const string VIEW_POPULATIONS = "VIEW_POPULATIONS";
+         public const string VIEW_POPULATION_AGE = "VIEW_POPULATION_AGE";
+         public const string VIEW_GENDERS = "VIEW_GENDERS";
+         public const string VIEW_SPECIES = "VIEW_SPECIES";
+         public const string VIEW_PARAMETER_VALUE_VERSIONS = "VIEW_PARAMETER_VALUE_VERSIONS";
+         public const string VIEW_POPULATION_CONTAINERS = "VIEW_POPULATION_CONTAINERS";
+         public const string VIEW_CONTAINERS = "VIEW_CONTAINERS";
+         public const string VIEW_REPRESENTATION_INFOS = "VIEW_REPRESENTATION_DATA";
+         public const string VIEW_RATE_OBJECT_PATHS = "VIEW_RATE_OBJECT_PATHS";
+         public const string VIEW_CALCULATION_METHOD_RATE_FORMULA = "VIEW_CALCULATION_METHOD_RATE_FORMULA";
+         public const string VIEW_MODEL_CONTAINERS = "VIEW_MODEL_CONTAINERS";
+         public const string VIEW_MODEL_PROCESSES = "VIEW_MODEL_PROCESSES";
+         public const string VIEW_SCHEMA_ITEMS = "VIEW_SCHEMA_ITEM_CONTAINERS";
+         public const string VIEW_OBSERVERS = "VIEW_OBSERVERS";
+         public const string VIEW_OBSERVER_DESCRIPTOR_CONDITIONS = "VIEW_OBSERVER_DESCRIPTOR_CONDITIONS";
+         public const string VIEW_INDIVIDUAL_ACTIVE_TRANSPORTS = "VIEW_INDIVIDUAL_ACTIVE_TRANSPORTS";
+         public const string VIEW_PROTEIN_SYNONYMS = "VIEW_PROTEIN_SYNONYMS";
+         public const string VIEW_PARAMETER_RHS = "VIEW_PARAMETER_RHS";
+         public const string VIEW_CALCULATION_METHODS = "VIEW_CALCULATION_METHODS";
+         public const string VIEW_MODELS = "VIEW_MODELS";
+         public const string VIEW_MODEL_SPECIES = "VIEW_MODEL_SPECIES";
+         public const string VIEW_MODEL_CALCULATION_METHODS = "VIEW_MODEL_CALCULATION_METHODS";
+         public const string VIEW_PROCESSES = "VIEW_PROCESSES";
+         public const string VIEW_OBJECT_PATHS = "VIEW_OBJECT_PATHS";
+         public const string VIEW_NEIGHBORHOODS = "VIEW_NEIGHBORHOODS";
+         public const string VIEW_MODEL_OBSERVERS = "VIEW_MODEL_OBSERVERS";
+         public const string VIEW_FORMULATION_ROUTES = "VIEW_FORMULATION_ROUTES";
+         public const string VIEW_ORGAN_TYPES = "VIEW_ORGAN_TYPES";
+         public const string VIEW_SPECIES_CALCULATION_METHODS = "VIEW_SPECIES_CALCULATION_METHODS";
+         public const string VIEW_COMPOUND_PROCESS_PARAMETER_MAPPINGS = "VIEW_COMPOUND_PROCESS_PARAMETER_MAPPING";
+         public const string VIEW_MOLECULE_START_FORMULAS = "VIEW_MOLECULE_START_FORMULAS";
+         public const string VIEW_ONTOGENIES = "VIEW_ONTOGENIES";
+         public const string VIEW_CATEGORY = "VIEW_CATEGORIES";
+         public const string VIEW_CALCULATION_METHOD_PARAMETER_RATES = "VIEW_CALCULATION_METHOD_PARAMETER_RATES";
+         public const string VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS = "VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS";
+         public const string VIEW_DYNAMIC_FORMULA_CRITERIA_REPOSITORY = "VIEW_CALCULATION_METHOD_RATE_DESCRIPTOR_CONDITIONS";
+         public const string VIEW_MODEL_PASSIVE_TRANSPORT_MOLECULE_NAMES = "VIEW_MODEL_TRANSPORT_MOLECULE_NAMES";
+         public const string VIEW_MODEL_CONTAINER_MOLECULES = "VIEW_MODEL_CONTAINER_MOLECULES";
+         public const string VIEW_REACTION_PARTNERS = "VIEW_REACTION_PARTNERS";
+         public const string VIEW_MOLECULE_PARAMETERS = "VIEW_MOLECULE_PARAMETERS";
+         public const string VIEW_VALUE_ORIGIN = "VIEW_VALUE_ORIGINS";
+         public const string VIEW_TRANSPORT_DIRECTIONS = "VIEW_TRANSPORT_DIRECTIONS";
+         public const string VIEW_TRANSPORTS = "VIEW_TRANSPORTS";
+         public const string VIEW_DISEASE_STATES = "VIEW_DISEASE_STATES";
+         public const string VIEW_POPULATION_DISEASE_STATES = "VIEW_POPULATION_DISEASE_STATES";
       }
 
       public static class Organ

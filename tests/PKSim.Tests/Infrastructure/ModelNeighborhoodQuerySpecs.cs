@@ -36,8 +36,8 @@ namespace PKSim.Infrastructure
          _modelProperties.ModelConfiguration.ModelName = "3Comp";
          _allFlatNeighborhoods = new List<FlatModelContainer>();
          A.CallTo(() => _modelContainerRepository.All()).Returns(_allFlatNeighborhoods);
-         _flatNeighborhoodFor3Comp = new FlatModelContainer {Model = "3Comp", Type = CoreConstants.ContainerType.Neighborhood, Id = 1};
-         _flatNeighborhoodFor4Comp = new FlatModelContainer {Model = "4Comp", Type = CoreConstants.ContainerType.Neighborhood, Id = 2};
+         _flatNeighborhoodFor3Comp = new FlatModelContainer {Model = "3Comp", Type = CoreConstants.ContainerType.NEIGHBORHOOD, Id = 1};
+         _flatNeighborhoodFor4Comp = new FlatModelContainer {Model = "4Comp", Type = CoreConstants.ContainerType.NEIGHBORHOOD, Id = 2};
          _allFlatNeighborhoods.Add(_flatNeighborhoodFor3Comp);
          _allFlatNeighborhoods.Add(_flatNeighborhoodFor4Comp);
          sut = new ModelNeighborhoodQuery(_modelContainerRepository,_neighborhoodBuilderFactory);
@@ -50,7 +50,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.UsageInIndividualRequired;
+         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED;
       }
 
       [Observation]
@@ -85,7 +85,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.UsageInIndividualOptional;
+         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_OPTIONAL;
       }
 
       protected override void Because()
@@ -116,7 +116,7 @@ namespace PKSim.Infrastructure
          _individualNeighborhoods.Add(new Container().WithName(_flatNeighborhoodFor3Comp.Name));
          _neighborhoodBuilder = A.Fake<INeighborhoodBuilder>();
          _flatNeighborhood = new FlatNeighborhood { Name = "tralala" };
-         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.UsageInIndividualRequired;
+         _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED;
          A.CallTo(() => _neighborhoodRepository.NeighborhoodFrom(_flatNeighborhoodFor3Comp.Id)).Returns(_flatNeighborhood);
          A.CallTo(() => _neighborhoodBuilderFactory.Create()).Returns(_neighborhoodBuilder);
       }

@@ -69,6 +69,7 @@
          public static readonly string VMAX = "Vmax";
          public static readonly string VMAX_LIVER_TISSUE = "Vmax (liver tissue)";
          public static readonly string VOLUME = "Volume";
+         public static readonly string INPUT_GFR = "InputGFR";
       }
 
       public static class ContainerName

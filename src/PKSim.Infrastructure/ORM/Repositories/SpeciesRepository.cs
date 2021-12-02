@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatSpeciesRepository : MetaDataRepository<FlatSpecies>, IFlatSpeciesRepository
    {
       public FlatSpeciesRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatSpecies> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewSpecies)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_SPECIES)
       {
       }
    }

@@ -20,23 +20,23 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatPopulationRepository(IDbGateway dbGateway,
                                       IDataTableToMetaDataMapper<FlatPopulation> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewPopulations)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_POPULATIONS)
       {
       }
    }
 
    public class PopulationRepository : StartableRepository<SpeciesPopulation>, IPopulationRepository
    {
-      private readonly IFlatPopulationRepository _flatPopultionRepository;
+      private readonly IFlatPopulationRepository _flatPopulationRepository;
       private readonly IFlatPopulationToPopulationMapper _flatPopMapper;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly ICoreUserSettings _userSettings;
       private IReadOnlyList<SpeciesPopulation> _allPopulations;
 
-      public PopulationRepository(IFlatPopulationRepository flatPopultionRepository, IFlatPopulationToPopulationMapper flatPopMapper,
+      public PopulationRepository(IFlatPopulationRepository flatPopulationRepository, IFlatPopulationToPopulationMapper flatPopMapper,
                                   IRepresentationInfoRepository representationInfoRepository, ICoreUserSettings userSettings)
       {
-         _flatPopultionRepository = flatPopultionRepository;
+         _flatPopulationRepository = flatPopulationRepository;
          _flatPopMapper = flatPopMapper;
          _representationInfoRepository = representationInfoRepository;
          _userSettings = userSettings;
@@ -60,7 +60,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
-         var flatPopulations = _flatPopultionRepository.All();
+         var flatPopulations = _flatPopulationRepository.All();
          _allPopulations =flatPopulations.MapAllUsing(_flatPopMapper);
          _allPopulations.Each(updateDisplayInfo);
       }

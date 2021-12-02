@@ -170,7 +170,7 @@ namespace PKSim.IntegrationTests
          return pd.Population.Equals(CoreConstants.Population.ICRP) &&
                 pd.Age >= 40 &&
                 pd.ParameterName.Equals("Volume") &&
-                pd.ContainerType.Equals(CoreConstants.ContainerType.Organ) &&
+                pd.ContainerType.Equals(CoreConstants.ContainerType.ORGAN) &&
                 pd.ContainerName.Equals(organ);
       }
 
@@ -316,7 +316,7 @@ namespace PKSim.IntegrationTests
          string flowParameterName,
          string flowInclMucosaParameterName)
       {
-         if (parameterRateMetaData.ContainerType != CoreConstants.ContainerType.Organ)
+         if (parameterRateMetaData.ContainerType != CoreConstants.ContainerType.ORGAN)
             return false;
 
          var container = parameterRateMetaData.ContainerName;

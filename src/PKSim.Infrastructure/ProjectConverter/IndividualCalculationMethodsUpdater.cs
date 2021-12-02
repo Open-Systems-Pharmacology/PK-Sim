@@ -58,7 +58,7 @@ namespace PKSim.Infrastructure.ProjectConverter
 
       private void addRenalAgingCalculationMethodTo(IWithCalculationMethods withCalculationMethods, bool isHuman)
       {
-         var renalAgingCalculationMethodName = isHuman ? CoreConstants.CalculationMethod.RenalAgingHuman : CoreConstants.CalculationMethod.RenalAgingAnimals;
+         var renalAgingCalculationMethodName = isHuman ? CoreConstants.CalculationMethod.RENAL_AGING_HUMAN : CoreConstants.CalculationMethod.RENAL_AGING_ANIMALS;
          addMissingCalculationMethodTo(withCalculationMethods, renalAgingCalculationMethodName);
       }
 

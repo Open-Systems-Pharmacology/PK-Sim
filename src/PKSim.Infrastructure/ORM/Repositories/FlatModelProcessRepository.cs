@@ -21,7 +21,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public FlatModelProcessRepository(IDbGateway dbGateway,
          IDataTableToMetaDataMapper<FlatModelProcess> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewModelProcesses)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_MODEL_PROCESSES)
       {
          _processesSortedByModel = new Cache<string, ICache<string, FlatModelProcess>>();
       }

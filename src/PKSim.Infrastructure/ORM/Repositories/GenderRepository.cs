@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatGenderRepository : MetaDataRepository<FlatGender>, IFlatGenderRepository
    {
       public FlatGenderRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatGender> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewGenders)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_GENDERS)
       {
       }
    }

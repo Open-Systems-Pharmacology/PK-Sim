@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly Cache<int, FlatValueOrigin> _flatValueOriginCache = new Cache<int, FlatValueOrigin>(x => x.Id, x => null);
 
       public FlatValueOriginRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatValueOrigin> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewValueOrigin)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_VALUE_ORIGIN)
       {
       }
 

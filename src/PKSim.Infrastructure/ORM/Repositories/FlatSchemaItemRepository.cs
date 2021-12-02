@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatSchemaItemRepository : MetaDataRepository<FlatSchemaItem>, IFlatSchemaItemRepository
    {
       public FlatSchemaItemRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatSchemaItem> mapper) :
-         base(dbGateway, mapper, CoreConstants.ORM.ViewSchemaItems)
+         base(dbGateway, mapper, CoreConstants.ORM.VIEW_SCHEMA_ITEMS)
       {
       }
    }

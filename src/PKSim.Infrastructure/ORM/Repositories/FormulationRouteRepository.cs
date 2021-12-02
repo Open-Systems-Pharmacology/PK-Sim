@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FormulationRouteRepository : MetaDataRepository<FormulationRoute>, IFormulationRouteRepository
    {
       public FormulationRouteRepository(IDbGateway dbGateway,IDataTableToMetaDataMapper<FormulationRoute> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewFormulationRoutes)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_FORMULATION_ROUTES)
       {
       }
    }
