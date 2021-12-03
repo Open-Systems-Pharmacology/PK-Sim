@@ -58,7 +58,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          IIndividualSettingsView view,
          ISpeciesRepository speciesRepository,
          ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
-         IDefaultIndividualRetriever  defaultIndividualRetriever,
+         IDefaultIndividualRetriever defaultIndividualRetriever,
          IIndividualDefaultValueUpdater defaultValueUpdater,
          IIndividualToIIndividualSettingsDTOMapper individualSettingsDTOMapper,
          IIndividualSettingsDTOToIndividualMapper individualMapper,
@@ -103,14 +103,9 @@ namespace PKSim.Presentation.Presenters.Individuals
          ViewChanged();
       }
 
-      public IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category)
-      {
-         return _calculationMethodCategoryRepository.FindBy(category).AllForSpecies(_individualSettingsDTO.Species);
-      }
-
       public IReadOnlyList<DiseaseState> AllDiseaseStatesFor(SpeciesPopulation population)
       {
-         var list = new List<DiseaseState> { _diseaseStateRepository.HealthyState};
+         var list = new List<DiseaseState> {_diseaseStateRepository.HealthyState};
          list.AddRange(_diseaseStateRepository.AllFor(population));
          return list;
       }
@@ -146,6 +141,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void DiseaseStateChanged()
       {
+         _defaultValueUpdater.UpdateDiseaseStateFor(_individualSettingsDTO);
          updateDiseaseStatesControls();
       }
 
@@ -199,8 +195,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private void updateDiseaseStatesControls()
       {
-         var diseaseStates = _diseaseStateRepository.AllFor(_individualSettingsDTO.Population);
-         _view.DiseaseStateVisible = diseaseStates.Any();
+         _view.BindToDiseaseState(_individualSettingsDTO);
       }
 
       public IEnumerable<Species> AllSpecies() => _speciesRepository.All();
@@ -215,6 +210,11 @@ namespace PKSim.Presentation.Presenters.Individuals
       public IEnumerable<ParameterValueVersion> AllParameterValueVersionsFor(string category)
       {
          return _individualSettingsDTO.Species.PVVCategoryByName(category).AllItems();
+      }
+
+      public IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category)
+      {
+         return _calculationMethodCategoryRepository.FindBy(category).AllForSpecies(_individualSettingsDTO.Species);
       }
 
       public bool ShouldDisplayPvvCategory(string category)

@@ -327,9 +327,9 @@ namespace PKSim.Core.Services
          for (int individualIndex = 0; individualIndex < populationSimulation.NumberOfItems; individualIndex++)
          {
             //create origin data for individual i
-            originData.Age = allAges[individualIndex];
-            originData.GestationalAge = allGAs[individualIndex];
-            originData.Height = allHeights[individualIndex];
+            originData.Age.Value = allAges[individualIndex];
+            originData.GestationalAge.Value = allGAs[individualIndex];
+            originData.Height.Value = allHeights[individualIndex];
             originData.Gender = allGender[individualIndex];
             tableFormulaParameter.Value = originData.Height.Value;
 
@@ -381,9 +381,9 @@ namespace PKSim.Core.Services
          for (int individualIndex = 0; individualIndex < populationSimulation.NumberOfItems; individualIndex++)
          {
             //create origin data for individual i
-            originData.Age = allAges[individualIndex];
-            originData.GestationalAge = allGAs[individualIndex];
-            originData.Height = allHeights[individualIndex];
+            originData.Age.Value = allAges[individualIndex];
+            originData.GestationalAge.Value = allGAs[individualIndex];
+            originData.Height.Value = allHeights[individualIndex];
             originData.Gender = allGender[individualIndex];
             tableFormulaParameter.Value = allValues[individualIndex];
             tableFormulaParameter.Percentile = allPercentiles[individualIndex];
@@ -423,7 +423,7 @@ namespace PKSim.Core.Services
          IReadOnlyList<ParameterDistributionMetaData> distributionsForMale,
          IReadOnlyList<ParameterDistributionMetaData> distributionsForFemale, OriginData originData)
       {
-         return allDistributionsFor(distributionsForMale, distributionsForFemale, originData, x => x.Age > originData.Age);
+         return allDistributionsFor(distributionsForMale, distributionsForFemale, originData, x => x.Age > originData.Age.Value);
       }
 
       private IReadOnlyList<ParameterDistributionMetaData> allDistributionsFor(
@@ -488,7 +488,7 @@ namespace PKSim.Core.Services
          var (meanHeight, deviation) = distributionSamples(originData);
          var heightDistributionFormula = createDistributionFrom(DistributionTypes.Normal, meanHeight, deviation);
 
-         double currentHeight = originData.Height.GetValueOrDefault(meanHeight);
+         double currentHeight = originData.Height.Value;
          double currentPercentile = heightDistributionFormula.CalculatePercentileForValue(currentHeight).CorrectedPercentileValue();
 
          return (meanHeight, currentHeight, currentPercentile, distributionSamples);
@@ -518,7 +518,7 @@ namespace PKSim.Core.Services
          foreach (var originDistributionMetaData in distributionsToScale)
          {
             var distributionMetaData = ParameterDistributionMetaData.From(originDistributionMetaData);
-            currentOriginData.Age = originDistributionMetaData.Age;
+            currentOriginData.Age.Value = originDistributionMetaData.Age;
 
             var (mean, deviation) = heightDistributionSamples(currentOriginData);
             double heightAtPercentile = valueFrom(DistributionTypes.Normal, mean, deviation, currentPercentile);

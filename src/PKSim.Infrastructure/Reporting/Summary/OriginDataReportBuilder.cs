@@ -31,22 +31,22 @@ namespace PKSim.Infrastructure.Reporting.Summary
          individualProperties.Types[PKSimConstants.UI.Value] = typeof (double);
          if (originData.SpeciesPopulation.IsAgeDependent)
          {
-            if (originData.Age.HasValue)
-               individualProperties.AddIs(PKSimConstants.UI.Age, displayValueFor(originData.Age.Value, _dimensionRepository.AgeInYears, originData.AgeUnit), originData.AgeUnit);
+            if (originData.Age!=null)
+               individualProperties.AddIs(PKSimConstants.UI.Age, displayValueFor(originData.Age.Value, _dimensionRepository.AgeInYears, originData.Age.Unit), originData.Age.Unit);
 
-            if (originData.SpeciesPopulation.IsPreterm && originData.GestationalAge.HasValue)
-               individualProperties.AddIs(PKSimConstants.UI.GestationalAge, displayValueFor(originData.GestationalAge.Value, _dimensionRepository.AgeInWeeks, originData.GestationalAgeUnit), originData.GestationalAgeUnit);
+            if (originData.SpeciesPopulation.IsPreterm && originData.GestationalAge!=null)
+               individualProperties.AddIs(PKSimConstants.UI.GestationalAge, displayValueFor(originData.GestationalAge.Value, _dimensionRepository.AgeInWeeks, originData.GestationalAge.Unit), originData.GestationalAge.Unit);
          }
 
-         individualProperties.AddIs(PKSimConstants.UI.Weight, displayValueFor(originData.Weight, _dimensionRepository.Mass, originData.WeightUnit), originData.WeightUnit);
+         individualProperties.AddIs(PKSimConstants.UI.Weight, displayValueFor(originData.Weight.Value, _dimensionRepository.Mass, originData.Weight.Unit), originData.Weight.Unit);
 
          if (originData.SpeciesPopulation.IsHeightDependent)
          {
-            if (originData.Height.HasValue)
-               individualProperties.AddIs(PKSimConstants.UI.Height, displayValueFor(originData.Height.Value, _dimensionRepository.Length, originData.HeightUnit), originData.HeightUnit);
+            if (originData.Height!=null)
+               individualProperties.AddIs(PKSimConstants.UI.Height, displayValueFor(originData.Height.Value, _dimensionRepository.Length, originData.Height.Unit), originData.Height.Unit);
 
-            if (originData.BMI.HasValue)
-               individualProperties.AddIs(PKSimConstants.UI.BMI, displayValueFor(originData.BMI.Value, _dimensionRepository.BMI, originData.BMIUnit), originData.BMIUnit);
+            if (originData.BMI != null)
+               individualProperties.AddIs(PKSimConstants.UI.BMI, displayValueFor(originData.BMI.Value, _dimensionRepository.BMI, originData.BMI.Unit), originData.BMI.Unit);
          }
 
          reportPart.AddPart(populationProperties);

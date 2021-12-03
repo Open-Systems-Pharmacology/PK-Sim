@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Linq;
 using DevExpress.XtraLayout.Utils;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.UI.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Controls;
+using PKSim.Presentation.Presenters.Parameters;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -15,6 +17,7 @@ namespace PKSim.UI.Views.Parameters
       private ScreenBinder<IParameterDTO> _screenBinder;
       private IElementBinder<IParameterDTO, double> _discreteValueElementBinder;
       private IElementBinder<IParameterDTO, double> _valueElementBinder;
+      private bool _isBound;
 
       /// <summary>
       ///    Event is raised whenever a value is being changed in the user control
@@ -69,21 +72,32 @@ namespace PKSim.UI.Views.Parameters
 
       public void BindTo(IParameterDTO parameterDTO)
       {
+         _isBound = parameterDTO != null;
+         if (parameterDTO == null)
+         {
+            _screenBinder.DeleteBinding();
+            return;
+         }
+
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(parameterDTO.IsDiscrete);
          layoutControlItemValue.Visibility = LayoutVisibilityConvertor.FromBoolean(!parameterDTO.IsDiscrete);
 
          if (!parameterDTO.IsDiscrete)
+         {
             _screenBinder.Remove(_discreteValueElementBinder);
+            cbUnit.Enabled = parameterDTO.AllUnits.Count() > 1;
+         }
          else
          {
             _screenBinder.Remove(_valueElementBinder);
             cbUnit.Enabled = false;
          }
 
+
          _screenBinder.BindToSource(parameterDTO);
       }
 
-      public override bool HasError => _screenBinder.HasError;
+      public override bool HasError => _isBound && _screenBinder.HasError;
 
       public void ValidateControl()
       {

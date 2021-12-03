@@ -22,9 +22,10 @@ namespace PKSim.Presentation
       protected IParameterToParameterDTOMapper _parameterMapper;
       protected IOriginDataTask _originDataTask;
       protected ISubPopulationToSubPopulationDTOMapper _subPopulationMapper;
-      protected ISpeciesRepository _speciesRepository;
       private ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodMapper;
       protected IPopulationRepository _populationRepository;
+      protected ICloner _cloner;
+      protected IDiseaseStateRepository _diseaseStateRepository;
 
       protected override void Context()
       {
@@ -35,9 +36,19 @@ namespace PKSim.Presentation
          _subPopulationMapper = A.Fake<ISubPopulationToSubPopulationDTOMapper>();
          _calculationMethodMapper = A.Fake<ICalculationMethodToCategoryCalculationMethodDTOMapper>();
          _populationRepository = A.Fake<IPopulationRepository>();
-         sut = new IndividualDefaultValuesUpdater(_individualModelTask, _originDataMapper, _parameterMapper,
-                                                   _originDataTask, _subPopulationMapper, _speciesRepository,
-                                                   _calculationMethodMapper, _populationRepository);
+         _cloner= A.Fake<ICloner>();
+         _diseaseStateRepository= A.Fake<IDiseaseStateRepository>(); 
+
+         sut = new IndividualDefaultValuesUpdater(
+            _individualModelTask,
+            _originDataMapper,
+            _parameterMapper,
+            _originDataTask,
+            _subPopulationMapper,
+            _calculationMethodMapper,
+            _populationRepository,
+            _cloner,
+            _diseaseStateRepository);
       }
    }
 
@@ -73,8 +84,8 @@ namespace PKSim.Presentation
          _meanHeightDTO = A.Fake<ParameterDTO>();
          _meanGestationalAgeDTO = A.Fake<ParameterDTO>();
          _individualSettingsDTO.Species = A.Fake<Species>();
-         A.CallTo(() => _meanAgeDTO.KernelValue).Returns(_ageKernelValue);
-         A.CallTo(() => _meanGestationalAgeDTO.KernelValue).Returns(_gestationalAgeKernelValue);
+         A.CallTo(() => _meanAge.Value).Returns(_ageKernelValue);
+         A.CallTo(() => _meanGestationalAge.Value).Returns(_gestationalAgeKernelValue);
          A.CallTo(() => _originDataMapper.MapFrom(_individualSettingsDTO)).Returns(_originData);
          A.CallTo(() => _originDataTask.DefaultSubPopulationFor(_individualSettingsDTO.Species)).Returns(_subPopulation);
          A.CallTo(() => _individualModelTask.MeanAgeFor(_originData)).Returns(_meanAge);
@@ -103,7 +114,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_retrieve_the_default_poopulation_for_the_species()
+      public void should_retrieve_the_default_population_for_the_species()
       {
          _individualSettingsDTO.SubPopulation.ShouldBeEqualTo(_subPopulationDTO);
       }
@@ -111,8 +122,8 @@ namespace PKSim.Presentation
       [Observation]
       public void should_have_used_the_default_kernel_value_for_age_and_gestational_age_to_retrieve_the_default_parameter_values()
       {
-         _originData.Age.ShouldBeEqualTo(_ageKernelValue);
-         _originData.GestationalAge.ShouldBeEqualTo(_gestationalAgeKernelValue);
+         _originData.Age.Value.ShouldBeEqualTo(_ageKernelValue);
+         _originData.GestationalAge.Value.ShouldBeEqualTo(_gestationalAgeKernelValue);
       }
    }
 }

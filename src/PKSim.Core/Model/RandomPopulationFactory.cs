@@ -225,14 +225,14 @@ namespace PKSim.Core.Model
             //first create a new age value if necessary
             if (originData.SpeciesPopulation.IsAgeDependent)
             {
-               originData.Age = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.AGE, randomGenerator, out success);
+               originData.Age = new OriginDataParameter(createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.AGE, randomGenerator, out success));
                currentIndividual.Organism.Parameter(CoreConstants.Parameters.AGE).Value = originData.Age.Value;
                if (!success) continue;
             }
 
             if (originData.SpeciesPopulation.IsPreterm)
             {
-               originData.GestationalAge = createDiscreteRandomValueFor(populationSettings, Constants.Parameters.GESTATIONAL_AGE, randomGenerator, out success);
+               originData.GestationalAge = new OriginDataParameter(createDiscreteRandomValueFor(populationSettings, Constants.Parameters.GESTATIONAL_AGE, randomGenerator, out success));
                currentIndividual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE).Value = originData.GestationalAge.Value;
                if (!success) continue;
             }
@@ -240,7 +240,7 @@ namespace PKSim.Core.Model
             //Then define gender depending on selecting proportions
             if (originData.SpeciesPopulation.IsHeightDependent)
             {
-               originData.Height = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, randomGenerator, out success);
+               originData.Height = new OriginDataParameter(createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, randomGenerator, out success));
                currentIndividual.Organism.Parameter(CoreConstants.Parameters.HEIGHT).Value = originData.Height.Value;
             }
          } while (!success && numberOfTry < _maxIterations);

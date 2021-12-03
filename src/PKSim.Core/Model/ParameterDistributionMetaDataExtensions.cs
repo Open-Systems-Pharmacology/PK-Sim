@@ -12,11 +12,11 @@ namespace PKSim.Core.Model
          {
             var allNonPreterm = metaDataForParameter.allForGA(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS).ToList();
 
-            if (!isRealPreterm(originData))
+            if (!originData.IsRealPreterm)
                allValidMetaData.AddRange(allNonPreterm);
             else
             {
-               var allForGestationalAge = metaDataForParameter.allForGA(originData.GestationalAge).ToList();
+               var allForGestationalAge = metaDataForParameter.allForGA(originData.GestationalAge?.Value).ToList();
             
                if (allForGestationalAge.Any())
                {
@@ -45,10 +45,7 @@ namespace PKSim.Core.Model
          return allMissing;
       }
 
-      private static bool isRealPreterm(OriginData originData)
-      {
-         return originData.GestationalAge.GetValueOrDefault(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS) < CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
-      }
+     
 
       private static IEnumerable<ParameterDistributionMetaData> allForGA(this IEnumerable<ParameterDistributionMetaData> allMetaData, double? gestationalAge)
       {

@@ -8,16 +8,18 @@ namespace PKSim.Core
     {
         protected override void Context()
         {
-            sut = new OriginData();
-            sut.Age = 10;
-            sut.GestationalAge = 20;
-            sut.Comment = "tralala";
-            sut.Gender = new Gender{Name = "gender"};
-            sut.Height = 25;
-            sut.SpeciesPopulation = new SpeciesPopulation { Name = "population" };
-            sut.Species = new Species { Name = "species" }; 
-            sut.SubPopulation = new SubPopulation();
-            sut.Weight = 50;
+            sut = new OriginData
+            {
+               Age = new OriginDataParameter(10),
+               GestationalAge = new OriginDataParameter(20),
+               Comment = "tralala",
+               Gender = new Gender{Name = "gender"},
+               Height = new OriginDataParameter(25),
+               SpeciesPopulation = new SpeciesPopulation { Name = "population" },
+               Species = new Species { Name = "species" },
+               SubPopulation = new SubPopulation(),
+               Weight = new OriginDataParameter(50)
+            };
         }
     }
 
@@ -34,15 +36,15 @@ namespace PKSim.Core
         [Observation]
         public void should_return_an_origin_data_object_containing_the_same_properties()
         {
-            _result.Age.ShouldBeEqualTo(sut.Age);
+            _result.Age.Value.ShouldBeEqualTo(sut.Age.Value);
             _result.Comment.ShouldBeEqualTo(sut.Comment);
             _result.Gender.ShouldBeEqualTo(sut.Gender);
-            _result.Height.ShouldBeEqualTo(sut.Height);
+            _result.Height.Value.ShouldBeEqualTo(sut.Height.Value);
             _result.SpeciesPopulation.ShouldBeEqualTo(sut.SpeciesPopulation);
             _result.Species.ShouldBeEqualTo(sut.Species);
             _result.SubPopulation.ShouldBeEqualTo(sut.SubPopulation);
-            _result.Weight.ShouldBeEqualTo(sut.Weight);
-            _result.GestationalAge.ShouldBeEqualTo(sut.GestationalAge);
+            _result.Weight.Value.ShouldBeEqualTo(sut.Weight.Value);
+            _result.GestationalAge.Value.ShouldBeEqualTo(sut.GestationalAge.Value);
         }
     }
 

@@ -75,24 +75,19 @@ namespace PKSim.Core
          _valueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro, Source = ValueOriginSources.Database};
          _originData.UpdateValueOriginFrom(_valueOrigin);
 
-         _originData.Age = 10;
-         _originData.AgeUnit = _age.DisplayUnit.Name;
+         _originData.Age = new OriginDataParameter(10, _age.DisplayUnit.Name);
          _organism.Add(_age);
 
-         _originData.GestationalAge = 40;
-         _originData.GestationalAgeUnit = _gestationalAge.DisplayUnit.Name;
+         _originData.GestationalAge = new OriginDataParameter(40, _gestationalAge.DisplayUnit.Name);
          _organism.Add(_gestationalAge);
 
-         _originData.Height = 170;
-         _originData.HeightUnit = _height.DisplayUnit.Name;
+         _originData.Height =   new OriginDataParameter(170, _height.DisplayUnit.Name);
          _organism.Add(_height);
 
-         _originData.Weight = 170;
-         _originData.WeightUnit = _weight.DisplayUnit.Name;
+         _originData.Weight = new OriginDataParameter(170, _weight.DisplayUnit.Name);
          _organism.Add(_weight);
 
-         _originData.BMI = 170;
-         _originData.BMIUnit = _bmi.DisplayUnit.Name;
+         _originData.BMI = new OriginDataParameter(170, _bmi.DisplayUnit.Name);
          _organism.Add(_bmi);
       }
 
@@ -162,7 +157,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_an_individual_for_the_predefined_origine_data_with_a_predefined_seed : concern_for_IndividualFactory
+   public class When_creating_an_individual_for_the_predefined_origin_data_with_a_predefined_seed : concern_for_IndividualFactory
    {
       private OriginData _originData;
       private Individual _individual;
@@ -173,7 +168,12 @@ namespace PKSim.Core
       {
          base.Context();
          _seed = 20;
-         _originData = new OriginData {Species = A.Fake<Species>().WithName("toto"), SpeciesPopulation = A.Fake<SpeciesPopulation>()};
+         _originData = new OriginData
+         {
+            Species = A.Fake<Species>().WithName("toto"), 
+            SpeciesPopulation = A.Fake<SpeciesPopulation>(),
+            Weight = new OriginDataParameter()
+         };
          _individual = new Individual();
          A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
       }
@@ -198,7 +198,6 @@ namespace PKSim.Core
    public class When_told_to_create_an_individual_without_parameters : concern_for_IndividualFactory
    {
       private Individual _individual;
-      private Individual _result;
       private Organism _organism;
       private IContainer _neighborhoods;
       private IRootContainer _rootContainer;
@@ -221,7 +220,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.CreateParameterLessIndividual();
+         sut.CreateParameterLessIndividual();
       }
 
       [Observation]
@@ -243,7 +242,12 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData {Species = A.Fake<Species>().WithName("toto"), SpeciesPopulation = A.Fake<SpeciesPopulation>()};
+         _originData = new OriginData
+         {
+            Species = A.Fake<Species>().WithName("toto"), 
+            SpeciesPopulation = A.Fake<SpeciesPopulation>(),
+            Weight = new OriginDataParameter()
+         };
          _individual = new Individual();
          _invalidResults = A.Fake<ValidationResult>();
          A.CallTo(() => _invalidResults.ValidationState).Returns(ValidationState.Invalid);

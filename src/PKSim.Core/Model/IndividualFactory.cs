@@ -97,15 +97,15 @@ namespace PKSim.Core.Model
          createAction(_individualModelTask)(individual);
 
          //Update parameters defined in origin data and also in individual
-         setParameter(individual, CoreConstants.Parameters.AGE, originData.Age, originData.AgeUnit);
-         setParameter(individual, Constants.Parameters.GESTATIONAL_AGE, originData.GestationalAge, originData.GestationalAgeUnit, individual.IsPreterm);
-         setParameter(individual, CoreConstants.Parameters.HEIGHT, originData.Height, originData.HeightUnit);
+         setParameter(individual, CoreConstants.Parameters.AGE, originData.Age);
+         setParameter(individual, Constants.Parameters.GESTATIONAL_AGE, originData.GestationalAge, individual.IsPreterm);
+         setParameter(individual, CoreConstants.Parameters.HEIGHT, originData.Height);
 
          //Do not update value for BMI and weight in individual as this parameter are defined as formula parameter
-         setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.WeightUnit, originData.ValueOrigin);
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.Weight.Unit, originData.ValueOrigin);
 
          //Do not update value origin for BMI as this is not an input from the user
-         setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMIUnit);
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMI?.Unit);
 
          //update ontogeny parameters 
          _ontogenyVariabilityUpdater.UpdatePlasmaProteinsOntogenyFor(individual);
@@ -145,9 +145,9 @@ namespace PKSim.Core.Model
          parameter.DisplayUnit = parameter.Dimension.UnitOrDefault(unit);
       }
 
-      private void setParameter(Individual individual, string parameterName, double? value, string unit = null, bool visible = true)
+      private void setParameter(Individual individual, string parameterName, OriginDataParameter originDataParameter, bool visible = true)
       {
-         if (!value.HasValue)
+         if (originDataParameter==null)
             return;
 
          var parameter = individual.Organism.Parameter(parameterName);
@@ -155,8 +155,8 @@ namespace PKSim.Core.Model
             return;
 
          var valueOrigin = individual.OriginData.ValueOrigin;
-
-         parameter.Value = value.Value;
+         var (value, unit) = originDataParameter;
+         parameter.Value = value;
          parameter.UpdateValueOriginFrom(valueOrigin);
 
          setParameterDisplayUnit(individual, parameterName, unit);

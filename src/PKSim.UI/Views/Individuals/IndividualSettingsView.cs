@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DevExpress.LookAndFeel;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -11,7 +12,6 @@ using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
@@ -35,8 +35,9 @@ namespace PKSim.UI.Views.Individuals
       private readonly UserLookAndFeel _lookAndFeel;
       private IIndividualSettingsPresenter _presenter;
 
-      private readonly ScreenBinder<IndividualSettingsDTO> _settingsBinder;
-      private readonly ScreenBinder<IndividualSettingsDTO> _parameterBinder;
+      private readonly ScreenBinder<IndividualSettingsDTO> _settingsBinder = new ScreenBinder<IndividualSettingsDTO>();
+      private readonly ScreenBinder<IndividualSettingsDTO> _diseaseStateBinder = new ScreenBinder<IndividualSettingsDTO>();
+      private readonly ScreenBinder<IndividualSettingsDTO> _parameterBinder = new ScreenBinder<IndividualSettingsDTO>();
       private readonly GridViewBinder<CategoryParameterValueVersionDTO> _gridParameterValueVersionsBinder;
       private readonly GridViewBinder<CategoryCalculationMethodDTO> _gridCalculationMethodsBinder;
 
@@ -55,8 +56,6 @@ namespace PKSim.UI.Views.Individuals
          _toolTipCreator = toolTipCreator;
          _lookAndFeel = lookAndFeel;
 
-         _settingsBinder = new ScreenBinder<IndividualSettingsDTO>();
-         _parameterBinder = new ScreenBinder<IndividualSettingsDTO>();
          _gridParameterValueVersionsBinder = new GridViewBinder<CategoryParameterValueVersionDTO>(gridViewParameterValueVersions);
          _gridCalculationMethodsBinder = new GridViewBinder<CategoryCalculationMethodDTO>(gridViewCalculationMethods);
          _repositoryForParameterValueVersions = new UxRepositoryItemComboBox(gridViewParameterValueVersions);
@@ -89,12 +88,6 @@ namespace PKSim.UI.Views.Individuals
             .WithValues(dto => _presenter.PopulationsFor(dto.Species))
             .AndDisplays(pop => pop.DisplayName)
             .Changed += () => _presenter.PopulationChanged();
-
-         _settingsBinder.Bind(dto => dto.DiseaseState)
-            .To(cbDiseaseState)
-            .WithValues(dto => _presenter.AllDiseaseStatesFor(dto.Population))
-            .AndDisplays(diseaseState => diseaseState.DisplayName)
-            .Changed += () => _presenter.DiseaseStateChanged();
 
          _settingsBinder.Bind(dto => dto.Gender)
             .To(cbGender)
@@ -132,10 +125,24 @@ namespace PKSim.UI.Views.Individuals
          _parameterBinder.Bind(dto => dto.ParameterWeight).To(uxWeight);
          _parameterBinder.Bind(dto => dto.ParameterBMI).To(uxBMI);
 
+         _diseaseStateBinder.Bind(dto => dto.DiseaseState)
+            .To(cbDiseaseState)
+            .WithValues(dto => _presenter.AllDiseaseStatesFor(dto.Population))
+            .AndDisplays(diseaseState => diseaseState.DisplayName)
+            .Changed += () => _presenter.DiseaseStateChanged();
+
+         _diseaseStateBinder.Bind(dto => dto.DiseaseState)
+            .To(lblDescription)
+            .WithFormat(x => x.Description.InBold());
+
+         _diseaseStateBinder.Bind(dto => dto.DiseaseStateParameter)
+            .To(uxDiseaseParameter);
+
          btnMeanValues.Click += (o, e) => this.DoWithinWaitCursor(() => OnEvent(_presenter.RetrieveMeanValues));
 
          RegisterValidationFor(_settingsBinder, settingsChanged, settingsChanged);
          RegisterValidationFor(_parameterBinder, settingsChanged, settingsChanged);
+         RegisterValidationFor(_diseaseStateBinder, settingsChanged, settingsChanged);
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
@@ -203,6 +210,22 @@ namespace PKSim.UI.Views.Individuals
          settingsChanged();
       }
 
+      public void BindToDiseaseState(IndividualSettingsDTO individualSettingsDTO)
+      {
+         this.DoWithinLatch(() =>
+         {
+            //One is healthy. We show the selection if we have more than one
+            DiseaseStateVisible = _presenter.AllDiseaseStatesFor(individualSettingsDTO.Population).Count > 1; ;
+            _diseaseStateBinder.BindToSource(individualSettingsDTO);
+            var diseaseStateParameter = individualSettingsDTO.DiseaseStateParameter;
+            var hasParameter = diseaseStateParameter != null;
+            if (hasParameter)
+               layoutItemDiseaseParameter.Text = diseaseStateParameter.DisplayName.FormatForLabel(checkCase:false);
+
+             layoutItemDiseaseParameter.Visibility = LayoutVisibilityConvertor.FromBoolean(hasParameter);
+         });
+      }
+
       public void BindToSubPopulation(IEnumerable<CategoryParameterValueVersionDTO> subPopulation)
       {
          _gridParameterValueVersionsBinder.BindToSource(subPopulation);
@@ -216,6 +239,7 @@ namespace PKSim.UI.Views.Individuals
       }
 
       public void RefreshAllIndividualList()
+
       {
          _settingsBinder.RefreshListElements();
          settingsChanged();
@@ -243,10 +267,7 @@ namespace PKSim.UI.Views.Individuals
 
       public bool DiseaseStateVisible
       {
-         set
-         {
-            layoutGroupDiseaseState.Visibility  = LayoutVisibilityConvertor.FromBoolean(value); 
-         }
+         set => layoutGroupDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
          get => LayoutVisibilityConvertor.ToBoolean(layoutGroupDiseaseState.Visibility);
       }
 
@@ -294,7 +315,7 @@ namespace PKSim.UI.Views.Individuals
          layoutControl.EndUpdate();
       }
 
-      public override bool HasError => _settingsBinder.HasError || _parameterBinder.HasError;
+      public override bool HasError => _settingsBinder.HasError || _parameterBinder.HasError || _diseaseStateBinder.HasError;
 
       public override void InitializeResources()
       {
@@ -312,11 +333,14 @@ namespace PKSim.UI.Views.Individuals
          layoutItemCalculationMethods.Text = PKSimConstants.UI.CalculationMethods.FormatForLabel();
          layoutControlGroupPopulationParameters.Text = PKSimConstants.UI.IndividualParameters;
          layoutControlGroupPopulationProperties.Text = PKSimConstants.UI.PopulationProperties;
+         layoutGroupDiseaseState.Text = PKSimConstants.UI.DiseaseState;
          layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          btnMeanValues.Text = PKSimConstants.UI.MeanValues;
          layoutControl.InitializeDisabledColors(_lookAndFeel);
          uxBMI.Enabled = false;
          cbSpecies.SetImages(_imageListRetriever);
+         layoutItemDiseaseState.Text = PKSimConstants.UI.Select.FormatForLabel();
+         lblDescription.AsDescription();
       }
 
       public override string Caption => PKSimConstants.UI.Biometrics;

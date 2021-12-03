@@ -21,6 +21,11 @@ namespace PKSim.Presentation.DTO.Individuals
       public Gender Gender { get; set; }
       public ValueOrigin ValueOrigin { get; }
       public DiseaseState DiseaseState { get; set; }
+      
+      /// <summary>
+      /// For now, we assume only one disease state parameters. We can make the view more generic if this is ever required
+      /// </summary>
+      public IParameterDTO DiseaseStateParameter { get; set; }
 
       public IndividualSettingsDTO()
       {

@@ -6,6 +6,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation.DTO.Individuals
 {
@@ -14,25 +15,31 @@ namespace PKSim.Presentation.DTO.Individuals
       void UpdateDefaultValueFor(IndividualSettingsDTO individualSettingsDTO);
       void UpdateMeanValueFor(IndividualSettingsDTO individualSettingsDTO);
       void UpdateSettingsAfterSpeciesChange(IndividualSettingsDTO individualSettingsDTO);
+      void UpdateDiseaseStateFor(IndividualSettingsDTO individualSettingsDTO);
    }
 
    public class IndividualDefaultValuesUpdater : IIndividualDefaultValueUpdater
    {
       private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
       private readonly IPopulationRepository _populationRepository;
+      private readonly ICloner _cloner;
+      private readonly IDiseaseStateRepository _diseaseStateRepository;
       private readonly IIndividualModelTask _individualModelTask;
       private readonly IIndividualSettingsDTOToOriginDataMapper _originDataMapper;
       private readonly IParameterToParameterDTOMapper _parameterMapper;
       private readonly ISubPopulationToSubPopulationDTOMapper _subPopulationDTOMapper;
       private readonly IOriginDataTask _originDataTask;
 
-      public IndividualDefaultValuesUpdater(IIndividualModelTask individualModelTask,
+      public IndividualDefaultValuesUpdater(
+         IIndividualModelTask individualModelTask,
          IIndividualSettingsDTOToOriginDataMapper originDataMapper,
          IParameterToParameterDTOMapper parameterMapper,
          IOriginDataTask originDataTask,
          ISubPopulationToSubPopulationDTOMapper subPopulationDTOMapper,
-         ISpeciesRepository speciesRepository,
-         ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper, IPopulationRepository populationRepository)
+         ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper, 
+         IPopulationRepository populationRepository,
+         ICloner cloner,
+         IDiseaseStateRepository diseaseStateRepository)
       {
          _individualModelTask = individualModelTask;
          _originDataMapper = originDataMapper;
@@ -41,6 +48,8 @@ namespace PKSim.Presentation.DTO.Individuals
          _subPopulationDTOMapper = subPopulationDTOMapper;
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
          _populationRepository = populationRepository;
+         _cloner = cloner;
+         _diseaseStateRepository = diseaseStateRepository;
       }
 
 
@@ -49,17 +58,21 @@ namespace PKSim.Presentation.DTO.Individuals
          individualSettingsDTO.SubPopulation = _subPopulationDTOMapper.MapFrom(_originDataTask.DefaultSubPopulationFor(individualSettingsDTO.Species));
          //Default parameter such as age etc.. were not defined yet
          var originData = _originDataMapper.MapFrom(individualSettingsDTO);
-         var parameterAge = _parameterMapper.MapAsReadWriteFrom(_individualModelTask.MeanAgeFor(originData));
-         originData.Age = parameterAge.KernelValue;
+         var parameterAge = _individualModelTask.MeanAgeFor(originData);
+         if(parameterAge!=null)
+            originData.Age = new OriginDataParameter(parameterAge.Value);
 
-         var parameterGestationalAge = _parameterMapper.MapAsReadWriteFrom(_individualModelTask.MeanGestationalAgeFor(originData));
-         originData.GestationalAge = parameterGestationalAge.KernelValue;
-         setDefaultValues(individualSettingsDTO, originData, parameterAge, parameterGestationalAge);
+         var parameterGestationalAge = _individualModelTask.MeanGestationalAgeFor(originData);
+         if (parameterGestationalAge != null)
+            originData.GestationalAge = new OriginDataParameter(parameterGestationalAge.Value);
+
+         setDefaultValues(individualSettingsDTO, originData, _parameterMapper.MapAsReadWriteFrom(parameterAge), _parameterMapper.MapAsReadWriteFrom(parameterGestationalAge));
       }
 
+      
       public void UpdateMeanValueFor(IndividualSettingsDTO individualSettingsDTO)
       {
-         OriginData originData = _originDataMapper.MapFrom(individualSettingsDTO);
+         var originData = _originDataMapper.MapFrom(individualSettingsDTO);
          setDefaultValues(individualSettingsDTO, originData, individualSettingsDTO.ParameterAge, individualSettingsDTO.ParameterGestationalAge);
       }
 
@@ -84,6 +97,20 @@ namespace PKSim.Presentation.DTO.Individuals
          individualSettingsDTO.Population = population;
          individualSettingsDTO.Gender = population.DefaultGender;
          individualSettingsDTO.CalculationMethods = individualCalculationMethods(species);
+
+         //after species change, we are always in healthy state
+         individualSettingsDTO.DiseaseState = _diseaseStateRepository.HealthyState;
+         UpdateDiseaseStateFor(individualSettingsDTO);
+      }
+
+      public void UpdateDiseaseStateFor(IndividualSettingsDTO individualSettingsDTO)
+      {
+         var diseaseState = individualSettingsDTO.DiseaseState;
+         //We clone parameters to ensure that we are not updating the default from DB;
+         individualSettingsDTO.DiseaseStateParameter = diseaseState.Parameters
+            .Select(_cloner.Clone)
+            .Select(_parameterMapper.MapAsReadWriteFrom)
+            .FirstOrDefault();
       }
 
       private IEnumerable<CategoryCalculationMethodDTO> individualCalculationMethods(Species species)

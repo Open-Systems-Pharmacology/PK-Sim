@@ -142,7 +142,7 @@ namespace PKSim.Core.Model
 
       private ParameterDistributionMetaData closestDistributionMetaDataFor(IReadOnlyList<ParameterDistributionMetaData> distributions, OriginData originData)
       {
-         if (!originData.Age.HasValue)
+         if (originData.Age == null)
             return distributions.First();
 
          var samples = distributions.Select(x => new Sample<ParameterDistributionMetaData>(x.Age, x));

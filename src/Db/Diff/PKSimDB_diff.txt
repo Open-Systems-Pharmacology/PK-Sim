@@ -17,6 +17,7 @@ CREATE TABLE tab_disease_states
     implementation text
 );
 INSERT INTO tab_disease_states(disease_state,display_name,description,implementation) VALUES('CKD','CKD Display TODO','CKD Description TODO','CKDDiseaseState');
+INSERT INTO tab_disease_states(disease_state,display_name,description,implementation) VALUES('Healthy','Healthy Display TODO','Healthy Description TODO',NULL);
 CREATE UNIQUE INDEX tab_disease_states_description_uindex
     on tab_disease_states (description);
 CREATE UNIQUE INDEX tab_disease_states_disease_state_uindex

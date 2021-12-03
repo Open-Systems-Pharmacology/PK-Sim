@@ -1,10 +1,11 @@
+using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Presentation.DTO.Individuals;
-using OSPSuite.Core.Domain;
 using PKSim.Core.Repositories;
+using PKSim.Presentation.DTO.Individuals;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -18,35 +19,38 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly ISubPopulationToSubPopulationDTOMapper _subPopulationDTOMapper;
       private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
       private readonly IDiseaseStateRepository _diseaseStateRepository;
+      private readonly IOriginDataParameterToParameterDTOMapper _originDataParameterMapper;
 
       public IndividualToIIndividualSettingsDTOMapper(
          IParameterToParameterDTOMapper parameterMapper,
          ISubPopulationToSubPopulationDTOMapper subPopulationDTOMapper,
          ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper,
-         IDiseaseStateRepository diseaseStateRepository
-         )
+         IDiseaseStateRepository diseaseStateRepository,
+         IOriginDataParameterToParameterDTOMapper originDataParameterMapper
+      )
       {
          _parameterMapper = parameterMapper;
          _subPopulationDTOMapper = subPopulationDTOMapper;
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
          _diseaseStateRepository = diseaseStateRepository;
+         _originDataParameterMapper = originDataParameterMapper;
       }
 
       public IndividualSettingsDTO MapFrom(Individual individual)
       {
+         var originData = individual.OriginData;
          var individualDTO = new IndividualSettingsDTO
          {
-            Species = individual.OriginData.Species,
-            Population = individual.OriginData.SpeciesPopulation,
-            SubPopulation = _subPopulationDTOMapper.MapFrom(individual.OriginData.SubPopulation),
-            Gender = individual.OriginData.Gender,
-            CalculationMethods = individual.OriginData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper),
-            //TODO
-
-            DiseaseState = _diseaseStateRepository.HealthyState
+            Species = originData.Species,
+            Population = originData.SpeciesPopulation,
+            SubPopulation = _subPopulationDTOMapper.MapFrom(originData.SubPopulation),
+            Gender = originData.Gender,
+            CalculationMethods = originData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper),
+            DiseaseState = originData.DiseaseState ?? _diseaseStateRepository.HealthyState,
+            DiseaseStateParameter = originData.DiseaseStateParameters.Select(_originDataParameterMapper.MapFrom).FirstOrDefault()
          };
 
-         individualDTO.UpdateValueOriginFrom(individual.OriginData.ValueOrigin);
+         individualDTO.UpdateValueOriginFrom(originData.ValueOrigin);
 
          individualDTO.SetDefaultParameters(
             _parameterMapper.MapAsReadWriteFrom(individual.Organism.Parameter(CoreConstants.Parameters.AGE)),

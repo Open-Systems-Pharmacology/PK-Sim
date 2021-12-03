@@ -53,16 +53,7 @@ namespace PKSim.Core.Model
 
       public virtual bool IsHuman => Species.IsHuman;
 
-      public virtual bool IsPreterm
-      {
-         get
-         {
-            if (!Population.IsPreterm)
-               return false;
-
-            return OriginData.GestationalAge.HasValue && OriginData.GestationalAge.Value <= CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
-         }
-      }
+      public virtual bool IsPreterm => Population.IsPreterm && OriginData.IsPreterm;
 
       public virtual Species Species => OriginData.Species;
 
@@ -137,17 +128,17 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Input age of the individual.
       /// </summary>
-      public virtual double Age => OriginData.Age ?? 0;
+      public virtual double Age => OriginData.Age?.Value ?? 0;
 
       /// <summary>
       ///    Input Weight of the individual.
       /// </summary>
-      public virtual double InputWeight => OriginData.Weight;
+      public virtual double InputWeight => OriginData.Weight.Value;
 
       /// <summary>
       ///    Input Height of the individual.
       /// </summary>
-      public virtual double InputHeight => OriginData.Height ?? 0;
+      public virtual double InputHeight => OriginData.Height?.Value ?? 0;
 
       /// <summary>
       ///    Mean height as defined in the database for the organism

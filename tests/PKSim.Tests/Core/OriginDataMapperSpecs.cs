@@ -66,23 +66,20 @@ namespace PKSim.Core
 
          _originData = new Model.OriginData
          {
-            Age = 35,
-            AgeUnit = "years",
-            Height = 17.8,
-            HeightUnit = "m",
-            Weight = 73,
-            WeightUnit = "kg",
+            Age = new  OriginDataParameter(35,"years"),
+            Height = new  OriginDataParameter(1.78,"m"),
+            Weight = new  OriginDataParameter(73,"kg"),
             Species = _species,
             SpeciesPopulation = _speciesPopulation,
             Gender = _gender,
-            GestationalAge = 40
+            GestationalAge = new OriginDataParameter(40)
          };
 
          A.CallTo(() => _parameterMapper.ParameterFrom(null, A<string>._, A<IDimension>._)).Returns(null);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Age, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Weight, A<string>._, A<IDimension>._)).Returns(_weightSnapshotParameter);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.GestationalAge, A<string>._, A<IDimension>._)).Returns(_gestationalAgeSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Age.Value, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Height.Value, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Weight.Value, A<string>._, A<IDimension>._)).Returns(_weightSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.GestationalAge.Value, A<string>._, A<IDimension>._)).Returns(_gestationalAgeSnapshotParameter);
 
 
          _valueOriginSnapshot = new ValueOrigin();
@@ -134,7 +131,7 @@ namespace PKSim.Core
          _speciesPopulation.AddGender(_anotherGender);
 
          A.CallTo(() => _individualModelTask.MeanAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Age.Value));
-         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight));
+         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight.Value));
       }
 
       protected override async Task Because()
@@ -175,7 +172,7 @@ namespace PKSim.Core
          _speciesPopulation.AddGender(_anotherGender);
 
          A.CallTo(() => _individualModelTask.MeanAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Age.Value));
-         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight));
+         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight.Value));
          A.CallTo(() => _individualModelTask.MeanGestationalAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.GestationalAge.Value));
          A.CallTo(() => _individualModelTask.MeanHeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Height.Value));
       }
@@ -352,7 +349,7 @@ namespace PKSim.Core
 
          var meanWeightParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanWeightFor(A<Model.OriginData>._)).Returns(meanWeightParameter);
-         A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight);
+         A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight.Value);
 
          var meanHeightParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanHeightFor(A<Model.OriginData>._)).Returns(meanHeightParameter);
@@ -378,10 +375,10 @@ namespace PKSim.Core
          _newOriginData.Species.ShouldBeEqualTo(_originData.Species);
          _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_originData.SpeciesPopulation);
          _newOriginData.Gender.ShouldBeEqualTo(_originData.Gender);
-         _newOriginData.Weight.ShouldBeEqualTo(_originData.Weight);
-         _newOriginData.Height.ShouldBeEqualTo(_originData.Height);
-         _newOriginData.Age.ShouldBeEqualTo(_originData.Age);
-         _newOriginData.GestationalAge.ShouldBeEqualTo(_originData.GestationalAge);
+         _newOriginData.Weight.Value.ShouldBeEqualTo(_originData.Weight.Value);
+         _newOriginData.Height.Value.ShouldBeEqualTo(_originData.Height.Value);
+         _newOriginData.Age.Value.ShouldBeEqualTo(_originData.Age.Value);
+         _newOriginData.GestationalAge.Value.ShouldBeEqualTo(_originData.GestationalAge.Value);
       }
 
       [Observation]

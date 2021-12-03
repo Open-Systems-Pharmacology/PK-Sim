@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -17,8 +18,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IPopulationRepository _populationRepository;
       private readonly IFlatDiseaseStateToDiseaseStateMapper _diseaseStateMapper;
       private readonly Cache<string, DiseaseState> _allDiseaseSates = new Cache<string, DiseaseState>(x => x.Id, x => null);
-      private readonly Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>> _allDiseaseStatePerPopulation 
-         = new Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>>(onMissingKey: x=> Array.Empty<DiseaseState>());
+
+      private readonly Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>> _allDiseaseStatePerPopulation
+         = new Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>>(onMissingKey: x => Array.Empty<DiseaseState>());
+
+      private DiseaseState _healthyState;
 
       public DiseaseStateRepository(
          IFlatDiseaseStateRepository flatDiseaseStateRepository,
@@ -44,12 +48,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             _allDiseaseStatePerPopulation[population] = diseaseStates;
          }
 
-         HealthyState = new DiseaseState
-         {
-            Id = CoreConstants.ContainerName.HEALTHY,
-            Name = CoreConstants.ContainerName.HEALTHY,
-            DisplayName = CoreConstants.ContainerName.HEALTHY,
-         };
+         _healthyState = _allDiseaseSates.FindByName(CoreConstants.ContainerName.HEALTHY);
       }
 
       public override IEnumerable<DiseaseState> All()
@@ -64,6 +63,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _allDiseaseStatePerPopulation[population];
       }
 
-      public DiseaseState HealthyState { get; private set; }
+      public DiseaseState HealthyState
+      {
+         get
+         {
+            Start();
+            return _healthyState;
+         }
+      }
    }
 }

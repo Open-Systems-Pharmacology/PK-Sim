@@ -1,17 +1,15 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO;
-
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
-
 using PKSim.Presentation.DTO.Parameters;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation
 {
@@ -23,17 +21,28 @@ namespace PKSim.Presentation
       protected SpeciesPopulation _speciesPopulation;
       protected ISubPopulationToSubPopulationDTOMapper _subPopulationDTOMapper;
       protected ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
+      protected IDiseaseStateRepository _diseaseStateRepository;
+      protected IOriginDataParameterToParameterDTOMapper _originDataParameterMapper;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
          _subPopulationDTOMapper = A.Fake<ISubPopulationToSubPopulationDTOMapper>();
          _calculationMethodDTOMapper = A.Fake<ICalculationMethodToCategoryCalculationMethodDTOMapper>();
+         _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
+         _originDataParameterMapper = A.Fake<IOriginDataParameterToParameterDTOMapper>();
+
          _species = new Species {Name = "species"};
          _speciesPopulation = new SpeciesPopulation {Name = "population"};
          _speciesPopulation.AddGender(new Gender {Name = "gender"});
          _species.AddPopulation(_speciesPopulation);
-         sut = new IndividualToIIndividualSettingsDTOMapper(_parameterMapper, _subPopulationDTOMapper, _calculationMethodDTOMapper);
+         sut = new IndividualToIIndividualSettingsDTOMapper(
+            _parameterMapper,
+            _subPopulationDTOMapper,
+            _calculationMethodDTOMapper,
+            _diseaseStateRepository,
+            _originDataParameterMapper
+         );
       }
    }
 
@@ -56,7 +65,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _organism = new Organism();
-         _individual =  A.Fake<Individual>();
+         _individual = A.Fake<Individual>();
          _origin = new OriginData();
          var cm1 = new CalculationMethod {Id = "1", Name = "1"};
          _cmDTO1 = new CategoryCalculationMethodDTO();

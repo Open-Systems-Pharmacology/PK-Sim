@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
-using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -17,27 +17,27 @@ namespace PKSim.Presentation.DTO.Mappers
       public OriginData MapFrom(IndividualSettingsDTO individualSettingsDTO)
       {
          var originData = new OriginData
-                             {
-                                Species = individualSettingsDTO.Species,
-                                SpeciesPopulation = individualSettingsDTO.Population,
-                                Gender = individualSettingsDTO.Gender,
-                                SubPopulation = subPopulationFrom(individualSettingsDTO.SubPopulation),
-                                Age = individualSettingsDTO.ParameterAge.KernelValue,
-                                AgeUnit = displayUnit(individualSettingsDTO.ParameterAge),
-                                GestationalAge = individualSettingsDTO.ParameterGestationalAge.KernelValue,
-                                GestationalAgeUnit = displayUnit(individualSettingsDTO.ParameterGestationalAge),
-                                Height = individualSettingsDTO.ParameterHeight.KernelValue,
-                                HeightUnit = displayUnit(individualSettingsDTO.ParameterHeight),
-                                Weight = individualSettingsDTO.ParameterWeight.KernelValue,
-                                WeightUnit = displayUnit(individualSettingsDTO.ParameterWeight),
-                                BMI = individualSettingsDTO.ParameterBMI.KernelValue,
-                                BMIUnit = displayUnit(individualSettingsDTO.ParameterBMI),
-                             };
+         {
+            Species = individualSettingsDTO.Species,
+            SpeciesPopulation = individualSettingsDTO.Population,
+            Gender = individualSettingsDTO.Gender,
+            SubPopulation = subPopulationFrom(individualSettingsDTO.SubPopulation),
+            Age = originDataParameterFrom(individualSettingsDTO.ParameterAge),
+            GestationalAge = originDataParameterFrom(individualSettingsDTO.ParameterGestationalAge),
+            Height = originDataParameterFrom(individualSettingsDTO.ParameterHeight),
+            Weight = originDataParameterFrom(individualSettingsDTO.ParameterWeight),
+            BMI = originDataParameterFrom(individualSettingsDTO.ParameterBMI)
+         };
 
          originData.UpdateValueOriginFrom(individualSettingsDTO.ValueOrigin);
          individualSettingsDTO.CalculationMethods.Select(cm => cm.CalculationMethod).Each(originData.AddCalculationMethod);
 
          return originData;
+      }
+
+      private OriginDataParameter originDataParameterFrom(IParameterDTO parameterDTO)
+      {
+         return new OriginDataParameter(parameterDTO.KernelValue, displayUnit(parameterDTO));
       }
 
       private static string displayUnit(IParameterDTO parameterDTO)

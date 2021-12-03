@@ -195,11 +195,11 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_origin_data_with_the_value_of_all_organism_parameters()
       {
-         checkOriginDataParameter(_cloneIndividual.OriginData.Age, CoreConstants.Parameters.AGE);
-         checkOriginDataParameter(_cloneIndividual.OriginData.GestationalAge, Constants.Parameters.GESTATIONAL_AGE);
-         checkOriginDataParameter(_cloneIndividual.OriginData.BMI, CoreConstants.Parameters.BMI);
-         checkOriginDataParameter(_cloneIndividual.OriginData.Height, CoreConstants.Parameters.HEIGHT);
-         checkOriginDataParameter(_cloneIndividual.OriginData.Weight, CoreConstants.Parameters.WEIGHT);
+         checkOriginDataParameter(_cloneIndividual.OriginData.Age?.Value, CoreConstants.Parameters.AGE);
+         checkOriginDataParameter(_cloneIndividual.OriginData.GestationalAge.Value, Constants.Parameters.GESTATIONAL_AGE);
+         checkOriginDataParameter(_cloneIndividual.OriginData.BMI.Value, CoreConstants.Parameters.BMI);
+         checkOriginDataParameter(_cloneIndividual.OriginData.Height.Value, CoreConstants.Parameters.HEIGHT);
+         checkOriginDataParameter(_cloneIndividual.OriginData.Weight.Value, CoreConstants.Parameters.WEIGHT);
       }
 
       private void checkOriginDataParameter(double? originDataParameter, string parameterName)

@@ -14,8 +14,7 @@ namespace PKSim.UI.Binders
       {
          _parameterDTOEdit = parameterDTOEdit;
          _parameterDTOEdit.Changing += ValueInControlChanging;
-
-         _parameterDTOEdit.Changed += () => NotifyChange();
+         _parameterDTOEdit.Changed += NotifyChange;
       }
 
       public override IParameterDTO GetValueFromControl()
@@ -28,15 +27,9 @@ namespace PKSim.UI.Binders
          _parameterDTOEdit.BindTo(value);
       }
 
-      public override Control Control
-      {
-         get { return _parameterDTOEdit; }
-      }
+      public override Control Control => _parameterDTOEdit;
 
-      public override bool HasError
-      {
-         get { return _parameterDTOEdit.HasError; }
-      }
+      public override bool HasError => _parameterDTOEdit.HasError;
 
       public override void Validate()
       {

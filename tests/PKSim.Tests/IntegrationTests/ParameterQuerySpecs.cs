@@ -18,12 +18,14 @@ namespace PKSim.IntegrationTests
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData();
-         _originData.Species = new Species().WithName(CoreConstants.Species.HUMAN);
-         _originData.SpeciesPopulation = new SpeciesPopulation().WithName(CoreConstants.Population.ICRP);
-         _originData.Age = 25;
-         _originData.Gender = new Gender().WithName(CoreConstants.Gender.Male);
-         _originData.SubPopulation=new SubPopulation();
+         _originData = new OriginData
+         {
+            Species = new Species().WithName(CoreConstants.Species.HUMAN),
+            SpeciesPopulation = new SpeciesPopulation().WithName(CoreConstants.Population.ICRP),
+            Age = new OriginDataParameter(25),
+            Gender = new Gender().WithName(CoreConstants.Gender.Male),
+            SubPopulation = new SubPopulation()
+         };
          _originData.SubPopulation.AddParameterValueVersion(new ParameterValueVersion().WithName(CoreConstants.ParameterValueVersion.IndividualPKSim));
          _container = new Container().WithName("Liver").WithParentContainer(new Organism().WithParentContainer(new RootContainer()));
       }
@@ -37,7 +39,7 @@ namespace PKSim.IntegrationTests
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 38;
+         _originData.GestationalAge = new OriginDataParameter(38);
       }
 
       protected override void Because()
@@ -60,7 +62,7 @@ namespace PKSim.IntegrationTests
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 40;
+         _originData.GestationalAge = new OriginDataParameter(40);
       }
 
       protected override void Because()

@@ -133,14 +133,14 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 25;
+         _originData.GestationalAge = new OriginDataParameter(25);
          var preterm = A.Fake<SpeciesPopulation>();
          A.CallTo(() => preterm.IsPreterm).Returns(true);
          _originData.SpeciesPopulation = preterm;
       }
 
       [Observation]
-      public void should_return_if_the_gestional_age_was_defined_and_is_less_than_40_week()
+      public void should_return_if_the_gestational_age_was_defined_and_is_less_than_40_week()
       {
          sut.IsPreterm.ShouldBeTrue();
       }
@@ -151,32 +151,32 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 40;
+         _originData.GestationalAge = new OriginDataParameter(40);
          var preterm = A.Fake<SpeciesPopulation>();
          A.CallTo(() => preterm.IsPreterm).Returns(false);
          _originData.SpeciesPopulation = preterm;
       }
 
       [Observation]
-      public void should_return_if_the_gestional_age_was_defined_and_is_less_than_40_week()
+      public void should_return_if_the_gestational_age_was_defined_and_is_less_than_40_week()
       {
          sut.IsPreterm.ShouldBeFalse();
       }
    }
 
-   public class When_checking_if_an_individual_created_with_the_a_non_preterm_population : concern_for_Individual
+   public class When_checking_if_an_individual_created_with_a_preterm_population : concern_for_Individual
    {
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 40;
+         _originData.GestationalAge = new OriginDataParameter(40);
          var preterm = A.Fake<SpeciesPopulation>();
          A.CallTo(() => preterm.IsPreterm).Returns(true);
          _originData.SpeciesPopulation = preterm;
       }
 
       [Observation]
-      public void should_return_if_the_gestional_age_was_defined_and_is_less_than_40_week()
+      public void should_return_if_the_gestational_age_was_defined_and_is_less_than_40_week()
       {
          sut.IsPreterm.ShouldBeTrue();
       }

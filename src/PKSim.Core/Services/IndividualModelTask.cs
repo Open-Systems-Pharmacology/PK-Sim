@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
@@ -31,6 +33,7 @@ namespace PKSim.Core.Services
       ///    Returns a BMI Parameter as a function of height and weight
       /// </summary>
       IParameter BMIBasedOn(OriginData originData, IParameter parameterWeight, IParameter parameterHeight);
+
    }
 
    public class IndividualModelTask : IIndividualModelTask
@@ -41,8 +44,11 @@ namespace PKSim.Core.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IPopulationAgeRepository _populationAgeRepository;
 
-      public IndividualModelTask(IParameterContainerTask parameterContainerTask, ISpeciesContainerQuery speciesContainerQuery,
-         IBuildingBlockFinalizer buildingBlockFinalizer, IFormulaFactory formulaFactory,
+      public IndividualModelTask(
+         IParameterContainerTask parameterContainerTask, 
+         ISpeciesContainerQuery speciesContainerQuery,
+         IBuildingBlockFinalizer buildingBlockFinalizer, 
+         IFormulaFactory formulaFactory,
          IPopulationAgeRepository populationAgeRepository)
       {
          _parameterContainerTask = parameterContainerTask;

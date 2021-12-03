@@ -15,6 +15,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Services;
+using PKSim.IntegrationTests;
 
 namespace PKSim.Presentation
 {
@@ -37,6 +38,9 @@ namespace PKSim.Presentation
       protected CalculationMethodCategory _cmCat1;
       protected CalculationMethodCategory _cmCat2;
       private IEditValueOriginPresenter _editValueOriginPresenter;
+      protected IDefaultIndividualRetriever _defaultIndividualRetriever;
+      protected Individual _defaultIndividual;
+      protected IDiseaseStateRepository _diseaseStateRepository;
 
       protected override void Context()
       {
@@ -48,6 +52,9 @@ namespace PKSim.Presentation
          _calculationMethodRepository = A.Fake<ICalculationMethodCategoryRepository>();
          _subPopulation = A.Fake<IEnumerable<CategoryParameterValueVersionDTO>>();
          _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();
+         _defaultIndividualRetriever= A.Fake<IDefaultIndividualRetriever>();
+         _diseaseStateRepository= A.Fake<IDiseaseStateRepository>();
+
          _individualSettingsDTO = new IndividualSettingsDTO();
          _individualPropertiesDTO = new ObjectBaseDTO();
 
@@ -62,13 +69,21 @@ namespace PKSim.Presentation
          _individualSettingsDTO.Population = _speciesPopulation;
          _individualSettingsDTO.Gender = _gender;
 
-         A.CallTo(() => _defaultValueUpdater.DefaultSettings()).Returns(_individualSettingsDTO);
-
+         A.CallTo(() => _defaultIndividualRetriever.DefaultIndividual()).Returns(_defaultIndividual);
+         A.CallTo(() => _individualSettingsDTOMapper.MapFrom(_defaultIndividual)).Returns(_individualSettingsDTO);
          A.CallTo(() => _calculationMethodRepository.All()).Returns(new[] {_cmCat1, _cmCat2});
          _individualSettingsDTO.SubPopulation = _subPopulation;
          _parentPresenter = A.Fake<IIndividualPresenter>();
-         sut = new IndividualSettingsPresenter(_view, _speciesRepository, _calculationMethodRepository, _defaultValueUpdater,
-                                               _individualSettingsDTOMapper, _individualMapper, _editValueOriginPresenter);
+         sut = new IndividualSettingsPresenter(
+            _view, 
+            _speciesRepository,
+            _calculationMethodRepository,
+            _defaultIndividualRetriever, 
+            _defaultValueUpdater,
+            _individualSettingsDTOMapper, 
+            _individualMapper,
+            _editValueOriginPresenter,
+            _diseaseStateRepository);
          sut.InitializeWith(_parentPresenter);
       }
    }
@@ -84,12 +99,8 @@ namespace PKSim.Presentation
       public void should_ask_the_view_to_bind_to_the_individual_dto_object()
       {
          A.CallTo(() => _view.BindToSettings(_individualSettingsDTO)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_retrieve_the_default_values()
-      {
-         A.CallTo(() => _defaultValueUpdater.DefaultSettings()).MustHaveHappened();
+         A.CallTo(() => _view.BindToParameters(_individualSettingsDTO)).MustHaveHappened();
+         A.CallTo(() => _view.BindToSubPopulation(_individualSettingsDTO.SubPopulation)).MustHaveHappened();
       }
    }
 
@@ -364,7 +375,6 @@ namespace PKSim.Presentation
       {
          base.Context();
          sut.PrepareForCreating();
-         A.CallTo(() => _defaultValueUpdater.DefaultPopulationFor(_individualSettingsDTO.Species)).Returns(_speciesPopulation);
       }
 
       protected override void Because()
@@ -379,7 +389,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_updatte_the_default_population_and_gender_for_that_species()
+      public void should_update_the_default_population_and_gender_for_that_species()
       {
          A.CallTo(() => _defaultValueUpdater.UpdateSettingsAfterSpeciesChange(_individualSettingsDTO)).MustHaveHappened();
       }
