@@ -15,7 +15,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_IndividualDefaultValueRetriever : ContextSpecification<IIndividualDefaultValueRetriever>
+   public abstract class concern_for_IndividualDefaultValueRetriever : ContextSpecification<IIndividualDefaultValueUpdater>
    {
       protected IIndividualSettingsDTOToOriginDataMapper _originDataMapper;
       protected IIndividualModelTask _individualModelTask;
@@ -35,7 +35,7 @@ namespace PKSim.Presentation
          _subPopulationMapper = A.Fake<ISubPopulationToSubPopulationDTOMapper>();
          _calculationMethodMapper = A.Fake<ICalculationMethodToCategoryCalculationMethodDTOMapper>();
          _populationRepository = A.Fake<IPopulationRepository>();
-         sut = new IndividualDefaultValueRetriever(_individualModelTask, _originDataMapper, _parameterMapper,
+         sut = new IndividualDefaultValuesUpdater(_individualModelTask, _originDataMapper, _parameterMapper,
                                                    _originDataTask, _subPopulationMapper, _speciesRepository,
                                                    _calculationMethodMapper, _populationRepository);
       }
@@ -91,7 +91,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.RetrieveDefaultValueFor(_individualSettingsDTO);
+         sut.UpdateDefaultValueFor(_individualSettingsDTO);
       }
 
       [Observation]

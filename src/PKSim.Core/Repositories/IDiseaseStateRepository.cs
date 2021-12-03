@@ -8,5 +8,7 @@ namespace PKSim.Core.Repositories
    public interface IDiseaseStateRepository : IStartableRepository<DiseaseState>
    {
       IReadOnlyList<DiseaseState> AllFor(SpeciesPopulation population);
+
+      DiseaseState HealthyState { get; }
    }
 }

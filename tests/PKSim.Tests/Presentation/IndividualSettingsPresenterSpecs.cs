@@ -25,7 +25,7 @@ namespace PKSim.Presentation
       protected IndividualSettingsDTO _individualSettingsDTO;
       protected IIndividualPresenter _parentPresenter;
       protected IIndividualToIIndividualSettingsDTOMapper _individualSettingsDTOMapper;
-      protected IIndividualDefaultValueRetriever _defaultValueRetriever;
+      protected IIndividualDefaultValueUpdater _defaultValueUpdater;
       protected SpeciesPopulation _speciesPopulation;
       protected IList<Gender> _allGenders;
       protected Species _species;
@@ -42,7 +42,7 @@ namespace PKSim.Presentation
       {
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _view = A.Fake<IIndividualSettingsView>();
-         _defaultValueRetriever = A.Fake<IIndividualDefaultValueRetriever>();
+         _defaultValueUpdater = A.Fake<IIndividualDefaultValueUpdater>();
          _individualSettingsDTOMapper = A.Fake<IIndividualToIIndividualSettingsDTOMapper>();
          _individualMapper = A.Fake<IIndividualSettingsDTOToIndividualMapper>();
          _calculationMethodRepository = A.Fake<ICalculationMethodCategoryRepository>();
@@ -59,15 +59,15 @@ namespace PKSim.Presentation
          _cmCat1.Add(new CalculationMethod());
          _cmCat2.Add(new CalculationMethod());
          _individualSettingsDTO.Species = _species;
-         _individualSettingsDTO.SpeciesPopulation = _speciesPopulation;
+         _individualSettingsDTO.Population = _speciesPopulation;
          _individualSettingsDTO.Gender = _gender;
 
-         A.CallTo(() => _defaultValueRetriever.DefaultSettings()).Returns(_individualSettingsDTO);
+         A.CallTo(() => _defaultValueUpdater.DefaultSettings()).Returns(_individualSettingsDTO);
 
          A.CallTo(() => _calculationMethodRepository.All()).Returns(new[] {_cmCat1, _cmCat2});
          _individualSettingsDTO.SubPopulation = _subPopulation;
          _parentPresenter = A.Fake<IIndividualPresenter>();
-         sut = new IndividualSettingsPresenter(_view, _speciesRepository, _calculationMethodRepository, _defaultValueRetriever,
+         sut = new IndividualSettingsPresenter(_view, _speciesRepository, _calculationMethodRepository, _defaultValueUpdater,
                                                _individualSettingsDTOMapper, _individualMapper, _editValueOriginPresenter);
          sut.InitializeWith(_parentPresenter);
       }
@@ -89,7 +89,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_retrieve_the_default_values()
       {
-         A.CallTo(() => _defaultValueRetriever.DefaultSettings()).MustHaveHappened();
+         A.CallTo(() => _defaultValueUpdater.DefaultSettings()).MustHaveHappened();
       }
    }
 
@@ -300,7 +300,7 @@ namespace PKSim.Presentation
          base.Context();
          _individual = A.Fake<Individual>();
          _individualSettingsDTO.Species = _species;
-         _individualSettingsDTO.SpeciesPopulation = _speciesPopulation;
+         _individualSettingsDTO.Population = _speciesPopulation;
          _individualSettingsDTO.Gender = _gender;
          A.CallTo(() => _individualSettingsDTOMapper.MapFrom(_individual)).Returns(_individualSettingsDTO);
       }
@@ -364,7 +364,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          sut.PrepareForCreating();
-         A.CallTo(() => _defaultValueRetriever.DefaultPopulationFor(_individualSettingsDTO.Species)).Returns(_speciesPopulation);
+         A.CallTo(() => _defaultValueUpdater.DefaultPopulationFor(_individualSettingsDTO.Species)).Returns(_speciesPopulation);
       }
 
       protected override void Because()
@@ -381,7 +381,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_updatte_the_default_population_and_gender_for_that_species()
       {
-         A.CallTo(() => _defaultValueRetriever.UpdateSettingsAfterSpeciesChange(_individualSettingsDTO)).MustHaveHappened();
+         A.CallTo(() => _defaultValueUpdater.UpdateSettingsAfterSpeciesChange(_individualSettingsDTO)).MustHaveHappened();
       }
    }
 
@@ -439,7 +439,7 @@ namespace PKSim.Presentation
          _individualToScale = A.Fake<Individual>();
          A.CallTo(() => _individualSettingsDTOMapper.MapFrom(_individualToScale)).Returns(_individualSettingsDTO);
          _individualSettingsDTO.Species = _species;
-         _individualSettingsDTO.SpeciesPopulation = _speciesPopulation;
+         _individualSettingsDTO.Population = _speciesPopulation;
          _individualSettingsDTO.Gender = _gender;
       }
 

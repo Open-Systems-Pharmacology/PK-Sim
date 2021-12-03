@@ -63,7 +63,7 @@ namespace PKSim.Presentation
          _subPopulationDTO = new List<CategoryParameterValueVersionDTO> { new CategoryParameterValueVersionDTO { ParameterValueVersion = _pvv1 }, new CategoryParameterValueVersionDTO { ParameterValueVersion = _pvv2 } };
          _individualSettingsDTO.Species = _species;
          _individualSettingsDTO.SubPopulation = _subPopulationDTO;
-         _individualSettingsDTO.SpeciesPopulation = _speciesPopulation;
+         _individualSettingsDTO.Population = _speciesPopulation;
          _individualSettingsDTO.Gender = _gender;
       }
 
@@ -76,14 +76,14 @@ namespace PKSim.Presentation
       public void the_returned_origin_data_should_be_filled_with_the_individual_properties()
       {
          _result.Species.ShouldBeEqualTo(_individualSettingsDTO.Species);
-         _result.SpeciesPopulation.ShouldBeEqualTo(_individualSettingsDTO.SpeciesPopulation);
+         _result.SpeciesPopulation.ShouldBeEqualTo(_individualSettingsDTO.Population);
          _result.SubPopulation.ParameterValueVersions.ShouldOnlyContain(_pvv1,_pvv2);
          _result.Gender.ShouldBeEqualTo(_individualSettingsDTO.Gender);
          _result.Age.ShouldBeEqualTo(_parameterAge.KernelValue);
          _result.GestationalAge.ShouldBeEqualTo(_parameterGestationalAge.KernelValue);
          _result.Height.ShouldBeEqualTo(_parameterHeight.KernelValue);
          _result.Weight.ShouldBeEqualTo(_parameterWeight.KernelValue);
-         _result.SpeciesPopulation.ShouldBeEqualTo(_individualSettingsDTO.SpeciesPopulation);
+         _result.SpeciesPopulation.ShouldBeEqualTo(_individualSettingsDTO.Population);
       }
    }
 }

@@ -14,12 +14,13 @@ namespace PKSim.Presentation.DTO.Individuals
       public IParameterDTO ParameterHeight { get; private set; }
       public IParameterDTO ParameterBMI { get; private set; }
 
-      public SpeciesPopulation SpeciesPopulation { get; set; }
+      public SpeciesPopulation Population { get; set; }
       public IEnumerable<CategoryParameterValueVersionDTO> SubPopulation { get; set; }
       public IEnumerable<CategoryCalculationMethodDTO> CalculationMethods { get; set; }
       public Species Species { get; set; }
       public Gender Gender { get; set; }
       public ValueOrigin ValueOrigin { get; }
+      public DiseaseState DiseaseState { get; set; }
 
       public IndividualSettingsDTO()
       {

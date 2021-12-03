@@ -84,26 +84,36 @@ namespace PKSim.UI.Views.Individuals
             .AndDisplays(species => species.DisplayName)
             .Changed += () => _presenter.SpeciesChanged();
 
-         _settingsBinder.Bind(dto => dto.SpeciesPopulation)
+         _settingsBinder.Bind(dto => dto.Population)
             .To(cbPopulation)
             .WithValues(dto => _presenter.PopulationsFor(dto.Species))
             .AndDisplays(pop => pop.DisplayName)
             .Changed += () => _presenter.PopulationChanged();
 
+         _settingsBinder.Bind(dto => dto.DiseaseState)
+            .To(cbDiseaseState)
+            .WithValues(dto => _presenter.AllDiseaseStatesFor(dto.Population))
+            .AndDisplays(diseaseState => diseaseState.DisplayName)
+            .Changed += () => _presenter.DiseaseStateChanged();
+
          _settingsBinder.Bind(dto => dto.Gender)
             .To(cbGender)
-            .WithValues(dto => _presenter.GenderFor(dto.SpeciesPopulation))
+            .WithValues(dto => _presenter.GenderFor(dto.Population))
             .AndDisplays(gender => gender.DisplayName)
             .Changed += () => _presenter.GenderChanged();
 
-         _gridParameterValueVersionsBinder.Bind(pvv => pvv.DisplayName).AsReadOnly();
+         _gridParameterValueVersionsBinder.Bind(pvv => pvv.DisplayName)
+            .AsReadOnly();
+
          _gridParameterValueVersionsBinder.Bind(pvv => pvv.ParameterValueVersion)
             .WithRepository(pvv => _repositoryForParameterValueVersions)
             .WithEditorConfiguration(updatePvvListForCategory)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
          _gridParameterValueVersionsBinder.Changed += settingsChanged;
 
-         _gridCalculationMethodsBinder.Bind(cm => cm.DisplayName).AsReadOnly();
+         _gridCalculationMethodsBinder.Bind(cm => cm.DisplayName)
+            .AsReadOnly();
+
          _gridCalculationMethodsBinder.Bind(cm => cm.CalculationMethod)
             .WithRepository(cm => _repositoryForCalculationMethods)
             .WithEditorConfiguration(updateCmListForCategory)
@@ -229,6 +239,15 @@ namespace PKSim.UI.Views.Individuals
             layoutItemAge.Text = (value ? PKSimConstants.UI.PostnatalAge : PKSimConstants.UI.Age).FormatForLabel();
          }
          get => LayoutVisibilityConvertor.ToBoolean(layoutItemGestationalAge.Visibility);
+      }
+
+      public bool DiseaseStateVisible
+      {
+         set
+         {
+            layoutGroupDiseaseState.Visibility  = LayoutVisibilityConvertor.FromBoolean(value); 
+         }
+         get => LayoutVisibilityConvertor.ToBoolean(layoutGroupDiseaseState.Visibility);
       }
 
       public void AddValueOriginView(IView view)

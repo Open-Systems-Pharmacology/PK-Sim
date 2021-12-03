@@ -19,6 +19,7 @@ namespace PKSim.Presentation.Views.Individuals
       bool IsReadOnly { get; set; }
       bool SpeciesVisible { get; set; }
       bool GestationalAgeVisible { get; set; }
+      bool DiseaseStateVisible { get; set; }
       void AddValueOriginView(IView view);
    }
 }

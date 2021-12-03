@@ -9,31 +9,24 @@ using PKSim.Presentation.DTO.Mappers;
 
 namespace PKSim.Presentation.DTO.Individuals
 {
-   public interface IIndividualDefaultValueRetriever
+   public interface IIndividualDefaultValueUpdater
    {
-      Species DefaultSpecies();
-      SpeciesPopulation DefaultPopulationFor(Species species);
-      Gender DefaultGenderFor(SpeciesPopulation speciesPopulation);
-      void RetrieveDefaultValueFor(IndividualSettingsDTO individualSettingsDTO);
-      void RetrieveMeanValueFor(IndividualSettingsDTO individualSettingsDTO);
-      IndividualSettingsDTO DefaultSettings();
-      IndividualSettingsDTO DefaultSettingFor(Species species);
-      IndividualSettingsDTO DefaultSettingFor(SpeciesPopulation speciesPopulation);
+      void UpdateDefaultValueFor(IndividualSettingsDTO individualSettingsDTO);
+      void UpdateMeanValueFor(IndividualSettingsDTO individualSettingsDTO);
       void UpdateSettingsAfterSpeciesChange(IndividualSettingsDTO individualSettingsDTO);
    }
 
-   public class IndividualDefaultValueRetriever : IIndividualDefaultValueRetriever
+   public class IndividualDefaultValuesUpdater : IIndividualDefaultValueUpdater
    {
       private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
       private readonly IPopulationRepository _populationRepository;
       private readonly IIndividualModelTask _individualModelTask;
       private readonly IIndividualSettingsDTOToOriginDataMapper _originDataMapper;
       private readonly IParameterToParameterDTOMapper _parameterMapper;
-      private readonly ISpeciesRepository _speciesRepository;
       private readonly ISubPopulationToSubPopulationDTOMapper _subPopulationDTOMapper;
       private readonly IOriginDataTask _originDataTask;
 
-      public IndividualDefaultValueRetriever(IIndividualModelTask individualModelTask,
+      public IndividualDefaultValuesUpdater(IIndividualModelTask individualModelTask,
          IIndividualSettingsDTOToOriginDataMapper originDataMapper,
          IParameterToParameterDTOMapper parameterMapper,
          IOriginDataTask originDataTask,
@@ -46,27 +39,12 @@ namespace PKSim.Presentation.DTO.Individuals
          _parameterMapper = parameterMapper;
          _originDataTask = originDataTask;
          _subPopulationDTOMapper = subPopulationDTOMapper;
-         _speciesRepository = speciesRepository;
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
          _populationRepository = populationRepository;
       }
 
-      public Species DefaultSpecies()
-      {
-         return _speciesRepository.DefaultSpecies;
-      }
 
-      public SpeciesPopulation DefaultPopulationFor(Species species)
-      {
-         return _populationRepository.DefaultPopulationFor(species);
-      }
-
-      public Gender DefaultGenderFor(SpeciesPopulation speciesPopulation)
-      {
-         return speciesPopulation.Genders.ElementAt(0);
-      }
-
-      public void RetrieveDefaultValueFor(IndividualSettingsDTO individualSettingsDTO)
+      public void UpdateDefaultValueFor(IndividualSettingsDTO individualSettingsDTO)
       {
          individualSettingsDTO.SubPopulation = _subPopulationDTOMapper.MapFrom(_originDataTask.DefaultSubPopulationFor(individualSettingsDTO.Species));
          //Default parameter such as age etc.. were not defined yet
@@ -79,7 +57,7 @@ namespace PKSim.Presentation.DTO.Individuals
          setDefaultValues(individualSettingsDTO, originData, parameterAge, parameterGestationalAge);
       }
 
-      public void RetrieveMeanValueFor(IndividualSettingsDTO individualSettingsDTO)
+      public void UpdateMeanValueFor(IndividualSettingsDTO individualSettingsDTO)
       {
          OriginData originData = _originDataMapper.MapFrom(individualSettingsDTO);
          setDefaultValues(individualSettingsDTO, originData, individualSettingsDTO.ParameterAge, individualSettingsDTO.ParameterGestationalAge);
@@ -98,41 +76,13 @@ namespace PKSim.Presentation.DTO.Individuals
             parameterGestationalAge);
       }
 
-      public IndividualSettingsDTO DefaultSettings()
-      {
-         return DefaultSettingFor(DefaultSpecies());
-      }
-
-      public IndividualSettingsDTO DefaultSettingFor(Species species)
-      {
-         var speciesPopulation = DefaultPopulationFor(species);
-         return defaultSettingsFor(species, speciesPopulation);
-      }
-
-      public IndividualSettingsDTO DefaultSettingFor(SpeciesPopulation speciesPopulation)
-      {
-         var species = _speciesRepository.FindByName(speciesPopulation.Species);
-         return defaultSettingsFor(species, speciesPopulation);
-      }
-
-      private IndividualSettingsDTO defaultSettingsFor(Species species, SpeciesPopulation speciesPopulation)
-      {
-         var individualSettingsDTO = new IndividualSettingsDTO();
-         updateSettingsFor(individualSettingsDTO, species, speciesPopulation);
-         RetrieveDefaultValueFor(individualSettingsDTO);
-         return individualSettingsDTO;
-      }
-
       public void UpdateSettingsAfterSpeciesChange(IndividualSettingsDTO individualSettingsDTO)
       {
-         updateSettingsFor(individualSettingsDTO, individualSettingsDTO.Species, DefaultPopulationFor(individualSettingsDTO.Species));
-      }
-
-      private void updateSettingsFor(IndividualSettingsDTO individualSettingsDTO, Species species, SpeciesPopulation speciesPopulation)
-      {
+         var species = individualSettingsDTO.Species;
+         var population = _populationRepository.DefaultPopulationFor(species);
          individualSettingsDTO.Species = species;
-         individualSettingsDTO.SpeciesPopulation = speciesPopulation;
-         individualSettingsDTO.Gender = DefaultGenderFor(speciesPopulation);
+         individualSettingsDTO.Population = population;
+         individualSettingsDTO.Gender = population.DefaultGender;
          individualSettingsDTO.CalculationMethods = individualCalculationMethods(species);
       }
 

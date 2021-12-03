@@ -436,6 +436,7 @@ namespace PKSim.Core
          public static readonly string SolverSettings = "SolverSettings";
          public static readonly string SimulationOutput = "SimulationOutput";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
+         public static readonly string HEALTHY = "Healthy";
 
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
          {

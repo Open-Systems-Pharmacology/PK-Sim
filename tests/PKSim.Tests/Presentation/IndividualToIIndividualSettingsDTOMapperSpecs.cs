@@ -92,7 +92,7 @@ namespace PKSim.Presentation
       public void should_map_the_elements_of_the_individual_correctly_to_the_individual_dto_properties()
       {
          _result.Species.ShouldBeEqualTo(_individual.OriginData.Species);
-         _result.SpeciesPopulation.ShouldBeEqualTo(_individual.OriginData.SpeciesPopulation);
+         _result.Population.ShouldBeEqualTo(_individual.OriginData.SpeciesPopulation);
          _result.SubPopulation.ShouldBeEqualTo(_subPopulationDTO);
          _result.Gender.ShouldBeEqualTo(_individual.OriginData.Gender);
          _result.ParameterWeight.ShouldBeEqualTo(_parameterWeightDTO);

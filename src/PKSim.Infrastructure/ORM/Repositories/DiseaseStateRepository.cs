@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Mappers;
@@ -42,6 +43,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
             diseaseStates.AddRange(query.Select(x => _allDiseaseSates[x.DiseaseState]));
             _allDiseaseStatePerPopulation[population] = diseaseStates;
          }
+
+         HealthyState = new DiseaseState
+         {
+            Id = CoreConstants.ContainerName.HEALTHY,
+            Name = CoreConstants.ContainerName.HEALTHY,
+            DisplayName = CoreConstants.ContainerName.HEALTHY,
+         };
       }
 
       public override IEnumerable<DiseaseState> All()
@@ -55,5 +63,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          Start();
          return _allDiseaseStatePerPopulation[population];
       }
+
+      public DiseaseState HealthyState { get; private set; }
    }
 }
