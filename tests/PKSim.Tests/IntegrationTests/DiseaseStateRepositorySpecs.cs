@@ -38,7 +38,7 @@ namespace PKSim.IntegrationTests
 
          var parameter = ckd.Parameter(CoreConstantsForSpecs.Parameter.INPUT_GFR);
          parameter.ShouldNotBeNull();
-         parameter.ValueInDisplayUnit.ShouldBeEqualTo(60);
+         parameter.ValueInDisplayUnit.ShouldBeEqualTo(60, 1e-2);
       }
 
       [Observation]
