@@ -17,7 +17,6 @@ namespace PKSim.UI.Views.Parameters
       private ScreenBinder<IParameterDTO> _screenBinder;
       private IElementBinder<IParameterDTO, double> _discreteValueElementBinder;
       private IElementBinder<IParameterDTO, double> _valueElementBinder;
-      private bool _isBound;
 
       /// <summary>
       ///    Event is raised whenever a value is being changed in the user control
@@ -72,13 +71,6 @@ namespace PKSim.UI.Views.Parameters
 
       public void BindTo(IParameterDTO parameterDTO)
       {
-         _isBound = parameterDTO != null;
-         if (parameterDTO == null)
-         {
-            _screenBinder.DeleteBinding();
-            return;
-         }
-
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(parameterDTO.IsDiscrete);
          layoutControlItemValue.Visibility = LayoutVisibilityConvertor.FromBoolean(!parameterDTO.IsDiscrete);
 
@@ -97,7 +89,7 @@ namespace PKSim.UI.Views.Parameters
          _screenBinder.BindToSource(parameterDTO);
       }
 
-      public override bool HasError => _isBound && _screenBinder.HasError;
+      public override bool HasError => _screenBinder.HasError;
 
       public void ValidateControl()
       {

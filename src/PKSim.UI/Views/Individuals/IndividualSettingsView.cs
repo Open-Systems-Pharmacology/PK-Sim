@@ -22,6 +22,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Individuals;
+using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Extensions;
@@ -218,7 +219,7 @@ namespace PKSim.UI.Views.Individuals
             DiseaseStateVisible = _presenter.AllDiseaseStatesFor(individualSettingsDTO.Population).Count > 1; ;
             _diseaseStateBinder.BindToSource(individualSettingsDTO);
             var diseaseStateParameter = individualSettingsDTO.DiseaseStateParameter;
-            var hasParameter = diseaseStateParameter != null;
+            var hasParameter = !diseaseStateParameter.IsNull();
             if (hasParameter)
                layoutItemDiseaseParameter.Text = diseaseStateParameter.DisplayName.FormatForLabel(checkCase:false);
 

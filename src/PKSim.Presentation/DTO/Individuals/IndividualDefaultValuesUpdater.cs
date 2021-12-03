@@ -110,7 +110,7 @@ namespace PKSim.Presentation.DTO.Individuals
          individualSettingsDTO.DiseaseStateParameter = diseaseState.Parameters
             .Select(_cloner.Clone)
             .Select(_parameterMapper.MapAsReadWriteFrom)
-            .FirstOrDefault();
+            .FirstOrDefault() ?? new NullParameterDTO();
       }
 
       private IEnumerable<CategoryCalculationMethodDTO> individualCalculationMethods(Species species)

@@ -6,6 +6,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Individuals;
+using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation.DTO.Mappers
 {
@@ -47,7 +48,9 @@ namespace PKSim.Presentation.DTO.Mappers
             Gender = originData.Gender,
             CalculationMethods = originData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper),
             DiseaseState = originData.DiseaseState ?? _diseaseStateRepository.HealthyState,
-            DiseaseStateParameter = originData.DiseaseStateParameters.Select(_originDataParameterMapper.MapFrom).FirstOrDefault()
+            DiseaseStateParameter = originData.DiseaseStateParameters
+               .Select(_originDataParameterMapper.MapFrom)
+               .FirstOrDefault() ?? new NullParameterDTO()
          };
 
          individualDTO.UpdateValueOriginFrom(originData.ValueOrigin);

@@ -57,6 +57,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _parameterGestationalAge.KernelValue).Returns(25);
          _individualSettingsDTO.SetDefaultParameters(_parameterAge, _parameterHeight, _parameterWeight, _parameterBMI,_parameterGestationalAge);
          _individualSettingsDTO.CalculationMethods = new List<CategoryCalculationMethodDTO>();
+         _individualSettingsDTO.DiseaseState = new DiseaseState();
          _species = A.Fake<Species>();
          _speciesPopulation = A.Fake<SpeciesPopulation>();
          _gender = A.Fake<Gender>();

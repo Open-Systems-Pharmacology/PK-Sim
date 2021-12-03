@@ -4,7 +4,7 @@ using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
-   public class OriginDataParameter
+   public class OriginDataParameter: IWithName
    {
       /// <summary>
       /// Name of parameter. Can be null if parameter is used as field
