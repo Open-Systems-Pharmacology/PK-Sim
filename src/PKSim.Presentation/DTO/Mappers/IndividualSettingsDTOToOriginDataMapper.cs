@@ -49,22 +49,30 @@ namespace PKSim.Presentation.DTO.Mappers
          }
 
          originData.DiseaseState = diseaseState;
-         if (individualSettingsDTO.DiseaseStateParameter.IsNull())
+         var diseaseStateParameter = individualSettingsDTO.DiseaseStateParameter;
+         //This is a disease state without parameters
+         if (diseaseStateParameter.IsNull())
             return;
 
-         originData.AddDiseaseStateParameter(originDataParameterFrom(individualSettingsDTO.DiseaseStateParameter));
+         //disease parameters are saved in a collection and we need to save the name to differentiate them
+         originData.AddDiseaseStateParameter(originDataParameterFrom(diseaseStateParameter, addName:true));
       }
 
-      private OriginDataParameter originDataParameterFrom(IParameterDTO parameterDTO)
+      private OriginDataParameter originDataParameterFrom(IParameterDTO parameterDTO, bool addName = false)
       {
-         return new OriginDataParameter(parameterDTO.KernelValue, displayUnit(parameterDTO));
+         var originDataParameter = new OriginDataParameter(parameterDTO.KernelValue, displayUnit(parameterDTO));
+         if (addName)
+            originDataParameter.Name = parameterDTO.Name;
+
+         return originDataParameter;
       }
 
       private static string displayUnit(IParameterDTO parameterDTO)
       {
          if (parameterDTO.DisplayUnit == null)
             return string.Empty;
-         return parameterDTO.DisplayUnit.ToString();
+
+         return parameterDTO.DisplayUnit.Name;
       }
 
       private SubPopulation subPopulationFrom(IEnumerable<CategoryParameterValueVersionDTO> subPopulationDTO)

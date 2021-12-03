@@ -110,7 +110,7 @@ namespace PKSim.Presentation
          _result.ParameterAge.ShouldBeEqualTo(_parameterAgeDTO);
          _result.CalculationMethods.ShouldOnlyContain(_cmDTO1);
       }
-      
+
       [Observation]
       public void should_set_a_disease_state_to_healthy_for_an_individual_without_disease_state()
       {
@@ -130,9 +130,6 @@ namespace PKSim.Presentation
       private IndividualSettingsDTO _result;
       private OriginData _origin;
       private Organism _organism;
-      private IParameter _parameterHeight;
-      private IParameter _parameterWeight;
-      private IParameter _parameterAge;
       private OriginDataParameter _diseaseStateParameter;
       private IParameterDTO _diseaseStateParameterDTO;
 
@@ -141,7 +138,7 @@ namespace PKSim.Presentation
          base.Context();
          _organism = new Organism();
          _individual = A.Fake<Individual>();
-         _diseaseStateParameterDTO= A.Fake<IParameterDTO>();
+         _diseaseStateParameterDTO = A.Fake<IParameterDTO>();
          A.CallTo(() => _individual.Organism).Returns(_organism);
          _origin = new OriginData
          {
@@ -157,7 +154,7 @@ namespace PKSim.Presentation
       {
          _result = sut.MapFrom(_individual);
       }
-      
+
       [Observation]
       public void should_set_take_the_disease_state_from_the_individual()
       {
@@ -170,5 +167,4 @@ namespace PKSim.Presentation
          _result.DiseaseStateParameter.ShouldBeEqualTo(_diseaseStateParameterDTO);
       }
    }
-
 }
