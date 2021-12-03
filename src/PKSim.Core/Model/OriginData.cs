@@ -62,8 +62,8 @@ namespace PKSim.Core.Model
       public SpeciesPopulation Population { get; set; }
       public SubPopulation SubPopulation { get; set; }
       public Gender Gender { get; set; }
-      public CalculationMethodCache CalculationMethodCache { get; private set; }
-      public ValueOrigin ValueOrigin { get; }
+      public CalculationMethodCache CalculationMethodCache { get; private set; } = new CalculationMethodCache();
+      public ValueOrigin ValueOrigin { get; } = new ValueOrigin();
 
       public OriginDataParameter Age { get; set; }
       public OriginDataParameter GestationalAge { get; set; }
@@ -110,8 +110,6 @@ namespace PKSim.Core.Model
 
       public OriginData()
       {
-         CalculationMethodCache = new CalculationMethodCache();
-         ValueOrigin = new ValueOrigin();
          //Weight is the only parameter that should be defined for all species
          Weight = new OriginDataParameter();
       }

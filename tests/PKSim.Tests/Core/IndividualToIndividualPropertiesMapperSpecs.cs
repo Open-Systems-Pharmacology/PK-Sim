@@ -45,8 +45,11 @@ namespace PKSim.Core
          _pathPara1 = "tata";
          _pathPara2 = "tutu";
          _individual = new Individual();
-         _individual.OriginData = A.Fake<OriginData>();
-         _individual.OriginData.Gender = new Gender().WithName("TOTO");
+         _individual.OriginData = new OriginData
+         {
+            Gender = new Gender().WithName("TOTO"),
+            Population = new SpeciesPopulation(),
+         };
          A.CallTo(() => _entityPathResolver.PathFor(_para1)).Returns(_pathPara1);
          A.CallTo(() => _entityPathResolver.PathFor(_para2)).Returns(_pathPara2);
          A.CallTo(() => _entityPathResolver.PathFor(_para2)).Returns(_pathPara2);
