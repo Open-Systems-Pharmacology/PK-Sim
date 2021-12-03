@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using NPOI.HSSF.Record;
 using OSPSuite.Core.Domain;
 using PKSim.Assets;
 
@@ -14,12 +12,12 @@ namespace PKSim.Core.Model
       public string Name { get; set; }
 
       /// <summary>
-      /// Value of parameter. If Unit is not defined, the value will be assumed to be in base unit of the corresponding parameter
+      /// Value of parameter, always in base unit
       /// </summary>
       public double Value { get; set; }
 
       /// <summary>
-      /// Unit used When the parameter was entered
+      /// Unit used When the parameter was entered. This is the unit selected by the user and it not necessarily the base unit
       /// </summary>
       public string Unit { get; set; }
 
@@ -136,10 +134,7 @@ namespace PKSim.Core.Model
          return clone;
       }
 
-      public override string ToString()
-      {
-         return PKSimConstants.UI.OriginData;
-      }
+      public override string ToString() => PKSimConstants.UI.OriginData;
 
       public void UpdateValueOriginFrom(ValueOrigin sourceValueOrigin)
       {
