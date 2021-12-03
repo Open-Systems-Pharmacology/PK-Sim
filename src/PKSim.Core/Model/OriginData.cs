@@ -25,7 +25,8 @@ namespace PKSim.Core.Model
       public OriginDataParameter Clone() => new OriginDataParameter
       {
          Value = Value,
-         Unit = Unit
+         Unit = Unit,
+         Name = Name
       };
 
       public void Deconstruct(out double value, out string unit)
@@ -45,8 +46,9 @@ namespace PKSim.Core.Model
       {
       }
 
-      public OriginDataParameter(double value, string unit = "")
+      public OriginDataParameter(double value, string unit = "", string name = "")
       {
+         Name = name;
          Value = value;
          Unit = unit;
       }
@@ -56,22 +58,22 @@ namespace PKSim.Core.Model
    {
       private DiseaseState _diseaseState;
       public readonly List<OriginDataParameter> _allDiseaseStateParameters = new List<OriginDataParameter>();
-      public virtual Species Species { get; set; }
-      public virtual SpeciesPopulation Population { get; set; }
-      public virtual SubPopulation SubPopulation { get; set; }
-      public virtual Gender Gender { get; set; }
-      public virtual CalculationMethodCache CalculationMethodCache { get; private set; }
+      public Species Species { get; set; }
+      public SpeciesPopulation Population { get; set; }
+      public SubPopulation SubPopulation { get; set; }
+      public Gender Gender { get; set; }
+      public CalculationMethodCache CalculationMethodCache { get; private set; }
       public ValueOrigin ValueOrigin { get; }
 
-      public virtual OriginDataParameter Age { get; set; }
-      public virtual OriginDataParameter GestationalAge { get; set; }
-      public virtual OriginDataParameter Height { get; set; }
-      public virtual OriginDataParameter BMI { get; set; }
-      public virtual OriginDataParameter Weight { get; set; }
+      public OriginDataParameter Age { get; set; }
+      public OriginDataParameter GestationalAge { get; set; }
+      public OriginDataParameter Height { get; set; }
+      public OriginDataParameter BMI { get; set; }
+      public OriginDataParameter Weight { get; set; }
 
       // Disease state associated with current origin data. null if no disease state associated with origin data (Healthy)
       // This is a reference to the db instance and will not be manipulated
-      public virtual DiseaseState DiseaseState
+      public DiseaseState DiseaseState
       {
          get => _diseaseState;
          set
@@ -85,7 +87,7 @@ namespace PKSim.Core.Model
 
       public void AddDiseaseStateParameter(OriginDataParameter diseaseStateParameter) => _allDiseaseStateParameters.Add(diseaseStateParameter);
 
-      public virtual bool IsPreterm
+      public bool IsPreterm
       {
          get
          {
@@ -94,7 +96,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      public virtual bool IsRealPreterm
+      public bool IsRealPreterm
       {
          get
          {
@@ -104,7 +106,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      public virtual string Comment { get; set; }
+      public string Comment { get; set; }
 
       public OriginData()
       {
@@ -114,7 +116,7 @@ namespace PKSim.Core.Model
          Weight = new OriginDataParameter();
       }
 
-      public virtual OriginData Clone()
+      public OriginData Clone()
       {
          var clone = new OriginData
          {

@@ -7,65 +7,85 @@ using PKSim.Core.Model;
 namespace PKSim.Core
 {
    public abstract class concern_for_OriginData : ContextSpecification<OriginData>
-    {
-        protected override void Context()
-        {
-            sut = new OriginData
-            {
-               Age = new OriginDataParameter(10),
-               GestationalAge = new OriginDataParameter(20),
-               Comment = "tralala",
-               Gender = new Gender{Name = "gender"},
-               Height = new OriginDataParameter(25),
-               Population = new SpeciesPopulation { Name = "population" },
-               Species = new Species { Name = "species" },
-               SubPopulation = new SubPopulation(),
-               Weight = new OriginDataParameter(50)
-            };
-        }
-    }
+   {
+      protected override void Context()
+      {
+         sut = new OriginData
+         {
+            Age = new OriginDataParameter(10),
+            GestationalAge = new OriginDataParameter(20),
+            Comment = "test",
+            Gender = new Gender {Name = "gender"},
+            Height = new OriginDataParameter(25),
+            Population = new SpeciesPopulation {Name = "population"},
+            Species = new Species {Name = "species"},
+            SubPopulation = new SubPopulation(),
+            Weight = new OriginDataParameter(50)
+         };
+      }
+   }
 
-    
-    public class When_cloning_an_origin_data : concern_for_OriginData
-    {
-       private OriginData _result;
+   public class When_cloning_an_origin_data : concern_for_OriginData
+   {
+      private OriginData _result;
 
-       protected override void Context()
-       {
-          base.Context();
-          sut.DiseaseState = new DiseaseState {Name = "TOTO"};
-          sut.AddDiseaseStateParameter(new OriginDataParameter{Name = "Param", Value = 40, Unit = "mg"});
-       }
-        protected override void Because()
-        {
-            _result = sut.Clone();
-        }
+      protected override void Context()
+      {
+         base.Context();
+         sut.DiseaseState = new DiseaseState {Name = "TOTO"};
+         sut.AddDiseaseStateParameter(new OriginDataParameter {Name = "Param", Value = 40, Unit = "mg"});
+      }
 
-        [Observation]
-        public void should_return_an_origin_data_object_containing_the_same_properties()
-        {
-            _result.Age.Value.ShouldBeEqualTo(sut.Age.Value);
-            _result.Comment.ShouldBeEqualTo(sut.Comment);
-            _result.Gender.ShouldBeEqualTo(sut.Gender);
-            _result.Height.Value.ShouldBeEqualTo(sut.Height.Value);
-            _result.Population.ShouldBeEqualTo(sut.Population);
-            _result.Species.ShouldBeEqualTo(sut.Species);
-            _result.SubPopulation.ShouldBeEqualTo(sut.SubPopulation);
-            _result.Weight.Value.ShouldBeEqualTo(sut.Weight.Value);
-            _result.GestationalAge.Value.ShouldBeEqualTo(sut.GestationalAge.Value);
-            //same instance
-            _result.DiseaseState.ShouldBeEqualTo(sut.DiseaseState);
-            sut.DiseaseStateParameters.Each(x =>
-            {
-               var cloneDiseaseStateParameter = _result.DiseaseStateParameters.FindByName(x.Name);
-               cloneDiseaseStateParameter.ShouldNotBeNull();
-               cloneDiseaseStateParameter.Value.ShouldBeEqualTo(40);
-               cloneDiseaseStateParameter.Unit.ShouldBeEqualTo("mg");
-               //NOT THE SAME INSTANCE
-               x.ShouldNotBeEqualTo(cloneDiseaseStateParameter);
-            });
+      protected override void Because()
+      {
+         _result = sut.Clone();
+      }
 
-        }
-    }
+      [Observation]
+      public void should_return_an_origin_data_object_containing_the_same_properties()
+      {
+         _result.Age.Value.ShouldBeEqualTo(sut.Age.Value);
+         _result.Comment.ShouldBeEqualTo(sut.Comment);
+         _result.Gender.ShouldBeEqualTo(sut.Gender);
+         _result.Height.Value.ShouldBeEqualTo(sut.Height.Value);
+         _result.Population.ShouldBeEqualTo(sut.Population);
+         _result.Species.ShouldBeEqualTo(sut.Species);
+         _result.SubPopulation.ShouldBeEqualTo(sut.SubPopulation);
+         _result.Weight.Value.ShouldBeEqualTo(sut.Weight.Value);
+         _result.GestationalAge.Value.ShouldBeEqualTo(sut.GestationalAge.Value);
+         //same instance
+         _result.DiseaseState.ShouldBeEqualTo(sut.DiseaseState);
+         sut.DiseaseStateParameters.Each(x =>
+         {
+            var cloneDiseaseStateParameter = _result.DiseaseStateParameters.FindByName(x.Name);
+            cloneDiseaseStateParameter.ShouldNotBeNull();
+            cloneDiseaseStateParameter.Value.ShouldBeEqualTo(40);
+            cloneDiseaseStateParameter.Unit.ShouldBeEqualTo("mg");
+            //NOT THE SAME INSTANCE
+            x.ShouldNotBeEqualTo(cloneDiseaseStateParameter);
+         });
+      }
+   }
 
+   public class When_setting_the_disease_state_in_an_origin_data : concern_for_OriginData
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.DiseaseState = new DiseaseState();
+         sut.AddDiseaseStateParameter(new OriginDataParameter());
+      }
+
+      protected override void Because()
+      {
+         //set another disease state
+         sut.DiseaseState = new DiseaseState();
+      }
+
+      [Observation]
+      public void should_clear_all_previous_disease_state_parameters_defined()
+      {
+         sut.DiseaseStateParameters.ShouldBeEmpty();
+      }
+   }
 }
