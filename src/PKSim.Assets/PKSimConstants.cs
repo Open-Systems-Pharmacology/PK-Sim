@@ -2221,7 +2221,7 @@ namespace PKSim.Assets
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
          public static readonly string TemplateSource = "Template Source";
          public static readonly string LoadExpressionFromDatabase = "Database Query";
-         public static readonly string DiseaseState = "Disease state";
+         public static readonly string DiseaseState = "Disease State";
          public static readonly string Select = "Select";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
