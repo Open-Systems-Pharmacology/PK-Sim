@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using DevExpress.LookAndFeel;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -20,6 +19,7 @@ using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Extensions;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Parameters;
@@ -216,14 +216,15 @@ namespace PKSim.UI.Views.Individuals
          this.DoWithinLatch(() =>
          {
             //One is healthy. We show the selection if we have more than one
-            DiseaseStateVisible = _presenter.AllDiseaseStatesFor(individualSettingsDTO.Population).Count > 1; ;
+            var hasDiseaseState = _presenter.AllDiseaseStatesFor(individualSettingsDTO.Population).HasAtLeastTwo();
+            layoutGroupDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(hasDiseaseState);
             _diseaseStateBinder.BindToSource(individualSettingsDTO);
             var diseaseStateParameter = individualSettingsDTO.DiseaseStateParameter;
             var hasParameter = !diseaseStateParameter.IsNull();
             if (hasParameter)
-               layoutItemDiseaseParameter.Text = diseaseStateParameter.DisplayName.FormatForLabel(checkCase:false);
+               layoutItemDiseaseParameter.Text = diseaseStateParameter.DisplayName.FormatForLabel(checkCase: false);
 
-             layoutItemDiseaseParameter.Visibility = LayoutVisibilityConvertor.FromBoolean(hasParameter);
+            layoutItemDiseaseParameter.Visibility = LayoutVisibilityConvertor.FromBoolean(hasParameter);
          });
       }
 
@@ -264,12 +265,6 @@ namespace PKSim.UI.Views.Individuals
             layoutItemAge.Text = (value ? PKSimConstants.UI.PostnatalAge : PKSimConstants.UI.Age).FormatForLabel();
          }
          get => LayoutVisibilityConvertor.ToBoolean(layoutItemGestationalAge.Visibility);
-      }
-
-      public bool DiseaseStateVisible
-      {
-         set => layoutGroupDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-         get => LayoutVisibilityConvertor.ToBoolean(layoutGroupDiseaseState.Visibility);
       }
 
       public void AddValueOriginView(IView view)

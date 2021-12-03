@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -200,10 +201,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public IEnumerable<Species> AllSpecies() => _speciesRepository.All();
 
-      public IReadOnlyList<SpeciesPopulation> PopulationsFor(Species species)
-      {
-         return species.Populations;
-      }
+      public IReadOnlyList<SpeciesPopulation> PopulationsFor(Species species) => species.Populations;
 
       public IReadOnlyList<Gender> GenderFor(SpeciesPopulation population) => population.Genders;
 
@@ -217,15 +215,9 @@ namespace PKSim.Presentation.Presenters.Individuals
          return _calculationMethodCategoryRepository.FindBy(category).AllForSpecies(_individualSettingsDTO.Species);
       }
 
-      public bool ShouldDisplayPvvCategory(string category)
-      {
-         return AllParameterValueVersionsFor(category).Count() > 1;
-      }
+      public bool ShouldDisplayPvvCategory(string category) => AllParameterValueVersionsFor(category).HasAtLeastTwo();
 
-      public bool ShouldDisplayCmCategory(string category)
-      {
-         return AllCalculationMethodsFor(category).Count() > 1;
-      }
+      public bool ShouldDisplayCmCategory(string category) => AllCalculationMethodsFor(category).HasAtLeastTwo();
 
       public void CreateIndividual()
       {

@@ -1,25 +1,24 @@
+using System;
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
-using PKSim.Presentation.DTO.Core;
-
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Presenters;
-using PKSim.Core.Services;
-using PKSim.IntegrationTests;
+using A = FakeItEasy.A;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_IndividualPresenterSettings : ContextSpecification<IIndividualSettingsPresenter>
+   public abstract class concern_for_IndividualSettingsPresenter : ContextSpecification<IIndividualSettingsPresenter>
    {
       protected ISpeciesRepository _speciesRepository;
       protected IIndividualSettingsView _view;
@@ -51,9 +50,9 @@ namespace PKSim.Presentation
          _individualMapper = A.Fake<IIndividualSettingsDTOToIndividualMapper>();
          _calculationMethodRepository = A.Fake<ICalculationMethodCategoryRepository>();
          _subPopulation = A.Fake<IEnumerable<CategoryParameterValueVersionDTO>>();
-         _editValueOriginPresenter= A.Fake<IEditValueOriginPresenter>();
-         _defaultIndividualRetriever= A.Fake<IDefaultIndividualRetriever>();
-         _diseaseStateRepository= A.Fake<IDiseaseStateRepository>();
+         _editValueOriginPresenter = A.Fake<IEditValueOriginPresenter>();
+         _defaultIndividualRetriever = A.Fake<IDefaultIndividualRetriever>();
+         _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
 
          _individualSettingsDTO = new IndividualSettingsDTO();
          _individualPropertiesDTO = new ObjectBaseDTO();
@@ -75,12 +74,12 @@ namespace PKSim.Presentation
          _individualSettingsDTO.SubPopulation = _subPopulation;
          _parentPresenter = A.Fake<IIndividualPresenter>();
          sut = new IndividualSettingsPresenter(
-            _view, 
+            _view,
             _speciesRepository,
             _calculationMethodRepository,
-            _defaultIndividualRetriever, 
+            _defaultIndividualRetriever,
             _defaultValueUpdater,
-            _individualSettingsDTOMapper, 
+            _individualSettingsDTOMapper,
             _individualMapper,
             _editValueOriginPresenter,
             _diseaseStateRepository);
@@ -88,7 +87,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_individual_presenter_is_told_to_prepare_for_individual_creation : concern_for_IndividualPresenterSettings
+   public class When_the_individual_presenter_is_told_to_prepare_for_individual_creation : concern_for_IndividualSettingsPresenter
    {
       protected override void Because()
       {
@@ -101,10 +100,11 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.BindToSettings(_individualSettingsDTO)).MustHaveHappened();
          A.CallTo(() => _view.BindToParameters(_individualSettingsDTO)).MustHaveHappened();
          A.CallTo(() => _view.BindToSubPopulation(_individualSettingsDTO.SubPopulation)).MustHaveHappened();
+         A.CallTo(() => _view.BindToDiseaseState(_individualSettingsDTO)).MustHaveHappened();
       }
    }
 
-   public class When_retrieving_the_list_of_all_species : concern_for_IndividualPresenterSettings
+   public class When_retrieving_the_list_of_all_species : concern_for_IndividualSettingsPresenter
    {
       private IEnumerable<Species> _results;
       private Species _species1;
@@ -136,7 +136,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_retrieving_the_list_of_all_population_for_a_given_species : concern_for_IndividualPresenterSettings
+   public class When_retrieving_the_list_of_all_population_for_a_given_species : concern_for_IndividualSettingsPresenter
    {
       private SpeciesPopulation _pop1;
       private SpeciesPopulation _pop2;
@@ -157,7 +157,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_retrieving_the_list_of_all_gender_for_a_given_population : concern_for_IndividualPresenterSettings
+   public class When_retrieving_the_list_of_all_gender_for_a_given_population : concern_for_IndividualSettingsPresenter
    {
       private SpeciesPopulation _pop;
       private Gender _gender1;
@@ -179,7 +179,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_retrieving_the_list_of_all_parameter_value_version_for_a_given_category : concern_for_IndividualPresenterSettings
+   public class When_retrieving_the_list_of_all_parameter_value_version_for_a_given_category : concern_for_IndividualSettingsPresenter
    {
       private ParameterValueVersion _pvv1;
       private ParameterValueVersion _pvv2;
@@ -206,7 +206,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public abstract class When_notified_that_the_current_population_has_changed : concern_for_IndividualPresenterSettings
+   public abstract class When_notified_that_the_current_population_has_changed : concern_for_IndividualSettingsPresenter
    {
       protected override void Context()
       {
@@ -221,7 +221,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_underlying_view_is_dirty : concern_for_IndividualPresenterSettings
+   public class When_the_underlying_view_is_dirty : concern_for_IndividualSettingsPresenter
    {
       protected override void Context()
       {
@@ -302,7 +302,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_editing_the_individual_settings_for_an_individual : concern_for_IndividualPresenterSettings
+   public class When_editing_the_individual_settings_for_an_individual : concern_for_IndividualSettingsPresenter
    {
       private Individual _individual;
 
@@ -340,14 +340,14 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_being_notified_of_a_change_in_the_view : concern_for_IndividualPresenterSettings
+   public class When_being_notified_of_a_change_in_the_view : concern_for_IndividualSettingsPresenter
    {
       private bool _statusChangeWasRaised;
 
       protected override void Context()
       {
          base.Context();
-         sut.StatusChanged += (o,e) => { _statusChangeWasRaised = true; };
+         sut.StatusChanged += (o, e) => { _statusChangeWasRaised = true; };
          A.CallTo(() => _view.HasError).Returns(true);
       }
 
@@ -369,7 +369,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_user_changed_the_selected_species : concern_for_IndividualPresenterSettings
+   public class When_the_user_changed_the_selected_species : concern_for_IndividualSettingsPresenter
    {
       protected override void Context()
       {
@@ -395,7 +395,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_user_changed_the_selected_gender : concern_for_IndividualPresenterSettings
+   public class When_the_user_changed_the_selected_gender : concern_for_IndividualSettingsPresenter
    {
       protected override void Context()
       {
@@ -415,7 +415,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_view_has_a_dirty_state : concern_for_IndividualPresenterSettings
+   public class When_the_view_has_a_dirty_state : concern_for_IndividualSettingsPresenter
    {
       protected override void Context()
       {
@@ -430,7 +430,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_individual_setting_presenter_is_asked_for_the_its_view : concern_for_IndividualPresenterSettings
+   public class When_the_individual_setting_presenter_is_asked_for_the_its_view : concern_for_IndividualSettingsPresenter
    {
       [Observation]
       public void should_return_the_view()
@@ -439,7 +439,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_individual_presenter_is_told_to_prepare_for_individual_scaling : concern_for_IndividualPresenterSettings
+   public class When_the_individual_presenter_is_told_to_prepare_for_individual_scaling : concern_for_IndividualSettingsPresenter
    {
       private Individual _individualToScale;
 
@@ -471,7 +471,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_individual_setting_presetner_is_asked_if_a_category_should_be_displayed : concern_for_IndividualPresenterSettings
+   public class When_the_individual_setting_presenter_is_asked_if_a_category_should_be_displayed : concern_for_IndividualSettingsPresenter
    {
       private ParameterValueVersionCategory _categoryWithPvvs;
       private ParameterValueVersionCategory _categoryWithOnlyOnePvv;
@@ -502,6 +502,79 @@ namespace PKSim.Presentation
       public void should_return_false_for_a_category_with_only_one_parameter_value_version()
       {
          sut.ShouldDisplayPvvCategory(_categoryWithOnlyOnePvv.Name).ShouldBeFalse();
+      }
+   }
+
+   public class When_retrieving_the_list_of_all_disease_states_defined_for_a_population_with_disease_states : concern_for_IndividualSettingsPresenter
+   {
+      private SpeciesPopulation _population;
+      private DiseaseState _diseaseState1;
+      private DiseaseState _diseaseState2;
+      private DiseaseState _healthyDiseaseState;
+
+      protected override void Context()
+      {
+         base.Context();
+         _population = new SpeciesPopulation();
+         _diseaseState1 = new DiseaseState();
+         _diseaseState2 = new DiseaseState();
+         _healthyDiseaseState = new DiseaseState();
+         A.CallTo(() => _diseaseStateRepository.AllFor(_population)).Returns(new[] {_diseaseState1, _diseaseState2});
+         A.CallTo(() => _diseaseStateRepository.HealthyState).Returns(_healthyDiseaseState);
+      }
+
+      [Observation]
+      public void should_return_all_disease_states_defined_for_the_population_with_the_healthy_state_first()
+      {
+         sut.AllDiseaseStatesFor(_population).ShouldOnlyContainInOrder(_healthyDiseaseState, _diseaseState1, _diseaseState2);
+      }
+   }
+
+   public class When_retrieving_the_list_of_all_disease_states_defined_for_a_population_without_disease_states : concern_for_IndividualSettingsPresenter
+   {
+      private SpeciesPopulation _population;
+      private DiseaseState _healthyDiseaseState;
+
+      protected override void Context()
+      {
+         base.Context();
+         _population = new SpeciesPopulation();
+         _healthyDiseaseState = new DiseaseState();
+         A.CallTo(() => _diseaseStateRepository.AllFor(_population)).Returns(Array.Empty<DiseaseState>());
+         A.CallTo(() => _diseaseStateRepository.HealthyState).Returns(_healthyDiseaseState);
+      }
+
+      [Observation]
+      public void should_return_the_healthy_state()
+      {
+         sut.AllDiseaseStatesFor(_population).ShouldOnlyContain(_healthyDiseaseState);
+      }
+   }
+
+
+   public class When_notified_that_the_selected_disease_state_has_changed : concern_for_IndividualSettingsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.PrepareForCreating();
+      }
+
+      protected override void Because()
+      {
+         sut.DiseaseStateChanged();
+      }
+
+      [Observation]
+      public void should_update_the_disease_state_settings_in_the_dto()
+      {
+         A.CallTo(() => _defaultValueUpdater.UpdateDiseaseStateFor(_individualSettingsDTO)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_refresh_the_view()
+      {
+         A.CallTo(() => _view.BindToDiseaseState(_individualSettingsDTO)).MustHaveHappened();
       }
    }
 }
