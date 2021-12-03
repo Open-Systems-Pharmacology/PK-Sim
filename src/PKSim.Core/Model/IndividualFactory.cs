@@ -74,7 +74,7 @@ namespace PKSim.Core.Model
          {
             Species = speciesToUse,
             Gender = speciesToUse.IsHuman ? _genderRepository.Female : null,
-            SpeciesPopulation = speciesToUse.DefaultPopulation
+            Population = speciesToUse.DefaultPopulation
          };
          return createStandardIndividual(originData, x => x.CreateOrganStructureFor);
       }

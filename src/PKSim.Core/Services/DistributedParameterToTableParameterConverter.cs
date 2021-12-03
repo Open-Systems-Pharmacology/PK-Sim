@@ -100,7 +100,7 @@ namespace PKSim.Core.Services
             _createAgingDataInPopulationSimulation = createAgingDataInPopulationSimulation;
             _baseIndividual = simulation.Individual;
             _baseOriginData = _baseIndividual.OriginData;
-            var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
+            var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.Population, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
             _allHeightDistributionMaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Male).ToList();
             _allHeightDistributionFemaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Female).ToList();
             createSpatialStructureTableParameters(buildConfiguration);
@@ -173,7 +173,7 @@ namespace PKSim.Core.Services
                continue;
 
             //cache all distributions for this parameter defined for the population and sub population.
-            var allDistributionsForParameter = _parameterQuery.ParameterDistributionsFor(individualParameter.ParentContainer, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, individualParameter.Name);
+            var allDistributionsForParameter = _parameterQuery.ParameterDistributionsFor(individualParameter.ParentContainer, _baseOriginData.Population, _baseOriginData.SubPopulation, individualParameter.Name);
             var allDistributionsForMaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.Male).ToList();
             var allDistributionsForFemaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.Female).ToList();
 
@@ -553,7 +553,7 @@ namespace PKSim.Core.Services
 
       private static bool needScaling(OriginData originData, IParameter individualParameter)
       {
-         if (!originData.SpeciesPopulation.IsHeightDependent)
+         if (!originData.Population.IsHeightDependent)
             return false;
 
          if (!individualParameter.IsNamed(Constants.Parameters.VOLUME))

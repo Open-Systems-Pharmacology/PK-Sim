@@ -43,7 +43,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var individualDTO = new IndividualSettingsDTO
          {
             Species = originData.Species,
-            Population = originData.SpeciesPopulation,
+            Population = originData.Population,
             SubPopulation = _subPopulationDTOMapper.MapFrom(originData.SubPopulation),
             Gender = originData.Gender,
             CalculationMethods = originData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper),

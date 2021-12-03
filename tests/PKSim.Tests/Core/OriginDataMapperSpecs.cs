@@ -70,7 +70,7 @@ namespace PKSim.Core
             Height = new  OriginDataParameter(1.78,"m"),
             Weight = new  OriginDataParameter(73,"kg"),
             Species = _species,
-            SpeciesPopulation = _speciesPopulation,
+            Population = _speciesPopulation,
             Gender = _gender,
             GestationalAge = new OriginDataParameter(40)
          };
@@ -106,7 +106,7 @@ namespace PKSim.Core
       public void should_save_the_origin_data_properties()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
-         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.Population.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
          _snapshot.Weight.ShouldBeEqualTo(_weightSnapshotParameter);
@@ -143,7 +143,7 @@ namespace PKSim.Core
       public void should_save_the_value_for_height_and_gestational_ag()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
-         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.Population.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
          _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
@@ -186,7 +186,7 @@ namespace PKSim.Core
       public void should_not_save_any_default_parameters_except_age()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
-         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.Population.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
          _snapshot.Height.ShouldBeNull();
@@ -262,7 +262,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_default_population()
       {
-         _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_speciesPopulation);
+         _newOriginData.Population.ShouldBeEqualTo(_speciesPopulation);
       }
    }
 
@@ -373,7 +373,7 @@ namespace PKSim.Core
       public void should_use_the_expected_individual_origin_data_to_create_the_individual()
       {
          _newOriginData.Species.ShouldBeEqualTo(_originData.Species);
-         _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_originData.SpeciesPopulation);
+         _newOriginData.Population.ShouldBeEqualTo(_originData.Population);
          _newOriginData.Gender.ShouldBeEqualTo(_originData.Gender);
          _newOriginData.Weight.Value.ShouldBeEqualTo(_originData.Weight.Value);
          _newOriginData.Height.Value.ShouldBeEqualTo(_originData.Height.Value);

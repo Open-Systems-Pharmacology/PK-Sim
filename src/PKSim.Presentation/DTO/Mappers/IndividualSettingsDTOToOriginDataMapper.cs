@@ -20,7 +20,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var originData = new OriginData
          {
             Species = individualSettingsDTO.Species,
-            SpeciesPopulation = individualSettingsDTO.Population,
+            Population = individualSettingsDTO.Population,
             Gender = individualSettingsDTO.Gender,
             SubPopulation = subPopulationFrom(individualSettingsDTO.SubPopulation),
             Age = originDataParameterFrom(individualSettingsDTO.ParameterAge),

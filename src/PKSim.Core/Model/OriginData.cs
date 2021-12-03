@@ -1,23 +1,24 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
-   public class OriginDataParameter: IWithName
+   public class OriginDataParameter : IWithName
    {
       /// <summary>
-      /// Name of parameter. Can be null if parameter is used as field
+      ///    Name of parameter. Can be null if parameter is used as field
       /// </summary>
       public string Name { get; set; }
 
       /// <summary>
-      /// Value of parameter, always in base unit
+      ///    Value of parameter, always in base unit
       /// </summary>
       public double Value { get; set; }
 
       /// <summary>
-      /// Unit used When the parameter was entered. This is the unit selected by the user and it not necessarily the base unit
+      ///    Unit used When the parameter was entered. This is the unit selected by the user and it not necessarily the base unit
       /// </summary>
       public string Unit { get; set; }
 
@@ -47,7 +48,7 @@ namespace PKSim.Core.Model
       public OriginDataParameter(double value, string unit = "")
       {
          Value = value;
-         Unit= unit;
+         Unit = unit;
       }
    }
 
@@ -56,7 +57,7 @@ namespace PKSim.Core.Model
       private DiseaseState _diseaseState;
       public readonly List<OriginDataParameter> _allDiseaseStateParameters = new List<OriginDataParameter>();
       public virtual Species Species { get; set; }
-      public virtual SpeciesPopulation SpeciesPopulation { get; set; }
+      public virtual SpeciesPopulation Population { get; set; }
       public virtual SubPopulation SubPopulation { get; set; }
       public virtual Gender Gender { get; set; }
       public virtual CalculationMethodCache CalculationMethodCache { get; private set; }
@@ -102,6 +103,7 @@ namespace PKSim.Core.Model
             return gaValue.GetValueOrDefault(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS) < CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
          }
       }
+
       public virtual string Comment { get; set; }
 
       public OriginData()
@@ -122,14 +124,16 @@ namespace PKSim.Core.Model
             Comment = Comment,
             Height = Height?.Clone(),
             BMI = BMI?.Clone(),
-            SpeciesPopulation = SpeciesPopulation,
+            Population = Population,
             Gender = Gender,
             Species = Species,
+            DiseaseState = DiseaseState,
             SubPopulation = SubPopulation,
             GestationalAge = GestationalAge?.Clone(),
             CalculationMethodCache = CalculationMethodCache.Clone()
          };
 
+         DiseaseStateParameters.Each(x => clone.AddDiseaseStateParameter(x.Clone()));
          clone.UpdateValueOriginFrom(ValueOrigin);
          return clone;
       }

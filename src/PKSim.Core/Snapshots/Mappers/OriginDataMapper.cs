@@ -48,11 +48,11 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshot = await SnapshotFrom(originData, x =>
          {
             x.Species = originData.Species.Name;
-            x.Population = originData.Species.Populations.Count > 1 ? originData.SpeciesPopulation.Name : null;
-            x.Gender = originData.SpeciesPopulation.Genders.Count > 1 ? originData.Gender.Name : null;
+            x.Population = originData.Species.Populations.Count > 1 ? originData.Population.Name : null;
+            x.Gender = originData.Population.Genders.Count > 1 ? originData.Gender.Name : null;
          });
 
-         if (originData.SpeciesPopulation.IsAgeDependent)
+         if (originData.Population.IsAgeDependent)
          {
             //Always generate age for Age dependent species
             snapshot.Age = parameterFrom(originData.Age, _dimensionRepository.AgeInYears);
@@ -61,7 +61,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          snapshot.Weight = originDataParameterFor(originData, _individualModelTask.MeanWeightFor, originData.Weight,  _dimensionRepository.Mass);
 
-         if (originData.SpeciesPopulation.IsHeightDependent)
+         if (originData.Population.IsHeightDependent)
             snapshot.Height = originDataParameterFor(originData, _individualModelTask.MeanHeightFor, originData.Height, _dimensionRepository.Length);
 
          snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(originData.ValueOrigin);
@@ -87,8 +87,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var originData = new ModelOriginData {Species = speciesFrom(snapshot)};
 
-         originData.SpeciesPopulation = speciesPopulationFrom(snapshot, originData.Species);
-         originData.Gender = genderFrom(snapshot, originData.SpeciesPopulation);
+         originData.Population = speciesPopulationFrom(snapshot, originData.Species);
+         originData.Gender = genderFrom(snapshot, originData.Population);
          originData.SubPopulation = _originDataTask.DefaultSubPopulationFor(originData.Species);
 
          _valueOriginMapper.UpdateValueOrigin(originData.ValueOrigin, snapshot.ValueOrigin);
@@ -109,7 +109,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateHeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
-         if (!originData.SpeciesPopulation.IsHeightDependent)
+         if (!originData.Population.IsHeightDependent)
             return;
 
          originData.Height = getOriginDataValues(originData, _individualModelTask.MeanHeightFor, snapshot.Height);
@@ -127,7 +127,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateAgeFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
-         if (!originData.SpeciesPopulation.IsAgeDependent)
+         if (!originData.Population.IsAgeDependent)
             return;
 
          originData.Age = getOriginDataValues(originData, _individualModelTask.MeanAgeFor, snapshot.Age);

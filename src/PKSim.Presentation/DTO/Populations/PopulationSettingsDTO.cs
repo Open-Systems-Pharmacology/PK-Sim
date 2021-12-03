@@ -37,7 +37,7 @@ namespace PKSim.Presentation.DTO.Populations
          {
             if (Individual == null)
                return string.Empty;
-            return Individual.OriginData.SpeciesPopulation.DisplayName;
+            return Individual.OriginData.Population.DisplayName;
          }
       }
 

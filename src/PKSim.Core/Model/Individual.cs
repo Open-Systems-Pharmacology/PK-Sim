@@ -37,7 +37,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Population used to create the individual (based on the selected species)
       /// </summary>
-      public virtual SpeciesPopulation Population => OriginData.SpeciesPopulation;
+      public virtual SpeciesPopulation Population => OriginData.Population;
 
       /// <summary>
       ///    all available organs in the individual
@@ -47,9 +47,9 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the available genders defined for the population in which the individual belongs
       /// </summary>
-      public virtual IEnumerable<Gender> AvailableGenders() => OriginData.SpeciesPopulation.Genders;
+      public virtual IEnumerable<Gender> AvailableGenders() => OriginData.Population.Genders;
 
-      public virtual bool IsAgeDependent => OriginData.SpeciesPopulation.IsAgeDependent;
+      public virtual bool IsAgeDependent => OriginData.Population.IsAgeDependent;
 
       public virtual bool IsHuman => Species.IsHuman;
 
@@ -150,7 +150,7 @@ namespace PKSim.Core.Model
             if (OriginData == null)
                return double.NaN;
 
-            if (OriginData.SpeciesPopulation.IsHeightDependent)
+            if (OriginData.Population.IsHeightDependent)
                return Organism.Parameter(CoreConstants.Parameters.MEAN_HEIGHT).Value;
 
             return double.NaN;

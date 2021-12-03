@@ -19,7 +19,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          Map(x => x.Species);
-         Map(x => x.SpeciesPopulation);
+         Map(x => x.Population);
          Map(x => x.SubPopulation);
          Map(x => x.Gender);
          Map(x => x.DiseaseState).AsAttribute();

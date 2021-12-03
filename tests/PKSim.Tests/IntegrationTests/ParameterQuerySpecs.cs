@@ -21,7 +21,7 @@ namespace PKSim.IntegrationTests
          _originData = new OriginData
          {
             Species = new Species().WithName(CoreConstants.Species.HUMAN),
-            SpeciesPopulation = new SpeciesPopulation().WithName(CoreConstants.Population.ICRP),
+            Population = new SpeciesPopulation().WithName(CoreConstants.Population.ICRP),
             Age = new OriginDataParameter(25),
             Gender = new Gender().WithName(CoreConstants.Gender.Male),
             SubPopulation = new SubPopulation()

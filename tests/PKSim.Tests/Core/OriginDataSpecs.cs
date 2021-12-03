@@ -1,5 +1,7 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 
 namespace PKSim.Core
@@ -15,7 +17,7 @@ namespace PKSim.Core
                Comment = "tralala",
                Gender = new Gender{Name = "gender"},
                Height = new OriginDataParameter(25),
-               SpeciesPopulation = new SpeciesPopulation { Name = "population" },
+               Population = new SpeciesPopulation { Name = "population" },
                Species = new Species { Name = "species" },
                SubPopulation = new SubPopulation(),
                Weight = new OriginDataParameter(50)
@@ -28,6 +30,12 @@ namespace PKSim.Core
     {
        private OriginData _result;
 
+       protected override void Context()
+       {
+          base.Context();
+          sut.DiseaseState = new DiseaseState {Name = "TOTO"};
+          sut.AddDiseaseStateParameter(new OriginDataParameter{Name = "Param", Value = 40, Unit = "mg"});
+       }
         protected override void Because()
         {
             _result = sut.Clone();
@@ -40,11 +48,23 @@ namespace PKSim.Core
             _result.Comment.ShouldBeEqualTo(sut.Comment);
             _result.Gender.ShouldBeEqualTo(sut.Gender);
             _result.Height.Value.ShouldBeEqualTo(sut.Height.Value);
-            _result.SpeciesPopulation.ShouldBeEqualTo(sut.SpeciesPopulation);
+            _result.Population.ShouldBeEqualTo(sut.Population);
             _result.Species.ShouldBeEqualTo(sut.Species);
             _result.SubPopulation.ShouldBeEqualTo(sut.SubPopulation);
             _result.Weight.Value.ShouldBeEqualTo(sut.Weight.Value);
             _result.GestationalAge.Value.ShouldBeEqualTo(sut.GestationalAge.Value);
+            //same instance
+            _result.DiseaseState.ShouldBeEqualTo(sut.DiseaseState);
+            sut.DiseaseStateParameters.Each(x =>
+            {
+               var cloneDiseaseStateParameter = _result.DiseaseStateParameters.FindByName(x.Name);
+               cloneDiseaseStateParameter.ShouldNotBeNull();
+               cloneDiseaseStateParameter.Value.ShouldBeEqualTo(40);
+               cloneDiseaseStateParameter.Unit.ShouldBeEqualTo("mg");
+               //NOT THE SAME INSTANCE
+               x.ShouldNotBeEqualTo(cloneDiseaseStateParameter);
+            });
+
         }
     }
 

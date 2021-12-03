@@ -62,7 +62,7 @@ namespace PKSim.Core.Services
       {
          addModelStructureTo(individual.Organism, individual.OriginData, addParameter: true);
          setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameters.AGE),
-            individual.OriginData.SpeciesPopulation.Name, setValueAndDisplayUnit: false);
+            individual.OriginData.Population.Name, setValueAndDisplayUnit: false);
          addWeightParameterTags(individual);
 
          addModelStructureTo(individual.Neighborhoods, individual.OriginData, addParameter: true);
@@ -84,7 +84,7 @@ namespace PKSim.Core.Services
       public IParameter MeanAgeFor(OriginData originData)
       {
          var ageParameter = MeanOrganismParameter(originData, CoreConstants.Parameters.AGE);
-         setAgeSettings(ageParameter, originData.SpeciesPopulation.Name, setValueAndDisplayUnit: true);
+         setAgeSettings(ageParameter, originData.Population.Name, setValueAndDisplayUnit: true);
 
          return ageParameter;
       }
@@ -126,7 +126,7 @@ namespace PKSim.Core.Services
       {
          var param = MeanOrganismParameter(originData, Constants.Parameters.GESTATIONAL_AGE);
          //for population not preterm where the parameter is actually defined, the value of the parameter should be set to another default
-         if (param != null && !originData.SpeciesPopulation.IsPreterm)
+         if (param != null && !originData.Population.IsPreterm)
             param.Value = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
          return param;
       }
@@ -168,7 +168,7 @@ namespace PKSim.Core.Services
          if (addParameter)
             _parameterContainerTask.AddIndividualParametersTo(container, originData);
 
-         foreach (var subContainer in _speciesContainerQuery.SubContainersFor(originData.SpeciesPopulation, container))
+         foreach (var subContainer in _speciesContainerQuery.SubContainersFor(originData.Population, container))
          {
             container.Add(subContainer);
             addModelStructureTo(subContainer, originData, addParameter);

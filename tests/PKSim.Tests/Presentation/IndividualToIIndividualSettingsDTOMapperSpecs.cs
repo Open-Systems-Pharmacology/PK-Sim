@@ -71,7 +71,7 @@ namespace PKSim.Presentation
          _cmDTO1 = new CategoryCalculationMethodDTO();
          A.CallTo(_calculationMethodDTOMapper).WithReturnType<CategoryCalculationMethodDTO>().Returns(_cmDTO1);
          _origin.Species = new Species();
-         _origin.SpeciesPopulation = new SpeciesPopulation();
+         _origin.Population = new SpeciesPopulation();
          _origin.SubPopulation = new SubPopulation();
          _origin.AddCalculationMethod(cm1);
          _origin.Gender = new Gender();
@@ -101,7 +101,7 @@ namespace PKSim.Presentation
       public void should_map_the_elements_of_the_individual_correctly_to_the_individual_dto_properties()
       {
          _result.Species.ShouldBeEqualTo(_individual.OriginData.Species);
-         _result.Population.ShouldBeEqualTo(_individual.OriginData.SpeciesPopulation);
+         _result.Population.ShouldBeEqualTo(_individual.OriginData.Population);
          _result.SubPopulation.ShouldBeEqualTo(_subPopulationDTO);
          _result.Gender.ShouldBeEqualTo(_individual.OriginData.Gender);
          _result.ParameterWeight.ShouldBeEqualTo(_parameterWeightDTO);

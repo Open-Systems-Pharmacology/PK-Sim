@@ -86,7 +86,7 @@ namespace PKSim.Core
             SubPopulation = new SubPopulation(),
             Species = new Species {DisplayName = speciesName, Id = speciesName}.WithName(speciesName),
             Gender = new Gender().WithName("Gender"),
-            SpeciesPopulation = new SpeciesPopulation().WithName("Population"),
+            Population = new SpeciesPopulation().WithName("Population"),
          };
 
          var pvv = new ParameterValueVersion().WithName("PVVName");

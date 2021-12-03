@@ -62,7 +62,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData {Species = new Species{Name = "A", Icon = "B"}, SpeciesPopulation = A.Fake<SpeciesPopulation>()};
+         _originData = new OriginData {Species = new Species{Name = "A", Icon = "B"}, Population = A.Fake<SpeciesPopulation>()};
          _individual = new Individual();
          _organism = new Organism();
          _neighborhoods = A.Fake<IContainer>();
@@ -171,7 +171,7 @@ namespace PKSim.Core
          _originData = new OriginData
          {
             Species = A.Fake<Species>().WithName("toto"), 
-            SpeciesPopulation = A.Fake<SpeciesPopulation>(),
+            Population = A.Fake<SpeciesPopulation>(),
             Weight = new OriginDataParameter()
          };
          _individual = new Individual();
@@ -245,7 +245,7 @@ namespace PKSim.Core
          _originData = new OriginData
          {
             Species = A.Fake<Species>().WithName("toto"), 
-            SpeciesPopulation = A.Fake<SpeciesPopulation>(),
+            Population = A.Fake<SpeciesPopulation>(),
             Weight = new OriginDataParameter()
          };
          _individual = new Individual();

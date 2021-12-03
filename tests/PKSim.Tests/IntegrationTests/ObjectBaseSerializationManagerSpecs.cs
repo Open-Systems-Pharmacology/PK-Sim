@@ -144,7 +144,7 @@ namespace PKSim.IntegrationTests
          base.Context();
          var diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
          _sourceBuildingBlock = DomainFactoryForSpecs.CreateStandardIndividual();
-         _diseaseState = diseaseStateRepository.AllFor(_sourceBuildingBlock.OriginData.SpeciesPopulation).FirstOrDefault();
+         _diseaseState = diseaseStateRepository.AllFor(_sourceBuildingBlock.OriginData.Population).FirstOrDefault();
 
          _sourceBuildingBlock.OriginData.DiseaseState = _diseaseState;
          _sourceBuildingBlock.OriginData.AddDiseaseStateParameter(new OriginDataParameter(40, "mg"){Name = "TEST"});

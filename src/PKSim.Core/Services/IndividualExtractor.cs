@@ -132,7 +132,7 @@ namespace PKSim.Core.Services
          updateOriginDataFromIndividual(individual, originData);
 
          originData.Gender = population.AllGenders(_genderRepository)[individualId];
-         originData.SpeciesPopulation = population.AllSpeciesPopulations(_populationRepository)[individualId];
+         originData.Population = population.AllSpeciesPopulations(_populationRepository)[individualId];
 
          return _individualTask.AddToProject(individual, editBuildingBlock: false, addToHistory: false);
       }

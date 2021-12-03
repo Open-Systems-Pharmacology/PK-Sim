@@ -74,7 +74,7 @@ namespace PKSim.Presentation
          base.Context();
          _subPopulation = new SubPopulation();
          _individualSettingsDTO = new IndividualSettingsDTO();
-         _originData = new OriginData {SpeciesPopulation = new SpeciesPopulation()};
+         _originData = new OriginData {Population = new SpeciesPopulation()};
          _meanAge = A.Fake<IParameter>();
          _meanWeight = A.Fake<IParameter>();
          _meanHeight = A.Fake<IParameter>();

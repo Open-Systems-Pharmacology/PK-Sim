@@ -77,14 +77,14 @@ namespace PKSim.Presentation
       public void the_returned_origin_data_should_be_filled_with_the_individual_properties()
       {
          _result.Species.ShouldBeEqualTo(_individualSettingsDTO.Species);
-         _result.SpeciesPopulation.ShouldBeEqualTo(_individualSettingsDTO.Population);
+         _result.Population.ShouldBeEqualTo(_individualSettingsDTO.Population);
          _result.SubPopulation.ParameterValueVersions.ShouldOnlyContain(_pvv1,_pvv2);
          _result.Gender.ShouldBeEqualTo(_individualSettingsDTO.Gender);
          _result.Age.Value.ShouldBeEqualTo(_parameterAge.KernelValue);
          _result.GestationalAge.Value.ShouldBeEqualTo(_parameterGestationalAge.KernelValue);
          _result.Height.Value.ShouldBeEqualTo(_parameterHeight.KernelValue);
          _result.Weight.Value.ShouldBeEqualTo(_parameterWeight.KernelValue);
-         _result.SpeciesPopulation.ShouldBeEqualTo(_individualSettingsDTO.Population);
+         _result.Population.ShouldBeEqualTo(_individualSettingsDTO.Population);
       }
    }
 }
