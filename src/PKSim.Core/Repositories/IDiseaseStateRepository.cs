@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 
