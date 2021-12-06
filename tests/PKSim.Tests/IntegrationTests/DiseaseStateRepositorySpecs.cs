@@ -36,9 +36,9 @@ namespace PKSim.IntegrationTests
          var ckd = sut.FindByName("CKD");
          ckd.ShouldNotBeNull();
 
-         var parameter = ckd.Parameter(CoreConstantsForSpecs.Parameter.INPUT_GFR);
+         var parameter = ckd.Parameter(CoreConstantsForSpecs.Parameter.TARGET_GFR);
          parameter.ShouldNotBeNull();
-         parameter.ValueInDisplayUnit.ShouldBeEqualTo(60);
+         parameter.ValueInDisplayUnit.ShouldBeEqualTo(60, 1e-2);
       }
 
       [Observation]

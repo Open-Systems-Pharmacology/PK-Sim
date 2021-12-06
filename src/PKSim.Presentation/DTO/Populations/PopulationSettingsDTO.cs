@@ -37,7 +37,7 @@ namespace PKSim.Presentation.DTO.Populations
          {
             if (Individual == null)
                return string.Empty;
-            return Individual.OriginData.SpeciesPopulation.DisplayName;
+            return Individual.OriginData.Population.DisplayName;
          }
       }
 
@@ -48,12 +48,12 @@ namespace PKSim.Presentation.DTO.Populations
 
       public virtual Gender Female
       {
-         get { return AvailableGenders().FindByName(CoreConstants.Gender.Female); }
+         get { return AvailableGenders().FindByName(CoreConstants.Gender.FEMALE); }
       }
 
       public virtual Gender Male
       {
-         get { return AvailableGenders().FindByName(CoreConstants.Gender.Male); }
+         get { return AvailableGenders().FindByName(CoreConstants.Gender.MALE); }
       }
 
       private static class AllRules

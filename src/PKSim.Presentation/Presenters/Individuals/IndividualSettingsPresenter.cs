@@ -3,8 +3,10 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.Individuals;
@@ -14,13 +16,16 @@ namespace PKSim.Presentation.Presenters.Individuals
    public interface IIndividualSettingsPresenter : IIndividualItemPresenter
    {
       IEnumerable<Species> AllSpecies();
-      IEnumerable<SpeciesPopulation> PopulationsFor(Species species);
-      IEnumerable<Gender> GenderFor(SpeciesPopulation speciesPopulation);
+      IReadOnlyList<SpeciesPopulation> PopulationsFor(Species species);
+      IReadOnlyList<Gender> GenderFor(SpeciesPopulation population);
       IEnumerable<ParameterValueVersion> AllParameterValueVersionsFor(string category);
       IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category);
+      IReadOnlyList<DiseaseState> AllDiseaseStatesFor(SpeciesPopulation population);
+
       void PrepareForCreating();
       void PrepareForScaling(Individual individualToScale);
       void PopulationChanged();
+      void DiseaseStateChanged();
       void RetrieveMeanValues();
       void SpeciesChanged();
       void GenderChanged();
@@ -38,10 +43,12 @@ namespace PKSim.Presentation.Presenters.Individuals
    {
       private readonly ISpeciesRepository _speciesRepository;
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
-      private readonly IIndividualDefaultValueRetriever _defaultValueRetriever;
+      private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
+      private readonly IIndividualDefaultValueUpdater _defaultValueUpdater;
       private readonly IIndividualToIIndividualSettingsDTOMapper _individualSettingsDTOMapper;
       private readonly IIndividualSettingsDTOToIndividualMapper _individualMapper;
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
+      private readonly IDiseaseStateRepository _diseaseStateRepository;
 
       public bool IndividualCreated { get; private set; }
 
@@ -52,17 +59,21 @@ namespace PKSim.Presentation.Presenters.Individuals
          IIndividualSettingsView view,
          ISpeciesRepository speciesRepository,
          ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
-         IIndividualDefaultValueRetriever defaultValueRetriever,
+         IDefaultIndividualRetriever defaultIndividualRetriever,
+         IIndividualDefaultValueUpdater defaultValueUpdater,
          IIndividualToIIndividualSettingsDTOMapper individualSettingsDTOMapper,
          IIndividualSettingsDTOToIndividualMapper individualMapper,
-         IEditValueOriginPresenter editValueOriginPresenter) : base(view)
+         IEditValueOriginPresenter editValueOriginPresenter,
+         IDiseaseStateRepository diseaseStateRepository) : base(view)
       {
          _speciesRepository = speciesRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
-         _defaultValueRetriever = defaultValueRetriever;
+         _defaultIndividualRetriever = defaultIndividualRetriever;
+         _defaultValueUpdater = defaultValueUpdater;
          _individualSettingsDTOMapper = individualSettingsDTOMapper;
          _individualMapper = individualMapper;
          _editValueOriginPresenter = editValueOriginPresenter;
+         _diseaseStateRepository = diseaseStateRepository;
          _editValueOriginPresenter.ShowCaption = false;
          AddSubPresenters(_editValueOriginPresenter);
          _view.AddValueOriginView(_editValueOriginPresenter.View);
@@ -93,25 +104,20 @@ namespace PKSim.Presentation.Presenters.Individuals
          ViewChanged();
       }
 
-      public IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category)
+      public IReadOnlyList<DiseaseState> AllDiseaseStatesFor(SpeciesPopulation population)
       {
-         return _calculationMethodCategoryRepository.FindBy(category).AllForSpecies(_individualSettingsDTO.Species);
+         var list = new List<DiseaseState> {_diseaseStateRepository.HealthyState};
+         list.AddRange(_diseaseStateRepository.AllFor(population));
+         return list;
       }
 
       public void PrepareForCreating()
       {
-         _individualSettingsDTO = _defaultValueRetriever.DefaultSettings();
-         _view.BindToSettings(_individualSettingsDTO);
-
-         updatePopulationControls();
-         retrieveDefaultValues();
-         _editValueOriginPresenter.Edit(_individualSettingsDTO);
+         var individual = _defaultIndividualRetriever.DefaultIndividual();
+         loadFromIndividual(individual);
       }
 
-      public void PrepareForScaling(Individual individualToScale)
-      {
-         loadFromIndividual(individualToScale);
-      }
+      public void PrepareForScaling(Individual individualToScale) => loadFromIndividual(individualToScale);
 
       public bool SpeciesVisible
       {
@@ -124,14 +130,20 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void SpeciesChanged()
       {
-         _defaultValueRetriever.UpdateSettingsAfterSpeciesChange(_individualSettingsDTO);
+         _defaultValueUpdater.UpdateSettingsAfterSpeciesChange(_individualSettingsDTO);
          updateView();
       }
 
       public void PopulationChanged()
       {
-         _individualSettingsDTO.Gender = _defaultValueRetriever.DefaultGenderFor(_individualSettingsDTO.SpeciesPopulation);
+         _individualSettingsDTO.Gender = _individualSettingsDTO.Population.DefaultGender;
          updateView();
+      }
+
+      public void DiseaseStateChanged()
+      {
+         _defaultValueUpdater.UpdateDiseaseStateFor(_individualSettingsDTO);
+         updateDiseaseStatesControls();
       }
 
       public void GenderChanged()
@@ -163,53 +175,49 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void RetrieveMeanValues()
       {
-         _defaultValueRetriever.RetrieveMeanValueFor(_individualSettingsDTO);
+         _defaultValueUpdater.UpdateMeanValueFor(_individualSettingsDTO);
          _view.BindToParameters(_individualSettingsDTO);
       }
 
       private void retrieveDefaultValues()
       {
-         _defaultValueRetriever.RetrieveDefaultValueFor(_individualSettingsDTO);
+         _defaultValueUpdater.UpdateDefaultValueFor(_individualSettingsDTO);
          _view.BindToParameters(_individualSettingsDTO);
          _view.BindToSubPopulation(_individualSettingsDTO.SubPopulation);
       }
 
       private void updatePopulationControls()
       {
-         _view.AgeVisible = _individualSettingsDTO.SpeciesPopulation.IsAgeDependent;
-         _view.HeightAndBMIVisible = _individualSettingsDTO.SpeciesPopulation.IsHeightDependent;
-         _view.GestationalAgeVisible = _individualSettingsDTO.SpeciesPopulation.IsPreterm;
+         _view.AgeVisible = _individualSettingsDTO.Population.IsAgeDependent;
+         _view.HeightAndBMIVisible = _individualSettingsDTO.Population.IsHeightDependent;
+         _view.GestationalAgeVisible = _individualSettingsDTO.Population.IsPreterm;
+         updateDiseaseStatesControls();
       }
 
-      public IEnumerable<Species> AllSpecies()
+      private void updateDiseaseStatesControls()
       {
-         return _speciesRepository.All();
+         _view.BindToDiseaseState(_individualSettingsDTO);
       }
 
-      public IEnumerable<SpeciesPopulation> PopulationsFor(Species species)
-      {
-         return species.Populations;
-      }
+      public IEnumerable<Species> AllSpecies() => _speciesRepository.All();
 
-      public IEnumerable<Gender> GenderFor(SpeciesPopulation speciesPopulation)
-      {
-         return speciesPopulation.Genders;
-      }
+      public IReadOnlyList<SpeciesPopulation> PopulationsFor(Species species) => species.Populations;
+
+      public IReadOnlyList<Gender> GenderFor(SpeciesPopulation population) => population.Genders;
 
       public IEnumerable<ParameterValueVersion> AllParameterValueVersionsFor(string category)
       {
          return _individualSettingsDTO.Species.PVVCategoryByName(category).AllItems();
       }
 
-      public bool ShouldDisplayPvvCategory(string category)
+      public IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category)
       {
-         return AllParameterValueVersionsFor(category).Count() > 1;
+         return _calculationMethodCategoryRepository.FindBy(category).AllForSpecies(_individualSettingsDTO.Species);
       }
 
-      public bool ShouldDisplayCmCategory(string category)
-      {
-         return AllCalculationMethodsFor(category).Count() > 1;
-      }
+      public bool ShouldDisplayPvvCategory(string category) => AllParameterValueVersionsFor(category).HasAtLeastTwo();
+
+      public bool ShouldDisplayCmCategory(string category) => AllCalculationMethodsFor(category).HasAtLeastTwo();
 
       public void CreateIndividual()
       {

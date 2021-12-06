@@ -100,9 +100,9 @@ namespace PKSim.Core.Services
             _createAgingDataInPopulationSimulation = createAgingDataInPopulationSimulation;
             _baseIndividual = simulation.Individual;
             _baseOriginData = _baseIndividual.OriginData;
-            var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
-            _allHeightDistributionMaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Male).ToList();
-            _allHeightDistributionFemaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Female).ToList();
+            var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.Population, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
+            _allHeightDistributionMaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.MALE).ToList();
+            _allHeightDistributionFemaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.FEMALE).ToList();
             createSpatialStructureTableParameters(buildConfiguration);
             createOntogenyTableParameters(buildConfiguration);
 
@@ -173,9 +173,9 @@ namespace PKSim.Core.Services
                continue;
 
             //cache all distributions for this parameter defined for the population and sub population.
-            var allDistributionsForParameter = _parameterQuery.ParameterDistributionsFor(individualParameter.ParentContainer, _baseOriginData.SpeciesPopulation, _baseOriginData.SubPopulation, individualParameter.Name);
-            var allDistributionsForMaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.Male).ToList();
-            var allDistributionsForFemaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.Female).ToList();
+            var allDistributionsForParameter = _parameterQuery.ParameterDistributionsFor(individualParameter.ParentContainer, _baseOriginData.Population, _baseOriginData.SubPopulation, individualParameter.Name);
+            var allDistributionsForMaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.MALE).ToList();
+            var allDistributionsForFemaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.FEMALE).ToList();
 
             createSpatialStructureTableParameter(structureParameter, individualParameter, allDistributionsForMaleParameter, allDistributionsForFemaleParameter, buildConfiguration);
 
@@ -327,9 +327,9 @@ namespace PKSim.Core.Services
          for (int individualIndex = 0; individualIndex < populationSimulation.NumberOfItems; individualIndex++)
          {
             //create origin data for individual i
-            originData.Age = allAges[individualIndex];
-            originData.GestationalAge = allGAs[individualIndex];
-            originData.Height = allHeights[individualIndex];
+            originData.Age.Value = allAges[individualIndex];
+            originData.GestationalAge.Value = allGAs[individualIndex];
+            originData.Height.Value = allHeights[individualIndex];
             originData.Gender = allGender[individualIndex];
             tableFormulaParameter.Value = originData.Height.Value;
 
@@ -381,9 +381,9 @@ namespace PKSim.Core.Services
          for (int individualIndex = 0; individualIndex < populationSimulation.NumberOfItems; individualIndex++)
          {
             //create origin data for individual i
-            originData.Age = allAges[individualIndex];
-            originData.GestationalAge = allGAs[individualIndex];
-            originData.Height = allHeights[individualIndex];
+            originData.Age.Value = allAges[individualIndex];
+            originData.GestationalAge.Value = allGAs[individualIndex];
+            originData.Height.Value = allHeights[individualIndex];
             originData.Gender = allGender[individualIndex];
             tableFormulaParameter.Value = allValues[individualIndex];
             tableFormulaParameter.Percentile = allPercentiles[individualIndex];
@@ -423,7 +423,7 @@ namespace PKSim.Core.Services
          IReadOnlyList<ParameterDistributionMetaData> distributionsForMale,
          IReadOnlyList<ParameterDistributionMetaData> distributionsForFemale, OriginData originData)
       {
-         return allDistributionsFor(distributionsForMale, distributionsForFemale, originData, x => x.Age > originData.Age);
+         return allDistributionsFor(distributionsForMale, distributionsForFemale, originData, x => x.Age > originData.Age.Value);
       }
 
       private IReadOnlyList<ParameterDistributionMetaData> allDistributionsFor(
@@ -435,7 +435,7 @@ namespace PKSim.Core.Services
          var criteria = criteriaFunc ?? (x => true);
 
          var distributions = distributionsForMale;
-         if (originData.Gender.Name == CoreConstants.Gender.Female)
+         if (originData.Gender.Name == CoreConstants.Gender.FEMALE)
             distributions = distributionsForFemale;
 
          return distributions.Where(criteria).DefinedFor(originData);
@@ -488,7 +488,7 @@ namespace PKSim.Core.Services
          var (meanHeight, deviation) = distributionSamples(originData);
          var heightDistributionFormula = createDistributionFrom(DistributionTypes.Normal, meanHeight, deviation);
 
-         double currentHeight = originData.Height.GetValueOrDefault(meanHeight);
+         double currentHeight = originData.Height.Value;
          double currentPercentile = heightDistributionFormula.CalculatePercentileForValue(currentHeight).CorrectedPercentileValue();
 
          return (meanHeight, currentHeight, currentPercentile, distributionSamples);
@@ -518,7 +518,7 @@ namespace PKSim.Core.Services
          foreach (var originDistributionMetaData in distributionsToScale)
          {
             var distributionMetaData = ParameterDistributionMetaData.From(originDistributionMetaData);
-            currentOriginData.Age = originDistributionMetaData.Age;
+            currentOriginData.Age.Value = originDistributionMetaData.Age;
 
             var (mean, deviation) = heightDistributionSamples(currentOriginData);
             double heightAtPercentile = valueFrom(DistributionTypes.Normal, mean, deviation, currentPercentile);
@@ -553,7 +553,7 @@ namespace PKSim.Core.Services
 
       private static bool needScaling(OriginData originData, IParameter individualParameter)
       {
-         if (!originData.SpeciesPopulation.IsHeightDependent)
+         if (!originData.Population.IsHeightDependent)
             return false;
 
          if (!individualParameter.IsNamed(Constants.Parameters.VOLUME))

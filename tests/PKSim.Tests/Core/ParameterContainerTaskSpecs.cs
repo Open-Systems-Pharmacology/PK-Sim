@@ -23,28 +23,34 @@ namespace PKSim.Core
 
       protected IParameterFactory _parameterFactory;
       protected IList<string> _calculationMethods = new List<string>();
-      private IList<ParameterDistributionMetaData> _distributionDefinitions = new List<ParameterDistributionMetaData>();
-      private IList<ParameterRateMetaData> _rateDefinitions = new List<ParameterRateMetaData>();
-      private IList<ParameterValueMetaData> _valueDefinitions = new List<ParameterValueMetaData>();
+      private readonly IList<ParameterDistributionMetaData> _distributionDefinitions = new List<ParameterDistributionMetaData>();
+      private readonly IList<ParameterRateMetaData> _rateDefinitions = new List<ParameterRateMetaData>();
+      private readonly IList<ParameterValueMetaData> _valueDefinitions = new List<ParameterValueMetaData>();
       protected IParameter _paramRate1;
 
       protected override void Context()
       {
          _parameterQuery = A.Fake<IParameterQuery>();
          _parameterFactory = A.Fake<IParameterFactory>();
-         _originData = A.Fake<OriginData>();
+         _originData = new OriginData();
          _param1 = A.Fake<IParameter>();
          _param1.Name = "param1";
-         var paramDef1 = new ParameterValueMetaData();
-         paramDef1.BuildingBlockType = PKSimBuildingBlockType.Individual;
+         var paramDef1 = new ParameterValueMetaData
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual
+         };
          _param2 = A.Fake<IParameter>();
          _param2.Name = "param2";
-         var paramDef2 = new ParameterValueMetaData();
-         paramDef2.BuildingBlockType = PKSimBuildingBlockType.Individual;
+         var paramDef2 = new ParameterValueMetaData
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Individual
+         };
          _param3 = A.Fake<IParameter>();
          _param3.Name = "param3";
-         var paramDef3 = new ParameterValueMetaData();
-         paramDef3.BuildingBlockType = PKSimBuildingBlockType.Compound;
+         var paramDef3 = new ParameterValueMetaData
+         {
+            BuildingBlockType = PKSimBuildingBlockType.Compound
+         };
          _valueDefinitions.Add(paramDef1);
          _valueDefinitions.Add(paramDef2);
          var paramRateDef1 = new ParameterRateMetaData();
@@ -53,7 +59,6 @@ namespace PKSim.Core
 
          _paramRate1 = new PKSimParameter().WithFormula(new ExplicitFormula("a formula"));
          _paramRate1.Name = "RateParameter";
-         A.CallTo(() => _originData.CalculationMethodCache).Returns(new CalculationMethodCache());
          A.CallTo(_parameterQuery).WithReturnType<IEnumerable<ParameterValueMetaData>>().Returns(_valueDefinitions);
          A.CallTo(_parameterQuery).WithReturnType<IEnumerable<ParameterDistributionMetaData>>().Returns(_distributionDefinitions);
          A.CallTo(_parameterQuery).WithReturnType<IEnumerable<ParameterRateMetaData>>().Returns(_rateDefinitions);

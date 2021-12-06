@@ -27,7 +27,7 @@ namespace PKSim.Core.Mappers
          if (individual == null)
             return populationSettings;
 
-         var population = individual.OriginData.SpeciesPopulation;
+         var population = individual.OriginData.Population;
          populationSettings.BaseIndividual = individual;
          populationSettings.NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
 

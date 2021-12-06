@@ -53,6 +53,8 @@ namespace PKSim.UI.Views.Individuals
          _presenter.ViewChanged();
       }
 
+      public void RefreshList() => _screenBinder.RefreshListElements();
+
       public override void InitializeResources()
       {
          base.InitializeResources();

@@ -152,7 +152,7 @@ namespace PKSim.Core.Model
             var bodyWeightParameter = _individualModelTask.MeanOrganismParameter(individual.OriginData, CoreConstants.Parameters.MEAN_WEIGHT);
             _createIndividualAlgorithm.Randomize(individual, bodyWeightParameter, bodyWeightRange.MinValue, bodyWeightRange.MaxValue, allIndividualParameters, randomGenerator);
 
-            if (!individual.OriginData.SpeciesPopulation.IsHeightDependent)
+            if (!individual.OriginData.Population.IsHeightDependent)
                return true;
 
             //last: Check if the value for the bmi is in the interval
@@ -223,24 +223,24 @@ namespace PKSim.Core.Model
             numberOfTry++;
 
             //first create a new age value if necessary
-            if (originData.SpeciesPopulation.IsAgeDependent)
+            if (originData.Population.IsAgeDependent)
             {
-               originData.Age = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.AGE, randomGenerator, out success);
+               originData.Age = new OriginDataParameter(createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.AGE, randomGenerator, out success));
                currentIndividual.Organism.Parameter(CoreConstants.Parameters.AGE).Value = originData.Age.Value;
                if (!success) continue;
             }
 
-            if (originData.SpeciesPopulation.IsPreterm)
+            if (originData.Population.IsPreterm)
             {
-               originData.GestationalAge = createDiscreteRandomValueFor(populationSettings, Constants.Parameters.GESTATIONAL_AGE, randomGenerator, out success);
+               originData.GestationalAge = new OriginDataParameter(createDiscreteRandomValueFor(populationSettings, Constants.Parameters.GESTATIONAL_AGE, randomGenerator, out success));
                currentIndividual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE).Value = originData.GestationalAge.Value;
                if (!success) continue;
             }
 
             //Then define gender depending on selecting proportions
-            if (originData.SpeciesPopulation.IsHeightDependent)
+            if (originData.Population.IsHeightDependent)
             {
-               originData.Height = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, randomGenerator, out success);
+               originData.Height = new OriginDataParameter(createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, randomGenerator, out success));
                currentIndividual.Organism.Parameter(CoreConstants.Parameters.HEIGHT).Value = originData.Height.Value;
             }
          } while (!success && numberOfTry < _maxIterations);

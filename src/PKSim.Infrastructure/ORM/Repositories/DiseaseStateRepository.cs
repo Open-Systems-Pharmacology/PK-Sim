@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Mappers;
@@ -16,8 +18,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IPopulationRepository _populationRepository;
       private readonly IFlatDiseaseStateToDiseaseStateMapper _diseaseStateMapper;
       private readonly Cache<string, DiseaseState> _allDiseaseSates = new Cache<string, DiseaseState>(x => x.Id, x => null);
-      private readonly Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>> _allDiseaseStatePerPopulation 
-         = new Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>>(onMissingKey: x=> Array.Empty<DiseaseState>());
+
+      private readonly Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>> _allDiseaseStatePerPopulation
+         = new Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>>(onMissingKey: x => Array.Empty<DiseaseState>());
+
+      private DiseaseState _healthyState;
 
       public DiseaseStateRepository(
          IFlatDiseaseStateRepository flatDiseaseStateRepository,
@@ -42,6 +47,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
             diseaseStates.AddRange(query.Select(x => _allDiseaseSates[x.DiseaseState]));
             _allDiseaseStatePerPopulation[population] = diseaseStates;
          }
+
+         _healthyState = _allDiseaseSates.FindByName(CoreConstants.DiseaseStates.HEALTHY);
       }
 
       public override IEnumerable<DiseaseState> All()
@@ -54,6 +61,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          Start();
          return _allDiseaseStatePerPopulation[population];
+      }
+
+      public DiseaseState HealthyState
+      {
+         get
+         {
+            Start();
+            return _healthyState;
+         }
       }
    }
 }

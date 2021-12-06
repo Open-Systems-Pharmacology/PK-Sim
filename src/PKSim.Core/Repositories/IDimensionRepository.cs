@@ -8,6 +8,7 @@ namespace PKSim.Core.Repositories
    {
       IDimension DimensionByName(string dimensionName);
       IDimension OptimalDimensionFor(IDimension dimension);
+      IDimension DimensionForUnit(string unit);
       IDimension DosePerBodyWeight { get; }
       IDimension InputDose { get; }
       IDimension Time { get; }

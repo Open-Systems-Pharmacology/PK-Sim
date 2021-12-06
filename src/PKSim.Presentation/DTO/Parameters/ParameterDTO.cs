@@ -215,7 +215,7 @@ namespace PKSim.Presentation.DTO.Parameters
       public WritableParameterDTO(IParameter parameter)
          : base(parameter)
       {
-         //base rules are not added for editeable parameter. We need them in that case however
+         //base rules are not added for editable parameter. We need them in that case however
          if (!parameter.Editable)
             Rules.Add(ParameterDTORules.ParameterIsValid());
       }

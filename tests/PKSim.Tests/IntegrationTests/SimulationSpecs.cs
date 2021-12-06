@@ -301,7 +301,7 @@ namespace PKSim.IntegrationTests
          _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
 
          var containerTask = IoC.Resolve<IContainerTask>();
-         _individual.OriginData.Age = 2;
+         _individual.OriginData.Age = new OriginDataParameter(2);
          _allDistributedParameter = containerTask.CacheAllChildren<IDistributedParameter>(_individual);
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
          _simulation.AllowAging = true;

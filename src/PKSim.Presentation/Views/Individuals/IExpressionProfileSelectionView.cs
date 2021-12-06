@@ -8,5 +8,6 @@ namespace PKSim.Presentation.Views.Individuals
    public interface IExpressionProfileSelectionView : IModalView<IExpressionProfileSelectionPresenter>
    {
       void BindTo(ExpressionProfileSelectionDTO expressionProfileSelectionDTO);
+      void RefreshList();
    }
 }

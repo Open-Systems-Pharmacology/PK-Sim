@@ -50,13 +50,13 @@ namespace PKSim.Core
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Path");
          _vectorialParameterContainers = A.Fake<IVectorialParametersContainer>();
          A.CallTo(() => _vectorialParameterContainers.AllValuesFor("Path")).Returns(new[] {0.77, 0.99, double.NaN});
-         var gender = new Gender {Id = CoreConstants.Gender.Male, Name = CoreConstants.Gender.Male};
+         var gender = new Gender {Id = CoreConstants.Gender.MALE, Name = CoreConstants.Gender.MALE};
          A.CallTo(() => _vectorialParameterContainers.AllGenders(_genderRepository)).Returns(new[] {gender, gender, gender});
       }
 
       protected override void Because()
       {
-         _data = sut.CreateFor(_vectorialParameterContainers, new DistributionSettings {AxisCountMode = AxisCountMode.Count, SelectedGender = CoreConstants.Gender.Male}, _parameter,_parameter.Dimension, _parameter.DisplayUnit);
+         _data = sut.CreateFor(_vectorialParameterContainers, new DistributionSettings {AxisCountMode = AxisCountMode.Count, SelectedGender = CoreConstants.Gender.MALE}, _parameter,_parameter.Dimension, _parameter.DisplayUnit);
       }
 
       [Observation]
@@ -91,13 +91,13 @@ namespace PKSim.Core
          A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns("Path");
          _vectorialParameterContainers = A.Fake<IVectorialParametersContainer>();
          A.CallTo(() => _vectorialParameterContainers.AllValuesFor("Path")).Returns(new[] { 0.5, 0.5, 0.5});
-         var gender = new Gender { Id = CoreConstants.Gender.Male, Name = CoreConstants.Gender.Male };
+         var gender = new Gender { Id = CoreConstants.Gender.MALE, Name = CoreConstants.Gender.MALE };
          A.CallTo(_vectorialParameterContainers).WithReturnType<IReadOnlyList<Gender>>().Returns(new[] { gender, gender, gender });
       }
 
       protected override void Because()
       {
-         _data = sut.CreateFor(_vectorialParameterContainers, new DistributionSettings { AxisCountMode = AxisCountMode.Count, SelectedGender = CoreConstants.Gender.Male }, _parameter,_parameter.Dimension, _parameter.DisplayUnit);
+         _data = sut.CreateFor(_vectorialParameterContainers, new DistributionSettings { AxisCountMode = AxisCountMode.Count, SelectedGender = CoreConstants.Gender.MALE }, _parameter,_parameter.Dimension, _parameter.DisplayUnit);
       }
 
       [Observation]

@@ -38,8 +38,8 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _male = new Gender().WithName(CoreConstants.Gender.Male);
-         _female = new Gender().WithName(CoreConstants.Gender.Female);
+         _male = new Gender().WithName(CoreConstants.Gender.MALE);
+         _female = new Gender().WithName(CoreConstants.Gender.FEMALE);
          _populationSettingsDTO = new PopulationSettingsDTO();
          _populationSettingsDTO.Individual = A.Fake<Individual>();
          _cloneIndividual = A.Fake<Individual>();
@@ -87,8 +87,8 @@ namespace PKSim.Presentation
       {
          base.Context();
          _individual = A.Fake<Individual>();
-         Gender male = new Gender {Name = CoreConstants.Gender.Male};
-         Gender female = new Gender {Name = CoreConstants.Gender.Female};
+         Gender male = new Gender {Name = CoreConstants.Gender.MALE};
+         Gender female = new Gender {Name = CoreConstants.Gender.FEMALE};
          A.CallTo(() => _individual.AvailableGenders()).Returns(new[] {male, female});
          _settings = new RandomPopulationSettings();
          _settings.BaseIndividual = _individual;
@@ -120,8 +120,8 @@ namespace PKSim.Presentation
          _individual = A.Fake<Individual>();
          _settings = new RandomPopulationSettings();
          A.CallTo(() => _individualToPopulationSettingsMapper.MapFrom(_individual)).Returns(_settings);
-         Gender male = new Gender {Name = CoreConstants.Gender.Male};
-         Gender female = new Gender {Name = CoreConstants.Gender.Female};
+         Gender male = new Gender {Name = CoreConstants.Gender.MALE};
+         Gender female = new Gender {Name = CoreConstants.Gender.FEMALE};
          _settings.BaseIndividual = _individual;
          _settings.AddGenderRatio(new GenderRatio {Gender = male, Ratio = 100});
          _settings.AddGenderRatio(new GenderRatio {Gender = female, Ratio = 0});

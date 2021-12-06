@@ -47,7 +47,7 @@ namespace PKSim.Core.Services
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.IndividualMoleculesAnSimulationCannotShareTheSameName);
 
          var schemaItems = protocols.SelectMany(x => _schemaItemsMapper.MapFrom(x)).ToList();
-         var speciesPopulation = simulationSubject.OriginData.SpeciesPopulation;
+         var speciesPopulation = simulationSubject.OriginData.Population;
          if (!speciesPopulation.IsBodySurfaceAreaDependent && schemaItems.Any(x => x.DoseIsPerBodySurfaceArea()))
             throw new InvalidSimulationConfigurationException(PKSimConstants.Error.DosePerBodySurfaceAreaProtocolCannotBeUsedWithSpeciesPopulation(speciesPopulation.DisplayName));
 

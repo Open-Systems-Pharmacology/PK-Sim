@@ -46,7 +46,7 @@ namespace PKSim.Core
          base.Context();
          _individual = A.Fake<Individual>();
          var originData = new OriginData();
-         originData.SpeciesPopulation = new SpeciesPopulation();
+         originData.Population = new SpeciesPopulation();
          A.CallTo(() => _individual.OriginData).Returns(originData);
          var organism = new Organism();
          var ga = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.GESTATIONAL_AGE);

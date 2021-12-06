@@ -56,7 +56,7 @@ namespace PKSim.Matlab
                Value = 175,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 
@@ -98,7 +98,7 @@ namespace PKSim.Matlab
                Value = 17.5,
                Unit = "dm",
             },
-            Gender = CoreConstants.Gender.Female
+            Gender = CoreConstants.Gender.FEMALE
          };
       }
 
@@ -141,7 +141,7 @@ namespace PKSim.Matlab
                Value = 175,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 

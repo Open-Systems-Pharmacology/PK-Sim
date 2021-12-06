@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Services;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Validation;
-using FakeItEasy;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -16,10 +20,6 @@ using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Presenters.Parameters.Mappers;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Presentation.Views;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation
@@ -32,7 +32,7 @@ namespace PKSim.Presentation
       protected Organism _organism;
       private IParameter _parameter;
       private ParameterDTO _parameterDTO;
-      protected INodeToCustomableParametersPresenterMapper _parameterPresenterMapper;
+      protected INodeToCustomizableParametersPresenterMapper _parameterPresenterMapper;
 
       protected IParameterContainerToTreeNodeMapper _containerNodeMapper;
       protected ITreeNode _containerNode;
@@ -53,13 +53,13 @@ namespace PKSim.Presentation
          _groupNodeCreator = A.Fake<IParameterGroupNodeCreator>();
          _parameterGroupTask = A.Fake<IParameterGroupTask>();
          _containerNodeMapper = A.Fake<IParameterContainerToTreeNodeMapper>();
-         _parameterPresenterMapper = A.Fake<INodeToCustomableParametersPresenterMapper>();
+         _parameterPresenterMapper = A.Fake<INodeToCustomizableParametersPresenterMapper>();
          _noItemInSelectionPresenter = A.Fake<INoItemInSelectionPresenter>();
-         _presenterSettingsTask= A.Fake<IPresentationSettingsTask>();
+         _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _groupRepository = A.Fake<IGroupRepository>();
          _userSettings = A.Fake<IUserSettings>();
-         _treeNodeContextMenuFactory= A.Fake<ITreeNodeContextMenuFactory>();
+         _treeNodeContextMenuFactory = A.Fake<ITreeNodeContextMenuFactory>();
          _organism = A.Fake<Organism>();
          _allParameters = new List<IParameter>();
          _parameter = A.Fake<IParameter>();
@@ -87,8 +87,8 @@ namespace PKSim.Presentation
          A.CallTo(_presenterSettingsTask).WithReturnType<ParameterGroupsPresenterSettings>().Returns(settings);
 
          sut = new ParameterGroupsPresenter(_view, _parameterGroupTask, _groupNodeCreator, _containerNodeMapper,
-                                            _parameterPresenterMapper, _noItemInSelectionPresenter, _treeNodeFactory, _groupRepository, _userSettings,
-                                            _presenterSettingsTask, _treeNodeContextMenuFactory);
+            _parameterPresenterMapper, _noItemInSelectionPresenter, _treeNodeFactory, _groupRepository, _userSettings,
+            _presenterSettingsTask, _treeNodeContextMenuFactory);
       }
    }
 
@@ -120,7 +120,7 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _groupRepository.GroupByName(_visibleParameter.GroupName)).Returns(_group);
 
-         A.CallTo(() => _parameterGroupTask.TopGroupsUsedBy(A<IEnumerable<IParameter>>.Ignored)).Returns(new[] { _selectedGroup });
+         A.CallTo(() => _parameterGroupTask.TopGroupsUsedBy(A<IEnumerable<IParameter>>.Ignored)).Returns(new[] {_selectedGroup});
 
          sut.InitializeWith(_organism, _allParameters);
       }
@@ -179,7 +179,6 @@ namespace PKSim.Presentation
          _nodes.First().ShouldBeEqualTo(_groupFavoritesNode);
       }
 
-
       [Observation]
       public void Must_insert_changed_at_second_position()
       {
@@ -198,7 +197,7 @@ namespace PKSim.Presentation
          base.Context();
          CreateSutForSettings(ParameterGroupingModeId.Simple);
          _compoundTreeNode = A.Fake<ITreeNode>();
-         
+
          _compoundInSimulationPresenter = A.Fake<ICompoundInSimulationPresenter>();
          A.CallTo(() => _parameterPresenterMapper.MapFrom(_compoundTreeNode)).Returns(_compoundInSimulationPresenter);
          A.CallTo(_compoundInSimulationPresenter).WithReturnType<bool>().Returns(true);
@@ -209,7 +208,7 @@ namespace PKSim.Presentation
       {
          sut.ActivateNode(_compoundTreeNode);
       }
- 
+
       [Observation]
       public void should_edit_parameters_and_not_a_compound()
       {
@@ -234,8 +233,8 @@ namespace PKSim.Presentation
 
          CreateSutForSettings(ParameterGroupingModeId.Advanced);
 
-         _group1 = new Group{Name="Group1",Visible = true};
-         _group2 = new Group{Name="Group2",Visible = true};
+         _group1 = new Group {Name = "Group1", Visible = true};
+         _group2 = new Group {Name = "Group2", Visible = true};
          _group1.IsAdvanced = false;
          _nodeGroup1 = new GroupNode(_group1);
          _nodeGroup2 = new GroupNode(_group2);
@@ -287,8 +286,8 @@ namespace PKSim.Presentation
          base.Context();
          CreateSutForSettings(ParameterGroupingModeId.Simple);
 
-         _group1 = new Group { Name = "Group1", Visible = true };
-         _group2 = new Group { Name = "Group2", Visible = true };
+         _group1 = new Group {Name = "Group1", Visible = true};
+         _group2 = new Group {Name = "Group2", Visible = true};
 
          _group1.IsAdvanced = false;
          _nodeGroup1 = new GroupNode(_group1);
@@ -331,7 +330,7 @@ namespace PKSim.Presentation
          base.Context();
          CreateSutForSettings(ParameterGroupingModeId.Hierarchical);
 
-         var group1 = new Group { Name = "Group1", Visible = true };
+         var group1 = new Group {Name = "Group1", Visible = true};
 
          var nodeGroup1 = new GroupNode(group1);
          var parameterEditPresenter1 = A.Fake<ICustomParametersPresenter>();
@@ -379,10 +378,10 @@ namespace PKSim.Presentation
          CreateSutForSettings(ParameterGroupingModeId.Simple);
 
          _fullPath = "A B C";
-         _group = new Group{Name = "toto"};
+         _group = new Group {Name = "toto"};
          _group.IsAdvanced = false;
 
-         _anotherGroup = new Group { Name = "toto" };
+         _anotherGroup = new Group {Name = "toto"};
          _anotherGroup.IsAdvanced = false;
 
          _parameterEditPresenter = A.Fake<ICustomParametersPresenter>();
@@ -421,12 +420,6 @@ namespace PKSim.Presentation
       protected override void Because()
       {
          sut.ActivateNode(_parameterGroupNode);
-      }
-
-      [Observation]
-      public void should_update_the_selected_group_caption()
-      {
-         _view.GroupCaption.ShouldBeEqualTo(_fullPath);
       }
 
       [Observation]
@@ -581,7 +574,7 @@ namespace PKSim.Presentation
          _allParameters.Add(hiddenParameter);
          A.CallTo(() => _parameterPresenterMapper.MapFrom(_groupUserDefinedNode)).Returns(_validPresenter);
          A.CallTo(() => _validPresenter.Edit(A<IEnumerable<IParameter>>.Ignored)).Invokes(x => _parameters = x.GetArgument<IEnumerable<IParameter>>(0));
-         sut.InitializeWith(_organism, _allParameters);                                       
+         sut.InitializeWith(_organism, _allParameters);
          sut.ParameterGroupingMode = ParameterGroupingModes.Advanced;
       }
 
@@ -627,5 +620,4 @@ namespace PKSim.Presentation
          A.CallTo(() => _alwaysRefreshPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappenedTwiceExactly();
       }
    }
-
 }
