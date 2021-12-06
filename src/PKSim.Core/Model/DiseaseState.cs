@@ -10,6 +10,6 @@ namespace PKSim.Core.Model
 
       public virtual IReadOnlyList<IParameter> Parameters => this.GetAllChildren<IParameter>();
 
-      public bool IsHealthy => this.IsNamed(CoreConstants.ContainerName.HEALTHY);
+      public bool IsHealthy => this.IsNamed(CoreConstants.DiseaseStates.HEALTHY);
    }
 }

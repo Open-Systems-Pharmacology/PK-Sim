@@ -48,7 +48,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             _allDiseaseStatePerPopulation[population] = diseaseStates;
          }
 
-         _healthyState = _allDiseaseSates.FindByName(CoreConstants.ContainerName.HEALTHY);
+         _healthyState = _allDiseaseSates.FindByName(CoreConstants.DiseaseStates.HEALTHY);
       }
 
       public override IEnumerable<DiseaseState> All()

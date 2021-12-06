@@ -436,7 +436,6 @@ namespace PKSim.Core
          public static readonly string SolverSettings = "SolverSettings";
          public static readonly string SimulationOutput = "SimulationOutput";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
-         public static readonly string HEALTHY = "Healthy";
 
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
          {
@@ -1429,6 +1428,13 @@ namespace PKSim.Core
          {
             return $"{FC_RN_BINDING_TISSUE} {compoundName}";
          }
+      }
+
+      public static class DiseaseStates
+      {
+         public const string CKD = "CKD";
+         public const string HEALTHY = "Healthy";
+
       }
    }
 }

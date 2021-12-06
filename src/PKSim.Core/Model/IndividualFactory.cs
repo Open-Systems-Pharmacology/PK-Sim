@@ -29,6 +29,7 @@ namespace PKSim.Core.Model
       private readonly IReportGenerator _reportGenerator;
       private readonly IMoleculeOntogenyVariabilityUpdater _ontogenyVariabilityUpdater;
       private readonly IGenderRepository _genderRepository;
+      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
 
       public IndividualFactory(
          IIndividualModelTask individualModelTask,
@@ -38,7 +39,8 @@ namespace PKSim.Core.Model
          IEntityValidator entityValidator,
          IReportGenerator reportGenerator,
          IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater,
-         IGenderRepository genderRepository)
+         IGenderRepository genderRepository,
+         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
       {
          _individualModelTask = individualModelTask;
          _objectBaseFactory = objectBaseFactory;
@@ -48,6 +50,7 @@ namespace PKSim.Core.Model
          _reportGenerator = reportGenerator;
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
          _genderRepository = genderRepository;
+         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
       }
 
       public Individual CreateAndOptimizeFor(OriginData originData, int? seed = null)
@@ -57,6 +60,10 @@ namespace PKSim.Core.Model
             individual.Seed = seed.Value;
 
          _createIndividualAlgorithm.Optimize(individual);
+
+         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+         diseaseStateImplementation.ApplyTo(individual);
+
          validate(individual);
          return individual;
       }
