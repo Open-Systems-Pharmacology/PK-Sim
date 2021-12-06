@@ -2,14 +2,9 @@
 
 namespace PKSim.Core.Model
 {
-   public interface IDiseaseStateImplementation
+   public interface IDiseaseStateImplementation : ISpecification<DiseaseState>
    {
       void ApplyTo(Individual individual);
-   }
-
-   public interface IDiseaseStateImplementationSpecificationFactory: ISpecification<DiseaseState>
-   {
-      IDiseaseStateImplementation Create();
    }
 
    public class HealthyDiseaseStateImplementation : IDiseaseStateImplementation
@@ -18,5 +13,7 @@ namespace PKSim.Core.Model
       {
          //nothing to do here
       }
+
+      public bool IsSatisfiedBy(DiseaseState item) => false;
    }
 }

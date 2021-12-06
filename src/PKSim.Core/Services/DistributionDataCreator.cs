@@ -70,7 +70,7 @@ namespace PKSim.Core.Services
          if (allGenders.Count == count)
             return allGenders;
 
-         var unknownGender = new Gender {Name = CoreConstants.Gender.Undefined};
+         var unknownGender = new Gender {Name = CoreConstants.Gender.UNDEFINED};
          return new Gender[count].InitializeWith(unknownGender);
       }
 

@@ -59,9 +59,11 @@ namespace PKSim.Core.Model
          if (seed.HasValue)
             individual.Seed = seed.Value;
 
+         //this creates a healthy individual
          _createIndividualAlgorithm.Optimize(individual);
 
-         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+         //Apply disease states if required
+         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(originData.DiseaseState);
          diseaseStateImplementation.ApplyTo(individual);
 
          validate(individual);
@@ -170,4 +172,31 @@ namespace PKSim.Core.Model
          parameter.Visible = visible;
       }
    }
+
+   // class DiseaseStateImplementationFactoryNew : IDiseaseStateImplementationFactory
+   // {
+   //    public IDiseaseStateImplementation CreateFor(DiseaseState diseaseState)
+   //    {
+   //       switch (diseaseState.Name)
+   //       {
+   //          case CoreConstants.DiseaseStates.CKD:
+   //             return new CKDDiseaseStateImplementation();
+   //          case CoreConstants.DiseaseStates.CKD:
+   //             return new CKDDiseaseStateImplementation();
+   //          case CoreConstants.DiseaseStates.CKD:
+   //             return new CKDDiseaseStateImplementation();
+   //          case CoreConstants.DiseaseStates.CKD:
+   //             return new CKDDiseaseStateImplementation();
+   //          case CoreConstants.DiseaseStates.CKD:
+   //             return new CKDDiseaseStateImplementation();
+   //          default:
+   //             return new HealthyDiseaseStateImplementation();
+   //       }
+   //    }
+   //
+   //    public IDiseaseStateImplementation CreateFor(Individual individual)
+   //    {
+   //     return  CreateFor(individual.OriginData.DiseaseState);
+   //    }
+   // }
 }

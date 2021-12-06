@@ -23,7 +23,7 @@ namespace PKSim.IntegrationTests
             Species = new Species().WithName(CoreConstants.Species.HUMAN),
             Population = new SpeciesPopulation().WithName(CoreConstants.Population.ICRP),
             Age = new OriginDataParameter(25),
-            Gender = new Gender().WithName(CoreConstants.Gender.Male),
+            Gender = new Gender().WithName(CoreConstants.Gender.MALE),
             SubPopulation = new SubPopulation()
          };
          _originData.SubPopulation.AddParameterValueVersion(new ParameterValueVersion().WithName(CoreConstants.ParameterValueVersion.IndividualPKSim));

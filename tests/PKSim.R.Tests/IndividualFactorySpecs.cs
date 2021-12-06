@@ -50,7 +50,7 @@ namespace PKSim.R
                Value = 175,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 
@@ -119,7 +119,7 @@ namespace PKSim.R
                Value = 17.5,
                Unit = "dm",
             },
-            Gender = CoreConstants.Gender.Female,
+            Gender = CoreConstants.Gender.FEMALE,
             Seed =  1234
          };
       }
@@ -204,7 +204,7 @@ namespace PKSim.R
                Value = 175,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 
@@ -255,7 +255,7 @@ namespace PKSim.R
                Value = 60,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 

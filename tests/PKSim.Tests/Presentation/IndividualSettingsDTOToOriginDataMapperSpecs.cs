@@ -48,7 +48,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _healthyDiseaseState = new DiseaseState {Name = CoreConstants.ContainerName.HEALTHY};
+         _healthyDiseaseState = new DiseaseState {Name = CoreConstants.DiseaseStates.HEALTHY};
          _pvv1 =new ParameterValueVersion().WithName("PV1");
          _pvv2 = new ParameterValueVersion().WithName("PV2");
          _parameterHeight = A.Fake<ParameterDTO>();

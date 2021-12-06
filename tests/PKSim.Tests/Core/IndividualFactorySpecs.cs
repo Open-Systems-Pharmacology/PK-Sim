@@ -25,6 +25,7 @@ namespace PKSim.Core
       protected IParameter _weight;
       protected IParameter _bmi;
       private IGenderRepository _genderRepository;
+      private IDiseaseStateImplementationFactory _diseaseStateImplementationRepository;
 
       protected override void Context()
       {
@@ -36,10 +37,19 @@ namespace PKSim.Core
          _reportGenerator = A.Fake<IReportGenerator>();
          _genderRepository= A.Fake<IGenderRepository>(); 
          _moleculeOntogenyVariabilityUpdater = A.Fake<IMoleculeOntogenyVariabilityUpdater>();
+         _diseaseStateImplementationRepository= A.Fake<IDiseaseStateImplementationFactory>();
+
          sut = new IndividualFactory(
-            _individualModelTask, _entityBaseFactory, _createIndvidualAlgorithm, 
-            _speciesRepository, _entityValidator, _reportGenerator, _moleculeOntogenyVariabilityUpdater,_genderRepository
-            );
+            _individualModelTask, 
+            _entityBaseFactory, 
+            _createIndvidualAlgorithm, 
+            _speciesRepository, 
+            _entityValidator, 
+            _reportGenerator, 
+            _moleculeOntogenyVariabilityUpdater,
+            _genderRepository,
+            _diseaseStateImplementationRepository
+         );
 
          _age = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.AGE);
          _gestationalAge = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.GESTATIONAL_AGE);
@@ -49,7 +59,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_an_individual_for_the_predefined_origine_data : concern_for_IndividualFactory
+   public class When_creating_an_individual_for_the_predefined_origin_data : concern_for_IndividualFactory
    {
       private OriginData _originData;
       private Individual _individual;

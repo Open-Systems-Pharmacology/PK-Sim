@@ -101,8 +101,8 @@ namespace PKSim.Core.Services
             _baseIndividual = simulation.Individual;
             _baseOriginData = _baseIndividual.OriginData;
             var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.Population, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
-            _allHeightDistributionMaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Male).ToList();
-            _allHeightDistributionFemaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.Female).ToList();
+            _allHeightDistributionMaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.MALE).ToList();
+            _allHeightDistributionFemaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.FEMALE).ToList();
             createSpatialStructureTableParameters(buildConfiguration);
             createOntogenyTableParameters(buildConfiguration);
 
@@ -174,8 +174,8 @@ namespace PKSim.Core.Services
 
             //cache all distributions for this parameter defined for the population and sub population.
             var allDistributionsForParameter = _parameterQuery.ParameterDistributionsFor(individualParameter.ParentContainer, _baseOriginData.Population, _baseOriginData.SubPopulation, individualParameter.Name);
-            var allDistributionsForMaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.Male).ToList();
-            var allDistributionsForFemaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.Female).ToList();
+            var allDistributionsForMaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.MALE).ToList();
+            var allDistributionsForFemaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.FEMALE).ToList();
 
             createSpatialStructureTableParameter(structureParameter, individualParameter, allDistributionsForMaleParameter, allDistributionsForFemaleParameter, buildConfiguration);
 
@@ -435,7 +435,7 @@ namespace PKSim.Core.Services
          var criteria = criteriaFunc ?? (x => true);
 
          var distributions = distributionsForMale;
-         if (originData.Gender.Name == CoreConstants.Gender.Female)
+         if (originData.Gender.Name == CoreConstants.Gender.FEMALE)
             distributions = distributionsForFemale;
 
          return distributions.Where(criteria).DefinedFor(originData);

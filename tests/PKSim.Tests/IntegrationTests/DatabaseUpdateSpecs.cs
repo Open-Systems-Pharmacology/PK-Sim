@@ -154,11 +154,11 @@ namespace PKSim.IntegrationTests
 
             foreach (var volumeParameter in volumeParameters)
             {
-               if (meanStdRatio.organ.Equals(LIVER) && volumeParameter.Gender.Equals(CoreConstants.Gender.Male))
+               if (meanStdRatio.organ.Equals(LIVER) && volumeParameter.Gender.Equals(CoreConstants.Gender.MALE))
                   continue; //no update for this combination
 
                var ratio = volumeParameter.Deviation / volumeParameter.Mean;
-               var expectedRatio = volumeParameter.Gender.Equals(CoreConstants.Gender.Male) ? meanStdRatio.maleRatio : meanStdRatio.femaleRatio;
+               var expectedRatio = volumeParameter.Gender.Equals(CoreConstants.Gender.MALE) ? meanStdRatio.maleRatio : meanStdRatio.femaleRatio;
 
                ratio.ShouldBeEqualTo(expectedRatio, 1e-3, $"{meanStdRatio.organ}.{volumeParameter.Gender}.{volumeParameter.Age} years");
             }
@@ -785,7 +785,7 @@ namespace PKSim.IntegrationTests
          var firstPopulationGender = populationGenderRepo.All().First();
 
          firstPopulationGender.Population.ShouldBeEqualTo(CoreConstants.Population.ICRP);
-         firstPopulationGender.GenderName.ShouldBeEqualTo(CoreConstants.Gender.Male);
+         firstPopulationGender.GenderName.ShouldBeEqualTo(CoreConstants.Gender.MALE);
       }
    }
 }

@@ -136,6 +136,7 @@ namespace PKSim.Core
       {
          public static readonly string KgPerM2 = "kg/m²";
          public static readonly string Kg = "kg";
+         public static readonly string m2 = "m²";
          public static readonly string cm = "cm";
          public static readonly string mg = "mg";
          public static readonly string MicroMolPerLiter = "µmol/l";
@@ -562,9 +563,9 @@ namespace PKSim.Core
 
       public static class Gender
       {
-         public static readonly string Male = "MALE";
-         public static readonly string Female = "FEMALE";
-         public static readonly string Undefined = "UNKNOWN";
+         public static readonly string MALE = "MALE";
+         public static readonly string FEMALE = "FEMALE";
+         public static readonly string UNDEFINED = "UNKNOWN";
       }
 
       public static class Groups
@@ -949,6 +950,7 @@ namespace PKSim.Core
          public static readonly string BMI = "BMI";
          public static readonly string BSA = "BSA";
          public static readonly string BLOOD_FLOW = "Blood flow rate";
+         public static readonly string SPECIFIC_BLOOD_FLOW_RATE = "Specific blood flow rate";
          public static readonly string DENSITY = "Density (tissue)";
          public static readonly string DRUG = "DRUG";
          public static readonly string ALLOMETRIC_SCALE_FACTOR = "Allometric scale factor";
@@ -1037,6 +1039,8 @@ namespace PKSim.Core
          public const string ONTOGENY_FACTOR_ALBUMIN = "Ontogeny factor (albumin)";
          public const string ONTOGENY_FACTOR_AGP = "Ontogeny factor (alpha1-acid glycoprotein)";
          public const string PLASMA_PROTEIN_SCALE_FACTOR = "Plasma protein scale factor";
+         public const string SMALL_INTESTINAL_TRANSIT_TIME = "Small intestinal transit time";
+         public const string GASTRIC_EMPTYING_TIME = "Gastric emptying time";
          public const string KM_INTERACTION_FACTOR = "Km interaction factor";
          public const string KCAT_INTERACTION_FACTOR = "kcat interaction factor";
          public const string CL_SPEC_PER_ENZYME_INTERACTION_FACTOR = "CLspec/[Enzyme] interaction factor";
