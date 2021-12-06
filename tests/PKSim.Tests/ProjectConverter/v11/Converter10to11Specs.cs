@@ -37,6 +37,27 @@ namespace PKSim.ProjectConverter.v11
          var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, ind.Species, ind.Name));
          expressionProfile.ShouldNotBeNull();
       }
+
+
+      [Observation]
+      public void should_have_converted_the_origin_data_value_to_origin_data_parameters()
+      {
+         var ind = _allIndividuals.FindByName("Human");
+         ind.OriginData.Age.ShouldNotBeNull();
+         ind.OriginData.Height.ShouldNotBeNull();
+         ind.OriginData.Weight.ShouldNotBeNull();
+         ind.OriginData.BMI.ShouldNotBeNull();
+         ind.OriginData.GestationalAge.ShouldNotBeNull();
+      }
+
+
+      [Observation]
+      public void should_have_converted_the_population_in_origin_data()
+      {
+         var pop = _allPopulations.FindByName("POP");
+         var ind = pop.FirstIndividual;
+         ind.OriginData.Population.ShouldNotBeNull();
+      }
    }
 
    public class When_converting_the_expression_v9_project_to_11 : ContextWithLoadedProject<Converter10to11>
@@ -74,6 +95,19 @@ namespace PKSim.ProjectConverter.v11
          var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species, pop.Name));
          expressionProfile.ShouldNotBeNull();
       }
+
+
+      [Observation]
+      public void should_have_converted_the_origin_data_value_to_origin_data_parameters()
+      {
+         var pop = _allPopulations.FindByName("POP");
+         var ind = pop.FirstIndividual;
+         ind.OriginData.Age.ShouldNotBeNull();
+         ind.OriginData.Height.ShouldNotBeNull();
+         ind.OriginData.Weight.ShouldNotBeNull();
+         ind.OriginData.BMI.ShouldNotBeNull();
+         ind.OriginData.GestationalAge.ShouldNotBeNull();
+      }
    }
 
    public class When_converting_the_expression_v10_project_to_11 : ContextWithLoadedProject<Converter10to11>
@@ -104,5 +138,6 @@ namespace PKSim.ProjectConverter.v11
          var allInitialConcentrationParameters = pop.FirstIndividual.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION));
          allInitialConcentrationParameters.Each(x=>x.CanBeVariedInPopulation.ShouldBeFalse());
       }
+
    }
 }
