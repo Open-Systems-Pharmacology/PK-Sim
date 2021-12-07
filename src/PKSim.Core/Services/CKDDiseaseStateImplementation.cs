@@ -31,7 +31,7 @@ namespace PKSim.Core.Services
 
       public CKDDiseaseStateImplementation(
          IValueOriginRepository valueOriginRepository,
-         IDimensionRepository dimensionRepository, 
+         IDimensionRepository dimensionRepository,
          IFormulaFactory formulaFactory)
       {
          _valueOriginRepository = valueOriginRepository;
@@ -77,7 +77,7 @@ namespace PKSim.Core.Services
          //Correct specific GFR
          updateParameter(GFR_spec, GFR_spec.Value * targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value);
 
-     
+
          var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
          //Categorial Parameters
@@ -94,20 +94,21 @@ namespace PKSim.Core.Services
          updateValueOriginsFor(parameter);
          if (parameter is IDistributedParameter distributedParameter)
          {
-            distributedParameter.ScaleDistributionBasedOn(value/distributedParameter.Value);
+            distributedParameter.ScaleDistributionBasedOn(value / distributedParameter.Value);
             return;
          }
+
          //We are using a formula, we override with a constant
          if (parameter.Formula.IsExplicit())
          {
             parameter.Formula = _formulaFactory.ConstantFormula(value, parameter.Dimension);
             return;
          }
+
          //constant formula
          parameter.Value = value;
          parameter.DefaultValue = value;
          parameter.IsFixedValue = false;
-
       }
 
       private double getHematocritFactor(double targetGFR, Gender gender)

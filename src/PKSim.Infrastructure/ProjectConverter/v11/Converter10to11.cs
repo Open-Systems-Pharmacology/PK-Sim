@@ -125,7 +125,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       {
          if (individual == null)
             return;
-         ;
+
 
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
          var parameter = defaultHuman.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
