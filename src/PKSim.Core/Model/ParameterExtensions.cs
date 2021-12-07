@@ -163,7 +163,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public static double ScaleFactor(this IParameter parameter)
       {
-         if (!parameter.ValueDiffersFromDefault())
+         if (parameter == null || !parameter.ValueDiffersFromDefault())
             return 1;
 
          //What should be done here?
@@ -199,17 +199,22 @@ namespace PKSim.Core.Model
 
       public static void ScaleDistributionBasedOn(this IDistributedParameter currentParameter, IDistributedParameter baseParameter)
       {
-         if (baseParameter == null)
+         ScaleDistributionBasedOn(currentParameter, baseParameter?.ScaleFactor());
+      }
+
+      public static void ScaleDistributionBasedOn(this IDistributedParameter parameter, double? factor)
+      {
+         var factorValue = factor.GetValueOrDefault(1);
+         if (factorValue == 1)
             return;
 
-         var factor = baseParameter.ScaleFactor();
-         if (factor == 1)
-            return;
+         parameter.MeanParameter.Value *= factorValue;
 
-         currentParameter.MeanParameter.Value *= factor;
+         if (parameter.Formula.DistributionType() == DistributionTypes.Normal)
+            parameter.DeviationParameter.Value *= factorValue;
 
-         if (currentParameter.Formula.DistributionType() == DistributionTypes.Normal)
-            currentParameter.DeviationParameter.Value *= factor;
+         parameter.IsFixedValue = false;
+
       }
    }
 }

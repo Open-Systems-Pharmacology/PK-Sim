@@ -289,6 +289,7 @@ namespace PKSim.UI.Views.Individuals
          {
             layoutControlGroupPopulationProperties.Enabled = !value;
             layoutControlGroupPopulationParameters.Enabled = layoutControlGroupPopulationProperties.Enabled;
+            layoutGroupDiseaseState.Enabled = layoutControlGroupPopulationProperties.Enabled;
          }
          get => !layoutControlGroupPopulationProperties.Enabled;
       }

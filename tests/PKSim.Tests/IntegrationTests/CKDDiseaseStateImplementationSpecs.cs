@@ -26,7 +26,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
          _diseaseStateCKD = _diseaseStateRepository.FindById(CoreConstants.DiseaseStates.CKD);
-         _targetGFR = _diseaseStateCKD.Parameter(CoreConstantsForSpecs.Parameter.TARGET_GFR);
+         _targetGFR = _diseaseStateCKD.Parameter(CKDDiseaseStateImplementation.TARGET_GFR);
       }
    }
 

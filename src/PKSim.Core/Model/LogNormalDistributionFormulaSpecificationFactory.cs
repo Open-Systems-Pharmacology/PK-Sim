@@ -44,17 +44,10 @@ namespace PKSim.Core.Model
          parameter.MeanParameter.Value = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), originData.Age.Value);
          parameter.DeviationParameter.Value = _interpolation.Interpolate(knownSamples.Select(item => item.Std), originData.Age.Value);
          parameter.ScaleDistributionBasedOn(baseParameter);
-         parameter.IsFixedValue = false;
       }
 
-      public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions)
-      {
-         return distributions.All(IsSatisfiedBy);
-      }
+      public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions) => distributions.All(IsSatisfiedBy);
 
-      public bool IsSatisfiedBy(IDistributionMetaData distribution)
-      {
-         return distribution.Distribution == DistributionTypes.LogNormal;
-      }
+      public bool IsSatisfiedBy(IDistributionMetaData distribution) => distribution.Distribution == DistributionTypes.LogNormal;
    }
 }

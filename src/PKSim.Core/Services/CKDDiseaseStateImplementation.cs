@@ -1,5 +1,6 @@
 ﻿using System;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
@@ -8,6 +9,7 @@ using PKSim.Core.Repositories;
 using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Organ;
 using static PKSim.Core.CoreConstants.Parameters;
+using IFormulaFactory = OSPSuite.Core.Domain.Formulas.IFormulaFactory;
 
 namespace PKSim.Core.Services
 {
@@ -21,19 +23,20 @@ namespace PKSim.Core.Services
       }
 
       private readonly IValueOriginRepository _valueOriginRepository;
-      private readonly IDimensionRepository _dimensionRepository;
+      private readonly IFormulaFactory _formulaFactory;
       private readonly IDimension _dimensionForGFR;
-      private const string TARGET_GFR = "TargetGFR";
+      public static readonly string TARGET_GFR = "Target eGFR";
       private const int CKD_VALUE_ORIGIN_ID = 92;
-      private const string GFR_UNIT= "ml/min/1.73m²";
+      private const string GFR_UNIT = "ml/min/1.73m²";
 
       public CKDDiseaseStateImplementation(
          IValueOriginRepository valueOriginRepository,
-         IDimensionRepository dimensionRepository)
+         IDimensionRepository dimensionRepository, 
+         IFormulaFactory formulaFactory)
       {
          _valueOriginRepository = valueOriginRepository;
-         _dimensionRepository = dimensionRepository;
-         _dimensionForGFR = _dimensionRepository.DimensionForUnit(GFR_UNIT);
+         _formulaFactory = formulaFactory;
+         _dimensionForGFR = dimensionRepository.DimensionForUnit(GFR_UNIT);
       }
 
       public bool IsSatisfiedBy(DiseaseState diseaseState) => diseaseState.IsNamed(CoreConstants.DiseaseStates.CKD);
@@ -65,28 +68,46 @@ namespace PKSim.Core.Services
 
          //Adjust kidney volume and update fat accordingly
          var healthyKidneyVolume = kidneyVolume.Value;
-         kidneyVolume.Value = getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0) * healthyKidneyVolume;
-         fatVolume.Value = fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value;
+         updateParameter(kidneyVolume, getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0) * healthyKidneyVolume);
+         updateParameter(fatVolume, fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value);
 
-         //Adjust rena blood flow
-         kidneySpecificBloodFlowRate.Value = getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0) * kidneySpecificBloodFlowRate.Value;
+         //Adjust renal blood flow spec
+         updateParameter(kidneySpecificBloodFlowRate, getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0) * kidneySpecificBloodFlowRate.Value);
 
          //Correct specific GFR
-         GFR_spec.Value = GFR_spec.Value * targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value;
+         updateParameter(GFR_spec, GFR_spec.Value * targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value);
 
-         var ckdStage = getCKDStage(targetGFRValue);
-         var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(ckdStage);
+     
+         var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
          //Categorial Parameters
-         plasmaProteinScaleFactorParameter.Value = plasmaProteinScaleFactor;
-         gastricEmptyingTime.Value *= gastricEmptyingTimeFactor;
-         smallIntestinalTransitTime.Value *= smallIntestinalTransitTimeFactor;
+         updateParameter(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor);
+         updateParameter(gastricEmptyingTime, gastricEmptyingTime.Value * gastricEmptyingTimeFactor);
+         updateParameter(smallIntestinalTransitTime, smallIntestinalTransitTime.Value * smallIntestinalTransitTimeFactor);
 
          //Special case for Hematocrit
-         hct.Value *= getHematocritFactor(targetGFRValue, individual.OriginData.Gender);
+         updateParameter(hct, hct.Value * getHematocritFactor(targetGFRValue, individual.OriginData.Gender));
+      }
 
-         //Finally update all value origin of modified parameters
-         updateValueOriginsFor(fatVolume, kidneyVolume, kidneySpecificBloodFlowRate, GFR_spec, plasmaProteinScaleFactorParameter, smallIntestinalTransitTime, gastricEmptyingTime, hct);
+      private void updateParameter(IParameter parameter, double value)
+      {
+         updateValueOriginsFor(parameter);
+         if (parameter is IDistributedParameter distributedParameter)
+         {
+            distributedParameter.ScaleDistributionBasedOn(value/distributedParameter.Value);
+            return;
+         }
+         //We are using a formula, we override with a constant
+         if (parameter.Formula.IsExplicit())
+         {
+            parameter.Formula = _formulaFactory.ConstantFormula(value, parameter.Dimension);
+            return;
+         }
+         //constant formula
+         parameter.Value = value;
+         parameter.DefaultValue = value;
+         parameter.IsFixedValue = false;
+
       }
 
       private double getHematocritFactor(double targetGFR, Gender gender)
@@ -129,7 +150,7 @@ namespace PKSim.Core.Services
             return CKDStage.Stage5;
          if (targetGFR < 30)
             return CKDStage.Stage4;
-         
+
          return CKDStage.Stage3;
       }
 
@@ -138,8 +159,9 @@ namespace PKSim.Core.Services
          return _dimensionForGFR.BaseUnitValueToUnitValue(_dimensionForGFR.Unit(GFR_UNIT), gfrValueInLPerMinPerDm2);
       }
 
-      private (double plasmaProteinScaleFactor, double gastricEmptyingTimeFactor, double smallIntestinalTransitTimeFactor) getCategorialFactors(CKDStage stage)
+      private (double plasmaProteinScaleFactor, double gastricEmptyingTimeFactor, double smallIntestinalTransitTimeFactor) getCategorialFactors(double gfrValue)
       {
+         var stage = getCKDStage(gfrValue);
          switch (stage)
          {
             case CKDStage.Stage3:
@@ -154,8 +176,6 @@ namespace PKSim.Core.Services
       }
    }
 }
-
-
 
 /* 
  * baseIndividual is CKD

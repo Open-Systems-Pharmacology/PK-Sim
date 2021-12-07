@@ -735,7 +735,7 @@ namespace PKSim.IntegrationTests
          var icrpParams = _parameterDistributionRepository.All()
             .Where(p => p.Population.Equals(CoreConstants.Population.ICRP))
             .Where(p => p.ParameterName.IsOneOf(
-               CoreConstantsForSpecs.Parameter.VOLUME,
+               Constants.Parameters.VOLUME,
                CoreConstants.Parameters.BLOOD_FLOW)).ToList();
 
          icrpParams.Count.ShouldBeGreaterThanOrEqualTo(agesWithFilledValueOrigins.Length * 2 * 2); //2 Genders * 2 parameters per age
