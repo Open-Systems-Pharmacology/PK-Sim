@@ -30,7 +30,7 @@ namespace PKSim.Core.Model
                             select new Sample(distribution.Age, distribution.Mean);
 
          parameter.MeanParameter.Value = _interpolation.Interpolate(knownSamples, originData.Age.Value);
-         this.ScaleDistributionFor(parameter,baseParameter);
+         parameter.ScaleDistributionBasedOn(baseParameter);
          parameter.IsFixedValue = false;
       }
 

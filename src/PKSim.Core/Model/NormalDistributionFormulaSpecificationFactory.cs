@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Maths.Interpolations;
 
 namespace PKSim.Core.Model
 {
@@ -12,14 +12,14 @@ namespace PKSim.Core.Model
       private readonly OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory _distributionFormulaFactory;
 
       public NormalDistributionFormulaSpecificationFactory(IInterpolation interpolation,
-                                                           OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory distributionFormulaFactory)
+         OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory distributionFormulaFactory)
       {
          _interpolation = interpolation;
          _distributionFormulaFactory = distributionFormulaFactory;
       }
 
       public IDistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions,
-                                            IDistributedParameter parameter, OriginData originData)
+         IDistributedParameter parameter, OriginData originData)
       {
          UpdateDistributionBasedOn(distributions, parameter, null, originData);
          return _distributionFormulaFactory.CreateNormalDistributionFormulaFor(parameter, parameter.MeanParameter, parameter.DeviationParameter);
@@ -35,16 +35,16 @@ namespace PKSim.Core.Model
       public void UpdateDistributionBasedOn(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, IDistributedParameter baseParameter, OriginData originData)
       {
          var knownSamples = from distribution in distributions
-                            select new
-                               {
-                                  Mean = new Sample(distribution.Age, distribution.Mean),
-                                  Std = new Sample(distribution.Age, distribution.Deviation),
-                               };
+            select new
+            {
+               Mean = new Sample(distribution.Age, distribution.Mean),
+               Std = new Sample(distribution.Age, distribution.Deviation),
+            };
 
          knownSamples = knownSamples.ToList();
          parameter.MeanParameter.Value = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), originData.Age.Value);
          parameter.DeviationParameter.Value = _interpolation.Interpolate(knownSamples.Select(item => item.Std), originData.Age.Value);
-         this.ScaleDistributionFor(parameter,baseParameter);
+         parameter.ScaleDistributionBasedOn(baseParameter);
          parameter.IsFixedValue = false;
       }
 

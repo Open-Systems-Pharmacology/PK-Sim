@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model.Extensions;
 using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Model
@@ -86,7 +87,7 @@ namespace PKSim.Core.Model
             return false;
 
          if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population,
-            PKSimBuildingBlockType.Simulation))
+                PKSimBuildingBlockType.Simulation))
             return false;
 
          if (parameter.Formula == null)
@@ -158,7 +159,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the factor with which the value was changed from current vlaue
+      ///    Returns the factor with which the value was changed from current value
       /// </summary>
       public static double ScaleFactor(this IParameter parameter)
       {
@@ -194,6 +195,21 @@ namespace PKSim.Core.Model
       public static IReadOnlyList<IParameter> AllExpressionParameters(this IReadOnlyList<IParameter> parameters)
       {
          return parameters.Except(AllGlobalMoleculeParameters(parameters)).ToList();
+      }
+
+      public static void ScaleDistributionBasedOn(this IDistributedParameter currentParameter, IDistributedParameter baseParameter)
+      {
+         if (baseParameter == null)
+            return;
+
+         var factor = baseParameter.ScaleFactor();
+         if (factor == 1)
+            return;
+
+         currentParameter.MeanParameter.Value *= factor;
+
+         if (currentParameter.Formula.DistributionType() == DistributionTypes.Normal)
+            currentParameter.DeviationParameter.Value *= factor;
       }
    }
 }
