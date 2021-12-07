@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
@@ -47,7 +48,51 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
-         return (ProjectVersions.V11, false);
+         _converted = false;
+         element.DescendantsAndSelf("Individual").Each(convertOriginDataInIndividualNode);
+         element.DescendantsAndSelf("BaseIndividual").Each(convertOriginDataInIndividualNode);
+         return (ProjectVersions.V11, _converted);
+      }
+
+
+      private void convertOriginDataInIndividualNode(XElement individualElement)
+      {
+         var originDataElement = individualElement.Element("OriginData");
+         if (originDataElement == null)
+            return;
+
+         var age = originDataElement.GetAttribute("age");
+         var ageUnit = originDataElement.GetAttribute("ageUnit");
+         var gestationalAge = originDataElement.GetAttribute("gestationalAge");
+         var gestationalAgeUnit = originDataElement.GetAttribute("gestationalAgeUnit");
+         var BMI = originDataElement.GetAttribute("bMI");
+         var BMIUnit = originDataElement.GetAttribute("bMIUnit");
+         var height = originDataElement.GetAttribute("height");
+         var heightUnit = originDataElement.GetAttribute("heightUnit");
+         var weight = originDataElement.GetAttribute("weight");
+         var weightUnit = originDataElement.GetAttribute("weightUnit");
+         var population = originDataElement.GetAttribute("speciesPopulation");
+         originDataElement.SetAttributeValue("population", population);
+         addOriginDataNodeToOriginData(age, ageUnit, "Age", originDataElement);
+         addOriginDataNodeToOriginData(gestationalAge, gestationalAgeUnit, "GestationalAge", originDataElement);
+         addOriginDataNodeToOriginData(BMI, BMIUnit, "BMI", originDataElement);
+         addOriginDataNodeToOriginData(height, heightUnit, "Height", originDataElement);
+         addOriginDataNodeToOriginData(weight, weightUnit, "Weight", originDataElement);
+
+         _converted = true;
+      }
+
+      private void addOriginDataNodeToOriginData(string value, string unit, string nodeName, XElement originDataElement)
+      {
+         if (value.IsNullOrEmpty())
+            return;
+
+         var originParameterElement = new XElement(nodeName);
+         originParameterElement.SetAttributeValue("value", value);
+         originParameterElement.SetAttributeValue("unit", unit);
+         originDataElement.Add(originParameterElement);
+
+         return;
       }
 
       public void Visit(Individual individual)
