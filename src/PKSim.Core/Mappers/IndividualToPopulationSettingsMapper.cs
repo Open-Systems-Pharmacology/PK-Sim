@@ -5,6 +5,8 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
+using static OSPSuite.Core.Domain.Constants.Parameters;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Mappers
 {
@@ -31,42 +33,37 @@ namespace PKSim.Core.Mappers
          populationSettings.BaseIndividual = individual;
          populationSettings.NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
 
-         int genderCount = individual.AvailableGenders().Count();
-         foreach (var gender in individual.AvailableGenders())
+         int genderCount = individual.AvailableGenders.Count;
+         foreach (var gender in individual.AvailableGenders)
          {
             populationSettings.AddGenderRatio(new GenderRatio {Gender = gender, Ratio = 100 / genderCount});
          }
 
-         if (individual.IsAgeDependent)
-         {
-            var ageParameter = individual.Organism.Parameter(CoreConstants.Parameters.AGE);
-            populationSettings.AddParameterRange(constrainedParameterRangeFrom(ageParameter));
-         }
+         var organism = individual.Organism;
+         if (individual.IsAgeDependent) 
+            populationSettings.AddParameterRange(constrainedParameterRangeFrom(organism.Parameter(AGE)));
 
          if (individual.IsPreterm)
          {
-            var gestationalAgeParameter = individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE);
+            var gestationalAgeParameter = organism.Parameter(GESTATIONAL_AGE);
             populationSettings.AddParameterRange(discreteParameterRangeFrom(gestationalAgeParameter, numericListOfValues(gestationalAgeParameter)));
          }
 
          if (population.IsHeightDependent)
+            populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(MEAN_HEIGHT)));
+         
+         var weightParameter = organism.Parameter(MEAN_WEIGHT);
+         populationSettings.AddParameterRange(population.IsAgeDependent ? parameterRangeFrom(weightParameter) : constrainedParameterRangeFrom(weightParameter));
+
+         if (population.IsHeightDependent) 
+            populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(BMI)));
+         
+         individual.OriginData.DiseaseStateParameters.Each(x =>
          {
-            var heightParameter = individual.Organism.Parameter(CoreConstants.Parameters.MEAN_HEIGHT);
-            populationSettings.AddParameterRange(parameterRangeFrom(heightParameter));
-         }
+            var parameter = individual.OriginData.DiseaseState.Parameter(x.Name);
+            populationSettings.AddParameterRange(constrainedParameterRangeFrom(parameter));
 
-         var weightParameter = individual.Organism.Parameter(CoreConstants.Parameters.MEAN_WEIGHT);
-
-         if (population.IsAgeDependent)
-            populationSettings.AddParameterRange(parameterRangeFrom(weightParameter));
-         else
-            populationSettings.AddParameterRange(constrainedParameterRangeFrom(weightParameter));
-
-         if (population.IsHeightDependent)
-         {
-            var bmiParameter = individual.Organism.Parameter(CoreConstants.Parameters.BMI);
-            populationSettings.AddParameterRange(parameterRangeFrom(bmiParameter));
-         }
+         });
          return populationSettings;
       }
 

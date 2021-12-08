@@ -33,6 +33,7 @@ namespace PKSim.UI.Views.Populations
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.lblDiseaseState = new DevExpress.XtraEditors.LabelControl();
          this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.btnStop = new DevExpress.XtraEditors.SimpleButton();
          this.lblPopulation = new DevExpress.XtraEditors.LabelControl();
@@ -54,6 +55,7 @@ namespace PKSim.UI.Views.Populations
          this.layoutItemIndividual = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemPopulation = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemDiseaseState = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
@@ -76,12 +78,14 @@ namespace PKSim.UI.Views.Populations
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemIndividual)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPopulation)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDiseaseState)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.lblDiseaseState);
          this.layoutControl.Controls.Add(this.lblDescription);
          this.layoutControl.Controls.Add(this.btnStop);
          this.layoutControl.Controls.Add(this.lblPopulation);
@@ -98,9 +102,18 @@ namespace PKSim.UI.Views.Populations
          this.layoutControl.TabIndex = 9;
          this.layoutControl.Text = "layoutControl1";
          // 
+         // lblDiseaseState
+         // 
+         this.lblDiseaseState.Location = new System.Drawing.Point(12, 63);
+         this.lblDiseaseState.Name = "lblDiseaseState";
+         this.lblDiseaseState.Size = new System.Drawing.Size(73, 13);
+         this.lblDiseaseState.StyleController = this.layoutControl;
+         this.lblDiseaseState.TabIndex = 21;
+         this.lblDiseaseState.Text = "lblDiseaseState";
+         // 
          // lblDescription
          // 
-         this.lblDescription.Location = new System.Drawing.Point(12, 53);
+         this.lblDescription.Location = new System.Drawing.Point(12, 29);
          this.lblDescription.Name = "lblDescription";
          this.lblDescription.Size = new System.Drawing.Size(63, 13);
          this.lblDescription.StyleController = this.layoutControl;
@@ -109,7 +122,7 @@ namespace PKSim.UI.Views.Populations
          // 
          // btnStop
          // 
-         this.btnStop.Location = new System.Drawing.Point(227, 392);
+         this.btnStop.Location = new System.Drawing.Point(227, 397);
          this.btnStop.Name = "btnStop";
          this.btnStop.Size = new System.Drawing.Size(212, 22);
          this.btnStop.StyleController = this.layoutControl;
@@ -118,7 +131,7 @@ namespace PKSim.UI.Views.Populations
          // 
          // lblPopulation
          // 
-         this.lblPopulation.Location = new System.Drawing.Point(12, 36);
+         this.lblPopulation.Location = new System.Drawing.Point(12, 46);
          this.lblPopulation.Name = "lblPopulation";
          this.lblPopulation.Size = new System.Drawing.Size(60, 13);
          this.lblPopulation.StyleController = this.layoutControl;
@@ -127,17 +140,17 @@ namespace PKSim.UI.Views.Populations
          // 
          // tbProportionsOfFemales
          // 
-         this.tbProportionsOfFemales.Location = new System.Drawing.Point(180, 135);
+         this.tbProportionsOfFemales.Location = new System.Drawing.Point(189, 147);
          this.tbProportionsOfFemales.Name = "tbProportionsOfFemales";
-         this.tbProportionsOfFemales.Size = new System.Drawing.Size(247, 20);
+         this.tbProportionsOfFemales.Size = new System.Drawing.Size(238, 20);
          this.tbProportionsOfFemales.StyleController = this.layoutControl;
          this.tbProportionsOfFemales.TabIndex = 17;
          // 
          // tbNumberOfIndividuals
          // 
-         this.tbNumberOfIndividuals.Location = new System.Drawing.Point(180, 111);
+         this.tbNumberOfIndividuals.Location = new System.Drawing.Point(189, 123);
          this.tbNumberOfIndividuals.Name = "tbNumberOfIndividuals";
-         this.tbNumberOfIndividuals.Size = new System.Drawing.Size(247, 20);
+         this.tbNumberOfIndividuals.Size = new System.Drawing.Size(238, 20);
          this.tbNumberOfIndividuals.StyleController = this.layoutControl;
          this.tbNumberOfIndividuals.TabIndex = 14;
          // 
@@ -145,23 +158,25 @@ namespace PKSim.UI.Views.Populations
          // 
          this.panelIndividualSelection.Location = new System.Drawing.Point(115, 12);
          this.panelIndividualSelection.Name = "panelIndividualSelection";
-         this.panelIndividualSelection.Size = new System.Drawing.Size(324, 20);
+         this.panelIndividualSelection.Size = new System.Drawing.Size(324, 13);
          this.panelIndividualSelection.TabIndex = 16;
          // 
          // gridParameters
          // 
-         this.gridParameters.Location = new System.Drawing.Point(24, 202);
+         this.gridParameters.Location = new System.Drawing.Point(24, 216);
          this.gridParameters.MainView = this.gridViewParameters;
          this.gridParameters.Name = "gridParameters";
-         this.gridParameters.Size = new System.Drawing.Size(403, 174);
+         this.gridParameters.Size = new System.Drawing.Size(403, 165);
          this.gridParameters.TabIndex = 10;
          this.gridParameters.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridViewParameters});
          // 
          // gridViewParameters
          // 
+         this.gridViewParameters.AllowsFiltering = true;
          this.gridViewParameters.EnableColumnContextMenu = true;
          this.gridViewParameters.GridControl = this.gridParameters;
+         this.gridViewParameters.MultiSelect = false;
          this.gridViewParameters.Name = "gridViewParameters";
          this.gridViewParameters.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
          this.gridViewParameters.OptionsNavigation.AutoFocusNewRow = true;
@@ -181,10 +196,8 @@ namespace PKSim.UI.Views.Populations
             this.emptySpaceItem2,
             this.layoutGroupIndividualSelection,
             this.emptySpaceItem});
-         this.layoutMainGroup.Location = new System.Drawing.Point(0, 0);
          this.layoutMainGroup.Name = "layoutMainGroup";
          this.layoutMainGroup.Size = new System.Drawing.Size(451, 546);
-         this.layoutMainGroup.Text = "layoutMainGroup";
          this.layoutMainGroup.TextVisible = false;
          // 
          // layoutGroupPopulationProperties
@@ -193,10 +206,9 @@ namespace PKSim.UI.Views.Populations
          this.layoutGroupPopulationProperties.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemProportionOfFemales,
             this.layoutItemNumberOfIndividuals});
-         this.layoutGroupPopulationProperties.Location = new System.Drawing.Point(0, 68);
+         this.layoutGroupPopulationProperties.Location = new System.Drawing.Point(0, 78);
          this.layoutGroupPopulationProperties.Name = "layoutGroupPopulationProperties";
-         this.layoutGroupPopulationProperties.Size = new System.Drawing.Size(431, 91);
-         this.layoutGroupPopulationProperties.Text = "layoutGroupPopulationProperties";
+         this.layoutGroupPopulationProperties.Size = new System.Drawing.Size(431, 93);
          // 
          // layoutItemProportionOfFemales
          // 
@@ -205,7 +217,6 @@ namespace PKSim.UI.Views.Populations
          this.layoutItemProportionOfFemales.Location = new System.Drawing.Point(0, 24);
          this.layoutItemProportionOfFemales.Name = "layoutItemProportionOfFemales";
          this.layoutItemProportionOfFemales.Size = new System.Drawing.Size(407, 24);
-         this.layoutItemProportionOfFemales.Text = "layoutItemProportionOfFemales";
          this.layoutItemProportionOfFemales.TextSize = new System.Drawing.Size(153, 13);
          // 
          // layoutItemNumberOfIndividuals
@@ -218,7 +229,6 @@ namespace PKSim.UI.Views.Populations
          this.layoutItemNumberOfIndividuals.Name = "layoutItemNumberOfIndividuals";
          this.layoutItemNumberOfIndividuals.Size = new System.Drawing.Size(407, 24);
          this.layoutItemNumberOfIndividuals.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemNumberOfIndividuals.Text = "layoutItemNumberOfIndividuals";
          this.layoutItemNumberOfIndividuals.TextSize = new System.Drawing.Size(153, 13);
          // 
          // layoutGroupParameterRanges
@@ -226,10 +236,9 @@ namespace PKSim.UI.Views.Populations
          this.layoutGroupParameterRanges.CustomizationFormText = "layoutGroupParameterRanges";
          this.layoutGroupParameterRanges.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemParameters});
-         this.layoutGroupParameterRanges.Location = new System.Drawing.Point(0, 159);
+         this.layoutGroupParameterRanges.Location = new System.Drawing.Point(0, 171);
          this.layoutGroupParameterRanges.Name = "layoutGroupParameterRanges";
-         this.layoutGroupParameterRanges.Size = new System.Drawing.Size(431, 221);
-         this.layoutGroupParameterRanges.Text = "layoutGroupParameterRanges";
+         this.layoutGroupParameterRanges.Size = new System.Drawing.Size(431, 214);
          // 
          // layoutItemParameters
          // 
@@ -237,42 +246,36 @@ namespace PKSim.UI.Views.Populations
          this.layoutItemParameters.CustomizationFormText = "layoutItemParameters";
          this.layoutItemParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutItemParameters.Name = "layoutItemParameters";
-         this.layoutItemParameters.Size = new System.Drawing.Size(407, 178);
-         this.layoutItemParameters.Text = "layoutItemParameters";
+         this.layoutItemParameters.Size = new System.Drawing.Size(407, 169);
          this.layoutItemParameters.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemParameters.TextToControlDistance = 0;
          this.layoutItemParameters.TextVisible = false;
          // 
          // layoutItemStop
          // 
          this.layoutItemStop.Control = this.btnStop;
          this.layoutItemStop.CustomizationFormText = "layoutItemStop";
-         this.layoutItemStop.Location = new System.Drawing.Point(215, 380);
+         this.layoutItemStop.Location = new System.Drawing.Point(215, 385);
          this.layoutItemStop.Name = "layoutItemStop";
          this.layoutItemStop.Size = new System.Drawing.Size(216, 26);
-         this.layoutItemStop.Text = "layoutItemStop";
          this.layoutItemStop.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemStop.TextToControlDistance = 0;
          this.layoutItemStop.TextVisible = false;
          // 
          // emptySpaceItem1
          // 
          this.emptySpaceItem1.AllowHotTrack = false;
          this.emptySpaceItem1.CustomizationFormText = "emptySpaceItem1";
-         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 406);
+         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 411);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(431, 120);
-         this.emptySpaceItem1.Text = "emptySpaceItem1";
+         this.emptySpaceItem1.Size = new System.Drawing.Size(431, 115);
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
          // 
          // emptySpaceItem2
          // 
          this.emptySpaceItem2.AllowHotTrack = false;
          this.emptySpaceItem2.CustomizationFormText = "emptySpaceItem2";
-         this.emptySpaceItem2.Location = new System.Drawing.Point(0, 380);
+         this.emptySpaceItem2.Location = new System.Drawing.Point(0, 385);
          this.emptySpaceItem2.Name = "emptySpaceItem2";
          this.emptySpaceItem2.Size = new System.Drawing.Size(215, 26);
-         this.emptySpaceItem2.Text = "emptySpaceItem2";
          this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
          // 
          // layoutGroupIndividualSelection
@@ -282,11 +285,11 @@ namespace PKSim.UI.Views.Populations
          this.layoutGroupIndividualSelection.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemIndividual,
             this.layoutItemPopulation,
+            this.layoutItemDiseaseState,
             this.layoutItemDescription});
          this.layoutGroupIndividualSelection.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupIndividualSelection.Name = "layoutGroupIndividualSelection";
-         this.layoutGroupIndividualSelection.Size = new System.Drawing.Size(431, 58);
-         this.layoutGroupIndividualSelection.Text = "layoutGroupIndividualSelection";
+         this.layoutGroupIndividualSelection.Size = new System.Drawing.Size(431, 68);
          // 
          // layoutItemIndividual
          // 
@@ -294,8 +297,7 @@ namespace PKSim.UI.Views.Populations
          this.layoutItemIndividual.CustomizationFormText = "layoutItemIndividual";
          this.layoutItemIndividual.Location = new System.Drawing.Point(0, 0);
          this.layoutItemIndividual.Name = "layoutItemIndividual";
-         this.layoutItemIndividual.Size = new System.Drawing.Size(431, 24);
-         this.layoutItemIndividual.Text = "layoutItemIndividual";
+         this.layoutItemIndividual.Size = new System.Drawing.Size(431, 17);
          this.layoutItemIndividual.TextAlignMode = DevExpress.XtraLayout.TextAlignModeItem.AutoSize;
          this.layoutItemIndividual.TextSize = new System.Drawing.Size(98, 13);
          this.layoutItemIndividual.TextToControlDistance = 5;
@@ -304,34 +306,38 @@ namespace PKSim.UI.Views.Populations
          // 
          this.layoutItemPopulation.Control = this.lblPopulation;
          this.layoutItemPopulation.CustomizationFormText = "layoutControlItem1";
-         this.layoutItemPopulation.Location = new System.Drawing.Point(0, 24);
+         this.layoutItemPopulation.Location = new System.Drawing.Point(0, 34);
          this.layoutItemPopulation.Name = "layoutItemPopulation";
          this.layoutItemPopulation.Size = new System.Drawing.Size(431, 17);
-         this.layoutItemPopulation.Text = "layoutItemPopulation";
          this.layoutItemPopulation.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemPopulation.TextToControlDistance = 0;
          this.layoutItemPopulation.TextVisible = false;
          // 
          // layoutItemDescription
          // 
          this.layoutItemDescription.Control = this.lblDescription;
          this.layoutItemDescription.CustomizationFormText = "layoutItemDescription";
-         this.layoutItemDescription.Location = new System.Drawing.Point(0, 41);
+         this.layoutItemDescription.Location = new System.Drawing.Point(0, 17);
          this.layoutItemDescription.Name = "layoutItemDescription";
          this.layoutItemDescription.Size = new System.Drawing.Size(431, 17);
-         this.layoutItemDescription.Text = "layoutItemDescription";
          this.layoutItemDescription.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemDescription.TextToControlDistance = 0;
          this.layoutItemDescription.TextVisible = false;
+         // 
+         // layoutItemDiseaseState
+         // 
+         this.layoutItemDiseaseState.Control = this.lblDiseaseState;
+         this.layoutItemDiseaseState.Location = new System.Drawing.Point(0, 51);
+         this.layoutItemDiseaseState.Name = "layoutItemDiseaseState";
+         this.layoutItemDiseaseState.Size = new System.Drawing.Size(431, 17);
+         this.layoutItemDiseaseState.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemDiseaseState.TextVisible = false;
          // 
          // emptySpaceItem
          // 
          this.emptySpaceItem.AllowHotTrack = false;
          this.emptySpaceItem.CustomizationFormText = "emptySpaceItem3";
-         this.emptySpaceItem.Location = new System.Drawing.Point(0, 58);
+         this.emptySpaceItem.Location = new System.Drawing.Point(0, 68);
          this.emptySpaceItem.Name = "emptySpaceItem";
          this.emptySpaceItem.Size = new System.Drawing.Size(431, 10);
-         this.emptySpaceItem.Text = "emptySpaceItem";
          this.emptySpaceItem.TextSize = new System.Drawing.Size(0, 0);
          // 
          // RandomPopulationSettingsView
@@ -362,6 +368,7 @@ namespace PKSim.UI.Views.Populations
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemIndividual)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPopulation)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDiseaseState)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).EndInit();
          this.ResumeLayout(false);
 
@@ -392,5 +399,7 @@ namespace PKSim.UI.Views.Populations
       private DevExpress.XtraEditors.LabelControl lblDescription;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem;
+      private DevExpress.XtraEditors.LabelControl lblDiseaseState;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemDiseaseState;
    }
 }

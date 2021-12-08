@@ -257,7 +257,7 @@ namespace PKSim.Core.Services
       private void setOrganVolumesTo(Individual individual, double[] organVolumes)
       {
          int organIndex = 0;
-         foreach (var organ in individual.AllOrgans())
+         foreach (var organ in individual.AllOrgans)
          {
             var volumeParameter = organ.Parameter(Constants.Parameters.VOLUME);
             volumeParameter.Value = organVolumes[organIndex];
@@ -366,9 +366,9 @@ namespace PKSim.Core.Services
 
       private double[] createRandomOrgansVolumesFrom(Individual individual, RandomGenerator randomGenerator, Func<IMuSigma, RandomGenerator, double> generateVolumeFunction)
       {
-         var allOrgans = individual.AllOrgans().ToList();
-         var organVolumes = new double[allOrgans.Count()];
-         _organDensity = new double[allOrgans.Count()];
+         var allOrgans = individual.AllOrgans.ToList();
+         var organVolumes = new double[allOrgans.Count];
+         _organDensity = new double[allOrgans.Count];
 
          int iOrganIndex = 0;
          foreach (var organ in allOrgans)
@@ -394,9 +394,9 @@ namespace PKSim.Core.Services
 
       private double[] createDefaultOrgansVolumesFrom(Individual individual)
       {
-         var allOrgans = individual.AllOrgans().ToList();
-         var organVolumes = new double[allOrgans.Count()];
-         _organDensity = new double[allOrgans.Count()];
+         var allOrgans = individual.AllOrgans.ToList();
+         var organVolumes = new double[allOrgans.Count];
+         _organDensity = new double[allOrgans.Count];
 
          int iOrganIndex = 0;
          foreach (var organ in allOrgans)
@@ -420,7 +420,7 @@ namespace PKSim.Core.Services
       private void initializeMusAndSigmas(Individual individual)
       {
          //retrieve disitribution parameters for volumes parameters
-         foreach (var organ in individual.AllOrgans())
+         foreach (var organ in individual.AllOrgans)
          {
             var volumeParameter = organ.Parameter(Constants.Parameters.VOLUME);
             var allometricScaleFactor = volumeParameter.ParentContainer.Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR).Value;
