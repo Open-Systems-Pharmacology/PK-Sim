@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Parameters;
 
@@ -40,7 +39,7 @@ namespace PKSim.Core.Mappers
          }
 
          var organism = individual.Organism;
-         if (individual.IsAgeDependent) 
+         if (individual.IsAgeDependent)
             populationSettings.AddParameterRange(constrainedParameterRangeFrom(organism.Parameter(AGE)));
 
          if (individual.IsPreterm)
@@ -51,18 +50,17 @@ namespace PKSim.Core.Mappers
 
          if (population.IsHeightDependent)
             populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(MEAN_HEIGHT)));
-         
+
          var weightParameter = organism.Parameter(MEAN_WEIGHT);
          populationSettings.AddParameterRange(population.IsAgeDependent ? parameterRangeFrom(weightParameter) : constrainedParameterRangeFrom(weightParameter));
 
-         if (population.IsHeightDependent) 
+         if (population.IsHeightDependent)
             populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(BMI)));
-         
+
          individual.OriginData.DiseaseStateParameters.Each(x =>
          {
             var parameter = individual.OriginData.DiseaseState.Parameter(x.Name);
             populationSettings.AddParameterRange(constrainedParameterRangeFrom(parameter));
-
          });
          return populationSettings;
       }

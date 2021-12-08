@@ -1,11 +1,11 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core
 {
@@ -67,6 +67,45 @@ namespace PKSim.Core
       public void should_add_a_range_for_gestational_age()
       {
          _result.ParameterRange(Constants.Parameters.GESTATIONAL_AGE).ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_set_the_list_of_values_for_the_gestational_age()
+      {
+         var discreteRange = _result.ParameterRange(Constants.Parameters.GESTATIONAL_AGE).DowncastTo<DiscreteParameterRange>();
+         discreteRange.ListOfValues.ShouldOnlyContain(24, 25);
+      }
+   }
+
+   public class When_creating_a_population_settings_for_an_individual_with_disease_state : concern_for_IndividualToPopulationSettingsDTOMapper
+   {
+      private RandomPopulationSettings _result;
+      private Individual _individual;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individual = A.Fake<Individual>();
+         var originData = new OriginData();
+         var diseaseState = new DiseaseState {DomainHelperForSpecs.ConstantParameterWithValue().WithName("P")};
+         originData.AddDiseaseStateParameter(new OriginDataParameter {Name = "P"});
+         originData.DiseaseState = diseaseState;
+         originData.Population = new SpeciesPopulation();
+         A.CallTo(() => _individual.OriginData).Returns(originData);
+         var organism = new Organism {DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.MEAN_WEIGHT)};
+         A.CallTo(() => _individual.Organism).Returns(organism);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_individual);
+      }
+
+      [Observation]
+      public void should_add_a_range_for_disease_state_parameters()
+      {
+         var range = _result.ParameterRange("P") as ConstrainedParameterRange;
+         range.ShouldNotBeNull();
       }
 
       [Observation]

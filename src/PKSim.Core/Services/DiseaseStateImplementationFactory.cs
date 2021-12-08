@@ -19,5 +19,7 @@ namespace PKSim.Core.Services
          var implementation = _diseaseStateImplementations.All().SingleOrDefault(x => x.IsSatisfiedBy(diseaseState));
          return implementation ?? new HealthyDiseaseStateImplementation();
       }
+
+      public IDiseaseStateImplementation CreateFor(Individual individual) => CreateFor(individual.OriginData.DiseaseState);
    }
 }

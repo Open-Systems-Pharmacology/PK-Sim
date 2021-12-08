@@ -54,7 +54,7 @@ namespace PKSim.Presentation.DTO.Mappers
             NumberOfIndividuals = populationSettings.NumberOfIndividuals.ConvertedTo<uint>()
          };
          //use clone since we do not want to override the value if the user clicks cancel
-         //in case of multiple gender, adjust the ration according to the feamales proportion
+         //in case of multiple gender, adjust the ration according to the females proportion
          if (populationSettingsDTO.HasMultipleGenders)
          {
             var femaleRatio = populationSettings.GenderRatio(populationSettingsDTO.Female);
