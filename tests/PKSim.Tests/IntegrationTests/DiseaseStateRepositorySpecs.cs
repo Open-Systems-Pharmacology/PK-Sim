@@ -6,6 +6,7 @@ using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.IntegrationTests
 {
@@ -36,7 +37,7 @@ namespace PKSim.IntegrationTests
          var ckd = sut.FindByName("CKD");
          ckd.ShouldNotBeNull();
 
-         var parameter = ckd.Parameter(CoreConstantsForSpecs.Parameter.TARGET_GFR);
+         var parameter = ckd.Parameter(CKDDiseaseStateImplementation.TARGET_GFR);
          parameter.ShouldNotBeNull();
          parameter.ValueInDisplayUnit.ShouldBeEqualTo(60, 1e-2);
       }

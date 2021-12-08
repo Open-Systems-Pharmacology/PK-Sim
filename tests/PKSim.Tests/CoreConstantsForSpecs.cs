@@ -68,8 +68,6 @@
          public static readonly string TUBULAR_SECRETION = "Tubular secretion";
          public static readonly string VMAX = "Vmax";
          public static readonly string VMAX_LIVER_TISSUE = "Vmax (liver tissue)";
-         public static readonly string VOLUME = "Volume";
-         public static readonly string TARGET_GFR = "TargetGFR";
       }
 
       public static class ContainerName

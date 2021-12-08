@@ -88,7 +88,7 @@ namespace PKSim.Core.Model
                var allBaseDistributedParameters = getAllDistributedParametersFrom(baseIndividual);
 
                //all individual parameters. Just an optimization to avoid call GetAllChildren for each individual
-               var allIndividualParameters = currentIndividual.GetAllChildren<IParameter>().ToList();
+               var allCurrentIndividualParameters = currentIndividual.GetAllChildren<IParameter>();
 
                int maxTotalIterations = populationSettings.NumberOfIndividuals * _maxIterations;
                uint numberOfTry = 0;
@@ -107,7 +107,7 @@ namespace PKSim.Core.Model
                   //create a new individual based on population settings defined by the user
                   updateCurrentIndividualFromSettings(populationSettings, currentIndividual, allDistributedParameters, allBaseDistributedParameters, currentGender, randomPopulation.RandomGenerator);
 
-                  bool success = tryRandomize(currentIndividual, populationSettings, allIndividualParameters, randomPopulation.RandomGenerator);
+                  bool success = tryRandomize(currentIndividual, populationSettings, allCurrentIndividualParameters, randomPopulation.RandomGenerator);
                   if (!success) continue;
 
                   randomPopulation.AddIndividualValues(_individualValuesMapper.MapFrom(currentIndividual, allChangedByCreatedIndividualParameters));

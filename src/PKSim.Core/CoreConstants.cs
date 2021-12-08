@@ -1070,6 +1070,7 @@ namespace PKSim.Core
          public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
          public const string FRACTION_EXPRESSED_BRAIN_TISSUE = "Fraction expressed brain tissue";
          public const string INITIAL_CONCENTRATION = "Initial concentration";
+         public const string E_GFR = "eGFR";
 
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
@@ -1218,6 +1219,7 @@ namespace PKSim.Core
             Constants.Distribution.MINIMUM,
             Constants.Distribution.PERCENTILE,
          };
+
       }
 
       public static class SimulationResults

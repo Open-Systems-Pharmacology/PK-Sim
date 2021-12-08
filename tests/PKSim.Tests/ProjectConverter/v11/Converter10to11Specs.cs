@@ -50,6 +50,13 @@ namespace PKSim.ProjectConverter.v11
          ind.OriginData.GestationalAge.ShouldNotBeNull();
       }
 
+      [Observation]
+      public void should_have_added_the_eGFR_parameter()
+      {
+         var ind = _allIndividuals.FindByName("Human");
+         var parameter = ind.Organism.EntityAt<IParameter>(CoreConstants.Organ.KIDNEY, CoreConstants.Parameters.E_GFR);
+         parameter.ShouldNotBeNull();
+      }
 
       [Observation]
       public void should_have_converted_the_population_in_origin_data()

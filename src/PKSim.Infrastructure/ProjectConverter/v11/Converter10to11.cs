@@ -8,6 +8,8 @@ using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using static PKSim.Core.CoreConstants.Organ;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Infrastructure.ProjectConverter.v11
 {
@@ -20,6 +22,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IEventPublisher _eventPublisher;
       private readonly IRegistrationTask _registrationTask;
+      private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
+      private readonly ICloner _cloner;
       private bool _converted;
 
       public Converter10to11(
@@ -27,7 +31,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          IExpressionProfileUpdater expressionProfileUpdater,
          IPKSimProjectRetriever projectRetriever,
          IEventPublisher eventPublisher,
-         IRegistrationTask registrationTask
+         IRegistrationTask registrationTask,
+         IDefaultIndividualRetriever defaultIndividualRetriever,
+         ICloner cloner
       )
       {
          _expressionProfileFactory = expressionProfileFactory;
@@ -35,6 +41,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          _projectRetriever = projectRetriever;
          _eventPublisher = eventPublisher;
          _registrationTask = registrationTask;
+         _defaultIndividualRetriever = defaultIndividualRetriever;
+         _cloner = cloner;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V10;
@@ -53,7 +61,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          element.DescendantsAndSelf("BaseIndividual").Each(convertOriginDataInIndividualNode);
          return (ProjectVersions.V11, _converted);
       }
-
 
       private void convertOriginDataInIndividualNode(XElement individualElement)
       {
@@ -98,18 +105,32 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       public void Visit(Individual individual)
       {
          addExpressionProfilesUsedBySimulationSubjectToProject(individual);
+         addEstimatedGFRParameterTo(individual);
       }
 
       public void Visit(Population population)
       {
          addExpressionProfilesUsedBySimulationSubjectToProject(population);
          makeInitialConcentrationParametersNotVariableInPopulation(population);
+         addEstimatedGFRParameterTo(population.FirstIndividual);
       }
 
       private void makeInitialConcentrationParametersNotVariableInPopulation(Population population)
       {
-         population?.FirstIndividual?.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION))
+         population?.FirstIndividual?.GetAllChildren<IParameter>(x => x.IsNamed(INITIAL_CONCENTRATION))
             .Each(x => x.CanBeVariedInPopulation = false);
+      }
+
+      private void addEstimatedGFRParameterTo(Individual individual)
+      {
+         if (individual == null)
+            return;
+
+
+         var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
+         var parameter = defaultHuman.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
+         var kidney = individual.Organism.Organ(KIDNEY);
+         kidney.Add(_cloner.Clone(parameter));
       }
 
       private void addExpressionProfilesUsedBySimulationSubjectToProject(ISimulationSubject simulationSubject)

@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model.Extensions;
 using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Model
@@ -86,7 +87,7 @@ namespace PKSim.Core.Model
             return false;
 
          if (!parameter.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population,
-            PKSimBuildingBlockType.Simulation))
+                PKSimBuildingBlockType.Simulation))
             return false;
 
          if (parameter.Formula == null)
@@ -158,11 +159,11 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the factor with which the value was changed from current vlaue
+      ///    Returns the factor with which the value was changed from current value
       /// </summary>
       public static double ScaleFactor(this IParameter parameter)
       {
-         if (!parameter.ValueDiffersFromDefault())
+         if (parameter == null || !parameter.ValueDiffersFromDefault())
             return 1;
 
          //What should be done here?
@@ -194,6 +195,26 @@ namespace PKSim.Core.Model
       public static IReadOnlyList<IParameter> AllExpressionParameters(this IReadOnlyList<IParameter> parameters)
       {
          return parameters.Except(AllGlobalMoleculeParameters(parameters)).ToList();
+      }
+
+      public static void ScaleDistributionBasedOn(this IDistributedParameter currentParameter, IDistributedParameter baseParameter)
+      {
+         ScaleDistributionBasedOn(currentParameter, baseParameter?.ScaleFactor());
+      }
+
+      public static void ScaleDistributionBasedOn(this IDistributedParameter parameter, double? factor)
+      {
+         var factorValue = factor.GetValueOrDefault(1);
+         if (factorValue == 1)
+            return;
+
+         parameter.MeanParameter.Value *= factorValue;
+
+         if (parameter.Formula.DistributionType() == DistributionTypes.Normal)
+            parameter.DeviationParameter.Value *= factorValue;
+
+         parameter.IsFixedValue = false;
+
       }
    }
 }
