@@ -242,6 +242,7 @@ namespace PKSim.Core.Model
       {
          bool success = true;
          var originData = currentIndividual.OriginData;
+         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(originData.DiseaseState);
          uint numberOfTry = 0;
          do
          {
@@ -274,6 +275,9 @@ namespace PKSim.Core.Model
             {
                diseaseStateParameter.Value = createDiseaseStateRandomParameterValueFor(originData, populationSettings, diseaseStateParameter, randomGenerator, out success);
             }
+
+            if (!success) continue;
+            (success, _) = diseaseStateImplementation.IsValid(originData);
          } while (!success && numberOfTry < _maxIterations);
 
          if (numberOfTry >= _maxIterations)

@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
@@ -25,7 +26,7 @@ namespace PKSim.Core
       protected IParameter _weight;
       protected IParameter _bmi;
       private IGenderRepository _genderRepository;
-      private IDiseaseStateImplementationFactory _diseaseStateImplementationRepository;
+      protected IDiseaseStateImplementationFactory _diseaseStateImplementationRepository;
 
       protected override void Context()
       {
@@ -35,17 +36,17 @@ namespace PKSim.Core
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _entityValidator = A.Fake<IEntityValidator>();
          _reportGenerator = A.Fake<IReportGenerator>();
-         _genderRepository= A.Fake<IGenderRepository>(); 
+         _genderRepository = A.Fake<IGenderRepository>();
          _moleculeOntogenyVariabilityUpdater = A.Fake<IMoleculeOntogenyVariabilityUpdater>();
-         _diseaseStateImplementationRepository= A.Fake<IDiseaseStateImplementationFactory>();
+         _diseaseStateImplementationRepository = A.Fake<IDiseaseStateImplementationFactory>();
 
          sut = new IndividualFactory(
-            _individualModelTask, 
-            _entityBaseFactory, 
-            _createIndvidualAlgorithm, 
-            _speciesRepository, 
-            _entityValidator, 
-            _reportGenerator, 
+            _individualModelTask,
+            _entityBaseFactory,
+            _createIndvidualAlgorithm,
+            _speciesRepository,
+            _entityValidator,
+            _reportGenerator,
             _moleculeOntogenyVariabilityUpdater,
             _genderRepository,
             _diseaseStateImplementationRepository
@@ -72,7 +73,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData {Species = new Species{Name = "A", Icon = "B"}, Population = A.Fake<SpeciesPopulation>()};
+         _originData = new OriginData {Species = new Species {Name = "A", Icon = "B"}, Population = A.Fake<SpeciesPopulation>()};
          _individual = new Individual();
          _organism = new Organism();
          _neighborhoods = A.Fake<IContainer>();
@@ -91,7 +92,7 @@ namespace PKSim.Core
          _originData.GestationalAge = new OriginDataParameter(40, _gestationalAge.DisplayUnit.Name);
          _organism.Add(_gestationalAge);
 
-         _originData.Height =   new OriginDataParameter(170, _height.DisplayUnit.Name);
+         _originData.Height = new OriginDataParameter(170, _height.DisplayUnit.Name);
          _organism.Add(_height);
 
          _originData.Weight = new OriginDataParameter(170, _weight.DisplayUnit.Name);
@@ -173,6 +174,7 @@ namespace PKSim.Core
       private Individual _individual;
       private Individual _result;
       private int _seed;
+      private IDiseaseStateImplementation _diseaseStateImplementation;
 
       protected override void Context()
       {
@@ -180,12 +182,14 @@ namespace PKSim.Core
          _seed = 20;
          _originData = new OriginData
          {
-            Species = A.Fake<Species>().WithName("toto"), 
+            Species = A.Fake<Species>().WithName("toto"),
             Population = A.Fake<SpeciesPopulation>(),
             Weight = new OriginDataParameter()
          };
          _individual = new Individual();
+         _diseaseStateImplementation = A.Fake<IDiseaseStateImplementation>();
          A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
+         A.CallTo(() => _diseaseStateImplementationRepository.CreateFor(_individual)).Returns(_diseaseStateImplementation);
       }
 
       protected override void Because()
@@ -202,6 +206,12 @@ namespace PKSim.Core
       public void should_use_the_registered_create_individual_algorithm_to_modify_the_standard_parameters()
       {
          A.CallTo(() => _createIndvidualAlgorithm.Optimize(_individual)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_apply_the_disease_state_for_the_individual()
+      {
+         A.CallTo(() => _diseaseStateImplementation.ApplyTo(_individual)).MustHaveHappened();
       }
    }
 
@@ -254,7 +264,7 @@ namespace PKSim.Core
          base.Context();
          _originData = new OriginData
          {
-            Species = A.Fake<Species>().WithName("toto"), 
+            Species = A.Fake<Species>().WithName("toto"),
             Population = A.Fake<SpeciesPopulation>(),
             Weight = new OriginDataParameter()
          };
@@ -275,6 +285,39 @@ namespace PKSim.Core
       public void should_throw_an_exception()
       {
          The.Action(() => sut.CreateAndOptimizeFor(_originData)).ShouldThrowAn<CannotCreateIndividualWithConstraintsException>();
+      }
+   }
+
+   public class When_creating_an_individual_for_the_predefined_origin_data_that_is_not_valid_for_disease_state : concern_for_IndividualFactory
+   {
+      private OriginData _originData;
+      private Individual _individual;
+      private ValidationResult _validationResult;
+      private IDiseaseStateImplementation _diseaseStateImplementation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _originData = new OriginData
+         {
+            Age = new OriginDataParameter(5),
+            Species = A.Fake<Species>().WithName("toto"),
+            Population = A.Fake<SpeciesPopulation>(),
+            Weight = new OriginDataParameter()
+         };
+         _individual = new Individual();
+         _validationResult = new ValidationResult();
+         _diseaseStateImplementation = A.Fake<IDiseaseStateImplementation>();
+         A.CallTo(() => _diseaseStateImplementation.Validate(_originData)).Throws<OSPSuiteException>();
+         A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
+         A.CallTo(() => _entityValidator.Validate(_individual)).Returns(_validationResult);
+         A.CallTo(() => _diseaseStateImplementationRepository.CreateFor(_individual)).Returns(_diseaseStateImplementation);
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.CreateAndOptimizeFor(_originData)).ShouldThrowAn<OSPSuiteException>();
       }
    }
 }

@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -27,7 +28,24 @@ namespace PKSim.Core.Services
       /// <returns></returns>
       Individual CreateBaseIndividualForPopulation(Individual originalIndividual);
 
+
+      /// <summary>
+      /// Ensures that some parameters that might have been overwritten by the algorithm are reset (distributions or formula)
+      /// </summary>
       void ResetParametersAfterPopulationIteration(Individual individual);
+
+      /// <summary>
+      /// Validates that the parameters are compatible with the underlying disease state (age constraints etc..).
+      /// Throws an exception if the origin data is not valid
+      /// </summary>
+      void Validate(OriginData originData);
+
+      /// <summary>
+      /// Returns <c>true</c> if the parameters are compatible with th underlying disease state otherwise <c>false</c>
+      /// If the <paramref name="originData"/> is not valid, the return value will contain the reason in error
+      /// </summary>
+      (bool isValid, string error) IsValid(OriginData originData);
+
    }
 
    public class HealthyDiseaseStateImplementation : IDiseaseStateImplementation
@@ -49,6 +67,16 @@ namespace PKSim.Core.Services
       public void ResetParametersAfterPopulationIteration(Individual individual)
       {
          //nothing to do here
+      }
+
+      public void Validate(OriginData originData)
+      {
+         //nothing to do here
+      }
+
+      public (bool isValid, string error) IsValid(OriginData originData)
+      {
+         return (true, string.Empty);
       }
 
       public bool IsSatisfiedBy(DiseaseState item) => false;

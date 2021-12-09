@@ -508,6 +508,8 @@ namespace PKSim.Assets
             }
          }
 
+         public const string CKDOnlyAvailableForAdult = "Chronic kidney disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
+
          public const string EventTemplateNotDefined = "Event template not defined.";
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";

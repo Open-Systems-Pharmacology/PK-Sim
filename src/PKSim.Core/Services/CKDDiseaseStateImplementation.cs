@@ -5,7 +5,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using static OSPSuite.Core.Domain.Constants.Parameters;
@@ -28,10 +30,10 @@ namespace PKSim.Core.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IIndividualFactory _individualFactory;
       private readonly IContainerTask _containerTask;
-      private readonly IParameterTask _parameterTask;
-      private readonly IParameterUpdater _parameterUpdater;
+      private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IDimension _dimensionForGFR;
       public static readonly string TARGET_GFR = "Target eGFR";
+      private readonly IDimension _ageDimension;
       private const int CKD_VALUE_ORIGIN_ID = 92;
       private const string GFR_UNIT = "ml/min/1.73m²";
 
@@ -41,16 +43,15 @@ namespace PKSim.Core.Services
          IFormulaFactory formulaFactory,
          IIndividualFactory individualFactory,
          IContainerTask containerTask,
-         IParameterTask parameterTask,
-         IParameterUpdater parameterUpdater)
+         IParameterSetUpdater parameterSetUpdater)
       {
          _valueOriginRepository = valueOriginRepository;
          _formulaFactory = formulaFactory;
          _individualFactory = individualFactory;
          _containerTask = containerTask;
-         _parameterTask = parameterTask;
-         _parameterUpdater = parameterUpdater;
+         _parameterSetUpdater = parameterSetUpdater;
          _dimensionForGFR = dimensionRepository.DimensionForUnit(GFR_UNIT);
+         _ageDimension = dimensionRepository.AgeInYears;
       }
 
       public bool IsSatisfiedBy(DiseaseState diseaseState) => diseaseState.IsNamed(CoreConstants.DiseaseStates.CKD);
@@ -173,26 +174,10 @@ namespace PKSim.Core.Services
 
          var allCKDParameters = parametersChangedByCKDAlgorithmAsList(healthyIndividual);
 
-         var allHealthyDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(healthyIndividual, x => !allCKDParameters.Contains(x));
-         var allOriginalDistributedParameters = _containerTask.CacheAllChildren<IDistributedParameter>(originalIndividual);
-
-         //update percentile for distributed parameters
-         foreach (var keyValue in allHealthyDistributedParameters.KeyValues)
-         {
-            var originalParameter = allOriginalDistributedParameters[keyValue.Key];
-            _parameterTask.SetParameterPercentile(keyValue.Value, originalParameter.Percentile);
-         }
-
-         //now update all other parameters that may have been changed by the user. Allowing the user to overwrite CKD Parameters is probably a recipe for disaster.
-         //We use visible to ensure that we do not run the algorithm for parameter that cannot be changed by the user
-         var allHealthyNonDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(healthyIndividual, x => !allCKDParameters.Contains(x) && !x.IsDistributed() && x.Visible);
-         var allOriginalNonDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(originalIndividual, x => !x.IsDistributed());
-
-         foreach (var keyValue in allHealthyNonDistributedParameters.KeyValues)
-         {
-            var originalParameter = allOriginalNonDistributedParameters[keyValue.Key];
-            _parameterUpdater.UpdateValue(keyValue.Value, originalParameter);
-         }
+         //do not update parameters changed by CKD algorithm or that are not visible
+         var allHealthyParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(healthyIndividual, x => !allCKDParameters.Contains(x) && x.Visible);
+         var allOriginalParameters = _containerTask.CacheAllChildren<IParameter>(originalIndividual);
+         _parameterSetUpdater.UpdateValues(allOriginalParameters, allHealthyParameters);
 
          //we have a healthy individuals based on the CKD individual where all changes were all manual changes were accounted for
          //we now need to add the disease state contributions from the original individual
@@ -207,6 +192,24 @@ namespace PKSim.Core.Services
          //ensures that formula parameters are reset so that they can be reused in next iteration
          var allCKDParameters = parametersChangedByCKDAlgorithmAsList(individual).Where(x => x.IsFixedValue);
          allCKDParameters.Each(x => x.ResetToDefault());
+      }
+
+      public void Validate(OriginData originData)
+      {
+         var (valid, error) = IsValid(originData);
+         if (valid)
+            return;
+
+         throw new OSPSuiteException(error);
+      }
+
+      public (bool isValid, string error) IsValid(OriginData originData)
+      {
+         var ageInYears = _ageDimension.BaseUnitValueToUnitValue(_ageDimension.Unit(CoreConstants.Units.Years), originData.Age.Value);
+         if (ageInYears >= 18)
+            return (true, string.Empty);
+
+         return (false, PKSimConstants.Error.CKDOnlyAvailableForAdult);
       }
 
       private double getHematocritFactor(double targetGFR, Gender gender)
@@ -275,11 +278,3 @@ namespace PKSim.Core.Services
       }
    }
 }
-
-/* 
- * baseIndividual is CKD
- * => create a new individual WITHOUT CKD disease and set all percentile of distributed parmaters as in baseIndividual
- * => for not distrbiuted parameter, simply take the value as is
- * => Individual healthy with changed percentiles/values based on CKD individual
- * => base on this individual, run the population algorithm with CKD Implementaiton
- */

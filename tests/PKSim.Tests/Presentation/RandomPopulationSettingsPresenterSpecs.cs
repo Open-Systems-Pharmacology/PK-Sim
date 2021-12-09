@@ -150,7 +150,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_load_the_newly_selecetd_individual()
+      public void should_load_the_newly_selected_individual()
       {
          A.CallTo(() => _lazyLoadTask.Load(_newIndividual)).MustHaveHappened();
       }
