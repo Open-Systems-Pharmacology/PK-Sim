@@ -59,13 +59,18 @@ namespace PKSim.Core.Snapshots.Mappers
             snapshot.GestationalAge = originDataParameterFor(originData, _individualModelTask.MeanGestationalAgeFor, originData.GestationalAge, _dimensionRepository.AgeInWeeks);
          }
 
-         snapshot.Weight = originDataParameterFor(originData, _individualModelTask.MeanWeightFor, originData.Weight,  _dimensionRepository.Mass);
+         snapshot.Weight = originDataParameterFor(originData, _individualModelTask.MeanWeightFor, originData.Weight, _dimensionRepository.Mass);
 
          if (originData.Population.IsHeightDependent)
             snapshot.Height = originDataParameterFor(originData, _individualModelTask.MeanHeightFor, originData.Height, _dimensionRepository.Length);
 
          snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(originData.ValueOrigin);
          snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(originData.CalculationMethodCache, originData.Species.Name);
+
+         snapshot.DiseaseState = originData.DiseaseState?.Name;
+         if (originData.DiseaseStateParameters.Any()) 
+            snapshot.DiseaseStateParameters = originData.DiseaseStateParameters.Select(namedParameterFrom).ToArray();
+
          return snapshot;
       }
 
@@ -74,7 +79,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameter == null)
             return null;
 
-         var (value, unit) = parameter;
+         var (value, _) = parameter;
          var meanParameter = meanParameterRetrieverFunc(originData);
 
          if (ValueComparer.AreValuesEqual(meanParameter.Value, value))
@@ -181,6 +186,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
       }
 
+      private Parameter namedParameterFrom(OriginDataParameter parameter)
+      {
+         return parameterFrom(parameter, _dimensionRepository.DimensionForUnit(parameter.Unit)).WithName(parameter.Name);
+
+      }
       private Parameter parameterFrom(OriginDataParameter parameter, IDimension dimension)
       {
          if (parameter == null)

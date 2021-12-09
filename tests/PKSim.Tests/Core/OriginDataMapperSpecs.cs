@@ -66,9 +66,9 @@ namespace PKSim.Core
 
          _originData = new Model.OriginData
          {
-            Age = new  OriginDataParameter(35,"years"),
-            Height = new  OriginDataParameter(1.78,"m"),
-            Weight = new  OriginDataParameter(73,"kg"),
+            Age = new OriginDataParameter(35, "years"),
+            Height = new OriginDataParameter(1.78, "m"),
+            Weight = new OriginDataParameter(73, "kg"),
             Species = _species,
             Population = _speciesPopulation,
             Gender = _gender,
@@ -85,6 +85,33 @@ namespace PKSim.Core
          _valueOriginSnapshot = new ValueOrigin();
          A.CallTo(() => _valueOriginMapper.MapToSnapshot(_originData.ValueOrigin)).Returns(_valueOriginSnapshot);
          return _completed;
+      }
+   }
+
+   public class When_mapping_an_origin_data_to_snapshot_with_disease_state : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _originData.DiseaseState = new DiseaseState {Name = "CKD"};
+         _originData.AddDiseaseStateParameter(new OriginDataParameter {Name = "Param", Value = 10, Unit = "mg"});
+         A.CallTo(() => _parameterMapper.ParameterFrom(10, "mg", A<IDimension>._)).Returns(new Parameter{Value = 10, Unit = "mg"});
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_originData);
+      }
+
+      [Observation]
+      public void should_save_the_origin_data_disease_state_properties()
+      {
+         _snapshot.DiseaseState.ShouldBeEqualTo(_originData.DiseaseState.Name);
+         _snapshot.DiseaseStateParameters.Length.ShouldBeEqualTo(1);
+         var param = _snapshot.DiseaseStateParameters[0];
+         param.Name.ShouldBeEqualTo("Param");
+         param.Unit.ShouldBeEqualTo("mg");
+         param.Value.ShouldBeEqualTo(10);
       }
    }
 
@@ -113,6 +140,9 @@ namespace PKSim.Core
          _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
          _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
          _snapshot.GestationalAge.ShouldBeEqualTo(_gestationalAgeSnapshotParameter);
+
+         _snapshot.DiseaseState.ShouldBeNull();
+         _snapshot.DiseaseStateParameters.ShouldBeNull();
       }
 
       [Observation]
@@ -199,7 +229,6 @@ namespace PKSim.Core
       {
          _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
       }
-
    }
 
    public class When_mappping_an_origin_data_for_a_species_population_that_is_not_age_or_heigt_dependent_to_snapshot : concern_for_OriginDataMapper
