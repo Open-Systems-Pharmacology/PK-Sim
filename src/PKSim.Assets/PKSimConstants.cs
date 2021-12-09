@@ -645,6 +645,11 @@ namespace PKSim.Assets
             return $"Could not find gender '{gender}' for population '{population}'.\nAvailable genders  are:\n\t{availableGenders.ToString("\n\t")}";
          }
 
+         public static string CannotFindDiseaseState(string diseaseState, string population)
+         {
+            return $"Could not find disease state '{diseaseState}' for population '{population}'.";
+         }
+
          public static string CouldNotFindCalculationMethodInCategory(string calculationMethod, string category, IEnumerable<string> availableCategories)
          {
             return $"Could not find calculation method '{calculationMethod}' in category '{category}'.\nAvailable calculation methods are:\n\t{availableCategories.ToString("\n\t")}";

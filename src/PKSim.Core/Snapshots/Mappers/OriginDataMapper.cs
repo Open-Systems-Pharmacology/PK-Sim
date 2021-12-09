@@ -18,6 +18,7 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IDimensionRepository _dimensionRepository;
       private readonly ISpeciesRepository _speciesRepository;
+      private readonly IDiseaseStateRepository _diseaseStateRepository;
       private readonly ParameterMapper _parameterMapper;
       private readonly IOriginDataTask _originDataTask;
       private readonly IIndividualModelTask _individualModelTask;
@@ -31,11 +32,13 @@ namespace PKSim.Core.Snapshots.Mappers
          IOriginDataTask originDataTask,
          IDimensionRepository dimensionRepository,
          IIndividualModelTask individualModelTask,
-         ISpeciesRepository speciesRepository
+         ISpeciesRepository speciesRepository,
+         IDiseaseStateRepository diseaseStateRepository
       )
       {
          _dimensionRepository = dimensionRepository;
          _speciesRepository = speciesRepository;
+         _diseaseStateRepository = diseaseStateRepository;
          _parameterMapper = parameterMapper;
          _originDataTask = originDataTask;
          _individualModelTask = individualModelTask;
@@ -68,7 +71,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(originData.CalculationMethodCache, originData.Species.Name);
 
          snapshot.DiseaseState = originData.DiseaseState?.Name;
-         if (originData.DiseaseStateParameters.Any()) 
+         if (originData.DiseaseStateParameters.Any())
             snapshot.DiseaseStateParameters = originData.DiseaseStateParameters.Select(namedParameterFrom).ToArray();
 
          return snapshot;
@@ -104,7 +107,32 @@ namespace PKSim.Core.Snapshots.Mappers
          updateWeightFromSnapshot(snapshot, originData);
          updateHeightFromSnapshot(snapshot, originData);
 
+         updateDiseaseStateFromSnapshot(snapshot, originData);
          return Task.FromResult(originData);
+      }
+
+      private void updateDiseaseStateFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
+      {
+         if (snapshot.DiseaseState == null)
+            return;
+
+         var diseaseState = _diseaseStateRepository.AllFor(originData.Population).FindByName(snapshot.DiseaseState);
+         if (diseaseState == null)
+            throw new PKSimException(PKSimConstants.Error.CannotFindDiseaseState(snapshot.DiseaseState, originData.Population.DisplayName));
+
+         originData.DiseaseState = diseaseState;
+         diseaseState.Parameters.Each(x =>
+         {
+            var diseaseStateParameter = new OriginDataParameter {Name = x.Name, Value = x.Value, Unit = x.DisplayUnitName()};
+            var snapshotParameter = snapshot.DiseaseStateParameters.FindByName(x.Name);
+            if (snapshotParameter != null)
+            {
+               diseaseStateParameter.Value = snapshotParameter.Value ?? x.Value;
+               diseaseStateParameter.Unit = snapshotParameter.Unit;
+            }
+
+            originData.AddDiseaseStateParameter(diseaseStateParameter);
+         });
       }
 
       private void updateWeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
@@ -189,8 +217,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private Parameter namedParameterFrom(OriginDataParameter parameter)
       {
          return parameterFrom(parameter, _dimensionRepository.DimensionForUnit(parameter.Unit)).WithName(parameter.Name);
-
       }
+
       private Parameter parameterFrom(OriginDataParameter parameter, IDimension dimension)
       {
          if (parameter == null)
