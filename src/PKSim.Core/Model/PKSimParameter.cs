@@ -52,7 +52,7 @@ namespace PKSim.Core.Model
                return true;
 
             //only parameter in these 4 organs needs to be treated specially
-            if (!isInFatOrMuscleOrLungOrPortailVein())
+            if (!isInFatOrMuscleOrLungOrPortalVein())
                return false;
 
             if (CoreConstants.Parameters.VolumeFractionWaterParameters.Contains(Name) && isInFatOrMuscle())
@@ -72,7 +72,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      private bool isInFatOrMuscleOrLungOrPortailVein()
+      private bool isInFatOrMuscleOrLungOrPortalVein()
       {
          return isInFatOrMuscle() || isInLungOrPortalVein();
       }
