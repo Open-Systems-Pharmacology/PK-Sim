@@ -26,7 +26,6 @@ namespace PKSim.Infrastructure.ORM.Mappers
             Name = flatDiseaseState.Id,
             DisplayName = flatDiseaseState.DisplayName,
             Description = flatDiseaseState.Description,
-            Implementation = flatDiseaseState.Implementation,
          };
 
          _parameterContainerTask.AddDiseaseStateParametersTo(diseaseState);
