@@ -53,8 +53,8 @@ namespace PKSim.IntegrationTests
          verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Fraction mucosa");
 
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.INFUSION_TIME);
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameters.INFUSION_TIME);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameters.VOLUME_OF_WATER_PER_BODYWEIGHT);
          verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameters.PartitionCoefficientWwaterProtein, "DRUG");
       }
 
@@ -560,7 +560,7 @@ namespace PKSim.IntegrationTests
       {
          var simulationActiveProcessRepository = IoC.Resolve<ISimulationActiveProcessRepository>();
          var process = simulationActiveProcessRepository.ProcessFor("HepatocytesRes");
-         process.Parameter(CoreConstantsForSpecs.Parameter.NUMBER_OF_CELLS_PER_INCUBATION).Value.ShouldBeEqualTo(1000);
+         process.Parameter(CoreConstantsForSpecs.Parameters.NUMBER_OF_CELLS_PER_INCUBATION).Value.ShouldBeEqualTo(1000);
       }
    }
 
@@ -651,7 +651,7 @@ namespace PKSim.IntegrationTests
 
          inhibitionProcess.ShouldNotBeNull();
          inhibitionProcess.Parameter(CoreConstants.Parameters.KI).ShouldNotBeNull();
-         inhibitionProcess.Parameter(CoreConstantsForSpecs.Parameter.KINACT).ShouldNotBeNull();
+         inhibitionProcess.Parameter(CoreConstantsForSpecs.Parameters.KINACT).ShouldNotBeNull();
       }
 
       [Observation]

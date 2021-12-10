@@ -4,7 +4,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;

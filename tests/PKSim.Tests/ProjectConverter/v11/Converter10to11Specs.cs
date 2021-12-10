@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v11;
 using PKSim.IntegrationTests;
 
@@ -54,7 +55,7 @@ namespace PKSim.ProjectConverter.v11
       public void should_have_added_the_eGFR_parameter()
       {
          var ind = _allIndividuals.FindByName("Human");
-         var parameter = ind.Organism.EntityAt<IParameter>(CoreConstants.Organ.KIDNEY, CoreConstants.Parameters.E_GFR);
+         var parameter = ind.Organism.EntityAt<IParameter>(CoreConstants.Organ.KIDNEY, ConverterConstants.Parameters.E_GFR);
          parameter.ShouldNotBeNull();
       }
 

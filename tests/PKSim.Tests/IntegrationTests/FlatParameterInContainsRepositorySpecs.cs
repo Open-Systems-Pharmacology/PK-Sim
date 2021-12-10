@@ -124,7 +124,7 @@ namespace PKSim.IntegrationTests
                      .Where(p => !p.ReadOnly))
          {
             //all editable formulation parameters with exception of "Thickness (unstirred water layer)" must be input
-            if (!parameter.ReadOnly && parameter.ParameterName != CoreConstantsForSpecs.Parameter.THICKNESS_WATER_LAYER)
+            if (!parameter.ReadOnly && parameter.ParameterName != CoreConstantsForSpecs.Parameters.THICKNESS_WATER_LAYER)
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
             else
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
@@ -164,9 +164,9 @@ namespace PKSim.IntegrationTests
             //few application parameters which are input
             if (parameter.ParameterName.IsOneOf(
                    CoreConstants.Parameters.INPUT_DOSE,
-                   CoreConstantsForSpecs.Parameter.INFUSION_TIME,
-                   CoreConstantsForSpecs.Parameter.START_TIME,
-                   CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT))
+                   CoreConstantsForSpecs.Parameters.INFUSION_TIME,
+                   CoreConstantsForSpecs.Parameters.START_TIME,
+                   CoreConstantsForSpecs.Parameters.VOLUME_OF_WATER_PER_BODYWEIGHT))
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
             else
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
@@ -197,11 +197,11 @@ namespace PKSim.IntegrationTests
             }
 
             if (parameter.ParameterName.IsOneOf(CoreConstants.Parameters.EC50, CoreConstants.Parameters.EMAX,
-                   CoreConstants.Parameters.GFR_FRACTION, CoreConstantsForSpecs.Parameter.HILL_COEFFICIENT,
-                   CoreConstants.Parameters.K_KINACT_HALF, CoreConstantsForSpecs.Parameter.KD,
+                   CoreConstants.Parameters.GFR_FRACTION, CoreConstantsForSpecs.Parameters.HILL_COEFFICIENT,
+                   CoreConstants.Parameters.K_KINACT_HALF, CoreConstantsForSpecs.Parameters.KD,
                    CoreConstants.Parameters.KI_C, CoreConstants.Parameters.KI_U,
-                   CoreConstants.Parameters.KINACT, CoreConstantsForSpecs.Parameter.KM,
-                   CoreConstantsForSpecs.Parameter.KOFF))
+                   CoreConstants.Parameters.KINACT, CoreConstantsForSpecs.Parameters.KM,
+                   CoreConstantsForSpecs.Parameters.KOFF))
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
             else
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
@@ -210,19 +210,19 @@ namespace PKSim.IntegrationTests
 
          if (parameter.GroupName == CoreConstants.Groups.COMPOUNDPROCESS_CALCULATION_PARAMETERS)
          {
-            if (parameter.ParameterName.IsOneOf(CoreConstantsForSpecs.Parameter.ENZYME_CONCENTRATION,
+            if (parameter.ParameterName.IsOneOf(CoreConstantsForSpecs.Parameters.ENZYME_CONCENTRATION,
                    CoreConstants.Parameters.FRACTION_UNBOUND_EXPERIMENT,
-                   CoreConstantsForSpecs.Parameter.IN_VITRO_CL_FOR_LIVER_MICROSOMES,
-                   CoreConstantsForSpecs.Parameter.IN_VITRO_CL_FOR_RECOMBINANT_ENZYMES,
-                   CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_LIVER_MICROSOMES,
-                   CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_RECOMBINANT_ENZYMES,
-                   CoreConstantsForSpecs.Parameter.IN_VITRO_VMAX_FOR_TRANSPORTER,
-                   CoreConstantsForSpecs.Parameter.INTRINSIC_CLEARANCE,
+                   CoreConstantsForSpecs.Parameters.IN_VITRO_CL_FOR_LIVER_MICROSOMES,
+                   CoreConstantsForSpecs.Parameters.IN_VITRO_CL_FOR_RECOMBINANT_ENZYMES,
+                   CoreConstantsForSpecs.Parameters.IN_VITRO_VMAX_FOR_LIVER_MICROSOMES,
+                   CoreConstantsForSpecs.Parameters.IN_VITRO_VMAX_FOR_RECOMBINANT_ENZYMES,
+                   CoreConstantsForSpecs.Parameters.IN_VITRO_VMAX_FOR_TRANSPORTER,
+                   CoreConstantsForSpecs.Parameters.INTRINSIC_CLEARANCE,
                    CoreConstants.Parameters.LIPOPHILICITY_EXPERIMENT,
-                   CoreConstantsForSpecs.Parameter.PLASMA_CLEARANCE, CoreConstants.Parameters.SPECIFIC_CLEARANCE,
-                   CoreConstantsForSpecs.Parameter.TRANSPORTER_CONCENTRATION,
-                   CoreConstantsForSpecs.Parameter.TS_MAX, CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION,
-                   CoreConstantsForSpecs.Parameter.VMAX, CoreConstantsForSpecs.Parameter.VMAX_LIVER_TISSUE))
+                   CoreConstantsForSpecs.Parameters.PLASMA_CLEARANCE, CoreConstants.Parameters.SPECIFIC_CLEARANCE,
+                   CoreConstantsForSpecs.Parameters.TRANSPORTER_CONCENTRATION,
+                   CoreConstantsForSpecs.Parameters.TS_MAX, CoreConstantsForSpecs.Parameters.TUBULAR_SECRETION,
+                   CoreConstantsForSpecs.Parameters.VMAX, CoreConstantsForSpecs.Parameters.VMAX_LIVER_TISSUE))
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: true);
             else
                checkIsInputFlag(parametersWithWrongIsInputFlag, parameter, isInputShouldBe: false);
