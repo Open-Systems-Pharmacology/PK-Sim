@@ -174,6 +174,9 @@ namespace PKSim.Core.Services
 
          var allCKDParameters = parametersChangedByCKDAlgorithmAsList(healthyIndividual);
 
+         //Make sure we update the flags that might not be set coming from the database
+         allCKDParameters.Each(x => x.IsChangedByCreateIndividual = true);
+
          //do not update parameters changed by CKD algorithm or that are not visible
          var allHealthyParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(healthyIndividual, x => !allCKDParameters.Contains(x) && x.Visible);
          var allOriginalParameters = _containerTask.CacheAllChildren<IParameter>(originalIndividual);
@@ -231,9 +234,11 @@ namespace PKSim.Core.Services
          return diseaseValue / healthyValue;
       }
 
-      private void updateValueOriginsFor(params IParameter[] parameters)
+      private void updateValueOriginsFor(IParameter parameter)
       {
-         parameters.Each(x => x.ValueOrigin.UpdateAllFrom(_valueOriginRepository.FindBy(CKD_VALUE_ORIGIN_ID)));
+         parameter.ValueOrigin.UpdateAllFrom(_valueOriginRepository.FindBy(CKD_VALUE_ORIGIN_ID));
+         //Make sure we mark this parameter as changed by create individual. It might already be the case but in that case, it does not change anything
+         parameter.IsChangedByCreateIndividual = true;
       }
 
       private double getKidneyVolumeFactor(double gfrValue) => getFactor(gfrValue, -6.3E-5, 0.0149, 4.13);

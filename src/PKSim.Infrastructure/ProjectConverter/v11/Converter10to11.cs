@@ -1,5 +1,7 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -10,6 +12,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using static PKSim.Core.CoreConstants.Organ;
 using static PKSim.Core.CoreConstants.Parameters;
+using static PKSim.Infrastructure.ProjectConverter.ConverterConstants.Parameters;
 
 namespace PKSim.Infrastructure.ProjectConverter.v11
 {
@@ -24,6 +27,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       private readonly IRegistrationTask _registrationTask;
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
+      private readonly IContainerTask _containerTask;
       private bool _converted;
 
       public Converter10to11(
@@ -33,7 +37,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          IEventPublisher eventPublisher,
          IRegistrationTask registrationTask,
          IDefaultIndividualRetriever defaultIndividualRetriever,
-         ICloner cloner
+         ICloner cloner,
+         IContainerTask containerTask
       )
       {
          _expressionProfileFactory = expressionProfileFactory;
@@ -43,6 +48,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          _registrationTask = registrationTask;
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
+         _containerTask = containerTask;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V10;
@@ -105,14 +111,37 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       public void Visit(Individual individual)
       {
          addExpressionProfilesUsedBySimulationSubjectToProject(individual);
-         addEstimatedGFRParameterTo(individual);
+         convertIndividual(individual);
       }
 
       public void Visit(Population population)
       {
          addExpressionProfilesUsedBySimulationSubjectToProject(population);
          makeInitialConcentrationParametersNotVariableInPopulation(population);
-         addEstimatedGFRParameterTo(population.FirstIndividual);
+         convertIndividual(population.FirstIndividual);
+      }
+
+      private void convertIndividual(Individual individual)
+      {
+         if (individual == null)
+            return;
+
+         addEstimatedGFRParameterTo(individual);
+         updateIsChangedByCreatedIndividualFlag(individual);
+      }
+
+      private void updateIsChangedByCreatedIndividualFlag(Individual individual)
+      {
+         var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
+         var allIsChangedByIndividualParameter = _containerTask.CacheAllChildrenSatisfying<IParameter>(defaultHuman, x => x.IsChangedByCreateIndividual);
+         var allParameters = _containerTask.CacheAllChildren<IParameter>(individual);
+         allIsChangedByIndividualParameter.KeyValues.Each(kv =>
+         {
+            var parameter = allParameters[kv.Key];
+            //can be null for a new parameter added at some point in the future
+            if (parameter != null)
+               parameter.IsChangedByCreateIndividual = true;
+         });
       }
 
       private void makeInitialConcentrationParametersNotVariableInPopulation(Population population)
@@ -123,10 +152,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
       private void addEstimatedGFRParameterTo(Individual individual)
       {
-         if (individual == null)
-            return;
-
-
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
          var parameter = defaultHuman.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
          var kidney = individual.Organism.Organ(KIDNEY);

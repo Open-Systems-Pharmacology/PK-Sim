@@ -44,6 +44,7 @@ namespace PKSim.IntegrationTests
          _individual.InputHeight.ShouldBeEqualTo(17.6);
          _individual.InputWeight.ShouldBeEqualTo(73);
          _individual.InputWeight.ShouldBeEqualTo(73);
+         _individual.Organism.Parameter(PLASMA_PROTEIN_SCALE_FACTOR).IsChangedByCreateIndividual.ShouldBeFalse();
          _individual.Organism.Parameter(BMI).ValueInDisplayUnit.ShouldBeEqualTo(23.57, 1e-2);
          _individual.Organism.Organ(FAT).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(14.8680, 1e-2);
          _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(302.705, 1e-2);
@@ -86,6 +87,12 @@ namespace PKSim.IntegrationTests
          kidneyVolume.ConvertToUnit(kidneyVolume.Value, "ml").ShouldBeEqualTo(246.637955, 1e-2);
          fatVolume.ConvertToUnit(fatVolume.Value, "ml").ShouldBeEqualTo(15059.86086, 1e-2);
          kidneySpecificBloodFlowRate.ConvertToUnit(kidneySpecificBloodFlowRate.Value, "ml/min/100g organ").ShouldBeEqualTo(100.446757, 1e-2);
+      }
+
+      [Observation]
+      public void should_set_some_parameters_as_changed_by_created_individuals()
+      {
+         _individual.Organism.Parameter(PLASMA_PROTEIN_SCALE_FACTOR).IsChangedByCreateIndividual.ShouldBeTrue();
       }
    }
 

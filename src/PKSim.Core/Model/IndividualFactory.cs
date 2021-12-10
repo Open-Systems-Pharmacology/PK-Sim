@@ -67,6 +67,7 @@ namespace PKSim.Core.Model
          diseaseStateImplementation.ApplyTo(individual);
 
          validate(individual);
+
          return individual;
       }
 

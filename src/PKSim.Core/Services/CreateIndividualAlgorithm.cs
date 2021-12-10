@@ -110,7 +110,7 @@ namespace PKSim.Core.Services
 
       private void randomizeDistributedParameterIn(Individual individual, RandomGenerator randomGenerator)
       {
-         //all distribued parameters in individual that are not standard parameters
+         //all distributed parameters in individual that are not standard parameters
          var allDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(
             individual, p => !CoreConstants.Parameters.StandardCreateIndividualParameters.Contains(p.Name));
 
