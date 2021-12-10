@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using static OSPSuite.Core.Domain.Constants.Parameters;
@@ -24,32 +28,49 @@ namespace PKSim.Core.Services
 
       private readonly IValueOriginRepository _valueOriginRepository;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IIndividualFactory _individualFactory;
+      private readonly IContainerTask _containerTask;
+      private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IDimension _dimensionForGFR;
       public static readonly string TARGET_GFR = "Target eGFR";
+      private readonly IDimension _ageDimension;
       private const int CKD_VALUE_ORIGIN_ID = 92;
       private const string GFR_UNIT = "ml/min/1.73m²";
 
       public CKDDiseaseStateImplementation(
          IValueOriginRepository valueOriginRepository,
          IDimensionRepository dimensionRepository,
-         IFormulaFactory formulaFactory)
+         IFormulaFactory formulaFactory,
+         IIndividualFactory individualFactory,
+         IContainerTask containerTask,
+         IParameterSetUpdater parameterSetUpdater)
       {
          _valueOriginRepository = valueOriginRepository;
          _formulaFactory = formulaFactory;
+         _individualFactory = individualFactory;
+         _containerTask = containerTask;
+         _parameterSetUpdater = parameterSetUpdater;
          _dimensionForGFR = dimensionRepository.DimensionForUnit(GFR_UNIT);
+         _ageDimension = dimensionRepository.AgeInYears;
       }
 
       public bool IsSatisfiedBy(DiseaseState diseaseState) => diseaseState.IsNamed(CoreConstants.DiseaseStates.CKD);
 
-      public void ApplyTo(Individual individual)
+      private (
+         IParameter hct,
+         IParameter GFR_spec,
+         IParameter kidneyVolume,
+         IParameter kidneySpecificBloodFlowRate,
+         IParameter fatVolume,
+         IParameter plasmaProteinScaleFactorParameter,
+         IParameter smallIntestinalTransitTime,
+         IParameter gastricEmptyingTime
+         ) parametersChangedByCKDAlgorithm(Individual individual)
       {
-         var targetGFR = individual.OriginData.DiseaseStateParameters.FindByName(TARGET_GFR);
-
          var organism = individual.Organism;
          var kidney = organism.Organ(KIDNEY);
          var fat = organism.Organ(FAT);
          var smallIntestine = organism.Organ(SMALL_INTESTINE);
-         var bsa = organism.Parameter(BSA);
          var hct = organism.Parameter(HCT);
          var GFR_spec = kidney.Parameter(GFR_SPEC);
          var kidneyVolume = kidney.Parameter(VOLUME);
@@ -60,33 +81,64 @@ namespace PKSim.Core.Services
          var smallIntestinalTransitTime = smallIntestine.Parameter(SMALL_INTESTINAL_TRANSIT_TIME);
          var gastricEmptyingTime = stomach.Parameter(GASTRIC_EMPTYING_TIME);
 
+         return (hct, GFR_spec, kidneyVolume, kidneySpecificBloodFlowRate, fatVolume, plasmaProteinScaleFactorParameter, smallIntestinalTransitTime, gastricEmptyingTime);
+      }
 
-         var GFR_0 = getTargetGFRValue(GFR_spec.Value * kidneyVolume.Value / bsa.Value);
+      private IReadOnlyList<IParameter> parametersChangedByCKDAlgorithmAsList(Individual individual)
+      {
+         var p = parametersChangedByCKDAlgorithm(individual);
+
+         return new[] {p.hct, p.GFR_spec, p.kidneyVolume, p.kidneySpecificBloodFlowRate, p.fatVolume, p.plasmaProteinScaleFactorParameter, p.smallIntestinalTransitTime, p.gastricEmptyingTime};
+      }
+
+      public bool ApplyTo(Individual individual) => applyTo(individual, updateParameter);
+
+      public bool ApplyForPopulationTo(Individual individual) => applyTo(individual, updateParameterValues);
+
+      private bool applyTo(Individual individual, Action<IParameter, double> updateParameterFunc)
+      {
+         var targetGFR = individual.OriginData.DiseaseStateParameters.FindByName(TARGET_GFR);
+
+         var (hct, GFR_Spec, kidneyVolume, kidneySpecificBloodFlowRate, fatVolume, plasmaProteinScaleFactorParameter, smallIntestinalTransitTime, gastricEmptyingTime)
+            = parametersChangedByCKDAlgorithm(individual);
+         var organism = individual.Organism;
+         var bsa = organism.Parameter(BSA);
+
+
+         var GFR_0 = getTargetGFRValue(GFR_Spec.Value * kidneyVolume.Value / bsa.Value);
          var targetGFRValue = getTargetGFRValue(targetGFR.Value);
+
+         //The GFR of our individual is smaller! This individual should be discarded
          if (GFR_0 < targetGFRValue)
-            throw new OSPSuiteException("ERROR");
+            return false;
 
          //Adjust kidney volume and update fat accordingly
          var healthyKidneyVolume = kidneyVolume.Value;
-         updateParameter(kidneyVolume, getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0) * healthyKidneyVolume);
-         updateParameter(fatVolume, fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value);
+         updateParameterFunc(kidneyVolume, getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0) * healthyKidneyVolume);
+         updateParameterFunc(fatVolume, fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value);
 
          //Adjust renal blood flow spec
-         updateParameter(kidneySpecificBloodFlowRate, getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0) * kidneySpecificBloodFlowRate.Value);
+         updateParameterFunc(kidneySpecificBloodFlowRate, getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0) * kidneySpecificBloodFlowRate.Value);
 
          //Correct specific GFR
-         updateParameter(GFR_spec, GFR_spec.Value * targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value);
-
+         updateParameterFunc(GFR_Spec, GFR_Spec.Value * targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value);
 
          var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
          //Categorial Parameters
-         updateParameter(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor);
-         updateParameter(gastricEmptyingTime, gastricEmptyingTime.Value * gastricEmptyingTimeFactor);
-         updateParameter(smallIntestinalTransitTime, smallIntestinalTransitTime.Value * smallIntestinalTransitTimeFactor);
+         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor);
+         updateParameterFunc(gastricEmptyingTime, gastricEmptyingTime.Value * gastricEmptyingTimeFactor);
+         updateParameterFunc(smallIntestinalTransitTime, smallIntestinalTransitTime.Value * smallIntestinalTransitTimeFactor);
 
          //Special case for Hematocrit
-         updateParameter(hct, hct.Value * getHematocritFactor(targetGFRValue, individual.OriginData.Gender));
+         updateParameterFunc(hct, hct.Value * getHematocritFactor(targetGFRValue, individual.OriginData.Gender));
+
+         return true;
+      }
+
+      private void updateParameterValues(IParameter parameter, double value)
+      {
+         parameter.Value = value;
       }
 
       private void updateParameter(IParameter parameter, double value)
@@ -109,6 +161,55 @@ namespace PKSim.Core.Services
          parameter.Value = value;
          parameter.DefaultValue = value;
          parameter.IsFixedValue = false;
+      }
+
+      public Individual CreateBaseIndividualForPopulation(Individual originalIndividual)
+      {
+         //we need to create a new individual WITHOUT CKD and set all percentiles as in the original individuals. Other parameters, value wil be taken as is
+         var originData = originalIndividual.OriginData.Clone();
+
+         //remove the disease state to create a healthy Individual
+         originData.DiseaseState = null;
+         var healthyIndividual = _individualFactory.CreateAndOptimizeFor(originData, originalIndividual.Seed);
+
+         var allCKDParameters = parametersChangedByCKDAlgorithmAsList(healthyIndividual);
+
+         //do not update parameters changed by CKD algorithm or that are not visible
+         var allHealthyParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(healthyIndividual, x => !allCKDParameters.Contains(x) && x.Visible);
+         var allOriginalParameters = _containerTask.CacheAllChildren<IParameter>(originalIndividual);
+         _parameterSetUpdater.UpdateValues(allOriginalParameters, allHealthyParameters);
+
+         //we have a healthy individuals based on the CKD individual where all changes were all manual changes were accounted for
+         //we now need to add the disease state contributions from the original individual
+         originData.DiseaseState = originalIndividual.OriginData.DiseaseState;
+         originalIndividual.OriginData.DiseaseStateParameters.Each(x => originData.AddDiseaseStateParameter(x.Clone()));
+
+         return healthyIndividual;
+      }
+
+      public void ResetParametersAfterPopulationIteration(Individual individual)
+      {
+         //ensures that formula parameters are reset so that they can be reused in next iteration
+         var allCKDParameters = parametersChangedByCKDAlgorithmAsList(individual).Where(x => x.IsFixedValue);
+         allCKDParameters.Each(x => x.ResetToDefault());
+      }
+
+      public void Validate(OriginData originData)
+      {
+         var (valid, error) = IsValid(originData);
+         if (valid)
+            return;
+
+         throw new OSPSuiteException(error);
+      }
+
+      public (bool isValid, string error) IsValid(OriginData originData)
+      {
+         var ageInYears = _ageDimension.BaseUnitValueToUnitValue(_ageDimension.Unit(CoreConstants.Units.Years), originData.Age.Value);
+         if (ageInYears >= 18)
+            return (true, string.Empty);
+
+         return (false, PKSimConstants.Error.CKDOnlyAvailableForAdult);
       }
 
       private double getHematocritFactor(double targetGFR, Gender gender)
@@ -177,11 +278,3 @@ namespace PKSim.Core.Services
       }
    }
 }
-
-/* 
- * baseIndividual is CKD
- * => create a new individual WITHOUT CKD disease and set all percentile of distributed parmaters as in baseIndividual
- * => for not distrbiuted parameter, simply take the value as is
- * => Individual healthy with changed percentiles/values based on CKD individual
- * => base on this individual, run the population algorithm with CKD Implementaiton
- */

@@ -44,6 +44,7 @@ namespace PKSim.Core.Model
          knownSamples = knownSamples.ToList();
          parameter.MeanParameter.Value = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), originData.Age.Value);
          parameter.DeviationParameter.Value = _interpolation.Interpolate(knownSamples.Select(item => item.Std), originData.Age.Value);
+         parameter.ScaleDistributionBasedOn(baseParameter);
       }
 
       public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions) => distributions.All(IsSatisfiedBy);

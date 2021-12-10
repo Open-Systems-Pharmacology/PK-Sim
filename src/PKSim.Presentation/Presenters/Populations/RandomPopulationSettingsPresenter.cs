@@ -27,7 +27,10 @@ namespace PKSim.Presentation.Presenters.Populations
       public event EventHandler<PopulationCreationEventArgs> PopulationCreationFinished = delegate { };
       public bool IsLatched { get; set; }
 
-      public RandomPopulationSettingsPresenter(IRandomPopulationSettingsView view, IRandomPopulationFactory randomPopulationFactory, IPopulationSettingsDTOMapper populationSettingsMapper,
+      public RandomPopulationSettingsPresenter(
+         IRandomPopulationSettingsView view,
+         IRandomPopulationFactory randomPopulationFactory,
+         IPopulationSettingsDTOMapper populationSettingsMapper,
          ILazyLoadTask lazyLoadTask)
          : base(view)
       {
@@ -62,7 +65,7 @@ namespace PKSim.Presentation.Presenters.Populations
          catch (Exception e)
          {
             raisePopulationCreationFinish(success: false);
-            if (!(e is OperationCanceledException)) 
+            if (!(e is OperationCanceledException))
                throw;
          }
          finally
@@ -101,8 +104,6 @@ namespace PKSim.Presentation.Presenters.Populations
       private void updateView()
       {
          _view.BindTo(_populationSettingsDTO);
-         _view.GenderSelectionVisible = _populationSettingsDTO.HasMultipleGenders;
-         _view.Population = _populationSettingsDTO.Population;
       }
    }
 }

@@ -133,7 +133,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _populationSettingsMapper.MapFrom(_oldIndividual)).Returns(_populationSettingsDTO);
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_newPopulationSettingsDTO);
          _newIndividual = A.Fake<Individual>();
-         A.CallTo(() => _newIndividual.AvailableGenders()).Returns(new List<Gender>());
+         A.CallTo(() => _newIndividual.AvailableGenders).Returns(new List<Gender>());
          //first initialize with the old individual
          sut.PrepareForCreating(_oldIndividual);
       }
@@ -150,7 +150,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_load_the_newly_selecetd_individual()
+      public void should_load_the_newly_selected_individual()
       {
          A.CallTo(() => _lazyLoadTask.Load(_newIndividual)).MustHaveHappened();
       }

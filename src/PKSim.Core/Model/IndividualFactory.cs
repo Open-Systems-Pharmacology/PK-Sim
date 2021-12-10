@@ -63,7 +63,7 @@ namespace PKSim.Core.Model
          _createIndividualAlgorithm.Optimize(individual);
 
          //Apply disease states if required
-         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(originData.DiseaseState);
+         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
          diseaseStateImplementation.ApplyTo(individual);
 
          validate(individual);
@@ -135,6 +135,11 @@ namespace PKSim.Core.Model
             var results = _entityValidator.Validate(individual);
             if (results.ValidationState == ValidationState.Invalid)
                throw new CannotCreateIndividualWithConstraintsException(_reportGenerator.StringReportFor(individual.OriginData));
+
+            //Apply disease states if required
+            var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+            //This will throw if not valid
+            diseaseStateImplementation.Validate(individual.OriginData);
          }
          finally
          {
@@ -156,7 +161,7 @@ namespace PKSim.Core.Model
 
       private void setParameter(Individual individual, string parameterName, OriginDataParameter originDataParameter, bool visible = true)
       {
-         if (originDataParameter==null)
+         if (originDataParameter == null)
             return;
 
          var parameter = individual.Organism.Parameter(parameterName);
@@ -172,31 +177,4 @@ namespace PKSim.Core.Model
          parameter.Visible = visible;
       }
    }
-
-   // class DiseaseStateImplementationFactoryNew : IDiseaseStateImplementationFactory
-   // {
-   //    public IDiseaseStateImplementation CreateFor(DiseaseState diseaseState)
-   //    {
-   //       switch (diseaseState.Name)
-   //       {
-   //          case CoreConstants.DiseaseStates.CKD:
-   //             return new CKDDiseaseStateImplementation();
-   //          case CoreConstants.DiseaseStates.CKD:
-   //             return new CKDDiseaseStateImplementation();
-   //          case CoreConstants.DiseaseStates.CKD:
-   //             return new CKDDiseaseStateImplementation();
-   //          case CoreConstants.DiseaseStates.CKD:
-   //             return new CKDDiseaseStateImplementation();
-   //          case CoreConstants.DiseaseStates.CKD:
-   //             return new CKDDiseaseStateImplementation();
-   //          default:
-   //             return new HealthyDiseaseStateImplementation();
-   //       }
-   //    }
-   //
-   //    public IDiseaseStateImplementation CreateFor(Individual individual)
-   //    {
-   //     return  CreateFor(individual.OriginData.DiseaseState);
-   //    }
-   // }
 }

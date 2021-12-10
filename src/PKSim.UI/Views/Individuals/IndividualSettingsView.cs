@@ -134,7 +134,7 @@ namespace PKSim.UI.Views.Individuals
 
          _diseaseStateBinder.Bind(dto => dto.DiseaseState)
             .To(lblDescription)
-            .WithFormat(x => x.Description.InBold());
+            .WithFormat(x => x.Description);
 
          _diseaseStateBinder.Bind(dto => dto.DiseaseStateParameter)
             .To(uxDiseaseParameter);

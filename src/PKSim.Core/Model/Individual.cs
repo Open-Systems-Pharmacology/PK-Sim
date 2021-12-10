@@ -42,12 +42,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    all available organs in the individual
       /// </summary>
-      public virtual IEnumerable<Organ> AllOrgans() => Organism.OrgansByType(OrganType.Tissue | OrganType.VascularSystem);
+      public virtual IEnumerable<Organ> AllOrgans => Organism.OrgansByType(OrganType.Tissue | OrganType.VascularSystem);
 
       /// <summary>
       ///    Returns the available genders defined for the population in which the individual belongs
       /// </summary>
-      public virtual IEnumerable<Gender> AvailableGenders() => OriginData.Population.Genders;
+      public virtual IReadOnlyList<Gender> AvailableGenders => OriginData.Population.Genders;
 
       public virtual bool IsAgeDependent => OriginData.Population.IsAgeDependent;
 

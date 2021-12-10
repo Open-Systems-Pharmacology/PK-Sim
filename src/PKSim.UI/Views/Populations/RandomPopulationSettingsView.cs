@@ -13,6 +13,8 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Populations;
 using PKSim.Presentation.Presenters.Populations;
@@ -31,7 +33,7 @@ namespace PKSim.UI.Views.Populations
       private readonly UxRepositoryItemComboBox _repositoryForDiscreteUnits;
       private readonly RepositoryItemTextEdit _repositoryFromItem = new RepositoryItemTextEdit {NullText = "from"};
       private readonly RepositoryItemTextEdit _repositoryToItem = new RepositoryItemTextEdit {NullText = "to"};
-      private readonly RepositoryItemTextEdit _stantdardParameterEditRepository = new RepositoryItemTextEdit();
+      private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       private readonly ScreenBinder<PopulationSettingsDTO> _settingsBinder;
       private readonly UxBuildingBlockSelection _uxIndividualSelection;
       private readonly UxRepositoryItemComboBox _discreteParameterRepository;
@@ -68,6 +70,12 @@ namespace PKSim.UI.Views.Populations
          layoutItemIndividual.FillWith(_uxIndividualSelection);
          gridViewParameters.ShowingEditor += onShowingEditor;
 
+         _settingsBinder.Bind(x => x.Population)
+            .To(lblPopulation);
+
+         _settingsBinder.Bind(x => x.DiseaseState)
+            .To(lblDiseaseState);
+         
          _settingsBinder.Bind(x => x.Individual)
             .To(_uxIndividualSelection)
             .OnValueUpdating += (o, e) => _presenter.IndividualSelectionChanged(e.NewValue);
@@ -138,7 +146,7 @@ namespace PKSim.UI.Views.Populations
          if (parameterRangeDTO.IsDiscrete)
             return _discreteParameterRepository;
 
-         return _stantdardParameterEditRepository;
+         return _standardParameterEditRepository;
       }
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Population;
@@ -147,6 +155,11 @@ namespace PKSim.UI.Views.Populations
       {
          _settingsBinder.BindToSource(populationSettingsDTO);
          _gridViewBinder.BindToSource(populationSettingsDTO.Parameters);
+         lblPopulation.Text = $"{PKSimConstants.UI.Population.FormatForLabel()} {populationSettingsDTO.Population}";
+         var hasDiseaseState = populationSettingsDTO.DiseaseState.StringIsNotEmpty();
+         layoutItemDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(hasDiseaseState);
+         GenderSelectionVisible = populationSettingsDTO.HasMultipleGenders;
+
          adjustHeights();
          NotifyViewChanged();
       }
@@ -185,11 +198,6 @@ namespace PKSim.UI.Views.Populations
          emptySpaceItem.Visibility = visibility;
       }
 
-      public string Population
-      {
-         set => lblPopulation.Text = $"{PKSimConstants.UI.Population.FormatForLabel()} {value}";
-         get => lblPopulation.Text;
-      }
 
       public override bool HasError => _settingsBinder.HasError || _gridViewBinder.HasError;
 
@@ -208,6 +216,10 @@ namespace PKSim.UI.Views.Populations
          layoutItemStop.AdjustButtonSize();
          btnStop.InitWithImage(ApplicationIcons.Stop, PKSimConstants.UI.Stop);
          layoutItemStop.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
+         layoutItemDiseaseState.TextVisible = true;
+         layoutItemDiseaseState.Text = PKSimConstants.UI.DiseaseState.FormatForLabel();
+         layoutItemPopulation.TextVisible = true;
+         layoutItemPopulation.Text = PKSimConstants.UI.Population.FormatForLabel();
       }
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
@@ -236,19 +248,13 @@ namespace PKSim.UI.Views.Populations
 
       private void updateUnits(BaseEdit activeEditor, ParameterRangeDTO parameterRange)
       {
-         activeEditor.FillComboBoxEditorWith(parameterRange.ParameterRange.Dimension.Units);
+         activeEditor.FillComboBoxEditorWith(parameterRange.ParameterRange.Dimension.VisibleUnits());
          activeEditor.Enabled = !parameterRange.IsDiscrete;
       }
 
-      private RepositoryItem toRepository(ParameterRangeDTO parameterRange)
-      {
-         return _repositoryToItem;
-      }
+      private RepositoryItem toRepository(ParameterRangeDTO parameterRange) => _repositoryToItem;
 
-      private RepositoryItem fromRepository(ParameterRangeDTO parameterRange)
-      {
-         return _repositoryFromItem;
-      }
+      private RepositoryItem fromRepository(ParameterRangeDTO parameterRange) => _repositoryFromItem;
 
       private void adjustHeights()
       {

@@ -88,4 +88,33 @@ namespace PKSim.IntegrationTests
          kidneySpecificBloodFlowRate.ConvertToUnit(kidneySpecificBloodFlowRate.Value, "ml/min/100g organ").ShouldBeEqualTo(100.446757, 1e-2);
       }
    }
+
+   public class When_validating_an_origin_data : concern_for_CKDDiseaseStateImplementation
+   {
+      private OriginData _originData;
+
+      protected override void Context()
+      {
+         base.Context();
+         var individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.ICRP);
+         _originData = individual.OriginData;
+         _originData.DiseaseState = _diseaseStateCKD;
+      }
+
+
+      [Observation]
+      public void should_return_valid_for_an_adult_age()
+      {
+         _originData.Age.Value = 30;
+         sut.IsValid(_originData).isValid.ShouldBeTrue();
+      }
+
+
+      [Observation]
+      public void should_return_invalid_for_a_child_age()
+      {
+         _originData.Age.Value = 14;
+         sut.IsValid(_originData).isValid.ShouldBeFalse();
+      }
+   }
 }

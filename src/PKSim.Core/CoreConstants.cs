@@ -1176,6 +1176,7 @@ namespace PKSim.Core
                BLOOD_FLOW,
                GFR_SPEC,
                VOLUME_PLASMA,
+               E_GFR
             }
             .Union(OntogenyFactors)
             .Union(AllPlasmaProteinOntogenyFactors).ToList();

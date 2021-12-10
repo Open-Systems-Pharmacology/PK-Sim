@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Update the distributions defined in the distributed parameters according to the given origin data
       /// </summary>
-      void UpdateDistributedParameter(PathCache<IDistributedParameter> allDistributedParameter, PathCache<IDistributedParameter> allBaseDistributedParamters, OriginData originData);
+      void UpdateDistributedParameter(PathCache<IDistributedParameter> allDistributedParameter, PathCache<IDistributedParameter> allBaseDistributedParameters, OriginData originData);
    }
 
    public class DistributedParametersUpdater : IDistributedParametersUpdater
@@ -23,7 +23,7 @@ namespace PKSim.Core.Services
          _distributionFactory = distributionFactory;
       }
 
-      public void UpdateDistributedParameter(PathCache<IDistributedParameter> allDistributedParameter, PathCache<IDistributedParameter> allBaseDistributedParamters, OriginData originData)
+      public void UpdateDistributedParameter(PathCache<IDistributedParameter> allDistributedParameter, PathCache<IDistributedParameter> allBaseDistributedParameters, OriginData originData)
       {
          foreach (var distributionsForOneContainer in _parameterQuery.AllParameterDistributionsFor(originData).GroupBy(dist => dist.ParentContainerPath))
          {
@@ -31,7 +31,7 @@ namespace PKSim.Core.Services
             {
                var parameterPath = distributionsForOneContainer.Key + ObjectPath.PATH_DELIMITER + distributions.Key;
                var currentParameter = allDistributedParameter[parameterPath];
-               var baseParameter = allBaseDistributedParamters[parameterPath];
+               var baseParameter = allBaseDistributedParameters[parameterPath];
                if (currentParameter == null || baseParameter==null) 
                   continue;
 
