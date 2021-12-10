@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Events;
@@ -151,6 +152,69 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          }
 
          _converted = true;
+      }
+
+      private bool isChangedByCreatedIndividual(IParameter parameter)
+      {
+         var Name = parameter.Name;
+         if (string.IsNullOrEmpty(Name))
+            return false;
+
+         if (!parameter.IsOfType(PKSimBuildingBlockType.Individual))
+            return false;
+
+         if (StandardCreateIndividualParameters.Contains(Name))
+            return true;
+
+         if (DerivedCreatedIndividualParameters.Contains(Name))
+            return true;
+
+         if (OntogenyFactors.Contains(Name))
+            return true;
+
+         if (AllPlasmaProteinOntogenyFactors.Contains(Name))
+            return true;
+
+         //only parameter in these 4 organs needs to be treated specially
+         if (!isInFatOrMuscleOrLungOrPortalVein(parameter))
+            return false;
+
+         if (VolumeFractionWaterParameters.Contains(Name) && isInFatOrMuscle(parameter))
+            return true;
+
+         //formula parameter indirectly changed by create individual 
+         if (string.Equals(FRACTION_INTRACELLULAR, Name) && isInFatOrMuscle(parameter))
+            return true;
+
+         if (VolumeFractionLipidsParameters.Contains(Name) && isInFat(parameter))
+            return true;
+
+         if (VolumeFractionProteinsParameters.Contains(Name) && isInMuscle(parameter))
+            return true;
+
+         return false;
+      }
+
+      private bool isInFatOrMuscleOrLungOrPortalVein(IParameter parameter) => isInFatOrMuscle(parameter) || isInLungOrPortalVein(parameter);
+
+      private bool isInFatOrMuscle(IParameter parameter) => isInFat(parameter) || isInMuscle(parameter);
+
+      private bool isInLungOrPortalVein(IParameter parameter) => isInLung(parameter) || isInPortalVein(parameter);
+
+      private bool isInPortalVein(IParameter parameter) => isIn(PORTAL_VEIN, parameter);
+
+      private bool isInLung(IParameter parameter) => isIn(LUNG, parameter);
+
+      private bool isInFat(IParameter parameter) => isIn(FAT, parameter);
+
+      private bool isInMuscle(IParameter parameter) => isIn(MUSCLE, parameter);
+
+      private bool isIn(string organName, IParameter parameter)
+      {
+         if (parameter.ParentContainer == null)
+            return false;
+
+         return string.Equals(parameter.ParentContainer.Name, organName);
       }
    }
 }
