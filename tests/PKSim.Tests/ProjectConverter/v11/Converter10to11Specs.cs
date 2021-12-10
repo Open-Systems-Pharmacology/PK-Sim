@@ -116,6 +116,13 @@ namespace PKSim.ProjectConverter.v11
          ind.OriginData.BMI.ShouldNotBeNull();
          ind.OriginData.GestationalAge.ShouldNotBeNull();
       }
+
+      [Observation]
+      public void should_have_rendered_the_parameter_required_as_is_changed_by_created_individual()
+      {
+         var ind = _allIndividuals.FindByName("IND");
+         ind.AgeParameter.IsChangedByCreateIndividual.ShouldBeTrue();
+      }
    }
 
    public class When_converting_the_expression_v10_project_to_11 : ContextWithLoadedProject<Converter10to11>

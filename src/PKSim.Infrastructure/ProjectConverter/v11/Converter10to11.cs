@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -26,6 +27,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       private readonly IRegistrationTask _registrationTask;
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
+      private readonly IContainerTask _containerTask;
       private bool _converted;
 
       public Converter10to11(
@@ -35,7 +37,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          IEventPublisher eventPublisher,
          IRegistrationTask registrationTask,
          IDefaultIndividualRetriever defaultIndividualRetriever,
-         ICloner cloner
+         ICloner cloner,
+         IContainerTask containerTask
       )
       {
          _expressionProfileFactory = expressionProfileFactory;
@@ -45,6 +48,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          _registrationTask = registrationTask;
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
+         _containerTask = containerTask;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V10;
@@ -107,14 +111,37 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       public void Visit(Individual individual)
       {
          addExpressionProfilesUsedBySimulationSubjectToProject(individual);
-         addEstimatedGFRParameterTo(individual);
+         convertIndividual(individual);
       }
 
       public void Visit(Population population)
       {
          addExpressionProfilesUsedBySimulationSubjectToProject(population);
          makeInitialConcentrationParametersNotVariableInPopulation(population);
-         addEstimatedGFRParameterTo(population.FirstIndividual);
+         convertIndividual(population.FirstIndividual);
+      }
+
+      private void convertIndividual(Individual individual)
+      {
+         if (individual == null)
+            return;
+
+         addEstimatedGFRParameterTo(individual);
+         updateIsChangedByCreatedIndividualFlag(individual);
+      }
+
+      private void updateIsChangedByCreatedIndividualFlag(Individual individual)
+      {
+         var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
+         var allIsChangedByIndividualParameter = _containerTask.CacheAllChildrenSatisfying<IParameter>(defaultHuman, x => x.IsChangedByCreateIndividual);
+         var allParameters = _containerTask.CacheAllChildren<IParameter>(individual);
+         allIsChangedByIndividualParameter.KeyValues.Each(kv =>
+         {
+            var parameter = allParameters[kv.Key];
+            //can be null for a new parameter added at some point in the future
+            if (parameter != null)
+               parameter.IsChangedByCreateIndividual = true;
+         });
       }
 
       private void makeInitialConcentrationParametersNotVariableInPopulation(Population population)
@@ -125,10 +152,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
       private void addEstimatedGFRParameterTo(Individual individual)
       {
-         if (individual == null)
-            return;
-
-
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
          var parameter = defaultHuman.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
          var kidney = individual.Organism.Organ(KIDNEY);
@@ -153,69 +176,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          }
 
          _converted = true;
-      }
-
-      private bool isChangedByCreatedIndividual(IParameter parameter)
-      {
-         var Name = parameter.Name;
-         if (string.IsNullOrEmpty(Name))
-            return false;
-
-         if (!parameter.IsOfType(PKSimBuildingBlockType.Individual))
-            return false;
-
-         if (StandardCreateIndividualParameters.Contains(Name))
-            return true;
-
-         if (DerivedCreatedIndividualParameters.Contains(Name))
-            return true;
-
-         if (OntogenyFactors.Contains(Name))
-            return true;
-
-         if (AllPlasmaProteinOntogenyFactors.Contains(Name))
-            return true;
-
-         //only parameter in these 4 organs needs to be treated specially
-         if (!isInFatOrMuscleOrLungOrPortalVein(parameter))
-            return false;
-
-         if (VolumeFractionWaterParameters.Contains(Name) && isInFatOrMuscle(parameter))
-            return true;
-
-         //formula parameter indirectly changed by create individual 
-         if (string.Equals(FRACTION_INTRACELLULAR, Name) && isInFatOrMuscle(parameter))
-            return true;
-
-         if (VolumeFractionLipidsParameters.Contains(Name) && isInFat(parameter))
-            return true;
-
-         if (VolumeFractionProteinsParameters.Contains(Name) && isInMuscle(parameter))
-            return true;
-
-         return false;
-      }
-
-      private bool isInFatOrMuscleOrLungOrPortalVein(IParameter parameter) => isInFatOrMuscle(parameter) || isInLungOrPortalVein(parameter);
-
-      private bool isInFatOrMuscle(IParameter parameter) => isInFat(parameter) || isInMuscle(parameter);
-
-      private bool isInLungOrPortalVein(IParameter parameter) => isInLung(parameter) || isInPortalVein(parameter);
-
-      private bool isInPortalVein(IParameter parameter) => isIn(PORTAL_VEIN, parameter);
-
-      private bool isInLung(IParameter parameter) => isIn(LUNG, parameter);
-
-      private bool isInFat(IParameter parameter) => isIn(FAT, parameter);
-
-      private bool isInMuscle(IParameter parameter) => isIn(MUSCLE, parameter);
-
-      private bool isIn(string organName, IParameter parameter)
-      {
-         if (parameter.ParentContainer == null)
-            return false;
-
-         return string.Equals(parameter.ParentContainer.Name, organName);
       }
    }
 }

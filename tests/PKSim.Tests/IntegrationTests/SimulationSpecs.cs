@@ -231,7 +231,7 @@ namespace PKSim.IntegrationTests
          var diseaseState = diseaseStateRepository.FindByName(CoreConstants.DiseaseStates.CKD);
          _individual.OriginData.DiseaseState = diseaseState;
          var param = diseaseState.Parameter(CKDDiseaseStateImplementation.TARGET_GFR);
-         _individual.OriginData.AddDiseaseStateParameter(new OriginDataParameter{Name = param.Name, Value = param.Value, Unit = param.DisplayUnitName()});
+         _individual.OriginData.AddDiseaseStateParameter(new OriginDataParameter {Name = param.Name, Value = param.Value, Unit = param.DisplayUnitName()});
          _protocol = DomainFactoryForSpecs.CreateStandardIVProtocol();
          _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_population, _compound, _protocol) as PopulationSimulation;
