@@ -96,9 +96,8 @@ namespace PKSim.Core.Services
          if (timeProfileChartData == null)
             return pkAnalyses; // there are no analyses to calculate
 
-         var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).Select(x =>
-               new {curveData = x, column = columnFor(x, populationDataCollector)})
-            .Where(c => c.column != null)
+         var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).SelectMany(x =>
+               columnsFor(x, populationDataCollector).Select(column => new {curveData = x, column = column}))
             .Where(c => c.column.IsConcentration());
 
          var columnsByMolecules = allColumns.GroupBy(x => x.column.MoleculeName());
@@ -106,7 +105,7 @@ namespace PKSim.Core.Services
          {
             var moleculeName = columnsByMolecule.Key;
             var options = _pkCalculationOptionsFactory.CreateFor(populationDataCollector, moleculeName);
-            pkAnalyses.AddRange(columnsByMolecule.Select(pkAnalysisData => new PopulationPKAnalysis(pkAnalysisData.curveData, calculatePKFor(pkAnalysisData.column, moleculeName, options).PKAnalysis)));
+            pkAnalyses.AddRange(columnsByMolecule.Select(pkAnalysisData => new PopulationPKAnalysis(pkAnalysisData.curveData, calculatePKFor(pkAnalysisData.column, moleculeName, options).PKAnalysis, pkAnalysisData.column.Name)));
          }
 
          return pkAnalyses;
@@ -139,17 +138,36 @@ namespace PKSim.Core.Services
          return allPKAnalysis;
       }
 
-      private DataColumn columnFor(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, IPopulationDataCollector populationDataCollector)
+      private IEnumerable<DataColumn> columnsFor(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, IPopulationDataCollector populationDataCollector)
       {
-         if (curveData.IsRange())
-            return null;
+         var baseGrid = new BaseGrid("Time", curveData.XAxis.Dimension) { Values = curveData.XValues.Select(x => x.X).ToList() };
 
-         var baseGrid = new BaseGrid("Time", curveData.XAxis.Dimension) {Values = curveData.XValues.Select(x => x.X).ToList()};
-         return new DataColumn("Col", curveData.YAxis.Dimension, baseGrid)
-         {
-            Values = curveData.YValues.Select(y => y.Y).ToList(),
-            DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
-            QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+         if (curveData.IsRange())
+            return new[] 
+            {
+               new DataColumn(" (Lower)", curveData.YAxis.Dimension, baseGrid)
+               {
+                  Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
+                  DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
+                  QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+               },
+               new DataColumn(" (Upper)", curveData.YAxis.Dimension, baseGrid)
+               {
+                  Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
+                  DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
+                  QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+               }
+            };
+
+
+         return new[] 
+         { 
+            new DataColumn("", curveData.YAxis.Dimension, baseGrid)
+            {
+               Values = curveData.YValues.Select(y => y.Y).ToList(),
+               DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
+               QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+            } 
          };
       }
 

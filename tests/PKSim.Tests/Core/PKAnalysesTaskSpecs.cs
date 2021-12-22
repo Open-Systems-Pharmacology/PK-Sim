@@ -47,7 +47,7 @@ namespace PKSim.Core
       private ChartData<TimeProfileXValue, TimeProfileYValue> _chartData;
       private IPopulationDataCollector _populationDataCollector;
       private List<PopulationPKAnalysis> _result;
-      private DataColumn _dataColumn;
+      private List<DataColumn> _dataColumn;
 
       protected override void Context()
       {
@@ -78,7 +78,9 @@ namespace PKSim.Core
          A.CallTo(() => _populationDataCollector.MolWeightFor("PATH")).Returns(100);
 
          A.CallTo(() => _pkMapper.MapFrom(A<DataColumn>._, A<PKValues>._, A<PKParameterMode>._, A<string>._))
-            .Invokes(x => _dataColumn = x.GetArgument<DataColumn>(0));
+            .Invokes(x => _dataColumn.Add(x.GetArgument<DataColumn>(0)));
+
+         _dataColumn = new List<DataColumn>();
       }
 
       protected override void Because()
@@ -89,19 +91,19 @@ namespace PKSim.Core
       [Observation]
       public void should_return_curve_data_with_the_mol_weight_set()
       {
-         _dataColumn.DataInfo.MolWeight.ShouldBeEqualTo(100);
+         _dataColumn.First(x => x.DataInfo.MolWeight != null).DataInfo.MolWeight.ShouldBeEqualTo(100);
       }
 
       [Observation]
       public void should_have_execluded_curve_representing_a_range_plot()
       {
-         _result.Count.ShouldBeEqualTo(1);
+         _result.Count.ShouldBeEqualTo(3);
       }
 
       [Observation]
       public void should_have_calculated_the_pk_analysis_with_the_expected_value()
       {
-         _dataColumn.Values.ShouldOnlyContainInOrder(10f, 20f);
+         _dataColumn.First(x => x.Values.Count == 2).Values.ShouldOnlyContainInOrder(10f, 20f);
       }
    }
 
