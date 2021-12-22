@@ -104,7 +104,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_options_with_a_dose_set_to_null_as_it_needs_to_be_calculated_for_all_individual_separately()
       {
-         _result.TotalDrugMassPerBodyWeight.ShouldBeNull();
+         _result.TotalDrugMassPerBodyWeight.ShouldNotBeNull();
       }
    }
 

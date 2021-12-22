@@ -40,7 +40,7 @@ namespace PKSim.Core.Services
       public PKCalculationOptions CreateFor(PopulationSimulation populationSimulation, string moleculeName)
       {
          var options = CreateFor((Simulation) populationSimulation, moleculeName);
-         options.TotalDrugMassPerBodyWeight = null;
+         //options.TotalDrugMassPerBodyWeight = null;
          return options;
       }
 
