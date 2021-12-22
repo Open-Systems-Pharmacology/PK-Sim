@@ -37,7 +37,7 @@ namespace PKSim.Core.Mappers
 
       private string getCurveName(PopulationPKAnalysis analysis)
       {
-         return analysis.CurveData.Caption;
+         return analysis.CurveData.Caption + analysis.ExtraDescription;
       }
    }
 }
