@@ -95,7 +95,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_execluded_curve_representing_a_range_plot()
+      public void should_not_generate_two_curves_for_each_range_plot()
       {
          _result.Count.ShouldBeEqualTo(3);
       }
