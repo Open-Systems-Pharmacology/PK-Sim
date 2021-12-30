@@ -1,9 +1,13 @@
+UPDATE tab_calculation_method_rates SET formula='f_onto * f_disease * C_0 * V' WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_StartAmount_Protein';
+INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DiseaseStates','One_Rate','1','Fraction');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DiseaseStates','PARAM_TargetGFR','60 * 1E-2 * 1E-3 / 1.73','Flow per body surface area');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('GFR_Calculation','PARAM_eGFR','GFR / BSA','Flow per body surface area');
 INSERT INTO tab_calculation_methods(calculation_method,display_name,description,category,sequence) VALUES('DiseaseStates','Disease states','Calculation of disease states parameters','DiseaseStates',1);
 INSERT INTO tab_categories(category,display_name,description,category_type,icon_name) VALUES('DiseaseStates','Disease States','Disease state parameters','Individual',NULL);
 INSERT INTO tab_container_names(container_type,container_name,display_name,description,extension,sequence,icon_name) VALUES('DISEASE_STATE','CKD','CKD Parameter container','CKD Parameter container',NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(157,'ORGAN','Kidney','eGFR','GFR_Calculation','PARAM_eGFR',0.0,1,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(5015,'GENERAL','PROTEIN','Disease factor','DiseaseStates','One_Rate',0.0,1,NULL,1,NULL);
+INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(5941,'GENERAL','TRANSPORTER','Disease factor','DiseaseStates','One_Rate',0.0,1,NULL,1,NULL);
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(5954,'DISEASE_STATE','CKD','Target eGFR','DiseaseStates','PARAM_TargetGFR',0.0,1,0.00034683,1,92);
 ALTER TABLE tab_container_parameters ADD COLUMN is_changed_by_create_individual;
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=146 AND container_type='ORGANISM' AND container_name='Organism' AND parameter_name='Acidic phospholipids (blood cells) [mg/g] - RR';
@@ -4143,6 +4147,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5011 AND container_type='GENERAL' AND container_name='MoleculeProperties' AND parameter_name='t1/2';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5013 AND container_type='PROCESS' AND container_name='GlomerularFiltration' AND parameter_name='GFR fraction';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Degradation coefficient';
+INSERT INTO tab_container_parameters(container_id,container_type,container_name,parameter_name,can_be_varied,read_only,visible,can_be_varied_in_population,group_name,sequence,build_mode,building_block_type,is_input,is_changed_by_create_individual) VALUES(5015,'GENERAL','PROTEIN','Disease factor',1,0,1,0,'DISEASE_STATES',1,'GLOBAL','INDIVIDUAL',0,0);
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed in blood cells';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed in blood cells membrane';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed in endosomes';
@@ -5015,6 +5020,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5646 AND container_type='ORGAN' AND container_name='VenousBlood_UmbilicalCord' AND parameter_name='Weight (tissue)';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5647 AND container_type='NEIGHBORHOOD' AND container_name='PlacentaMaternal_pls_PlacentaFetal_cell' AND parameter_name='Surface area (plasma/intracellular)';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5941 AND container_type='GENERAL' AND container_name='TRANSPORTER' AND parameter_name='Degradation coefficient';
+INSERT INTO tab_container_parameters(container_id,container_type,container_name,parameter_name,can_be_varied,read_only,visible,can_be_varied_in_population,group_name,sequence,build_mode,building_block_type,is_input,is_changed_by_create_individual) VALUES(5941,'GENERAL','TRANSPORTER','Disease factor',1,0,1,0,'DISEASE_STATES',1,'GLOBAL','INDIVIDUAL',0,0);
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5941 AND container_type='GENERAL' AND container_name='TRANSPORTER' AND parameter_name='Fraction expressed apical';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5941 AND container_type='GENERAL' AND container_name='TRANSPORTER' AND parameter_name='Fraction expressed at blood brain barrier';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5941 AND container_type='GENERAL' AND container_name='TRANSPORTER' AND parameter_name='Fraction expressed basolateral';
@@ -5043,6 +5049,7 @@ CREATE UNIQUE INDEX tab_disease_states_description_uindex ON tab_disease_states 
 CREATE UNIQUE INDEX tab_disease_states_disease_state_uindex ON tab_disease_states (disease_state);
 CREATE UNIQUE INDEX tab_disease_states_display_name_uindex ON tab_disease_states (display_name);
 INSERT INTO tab_groups(group_name,display_name,description,parent_group,icon_name,visible,sequence,is_advanced,unique_id,pop_display_name,full_name) VALUES('DISEASE_STATES','Disease states','Disease states parameters',NULL,NULL,1,1,0,153,NULL,'Disease States');
+INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Disease factor','Disease factor','Used for scaling reference concentration based on the selected disease state.','Dimensionless',NULL);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Target eGFR','Target eGFR','Target eGFR value','Flow per body surface area',NULL);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('eGFR','eGFR','Estimated GFR is the GFR normalized to body surface area (BSA). The eGFR is used clinically to determine staging of chronic kidney disease.','Flow per body surface area',NULL);
 CREATE TABLE tab_population_disease_states
@@ -5065,6 +5072,7 @@ INSERT INTO tab_population_disease_states(population,disease_state) VALUES('Mexi
 INSERT INTO tab_population_disease_states(population,disease_state) VALUES('WhiteAmerican_NHANES_1997','CKD');
 INSERT INTO tab_rate_container_parameters(calculation_method,formula_rate,container_id,container_type,container_name,parameter_name,alias) VALUES('GFR_Calculation','PARAM_eGFR',146,'ORGANISM','Organism','BSA','BSA');
 INSERT INTO tab_rate_container_parameters(calculation_method,formula_rate,container_id,container_type,container_name,parameter_name,alias) VALUES('GFR_Calculation','PARAM_eGFR',157,'ORGAN','Kidney','GFR','GFR');
+INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('CompoundCommon','PARAM_StartAmount_Protein',240,'Disease factor','f_disease');
 INSERT INTO tab_rates(formula_rate,display_name,description) VALUES('PARAM_TargetGFR','PARAM_TargetGFR','PARAM_TargetGFR');
 INSERT INTO tab_rates(formula_rate,display_name,description) VALUES('PARAM_eGFR','PARAM_eGFR','PARAM_eGFR');
 INSERT INTO tab_references(reference) VALUES('Paul R.V. Malik, Cindy H.T. Yeung, Shams Ismaeil, Urooj Advani, Sebastian Djie, Andrea N. Edginton. A Physiological Approach to Pharmacokinetics in Chronic Kidney Disease https://accp1.onlinelibrary.wiley.com/doi/full/10.1002/jcph.1713');

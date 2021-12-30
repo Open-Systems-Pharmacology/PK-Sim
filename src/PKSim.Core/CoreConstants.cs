@@ -25,6 +25,7 @@ namespace PKSim.Core
       public const double LOW_RESOLUTION_IN_PTS_PER_MIN = 1.0 / 15; //4 pts per hours
       public const double DEFAULT_PROTOCOL_END_TIME_IN_MIN = 1440;
       public const double DEFAULT_ONTOGENY_FACTOR = 1;
+      public const double DEFAULT_DISEASE_FACTOR = 1;
       public const double DEFAULT_REFERENCE_CONCENTRATION_VALUE = 1;
       public const double DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN = 36 * 60;
       public const double DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN = 23 * 60;
@@ -321,7 +322,8 @@ namespace PKSim.Core
             DIFFUSION_COMMON_PKSIM,
             INTESTINAL_PERMEABILITY_COMMON_PKSIM,
             DYNAMIC_SUM_FORMULAS,
-            EXPRESSION_PARAMETERS
+            EXPRESSION_PARAMETERS,
+            DISEASE_STATES
          };
 
          public static readonly IReadOnlyList<string> ForEvents = new List<string> {EVENTS};
@@ -1055,6 +1057,7 @@ namespace PKSim.Core
          public const string FRACTION_EXPRESSED_AT_BLOOD_BRAIN_BARRIER = "Fraction expressed at blood brain barrier";
          public const string FRACTION_EXPRESSED_BRAIN_TISSUE = "Fraction expressed brain tissue";
          public const string INITIAL_CONCENTRATION = "Initial concentration";
+         public const string DISEASE_FACTOR = "Disease factor";
 
 
          public static readonly IReadOnlyList<string> OntogenyFactors = new[]
