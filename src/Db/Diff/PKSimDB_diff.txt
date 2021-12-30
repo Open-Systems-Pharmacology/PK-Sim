@@ -82,7 +82,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction vascular';
@@ -127,7 +127,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=149 AND container_type='ORGAN' AND container_name='Brain' AND parameter_name='Fraction vascular';
@@ -209,7 +209,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=1 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=1 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=152 AND container_type='ORGAN' AND container_name='Fat' AND parameter_name='Fraction vascular';
@@ -256,7 +256,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=155 AND container_type='ORGAN' AND container_name='Gonads' AND parameter_name='Fraction vascular';
@@ -300,7 +300,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=156 AND container_type='ORGAN' AND container_name='Heart' AND parameter_name='Fraction vascular';
@@ -346,7 +346,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=157 AND container_type='ORGAN' AND container_name='Kidney' AND parameter_name='Fraction vascular';
@@ -402,7 +402,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=158 AND container_type='ORGAN' AND container_name='LargeIntestine' AND parameter_name='Fraction vascular';
@@ -455,7 +455,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction of periportal zone';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Fraction recycled to plasma';
@@ -503,7 +503,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=1 WHERE container_id=160 AND container_type='ORGAN' AND container_name='Lung' AND parameter_name='Fraction vascular';
@@ -546,7 +546,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=1 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=1 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=161 AND container_type='ORGAN' AND container_name='Muscle' AND parameter_name='Fraction vascular';
@@ -594,7 +594,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=162 AND container_type='ORGAN' AND container_name='Pancreas' AND parameter_name='Fraction vascular';
@@ -649,7 +649,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=167 AND container_type='ORGAN' AND container_name='Skin' AND parameter_name='Fraction vascular';
@@ -695,7 +695,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=168 AND container_type='ORGAN' AND container_name='SmallIntestine' AND parameter_name='Fraction vascular';
@@ -747,7 +747,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=169 AND container_type='ORGAN' AND container_name='Spleen' AND parameter_name='Fraction vascular';
@@ -791,7 +791,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=170 AND container_type='ORGAN' AND container_name='Stomach' AND parameter_name='Fraction vascular';
@@ -1700,7 +1700,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3950 AND container_type='COMPARTMENT' AND container_name='Duodenum' AND parameter_name='Fraction recycled to plasma';
@@ -1783,7 +1783,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3973 AND container_type='COMPARTMENT' AND container_name='UpperJejunum' AND parameter_name='Fraction recycled to plasma';
@@ -1866,7 +1866,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=3996 AND container_type='COMPARTMENT' AND container_name='LowerJejunum' AND parameter_name='Fraction recycled to plasma';
@@ -1949,7 +1949,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4019 AND container_type='COMPARTMENT' AND container_name='UpperIleum' AND parameter_name='Fraction recycled to plasma';
@@ -2032,7 +2032,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4042 AND container_type='COMPARTMENT' AND container_name='LowerIleum' AND parameter_name='Fraction recycled to plasma';
@@ -2115,7 +2115,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4066 AND container_type='COMPARTMENT' AND container_name='Caecum' AND parameter_name='Fraction recycled to plasma';
@@ -2198,7 +2198,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4089 AND container_type='COMPARTMENT' AND container_name='ColonAscendens' AND parameter_name='Fraction recycled to plasma';
@@ -2281,7 +2281,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4112 AND container_type='COMPARTMENT' AND container_name='ColonTransversum' AND parameter_name='Fraction recycled to plasma';
@@ -2364,7 +2364,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4135 AND container_type='COMPARTMENT' AND container_name='ColonDescendens' AND parameter_name='Fraction recycled to plasma';
@@ -2447,7 +2447,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4158 AND container_type='COMPARTMENT' AND container_name='ColonSigmoid' AND parameter_name='Fraction recycled to plasma';
@@ -2530,7 +2530,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction intracellular';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction mucosa';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction of regional blood flow rate';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=4181 AND container_type='COMPARTMENT' AND container_name='Rectum' AND parameter_name='Fraction recycled to plasma';
@@ -4666,7 +4666,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5557 AND container_type='COMPARTMENT' AND container_name='Periportal' AND parameter_name='Fraction vascular';
@@ -4709,7 +4709,7 @@ UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE cont
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction endosomal';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction intracellular';
-UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction of blood for sampling';
+UPDATE tab_container_parameters SET read_only=0, visible=1, group_name='FRACTION_OF_BLOOD_SAMPLING', is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction of blood for sampling';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction of endosomal uptake from plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction recycled to plasma';
 UPDATE tab_container_parameters SET is_changed_by_create_individual=0 WHERE container_id=5558 AND container_type='COMPARTMENT' AND container_name='Pericentral' AND parameter_name='Fraction vascular';
@@ -5049,7 +5049,11 @@ CREATE UNIQUE INDEX tab_disease_states_description_uindex ON tab_disease_states 
 CREATE UNIQUE INDEX tab_disease_states_disease_state_uindex ON tab_disease_states (disease_state);
 CREATE UNIQUE INDEX tab_disease_states_display_name_uindex ON tab_disease_states (display_name);
 INSERT INTO tab_groups(group_name,display_name,description,parent_group,icon_name,visible,sequence,is_advanced,unique_id,pop_display_name,full_name) VALUES('DISEASE_STATES','Disease states','Disease states parameters',NULL,NULL,1,1,0,153,NULL,'Disease States');
+INSERT INTO tab_groups(group_name,display_name,description,parent_group,icon_name,visible,sequence,is_advanced,unique_id,pop_display_name,full_name) VALUES('FRACTION_OF_BLOOD_SAMPLING','Fraction of blood','Fraction of blood for sampling','SAMPLING_PROCEDURE',NULL,1,1,1,154,NULL,'Sampling - Fraction of blood');
+DELETE FROM tab_groups WHERE group_name='SAMPLING PROCEDURE';
+INSERT INTO tab_groups(group_name,display_name,description,parent_group,icon_name,visible,sequence,is_advanced,unique_id,pop_display_name,full_name) VALUES('SAMPLING_PROCEDURE','Sampling','Sampling',NULL,NULL,1,9999,1,94,'','Sampling');
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Disease factor','Disease factor','Used for scaling reference concentration based on the selected disease state.','Dimensionless',NULL);
+UPDATE tab_parameters SET description='Fraction of blood for sampling observer' WHERE parameter_name='Fraction of blood for sampling';
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Target eGFR','Target eGFR','Target eGFR value','Flow per body surface area',NULL);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('eGFR','eGFR','Estimated GFR is the GFR normalized to body surface area (BSA). The eGFR is used clinically to determine staging of chronic kidney disease.','Flow per body surface area',NULL);
 CREATE TABLE tab_population_disease_states

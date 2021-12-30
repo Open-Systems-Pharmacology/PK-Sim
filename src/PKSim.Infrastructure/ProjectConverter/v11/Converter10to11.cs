@@ -128,6 +128,18 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
          addEstimatedGFRParameterTo(individual);
          updateIsChangedByCreatedIndividualFlag(individual);
+         updateFractionOfBloodForSampling(individual);
+      }
+
+      private void updateFractionOfBloodForSampling(Individual individual)
+      {
+         var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
+         var oneStandardFractionOfBloodParameter = defaultHuman.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_OF_BLOOD_FOR_SAMPLING)).First();
+         var allFractionOfBloodParameters = individual.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_OF_BLOOD_FOR_SAMPLING));
+         allFractionOfBloodParameters.Each(x =>
+         {
+            x.Info.UpdatePropertiesFrom(oneStandardFractionOfBloodParameter.Info);
+         });
       }
 
       private void updateIsChangedByCreatedIndividualFlag(Individual individual)

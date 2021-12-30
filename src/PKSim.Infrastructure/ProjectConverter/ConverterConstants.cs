@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure.ProjectConverter
 
       public static class Parameters
       {
-         public static readonly string PeripheralBloodFlowFraction = "Peripheral blood flow fraction";
+         public static readonly string PERIPHERAL_BLOOD_FLOW_FRACTION = "Peripheral blood flow fraction";
          public static readonly string PlasmaClearance = "Plasma clearance";
          public static readonly string GastricEmptyingTime = "Gastric emptying time";
          public static readonly string SITT = "Small intestinal transit time";
@@ -38,6 +38,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string TabletTimeDelayFactor = "Tablet time delay factor";
          public static readonly string FRACTION_ENDOSOMAL = "Fraction endosomal";
          public static readonly string NORM_SUFFIX = " (normalized)";
+         public static readonly string FRACTION_OF_BLOOD_FOR_SAMPLING = "Fraction of blood for sampling";
          public const string E_GFR = "eGFR";
 
          public static string NormParameterFor(string parameter)

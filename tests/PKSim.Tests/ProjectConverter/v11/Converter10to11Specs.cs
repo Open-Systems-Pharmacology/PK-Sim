@@ -123,6 +123,19 @@ namespace PKSim.ProjectConverter.v11
          var ind = _allIndividuals.FindByName("IND");
          ind.AgeParameter.IsChangedByCreateIndividual.ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_have_set_the_fraction_of_blood_for_sampling_parameter_visible()
+      {
+         var ind = _allIndividuals.FindByName("IND");
+         var parameters = ind.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.FRACTION_OF_BLOOD_FOR_SAMPLING));
+         parameters.Each(x =>
+         {
+            x.Visible.ShouldBeTrue();
+            x.Info.ReadOnly.ShouldBeFalse();
+            x.GroupName.ShouldBeEqualTo("FRACTION_OF_BLOOD_SAMPLING");
+         });
+      }
    }
 
    public class When_converting_the_expression_v10_project_to_11 : ContextWithLoadedProject<Converter10to11>
