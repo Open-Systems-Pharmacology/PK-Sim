@@ -164,9 +164,14 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
       private void addEstimatedGFRParameterTo(Individual individual)
       {
+         var kidney = individual.Organism.Organ(KIDNEY);
+         var gfr_spec = kidney.Parameter(GFR_SPEC);
+         //This is an old individual without GFR (v6.x) Return
+         if (gfr_spec == null)
+            return;
+
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
          var parameter = defaultHuman.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
-         var kidney = individual.Organism.Organ(KIDNEY);
          kidney.Add(_cloner.Clone(parameter));
       }
 
