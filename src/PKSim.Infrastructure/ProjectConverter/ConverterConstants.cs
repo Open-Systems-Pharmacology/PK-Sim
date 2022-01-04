@@ -40,6 +40,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string NORM_SUFFIX = " (normalized)";
          public static readonly string FRACTION_OF_BLOOD_FOR_SAMPLING = "Fraction of blood for sampling";
          public const string E_GFR = "eGFR";
+         public const string GFR = "GFR";
 
          public static string NormParameterFor(string parameter)
          {

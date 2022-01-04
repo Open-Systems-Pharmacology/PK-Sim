@@ -136,10 +136,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
          var oneStandardFractionOfBloodParameter = defaultHuman.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_OF_BLOOD_FOR_SAMPLING)).First();
          var allFractionOfBloodParameters = individual.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_OF_BLOOD_FOR_SAMPLING));
-         allFractionOfBloodParameters.Each(x =>
-         {
-            x.Info.UpdatePropertiesFrom(oneStandardFractionOfBloodParameter.Info);
-         });
+         allFractionOfBloodParameters.Each(x => { x.Info.UpdatePropertiesFrom(oneStandardFractionOfBloodParameter.Info); });
       }
 
       private void updateIsChangedByCreatedIndividualFlag(Individual individual)
@@ -164,9 +161,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
       private void addEstimatedGFRParameterTo(Individual individual)
       {
+         var kidney = individual.Organism.Organ(KIDNEY);
+         var gfr = kidney.Parameter(GFR);
+         var bsa = individual.Organism.Parameter(BSA);
+         //This is an old individual without GFR (v6.x) or BSA Return
+         if (gfr == null || bsa == null)
+            return;
+
          var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
          var parameter = defaultHuman.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
-         var kidney = individual.Organism.Organ(KIDNEY);
          kidney.Add(_cloner.Clone(parameter));
       }
 
