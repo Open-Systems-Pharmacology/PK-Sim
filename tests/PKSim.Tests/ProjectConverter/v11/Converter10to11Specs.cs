@@ -62,7 +62,7 @@ namespace PKSim.ProjectConverter.v11
       [Observation]
       public void should_have_converted_the_population_in_origin_data()
       {
-         var pop = _allPopulations.FindByName("POP");
+         var pop = _allPopulations.FindByName("Pop");
          var ind = pop.FirstIndividual;
          ind.OriginData.Population.ShouldNotBeNull();
       }
