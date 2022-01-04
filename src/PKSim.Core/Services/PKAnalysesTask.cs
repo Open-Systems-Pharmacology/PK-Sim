@@ -191,10 +191,10 @@ namespace PKSim.Core.Services
          if (globalPKAnalysis == null)
             return;
 
-         addFractionAbsorvedWarningTo(pkAnalysis, globalPKAnalysis, moleculeName);
+         addFractionAbsorbedWarningTo(pkAnalysis, globalPKAnalysis, moleculeName);
       }
 
-      private void addFractionAbsorvedWarningTo(PKAnalysis pkAnalysis, GlobalPKAnalysis globalPKAnalysis, string moleculeName)
+      private void addFractionAbsorbedWarningTo(PKAnalysis pkAnalysis, GlobalPKAnalysis globalPKAnalysis, string moleculeName)
       {
          var fractionAbsorbed = globalPKAnalysis.PKParameter(moleculeName, CoreConstants.PKAnalysis.FractionAbsorbed);
          if (fractionAbsorbed == null)

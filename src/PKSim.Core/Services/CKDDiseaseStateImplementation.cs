@@ -215,6 +215,11 @@ namespace PKSim.Core.Services
          return (false, PKSimConstants.Error.CKDOnlyAvailableForAdult);
       }
 
+      public void ApplyTo(IndividualMolecule individualMolecule)
+      {
+         //nothing to do here
+      }
+
       private double getHematocritFactor(double targetGFR, Gender gender)
       {
          var isFemale = gender.IsNamed(CoreConstants.Gender.FEMALE);

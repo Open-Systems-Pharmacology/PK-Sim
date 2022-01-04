@@ -45,6 +45,11 @@ namespace PKSim.Core.Services
       /// If the <paramref name="originData"/> is not valid, the return value will contain the reason in error
       /// </summary>
       (bool isValid, string error) IsValid(OriginData originData);
+      
+      /// <summary>
+      /// Apply any change required to the disease factor parameter associated with the molecule
+      /// </summary>
+      void ApplyTo(IndividualMolecule individualMolecule);
 
    }
 
@@ -77,6 +82,11 @@ namespace PKSim.Core.Services
       public (bool isValid, string error) IsValid(OriginData originData)
       {
          return (true, string.Empty);
+      }
+
+      public void ApplyTo(IndividualMolecule individualMolecule)
+      {
+         //nothing to do here
       }
 
       public bool IsSatisfiedBy(DiseaseState item) => false;
