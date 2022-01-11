@@ -1,5 +1,5 @@
 UPDATE tab_calculation_method_rates SET formula='f_onto * f_disease * C_0 * V' WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_StartAmount_Protein';
-INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DiseaseStates','One_Rate','1','Fraction');
+INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DiseaseStates','One_Rate','1','Dimensionless');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DiseaseStates','PARAM_TargetGFR','60 * 1E-2 * 1E-3 / 1.73','Flow per body surface area');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('GFR_Calculation','PARAM_eGFR','GFR / BSA','Flow per body surface area');
 INSERT INTO tab_calculation_methods(calculation_method,display_name,description,category,sequence) VALUES('DiseaseStates','Disease states','Calculation of disease states parameters','DiseaseStates',1);
