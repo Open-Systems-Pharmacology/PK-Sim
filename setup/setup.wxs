@@ -169,7 +169,6 @@
       <ComponentGroupRef Id="App" />
       <ComponentGroupRef Id="ChartLayouts" />
       <ComponentGroupRef Id="OSPSuite.TeXReporting" />
-      <ComponentGroupRef Id="Examples" />
 
       <ComponentRef Id="PKSim.exe" />
       <ComponentRef Id="OSPSuiteMenuDir" />
