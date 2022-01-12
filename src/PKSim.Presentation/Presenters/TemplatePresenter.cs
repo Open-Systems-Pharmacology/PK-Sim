@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -40,6 +41,12 @@ namespace PKSim.Presentation.Presenters
       /// </summary>
       /// <param name="templateDTO">Building block template to delete</param>
       void Delete(TemplateDTO templateDTO);
+
+      /// <summary>
+      ///    Delete the building block templates given as parameter
+      /// </summary>
+      /// <param name="templateDTOs">Building block templates to delete</param>
+      void Delete(IReadOnlyList<TemplateDTO> templateDTOs);
 
       /// <summary>
       ///    Returns true if the user can edit the given <paramref name="template" /> otherwise false
@@ -220,16 +227,22 @@ namespace PKSim.Presentation.Presenters
          }
       }
 
-      public void Delete(TemplateDTO templateDTO)
+      public void Delete(TemplateDTO templateDTO) => Delete(new[] {templateDTO});
+
+      public void Delete(IReadOnlyList<TemplateDTO> templateDTOs)
       {
-         var result = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteTemplate(templateDTO.Name));
+         var result = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteTemplate(templateDTOs.AllNames()));
          if (result == ViewResult.No)
             return;
 
-         var template = templateDTO.Template;
-         _templateTaskQuery.DeleteTemplate(template);
-         _availableTemplates.Remove(template);
-         _selectedTemplates.Remove(template);
+         templateDTOs.Each(x =>
+         {
+            var template = x.Template;
+            _templateTaskQuery.DeleteTemplate(template);
+            _availableTemplates.Remove(template);
+            _selectedTemplates.Remove(template);
+
+         });
 
          updateView();
       }

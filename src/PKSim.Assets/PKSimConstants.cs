@@ -2473,7 +2473,7 @@ namespace PKSim.Assets
 
          public static string ReallyDeleteSimulationComparisons(IReadOnlyList<string> simulationComparisons) => ReallyDeleteObjectOfType(SimulationComparison, simulationComparisons);
 
-         public static string ReallyDeleteTemplate(string templateName) => ReallyDeleteObjectOfType(ObjectTypes.Template, templateName);
+         public static string ReallyDeleteTemplate(IReadOnlyList<string> templates) => ReallyDeleteObjectOfType(ObjectTypes.Template, templates);
 
          public static string ReallyDeleteProtein(string proteinType, string proteinName) => ReallyDeleteObjectOfType(proteinType, proteinName);
 
