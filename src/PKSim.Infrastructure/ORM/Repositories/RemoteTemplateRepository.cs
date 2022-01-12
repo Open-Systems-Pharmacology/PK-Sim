@@ -69,6 +69,20 @@ namespace PKSim.Infrastructure.ORM.Repositories
          }
       }
 
+      public async Task UpdateLocalTemplateSummaryFile()
+      {
+         var tempFile = FileHelper.GenerateTemporaryFileName();
+         try
+         {
+            await downloadRemoteFile(CoreConstants.REMOTE_TEMPLATE_FILE_URL, tempFile);
+            FileHelper.Copy(tempFile, _configuration.RemoteTemplateSummaryPath);
+         }
+         catch (Exception)
+         {
+            //could not download the file. Do nothing
+         }
+      }
+
       private IReadOnlyList<RemoteTemplate> expressionProfileFor(RemoteTemplate remoteTemplate, ISimulationSubject simulationSubject)
       {
          //TODO Not implemented yet. It will be done with the profile defined for individual as separate building block
