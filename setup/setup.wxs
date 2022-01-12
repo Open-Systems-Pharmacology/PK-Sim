@@ -128,6 +128,10 @@
                   <Shortcut Id="ExampleFolderShortCut" Name="$(var.ProductName) Examples" Directory="OSPSuiteMenuDir" />
                   <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="Examples" KeyPath="yes" />
                 </Component>
+
+                <Component Id="ExamplesReadMe" Guid="E3C8F2A6-24F3-4810-BD11-C4A4EA440661">
+                  <File Name="README.md" Id="ExamplesReadMe" Source="$(var.DeployDir)/README.md" KeyPath="yes" />
+                </Component>
               </Directory>
             </Directory>
           </Directory>
@@ -180,6 +184,7 @@
       <ComponentRef Id="TeXTemplatesFolder" />
       <ComponentRef Id="ExamplesFolder" />
       <ComponentRef Id="ExampleFolderShortCut" />
+      <ComponentRef Id="ExamplesReadMe" />
       <ComponentRef Id="OSPSuite.Dimensions" />
       <ComponentRef Id="OSPSuite.PKParameters" />
       <ComponentRef Id="templates" />
