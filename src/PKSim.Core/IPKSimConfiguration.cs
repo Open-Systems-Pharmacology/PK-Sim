@@ -34,6 +34,9 @@ namespace PKSim.Core
       /// </summary>
       string RemoteTemplateSummaryPath { get; }
 
+      /// <summary>
+      /// Folder path where templates will be downloaded 
+      /// </summary>
       string RemoteTemplateFolderPath { get; }
    }
 

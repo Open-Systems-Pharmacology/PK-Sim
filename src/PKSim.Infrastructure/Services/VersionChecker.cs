@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
@@ -11,57 +10,46 @@ namespace PKSim.Infrastructure.Services
    public class VersionChecker : IVersionChecker
    {
       private readonly IJsonSerializer _jsonSerializer;
+      private IReadOnlyList<VersionInfo> _allVersions = new List<VersionInfo>();
       public string ProductName { get; set; }
       public string CurrentVersion { get; set; }
       public string VersionFileUrl { get; set; }
-      public VersionInfo LatestVersion { get; private set; }
 
       public VersionChecker(IJsonSerializer jsonSerializer)
       {
          _jsonSerializer = jsonSerializer;
       }
 
-      public async Task<bool> NewVersionIsAvailableAsync()
+      public VersionInfo LatestVersion => LatestVersionFor(ProductName);
+
+      public VersionInfo LatestVersionFor(string productName) => _allVersions.FindByName(productName);
+
+      public async Task DownloadLatestVersionInfoAsync()
       {
          try
          {
-            await retrieveLatestVersion();
-            return newVersionIsAvailable();
-
+            using (var wc = new WebClient())
+            {
+               var jsonContent = await wc.DownloadStringTaskAsync(VersionFileUrl);
+               _allVersions = await _jsonSerializer.DeserializeAsArrayFromString<VersionInfo>(jsonContent);
+            }
          }
          catch (Exception)
          {
-            return false;
+            //we do nothing if we cannot download the file
          }
       }
 
-      private async Task retrieveLatestVersion()
-      {
-         using (var wc = new WebClient())
-         {
-            var jsonContent = await wc.DownloadStringTaskAsync(VersionFileUrl);
-            var versions = await _jsonSerializer.DeserializeAsArrayFromString<VersionInfo>(jsonContent);
-            LatestVersion = retrieveVersionFrom(versions);
-         }
-      }
+      public bool NewVersionIsAvailable => NewVersionIsAvailableFor(ProductName, CurrentVersion);
 
-      private bool newVersionIsAvailable()
+      public bool NewVersionIsAvailableFor(string productName, string currentVersion)
       {
-         if (LatestVersion == null)
+         var latestVersion = LatestVersionFor(productName);
+         if (latestVersion == null)
             return false;
 
-         var curVersion = new Version(CurrentVersion);
-         return curVersion.CompareTo(new Version(LatestVersion.Version)) < 0;
-      }
-
-
-      private VersionInfo retrieveVersionFrom(IEnumerable<VersionInfo> allVersionInfos)
-      {
-         var versionInfo = allVersionInfos.FindByName(ProductName);
-         if (versionInfo == null)
-            throw new OSPSuiteException($"{ProductName} node not available");
-
-         return versionInfo;
+         var curVersion = new Version(currentVersion);
+         return curVersion.CompareTo(new Version(latestVersion.Version)) < 0;
       }
    }
 }

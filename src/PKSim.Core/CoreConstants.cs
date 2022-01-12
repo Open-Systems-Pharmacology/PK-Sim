@@ -80,11 +80,13 @@ namespace PKSim.Core
       public static readonly string TEMPLATE_USER_DATABASE_TEMPLATE = "PKSimTemplateDBUser.template";
       public static readonly string REMOTE_TEMPLATE_SUMMARY = "templates.json";
       public const string PRODUCT_NAME = "PK-Sim";
+      public const string TEMPLATES_PRODUCT_NAME = "BuildingBlockTemplates";
       public static readonly string PRODUCT_NAME_WITH_TRADEMARK = "PK-Sim®";
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
       public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.json";
+      public static readonly string REMOTE_TEMPLATE_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/OSPSuite.BuildingBlockTemplates/main/templates.json";
       public static readonly string ISSUE_TRACKER_URL = "https://github.com/open-systems-pharmacology/pk-sim/issues";
 
       public static readonly string TEMPLATE_DATABASE_CONVERSION_WIKI_URL =
@@ -92,7 +94,7 @@ namespace PKSim.Core
 
       public const string APPLICATION_NAME_TEMPLATE = "Application_";
 
-      //tolerated precision to relativtely compare to double values 
+      //tolerated precision to relatively compare to double values 
       public const double DOUBLE_RELATIVE_EPSILON = 1e-2;
 
       public const char COMPOSITE_SEPARATOR = '-';

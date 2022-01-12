@@ -12,5 +12,6 @@ namespace PKSim.Core.Repositories
       RemoteTemplate TemplateBy(TemplateType templateType, string name);
       Task<T> LoadTemplateAsync<T>(RemoteTemplate remoteTemplate);
       IReadOnlyList<RemoteTemplate> AllReferenceTemplatesFor<T>(RemoteTemplate remoteTemplate, T loadedTemplate);
+      Task UpdateLocalTemplateSummaryFile();
    }
 }

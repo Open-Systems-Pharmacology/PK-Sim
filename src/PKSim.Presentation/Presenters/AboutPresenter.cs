@@ -12,7 +12,7 @@ namespace PKSim.Presentation.Presenters
 {
    public interface IAboutPresenter : IDisposablePresenter
    {
-      Task CheckForUpdate();
+      void CheckForUpdate();
    }
 
    public class AboutPresenter : AbstractDisposablePresenter<IAboutView, IAboutPresenter>, IAboutPresenter
@@ -36,9 +36,9 @@ namespace PKSim.Presentation.Presenters
          _view.Display();
       }
 
-      public async Task CheckForUpdate()
+      public void CheckForUpdate()
       {
-         var newVersionAvailable = await _versionChecker.NewVersionIsAvailableAsync();
+         var newVersionAvailable =  _versionChecker.NewVersionIsAvailable;
 
          if (newVersionAvailable)
             _dialogCreator.MessageBoxInfo(PKSimConstants.Information.NewVersionIsAvailable(_versionChecker.LatestVersion, Constants.PRODUCT_SITE_DOWNLOAD).RemoveHtml());

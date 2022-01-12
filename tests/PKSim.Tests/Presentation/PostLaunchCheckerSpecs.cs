@@ -6,10 +6,11 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Events;
 using PKSim.Presentation.Services;
-
 
 namespace PKSim.Presentation
 {
@@ -20,6 +21,7 @@ namespace PKSim.Presentation
       protected ITemplateDatabaseCreator TemplateDatabaseCreator;
       protected IUserSettings _userSettings;
       protected IEventPublisher _eventPublisher;
+      protected IRemoteTemplateRepository _remoteTemplateRepository;
 
       protected override Task Context()
       {
@@ -28,8 +30,15 @@ namespace PKSim.Presentation
          TemplateDatabaseCreator = A.Fake<ITemplateDatabaseCreator>();
          _userSettings = A.Fake<IUserSettings>();
          _eventPublisher = A.Fake<IEventPublisher>();
+         _remoteTemplateRepository = A.Fake<IRemoteTemplateRepository>();
 
-         sut = new PostLaunchChecker(_versionChecker, _watermarkStatusChecker, TemplateDatabaseCreator, _eventPublisher, _userSettings);
+         sut = new PostLaunchChecker(
+            _versionChecker,
+            _watermarkStatusChecker,
+            TemplateDatabaseCreator,
+            _eventPublisher,
+            _userSettings,
+            _remoteTemplateRepository);
 
          return _completed;
       }
@@ -53,9 +62,15 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _watermarkStatusChecker.CheckWatermarkStatus()).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_check_if_a_new_version_of_the_template_repository_file_is_available()
+      {
+         A.CallTo(() => _versionChecker.NewVersionIsAvailableFor(CoreConstants.TEMPLATES_PRODUCT_NAME, _remoteTemplateRepository.Version)).MustHaveHappened();
+      }
    }
 
-   public class When_starting_the_post_launch_check_and_the_user_does_not_want_to_be_notifed_of_new_version_of_the_app : concern_for_PostLaunchChecker
+   public class When_starting_the_post_launch_check_and_the_user_does_not_want_to_be_notified_of_new_version_of_the_app : concern_for_PostLaunchChecker
    {
       protected override async Task Context()
       {
@@ -71,11 +86,11 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_check_for_a_new_version()
       {
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).MustNotHaveHappened();
+         A.CallTo(() => _versionChecker.NewVersionIsAvailable).MustNotHaveHappened();
       }
    }
 
-   public class When_starting_the_post_launch_check_and_the_user_wants_to_be_notifed_of_new_version_of_the_app_and_a_new_version_is_available : concern_for_PostLaunchChecker
+   public class When_starting_the_post_launch_check_and_the_user_wants_to_be_notified_of_new_version_of_the_app_and_a_new_version_is_available : concern_for_PostLaunchChecker
    {
       private readonly VersionInfo _newVersion = new VersionInfo {Version = "1.2.3"};
       private ShowNotificationEvent _event;
@@ -84,12 +99,11 @@ namespace PKSim.Presentation
       {
          await base.Context();
          _userSettings.ShowUpdateNotification = true;
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
+         A.CallTo(() => _versionChecker.NewVersionIsAvailable).Returns(true);
          A.CallTo(() => _versionChecker.LatestVersion).Returns(_newVersion);
 
          A.CallTo(() => _eventPublisher.PublishEvent(A<ShowNotificationEvent>._))
             .Invokes(x => _event = x.GetArgument<ShowNotificationEvent>(0));
-
       }
 
       protected override async Task Because()
@@ -107,15 +121,15 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_starting_the_post_launch_check_and_the_user_wants_to_be_notifed_of_new_version_of_the_app_and_a_new_version_is_available_but_the_check_was_already_dismissed_by_user : concern_for_PostLaunchChecker
+   public class When_starting_the_post_launch_check_and_the_user_wants_to_be_notified_of_new_version_of_the_app_and_a_new_version_is_available_but_the_check_was_already_dismissed_by_user : concern_for_PostLaunchChecker
    {
-      private readonly VersionInfo _newVersion = new VersionInfo { Version = "1.2.3" };
+      private readonly VersionInfo _newVersion = new VersionInfo {Version = "1.2.3"};
 
       protected override async Task Context()
       {
          await base.Context();
          _userSettings.ShowUpdateNotification = true;
-         A.CallTo(() => _versionChecker.NewVersionIsAvailableAsync()).Returns(true);
+         A.CallTo(() => _versionChecker.NewVersionIsAvailable).Returns(true);
          A.CallTo(() => _versionChecker.LatestVersion).Returns(_newVersion);
          A.CallTo(() => _userSettings.LastIgnoredVersion).Returns(_newVersion.Version);
       }
@@ -132,4 +146,44 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_starting_the_post_launch_check_and_a_new_template_version_is_available : concern_for_PostLaunchChecker
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _versionChecker.NewVersionIsAvailableFor(CoreConstants.TEMPLATES_PRODUCT_NAME, _remoteTemplateRepository.Version)).Returns(true);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.PerformPostLaunchCheckAsync();
+      }
+
+      [Observation]
+      public void should_update_the_summary_file()
+      {
+         A.CallTo(() => _remoteTemplateRepository.UpdateLocalTemplateSummaryFile()).MustHaveHappened();
+      }
+   }
+
+
+   public class When_starting_the_post_launch_check_and_no_new_template_version_is_available : concern_for_PostLaunchChecker
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _versionChecker.NewVersionIsAvailableFor(CoreConstants.TEMPLATES_PRODUCT_NAME, _remoteTemplateRepository.Version)).Returns(false);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.PerformPostLaunchCheckAsync();
+      }
+
+      [Observation]
+      public void should_update_the_summary_file()
+      {
+         A.CallTo(() => _remoteTemplateRepository.UpdateLocalTemplateSummaryFile()).MustNotHaveHappened();
+      }
+   }
 }
