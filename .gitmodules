@@ -10,18 +10,6 @@
 [submodule "documentation"]
 	path = documentation
 	url = https://github.com/Open-Systems-Pharmacology/OSPSuite.Documentation.git
-[submodule "examples/Theophylline"]
-	path = examples/Theophylline
-	url = https://github.com/Open-Systems-Pharmacology/Example_Theophylline.git
-[submodule "examples/Paracetamol"]
-	path = examples/Paracetamol
-	url = https://github.com/Open-Systems-Pharmacology/Example_Paracetamol.git
-[submodule "examples/Aciclovir"]
-	path = examples/Aciclovir
-	url = https://github.com/Open-Systems-Pharmacology/Example_Aciclovir.git
-[submodule "examples/Caffeine"]
-	path = examples/Caffeine
-	url = https://github.com/Open-Systems-Pharmacology/Example_Caffeine.git
 [submodule "templates"]
 	path = templates
 	url = https://github.com/Open-Systems-Pharmacology/OSPSuite.BuildingBlockTemplates.git
