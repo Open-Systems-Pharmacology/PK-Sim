@@ -1,11 +1,12 @@
 ﻿using System;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using PKSim.Assets;
 using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO
 {
-   public class TemplateDTO
+   public class TemplateDTO : IWithName
    {
       public TemplateDTO(Template template)
       {
@@ -36,7 +37,11 @@ namespace PKSim.Presentation.DTO
          }
       }
 
-      public string Name => Template.Name;
+      public string Name
+      {
+         get => Template.Name;
+         set => Template.Name = value;
+      }
 
       public TemplateDatabaseType DatabaseType => Template.DatabaseType;
 

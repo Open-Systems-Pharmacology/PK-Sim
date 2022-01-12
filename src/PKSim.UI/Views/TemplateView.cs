@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
 using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding.DevExpress;
@@ -57,6 +59,26 @@ namespace PKSim.UI.Views
          _editRemoveRepository = createEditRemoveButtonRepository();
          _urlRepository = new RepositoryItemHyperLinkEdit {TextEditStyle = TextEditStyles.DisableTextEditor, SingleClick = true};
          lblDescription.AsDescription();
+         gridView.PopupMenuShowing += (o, e) => OnEvent(onPopupMenuShowing, o, e);
+      }
+
+      private void onPopupMenuShowing(object o, PopupMenuShowingEventArgs e)
+      {
+         var gridViewMenu = e.Menu;
+         if (gridViewMenu == null)
+            return;
+
+         //we only show the context menu if we are selecting cells and nothing else
+         if (e.HitInfo.HitTest != GridHitTest.RowCell)
+            return;
+
+         //we allow delete only if we have items that can be edited (depends on dev mode)
+         var editableTemplates = SelectedTemplates.Where(_presenter.CanEdit).ToList();
+         if (!editableTemplates.Any())
+            return;
+
+         var deleteSelectedMenuItem = new DXMenuItem(PKSimConstants.MenuNames.Delete, (obj, args) => _presenter.Delete(editableTemplates), ApplicationIcons.Delete);
+         gridViewMenu.Items.Insert(0, deleteSelectedMenuItem);
       }
 
       private void onShowingEditor(object sender, CancelEventArgs e)
