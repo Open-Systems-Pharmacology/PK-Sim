@@ -29,7 +29,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      public override bool IsChangedByCreateIndividual
+      /*public override bool IsChangedByCreateIndividual
       {
          get
          {
@@ -70,7 +70,7 @@ namespace PKSim.Core.Model
 
             return false;
          }
-      }
+      }*/
 
       private bool isInFatOrMuscleOrLungOrPortailVein()
       {

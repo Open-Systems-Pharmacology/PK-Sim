@@ -23,6 +23,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters.Events;
 using PKSim.Core;
+using System.Collections.Generic;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -64,6 +65,9 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
       private bool _enabled;
       private SimulationState _simulationState;
+      private List<string> _activePIs;
+      private string _currentlyActivePI;
+      private readonly IEventPublisher _eventPublisher;
 
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
@@ -72,7 +76,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
          IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider,
-         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever) : base(view, menuBarItemRepository, mruProvider)
+         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever, IEventPublisher eventPublisher) : base(view, menuBarItemRepository, mruProvider)
       {
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;
@@ -81,6 +85,8 @@ namespace PKSim.Presentation.Presenters.Main
          _workspace = workspace;
          _activeSubjectRetriever = activeSubjectRetriever;
          _enabled = true;
+         _activePIs = new List<string>();
+         _eventPublisher = eventPublisher;
       }
 
       protected override void AddRibbonPages()
@@ -126,11 +132,11 @@ namespace PKSim.Presentation.Presenters.Main
          _view.CreateDynamicPageCategory(RibbonCategories.ParameterIdentification, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.SensitivityAnalysis, Color.LightGreen);
 
-         _dynamicRibbonPageCache.Add(typeof (IndividualSimulation), PKSimConstants.RibbonCategories.IndividualSimulation);
-         _dynamicRibbonPageCache.Add(typeof (PopulationSimulation), PKSimConstants.RibbonCategories.PopulationSimulation);
-         _dynamicRibbonPageCache.Add(typeof (PopulationSimulationComparison), PKSimConstants.RibbonCategories.PopulationSimulationComparison);
-         _dynamicRibbonPageCache.Add(typeof (ParameterIdentification), RibbonCategories.ParameterIdentification);
-         _dynamicRibbonPageCache.Add(typeof (SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);
+         _dynamicRibbonPageCache.Add(typeof(IndividualSimulation), PKSimConstants.RibbonCategories.IndividualSimulation);
+         _dynamicRibbonPageCache.Add(typeof(PopulationSimulation), PKSimConstants.RibbonCategories.PopulationSimulation);
+         _dynamicRibbonPageCache.Add(typeof(PopulationSimulationComparison), PKSimConstants.RibbonCategories.PopulationSimulationComparison);
+         _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
+         _dynamicRibbonPageCache.Add(typeof(SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);
 
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.RunSimulation), PKSimConstants.RibbonPages.RunSimulation, PKSimConstants.RibbonCategories.IndividualSimulation);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.IndividualSimulationAnalyses), PKSimConstants.RibbonPages.RunSimulation, PKSimConstants.RibbonCategories.IndividualSimulation);
@@ -357,7 +363,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.LoadObserverSet].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.NewExpressionProfile].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadExpressionProfile].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled ;
+         _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparisonInAnalyze].Enabled = enabled;
@@ -510,18 +516,24 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
+         _currentlyActivePI = parameterIdentification.Id;
+         _parameterIdentificationRunning = _activePIs.Contains(parameterIdentification.Id);
          updateParameterIdentificationItems(parameterIdentification);
+         _eventPublisher.PublishEvent(new ParameterIdentificationSelectedEvent(parameterIdentification));
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
+         _activePIs.Add(parameterIdentificationEvent.ParameterIdentification.Id);
          _parameterIdentificationRunning = true;
          updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
       {
-         _parameterIdentificationRunning = false;
+         _activePIs.Remove(parameterIdentificationEvent.ParameterIdentification.Id);
+         if (parameterIdentificationEvent.ParameterIdentification.Id == _currentlyActivePI)
+            _parameterIdentificationRunning = false;
          updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
