@@ -29,6 +29,7 @@ namespace PKSim.Core.Model
          }
       }
 
+      //ToDo: @michael -> No longer virtual so it cannot be overwriten
       /*public override bool IsChangedByCreateIndividual
       {
          get
