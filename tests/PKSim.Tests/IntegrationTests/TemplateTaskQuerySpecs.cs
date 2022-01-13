@@ -129,7 +129,7 @@ namespace PKSim.IntegrationTests
       public void system_database_should_contain_expected_number_of_templates()
       {
          _individuals.Count.ShouldBeEqualTo(0);
-         _compounds.Count.ShouldBeEqualTo(24);
+         _compounds.Count.ShouldBeEqualTo(10);
          _formulations.Count.ShouldBeEqualTo(1);
          _protocols.Count.ShouldBeEqualTo(2);
       }
