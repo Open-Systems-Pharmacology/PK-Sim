@@ -23,7 +23,6 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters.Events;
 using PKSim.Core;
-using System.Collections.Generic;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -65,8 +64,6 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
       private bool _enabled;
       private SimulationState _simulationState;
-      private List<string> _activePIs;
-      private string _currentlyActivePI;
 
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
@@ -84,7 +81,6 @@ namespace PKSim.Presentation.Presenters.Main
          _workspace = workspace;
          _activeSubjectRetriever = activeSubjectRetriever;
          _enabled = true;
-         _activePIs = new List<string>();
       }
 
       protected override void AddRibbonPages()
@@ -514,23 +510,18 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
-         _currentlyActivePI = parameterIdentification.Id;
-         _parameterIdentificationRunning = _activePIs.Contains(parameterIdentification.Id);
          updateParameterIdentificationItems(parameterIdentification);
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
-         _activePIs.Add(parameterIdentificationEvent.ParameterIdentification.Id);
          _parameterIdentificationRunning = true;
          updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
       {
-         _activePIs.Remove(parameterIdentificationEvent.ParameterIdentification.Id);
-         if (parameterIdentificationEvent.ParameterIdentification.Id == _currentlyActivePI)
-            _parameterIdentificationRunning = false;
+         _parameterIdentificationRunning = false;
          updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
