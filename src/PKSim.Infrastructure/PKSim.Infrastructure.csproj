@@ -65,6 +65,14 @@
     <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="11.0.37" />
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="11.0.37" />
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.0.37" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="10.0.371-rsgvdwow" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
   </ItemGroup>
 
