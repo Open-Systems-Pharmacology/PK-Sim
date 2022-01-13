@@ -129,15 +129,9 @@ namespace PKSim.IntegrationTests
       public void system_database_should_contain_expected_number_of_templates()
       {
          _individuals.Count.ShouldBeEqualTo(0);
-         _compounds.Count.ShouldBeEqualTo(24);
+         _compounds.Count.ShouldBeEqualTo(0);
          _formulations.Count.ShouldBeEqualTo(1);
          _protocols.Count.ShouldBeEqualTo(2);
-      }
-
-      [Observation]
-      public void system_database_should_contain_new_templates()
-      {
-         _compounds.FindByName("Digoxin").ShouldNotBeNull();
       }
    }
 
@@ -248,7 +242,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_load_the_template_and_delete_the_referece()
+      public void should_be_able_to_load_the_template_and_delete_the_reference()
       {
          sut.LoadTemplateAsync<Compound>(_template).ShouldNotBeNull();
          sut.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound).ShouldBeFalse();
