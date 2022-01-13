@@ -508,6 +508,8 @@ namespace PKSim.Assets
             }
          }
 
+         public const string CKDOnlyAvailableForAdult = "Chronic kidney disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
+
          public const string EventTemplateNotDefined = "Event template not defined.";
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
@@ -641,6 +643,11 @@ namespace PKSim.Assets
          public static string CouldNotFindGenderForPopulation(string gender, string population, IEnumerable<string> availableGenders)
          {
             return $"Could not find gender '{gender}' for population '{population}'.\nAvailable genders  are:\n\t{availableGenders.ToString("\n\t")}";
+         }
+
+         public static string CannotFindDiseaseState(string diseaseState, string population)
+         {
+            return $"Could not find disease state '{diseaseState}' for population '{population}'.";
          }
 
          public static string CouldNotFindCalculationMethodInCategory(string calculationMethod, string category, IEnumerable<string> availableCategories)
@@ -1268,6 +1275,7 @@ namespace PKSim.Assets
          public static readonly string Snapshot = "Snapshot";
          public static readonly string ObserverSet = "Observers";
          public static readonly string ExpressionProfile = "Expression Profile";
+         public static readonly string DiseaseState = "Disease State";
       }
 
       public static class ProteinExpressions
@@ -2220,6 +2228,8 @@ namespace PKSim.Assets
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
          public static readonly string TemplateSource = "Template Source";
          public static readonly string LoadExpressionFromDatabase = "Database Query";
+         public static readonly string DiseaseState = "Disease State";
+         public static readonly string Select = "Select";
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 

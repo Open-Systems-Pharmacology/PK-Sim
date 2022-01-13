@@ -8,9 +8,9 @@ using FakeItEasy;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_NodeToCustomableParametersPresenterMapper : ContextSpecification<INodeToCustomableParametersPresenterMapper>
+   public abstract class concern_for_NodeToCustomableParametersPresenterMapper : ContextSpecification<INodeToCustomizableParametersPresenterMapper>
    {
-      protected IParameterGroupToCustomableParametersPresenter _parameterGroupPresenterMapper;
+      protected IParameterGroupToCustomizableParametersPresenter _parameterGroupPresenterMapper;
       protected IContainerToCustomableParametersPresenterMapper _containerPresentrMapper;
       protected IMultiParameterEditPresenter _multiEditPresenter;
       protected IMultiParameterEditPresenterFactory _multiEditPresenterFactory;
@@ -18,11 +18,11 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _multiEditPresenter = A.Fake<IMultiParameterEditPresenter>();
-         _parameterGroupPresenterMapper = A.Fake<IParameterGroupToCustomableParametersPresenter>();
+         _parameterGroupPresenterMapper = A.Fake<IParameterGroupToCustomizableParametersPresenter>();
          _containerPresentrMapper = A.Fake<IContainerToCustomableParametersPresenterMapper>();
          _multiEditPresenterFactory = A.Fake<IMultiParameterEditPresenterFactory>();
          A.CallTo(() => _multiEditPresenterFactory.Create()).Returns(_multiEditPresenter);
-         sut = new NodeToCustomableParametersPresenterMapper(_containerPresentrMapper, _parameterGroupPresenterMapper, _multiEditPresenterFactory);
+         sut = new NodeToCustomizableParametersPresenterMapper(_containerPresentrMapper, _parameterGroupPresenterMapper, _multiEditPresenterFactory);
       }
    }
 

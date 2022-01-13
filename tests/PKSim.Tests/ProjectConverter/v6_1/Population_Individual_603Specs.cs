@@ -47,7 +47,7 @@ namespace PKSim.ProjectConverter.v6_1
       }
 
       [Observation]
-      public void should_have_set_the_value_of_parameter_use_as_suspenssion_to_zero()
+      public void should_have_set_the_value_of_parameter_use_as_suspension_to_zero()
       {
          _formulation.Parameter(Constants.Parameters.USE_AS_SUSPENSION).Value.ShouldBeEqualTo(0);
       }

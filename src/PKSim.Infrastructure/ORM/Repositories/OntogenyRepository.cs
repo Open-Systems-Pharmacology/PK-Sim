@@ -86,7 +86,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public double OntogenyFactorFor(Ontogeny ontogeny, string containerName, OriginData originData, RandomGenerator randomGenerator = null)
       {
-         return OntogenyFactorFor(ontogeny, containerName, originData.Age, originData.GestationalAge, randomGenerator);
+         return OntogenyFactorFor(ontogeny, containerName, originData.Age?.Value, originData.GestationalAge?.Value, randomGenerator);
       }
 
       public double OntogenyFactorFor(Ontogeny ontogeny, string containerName, double? age, double? gestationalAge, RandomGenerator randomGenerator)
@@ -101,7 +101,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public double PlasmaProteinOntogenyFactor(string protein, OriginData originData, RandomGenerator randomGenerator = null)
       {
-         return PlasmaProteinOntogenyFactor(protein, originData.Age, originData.GestationalAge, originData.Species.Name, randomGenerator);
+         return PlasmaProteinOntogenyFactor(protein, originData.Age?.Value, originData.GestationalAge?.Value, originData.Species.Name, randomGenerator);
       }
 
       public double PlasmaProteinOntogenyFactor(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator)
@@ -123,7 +123,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             return new List<Sample>();
 
          var pma = postmenstrualAgeInYearsFor(originData);
-         var gaInYears = inYears(originData.GestationalAge.GetValueOrDefault(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS));
+         var gaInYears = inYears(originData.GestationalAge?.Value ?? CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS);
 
          var ontogenies = AllValuesFor(ontogeny, containerName)
             .Where(x => x.PostmenstrualAge > pma)
@@ -171,7 +171,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private double postmenstrualAgeInYearsFor(OriginData originData)
       {
-         return postmenstrualAgeInYearsFor(originData.Age, originData.GestationalAge);
+         return postmenstrualAgeInYearsFor(originData.Age?.Value, originData.GestationalAge?.Value);
       }
 
       private double postmenstrualAgeInYearsFor(double? ageInYears, double? gestationalAge)

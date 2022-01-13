@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
     public class FlatRepresentationInfoRepository : MetaDataRepository<RepresentationInfo>, IFlatRepresentationInfoRepository
     {
        public FlatRepresentationInfoRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<RepresentationInfo> mapper) :
-            base(dbGateway, mapper, CoreConstants.ORM.ViewRepresentationInfos)
+            base(dbGateway, mapper, CoreConstants.ORM.VIEW_REPRESENTATION_INFOS)
         {
         }
     }

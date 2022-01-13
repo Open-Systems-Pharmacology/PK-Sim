@@ -39,18 +39,22 @@ namespace PKSim.UI.Views.Parameters
          this.cbGroupingMode = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.layoutGroupTrees = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemGroupingType = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemTreeView = new DevExpress.XtraLayout.LayoutControlItem();
          this.groupParameters = new DevExpress.XtraEditors.GroupControl();
          this._toolTipController = new DevExpress.Utils.ToolTipController(this.components);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainer.Panel1)).BeginInit();
+         this.splitContainer.Panel1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainer.Panel2)).BeginInit();
+         this.splitContainer.Panel2.SuspendLayout();
          this.splitContainer.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlTree)).BeginInit();
          this.layoutControlTree.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbGroupingMode.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupTrees)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGroupingType)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemTreeView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.groupParameters)).BeginInit();
          this.SuspendLayout();
          // 
@@ -60,8 +64,14 @@ namespace PKSim.UI.Views.Parameters
          this.splitContainer.Location = new System.Drawing.Point(0, 0);
          this.splitContainer.Margin = new System.Windows.Forms.Padding(0);
          this.splitContainer.Name = "splitContainer";
+         // 
+         // splitContainer.Panel1
+         // 
          this.splitContainer.Panel1.Controls.Add(this.layoutControlTree);
          this.splitContainer.Panel1.Text = "Panel1";
+         // 
+         // splitContainer.Panel2
+         // 
          this.splitContainer.Panel2.Controls.Add(this.groupParameters);
          this.splitContainer.Panel2.Text = "Panel2";
          this.splitContainer.Size = new System.Drawing.Size(695, 533);
@@ -77,6 +87,8 @@ namespace PKSim.UI.Views.Parameters
          this.layoutControlTree.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControlTree.Location = new System.Drawing.Point(0, 0);
          this.layoutControlTree.Name = "layoutControlTree";
+         this.layoutControlTree.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1335, 346, 650, 400);
+         this.layoutControlTree.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
          this.layoutControlTree.Root = this.layoutGroupTrees;
          this.layoutControlTree.Size = new System.Drawing.Size(185, 533);
          this.layoutControlTree.TabIndex = 1;
@@ -84,31 +96,31 @@ namespace PKSim.UI.Views.Parameters
          // 
          // _filterTreeView
          // 
-         this._filterTreeView.Location = new System.Drawing.Point(3, 3);
+         this._filterTreeView.Location = new System.Drawing.Point(2, 2);
          this._filterTreeView.Name = "_filterTreeView";
          this._filterTreeView.ShowDescendantNode = true;
-         this._filterTreeView.Size = new System.Drawing.Size(179, 503);
+         this._filterTreeView.Size = new System.Drawing.Size(181, 501);
          this._filterTreeView.TabIndex = 7;
          // 
          // cbGroupingMode
          // 
-         this.cbGroupingMode.Location = new System.Drawing.Point(3, 510);
+         this.cbGroupingMode.Location = new System.Drawing.Point(4, 509);
          this.cbGroupingMode.Name = "cbGroupingMode";
          this.cbGroupingMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbGroupingMode.Size = new System.Drawing.Size(179, 20);
+         this.cbGroupingMode.Size = new System.Drawing.Size(177, 20);
          this.cbGroupingMode.StyleController = this.layoutControlTree;
          this.cbGroupingMode.TabIndex = 6;
          // 
          // layoutGroupTrees
          // 
          this.layoutGroupTrees.CustomizationFormText = "layoutGroupTrees";
+         this.layoutGroupTrees.GroupBordersVisible = false;
          this.layoutGroupTrees.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemGroupingType,
-            this.layoutControlItem1});
-         this.layoutGroupTrees.Location = new System.Drawing.Point(0, 0);
-         this.layoutGroupTrees.Name = "layoutControlGroup1";
-         this.layoutGroupTrees.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
+            this.layoutItemTreeView});
+         this.layoutGroupTrees.Name = "Root";
+         this.layoutGroupTrees.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 2, 0);
          this.layoutGroupTrees.Size = new System.Drawing.Size(185, 533);
          this.layoutGroupTrees.Text = "layoutGroupTrees";
          this.layoutGroupTrees.TextVisible = false;
@@ -117,33 +129,30 @@ namespace PKSim.UI.Views.Parameters
          // 
          this.layoutItemGroupingType.Control = this.cbGroupingMode;
          this.layoutItemGroupingType.CustomizationFormText = "layoutItemGroupingType";
-         this.layoutItemGroupingType.Location = new System.Drawing.Point(0, 507);
+         this.layoutItemGroupingType.Location = new System.Drawing.Point(0, 505);
          this.layoutItemGroupingType.Name = "layoutItemGroupingType";
-         this.layoutItemGroupingType.Size = new System.Drawing.Size(183, 24);
-         this.layoutItemGroupingType.Text = "layoutItemGroupingType";
+         this.layoutItemGroupingType.Padding = new DevExpress.XtraLayout.Utils.Padding(4, 4, 4, 4);
+         this.layoutItemGroupingType.Size = new System.Drawing.Size(185, 28);
          this.layoutItemGroupingType.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemGroupingType.TextToControlDistance = 0;
          this.layoutItemGroupingType.TextVisible = false;
          // 
-         // layoutControlItem1
+         // layoutItemTreeView
          // 
-         this.layoutControlItem1.Control = this._filterTreeView;
-         this.layoutControlItem1.CustomizationFormText = "layoutControlItem1";
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(183, 507);
-         this.layoutControlItem1.Text = "layoutControlItem1";
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextToControlDistance = 0;
-         this.layoutControlItem1.TextVisible = false;
+         this.layoutItemTreeView.Control = this._filterTreeView;
+         this.layoutItemTreeView.CustomizationFormText = "layoutItemTreeView";
+         this.layoutItemTreeView.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemTreeView.Name = "layoutItemTreeView";
+         this.layoutItemTreeView.Size = new System.Drawing.Size(185, 505);
+         this.layoutItemTreeView.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemTreeView.TextVisible = false;
          // 
          // groupParameters
          // 
+         this.groupParameters.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
          this.groupParameters.Dock = System.Windows.Forms.DockStyle.Fill;
          this.groupParameters.Location = new System.Drawing.Point(0, 0);
          this.groupParameters.Name = "groupParameters";
-         this.groupParameters.Padding = new System.Windows.Forms.Padding(10);
-         this.groupParameters.Size = new System.Drawing.Size(505, 533);
+         this.groupParameters.Size = new System.Drawing.Size(500, 533);
          this.groupParameters.TabIndex = 3;
          this.groupParameters.Text = "groupParameters";
          // 
@@ -155,6 +164,10 @@ namespace PKSim.UI.Views.Parameters
          this.Name = "ParameterGroupsView";
          this.Size = new System.Drawing.Size(695, 533);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainer.Panel1)).EndInit();
+         this.splitContainer.Panel1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainer.Panel2)).EndInit();
+         this.splitContainer.Panel2.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
          this.splitContainer.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlTree)).EndInit();
@@ -162,7 +175,7 @@ namespace PKSim.UI.Views.Parameters
          ((System.ComponentModel.ISupportInitialize)(this.cbGroupingMode.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupTrees)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGroupingType)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemTreeView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.groupParameters)).EndInit();
          this.ResumeLayout(false);
 
@@ -178,7 +191,7 @@ namespace PKSim.UI.Views.Parameters
       private OSPSuite.UI.Controls.UxLayoutControl layoutControlTree;
       private DevExpress.Utils.ToolTipController _toolTipController;
       private FilterTreeView _filterTreeView;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemTreeView;
    }
 }
 

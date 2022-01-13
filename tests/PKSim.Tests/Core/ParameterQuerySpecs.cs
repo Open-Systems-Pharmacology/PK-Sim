@@ -26,7 +26,7 @@ namespace PKSim.Core
          _containerPathRetriever = A.Fake<IEntityPathResolver>();
          A.CallTo(() => _containerPathRetriever.PathFor(_compartment)).Returns(containerPath);
          _originData = new OriginData();
-         _originData.SpeciesPopulation = new SpeciesPopulation();
+         _originData.Population = new SpeciesPopulation();
          var distributionDefinition = new ParameterDistributionMetaData();
          var rateDefinition = new ParameterRateMetaData();
          var valueDefinition = new ParameterValueMetaData();

@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -219,6 +220,41 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_creating_a_population_for_a_ckd_individual : concern_for_PopulationSimulation
+   {
+      private Population _population;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
+         var diseaseState = diseaseStateRepository.FindByName(CoreConstants.DiseaseStates.CKD);
+         _individual.OriginData.DiseaseState = diseaseState;
+         var param = diseaseState.Parameter(CKDDiseaseStateImplementation.TARGET_GFR);
+         _individual.OriginData.AddDiseaseStateParameter(new OriginDataParameter {Name = param.Name, Value = param.Value, Unit = param.DisplayUnitName()});
+         _protocol = DomainFactoryForSpecs.CreateStandardIVProtocol();
+         _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_population, _compound, _protocol) as PopulationSimulation;
+      }
+
+      [Observation]
+      public void should_have_created_a_population_with_new_changed_by_create_individual_algorithm()
+      {
+         var parameterPath = new[] {Constants.ORGANISM, CoreConstants.Parameters.PLASMA_PROTEIN_SCALE_FACTOR}.ToPathString();
+         _population.IndividualValuesCache.Has(parameterPath).ShouldBeTrue();
+      }
+
+      [Observation]
+      public async Task should_be_able_to_simulate_the_simulation()
+      {
+         var simulationEngine = IoC.Resolve<IPopulationSimulationEngine>();
+         var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
+         simSettingsRetriever.CreatePKSimDefaults(_simulation);
+         await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
+         _simulation.HasResults.ShouldBeTrue();
+      }
+   }
+
    public class When_setting_the_value_of_the_hematocrit_parameter_in_the_individual : concern_for_IndividualSimulation
    {
       public override void GlobalContext()
@@ -270,7 +306,7 @@ namespace PKSim.IntegrationTests
       {
          var simulationExporter = IoC.Resolve<IMoBiExportTask>();
          await simulationExporter.ExportSimulationToPkmlFileAsync(_simulation, "C:\\temp\\bug.pkml");
-      
+
          var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
          await simulationEngine.RunAsync(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
@@ -296,12 +332,12 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
 
          var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
-         var individualProtein = enzymeFactory.AddMoleculeTo(_individual,_enzymeName);
+         var individualProtein = enzymeFactory.AddMoleculeTo(_individual, _enzymeName);
          individualProtein.Ontogeny = new UserDefinedOntogeny() {Table = createOntogenyTable()};
          _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
 
          var containerTask = IoC.Resolve<IContainerTask>();
-         _individual.OriginData.Age = 2;
+         _individual.OriginData.Age = new OriginDataParameter(2);
          _allDistributedParameter = containerTask.CacheAllChildren<IDistributedParameter>(_individual);
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
          _simulation.AllowAging = true;

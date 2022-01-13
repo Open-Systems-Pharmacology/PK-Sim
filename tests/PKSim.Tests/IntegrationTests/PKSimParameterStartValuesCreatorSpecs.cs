@@ -28,7 +28,7 @@ namespace PKSim.IntegrationTests
       protected override void Because()
       {
          var compoundName = _simulation.CompoundNames.First();
-         var parameter = _simulation.Model.Root.EntityAt<IParameter>(compoundName, CoreConstantsForSpecs.Parameter.BLOOD_PLASMA_CONCENTRATION_RATIO);
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(compoundName, CoreConstantsForSpecs.Parameters.BLOOD_PLASMA_CONCENTRATION_RATIO);
          parameter.Value = 10;
          _parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          _psv = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false).ParameterStartValues;

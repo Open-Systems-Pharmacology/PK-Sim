@@ -78,7 +78,7 @@ namespace PKSim.Core
          var meanParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("Mean");
          A.CallTo(() => _parameter.MeanParameter).Returns(meanParameter);
 
-         _originData = new OriginData {Age = 12};
+         _originData = new OriginData { Age = new OriginDataParameter(12)};
          A.CallTo(() => _distrFormulaFactory.CreateDiscreteDistributionFormulaFor(_parameter, meanParameter)).Returns(new DiscreteDistributionFormula());
       }
 
@@ -88,7 +88,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_distributon_formula_of_type_discrete_distribution()
+      public void should_return_a_distribution_formula_of_type_discrete_distribution()
       {
          _resultingDistribution.IsAnImplementationOf<DiscreteDistributionFormula>().ShouldBeTrue();
       }

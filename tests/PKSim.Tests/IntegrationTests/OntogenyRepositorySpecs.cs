@@ -28,7 +28,7 @@ namespace PKSim.IntegrationTests
          _originData = new OriginData
          {
             Species = new Species {Name = CoreConstants.Species.HUMAN},
-            Age = 0.8
+            Age = new OriginDataParameter(0.8)
          };
       }
 
@@ -69,15 +69,15 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_retrieve_the_value_for_the_given_age_and_gestational_age()
       {
-         _originData.Age = 5 / 12.0; //5month
-         _originData.GestationalAge = 30; //30 weeks
+         _originData.Age = new OriginDataParameter(5 / 12.0);     //5month
+         _originData.GestationalAge = new OriginDataParameter(30); //30 weeks
          var v1 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData);
 
-         _originData.Age = 6 / 12.0; //6month
-         _originData.GestationalAge = 26; //26 weeks
+         _originData.Age = new OriginDataParameter(6 / 12.0);     //6month
+         _originData.GestationalAge = new OriginDataParameter(26); //26 weeks
          var v2 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData);
 
-         _originData.Age = 0.5 - 14.0 / 52.0;
+         _originData.Age = new OriginDataParameter(0.5 - 14.0 / 52.0);
          _originData.GestationalAge = null;
          var v3 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData);
 
@@ -103,8 +103,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_always_create_different_values_based_on_the_distribution()
       {
-         _originData.Age = 5 / 12.0; //5month
-         _originData.GestationalAge = 30; //30 weeks
+         _originData.Age = new OriginDataParameter(5 / 12.0);     //5month
+         _originData.GestationalAge = new OriginDataParameter(30); //30 weeks
          var v1 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData, _randomGenerator);
          var v2 = sut.OntogenyFactorFor(CYP3A4, CoreConstants.Organ.LIVER, _originData, _randomGenerator);
 
@@ -145,7 +145,7 @@ namespace PKSim.IntegrationTests
          A.CallTo(() => _userDefinedOntogeny.PostmenstrualAges()).Returns(new [] {1, 2, 3f});
          A.CallTo(() => _userDefinedOntogeny.OntogenyFactors()).Returns(new [] {0, 1, 31f});
          A.CallTo(() => _userDefinedOntogeny.Deviations()).Returns(new [] {1, 1, 1f});
-         _originData = new OriginData { Species = new Species { Name = CoreConstants.Species.HUMAN }, Age = 1, GestationalAge = 24};
+         _originData = new OriginData { Species = new Species { Name = CoreConstants.Species.HUMAN }, Age = new OriginDataParameter(1), GestationalAge = new OriginDataParameter(24)};
       }
 
       [Observation]
@@ -165,7 +165,7 @@ namespace PKSim.IntegrationTests
          _adultOriginData = new OriginData
          {
             Species = new Species {Name = CoreConstants.Species.HUMAN}, 
-            Age = 30
+            Age = new OriginDataParameter(30)
          };
       }
 
@@ -183,7 +183,7 @@ namespace PKSim.IntegrationTests
    public class When_retrieving_all_ontogeny_factors_for_a_protein_strict_bigger_than_a_given_PMA_using_a_random_factor : concern_for_OntogenyRepository
    {
       private readonly RandomGenerator _randomGenerator = new RandomGenerator();
-      private readonly OriginData _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}, GestationalAge = 25, Age = 0};
+      private readonly OriginData _originData = new OriginData {Species = new Species {Name = CoreConstants.Species.HUMAN}, GestationalAge = new OriginDataParameter(25), Age = new OriginDataParameter(0)};
       private IReadOnlyList<Sample> _resultRandom;
       private IReadOnlyList<Sample> _resultMean;
 

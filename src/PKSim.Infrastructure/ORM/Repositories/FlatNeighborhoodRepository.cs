@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly ICache<string, FlatNeighborhood> _flatNeighborhoodsCachedByName;
 
       public FlatNeighborhoodRepository(IDbGateway dbGateway,IDataTableToMetaDataMapper<FlatNeighborhood> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewNeighborhoods)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_NEIGHBORHOODS)
       {
          _flatNeighborhoodsCachedById = new Cache<int, FlatNeighborhood>(x => x.Id);
          _flatNeighborhoodsCachedByName = new Cache<string, FlatNeighborhood>(x => x.Name);

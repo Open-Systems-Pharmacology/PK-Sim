@@ -17,7 +17,9 @@ namespace PKSim.Presentation.Presenters.Individuals
    {
       private readonly IParameterGroupsPresenter _parameterGroupsPresenter;
 
-      public IndividualParametersPresenter(IIndividualParametersView view, IParameterGroupsPresenter parameterGroupsPresenter) : base(view)
+      public IndividualParametersPresenter(
+         IIndividualParametersView view, 
+         IParameterGroupsPresenter parameterGroupsPresenter) : base(view)
       {
          _parameterGroupsPresenter = parameterGroupsPresenter;
          _parameterGroupsPresenter.NoSelectionCaption = PKSimConstants.Information.NoParametersInIndividualSelection;

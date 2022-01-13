@@ -397,7 +397,7 @@ namespace PKSim.Infrastructure.Services
       {
          addUndefinedValueTo(genderMetaData);
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
-         foreach (var gender in defaultIndividual.AvailableGenders())
+         foreach (var gender in defaultIndividual.AvailableGenders)
          {
             addInfoToCategory(genderMetaData, gender);
          }
@@ -509,7 +509,7 @@ namespace PKSim.Infrastructure.Services
          nameCategory.ListOfValues.Clear();
 
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
-         foreach (var gender in defaultIndividual.AvailableGenders())
+         foreach (var gender in defaultIndividual.AvailableGenders)
          {
             nameCategory.ListOfValues.Add(gender.Name, gender.Name);
          }

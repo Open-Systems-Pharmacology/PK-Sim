@@ -31,7 +31,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected override void DoStart()
       {
          foreach (var flatEventGroupContainer in _flatContainerRepo.All()
-            .Where(c => c.Type.Equals(CoreConstants.ContainerType.EventGroup) &&
+            .Where(c => c.Type.Equals(CoreConstants.ContainerType.EVENT_GROUP) &&
                         !c.ParentId.HasValue))
          {
             var eventGroupBuilder = _eventGroupMapper.MapFrom(flatEventGroupContainer);

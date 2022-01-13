@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly ICache<string, ICache<int, IEnumerable<FlatModelContainer>>> _allContainerCache = new Cache<string, ICache<int, IEnumerable<FlatModelContainer>>>();
 
       public FlatModelContainerRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatModelContainer> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewModelContainers)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_MODEL_CONTAINERS)
       {
       }
 

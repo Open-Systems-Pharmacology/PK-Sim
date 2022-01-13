@@ -110,7 +110,7 @@ namespace PKSim.Core.Services
 
       private void randomizeDistributedParameterIn(Individual individual, RandomGenerator randomGenerator)
       {
-         //all distribued parameters in individual that are not standard parameters
+         //all distributed parameters in individual that are not standard parameters
          var allDistributedParameters = _containerTask.CacheAllChildrenSatisfying<IDistributedParameter>(
             individual, p => !CoreConstants.Parameters.StandardCreateIndividualParameters.Contains(p.Name));
 
@@ -257,7 +257,7 @@ namespace PKSim.Core.Services
       private void setOrganVolumesTo(Individual individual, double[] organVolumes)
       {
          int organIndex = 0;
-         foreach (var organ in individual.AllOrgans())
+         foreach (var organ in individual.AllOrgans)
          {
             var volumeParameter = organ.Parameter(Constants.Parameters.VOLUME);
             volumeParameter.Value = organVolumes[organIndex];
@@ -366,9 +366,9 @@ namespace PKSim.Core.Services
 
       private double[] createRandomOrgansVolumesFrom(Individual individual, RandomGenerator randomGenerator, Func<IMuSigma, RandomGenerator, double> generateVolumeFunction)
       {
-         var allOrgans = individual.AllOrgans().ToList();
-         var organVolumes = new double[allOrgans.Count()];
-         _organDensity = new double[allOrgans.Count()];
+         var allOrgans = individual.AllOrgans.ToList();
+         var organVolumes = new double[allOrgans.Count];
+         _organDensity = new double[allOrgans.Count];
 
          int iOrganIndex = 0;
          foreach (var organ in allOrgans)
@@ -394,9 +394,9 @@ namespace PKSim.Core.Services
 
       private double[] createDefaultOrgansVolumesFrom(Individual individual)
       {
-         var allOrgans = individual.AllOrgans().ToList();
-         var organVolumes = new double[allOrgans.Count()];
-         _organDensity = new double[allOrgans.Count()];
+         var allOrgans = individual.AllOrgans.ToList();
+         var organVolumes = new double[allOrgans.Count];
+         _organDensity = new double[allOrgans.Count];
 
          int iOrganIndex = 0;
          foreach (var organ in allOrgans)
@@ -420,7 +420,7 @@ namespace PKSim.Core.Services
       private void initializeMusAndSigmas(Individual individual)
       {
          //retrieve disitribution parameters for volumes parameters
-         foreach (var organ in individual.AllOrgans())
+         foreach (var organ in individual.AllOrgans)
          {
             var volumeParameter = organ.Parameter(Constants.Parameters.VOLUME);
             var allometricScaleFactor = volumeParameter.ParentContainer.Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR).Value;

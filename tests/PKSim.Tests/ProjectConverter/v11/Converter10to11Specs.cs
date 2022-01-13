@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v11;
 using PKSim.IntegrationTests;
 
@@ -36,6 +37,34 @@ namespace PKSim.ProjectConverter.v11
          var cyp3A4 = ind.MoleculeByName<IndividualEnzyme>("CYP3A4");
          var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, ind.Species, ind.Name));
          expressionProfile.ShouldNotBeNull();
+      }
+
+
+      [Observation]
+      public void should_have_converted_the_origin_data_value_to_origin_data_parameters()
+      {
+         var ind = _allIndividuals.FindByName("Human");
+         ind.OriginData.Age.ShouldNotBeNull();
+         ind.OriginData.Height.ShouldNotBeNull();
+         ind.OriginData.Weight.ShouldNotBeNull();
+         ind.OriginData.BMI.ShouldNotBeNull();
+         ind.OriginData.GestationalAge.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_added_the_eGFR_parameter()
+      {
+         var ind = _allIndividuals.FindByName("Human");
+         var parameter = ind.Organism.EntityAt<IParameter>(CoreConstants.Organ.KIDNEY, ConverterConstants.Parameters.E_GFR);
+         parameter.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_converted_the_population_in_origin_data()
+      {
+         var pop = _allPopulations.FindByName("Pop");
+         var ind = pop.FirstIndividual;
+         ind.OriginData.Population.ShouldNotBeNull();
       }
    }
 
@@ -74,6 +103,39 @@ namespace PKSim.ProjectConverter.v11
          var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species, pop.Name));
          expressionProfile.ShouldNotBeNull();
       }
+
+
+      [Observation]
+      public void should_have_converted_the_origin_data_value_to_origin_data_parameters()
+      {
+         var pop = _allPopulations.FindByName("POP");
+         var ind = pop.FirstIndividual;
+         ind.OriginData.Age.ShouldNotBeNull();
+         ind.OriginData.Height.ShouldNotBeNull();
+         ind.OriginData.Weight.ShouldNotBeNull();
+         ind.OriginData.BMI.ShouldNotBeNull();
+         ind.OriginData.GestationalAge.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_rendered_the_parameter_required_as_is_changed_by_created_individual()
+      {
+         var ind = _allIndividuals.FindByName("IND");
+         ind.AgeParameter.IsChangedByCreateIndividual.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_set_the_fraction_of_blood_for_sampling_parameter_visible()
+      {
+         var ind = _allIndividuals.FindByName("IND");
+         var parameters = ind.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.FRACTION_OF_BLOOD_FOR_SAMPLING));
+         parameters.Each(x =>
+         {
+            x.Visible.ShouldBeTrue();
+            x.Info.ReadOnly.ShouldBeFalse();
+            x.GroupName.ShouldBeEqualTo("FRACTION_OF_BLOOD_SAMPLING");
+         });
+      }
    }
 
    public class When_converting_the_expression_v10_project_to_11 : ContextWithLoadedProject<Converter10to11>
@@ -104,5 +166,6 @@ namespace PKSim.ProjectConverter.v11
          var allInitialConcentrationParameters = pop.FirstIndividual.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION));
          allInitialConcentrationParameters.Each(x=>x.CanBeVariedInPopulation.ShouldBeFalse());
       }
+
    }
 }

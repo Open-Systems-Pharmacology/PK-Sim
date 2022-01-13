@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatParameterRHSRepository(IDbGateway dbGateway,
                                     IDataTableToMetaDataMapper<FlatParameterRHS> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewParameterRHS)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_PARAMETER_RHS)
       {
       }
    }

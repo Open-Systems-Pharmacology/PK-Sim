@@ -64,10 +64,6 @@ namespace PKSim.UI.Views.Individuals
          panelExpression.FillWith(expressionsView);
       }
 
-      public string GroupCaption
-      {
-         set => layoutGroupExpression.Text = value;
-      }
 
       public void AttachPresenter(IMoleculesPresenter presenter)
       {

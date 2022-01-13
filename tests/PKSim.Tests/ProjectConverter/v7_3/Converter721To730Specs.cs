@@ -145,14 +145,14 @@ namespace PKSim.ProjectConverter.v7_3
       [Observation]
       public void should_have_updated_the_value_origin_to_use_the_value_description_of_previous_parameters()
       {
-         var tubularSecretion = _tubularSecretionProcess.Parameter(CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION);
+         var tubularSecretion = _tubularSecretionProcess.Parameter(CoreConstantsForSpecs.Parameters.TUBULAR_SECRETION);
          string.IsNullOrEmpty(tubularSecretion.ValueOrigin.Description).ShouldNotBeNull();
       }
 
       [Observation]
       public void should_have_set_the_is_input_value_to_true_for_process_parameters_changed_by_the_user()
       {
-         var tubularSecretion = _tubularSecretionProcess.Parameter(CoreConstantsForSpecs.Parameter.TUBULAR_SECRETION);
+         var tubularSecretion = _tubularSecretionProcess.Parameter(CoreConstantsForSpecs.Parameters.TUBULAR_SECRETION);
          tubularSecretion.IsDefault.ShouldBeFalse();
       }
 

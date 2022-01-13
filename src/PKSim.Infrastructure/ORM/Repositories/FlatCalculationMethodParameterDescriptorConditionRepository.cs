@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatCalculationMethodParameterDescriptorConditionRepository(IDbGateway dbGateway,
                                        IDataTableToMetaDataMapper<FlatCalculationMethodParameterDescriptorCondition> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewCalculationMethodParameterDescriptorConditions)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_CALCULATION_METHOD_PARAMETER_DESCRIPTOR_CONDITIONS)
       {
       }
    }

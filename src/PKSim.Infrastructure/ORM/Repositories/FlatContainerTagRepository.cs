@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatContainerTagRepository(IDbGateway dbGateway,
                                         IDataTableToMetaDataMapper<FlatContainerTag> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewContainerTags)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_CONTAINER_TAGS)
       {
       }
    }

@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatModelContainerMoleculeRepository(IDbGateway dbGateway,
                                           IDataTableToMetaDataMapper<FlatModelContainerMolecule> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewModelContainerMolecules)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_MODEL_CONTAINER_MOLECULES)
       {
       }
 

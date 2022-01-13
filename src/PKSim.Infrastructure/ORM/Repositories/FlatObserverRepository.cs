@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatObserverRepository(IDbGateway dbGateway,
                                     IDataTableToMetaDataMapper<FlatObserver> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewObservers)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_OBSERVERS)
       {
       }
    }

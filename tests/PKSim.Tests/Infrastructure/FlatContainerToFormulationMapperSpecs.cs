@@ -34,7 +34,7 @@ namespace PKSim.Infrastructure
          base.Context();
          _formulation = A.Fake< PKSim.Core.Model.Formulation>();
          _formulationFlatContainer = new FlatContainer();
-         _formulationFlatContainer.Type = CoreConstants.ContainerType.Formulation;
+         _formulationFlatContainer.Type = CoreConstants.ContainerType.FORMULATION;
          _formulationFlatContainer.Name = "tralal";
          A.CallTo(() => _containerIdToFormulationMapper.MapFrom(_formulationFlatContainer)).Returns(_formulation);
 

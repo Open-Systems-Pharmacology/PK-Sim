@@ -8,8 +8,6 @@ namespace PKSim.Presentation.Views.Populations
    {
       void BindTo(PopulationSettingsDTO populationSettingsDTO);
       bool CreatingPopulation { get; set; }
-      bool GenderSelectionVisible { get; set; }
       void UpdateLayoutForEditing();
-      string Population { get; set; }
    }
 }

@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatApplicationRepository(IDbGateway dbGateway,
                                        IDataTableToMetaDataMapper<FlatApplication> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewApplications)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_APPLICATIONS)
       {
       }
    }

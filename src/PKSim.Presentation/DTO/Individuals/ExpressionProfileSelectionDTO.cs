@@ -9,7 +9,14 @@ namespace PKSim.Presentation.DTO.Individuals
 {
    public class ExpressionProfileSelectionDTO : ValidatableDTO
    {
-      public ExpressionProfile ExpressionProfile { get; set; }
+      private ExpressionProfile _expressionProfile;
+
+      public ExpressionProfile ExpressionProfile
+      {
+         get => _expressionProfile;
+         set => SetProperty(ref _expressionProfile, value);
+      }
+
       public IReadOnlyList<string> AllExistingMolecules { get; set; } = new List<string>();
 
       public ExpressionProfileSelectionDTO()

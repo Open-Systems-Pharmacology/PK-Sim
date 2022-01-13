@@ -97,8 +97,8 @@ namespace PKSim.UI.Views.Parameters
 
       public string GroupCaption
       {
-         set { groupParameters.Text = value; }
-         get { return groupParameters.Text; }
+         set => groupParameters.Text = value;
+         get => groupParameters.Text;
       }
 
       public override string Caption => PKSimConstants.UI.Parameters;

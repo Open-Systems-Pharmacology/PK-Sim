@@ -202,12 +202,12 @@ namespace PKSim.Core.Model
 
       public IFormula DoseFromDosePerBodyWeightFor(IFormulaCache formulaCache)
       {
-         return RateFor(CoreConstants.CalculationMethod.ApplicationParameter, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT, formulaCache);
+         return RateFor(CoreConstants.CalculationMethod.APPLICATION_PARAMETER, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_WEIGHT, formulaCache);
       }
 
       public IFormula DoseFromDosePerBodySurfaceAreaFor(IFormulaCache formulaCache)
       {
-         return RateFor(CoreConstants.CalculationMethod.ApplicationParameter_Human, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA, formulaCache);
+         return RateFor(CoreConstants.CalculationMethod.APPLICATION_PARAMETER_HUMAN, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA, formulaCache);
       }
 
       private IFormulaUsablePath pathInParentContainerFor(IParameter parameter, string alias)

@@ -4,19 +4,20 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Presenters.Parameters.Mappers
 {
-   public interface INodeToCustomableParametersPresenterMapper : IMapper<ITreeNode, ICustomParametersPresenter>
+   public interface INodeToCustomizableParametersPresenterMapper : IMapper<ITreeNode, ICustomParametersPresenter>
    {
    }
 
-   public class NodeToCustomableParametersPresenterMapper : INodeToCustomableParametersPresenterMapper
+   public class NodeToCustomizableParametersPresenterMapper : INodeToCustomizableParametersPresenterMapper
    {
       private readonly IContainerToCustomableParametersPresenterMapper _containerPresenterMapper;
-      private readonly IParameterGroupToCustomableParametersPresenter _parameterGroupPresenterMapper;
+      private readonly IParameterGroupToCustomizableParametersPresenter _parameterGroupPresenterMapper;
       private readonly IMultiParameterEditPresenterFactory _multiParameterEditPresenterFactory;
 
-      public NodeToCustomableParametersPresenterMapper(IContainerToCustomableParametersPresenterMapper containerPresenterMapper,
-                                                       IParameterGroupToCustomableParametersPresenter parameterGroupPresenterMapper,
-                                                       IMultiParameterEditPresenterFactory multiParameterEditPresenterFactory)
+      public NodeToCustomizableParametersPresenterMapper(
+         IContainerToCustomableParametersPresenterMapper containerPresenterMapper,
+         IParameterGroupToCustomizableParametersPresenter parameterGroupPresenterMapper,
+         IMultiParameterEditPresenterFactory multiParameterEditPresenterFactory)
       {
          _containerPresenterMapper = containerPresenterMapper;
          _parameterGroupPresenterMapper = parameterGroupPresenterMapper;

@@ -39,6 +39,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new IconSizeAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new DosingIntervalXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new LabelGenerationStrategyXmlAttributeMapper());
+         AttributeMapperRepository.AddAttributeMapper(new DiseaseStateXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<TransportDirectionId, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<Localization, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<OrganType, SerializationContext>());

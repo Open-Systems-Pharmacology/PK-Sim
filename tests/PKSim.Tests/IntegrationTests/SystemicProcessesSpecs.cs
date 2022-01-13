@@ -201,11 +201,11 @@ namespace PKSim.IntegrationTests
       {
          var processName = CoreConstants.CompositeNameFor(_compound.Name, _liverClearance.Name);
          var processContainer = _simulation.Model.Root.EntityAt<Container>(processName);
-         processContainer.Parameter(CoreConstantsForSpecs.Parameter.ENZYME_CONCENTRATION).Value.ShouldBeEqualTo(1);
-         processContainer.Parameter(CoreConstantsForSpecs.Parameter.ENZYME_CONCENTRATION).Visible.ShouldBeFalse();
+         processContainer.Parameter(CoreConstantsForSpecs.Parameters.ENZYME_CONCENTRATION).Value.ShouldBeEqualTo(1);
+         processContainer.Parameter(CoreConstantsForSpecs.Parameters.ENZYME_CONCENTRATION).Visible.ShouldBeFalse();
 
-         processContainer.Parameter(CoreConstantsForSpecs.Parameter.CL_SPEC_PER_ENZYME).Value.ShouldBeEqualTo(processContainer.Parameter(CoreConstants.Parameters.SPECIFIC_CLEARANCE).Value);
-         processContainer.Parameter(CoreConstantsForSpecs.Parameter.CL_SPEC_PER_ENZYME).Visible.ShouldBeFalse();
+         processContainer.Parameter(CoreConstantsForSpecs.Parameters.CL_SPEC_PER_ENZYME).Value.ShouldBeEqualTo(processContainer.Parameter(CoreConstants.Parameters.SPECIFIC_CLEARANCE).Value);
+         processContainer.Parameter(CoreConstantsForSpecs.Parameters.CL_SPEC_PER_ENZYME).Visible.ShouldBeFalse();
       }
 
       [Observation]
