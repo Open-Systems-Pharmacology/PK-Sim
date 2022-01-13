@@ -34,41 +34,41 @@
          public static readonly string LIVERMICROSOMERES = "LiverMicrosomeRes";
       }
 
-      public static class Parameter
+      public static class Parameters
       {
-         public static readonly string KINACT = "kinact";
-         public static readonly string EC50 = "EC50";
-         public static readonly string BLOOD_PLASMA_CONCENTRATION_RATIO = "Blood/Plasma concentration ratio";
-         public static readonly string ENZYME_CONCENTRATION = "Enzyme concentration";
-         public static readonly string CL_SPEC_PER_ENZYME = "CLspec/[Enzyme]";
-         public static readonly string NUMBER_OF_CELLS_PER_INCUBATION = "Number of cells/incubation";
-         public static readonly string INTESTINAL_TRANSIT_RATE_ABSOLUTE = "Intestinal transit rate (absolute)";
-         public static readonly string DRUG_MASS = "DrugMass";
-         public static readonly string PARTICLE_RADIUS_DISSOLVED = "Immediately dissolve particles smaller than";
-         public static readonly string THICKNESS_WATER_LAYER = "Thickness (unstirred water layer)";
-         public static readonly string INFUSION_TIME = "Infusion time";
-         public static readonly string START_TIME = "Start time";
-         public static readonly string VOLUME_OF_WATER_PER_BODYWEIGHT = "Volume of water/body weight";
-         public static readonly string HILL_COEFFICIENT = "Hill coefficient";
-         public static readonly string IN_VITRO_CL_FOR_LIVER_MICROSOMES = "In vitro CL for liver microsomes";
-         public static readonly string IN_VITRO_CL_FOR_RECOMBINANT_ENZYMES = "In vitro CL/recombinant enzyme";
-         public static readonly string IN_VITRO_VMAX_FOR_LIVER_MICROSOMES = "In vitro Vmax for liver microsomes";
-         public static readonly string IN_VITRO_VMAX_FOR_RECOMBINANT_ENZYMES = "In vitro Vmax/recombinant enzyme";
-         public static readonly string IN_VITRO_VMAX_FOR_TRANSPORTER = "In vitro Vmax/transporter";
-         public static readonly string INTRINSIC_CLEARANCE = "Intrinsic clearance";
-         public static readonly string KD = "Kd";
-         public static readonly string KM = "Km";
-         public static readonly string KOFF = "koff";
-         public static readonly string MEASURING_TIME = "Measuring time";
-         public static readonly string PLASMA_CLEARANCE = "Plasma clearance";
-         public static readonly string HALF_LIFE_HEPATOCYTE_ASSAY = "t1/2 (hepatocyte assay)";
-         public static readonly string HALF_LIFE_MICROSOMAL_ASSAY = "t1/2 (microsomal assay)";
-         public static readonly string TRANSPORTER_CONCENTRATION = "Transporter concentration";
-         public static readonly string TS_MAX = "TSmax";
-         public static readonly string TUBULAR_SECRETION = "Tubular secretion";
-         public static readonly string VMAX = "Vmax";
-         public static readonly string VMAX_LIVER_TISSUE = "Vmax (liver tissue)";
-         public static readonly string VOLUME = "Volume";
+         public const string KINACT = "kinact";
+         public const string EC50 = "EC50";
+         public const string BLOOD_PLASMA_CONCENTRATION_RATIO = "Blood/Plasma concentration ratio";
+         public const string ENZYME_CONCENTRATION = "Enzyme concentration";
+         public const string CL_SPEC_PER_ENZYME = "CLspec/[Enzyme]";
+         public const string NUMBER_OF_CELLS_PER_INCUBATION = "Number of cells/incubation";
+         public const string INTESTINAL_TRANSIT_RATE_ABSOLUTE = "Intestinal transit rate (absolute)";
+         public const string DRUG_MASS = "DrugMass";
+         public const string PARTICLE_RADIUS_DISSOLVED = "Immediately dissolve particles smaller than";
+         public const string THICKNESS_WATER_LAYER = "Thickness (unstirred water layer)";
+         public const string INFUSION_TIME = "Infusion time";
+         public const string START_TIME = "Start time";
+         public const string VOLUME_OF_WATER_PER_BODYWEIGHT = "Volume of water/body weight";
+         public const string HILL_COEFFICIENT = "Hill coefficient";
+         public const string IN_VITRO_CL_FOR_LIVER_MICROSOMES = "In vitro CL for liver microsomes";
+         public const string IN_VITRO_CL_FOR_RECOMBINANT_ENZYMES = "In vitro CL/recombinant enzyme";
+         public const string IN_VITRO_VMAX_FOR_LIVER_MICROSOMES = "In vitro Vmax for liver microsomes";
+         public const string IN_VITRO_VMAX_FOR_RECOMBINANT_ENZYMES = "In vitro Vmax/recombinant enzyme";
+         public const string IN_VITRO_VMAX_FOR_TRANSPORTER = "In vitro Vmax/transporter";
+         public const string INTRINSIC_CLEARANCE = "Intrinsic clearance";
+         public const string KD = "Kd";
+         public const string KM = "Km";
+         public const string KOFF = "koff";
+         public const string MEASURING_TIME = "Measuring time";
+         public const string PLASMA_CLEARANCE = "Plasma clearance";
+         public const string HALF_LIFE_HEPATOCYTE_ASSAY = "t1/2 (hepatocyte assay)";
+         public const string HALF_LIFE_MICROSOMAL_ASSAY = "t1/2 (microsomal assay)";
+         public const string TRANSPORTER_CONCENTRATION = "Transporter concentration";
+         public const string TS_MAX = "TSmax";
+         public const string TUBULAR_SECRETION = "Tubular secretion";
+         public const string VMAX = "Vmax";
+         public const string VMAX_LIVER_TISSUE = "Vmax (liver tissue)";
+
       }
 
       public static class ContainerName

@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatCompoundProcessParameterMappingRepository : MetaDataRepository<FlatCompoundProcessParameterMapping>, IFlatCompoundProcessParameterMappingRepository
    {
       public FlatCompoundProcessParameterMappingRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatCompoundProcessParameterMapping> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewCompoundProcessParameterMappings)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_COMPOUND_PROCESS_PARAMETER_MAPPINGS)
       {
       }
    }

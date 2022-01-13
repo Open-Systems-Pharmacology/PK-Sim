@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PKSim.Core.Extensions
 {
@@ -12,7 +13,7 @@ namespace PKSim.Core.Extensions
       /// <param name="list">A sequence in which to locate a value.</param>
       /// <param name="value">The object to locate in the sequence</param>
       /// <returns>The zero-based index of the first occurrence of value within the entire sequence, if found; otherwise, –1.</returns>
-      public static int IndexOf<TSource>(this IEnumerable<TSource> list, TSource value) 
+      public static int IndexOf<TSource>(this IEnumerable<TSource> list, TSource value)
       {
          return list.IndexOf(value, (x, y) => Equals(x, y));
       }
@@ -49,5 +50,10 @@ namespace PKSim.Core.Extensions
       /// <returns>The zero-based index of the first occurrence of value within the entire sequence, if found; otherwise, –1.</returns>
       public static int IndexOf<TSource>(this IEnumerable<TSource> list, TSource value, IEqualityComparer<TSource> comparer)
          => list.IndexOf(value, comparer.Equals);
+
+      /// <summary>
+      ///    Returns true if there are at least two elements in the list (>1) otherwise false
+      /// </summary>
+      public static bool HasAtLeastTwo<TSource>(this IEnumerable<TSource> list) => list.Count() > 1;
    }
 }

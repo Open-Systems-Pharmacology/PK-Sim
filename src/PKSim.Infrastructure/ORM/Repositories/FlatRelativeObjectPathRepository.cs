@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public FlatRelativeObjectPathRepository(IDbGateway dbGateway,
          IDataTableToMetaDataMapper<FlatRelativeObjectPath> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewObjectPaths)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_OBJECT_PATHS)
       {
          _flatObjectPaths = new Cache<long, FlatRelativeObjectPath>();
       }

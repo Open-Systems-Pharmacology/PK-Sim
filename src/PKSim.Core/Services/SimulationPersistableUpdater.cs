@@ -35,19 +35,19 @@ namespace PKSim.Core.Services
       private void addRequiredOutputForSimulation(IContainer organism, Compound compound)
       {
          //make sure venous blood plasma is always selected so that PK can be calculated as well
-         updatePeristable(organism, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA,
+         updatePersistable(organism, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA,
             compound.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
 
          //make sure peripheral venous blood plasma is always selected so that PK can be calculated as well
-         updatePeristable(organism, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, compound.Name,
+         updatePersistable(organism, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, compound.Name,
             CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD);
 
          //make sure lumen FabsOral is always selected for fabs calculation
-         updatePeristable(organism, CoreConstants.Organ.LUMEN, compound.Name,
+         updatePersistable(organism, CoreConstants.Organ.LUMEN, compound.Name,
             CoreConstants.Observer.FABS_ORAL);
       }
 
-      private void updatePeristable(IContainer container, params string[] path)
+      private void updatePersistable(IContainer container, params string[] path)
       {
          var observer = container.EntityAt<Observer>(path);
          if (observer == null) return;

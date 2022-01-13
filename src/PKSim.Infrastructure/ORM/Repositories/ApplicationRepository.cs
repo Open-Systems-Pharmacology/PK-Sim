@@ -33,7 +33,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
-         foreach (var flatApplicContainer in _flatContainerRepository.All().Where(c => string.Equals(c.Type, CoreConstants.ContainerType.Application)))
+         foreach (var flatApplicContainer in _flatContainerRepository.All().Where(c => string.Equals(c.Type, CoreConstants.ContainerType.APPLICATION)))
          {
             var applicationType = applicationTypeFrom(flatApplicContainer);
             if (string.IsNullOrEmpty(applicationType))

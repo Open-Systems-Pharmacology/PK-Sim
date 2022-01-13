@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatParameterValueVersionRepository : MetaDataRepository<FlatParameterValueVersion>, IFlatParameterValueVersionRepository
    {
       public FlatParameterValueVersionRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatParameterValueVersion> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewParameterValueVersions)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_PARAMETER_VALUE_VERSIONS)
       {
       }
    }

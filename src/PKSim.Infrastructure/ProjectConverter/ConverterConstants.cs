@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using PKSim.Core;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Infrastructure.ProjectConverter
 {
@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure.ProjectConverter
 
       public static class Parameters
       {
-         public static readonly string PeripheralBloodFlowFraction = "Peripheral blood flow fraction";
+         public static readonly string PERIPHERAL_BLOOD_FLOW_FRACTION = "Peripheral blood flow fraction";
          public static readonly string PlasmaClearance = "Plasma clearance";
          public static readonly string GastricEmptyingTime = "Gastric emptying time";
          public static readonly string SITT = "Small intestinal transit time";
@@ -38,16 +38,19 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string TabletTimeDelayFactor = "Tablet time delay factor";
          public static readonly string FRACTION_ENDOSOMAL = "Fraction endosomal";
          public static readonly string NORM_SUFFIX = " (normalized)";
+         public static readonly string FRACTION_OF_BLOOD_FOR_SAMPLING = "Fraction of blood for sampling";
+         public const string E_GFR = "eGFR";
+         public const string GFR = "GFR";
 
          public static string NormParameterFor(string parameter)
          {
             return $"{parameter}{NORM_SUFFIX}";
          }
 
-         public static readonly string REL_EXP_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP);
-         public static readonly string REL_EXP_BLOOD_CELLS_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS);
-         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_PLASMA);
-         public static readonly string REL_EXP_VASCULAR_ENDOTHELIUM_NORM = NormParameterFor(CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
+         public static readonly string REL_EXP_NORM = NormParameterFor(REL_EXP);
+         public static readonly string REL_EXP_BLOOD_CELLS_NORM = NormParameterFor(REL_EXP_BLOOD_CELLS);
+         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(REL_EXP_PLASMA);
+         public static readonly string REL_EXP_VASCULAR_ENDOTHELIUM_NORM = NormParameterFor(REL_EXP_VASCULAR_ENDOTHELIUM);
 
          public static IList<string> DistributedParametersWithOnlyOneSupportingPoint => new List<string>
          {
@@ -60,7 +63,6 @@ namespace PKSim.Infrastructure.ProjectConverter
             SITT,
             EffectiveSurfaceAreaVariabilityFactor
          };
-
       }
 
       public static class CalculationMethod

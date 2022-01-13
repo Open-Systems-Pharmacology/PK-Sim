@@ -125,7 +125,7 @@ namespace PKSim.IntegrationTests
       {
          var genderCovariates = _results.AllCovariateValuesFor(Constants.Population.GENDER);
          genderCovariates.Count.ShouldBeEqualTo(50);
-         genderCovariates.Distinct().ShouldOnlyContain(CoreConstants.Gender.Male, CoreConstants.Gender.Female);
+         genderCovariates.Distinct().ShouldOnlyContain(CoreConstants.Gender.MALE, CoreConstants.Gender.FEMALE);
          var raceCovariate = _results.AllCovariateValuesFor(Constants.Population.POPULATION);
          raceCovariate.Count.ShouldBeEqualTo(50);
          raceCovariate.Distinct().ShouldOnlyContain(CoreConstants.Population.ICRP);

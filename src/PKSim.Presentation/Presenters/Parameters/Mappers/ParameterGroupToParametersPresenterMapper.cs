@@ -11,15 +11,15 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters.Parameters.Mappers
 {
-   public interface IParameterGroupToCustomableParametersPresenter : IMapper<IGroup, ICustomParametersPresenter>
+   public interface IParameterGroupToCustomizableParametersPresenter : IMapper<IGroup, ICustomParametersPresenter>
    {
    }
 
-   public class ParameterGroupToCustomableParametersPresenter : IParameterGroupToCustomableParametersPresenter
+   public class ParameterGroupToCustomizableParametersPresenter : IParameterGroupToCustomizableParametersPresenter
    {
       private readonly IContainer _container;
 
-      public ParameterGroupToCustomableParametersPresenter(IContainer container)
+      public ParameterGroupToCustomizableParametersPresenter(IContainer container)
       {
          _container = container;
       }

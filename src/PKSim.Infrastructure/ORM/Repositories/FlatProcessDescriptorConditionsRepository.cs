@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatProcessDescriptorConditionRepository(IDbGateway dbGateway,
                                                       IDataTableToMetaDataMapper<FlatProcessDescriptorCondition> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewProcessDescriptorConditions)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_PROCESS_DESCRIPTOR_CONDITIONS)
       {
       }
    }

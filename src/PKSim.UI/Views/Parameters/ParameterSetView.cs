@@ -51,6 +51,12 @@ namespace PKSim.UI.Views.Parameters
       protected IGridViewColumn _columnFavorites;
       protected readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
 
+      //Design only
+      public ParameterSetView()
+      {
+         InitializeComponent();
+      }
+
       public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          InitializeComponent();

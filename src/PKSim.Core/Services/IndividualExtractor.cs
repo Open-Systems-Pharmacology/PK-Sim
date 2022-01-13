@@ -132,7 +132,7 @@ namespace PKSim.Core.Services
          updateOriginDataFromIndividual(individual, originData);
 
          originData.Gender = population.AllGenders(_genderRepository)[individualId];
-         originData.SpeciesPopulation = population.AllSpeciesPopulations(_populationRepository)[individualId];
+         originData.Population = population.AllSpeciesPopulations(_populationRepository)[individualId];
 
          return _individualTask.AddToProject(individual, editBuildingBlock: false, addToHistory: false);
       }
@@ -140,18 +140,25 @@ namespace PKSim.Core.Services
       private static void updateOriginDataFromIndividual(Individual individual, OriginData originData)
       {
          var organism = individual.Organism;
-         originData.Age = organism.Parameter(CoreConstants.Parameters.AGE)?.Value;
-         originData.GestationalAge = organism.Parameter(Constants.Parameters.GESTATIONAL_AGE)?.Value;
-         originData.Height = organism.Parameter(CoreConstants.Parameters.HEIGHT)?.Value;
-         originData.BMI = organism.Parameter(CoreConstants.Parameters.BMI)?.Value;
-         originData.Weight = organism.Parameter(CoreConstants.Parameters.WEIGHT).Value;
+         originData.Age = originDataParameterFrom(organism.Parameter(CoreConstants.Parameters.AGE));
+         originData.GestationalAge = originDataParameterFrom(organism.Parameter(Constants.Parameters.GESTATIONAL_AGE));
+         originData.Height = originDataParameterFrom(organism.Parameter(CoreConstants.Parameters.HEIGHT));
+         originData.BMI = originDataParameterFrom(organism.Parameter(CoreConstants.Parameters.BMI));
+         originData.Weight = originDataParameterFrom(organism.Parameter(CoreConstants.Parameters.WEIGHT));
       }
 
-      private void updateParameterValue(Population population, int individualId, IParameter parameter, PathCache<IParameter> exctractedIndividualParameterCache)
+      private static OriginDataParameter originDataParameterFrom(IParameter parameter)
+      {
+         if (parameter == null)
+            return null;
+
+         return new OriginDataParameter(parameter.Value, parameter.Dimension.BaseUnit.Name);
+      }
+      private void updateParameterValue(Population population, int individualId, IParameter parameter, PathCache<IParameter> extractedIndividualParameterCache)
       {
          var parameterPath = _entityPathResolver.PathFor(parameter);
          var parameterValues = population.AllValuesFor(parameterPath);
-         var extractedParameter = exctractedIndividualParameterCache[parameterPath];
+         var extractedParameter = extractedIndividualParameterCache[parameterPath];
          var value = parameterValues[individualId];
 
          if (!shouldUpdateParameter(extractedParameter, value))

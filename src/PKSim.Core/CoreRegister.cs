@@ -64,7 +64,7 @@ namespace PKSim.Core
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();
          });
-
+         
          container.Register<ICoreSimulationFactory, SimulationFactory>();
          container.Register<ISetParameterTask,  ParameterTask>(LifeStyle.Transient);
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IExecutionContext>>();

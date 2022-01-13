@@ -1,9 +1,10 @@
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
    public interface IIndividualItemPresenter : ISubPresenter
    {
-      void EditIndividual(PKSim.Core.Model.Individual individualToEdit);
+      void EditIndividual(Individual individualToEdit);
    }
 }

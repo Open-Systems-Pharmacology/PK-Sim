@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Model
 {
@@ -24,7 +25,7 @@ namespace PKSim.Core.Model
          set => OntogenyFactorParameter.Value = value;
       }
 
-      public IParameter OntogenyFactorParameter => this.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR);
+      public IParameter OntogenyFactorParameter => this.Parameter(ONTOGENY_FACTOR);
 
       public virtual double OntogenyFactorGI
       {
@@ -32,18 +33,27 @@ namespace PKSim.Core.Model
          set => OntogenyFactorGIParameter.Value = value;
       }
 
-      public IParameter OntogenyFactorGIParameter => this.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI);
+      public IParameter OntogenyFactorGIParameter => this.Parameter(ONTOGENY_FACTOR_GI);
+
+      public IParameter DiseaseFactorParameter => this.Parameter(DISEASE_FACTOR);
+
+      public virtual double DiseaseFactor
+      {
+         get => DiseaseFactorParameter.Value;
+         set => DiseaseFactorParameter.Value = value;
+      }
+
 
       public virtual bool HasQuery()
       {
          return !string.IsNullOrEmpty(QueryConfiguration);
       }
 
-      public virtual IParameter ReferenceConcentration => this.Parameter(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
+      public virtual IParameter ReferenceConcentration => this.Parameter(REFERENCE_CONCENTRATION);
 
-      public virtual IParameter HalfLifeLiver => this.Parameter(CoreConstants.Parameters.HALF_LIFE_LIVER);
+      public virtual IParameter HalfLifeLiver => this.Parameter(HALF_LIFE_LIVER);
 
-      public virtual IParameter HalfLifeIntestine => this.Parameter(CoreConstants.Parameters.HALF_LIFE_INTESTINE);
+      public virtual IParameter HalfLifeIntestine => this.Parameter(HALF_LIFE_INTESTINE);
 
       public IReadOnlyList<IParameter> AllGlobalMoleculeParameters => new[] {ReferenceConcentration, HalfLifeLiver, HalfLifeIntestine};
 

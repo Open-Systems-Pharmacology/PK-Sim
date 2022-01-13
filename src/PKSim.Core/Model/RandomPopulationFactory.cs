@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
@@ -24,8 +23,14 @@ namespace PKSim.Core.Model
       /// </summary>
       /// <param name="populationSettings">Population settings used to create the population</param>
       /// <param name="cancellationToken">Allows the called to cancel the task</param>
-      /// <param name="seed">If provided, the seed will be used to generate random values and will overwrite the seed created in the population</param>
-      /// <param name="addMoleculeParametersVariability">If set to <c>true</c> (default), default parameter variability will be created for all molecules for which information is available in the database </param>
+      /// <param name="seed">
+      ///    If provided, the seed will be used to generate random values and will overwrite the seed created in
+      ///    the population
+      /// </param>
+      /// <param name="addMoleculeParametersVariability">
+      ///    If set to <c>true</c> (default), default parameter variability will be
+      ///    created for all molecules for which information is available in the database
+      /// </param>
       Task<RandomPopulation> CreateFor(RandomPopulationSettings populationSettings, CancellationToken cancellationToken, int? seed = null, bool addMoleculeParametersVariability = true);
    }
 
@@ -42,14 +47,23 @@ namespace PKSim.Core.Model
       private readonly IReportGenerator _reportGenerator;
       private readonly IMoleculeParameterVariabilityCreator _moleculeParameterVariabilityCreator;
       private readonly IMoleculeOntogenyVariabilityUpdater _moleculeOntogenyVariabilityUpdater;
+      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
       private Queue<Gender> _genderQueue;
       private const int _maxIterations = 100;
 
-      public RandomPopulationFactory(IObjectBaseFactory objectBaseFactory,
-         IProgressManager progressManager, IIndividualModelTask individualModelTask,
-         ICreateIndividualAlgorithm createIndividualAlgorithm, IIndividualToIndividualValuesMapper individualValuesMapper,
-         IContainerTask containerTask, ICloner cloner, IDistributedParametersUpdater distributedParametersUpdater,
-         IReportGenerator reportGenerator, IMoleculeParameterVariabilityCreator moleculeParameterVariabilityCreator, IMoleculeOntogenyVariabilityUpdater moleculeOntogenyVariabilityUpdater)
+      public RandomPopulationFactory(
+         IObjectBaseFactory objectBaseFactory,
+         IProgressManager progressManager,
+         IIndividualModelTask individualModelTask,
+         ICreateIndividualAlgorithm createIndividualAlgorithm,
+         IIndividualToIndividualValuesMapper individualValuesMapper,
+         IContainerTask containerTask,
+         ICloner cloner,
+         IDistributedParametersUpdater distributedParametersUpdater,
+         IReportGenerator reportGenerator,
+         IMoleculeParameterVariabilityCreator moleculeParameterVariabilityCreator,
+         IMoleculeOntogenyVariabilityUpdater moleculeOntogenyVariabilityUpdater,
+         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
       {
          _objectBaseFactory = objectBaseFactory;
          _progressManager = progressManager;
@@ -62,6 +76,7 @@ namespace PKSim.Core.Model
          _reportGenerator = reportGenerator;
          _moleculeParameterVariabilityCreator = moleculeParameterVariabilityCreator;
          _moleculeOntogenyVariabilityUpdater = moleculeOntogenyVariabilityUpdater;
+         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
       }
 
       public Task<RandomPopulation> CreateFor(RandomPopulationSettings populationSettings, CancellationToken cancellationToken, int? seed = null, bool addMoleculeParametersVariability = true)
@@ -75,11 +90,12 @@ namespace PKSim.Core.Model
                fllUpGenderQueueBasedOn(populationSettings);
                progressUpdater.Initialize(populationSettings.NumberOfIndividuals, PKSimConstants.UI.CreatingPopulation);
 
+               var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(populationSettings.BaseIndividual);
                //the base individual is used to retrieve the default values. 
-               var baseIndividual = populationSettings.BaseIndividual;
+               var baseIndividual = diseaseStateImplementation.CreateBaseIndividualForPopulation(populationSettings.BaseIndividual);
 
                //current individual defined as a clone of the based individual. The current individual will be the one varying 
-               var currentIndividual = _cloner.Clone(populationSettings.BaseIndividual);
+               var currentIndividual = _cloner.Clone(baseIndividual);
 
                //cache containing all parameters changed by the create individual from the current individual. This will be used just as reference to the current parameters
                var allChangedByCreatedIndividualParameters = getAllCreateIndividualParametersFrom(currentIndividual);
@@ -88,7 +104,7 @@ namespace PKSim.Core.Model
                var allBaseDistributedParameters = getAllDistributedParametersFrom(baseIndividual);
 
                //all individual parameters. Just an optimization to avoid call GetAllChildren for each individual
-               var allIndividualParameters = currentIndividual.GetAllChildren<IParameter>().ToList();
+               var allCurrentIndividualParameters = currentIndividual.GetAllChildren<IParameter>();
 
                int maxTotalIterations = populationSettings.NumberOfIndividuals * _maxIterations;
                uint numberOfTry = 0;
@@ -105,12 +121,19 @@ namespace PKSim.Core.Model
                      throw new CannotCreatePopulationWithConstraintsException(_reportGenerator.StringReportFor(populationSettings));
 
                   //create a new individual based on population settings defined by the user
-                  updateCurrentIndividualFromSettings(populationSettings, currentIndividual, allDistributedParameters, allBaseDistributedParameters, currentGender, randomPopulation.RandomGenerator);
+                  updateCurrentIndividualFromSettings(populationSettings, baseIndividual, currentIndividual, allDistributedParameters, allBaseDistributedParameters, currentGender, randomPopulation.RandomGenerator);
 
-                  bool success = tryRandomize(currentIndividual, populationSettings, allIndividualParameters, randomPopulation.RandomGenerator);
-                  if (!success) continue;
+                  var success = tryRandomize(currentIndividual, populationSettings, allCurrentIndividualParameters, randomPopulation.RandomGenerator);
+                  if (!success)
+                     continue;
+
+                  success = diseaseStateImplementation.ApplyForPopulationTo(currentIndividual);
+                  if (!success)
+                     continue;
 
                   randomPopulation.AddIndividualValues(_individualValuesMapper.MapFrom(currentIndividual, allChangedByCreatedIndividualParameters));
+
+                  diseaseStateImplementation.ResetParametersAfterPopulationIteration(currentIndividual);
 
                   currentGender = _genderQueue.Dequeue();
                   progressUpdater.IncrementProgress(PKSimConstants.UI.CreatingIndividualInPopulation(randomPopulation.NumberOfItems, populationSettings.NumberOfIndividuals));
@@ -119,7 +142,7 @@ namespace PKSim.Core.Model
                if (numberOfTry >= maxTotalIterations)
                   throw new CannotCreatePopulationWithConstraintsException(_reportGenerator.StringReportFor(populationSettings));
 
-               if(addMoleculeParametersVariability)
+               if (addMoleculeParametersVariability)
                   _moleculeParameterVariabilityCreator.AddVariabilityTo(randomPopulation);
 
                _moleculeOntogenyVariabilityUpdater.UpdateAllOntogenies(randomPopulation);
@@ -130,7 +153,6 @@ namespace PKSim.Core.Model
          }, cancellationToken);
       }
 
- 
       private RandomPopulation createPopulationFor(RandomPopulationSettings populationSettings, int? seed)
       {
          var randomPopulation = _objectBaseFactory.Create<RandomPopulation>();
@@ -152,7 +174,7 @@ namespace PKSim.Core.Model
             var bodyWeightParameter = _individualModelTask.MeanOrganismParameter(individual.OriginData, CoreConstants.Parameters.MEAN_WEIGHT);
             _createIndividualAlgorithm.Randomize(individual, bodyWeightParameter, bodyWeightRange.MinValue, bodyWeightRange.MaxValue, allIndividualParameters, randomGenerator);
 
-            if (!individual.OriginData.SpeciesPopulation.IsHeightDependent)
+            if (!individual.OriginData.Population.IsHeightDependent)
                return true;
 
             //last: Check if the value for the bmi is in the interval
@@ -166,14 +188,17 @@ namespace PKSim.Core.Model
          }
       }
 
-      private void updateCurrentIndividualFromSettings(RandomPopulationSettings populationSettings, Individual currentIndividual,
-         PathCache<IDistributedParameter> allCurrentDistributedParameters, 
-         PathCache<IDistributedParameter> allBaseDistributedParameters, 
+      private void updateCurrentIndividualFromSettings(
+         RandomPopulationSettings populationSettings,
+         Individual baseIndividual,
+         Individual currentIndividual,
+         PathCache<IDistributedParameter> allCurrentDistributedParameters,
+         PathCache<IDistributedParameter> allBaseDistributedParameters,
          Gender currentGender,
          RandomGenerator randomGenerator)
       {
          //clone of the original origin data
-         currentIndividual.OriginData = populationSettings.BaseIndividual.OriginData.Clone();
+         currentIndividual.OriginData = baseIndividual.OriginData.Clone();
          currentIndividual.OriginData.Gender = currentGender;
 
          //perform random variation of the origin data according to the settings defined for the population
@@ -217,32 +242,42 @@ namespace PKSim.Core.Model
       {
          bool success = true;
          var originData = currentIndividual.OriginData;
+         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(originData.DiseaseState);
          uint numberOfTry = 0;
          do
          {
             numberOfTry++;
 
             //first create a new age value if necessary
-            if (originData.SpeciesPopulation.IsAgeDependent)
+            if (originData.Population.IsAgeDependent)
             {
-               originData.Age = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.AGE, randomGenerator, out success);
+               originData.Age = new OriginDataParameter(createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.AGE, randomGenerator, out success));
                currentIndividual.Organism.Parameter(CoreConstants.Parameters.AGE).Value = originData.Age.Value;
                if (!success) continue;
             }
 
-            if (originData.SpeciesPopulation.IsPreterm)
+            if (originData.Population.IsPreterm)
             {
-               originData.GestationalAge = createDiscreteRandomValueFor(populationSettings, Constants.Parameters.GESTATIONAL_AGE, randomGenerator, out success);
+               originData.GestationalAge = new OriginDataParameter(createDiscreteRandomValueFor(populationSettings, Constants.Parameters.GESTATIONAL_AGE, randomGenerator, out success));
                currentIndividual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE).Value = originData.GestationalAge.Value;
                if (!success) continue;
             }
 
             //Then define gender depending on selecting proportions
-            if (originData.SpeciesPopulation.IsHeightDependent)
+            if (originData.Population.IsHeightDependent)
             {
-               originData.Height = createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, randomGenerator, out success);
+               originData.Height = new OriginDataParameter(createRandomValueFor(originData, populationSettings, CoreConstants.Parameters.MEAN_HEIGHT, randomGenerator, out success));
                currentIndividual.Organism.Parameter(CoreConstants.Parameters.HEIGHT).Value = originData.Height.Value;
             }
+
+            //now assign any random parameters due to disease state
+            foreach (var diseaseStateParameter in originData.DiseaseStateParameters)
+            {
+               diseaseStateParameter.Value = createDiseaseStateRandomParameterValueFor(originData, populationSettings, diseaseStateParameter, randomGenerator, out success);
+            }
+
+            if (!success) continue;
+            (success, _) = diseaseStateImplementation.IsValid(originData);
          } while (!success && numberOfTry < _maxIterations);
 
          if (numberOfTry >= _maxIterations)
@@ -253,6 +288,13 @@ namespace PKSim.Core.Model
       {
          var parameterRange = populationSettings.ParameterRange(parameterName);
          var parameter = _individualModelTask.MeanOrganismParameter(originData, parameterName);
+         return tryCreateRandomValueFor(parameterRange, parameter, randomGenerator, out success);
+      }
+
+      private double createDiseaseStateRandomParameterValueFor(OriginData originData, RandomPopulationSettings populationSettings, OriginDataParameter diseaseStateParameter, RandomGenerator randomGenerator, out bool success)
+      {
+         var parameterRange = populationSettings.ParameterRange(diseaseStateParameter.Name);
+         var parameter = originData.DiseaseState.Parameter(diseaseStateParameter.Name);
          return tryCreateRandomValueFor(parameterRange, parameter, randomGenerator, out success);
       }
 

@@ -15,7 +15,9 @@ namespace PKSim.Presentation.Presenters.Individuals
 
    public class EditIndividualPresenter : SingleStartContainerPresenter<IEditIndividualView, IEditIndividualPresenter, Individual, IIndividualItemPresenter>, IEditIndividualPresenter
    {
-      public EditIndividualPresenter(IEditIndividualView view, ISubPresenterItemManager<IIndividualItemPresenter> subPresenterItemManager)
+      public EditIndividualPresenter(
+         IEditIndividualView view, 
+         ISubPresenterItemManager<IIndividualItemPresenter> subPresenterItemManager)
          : base(view, subPresenterItemManager, IndividualItems.All)
       {
       }

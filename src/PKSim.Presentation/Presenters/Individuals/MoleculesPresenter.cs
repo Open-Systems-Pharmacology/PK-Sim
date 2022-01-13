@@ -136,7 +136,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          if (node == null) return;
          //one of the root has been selected
-         _view.GroupCaption = node.FullPath(PKSimConstants.UI.DisplayPathSeparator);
          if (nodeRepresentsMoleculeFolder(node))
          {
             _view.LinkedExpressionProfileCaption = string.Empty;

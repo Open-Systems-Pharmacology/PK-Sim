@@ -53,8 +53,8 @@ namespace PKSim.IntegrationTests
          verifyParametersCanBeVariedInPopulation(parameterValueRepository, "Fraction mucosa");
 
          var parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.INFUSION_TIME);
-         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameter.VOLUME_OF_WATER_PER_BODYWEIGHT);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameters.INFUSION_TIME);
+         verifyParametersCanBeVariedInPopulation(parameterRateRepository, CoreConstantsForSpecs.Parameters.VOLUME_OF_WATER_PER_BODYWEIGHT);
          verifyParametersCanBeVariedInPopulation(parameterRateRepository, ConverterConstants.Parameters.PartitionCoefficientWwaterProtein, "DRUG");
       }
 
@@ -154,11 +154,11 @@ namespace PKSim.IntegrationTests
 
             foreach (var volumeParameter in volumeParameters)
             {
-               if (meanStdRatio.organ.Equals(LIVER) && volumeParameter.Gender.Equals(CoreConstants.Gender.Male))
+               if (meanStdRatio.organ.Equals(LIVER) && volumeParameter.Gender.Equals(CoreConstants.Gender.MALE))
                   continue; //no update for this combination
 
                var ratio = volumeParameter.Deviation / volumeParameter.Mean;
-               var expectedRatio = volumeParameter.Gender.Equals(CoreConstants.Gender.Male) ? meanStdRatio.maleRatio : meanStdRatio.femaleRatio;
+               var expectedRatio = volumeParameter.Gender.Equals(CoreConstants.Gender.MALE) ? meanStdRatio.maleRatio : meanStdRatio.femaleRatio;
 
                ratio.ShouldBeEqualTo(expectedRatio, 1e-3, $"{meanStdRatio.organ}.{volumeParameter.Gender}.{volumeParameter.Age} years");
             }
@@ -170,7 +170,7 @@ namespace PKSim.IntegrationTests
          return pd.Population.Equals(CoreConstants.Population.ICRP) &&
                 pd.Age >= 40 &&
                 pd.ParameterName.Equals("Volume") &&
-                pd.ContainerType.Equals(CoreConstants.ContainerType.Organ) &&
+                pd.ContainerType.Equals(CoreConstants.ContainerType.ORGAN) &&
                 pd.ContainerName.Equals(organ);
       }
 
@@ -316,7 +316,7 @@ namespace PKSim.IntegrationTests
          string flowParameterName,
          string flowInclMucosaParameterName)
       {
-         if (parameterRateMetaData.ContainerType != CoreConstants.ContainerType.Organ)
+         if (parameterRateMetaData.ContainerType != CoreConstants.ContainerType.ORGAN)
             return false;
 
          var container = parameterRateMetaData.ContainerName;
@@ -560,7 +560,7 @@ namespace PKSim.IntegrationTests
       {
          var simulationActiveProcessRepository = IoC.Resolve<ISimulationActiveProcessRepository>();
          var process = simulationActiveProcessRepository.ProcessFor("HepatocytesRes");
-         process.Parameter(CoreConstantsForSpecs.Parameter.NUMBER_OF_CELLS_PER_INCUBATION).Value.ShouldBeEqualTo(1000);
+         process.Parameter(CoreConstantsForSpecs.Parameters.NUMBER_OF_CELLS_PER_INCUBATION).Value.ShouldBeEqualTo(1000);
       }
    }
 
@@ -651,7 +651,7 @@ namespace PKSim.IntegrationTests
 
          inhibitionProcess.ShouldNotBeNull();
          inhibitionProcess.Parameter(CoreConstants.Parameters.KI).ShouldNotBeNull();
-         inhibitionProcess.Parameter(CoreConstantsForSpecs.Parameter.KINACT).ShouldNotBeNull();
+         inhibitionProcess.Parameter(CoreConstantsForSpecs.Parameters.KINACT).ShouldNotBeNull();
       }
 
       [Observation]
@@ -735,7 +735,7 @@ namespace PKSim.IntegrationTests
          var icrpParams = _parameterDistributionRepository.All()
             .Where(p => p.Population.Equals(CoreConstants.Population.ICRP))
             .Where(p => p.ParameterName.IsOneOf(
-               CoreConstantsForSpecs.Parameter.VOLUME,
+               Constants.Parameters.VOLUME,
                CoreConstants.Parameters.BLOOD_FLOW)).ToList();
 
          icrpParams.Count.ShouldBeGreaterThanOrEqualTo(agesWithFilledValueOrigins.Length * 2 * 2); //2 Genders * 2 parameters per age
@@ -785,7 +785,7 @@ namespace PKSim.IntegrationTests
          var firstPopulationGender = populationGenderRepo.All().First();
 
          firstPopulationGender.Population.ShouldBeEqualTo(CoreConstants.Population.ICRP);
-         firstPopulationGender.GenderName.ShouldBeEqualTo(CoreConstants.Gender.Male);
+         firstPopulationGender.GenderName.ShouldBeEqualTo(CoreConstants.Gender.MALE);
       }
    }
 }

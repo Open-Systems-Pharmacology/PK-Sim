@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatCalculationMethodRepository : MetaDataRepository<FlatCalculationMethod>, IFlatCalculationMethodRepository
    {
       public FlatCalculationMethodRepository(IDbGateway dbGateway,IDataTableToMetaDataMapper<FlatCalculationMethod> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewCalculationMethods)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_CALCULATION_METHODS)
       {
       }
    }

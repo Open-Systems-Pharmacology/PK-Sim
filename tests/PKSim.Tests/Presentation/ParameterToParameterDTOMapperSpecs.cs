@@ -13,6 +13,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
+using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Presentation
 {
@@ -36,7 +37,13 @@ namespace PKSim.Presentation
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _pathToPathElementsMapper = A.Fake<IPathToPathElementsMapper>();
          _parameterListOfValuesRetriever = A.Fake<IParameterListOfValuesRetriever>();
-         sut = new ParameterToParameterDTOMapper(_representationInfoRepository, _formulaTypeMapper, _pathToPathElementsMapper, _favoriteRepository, _entityPathResolver, _parameterListOfValuesRetriever);
+         sut = new ParameterToParameterDTOMapper(
+            _representationInfoRepository, 
+            _formulaTypeMapper, 
+            _pathToPathElementsMapper, 
+            _favoriteRepository, 
+            _entityPathResolver,
+            _parameterListOfValuesRetriever);
       }
    }
 

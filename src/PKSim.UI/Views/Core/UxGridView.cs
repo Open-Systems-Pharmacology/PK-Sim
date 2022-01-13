@@ -1,10 +1,5 @@
-using System.Windows.Forms;
 using DevExpress.Utils;
-using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Drawing;
-using DevExpress.XtraEditors.ViewInfo;
 using DevExpress.XtraGrid;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 
 namespace PKSim.UI.Views.Core

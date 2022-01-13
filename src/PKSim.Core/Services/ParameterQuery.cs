@@ -102,7 +102,7 @@ namespace PKSim.Core.Services
          if (originData == null)
             return Enumerable.Empty<ParameterDistributionMetaData>();
 
-         var allDistributedParameters = (from distribution in distributedParameterMetaDataFor(queryableDistributionParameters, originData.SpeciesPopulation, originData.SubPopulation)
+         var allDistributedParameters = (from distribution in distributedParameterMetaDataFor(queryableDistributionParameters, originData.Population, originData.SubPopulation)
                                          where distribution.Gender == originData.Gender.Name
                                          select distribution);
 

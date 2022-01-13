@@ -30,8 +30,7 @@ namespace PKSim.Core.Model
                             select new Sample(distribution.Age, distribution.Mean);
 
          parameter.MeanParameter.Value = _interpolation.Interpolate(knownSamples, originData.Age.Value);
-         this.ScaleDistributionFor(parameter,baseParameter);
-         parameter.IsFixedValue = false;
+         parameter.ScaleDistributionBasedOn(baseParameter);
       }
 
       public IDistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
@@ -40,14 +39,8 @@ namespace PKSim.Core.Model
          return _distributionFormulaFactory.CreateDiscreteDistributionFormulaFor(parameter, parameter.MeanParameter);
       }
 
-      public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions)
-      {
-         return distributions.All(IsSatisfiedBy);
-      }
+      public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions) => distributions.All(IsSatisfiedBy);
 
-      public bool IsSatisfiedBy(IDistributionMetaData distribution)
-      {
-         return distribution.Distribution == DistributionTypes.Discrete;
-      }
+      public bool IsSatisfiedBy(IDistributionMetaData distribution) => distribution.Distribution == DistributionTypes.Discrete;
    }
 }

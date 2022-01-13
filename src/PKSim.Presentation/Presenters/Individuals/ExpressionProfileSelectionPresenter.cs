@@ -71,9 +71,6 @@ namespace PKSim.Presentation.Presenters.Individuals
 
          refreshExpressionProfilesForMolecule();
 
-         //Pre selection
-         _expressionProfileSelectionDTO.ExpressionProfile = _allExpressionProfilesForMoleculeType.FirstOrDefault();
-
          var moleculeDisplay = _moleculePropertiesMapper.MoleculeDisplayFor<TMolecule>();
          _view.Caption = PKSimConstants.UI.AddMolecule(moleculeDisplay);
          _view.ApplicationIcon = _moleculePropertiesMapper.MoleculeIconFor<TMolecule>();
@@ -89,6 +86,9 @@ namespace PKSim.Presentation.Presenters.Individuals
       private void refreshExpressionProfilesForMolecule()
       {
          _allExpressionProfilesForMoleculeType = _buildingBlockRepository.All<ExpressionProfile>(canSelect);
+         _view.RefreshList();
+         //Pre selection
+         _expressionProfileSelectionDTO.ExpressionProfile = _allExpressionProfilesForMoleculeType.FirstOrDefault();
       }
 
       private bool canSelect(ExpressionProfile expressionProfile) =>

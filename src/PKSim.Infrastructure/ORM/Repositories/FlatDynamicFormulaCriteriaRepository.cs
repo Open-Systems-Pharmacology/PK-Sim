@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatDynamicFormulaCriteriaRepository(IDbGateway dbGateway,
                                        IDataTableToMetaDataMapper<FlatCalculationMethodRateDescriptorConditions> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewDynamicFormulaCriteriaRepository)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_DYNAMIC_FORMULA_CRITERIA_REPOSITORY)
       {
       }
    }
