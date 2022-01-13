@@ -22,8 +22,8 @@
     <PackageReference Include="OSPSuite.UI" Version="11.0.22" />
     <PackageReference Include="OSPSuite.Core" Version="10.0.371-jlrnkckf" />
     <PackageReference Include="OSPSuite.UI" Version="10.0.371-jlrnkckf" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.37" />
-    <PackageReference Include="OSPSuite.UI" Version="11.0.37" />
+    <PackageReference Include="OSPSuite.Core" Version="10.0.371-rsgvdwow" />
+    <PackageReference Include="OSPSuite.UI" Version="10.0.371-rsgvdwow" />
   </ItemGroup>
 
   <ItemGroup>
