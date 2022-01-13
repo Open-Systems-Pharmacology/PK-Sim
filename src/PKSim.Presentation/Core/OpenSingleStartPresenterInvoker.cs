@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Chart;
@@ -34,6 +35,7 @@ namespace PKSim.Presentation.Core
       IVisitor<SensitivityAnalysis>,
       IVisitor<ObserverSet>,
       IVisitor<ExpressionProfile>,
+      IVisitor<ParameterIdentificationFeedback>,
       IVisitor<IEnumerable<DataRepository>>,
       IStrictVisitor
    {
@@ -98,5 +100,7 @@ namespace PKSim.Presentation.Core
       public void Visit(ObserverSet objToVisit) => openPresenter(objToVisit);
 
       public void Visit(ExpressionProfile objToVisit) => openPresenter(objToVisit);
+
+      public void Visit(ParameterIdentificationFeedback objToVisit) => openPresenter(objToVisit);
    }
 }
