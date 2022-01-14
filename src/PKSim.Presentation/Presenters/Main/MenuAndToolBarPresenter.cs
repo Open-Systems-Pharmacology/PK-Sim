@@ -24,6 +24,7 @@ using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters.Events;
 using PKSim.Core;
 using System.Collections.Generic;
+using NPOI.OpenXmlFormats.Dml;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -65,14 +66,12 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
       private bool _enabled;
       private SimulationState _simulationState;
-      private List<string> _activePIs;
-      private string _currentlyActivePI;
+      private readonly List<ParameterIdentification> _runningParameterIdentifications = new List<ParameterIdentification>();
       private readonly IEventPublisher _eventPublisher;
 
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
-      private bool _parameterIdentificationRunning;
-      private bool _sensitivityRunning;
+      private SensitivityAnalysis _runningSensitivityAnalysis;
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
          IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider,
@@ -85,7 +84,6 @@ namespace PKSim.Presentation.Presenters.Main
          _workspace = workspace;
          _activeSubjectRetriever = activeSubjectRetriever;
          _enabled = true;
-         _activePIs = new List<string>();
          _eventPublisher = eventPublisher;
       }
 
@@ -516,32 +514,33 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
-         _currentlyActivePI = parameterIdentification.Id;
-         _parameterIdentificationRunning = _activePIs.Contains(parameterIdentification.Id);
          updateParameterIdentificationItems(parameterIdentification);
          _eventPublisher.PublishEvent(new ParameterIdentificationSelectedEvent(parameterIdentification));
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
-         _activePIs.Add(parameterIdentificationEvent.ParameterIdentification.Id);
-         _parameterIdentificationRunning = true;
-         updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
+         var parameterIdentification = parameterIdentificationEvent.ParameterIdentification; 
+         _runningParameterIdentifications.Add(parameterIdentification);
+         updateParameterIdentificationItems(parameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
       {
-         _activePIs.Remove(parameterIdentificationEvent.ParameterIdentification.Id);
-         if (parameterIdentificationEvent.ParameterIdentification.Id == _currentlyActivePI)
-            _parameterIdentificationRunning = false;
-         updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
+         var parameterIdentification = parameterIdentificationEvent.ParameterIdentification;
+         _runningParameterIdentifications.Remove(parameterIdentification);
+         //only update if selected subject in the actual parameter identification terminated
+         var activeSubject = _activeSubjectRetriever.Active<ParameterIdentification>();
+         if(Equals(activeSubject, parameterIdentification))
+            updateParameterIdentificationItems(parameterIdentification);
       }
 
       private void updateParameterIdentificationItems(ParameterIdentification parameterIdentification)
       {
-         var hasResult = !_parameterIdentificationRunning && parameterIdentification.HasResults;
-         _menuBarItemRepository[MenuBarItemIds.RunParameterIdentification].Enabled = !_parameterIdentificationRunning;
-         _menuBarItemRepository[MenuBarItemIds.StopParameterIdentification].Enabled = _parameterIdentificationRunning;
+         var parameterIdentificationRunning = _runningParameterIdentifications.Contains(parameterIdentification);
+         var hasResult = !parameterIdentificationRunning && parameterIdentification.HasResults;
+         _menuBarItemRepository[MenuBarItemIds.RunParameterIdentification].Enabled = !parameterIdentificationRunning;
+         _menuBarItemRepository[MenuBarItemIds.StopParameterIdentification].Enabled = parameterIdentificationRunning;
          _menuBarItemRepository[MenuBarItemIds.TimeProfileParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedParameterIdentification].Enabled = hasResult;
          _menuBarItemRepository[MenuBarItemIds.CorrelationMatrixParameterIdentification].Enabled = hasResult;
@@ -555,21 +554,23 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SensitivityAnalysisStartedEvent sensitivityAnalysisEvent)
       {
-         _sensitivityRunning = true;
+         _runningSensitivityAnalysis = sensitivityAnalysisEvent.SensitivityAnalysis;
          updateSensitivityAnalysisItems(sensitivityAnalysisEvent.SensitivityAnalysis);
       }
 
       public void Handle(SensitivityAnalysisTerminatedEvent sensitivityAnalysisEvent)
       {
-         _sensitivityRunning = false;
+         _runningSensitivityAnalysis = null;
          updateSensitivityAnalysisItems(sensitivityAnalysisEvent.SensitivityAnalysis);
       }
 
       private void updateSensitivityAnalysisItems(SensitivityAnalysis sensitivityAnalysis)
       {
-         var hasResult = !_sensitivityRunning && sensitivityAnalysis.HasResults;
-         _menuBarItemRepository[MenuBarItemIds.RunSensitivityAnalysis].Enabled = !_sensitivityRunning;
-         _menuBarItemRepository[MenuBarItemIds.StopSensitivityAnalysis].Enabled = _sensitivityRunning;
+         var sensitivityRunning = Equals(_runningSensitivityAnalysis, sensitivityAnalysis);
+
+         var hasResult = !sensitivityRunning && sensitivityAnalysis.HasResults;
+         _menuBarItemRepository[MenuBarItemIds.RunSensitivityAnalysis].Enabled = !sensitivityRunning;
+         _menuBarItemRepository[MenuBarItemIds.StopSensitivityAnalysis].Enabled = sensitivityRunning;
          _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisPKParameterAnalysis].Enabled = hasResult;
       }
    }
