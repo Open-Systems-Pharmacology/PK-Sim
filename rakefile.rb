@@ -42,7 +42,7 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 	setup_files	 = [
 		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
 		"#{relative_src_dir}/TeXTemplates/**/*.*",
-		'examples/*.md',
+		'examples/*.txt',
 		'src/PKSim.Assets.Images/Resources/*.ico',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
