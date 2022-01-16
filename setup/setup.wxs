@@ -130,7 +130,7 @@
                 </Component>
 
                 <Component Id="ExamplesReadMe" Guid="E3C8F2A6-24F3-4810-BD11-C4A4EA440661">
-                  <File Name="README.md" Id="ExamplesReadMe" Source="$(var.DeployDir)/README.md" KeyPath="yes" />
+                  <File Name="README.txt" Id="ExamplesReadMe" Source="$(var.DeployDir)/README.txt" KeyPath="yes" />
                 </Component>
               </Directory>
             </Directory>
