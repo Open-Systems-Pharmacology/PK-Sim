@@ -39,15 +39,5 @@ namespace PKSim.Infrastructure.ORM.Repositories
             _eventGroupBuilders.Add(eventGroupBuilder);
          }
       }
-
-      public IEnumerable<IEventGroupBuilder> AllForCreationByUser()
-      {
-         return All().Where(canBeCreatedByUser);
-      }
-
-      private bool canBeCreatedByUser(IEventGroupBuilder eventGroup)
-      {
-         return !eventGroup.IsNamed(CoreConstants.EventGroup.EHCImmediate);
-      }
    }
 }

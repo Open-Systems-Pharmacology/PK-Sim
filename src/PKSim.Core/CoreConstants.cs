@@ -256,11 +256,6 @@ namespace PKSim.Core
          }
       }
 
-      public static class EventGroup
-      {
-         public static readonly string EHCImmediate = "Gallbladder emptying (immediate)";
-      }
-
       public static class Category
       {
          public static readonly string DynamicFormulas = "DynamicFormulas";

@@ -82,7 +82,7 @@ namespace PKSim.Presentation.Presenters.Events
 
       public IEnumerable<IEventGroupBuilder> AllTemplates()
       {
-         return _eventGroupRepository.AllForCreationByUser();
+         return _eventGroupRepository.All();
       }
 
       public string DisplayNameFor(IEventGroupBuilder eventTemplate)
