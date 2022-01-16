@@ -34,6 +34,10 @@
          public static readonly string LIVERMICROSOMERES = "LiverMicrosomeRes";
       }
 
+      public static class Events
+      {
+         public const string URINE_EMPTYING = "Urine compartment emptying";
+      }
       public static class Parameters
       {
          public const string KINACT = "kinact";
