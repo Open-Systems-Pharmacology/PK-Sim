@@ -6,6 +6,7 @@ DELETE FROM tab_container_names WHERE container_type='EVENT' AND container_name=
 INSERT INTO tab_container_names(container_type,container_name,display_name,description,extension,sequence,icon_name) VALUES('EVENT','Urine_Emptying_StartEvent','Urine emptying start event','Urine emptying start event','_evt',3,NULL);
 DELETE FROM tab_container_names WHERE container_type='EVENTGROUP' AND container_name='Gallbladder emptying (immediate)';
 INSERT INTO tab_container_names(container_type,container_name,display_name,description,extension,sequence,icon_name) VALUES('EVENTGROUP','Urine compartment emptying','Urine compartment emptying','Enables urine compartment emptying','_evt',1,NULL);
+INSERT INTO tab_container_names(container_type,container_name,display_name,description,extension,sequence,icon_name) VALUES('GENERAL','ALL_FLOATING_MOLECULES','ALL_FLOATING_MOLECULES','Path entry referencing all floating molecules (Assignments)','',1,NULL);
 DELETE FROM tab_container_parameter_rates WHERE container_id=5331 AND container_type='EVENTGROUP' AND container_name='Gallbladder emptying (immediate)' AND parameter_name='Gallbladder emptying enabled' AND calculation_method='Events';
 DELETE FROM tab_container_parameter_rates WHERE container_id=5332 AND container_type='EVENTGROUP' AND container_name='EventGroupSubContainer' AND parameter_name='Start time' AND calculation_method='Events';
 INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(5955,'EVENTGROUP','Urine compartment emptying','Urine compartment emptying enabled','Events','One_Rate',0.0,1,1.0,1,NULL);
@@ -137,10 +138,10 @@ INSERT INTO tab_event_conditions(event_id,event_container_type,event_name,calcul
 DELETE FROM tab_event_conditions WHERE event_id=5330 AND event_container_type='EVENT' AND event_name='EHC_Stop_Event' AND calculation_method='Events';
 DELETE FROM tab_event_conditions WHERE event_id=5333 AND event_container_type='EVENT' AND event_name='EHC_Start_Event' AND calculation_method='Events';
 INSERT INTO tab_event_conditions(event_id,event_container_type,event_name,calculation_method,rate,is_one_time) VALUES(5957,'EVENT','Urine_Emptying_StartEvent','Events','Urine_Emptying_StartEvent_Condition',1);
-INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4911,4911,'ORGANISM','Organism','Organism\Kidney\Urine\MOLECULE');
+INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4911,4911,'ORGANISM','Organism','Organism\Kidney\Urine\ALL_FLOATING_MOLECULES');
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4912,4911,'ORGAN','Kidney',NULL);
 INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4913,4912,'COMPARTMENT','Urine',NULL);
-INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4914,4913,'GENERAL','MOLECULE',NULL);
+INSERT INTO tab_object_paths(path_id,parent_path_id,ref_container_type,ref_container_name,description) VALUES(4914,4913,'GENERAL','ALL_FLOATING_MOLECULES',NULL);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Urine compartment emptying enabled','Urine compartment emptying enabled','TODO: Enable urine compartment emptying','Dimensionless',NULL);
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('Events','Urine_Emptying_StartEvent_Condition',139,'Start time','StartTime');
 INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('Events','Urine_Emptying_StartEvent_Condition',140,'Urine compartment emptying enabled','Urine_Emptying_Enabled');

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core;
 using PKSim.Core.Repositories;
@@ -15,7 +14,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatContainerToEventGroupBuilderMapper _eventGroupMapper;
       private readonly ICache<string, IEventGroupBuilder> _eventGroupBuilders;
 
-      public EventGroupRepository(IFlatContainerRepository flatContainerRepo, IFlatContainerToEventGroupBuilderMapper eventGroupMapper)
+      public EventGroupRepository(
+         IFlatContainerRepository flatContainerRepo, 
+         IFlatContainerToEventGroupBuilderMapper eventGroupMapper)
       {
          _flatContainerRepo = flatContainerRepo;
          _eventGroupMapper = eventGroupMapper;
