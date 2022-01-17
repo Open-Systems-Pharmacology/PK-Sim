@@ -25,6 +25,8 @@ namespace PKSim.Presentation
       protected IRenameObjectDTOFactory _renameObjectFactory;
       protected RenameObjectDTO _renameDTO;
 
+      protected static string ENT_TYPE = "ENT_TYPE";
+
       protected override void Context()
       {
          _applicationController = A.Fake<IApplicationController>();
@@ -38,6 +40,7 @@ namespace PKSim.Presentation
          _renameDTO = new RenameObjectDTO(_entity.Name);
          _renameDTO.AddUsedNames(new[] {"A", "B"});
          A.CallTo(() => _renameObjectFactory.CreateFor(_entity)).Returns(_renameDTO);
+         A.CallTo(() => _executionContext.TypeFor<IObjectBase>(_entity)).Returns(ENT_TYPE);
       }
    }
 
@@ -51,7 +54,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_retrieve_the_rename_presenter_and_start_it()
       {
-         A.CallTo(() => _renamePresenter.NewNameFrom(_entity, _renameDTO.UsedNames, _renameDTO.ContainerType)).MustHaveHappened();
+         A.CallTo(() => _renamePresenter.NewNameFrom(_entity, _renameDTO.UsedNames, ENT_TYPE)).MustHaveHappened();
       }
    }
 
@@ -112,6 +115,8 @@ namespace PKSim.Presentation
          A.CallTo(() => _applicationController.Start<IRenameExpressionProfilePresenter>()).Returns(_renameExpressionProfilePresenter);
          _expressionProfile = new ExpressionProfile();
          A.CallTo(() => _renameObjectFactory.CreateFor(_expressionProfile)).Returns(_renameDTO);
+         A.CallTo(() => _executionContext.TypeFor<IObjectBase>(_expressionProfile)).Returns(ENT_TYPE);
+
       }
 
       protected override void Because()
@@ -122,7 +127,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_use_the_rename_expression_profile_presenter_to_perform_the_rename()
       {
-         A.CallTo(() => _renameExpressionProfilePresenter.NewNameFrom(_expressionProfile, _renameDTO.UsedNames, _renameDTO.ContainerType)).MustHaveHappened();
+         A.CallTo(() => _renameExpressionProfilePresenter.NewNameFrom(_expressionProfile, _renameDTO.UsedNames, ENT_TYPE)).MustHaveHappened();
       }
    }
 }
