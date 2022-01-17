@@ -106,7 +106,7 @@ namespace PKSim.Core.Commands
          _protein = null;
          _simulationSubject = null;
 
-         
+
          //update properties from first command
          this.UpdatePropertiesFrom(setLocationCommand);
       }
@@ -188,7 +188,7 @@ namespace PKSim.Core.Commands
          return command.All();
       }
 
-      private IEnumerable<ICommand> setParametersForFlags(IExecutionContext context, 
+      private IEnumerable<ICommand> setParametersForFlags(IExecutionContext context,
          Localization enabledLocalization,
          Localization disabledLocalization,
          params (IParameter param, double value)[] parametersToSet)
@@ -204,8 +204,8 @@ namespace PKSim.Core.Commands
             var (parameter, value) = x;
             var macroCommand = new PKSimMacroCommand();
             macroCommand.Add(new SetParameterValueCommand(parameter, value));
-            macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault:true) { ShouldChangeVersion = false, Visible = false});
-            macroCommand.Add(new UpdateParameterValueOriginCommand(parameter, ValueOrigin.Undefined) { ShouldChangeVersion = false, Visible = false });
+            macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault: true) {ShouldChangeVersion = false, Visible = false});
+            macroCommand.Add(new UpdateParameterValueOriginCommand(parameter, ValueOrigin.Undefined) {ShouldChangeVersion = false, Visible = false});
             macroCommand.Execute(context);
             macroCommand.WithHistoryEntriesFrom(macroCommand);
             return macroCommand;

@@ -277,9 +277,9 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       private string getQueryDescription()
       {
          var description = new StringBuilder();
-         description.AppendLine(String.Format("Selected protein: {0}", _proteinName));
+         description.AppendLine($"Selected protein: {_proteinName}");
          var selectedUnit = PresenterAt(ExpressionItems.Transfer).GetSelectedUnit();
-         description.AppendLine(String.Format("Selected unit: {0}", selectedUnit));
+         description.AppendLine($"Selected unit: {selectedUnit}");
          var filterInfo = PresenterAt(ExpressionItems.ExpressionData).GetFilterInformation();
          if (!String.IsNullOrEmpty(filterInfo))
          {
@@ -296,8 +296,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
                if (String.IsNullOrEmpty(tissue)) continue;
                var container = row[DatabaseConfiguration.MappingColumns.COL_CONTAINER].ToString();
                if (String.IsNullOrEmpty(container)) continue;
-               description.AppendLine(String.Format("Tissue [{0}] -> Container [{1}]", tissue,
-                  container));
+               description.AppendLine($"Tissue [{tissue}] -> Container [{container}]");
             }
          }
 
@@ -316,7 +315,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
             //filter on current unit and join with containers
             var expDataView = selectedData.DefaultView;
-            expDataView.RowFilter = String.Format("[{0}] = '{1}'", ColumnNamesOfTransferTable.Unit, unit);
+            expDataView.RowFilter = $"[{ColumnNamesOfTransferTable.Unit}] = '{unit}'";
             var expData = joinTransferDataWithContainers(expDataView.ToTable());
             //fill out unit for outer joined containers
             foreach (DataRow row in expData.Rows)
