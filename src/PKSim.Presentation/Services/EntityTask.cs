@@ -19,7 +19,10 @@ namespace PKSim.Presentation.Services
       private readonly IExecutionContext _executionContext;
       private readonly IRenameObjectDTOFactory _renameObjectDTOFactory;
 
-      public EntityTask(IApplicationController applicationController, IExecutionContext executionContext, IRenameObjectDTOFactory renameObjectDTOFactory)
+      public EntityTask(
+         IApplicationController applicationController, 
+         IExecutionContext executionContext, 
+         IRenameObjectDTOFactory renameObjectDTOFactory)
       {
          _applicationController = applicationController;
          _executionContext = executionContext;
@@ -34,7 +37,7 @@ namespace PKSim.Presentation.Services
       private ICommand rename(IEntity elementToRename, bool isStructuralChange)
       {
          var dto = _renameObjectDTOFactory.CreateFor(elementToRename);
-         var newName = NewNameFor(elementToRename, dto.UsedNames, dto.ContainerType);
+         var newName = NewNameFor(elementToRename, dto.UsedNames, TypeFor(elementToRename));
          if(string.IsNullOrEmpty(newName))
             return new PKSimEmptyCommand();
 
