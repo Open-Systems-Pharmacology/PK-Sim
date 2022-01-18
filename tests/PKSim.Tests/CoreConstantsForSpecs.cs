@@ -36,7 +36,7 @@
 
       public static class Events
       {
-         public const string URINE_EMPTYING = "Urine compartment emptying";
+         public const string URINARY_BLADDER_EMPTYING = "Urinary bladder emptying";
       }
       public static class Parameters
       {

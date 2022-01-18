@@ -22,7 +22,7 @@ namespace PKSim.IntegrationTests
          var eventFactory = IoC.Resolve<IEventFactory>();
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol).DowncastTo<IndividualSimulation>() ;
-         var pksimEvent = eventFactory.Create(CoreConstantsForSpecs.Events.URINE_EMPTYING).WithName("Event");
+         var pksimEvent = eventFactory.Create(CoreConstantsForSpecs.Events.URINARY_BLADDER_EMPTYING).WithName("Event");
          var eventMapping = eventMappingFactory.Create(pksimEvent);
          eventMapping.StartTime.ValueInDisplayUnit = 2;
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock(pksimEvent.Id, PKSimBuildingBlockType.Event){BuildingBlock = pksimEvent});
