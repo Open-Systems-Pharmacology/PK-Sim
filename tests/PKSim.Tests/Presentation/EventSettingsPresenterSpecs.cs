@@ -88,7 +88,6 @@ namespace PKSim.Presentation
          _temp2 = new EventGroupBuilder();
          _allTemplates = new List<IEventGroupBuilder> {_temp1, _temp2};
          A.CallTo(() => _eventGroupRepository.All()).Returns(_allTemplates);
-         A.CallTo(() => _eventGroupRepository.AllForCreationByUser()).Returns(_allTemplates);
       }
 
       [Observation]

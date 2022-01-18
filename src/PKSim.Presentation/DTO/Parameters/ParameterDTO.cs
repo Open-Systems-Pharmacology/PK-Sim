@@ -78,9 +78,9 @@ namespace PKSim.Presentation.DTO.Parameters
       {
          get
          {
-            var success = Parameter.TryGetValueInDisplayUnit(out var result);
+            var (result,_) = Parameter.TryGetValueInDisplayUnit();
             //Permeability cannot be read in compound as references cannot be resolved
-            return success ? result : double.NaN;
+            return result;
 
          }
          set

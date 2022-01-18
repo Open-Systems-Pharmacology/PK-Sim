@@ -141,10 +141,8 @@ namespace PKSim.Presentation
          base.Context();
          _parameter.Value = 20;
          _convertedValue = 30;
-         double res;
-         A.CallTo(() => _parameter.TryGetValueInDisplayUnit(out res))
-            .Returns(true)
-            .AssignsOutAndRefParameters(_convertedValue);
+         A.CallTo(() => _parameter.TryGetValueInDisplayUnit())
+            .Returns((_convertedValue, true));
       }
 
       [Observation]
