@@ -1292,7 +1292,7 @@ namespace PKSim.Core
          public const int SIMULATION_SETTINGS_HEIGHT = 650;
          public const int SIMULATION_VIEW_WIDTH = 700;
          public const int INDIVIDUAL_VIEW_WIDTH = 880;
-         public const int INDIVIDUAL_VIEW_HEIGHT = 720;
+         public const int INDIVIDUAL_VIEW_HEIGHT = 780;
          public const int CONFIGURE_SIMULATION_VIEW_HEIGHT = 708;
          public const int CREATE_SIMULATION_VIEW_HEIGHT = CONFIGURE_SIMULATION_VIEW_HEIGHT + 40;
          

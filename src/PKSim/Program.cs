@@ -21,6 +21,7 @@ namespace PKSim
          Application.SetCompatibleTextRenderingDefault(false);
 
          WindowsFormsSettings.SetDPIAware();
+         WindowsFormsSettings.SetPerMonitorDpiAware();
          WindowsFormsSettings.TouchUIMode = TouchUIMode.False;
 
          try

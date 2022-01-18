@@ -16,7 +16,6 @@ namespace PKSim.UI.Views.Individuals
    {
       private readonly ScreenBinder<IndividualProtein> _screenBinder;
       private IExpressionLocalizationPresenter _presenter;
-      private const int HEIGHT = 72;
 
       public ExpressionLocalizationView()
       {
@@ -82,6 +81,6 @@ namespace PKSim.UI.Views.Individuals
          });
       }
 
-      public override int OptimalHeight => HEIGHT;
+      public override int OptimalHeight => Root.Bounds.Height + layoutControl.Margin.Top;
    }
 }

@@ -51,10 +51,11 @@
          // cbOntogey
          // 
          this.cbOntogey.Location = new System.Drawing.Point(2, 2);
+         this.cbOntogey.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.cbOntogey.Name = "cbOntogey";
          this.cbOntogey.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbOntogey.Size = new System.Drawing.Size(98, 20);
+         this.cbOntogey.Size = new System.Drawing.Size(115, 22);
          this.cbOntogey.StyleController = this.layoutControl;
          this.cbOntogey.TabIndex = 0;
          // 
@@ -66,26 +67,29 @@
          this.layoutControl.Controls.Add(this.btnShowOntogeny);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.layoutControlGroup;
-         this.layoutControl.Size = new System.Drawing.Size(349, 26);
+         this.layoutControl.Size = new System.Drawing.Size(407, 32);
          this.layoutControl.TabIndex = 1;
          this.layoutControl.Text = "layoutControl1";
          // 
          // btnLoadOntogenyFromFile
          // 
-         this.btnLoadOntogenyFromFile.Location = new System.Drawing.Point(209, 2);
+         this.btnLoadOntogenyFromFile.Location = new System.Drawing.Point(243, 2);
+         this.btnLoadOntogenyFromFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.btnLoadOntogenyFromFile.Name = "btnLoadOntogenyFromFile";
-         this.btnLoadOntogenyFromFile.Size = new System.Drawing.Size(138, 22);
+         this.btnLoadOntogenyFromFile.Size = new System.Drawing.Size(162, 27);
          this.btnLoadOntogenyFromFile.StyleController = this.layoutControl;
          this.btnLoadOntogenyFromFile.TabIndex = 5;
          this.btnLoadOntogenyFromFile.Text = "btnLoadOntogenyFromFile";
          // 
          // btnShowOntogeny
          // 
-         this.btnShowOntogeny.Location = new System.Drawing.Point(104, 2);
+         this.btnShowOntogeny.Location = new System.Drawing.Point(121, 2);
+         this.btnShowOntogeny.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.btnShowOntogeny.Name = "btnShowOntogeny";
-         this.btnShowOntogeny.Size = new System.Drawing.Size(101, 22);
+         this.btnShowOntogeny.Size = new System.Drawing.Size(118, 27);
          this.btnShowOntogeny.StyleController = this.layoutControl;
          this.btnShowOntogeny.TabIndex = 4;
          this.btnShowOntogeny.Text = "btnShowOntogeny";
@@ -101,7 +105,7 @@
             this.layoutItemLoadOntogeny});
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup.Size = new System.Drawing.Size(349, 26);
+         this.layoutControlGroup.Size = new System.Drawing.Size(407, 32);
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutItemOntogeny
@@ -110,7 +114,7 @@
          this.layoutItemOntogeny.CustomizationFormText = "layoutItemOntogeny";
          this.layoutItemOntogeny.Location = new System.Drawing.Point(0, 0);
          this.layoutItemOntogeny.Name = "layoutItemOntogeny";
-         this.layoutItemOntogeny.Size = new System.Drawing.Size(102, 26);
+         this.layoutItemOntogeny.Size = new System.Drawing.Size(119, 32);
          this.layoutItemOntogeny.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemOntogeny.TextVisible = false;
          // 
@@ -118,9 +122,9 @@
          // 
          this.layoutItemButtonOntogeny.Control = this.btnShowOntogeny;
          this.layoutItemButtonOntogeny.CustomizationFormText = "layoutItemButtonOntogeny";
-         this.layoutItemButtonOntogeny.Location = new System.Drawing.Point(102, 0);
+         this.layoutItemButtonOntogeny.Location = new System.Drawing.Point(119, 0);
          this.layoutItemButtonOntogeny.Name = "layoutItemButtonOntogeny";
-         this.layoutItemButtonOntogeny.Size = new System.Drawing.Size(105, 26);
+         this.layoutItemButtonOntogeny.Size = new System.Drawing.Size(122, 32);
          this.layoutItemButtonOntogeny.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemButtonOntogeny.TextVisible = false;
          // 
@@ -128,20 +132,21 @@
          // 
          this.layoutItemLoadOntogeny.Control = this.btnLoadOntogenyFromFile;
          this.layoutItemLoadOntogeny.CustomizationFormText = "layoutControlItem1";
-         this.layoutItemLoadOntogeny.Location = new System.Drawing.Point(207, 0);
+         this.layoutItemLoadOntogeny.Location = new System.Drawing.Point(241, 0);
          this.layoutItemLoadOntogeny.Name = "layoutItemLoadOntogeny";
-         this.layoutItemLoadOntogeny.Size = new System.Drawing.Size(142, 26);
+         this.layoutItemLoadOntogeny.Size = new System.Drawing.Size(166, 32);
          this.layoutItemLoadOntogeny.Text = "layoutControlItem1";
          this.layoutItemLoadOntogeny.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemLoadOntogeny.TextVisible = false;
          // 
          // OntogenySelectionView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+         this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
          this.Controls.Add(this.layoutControl);
+         this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
          this.Name = "OntogenySelectionView";
-         this.Size = new System.Drawing.Size(349, 26);
+         this.Size = new System.Drawing.Size(407, 32);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbOntogey.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
