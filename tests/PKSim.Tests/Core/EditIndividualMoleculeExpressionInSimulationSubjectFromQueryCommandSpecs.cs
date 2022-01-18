@@ -18,14 +18,16 @@ namespace PKSim.Core
       protected IExecutionContext _context;
       protected readonly List<ExpressionResult> _expressionResults = new List<ExpressionResult>();
       protected readonly Cache<string, IParameter> _allExpressionParameters = new Cache<string, IParameter>();
+      protected IndividualProtein _protein;
 
       protected override void Context()
       {
          _context = A.Fake<IExecutionContext>();
          var expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
-         (_molecule, _ ) = expressionProfile;
+         (_molecule, _) = expressionProfile;
+         _protein = _molecule.DowncastTo<IndividualProtein>();
          _result = new QueryExpressionResults(_expressionResults);
-         _simulationSubject= A.Fake<ISimulationSubject>();
+         _simulationSubject = A.Fake<ISimulationSubject>();
          sut = new EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(_molecule, _result, _simulationSubject);
 
          A.CallTo(() => _simulationSubject.AllExpressionParametersFor(_molecule)).Returns(_allExpressionParameters);
@@ -48,10 +50,34 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_turn_on_blood_cell_localization()
+      public void should_turn_on_blood_cell_intracellular_localization()
       {
-         _molecule.DowncastTo<IndividualProtein>().InBloodCells.ShouldBeTrue();
-         _molecule.DowncastTo<IndividualProtein>().IsBloodCellsIntracellular.ShouldBeTrue();
+         _protein.InBloodCells.ShouldBeTrue();
+         _protein.IsBloodCellsIntracellular.ShouldBeTrue();
+      }
+   }
+
+   public class When_setting_the_relative_expression_for_a_molecule_that_is_localized_in_blood_cells_and_the_blood_cells_expression_is_greater_than_zero : concern_for_EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _protein.IsBloodCellsMembrane = true;
+         _allExpressionParameters.Add(CoreConstants.Compartment.BLOOD_CELLS, DomainHelperForSpecs.ConstantParameterWithValue(1));
+         _expressionResults.Add(new ExpressionResult {ContainerName = CoreConstants.Compartment.BLOOD_CELLS, RelativeExpression = 2});
+         _molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_BLOOD_CELLS));
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void should_not_turn_on_blood_cell_intracellular_localization()
+      {
+         _protein.InBloodCells.ShouldBeTrue();
+         _protein.IsBloodCellsIntracellular.ShouldBeFalse();
       }
    }
 
@@ -74,8 +100,31 @@ namespace PKSim.Core
       [Observation]
       public void should_turn_on_vascular_endothelium_localization()
       {
-         _molecule.DowncastTo<IndividualProtein>().InVascularEndothelium.ShouldBeTrue();
-         _molecule.DowncastTo<IndividualProtein>().IsVascEndosome.ShouldBeTrue();
+         _protein.InVascularEndothelium.ShouldBeTrue();
+         _protein.IsVascEndosome.ShouldBeTrue();
+      }
+   }
+
+   public class When_setting_the_relative_expression_for_a_molecule_that_is_localized_in_vascular_endothelium_and_the_vasc_endothelium_expression_is_greater_than_zero : concern_for_EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _protein.IsVascMembranePlasmaSide = true;
+         _allExpressionParameters.Add(CoreConstants.Compartment.VASCULAR_ENDOTHELIUM, DomainHelperForSpecs.ConstantParameterWithValue(1));
+         _expressionResults.Add(new ExpressionResult {ContainerName = CoreConstants.Compartment.VASCULAR_ENDOTHELIUM, RelativeExpression = 2});
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void should_not_turn_on_vascular_endosome()
+      {
+         _protein.InVascularEndothelium.ShouldBeTrue();
+         _protein.IsVascEndosome.ShouldBeFalse();
       }
    }
 }

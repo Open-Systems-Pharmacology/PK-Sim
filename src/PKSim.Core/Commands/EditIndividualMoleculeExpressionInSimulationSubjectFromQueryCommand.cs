@@ -68,11 +68,11 @@ namespace PKSim.Core.Commands
       {
          //special case for blood cells and vascular endothelium. if the value is set > 0. we need to turn on some locations programatically
          var bloodCells = _queryExpressionResults.ExpressionResultFor(CoreConstants.Compartment.BLOOD_CELLS);
-         if (bloodCells?.RelativeExpression > 0 && !protein.IsBloodCell())
+         if (bloodCells?.RelativeExpression > 0 && !protein.InBloodCells)
             Add(new SetExpressionLocalizationCommand(protein, Localization.BloodCellsIntracellular, _simulationSubject, context).Run(context));
 
          var vascularEndothelium = _queryExpressionResults.ExpressionResultFor(CoreConstants.Compartment.VASCULAR_ENDOTHELIUM);
-         if (vascularEndothelium?.RelativeExpression > 0 && !protein.IsVascularEndothelium())
+         if (vascularEndothelium?.RelativeExpression > 0 && !protein.InVascularEndothelium)
             Add(new SetExpressionLocalizationCommand(protein, Localization.VascEndosome, _simulationSubject, context).Run(context));
       }
    }
