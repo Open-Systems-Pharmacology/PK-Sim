@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Model
 {
@@ -24,7 +25,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public string Description { get; set; }
 
-      public QueryExpressionResults(IEnumerable<ExpressionResult> expressionResults)
+      public QueryExpressionResults(IReadOnlyList<ExpressionResult> expressionResults)
       {
          ExpressionResults = expressionResults;
       }
@@ -32,6 +33,8 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Results of query
       /// </summary>
-      public IEnumerable<ExpressionResult> ExpressionResults { get; }
+      public IReadOnlyList<ExpressionResult> ExpressionResults { get; }
+
+      public ExpressionResult ExpressionResultFor(string containerName) => ExpressionResults.Find(x => string.Equals(x.ContainerName, containerName));
    }
 }
