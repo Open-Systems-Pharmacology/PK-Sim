@@ -705,15 +705,15 @@ namespace PKSim.UI.Views.ProteinExpression
          // Count
          var argument2Description =
             new SummaryFunctionArgumentDescription("Count", ScaleType.Numerical);
-
+         
          // Register the summary function in chart.
          const string STR_CUSTOM_SUMMARY_FUNCTION_NAME = "WeightedAverage";
          const string STR_CUSTOM_SUMMARY_FUNCTION_DISPLAY_NAME = "WeightedAverage";
          chart.RegisterSummaryFunction(STR_CUSTOM_SUMMARY_FUNCTION_NAME, STR_CUSTOM_SUMMARY_FUNCTION_DISPLAY_NAME, 1,
                                        new[] {argument1Description, argument2Description},
                                        customSummary);
-
-         chart.SeriesTemplate.NumericSummaryOptions.SummaryFunction = 
+         
+         chart.SeriesTemplate.QualitativeSummaryOptions.SummaryFunction = 
             $"{STR_CUSTOM_SUMMARY_FUNCTION_NAME}([{_fieldNormValue.FieldName + "_" + _fieldNormValue.SummaryType}],[{_fieldNormValue2.FieldName + "_" + _fieldNormValue2.SummaryType}])";
 
          //config layout
