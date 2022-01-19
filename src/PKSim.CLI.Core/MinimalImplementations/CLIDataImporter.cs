@@ -29,6 +29,11 @@ namespace PKSim.CLI.Core.MinimalImplementations
          throw new NotImplementedException();
       }
 
+      public IReadOnlyList<ColumnInfo> ColumnInfosForObservedData()
+      {
+         throw new NotImplementedException();
+      }
+
       public bool AreFromSameMetaDataCombination(DataRepository sourceDataRepository, DataRepository targetDataRepository)
       {
          throw new NotImplementedException();
