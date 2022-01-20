@@ -92,7 +92,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public void RefreshView()
       {
          updateShowOntogenyButton();
-         // _view.AdjustHeight();
+         _view.AdjustHeight();
       }
 
       public void LoadOntogeny()
