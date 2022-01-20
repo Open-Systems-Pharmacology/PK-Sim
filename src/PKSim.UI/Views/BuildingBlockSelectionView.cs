@@ -1,16 +1,16 @@
-using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.UI.Controls;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views
 {
@@ -105,8 +105,9 @@ namespace PKSim.UI.Views
       {
          btnCreateBuildingBlock.InitWithImage(ApplicationIcons.Create, imageLocation: ImageLocation.MiddleCenter);
          btnLoadBuildingBlock.InitWithImage(ApplicationIcons.LoadFromTemplate, imageLocation: ImageLocation.MiddleCenter);
-         layoutItemCreate.AdjustButtonSizeWithImageOnly();
-         layoutItemLoad.AdjustButtonSizeWithImageOnly();
+         // tablePanel.WithButtonWidth(1, 2);
+         btnCreateBuildingBlock.AdjustButtonWithImageOnly();
+         btnLoadBuildingBlock.AdjustButtonWithImageOnly();
          cbBuildingBlocks.Properties.AllowHtmlDraw = DefaultBoolean.True;
       }
    }

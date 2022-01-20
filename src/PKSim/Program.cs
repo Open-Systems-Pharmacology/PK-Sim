@@ -19,7 +19,7 @@ namespace PKSim
       {
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(false);
-
+         
          WindowsFormsSettings.SetDPIAware();
          WindowsFormsSettings.SetPerMonitorDpiAware();
          WindowsFormsSettings.TouchUIMode = TouchUIMode.False;

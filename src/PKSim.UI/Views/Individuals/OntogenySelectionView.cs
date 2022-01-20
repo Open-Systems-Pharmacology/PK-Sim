@@ -1,13 +1,15 @@
 ﻿using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Extensions;
 using OSPSuite.Assets;
 using DevExpress.XtraEditors;
+using OSPSuite.Presentation.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -17,7 +19,7 @@ namespace PKSim.UI.Views.Individuals
       private IOntogenySelectionPresenter _presenter;
       private ScreenBinder<IndividualMolecule> _screenBinder;
 
-      public override int OptimalHeight => layoutControlGroup.Height;
+      public override int OptimalHeight => 30;
 
       public OntogenySelectionView(IToolTipCreator toolTipCreator)
       {
@@ -33,7 +35,6 @@ namespace PKSim.UI.Views.Individuals
       public void BindTo(IndividualMolecule individualMolecule)
       {
          _screenBinder.BindToSource(individualMolecule);
-         AdjustHeight();
       }
 
       public bool ShowOntogenyEnabled
@@ -65,15 +66,13 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemButtonOntogeny.AdjustButtonSizeWithImageOnly();
-         btnShowOntogeny.Image = ApplicationIcons.TimeProfileAnalysis.ToImage(IconSizes.Size16x16);
-         btnShowOntogeny.ImageLocation = ImageLocation.MiddleCenter;
+         btnShowOntogeny.InitWithImage(ApplicationIcons.TimeProfileAnalysis, imageLocation: ImageLocation.MiddleCenter);
          btnShowOntogeny.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ShowOntogeny, ApplicationIcons.TimeProfileAnalysis);
-
-         layoutItemLoadOntogeny.AdjustButtonSizeWithImageOnly();
-         btnLoadOntogenyFromFile.Image = ApplicationIcons.Excel.ToImage(IconSizes.Size16x16);
-         btnLoadOntogenyFromFile.ImageLocation = ImageLocation.MiddleCenter;
+         btnShowOntogeny.AdjustButtonWithImageOnly();
+         btnLoadOntogenyFromFile.InitWithImage(ApplicationIcons.Excel, imageLocation: ImageLocation.MiddleCenter);
          btnLoadOntogenyFromFile.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ImportOntogenyToolTip, PKSimConstants.UI.ImportOntogeny, ApplicationIcons.Excel);
+         btnLoadOntogenyFromFile.AdjustButtonWithImageOnly();
+         layoutItemOntogeny.Text = PKSimConstants.UI.OntogenyVariabilityLike.FormatForLabel();
       }
    }
 }
