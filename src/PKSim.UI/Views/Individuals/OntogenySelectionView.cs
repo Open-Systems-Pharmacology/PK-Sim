@@ -1,14 +1,15 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
+﻿using DevExpress.XtraEditors;
 using OSPSuite.Assets;
-using DevExpress.XtraEditors;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.Individuals
@@ -19,7 +20,7 @@ namespace PKSim.UI.Views.Individuals
       private IOntogenySelectionPresenter _presenter;
       private ScreenBinder<IndividualMolecule> _screenBinder;
 
-      public override int OptimalHeight => 30;
+      public override int OptimalHeight => UIConstants.Size.ScaleForScreenDPI(30);
 
       public OntogenySelectionView(IToolTipCreator toolTipCreator)
       {
@@ -72,6 +73,7 @@ namespace PKSim.UI.Views.Individuals
          btnLoadOntogenyFromFile.InitWithImage(ApplicationIcons.Excel, imageLocation: ImageLocation.MiddleCenter);
          btnLoadOntogenyFromFile.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ImportOntogenyToolTip, PKSimConstants.UI.ImportOntogeny, ApplicationIcons.Excel);
          btnLoadOntogenyFromFile.AdjustButtonWithImageOnly();
+         cbOntogey.Height = btnLoadOntogenyFromFile.Height;
          layoutItemOntogeny.Text = PKSimConstants.UI.OntogenyVariabilityLike.FormatForLabel();
       }
    }

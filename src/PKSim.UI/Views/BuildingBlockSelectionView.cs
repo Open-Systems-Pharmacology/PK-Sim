@@ -3,6 +3,7 @@ using DevExpress.XtraEditors;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
@@ -105,9 +106,10 @@ namespace PKSim.UI.Views
       {
          btnCreateBuildingBlock.InitWithImage(ApplicationIcons.Create, imageLocation: ImageLocation.MiddleCenter);
          btnLoadBuildingBlock.InitWithImage(ApplicationIcons.LoadFromTemplate, imageLocation: ImageLocation.MiddleCenter);
-         // tablePanel.WithButtonWidth(1, 2);
-         btnCreateBuildingBlock.AdjustButtonWithImageOnly();
-         btnLoadBuildingBlock.AdjustButtonWithImageOnly();
+         layoutItemLoad.AdjustButtonSizeWithImageOnly();
+         layoutItemCreate.AdjustButtonSizeWithImageOnly();
+         //Make combo box same size as button
+         layoutItemBuildingBlock.AdjustSize(0, UIConstants.Size.BUTTON_HEIGHT);
          cbBuildingBlocks.Properties.AllowHtmlDraw = DefaultBoolean.True;
       }
    }

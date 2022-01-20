@@ -32,9 +32,9 @@
       {
          this.cbOntogey = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
-         this.layoutItemOntogeny = new DevExpress.XtraEditors.LabelControl();
-         this.btnShowOntogeny = new DevExpress.XtraEditors.SimpleButton();
          this.btnLoadOntogenyFromFile = new DevExpress.XtraEditors.SimpleButton();
+         this.btnShowOntogeny = new DevExpress.XtraEditors.SimpleButton();
+         this.layoutItemOntogeny = new DevExpress.XtraEditors.LabelControl();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbOntogey.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
@@ -44,13 +44,14 @@
          // cbOntogey
          // 
          this.tablePanel.SetColumn(this.cbOntogey, 1);
-         this.cbOntogey.Location = new System.Drawing.Point(124, 6);
+         this.cbOntogey.Location = new System.Drawing.Point(124, 4);
          this.cbOntogey.Margin = new System.Windows.Forms.Padding(4);
          this.cbOntogey.Name = "cbOntogey";
+         this.cbOntogey.Properties.AutoHeight = false;
          this.cbOntogey.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.tablePanel.SetRow(this.cbOntogey, 0);
-         this.cbOntogey.Size = new System.Drawing.Size(262, 22);
+         this.cbOntogey.Size = new System.Drawing.Size(262, 26);
          this.cbOntogey.TabIndex = 0;
          // 
          // tablePanel
@@ -73,15 +74,15 @@
          this.tablePanel.Size = new System.Drawing.Size(647, 61);
          this.tablePanel.TabIndex = 2;
          // 
-         // layoutItemOntogeny
+         // btnLoadOntogenyFromFile
          // 
-         this.tablePanel.SetColumn(this.layoutItemOntogeny, 0);
-         this.layoutItemOntogeny.Location = new System.Drawing.Point(3, 9);
-         this.layoutItemOntogeny.Name = "layoutItemOntogeny";
-         this.tablePanel.SetRow(this.layoutItemOntogeny, 0);
-         this.layoutItemOntogeny.Size = new System.Drawing.Size(114, 16);
-         this.layoutItemOntogeny.TabIndex = 6;
-         this.layoutItemOntogeny.Text = "layoutItemOntogeny";
+         this.tablePanel.SetColumn(this.btnLoadOntogenyFromFile, 3);
+         this.btnLoadOntogenyFromFile.Location = new System.Drawing.Point(550, 3);
+         this.btnLoadOntogenyFromFile.Name = "btnLoadOntogenyFromFile";
+         this.tablePanel.SetRow(this.btnLoadOntogenyFromFile, 0);
+         this.btnLoadOntogenyFromFile.Size = new System.Drawing.Size(94, 29);
+         this.btnLoadOntogenyFromFile.TabIndex = 8;
+         this.btnLoadOntogenyFromFile.Text = "btnLoadOntogenyFromFile";
          // 
          // btnShowOntogeny
          // 
@@ -93,15 +94,15 @@
          this.btnShowOntogeny.TabIndex = 7;
          this.btnShowOntogeny.Text = "btnShowOntogeny";
          // 
-         // btnLoadOntogenyFromFile
+         // layoutItemOntogeny
          // 
-         this.tablePanel.SetColumn(this.btnLoadOntogenyFromFile, 3);
-         this.btnLoadOntogenyFromFile.Location = new System.Drawing.Point(550, 3);
-         this.btnLoadOntogenyFromFile.Name = "btnLoadOntogenyFromFile";
-         this.tablePanel.SetRow(this.btnLoadOntogenyFromFile, 0);
-         this.btnLoadOntogenyFromFile.Size = new System.Drawing.Size(94, 29);
-         this.btnLoadOntogenyFromFile.TabIndex = 8;
-         this.btnLoadOntogenyFromFile.Text = "btnLoadOntogenyFromFile";
+         this.tablePanel.SetColumn(this.layoutItemOntogeny, 0);
+         this.layoutItemOntogeny.Location = new System.Drawing.Point(3, 9);
+         this.layoutItemOntogeny.Name = "layoutItemOntogeny";
+         this.tablePanel.SetRow(this.layoutItemOntogeny, 0);
+         this.layoutItemOntogeny.Size = new System.Drawing.Size(114, 16);
+         this.layoutItemOntogeny.TabIndex = 6;
+         this.layoutItemOntogeny.Text = "layoutItemOntogeny";
          // 
          // OntogenySelectionView
          // 

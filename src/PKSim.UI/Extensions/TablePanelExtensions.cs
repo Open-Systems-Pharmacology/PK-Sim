@@ -31,8 +31,11 @@ namespace PKSim.UI.Extensions
 
       public static void AdjustButtonWithImageOnly(this SimpleButton button)
       {
-         button.Size = new Size(UIConstants.Size.BUTTON_HEIGHT, UIConstants.Size.BUTTON_HEIGHT);
-          button.Margin = new Padding(UIConstants.Size.ScaleForScreenDPI(2));
+         button.Size = new Size(UIConstants.Size.ScaleForScreenDPI(24), UIConstants.Size.ScaleForScreenDPI(22));
+      }
+      public static void AdjustLongButtonWidth(this SimpleButton button)
+      {
+         button.Size = new Size(UIConstants.Size.LARGE_BUTTON_WIDTH, button.Height);
       }
    }
 }
