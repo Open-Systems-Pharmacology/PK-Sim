@@ -11,7 +11,6 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views
 {
