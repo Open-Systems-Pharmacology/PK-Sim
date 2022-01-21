@@ -63,15 +63,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, int originalVersion)
       {
          _converted = false;
-         // element.DescendantsAndSelf("Individual").Each(convertOriginDataInIndividualNode);
-         // element.DescendantsAndSelf("BaseIndividual").Each(convertOriginDataInIndividualNode);
          element.DescendantsAndSelf("OriginData").Each(convertOriginDataElement);
          return (ProjectVersions.V11, _converted);
-      }
-
-      private void convertOriginDataInIndividualNode(XElement individualElement)
-      {
-         convertOriginDataElement(individualElement.Element("OriginData"));
       }
 
       private void convertOriginDataElement(XElement originDataElement)
