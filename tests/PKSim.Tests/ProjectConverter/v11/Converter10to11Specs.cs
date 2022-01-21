@@ -22,9 +22,9 @@ namespace PKSim.ProjectConverter.v11
       {
          base.GlobalContext();
          LoadProject("SimplePop_73");
-         _allSimulations = All<PopulationSimulation>().ToList();
-         _allPopulations = All<Population>().ToList();
-         _allIndividuals = All<Individual>().ToList();
+         _allSimulations = All<PopulationSimulation>();
+         _allPopulations = All<Population>();
+         _allIndividuals = All<Individual>();
          _allSimulations.Each(Load);
          _allPopulations.Each(Load);
          _allIndividuals.Each(Load);
@@ -78,9 +78,9 @@ namespace PKSim.ProjectConverter.v11
       {
          base.GlobalContext();
          LoadProject("expression_v9");
-         _allSimulations = All<PopulationSimulation>().ToList();
-         _allPopulations = All<Population>().ToList();
-         _allIndividuals = All<Individual>().ToList();
+         _allSimulations = All<PopulationSimulation>();
+         _allPopulations = All<Population>();
+         _allIndividuals = All<Individual>();
          _allSimulations.Each(Load);
          _allPopulations.Each(Load);
          _allIndividuals.Each(Load);
@@ -141,13 +141,21 @@ namespace PKSim.ProjectConverter.v11
    public class When_converting_the_expression_v10_project_to_11 : ContextWithLoadedProject<Converter10to11>
    {
       private List<Population> _allPopulations;
+      private List<Individual> _allIndividuals;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          LoadProject("expression_v10");
-         _allPopulations = All<Population>().ToList();
+         _allPopulations = All<Population>();
+         _allIndividuals = All<Individual>();
          _allPopulations.Each(Load);
+      }
+
+      [Observation]
+      public void should_be_able_to_read_the_population_of_all_individuals_before_loading_them()
+      {
+         _allIndividuals.Each(x=>x.OriginData.Population.ShouldNotBeNull());
       }
 
       [Observation]
