@@ -16,6 +16,7 @@ namespace PKSim.UI.Views.Simulations
       private readonly ScreenBinder<SimulationSubjectDTO> _screenBinder;
       private readonly UxBuildingBlockSelection _uxSimulationSubjectSelection;
 
+      private const int OPTIMAL_HEIGHT = 60;
       public SimulationSubjectConfigurationView()
       {
          InitializeComponent();
@@ -51,7 +52,11 @@ namespace PKSim.UI.Views.Simulations
 
       public bool AllowAgingVisible
       {
-         set => layoutItemAllowAging.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         set
+         {
+            layoutItemAllowAging.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+            AdjustHeight();
+         }
          get => LayoutVisibilityConvertor.ToBoolean(layoutItemAllowAging.Visibility);
       }
 
@@ -62,6 +67,6 @@ namespace PKSim.UI.Views.Simulations
          layoutItemIndividual.TextVisible = false;
       }
 
-      public override int OptimalHeight => layoutItemIndividual.Height + layoutItemAllowAging.Padding.Height + chkAllowAging.Height + chkAllowAging.Margin.Size.Height;
+      public override int OptimalHeight => OPTIMAL_HEIGHT - (AllowAgingVisible ? 0 : layoutItemAllowAging.Height - layoutItemAllowAging.Padding.Height);
    }
 }

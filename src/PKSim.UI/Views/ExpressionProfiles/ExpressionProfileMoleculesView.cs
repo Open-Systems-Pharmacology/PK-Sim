@@ -10,6 +10,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Views.ExpressionProfiles;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.ExpressionProfiles
 {
@@ -47,8 +48,11 @@ namespace PKSim.UI.Views.ExpressionProfiles
       public void DisableSettings()
       {
          layoutItemSpecies.Enabled = false;
+         cbSpecies.Enabled = false;
          layoutItemCategory.Enabled = false;
+         tbCategory.Enabled = false;
          layoutItemMoleculeName.Enabled = false;
+         cbMoleculeName.Enabled = false;
       }
 
       public override void InitializeBinding()
@@ -78,12 +82,15 @@ namespace PKSim.UI.Views.ExpressionProfiles
          base.InitializeResources();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
          layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
-         layoutGroupReferencePopulation.Text = PKSimConstants.UI.ReferencePopulation;
-         layoutGroupMoleculeName.Text = PKSimConstants.UI.Molecule;
-         layoutGroupReferencePopulation.ExpandButtonVisible = true;
-         layoutGroupMoleculeName.ExpandButtonVisible = true;
+         // layoutGroupReferencePopulation.Text = PKSimConstants.UI.ReferencePopulation;
+         // layoutGroupMoleculeName.Text = PKSimConstants.UI.Molecule;
+         // layoutGroupReferencePopulation.ExpandButtonVisible = true;
+         // layoutGroupMoleculeName.ExpandButtonVisible = true;
          btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, PKSimConstants.UI.LoadExpressionFromDatabase);
-         layoutItemLoadFromDatabase.AdjustLongButtonSize();
+         // tablePanel.WithLongButtonWidth(columnIndexes: 2);
+         btnLoadFromDatabase.AdjustLongButtonWidth();
+         // layoutItemLoadFromDatabase.AdjustLongButtonSize();
+
       }
 
       public override bool HasError => _screenBinder.HasError || base.HasError;
