@@ -9,6 +9,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 {
    public interface IProteinSelectionPresenter : IExpressionItemPresenter
    {
+      void InitWithProteinName(string proteinName);
       void SearchProtein(string proteinName);
       void SelectProtein();
       bool ProteinSelected { get; }
@@ -34,6 +35,12 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       public ProteinSelectionPresenter(IProteinSelectionView view, IGeneExpressionQueries geneExpressionQueries) : base(view)
       {
          _geneExpressionQueries = geneExpressionQueries;
+      }
+
+      public void InitWithProteinName(string proteinName)
+      {
+         _view.SearchCriteria = proteinName;
+         SearchProtein($"%{proteinName}%");
       }
 
       public void SearchProtein(string proteinName)

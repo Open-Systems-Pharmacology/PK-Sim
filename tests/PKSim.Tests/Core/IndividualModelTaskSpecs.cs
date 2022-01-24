@@ -52,12 +52,12 @@ namespace PKSim.Core
          _individual.OriginData = _originData;
          _individual.Add(_organism);
          _individual.Add(_neighborhoods);
-         _originData.SpeciesPopulation = new SpeciesPopulation();
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.SpeciesPopulation, _individual)).Returns(new[] {_organism});
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.SpeciesPopulation, _organism)).Returns(new[] {_organ});
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.SpeciesPopulation, _organ)).Returns(new[] {_compartment});
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.SpeciesPopulation, _compartment)).Returns(new List<IContainer>());
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.SpeciesPopulation, _neighborhoods)).Returns(new List<IContainer>());
+         _originData.Population = new SpeciesPopulation();
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _individual)).Returns(new[] {_organism});
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _organism)).Returns(new[] {_organ});
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _organ)).Returns(new[] {_compartment});
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _compartment)).Returns(new List<IContainer>());
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _neighborhoods)).Returns(new List<IContainer>());
       }
 
       protected override void Because()

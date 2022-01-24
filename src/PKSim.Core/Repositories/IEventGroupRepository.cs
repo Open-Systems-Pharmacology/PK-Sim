@@ -9,11 +9,6 @@ namespace PKSim.Core.Repositories
    /// </summary>
    public interface IEventGroupRepository : IStartableRepository<IEventGroupBuilder>
    {
-      /// <summary>
-      ///    Returns all event groups which can be created by user
-      ///    <para></para>
-      ///    (some event groups are e.g. only used for project conversion)
-      /// </summary>
-      IEnumerable<IEventGroupBuilder> AllForCreationByUser();
+     
    }
 }

@@ -60,7 +60,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public bool ContainerIsFormulation(FlatContainer container)
       {
-         return string.Equals(container.Type, CoreConstants.ContainerType.Formulation) && container.Visible;
+         return string.Equals(container.Type, CoreConstants.ContainerType.FORMULATION) && container.Visible;
       }
 
       public IEnumerable<Formulation> AllFor(string applicationRoute)

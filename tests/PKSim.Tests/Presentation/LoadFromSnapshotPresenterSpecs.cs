@@ -121,9 +121,9 @@ namespace PKSim.Presentation
          var snapshotFile = "SnapshotFile";
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(snapshotFile);
          _loadFromSnapshotDTO.SnapshotFile = snapshotFile;
-         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFile<Individual>(snapshotFile)).Returns(new[] {_individual});
+         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFileAsync<Individual>(snapshotFile)).Returns(new[] {_individual});
          A.CallTo(() => _view.Display())
-            .Invokes(x => sut.Start().Wait());
+            .Invokes(x => sut.StartAsync().Wait());
       }
 
       protected override void Because()
@@ -165,12 +165,12 @@ namespace PKSim.Presentation
       {
          base.Context();
          _exception = new Exception();
-         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFile<Individual>(A<string>._)).Throws(_exception);
+         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFileAsync<Individual>(A<string>._)).Throws(_exception);
       }
 
       protected override void Because()
       {
-         sut.Start().Wait();
+         sut.StartAsync().Wait();
       }
 
       [Observation]

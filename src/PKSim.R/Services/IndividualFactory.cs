@@ -4,7 +4,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -65,13 +64,13 @@ namespace PKSim.R.Services
          var derivedParameters = new List<ParameterValueWithUnit>();
 
          //Add Age and Height parameter that is not distributed at the moment
-         if (originData.SpeciesPopulation.IsAgeDependent)
+         if (originData.Population.IsAgeDependent)
          {
             distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.AGE)));
             distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE)));
          }
 
-         if (originData.SpeciesPopulation.IsHeightDependent)
+         if (originData.Population.IsHeightDependent)
             distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.HEIGHT)));
 
          distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP)));

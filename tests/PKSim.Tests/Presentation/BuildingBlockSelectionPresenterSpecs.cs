@@ -27,7 +27,7 @@ namespace PKSim.Presentation
       protected IBuildingBlockSelectionView _view;
       protected IObjectTypeResolver _objectTypeResolver;
       protected IBuildingBlockTask<Individual> _individualBuildingBlockTask;
-      protected IList<Individual> _individualList;
+      protected List<Individual> _individualList;
       protected string _buildingBlockType;
       private IContainer _container;
       protected IToolTipPartCreator _toolTipCreator;

@@ -75,7 +75,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
       private void addEvents(IContainer container)
       {
-         var flatEventSubContainers = flatSubContainersFor(container, x => x == CoreConstants.ContainerType.Event);
+         var flatEventSubContainers = flatSubContainersFor(container, x => x == CoreConstants.ContainerType.EVENT);
 
          foreach (var flatEventContainer in flatEventSubContainers)
          {
@@ -107,8 +107,8 @@ namespace PKSim.Infrastructure.ORM.Mappers
       {
          var flatSubContainers = flatSubContainersFor(container,
             containerType =>
-               containerType != CoreConstants.ContainerType.Event &&
-               containerType != CoreConstants.ContainerType.Process);
+               containerType != CoreConstants.ContainerType.EVENT &&
+               containerType != CoreConstants.ContainerType.PROCESS);
 
          return flatSubContainers.MapAllUsing(_flatContainerIdMapper);
       }

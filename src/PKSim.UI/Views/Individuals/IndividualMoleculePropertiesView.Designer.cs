@@ -59,16 +59,16 @@
          // 
          // panelOntogeny
          // 
-         this.panelOntogeny.Location = new System.Drawing.Point(153, 117);
+         this.panelOntogeny.Location = new System.Drawing.Point(151, 115);
          this.panelOntogeny.Name = "panelOntogeny";
-         this.panelOntogeny.Size = new System.Drawing.Size(530, 31);
+         this.panelOntogeny.Size = new System.Drawing.Size(534, 35);
          this.panelOntogeny.TabIndex = 5;
          // 
          // panelMoleculeParameters
          // 
-         this.panelMoleculeParameters.Location = new System.Drawing.Point(153, 2);
+         this.panelMoleculeParameters.Location = new System.Drawing.Point(151, 0);
          this.panelMoleculeParameters.Name = "panelMoleculeParameters";
-         this.panelMoleculeParameters.Size = new System.Drawing.Size(530, 111);
+         this.panelMoleculeParameters.Size = new System.Drawing.Size(534, 115);
          this.panelMoleculeParameters.TabIndex = 4;
          // 
          // Root
@@ -88,6 +88,7 @@
          this.layoutItemMoleculeParameters.Control = this.panelMoleculeParameters;
          this.layoutItemMoleculeParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutItemMoleculeParameters.Name = "layoutItemMoleculeParameters";
+         this.layoutItemMoleculeParameters.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutItemMoleculeParameters.Size = new System.Drawing.Size(685, 115);
          this.layoutItemMoleculeParameters.TextSize = new System.Drawing.Size(148, 13);
          // 
@@ -96,6 +97,7 @@
          this.layoutItemOntogeny.Control = this.panelOntogeny;
          this.layoutItemOntogeny.Location = new System.Drawing.Point(0, 115);
          this.layoutItemOntogeny.Name = "layoutItemOntogeny";
+         this.layoutItemOntogeny.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutItemOntogeny.Size = new System.Drawing.Size(685, 35);
          this.layoutItemOntogeny.TextSize = new System.Drawing.Size(148, 13);
          // 

@@ -51,6 +51,12 @@ namespace PKSim.UI.Views.Parameters
       protected IGridViewColumn _columnFavorites;
       protected readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
 
+      //Design only
+      public ParameterSetView()
+      {
+         InitializeComponent();
+      }
+
       public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
@@ -186,7 +192,8 @@ namespace PKSim.UI.Views.Parameters
          if (parameterDTO.FormulaType == FormulaType.Table)
             return parameterDTO.Editable ? _editTableParameterRepository : _showTableParameterRepository;
 
-         if (_presenter.IsSetByUser(parameterDTO))
+         //We only show the fixed parameter if the column is not readonly. Otherwise, no need to show the button
+         if (_presenter.IsSetByUser(parameterDTO) && !_columnValue.ReadOnly)
             return _isFixedParameterEditRepository;
 
          return _standardParameterEditRepository;
@@ -270,6 +277,15 @@ namespace PKSim.UI.Views.Parameters
       }
 
       public override bool HasError => _gridViewBinder.HasError;
+
+      public bool ReadOnly
+      {
+         set
+         {
+            _columnValue.ReadOnly = value;
+            _valueOriginBinder.ValueOriginColumn.ReadOnly = value;
+         }
+      }
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {

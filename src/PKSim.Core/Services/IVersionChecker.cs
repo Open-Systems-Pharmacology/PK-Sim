@@ -25,8 +25,23 @@ namespace PKSim.Core.Services
       VersionInfo LatestVersion { get; }
 
       /// <summary>
+      ///    Returns the latest version available for the  product named <paramref name="productName"/>
+      /// </summary>
+      VersionInfo LatestVersionFor(string productName);
+
+      /// <summary>
+      ///    Downloads the latest version available for our software products
+      /// </summary>
+      Task DownloadLatestVersionInfoAsync();
+
+      /// <summary>
       ///    Returns true if a new version was found otherwise false. The latest version can be retrieved from LatestVersion
       /// </summary>
-      Task<bool> NewVersionIsAvailableAsync();
+      bool NewVersionIsAvailable { get; }
+
+      /// <summary>
+      ///    Returns true if a new version was found for product named <paramref name="productName" /> otherwise false.
+      /// </summary>
+      bool NewVersionIsAvailableFor(string productName, string currentVersion);
    }
 }

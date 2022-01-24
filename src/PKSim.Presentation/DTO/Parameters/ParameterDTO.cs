@@ -78,18 +78,10 @@ namespace PKSim.Presentation.DTO.Parameters
       {
          get
          {
-            try
-            {
-               return Parameter.ValueInDisplayUnit;
-            }
-            catch (Exception exception)
+            var (result,_) = Parameter.TryGetValueInDisplayUnit();
+            //Permeability cannot be read in compound as references cannot be resolved
+            return result;
 
-            {
-               Debug.Write(exception.Message);
-               //Maybe implement a way to ask if a value can be computed instead of catching exception
-               //Permeability cannot be read in compound as references cannot be resolved
-               return 0;
-            }
          }
          set
          {
@@ -223,7 +215,7 @@ namespace PKSim.Presentation.DTO.Parameters
       public WritableParameterDTO(IParameter parameter)
          : base(parameter)
       {
-         //base rules are not added for editeable parameter. We need them in that case however
+         //base rules are not added for editable parameter. We need them in that case however
          if (!parameter.Editable)
             Rules.Add(ParameterDTORules.ParameterIsValid());
       }

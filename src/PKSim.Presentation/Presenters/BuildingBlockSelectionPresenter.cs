@@ -1,20 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using System.Threading.Tasks;
 using OSPSuite.Assets;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.DTO;
-using PKSim.Presentation.Nodes;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters
@@ -28,10 +28,15 @@ namespace PKSim.Presentation.Presenters
       void Edit(IPKSimBuildingBlock buildingBlock);
       void CreateBuildingBlock();
       ApplicationIcon IconFor(IPKSimBuildingBlock buildingBlock);
-      void LoadBuildingBlock();
+      Task LoadBuildingBlockAsync();
       string DisplayFor(IPKSimBuildingBlock buildingBlock);
       IEnumerable<ToolTipPart> ToolTipPartsFor(int selectedIndex);
       bool AllowEmptySelection { set; }
+
+      /// <summary>
+      ///    Allows to filter the building block to show even more based on some criteria
+      /// </summary>
+      Func<IPKSimBuildingBlock, bool> ExtraFilter { get; set; }
    }
 
    public interface IBuildingBlockSelectionPresenter<TBuildingBlock> : IBuildingBlockSelectionPresenter where TBuildingBlock : IPKSimBuildingBlock
@@ -49,9 +54,16 @@ namespace PKSim.Presentation.Presenters
       private readonly TBuildingBlock _emptySelection;
       public string BuildingBlockType { get; }
 
-      public BuildingBlockSelectionPresenter(IBuildingBlockSelectionView view, IObjectTypeResolver objectTypeResolver,
-         IBuildingBlockRepository buildingBlockRepository, IContainer container,
-         IObjectBaseFactory objectBaseFactory, IBuildingBlockSelectionDisplayer buildingBlockSelectionDisplayer)
+      //By default, always allowed
+      public Func<IPKSimBuildingBlock, bool> ExtraFilter { get; set; } = _ => true;
+
+      public BuildingBlockSelectionPresenter(
+         IBuildingBlockSelectionView view,
+         IObjectTypeResolver objectTypeResolver,
+         IBuildingBlockRepository buildingBlockRepository,
+         IContainer container,
+         IObjectBaseFactory objectBaseFactory,
+         IBuildingBlockSelectionDisplayer buildingBlockSelectionDisplayer)
          : base(view)
       {
          _buildingBlockRepository = buildingBlockRepository;
@@ -68,6 +80,7 @@ namespace PKSim.Presentation.Presenters
          get
          {
             var allTemplateBuildingBlocks = _buildingBlockRepository.All<TBuildingBlock>()
+               .Where(ExtraFilter)
                .Select(x => x.DowncastTo<IPKSimBuildingBlock>()).ToList();
 
             if (_buildingBlockDTO.AllowEmptySelection)
@@ -98,7 +111,7 @@ namespace PKSim.Presentation.Presenters
 
       public bool DisplayNotification
       {
-         set { _buildingBlockDTO.ValidateBuildingBlock = value; }
+         set => _buildingBlockDTO.ValidateBuildingBlock = value;
       }
 
       public void Edit(IPKSimBuildingBlock buildingBlock)
@@ -129,7 +142,7 @@ namespace PKSim.Presentation.Presenters
       {
          var buildingBlockTask = _container.Resolve<IBuildingBlockTask<TBuildingBlock>>();
          buildingBlockTask.AddToProject();
-         Edit(_buildingBlockRepository.All<TBuildingBlock>().LastOrDefault());
+         Edit(getNewlyAddedBuildingBlock());
       }
 
       public ApplicationIcon IconFor(IPKSimBuildingBlock buildingBlock)
@@ -137,12 +150,14 @@ namespace PKSim.Presentation.Presenters
          return _buildingBlockSelectionDisplayer.IconFor(buildingBlock, _emptySelection);
       }
 
-      public void LoadBuildingBlock()
+      public async Task LoadBuildingBlockAsync()
       {
          var buildingBlockTask = _container.Resolve<IBuildingBlockTask<TBuildingBlock>>();
-         buildingBlockTask.LoadSingleFromTemplate();
-         Edit(_buildingBlockRepository.All<TBuildingBlock>().LastOrDefault());
+         await buildingBlockTask.LoadSingleFromTemplateAsync();
+         Edit(getNewlyAddedBuildingBlock());
       }
+
+      private IPKSimBuildingBlock getNewlyAddedBuildingBlock() => _buildingBlockRepository.All<TBuildingBlock>().Where(ExtraFilter).LastOrDefault();
 
       public string DisplayFor(IPKSimBuildingBlock buildingBlock)
       {
@@ -154,6 +169,5 @@ namespace PKSim.Presentation.Presenters
          var buildingBlock = AllAvailableBlocks.ElementAtOrDefault(selectedIndex) as TBuildingBlock;
          return _buildingBlockSelectionDisplayer.ToolTipFor(buildingBlock);
       }
-
    }
 }

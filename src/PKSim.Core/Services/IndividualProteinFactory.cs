@@ -27,12 +27,15 @@ namespace PKSim.Core.Services
       {
          var molecule = CreateMolecule(moleculeName);
 
+         if(HasAgeParameter(simulationSubject))
+            AddOntogenyParameterTo(molecule);
+
          //default localization
          molecule.Localization = Localization.Intracellular;
 
          AddGlobalExpression(molecule,
             RelExpParam(REL_EXP_BLOOD_CELLS),
-            FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ONE_RATE),
             FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.PARAM_F_EXP_BC_MEMBRANE, editable: false)
          );
 
@@ -40,7 +43,7 @@ namespace PKSim.Core.Services
 
          AddGlobalExpression(molecule,
             RelExpParam(REL_EXP_VASCULAR_ENDOTHELIUM),
-            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME, CoreConstants.Rate.ZERO_RATE),
+            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME, CoreConstants.Rate.ONE_RATE),
             FractionParam(FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE, CoreConstants.Rate.ZERO_RATE),
             FractionParam(FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE, CoreConstants.Rate.PARAM_F_EXP_VASC_TISSUE_SIDE, editable: false)
          );

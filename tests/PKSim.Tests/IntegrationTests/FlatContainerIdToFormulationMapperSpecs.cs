@@ -30,7 +30,7 @@ namespace PKSim.IntegrationTests
       protected override void Context()
       {
          base.Context();
-         _formulationFlatContainer = _flatContainerRepository.All().First(x => x.Type == CoreConstants.ContainerType.Formulation);
+         _formulationFlatContainer = _flatContainerRepository.All().First(x => x.Type == CoreConstants.ContainerType.FORMULATION);
       }
       protected override void Because()
       {

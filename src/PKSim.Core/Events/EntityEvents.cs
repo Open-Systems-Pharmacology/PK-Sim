@@ -78,7 +78,7 @@ namespace PKSim.Core.Events
 
    public class BuildingBlockRemovedEvent : RemoveBuildingBlockEvent<IPKSimBuildingBlock>
    {
-      public bool DueToSwap { get; private set; }
+      public bool DueToSwap { get; }
 
       public BuildingBlockRemovedEvent(IPKSimBuildingBlock buildingBlock, PKSimProject project) : this(buildingBlock, project, false)
       {
@@ -93,7 +93,7 @@ namespace PKSim.Core.Events
 
    public class BuildingBlockUpdatedEvent
    {
-      public IPKSimBuildingBlock BuildingBlock { get; private set; }
+      public IPKSimBuildingBlock BuildingBlock { get; }
 
       public BuildingBlockUpdatedEvent(IPKSimBuildingBlock buildingBlock)
       {
@@ -103,8 +103,8 @@ namespace PKSim.Core.Events
 
    public class ObjectBaseConvertedEvent
    {
-      public IObjectBase ConvertedObject { get; private set; }
-      public ProjectVersion FromVersion { get; private set; }
+      public IObjectBase ConvertedObject { get; }
+      public ProjectVersion FromVersion { get; }
 
       public ObjectBaseConvertedEvent(IObjectBase convertedObject, ProjectVersion fromVersion)
       {
@@ -133,8 +133,8 @@ namespace PKSim.Core.Events
 
    public class SwapSimulationEvent
    {
-      public Simulation OldSimulation { get; private set; }
-      public Simulation NewSimulation { get; private set; }
+      public Simulation OldSimulation { get; }
+      public Simulation NewSimulation { get; }
 
       public SwapSimulationEvent(Simulation oldSimulation, Simulation newSimulation)
       {
@@ -145,8 +145,8 @@ namespace PKSim.Core.Events
 
    public class SwapBuildingBlockEvent
    {
-      public IPKSimBuildingBlock OldBuildingBlock { get; private set; }
-      public IPKSimBuildingBlock NewBuildingBlock { get; private set; }
+      public IPKSimBuildingBlock OldBuildingBlock { get; }
+      public IPKSimBuildingBlock NewBuildingBlock { get; }
 
       public SwapBuildingBlockEvent(IPKSimBuildingBlock oldBuildingBlock, IPKSimBuildingBlock newBuildingBlock)
       {
@@ -157,7 +157,7 @@ namespace PKSim.Core.Events
 
    public class NoTranporterTemplateAvailableEvent
    {
-      public IndividualTransporter Transporter { get; private set; }
+      public IndividualTransporter Transporter { get; }
 
       public NoTranporterTemplateAvailableEvent(IndividualTransporter transporter)
       {

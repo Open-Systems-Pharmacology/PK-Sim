@@ -23,7 +23,7 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public ICommand RemoveMoleculeFrom(IndividualMolecule molecule, Population population)
+      public IOSPSuiteCommand RemoveMoleculeFrom(IndividualMolecule molecule, Population population)
       {
          var removeMoleculeCommand = new RemoveMoleculeFromPopulationCommand(molecule, population, _executionContext);
          var command = macroCommandFrom(population,
@@ -37,7 +37,7 @@ namespace PKSim.Core.Services
          return command;
       }
 
-      private ICommand removeAdvancedParametersForMolecule(IndividualMolecule molecule, Population population)
+      private IOSPSuiteCommand removeAdvancedParametersForMolecule(IndividualMolecule molecule, Population population)
       {
          var macroCommand = new PKSimMacroCommand
          {
@@ -57,30 +57,13 @@ namespace PKSim.Core.Services
          return macroCommand;
       }
 
-      public ICommand AddMoleculeTo(IndividualMolecule molecule, Population population)
+      public IOSPSuiteCommand AddMoleculeTo(IndividualMolecule molecule, Population population)
       {
          var baseCommand = new AddMoleculeToPopulationCommand(molecule, population, _executionContext);
          return addMoleculeToPopulation(molecule, population, baseCommand);
       }
 
-      public IOSPSuiteCommand EditMolecule(IndividualMolecule moleculeToEdit,  QueryExpressionResults queryResults, Population population)
-      {
-         return new EditIndividualMoleculeExpressionInSimulationSubjectFromQueryCommand(moleculeToEdit,  queryResults, population)
-            .Run(_executionContext);
-      }
-
-      public ICommand AddMoleculeTo(IndividualMolecule molecule, Population population, QueryExpressionResults queryExpressionResults)
-      {
-         var baseCommand = new AddMoleculeExpressionsFromQueryToPopulationCommand(molecule, queryExpressionResults, population);
-         return addMoleculeToPopulation(molecule, population, baseCommand);
-      }
-
-      public ICommand RenameMolecule(IndividualMolecule molecule, string newName, Population simulationSubject)
-      {
-         return new RenameMoleculeInSimulationSubjectCommand(molecule, simulationSubject, newName, _executionContext).Run(_executionContext);
-      }
-
-      private ICommand addMoleculeToPopulation(IndividualMolecule molecule, Population population, ICommand<IExecutionContext> baseCommand)
+      private IOSPSuiteCommand addMoleculeToPopulation(IndividualMolecule molecule, Population population, ICommand<IExecutionContext> baseCommand)
       {
          return macroCommandFrom(population,
             baseCommand,
@@ -92,7 +75,7 @@ namespace PKSim.Core.Services
          );
       }
 
-      private ICommand macroCommandFrom(Population population, ICommand baseCommand, IEnumerable<ICommand> commands)
+      private IOSPSuiteCommand macroCommandFrom(Population population, ICommand baseCommand, IEnumerable<ICommand> commands)
       {
          var macroCommand = new PKSimMacroCommand
          {

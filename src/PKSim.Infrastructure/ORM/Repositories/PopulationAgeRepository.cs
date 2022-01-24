@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatPopulationAgeRepository(IDbGateway dbGateway,
          IDataTableToMetaDataMapper<PopulationAgeSettings> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewPopulationAge)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_POPULATION_AGE)
       {
       }
    }

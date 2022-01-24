@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using static PKSim.Core.Model.Localization;
 
 namespace PKSim.Core.Commands
@@ -99,8 +100,12 @@ namespace PKSim.Core.Commands
          if (_localization.Is(InTissue))
             AddRange(updateTissueExpressionParameters(context));
 
+         var expressionProfileUpdater = context.Resolve<IExpressionProfileUpdater>();
+         expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(_simulationSubject);
+
          _protein = null;
          _simulationSubject = null;
+
 
          //update properties from first command
          this.UpdatePropertiesFrom(setLocationCommand);
@@ -183,7 +188,7 @@ namespace PKSim.Core.Commands
          return command.All();
       }
 
-      private IEnumerable<ICommand> setParametersForFlags(IExecutionContext context, 
+      private IEnumerable<ICommand> setParametersForFlags(IExecutionContext context,
          Localization enabledLocalization,
          Localization disabledLocalization,
          params (IParameter param, double value)[] parametersToSet)
@@ -199,8 +204,8 @@ namespace PKSim.Core.Commands
             var (parameter, value) = x;
             var macroCommand = new PKSimMacroCommand();
             macroCommand.Add(new SetParameterValueCommand(parameter, value));
-            macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault:true) { ShouldChangeVersion = false, Visible = false});
-            macroCommand.Add(new UpdateParameterValueOriginCommand(parameter, ValueOrigin.Undefined) { ShouldChangeVersion = false, Visible = false });
+            macroCommand.Add(new SetParameterDefaultStateCommand(parameter, isDefault: true) {ShouldChangeVersion = false, Visible = false});
+            macroCommand.Add(new UpdateParameterValueOriginCommand(parameter, ValueOrigin.Undefined) {ShouldChangeVersion = false, Visible = false});
             macroCommand.Execute(context);
             macroCommand.WithHistoryEntriesFrom(macroCommand);
             return macroCommand;

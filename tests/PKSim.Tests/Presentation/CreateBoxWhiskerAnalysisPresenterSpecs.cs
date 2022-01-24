@@ -124,18 +124,18 @@ namespace PKSim.Presentation
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _loadedAnalysis = A.Fake<PopulationBoxWhiskerAnalysis>();
          sut.Create(_populationDataCollector);
-         A.CallTo(() => _populationAnalysisTemplateTask.LoadPopulationAnalysisFor<PopulationBoxWhiskerAnalysis>(_populationDataCollector)).Returns(_loadedAnalysis);
+         A.CallTo(() => _populationAnalysisTemplateTask.LoadPopulationAnalysisForAsync<PopulationBoxWhiskerAnalysis>(_populationDataCollector)).Returns(_loadedAnalysis);
       }
 
       protected override void Because()
       {
-         sut.LoadAnalysis();
+         sut.LoadAnalysisTask();
       }
 
       [Observation]
       public void should_leverate_the_templating_task_to_retrieve_a_population_analysis_from_template()
       {
-         A.CallTo(() => _populationAnalysisTemplateTask.LoadPopulationAnalysisFor<PopulationBoxWhiskerAnalysis>(_populationDataCollector)).MustHaveHappened();
+         A.CallTo(() => _populationAnalysisTemplateTask.LoadPopulationAnalysisForAsync<PopulationBoxWhiskerAnalysis>(_populationDataCollector)).MustHaveHappened();
       }
 
       [Observation]

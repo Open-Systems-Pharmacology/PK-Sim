@@ -26,7 +26,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_protein, _individual);
+         _result = sut.MapFrom(_protein, _individual, _protein.Name);
       }
    }
 

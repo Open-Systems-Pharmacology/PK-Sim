@@ -23,7 +23,7 @@ namespace PKSim.Presentation
       protected ICompoundTask _compoundTask;
       protected ISimulationCompoundsSelectionView _view;
       protected IBuildingBlockRepository _buildingBlockRepository;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected List<Compound> _allCompoundTemplates;
       protected Compound _compound1;
       protected Compound _compound2;
@@ -43,7 +43,7 @@ namespace PKSim.Presentation
          _compoundTask = A.Fake<ICompoundTask>();
          _view = A.Fake<ISimulationCompoundsSelectionView>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _buildingBlockSelectionDisplayer = A.Fake<IBuildingBlockSelectionDisplayer>();
 
 
@@ -51,7 +51,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.BindTo(A<NotifyList<CompoundSelectionDTO>>._))
             .Invokes(x => _compoundDTOList = x.GetArgument<NotifyList<CompoundSelectionDTO>>(0));
 
-         sut = new SimulationCompoundsSelectionPresenter(_view, _buildingBlockRepository, _buildingBlockInSimulationManager, _compoundTask, _buildingBlockSelectionDisplayer);
+         sut = new SimulationCompoundsSelectionPresenter(_view, _buildingBlockRepository, _buildingBlockInProjectManager, _compoundTask, _buildingBlockSelectionDisplayer);
 
          sut.Initialize();
 
@@ -92,12 +92,12 @@ namespace PKSim.Presentation
       {
          base.Context();
          _newCompound = new Compound().WithName("NEW COMPOUND");
-         A.CallTo(() => _compoundTask.LoadSingleFromTemplate()).Returns(_newCompound);
+         A.CallTo(() => _compoundTask.LoadSingleFromTemplateAsync()).Returns(_newCompound);
       }
 
       protected override void Because()
       {
-         sut.LoadCompound();
+         sut.LoadCompoundAsync();
       }
 
       [Observation]

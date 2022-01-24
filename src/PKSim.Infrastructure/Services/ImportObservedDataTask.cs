@@ -87,7 +87,7 @@ namespace PKSim.Infrastructure.Services
 
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
       {
-         var importedObservedData = getObservedDataFromImporter(configuration, columnInfoConfiguration, null, false, false);
+         var importedObservedData = getObservedDataFromImporter(configuration, null, false, false);
          var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
 
          if (reloadDataSets == null) return;
@@ -140,24 +140,24 @@ namespace PKSim.Infrastructure.Services
       public void AddObservedDataToProjectForCompound(Compound compound)
       {
          _executionContext.Load(compound);
-         addObservedData(columnInfoConfiguration, compound);
+         addObservedData(compound);
       }
 
       public void AddObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration)
       {
          _executionContext.Load(compound);
-         addObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, null, false, true);
+         addObservedDataFromConfiguration(configuration, compound, null, false, true);
       }
 
       private void addObservedDataFromConfigurationToProjectForCompound(Compound compound, ImporterConfiguration configuration, string dataRepositoryName)
       {
          _executionContext.Load(compound);
-         addObservedDataFromConfiguration(configuration, columnInfoConfiguration, compound, dataRepositoryName);
+         addObservedDataFromConfiguration(configuration, compound, dataRepositoryName);
       }
 
-      private void addObservedDataFromConfiguration(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, string dataRepositoryName = null, bool allowCompoundNameEdit = false, bool propmtUser = false)
+      private void addObservedDataFromConfiguration(ImporterConfiguration configuration, Compound compound = null, string dataRepositoryName = null, bool allowCompoundNameEdit = false, bool propmtUser = false)
       {
-         var importedObservedData = getObservedDataFromImporter(configuration, importConfiguration, compound, propmtUser, allowCompoundNameEdit);
+         var importedObservedData = getObservedDataFromImporter(configuration, compound, propmtUser, allowCompoundNameEdit);
          if (importedObservedData == null) return;
 
          foreach (var observedData in string.IsNullOrEmpty(dataRepositoryName) ? importedObservedData : importedObservedData.Where(r => r.Name == dataRepositoryName))
@@ -217,7 +217,7 @@ namespace PKSim.Infrastructure.Services
          return (metaDataCategories, dataImporterSettings);
       }
 
-      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound, bool promptUser,
+      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration, Compound compound, bool promptUser,
          bool allowCompoundNameEdit)
       {
          var (metaDataCategories, dataImporterSettings) = initializeSettings(compound, allowCompoundNameEdit);
@@ -226,20 +226,20 @@ namespace PKSim.Infrastructure.Services
          var importedObservedData = _dataImporter.ImportFromConfiguration(
             configuration,
             metaDataCategories,
-            importConfiguration(),
+            _dataImporter.ColumnInfosForObservedData(),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
          return importedObservedData;
       }
 
-      private void addObservedData(Func<IReadOnlyList<ColumnInfo>> importConfiguration, Compound compound = null, bool allowCompoundNameEdit = false)
+      private void addObservedData( Compound compound = null, bool allowCompoundNameEdit = false)
       {
 
          var (metaDataCategories, dataImporterSettings) = initializeSettings(compound, allowCompoundNameEdit);
          var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
             metaDataCategories,
-            importConfiguration(),
+            _dataImporter.ColumnInfosForObservedData(),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          );
@@ -279,73 +279,6 @@ namespace PKSim.Infrastructure.Services
       private void adjustMolWeight(DataRepository observedData)
       {
          _parameterChangeUpdater.UpdateMolWeightIn(observedData);
-      }
-
-      private IReadOnlyList<ColumnInfo> columnInfoConfiguration()
-      {
-         var columns = new List<ColumnInfo>();
-         var timeColumn = createTimeColumn();
-         columns.Add(timeColumn);
-
-
-         var supportedDimensions = new[]
-         {
-            _dimensionRepository.MolarConcentration,
-            _dimensionRepository.MassConcentration,
-            _dimensionRepository.Amount,
-            _dimensionRepository.Mass,
-            _dimensionRepository.NoDimension,
-            _dimensionRepository.Fraction,
-         };
-
-         var measurementInfo = new ColumnInfo
-         {
-            Name = PKSimConstants.UI.Measurement,
-            DefaultDimension = supportedDimensions[0],
-            IsMandatory = true,
-            BaseGridName = timeColumn.Name
-         };
-
-         addSupportedDimensionsTo(measurementInfo, supportedDimensions);
-
-         columns.Add(measurementInfo);
-         columns.Add(createErrorColumnInfo(measurementInfo, supportedDimensions));
-
-         return columns;
-      }
-
-      private ColumnInfo createErrorColumnInfo(ColumnInfo mainColumnInfo, IEnumerable<IDimension> supportedDimensions)
-      {
-         var errorInfo = new ColumnInfo
-         {
-            DefaultDimension = mainColumnInfo.DefaultDimension,
-            Name = PKSimConstants.UI.Error,
-            IsMandatory = false,
-            BaseGridName = mainColumnInfo.BaseGridName,
-            RelatedColumnOf = mainColumnInfo.Name
-         };
-
-         addSupportedDimensionsTo(errorInfo, supportedDimensions);
-
-         return errorInfo;
-      }
-
-      private void addSupportedDimensionsTo(ColumnInfo column, IEnumerable<IDimension> supportedDimensions)
-      {
-         supportedDimensions.Each(column.SupportedDimensions.Add);
-      }
-
-      private ColumnInfo createTimeColumn()
-      {
-         var timeColumn = new ColumnInfo
-         {
-            DefaultDimension = _dimensionRepository.Time,
-            Name = PKSimConstants.UI.Time,
-            IsMandatory = true,
-         };
-
-         timeColumn.SupportedDimensions.Add(_dimensionRepository.Time);
-         return timeColumn;
       }
 
       public IEnumerable<string> PredefinedValuesFor(string name)
@@ -397,7 +330,7 @@ namespace PKSim.Infrastructure.Services
       {
          addUndefinedValueTo(genderMetaData);
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
-         foreach (var gender in defaultIndividual.AvailableGenders())
+         foreach (var gender in defaultIndividual.AvailableGenders)
          {
             addInfoToCategory(genderMetaData, gender);
          }
@@ -509,7 +442,7 @@ namespace PKSim.Infrastructure.Services
          nameCategory.ListOfValues.Clear();
 
          var defaultIndividual = _defaultIndividualRetriever.DefaultIndividual();
-         foreach (var gender in defaultIndividual.AvailableGenders())
+         foreach (var gender in defaultIndividual.AvailableGenders)
          {
             nameCategory.ListOfValues.Add(gender.Name, gender.Name);
          }

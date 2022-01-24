@@ -57,7 +57,7 @@ namespace PKSim.Core.Services
       private async Task exportUsedObservedData(DataRepository observedData, string exportDirectory)
       {
          var targetFile = fileWithExtensions(exportDirectory, observedData.Name, Constants.Filter.JSON_EXTENSION);
-         await _snapshotTask.ExportModelToSnapshot(observedData, targetFile);
+         await _snapshotTask.ExportModelToSnapshotAsync(observedData, targetFile);
          targetFile = fileWithExtensions(exportDirectory, observedData.Name, Constants.Filter.PKML_EXTENSION);
          _pkmlPersistor.SaveToPKML(observedData, targetFile);
       }
@@ -65,7 +65,7 @@ namespace PKSim.Core.Services
       private async Task exportParameterIdentification(ParameterIdentification parameterIdentification, string exportDirectory)
       {
          var targetFile = fileWithExtensions(exportDirectory, parameterIdentification.Name, Constants.Filter.JSON_EXTENSION);
-         await _snapshotTask.ExportModelToSnapshot(parameterIdentification, targetFile);
+         await _snapshotTask.ExportModelToSnapshotAsync(parameterIdentification, targetFile);
          targetFile = fileWithExtensions(exportDirectory, parameterIdentification.Name, Constants.Filter.PKML_EXTENSION);
          _pkmlPersistor.SaveToPKML(parameterIdentification, targetFile);
       }

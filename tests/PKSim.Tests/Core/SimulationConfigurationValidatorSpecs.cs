@@ -37,7 +37,7 @@ namespace PKSim.Core
          _individual = new Individual().WithName("MyIndividual");
          _speciesPopulation = new SpeciesPopulation();
 
-         _individual.OriginData = new OriginData {SpeciesPopulation = _speciesPopulation};
+         _individual.OriginData = new OriginData {Population = _speciesPopulation};
          _compound = A.Fake<Compound>().WithName("MyCompound");
          _protocol = A.Fake<SimpleProtocol>().WithName("MyProtocol");
          _formulation = A.Fake<Formulation>().WithName("Formulation");

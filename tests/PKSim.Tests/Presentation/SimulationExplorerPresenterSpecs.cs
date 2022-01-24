@@ -43,7 +43,7 @@ namespace PKSim.Presentation
       protected PKSimProject _project;
       protected UsedBuildingBlockInSimulationNode _usedBuildingBlockNode;
       private IRegionResolver _regionResolver;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected UsedBuildingBlock _usedCompoundBuildingBlock;
       protected IBuildingBlockTask _buildingBlockTask;
       protected UsedObservedData _usedObservedData;
@@ -70,7 +70,7 @@ namespace PKSim.Presentation
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _contextMenuFactory = A.Fake<ITreeNodeContextMenuFactory>();
          _regionResolver = A.Fake<IRegionResolver>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _buildingBlockTask = A.Fake<IBuildingBlockTask>();
          _toolTipNodeCreator = A.Fake<IToolTipPartCreator>();
          _projectRetriever = A.Fake<IProjectRetriever>();
@@ -137,7 +137,7 @@ namespace PKSim.Presentation
          sut = new SimulationExplorerPresenter(
             _view, _treeNodeFactory, _contextMenuFactory, 
             _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever,
-            _regionResolver, _buildingBlockTask, _buildingBlockInSimulationManager, 
+            _regionResolver, _buildingBlockTask, _buildingBlockInProjectManager, 
             _toolTipNodeCreator, _projectRetriever, _classificationPresenter, 
             _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager, _simulationComparisonTask);
 
@@ -321,7 +321,7 @@ namespace PKSim.Presentation
          base.Context();
          sut.Handle(new ProjectCreatedEvent(_project));
          _buildingBlock = A.Fake<IPKSimBuildingBlock>();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new[] {_simulation});
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new[] {_simulation});
          _usedBuildingBlockNode.Text = "oldText";
          _usedCompoundBuildingBlock.Name = "newName";
       }
@@ -380,7 +380,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          _anotherBuildingBlock = A.Fake<IPKSimBuildingBlock>();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_anotherBuildingBlock)).Returns(Enumerable.Empty<Simulation>());
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_anotherBuildingBlock)).Returns(Array.Empty<Simulation>());
          sut.Handle(new ProjectCreatedEvent(_project));
          _usedBuildingBlockNode.Text = "oldText";
          _anotherBuildingBlock.Name = "newName";
@@ -398,7 +398,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_simulation_explorer_is_told_that_a_node_was_activaed : concern_for_SimulationExplorerPresenter
+   public class When_simulation_explorer_is_told_that_a_node_was_activated : concern_for_SimulationExplorerPresenter
    {
       protected override void Because()
       {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -17,14 +18,13 @@ using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_BuildingBlockTask : ContextSpecification<IBuildingBlockTask>
+   public abstract class concern_for_BuildingBlockTask : ContextSpecificationAsync<IBuildingBlockTask>
    {
       protected IExecutionContext _executionContext;
       protected IApplicationController _applicationController;
@@ -33,7 +33,7 @@ namespace PKSim.Presentation
       protected IRenameObjectPresenter _renamePresenter;
       protected IDialogCreator _dialogCreator;
       protected PKSimProject _project;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected IEntityTask _entityTask;
       protected ITemplateTaskQuery _templateTaskQuery;
       protected ISingleStartPresenterTask _singleStartPresenterTask;
@@ -42,7 +42,7 @@ namespace PKSim.Presentation
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
       protected IPresentationSettingsTask _presenterSettingsTask;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _project = A.Fake<PKSimProject>();
          _entityTask = A.Fake<IEntityTask>();
@@ -50,7 +50,7 @@ namespace PKSim.Presentation
          _executionContext = A.Fake<IExecutionContext>();
          A.CallTo(() => _executionContext.CurrentProject).Returns(_project);
          _applicationController = A.Fake<IApplicationController>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _clonePresenter = A.Fake<ICloneBuildingBlockPresenter>();
          _renamePresenter = A.Fake<IRenameObjectPresenter>();
@@ -62,14 +62,14 @@ namespace PKSim.Presentation
 
          sut = new BuildingBlockTask(
             _executionContext,
-            _applicationController, 
+            _applicationController,
             _dialogCreator,
-            _buildingBlockInSimulationManager,
-            _entityTask, 
-            _templateTaskQuery, 
-            _singleStartPresenterTask, 
-            _buildingBlockRepository, 
-            _lazyLoadTask, 
+            _buildingBlockInProjectManager,
+            _entityTask,
+            _templateTaskQuery,
+            _singleStartPresenterTask,
+            _buildingBlockRepository,
+            _lazyLoadTask,
             _presenterSettingsTask,
             _simulationReferenceUpdater);
 
@@ -77,14 +77,17 @@ namespace PKSim.Presentation
          A.CallTo(() => _applicationController.Start<IRenameObjectPresenter>()).Returns(_renamePresenter);
 
          _buildingBlock = A.Fake<IPKSimBuildingBlock>();
+
+         return _completed;
       }
    }
 
    public class When_performing_a_clone_operation_on_a_building_block : concern_for_BuildingBlockTask
    {
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Clone(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -103,15 +106,16 @@ namespace PKSim.Presentation
 
    public class When_the_clone_operation_was_canceled_by_the_user : concern_for_BuildingBlockTask
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _clonePresenter.CreateCloneFor(_buildingBlock)).Returns(null);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Clone(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -126,18 +130,19 @@ namespace PKSim.Presentation
       private AddBuildingBlockToProjectCommand _command;
       private IPKSimBuildingBlock _clonedBuildingBlock;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _buildingBlock.Name = "AA";
          _clonedBuildingBlock = A.Fake<IPKSimBuildingBlock>();
          A.CallTo(() => _clonePresenter.CreateCloneFor(_buildingBlock)).Returns(_clonedBuildingBlock);
          A.CallTo(() => _executionContext.AddToHistory(A<IPKSimCommand>.Ignored)).Invokes(x => _command = x.GetArgument<AddBuildingBlockToProjectCommand>(0));
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Clone(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -158,19 +163,20 @@ namespace PKSim.Presentation
    {
       private string _buildingBlockType;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
+         await base.Context();
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
          A.CallTo(() => _buildingBlock.Name).Returns("toto");
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name), ViewResult.Yes)).Returns(ViewResult.No);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Delete(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -190,19 +196,20 @@ namespace PKSim.Presentation
    {
       private string _buildingBlockType;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
+         await base.Context();
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
          _buildingBlock.Id = "toto";
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyDeleteObjectOfType(_buildingBlockType, _buildingBlock.Name), ViewResult.Yes)).Returns(ViewResult.Yes);
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Delete(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -226,17 +233,18 @@ namespace PKSim.Presentation
 
    public class When_asked_to_delete_a_building_block_that_is_not_used_in_any_simulation_and_the_user_confirms_the_deletion_and_the_loading_is_unsuccessful : concern_for_BuildingBlockTask
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
+         await base.Context();
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationsUsing(_buildingBlock)).Returns(new List<Simulation>());
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
          A.CallTo(() => _executionContext.Load(_buildingBlock)).Throws(new OSPSuiteException());
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Delete(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -256,15 +264,16 @@ namespace PKSim.Presentation
    {
       private Simulation _simulation;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = A.Fake<Simulation>();
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Delete(_simulation);
+         return _completed;
       }
 
       [Observation]
@@ -285,14 +294,14 @@ namespace PKSim.Presentation
       private string _buildingBlockType;
       private Simulation _simulation1;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation1 = A.Fake<Simulation>();
          _buildingBlock.Id = "toto";
          _buildingBlockType = "Individual";
          A.CallTo(() => _entityTask.TypeFor(_buildingBlock)).Returns(_buildingBlockType);
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationsUsing(_buildingBlock)).Returns(new[] {_simulation1});
+         A.CallTo(() => _buildingBlockInProjectManager.BuildingBlockUsing(_buildingBlock)).Returns(new[] {_simulation1});
       }
 
       [Observation]
@@ -306,16 +315,17 @@ namespace PKSim.Presentation
    {
       private IPKSimCommand _command;
 
-      protected override void Because()
+      protected override async Task Context()
       {
-         sut.Rename(_buildingBlock);
-      }
-
-      protected override void Context()
-      {
-         base.Context();
+         await base.Context();
          _command = A.Fake<IPKSimCommand>();
          A.CallTo(() => _entityTask.Rename(_buildingBlock)).Returns(_command);
+      }
+
+      protected override Task Because()
+      {
+         sut.Rename(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -335,15 +345,16 @@ namespace PKSim.Presentation
    {
       private IPKSimBuildingBlock _buildingBlockToLoad;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _buildingBlockToLoad = A.Fake<IPKSimBuildingBlock>();
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.Load(_buildingBlockToLoad);
+         return _completed;
       }
 
       [Observation]
@@ -359,17 +370,18 @@ namespace PKSim.Presentation
       private Individual _ind1;
       private Individual _ind2;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _ind1 = new Individual();
          _ind2 = new Individual();
          A.CallTo(() => _buildingBlockRepository.All<Individual>()).Returns(new[] {_ind1, _ind2});
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          _results = sut.All<Individual>();
+         return _completed;
       }
 
       [Observation]
@@ -378,7 +390,7 @@ namespace PKSim.Presentation
          _results.ShouldOnlyContain(_ind1, _ind2);
       }
    }
-   
+
    public class When_loading_a_template_for_a_given_building_block_type : concern_for_BuildingBlockTask
    {
       private ITemplatePresenter _templatePresenter;
@@ -386,21 +398,21 @@ namespace PKSim.Presentation
       private ISimulationSubject _individual;
       private IPKSimCommand _command;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _templatePresenter = A.Fake<ITemplatePresenter>();
          _templateIndividual = new Individual();
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(_templatePresenter).WithReturnType<IReadOnlyList<ISimulationSubject>>().Returns(new[] {_templateIndividual});
+         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<IPKSimBuildingBlock>>>().Returns(new[] {_templateIndividual});
 
          A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
             .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _individual = sut.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject).FirstOrDefault();
+         _individual = await sut.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
       }
 
       [Observation]
@@ -423,21 +435,21 @@ namespace PKSim.Presentation
       private ObserverSet _observerSet;
       private IPKSimCommand _command;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _templatePresenter = A.Fake<ITemplatePresenter>();
          _templateObserverSet = new ObserverSet();
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(_templatePresenter).WithReturnType<IReadOnlyList<ObserverSet>>().Returns(new[] { _templateObserverSet });
+         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<IPKSimBuildingBlock>>>().Returns(new[] {_templateObserverSet});
 
          A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
             .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _observerSet = sut.LoadFromTemplate<ObserverSet>(PKSimBuildingBlockType.ObserverSet).FirstOrDefault();
+         _observerSet = await sut.LoadSingleFromTemplateAsync<ObserverSet>(PKSimBuildingBlockType.ObserverSet);
       }
 
       [Observation]
@@ -460,23 +472,23 @@ namespace PKSim.Presentation
       private ISimulationSubject _existingIndividual;
       private IPKSimCommand _command;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _templatePresenter = A.Fake<ITemplatePresenter>();
          _templateIndividual = new Individual().WithName("Existing");
          _existingIndividual = new Individual().WithName("ExiStIng");
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
-         A.CallTo(_templatePresenter).WithReturnType<IReadOnlyList<ISimulationSubject>>().Returns(new[] {_templateIndividual});
+         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<IPKSimBuildingBlock>>>().Returns(new[] {_templateIndividual});
          A.CallTo(() => _project.All(_templateIndividual.BuildingBlockType)).Returns(new[] {_existingIndividual});
 
          A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
             .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
-         sut.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+         return sut.LoadFromTemplateAsync(PKSimBuildingBlockType.SimulationSubject);
       }
 
       [Observation]
@@ -496,24 +508,24 @@ namespace PKSim.Presentation
    {
       private ITemplatePresenter _templatePresenter;
       private ISimulationSubject _templateIndividual;
-      private ISimulationSubject _existingIndiviudal;
+      private ISimulationSubject _existingIndividual;
       private ISimulationSubject _individual;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _templatePresenter = A.Fake<ITemplatePresenter>();
          _templateIndividual = new Individual().WithName("Existing");
-         _existingIndiviudal = new Individual().WithName("ExiStIng");
+         _existingIndividual = new Individual().WithName("ExiStIng");
          A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
          A.CallTo(_templatePresenter).WithReturnType<ISimulationSubject>().Returns(_templateIndividual);
-         A.CallTo(() => _project.All(_templateIndividual.BuildingBlockType)).Returns(new[] {_existingIndiviudal});
+         A.CallTo(() => _project.All(_templateIndividual.BuildingBlockType)).Returns(new[] {_existingIndividual});
          A.CallTo(() => _entityTask.Rename(_templateIndividual)).Returns(new PKSimEmptyCommand());
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         _individual = sut.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject).FirstOrDefault();
+         _individual = await sut.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
       }
 
       [Observation]
@@ -534,11 +546,11 @@ namespace PKSim.Presentation
       protected ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> _cache;
       protected IPKSimBuildingBlock _compound;
       protected IPKSimBuildingBlock _metabolite;
-      protected IReadOnlyList<Template> _allTemplateItems;
+      protected IReadOnlyList<LocalTemplate> _allTemplateItems;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _compound = new Compound().WithId("Comp");
          _metabolite = new Compound().WithId("Met");
          _cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>
@@ -546,13 +558,14 @@ namespace PKSim.Presentation
             [_compound] = new List<IPKSimBuildingBlock> {_metabolite}
          };
 
-         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<IReadOnlyList<Template>>._))
-            .Invokes(x => _allTemplateItems = x.GetArgument<IReadOnlyList<Template>>(0));
+         A.CallTo(() => _templateTaskQuery.SaveToTemplate(A<IReadOnlyList<LocalTemplate>>._))
+            .Invokes(x => _allTemplateItems = x.GetArgument<IReadOnlyList<LocalTemplate>>(0));
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveAsTemplate(_cache, TemplateDatabaseType.User);
+         return _completed;
       }
    }
 
@@ -578,9 +591,9 @@ namespace PKSim.Presentation
 
    public class When_saving_some_templates_with_references_defined_twice_to_the_user_template_database : When_saving_building_blocks_to_the_user_template_database
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _cache[_metabolite] = new List<IPKSimBuildingBlock>();
       }
 
@@ -597,9 +610,9 @@ namespace PKSim.Presentation
 
    public class When_saving_some_templates_with_reference_to_the_user_template_database_and_one_reference_already_exists_by_name_and_the_user_cancels_the_action : When_saving_building_blocks_to_the_user_template_database
    {
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          A.CallTo(() => _templateTaskQuery.Exists(TemplateDatabaseType.User, _metabolite.Name, TemplateType.Compound)).Returns(true);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Cancel);
       }
@@ -616,16 +629,17 @@ namespace PKSim.Presentation
       private List<IPKSimBuildingBlock> _buildingBlocks;
       private IPKSimBuildingBlock _anotherBuildingBlock;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
-         _anotherBuildingBlock= A.Fake<IPKSimBuildingBlock>();
+         await base.Context();
+         _anotherBuildingBlock = A.Fake<IPKSimBuildingBlock>();
          _buildingBlocks = new List<IPKSimBuildingBlock> {_buildingBlock, _anotherBuildingBlock};
       }
 
-      protected override void Because()
+      protected override Task Because()
       {
          sut.SaveAsTemplate(_buildingBlocks, TemplateDatabaseType.User);
+         return _completed;
       }
 
       [Observation]
@@ -641,9 +655,10 @@ namespace PKSim.Presentation
    {
       private IPKSimCommand _command;
 
-      protected override void Because()
+      protected override Task Because()
       {
          _command = sut.AddToProject(_buildingBlock);
+         return _completed;
       }
 
       [Observation]
@@ -657,9 +672,10 @@ namespace PKSim.Presentation
    {
       private IPKSimCommand _command;
 
-      protected override void Because()
+      protected override Task Because()
       {
          _command = sut.AddToProject(_buildingBlock, addToHistory: false);
+         return _completed;
       }
 
       [Observation]

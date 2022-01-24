@@ -4,6 +4,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Events;
 
@@ -16,24 +18,29 @@ namespace PKSim.Presentation.Services
       private readonly ITemplateDatabaseCreator _templateDatabaseCreator;
       private readonly IEventPublisher _eventPublisher;
       private readonly IUserSettings _userSettings;
+      private readonly IRemoteTemplateRepository _remoteTemplateRepository;
 
       public PostLaunchChecker(
          IVersionChecker versionChecker, 
          IWatermarkStatusChecker watermarkStatusChecker,
          ITemplateDatabaseCreator templateDatabaseCreator,
          IEventPublisher eventPublisher, 
-         IUserSettings userSettings)
+         IUserSettings userSettings,
+         IRemoteTemplateRepository remoteTemplateRepository)
       {
          _versionChecker = versionChecker;
          _watermarkStatusChecker = watermarkStatusChecker;
          _templateDatabaseCreator = templateDatabaseCreator;
          _eventPublisher = eventPublisher;
          _userSettings = userSettings;
+         _remoteTemplateRepository = remoteTemplateRepository;
       }
 
       public async Task PerformPostLaunchCheckAsync()
       {
-         await checkForNewVersionAsync();
+         await checkForNewSoftwareVersionAsync();
+
+         await checkForNewTemplateVersionAsync();
 
          _watermarkStatusChecker.CheckWatermarkStatus();
 
@@ -41,14 +48,34 @@ namespace PKSim.Presentation.Services
 
       }
 
-      private async Task checkForNewVersionAsync()
+      private async Task checkForNewTemplateVersionAsync()
+      {
+         try
+         {
+            await _versionChecker.DownloadLatestVersionInfoAsync();
+            var hasNewVersion = _versionChecker.NewVersionIsAvailableFor(CoreConstants.TEMPLATES_PRODUCT_NAME, _remoteTemplateRepository.Version);
+            if (!hasNewVersion) 
+               return;
+
+            await _remoteTemplateRepository.UpdateLocalTemplateSummaryFile();
+         }
+         catch (Exception)
+         {
+            //no need to do anything if version cannot be returned
+            return;
+         }
+
+
+      }
+      private async Task checkForNewSoftwareVersionAsync()
       {
          if (!_userSettings.ShowUpdateNotification)
             return;
 
          try
          {
-            var hasNewVersion = await _versionChecker.NewVersionIsAvailableAsync();
+            await _versionChecker.DownloadLatestVersionInfoAsync();
+            var hasNewVersion =  _versionChecker.NewVersionIsAvailable;
             if (!hasNewVersion) return;
          }
          catch (Exception)

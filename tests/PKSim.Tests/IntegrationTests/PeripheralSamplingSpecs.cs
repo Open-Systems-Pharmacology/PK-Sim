@@ -64,7 +64,7 @@ namespace PKSim.IntegrationTests
          {
             foreach (var organ in organism.GetChildren<IContainer>(x => x.NameIsOneOf(organNames)))
             {
-               var parameter = organ.Parameter(ConverterConstants.Parameters.PeripheralBloodFlowFraction);
+               var parameter = organ.Parameter(ConverterConstants.Parameters.PERIPHERAL_BLOOD_FLOW_FRACTION);
                if (parameter != null)
                   return;
 

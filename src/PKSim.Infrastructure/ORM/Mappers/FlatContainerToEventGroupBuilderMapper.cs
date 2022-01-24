@@ -39,13 +39,13 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
          foreach (var flatSubContainer in eventGroupSubContainers(eventGroupFlatContainer))
          {
-            if (flatSubContainer.Type.Equals(CoreConstants.ContainerType.EventGroup))
+            if (flatSubContainer.Type.Equals(CoreConstants.ContainerType.EVENT_GROUP))
             {
                eventGroup.Add(MapFrom(flatSubContainer));
                continue;
             }
 
-            if (flatSubContainer.Type.Equals(CoreConstants.ContainerType.Event))
+            if (flatSubContainer.Type.Equals(CoreConstants.ContainerType.EVENT))
             {
                eventGroup.Add(_eventMapper.MapFrom(flatSubContainer));
                continue;

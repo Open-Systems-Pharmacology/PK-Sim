@@ -19,7 +19,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatCalculationMethodParameterRateRepository : MetaDataRepository<FlatCalculationMethodParameterRate>, IFlatCalculationMethodParameterRateRepository
    {
       public FlatCalculationMethodParameterRateRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatCalculationMethodParameterRate> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewCalculationMethodParameterRates)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_CALCULATION_METHOD_PARAMETER_RATES)
       {
       }
 

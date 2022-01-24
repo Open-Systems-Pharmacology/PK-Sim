@@ -31,8 +31,7 @@ namespace PKSim.Core.Commands
       {
          _individual.RemoveMolecule(_molecule);
          context.Unregister(_molecule);
-         context.PublishEvent(new RemoveMoleculeFromSimulationSubjectEvent<Individual> { Entity = _molecule, Container = _individual });
-
+         context.PublishEvent(new RemoveMoleculeFromSimulationSubjectEvent<Individual> {Entity = _molecule, Container = _individual});
       }
    }
 }

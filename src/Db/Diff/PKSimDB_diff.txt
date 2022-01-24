@@ -1,2 +1,2 @@
-UPDATE tab_populations SET display_name='Japanese (Schlender, 2015)', description='Japanese (Schlender, 2015)' WHERE population='Japanese_Population';
-UPDATE tab_populations SET display_name='Preterm (Claassen, 2015)', description='Preterm (Claassen, 2015)' WHERE population='Preterm';
+UPDATE tab_container_parameter_rates SET formula_rate='One_Rate' WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed in blood cells' AND calculation_method='ExpressionParameters';
+UPDATE tab_container_parameter_rates SET formula_rate='One_Rate' WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed in endosomes' AND calculation_method='ExpressionParameters';

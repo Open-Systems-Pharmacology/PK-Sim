@@ -15,5 +15,7 @@ namespace PKSim.Presentation.Views.Individuals
       ///    sets if the show ontogeny button is enabled or disabled
       /// </summary>
       bool ShowOntogenyEnabled { set; }
+
+      bool ReadOnly { set; }
    }
 }

@@ -72,7 +72,7 @@ namespace PKSim.Infrastructure
             {
                CanBeVaried = false,
                ContainerName = "Cell",
-               ContainerType = CoreConstants.ContainerType.Compartment,
+               ContainerType = CoreConstants.ContainerType.COMPARTMENT,
                DefaultValue = 17.5,
                Dimension = "NO_DIM",
                GroupName = "123",

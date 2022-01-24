@@ -22,7 +22,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Loads observed data from the template database
       /// </summary>
-      void LoadObservedDataFromTemplate();
+      Task LoadObservedDataFromTemplateAsync();
 
       /// <summary>
       ///    Saves the given <paramref name="observedData" /> to the template database

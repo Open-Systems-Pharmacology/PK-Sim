@@ -51,7 +51,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_perfoning_validation_for_a_given_property : concern_for_ParameterDTO
+   public class When_perfoming_validation_for_a_given_property : concern_for_ParameterDTO
    {
       private double _valueInDisplayUnit;
       private double _kernelValue;
@@ -141,7 +141,8 @@ namespace PKSim.Presentation
          base.Context();
          _parameter.Value = 20;
          _convertedValue = 30;
-         _parameter.ValueInDisplayUnit = _convertedValue;
+         A.CallTo(() => _parameter.TryGetValueInDisplayUnit())
+            .Returns((_convertedValue, true));
       }
 
       [Observation]

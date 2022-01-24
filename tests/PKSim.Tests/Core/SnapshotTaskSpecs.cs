@@ -59,7 +59,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.ExportModelToSnapshot(_parameter);
+         await sut.ExportModelToSnapshotAsync(_parameter);
       }
 
       [Observation]
@@ -90,7 +90,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.ExportModelToSnapshot(_parameter);
+         await sut.ExportModelToSnapshotAsync(_parameter);
       }
 
       [Observation]
@@ -147,7 +147,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadModelsFromSnapshotFile<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelsFromSnapshotFileAsync<Formulation>()).ToList();
       }
 
       [Observation]
@@ -175,7 +175,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadModelsFromSnapshotFile<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelsFromSnapshotFileAsync<Formulation>()).ToList();
       }
 
       [Observation]
@@ -208,7 +208,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _project = await sut.LoadProjectFromSnapshotFile(_fileName);
+         _project = await sut.LoadProjectFromSnapshotFileAsync(_fileName);
       }
 
       [Observation]

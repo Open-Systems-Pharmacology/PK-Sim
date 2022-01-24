@@ -107,13 +107,13 @@ namespace PKSim.Presentation
    {
       protected override void Because()
       {
-         sut.LoadSingleFromTemplate();
+         sut.LoadSingleFromTemplateAsync();
       }
 
       [Observation]
       public void should_load_the_available_individual_and_population_from_the_database()
       {
-         A.CallTo(() => _buildingBlockTask.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.Individual | PKSimBuildingBlockType.Population)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockTask.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.Individual | PKSimBuildingBlockType.Population)).MustHaveHappened();
       }
    }
 }

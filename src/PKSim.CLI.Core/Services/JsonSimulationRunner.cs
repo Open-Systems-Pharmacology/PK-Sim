@@ -133,7 +133,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Starting batch simulation export for file '{projectFile}'");
          try
          {
-            var project = await _snapshotTask.LoadProjectFromSnapshotFile(projectFile.FullName);
+            var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(projectFile.FullName);
             var simulations = project.All<Simulation>();
             var numberOfSimulations = simulations.Count;
             _logger.AddInfo($"{numberOfSimulations} {"simulation".PluralizeIf(numberOfSimulations)} found in file '{projectFile}'", project.Name);

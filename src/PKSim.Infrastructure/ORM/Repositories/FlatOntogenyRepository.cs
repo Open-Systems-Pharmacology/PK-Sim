@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatOntogenyRepository : MetaDataRepository<OntogenyMetaData>, IFlatOntogenyRepository
    {
       public FlatOntogenyRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<OntogenyMetaData> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewOntogenies)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_ONTOGENIES)
       {
       }
    }

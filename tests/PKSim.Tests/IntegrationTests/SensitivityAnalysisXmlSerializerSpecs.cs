@@ -3,8 +3,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Infrastructure.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 
@@ -51,16 +49,6 @@ namespace PKSim.IntegrationTests
          _sensitivityAnalysis.AddSensitivityParameter(_sensitivityParameter1);
 
          _deserializedSensitivityAnalysis = SerializeAndDeserialize(_sensitivityAnalysis);
-      }
-
-      public override SensitivityAnalysis SerializeAndDeserialize(SensitivityAnalysis sensitivityAnalysis)
-      {
-         var stream = _serializationManager.Serialize(sensitivityAnalysis);
-         var serializationContectFactory = IoC.Resolve<ISerializationContextFactory>();
-         using (var context = serializationContectFactory.Create())
-         {
-            return _serializationManager.Deserialize<SensitivityAnalysis>(stream, context);
-         }
       }
 
       [Observation]

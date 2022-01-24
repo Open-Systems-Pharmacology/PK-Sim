@@ -23,7 +23,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public ObserverSetFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
-         : base(PKSimRootNodeTypes.ObserversFolder, repository)
+         : base(PKSimRootNodeTypes.ObserverSetFolder, repository)
       {
          _buildingBlockRepository = buildingBlockRepository;
       }

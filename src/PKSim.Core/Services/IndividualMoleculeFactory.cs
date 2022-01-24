@@ -22,6 +22,12 @@ namespace PKSim.Core.Services
       IndividualMolecule CreateEmpty();
 
       IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
+
+      /// <summary>
+      ///    Add all predefined ontogeny parameters to the global molecule. This is only required for actual SimulationSubject
+      /// </summary>
+      /// <param name="individualMolecule"></param>
+      void AddOntogenyParameterTo(IndividualMolecule individualMolecule);
    }
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
@@ -52,9 +58,18 @@ namespace PKSim.Core.Services
 
       protected abstract ApplicationIcon Icon { get; }
 
-      public virtual IndividualMolecule CreateEmpty() => CreateMolecule(string.Empty);
+      public virtual IndividualMolecule CreateEmpty(){
+         var molecule = CreateMolecule(string.Empty);
+         AddOntogenyParameterTo(molecule);
+         return molecule;
+      }
 
       public abstract IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
+
+      protected bool HasAgeParameter(ISimulationSubject simulationSubject)
+      {
+         return simulationSubject?.Individual?.AgeParameter != null;
+      }
 
       protected ParameterValueMetaData RelExpParam(string paramName, double defaultValue = 0) => new ParameterValueMetaData
       {
@@ -97,13 +112,12 @@ namespace PKSim.Core.Services
             CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             CanBeVaried = true,
-            CanBeVariedInPopulation = true,
+            CanBeVariedInPopulation = false,
             Dimension = MOLAR_CONCENTRATION,
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
             MinValue = 0,
             MinIsAllowed = true
          };
-
 
       protected TMolecule CreateMolecule(string moleculeName)
       {
@@ -111,12 +125,16 @@ namespace PKSim.Core.Services
          CreateMoleculeParameterIn(molecule, REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE, MOLAR_CONCENTRATION);
          CreateMoleculeParameterIn(molecule, HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN, TIME);
          CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN, TIME);
-
-         OntogenyFactors.Each(parameterName => CreateMoleculeParameterIn(molecule, parameterName, 1, DIMENSIONLESS,
-            CoreConstants.Groups.ONTOGENY_FACTOR,
-            canBeVariedInPopulation: false));
+         CreateMoleculeParameterIn(molecule, DISEASE_FACTOR, CoreConstants.DEFAULT_DISEASE_FACTOR, DIMENSIONLESS, canBeVariedInPopulation: false);
 
          return molecule;
+      }
+
+      public void AddOntogenyParameterTo(IndividualMolecule molecule)
+      {
+         OntogenyFactors.Each(x =>
+            CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR, DIMENSIONLESS, CoreConstants.Groups.ONTOGENY_FACTOR, canBeVariedInPopulation: false)
+         );
       }
 
       protected IParameter CreateFormulaParameterIn(
@@ -172,8 +190,7 @@ namespace PKSim.Core.Services
          bool canBeVaried = true,
          bool canBeVariedInPopulation = true,
          bool visible = true,
-         string displayUnit = null,
-         PKSimBuildingBlockType buildingBlockType = PKSimBuildingBlockType.Individual)
+         string displayUnit = null)
       {
          var parameterValue = new ParameterValueMetaData
          {
@@ -185,7 +202,7 @@ namespace PKSim.Core.Services
             CanBeVariedInPopulation = canBeVariedInPopulation,
             Visible = visible,
             DefaultUnit = displayUnit,
-            BuildingBlockType = buildingBlockType
+            BuildingBlockType = PKSimBuildingBlockType.Individual
          };
 
          return CreateConstantParameterIn(parameterContainer, parameterValue);
@@ -205,6 +222,5 @@ namespace PKSim.Core.Services
          parameters.Each(p => AddParameterIn(expressionContainer, p, moleculeName));
          return expressionContainer;
       }
-
    }
 }

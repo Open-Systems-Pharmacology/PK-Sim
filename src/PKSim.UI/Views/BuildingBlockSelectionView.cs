@@ -1,15 +1,16 @@
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.UI;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views
 {
@@ -67,14 +68,14 @@ namespace PKSim.UI.Views
 
          _screenBinder.Changed += () => _presenter.ViewChanged();
          btnCreateBuildingBlock.Click += (o, e) => OnEvent(_presenter.CreateBuildingBlock);
-         btnLoadBuildingBlock.Click += (o, e) => OnEvent(_presenter.LoadBuildingBlock);
+         btnLoadBuildingBlock.Click += (o, e) => OnEvent(_presenter.LoadBuildingBlockAsync);
       }
 
       public void BindTo(BuildingBlockSelectionDTO buildingBlockSelectionDTO)
       {
          _screenBinder.BindToSource(buildingBlockSelectionDTO);
          btnCreateBuildingBlock.ToolTip = PKSimConstants.UI.CreateBuildingBlockHint(buildingBlockSelectionDTO.BuildingBockType);
-         btnLoadBuildingBlock.ToolTip = PKSimConstants.UI.LoadBuildingBlockHint(buildingBlockSelectionDTO.BuildingBockType);
+         btnLoadBuildingBlock.ToolTip = PKSimConstants.UI.LoadItemFromTemplateHint(buildingBlockSelectionDTO.BuildingBockType);
          _presenter.ViewChanged();
       }
 
@@ -104,8 +105,10 @@ namespace PKSim.UI.Views
       {
          btnCreateBuildingBlock.InitWithImage(ApplicationIcons.Create, imageLocation: ImageLocation.MiddleCenter);
          btnLoadBuildingBlock.InitWithImage(ApplicationIcons.LoadFromTemplate, imageLocation: ImageLocation.MiddleCenter);
-         layoutItemCreate.AdjustButtonSizeWithImageOnly();
          layoutItemLoad.AdjustButtonSizeWithImageOnly();
+         layoutItemCreate.AdjustButtonSizeWithImageOnly();
+         //Make combo box same size as button
+         layoutItemBuildingBlock.AdjustSize(0, UIConstants.Size.BUTTON_HEIGHT);
          cbBuildingBlocks.Properties.AllowHtmlDraw = DefaultBoolean.True;
       }
    }

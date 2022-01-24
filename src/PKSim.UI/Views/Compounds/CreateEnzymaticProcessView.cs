@@ -5,11 +5,11 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.UI.Services;
 using DevExpress.LookAndFeel;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.UI.Controls;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Views.Core;
 using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Compounds

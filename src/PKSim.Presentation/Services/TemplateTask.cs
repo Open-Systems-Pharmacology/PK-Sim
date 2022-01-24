@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -32,11 +34,11 @@ namespace PKSim.Presentation.Services
             if (!namePresenter.NewName(defaultName, templateType))
                return;
 
-            var templateItem = new Template
+            var templateItem = new LocalTemplate
             {
                Name = namePresenter.Name,
                Description = namePresenter.Description,
-               TemplateType = templateType,
+               Type = templateType,
                Object = objectToSave,
                DatabaseType = TemplateDatabaseType.User,
             };
@@ -50,12 +52,17 @@ namespace PKSim.Presentation.Services
          SaveToTemplate(objectToSave, templateType, objectToSave.Name);
       }
 
-      public IReadOnlyList<T> LoadFromTemplate<T>(TemplateType templateType) where T : class
+      public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType) where T : class
       {
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
-            return presenter.LoadFromTemplate<T>(templateType);
+            return presenter.LoadFromTemplateAsync<T>(templateType);
          }
+      }
+
+      public async Task<T> LoadSingleFromTemplateAsync<T>(TemplateType templateType) where T : class
+      {
+         return (await LoadFromTemplateAsync<T>(templateType)).FirstOrDefault();
       }
    }
 }

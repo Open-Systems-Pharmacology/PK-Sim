@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
@@ -12,6 +13,7 @@ namespace PKSim.Core.Services
       void UpdatePlasmaProteinsOntogenyFor(Individual individual);
       void UpdatePlasmaProteinsOntogenyFor(Population population);
 
+      void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject);
       void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Individual individual);
       void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Population population);
 
@@ -52,6 +54,21 @@ namespace PKSim.Core.Services
          updatePlasmaProteinsOntogenyFor(population, allAgesIn(population), allGAsIn(population));
       }
 
+      public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject)
+      {
+         switch (simulationSubject)
+         {
+            case Individual individual:
+               UpdateMoleculeOntogeny(molecule, ontogeny, individual);
+               break;
+            case Population population:
+               UpdateMoleculeOntogeny(molecule, ontogeny, population);
+               break;
+            default:
+               throw new ArgumentOutOfRangeException(nameof(simulationSubject));
+         }
+      }
+
       public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Individual individual)
       {
          molecule.Ontogeny = ontogeny;
@@ -61,6 +78,10 @@ namespace PKSim.Core.Services
 
       private void updateOntogenyParameter(IParameter parameter, double value)
       {
+         //this can be the case if the parameter is defined in an expression profile
+         if (parameter == null)
+            return;
+
          parameter.DefaultValue = value;
          parameter.Value = parameter.DefaultValue.Value;
       }

@@ -1,0 +1,126 @@
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO.ExpressionProfiles;
+using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Presenters.ExpressionProfiles;
+using PKSim.Presentation.Views.ExpressionProfiles;
+
+namespace PKSim.Presentation
+{
+   public abstract class concern_for_CreateExpressionProfilePresenter : ContextSpecification<ICreateExpressionProfilePresenter>
+   {
+      protected ICreateExpressionProfileView _view;
+      protected IExpressionProfileFactory _expressionProfileFactory;
+      protected ExpressionProfile _expressionProfile;
+      protected IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
+      protected IMoleculeParameterTask _moleculeParameterTask;
+      protected ExpressionProfileDTO _expressionProfileDTO;
+      protected ExpressionProfile _updatedExpressionProfile;
+
+      protected override void Context()
+      {
+         _view = A.Fake<ICreateExpressionProfileView>();
+         _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
+         _expressionProfileDTOMapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
+         _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
+         sut = new CreateExpressionProfilePresenter(_view, _expressionProfileFactory, _expressionProfileDTOMapper, _moleculeParameterTask);
+
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _updatedExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _expressionProfileDTO = new ExpressionProfileDTO
+         {
+            Species = new Species(),
+            MoleculeName = "TOTO"
+         };
+
+         A.CallTo(() => _expressionProfileFactory.Create<IndividualEnzyme>()).Returns(_expressionProfile);
+
+         A.CallTo(() => _expressionProfileDTOMapper.MapFrom(_expressionProfile)).Returns(_expressionProfileDTO);
+
+         A.CallTo(() => _expressionProfileFactory.Create<IndividualEnzyme>(_expressionProfileDTO.Species, _expressionProfileDTO.MoleculeName))
+            .Returns(_updatedExpressionProfile);
+      }
+   }
+
+   public class When_creating_a_new_expression_profile : concern_for_CreateExpressionProfilePresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _view.Canceled).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         sut.Create<IndividualEnzyme>();
+      }
+
+      [Observation]
+      public void should_update_the_view_with_the_expected_caption()
+      {
+         _view.Caption.ShouldBeEqualTo(PKSimConstants.UI.CreateExpressionProfile);
+      }
+
+      [Observation]
+      public void should_bind_the_expression_dto_to_edit_to_the_view()
+      {
+         A.CallTo(() => _view.BindTo(_expressionProfileDTO)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_returned_building_block_should_be_the_expression_profile_created()
+      {
+         sut.BuildingBlock.ShouldBeEqualTo(_updatedExpressionProfile);
+      }
+   }
+
+   public class When_the_create_expression_profile_presenter_is_being_notified_that_the_view_has_changed : concern_for_CreateExpressionProfilePresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Create<IndividualEnzyme>();
+         A.CallTo(() => _view.HasError).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.ViewChanged();
+      }
+
+      [Observation]
+      public void should_update_the_ok_button_state()
+      {
+         _view.OkEnabled.ShouldBeFalse();
+      }
+   }
+
+   public class When_creating_a_new_expression_profile_and_the_user_cancels_the_action : concern_for_CreateExpressionProfilePresenter
+   {
+      private IPKSimCommand _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _view.Canceled).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.Create<IndividualEnzyme>();
+      }
+
+      [Observation]
+      public void should_return_an_empty_command()
+      {
+         _result.IsEmpty().ShouldBeTrue();
+      }
+   }
+}

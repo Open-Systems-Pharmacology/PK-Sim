@@ -22,18 +22,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IndividualMolecule molecule, IMoleculesPresenter presenter)
       {
          yield return
-            CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Rename)
-               .WithActionCommand(() => presenter.RenameMolecule(molecule))
-               .WithIcon(ApplicationIcons.Rename);
-
-         if (presenter.EditConfigurationEnabledFor(molecule))
-            yield return
-               CreateMenuButton.WithCaption(PKSimConstants.MenuNames.EditQuery)
-                  .WithIcon(ApplicationIcons.Edit)
-                  .WithActionCommand(() => presenter.EditMolecule(molecule))
-                  .AsGroupStarter();
-
-         yield return
             CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
                .WithActionCommand(() => presenter.RemoveMolecule(molecule))
                .WithIcon(ApplicationIcons.Delete)

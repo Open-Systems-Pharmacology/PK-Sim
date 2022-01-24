@@ -18,6 +18,7 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IDimensionRepository _dimensionRepository;
       private readonly ISpeciesRepository _speciesRepository;
+      private readonly IDiseaseStateRepository _diseaseStateRepository;
       private readonly ParameterMapper _parameterMapper;
       private readonly IOriginDataTask _originDataTask;
       private readonly IIndividualModelTask _individualModelTask;
@@ -31,11 +32,13 @@ namespace PKSim.Core.Snapshots.Mappers
          IOriginDataTask originDataTask,
          IDimensionRepository dimensionRepository,
          IIndividualModelTask individualModelTask,
-         ISpeciesRepository speciesRepository
+         ISpeciesRepository speciesRepository,
+         IDiseaseStateRepository diseaseStateRepository
       )
       {
          _dimensionRepository = dimensionRepository;
          _speciesRepository = speciesRepository;
+         _diseaseStateRepository = diseaseStateRepository;
          _parameterMapper = parameterMapper;
          _originDataTask = originDataTask;
          _individualModelTask = individualModelTask;
@@ -48,43 +51,52 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshot = await SnapshotFrom(originData, x =>
          {
             x.Species = originData.Species.Name;
-            x.Population = originData.Species.Populations.Count > 1 ? originData.SpeciesPopulation.Name : null;
-            x.Gender = originData.SpeciesPopulation.Genders.Count > 1 ? originData.Gender.Name : null;
+            x.Population = originData.Species.Populations.Count > 1 ? originData.Population.Name : null;
+            x.Gender = originData.Population.Genders.Count > 1 ? originData.Gender.Name : null;
          });
 
-         if (originData.SpeciesPopulation.IsAgeDependent)
+         if (originData.Population.IsAgeDependent)
          {
             //Always generate age for Age dependent species
-            snapshot.Age = parameterFrom(originData.Age, originData.AgeUnit, _dimensionRepository.AgeInYears);
-            snapshot.GestationalAge = originDataParameterFor(originData, _individualModelTask.MeanGestationalAgeFor, originData.GestationalAge, originData.GestationalAgeUnit, _dimensionRepository.AgeInWeeks);
+            snapshot.Age = parameterFrom(originData.Age, _dimensionRepository.AgeInYears);
+            snapshot.GestationalAge = originDataParameterFor(originData, _individualModelTask.MeanGestationalAgeFor, originData.GestationalAge, _dimensionRepository.AgeInWeeks);
          }
 
-         snapshot.Weight = originDataParameterFor(originData, _individualModelTask.MeanWeightFor, originData.Weight, originData.WeightUnit, _dimensionRepository.Mass);
+         snapshot.Weight = originDataParameterFor(originData, _individualModelTask.MeanWeightFor, originData.Weight, _dimensionRepository.Mass);
 
-         if (originData.SpeciesPopulation.IsHeightDependent)
-            snapshot.Height = originDataParameterFor(originData, _individualModelTask.MeanHeightFor, originData.Height, originData.HeightUnit, _dimensionRepository.Length);
+         if (originData.Population.IsHeightDependent)
+            snapshot.Height = originDataParameterFor(originData, _individualModelTask.MeanHeightFor, originData.Height, _dimensionRepository.Length);
 
          snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(originData.ValueOrigin);
          snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(originData.CalculationMethodCache, originData.Species.Name);
+
+         snapshot.DiseaseState = originData.DiseaseState?.Name;
+         if (originData.DiseaseStateParameters.Any())
+            snapshot.DiseaseStateParameters = originData.DiseaseStateParameters.Select(namedParameterFrom).ToArray();
+
          return snapshot;
       }
 
-      private Parameter originDataParameterFor(ModelOriginData originData, Func<ModelOriginData, IParameter> meanParameterRetrieverFunc, double? value, string unit, IDimension dimension)
+      private Parameter originDataParameterFor(ModelOriginData originData, Func<ModelOriginData, IParameter> meanParameterRetrieverFunc, OriginDataParameter parameter, IDimension dimension)
       {
-         var meanParameter = meanParameterRetrieverFunc(originData);
-
-         if (value == null || ValueComparer.AreValuesEqual(meanParameter.Value, value.Value))
+         if (parameter == null)
             return null;
 
-         return parameterFrom(value, unit, dimension);
+         var (value, _) = parameter;
+         var meanParameter = meanParameterRetrieverFunc(originData);
+
+         if (ValueComparer.AreValuesEqual(meanParameter.Value, value))
+            return null;
+
+         return parameterFrom(parameter, dimension);
       }
 
       public override Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot)
       {
          var originData = new ModelOriginData {Species = speciesFrom(snapshot)};
 
-         originData.SpeciesPopulation = speciesPopulationFrom(snapshot, originData.Species);
-         originData.Gender = genderFrom(snapshot, originData.SpeciesPopulation);
+         originData.Population = speciesPopulationFrom(snapshot, originData.Species);
+         originData.Gender = genderFrom(snapshot, originData.Population);
          originData.SubPopulation = _originDataTask.DefaultSubPopulationFor(originData.Species);
 
          _valueOriginMapper.UpdateValueOrigin(originData.ValueOrigin, snapshot.ValueOrigin);
@@ -95,20 +107,45 @@ namespace PKSim.Core.Snapshots.Mappers
          updateWeightFromSnapshot(snapshot, originData);
          updateHeightFromSnapshot(snapshot, originData);
 
+         updateDiseaseStateFromSnapshot(snapshot, originData);
          return Task.FromResult(originData);
+      }
+
+      private void updateDiseaseStateFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
+      {
+         if (snapshot.DiseaseState == null)
+            return;
+
+         var diseaseState = _diseaseStateRepository.AllFor(originData.Population).FindByName(snapshot.DiseaseState);
+         if (diseaseState == null)
+            throw new PKSimException(PKSimConstants.Error.CannotFindDiseaseState(snapshot.DiseaseState, originData.Population.DisplayName));
+
+         originData.DiseaseState = diseaseState;
+         diseaseState.Parameters.Each(x =>
+         {
+            var diseaseStateParameter = new OriginDataParameter {Name = x.Name, Value = x.Value, Unit = x.DisplayUnitName()};
+            var snapshotParameter = snapshot.DiseaseStateParameters.FindByName(x.Name);
+            if (snapshotParameter != null)
+            {
+               diseaseStateParameter.Value = snapshotParameter.Value ?? x.Value;
+               diseaseStateParameter.Unit = snapshotParameter.Unit;
+            }
+
+            originData.AddDiseaseStateParameter(diseaseStateParameter);
+         });
       }
 
       private void updateWeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
-         (originData.Weight, originData.WeightUnit) = getOriginDataValues(originData, _individualModelTask.MeanWeightFor, snapshot.Weight);
+         originData.Weight = getOriginDataValues(originData, _individualModelTask.MeanWeightFor, snapshot.Weight);
       }
 
       private void updateHeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
-         if (!originData.SpeciesPopulation.IsHeightDependent)
+         if (!originData.Population.IsHeightDependent)
             return;
 
-         (originData.Height, originData.HeightUnit) = getOriginDataValues(originData, _individualModelTask.MeanHeightFor, snapshot.Height);
+         originData.Height = getOriginDataValues(originData, _individualModelTask.MeanHeightFor, snapshot.Height);
       }
 
       private void updateCalculationMethodsFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
@@ -123,19 +160,19 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateAgeFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
       {
-         if (!originData.SpeciesPopulation.IsAgeDependent)
+         if (!originData.Population.IsAgeDependent)
             return;
 
-         (originData.Age, originData.AgeUnit) = getOriginDataValues(originData, _individualModelTask.MeanAgeFor, snapshot.Age);
-         (originData.GestationalAge, originData.GestationalAgeUnit) = getOriginDataValues(originData, _individualModelTask.MeanGestationalAgeFor, snapshot.GestationalAge);
+         originData.Age = getOriginDataValues(originData, _individualModelTask.MeanAgeFor, snapshot.Age);
+         originData.GestationalAge = getOriginDataValues(originData, _individualModelTask.MeanGestationalAgeFor, snapshot.GestationalAge);
       }
 
-      private (double value, string unit) getOriginDataValues(ModelOriginData originData, Func<ModelOriginData, IParameter> meanParameterRetrieverFunc, Parameter snapshotParameter)
+      private OriginDataParameter getOriginDataValues(ModelOriginData originData, Func<ModelOriginData, IParameter> meanParameterRetrieverFunc, Parameter snapshotParameter)
       {
          var meanParameter = meanParameterRetrieverFunc(originData);
          var value = baseParameterValueFrom(snapshotParameter, meanParameter.Dimension, meanParameter.Value);
          var unit = meanParameter.Dimension.UnitOrDefault(snapshotParameter?.Unit).Name;
-         return (value, unit);
+         return new OriginDataParameter {Value = value, Unit = unit};
       }
 
       private Gender genderFrom(SnapshotOriginData snapshot, SpeciesPopulation speciesPopulation)
@@ -177,9 +214,17 @@ namespace PKSim.Core.Snapshots.Mappers
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
       }
 
-      private Parameter parameterFrom(double? parameterBaseValue, string parameterDisplayUnit, IDimension dimension)
+      private Parameter namedParameterFrom(OriginDataParameter parameter)
       {
-         return _parameterMapper.ParameterFrom(parameterBaseValue, parameterDisplayUnit, dimension);
+         return parameterFrom(parameter, _dimensionRepository.DimensionForUnit(parameter.Unit)).WithName(parameter.Name);
+      }
+
+      private Parameter parameterFrom(OriginDataParameter parameter, IDimension dimension)
+      {
+         if (parameter == null)
+            return null;
+
+         return _parameterMapper.ParameterFrom(parameter.Value, parameter.Unit, dimension);
       }
    }
 }

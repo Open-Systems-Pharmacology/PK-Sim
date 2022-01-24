@@ -45,7 +45,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
+         _originData.GestationalAge = new OriginDataParameter(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS);
       }
 
       [Observation]
@@ -60,7 +60,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 26;
+         _originData.GestationalAge   = new OriginDataParameter(26);
       }
 
       [Observation]
@@ -75,7 +75,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 30;
+         _originData.GestationalAge = new OriginDataParameter(30);
       }
 
       [Observation]
@@ -90,7 +90,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData.GestationalAge = 26;
+         _originData.GestationalAge =  new OriginDataParameter(26);
       }
 
       [Observation]

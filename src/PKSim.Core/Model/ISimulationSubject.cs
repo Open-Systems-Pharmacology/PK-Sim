@@ -43,7 +43,46 @@ namespace PKSim.Core.Model
       /// </summary>
       IndividualMolecule MoleculeByName(string moleculeName);
 
+      /// <summary>
+      ///    Returns the molecule named <paramref name="moleculeName" /> or NULL if not found
+      /// </summary>
+      TMolecules MoleculeByName<TMolecules>(string moleculeName) where TMolecules : IndividualMolecule;
+
       IEnumerable<TMolecules> AllMolecules<TMolecules>() where TMolecules : IndividualMolecule;
+
+      /// <summary>
+      /// Returns the expression profile associated with the <paramref name="molecule"/>
+      /// </summary>
+      ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule);
+
+      /// <summary>
+      ///    Adds a <paramref name="expressionProfile" /> reference to the underlying subject
+      /// </summary>
+      /// <param name="expressionProfile"> Expression profile to add </param>
+      void AddExpressionProfile(ExpressionProfile expressionProfile);
+      
+      /// <summary>
+      ///    Removes a <paramref name="expressionProfile" /> from the subject
+      /// </summary>
+      /// <param name="expressionProfile">Expression profile to remove </param>s
+      void RemoveExpressionProfile(ExpressionProfile expressionProfile);
+
+      /// <summary>
+      ///   Returns all expression profiles used by the subject
+      /// </summary>
+      IReadOnlyList<ExpressionProfile> AllExpressionProfiles();
+
+      /// <summary>
+      ///  Returns the molecule associated with the expression profile or null if the expression profile isn't used
+      /// </summary>
+      /// <param name="expressionProfile"></param>
+      /// <returns></returns>
+      IndividualMolecule MoleculeFor(ExpressionProfile expressionProfile);
+
+      /// <summary>
+      /// Returns <c>true</c> if the expression profile is used by the subject otherwise <c>false</c>
+      /// </summary>
+      bool Uses(ExpressionProfile expressionProfile);
 
       /// <summary>
       ///    Add a <paramref name="molecule" /> to the subject

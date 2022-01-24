@@ -35,16 +35,16 @@ namespace PKSim.Presentation.Presenters.Simulations
       ISimulationSubjectConfigurationPresenter
    {
       private readonly ILazyLoadTask _lazyLoadTask;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private SimulationSubjectDTO _simulationSubjectDTO;
       public bool SubjectChanged { get; private set; }
       public event Action SubjectSelectionChanged = delegate { };
 
-      public SimulationSubjectConfigurationPresenter(ISimulationSubjectConfigurationView view, ILazyLoadTask lazyLoadTask, IBuildingBlockInSimulationManager buildingBlockInSimulationManager)
+      public SimulationSubjectConfigurationPresenter(ISimulationSubjectConfigurationView view, ILazyLoadTask lazyLoadTask, IBuildingBlockInProjectManager buildingBlockInProjectManager)
          : base(view)
       {
          _lazyLoadTask = lazyLoadTask;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          SubjectChanged = false;
       }
 
@@ -59,7 +59,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          _simulationSubjectDTO = new SimulationSubjectDTO
          {
-            BuildingBlock = _buildingBlockInSimulationManager.TemplateBuildingBlocksUsedBy<ISimulationSubject>(simulation).SingleOrDefault(),
+            BuildingBlock = _buildingBlockInProjectManager.TemplateBuildingBlocksUsedBy<ISimulationSubject>(simulation).SingleOrDefault(),
             AllowAging = simulation.AllowAging
          };
 

@@ -40,9 +40,9 @@ namespace PKSim.UI.Views
          this.tbNumberOfProcessors = new DevExpress.XtraEditors.TextEdit();
          this.chkShowUpdateNotification = new OSPSuite.UI.Controls.UxCheckEdit();
          this.colorFormula = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
-         this.cbDefaultSolName = new PKSim.UI.Views.Core.UxMRUEdit();
-         this.cbDefaultFuName = new PKSim.UI.Views.Core.UxMRUEdit();
-         this.cbDefaultLipoName = new PKSim.UI.Views.Core.UxMRUEdit();
+         this.cbDefaultSolName = new OSPSuite.UI.Controls.UxMRUEdit();
+         this.cbDefaultFuName = new OSPSuite.UI.Controls.UxMRUEdit();
+         this.cbDefaultLipoName = new OSPSuite.UI.Controls.UxMRUEdit();
          this.tbRelTol = new DevExpress.XtraEditors.TextEdit();
          this.tbAbsTol = new DevExpress.XtraEditors.TextEdit();
          this.cbIconSizeContextMenu = new OSPSuite.UI.Controls.UxComboBoxEdit();
@@ -1033,9 +1033,9 @@ namespace PKSim.UI.Views
         private DevExpress.XtraLayout.LayoutControlItem layoutItemDefaultFuName;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemDefaultSolName;
         private DevExpress.XtraLayout.LayoutControlItem layoutItemFormulaColor;
-        private PKSim.UI.Views.Core.UxMRUEdit cbDefaultSolName;
-        private PKSim.UI.Views.Core.UxMRUEdit cbDefaultFuName;
-        private PKSim.UI.Views.Core.UxMRUEdit cbDefaultLipoName;
+        private OSPSuite.UI.Controls.UxMRUEdit cbDefaultSolName;
+        private OSPSuite.UI.Controls.UxMRUEdit cbDefaultFuName;
+        private OSPSuite.UI.Controls.UxMRUEdit cbDefaultLipoName;
         private OSPSuite.UI.Controls.UxCheckEdit chkShowUpdateNotification;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
         private DevExpress.XtraEditors.TextEdit tbNumberOfProcessors;

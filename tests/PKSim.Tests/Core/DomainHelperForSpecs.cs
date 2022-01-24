@@ -25,9 +25,9 @@ namespace PKSim.Core
       private static Dimension _massConcentrationDimension;
       private static Dimension _fractionDimension;
 
-      private static string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
-      private static string PATH_TO_DATA = "..\\..\\..\\Data\\";
-      private static string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
+      private static readonly string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
+      private static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
+      private static readonly string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
 
       public static string FilePathFor(string fileNameWithExtension)
       {
@@ -69,14 +69,24 @@ namespace PKSim.Core
          return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
       }
 
-      public static Individual CreateIndividual()
+      public static ExpressionProfile CreateExpressionProfile<TMolecule>(string speciesName = "Species", string moleculeName = "CYP3A4", string category = "Healthy") where TMolecule : IndividualMolecule, new()
+      {
+         var expressionProfile = new ExpressionProfile();
+         var individual = CreateIndividual(speciesName);
+         individual.AddMolecule(new TMolecule().WithName(moleculeName));
+         expressionProfile.Individual = individual;
+         expressionProfile.Category = category;
+         return expressionProfile;
+      }
+
+      public static Individual CreateIndividual(string speciesName = "Species")
       {
          var originData = new OriginData
          {
             SubPopulation = new SubPopulation(),
-            Species = new Species().WithName("Species"),
+            Species = new Species {DisplayName = speciesName, Id = speciesName}.WithName(speciesName),
             Gender = new Gender().WithName("Gender"),
-            SpeciesPopulation = new SpeciesPopulation().WithName("Population"),
+            Population = new SpeciesPopulation().WithName("Population"),
          };
 
          var pvv = new ParameterValueVersion().WithName("PVVName");
@@ -124,7 +134,7 @@ namespace PKSim.Core
          return individual;
       }
 
-      public static IParameter ConstantParameterWithValue(double value=10, bool isDefault = false, bool visible = true)
+      public static IParameter ConstantParameterWithValue(double value = 10, bool isDefault = false, bool visible = true)
       {
          var parameter = new PKSimParameter().WithFormula(new ConstantFormula(value).WithId("constantFormulaId"));
          parameter.Visible = visible;
@@ -134,7 +144,7 @@ namespace PKSim.Core
          return parameter;
       }
 
-      public static IDistributedParameter NormalDistributedParameter(double defaultMean = 0, double defaultDeviation = 1, double defaultPercentile = 0.5, bool isDefault=false, bool distributionParameterIsDefault = true)
+      public static IDistributedParameter NormalDistributedParameter(double defaultMean = 0, double defaultDeviation = 1, double defaultPercentile = 0.5, bool isDefault = false, bool distributionParameterIsDefault = true)
       {
          var parameter = new PKSimDistributedParameter().WithId("P1");
          parameter.IsDefault = isDefault;
@@ -172,6 +182,7 @@ namespace PKSim.Core
             _lengthDimension.AddUnit(new Unit("cm", 0.01, 0));
             _lengthDimension.AddUnit(new Unit("mm", 0.001, 0));
          }
+
          return _lengthDimension;
       }
 
@@ -182,6 +193,7 @@ namespace PKSim.Core
             _timeDimension = new Dimension(new BaseDimensionRepresentation {TimeExponent = 1}, Constants.Dimension.TIME, "min");
             _timeDimension.AddUnit(new Unit("h", 60, 0));
          }
+
          return _timeDimension;
       }
 
@@ -192,6 +204,7 @@ namespace PKSim.Core
             _concentrationDimension = new Dimension(new BaseDimensionRepresentation {AmountExponent = 3, LengthExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
             _concentrationDimension.AddUnit(new Unit("mol/l", 1E6, 0));
          }
+
          return _concentrationDimension;
       }
 
@@ -202,6 +215,7 @@ namespace PKSim.Core
             _massConcentrationDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, LengthExponent = -1}, Constants.Dimension.MASS_CONCENTRATION, "µg/l");
             _massConcentrationDimension.AddUnit(new Unit("g/l", 1E6, 0));
          }
+
          return _massConcentrationDimension;
       }
 
@@ -212,6 +226,7 @@ namespace PKSim.Core
             _fractionDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.FRACTION, "");
             _fractionDimension.AddUnit(new Unit("%", 1e-2, 0));
          }
+
          return _fractionDimension;
       }
 
@@ -301,6 +316,7 @@ namespace PKSim.Core
          {
             ind.Add(createValuesArray(i, numberOfPoints));
          }
+
          return ind;
       }
 
@@ -327,6 +343,7 @@ namespace PKSim.Core
          {
             values[i] = (float) (_random.NextDouble() * 100);
          }
+
          quantityValues.Values = values;
          return quantityValues;
       }

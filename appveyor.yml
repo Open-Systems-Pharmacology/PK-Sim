@@ -21,7 +21,7 @@ skip_branch_with_pr: true
 branches:
   only:
     - develop
-    - hotfix/v9.1
+    - ckd-population-feature
 
 pull_requests:
   do_not_increment_build_number: true

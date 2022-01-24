@@ -42,7 +42,7 @@ namespace PKSim.R.Services
 
       public CreatePopulationResults CreatePopulation(PopulationCharacteristics populationCharacteristics)
       {
-         var populationSettings = _populationSettingsMapper.MapToModel(populationCharacteristics).Result;
+         var populationSettings = _populationSettingsMapper.MapToModel(populationCharacteristics, new PKSimProject()).Result;
          validate(populationSettings);
          var population = _randomPopulationFactory.CreateFor(populationSettings, new CancellationToken(), seed: populationCharacteristics.Seed).Result;
 

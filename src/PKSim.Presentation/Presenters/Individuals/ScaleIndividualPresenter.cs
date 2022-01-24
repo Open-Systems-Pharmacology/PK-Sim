@@ -29,9 +29,14 @@ namespace PKSim.Presentation.Presenters.Individuals
       private Individual _individualToScale;
       private ObjectBaseDTO _scaleIndividualPropertiesDTO;
 
-      public ScaleIndividualPresenter(IScaleIndividualView view, ISubPresenterItemManager<IIndividualItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator,
-         IIndividualExpressionsUpdater individualExpressionsUpdater, IObjectBaseDTOFactory objectBaseDTOFactory,
-         IBuildingBlockPropertiesMapper propertiesMapper, ICloner cloner)
+      public ScaleIndividualPresenter(
+         IScaleIndividualView view, 
+         ISubPresenterItemManager<IIndividualItemPresenter> subPresenterItemManager, 
+         IDialogCreator dialogCreator,
+         IIndividualExpressionsUpdater individualExpressionsUpdater, 
+         IObjectBaseDTOFactory objectBaseDTOFactory,
+         IBuildingBlockPropertiesMapper propertiesMapper, 
+         ICloner cloner)
          : base(view, subPresenterItemManager, ScaleIndividualItems.All, dialogCreator)
       {
          _individualExpressionsUpdater = individualExpressionsUpdater;

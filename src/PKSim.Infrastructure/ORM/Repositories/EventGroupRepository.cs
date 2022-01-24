@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core;
 using PKSim.Core.Repositories;
@@ -15,7 +14,9 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatContainerToEventGroupBuilderMapper _eventGroupMapper;
       private readonly ICache<string, IEventGroupBuilder> _eventGroupBuilders;
 
-      public EventGroupRepository(IFlatContainerRepository flatContainerRepo, IFlatContainerToEventGroupBuilderMapper eventGroupMapper)
+      public EventGroupRepository(
+         IFlatContainerRepository flatContainerRepo, 
+         IFlatContainerToEventGroupBuilderMapper eventGroupMapper)
       {
          _flatContainerRepo = flatContainerRepo;
          _eventGroupMapper = eventGroupMapper;
@@ -31,23 +32,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected override void DoStart()
       {
          foreach (var flatEventGroupContainer in _flatContainerRepo.All()
-            .Where(c => c.Type.Equals(CoreConstants.ContainerType.EventGroup) &&
+            .Where(c => c.Type.Equals(CoreConstants.ContainerType.EVENT_GROUP) &&
                         !c.ParentId.HasValue))
          {
             var eventGroupBuilder = _eventGroupMapper.MapFrom(flatEventGroupContainer);
 
             _eventGroupBuilders.Add(eventGroupBuilder);
          }
-      }
-
-      public IEnumerable<IEventGroupBuilder> AllForCreationByUser()
-      {
-         return All().Where(canBeCreatedByUser);
-      }
-
-      private bool canBeCreatedByUser(IEventGroupBuilder eventGroup)
-      {
-         return !eventGroup.IsNamed(CoreConstants.EventGroup.EHCImmediate);
       }
    }
 }

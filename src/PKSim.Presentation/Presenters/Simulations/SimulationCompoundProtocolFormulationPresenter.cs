@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
@@ -16,7 +17,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       IEnumerable<FormulationSelectionDTO> AllFormulationsFor(FormulationMappingDTO formulationMappingDTO);
       void CreateFormulationFor(FormulationMappingDTO formulationMappingDTO);
-      void LoadFormulationFor(FormulationMappingDTO formulationMappingDTO);
+      Task LoadFormulationForAsync(FormulationMappingDTO formulationMappingDTO);
       bool FormulationVisible { get; }
       void UpdateSelectedFormulation(Formulation templateFormulation);
    }
@@ -112,9 +113,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          updateFormulationInMapping(formulationMappingDTO, formulation);
       }
 
-      public void LoadFormulationFor(FormulationMappingDTO formulationMappingDTO)
+      public async Task LoadFormulationForAsync(FormulationMappingDTO formulationMappingDTO)
       {
-         var formulation = _formulationTask.LoadFormulationForRoute(formulationMappingDTO.Route);
+         var formulation = await _formulationTask.LoadFormulationForRouteAsync(formulationMappingDTO.Route);
          updateFormulationInMapping(formulationMappingDTO, formulation);
       }
 

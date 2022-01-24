@@ -14,16 +14,16 @@ namespace PKSim.Presentation
       protected ISimulationCompoundProtocolView _view;
       protected ILazyLoadTask _lazyLoadTask;
       protected ISimulationCompoundProtocolFormulationPresenter _simulationCompoundProtocolFormulationPresenter;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       protected override void Context()
       {
          _view = A.Fake<ISimulationCompoundProtocolView>();
          _simulationCompoundProtocolFormulationPresenter = A.Fake<ISimulationCompoundProtocolFormulationPresenter>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
 
-         sut = new SimulationCompoundProtocolPresenter(_view, _simulationCompoundProtocolFormulationPresenter, _lazyLoadTask, _buildingBlockInSimulationManager);
+         sut = new SimulationCompoundProtocolPresenter(_view, _simulationCompoundProtocolFormulationPresenter, _lazyLoadTask, _buildingBlockInProjectManager);
       }
    }
 
@@ -52,7 +52,7 @@ namespace PKSim.Presentation
          _templateProtocol = A.Fake<Protocol>();
          var compoundProperties = new CompoundProperties {ProtocolProperties = {Protocol = _simulationProtocol}};
          A.CallTo(() => _simulation.CompoundPropertiesFor(_compound)).Returns(compoundProperties);
-         A.CallTo(() => _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy(_simulation,  _simulationProtocol)).Returns(_templateProtocol);
+         A.CallTo(() => _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy(_simulation,  _simulationProtocol)).Returns(_templateProtocol);
       }
 
       protected override void Because()

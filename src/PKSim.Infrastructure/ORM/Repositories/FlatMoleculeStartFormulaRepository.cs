@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatMoleculeStartFormulaRepository : MetaDataRepository<FlatMoleculeStartFormula>, IFlatMoleculeStartFormulaRepository
    {
       public FlatMoleculeStartFormulaRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatMoleculeStartFormula> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewMoleculeStartFormulas)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_MOLECULE_START_FORMULAS)
       {
       }
    }

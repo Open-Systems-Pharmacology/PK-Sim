@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatMoleculeParameterRepository : MetaDataRepository<FlatMoleculeParameter>, IFlatMoleculeParameterRepository
    {
       public FlatMoleculeParameterRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatMoleculeParameter> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewMoleculeParameters)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_MOLECULE_PARAMETERS)
       {
       }
    }

@@ -20,8 +20,8 @@ namespace PKSim.Infrastructure.Reporting.Summary
       protected override void FillUpReport(SimpleProtocol simpleProtocol, ReportPart reportPart)
       {
          reportPart.Title = PKSimConstants.UI.SimpleProtocolMode;
-         reportPart.AddToContent(simpleProtocol.ApplicationType.DisplayName);
-         reportPart.AddToContent(PKSimConstants.UI.ReportIs(PKSimConstants.UI.DosingInterval, simpleProtocol.DosingInterval.DisplayName));
+         reportPart.AddToContent(simpleProtocol.ApplicationType?.DisplayName);
+         reportPart.AddToContent(PKSimConstants.UI.ReportIs(PKSimConstants.UI.DosingInterval, simpleProtocol.DosingInterval?.DisplayName));
 
          simpleProtocol.AllParameters().Where(simpleProtocol.ParameterShouldBeExported)
             .Each(x => reportPart.AddToContent(_reportGenerator.ReportFor(x)));

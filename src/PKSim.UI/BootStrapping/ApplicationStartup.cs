@@ -55,10 +55,10 @@ namespace PKSim.UI.BootStrapping
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
 
          updateGoDiagramKey();
-
+         initializeSynchronizationContext();
 
          var container = InfrastructureRegister.Initialize();
-         container.RegisterImplementationOf(getCurrentContext());
+         container.RegisterImplementationOf(SynchronizationContext.Current);
 
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
          container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
@@ -101,15 +101,10 @@ namespace PKSim.UI.BootStrapping
          UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
       }
 
-      private SynchronizationContext getCurrentContext()
+      private void initializeSynchronizationContext()
       {
-         var context = SynchronizationContext.Current;
-         if (context == null)
-         {
-            context = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(context);
-         }
-         return SynchronizationContext.Current;
+         var context = new WindowsFormsSynchronizationContext();
+         SynchronizationContext.SetSynchronizationContext(context);
       }
 
       public void Start()

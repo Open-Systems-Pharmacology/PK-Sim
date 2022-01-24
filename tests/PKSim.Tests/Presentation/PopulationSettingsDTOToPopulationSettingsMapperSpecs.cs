@@ -1,15 +1,14 @@
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-
 using PKSim.Presentation.DTO.Populations;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation
 {
@@ -38,13 +37,15 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _male = new Gender().WithName(CoreConstants.Gender.Male);
-         _female = new Gender().WithName(CoreConstants.Gender.Female);
-         _populationSettingsDTO = new PopulationSettingsDTO();
-         _populationSettingsDTO.Individual = A.Fake<Individual>();
+         _male = new Gender().WithName(CoreConstants.Gender.MALE);
+         _female = new Gender().WithName(CoreConstants.Gender.FEMALE);
+         _populationSettingsDTO = new PopulationSettingsDTO
+         {
+            Individual = A.Fake<Individual>()
+         };
          _cloneIndividual = A.Fake<Individual>();
          A.CallTo(() => _cloneManager.Clone(_populationSettingsDTO.Individual)).Returns(_cloneIndividual);
-         A.CallTo(() => _populationSettingsDTO.Individual.AvailableGenders()).Returns(new[] {_male, _female,});
+         A.CallTo(() => _populationSettingsDTO.Individual.AvailableGenders).Returns(new[] {_male, _female,});
          _populationSettingsDTO.NumberOfIndividuals = 150;
          _populationSettingsDTO.Parameters.Add(new ParameterRangeDTO(new ParameterRange {ParameterName = "P1"}));
          _populationSettingsDTO.Parameters.Add(new ParameterRangeDTO(new ParameterRange {ParameterName = "P2"}));
@@ -65,7 +66,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_a_population_settings_with_contaiing_the_parameter_ranges_defined_by_the_user()
+      public void should_return_a_population_settings_with_containing_the_parameter_ranges_defined_by_the_user()
       {
          _result.ParameterRanges.ShouldOnlyContain(_populationSettingsDTO.Parameters.Select(x => x.ParameterRange));
       }
@@ -87,11 +88,13 @@ namespace PKSim.Presentation
       {
          base.Context();
          _individual = A.Fake<Individual>();
-         Gender male = new Gender {Name = CoreConstants.Gender.Male};
-         Gender female = new Gender {Name = CoreConstants.Gender.Female};
-         A.CallTo(() => _individual.AvailableGenders()).Returns(new[] {male, female});
-         _settings = new RandomPopulationSettings();
-         _settings.BaseIndividual = _individual;
+         Gender male = new Gender {Name = CoreConstants.Gender.MALE};
+         Gender female = new Gender {Name = CoreConstants.Gender.FEMALE};
+         A.CallTo(() => _individual.AvailableGenders).Returns(new[] {male, female});
+         _settings = new RandomPopulationSettings
+         {
+            BaseIndividual = _individual
+         };
          _settings.AddGenderRatio(new GenderRatio {Gender = male, Ratio = 100});
          _settings.AddGenderRatio(new GenderRatio {Gender = female, Ratio = 0});
       }
@@ -120,8 +123,8 @@ namespace PKSim.Presentation
          _individual = A.Fake<Individual>();
          _settings = new RandomPopulationSettings();
          A.CallTo(() => _individualToPopulationSettingsMapper.MapFrom(_individual)).Returns(_settings);
-         Gender male = new Gender {Name = CoreConstants.Gender.Male};
-         Gender female = new Gender {Name = CoreConstants.Gender.Female};
+         var male = new Gender {Name = CoreConstants.Gender.MALE};
+         var female = new Gender {Name = CoreConstants.Gender.FEMALE};
          _settings.BaseIndividual = _individual;
          _settings.AddGenderRatio(new GenderRatio {Gender = male, Ratio = 100});
          _settings.AddGenderRatio(new GenderRatio {Gender = female, Ratio = 0});

@@ -28,6 +28,11 @@ namespace PKSim.UI.Views.ProteinExpression
 
       public bool SelectionChanged { get; private set; } = false;
 
+      public string SearchCriteria
+      {
+         set => txtSearchCriteria.Text = value;
+      }
+
       public void Activate()
       {
          ActiveControl = txtSearchCriteria;

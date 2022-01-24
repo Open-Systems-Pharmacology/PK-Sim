@@ -91,7 +91,7 @@ namespace PKSim.CLI.Core.Services
          }
 
          var begin = DateTime.UtcNow;
-         var project = await _snapshotTask.LoadProjectFromSnapshot(snapshot, runOptions.Run);
+         var project = await _snapshotTask.LoadProjectFromSnapshotAsync(snapshot, runOptions.Run);
          _workspace.Project = project;
 
          var projectOutputFolder = createProjectOutputFolder(config.OutputFolder, project.Name);
@@ -129,7 +129,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddDebug($"Project saved to '{projectFile}'", project.Name);
 
          var snapshotFile = Path.Combine(config.TempFolder, $"{project.Name}{Constants.Filter.JSON_EXTENSION}");
-         await _snapshotTask.ExportModelToSnapshot(project, snapshotFile);
+         await _snapshotTask.ExportModelToSnapshotAsync(project, snapshotFile);
          _logger.AddDebug($"Project snapshot saved to '{snapshotFile}'", project.Name);
 
          var end = DateTime.UtcNow;
@@ -299,7 +299,7 @@ namespace PKSim.CLI.Core.Services
       {
          if (!_snapshotProjectCache.Contains(snapshotPath))
          {
-            var snapshot = await _snapshotTask.LoadSnapshotFromFile<Project>(snapshotPath);
+            var snapshot = await _snapshotTask.LoadSnapshotFromFileAsync<Project>(snapshotPath);
             _snapshotProjectCache[snapshotPath] = snapshot ?? throw new QualificationRunException(CannotLoadSnapshotFromFile(snapshotPath));
          }
 

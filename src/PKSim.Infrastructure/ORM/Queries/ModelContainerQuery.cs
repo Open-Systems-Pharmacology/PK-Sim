@@ -58,13 +58,13 @@ namespace PKSim.Infrastructure.ORM.Queries
             // model subcontainer NOT available in species structure.
             // In this case, action depends on UsageInIndividuum-flag
 
-            if (flatModelContainer.UsageInIndividual == CoreConstants.ORM.UsageInIndividualRequired)
+            if (flatModelContainer.UsageInIndividual == CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED)
                throw new ArgumentException(PKSimConstants.Error.ModelContainerNotAvailable(_flatContainerRepo.ContainerPathFrom(flatModelContainer.Id).ToString()));
 
-            if (flatModelContainer.UsageInIndividual == CoreConstants.ORM.UsageInIndividualOptional)
+            if (flatModelContainer.UsageInIndividual == CoreConstants.ORM.USAGE_IN_INDIVIDUAL_OPTIONAL)
                continue; 
 
-            if (flatModelContainer.UsageInIndividual == CoreConstants.ORM.UsageInIndividualExtended)
+            if (flatModelContainer.UsageInIndividual == CoreConstants.ORM.USAGE_IN_INDIVIDUAL_EXTENDED)
             {
                allSubContainers.Add(_flatContainerIdToContainerMapper.MapFrom(flatModelContainer));
                continue;

@@ -24,7 +24,7 @@ namespace PKSim.Infrastructure
          var defaultIndividualRetriever = IoC.Resolve<IDefaultIndividualRetriever>();
          var populationRepository = IoC.Resolve<IPopulationRepository>();
          var cloneManager = IoC.Resolve<ICloneManagerForBuildingBlock>();
-         return cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache());
+         return cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache()).WithName("Individual");
       }
 
       public static Compound CreateStandardCompound()
@@ -64,6 +64,14 @@ namespace PKSim.Infrastructure
          formulation.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? CoreConstants.Parameters.POLYDISPERSE : CoreConstants.Parameters.MONODISPERSE;
 
          return formulation;
+      }
+
+      public static ExpressionProfile CreateExpressionProfile<TMolecule>(string moleculeName = "CYP3A4") where TMolecule:IndividualMolecule
+      {
+         var expressionProfileFactory = IoC.Resolve<IExpressionProfileFactory>();
+         var expressionProfile = expressionProfileFactory.Create<TMolecule>(moleculeName);
+         expressionProfile.Category = "Standard";
+         return expressionProfile;
       }
 
       public static IndividualSimulation CreateDefaultSimulation()

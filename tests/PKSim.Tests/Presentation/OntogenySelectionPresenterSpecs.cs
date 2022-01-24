@@ -14,11 +14,11 @@ using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_OntogenySelectionPresenter : ContextSpecification<IOntogenySelectionPresenter<Individual>>
+   public abstract class concern_for_OntogenySelectionPresenter : ContextSpecification<IOntogenySelectionPresenter>
    {
       protected IOntogenySelectionView _view;
       protected IOntogenyRepository _ontogenyRepository;
-      protected IOntogenyTask<Individual> _ontogenyTask;
+      protected IOntogenyTask _ontogenyTask;
       protected List<Ontogeny> _allOntogenies;
       protected ICommandCollector _commandRegister;
 
@@ -26,11 +26,11 @@ namespace PKSim.Presentation
       {
          _view = A.Fake<IOntogenySelectionView>();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
-         _ontogenyTask = A.Fake<IOntogenyTask<Individual>>();
+         _ontogenyTask = A.Fake<IOntogenyTask>();
          _commandRegister = A.Fake<ICommandCollector>();
          _allOntogenies = new List<Ontogeny>();
          A.CallTo(() => _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN)).Returns(_allOntogenies);
-         sut = new OntogenySelectionPresenter<Individual>(_view, _ontogenyRepository, _ontogenyTask);
+         sut = new OntogenySelectionPresenter(_view, _ontogenyRepository, _ontogenyTask);
          sut.InitializeWith(_commandRegister);
       }
    }

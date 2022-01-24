@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly Cache<string, RepresentationInfo> _representationInfosCache;
 
       public RepresentationInfoRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<RepresentationInfo> mapper, ITypeToRepresentationObjectTypeMapper representationObjectTypeMapper) :
-         base(dbGateway, mapper, CoreConstants.ORM.ViewRepresentationInfos)
+         base(dbGateway, mapper, CoreConstants.ORM.VIEW_REPRESENTATION_INFOS)
       {
          _representationObjectTypeMapper = representationObjectTypeMapper;
          _representationInfosCache = new Cache<string, RepresentationInfo>(getKey, x => null);

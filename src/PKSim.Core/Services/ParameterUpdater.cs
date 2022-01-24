@@ -34,13 +34,13 @@ namespace PKSim.Core.Services
 
       public ICommand UpdateValue(IParameter sourceParameter, IParameter targetParameter)
       {
-         var targetformulaType = _formulaTypeMapper.MapFrom(targetParameter);
-         var sourceformulaType = _formulaTypeMapper.MapFrom(sourceParameter);
+         var targetFormulaType = _formulaTypeMapper.MapFrom(targetParameter);
+         var sourceFormulaType = _formulaTypeMapper.MapFrom(sourceParameter);
 
-         if (targetformulaType == FormulaType.Distribution)
+         if (targetFormulaType == FormulaType.Distribution)
             return setDistributionValue(sourceParameter, targetParameter.DowncastTo<IDistributedParameter>());
 
-         if (targetformulaType == FormulaType.Table)
+         if (targetFormulaType == FormulaType.Table)
             return setTableFormulaValue(sourceParameter, targetParameter);
 
          //source parameter is fixed, target parameter should be fixed as well
@@ -52,13 +52,13 @@ namespace PKSim.Core.Services
             return null;
 
          //from here source is not fixed and building block type is not simulation
-         if (targetformulaType == FormulaType.Constant)
+         if (targetFormulaType == FormulaType.Constant)
             return setParameterValue(sourceParameter, targetParameter, forceUpdate: false);
 
          //from here source is not fixed and target parameter is formula
 
          //target is a formula and source is a constant always update value (hence true) //Permeability
-         if (sourceformulaType == FormulaType.Constant)
+         if (sourceFormulaType == FormulaType.Constant)
             return setParameterValue(sourceParameter, targetParameter, forceUpdate: true);
 
          //both source and target are formula
@@ -72,7 +72,7 @@ namespace PKSim.Core.Services
 
       private ICommand setTableFormulaValue(IParameter sourceParameter, IParameter targetParameter)
       {
-         //target formula is alwyays a table:
+         //target formula is always a table:
          var targetTableFormula = targetParameter.Formula as DistributedTableFormula;
 
          //updating a table formula from a distributed parameter? only for distributedTableFormula
@@ -101,17 +101,15 @@ namespace PKSim.Core.Services
       private ICommand setDistributionValue(IParameter sourceParameter, IDistributedParameter targetParameter)
       {
          //distributed to distributed
-         var sourceDistributedParameter = sourceParameter as IDistributedParameter;
-         if (sourceDistributedParameter != null)
-            return setParameterValue(sourceParameter, targetParameter, false);
+         if (sourceParameter is IDistributedParameter sourceDistributedParameter)
+            return setParameterValue(sourceDistributedParameter, targetParameter, false);
 
-         //source parameter it not distributed. Is the formula a table paramter? In that case, we are most likely
+         //source parameter it not distributed. Is the formula a table parameter? In that case, we are most likely
          //updating from simulation table parameter to distributed parameter in individual
-         var tableFormula = sourceParameter.Formula as DistributedTableFormula;
-         if (tableFormula == null)
-            return setParameterValue(sourceParameter, targetParameter, false);
+         if (sourceParameter.Formula is DistributedTableFormula tableFormula)
+            return _parameterTask.SetParameterPercentile(targetParameter, tableFormula.Percentile);
 
-         return _parameterTask.SetParameterPercentile(targetParameter, tableFormula.Percentile);
+         return setParameterValue(sourceParameter, targetParameter, false);
       }
 
       private ICommand resetParameterValue(IParameter targetParameter)

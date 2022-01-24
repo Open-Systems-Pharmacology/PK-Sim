@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatReactionPartnerRepository : MetaDataRepository<FlatReactionPartner>, IFlatReactionPartnerRepository
    {
       public FlatReactionPartnerRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatReactionPartner> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewReactionPartners)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_REACTION_PARTNERS)
       {
       }
    }

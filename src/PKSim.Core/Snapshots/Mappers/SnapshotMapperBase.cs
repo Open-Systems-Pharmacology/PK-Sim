@@ -24,6 +24,10 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public Type SnapshotTypeFor<T>() => typeof(TSnapshot);
 
+      public ISnapshotMapper MapperFor(object modelOrSnapshotType) => this;
+
+      public ISnapshotMapper MapperFor(Type modelOrSnapshotType) => this;
+
       public virtual bool IsSatisfiedBy(Type item)
       {
          return item.IsAnImplementationOf<TModel>() || item.IsAnImplementationOf<TSnapshot>();

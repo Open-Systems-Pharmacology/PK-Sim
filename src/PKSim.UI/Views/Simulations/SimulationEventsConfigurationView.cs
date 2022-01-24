@@ -82,7 +82,8 @@ namespace PKSim.UI.Views.Simulations
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;
          gridView.HiddenEditor += (o, e) => { _comboBoxUnit.Visible = false; };
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveEventMapping(_gridViewBinder.FocusedElement));
-         loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadEventFor(_gridViewBinder.FocusedElement));
+
+         loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadEventAsync(_gridViewBinder.FocusedElement));
          createButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.CreateEventFor(_gridViewBinder.FocusedElement));
       }
 
@@ -109,7 +110,7 @@ namespace PKSim.UI.Views.Simulations
 
       private RepositoryItemButtonEdit loadEventButtonRepository()
       {
-         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.Event));
+         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplate(PKSimConstants.ObjectTypes.Event));
       }
 
       private void setParameterValue(IParameterDTO parameterDTO, double newValue)

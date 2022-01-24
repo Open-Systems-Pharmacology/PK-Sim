@@ -3,6 +3,20 @@
     <HiddenComponentWarnings>
       <Value>LongTestTimesWithoutParallelExecution</Value>
     </HiddenComponentWarnings>
+    <IgnoredTests>
+      <FixtureTestSelector>
+        <FixtureName>PKSim.Reporting.When_creating_a_report_using_the_simulation_reporter</FixtureName>
+      </FixtureTestSelector>
+      <FixtureTestSelector>
+        <FixtureName>PKSim.Reporting.Testing_project_ReportingProject_740</FixtureName>
+      </FixtureTestSelector>
+      <FixtureTestSelector>
+        <FixtureName>PKSim.Reporting.Testing_project_PopSimTest_740</FixtureName>
+      </FixtureTestSelector>
+      <FixtureTestSelector>
+        <FixtureName>PKSim.Reporting.Testing_project_ObservedData_740</FixtureName>
+      </FixtureTestSelector>
+    </IgnoredTests>
     <PreviouslyBuiltSuccessfully>True</PreviouslyBuiltSuccessfully>
   </Settings>
 </ProjectConfiguration>
