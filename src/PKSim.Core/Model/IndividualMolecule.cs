@@ -43,7 +43,6 @@ namespace PKSim.Core.Model
          set => DiseaseFactorParameter.Value = value;
       }
 
-
       public virtual bool HasQuery()
       {
          return !string.IsNullOrEmpty(QueryConfiguration);
@@ -59,7 +58,14 @@ namespace PKSim.Core.Model
 
       public IReadOnlyList<IParameter> AllOntogenyParameters => new[] {OntogenyFactorParameter, OntogenyFactorGIParameter};
 
-      public IReadOnlyList<IParameter> AllGlobalExpressionParameters => this.AllParameters().Except(AllGlobalMoleculeParameters).Except(AllOntogenyParameters).ToList();
+      public IReadOnlyList<IParameter> AllDiseaseStateParameters => new[] {DiseaseFactorParameter};
+
+      public IReadOnlyList<IParameter> AllGlobalExpressionParameters => 
+         this.AllParameters()
+            .Except(AllGlobalMoleculeParameters)
+            .Except(AllOntogenyParameters)
+            .Except(AllDiseaseStateParameters)
+            .ToList();
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
       {

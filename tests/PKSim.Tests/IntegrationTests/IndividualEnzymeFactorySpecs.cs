@@ -29,24 +29,24 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_a_metabolism_expression_for_an_individual : concern_for_IndividualEnzymeFactory
    {
-      private IndividualMolecule _result;
+      private IndividualMolecule _molecule;
       private ICache<string, IParameter> _allExpressionParameters;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _result = sut.AddMoleculeTo(_individual, "CYP3A4");
+         _molecule = sut.AddMoleculeTo(_individual, "CYP3A4");
       }
 
       protected override void Because()
       {
-         _allExpressionParameters = _individual.AllExpressionParametersFor(_result);
+         _allExpressionParameters = _individual.AllExpressionParametersFor(_molecule);
       }
 
       [Observation]
       public void should_return_a_metabolism_expression()
       {
-         _result.ShouldBeAnInstanceOf<IndividualEnzyme>();
+         _molecule.ShouldBeAnInstanceOf<IndividualEnzyme>();
       }
 
       [Observation]
@@ -59,14 +59,14 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_marked_the_reference_concentration_parameter_as_variable()
       {
-         _result.ReferenceConcentration.CanBeVaried.ShouldBeTrue();
-         _result.ReferenceConcentration.CanBeVariedInPopulation.ShouldBeTrue();
+         _molecule.ReferenceConcentration.CanBeVaried.ShouldBeTrue();
+         _molecule.ReferenceConcentration.CanBeVariedInPopulation.ShouldBeTrue();
       }
 
       [Observation]
       public void should_have_ensure_that_all_formula_have_different_ids()
       {
-         var allInitialConcentrationParameters = _individual.AllMoleculeParametersFor(_result)
+         var allInitialConcentrationParameters = _individual.AllMoleculeParametersFor(_molecule)
             .Where(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION))
             .ToList();
 
@@ -78,13 +78,32 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_set_all_initial_concentration_parameters_as_not_Variable()
       {
-         var allInitialConcentrationParameters = _individual.AllMoleculeParametersFor(_result)
+         var allInitialConcentrationParameters = _individual.AllMoleculeParametersFor(_molecule)
             .Where(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION))
             .ToList();
 
 
          allInitialConcentrationParameters.Each(x => x.CanBeVariedInPopulation.ShouldBeFalse());
       }
+
+      [Observation]
+      public void should_not_return_disease_state_parameters_as_part_of_global_expression_parameters()
+      {
+         _molecule.AllGlobalExpressionParameters.ShouldNotContain(_molecule.DiseaseFactorParameter);
+      }
+ 
+      [Observation]
+      public void should_not_return_molecule_properties_parameters_as_part_of_global_expression_parameters()
+      {
+         _molecule.AllGlobalExpressionParameters.ShouldNotContain(_molecule.ReferenceConcentration,_molecule.HalfLifeIntestine,_molecule.HalfLifeLiver);
+      }
+
+      [Observation]
+      public void should_not_return_ontogeny_parameters_as_part_of_global_expression_parameters()
+      {
+         _molecule.AllGlobalExpressionParameters.ShouldNotContain(_molecule.OntogenyFactorParameter, _molecule.OntogenyFactorGIParameter);
+      }
+
    }
 
    public class When_creating_an_undefined_enzyme_for_a_given_individual : concern_for_IndividualEnzymeFactory
