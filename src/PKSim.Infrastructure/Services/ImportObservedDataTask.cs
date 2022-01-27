@@ -206,7 +206,12 @@ namespace PKSim.Infrastructure.Services
 
       private (IReadOnlyList<MetaDataCategory>, DataImporterSettings) initializeSettings(Compound compound = null, bool allowCompoundNameEdit = false)
       {
-         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
+         var dataImporterSettings = new DataImporterSettings
+         {
+            Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", 
+            IconName = ApplicationIcons.ObservedData.IconName,
+            CheckMolWeightAgainstMolecule = true
+         };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
@@ -305,7 +310,7 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { };
 
-      public bool MolWeightEditable => false;
+      public bool MolWeightEditable => true;
 
       public bool MolWeightVisible => true;
 
