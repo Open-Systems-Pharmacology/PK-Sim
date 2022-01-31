@@ -31,8 +31,8 @@
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.Presentation" Version="11.0.62" />
     <PackageReference Include="OSPSuite.Core" Version="11.0.62" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.0.64" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.64" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.65" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.65" />
   </ItemGroup>
 
   <ItemGroup>
