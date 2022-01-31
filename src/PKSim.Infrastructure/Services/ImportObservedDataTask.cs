@@ -210,7 +210,7 @@ namespace PKSim.Infrastructure.Services
          {
             Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", 
             IconName = ApplicationIcons.ObservedData.IconName,
-            CheckMolWeightAgainstMolecule = true
+            // CheckMolWeightAgainstMolecule = true
          };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;

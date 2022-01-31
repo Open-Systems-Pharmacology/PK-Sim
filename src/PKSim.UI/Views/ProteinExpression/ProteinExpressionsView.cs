@@ -8,6 +8,7 @@ using OSPSuite.Presentation;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.ProteinExpression
 {
@@ -16,7 +17,7 @@ namespace PKSim.UI.Views.ProteinExpression
       public ProteinExpressionsView(Shell shell):base(shell)
       {
          InitializeComponent();
-         ClientSize = new System.Drawing.Size(CoreConstants.UI.EXPRESSION_QUERY_VIEW_WIDTH, CoreConstants.UI.EXPRESSION_QUERY_VIEW_HEIGHT);
+         ClientSize = new System.Drawing.Size(UIConstants.Size.EXPRESSION_QUERY_VIEW_WIDTH, UIConstants.Size.EXPRESSION_QUERY_VIEW_HEIGHT);
 
       }
 
@@ -35,7 +36,7 @@ namespace PKSim.UI.Views.ProteinExpression
          base.InitializeResources();
          Text = PKSimConstants.ProteinExpressions.MainView.MainText;
          Icon = ApplicationIcons.ProteinExpression.WithSize(IconSizes.Size16x16);
-         this.ReziseForCurrentScreen(fractionHeight: UIConstants.Size.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.Size.SCREEN_RESIZE_FRACTION);
+         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
          MaximizeBox = true;
       }
    }

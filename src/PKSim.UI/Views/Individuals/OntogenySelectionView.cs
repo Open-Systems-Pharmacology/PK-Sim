@@ -20,7 +20,7 @@ namespace PKSim.UI.Views.Individuals
       private IOntogenySelectionPresenter _presenter;
       private ScreenBinder<IndividualMolecule> _screenBinder;
 
-      public override int OptimalHeight => UIConstants.Size.ScaleForScreenDPI(30);
+      public override int OptimalHeight => OSPSuite.UI.UIConstants.Size.ScaleForScreenDPI(30);
 
       public OntogenySelectionView(IToolTipCreator toolTipCreator)
       {

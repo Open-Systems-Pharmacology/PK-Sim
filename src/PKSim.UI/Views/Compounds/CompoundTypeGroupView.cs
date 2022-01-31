@@ -21,6 +21,7 @@ using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -84,7 +85,7 @@ namespace PKSim.UI.Views.Compounds
 
          _colFavorites = _gridViewBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithFixedWidth(EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => OnEvent(() => compoundTypeGroupPresenter.SetFavorite(o, e.NewValue)));

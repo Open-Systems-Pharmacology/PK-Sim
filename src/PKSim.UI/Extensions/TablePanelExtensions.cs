@@ -31,11 +31,11 @@ namespace PKSim.UI.Extensions
 
       public static void AdjustButtonWithImageOnly(this SimpleButton button)
       {
-         button.Size = new Size(UIConstants.Size.ScaleForScreenDPI(24), UIConstants.Size.ScaleForScreenDPI(22));
+         button.Size = new Size(OSPSuite.UI.UIConstants.Size.ScaleForScreenDPI(24), OSPSuite.UI.UIConstants.Size.ScaleForScreenDPI(22));
       }
       public static void AdjustLongButtonWidth(this SimpleButton button)
       {
-         button.Size = new Size(UIConstants.Size.LARGE_BUTTON_WIDTH, button.Height);
+         button.Size = new Size(OSPSuite.UI.UIConstants.Size.LARGE_BUTTON_WIDTH, button.Height);
       }
    }
 }

@@ -21,6 +21,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views
 {
@@ -128,7 +129,7 @@ namespace PKSim.UI.Views
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(repositoryForTemplate)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);
 
          gridView.PreviewFieldName = colDescription.PropertyName;
          colDescription.Visible = false;

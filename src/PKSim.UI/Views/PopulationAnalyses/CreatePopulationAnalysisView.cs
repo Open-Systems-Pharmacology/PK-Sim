@@ -8,6 +8,7 @@ using OSPSuite.Presentation;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -39,7 +40,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          var dropDownButtonItem = createAnalysisPresenter.CreateTemplateButtonItem(_toolTipCreator, layoutControlBase);
          dropDownButtonItem.Move(emptySpaceItemBase, InsertType.Left);
          MaximizeBox = true;
-         this.ReziseForCurrentScreen(fractionHeight: UIConstants.Size.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.Size.SCREEN_RESIZE_FRACTION);
+         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
 
       private ICreatePopulationAnalysisPresenter createAnalysisPresenter => WizardPresenter as ICreatePopulationAnalysisPresenter;

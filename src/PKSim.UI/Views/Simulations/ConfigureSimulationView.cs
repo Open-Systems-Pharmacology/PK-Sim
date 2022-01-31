@@ -10,6 +10,7 @@ using OSPSuite.Presentation;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -18,7 +19,7 @@ namespace PKSim.UI.Views.Simulations
       public ConfigureSimulationView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.SIMULATION_VIEW_WIDTH, CoreConstants.UI.CONFIGURE_SIMULATION_VIEW_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.SIMULATION_VIEW_WIDTH, UIConstants.Size.CONFIGURE_SIMULATION_VIEW_HEIGHT);
       }
 
       public override XtraTabControl TabControl => tabConfigureSimulation;
@@ -32,7 +33,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          Icon = ApplicationIcons.SimulationConfigure.WithSize(IconSizes.Size16x16);
-         this.ReziseForCurrentScreen(fractionHeight: UIConstants.Size.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.Size.SCREEN_RESIZE_FRACTION);
+         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
          btnOk.DialogResult = DialogResult.None;
       }
 

@@ -9,6 +9,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -22,7 +23,7 @@ namespace PKSim.UI.Views.Simulations
       {
          _toolTipCreator = toolTipCreator;
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.SIMULATION_SETTINGS_WIDTH, CoreConstants.UI.SIMULATION_SETTINGS_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.SIMULATION_SETTINGS_WIDTH, UIConstants.Size.SIMULATION_SETTINGS_HEIGHT);
       }
 
       public void AttachPresenter(IPopulationSimulationSettingsPresenter presenter)
@@ -46,7 +47,7 @@ namespace PKSim.UI.Views.Simulations
          Caption = PKSimConstants.UI.PopulationSimulationSettings;
          var dropDownButtonItem = _presenter.CreateSaveSettingsButtonItem(_toolTipCreator, layoutControlBase);
          dropDownButtonItem.Move(emptySpaceItemBase, InsertType.Left);
-         this.ReziseForCurrentScreen(fractionHeight: UIConstants.Size.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.Size.SCREEN_RESIZE_FRACTION);
+         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
    }
 }

@@ -19,6 +19,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Applications;
 using PKSim.Presentation.Presenters.Applications;
 using PKSim.Presentation.Views.Applications;
+using static OSPSuite.UI.UIConstants.Size;
 using BaseView = DevExpress.XtraGrid.Views.Base.BaseView;
 
 namespace PKSim.UI.Views.Applications
@@ -114,7 +115,7 @@ namespace PKSim.UI.Views.Applications
 
          parameterBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithFixedWidth(EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => new UxRepositoryItemCheckEdit(parameterBinder.GridView))
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));

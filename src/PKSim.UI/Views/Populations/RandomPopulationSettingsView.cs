@@ -93,14 +93,14 @@ namespace PKSim.UI.Views.Populations
             .AsReadOnly();
 
          _colFrom = _gridViewBinder.AddUnboundColumn()
-            .WithCaption(UIConstants.EMPTY_COLUMN)
+            .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
             .WithRepository(fromRepository).AsReadOnly();
          _colFrom.XtraColumn.MaxWidth = 40;
 
          bindValue(x => x.MinValueInDisplayUnit);
 
          _colTo = _gridViewBinder.AddUnboundColumn()
-            .WithCaption(UIConstants.EMPTY_COLUMN)
+            .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
             .WithRepository(toRepository).AsReadOnly();
 
          _colTo.XtraColumn.MaxWidth = 40;
