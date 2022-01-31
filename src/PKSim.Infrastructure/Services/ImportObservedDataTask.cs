@@ -310,7 +310,7 @@ namespace PKSim.Infrastructure.Services
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { };
 
-      public bool MolWeightEditable => false;
+      public bool MolWeightAlwaysEditable => false;
 
       public bool MolWeightVisible => true;
 
