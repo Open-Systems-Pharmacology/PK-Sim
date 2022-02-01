@@ -19,13 +19,17 @@ namespace PKSim.CLI.Commands
       [Option('r', "run", Required = false, HelpText = "Should the qualification runner also run the simulation or simply export the qualification report for further processing. Default is false")]
       public bool Run { get; set; } = false;
 
+      [Option('e', "exp", Required = false, HelpText = "Should the qualification runner also export the project files (snapshot and PK-Sim project file). Default is false")]
+      public bool ExportProjectFiles { get; set; } = false;
+
       public override QualificationRunOptions ToRunOptions()
       {
          return new QualificationRunOptions
          {
             ConfigurationFile = ConfigurationFile,
             Validate = Validate,
-            Run = Run
+            Run = Run,
+            ExportProjectFiles = ExportProjectFiles
          };
       }
 
@@ -35,7 +39,8 @@ namespace PKSim.CLI.Commands
          LogDefaultOptions(sb);
          sb.AppendLine($"Validate: {Validate}");
          sb.AppendLine($"Configuration file: {ConfigurationFile}");
-         sb.AppendLine($"Run Simulations: {Run}");
+         sb.AppendLine($"Run simulations: {Run}");
+         sb.AppendLine($"Export project files: {ExportProjectFiles}");
          return sb.ToString();
       }
    }

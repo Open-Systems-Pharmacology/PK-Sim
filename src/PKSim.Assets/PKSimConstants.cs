@@ -906,6 +906,9 @@ namespace PKSim.Assets
 
          public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
 
+         public static string SimulationUsedInPlotsAreNotExported(IReadOnlyList<string> simulationNames, string project)
+            => $"{ObjectTypes.Simulation.PluralizeIf(simulationNames)} {simulationNames.ToString(", ", "'")} used in plots {"is".PluralizeIf(simulationNames)} not found in the list of exported simulations for {ObjectTypes.Project} {project}";
+
          public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
             $"Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
 
