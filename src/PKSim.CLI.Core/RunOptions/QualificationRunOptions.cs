@@ -18,7 +18,7 @@
       public bool Run { get; set; }
 
       /// <summary>
-      /// Specifies if project files (snapshot and project should be exported)
+      /// Specifies if project files (snapshot and PK-Sim project file should be exported)
       /// </summary>
       public bool ExportProjectFiles { get; set; }
    }
