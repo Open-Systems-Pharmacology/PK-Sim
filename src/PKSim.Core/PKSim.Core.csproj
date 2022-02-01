@@ -34,10 +34,10 @@
     <PackageReference Include="OSPSuite.Assets" Version="11.0.62" />
     <PackageReference Include="OSPSuite.Assets.Images" Version="11.0.62" />
     <PackageReference Include="OSPSuite.Infrastructure.Import" Version="11.0.62" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Assets" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="11.0.71" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="11.0.72" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
 

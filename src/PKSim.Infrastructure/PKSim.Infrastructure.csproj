@@ -49,14 +49,14 @@
     <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="11.0.62" />
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="11.0.62" />
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.0.62" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="11.0.71" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.0.71" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="11.0.72" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="11.0.72" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
   </ItemGroup>
 
