@@ -16,5 +16,10 @@
       ///    Should simulation be performed as part of the run?
       /// </summary>
       public bool Run { get; set; }
+
+      /// <summary>
+      /// Specifies if project files (snapshot and project should be exported)
+      /// </summary>
+      public bool ExportProjectFiles { get; set; }
    }
 }

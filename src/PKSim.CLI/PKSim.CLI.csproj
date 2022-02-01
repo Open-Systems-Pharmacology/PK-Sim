@@ -63,8 +63,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.0" />
     <PackageReference Include="OSPSuite.Core" Version="11.0.62" />
     <PackageReference Include="OSPSuite.Presentation" Version="11.0.62" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.60" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.0.60" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.71" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.71" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.51" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.45" GeneratePathProperty="true" />

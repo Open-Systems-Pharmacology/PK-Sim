@@ -54,9 +54,9 @@
     <PackageReference Include="OSPSuite.Presentation" Version="11.0.62" />
     <PackageReference Include="OSPSuite.UI" Version="11.0.62" />
     <PackageReference Include="OSPSuite.Core" Version="11.0.62" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.0.60" />
-    <PackageReference Include="OSPSuite.UI" Version="11.0.60" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.60" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.71" />
+    <PackageReference Include="OSPSuite.UI" Version="11.0.71" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.71" />
   </ItemGroup>
 
   <ItemGroup>
