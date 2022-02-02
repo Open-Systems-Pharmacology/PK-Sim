@@ -306,13 +306,13 @@ namespace PKSim.Infrastructure.Services
          return Enumerable.Empty<string>();
       }
 
-      public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
+      public IReadOnlyList<string> DefaultMetaDataCategories { get; } = CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { };
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories { get; } = new List<string> { };
+    
+      public bool MolWeightAlwaysEditable { get; } = false;
 
-      public bool MolWeightAlwaysEditable => false;
-
-      public bool MolWeightVisible => true;
+      public bool MolWeightVisible { get; }=  true;
 
       private IEnumerable<string> predefinedGenders => predefinedValuesFor(addPredefinedGenderValues);
 
