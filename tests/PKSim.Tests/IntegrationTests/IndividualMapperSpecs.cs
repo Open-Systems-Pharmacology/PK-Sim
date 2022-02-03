@@ -138,4 +138,24 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_loading_a_snapshot_file_containing_expression_created_in_v9_with_individual_and_population : ContextWithLoadedSnapshot
+   {
+      private Individual _individual;
+      private Population _pop;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadSnapshot("ind_pop_v9");
+         _individual = FindByName<Individual>("Ind");
+         _pop = FindByName<Population>("Pop");
+      }
+
+      [Observation]
+      public void should_have_been_able_to_load_the_individual_and_the_population()
+      {
+         _individual.ShouldNotBeNull();
+         _pop.ShouldNotBeNull();
+      }
+   }
 }

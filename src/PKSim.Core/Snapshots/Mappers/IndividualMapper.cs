@@ -62,7 +62,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await updateIndividualParameters(individualSnapshot, individual);
 
          if (isV10Format(individualSnapshot))
-            await convertMoleculesToExpressionProfiles(individualSnapshot,   project);
+            await convertMoleculesToExpressionProfiles(individualSnapshot, project);
 
          individualSnapshot.ExpressionProfiles?.Each(x =>
          {
@@ -74,7 +74,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return individual;
       }
 
-      private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot,   PKSimProject project)
+      private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot, PKSimProject project)
       {
          var expressionProfilesSnapshot = individualSnapshot.Molecules;
          expressionProfilesSnapshot.Each(x =>
@@ -84,11 +84,15 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Molecule = x.Name;
          });
 
-         var expressionProfiles = await _expressionProfileMapper.MapToModels(individualSnapshot.Molecules);
+         var expressionProfiles = await _expressionProfileMapper.MapToModels(expressionProfilesSnapshot);
          foreach (var expressionProfile in expressionProfiles)
          {
-            var (molecule, individual) = expressionProfile;
-            project.AddBuildingBlock(expressionProfile);
+            var (_, individual) = expressionProfile;
+            //Expression profile may have been added already to the project when converting a project with population 
+            //and individual. So we only add if not available already
+            if (project.BuildingBlockByName<Model.ExpressionProfile>(expressionProfile.Name) == null)
+               project.AddBuildingBlock(expressionProfile);
+
             //this needs to happen here since molecule parameters were defined in individual in v10
             await updateIndividualParameters(individualSnapshot, individual);
          }
@@ -103,6 +107,5 @@ namespace PKSim.Core.Snapshots.Mappers
          //We do not show warning for v10 format as we will FOR SURE have missing parameters
          return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, showParameterNotFoundWarning: !isV10Format(snapshot));
       }
-
    }
 }

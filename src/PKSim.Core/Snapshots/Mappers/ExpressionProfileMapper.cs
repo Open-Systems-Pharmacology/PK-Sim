@@ -90,7 +90,7 @@ namespace PKSim.Core.Snapshots.Mappers
          expressionProfile.Category = snapshot.Category;
 
          var (molecule, individual) = expressionProfile;
-         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual);
+         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, !isV9Format(snapshot));
 
          updateMoleculePropertiesToMolecule(molecule, snapshot, individual);
 

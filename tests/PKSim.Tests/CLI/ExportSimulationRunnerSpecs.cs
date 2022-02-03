@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
@@ -17,6 +18,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Services;
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI
@@ -24,10 +26,11 @@ namespace PKSim.CLI
    public abstract class concern_for_ExportSimulationRunner : ContextSpecificationAsync<ExportSimulationRunner>
    {
       protected IOSPSuiteLogger _logger;
-      protected IWorkspacePersistor _workspacePersitor;
+      protected IWorkspacePersistor _workspacePersistor;
       protected ICoreWorkspace _workspace;
       protected ISimulationExporter _simulationExporter;
       protected ILazyLoadTask _lazyLoadTask;
+
       protected ExportRunOptions _exportRunOptions = new ExportRunOptions {ExportMode = SimulationExportMode.Json | SimulationExportMode.Xml};
 
       private Func<string, bool> _oldFileExists;
@@ -74,17 +77,17 @@ namespace PKSim.CLI
       protected override Task Context()
       {
          _logger = A.Fake<IOSPSuiteLogger>();
-         _workspacePersitor = A.Fake<IWorkspacePersistor>();
+         _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _workspace = A.Fake<ICoreWorkspace>();
          _simulationExporter = A.Fake<ISimulationExporter>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
-         sut = new ExportSimulationRunner(_logger, _workspacePersitor, _workspace, _simulationExporter, _lazyLoadTask);
+         sut = new ExportSimulationRunner(_logger, _workspacePersistor, _workspace, _simulationExporter, _lazyLoadTask);
 
          _project = new PKSimProject {Name = _projectName};
          _simulation1 = createSimulationWithResults(_simulation1Name);
          _simulation2 = createSimulationWithResults(_simulation2Name);
 
-         A.CallTo(() => _workspacePersitor.LoadSession(_workspace, _projectFileName)).Invokes(x => { _workspace.Project = _project; });
+         A.CallTo(() => _workspacePersistor.LoadSession(_workspace, _projectFileName)).Invokes(x => { _workspace.Project = _project; });
 
 
          return _completed;
