@@ -33,27 +33,29 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.btnLoadFromDatabase = new OSPSuite.UI.Controls.UxSimpleButton();
          this.tbCategory = new DevExpress.XtraEditors.TextEdit();
          this.cbMoleculeName = new OSPSuite.UI.Controls.UxMRUEdit();
+         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
          this.panelExpression = new DevExpress.XtraEditors.PanelControl();
          this.layoutItemMoleculeName = new DevExpress.XtraEditors.LabelControl();
          this.layoutItemCategory = new DevExpress.XtraEditors.LabelControl();
          this.layoutItemSpecies = new DevExpress.XtraEditors.LabelControl();
-         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeName.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          this.tablePanel.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelExpression)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).BeginInit();
          this.SuspendLayout();
          // 
          // btnLoadFromDatabase
          // 
+         this.tablePanel.SetColumn(this.btnLoadFromDatabase, 2);
          this.btnLoadFromDatabase.Location = new System.Drawing.Point(503, 34);
          this.btnLoadFromDatabase.Manager = null;
          this.btnLoadFromDatabase.Margin = new System.Windows.Forms.Padding(4);
          this.btnLoadFromDatabase.Name = "btnLoadFromDatabase";
+         this.tablePanel.SetRow(this.btnLoadFromDatabase, 1);
          this.btnLoadFromDatabase.Shortcut = System.Windows.Forms.Keys.None;
          this.btnLoadFromDatabase.Size = new System.Drawing.Size(476, 22);
          this.btnLoadFromDatabase.TabIndex = 8;
@@ -61,23 +63,42 @@ namespace PKSim.UI.Views.ExpressionProfiles
          // 
          // tbCategory
          // 
+         this.tablePanel.SetColumn(this.tbCategory, 1);
+         this.tablePanel.SetColumnSpan(this.tbCategory, 2);
          this.tbCategory.Location = new System.Drawing.Point(153, 64);
          this.tbCategory.Margin = new System.Windows.Forms.Padding(4);
          this.tbCategory.Name = "tbCategory";
+         this.tablePanel.SetRow(this.tbCategory, 2);
          this.tbCategory.Size = new System.Drawing.Size(826, 22);
          this.tbCategory.TabIndex = 6;
          // 
          // cbMoleculeName
          // 
          this.cbMoleculeName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+         this.tablePanel.SetColumn(this.cbMoleculeName, 1);
          this.cbMoleculeName.Location = new System.Drawing.Point(153, 34);
          this.cbMoleculeName.Margin = new System.Windows.Forms.Padding(4);
          this.cbMoleculeName.Name = "cbMoleculeName";
          this.cbMoleculeName.Properties.AllowRemoveMRUItems = false;
          this.cbMoleculeName.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.tablePanel.SetRow(this.cbMoleculeName, 1);
          this.cbMoleculeName.Size = new System.Drawing.Size(342, 22);
          this.cbMoleculeName.TabIndex = 5;
+         // 
+         // cbSpecies
+         // 
+         this.tablePanel.SetColumn(this.cbSpecies, 1);
+         this.tablePanel.SetColumnSpan(this.cbSpecies, 2);
+         this.cbSpecies.Location = new System.Drawing.Point(153, 4);
+         this.cbSpecies.Margin = new System.Windows.Forms.Padding(4);
+         this.cbSpecies.Name = "cbSpecies";
+         this.cbSpecies.Properties.AllowMouseWheel = false;
+         this.cbSpecies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.tablePanel.SetRow(this.cbSpecies, 0);
+         this.cbSpecies.Size = new System.Drawing.Size(826, 22);
+         this.cbSpecies.TabIndex = 4;
          // 
          // tablePanel
          // 
@@ -144,20 +165,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutItemSpecies.TabIndex = 9;
          this.layoutItemSpecies.Text = "layoutItemSpecies";
          // 
-         // cbSpecies
-         // 
-         this.tablePanel.SetColumn(this.cbSpecies, 1);
-         this.tablePanel.SetColumnSpan(this.cbSpecies, 2);
-         this.cbSpecies.Location = new System.Drawing.Point(153, 4);
-         this.cbSpecies.Margin = new System.Windows.Forms.Padding(4);
-         this.cbSpecies.Name = "cbSpecies";
-         this.cbSpecies.Properties.AllowMouseWheel = false;
-         this.cbSpecies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.tablePanel.SetRow(this.cbSpecies, 0);
-         this.cbSpecies.Size = new System.Drawing.Size(826, 22);
-         this.cbSpecies.TabIndex = 4;
-         // 
          // ExpressionProfileMoleculesView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -169,11 +176,11 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeName.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
          this.tablePanel.ResumeLayout(false);
          this.tablePanel.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelExpression)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).EndInit();
          this.ResumeLayout(false);
 
       }
