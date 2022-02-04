@@ -1,8 +1,6 @@
 ﻿using System.Drawing;
-using System.Windows.Forms;
 using DevExpress.Utils.Layout;
 using DevExpress.XtraEditors;
-using OSPSuite.UI;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Extensions
@@ -16,23 +14,11 @@ namespace PKSim.UI.Extensions
          return tablePanel;
       }
 
-      public static TablePanel WithLongButtonWidth(this TablePanel tablePanel, params int[] columnIndexes)
-      {
-         //TODO define constant
-         columnIndexes.Each(columnIndex => WithAbsoluteWidth(tablePanel, columnIndex, 150));
-         return tablePanel;
-      }
-
-      public static TablePanel WithButtonWidth(this TablePanel tablePanel, params int[] columnIndexes)
-      {
-         columnIndexes.Each(columnIndex => WithAbsoluteWidth(tablePanel, columnIndex, 30));
-         return tablePanel;
-      }
-
       public static void AdjustButtonWithImageOnly(this SimpleButton button)
       {
-         button.Size = new Size(OSPSuite.UI.UIConstants.Size.ScaleForScreenDPI(24), OSPSuite.UI.UIConstants.Size.ScaleForScreenDPI(22));
+         button.Size = new Size(OSPSuite.UI.UIConstants.Size.RADIO_GROUP_HEIGHT, OSPSuite.UI.UIConstants.Size.BUTTON_HEIGHT);
       }
+
       public static void AdjustLongButtonWidth(this SimpleButton button)
       {
          button.Size = new Size(OSPSuite.UI.UIConstants.Size.LARGE_BUTTON_WIDTH, button.Height);

@@ -100,7 +100,7 @@ namespace PKSim.UI.Views.Simulations
          get
          {
             var warningHeight = layoutItemWarning.Visible ? layoutItemWarning.Height : 1;
-            return layoutItemCompounds.Padding.Height + gridView.OptimalHeight + layoutItemAddCompound.Height + warningHeight;
+            return layoutItemCompounds.Padding.Height + gridView.OptimalHeight + layoutItemAddCompound.Height + warningHeight + emptySpaceItem2.Height;
          }
       }
 

@@ -3,11 +3,9 @@ using System.Windows.Forms;
 using PKSim.Assets;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Simulations
 {

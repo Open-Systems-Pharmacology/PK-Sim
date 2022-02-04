@@ -56,7 +56,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _pnlChart.FillWith(Chart);
          Chart.RefreshDataOnRepaint = false;
          Chart.CacheToMemory = true;
-         Chart.Legend.MarkerSize = UIConstants.Chart.LEGEND_MARKER_SIZE;
+         Chart.Legend.MarkerSize = OSPSuite.UI.UIConstants.Chart.LEGEND_MARKER_SIZE;
          DragDropEnabled = false;
          initializeChart(imageListRetriever);
       }
