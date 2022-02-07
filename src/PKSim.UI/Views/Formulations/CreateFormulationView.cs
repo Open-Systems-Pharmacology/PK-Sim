@@ -13,7 +13,7 @@ namespace PKSim.UI.Views.Formulations
       public CreateFormulationView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.FORMULATION_VIEW_WIDTH, CoreConstants.UI.FORMULATION_VIEW_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.FORMULATION_VIEW_WIDTH, UIConstants.Size.FORMULATION_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ICreateFormulationPresenter presenter)

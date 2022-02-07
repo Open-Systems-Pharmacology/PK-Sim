@@ -15,6 +15,7 @@ using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -84,7 +85,7 @@ namespace PKSim.UI.Views.Simulations
 
          _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => createFormulationButton);
 
@@ -92,7 +93,7 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => loadFormulationButton);
 
          _gridViewBinder.Changed += () => _presenter.ViewChanged();

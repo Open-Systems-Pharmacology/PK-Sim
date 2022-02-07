@@ -16,6 +16,8 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
+using static PKSim.UI.UIConstants.Size;
 using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.Simulations
@@ -66,7 +68,7 @@ namespace PKSim.UI.Views.Simulations
          _colImage = _gridViewBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH);
 
          _gridViewBinder.Bind(x => x.FilePath)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
@@ -75,13 +77,13 @@ namespace PKSim.UI.Views.Simulations
 
          _gridViewBinder.Bind(x => x.NumberOfIndividuals)
             .WithCaption(PKSimConstants.UI.NumberOfIndividuals)
-            .WithFixedWidth(CoreConstants.UI.PARAMETER_WIDTH)
+            .WithFixedWidth(PARAMETER_WIDTH)
             .WithFormat(new NullIntParameterFormatter())
             .AsReadOnly();
 
          _gridViewBinder.Bind(x => x.NumberOfQuantities)
             .WithCaption(PKSimConstants.UI.NumberOfOutputs)
-            .WithFixedWidth(CoreConstants.UI.PARAMETER_WIDTH)
+            .WithFixedWidth(PARAMETER_WIDTH)
             .WithFormat(new NullIntParameterFormatter())
             .AsReadOnly();
 
@@ -89,7 +91,7 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveFile(_gridViewBinder.FocusedElement));
          _filePathRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.ChangePath(_gridViewBinder.FocusedElement));

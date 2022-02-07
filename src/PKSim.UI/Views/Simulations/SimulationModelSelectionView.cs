@@ -1,7 +1,6 @@
 ﻿using PKSim.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
@@ -23,12 +22,6 @@ namespace PKSim.UI.Views.Simulations
       public void AttachPresenter(ISimulationModelSelectionPresenter presenter)
       {
          _presenter = presenter;
-      }
-
-      public override void InitializeResources()
-      {
-         base.InitializeResources();
-         layoutGroupModelSettings.Text = PKSimConstants.UI.ModelSettings;
       }
 
       public override void InitializeBinding()

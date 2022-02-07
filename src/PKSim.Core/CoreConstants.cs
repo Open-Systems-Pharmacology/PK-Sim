@@ -1283,36 +1283,7 @@ namespace PKSim.Core
          }
       }
 
-      public static class UI
-      {
-         public static readonly int BUILDING_BLOCK_SELECTION_SIZE = 32;
-         public static readonly int PARAMETER_WIDTH = 110;
-         public static readonly int DATA_SOURCE_WIDTH = 180;
-         public const int SIMULATION_SETTINGS_WIDTH = 750;
-         public const int SIMULATION_SETTINGS_HEIGHT = 650;
-         public const int SIMULATION_VIEW_WIDTH = 700;
-         public const int INDIVIDUAL_VIEW_WIDTH = 880;
-         public const int INDIVIDUAL_VIEW_HEIGHT = 780;
-         public const int CONFIGURE_SIMULATION_VIEW_HEIGHT = 708;
-         public const int CREATE_SIMULATION_VIEW_HEIGHT = CONFIGURE_SIMULATION_VIEW_HEIGHT + 40;
-         
-         public const int EXPRESSION_QUERY_VIEW_HEIGHT = 900;
-         public const int EXPRESSION_QUERY_VIEW_WIDTH = 1100;
-         
-         public const int FORMULATION_VIEW_WIDTH = 650;
-         public const int FORMULATION_VIEW_HEIGHT = 760;
-
-         public const int OBSERVER_VIEW_HEIGHT = 760;
-         public const int OBSERVER_VIEW_WIDTH = 650;
-         
-         public const int PROTOCOL_VIEW_WIDTH = 700;
-         public const int PROTOCOL_VIEW_HEIGHT = 760;
-
-         public const int EXPRESSION_PROFILE_VIEW_HEIGHT = 900;
-         public const int EXPRESSION_PROFILE_VIEW_WIDTH = 760;
-
-      }
-
+      
       public static class Covariates
       {
          public static readonly string GENDER = "Gender";

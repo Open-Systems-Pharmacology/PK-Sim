@@ -13,7 +13,7 @@ namespace PKSim.UI.Views.Observers
       public CreateObserverSetView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.OBSERVER_VIEW_WIDTH, CoreConstants.UI.OBSERVER_VIEW_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.OBSERVER_VIEW_WIDTH, UIConstants.Size.OBSERVER_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ICreateObserverSetPresenter presenter)

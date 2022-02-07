@@ -19,6 +19,7 @@ using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
+using static OSPSuite.UI.UIConstants.Size;
 using UxGridView = PKSim.UI.Views.Core.UxGridView;
 
 namespace PKSim.UI.Views.Simulations
@@ -108,7 +109,7 @@ namespace PKSim.UI.Views.Simulations
          _gridViewSystemicBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .AsReadOnly();
 
          _gridViewSystemicBinder.Bind(x => x.SystemicProcessType)
@@ -119,7 +120,7 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.DataSourceColumn)
             .WithRepository(repositoryItemForSystemicProcesses)
             .WithEditorConfiguration(configureSystemicProcessesRepository)
-            .WithFixedWidth(CoreConstants.UI.DATA_SOURCE_WIDTH)
+            .WithFixedWidth(UIConstants.Size.DATA_SOURCE_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithOnChanged(dto => OnEvent(() => _presenter.SelectionChanged(dto)));
       }
@@ -152,7 +153,7 @@ namespace PKSim.UI.Views.Simulations
          return _gridViewPartialBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .AsReadOnly();
       }
 

@@ -3,11 +3,9 @@ using System.Windows.Forms;
 using PKSim.Assets;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -16,7 +14,7 @@ namespace PKSim.UI.Views.Simulations
       public CreateSimulationView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.SIMULATION_VIEW_WIDTH, CoreConstants.UI.CREATE_SIMULATION_VIEW_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.SIMULATION_VIEW_WIDTH, UIConstants.Size.CREATE_SIMULATION_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ISimulationWizardPresenter presenter)
