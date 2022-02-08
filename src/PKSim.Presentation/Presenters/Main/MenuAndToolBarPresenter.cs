@@ -67,7 +67,6 @@ namespace PKSim.Presentation.Presenters.Main
       private bool _enabled;
       private SimulationState _simulationState;
       private readonly List<ParameterIdentification> _runningParameterIdentifications = new List<ParameterIdentification>();
-      private readonly IEventPublisher _eventPublisher;
 
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
@@ -84,7 +83,6 @@ namespace PKSim.Presentation.Presenters.Main
          _workspace = workspace;
          _activeSubjectRetriever = activeSubjectRetriever;
          _enabled = true;
-         _eventPublisher = eventPublisher;
       }
 
       protected override void AddRibbonPages()
@@ -515,7 +513,6 @@ namespace PKSim.Presentation.Presenters.Main
       public void Visit(ParameterIdentification parameterIdentification)
       {
          updateParameterIdentificationItems(parameterIdentification);
-         _eventPublisher.PublishEvent(new ParameterIdentificationSelectedEvent(parameterIdentification));
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
