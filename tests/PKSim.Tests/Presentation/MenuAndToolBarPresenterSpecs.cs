@@ -24,7 +24,6 @@ namespace PKSim.Presentation
       protected ICoreWorkspace _workspace;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
       private IStartOptions _startOptions;
-      private IEventPublisher _eventPublisher;
 
       protected override void Context()
       {
@@ -36,9 +35,8 @@ namespace PKSim.Presentation
          _workspace = A.Fake<ICoreWorkspace>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          _startOptions= A.Fake<IStartOptions>();
-         _eventPublisher = A.Fake<IEventPublisher>();
 
-         sut = new MenuAndToolBarPresenter(_view, _menuBarItemRepository, _buttonGroupRepository, _mruProvider, _skinManager, _startOptions, _workspace, _activeSubjectRetriever, _eventPublisher);
+         sut = new MenuAndToolBarPresenter(_view, _menuBarItemRepository, _buttonGroupRepository, _mruProvider, _skinManager, _startOptions, _workspace, _activeSubjectRetriever);
 
 
          A.CallTo(() => _menuBarItemRepository[A<MenuBarItemId>._]).ReturnsLazily(item =>

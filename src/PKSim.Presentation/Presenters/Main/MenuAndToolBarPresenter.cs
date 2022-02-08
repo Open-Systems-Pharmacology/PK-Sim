@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
          IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider,
-         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever, IEventPublisher eventPublisher) : base(view, menuBarItemRepository, mruProvider)
+         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever) : base(view, menuBarItemRepository, mruProvider)
       {
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;
