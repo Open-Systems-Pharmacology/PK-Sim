@@ -71,8 +71,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          base.InitializeResources();
          layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
-         layoutItemOK.AdjustButtonSize();
-         layoutItemOK.AdjustControlWidth(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH);
       }
 
       protected override void SetActiveControl()
