@@ -1,4 +1,6 @@
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Utility.Container;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
@@ -18,6 +20,8 @@ namespace PKSim.Presentation.UICommands
 
       public virtual void Execute()
       {
+         var dialogCreator = IoC.Resolve<IDialogCreator>();
+         dialogCreator.MessageBoxError("BONJOUR GROS CACA");
          _buildingBlockTask.AddToProject();
       }
    }
