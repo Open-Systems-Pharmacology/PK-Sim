@@ -10,7 +10,6 @@ using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using PKSim.Core;
-using OSPSuite.Utility.Events;
 
 namespace PKSim.Presentation
 {

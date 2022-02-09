@@ -24,7 +24,6 @@ using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters.Events;
 using PKSim.Core;
 using System.Collections.Generic;
-using NPOI.OpenXmlFormats.Dml;
 
 namespace PKSim.Presentation.Presenters.Main
 {
