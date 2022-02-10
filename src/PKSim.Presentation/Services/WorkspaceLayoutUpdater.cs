@@ -67,7 +67,7 @@ namespace PKSim.Presentation.Services
          var workspaceLayout = new WorkspaceLayout();
          foreach (var presenter in _applicationController.OpenedPresenters())
          {
-            var withId = presenter.Subject.DowncastTo<IWithId>();
+            var withId = presenter.Subject as IWithId;
             if (withId == null) continue;
             var workspaceLayoutItem = new WorkspaceLayoutItem {WasOpenOnSave = true, SubjectId = withId.Id, PresentationSettings = presenter.GetSettings()};
             workspaceLayout.AddLayoutItem(workspaceLayoutItem);
