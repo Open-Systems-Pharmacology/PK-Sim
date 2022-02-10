@@ -122,7 +122,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_an_object_containing_one_layout_item_for_each_opened_presenter_and_one_for_the_existing_layout_item()
+      public void should_ignore_non_persistent_subject_presenters()
       {
          _workspace.WorkspaceLayout.LayoutItems.Count().ShouldBeEqualTo(2);
       }
