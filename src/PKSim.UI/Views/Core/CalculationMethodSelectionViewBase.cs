@@ -62,7 +62,6 @@ namespace PKSim.UI.Views.Core
       public void BindTo(IEnumerable<CategoryCalculationMethodDTO> calculationMethodDtos)
       {
          _gridViewBinder.BindToSource(calculationMethodDtos);
-         // AdjustHeight();
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)

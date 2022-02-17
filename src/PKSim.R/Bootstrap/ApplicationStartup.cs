@@ -84,9 +84,8 @@ namespace PKSim.R.Bootstrap
       private static void redirectAssemblies()
       {
           redirectAssembly("NHibernate", new Version(5, 2, 0, 0), "aa95f207798dfdb4");
-         // // redirectAssembly("BouncyCastle.Crypto", new Version(1, 8, 9, 0), "0e99375e54769942");
-         // redirectAssembly("Microsoft.Extensions.Options", new Version(3, 1, 0, 0), "adb9793829ddae60");
-         // redirectAssembly("Microsoft.Extensions.Logging.Abstractions", new Version(3, 1, 0, 0), "adb9793829ddae60");
+          redirectAssembly("Microsoft.Extensions.Options", new Version(3, 1, 0, 0), "adb9793829ddae60");
+          redirectAssembly("Microsoft.Extensions.Logging.Abstractions", new Version(3, 1, 0, 0), "adb9793829ddae60");
       }
 
       private static void redirectAssembly(string shortName, Version targetVersion, string publicKeyToken)
