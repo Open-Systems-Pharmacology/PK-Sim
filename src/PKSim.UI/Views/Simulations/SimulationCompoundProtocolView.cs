@@ -77,5 +77,7 @@ namespace PKSim.UI.Views.Simulations
       }
 
       public int OptimalHeight => layoutControlGroup.Height;
+
+      public int DefaultHeight => 50;
    }
 }

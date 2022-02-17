@@ -36,7 +36,7 @@ namespace PKSim.UI.Views.Simulations
       protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, IResizableView view, int height)
       {
          base.AdjustLayoutItemSize(layoutControlItem, view, height);
-         raiseHeightChanged();
+     //    raiseHeightChanged();
       }
 
       private void raiseHeightChanged()
@@ -53,7 +53,9 @@ namespace PKSim.UI.Views.Simulations
 
       public void Repaint()
       {
-         _subViews.Each(view => view.Repaint());
+       //  _subViews.Each(view => view.Repaint());
       }
+
+      public int DefaultHeight => 300;
    }
 }

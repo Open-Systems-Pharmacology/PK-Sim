@@ -62,5 +62,7 @@ namespace PKSim.UI.Views.Simulations
       {
          _subViews.Each(view => view.Repaint());
       }
+
+      public int DefaultHeight => 350;
    }
 }

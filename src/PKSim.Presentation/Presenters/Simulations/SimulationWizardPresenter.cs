@@ -83,7 +83,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       protected IEnumerable<ISubPresenterItem<ISimulationItemPresenter>> AllSimulationItemsAfterModel => new ISubPresenterItem<ISimulationItemPresenter>[]
-      {
+      {   
          SimulationItems.Compounds, SimulationItems.CompoundsProcesses, SimulationItems.CompoundProtocols, SimulationItems.Events, SimulationItems.Observers
       };
 

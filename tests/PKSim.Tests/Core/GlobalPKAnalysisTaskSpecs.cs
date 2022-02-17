@@ -78,7 +78,7 @@ namespace PKSim.Core
          _simulation.DataRepository = new DataRepository {_venousBloodPlasma, _peripheralVenousBloodPlasma};
          _simulation.SimulationSettings = new SimulationSettings();
          _simulation.OutputSchema = new OutputSchema();
-         _simulation.OutputSchema.AddInterval(new OutputInterval{DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME) });
+         _simulation.OutputSchema.AddInterval(new OutputInterval {DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME)});
          _simulation.Model = new OSPSuite.Core.Domain.Model {Root = new Container()};
          _eventGroup = new EventGroup();
          _application1 = new Container().WithName("App1").WithContainerType(ContainerType.Application);
@@ -322,8 +322,7 @@ namespace PKSim.Core
          A.CallTo(() => schemaItem.Dose).Returns(inputDose);
          A.CallTo(() => schemaItem.StartTime).Returns(startTime);
 
-         A.CallTo(() => _protocolMapper.MapFrom(_protocol)).Returns(new []{schemaItem, });
-
+         A.CallTo(() => _protocolMapper.MapFrom(_protocol)).Returns(new[] {schemaItem,});
       }
 
       protected override void Because()
