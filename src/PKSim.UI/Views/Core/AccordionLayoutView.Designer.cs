@@ -28,52 +28,54 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl(); 
          this.emptySpaceGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceGroup)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.SuspendLayout();
          // 
-         // layoutControl
-         // 
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(749, 164, 520, 350);
-         this.layoutControl.Root = this.emptySpaceGroup;
-         this.layoutControl.Size = new System.Drawing.Size(150, 150);
-         this.layoutControl.TabIndex = 0;
-         this.layoutControl.Text = "layoutControl1";
-         // 
-         // layoutControlGroup
+         // emptySpaceGroup
          // 
          this.emptySpaceGroup.CustomizationFormText = "layoutControlGroup1";
          this.emptySpaceGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.emptySpaceGroup.GroupBordersVisible = false;
-         this.emptySpaceGroup.Location = new System.Drawing.Point(0, 0);
          this.emptySpaceGroup.Name = "emptySpaceGroup";
          this.emptySpaceGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.emptySpaceGroup.Size = new System.Drawing.Size(150, 150);
+         this.emptySpaceGroup.Size = new System.Drawing.Size(175, 185);
          this.emptySpaceGroup.Text = "layoutControlGroup";
          this.emptySpaceGroup.TextVisible = false;
          // 
+         // layoutControl
+         // 
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Margin = new System.Windows.Forms.Padding(4);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(749, 164, 520, 350);
+         this.layoutControl.Root = this.emptySpaceGroup;
+         this.layoutControl.Size = new System.Drawing.Size(175, 185);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl1";
+         // 
          // AccordionLayoutView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
+         this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
          this.Name = "AccordionLayoutView";
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceGroup)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.ResumeLayout(false);
 
       }
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup emptySpaceGroup;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
    }
 }

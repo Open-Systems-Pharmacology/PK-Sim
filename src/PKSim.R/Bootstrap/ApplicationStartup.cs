@@ -83,9 +83,9 @@ namespace PKSim.R.Bootstrap
 
       private static void redirectAssemblies()
       {
-         redirectAssembly("NHibernate", new Version(5, 2, 0, 0), "aa95f207798dfdb4");
-         redirectAssembly("Microsoft.Extensions.Options", new Version(3, 1, 0, 0), "adb9793829ddae60");
-         redirectAssembly("Microsoft.Extensions.Logging.Abstractions", new Version(3, 1, 0, 0), "adb9793829ddae60");
+          redirectAssembly("NHibernate", new Version(5, 2, 0, 0), "aa95f207798dfdb4");
+          redirectAssembly("Microsoft.Extensions.Options", new Version(3, 1, 0, 0), "adb9793829ddae60");
+          redirectAssembly("Microsoft.Extensions.Logging.Abstractions", new Version(3, 1, 0, 0), "adb9793829ddae60");
       }
 
       private static void redirectAssembly(string shortName, Version targetVersion, string publicKeyToken)
@@ -93,7 +93,7 @@ namespace PKSim.R.Bootstrap
          Assembly Handler(object sender, ResolveEventArgs args)
          {
             var requestedAssembly = new AssemblyName(args.Name);
-            if (requestedAssembly.Name != shortName) return null;
+            if (requestedAssembly.Name != shortName) return null; 
 
             requestedAssembly.Version = targetVersion;
             requestedAssembly.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=" + publicKeyToken).GetPublicKeyToken());

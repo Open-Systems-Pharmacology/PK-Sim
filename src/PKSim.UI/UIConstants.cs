@@ -39,6 +39,10 @@ namespace PKSim.UI
          public static readonly int COMPOUND_VIEW_WIDTH = ScaleForScreenDPI(760);
 
          public static readonly int MODEL_PICTURE_HEIGHT = ScaleForScreenDPI(400);
+
+         public static readonly int SIMULATION_COMPOUND_CONFIGURATION_DEFAULT_HEIGHT = ScaleForScreenDPI(280);
+         public static readonly int SIMULATION_COMPOUND_PROCESS_DEFAULT_HEIGHT = ScaleForScreenDPI(250);
+         public static readonly int SIMULATION_COMPOUND_PROTOCOL_DEFAULT_HEIGHT = ScaleForScreenDPI(40);
       }
    }
 }

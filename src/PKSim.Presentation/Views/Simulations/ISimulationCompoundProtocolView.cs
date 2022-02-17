@@ -4,7 +4,7 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Simulations
 {
-   public interface ISimulationCompoundProtocolView : IView<ISimulationCompoundProtocolPresenter>, IResizableView
+   public interface ISimulationCompoundProtocolView : IView<ISimulationCompoundProtocolPresenter>, IResizableWithDefaultHeightView
    {
       void BindTo(ProtocolSelectionDTO protocolSelectionDTO);
       void AddFormulationMappingView(IView view);

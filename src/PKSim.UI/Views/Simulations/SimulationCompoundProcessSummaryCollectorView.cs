@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.Simulations
          get => layoutGroupInhibitionSelection.Visible;
          set
          {
-            layoutGroupInhibitionSelection.Visibility=LayoutVisibility.Never;
+            layoutGroupInhibitionSelection.Visibility = LayoutVisibility.Never;
             layoutGroupInhibitionSelection.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
          }
       }

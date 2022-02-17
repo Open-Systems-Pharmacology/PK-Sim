@@ -1,13 +1,13 @@
 using System;
-using OSPSuite.DataBinding;
 using DevExpress.XtraLayout;
+using OSPSuite.DataBinding;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Extensions;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -77,5 +77,7 @@ namespace PKSim.UI.Views.Simulations
       }
 
       public int OptimalHeight => layoutControlGroup.Height;
+
+      public int DefaultHeight => UIConstants.Size.SIMULATION_COMPOUND_PROTOCOL_DEFAULT_HEIGHT;
    }
 }

@@ -15,6 +15,11 @@ namespace PKSim.UI.Views.Core
          InitializeResources();
       }
 
+      public void StartAddingViews()
+      {
+         xtraTabControl.SuspendLayout();
+      }
+
       public void AddView(IView view)
       {
          var layoutControl = new LayoutControl();
@@ -29,6 +34,8 @@ namespace PKSim.UI.Views.Core
 
       public void FinishedAddingViews()
       {
+         xtraTabControl.ResumeLayout();
+
       }
 
       public override void InitializeResources()

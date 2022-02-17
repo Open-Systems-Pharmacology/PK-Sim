@@ -1,6 +1,6 @@
-﻿using PKSim.Presentation.Views;
-using OSPSuite.Presentation.Views;
+﻿using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using PKSim.Presentation.Views;
 
 namespace PKSim.UI.Views.Core
 {
@@ -11,14 +11,25 @@ namespace PKSim.UI.Views.Core
          InitializeComponent();
       }
 
+      public void StartAddingViews()
+      {
+         layoutControl.SuspendLayout();
+      }
+
       public void AddView(IView view)
       {
          var group = layoutControl.Root.AddGroup();
-         AddViewToGroup(group, view);
+         var layoutItem = AddViewToGroup(group, view);
+         var resizeView = view as IResizableWithDefaultHeightView;
+         if (resizeView != null)
+            this.AdjustLayoutItemSize(layoutItem, resizeView, resizeView.DefaultHeight);
 
          group.ExpandButtonVisible = true;
       }
 
-      public void FinishedAddingViews() => AddEmptyPlaceHolder(layoutControl);
+      public void FinishedAddingViews()
+      {
+         layoutControl.ResumeLayout();
+      }
    }
 }
