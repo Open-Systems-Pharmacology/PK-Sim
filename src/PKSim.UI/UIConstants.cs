@@ -13,12 +13,12 @@ namespace PKSim.UI
          public static readonly int SIMULATION_SETTINGS_WIDTH = ScaleForScreenDPI(750);
          public static readonly int SIMULATION_SETTINGS_HEIGHT = ScaleForScreenDPI(650);
 
-         public static readonly int INDIVIDUAL_VIEW_WIDTH = ScaleForScreenDPI(880);
+         public static readonly int INDIVIDUAL_VIEW_WIDTH = ScaleForScreenDPI(800);
          public static readonly int INDIVIDUAL_VIEW_HEIGHT = ScaleForScreenDPI(780);
 
          public static readonly int CONFIGURE_SIMULATION_VIEW_HEIGHT = ScaleForScreenDPI(708);
          public static readonly int CREATE_SIMULATION_VIEW_HEIGHT = ScaleForScreenDPI(750);
-         public static readonly int SIMULATION_VIEW_WIDTH = ScaleForScreenDPI(600);
+         public static readonly int SIMULATION_VIEW_WIDTH = ScaleForScreenDPI(580);
 
          public static readonly int EXPRESSION_QUERY_VIEW_HEIGHT = ScaleForScreenDPI(900);
          public static readonly int EXPRESSION_QUERY_VIEW_WIDTH = ScaleForScreenDPI(1100);
@@ -38,7 +38,7 @@ namespace PKSim.UI
          public static readonly int COMPOUND_VIEW_HEIGHT = ScaleForScreenDPI(900);
          public static readonly int COMPOUND_VIEW_WIDTH = ScaleForScreenDPI(760);
 
-         public static readonly int MODEL_PICTURE_HEIGHT = ScaleForScreenDPI(400);
+         public static readonly int MODEL_PICTURE_HEIGHT = ScaleForScreenDPI(280);
 
          public static readonly int SIMULATION_COMPOUND_CONFIGURATION_DEFAULT_HEIGHT = ScaleForScreenDPI(280);
          public static readonly int SIMULATION_COMPOUND_PROCESS_DEFAULT_HEIGHT = ScaleForScreenDPI(250);

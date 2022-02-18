@@ -6,6 +6,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Views.Core;
+using static PKSim.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -14,7 +15,7 @@ namespace PKSim.UI.Views.Simulations
       public CreateSimulationView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(UIConstants.Size.SIMULATION_VIEW_WIDTH, UIConstants.Size.CREATE_SIMULATION_VIEW_HEIGHT);
+         ClientSize = new Size(SIMULATION_VIEW_WIDTH, CREATE_SIMULATION_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ISimulationWizardPresenter presenter)
