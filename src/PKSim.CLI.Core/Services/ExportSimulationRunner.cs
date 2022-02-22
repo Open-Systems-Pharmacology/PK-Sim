@@ -72,7 +72,7 @@ namespace PKSim.CLI.Core.Services
       public async Task<SimulationMapping[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions)
       {
          var nameOfSimulationsToExport = (exportRunOptions.Simulations ?? Enumerable.Empty<string>()).ToList();
-         if (!nameOfSimulationsToExport.Any())
+         if (!nameOfSimulationsToExport.Any() && exportRunOptions.ExportAllSimulationsIfListIsEmpty)
             nameOfSimulationsToExport.AddRange(project.All<Simulation>().AllNames());
 
          var simulationExports = new List<SimulationMapping>();

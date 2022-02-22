@@ -104,7 +104,10 @@ namespace PKSim.CLI.Core.Services
             //We run the output, this is for the old matlab implementation where we need xml. Otherwise, we only need pkml export
             ExportMode = runOptions.Run ? SimulationExportMode.Xml | SimulationExportMode.Csv : SimulationExportMode.Pkml,
 
-            Simulations = config.Simulations
+            Simulations = config.Simulations,
+
+            //We only want to export what is required in this case
+            ExportAllSimulationsIfListIsEmpty = false
          };
 
          //Using absolute path for simulation folder. We need them to be relative
