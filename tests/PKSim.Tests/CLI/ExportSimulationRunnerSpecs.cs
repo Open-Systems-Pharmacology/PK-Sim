@@ -7,18 +7,15 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Services;
-using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI
@@ -238,6 +235,31 @@ namespace PKSim.CLI
       }
    }
 
+   public class When_running_the_export_simulation_runner_for_an_empty_list_of_simulations_in_an_existing_project_with_export_all_flag_false : concern_for_ExportSimulationRunner
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _exportRunOptions.ProjectFile = _projectFileName;
+         _exportRunOptions.Simulations = Array.Empty<string>();
+         _exportRunOptions.ExportAllSimulationsIfListIsEmpty = false;
+         _exportRunOptions.RunSimulation = false;
+         _project.AddBuildingBlock(_simulation1);
+         _project.AddBuildingBlock(_simulation2);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_exportRunOptions);
+      }
+
+      [Observation]
+      public void should_not_run_the_export_for_the_selected_simulations_defined_in_the_project()
+      {
+         A.CallTo(() => _simulationExporter.Export(A<Simulation>._, A<SimulationExportOptions>._)).MustNotHaveHappened();
+      }
+   }
+
    public class When_running_the_export_simulation_runner_for_simulations_of_an_existing_project_and_simulation_should_be_calculated : concern_for_ExportSimulationRunner
    {
       private SimulationExportOptions _simulationExportOptions;
@@ -267,7 +289,6 @@ namespace PKSim.CLI
          _simulationExportOptions.ExportMode.ShouldBeEqualTo(_exportRunOptions.ExportMode);
       }
    }
-
 
    public class When_running_the_export_simulation_runner_for_a_simulation_that_does_not_exist : concern_for_ExportSimulationRunner
    {
