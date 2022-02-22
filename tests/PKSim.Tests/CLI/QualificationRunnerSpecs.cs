@@ -258,6 +258,7 @@ namespace PKSim.CLI
       public void should_only_export_the_simulation_required_for_the_qualification()
       {
          _exportOptions.Simulations.ShouldBeEqualTo(_qualificationConfiguration.Simulations);
+         _exportOptions.ExportAllSimulationsIfListIsEmpty.ShouldBeFalse();
       }
 
       [Observation]
