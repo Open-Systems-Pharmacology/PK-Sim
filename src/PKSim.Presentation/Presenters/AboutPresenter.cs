@@ -43,7 +43,7 @@ namespace PKSim.Presentation.Presenters
          if (newVersionAvailable)
             _dialogCreator.MessageBoxInfo(PKSimConstants.Information.NewVersionIsAvailable(_versionChecker.LatestVersion, Constants.PRODUCT_SITE_DOWNLOAD).RemoveHtml());
          else
-            _dialogCreator.MessageBoxInfo(PKSimConstants.UI.ProductIsUptodate(CoreConstants.PRODUCT_NAME_WITH_TRADEMARK));
+            _dialogCreator.MessageBoxInfo(PKSimConstants.UI.ProductIsUpToDate(CoreConstants.PRODUCT_NAME_WITH_TRADEMARK));
       }
    }
 }
