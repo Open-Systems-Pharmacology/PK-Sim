@@ -71,6 +71,8 @@ namespace PKSim.UI.Views.ExpressionProfiles
          base.InitializeResources();
          layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
+         labelCategoryDescription.AsDescription();
+         labelCategoryDescription.Text = PKSimConstants.UI.ExpressionProfileCategoryDescription.FormatForDescription();
       }
 
       protected override void SetActiveControl()

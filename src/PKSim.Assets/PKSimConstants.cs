@@ -1728,6 +1728,8 @@ namespace PKSim.Assets
          public static readonly string CalculationMethods = "Calculation methods";
          public static readonly string ReferencePopulation = "Reference Population";
          public static readonly string ExpressionProfileCategory = "Phenotype";
+         public static readonly string ExpressionProfileCategoryDescription =
+            "Multiple expression profiles of the same protein can be defined to describe different phenotypes or disease states (e.g. Healthy, Extensive etc.)";
          public static readonly string Category = "Category";
          public static readonly string CreateIndividual = "Create Individual";
          public static readonly string CreateSimulationSettings = "Create Simulation Settings";
@@ -2367,7 +2369,7 @@ namespace PKSim.Assets
 
          public static string AddParameterAsFavorites(string parameterName) => $"Add '{parameterName}' as favorite";
 
-         public static string ProductIsUptodate(string productName) => $"{productName} is up to date!";
+         public static string ProductIsUpToDate(string productName) => $"{productName} is up to date!";
 
          public static string ImportSimulationPKAnalysesDescription
          {
@@ -2414,9 +2416,9 @@ namespace PKSim.Assets
 
          public static string HalfLifeIntestineDescription(string moleculeType) => $"Apparent half life intestine of the affected {moleculeType.ToLower()}";
 
-         public static string ConfigureSimulation(string simulatioName) => $"Configure Simulation: {simulatioName}";
+         public static string ConfigureSimulation(string simulationName) => $"Configure Simulation: {simulationName}";
 
-         public static string CloningSimulation(string simulatioName) => $"Cloning Simulation: {simulatioName}";
+         public static string CloningSimulation(string simulationName) => $"Cloning Simulation: {simulationName}";
 
          public static string CreateGroupParameterAlternativeCaption(string groupName) => $"Create new {groupName.ToLower()} value";
 
