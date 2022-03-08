@@ -54,25 +54,31 @@ namespace PKSim.Presentation.Presenters
       bool CanEdit(TemplateDTO template);
 
       void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templates);
+
+      /// <summary>
+      /// Specifies of only qualified templates should be displayed or not. This filtering only applied to remote templates
+      /// </summary>
+      bool ShowOnlyQualifiedTemplate { get; set; }
    }
 
    public class TemplatePresenter : AbstractDisposablePresenter<ITemplateView, ITemplatePresenter>, ITemplatePresenter, ILatchable
    {
       private readonly ITemplateTaskQuery _templateTaskQuery;
-      private readonly ITreeNodeContextMenuFactory _contextMenuFactory;
       private readonly IApplicationController _applicationController;
       private readonly IDialogCreator _dialogCreator;
-      private List<Template> _availableTemplates;
+      private readonly List<Template> _availableTemplates = new List<Template>();
       private bool _shouldAddItemIcons;
       private readonly IStartOptions _startOptions;
       private readonly IApplicationConfiguration _configuration;
       private string _templateTypeDisplay = string.Empty;
       private readonly List<Template> _selectedTemplates = new List<Template>();
 
+      //By default, we only show the qualified templates
+      private bool _showOnlyQualifiedTemplate = true;
+
       public TemplatePresenter(
          ITemplateView view,
          ITemplateTaskQuery templateTaskQuery,
-         ITreeNodeContextMenuFactory contextMenuFactory,
          IApplicationController applicationController,
          IDialogCreator dialogCreator,
          IStartOptions startOptions,
@@ -80,7 +86,6 @@ namespace PKSim.Presentation.Presenters
          : base(view)
       {
          _templateTaskQuery = templateTaskQuery;
-         _contextMenuFactory = contextMenuFactory;
          _applicationController = applicationController;
          _dialogCreator = dialogCreator;
          _startOptions = startOptions;
@@ -95,10 +100,9 @@ namespace PKSim.Presentation.Presenters
 
          updateIcon(templateType);
 
-         _availableTemplates = _templateTaskQuery.AllTemplatesFor(templateType)
+         _availableTemplates.AddRange(_templateTaskQuery.AllTemplatesFor(templateType)
             .Where(x => x.IsSupportedByCurrentVersion(_configuration.Version))
-            .OrderBy(x => x.Name)
-            .ToList();
+            .OrderBy(x => x.Name));
 
          if (!_availableTemplates.Any())
             throw new NoTemplateAvailableException(_templateTypeDisplay);
@@ -209,11 +213,19 @@ namespace PKSim.Presentation.Presenters
       private void updateView()
       {
          refreshView();
-         var allTemplateDTOs = _availableTemplates.Select(x => new TemplateDTO(x)).ToList();
+         var allTemplateDTOs = filteredTemplates(_availableTemplates.Select(x => new TemplateDTO(x)).ToList());
          this.DoWithinLatch(() => _view.BindTo(allTemplateDTOs));
       }
 
-      public IEnumerable<Template> AllTemplates() => _availableTemplates;
+      private IReadOnlyList<TemplateDTO> filteredTemplates(IReadOnlyList<TemplateDTO> allTemplateDTOs)
+      {
+         if (!_showOnlyQualifiedTemplate)
+            return allTemplateDTOs;
+
+         //For templates that are qualified, the value is true. For template that are loaded from db or user defined, the value is null.
+         //we only want to filter out templates with an explicit value of false
+         return allTemplateDTOs.Where(x => x.Qualified.GetValueOrDefault(true)).ToList();
+      }
 
       public void Rename(TemplateDTO templateDTO)
       {
@@ -264,6 +276,19 @@ namespace PKSim.Presentation.Presenters
          _selectedTemplates.Clear();
          _selectedTemplates.AddRange(templateDTOs.Select(x => x.Template));
          refreshView();
+      }
+
+      public bool ShowOnlyQualifiedTemplate
+      {
+         get => _showOnlyQualifiedTemplate;
+         set
+         {
+            _showOnlyQualifiedTemplate = value;
+            //we reset the selection here just in case a template not qualified was selected
+            //and we only show qualified templates
+            _selectedTemplates.Clear();
+            updateView();
+         }
       }
 
       public bool IsLatched { get; set; }
