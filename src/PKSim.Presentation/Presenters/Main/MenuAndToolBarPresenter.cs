@@ -277,7 +277,6 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToMoBi].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToPkml].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationResultsToCSV].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToPDF].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.CloneActiveSimulation].Enabled = enabledPKSimSimulationOnlyItems;
          _menuBarItemRepository[MenuBarItemIds.ConfigureActiveSimulation].Enabled = enabledPKSimSimulationOnlyItems;
 
@@ -359,14 +358,12 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.NewExpressionProfile].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.LoadExpressionProfile].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.ProjectReport].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparison].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.IndividualSimulationComparisonInAnalyze].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.PopulationSimulationComparison].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.PopulationSimulationComparisonInAnalyze].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.HistoryReportExcel].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.HistoryReportPDF].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ManageUserDisplayUnits].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ManageProjectDisplayUnits].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.UpdateAllToDisplayUnits].Enabled = enabled;

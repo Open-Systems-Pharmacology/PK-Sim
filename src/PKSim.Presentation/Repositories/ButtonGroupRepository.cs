@@ -86,7 +86,6 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationToPkml)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationResultsToExcel)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationResultsToCSV)))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationToPDF)))
          .WithId(ButtonGroupIds.ExportIndividualSimulation);
 
       private IButtonGroup exportPopulationSimulationGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Export)
@@ -96,17 +95,14 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationResultsToCSV)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationPKAnalysesToCSV)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationForClusterComputations)))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationToPDF)))
          .WithId(ButtonGroupIds.ExportPopulationSimulation);
 
       private IButtonGroup exportProjectGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.ExportProject)
          .WithButton(
             CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportGroup))
                .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportExcel))
-               .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportPDF))
                .WithStyle(ItemStyle.Large)
          )
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ProjectReport)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportProjectToSnapshot)))
          .WithId(ButtonGroupIds.ExportProject);
 

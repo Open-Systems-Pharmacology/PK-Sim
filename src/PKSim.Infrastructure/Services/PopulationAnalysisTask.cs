@@ -1,20 +1,18 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
-using PKSim.Presentation.UICommands;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
    public class PopulationAnalysisTask : IPopulationAnalysisTask
    {
-      private readonly ExportSimulationAnalysisToPDFCommand _exportSimulationAnalysisToPDFCommand;
       private readonly IChartDataToTableMapperFactory _chartDataToTableMapperFactory;
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IDialogCreator _dialogCreator;
@@ -22,12 +20,10 @@ namespace PKSim.Infrastructure.Services
 
       public PopulationAnalysisTask(
          IDialogCreator dialogCreator,
-         IDataRepositoryExportTask dataRepositoryTask, 
-         ExportSimulationAnalysisToPDFCommand exportSimulationAnalysisToPDFCommand,
-         IChartDataToTableMapperFactory chartDataToTableMapperFactory, 
+         IDataRepositoryExportTask dataRepositoryTask,
+         IChartDataToTableMapperFactory chartDataToTableMapperFactory,
          IPKSimProjectRetriever projectRetriever)
       {
-         _exportSimulationAnalysisToPDFCommand = exportSimulationAnalysisToPDFCommand;
          _chartDataToTableMapperFactory = chartDataToTableMapperFactory;
          _projectRetriever = projectRetriever;
          _dialogCreator = dialogCreator;
@@ -53,19 +49,6 @@ namespace PKSim.Infrastructure.Services
          tables.Each(t => t.TableName = $"{analysisName} {t.TableName}");
 
          _dataRepositoryTask.ExportToExcel(tables, fileName, launchExcel: true);
-      }
-
-      public void ExportToPDF(ISimulationAnalysis analysis)
-      {
-         try
-         {
-            _exportSimulationAnalysisToPDFCommand.Subject = analysis;
-            _exportSimulationAnalysisToPDFCommand.Execute();
-         }
-         finally
-         {
-            _exportSimulationAnalysisToPDFCommand.Subject = null;
-         }
       }
    }
 }

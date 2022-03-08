@@ -54,7 +54,6 @@ namespace PKSim.Presentation
 
             //This specific objects needs to be register as Singleton
             scan.ExcludeType<CloseSubjectPresenterInvoker>();
-            scan.ExcludeType<ExportToPDFInvoker>();
             scan.ExcludeType<ButtonGroupRepository>();
             scan.ExcludeType<MenuBarItemRepository>();
 
@@ -72,7 +71,6 @@ namespace PKSim.Presentation
             scan.AssemblyContainingType<PresenterRegister>();
 
             scan.IncludeType<CloseSubjectPresenterInvoker>();
-            scan.IncludeType<ExportToPDFInvoker>();
             scan.IncludeType<ButtonGroupRepository>();
             scan.IncludeType<MenuBarItemRepository>();
 

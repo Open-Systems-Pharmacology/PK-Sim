@@ -3,29 +3,18 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
 
 namespace PKSim.Infrastructure.Services
 {
    public class ChartTask : IChartTask
    {
       private readonly IProjectRetriever _projectRetriever;
-      private readonly IContainer _executionContext;
 
-      public ChartTask(IProjectRetriever projectRetriever, IContainer container)
+      public ChartTask(IProjectRetriever projectRetriever)
       {
          _projectRetriever = projectRetriever;
-         _executionContext = container;
-      }
-
-      public void ExportToPDF(CurveChart chart)
-      {
-         var exportToPDFCommand = _executionContext.Resolve<ExportChartToPDFCommand>();
-         exportToPDFCommand.Subject = chart;
-         exportToPDFCommand.Execute();
       }
 
       public void SetOriginTextFor(string simulationName, IChart chart)

@@ -11,7 +11,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
    public interface IPopulationAnalysisChartPresenter : IPresenter
    {
       /// <summary>
-      ///    Specifies wether the edit method can be called
+      ///    Specifies if the edit method can be called
       /// </summary>
       bool AllowEdit { set; }
 
@@ -31,14 +31,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       event EventHandler OnExportDataToExcel;
 
-      /// <summary>
-      ///    Exports the plot to pdf
-      /// </summary>
-      void ExportToPDF();
-
-      event EventHandler OnExportToPDF;
-
-      void ClearPlot();
+  void ClearPlot();
    }
 
    public interface IPopulationAnalysisChartPresenter<TX, TY> : IPopulationAnalysisChartPresenter
@@ -79,7 +72,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IApplicationSettings _applicationSettings;
       public event EventHandler OnEdit = delegate { };
       public event EventHandler OnExportDataToExcel = delegate { };
-      public event EventHandler OnExportToPDF = delegate { };
       private readonly IChartsDataBinder<TX, TY> _chartDataBinder;
       private ChartData<TX, TY> _chartData;
 
@@ -133,7 +125,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       {
          var paneData = _chartData.Panes[paneId];
 
-         //Observed data can only be identifed using caption for now as their Id (observedData.Id) is not available in the DevExpress Series.
+         //Observed data can only be identified using caption for now as their Id (observedData.Id) is not available in the DevExpress Series.
          return paneData?.ObservedCurveData.FirstOrDefault(o => string.Equals(o.Caption, caption));
       }
 
@@ -153,11 +145,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public void ExportDataToExcel()
       {
          OnExportDataToExcel(this, EventArgs.Empty);
-      }
-
-      public void ExportToPDF()
-      {
-         OnExportToPDF(this, EventArgs.Empty);
       }
    }
 }
