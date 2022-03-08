@@ -64,6 +64,7 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="Reporting\" />
   </ItemGroup>
 
   <ItemGroup>

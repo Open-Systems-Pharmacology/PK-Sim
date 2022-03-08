@@ -33,9 +33,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
                .WithCommandFor<ConfigurePopulationSimulationComparison, PopulationSimulationComparison>(populationSimulationComparison)
                .AsGroupStarter();
          }
-         
-         yield return GenericMenu.ExportToPDFMenuFor(simulationComparison)
-            .AsGroupStarter();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
             .WithCommandFor<DeleteSimulationComparisonsUICommand, IReadOnlyList<ISimulationComparison>>(new[] {simulationComparison})

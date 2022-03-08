@@ -56,8 +56,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return SaveAsSystemTemplateMenuFor(buildingBlock);
 
-         yield return ExportToPDFMenuFor(buildingBlock);
-
          yield return AddToJournalMenuFor(buildingBlock);
       }
 
@@ -127,8 +125,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
 
       protected IMenuBarItem AddToJournalMenuFor(TBuildingBlock buildingBlock) => GenericMenu.AddToJournal(buildingBlock);
-
-      protected IMenuBarItem ExportToPDFMenuFor(TBuildingBlock buildingBlock) => GenericMenu.ExportToPDFMenuFor(buildingBlock);
 
       protected IMenuBarItem ExportSnapshotMenuFor(TBuildingBlock buildingBlock) => GenericMenu.ExportSnapshotMenuFor(buildingBlock);
 

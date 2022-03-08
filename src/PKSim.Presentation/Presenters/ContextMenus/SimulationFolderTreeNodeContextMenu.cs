@@ -31,8 +31,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          _view.AddMenuItem(SimulationClassificationCommonContextMenuItems.RemoveSimulationFolderMainMenu(treeNode, presenter).AsGroupStarter());
 
-         _view.AddMenuItem(GenericMenu.ExportCollectionToPDFMenuFor<Simulation>().AsGroupStarter());
-
          _view.AddMenuItem(loadSimulationFromSnapshot().AsGroupStarter());
       }
 

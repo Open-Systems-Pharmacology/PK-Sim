@@ -368,12 +368,6 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<ImportConcentrationDataCommand>()
             .WithIcon(ApplicationIcons.ObservedData);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ProjectReport)
-            .WithId(MenuBarItemIds.ProjectReport)
-            .WithDescription(PKSimConstants.UI.ProjectReportDescription)
-            .WithCommand<ExportProjectToPDFCommand>()
-            .WithIcon(ApplicationIcons.PDF);
-
          yield return CreateSubMenu.WithCaption(PKSimConstants.MenuNames.ExportHistory)
             .WithId(MenuBarItemIds.HistoryReportGroup)
             .WithIcon(ApplicationIcons.HistoryExport);
@@ -383,12 +377,6 @@ namespace PKSim.Presentation.Repositories
             .WithDescription(PKSimConstants.UI.ExportHistoryToExcelDescription)
             .WithCommand<ExportHistoryToExcelCommand>()
             .WithIcon(ApplicationIcons.Excel);
-
-         yield return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
-            .WithId(MenuBarItemIds.HistoryReportPDF)
-            .WithDescription(PKSimConstants.UI.ExportHistoryToPDFDescription)
-            .WithIcon(ApplicationIcons.PDF)
-            .WithCommand<ExportHistoryToPDFCommand>();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CloneMenu)
             .WithId(MenuBarItemIds.CloneActiveSimulation)
@@ -452,11 +440,6 @@ namespace PKSim.Presentation.Repositories
             .WithId(MenuBarItemIds.ImportActiveSimulationPKParameters)
             .WithIcon(ApplicationIcons.PKAnalysesImportFromCSV)
             .WithCommand<ImportPKAnalysesCommand>();
-
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationToPDFMenu)
-            .WithId(MenuBarItemIds.ExportActiveSimulationToPDF)
-            .WithIcon(ApplicationIcons.ExportToPDF)
-            .WithCommand<ExportActiveSimulationToPDFCommand>();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadPopulationAnalysisWorkflowFromTemplateMenu)
             .WithId(MenuBarItemIds.LoadPopulationSimulationWorkflow)

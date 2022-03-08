@@ -14,8 +14,6 @@ namespace PKSim.Presentation.Services
       /// </summary>
       bool IsColumnVisibleInDataBrowser(DataColumn dataColumn);
 
-      void ExportToPDF(CurveChart chart);
-
       /// <summary>
       /// Sets origin data for the <paramref name="chart"/> to indicate project name , <paramref name="simulationName"/> and current date/time
       /// </summary>

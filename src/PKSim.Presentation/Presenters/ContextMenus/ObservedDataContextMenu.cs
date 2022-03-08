@@ -50,10 +50,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithCommandFor<ExportObservedDataToExcelCommand, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.Excel);
             
-         yield return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
-            .WithCommandFor<ExportToPDFCommand<DataRepository>, DataRepository>(dataRepository)
-            .WithIcon(ApplicationIcons.PDF);
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
             .WithCommandFor<ExportObservedDataToPkmlCommand, DataRepository>(dataRepository)
             .WithIcon(ApplicationIcons.PKMLSave);
