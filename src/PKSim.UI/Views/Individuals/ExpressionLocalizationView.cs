@@ -9,6 +9,7 @@ using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using System;
 using System.Linq.Expressions;
+using static PKSim.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -81,6 +82,6 @@ namespace PKSim.UI.Views.Individuals
          });
       }
 
-      public override int OptimalHeight => Root.Bounds.Height + layoutControl.Margin.Top;
+      public override int OptimalHeight => EXPRESSION_PROFILE_LOCALIZATION_HEIGHT;
    }
 }
