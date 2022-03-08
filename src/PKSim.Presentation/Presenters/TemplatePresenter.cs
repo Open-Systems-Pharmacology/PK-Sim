@@ -284,6 +284,8 @@ namespace PKSim.Presentation.Presenters
          set
          {
             _showOnlyQualifiedTemplate = value;
+            //we reset the selection here just in case a template not qualified was selected
+            //and we only show qualified templates
             _selectedTemplates.Clear();
             updateView();
          }
