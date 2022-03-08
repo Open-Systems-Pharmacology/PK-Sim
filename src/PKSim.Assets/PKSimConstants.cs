@@ -2054,6 +2054,7 @@ namespace PKSim.Assets
          public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string CheckForUpdate = "Check for Update";
          public static readonly string Template = "Template";
+         public static readonly string OnlyShowQualifiedTemplates = "Only show qualified templates";
          public static readonly string BuildingBlock = "Building Block";
          public static readonly string BuildingBlocks = "Building Blocks";
          public static readonly string AllowAging = "Allow aging";

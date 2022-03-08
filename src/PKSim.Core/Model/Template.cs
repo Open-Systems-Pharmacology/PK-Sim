@@ -101,6 +101,11 @@ namespace PKSim.Core.Model
       /// </summary>
       public string MaxVersion { get; set; }
 
+      /// <summary>
+      /// Indicates if this remote template is qualified. 
+      /// </summary>
+      public bool Qualified { get; set; }
+
       public override bool IsSupportedByCurrentVersion(string currentVersion)
       {
          var curVersion = new Version(currentVersion);
