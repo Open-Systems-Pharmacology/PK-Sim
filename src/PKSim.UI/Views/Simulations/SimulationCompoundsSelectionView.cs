@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
@@ -100,6 +101,9 @@ namespace PKSim.UI.Views.Simulations
          get
          {
             var warningHeight = layoutItemWarning.Visible ? layoutItemWarning.Height : 1;
+            if (!_gridViewBinder.Source?.Any() ?? false)
+               warningHeight += emptySpaceItem1.Height;
+
             return layoutItemCompounds.Padding.Height + gridView.OptimalHeight + layoutItemAddCompound.Height + warningHeight + emptySpaceItem2.Height;
          }
       }

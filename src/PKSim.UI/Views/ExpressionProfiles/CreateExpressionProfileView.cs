@@ -1,4 +1,6 @@
-﻿using OSPSuite.Assets;
+﻿using System.Windows.Forms;
+using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;

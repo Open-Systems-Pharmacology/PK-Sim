@@ -18,7 +18,7 @@ namespace PKSim.UI
 
          public static readonly int CONFIGURE_SIMULATION_VIEW_HEIGHT = ScaleForScreenDPI(708);
          public static readonly int CREATE_SIMULATION_VIEW_HEIGHT = ScaleForScreenDPI(750);
-         public static readonly int SIMULATION_VIEW_WIDTH = ScaleForScreenDPI(580);
+         public static readonly int SIMULATION_VIEW_WIDTH = ScaleForScreenDPI(650);
 
          public static readonly int EXPRESSION_QUERY_VIEW_HEIGHT = ScaleForScreenDPI(900);
          public static readonly int EXPRESSION_QUERY_VIEW_WIDTH = ScaleForScreenDPI(1100);
@@ -31,6 +31,8 @@ namespace PKSim.UI
 
          public static readonly int PROTOCOL_VIEW_WIDTH = ScaleForScreenDPI(700);
          public static readonly int PROTOCOL_VIEW_HEIGHT = ScaleForScreenDPI(760);
+
+         public static readonly int EXPRESSION_PROFILE_LOCALIZATION_HEIGHT = ScaleForScreenDPI(80);
 
          public static readonly int EXPRESSION_PROFILE_VIEW_HEIGHT = ScaleForScreenDPI(900);
          public static readonly int EXPRESSION_PROFILE_VIEW_WIDTH = ScaleForScreenDPI(760);
