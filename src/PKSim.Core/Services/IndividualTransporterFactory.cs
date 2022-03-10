@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
+using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Compartment;
 using static PKSim.Core.CoreConstants.Parameters;
 using static PKSim.Core.Model.TransportDirections;
@@ -24,9 +25,12 @@ namespace PKSim.Core.Services
 
       public IndividualTransporterFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
-         IObjectPathFactory objectPathFactory, IEntityPathResolver entityPathResolver,
-         IIndividualPathWithRootExpander individualPathWithRootExpander, IIdGenerator idGenerator) : base(objectBaseFactory, parameterFactory,
-         objectPathFactory, entityPathResolver, idGenerator)
+         IObjectPathFactory objectPathFactory, 
+         IEntityPathResolver entityPathResolver,
+         IIndividualPathWithRootExpander individualPathWithRootExpander, 
+         IIdGenerator idGenerator,
+         IParameterRateRepository parameterRateRepository) : 
+         base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, idGenerator, parameterRateRepository, CoreConstants.ORM.TRANSPORTER)
       {
          _individualPathWithRootExpander = individualPathWithRootExpander;
       }
@@ -142,7 +146,7 @@ namespace PKSim.Core.Services
             organ.IsKidney() ? TransportDirectionId.ExcretionKidney : TransportDirectionId.ExcretionLiver;
 
          addContainerExpression(organ.Container(INTERSTITIAL), transporter, DefaultTissueDirectionFor(transporter.TransportType),
-            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, editable: false),
+            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
 
@@ -169,7 +173,7 @@ namespace PKSim.Core.Services
          );
 
          addContainerExpression(organ.Container(INTERSTITIAL), transporter, DefaultBrainTissueDirectionFor(transporter.TransportType),
-            FractionParam(FRACTION_EXPRESSED_BRAIN_TISSUE, CoreConstants.Rate.PARAM_F_EXP_BRN_TISSUE, editable: false),
+            FractionParam(FRACTION_EXPRESSED_BRAIN_TISSUE, CoreConstants.Rate.PARAM_F_EXP_BRN_TISSUE),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_BRAIN_INTERSTITIAL_TRANSPORTER)
          );
 
@@ -190,7 +194,7 @@ namespace PKSim.Core.Services
          addContainerExpression(organ.Container(INTERSTITIAL), transporter,
             TransportDirectionId.None,
             //We had the tissue side parameter to ensure that we can use the same formula. But this parameter is required only from a technical point of view
-            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.ONE_RATE, editable: false, visible: false),
+            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.ONE_RATE,  visible: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }

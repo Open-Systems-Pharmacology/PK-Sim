@@ -3,6 +3,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -19,8 +20,10 @@ namespace PKSim.Core.Services
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
-         IIndividualPathWithRootExpander individualPathWithRootExpander, IIdGenerator idGenerator) :
-         base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, individualPathWithRootExpander, idGenerator)
+         IIndividualPathWithRootExpander individualPathWithRootExpander,
+         IIdGenerator idGenerator,
+         IParameterRateRepository parameterRateRepository) :
+         base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, individualPathWithRootExpander, idGenerator, parameterRateRepository)
       {
       }
 

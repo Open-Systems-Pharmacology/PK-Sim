@@ -11,5 +11,14 @@ namespace PKSim.Core.Model
          MinValue = 0;
          MinIsAllowed = true;
       }
+
+      public override void UpdatePropertiesFrom(ParameterMetaData parameterMetaData)
+      {
+         base.UpdatePropertiesFrom(parameterMetaData);
+         if (!(parameterMetaData is ParameterValueMetaData parameterValueMetaData)) return;
+         DefaultValue = parameterValueMetaData.DefaultValue;
+         ParameterValueVersion = parameterValueMetaData.ParameterValueVersion;
+         Species = parameterValueMetaData.Species;
+      }
    }
 }

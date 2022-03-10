@@ -27,8 +27,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
          IFlatParameterRateRepository flatParameterRateRepo,
          IFlatContainerRepository flatContainerRepo,
          IFlatParameterRHSRepository flatParameterRHSRepository,
-         IValueOriginRepository valueOriginRepository) :
-         base(flatParameterRateRepo, flatContainerRepo, valueOriginRepository)
+         IValueOriginRepository valueOriginRepository,
+         IFlatContainerParameterDescriptorConditionRepository flatContainerParameterDescriptorConditionRepository,
+         ICriteriaConditionToDescriptorConditionMapper descriptorConditionMapper) :
+         base(flatParameterRateRepo, flatContainerRepo, valueOriginRepository, flatContainerParameterDescriptorConditionRepository, descriptorConditionMapper)
       {
          _flatParameterRHSRepository = flatParameterRHSRepository;
       }
@@ -51,7 +53,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          //nor RHS for given parameter available
          if (!rhsItems.Any())
-            return; 
+            return;
 
          //set name of RHS rate
          parameterRateMetaData.RHSRate = rhsItems.ElementAt(0).Rate;

@@ -1,2 +1,28 @@
-UPDATE tab_container_parameter_rates SET formula_rate='One_Rate' WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed in blood cells' AND calculation_method='ExpressionParameters';
-UPDATE tab_container_parameter_rates SET formula_rate='One_Rate' WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed in endosomes' AND calculation_method='ExpressionParameters';
+CREATE TABLE tab_container_parameter_descriptor_conditions
+(
+    container_id   bigint not null,
+    container_type text   not null,
+    container_name text   not null,
+    parameter_name text   not null,
+    tag            text   not null
+        constraint tab_container_parameter_descriptor_conditions_tab_tags_tag_fk
+            references tab_tags
+            on update cascade on delete cascade,
+    condition      text   not null
+        constraint tab_container_parameter_descriptor_conditions_tab_criteria_conditions_condition_fk
+            references tab_criteria_conditions
+            on update cascade on delete cascade,
+    constraint tab_container_parameter_descriptor_conditions_tab_container_parameters_container_id_container_type_container_name_parameter_name_fk
+        foreign key (container_id, container_type, container_name, parameter_name) references tab_container_parameters
+            on update cascade on delete cascade
+);
+INSERT INTO tab_container_parameter_descriptor_conditions(rowid,container_id,container_type,container_name,parameter_name,tag,condition) VALUES(1,5015,'GENERAL','PROTEIN','Fraction expressed interstitial','Interstitial','Has');
+INSERT INTO tab_container_parameter_descriptor_conditions(rowid,container_id,container_type,container_name,parameter_name,tag,condition) VALUES(2,5015,'GENERAL','PROTEIN','Fraction expressed intracellular','Intracellular','Has');
+INSERT INTO tab_container_parameter_descriptor_conditions(rowid,container_id,container_type,container_name,parameter_name,tag,condition) VALUES(3,5941,'GENERAL','TRANSPORTER','Fraction expressed at blood brain barrier','Brain','InContainer');
+INSERT INTO tab_container_parameter_descriptor_conditions(rowid,container_id,container_type,container_name,parameter_name,tag,condition) VALUES(4,5941,'GENERAL','TRANSPORTER','Fraction expressed at blood brain barrier','Plasma','Has');
+INSERT INTO tab_container_parameter_descriptor_conditions(rowid,container_id,container_type,container_name,parameter_name,tag,condition) VALUES(5,5941,'GENERAL','TRANSPORTER','Fraction expressed brain tissue','Brain','InContainer');
+INSERT INTO tab_container_parameter_descriptor_conditions(rowid,container_id,container_type,container_name,parameter_name,tag,condition) VALUES(6,5941,'GENERAL','TRANSPORTER','Fraction expressed brain tissue','Interstitial','Has');
+UPDATE tab_container_parameter_rates SET formula_rate='PARAM_f_exp_interstitial' WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed interstitial' AND calculation_method='ExpressionParameters';
+UPDATE tab_container_parameter_rates SET formula_rate='One_Rate' WHERE container_id=5015 AND container_type='GENERAL' AND container_name='PROTEIN' AND parameter_name='Fraction expressed intracellular' AND calculation_method='ExpressionParameters';
+UPDATE tab_container_parameter_rates SET formula_rate='One_Rate' WHERE container_id=5941 AND container_type='GENERAL' AND container_name='TRANSPORTER' AND parameter_name='Fraction expressed at blood brain barrier' AND calculation_method='ExpressionParameters';
+UPDATE tab_container_parameter_rates SET formula_rate='PARAM_f_exp_brn_tissue' WHERE container_id=5941 AND container_type='GENERAL' AND container_name='TRANSPORTER' AND parameter_name='Fraction expressed brain tissue' AND calculation_method='ExpressionParameters';
