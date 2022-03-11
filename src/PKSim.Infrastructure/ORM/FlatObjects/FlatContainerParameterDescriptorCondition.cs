@@ -1,4 +1,6 @@
-﻿namespace PKSim.Infrastructure.ORM.FlatObjects
+﻿using OSPSuite.Core.Domain.Descriptors;
+
+namespace PKSim.Infrastructure.ORM.FlatObjects
 {
    public class FlatContainerParameterDescriptorCondition
    {
@@ -8,5 +10,6 @@
       public string ContainerName { get; set; }
       public string Tag { get; set; }
       public CriteriaCondition Condition { get; set; }
+      public CriteriaOperator Operator { get; set; }
    }
 }

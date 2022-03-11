@@ -25,11 +25,11 @@ namespace PKSim.Core.Services
 
       public IndividualTransporterFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
-         IObjectPathFactory objectPathFactory, 
+         IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
-         IIndividualPathWithRootExpander individualPathWithRootExpander, 
+         IIndividualPathWithRootExpander individualPathWithRootExpander,
          IIdGenerator idGenerator,
-         IParameterRateRepository parameterRateRepository) : 
+         IParameterRateRepository parameterRateRepository) :
          base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, idGenerator, parameterRateRepository, CoreConstants.ORM.TRANSPORTER)
       {
          _individualPathWithRootExpander = individualPathWithRootExpander;
@@ -87,11 +87,15 @@ namespace PKSim.Core.Services
          LiverZones.Each(zoneName =>
          {
             var zone = liver.Compartment(zoneName);
-            addContainerExpression(zone.Container(INTRACELLULAR), transporter, TransportDirectionId.ExcretionLiver,
-               RelExpParam(REL_EXP, defaultValue: 1),
+            var intracellular = zone.Container(INTRACELLULAR);
+            addContainerExpression(intracellular, transporter, TransportDirectionId.ExcretionLiver,
+               RelExpParam(REL_EXP),
                FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ONE_RATE),
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR_TRANSPORTER)
             );
+            var relExpParameter = intracellular.EntityAt<IParameter>(transporter.Name, REL_EXP);
+            relExpParameter.Value = 1;
+            relExpParameter.DefaultValue = 1;
          });
 
          _individualPathWithRootExpander.AddRootToPathIn(individual, transporter.Name);
@@ -194,7 +198,7 @@ namespace PKSim.Core.Services
          addContainerExpression(organ.Container(INTERSTITIAL), transporter,
             TransportDirectionId.None,
             //We had the tissue side parameter to ensure that we can use the same formula. But this parameter is required only from a technical point of view
-            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.ONE_RATE,  visible: false),
+            FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.ONE_RATE, visible: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
       }

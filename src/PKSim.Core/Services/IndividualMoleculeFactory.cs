@@ -78,32 +78,27 @@ namespace PKSim.Core.Services
          return simulationSubject?.Individual?.AgeParameter != null;
       }
 
-      protected ParameterValueMetaData RelExpParam(string paramName, double defaultValue = 0)
+      protected ParameterRateMetaData RelExpParam(string paramName)
       {
-         //In the db, we define those parameters as rate for now but we need to create a value meta data here so we update
-         var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
-         var parameterValueMetaData = new ParameterValueMetaData {DefaultValue = defaultValue};
-         parameterValueMetaData.UpdatePropertiesFrom(parameterMetaData);
-         return parameterValueMetaData;
+         return _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
       }
 
-      protected ParameterRateMetaData FractionParam(string paramName, string rate, bool visible = true)
+      protected ParameterRateMetaData FractionParam(string paramName, string rate, bool? visible = null)
+      {
+         var param = rateParam(paramName, rate);
+         param.Visible = visible.GetValueOrDefault(param.Visible);
+         return param;
+      }
+
+      protected ParameterRateMetaData InitialConcentrationParam(string rate) => rateParam(INITIAL_CONCENTRATION, rate);
+
+      private ParameterRateMetaData rateParam(string paramName, string rate)
       {
          var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
          var parameterRateMetaData = new ParameterRateMetaData();
          parameterRateMetaData.UpdatePropertiesFrom(parameterMetaData);
          parameterRateMetaData.Rate = rate;
-         parameterRateMetaData.Visible = visible;
          return parameterRateMetaData;
-      }
-
-      protected ParameterRateMetaData InitialConcentrationParam(string rate)
-      {
-         var parameterRateMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, INITIAL_CONCENTRATION);
-         var parameterMetaData = new ParameterRateMetaData();
-         parameterMetaData.UpdatePropertiesFrom(parameterRateMetaData);
-         parameterMetaData.Rate = rate;
-         return parameterMetaData;
       }
 
       protected TMolecule CreateMolecule(string moleculeName)

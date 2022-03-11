@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Mappers;
@@ -78,8 +80,13 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (!allConditions.Any())
             return null;
 
+         var operators = allConditions.Select(x => x.Operator).Distinct().ToList();
+         if (operators.Count != 1)
+            throw new ArgumentException(PKSimConstants.Error.MultipleOperatorFoundForContainer(containerId, parameterName));
+
          var criteria = new DescriptorCriteria();
          allConditions.Each(x => criteria.Add(_descriptorConditionMapper.MapFrom(x.Condition, x.Tag)));
+         criteria.Operator = allConditions.First().Operator;
          return criteria;
       }
 

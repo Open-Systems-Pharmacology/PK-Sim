@@ -40,11 +40,17 @@ namespace PKSim.Core.Services
          CoreConstants.Compartment.LiverZones.Each(zoneName =>
          {
             var zone = liver.Container(zoneName);
-            AddContainerExpression(zone.Container(CoreConstants.Compartment.INTRACELLULAR), undefinedLiver.Name,
-               RelExpParam(REL_EXP, defaultValue: 1),
+            var intracellular = zone.Container(CoreConstants.Compartment.INTRACELLULAR);
+            AddContainerExpression(intracellular, undefinedLiver.Name,
+               RelExpParam(REL_EXP),
                FractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ONE_RATE),
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
             );
+
+            var relExpParameter = intracellular.EntityAt<IParameter>(undefinedLiver.Name, REL_EXP);
+            relExpParameter.Value = 1;
+            relExpParameter.DefaultValue = 1;
+
          });
          _individualPathWithRootExpander.AddRootToPathIn(individual, undefinedLiver.Name);
          individual.AddMolecule(undefinedLiver);
