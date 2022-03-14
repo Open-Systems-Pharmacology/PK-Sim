@@ -1,5 +1,4 @@
-﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
+﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
@@ -38,7 +37,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.ICRP);
-         
+
          //verify that the individual as the expected values
          _individual.Age.ShouldBeEqualTo(30);
          _individual.InputHeight.ShouldBeEqualTo(17.6);
@@ -55,15 +54,13 @@ namespace PKSim.IntegrationTests
             Value = _targetGFR.ConvertToBaseUnit(22, _targetGFR.DisplayUnitName()),
             Unit = _targetGFR.DisplayUnitName(),
          });
-
       }
 
       protected override void Because()
       {
          sut.ApplyTo(_individual);
       }
-      
-    
+
       [Observation]
       public void should_return_the_expected_values()
       {
@@ -94,6 +91,18 @@ namespace PKSim.IntegrationTests
       {
          _individual.Organism.Parameter(PLASMA_PROTEIN_SCALE_FACTOR).IsChangedByCreateIndividual.ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_lock_some_parameters_that_were_scaled_by_the_algorithm()
+      {
+         var organism = _individual.Organism;
+         var kidney = organism.Organ(KIDNEY);
+         var kidneyVolume = kidney.Parameter(VOLUME);
+         var GFR_spec = kidney.Parameter(GFR_SPEC);
+
+         kidneyVolume.Editable.ShouldBeFalse();
+         GFR_spec.Editable.ShouldBeFalse();
+      }
    }
 
    public class When_validating_an_origin_data : concern_for_CKDDiseaseStateImplementation
@@ -108,14 +117,12 @@ namespace PKSim.IntegrationTests
          _originData.DiseaseState = _diseaseStateCKD;
       }
 
-
       [Observation]
       public void should_return_valid_for_an_adult_age()
       {
          _originData.Age.Value = 30;
          sut.IsValid(_originData).isValid.ShouldBeTrue();
       }
-
 
       [Observation]
       public void should_return_invalid_for_a_child_age()

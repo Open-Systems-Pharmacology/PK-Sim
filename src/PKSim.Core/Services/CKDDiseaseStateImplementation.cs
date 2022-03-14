@@ -126,14 +126,20 @@ namespace PKSim.Core.Services
          var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
          //Categorial Parameters
-         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor);
+         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactorParameter.Value * plasmaProteinScaleFactor);
          updateParameterFunc(gastricEmptyingTime, gastricEmptyingTime.Value * gastricEmptyingTimeFactor);
          updateParameterFunc(smallIntestinalTransitTime, smallIntestinalTransitTime.Value * smallIntestinalTransitTimeFactor);
 
          //Special case for Hematocrit
          updateParameterFunc(hct, hct.Value * getHematocritFactor(targetGFRValue, individual.OriginData.Gender));
 
+         lockParametersAfterCKDImplementation(kidneyVolume, GFR_Spec);
          return true;
+      }
+
+      private void lockParametersAfterCKDImplementation(params IParameter[] parameters)
+      {
+         parameters.Each(x => x.Editable = false);
       }
 
       private void updateParameterValues(IParameter parameter, double value)
@@ -158,7 +164,7 @@ namespace PKSim.Core.Services
          }
 
          //constant formula
-         parameter.Value = value;
+         updateParameterValues(parameter, value);
          parameter.DefaultValue = value;
          parameter.IsFixedValue = false;
       }
