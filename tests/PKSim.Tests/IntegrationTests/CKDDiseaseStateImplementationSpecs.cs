@@ -86,7 +86,7 @@ namespace PKSim.IntegrationTests
          kidneySpecificBloodFlowRate.ConvertToUnit(kidneySpecificBloodFlowRate.Value, "ml/min/100g organ").ShouldBeEqualTo(100.446757, 1e-2);
       }
 
-      [Observation]
+      [Observation]  
       public void should_set_some_parameters_as_changed_by_created_individuals()
       {
          _individual.Organism.Parameter(PLASMA_PROTEIN_SCALE_FACTOR).IsChangedByCreateIndividual.ShouldBeTrue();

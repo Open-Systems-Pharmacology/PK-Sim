@@ -125,8 +125,10 @@ namespace PKSim.Core.Services
 
          var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
-         //Categorial Parameters
-         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactorParameter.Value * plasmaProteinScaleFactor);
+         //Categorial Parameters as constant: We set the value as is as the value will not be reset when creating a population
+         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor);
+
+         //Categorial Parameters distributed: We apply the variation to the default value
          updateParameterFunc(gastricEmptyingTime, gastricEmptyingTime.Value * gastricEmptyingTimeFactor);
          updateParameterFunc(smallIntestinalTransitTime, smallIntestinalTransitTime.Value * smallIntestinalTransitTimeFactor);
 
