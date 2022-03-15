@@ -173,6 +173,7 @@ namespace PKSim.Core.Services
 
          addContainerExpression(organ.Container(INTERSTITIAL), transporter,
             TransportDirectionId.None,
+            //added for consistency with Initial concentration parameter formula. Hidden in UI
             FractionParam(FRACTION_EXPRESSED_BASOLATERAL, CoreConstants.Rate.PARAM_F_EXP_BASOLATERAL, visible: false),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL_TRANSPORTER)
          );
@@ -180,7 +181,8 @@ namespace PKSim.Core.Services
          addContainerExpression(organ.Container(INTRACELLULAR), transporter,
             DefaultTissueDirectionFor(transporter.TransportType),
             RelExpParam(REL_EXP),
-            FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ZERO_RATE)
+            //added for consistency fraction expressed basolateral formula. Hidden in UI
+            FractionParam(FRACTION_EXPRESSED_APICAL, CoreConstants.Rate.ZERO_RATE, visible: false)
          );
       }
 
