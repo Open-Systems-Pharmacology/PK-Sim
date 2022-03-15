@@ -736,6 +736,8 @@ namespace PKSim.Core
 
       public static class ORM
       {
+         public const string PROTEIN = "PROTEIN";
+         public const string TRANSPORTER = "TRANSPORTER";
          public const string COMPOUND_ACTIVE_PROCESS_PREFIX = "COMPOUND_";
          public const string USAGE_IN_INDIVIDUAL_REQUIRED = "REQUIRED";
          public const string USAGE_IN_INDIVIDUAL_OPTIONAL = "OPTIONAL";
@@ -803,6 +805,7 @@ namespace PKSim.Core
          public const string VIEW_TRANSPORTS = "VIEW_TRANSPORTS";
          public const string VIEW_DISEASE_STATES = "VIEW_DISEASE_STATES";
          public const string VIEW_POPULATION_DISEASE_STATES = "VIEW_POPULATION_DISEASE_STATES";
+         public const string VIEW_CONTAINER_PARAMETER_DESCRIPTOR_CONDITIONS = "VIEW_CONTAINER_PARAMETER_DESCRIPTOR_CONDITIONS";
       }
 
       public static class Organ

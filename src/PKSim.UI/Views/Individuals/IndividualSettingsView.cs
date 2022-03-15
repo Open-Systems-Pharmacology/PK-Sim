@@ -339,6 +339,11 @@ namespace PKSim.UI.Views.Individuals
          cbSpecies.SetImages(_imageListRetriever);
          layoutItemDiseaseState.Text = PKSimConstants.UI.Select.FormatForLabel();
          lblDescription.AsDescription();
+         layoutItemAge.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
+         layoutItemGestationalAge.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
+         layoutItemWeight.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
+         layoutItemHeight.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
+         layoutItemBMI.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
       }
 
       public override string Caption => PKSimConstants.UI.Biometrics;

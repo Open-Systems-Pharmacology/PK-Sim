@@ -56,51 +56,7 @@ namespace PKSim.UI.Views.Protocols
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemSplit)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(563, 12);
-         this.btnCancel.Size = new System.Drawing.Size(116, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(421, 12);
-         this.btnOk.Size = new System.Drawing.Size(138, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 631);
-         this.layoutControlBase.Size = new System.Drawing.Size(691, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(200, 22);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(691, 46);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(409, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(142, 26);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(551, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(120, 26);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(204, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(205, 26);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(204, 26);
+      
          // 
          // layoutApplicationSchema
          // 

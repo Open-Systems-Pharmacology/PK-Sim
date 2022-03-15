@@ -66,6 +66,8 @@ namespace PKSim.UI.Views.Individuals
          layoutItemLoad.AdjustButtonSizeWithImageOnly();
          cbExpressionProfile.Properties.AllowHtmlDraw = DefaultBoolean.True;
          layoutItemExpressionProfileSelection.TextVisible = false;
+         cbExpressionProfile.Properties.AutoHeight = false;
+         cbExpressionProfile.Height = btnLoad.Height;
       }
 
       public override ApplicationIcon ApplicationIcon

@@ -1,14 +1,14 @@
 ﻿using DevExpress.XtraEditors.Controls;
-using PKSim.Assets;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using PKSim.Presentation.DTO.Simulations;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Assets;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
+using PKSim.Presentation.DTO.Simulations;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -75,7 +75,7 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
 
          layoutItemSelectFileToImport.Text = PKSimConstants.UI.FilePath.FormatForLabel();
-         btnImport.InitWithImage(ApplicationIcons.Run,text: PKSimConstants.UI.StartImport);
+         btnImport.InitWithImage(ApplicationIcons.Run, text: PKSimConstants.UI.StartImport);
          layoutItemButtonImport.AdjustLargeButtonSize();
 
          tbFileToImport.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;

@@ -42,28 +42,6 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
          // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(437, 12);
-         this.btnCancel.Size = new System.Drawing.Size(89, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(328, 12);
-         this.btnOk.Size = new System.Drawing.Size(105, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 500);
-         this.layoutControlBase.Size = new System.Drawing.Size(538, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(154, 22);
-         // 
          // layoutControl1
          // 
          this.layoutControl1.Controls.Add(this.panel);

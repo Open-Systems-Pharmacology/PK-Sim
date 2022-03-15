@@ -3,7 +3,6 @@ using PKSim.Assets;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
 using OSPSuite.Assets;
-using OSPSuite.Presentation;
 using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views

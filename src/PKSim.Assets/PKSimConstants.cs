@@ -926,6 +926,10 @@ namespace PKSim.Assets
 
          public static string NoProteinExpressionDatabaseAssociatedTo(string speciesName) =>
             $"No protein expression database available for species '{speciesName}'";
+
+         public static string MultipleOperatorFoundForContainer(int containerId, string parameterName) =>
+            $"Multiple operator values found for container id '{containerId}' and parameter '{parameterName}'";
+
       }
 
       public static class Information

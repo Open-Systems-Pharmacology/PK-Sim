@@ -55,13 +55,6 @@ namespace PKSim.UI.Views.Compounds
          this.layoutItemSystemicProcessType = new DevExpress.XtraLayout.LayoutControlItem();
          this.cbProteinName = new OSPSuite.UI.Controls.UxMRUEdit();
          this.layoutItemProtein = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbDataSource.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
@@ -86,55 +79,6 @@ namespace PKSim.UI.Views.Compounds
          ((System.ComponentModel.ISupportInitialize)(this.cbProteinName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemProtein)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(431, 12);
-         this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-         this.btnCancel.Size = new System.Drawing.Size(88, 22);
-         this.btnCancel.TabIndex = 1;
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(323, 12);
-         this.btnOk.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-         this.btnOk.Size = new System.Drawing.Size(104, 22);
-         this.btnOk.TabIndex = 0;
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 596);
-         this.layoutControlBase.Size = new System.Drawing.Size(531, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(151, 22);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(531, 46);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(311, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(108, 26);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(419, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(92, 26);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(155, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(156, 26);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(155, 26);
          // 
          // tbDataSource
          // 
@@ -416,15 +360,7 @@ namespace PKSim.UI.Views.Compounds
          this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.Name = "CreateProcessView";
          this.Text = "CreateProcessView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbDataSource.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();

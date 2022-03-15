@@ -15,7 +15,6 @@ using DevExpress.XtraGrid.Views.Grid;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Views.ProteinExpression;
-using OSPSuite.Presentation;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Views;
 

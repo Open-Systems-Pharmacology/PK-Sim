@@ -76,19 +76,19 @@ namespace PKSim.IntegrationTests
       {
          var expectedAliases = new[]
          {
-            "PassiveRates_para", "PassiveRates_trans", 
+            "PassiveRates_para", "PassiveRates_trans",
             "ActiveRates_para_IN", "ActiveRates_trans_IN",
             "ActiveRates_para_OUT", "ActiveRates_trans_OUT"
          };
 
-         var lumen= _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.LUMEN);
+         var lumen = _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.LUMEN);
          foreach (var segment in CoreConstants.Compartment.LumenSegmentsDuodenumToRectum)
          {
             var massAbsorbedSegmentParameter = lumen.Container(segment).Container(_drugName).Parameter("Oral mass absorbed segment");
             massAbsorbedSegmentParameter.RHSFormula.ShouldNotBeNull();
             var formula = massAbsorbedSegmentParameter.RHSFormula.DowncastTo<ExplicitFormula>();
             formula.ShouldNotBeNull();
-            expectedAliases.Each(alias=> formula.FormulaString.Contains(alias).ShouldBeTrue());
+            expectedAliases.Each(alias => formula.FormulaString.Contains(alias).ShouldBeTrue());
          }
       }
    }
@@ -222,7 +222,6 @@ namespace PKSim.IntegrationTests
          MassAbsorbedSegmentShouldHaveCorrectFormula();
       }
    }
-
 
    public class When_creating_model_with_active_transporter_Hill : When_creating_a_model_with_active_transporter
    {

@@ -3,7 +3,6 @@ using OSPSuite.Assets;
 using PKSim.Presentation.Presenters.Events;
 using PKSim.Presentation.Views.Events;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Events
 {

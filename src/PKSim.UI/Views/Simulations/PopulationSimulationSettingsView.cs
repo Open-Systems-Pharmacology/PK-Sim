@@ -1,14 +1,11 @@
 ﻿using System.Drawing;
 using DevExpress.XtraLayout.Utils;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations

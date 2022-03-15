@@ -3,7 +3,6 @@ using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using PKSim.Assets;
@@ -47,7 +46,7 @@ namespace PKSim.UI.Views.Individuals
       {
          set
          {
-            cbOntogey.ReadOnly = value;
+            cbOntogeny.ReadOnly = value;
             btnLoadOntogenyFromFile.Enabled = !value;
          }
       }
@@ -55,7 +54,7 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeBinding()
       {
          _screenBinder = new ScreenBinder<IndividualMolecule> {BindingMode = BindingMode.OneWay};
-         _screenBinder.Bind(x => x.Ontogeny).To(cbOntogey)
+         _screenBinder.Bind(x => x.Ontogeny).To(cbOntogeny)
             .WithValues(x => _presenter.AllOntogenies())
             .AndDisplays(x => x.DisplayName)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SelectedOntogenyIs(e.NewValue));
@@ -73,7 +72,7 @@ namespace PKSim.UI.Views.Individuals
          btnLoadOntogenyFromFile.InitWithImage(ApplicationIcons.Excel, imageLocation: ImageLocation.MiddleCenter);
          btnLoadOntogenyFromFile.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ImportOntogenyToolTip, PKSimConstants.UI.ImportOntogeny, ApplicationIcons.Excel);
          btnLoadOntogenyFromFile.AdjustButtonWithImageOnly();
-         cbOntogey.Height = btnLoadOntogenyFromFile.Height;
+         cbOntogeny.Height = btnLoadOntogenyFromFile.Height;
          layoutItemOntogeny.Text = PKSimConstants.UI.OntogenyVariabilityLike.FormatForLabel();
       }
    }

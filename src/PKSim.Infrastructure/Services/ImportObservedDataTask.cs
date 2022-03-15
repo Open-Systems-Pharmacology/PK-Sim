@@ -216,7 +216,7 @@ namespace PKSim.Infrastructure.Services
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
 
-         var metaDataCategories = _dataImporter.DefaultMetaDataCategories().ToList();
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategoriesForObservedData().ToList();
          populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
 
          return (metaDataCategories, dataImporterSettings);
