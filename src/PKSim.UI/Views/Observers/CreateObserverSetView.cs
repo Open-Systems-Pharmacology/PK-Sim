@@ -1,7 +1,6 @@
 ﻿using System.Drawing;
 using OSPSuite.Assets;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Presentation.Presenters.Observers;
 using PKSim.Presentation.Views.Observers;
 using PKSim.UI.Views.Core;

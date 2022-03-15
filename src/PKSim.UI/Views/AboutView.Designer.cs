@@ -32,62 +32,11 @@
          this.linkSite = new DevExpress.XtraEditors.HyperLinkEdit();
          this.licenseAgreementLink = new DevExpress.XtraEditors.HyperLinkEdit();
          this.lblProductInfo = new DevExpress.XtraEditors.LabelControl();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.linkSite.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.licenseAgreementLink.Properties)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(619, 12);
-         this.btnCancel.Size = new System.Drawing.Size(138, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(469, 12);
-         this.btnOk.Size = new System.Drawing.Size(146, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 253);
-         this.layoutControlBase.Size = new System.Drawing.Size(769, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(225, 22);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(769, 46);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(457, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(150, 26);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(607, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(142, 26);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(229, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(228, 26);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(229, 26);
+       
          // 
          // linkSite
          // 
@@ -140,14 +89,6 @@
          this.Controls.SetChildIndex(this.licenseAgreementLink, 0);
          this.Controls.SetChildIndex(this.linkSite, 0);
          this.Controls.SetChildIndex(this.lblProductInfo, 0);
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.linkSite.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.licenseAgreementLink.Properties)).EndInit();

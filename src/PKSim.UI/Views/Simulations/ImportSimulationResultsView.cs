@@ -8,7 +8,6 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
@@ -18,7 +17,7 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 using static OSPSuite.UI.UIConstants.Size;
 using static PKSim.UI.UIConstants.Size;
-using UIConstants = OSPSuite.UI.UIConstants;
+using BaseView = OSPSuite.UI.Views.BaseView;
 
 namespace PKSim.UI.Views.Simulations
 {
