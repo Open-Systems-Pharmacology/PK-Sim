@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -88,11 +90,10 @@ namespace PKSim.Core.Services
          if (parameter.HasAncestorNamed(CoreConstants.Compartment.ENDOSOME) && isSmallMolecule)
             return;
 
-         //we do not generate start values for parameter that are marked as property 
-         if (parameter.BuildMode == ParameterBuildMode.Property)
+         //We do not generate value for this parameter by default. Exit
+         var parameterStartValue = getStartValueFor(parameter);
+         if (parameterStartValue == null)
             return;
-
-         var parameterStartValue = getOrCreateStartValueFor(parameter);
 
          if (parameter.Formula.IsExplicit())
          {
@@ -126,6 +127,12 @@ namespace PKSim.Core.Services
          _defaultStartValues.Add(parameterStartValue);
 
          return parameterStartValue;
+      }
+
+      private IParameterStartValue getStartValueFor(IParameter parameter)
+      {
+         var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
+         return _defaultStartValues[parameterPath];
       }
    }
 }
