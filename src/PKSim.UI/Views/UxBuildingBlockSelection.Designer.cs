@@ -41,7 +41,7 @@
          this.lblDesigner.Dock = System.Windows.Forms.DockStyle.Fill;
          this.lblDesigner.Location = new System.Drawing.Point(0, 0);
          this.lblDesigner.Name = "lblDesigner";
-         this.lblDesigner.Size = new System.Drawing.Size(431, 26);
+         this.lblDesigner.Size = new System.Drawing.Size(361, 37);
          this.lblDesigner.TabIndex = 2;
          this.lblDesigner.Text = "Label For Designer Time Only";
          // 
@@ -50,10 +50,9 @@
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.lblDesigner);
-         this.MaximumSize = new System.Drawing.Size(10000, 26);
          this.MinimumSize = new System.Drawing.Size(0, 26);
          this.Name = "UxBuildingBlockSelection";
-         this.Size = new System.Drawing.Size(431, 26);
+         this.Size = new System.Drawing.Size(361, 37);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          this.ResumeLayout(false);
 

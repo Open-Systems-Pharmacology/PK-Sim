@@ -56,11 +56,11 @@
          // 
          this.uxProtocolSelection.AllowEmptySelection = false;
          this.uxProtocolSelection.Caption = "";
-         this.uxProtocolSelection.Location = new System.Drawing.Point(98, 2);
+         this.uxProtocolSelection.Location = new System.Drawing.Point(107, 2);
          this.uxProtocolSelection.MaximumSize = new System.Drawing.Size(10000, 26);
          this.uxProtocolSelection.MinimumSize = new System.Drawing.Size(0, 26);
          this.uxProtocolSelection.Name = "uxProtocolSelection";
-         this.uxProtocolSelection.Size = new System.Drawing.Size(273, 26);
+         this.uxProtocolSelection.Size = new System.Drawing.Size(264, 26);
          this.uxProtocolSelection.TabIndex = 13;
          // 
          // layoutControlGroup
@@ -70,7 +70,6 @@
          this.layoutControlGroup.GroupBordersVisible = false;
          this.layoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemProtocol});
-         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup.Size = new System.Drawing.Size(374, 118);
@@ -82,10 +81,11 @@
          this.layoutItemProtocol.Control = this.uxProtocolSelection;
          this.layoutItemProtocol.CustomizationFormText = "layoutItemProtocol";
          this.layoutItemProtocol.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemProtocol.MinSize = new System.Drawing.Size(120, 30);
          this.layoutItemProtocol.Name = "layoutItemProtocol";
          this.layoutItemProtocol.Padding = new DevExpress.XtraLayout.Utils.Padding(4, 3, 2, 2);
          this.layoutItemProtocol.Size = new System.Drawing.Size(374, 118);
-         this.layoutItemProtocol.Text = "layoutItemProtocol";
+         this.layoutItemProtocol.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemProtocol.TextSize = new System.Drawing.Size(91, 13);
          // 
          // SimulationCompoundProtocolView

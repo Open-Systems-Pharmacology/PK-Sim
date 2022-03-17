@@ -30,9 +30,11 @@ namespace PKSim.Presentation.Presenters.Simulations
       public bool FormulationChanged { get; private set; }
       public bool ProtocolChanged { get; private set; }
 
-      public SimulationCompoundProtocolPresenter(ISimulationCompoundProtocolView view,
+      public SimulationCompoundProtocolPresenter(
+         ISimulationCompoundProtocolView view,
          ISimulationCompoundProtocolFormulationPresenter simulationCompoundProtocolFormulationPresenter,
-         ILazyLoadTask lazyLoadTask, IBuildingBlockInProjectManager buildingBlockInProjectManager)
+         ILazyLoadTask lazyLoadTask, 
+         IBuildingBlockInProjectManager buildingBlockInProjectManager)
          : base(view)
       {
          _simulationCompoundProtocolFormulationPresenter = simulationCompoundProtocolFormulationPresenter;
