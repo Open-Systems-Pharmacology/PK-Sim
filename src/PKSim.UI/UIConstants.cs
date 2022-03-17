@@ -6,7 +6,7 @@ namespace PKSim.UI
    {
       public static class Size
       {
-         public static readonly int BUILDING_BLOCK_SELECTION_SIZE = 32;
+         public static readonly int BUILDING_BLOCK_SELECTION_SIZE = ScaleForScreenDPI(32);
          public static readonly int PARAMETER_EDIT_HEIGHT = ScaleForScreenDPI(31);
          public static readonly int PARAMETER_WIDTH = ScaleForScreenDPI(110);
          public static readonly int DATA_SOURCE_WIDTH = ScaleForScreenDPI(180);
@@ -45,7 +45,7 @@ namespace PKSim.UI
 
          public static readonly int SIMULATION_COMPOUND_CONFIGURATION_DEFAULT_HEIGHT = ScaleForScreenDPI(280);
          public static readonly int SIMULATION_COMPOUND_PROCESS_DEFAULT_HEIGHT = ScaleForScreenDPI(250);
-         public static readonly int SIMULATION_COMPOUND_PROTOCOL_DEFAULT_HEIGHT = ScaleForScreenDPI(40);
+         public static readonly int SIMULATION_COMPOUND_PROTOCOL_DEFAULT_HEIGHT = ScaleForScreenDPI(50);
       }
    }
 }

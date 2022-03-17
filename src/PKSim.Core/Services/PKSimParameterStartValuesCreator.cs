@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;

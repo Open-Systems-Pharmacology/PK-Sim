@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Windows.Forms;
 using DevExpress.LookAndFeel;
 using DevExpress.Utils;
+using DevExpress.Utils.Layout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
@@ -26,6 +28,7 @@ using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Extensions;
+using Padding = System.Windows.Forms.Padding;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -250,38 +253,39 @@ namespace PKSim.UI.Views.Individuals
 
       public bool AgeVisible
       {
-         set
-         {
-            layoutItemAge.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            emptySpaceAge.Visibility = layoutItemAge.Visibility;
-         }
-         get => LayoutVisibilityConvertor.ToBoolean(layoutItemAge.Visibility);
+         set => tablePanel.RowFor(uxAge).Visible = value;
+         get => tablePanel.RowFor(uxAge).Visible;
       }
 
       public bool GestationalAgeVisible
       {
          set
          {
-            layoutItemGestationalAge.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            layoutItemAge.Text = (value ? PKSimConstants.UI.PostnatalAge : PKSimConstants.UI.Age).FormatForLabel();
+            tablePanel.RowFor(uxGestationalAge).Visible = value;
+            labelAge.Text = (value ? PKSimConstants.UI.PostnatalAge : PKSimConstants.UI.Age).FormatForLabel();
          }
-         get => LayoutVisibilityConvertor.ToBoolean(layoutItemGestationalAge.Visibility);
+         get => tablePanel.RowFor(uxGestationalAge).Visible;
       }
 
       public void AddValueOriginView(IView view)
       {
-         AddViewTo(layoutItemValueOrigin, view);
+         var control = view.DowncastTo<Control>();
+         var row = tablePanel.RowFor(labelValueOrigin);
+         var rowIndex = tablePanel.GetRow(labelValueOrigin);
+         tablePanel.Controls.Add(control);
+         tablePanel.SetCell(control, rowIndex, 1);
+         control.Margin = new Padding(uxAge.Margin.Left, control.Margin.Top, uxAge.Margin.Right, control.Margin.Bottom);
+       //  row.Height = cbSpecies.Height;
       }
 
       public bool HeightAndBMIVisible
       {
          set
          {
-            layoutItemHeight.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            layoutItemBMI.Visibility = layoutItemHeight.Visibility;
-            emptySpaceBMI.Visibility = layoutItemBMI.Visibility;
+            tablePanel.RowFor(uxHeight).Visible = value;
+            tablePanel.RowFor(uxBMI).Visible = value;
          }
-         get => LayoutVisibilityConvertor.ToBoolean(layoutItemHeight.Visibility);
+         get => tablePanel.RowFor(uxHeight).Visible;
       }
 
       public bool IsReadOnly
@@ -321,29 +325,27 @@ namespace PKSim.UI.Views.Individuals
          layoutItemPopulation.Text = PKSimConstants.UI.Population.FormatForLabel();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
          layoutItemGender.Text = PKSimConstants.UI.Gender.FormatForLabel();
-         layoutItemAge.Text = PKSimConstants.UI.Age.FormatForLabel();
-         layoutItemGestationalAge.Text = PKSimConstants.UI.GestationalAge.FormatForLabel();
-         layoutItemWeight.Text = PKSimConstants.UI.Weight.FormatForLabel();
-         layoutItemHeight.Text = PKSimConstants.UI.Height.FormatForLabel();
-         layoutItemBMI.Text = PKSimConstants.UI.BMI.FormatForLabel(checkCase: false);
+         labelAge.Text = PKSimConstants.UI.Age.FormatForLabel();
+         labelGestationalAge.Text = PKSimConstants.UI.GestationalAge.FormatForLabel();
+         labelWeight.Text = PKSimConstants.UI.Weight.FormatForLabel();
+         labelHeight.Text = PKSimConstants.UI.Height.FormatForLabel();
+         labelBMI.Text = PKSimConstants.UI.BMI.FormatForLabel(checkCase: false);
          layoutItemSubPopulation.Text = PKSimConstants.UI.SubPopulation.FormatForLabel();
          layoutItemSubPopulation.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
          layoutItemCalculationMethods.Text = PKSimConstants.UI.CalculationMethods.FormatForLabel();
          layoutControlGroupPopulationParameters.Text = PKSimConstants.UI.IndividualParameters;
          layoutControlGroupPopulationProperties.Text = PKSimConstants.UI.PopulationProperties;
          layoutGroupDiseaseState.Text = PKSimConstants.UI.DiseaseState;
-         layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
+         labelValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          btnMeanValues.Text = PKSimConstants.UI.MeanValues;
          layoutControl.InitializeDisabledColors(_lookAndFeel);
          uxBMI.Enabled = false;
          cbSpecies.SetImages(_imageListRetriever);
          layoutItemDiseaseState.Text = PKSimConstants.UI.Select.FormatForLabel();
          lblDescription.AsDescription();
-         layoutItemAge.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
-         layoutItemGestationalAge.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
-         layoutItemWeight.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
-         layoutItemHeight.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
-         layoutItemBMI.AdjustControlHeight(UIConstants.Size.PARAMETER_EDIT_HEIGHT);
+         btnMeanValues.Margin = new Padding(btnMeanValues.Margin.Left, uxHeight.Margin.Top, btnMeanValues.Margin.Right, btnMeanValues.Margin.Bottom);
+         tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
+
       }
 
       public override string Caption => PKSimConstants.UI.Biometrics;

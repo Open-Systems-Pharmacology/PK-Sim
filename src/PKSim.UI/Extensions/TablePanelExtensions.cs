@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Windows.Forms;
 using DevExpress.Utils.Layout;
 using DevExpress.XtraEditors;
 using OSPSuite.Utility.Extensions;
@@ -22,6 +23,11 @@ namespace PKSim.UI.Extensions
       public static void AdjustLongButtonWidth(this SimpleButton button)
       {
          button.Size = new Size(OSPSuite.UI.UIConstants.Size.LARGE_BUTTON_WIDTH, button.Height);
+      }
+
+      public static TablePanelRow RowFor(this TablePanel tablePanel, Control control)
+      {
+         return tablePanel.Rows[tablePanel.GetRow(control)];
       }
    }
 }
