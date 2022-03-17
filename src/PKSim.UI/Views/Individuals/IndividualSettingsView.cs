@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using DevExpress.LookAndFeel;
 using DevExpress.Utils;
+using DevExpress.Utils.Layout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
@@ -343,6 +344,7 @@ namespace PKSim.UI.Views.Individuals
          layoutItemDiseaseState.Text = PKSimConstants.UI.Select.FormatForLabel();
          lblDescription.AsDescription();
          btnMeanValues.Margin = new Padding(btnMeanValues.Margin.Left, uxHeight.Margin.Top, btnMeanValues.Margin.Right, btnMeanValues.Margin.Bottom);
+         tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
 
       }
 

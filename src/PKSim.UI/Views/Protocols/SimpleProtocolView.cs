@@ -1,16 +1,19 @@
+using System.Windows.Forms;
+using DevExpress.Utils.Layout;
+using DevExpress.XtraLayout.Utils;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
-using DevExpress.XtraLayout.Utils;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
 using PKSim.UI.Extensions;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI.Extensions;
+using Padding = System.Windows.Forms.Padding;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -40,7 +43,7 @@ namespace PKSim.UI.Views.Protocols
 
       public bool EndTimeVisible
       {
-         set => layoutItemEndTime.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         set => tablePanel.RowFor(uxEndTime).Visible = value;
       }
 
       public bool DynamicParameterVisible
@@ -53,10 +56,10 @@ namespace PKSim.UI.Views.Protocols
       {
          set
          {
-            layoutItemTargetOrgan.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            layoutItemTargetCompartment.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+            tablePanel.RowFor(cbTargetOrgan).Visible = value;
+            tablePanel.RowFor(cbTargetCompartment).Visible = value;
          }
-         get => LayoutVisibilityConvertor.ToBoolean(layoutItemTargetOrgan.Visibility);
+         get => tablePanel.RowFor(cbTargetOrgan).Visible;
       }
 
       public void AddDynamicParameterView(IView view)
@@ -110,16 +113,19 @@ namespace PKSim.UI.Views.Protocols
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemDose.Text = PKSimConstants.UI.Dose.FormatForLabel();
-         layoutItemEndTime.Text = PKSimConstants.UI.ProtocolEndTime.FormatForLabel();
-         layoutItemDosingInterval.Text = PKSimConstants.UI.DosingInterval.FormatForLabel();
-         layoutItemApplicationType.Text = PKSimConstants.UI.ApplicationType.FormatForLabel();
+         labelDose.Text = PKSimConstants.UI.Dose.FormatForLabel();
+         labelEndTime.Text = PKSimConstants.UI.ProtocolEndTime.FormatForLabel();
+         labelDosingInterval.Text = PKSimConstants.UI.DosingInterval.FormatForLabel();
+         labelApplicationType.Text = PKSimConstants.UI.ApplicationType.FormatForLabel();
          layoutGroupProperties.Text = PKSimConstants.UI.ProtocolProperties;
-         layoutItemTargetCompartment.Text = PKSimConstants.UI.TargetCompartment.FormatForLabel();
-         layoutItemTargetOrgan.Text = PKSimConstants.UI.TargetOrgan.FormatForLabel();
+         labelTargetCompartment.Text = PKSimConstants.UI.TargetCompartment.FormatForLabel();
+         labelTargetOrgan.Text = PKSimConstants.UI.TargetOrgan.FormatForLabel();
          cbApplicationType.SetImages(_imageListRetriever);
          cbTargetOrgan.SetImages(_imageListRetriever);
          cbTargetCompartment.SetImages(_imageListRetriever);
+         uxDose.Margin = cbApplicationType.Margin;
+         uxEndTime.Margin = cbApplicationType.Margin;
+         tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
       }
    }
 }
