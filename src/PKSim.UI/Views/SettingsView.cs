@@ -23,10 +23,7 @@ namespace PKSim.UI.Views
          _presenter = presenter;
       }
 
-      public override XtraTabControl TabControl
-      {
-         get { return tabSettings; }
-      }
+      public override XtraTabControl TabControl => tabSettings;
 
       public override void InitializeResources()
       {
@@ -34,8 +31,8 @@ namespace PKSim.UI.Views
          ExtraVisible = true;
          Icon = ApplicationIcons.Settings;
          Caption = PKSimConstants.UI.Options;
-         btnExtra.Text = PKSimConstants.UI.ResetLayout;
-         btnExtra.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetLayoutSettingsToolTip);
+         ExtraCaption = PKSimConstants.UI.ResetLayout;
+         ButtonExtra.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetLayoutSettingsToolTip);
          ActiveControl = TabControl;
       }
       protected override void SetActiveControl()

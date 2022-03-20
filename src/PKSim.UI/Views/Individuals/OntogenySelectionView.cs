@@ -68,10 +68,10 @@ namespace PKSim.UI.Views.Individuals
          base.InitializeResources();
          btnShowOntogeny.InitWithImage(ApplicationIcons.TimeProfileAnalysis, imageLocation: ImageLocation.MiddleCenter);
          btnShowOntogeny.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ShowOntogeny, ApplicationIcons.TimeProfileAnalysis);
-         btnShowOntogeny.AdjustButtonWithImageOnly();
+         tablePanel.AdjustButtonWithImageOnly(btnShowOntogeny);
          btnLoadOntogenyFromFile.InitWithImage(ApplicationIcons.Excel, imageLocation: ImageLocation.MiddleCenter);
          btnLoadOntogenyFromFile.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ImportOntogenyToolTip, PKSimConstants.UI.ImportOntogeny, ApplicationIcons.Excel);
-         btnLoadOntogenyFromFile.AdjustButtonWithImageOnly();
+         tablePanel.AdjustButtonWithImageOnly(btnLoadOntogenyFromFile);
          cbOntogeny.Height = btnLoadOntogenyFromFile.Height;
          layoutItemOntogeny.Text = PKSimConstants.UI.OntogenyVariabilityLike.FormatForLabel();
       }

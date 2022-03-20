@@ -45,13 +45,6 @@ namespace PKSim.UI.Views
          this.toolTipController = new DevExpress.Utils.ToolTipController(this.components);
          this.chkShowQualifiedTemplate = new DevExpress.XtraEditors.CheckEdit();
          this.layoutItemShowQualifiedTemplate = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -63,57 +56,6 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.chkShowQualifiedTemplate.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemShowQualifiedTemplate)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(832, 14);
-         this.btnCancel.Size = new System.Drawing.Size(166, 27);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(632, 14);
-         this.btnOk.Size = new System.Drawing.Size(196, 27);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Controls.Add(this.chkShowQualifiedTemplate);
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 887);
-         this.layoutControlBase.Size = new System.Drawing.Size(1011, 57);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.chkShowQualifiedTemplate, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Location = new System.Drawing.Point(200, 14);
-         this.btnExtra.Size = new System.Drawing.Size(140, 27);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemShowQualifiedTemplate});
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(1011, 57);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(619, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(200, 33);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(819, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(170, 33);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(331, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(288, 33);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Location = new System.Drawing.Point(187, 0);
-         this.layoutItemExtra.Size = new System.Drawing.Size(144, 33);
          // 
          // layoutControl
          // 
@@ -197,7 +139,6 @@ namespace PKSim.UI.Views
          this.chkShowQualifiedTemplate.Name = "chkShowQualifiedTemplate";
          this.chkShowQualifiedTemplate.Properties.Caption = "chkShowQualifiedTemplate";
          this.chkShowQualifiedTemplate.Size = new System.Drawing.Size(183, 24);
-         this.chkShowQualifiedTemplate.StyleController = this.layoutControlBase;
          this.chkShowQualifiedTemplate.TabIndex = 33;
          // 
          // layoutItemShowQualifiedTemplate
@@ -220,15 +161,7 @@ namespace PKSim.UI.Views
          this.Margin = new System.Windows.Forms.Padding(6);
          this.Name = "TemplateView";
          this.Text = "BuildingBlockFromTemplateView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);

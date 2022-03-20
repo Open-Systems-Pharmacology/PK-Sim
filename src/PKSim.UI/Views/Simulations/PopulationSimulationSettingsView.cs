@@ -1,11 +1,11 @@
 ﻿using System.Drawing;
-using DevExpress.XtraLayout.Utils;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
+using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
@@ -14,6 +14,7 @@ namespace PKSim.UI.Views.Simulations
    {
       private readonly IToolTipCreator _toolTipCreator;
       private IPopulationSimulationSettingsPresenter _presenter;
+      private readonly UxDropDownButton _uxDropDownButton = new UxDropDownButton();
 
       public PopulationSimulationSettingsView(Shell shell, IToolTipCreator toolTipCreator)
          : base(shell)
@@ -30,7 +31,7 @@ namespace PKSim.UI.Views.Simulations
 
       protected override void SetActiveControl()
       {
-         ActiveControl = btnOk;
+         ActiveControl = ButtonOk;
       }
 
       public void AddSettingsView(IView settingsView)
@@ -42,8 +43,9 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          Caption = PKSimConstants.UI.PopulationSimulationSettings;
-         var dropDownButtonItem = _presenter.CreateSaveSettingsButtonItem(_toolTipCreator, layoutControlBase);
-         dropDownButtonItem.Move(emptySpaceItemBase, InsertType.Left);
+         _presenter.UpdateSaveSettingsButtonItem(_toolTipCreator, _uxDropDownButton);
+         ReplaceExtraButtonWith(_uxDropDownButton);
+         tablePanel.AdjustLongButtonWidth(_uxDropDownButton);
          this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
    }

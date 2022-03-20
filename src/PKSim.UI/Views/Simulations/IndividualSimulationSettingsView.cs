@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Windows.Forms;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
@@ -7,7 +8,9 @@ using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
+using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
+using Padding = System.Windows.Forms.Padding;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -15,6 +18,7 @@ namespace PKSim.UI.Views.Simulations
    {
       private readonly IToolTipCreator _toolTipCreator;
       private IIndividualSimulationSettingsPresenter _presenter;
+      private readonly UxDropDownButton _uxDropDownButton;
 
       public IndividualSimulationSettingsView(Shell shell, IToolTipCreator toolTipCreator)
          : base(shell)
@@ -22,6 +26,7 @@ namespace PKSim.UI.Views.Simulations
          _toolTipCreator = toolTipCreator;
          InitializeComponent();
          ClientSize = new Size(UIConstants.Size.SIMULATION_SETTINGS_WIDTH, UIConstants.Size.SIMULATION_SETTINGS_HEIGHT);
+         _uxDropDownButton = new UxDropDownButton();
       }
 
       public void AttachPresenter(IIndividualSimulationSettingsPresenter presenter)
@@ -31,7 +36,7 @@ namespace PKSim.UI.Views.Simulations
 
       protected override void SetActiveControl()
       {
-         ActiveControl = btnOk;
+         ActiveControl = ButtonOk;
       }
 
       public void AddSettingsView(IView settingsView)
@@ -44,9 +49,9 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
          Caption = PKSimConstants.UI.IndividualSimulationSettings;
          Icon = ApplicationIcons.Simulation;
-
-         var dropDownButtonItem = _presenter.CreateSaveSettingsButtonItem(_toolTipCreator, layoutControlBase);
-         dropDownButtonItem.Move(emptySpaceItemBase, InsertType.Left);
+         _presenter.UpdateSaveSettingsButtonItem(_toolTipCreator, _uxDropDownButton);
+         ReplaceExtraButtonWith(_uxDropDownButton);
+         tablePanel.AdjustLongButtonWidth(_uxDropDownButton);
          this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
    }

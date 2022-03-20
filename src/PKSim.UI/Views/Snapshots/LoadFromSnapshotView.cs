@@ -56,8 +56,8 @@ namespace PKSim.UI.Views.Snapshots
 
       public void EnableButtons(bool cancelEnabled, bool okEnabled = false, bool startEnabled = false)
       {
-         btnCancel.Enabled = cancelEnabled;
-         btnOk.Enabled = okEnabled;
+         OkEnabled = okEnabled;
+         CancelEnabled = cancelEnabled;
          buttonStart.Enabled = startEnabled;
       }
 

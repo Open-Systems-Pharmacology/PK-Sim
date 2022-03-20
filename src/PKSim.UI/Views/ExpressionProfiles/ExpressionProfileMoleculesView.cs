@@ -82,15 +82,8 @@ namespace PKSim.UI.Views.ExpressionProfiles
          base.InitializeResources();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
          layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
-         // layoutGroupReferencePopulation.Text = PKSimConstants.UI.ReferencePopulation;
-         // layoutGroupMoleculeName.Text = PKSimConstants.UI.Molecule;
-         // layoutGroupReferencePopulation.ExpandButtonVisible = true;
-         // layoutGroupMoleculeName.ExpandButtonVisible = true;
          btnLoadFromDatabase.InitWithImage(ApplicationIcons.ExpressionProfile, PKSimConstants.UI.LoadExpressionFromDatabase);
-         // tablePanel.WithLongButtonWidth(columnIndexes: 2);
-         btnLoadFromDatabase.AdjustLongButtonWidth();
-         // layoutItemLoadFromDatabase.AdjustLongButtonSize();
-
+         tablePanel.AdjustLongButtonWidth(btnLoadFromDatabase);
       }
 
       public override bool HasError => _screenBinder.HasError || base.HasError;

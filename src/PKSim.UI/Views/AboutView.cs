@@ -31,7 +31,7 @@ namespace PKSim.UI.Views
 
       protected override void SetActiveControl()
       {
-         ActiveControl = btnOk;
+         ActiveControl = ButtonOk;
       }
 
       public void AttachPresenter(IAboutPresenter presenter)
@@ -88,7 +88,7 @@ namespace PKSim.UI.Views
          CancelVisible = false;
          linkSite.Text = Constants.PRODUCT_SITE;
          licenseAgreementLink.Text = Captions.ReadLicenseAgreement;
-         btnExtra.Text = PKSimConstants.UI.CheckForUpdate;
+         ExtraCaption = PKSimConstants.UI.CheckForUpdate;
          ExtraEnabled = true;
          ExtraVisible = true;
       }
