@@ -28,80 +28,28 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+         this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.panelControl = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
          // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(1033, 12);
-         this.btnCancel.Size = new System.Drawing.Size(221, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(770, 12);
-         this.btnOk.Size = new System.Drawing.Size(259, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 958);
-         this.layoutControlBase.Size = new System.Drawing.Size(1266, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(375, 22);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(1266, 46);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(758, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(263, 26);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(1021, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(225, 26);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(379, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(379, 26);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(379, 26);
-         // 
          // layoutControl1
          // 
-         this.layoutControl1.Controls.Add(this.panelControl);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.Root;
-         this.layoutControl1.Size = new System.Drawing.Size(1266, 958);
-         this.layoutControl1.TabIndex = 38;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.Controls.Add(this.panelControl);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(1266, 958);
+         this.layoutControl.TabIndex = 38;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // Root
          // 
@@ -135,21 +83,13 @@
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "StarterRelativeExpressionView";
          this.ClientSize = new System.Drawing.Size(1266, 1004);
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "StarterRelativeExpressionView";
          this.Text = "StarterRelativeExpressionView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
-         this.Controls.SetChildIndex(this.layoutControl1, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
+         this.Controls.SetChildIndex(this.layoutControl, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
@@ -160,7 +100,7 @@
 
       #endregion
 
-      private DevExpress.XtraLayout.LayoutControl layoutControl1;
+      private DevExpress.XtraLayout.LayoutControl layoutControl;
       private DevExpress.XtraEditors.PanelControl panelControl;
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;

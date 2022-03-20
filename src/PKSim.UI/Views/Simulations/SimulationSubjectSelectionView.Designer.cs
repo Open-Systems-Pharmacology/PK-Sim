@@ -32,8 +32,6 @@
          this.radioGroupSimulationSubject = new DevExpress.XtraEditors.RadioGroup();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -98,9 +96,6 @@
          this.Name = "SimulationSubjectSelectionView";
          this.Text = "SimulationSubjectSelectionView";
          this.Controls.SetChildIndex(this.layoutControl, 0);
-         this.Controls.SetChildIndex(this.layoutControlBase, 1);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);

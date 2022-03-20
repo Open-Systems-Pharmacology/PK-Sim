@@ -49,16 +49,6 @@
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
          this.SuspendLayout();
          // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(493, 12);
-         this.btnCancel.Size = new System.Drawing.Size(102, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(370, 12);
-         this.btnOk.Size = new System.Drawing.Size(119, 22);
-         // 
          // gridParameterId
          // 
          this.gridParameterId.Location = new System.Drawing.Point(12, 12);

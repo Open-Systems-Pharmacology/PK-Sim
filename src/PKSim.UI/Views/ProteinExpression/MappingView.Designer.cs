@@ -42,16 +42,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(338, 12);
-         this.btnCancel.Size = new System.Drawing.Size(68, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(254, 12);
-         this.btnOk.Size = new System.Drawing.Size(80, 22);
+        
          // 
          // layoutControl1
          // 

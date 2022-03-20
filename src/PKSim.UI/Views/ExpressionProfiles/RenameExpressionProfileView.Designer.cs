@@ -37,13 +37,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemMoleculeName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemCategory = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -53,51 +46,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeName)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemCategory)).BeginInit();
          this.SuspendLayout();
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(543, 14);
-         this.btnCancel.Size = new System.Drawing.Size(112, 27);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(407, 14);
-         this.btnOk.Size = new System.Drawing.Size(132, 27);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 84);
-         this.layoutControlBase.Size = new System.Drawing.Size(668, 57);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(193, 27);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(668, 57);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(394, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(136, 33);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(530, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(116, 33);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(197, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(197, 33);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(197, 33);
          // 
          // layoutControl
          // 
@@ -171,15 +119,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
          this.Name = "RenameExpressionProfileView";
          this.Text = "RenameExpressionProfileView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);

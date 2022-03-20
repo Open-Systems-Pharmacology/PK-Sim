@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors;
-using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Assets;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Views.Core
 {
@@ -17,18 +15,22 @@ namespace PKSim.UI.Views.Core
    {
       private readonly DXPopupMenu _popupMenu;
 
-      public UxDropDownButton(string caption, ApplicationIcon icon = null, SuperToolTip superTip = null)
+      public UxDropDownButton()
       {
-         Text = caption;
-
-         Image = imageFrom(icon);
-         SuperTip = superTip;
          DropDownArrowStyle = DropDownArrowStyle.Show;
          ImageLocation = ImageLocation.MiddleLeft;
          _popupMenu = new DXPopupMenu();
 
          DropDownControl = _popupMenu;
       }
+
+      // public UxDropDownButton(string caption= null, ApplicationIcon icon = null, SuperToolTip superTip = null)
+      // {
+      //    Text = caption;
+      //
+      //    Image = imageFrom(icon);
+      //    SuperTip = superTip;
+      // }
 
       public void AddMenu(string caption, Action action, ApplicationIcon icon = null)
       {
@@ -48,6 +50,7 @@ namespace PKSim.UI.Views.Core
                IoC.Resolve<IExceptionManager>().LogException(e);
             }
          }
+
          _popupMenu.Items.Add(new DXMenuItem(caption, (o, e) => executeAction(), imageFrom(icon)));
       }
 

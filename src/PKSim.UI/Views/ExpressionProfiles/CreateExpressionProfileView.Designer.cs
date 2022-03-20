@@ -34,55 +34,30 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.labelCategoryDescription = new DevExpress.XtraEditors.LabelControl();
          this.cbMoleculeName = new OSPSuite.UI.Controls.UxMRUEdit();
          this.tbCategory = new DevExpress.XtraEditors.TextEdit();
-         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemMoleculeName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemCategory = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemSpecies = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
+         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
+         this.layoutItemSpecies = new DevExpress.XtraLayout.LayoutControlItem();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeName)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemCategory)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).BeginInit();
          this.SuspendLayout();
-        
          // 
-         // layoutControlGroupBase
+         // tablePanel
          // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(565, 46);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(331, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(115, 26);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(446, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(99, 26);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(166, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(165, 26);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(166, 26);
+         this.tablePanel.Location = new System.Drawing.Point(0, 133);
+         this.tablePanel.Size = new System.Drawing.Size(565, 43);
          // 
          // layoutControl
          // 
@@ -95,7 +70,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.Root;
-         this.layoutControl.Size = new System.Drawing.Size(565, 130);
+         this.layoutControl.Size = new System.Drawing.Size(565, 133);
          this.layoutControl.TabIndex = 38;
          this.layoutControl.Text = "uxLayoutControl1";
          // 
@@ -128,17 +103,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.tbCategory.StyleController = this.layoutControl;
          this.tbCategory.TabIndex = 5;
          // 
-         // cbSpecies
-         // 
-         this.cbSpecies.Location = new System.Drawing.Point(144, 12);
-         this.cbSpecies.Name = "cbSpecies";
-         this.cbSpecies.Properties.AllowMouseWheel = false;
-         this.cbSpecies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbSpecies.Size = new System.Drawing.Size(409, 20);
-         this.cbSpecies.StyleController = this.layoutControl;
-         this.cbSpecies.TabIndex = 6;
-         // 
          // Root
          // 
          this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -149,7 +113,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
             this.layoutItemSpecies,
             this.layoutControlItem1});
          this.Root.Name = "Root";
-         this.Root.Size = new System.Drawing.Size(565, 130);
+         this.Root.Size = new System.Drawing.Size(565, 133);
          this.Root.TextVisible = false;
          // 
          // layoutItemMoleculeName
@@ -172,6 +136,26 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutItemCategory.Size = new System.Drawing.Size(545, 24);
          this.layoutItemCategory.TextSize = new System.Drawing.Size(120, 13);
          // 
+         // layoutControlItem1
+         // 
+         this.layoutControlItem1.Control = this.labelCategoryDescription;
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 72);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(545, 41);
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
+         // 
+         // cbSpecies
+         // 
+         this.cbSpecies.Location = new System.Drawing.Point(144, 12);
+         this.cbSpecies.Name = "cbSpecies";
+         this.cbSpecies.Properties.AllowMouseWheel = false;
+         this.cbSpecies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.cbSpecies.Size = new System.Drawing.Size(409, 20);
+         this.cbSpecies.StyleController = this.layoutControl;
+         this.cbSpecies.TabIndex = 6;
+         // 
          // layoutItemSpecies
          // 
          this.layoutItemSpecies.Control = this.cbSpecies;
@@ -179,15 +163,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutItemSpecies.Name = "layoutItemSpecies";
          this.layoutItemSpecies.Size = new System.Drawing.Size(545, 24);
          this.layoutItemSpecies.TextSize = new System.Drawing.Size(120, 13);
-         // 
-         // layoutControlItem1
-         // 
-         this.layoutControlItem1.Control = this.labelCategoryDescription;
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 72);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(545, 38);
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextVisible = false;
          // 
          // CreateExpressionProfileView
          // 
@@ -199,26 +174,21 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.Margin = new System.Windows.Forms.Padding(5);
          this.Name = "CreateExpressionProfileView";
          this.Text = "CreateExpressionProfileView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
+         this.Controls.SetChildIndex(this.tablePanel, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
+         this.layoutControl.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbCategory.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeName)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemCategory)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
