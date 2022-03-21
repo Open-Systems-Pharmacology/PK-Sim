@@ -32,7 +32,7 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IDimension _dimensionForGFR;
-      public static readonly string TARGET_GFR = "Target eGFR";
+      public static readonly string TARGET_GFR = "eGFR";
       private readonly IDimension _ageDimension;
       private const int CKD_VALUE_ORIGIN_ID = 92;
       private const string GFR_UNIT = "ml/min/1.73m²";
@@ -125,15 +125,24 @@ namespace PKSim.Core.Services
 
          var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
-         //Categorial Parameters
+         //Categorial Parameters as constant: We set the value as is as the value will not be reset when creating a population
          updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor);
+
+         //Categorial Parameters distributed: We apply the variation to the default value
          updateParameterFunc(gastricEmptyingTime, gastricEmptyingTime.Value * gastricEmptyingTimeFactor);
          updateParameterFunc(smallIntestinalTransitTime, smallIntestinalTransitTime.Value * smallIntestinalTransitTimeFactor);
 
          //Special case for Hematocrit
          updateParameterFunc(hct, hct.Value * getHematocritFactor(targetGFRValue, individual.OriginData.Gender));
 
+         //no parameters to lock for now
+         lockParametersAfterCKDImplementation();
          return true;
+      }
+
+      private void lockParametersAfterCKDImplementation(params IParameter[] parameters)
+      {
+         parameters.Each(x => x.Editable = false);
       }
 
       private void updateParameterValues(IParameter parameter, double value)
@@ -158,7 +167,7 @@ namespace PKSim.Core.Services
          }
 
          //constant formula
-         parameter.Value = value;
+         updateParameterValues(parameter, value);
          parameter.DefaultValue = value;
          parameter.IsFixedValue = false;
       }
