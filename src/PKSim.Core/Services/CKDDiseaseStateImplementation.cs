@@ -32,7 +32,7 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IDimension _dimensionForGFR;
-      public static readonly string TARGET_GFR = "Target eGFR";
+      public static readonly string TARGET_GFR = "eGFR";
       private readonly IDimension _ageDimension;
       private const int CKD_VALUE_ORIGIN_ID = 92;
       private const string GFR_UNIT = "ml/min/1.73m²";
@@ -135,7 +135,8 @@ namespace PKSim.Core.Services
          //Special case for Hematocrit
          updateParameterFunc(hct, hct.Value * getHematocritFactor(targetGFRValue, individual.OriginData.Gender));
 
-         lockParametersAfterCKDImplementation(kidneyVolume, GFR_Spec);
+         //no parameters to lock for now
+         lockParametersAfterCKDImplementation();
          return true;
       }
 
