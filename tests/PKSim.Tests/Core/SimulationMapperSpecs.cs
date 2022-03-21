@@ -537,7 +537,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, new SimulationContext{Project = _project, Run = true});
+         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(_project, run: true));
       }
 
       [Observation]
@@ -659,7 +659,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, new SimulationContext {Project = _project, Run = false});
+         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(_project, run: false));
       }
 
       [Observation]

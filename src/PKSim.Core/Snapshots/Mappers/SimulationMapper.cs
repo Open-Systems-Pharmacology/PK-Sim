@@ -19,8 +19,18 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class SimulationContext
    {
-      public PKSimProject Project { get; set; }
-      public bool Run { get; set; }
+      public PKSimProject Project { get; }
+      public bool Run { get;  }
+      
+      public SimulationContext(PKSimProject project, bool run)
+      {
+         Project = project;
+         Run = run;
+      }
+
+      public int NumberOfSimulationsToLoad { get; set; } = 1;
+      public int NumberOfSimulationsLoaded { get; set; } = 1;
+
    }
 
    public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, SimulationContext, PKSimProject>
@@ -259,7 +269,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, SimulationContext simulationContext)
       {
          var project = simulationContext.Project;
-         _logger.AddDebug(PKSimConstants.Information.LoadingSimulation(snapshot.Name), project.Name);
+         _logger.AddInfo(PKSimConstants.Information.LoadingSimulation(snapshot.Name, simulationContext.NumberOfSimulationsLoaded, simulationContext.NumberOfSimulationsToLoad), project.Name);
 
          //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered 
          //in global context once the whole snapshot mapping process is completed

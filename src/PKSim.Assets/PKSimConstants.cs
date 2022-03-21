@@ -1077,7 +1077,7 @@ namespace PKSim.Assets
 
          public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from {ObjectTypes.Snapshot.ToLower()}";
 
-         public static string LoadingSimulation(string simulationName) => $"Loading simulation '{simulationName}'...";
+         public static string LoadingSimulation(string simulationName, int count, int total) => $"Loading simulation '{simulationName}' ({count}/{total})...";
 
          public static string StartingQualificationPlan(string qualificationPlan) => Starting(ObjectTypes.QualificationPlan, qualificationPlan);
 
@@ -1091,7 +1091,7 @@ namespace PKSim.Assets
 
          public static readonly string LoadFromTemplate = UI.LoadFromTemplate;
          public static readonly string SaveAsTemplate = UI.SaveAsTemplate;
-         public static readonly string SaveAsSytemTemplate = "Save as System Template...";
+         public static readonly string SaveAsSystemTemplate = "Save as System Template...";
          public static readonly string Reset = "Reset";
          public static readonly string Undo = "Undo";
          public static readonly string Diff = "Show Differences...";

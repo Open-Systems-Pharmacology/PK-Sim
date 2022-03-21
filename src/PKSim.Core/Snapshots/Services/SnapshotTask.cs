@@ -184,7 +184,7 @@ namespace PKSim.Core.Snapshots.Services
 
       public async Task<PKSimProject> LoadProjectFromSnapshotAsync(Project snapshot, bool runSimulations)
       {
-         var project = await _projectMapper.MapToModel(snapshot, new ProjectContext {RunSimulations = runSimulations});
+         var project = await _projectMapper.MapToModel(snapshot, new ProjectContext(runSimulations));
          return projectWithUpdatedProperties(project, snapshot?.Name);
       }
 
