@@ -1966,7 +1966,6 @@ namespace PKSim.Assets
          public static readonly string ExportSimulationToCpp = $"Export simulation to C++ code";
          public static readonly string ExportODEForMatlab = "Export simulation to Matlab® ODE";
          public static readonly string ExportODEForR = "Export simulation to R ODE";
-         public static readonly string ReallyCancel = "Do you really want to cancel?";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string BuildingBlockType = "Building Block Type";
          public static readonly string MetabolizingEnzyme = "Metabolizing Enzyme";

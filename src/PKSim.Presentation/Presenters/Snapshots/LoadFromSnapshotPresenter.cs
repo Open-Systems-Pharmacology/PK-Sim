@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -17,7 +18,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
    public interface ILoadFromSnapshotPresenter : IPresenter<ILoadFromSnapshotView>, IDisposablePresenter
    {
       /// <summary>
-      /// Starts the snapshot file selection process. Returns <c>true</c> if a file was selected of <c>false</c> if the selection was canceled
+      ///    Starts the snapshot file selection process. Returns <c>true</c> if a file was selected of <c>false</c> if the
+      ///    selection was canceled
       /// </summary>
       bool SelectFile();
 
@@ -66,6 +68,18 @@ namespace PKSim.Presentation.Presenters.Snapshots
          _view.Caption = PKSimConstants.UI.LoadObjectFromSnapshot(typeToLoad);
          _view.AddLogView(_logPresenter.BaseView);
          _view.BindTo(_loadFromSnapshotDTO);
+      }
+
+      public override bool ShouldClose
+      {
+         get
+         {
+            if (!ModelIsDefined)
+               return true;
+
+            var shouldCancel = _dialogCreator.MessageBoxYesNo(Captions.ReallyCancel);
+            return shouldCancel == ViewResult.Yes;
+         }
       }
 
       public IReadOnlyList<T> LoadModelFromSnapshot()
