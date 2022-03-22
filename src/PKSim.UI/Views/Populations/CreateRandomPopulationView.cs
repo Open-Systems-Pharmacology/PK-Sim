@@ -1,10 +1,8 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
-
+﻿using OSPSuite.Assets;
+using PKSim.Assets;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Populations
 {

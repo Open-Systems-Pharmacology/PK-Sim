@@ -3,7 +3,7 @@ using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.Populations
 {
-   public static class RamdomPopulationItems
+   public static class RandomPopulationItems
    {
       public static readonly PopulationItem<IRandomPopulationSettingsPresenter> Settings = new PopulationItem<IRandomPopulationSettingsPresenter>();
       public static readonly PopulationItem<IPopulationMoleculesPresenter> Molecules = new PopulationItem<IPopulationMoleculesPresenter>();

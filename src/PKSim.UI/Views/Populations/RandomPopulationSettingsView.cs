@@ -61,13 +61,13 @@ namespace PKSim.UI.Views.Populations
          _repositoryForDiscreteUnits.Buttons.Clear();
 
          gridViewParameters.RowCellStyle += updateRowCellStyle;
-
          gridViewParameters.ShowColumnHeaders = false;
+
+         layoutItemIndividual.FillWith(_uxIndividualSelection);
       }
 
       public override void InitializeBinding()
       {
-         layoutItemIndividual.FillWith(_uxIndividualSelection);
          gridViewParameters.ShowingEditor += onShowingEditor;
 
          _settingsBinder.Bind(x => x.Population)

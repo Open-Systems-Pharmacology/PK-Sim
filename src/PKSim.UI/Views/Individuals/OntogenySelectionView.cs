@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraEditors;
+﻿using System.Windows.Forms;
+using DevExpress.XtraEditors;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -68,11 +69,14 @@ namespace PKSim.UI.Views.Individuals
          base.InitializeResources();
          btnShowOntogeny.InitWithImage(ApplicationIcons.TimeProfileAnalysis, imageLocation: ImageLocation.MiddleCenter);
          btnShowOntogeny.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ShowOntogeny, ApplicationIcons.TimeProfileAnalysis);
-         tablePanel.AdjustButtonWithImageOnly(btnShowOntogeny);
          btnLoadOntogenyFromFile.InitWithImage(ApplicationIcons.Excel, imageLocation: ImageLocation.MiddleCenter);
          btnLoadOntogenyFromFile.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ImportOntogenyToolTip, PKSimConstants.UI.ImportOntogeny, ApplicationIcons.Excel);
-         tablePanel.AdjustButtonWithImageOnly(btnLoadOntogenyFromFile);
-         cbOntogeny.Height = btnLoadOntogenyFromFile.Height;
+         //Make size of buttons the size of the combo box
+         btnShowOntogeny.Margin = cbOntogeny.Margin;
+         btnLoadOntogenyFromFile.Margin = cbOntogeny.Margin;
+         btnLoadOntogenyFromFile.UpdateMargin( right:0);
+         tablePanel.AdjustButtonSize(btnShowOntogeny, cbOntogeny.Height, cbOntogeny.Height);
+         tablePanel.AdjustButtonSize(btnLoadOntogenyFromFile, cbOntogeny.Height, cbOntogeny.Height);
          layoutItemOntogeny.Text = PKSimConstants.UI.OntogenyVariabilityLike.FormatForLabel();
       }
    }
