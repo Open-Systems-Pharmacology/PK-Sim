@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using DevExpress.Utils.Layout;
 using DevExpress.XtraEditors;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
@@ -75,9 +76,11 @@ namespace PKSim.UI.Views.Individuals
          btnShowOntogeny.Margin = cbOntogeny.Margin;
          btnLoadOntogenyFromFile.Margin = cbOntogeny.Margin;
          btnLoadOntogenyFromFile.UpdateMargin( right:0);
-         tablePanel.AdjustButtonSize(btnShowOntogeny, cbOntogeny.Height, cbOntogeny.Height);
-         tablePanel.AdjustButtonSize(btnLoadOntogenyFromFile, cbOntogeny.Height, cbOntogeny.Height);
+         tablePanel.AdjustControlSize(btnShowOntogeny, cbOntogeny.Height, cbOntogeny.Height);
+         tablePanel.AdjustControlSize(btnLoadOntogenyFromFile, cbOntogeny.Height, cbOntogeny.Height);
          layoutItemOntogeny.Text = PKSimConstants.UI.OntogenyVariabilityLike.FormatForLabel();
       }
+
+
    }
 }

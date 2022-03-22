@@ -230,7 +230,7 @@ namespace PKSim.UI.Views.Individuals
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 24F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
          this.tablePanel.Size = new System.Drawing.Size(574, 163);
          this.tablePanel.TabIndex = 19;
@@ -238,7 +238,7 @@ namespace PKSim.UI.Views.Individuals
          // labelValueOrigin
          // 
          this.tablePanel.SetColumn(this.labelValueOrigin, 0);
-         this.labelValueOrigin.Location = new System.Drawing.Point(3, 136);
+         this.labelValueOrigin.Location = new System.Drawing.Point(3, 135);
          this.labelValueOrigin.Name = "labelValueOrigin";
          this.tablePanel.SetRow(this.labelValueOrigin, 5);
          this.labelValueOrigin.Size = new System.Drawing.Size(76, 13);

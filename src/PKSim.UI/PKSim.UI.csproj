@@ -51,9 +51,9 @@
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.0.2" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.0.131" />
-    <PackageReference Include="OSPSuite.UI" Version="11.0.131" />
-    <PackageReference Include="OSPSuite.Core" Version="11.0.131" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.0.132" />
+    <PackageReference Include="OSPSuite.UI" Version="11.0.132" />
+    <PackageReference Include="OSPSuite.Core" Version="11.0.132" />
   </ItemGroup>
 
   <ItemGroup>
