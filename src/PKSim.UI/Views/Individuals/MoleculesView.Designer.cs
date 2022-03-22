@@ -37,13 +37,8 @@ namespace PKSim.UI.Views.Individuals
          this.components = new System.ComponentModel.Container();
          this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
          this.treeView = new OSPSuite.UI.Controls.UxImageTreeView();
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.panelExpression = new DevExpress.XtraEditors.PanelControl();
          this.lblLinkedExpressionProfile = new DevExpress.XtraEditors.LabelControl();
-         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutItemLinkedExpressionProfile = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutGroup = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.panelExpression = new DevExpress.XtraEditors.PanelControl();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl.Panel1)).BeginInit();
@@ -52,13 +47,7 @@ namespace PKSim.UI.Views.Individuals
          this.splitContainerControl.Panel2.SuspendLayout();
          this.splitContainerControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.treeView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
-         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelExpression)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemLinkedExpressionProfile)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutGroup)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
          // 
          // splitContainerControl
@@ -74,7 +63,8 @@ namespace PKSim.UI.Views.Individuals
          // 
          // splitContainerControl.Panel2
          // 
-         this.splitContainerControl.Panel2.Controls.Add(this.layoutControl);
+         this.splitContainerControl.Panel2.Controls.Add(this.panelExpression);
+         this.splitContainerControl.Panel2.Controls.Add(this.lblLinkedExpressionProfile);
          this.splitContainerControl.Panel2.Text = "PanelContent";
          this.splitContainerControl.Size = new System.Drawing.Size(735, 486);
          this.splitContainerControl.SplitterPosition = 184;
@@ -97,75 +87,23 @@ namespace PKSim.UI.Views.Individuals
          this.treeView.ToolTipForNode = null;
          this.treeView.UseLazyLoading = false;
          // 
-         // layoutControl
-         // 
-         this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.panelExpression);
-         this.layoutControl.Controls.Add(this.lblLinkedExpressionProfile);
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.Root = this.Root;
-         this.layoutControl.Size = new System.Drawing.Size(541, 486);
-         this.layoutControl.TabIndex = 0;
-         this.layoutControl.Text = "uxLayoutControl1";
-         // 
-         // panelExpression
-         // 
-         this.panelExpression.Location = new System.Drawing.Point(4, 31);
-         this.panelExpression.Name = "panelExpression";
-         this.panelExpression.Size = new System.Drawing.Size(523, 451);
-         this.panelExpression.TabIndex = 5;
-         // 
          // lblLinkedExpressionProfile
          // 
-         this.lblLinkedExpressionProfile.Location = new System.Drawing.Point(4, 14);
+         this.lblLinkedExpressionProfile.Dock = System.Windows.Forms.DockStyle.Top;
+         this.lblLinkedExpressionProfile.Location = new System.Drawing.Point(0, 0);
          this.lblLinkedExpressionProfile.Name = "lblLinkedExpressionProfile";
-         this.lblLinkedExpressionProfile.Size = new System.Drawing.Size(122, 13);
-         this.lblLinkedExpressionProfile.StyleController = this.layoutControl;
+         this.lblLinkedExpressionProfile.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
+         this.lblLinkedExpressionProfile.Size = new System.Drawing.Size(122, 19);
          this.lblLinkedExpressionProfile.TabIndex = 4;
          this.lblLinkedExpressionProfile.Text = "lblLinkedExpressionProfile";
          // 
-         // Root
+         // panelExpression
          // 
-         this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.Root.GroupBordersVisible = false;
-         this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutGroup});
-         this.Root.Name = "Root";
-         this.Root.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.Root.Size = new System.Drawing.Size(541, 486);
-         this.Root.TextVisible = false;
-         // 
-         // layoutItemLinkedExpressionProfile
-         // 
-         this.layoutItemLinkedExpressionProfile.Control = this.lblLinkedExpressionProfile;
-         this.layoutItemLinkedExpressionProfile.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemLinkedExpressionProfile.Name = "layoutItemLinkedExpressionProfile";
-         this.layoutItemLinkedExpressionProfile.Size = new System.Drawing.Size(527, 17);
-         this.layoutItemLinkedExpressionProfile.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemLinkedExpressionProfile.TextVisible = false;
-         // 
-         // layoutGroup
-         // 
-         this.layoutGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.layoutGroup.GroupBordersVisible = false;
-         this.layoutGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemLinkedExpressionProfile,
-            this.layoutControlItem1});
-         this.layoutGroup.Location = new System.Drawing.Point(0, 0);
-         this.layoutGroup.Name = "layoutGroup";
-         this.layoutGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 10, 10, 0);
-         this.layoutGroup.Size = new System.Drawing.Size(541, 486);
-         // 
-         // layoutControlItem1
-         // 
-         this.layoutControlItem1.Control = this.panelExpression;
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 17);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(527, 455);
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextVisible = false;
+         this.panelExpression.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.panelExpression.Location = new System.Drawing.Point(0, 19);
+         this.panelExpression.Name = "panelExpression";
+         this.panelExpression.Size = new System.Drawing.Size(541, 467);
+         this.panelExpression.TabIndex = 5;
          // 
          // MoleculesView
          // 
@@ -179,16 +117,11 @@ namespace PKSim.UI.Views.Individuals
          this.splitContainerControl.Panel1.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl.Panel2)).EndInit();
          this.splitContainerControl.Panel2.ResumeLayout(false);
+         this.splitContainerControl.Panel2.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
          this.splitContainerControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.treeView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
-         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelExpression)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemLinkedExpressionProfile)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutGroup)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -197,13 +130,8 @@ namespace PKSim.UI.Views.Individuals
 
       protected DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
       private UxImageTreeView treeView;
-      private UxLayoutControl layoutControl;
-      private DevExpress.XtraEditors.PanelControl panelExpression;
       private DevExpress.XtraEditors.LabelControl lblLinkedExpressionProfile;
-      private DevExpress.XtraLayout.LayoutControlGroup Root;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutGroup;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemLinkedExpressionProfile;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+      private DevExpress.XtraEditors.PanelControl panelExpression;
    }
 }
 

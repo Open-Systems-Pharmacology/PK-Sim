@@ -17,21 +17,21 @@ namespace PKSim.Presentation.Presenters.Populations
       public CreateRandomPopulationPresenter(ICreateRandomPopulationView view, ISubPresenterItemManager<IPopulationItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator,
                                              IBuildingBlockPropertiesMapper propertiesMapper, IObjectBaseDTOFactory buildingBlockDTOFactory,
                                              IBuildingBlockRepository buildingBlockRepository)
-         : base(view, subPresenterItemManager, RamdomPopulationItems.All, dialogCreator, propertiesMapper, buildingBlockDTOFactory, buildingBlockRepository)
+         : base(view, subPresenterItemManager, RandomPopulationItems.All, dialogCreator, propertiesMapper, buildingBlockDTOFactory, buildingBlockRepository)
       {
       }
 
       protected override IPopulationSettingsPresenter<RandomPopulation> RetrieveSettingsPresenter()
       {
-         return PresenterAt(RamdomPopulationItems.Settings);
+         return PresenterAt(RandomPopulationItems.Settings);
       }
 
-      protected override ISubPresenterItem SettingPresenterItem => RamdomPopulationItems.Settings;
+      protected override ISubPresenterItem SettingPresenterItem => RandomPopulationItems.Settings;
 
-      protected override ISubPresenterItem<IPopulationAdvancedParametersPresenter> AdvancedParametersPresenterItem => RamdomPopulationItems.AdvancedParameters;
+      protected override ISubPresenterItem<IPopulationAdvancedParametersPresenter> AdvancedParametersPresenterItem => RandomPopulationItems.AdvancedParameters;
 
-      protected override ISubPresenterItem<IPopulationMoleculesPresenter> MoleculesPresenterItem => RamdomPopulationItems.Molecules;
+      protected override ISubPresenterItem<IPopulationMoleculesPresenter> MoleculesPresenterItem => RandomPopulationItems.Molecules;
 
-      protected override ISubPresenterItem<IPopulationAdvancedParameterDistributionPresenter> DistributionPresenterItem => RamdomPopulationItems.ParameterDistribution;
+      protected override ISubPresenterItem<IPopulationAdvancedParameterDistributionPresenter> DistributionPresenterItem => RandomPopulationItems.ParameterDistribution;
    }
 }

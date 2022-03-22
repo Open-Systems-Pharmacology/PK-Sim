@@ -1,7 +1,6 @@
 ﻿using System;
 using DevExpress.XtraLayout.Utils;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;

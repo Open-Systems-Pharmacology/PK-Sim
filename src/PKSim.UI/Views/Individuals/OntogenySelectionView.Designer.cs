@@ -47,7 +47,7 @@
          this.cbOntogeny.Location = new System.Drawing.Point(124, 4);
          this.cbOntogeny.Margin = new System.Windows.Forms.Padding(4);
          this.cbOntogeny.Name = "cbOntogeny";
-         this.cbOntogeny.Properties.AutoHeight = false;
+         
          this.cbOntogeny.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.tablePanel.SetRow(this.cbOntogeny, 0);

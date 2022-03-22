@@ -272,10 +272,12 @@ namespace PKSim.UI.Views.Individuals
          var control = view.DowncastTo<Control>();
          var row = tablePanel.RowFor(labelValueOrigin);
          var rowIndex = tablePanel.GetRow(labelValueOrigin);
+         var colIndex = tablePanel.GetColumn(uxAge);
          tablePanel.Controls.Add(control);
-         tablePanel.SetCell(control, rowIndex, 1);
-         control.Margin = new Padding(uxAge.Margin.Left, control.Margin.Top, uxAge.Margin.Right, control.Margin.Bottom);
-       //  row.Height = cbSpecies.Height;
+         tablePanel.SetCell(control, rowIndex, colIndex);
+         control.Margin = uxAge.Margin;
+         row.Height = tablePanel.RowFor(uxAge).Height;
+         control.Height = cbSpecies.Height;
       }
 
       public bool HeightAndBMIVisible
@@ -345,7 +347,6 @@ namespace PKSim.UI.Views.Individuals
          lblDescription.AsDescription();
          btnMeanValues.Margin = new Padding(btnMeanValues.Margin.Left, uxHeight.Margin.Top, btnMeanValues.Margin.Right, btnMeanValues.Margin.Bottom);
          tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
-
       }
 
       public override string Caption => PKSimConstants.UI.Biometrics;
