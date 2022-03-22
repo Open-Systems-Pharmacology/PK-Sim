@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -17,7 +18,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
    public interface ILoadFromSnapshotPresenter : IPresenter<ILoadFromSnapshotView>, IDisposablePresenter
    {
       /// <summary>
-      /// Starts the snapshot file selection process. Returns <c>true</c> if a file was selected of <c>false</c> if the selection was canceled
+      ///    Starts the snapshot file selection process. Returns <c>true</c> if a file was selected of <c>false</c> if the
+      ///    selection was canceled
       /// </summary>
       bool SelectFile();
 
@@ -68,6 +70,18 @@ namespace PKSim.Presentation.Presenters.Snapshots
          _view.BindTo(_loadFromSnapshotDTO);
       }
 
+      public override bool ShouldClose
+      {
+         get
+         {
+            if (!ModelIsDefined)
+               return true;
+
+            var shouldCancel = _dialogCreator.MessageBoxYesNo(Captions.ReallyCancel);
+            return shouldCancel == ViewResult.Yes;
+         }
+      }
+
       public IReadOnlyList<T> LoadModelFromSnapshot()
       {
          if (!SelectFile())
@@ -83,6 +97,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          var fileName = selectSnapshotFile();
          if (string.IsNullOrEmpty(fileName))
             return false;
+
+         ClearModel();
 
          _loadFromSnapshotDTO.SnapshotFile = fileName;
          return true;
@@ -112,7 +128,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          }
          finally
          {
-            _view.EnableButtons(cancelEnabled: true, okEnabled: ModelIsDefined, startEnabled: CanClose);
+            //Start is disabled if the model was loaded successfully
+            _view.EnableButtons(cancelEnabled: true, okEnabled: ModelIsDefined, startEnabled: !ModelIsDefined);
          }
       }
 
@@ -122,8 +139,14 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       protected async Task PerformLoadAsync(string snapshotFile)
       {
-         ClearModel(_model);
+         ClearModel();
          _model = await LoadModelAsync(snapshotFile);
+      }
+
+      protected virtual void ClearModel()
+      {
+         ClearModel(_model);
+         _model = null;
       }
 
       protected virtual void ClearModel(IEnumerable<T> model)

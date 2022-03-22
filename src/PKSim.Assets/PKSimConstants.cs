@@ -1077,7 +1077,7 @@ namespace PKSim.Assets
 
          public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from {ObjectTypes.Snapshot.ToLower()}";
 
-         public static string LoadingSimulation(string simulationName) => $"Loading simulation '{simulationName}'...";
+         public static string LoadingSimulation(string simulationName, int count, int total) => $"Loading simulation '{simulationName}' ({count}/{total})...";
 
          public static string StartingQualificationPlan(string qualificationPlan) => Starting(ObjectTypes.QualificationPlan, qualificationPlan);
 
@@ -1091,7 +1091,7 @@ namespace PKSim.Assets
 
          public static readonly string LoadFromTemplate = UI.LoadFromTemplate;
          public static readonly string SaveAsTemplate = UI.SaveAsTemplate;
-         public static readonly string SaveAsSytemTemplate = "Save as System Template...";
+         public static readonly string SaveAsSystemTemplate = "Save as System Template...";
          public static readonly string Reset = "Reset";
          public static readonly string Undo = "Undo";
          public static readonly string Diff = "Show Differences...";
@@ -1966,7 +1966,6 @@ namespace PKSim.Assets
          public static readonly string ExportSimulationToCpp = $"Export simulation to C++ code";
          public static readonly string ExportODEForMatlab = "Export simulation to Matlab® ODE";
          public static readonly string ExportODEForR = "Export simulation to R ODE";
-         public static readonly string ReallyCancel = "Do you really want to cancel?";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string BuildingBlockType = "Building Block Type";
          public static readonly string MetabolizingEnzyme = "Metabolizing Enzyme";
