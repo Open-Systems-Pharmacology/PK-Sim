@@ -98,6 +98,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          if (string.IsNullOrEmpty(fileName))
             return false;
 
+         ClearModel();
+
          _loadFromSnapshotDTO.SnapshotFile = fileName;
          return true;
       }
@@ -126,7 +128,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          }
          finally
          {
-            _view.EnableButtons(cancelEnabled: true, okEnabled: ModelIsDefined, startEnabled: CanClose);
+            //Start is disabled if the model was loaded successfully
+            _view.EnableButtons(cancelEnabled: true, okEnabled: ModelIsDefined, startEnabled: !ModelIsDefined);
          }
       }
 
@@ -136,8 +139,14 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       protected async Task PerformLoadAsync(string snapshotFile)
       {
-         ClearModel(_model);
+         ClearModel();
          _model = await LoadModelAsync(snapshotFile);
+      }
+
+      protected virtual void ClearModel()
+      {
+         ClearModel(_model);
+         _model = null;
       }
 
       protected virtual void ClearModel(IEnumerable<T> model)

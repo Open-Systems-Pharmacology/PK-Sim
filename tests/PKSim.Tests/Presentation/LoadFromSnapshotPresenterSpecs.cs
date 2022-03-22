@@ -187,7 +187,7 @@ namespace PKSim.Presentation
       public void should_have_disable_all_ui_buttons_and_enabled_them_once_the_run_was_finished()
       {
          A.CallTo(() => _view.EnableButtons(false, false, false)).MustHaveHappened();
-         A.CallTo(() => _view.EnableButtons(true, true, true)).MustHaveHappened();
+         A.CallTo(() => _view.EnableButtons(true, true, !sut.ModelIsDefined)).MustHaveHappened();
       }
    }
 
@@ -222,7 +222,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_enable_the_ok_button()
       {
-         A.CallTo(() => _view.EnableButtons(true, false, true)).MustHaveHappened();
+         A.CallTo(() => _view.EnableButtons(true, false, !sut.ModelIsDefined)).MustHaveHappened();
       }
    }
 }
