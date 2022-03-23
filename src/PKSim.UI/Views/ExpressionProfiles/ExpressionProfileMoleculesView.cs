@@ -86,7 +86,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          tablePanel.AdjustLongButtonWidth(btnLoadFromDatabase);
          //Make size of buttons the size of the combo box
          btnLoadFromDatabase.Margin = cbMoleculeName.Margin;
-         tablePanel.AdjustControlSize(btnLoadFromDatabase, height: cbMoleculeName.Height);
+         btnLoadFromDatabase.Height = cbMoleculeName.Height;
       }
 
       public override bool HasError => _screenBinder.HasError || base.HasError;
