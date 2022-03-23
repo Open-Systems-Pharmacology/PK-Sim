@@ -40,4 +40,6 @@ DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_P
 DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_VolumePlasma' AND container_id=4187 AND container_type='COMPARTMENT' AND container_name='Plasma' AND parameter_name='Volume';
 DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_VolumePlasma' AND container_id=5563 AND container_type='COMPARTMENT' AND container_name='Plasma' AND parameter_name='Volume';
 DELETE FROM tab_rate_container_parameters WHERE calculation_method='Individual_PKSim' AND formula_rate='PARAM_VolumePlasma' AND container_id=5568 AND container_type='COMPARTMENT' AND container_name='Plasma' AND parameter_name='Volume';
+UPDATE tab_species SET display_name='Cat (beta version)' WHERE species='Cat';
+UPDATE tab_species SET display_name='Cattle (IV only) (beta version)' WHERE species='Cattle';
 INSERT INTO tab_tags(tag) VALUES('Volume');
