@@ -1,8 +1,8 @@
-﻿using OSPSuite.UI.Services;
-using OSPSuite.Assets;
+﻿using OSPSuite.Assets;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -19,9 +19,10 @@ namespace PKSim.UI.Views.Simulations
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon
+      public override void InitializeResources()
       {
-         get { return ApplicationIcons.PopulationSimulationComparison; }
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.PopulationSimulationComparison;
       }
    }
 }

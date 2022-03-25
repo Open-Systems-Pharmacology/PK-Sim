@@ -96,7 +96,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_set_the_icon_in_the_view_according_to_the_selected_species()
       {
-         A.CallTo(() => _view.UpdateIcon(ApplicationIcons.Human)).MustHaveHappened();
+         _view.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.Human);
       }
    }
 

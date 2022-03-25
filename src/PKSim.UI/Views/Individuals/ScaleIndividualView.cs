@@ -50,7 +50,7 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.ScaleIndividual.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.ScaleIndividual;
          layoutItemIndividualName.Text = PKSimConstants.UI.Name.FormatForLabel();
       }
    }

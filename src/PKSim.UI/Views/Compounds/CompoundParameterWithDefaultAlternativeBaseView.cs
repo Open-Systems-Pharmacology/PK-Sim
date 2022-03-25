@@ -128,7 +128,7 @@ namespace PKSim.UI.Views.Compounds
       protected void UpdateButtonImage(int buttonIndex, RepositoryItemButtonEdit repositoryItemButtonEdit, ApplicationIcon image)
       {
          repositoryItemButtonEdit.Buttons[buttonIndex].Kind = ButtonPredefines.Glyph;
-         repositoryItemButtonEdit.Buttons[buttonIndex].Image = image;
+         repositoryItemButtonEdit.Buttons[buttonIndex].ImageOptions.SvgImage = image;
       }
 
       private void updateValueOrigin(TParameterAlternativeDTO parameterAlternativeDTO, ValueOrigin newValueOrigin)

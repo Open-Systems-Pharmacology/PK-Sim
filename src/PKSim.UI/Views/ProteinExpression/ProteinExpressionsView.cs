@@ -35,7 +35,7 @@ namespace PKSim.UI.Views.ProteinExpression
       {
          base.InitializeResources();
          Text = PKSimConstants.ProteinExpressions.MainView.MainText;
-         Icon = ApplicationIcons.ProteinExpression.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.ProteinExpression;
          this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
          MaximizeBox = true;
       }

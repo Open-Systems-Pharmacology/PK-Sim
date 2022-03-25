@@ -18,7 +18,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       public CreateSpecificBindingPartialProcessPresenter(ICreatePartialProcessView view, ICompoundProcessTask compoundProcessTask, ICompoundProcessToCompoundProcessDTOMapper processMapper, IPartialProcessToPartialProcessDTOMapper partialProcessMapper, IParametersByGroupPresenter parameterEditPresenter, IUsedMoleculeRepository usedMoleculeRepository, ISpeciesRepository speciesRepository)
          : base(view, compoundProcessTask,  partialProcessMapper, parameterEditPresenter,processMapper, usedMoleculeRepository, speciesRepository)
       {
-         view.SetIcon(ApplicationIcons.SpecificBinding);
+         view.ApplicationIcon = ApplicationIcons.SpecificBinding;
          view.MoleculeCaption = PKSimConstants.UI.ProteinBindingPartner;
          view.Caption = PKSimConstants.UI.CreateProteinBindingPartner;
       }

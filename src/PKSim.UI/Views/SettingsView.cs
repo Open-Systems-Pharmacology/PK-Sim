@@ -29,7 +29,7 @@ namespace PKSim.UI.Views
       {
          base.InitializeResources();
          ExtraVisible = true;
-         Icon = ApplicationIcons.Settings;
+         ApplicationIcon = ApplicationIcons.Settings;
          Caption = PKSimConstants.UI.Options;
          ExtraCaption = PKSimConstants.UI.ResetLayout;
          ButtonExtra.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetLayoutSettingsToolTip);

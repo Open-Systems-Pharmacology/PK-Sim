@@ -23,7 +23,7 @@ namespace PKSim.UI.Views.Observers
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Observer.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Observer;
          Caption = PKSimConstants.UI.CreateObserverSet;
       }
    }

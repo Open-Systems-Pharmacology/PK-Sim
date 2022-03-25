@@ -28,7 +28,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          Caption = PKSimConstants.UI.SimulationSubjectSelection;
-         Icon = ApplicationIcons.Simulation;
+         ApplicationIcon = ApplicationIcons.Simulation;
          radioGroupSimulationSubject.Properties.AllowMouseWheel = false;
          radioGroupSimulationSubject.Properties.Items.AddRange(new[]
                                                                   {

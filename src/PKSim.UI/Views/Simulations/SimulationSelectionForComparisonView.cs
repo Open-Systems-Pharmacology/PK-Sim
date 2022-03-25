@@ -91,7 +91,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          Caption = PKSimConstants.UI.SelectSimulationForComparison;
-         Icon = ApplicationIcons.PopulationSimulationComparison.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.PopulationSimulationComparison;
          lblDescription.AsDescription();
          lblDescription.Text = PKSimConstants.UI.SelectSimulationForComparisonDescription.FormatForDescription();
          lblReferenceDescription.AsDescription();

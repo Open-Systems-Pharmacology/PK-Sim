@@ -9,7 +9,6 @@ namespace PKSim.Presentation.Views.Compounds
       void AddParametersView(IView parametersView);
       bool SpeciesVisible { set; }
       string TemplateDescription { set; }
-      void SetIcon(ApplicationIcon icon);
       void AdjustParametersHeight(int optimalHeight);
    }
 }

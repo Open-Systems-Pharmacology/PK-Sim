@@ -148,7 +148,7 @@ namespace PKSim.UI.Views.Simulations
 
          btnBrowseForFolder.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
          Caption = PKSimConstants.UI.ImportSimulationResults;
-         Icon = ApplicationIcons.ClusterExport.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.ClusterExport;
          tbLog.Properties.ReadOnly = true;
       }
 

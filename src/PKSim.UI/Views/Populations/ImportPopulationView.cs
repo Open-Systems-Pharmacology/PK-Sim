@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.Populations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.MergePopulation.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.MergePopulation;
          Caption = PKSimConstants.UI.ImportPopulation;
       }
 

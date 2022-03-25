@@ -21,7 +21,7 @@ namespace PKSim.UI.Views.Populations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Population.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Population;
          Caption = PKSimConstants.UI.CreatePopulation;
       }
    }

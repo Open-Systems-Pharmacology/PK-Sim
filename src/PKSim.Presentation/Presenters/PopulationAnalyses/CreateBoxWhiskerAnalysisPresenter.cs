@@ -17,17 +17,11 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public CreateBoxWhiskerAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory)
          : base(view, subPresenterItemManager, BoxWhiskerItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
-         View.Image = ApplicationIcons.BoxWhiskerAnalysis;
+         View.ApplicationIcon = ApplicationIcons.BoxWhiskerAnalysis;
       }
 
-      protected override string AnalysisType
-      {
-         get { return PKSimConstants.UI.BoxWhisker; }
-      }
+      protected override string AnalysisType => PKSimConstants.UI.BoxWhisker;
 
-      protected override ISubPresenterItem<IPopulationAnalysisResultsPresenter> ResultsPresenterItem
-      {
-         get { return BoxWhiskerItems.Chart; }
-      }
+      protected override ISubPresenterItem<IPopulationAnalysisResultsPresenter> ResultsPresenterItem => BoxWhiskerItems.Chart;
    }
 }

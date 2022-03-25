@@ -54,15 +54,14 @@ namespace PKSim.UI.Views.Parameters
 
       public bool ReadOnly
       {
-         set { layoutControl.Enabled = !value; }
+         set => layoutControl.Enabled = !value;
       }
 
       public override void InitializeResources()
       {
-         var resetImage = ApplicationIcons.Reset.ToImage(IconSizes.Size16x16);
          btnReset.Text = PKSimConstants.UI.ResetAll;
-         btnReset.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetAllVisibleButtonToolTip, PKSimConstants.UI.ResetAll, resetImage);
-         btnReset.Image = resetImage;
+         btnReset.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetAllVisibleButtonToolTip, PKSimConstants.UI.ResetAll, ApplicationIcons.Reset);
+         btnReset.ImageOptions.SvgImage = ApplicationIcons.Reset;
          btnReset.ImageLocation = ImageLocation.MiddleLeft;
          btnScale.Text = PKSimConstants.UI.ScaleButton;
          btnScale.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ScaleButtonToolTip, PKSimConstants.UI.ScaleButton);

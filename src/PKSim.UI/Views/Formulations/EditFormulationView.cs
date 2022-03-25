@@ -1,10 +1,10 @@
 ﻿using OSPSuite.Assets;
-using PKSim.Presentation.Presenters.Formulations;
-using PKSim.Presentation.Views.Formulations;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Presentation.Presenters.Formulations;
+using PKSim.Presentation.Views.Formulations;
 
 namespace PKSim.UI.Views.Formulations
 {
@@ -25,9 +25,10 @@ namespace PKSim.UI.Views.Formulations
          this.FillWith(viewToAdd);
       }
 
-      public override ApplicationIcon ApplicationIcon
+      public override void InitializeResources()
       {
-         get { return ApplicationIcons.Formulation; }
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Formulation;
       }
    }
 }

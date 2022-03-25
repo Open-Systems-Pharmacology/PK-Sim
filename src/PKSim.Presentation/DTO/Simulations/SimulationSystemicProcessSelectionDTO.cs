@@ -17,7 +17,7 @@ namespace PKSim.Presentation.DTO.Simulations
       ///    Status of the selection (Image that will be displayed to the end user indicating if the mapping
       ///    appears to be allowed or not)
       /// </summary>
-      public Image Image
+      public ApplicationIcon Image
       {
          get
          {
@@ -33,7 +33,7 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public SystemicProcess SelectedProcess
       {
-         get { return _selectedProcess; }
+         get => _selectedProcess;
          set
          {
             _selectedProcess = value;

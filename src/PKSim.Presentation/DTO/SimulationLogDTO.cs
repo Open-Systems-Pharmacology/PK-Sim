@@ -1,17 +1,16 @@
 using System;
-using System.Drawing;
-using PKSim.Core.Events;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using PKSim.Core.Events;
 
 namespace PKSim.Presentation.DTO
 {
    public class SimulationLogDTO : DxValidatableDTO
    {
-      public string SimulationName { get; private set; }
-      public string Message { get; private set; }
-      public NotificationType Status { get; private set; }
+      public string SimulationName { get; }
+      public string Message { get; }
+      public NotificationType Status { get; }
 
       public SimulationLogDTO(SimulationLog simulationLog)
       {
@@ -24,7 +23,7 @@ namespace PKSim.Presentation.DTO
       ///    Status of the selection (Image that will be displayed to the end user indicating if the mapping
       ///    appears to be allowed or not)
       /// </summary>
-      public Image Image
+      public ApplicationIcon Image
       {
          get
          {

@@ -1,17 +1,16 @@
 using System;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
-using PKSim.Assets;
-using PKSim.Core.Model;
-using PKSim.Presentation.Presenters.Protocols;
-using PKSim.Presentation.Views.Protocols;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Presentation.Presenters.Protocols;
+using PKSim.Presentation.Views.Protocols;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -22,11 +21,6 @@ namespace PKSim.UI.Views.Protocols
       public EditProtocolView(Shell shell) : base(shell)
       {
          InitializeComponent();
-      }
-
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.Protocol; }
       }
 
       public void AttachPresenter(IEditProtocolPresenter presenter)
@@ -79,13 +73,14 @@ namespace PKSim.UI.Views.Protocols
       public override void InitializeResources()
       {
          base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Protocol;
          _radioButtonSimple = new RadioGroupItem(ProtocolMode.Simple, PKSimConstants.UI.SimpleProtocolMode);
          radioGroupProtocolMode.Properties.AllowMouseWheel = false;
          radioGroupProtocolMode.Properties.Items.AddRange(new[]
-                                                             {
-                                                                _radioButtonSimple,
-                                                                new RadioGroupItem(ProtocolMode.Advanced, PKSimConstants.UI.AdvancedProtocolMode)
-                                                             });
+         {
+            _radioButtonSimple,
+            new RadioGroupItem(ProtocolMode.Advanced, PKSimConstants.UI.AdvancedProtocolMode)
+         });
       }
 
       private IEditProtocolPresenter editProtocolPresenter => _presenter.DowncastTo<IEditProtocolPresenter>();

@@ -200,7 +200,7 @@ namespace PKSim.Presentation.Presenters
 
          var icon = ApplicationIcons.IconByName(templateType.ToString());
          if (icon != ApplicationIcons.EmptyIcon)
-            _view.SetIcon(icon);
+            _view.ApplicationIcon = icon;
       }
 
       private void refreshView()

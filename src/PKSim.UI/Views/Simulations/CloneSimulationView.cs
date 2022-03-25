@@ -15,7 +15,7 @@ namespace PKSim.UI.Views.Simulations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.SimulationClone.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.SimulationClone;
          Caption = PKSimConstants.UI.CloneSimulation;
       }
    }

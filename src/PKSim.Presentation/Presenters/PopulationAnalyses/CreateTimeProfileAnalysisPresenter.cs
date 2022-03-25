@@ -23,7 +23,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          : base(view, subPresenterItemManager, TimeProfileItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
          _lazyLoadTask = lazyLoadTask;
-         View.Image = ApplicationIcons.TimeProfileAnalysis;
+         View.ApplicationIcon = ApplicationIcons.TimeProfileAnalysis;
       }
 
       protected override string AnalysisType => PKSimConstants.UI.TimeProfile;

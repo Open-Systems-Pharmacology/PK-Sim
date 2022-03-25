@@ -31,7 +31,7 @@ namespace PKSim.Presentation.Presenters
             _view.Caption = Title;
 
          _view.NameDescription = PKSimConstants.UI.RenameEntityCaption(entityType, entity.Name);
-         _view.Icon = ApplicationIcons.Description;
+         _view.ApplicationIcon = ApplicationIcons.Description;
       }
 
       protected override ObjectBaseDTO CreateDTOFor(IObjectBase entity)

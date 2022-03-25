@@ -1,9 +1,8 @@
-﻿using OSPSuite.Assets;
-using DevExpress.XtraTab;
+﻿using DevExpress.XtraTab;
+using OSPSuite.Assets;
+using OSPSuite.UI.Views;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -19,7 +18,11 @@ namespace PKSim.UI.Views.Compounds
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Compound;
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Compound;
+      }
 
       public override XtraTabControl TabControl => tabEditCompound;
    }
