@@ -106,7 +106,7 @@ namespace PKSim.UI.Views.Protocols
 
          layoutItemName.Text = PKSimConstants.UI.Name.FormatForLabel();
          Caption = PKSimConstants.UI.CreateAdministrationProtocol;
-         Icon = ApplicationIcons.Protocol.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Protocol;
          this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
 

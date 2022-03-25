@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.Simulations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.SimulationConfigure.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.SimulationConfigure;
          this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
          btnOk.DialogResult = DialogResult.None;
       }

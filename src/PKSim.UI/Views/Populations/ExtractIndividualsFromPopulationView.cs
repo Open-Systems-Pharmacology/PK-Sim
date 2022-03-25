@@ -64,7 +64,7 @@ namespace PKSim.UI.Views.Populations
          lblIdividualIdsDescription.Text = PKSimConstants.UI.IndividualIdsDescription.FormatForDescription();
          lblIdividualIdsDescription.AsDescription();
          lblPopulationDescription.AsDescription();
-         Icon = ApplicationIcons.Population;
+         ApplicationIcon = ApplicationIcons.Population;
          tbOutput.ReadOnly = true;
       }
 

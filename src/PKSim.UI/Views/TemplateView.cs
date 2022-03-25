@@ -83,7 +83,7 @@ namespace PKSim.UI.Views
          if (!editableTemplates.Any())
             return;
 
-         var deleteSelectedMenuItem = new DXMenuItem(PKSimConstants.MenuNames.Delete, (obj, args) => _presenter.Delete(editableTemplates), ApplicationIcons.Delete);
+         var deleteSelectedMenuItem = new DXMenuItem(PKSimConstants.MenuNames.Delete, (obj, args) => _presenter.Delete(editableTemplates)){SvgImage = ApplicationIcons.Delete };
          gridViewMenu.Items.Insert(0, deleteSelectedMenuItem);
       }
 
@@ -190,11 +190,7 @@ namespace PKSim.UI.Views
          _presenter = presenter;
       }
 
-      public void SetIcon(ApplicationIcon icon)
-      {
-         Icon = icon;
-      }
-
+    
       public void SelectTemplate(TemplateDTO templateDTO)
       {
          if (templateDTO == null)

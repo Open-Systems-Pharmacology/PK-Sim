@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using OSPSuite.UI.Services;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
+using OSPSuite.Assets;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Views.Main;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views
 {
@@ -57,7 +56,6 @@ namespace PKSim.UI.Views
             e.Effect = DragDropEffects.None;
       }
 
-
       protected override void OnLoad(EventArgs e)
       {
          SuspendLayout();
@@ -83,7 +81,6 @@ namespace PKSim.UI.Views
       {
          base.InitializeResources();
          ApplicationIcon = ApplicationIcons.PKSim;
-         Icon = ApplicationIcon.WithSize(IconSizes.Size32x32);
       }
 
       protected override void RegisterRegions()

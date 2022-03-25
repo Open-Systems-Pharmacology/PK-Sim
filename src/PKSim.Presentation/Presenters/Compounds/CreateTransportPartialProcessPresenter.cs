@@ -18,7 +18,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       public CreateTransportPartialProcessPresenter(ICreatePartialProcessView view, ICompoundProcessTask compoundProcessTask, ICompoundProcessToCompoundProcessDTOMapper processMapper, IPartialProcessToPartialProcessDTOMapper partialProcessMapper, IParametersByGroupPresenter parameterEditPresenter, IUsedMoleculeRepository usedMoleculeRepository, ISpeciesRepository speciesRepository)
          : base(view, compoundProcessTask,  partialProcessMapper, parameterEditPresenter,processMapper, usedMoleculeRepository, speciesRepository)
       {
-         view.SetIcon(ApplicationIcons.Transporter);
+         view.ApplicationIcon = ApplicationIcons.Transporter;
          view.MoleculeCaption = PKSimConstants.UI.TransportProteins;
          view.Caption = PKSimConstants.UI.CreateTransportProtein;
       }

@@ -42,7 +42,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
 
       public void BindTo(ExpressionProfileDTO expressionProfileDTO)
       {
-         Icon = expressionProfileDTO.Icon.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = expressionProfileDTO.Icon;
          cbMoleculeName.FillWith(expressionProfileDTO.AllMolecules);
          layoutItemMoleculeName.Text = expressionProfileDTO.MoleculeType.FormatForLabel();
          _screenBinder.BindToSource(expressionProfileDTO);

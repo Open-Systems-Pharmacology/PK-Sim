@@ -1,14 +1,14 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
 using DevExpress.XtraEditors;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Core;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.Charts;
 using PKSim.Presentation.Views.Charts;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Core;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Charts
 {
@@ -28,7 +28,7 @@ namespace PKSim.UI.Views.Charts
       {
          base.InitializeBinding();
          DragDrop += DragDropEventHandler;
-         DragOver += (o,e) => _individualSimulationComparisonMdiPresenter.OnDragOver(o, new DragEvent(e));
+         DragOver += (o, e) => _individualSimulationComparisonMdiPresenter.OnDragOver(o, new DragEvent(e));
       }
 
       private void DragDropEventHandler(object sender, DragEventArgs e)
@@ -49,6 +49,7 @@ namespace PKSim.UI.Views.Charts
          _lblInfo.BackColor = Color.Transparent;
          _lblInfo.Top = 200;
          _lblInfo.Left = 200;
+         ApplicationIcon = ApplicationIcons.IndividualSimulationComparison;
       }
 
       public void AttachPresenter(IIndividualSimulationComparisonMdiPresenter presenter)
@@ -59,7 +60,7 @@ namespace PKSim.UI.Views.Charts
 
       public bool ChartVisible
       {
-         get { return panelControl.Visible; }
+         get => panelControl.Visible;
          set
          {
             panelControl.Visible = value;
@@ -71,7 +72,5 @@ namespace PKSim.UI.Views.Charts
       {
          panelControl.FillWith(view);
       }
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.IndividualSimulationComparison;
    }
 }

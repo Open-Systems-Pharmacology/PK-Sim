@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Individual.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Individual;
          Caption = PKSimConstants.UI.CreateIndividual;
       }
    }

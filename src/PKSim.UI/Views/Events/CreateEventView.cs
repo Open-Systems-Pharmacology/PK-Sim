@@ -21,7 +21,7 @@ namespace PKSim.UI.Views.Events
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Event.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Event;
          Caption = PKSimConstants.UI.CreateEvent;
       }
    }

@@ -39,7 +39,7 @@ namespace PKSim.UI.Views
       public override void InitializeResources()
       {
          labelStatus.Text = string.Empty;
-         Icon = ApplicationIcons.PKSim.WithSize(IconSizes.Size48x48);
+         ApplicationIcon = ApplicationIcons.PKSim;
       }
    }
 }

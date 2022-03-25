@@ -1,5 +1,4 @@
 ﻿using OSPSuite.Infrastructure.Import.Services;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Simulations
@@ -24,13 +23,13 @@ namespace PKSim.Presentation.DTO.Simulations
       public static SimulationResultsFileSelectionDTO From(SimulationResultsImportFile simulationResultsFile)
       {
          return new SimulationResultsFileSelectionDTO
-            {
-               FilePath = simulationResultsFile.FilePath,
-               Status = simulationResultsFile.Status,
-               NumberOfIndividuals = simulationResultsFile.NumberOfIndividuals,
-               NumberOfQuantities = simulationResultsFile.NumberOfQuantities,
-               Messages = simulationResultsFile.Log
-            };
+         {
+            FilePath = simulationResultsFile.FilePath,
+            Status = simulationResultsFile.Status,
+            NumberOfIndividuals = simulationResultsFile.NumberOfIndividuals,
+            NumberOfQuantities = simulationResultsFile.NumberOfQuantities,
+            Messages = simulationResultsFile.Log
+         };
       }
    }
 }

@@ -26,7 +26,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Edit;
+         ApplicationIcon = ApplicationIcons.Edit;
       }
    }
 }

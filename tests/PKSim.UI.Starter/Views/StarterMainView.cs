@@ -33,7 +33,6 @@ namespace PKSim.UI.Starter.Views
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
          ApplicationIcon = ApplicationIcons.PKSim;
-         Icon = ApplicationIcon.WithSize(IconSizes.Size32x32);
          btnRelativeExpression.Text = "Show Relative Expressions";
       }
    }

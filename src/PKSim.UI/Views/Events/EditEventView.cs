@@ -1,10 +1,10 @@
 ﻿using OSPSuite.Assets;
-using PKSim.Presentation.Presenters.Events;
-using PKSim.Presentation.Views.Events;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Presentation.Presenters.Events;
+using PKSim.Presentation.Views.Events;
 
 namespace PKSim.UI.Views.Events
 {
@@ -25,6 +25,10 @@ namespace PKSim.UI.Views.Events
          this.FillWith(viewToAdd);
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Event;
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Event;
+      }
    }
 }

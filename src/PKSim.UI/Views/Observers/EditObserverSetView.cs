@@ -25,6 +25,10 @@ namespace PKSim.UI.Views.Observers
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Observer;
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Observer;
+      }
    }
 }

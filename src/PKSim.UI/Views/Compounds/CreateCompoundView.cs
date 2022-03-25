@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.Compounds
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Compound.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Compound;
          Caption = PKSimConstants.UI.CreateCompound;
       }
    }

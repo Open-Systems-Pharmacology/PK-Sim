@@ -81,7 +81,7 @@ namespace PKSim.Core.Services
 
          try
          {
-            return base.CalculateFor(populationSimulation, populationSimulation.NumberOfItems, populationSimulation.Results, (individualId) => { updateBodyWeightFromCurrentIndividual(bodyWeightParameter, allBodyWeights, individualId); });
+            return base.CalculateFor(populationSimulation, populationSimulation.Results, (individualId) => { updateBodyWeightFromCurrentIndividual(bodyWeightParameter, allBodyWeights, individualId); });
          }
          finally
          {

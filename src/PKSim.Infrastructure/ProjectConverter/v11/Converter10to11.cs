@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Converters.v11;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Serializer.Xml.Extensions;
@@ -28,6 +29,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
       private readonly IContainerTask _containerTask;
+      private readonly Converter100To110 _coreConverter;
       private bool _converted;
 
       public Converter10to11(
@@ -38,7 +40,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          IRegistrationTask registrationTask,
          IDefaultIndividualRetriever defaultIndividualRetriever,
          ICloner cloner,
-         IContainerTask containerTask
+         IContainerTask containerTask,
+         Converter100To110 coreConverter
       )
       {
          _expressionProfileFactory = expressionProfileFactory;
@@ -49,6 +52,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          _defaultIndividualRetriever = defaultIndividualRetriever;
          _cloner = cloner;
          _containerTask = containerTask;
+         _coreConverter = coreConverter;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V10;
@@ -64,7 +68,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       {
          _converted = false;
          element.DescendantsAndSelf("OriginData").Each(convertOriginDataElement);
-         return (ProjectVersions.V11, _converted);
+         var (_, coreConverted) = _coreConverter.ConvertXml(element);
+         return (ProjectVersions.V11, _converted || coreConverted);
       }
 
       private void convertOriginDataElement(XElement originDataElement)

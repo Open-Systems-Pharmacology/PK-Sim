@@ -1,13 +1,10 @@
-﻿using OSPSuite.Assets;
-using DevExpress.XtraLayout.Utils;
+﻿using DevExpress.XtraLayout.Utils;
 using DevExpress.XtraTab;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Views;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using PKSim.UI.Views.Simulations;
-using OSPSuite.Presentation;
-using OSPSuite.UI;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.PopulationAnalyses
@@ -44,10 +41,5 @@ namespace PKSim.UI.Views.PopulationAnalyses
       }
 
       private ICreatePopulationAnalysisPresenter createAnalysisPresenter => WizardPresenter as ICreatePopulationAnalysisPresenter;
-
-      public ApplicationIcon Image
-      {
-         set => Icon = value.WithSize(IconSizes.Size16x16);
-      }
    }
 }

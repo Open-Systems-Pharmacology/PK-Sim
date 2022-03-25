@@ -1,46 +1,42 @@
 using System;
-using System.Drawing;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Reflection;
 using DevExpress.XtraEditors.DXErrorProvider;
+using OSPSuite.Assets;
+using OSPSuite.Utility.Reflection;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.DTO.Simulations
 {
-   public class SimulationPartialProcessSelectionDTO : Notifier, IDXDataErrorInfo 
+   public class SimulationPartialProcessSelectionDTO : Notifier, IDXDataErrorInfo
    {
-      private readonly SimulationPartialProcess _simulationPartialProcess;
-
-      public SimulationPartialProcess SimulationPartialProcess => _simulationPartialProcess;
+      public SimulationPartialProcess SimulationPartialProcess { get; }
 
       public SimulationPartialProcessSelectionDTO(SimulationPartialProcess simulationPartialProcess)
       {
-         _simulationPartialProcess = simulationPartialProcess;
+         SimulationPartialProcess = simulationPartialProcess;
       }
 
       /// <summary>
       ///    Selected process in compound
       /// </summary>
-      public PartialProcess  CompoundProcess => _simulationPartialProcess.CompoundProcess;
+      public PartialProcess CompoundProcess => SimulationPartialProcess.CompoundProcess;
 
       public string CompoundProcessName => Status == SimulationPartialProcessStatus.ProcessNotSelected ? string.Empty : CompoundProcess.Name;
 
       /// <summary>
-      ///    Enyyme used in the individual to be mapped to the selected process in compound
+      ///    Enzyme used in the individual to be mapped to the selected process in compound
       /// </summary>
-      public IndividualMolecule IndividualMolecule => _simulationPartialProcess.IndividualMolecule;
+      public IndividualMolecule IndividualMolecule => SimulationPartialProcess.IndividualMolecule;
 
-      public SimulationPartialProcessStatus Status => _simulationPartialProcess.Status;
+      public SimulationPartialProcessStatus Status => SimulationPartialProcess.Status;
 
-      public string CompoundName => _simulationPartialProcess.CompoundName;
+      public string CompoundName => SimulationPartialProcess.CompoundName;
 
       /// <summary>
       ///    Status of the selection (Image that will be displayed to the end user indicating if the mapping
       ///    appears to be allowed or not)
       /// </summary>
-      public Image Image => imageFrom(Status);
+      public ApplicationIcon Image => imageFrom(Status);
 
       public void GetPropertyError(string propertyName, ErrorInfo info)
       {
@@ -60,7 +56,7 @@ namespace PKSim.Presentation.DTO.Simulations
          }
       }
 
-      private Image imageFrom(SimulationPartialProcessStatus status)
+      private ApplicationIcon imageFrom(SimulationPartialProcessStatus status)
       {
          switch (status)
          {
@@ -69,7 +65,7 @@ namespace PKSim.Presentation.DTO.Simulations
             case SimulationPartialProcessStatus.CanBeUsedInSimulation:
                return ApplicationIcons.OK;
             default:
-               throw new ArgumentOutOfRangeException("status");
+               throw new ArgumentOutOfRangeException(nameof(status));
          }
       }
    }

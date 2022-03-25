@@ -18,7 +18,7 @@ namespace PKSim.Presentation.Presenters.Compounds
       public CreateInductionProcessPresenter(ICreatePartialProcessView view, ICompoundProcessTask compoundProcessTask, IPartialProcessToPartialProcessDTOMapper partialProcessMapper, IParametersByGroupPresenter parameterEditPresenter, ICompoundProcessToCompoundProcessDTOMapper processMapper, IUsedMoleculeRepository usedMoleculeRepository, ISpeciesRepository speciesRepository)
          : base(view, compoundProcessTask, partialProcessMapper, parameterEditPresenter, processMapper, usedMoleculeRepository, speciesRepository)
       {
-         view.SetIcon(ApplicationIcons.Induction);
+         view.ApplicationIcon = ApplicationIcons.Induction;
          view.MoleculeCaption = PKSimConstants.UI.AffectedEnzymeOrTransporter;
          view.Caption = PKSimConstants.UI.Induction;
       }

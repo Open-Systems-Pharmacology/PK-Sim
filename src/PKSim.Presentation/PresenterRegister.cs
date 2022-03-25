@@ -126,7 +126,6 @@ namespace PKSim.Presentation
 
          container.Register<IFormatterFactory, FormatterFactory>();
 
-         ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
          Captions.SimulationPath = PKSimConstants.UI.Simulation;
          Captions.ContainerPath = PKSimConstants.UI.Organ;
          Captions.BottomCompartmentPath = PKSimConstants.UI.Compartment;

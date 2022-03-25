@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.Formulations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Formulation.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Formulation;
          Caption = PKSimConstants.UI.CreateFormulation;
       }
    }

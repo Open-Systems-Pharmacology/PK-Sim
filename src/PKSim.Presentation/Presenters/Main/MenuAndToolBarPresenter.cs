@@ -153,7 +153,7 @@ namespace PKSim.Presentation.Presenters.Main
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.SensitivityAnalysisPKParameterAnalyses), RibbonPages.RunSensitivityAnalysis, RibbonCategories.SensitivityAnalysis);
       }
 
-      protected override void DisableMenuBarItemsForPogramStart()
+      protected override void DisableMenuBarItemsForProgramStart()
       {
          DisableAll();
          enableDefaultItems();

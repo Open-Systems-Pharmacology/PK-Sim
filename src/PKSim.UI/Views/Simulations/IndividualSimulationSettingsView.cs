@@ -48,7 +48,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          Caption = PKSimConstants.UI.IndividualSimulationSettings;
-         Icon = ApplicationIcons.Simulation;
+         ApplicationIcon = ApplicationIcons.Simulation;
          _presenter.UpdateSaveSettingsButtonItem(_toolTipCreator, _uxDropDownButton);
          ReplaceExtraButtonWith(_uxDropDownButton);
          tablePanel.AdjustLongButtonWidth(_uxDropDownButton);

@@ -34,7 +34,7 @@ namespace PKSim.UI
       SuperToolTip ToolTipForPKAnalysis(string parameterDisplayName, string displayValue, string warning);
       SuperToolTip CreateToolTip(string content, string title);
       SuperToolTip CreateToolTip(string content);
-      SuperToolTip CreateToolTip(string content, Image image);
+      SuperToolTip CreateToolTip(string content, ApplicationIcon image);
       SuperToolTip WarningToolTip(string warning);
       SuperToolTip ToolTipFor(ParameterAlternativeDTO parameterAlternativeDTO);
       SuperToolTip ToolTipFor(IEnumerable<ToolTipPart> toolTipParts);
@@ -113,8 +113,10 @@ namespace PKSim.UI
          if (simulationResultsFileSelectionDTO.Status == NotificationType.Error)
             message = simulationResultsFileSelectionDTO.Message;
 
-         return CreateToolTip(message, simulationResultsFileSelectionDTO.FilePath, simulationResultsFileSelectionDTO.Image);
+         // return CreateToolTip(message, simulationResultsFileSelectionDTO.FilePath, simulationResultsFileSelectionDTO.Image);
+         return CreateToolTip(message, simulationResultsFileSelectionDTO.FilePath, ApplicationIcons.About);
       }
+
 
       public SuperToolTip ToolTipFor(QuantityPKParameterDTO quantityPKParameterDTO)
       {
@@ -169,12 +171,13 @@ namespace PKSim.UI
             toolTip.Items.AddSeparator();
             toolTip.WithTitle(PKSimConstants.UI.Warning);
             var item = toolTip.Items.Add(warning);
-            item.Image = ApplicationIcons.Warning;
+            item.ImageOptions.SvgImage = ApplicationIcons.Warning;
+            item.ImageOptions.SvgImageSize = IconSizes.Size16x16;
          }
          return toolTip;
       }
 
-      public SuperToolTip CreateToolTip(string content, Image image)
+      public SuperToolTip CreateToolTip(string content, ApplicationIcon image)
       {
          return CreateToolTip(content, string.Empty, image);
       }
