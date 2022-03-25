@@ -95,6 +95,11 @@ namespace PKSim.Infrastructure.Services
 
          initializeFromTemplate(originalChart, clonedChart, simulation);
 
+         //copy property not copied from template by default
+         clonedChart.Title = originalChart.Title;
+         clonedChart.Description = originalChart.Description;
+
+
          return clonedChart.DowncastTo<SimulationTimeProfileChart>();
       }
 
@@ -103,7 +108,7 @@ namespace PKSim.Infrastructure.Services
          var allAvailableColumns = new List<DataColumn>();
          addSimulationResults(simulation, allAvailableColumns);
          addObservedDataColumns(simulation, allAvailableColumns);
-         Func<DataColumn, string> curveNameDefinition = c => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, c);
+         string curveNameDefinition(DataColumn c) => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, c);
          _chartFromTemplateService.InitializeChartFromTemplate(clonedChart, allAvailableColumns, _chartTemplateMapper.MapFrom(originalChart), curveNameDefinition);
       }
 

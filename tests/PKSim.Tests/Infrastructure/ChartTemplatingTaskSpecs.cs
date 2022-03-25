@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.Utility.Compression;
 using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
-using PKSim.Infrastructure.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Mappers;
 using OSPSuite.Core.Domain;
@@ -19,6 +15,12 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Utility.Compression;
+using PKSim.Core;
+using PKSim.Core.Chart;
+using PKSim.Core.Model;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Services;
 
 namespace PKSim.Infrastructure
@@ -54,8 +56,8 @@ namespace PKSim.Infrastructure
          _cloneManager = A.Fake<ICloneManager>();
          _applicationController = A.Fake<IApplicationController>();
          _executionContext = A.Fake<IExecutionContext>();
-         _chartUpdater= A.Fake<IChartUpdater>();
-         sut = new ChartTemplatingTask(_chartFromTemplateService, _projectRetriever, _chartTemplatePersistor,_chartUpdater, _dialogCreator, _chartFactory, _quantityDisplayPathMapper, _chartTemplateMapper,
+         _chartUpdater = A.Fake<IChartUpdater>();
+         sut = new ChartTemplatingTask(_chartFromTemplateService, _projectRetriever, _chartTemplatePersistor, _chartUpdater, _dialogCreator, _chartFactory, _quantityDisplayPathMapper, _chartTemplateMapper,
             _executionContext, _applicationController, _cloneManager, _chartTask);
       }
    }
@@ -72,8 +74,8 @@ namespace PKSim.Infrastructure
          base.Context();
          _allAvailableColumns = A.Fake<IReadOnlyCollection<DataColumn>>();
          _chartEditorPresenter = A.Fake<IChartEditorPresenter>();
-         var individualSimulation = new IndividualSimulation { SimulationSettings = new SimulationSettings() };
-         _simulationCollection = new List<ISimulation> { individualSimulation };
+         var individualSimulation = new IndividualSimulation {SimulationSettings = new SimulationSettings()};
+         _simulationCollection = new List<ISimulation> {individualSimulation};
          _chartWithObservedData = A.Fake<ChartWithObservedData>();
          A.CallTo(() => _chartEditorPresenter.Chart).Returns(_chartWithObservedData);
       }
@@ -89,7 +91,6 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _chartTask.UpdateObservedDataInChartFor(A<Simulation>._, _chartWithObservedData)).MustHaveHappened();
       }
    }
-
 
    public abstract class When_updating_default_settings : concern_for_ChartTemplatingTask
    {
@@ -110,7 +111,7 @@ namespace PKSim.Infrastructure
          _chartEditorPresenter = A.Fake<IChartEditorPresenter>();
          _simulations = A.Fake<IReadOnlyCollection<IndividualSimulation>>();
          var individualSimulation = new IndividualSimulation {SimulationSettings = new SimulationSettings()};
-         _simulations = new List<IndividualSimulation> { individualSimulation };
+         _simulations = new List<IndividualSimulation> {individualSimulation};
          var simulationConcentrationChart = new SimulationTimeProfileChart();
          individualSimulation.AddAnalysis(simulationConcentrationChart);
 
@@ -127,9 +128,9 @@ namespace PKSim.Infrastructure
       private DataRepository generateDataRepository()
       {
          _column = GenerateDataColumn();
-         _allAvailableColumns = new List<DataColumn> { _column };
+         _allAvailableColumns = new List<DataColumn> {_column};
          _curve.SetyData(_column, A.Fake<IDimensionFactory>());
-         var dataRepository = new DataRepository { _column };
+         var dataRepository = new DataRepository {_column};
          return dataRepository;
       }
 
@@ -144,7 +145,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-   public class When_updating_the_default_settings_for_a_calcualted_output_and_no_template_is_found : When_updating_default_settings
+   public class When_updating_the_default_settings_for_a_calculated_output_and_no_template_is_found : When_updating_default_settings
    {
       protected override void Context()
       {
@@ -158,8 +159,8 @@ namespace PKSim.Infrastructure
          return new DataColumn
          {
             BaseGrid = GenerateNewBaseGrid(),
-            DataInfo = { Origin = ColumnOrigins.Calculation },
-            QuantityInfo = { Path = new[] { "path" } }
+            DataInfo = {Origin = ColumnOrigins.Calculation},
+            QuantityInfo = {Path = new[] {"path"}}
          };
       }
 
@@ -170,15 +171,41 @@ namespace PKSim.Infrastructure
       }
    }
 
+   public class When_cloning_a_individual_chart : concern_for_ChartTemplatingTask
+   {
+      private SimulationTimeProfileChart _originalChart;
+      private IndividualSimulation _individualSimulation;
+      private SimulationTimeProfileChart _clonedChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualSimulation = new IndividualSimulation();
+         _originalChart = new SimulationTimeProfileChart {Title = "TOTO", Description = "TATA"};
+         A.CallTo(() => _chartFactory.Create(A<Type>._)).Returns(new SimulationTimeProfileChart());
+      }
+
+      protected override void Because()
+      {
+         _clonedChart = sut.CloneChart(_originalChart, _individualSimulation);
+      }
+
+      [Observation]
+      public void should_have_copied_also_the_title_and_description()
+      {
+         _clonedChart.Title.ShouldBeEqualTo(_originalChart.Title);
+         _clonedChart.Description.ShouldBeEqualTo(_originalChart.Description);
+      }
+   }
+
    public class When_updating_the_default_settings_for_a_observed_data_and_no_template_is_found : When_updating_default_settings
    {
-
       protected override DataColumn GenerateDataColumn()
       {
          return new DataColumn
          {
             BaseGrid = GenerateNewBaseGrid(),
-            DataInfo = { Origin = ColumnOrigins.Observation }
+            DataInfo = {Origin = ColumnOrigins.Observation}
          };
       }
 
