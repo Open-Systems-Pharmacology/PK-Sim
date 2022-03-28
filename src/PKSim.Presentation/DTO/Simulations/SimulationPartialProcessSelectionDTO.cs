@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using DevExpress.XtraEditors.DXErrorProvider;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Reflection;
@@ -7,7 +8,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Simulations
 {
-   public class SimulationPartialProcessSelectionDTO : Notifier, IDXDataErrorInfo
+   public class SimulationPartialProcessSelectionDTO : Notifier, IWithImageDTO
    {
       public SimulationPartialProcess SimulationPartialProcess { get; }
 
@@ -36,7 +37,7 @@ namespace PKSim.Presentation.DTO.Simulations
       ///    Status of the selection (Image that will be displayed to the end user indicating if the mapping
       ///    appears to be allowed or not)
       /// </summary>
-      public ApplicationIcon Image => imageFrom(Status);
+      public Image Image => imageFrom(Status).ToImage();
 
       public void GetPropertyError(string propertyName, ErrorInfo info)
       {
