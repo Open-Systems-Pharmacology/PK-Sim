@@ -19,5 +19,7 @@ namespace PKSim.Presentation.Views.Individuals
    public interface IIndividualTransporterExpressionsView : IView<IIndividualTransporterExpressionsPresenter>, IIndividualMoleculeView
    {
       void BindTo(IndividualTransporterDTO transporterExpressionDTO);
+      void ShowWarning(string warning);
+      void HideWarning();
    }
 }

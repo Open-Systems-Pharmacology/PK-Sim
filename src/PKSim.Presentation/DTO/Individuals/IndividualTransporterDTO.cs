@@ -27,6 +27,11 @@ namespace PKSim.Presentation.DTO.Individuals
          set => Transporter.TransportType = value.TransportType;
       }
 
+      /// <summary>
+      /// Returns true if some information could be ready from the database otherwise false
+      /// </summary>
+      public bool DefaultAvailableInDatabase { get; set; }
+
       public void ClearExpressionParameters() => _allExpressionParameters.Clear();
    }
 }

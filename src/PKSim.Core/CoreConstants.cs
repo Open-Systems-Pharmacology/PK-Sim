@@ -35,6 +35,7 @@ namespace PKSim.Core
       public const string DEFAULT_FORMULATION_KEY = "Formulation";
       public const string DEFAULT_CALCULATION_METHODS_FILE_NAME_FOR_MOBI = "AllCalculationMethods";
       public const string DEFAULT_EXPRESSION_PROFILE_MOLECULE_NAME = "<MOLECULE>";
+      public const TransportType DEFAULT_TRANSPORTER_TYPE = TransportType.Efflux;
 
       public const int NUMBER_OF_PKA_PARAMETERS = 3;
 

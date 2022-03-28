@@ -14,15 +14,19 @@ namespace PKSim.Presentation.DTO.Mappers
 
    public class IndividualTransporterToTransporterExpressionDTOMapper : IIndividualTransporterToTransporterExpressionDTOMapper
    {
-      private readonly IExpressionParameterMapper<TransporterExpressionParameterDTO> _expressionContainerMapper;
+      private readonly IExpressionParameterMapper<TransporterExpressionParameterDTO> _expressionParameterMapper;
       private readonly ITransportDirectionRepository _transportDirectionRepository;
+      private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
 
       public IndividualTransporterToTransporterExpressionDTOMapper(
-         IExpressionParameterMapper<TransporterExpressionParameterDTO> expressionContainerMapper,
-         ITransportDirectionRepository transportDirectionRepository)
+         IExpressionParameterMapper<TransporterExpressionParameterDTO> expressionParameterMapper,
+         ITransportDirectionRepository transportDirectionRepository,
+         ITransporterContainerTemplateRepository transporterContainerTemplateRepository
+         )
       {
-         _expressionContainerMapper = expressionContainerMapper;
+         _expressionParameterMapper = expressionParameterMapper;
          _transportDirectionRepository = transportDirectionRepository;
+         _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
       }
 
       public IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject)
@@ -40,23 +44,24 @@ namespace PKSim.Presentation.DTO.Mappers
          //Local parameters
          foreach (var transporterExpressionContainer in simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
+            var organ = transporterExpressionContainer.LogicalContainer;
+            var isInOrganWithLumenOrBrain = organ.IsOrganWithLumen() || organ.IsBrain();
+
             foreach (var parameter in transporterExpressionContainer.AllParameters())
             {
-               var organ = transporterExpressionContainer.LogicalContainer;
-               var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
-               var isInOrganWithLumenOrBrain = organ.IsOrganWithLumen() || organ.IsBrain();
-               expressionParameter.TransporterExpressionContainer = transporterExpressionContainer;
-               expressionParameter.IsInOrganWithLumenOrBrain = isInOrganWithLumenOrBrain;
+               var expressionParameterDTO = _expressionParameterMapper.MapFrom(parameter);
+               expressionParameterDTO.TransporterExpressionContainer = transporterExpressionContainer;
+               expressionParameterDTO.IsInOrganWithLumenOrBrain = isInOrganWithLumenOrBrain;
                var direction = retrieveTransporterDirectionFor(transporterExpressionContainer, parameter, isInOrganWithLumenOrBrain);
-               expressionParameter.TransportDirection = _transportDirectionRepository.ById(direction);
-               individualTransporterDTO.AddExpressionParameter(expressionParameter);
+               expressionParameterDTO.TransportDirection = _transportDirectionRepository.ById(direction);
+               individualTransporterDTO.AddExpressionParameter(expressionParameterDTO);
             }
          }
 
          //Global parameters;
          foreach (var parameter in transporter.AllGlobalExpressionParameters)
          {
-            var expressionParameter = _expressionContainerMapper.MapFrom(parameter);
+            var expressionParameter = _expressionParameterMapper.MapFrom(parameter);
             expressionParameter.TransporterExpressionContainer = parameter.IsNamed(REL_EXP_BLOOD_CELLS)
                ? transporter.BloodCellsContainer
                : transporter.VascularEndotheliumContainer;
@@ -65,6 +70,9 @@ namespace PKSim.Presentation.DTO.Mappers
             expressionParameter.TransportDirection = _transportDirectionRepository.ById(direction);
             individualTransporterDTO.AddExpressionParameter(expressionParameter);
          }
+
+         var hasTemplateForSpecies = _transporterContainerTemplateRepository.HasTransporterTemplateFor(simulationSubject.Species.Name, transporter.Name);
+         individualTransporterDTO.DefaultAvailableInDatabase = hasTemplateForSpecies;
       }
 
       private TransportDirectionId retrieveTransporterDirectionFor(TransporterExpressionContainer transporterExpressionContainer, IParameter parameter,
