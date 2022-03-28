@@ -8,7 +8,7 @@ using OSPSuite.Assets;
 
 namespace PKSim.Presentation.DTO.Simulations
 {
-   public class SimulationSystemicProcessSelectionDTO : Notifier, IDXDataErrorInfo
+   public class SimulationSystemicProcessSelectionDTO : Notifier, IWithImageDTO
    {
       public SystemicProcessType SystemicProcessType { get; set; }
       private SystemicProcess _selectedProcess;
@@ -17,7 +17,9 @@ namespace PKSim.Presentation.DTO.Simulations
       ///    Status of the selection (Image that will be displayed to the end user indicating if the mapping
       ///    appears to be allowed or not)
       /// </summary>
-      public ApplicationIcon Image
+      public Image Image => imageFromType.ToImage();
+
+      private ApplicationIcon imageFromType
       {
          get
          {
@@ -30,7 +32,6 @@ namespace PKSim.Presentation.DTO.Simulations
             return ApplicationIcons.OK;
          }
       }
-
       public SystemicProcess SelectedProcess
       {
          get => _selectedProcess;

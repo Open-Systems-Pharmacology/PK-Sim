@@ -9,12 +9,10 @@ using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
@@ -30,7 +28,7 @@ namespace PKSim.UI.Views.Simulations
       where TPartialProcess : PartialProcess
    {
       private readonly UxRepositoryItemComboBox _compoundMoleculeRepository;
-      private readonly RepositoryItemPictureEdit _statusIconRepository;
+      private readonly RepositoryItemPictureEdit _imageRepository;
       private readonly UxRepositoryItemComboBox _systemicProcessRepository;
       private readonly RepositoryItemTextEdit _repositoryItemDisabled = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
       protected readonly GridViewBinder<TPartialProcessDTO> _gridViewPartialBinder;
@@ -45,7 +43,7 @@ namespace PKSim.UI.Views.Simulations
          InitializeComponent();
          _compoundMoleculeRepository = new UxRepositoryItemComboBox(gridViewPartialProcesses);
          _systemicProcessRepository = new UxRepositoryItemComboBox(gridViewSystemicProcesses);
-         _statusIconRepository = new RepositoryItemPictureEdit();
+         _imageRepository = new RepositoryItemPictureEdit();
          gridViewSystemicProcesses.AllowsFiltering = false;
          gridViewSystemicProcesses.HorzScrollVisibility = ScrollVisibility.Never;
          gridViewPartialProcesses.AllowsFiltering = false;
@@ -108,7 +106,7 @@ namespace PKSim.UI.Views.Simulations
       {
          _gridViewSystemicBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .WithRepository(dto => _statusIconRepository)
+            .WithRepository(dto => _imageRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .AsReadOnly();
 
@@ -152,7 +150,7 @@ namespace PKSim.UI.Views.Simulations
       {
          return _gridViewPartialBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .WithRepository(dto => _statusIconRepository)
+            .WithRepository(dto => _imageRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .AsReadOnly();
       }
