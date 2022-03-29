@@ -1,10 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29025.244
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B4D05BE-A0E7-41D6-8FCF-1C6005FBE801}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		appveyor-coverage.yml = appveyor-coverage.yml
 		appveyor-nightly.yml = appveyor-nightly.yml
@@ -136,8 +137,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 		VisualSVNWorkingCopyRoot = 
+		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"

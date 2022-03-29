@@ -7,6 +7,7 @@ using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Extensions;
 using OSPSuite.UI.Controls;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -16,7 +17,7 @@ namespace PKSim.UI.Views.Simulations
       private readonly ScreenBinder<SimulationSubjectDTO> _screenBinder;
       private readonly UxBuildingBlockSelection _uxSimulationSubjectSelection;
 
-      private const int OPTIMAL_HEIGHT = 60;
+      private readonly int OPTIMAL_HEIGHT = ScaleForScreenDPI(65);
       public SimulationSubjectConfigurationView()
       {
          InitializeComponent();

@@ -30,9 +30,11 @@ namespace PKSim.Presentation.Presenters.Simulations
       public bool FormulationChanged { get; private set; }
       public bool ProtocolChanged { get; private set; }
 
-      public SimulationCompoundProtocolPresenter(ISimulationCompoundProtocolView view,
+      public SimulationCompoundProtocolPresenter(
+         ISimulationCompoundProtocolView view,
          ISimulationCompoundProtocolFormulationPresenter simulationCompoundProtocolFormulationPresenter,
-         ILazyLoadTask lazyLoadTask, IBuildingBlockInProjectManager buildingBlockInProjectManager)
+         ILazyLoadTask lazyLoadTask, 
+         IBuildingBlockInProjectManager buildingBlockInProjectManager)
          : base(view)
       {
          _simulationCompoundProtocolFormulationPresenter = simulationCompoundProtocolFormulationPresenter;
@@ -56,10 +58,11 @@ namespace PKSim.Presentation.Presenters.Simulations
          var templateProtocol = _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy(_simulation,_protocolProperties.Protocol);
          _protocolSelectionDTO = new ProtocolSelectionDTO { BuildingBlock = templateProtocol };
          _view.BindTo(_protocolSelectionDTO);
-         updateActiveProtcol();
+       //  _view.AdjustHeight();
+         updateActiveProtocol();
       }
 
-      private void updateActiveProtcol()
+      private void updateActiveProtocol()
       {
          _lazyLoadTask.Load(SelectedProtocol);
          _protocolProperties.Protocol = SelectedProtocol;
@@ -78,7 +81,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          _protocolSelectionDTO.BuildingBlock = selectedProtocol;
          ProtocolChanged = true;
-         updateActiveProtcol();
+         updateActiveProtocol();
          ViewChanged();
       }
 

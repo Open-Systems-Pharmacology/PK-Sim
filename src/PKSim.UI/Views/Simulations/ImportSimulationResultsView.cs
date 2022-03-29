@@ -8,7 +8,6 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
@@ -16,7 +15,9 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
-using UIConstants = OSPSuite.UI.UIConstants;
+using static OSPSuite.UI.UIConstants.Size;
+using static PKSim.UI.UIConstants.Size;
+using BaseView = OSPSuite.UI.Views.BaseView;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -66,7 +67,7 @@ namespace PKSim.UI.Views.Simulations
          _colImage = _gridViewBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH);
 
          _gridViewBinder.Bind(x => x.FilePath)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
@@ -75,13 +76,13 @@ namespace PKSim.UI.Views.Simulations
 
          _gridViewBinder.Bind(x => x.NumberOfIndividuals)
             .WithCaption(PKSimConstants.UI.NumberOfIndividuals)
-            .WithFixedWidth(CoreConstants.UI.PARAMETER_WIDTH)
+            .WithFixedWidth(PARAMETER_WIDTH)
             .WithFormat(new NullIntParameterFormatter())
             .AsReadOnly();
 
          _gridViewBinder.Bind(x => x.NumberOfQuantities)
             .WithCaption(PKSimConstants.UI.NumberOfOutputs)
-            .WithFixedWidth(CoreConstants.UI.PARAMETER_WIDTH)
+            .WithFixedWidth(PARAMETER_WIDTH)
             .WithFormat(new NullIntParameterFormatter())
             .AsReadOnly();
 
@@ -89,7 +90,7 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveFile(_gridViewBinder.FocusedElement));
          _filePathRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.ChangePath(_gridViewBinder.FocusedElement));
@@ -147,7 +148,7 @@ namespace PKSim.UI.Views.Simulations
 
          btnBrowseForFolder.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
          Caption = PKSimConstants.UI.ImportSimulationResults;
-         Icon = ApplicationIcons.ClusterExport.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.ClusterExport;
          tbLog.Properties.ReadOnly = true;
       }
 

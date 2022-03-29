@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using DevExpress.Utils;
 using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -10,17 +11,19 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
 using OSPSuite.Core.Extensions;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using PKSim.Assets;
+using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views
 {
@@ -35,6 +38,9 @@ namespace PKSim.UI.Views
       private IGridViewColumn _colVersion;
       private IGridViewColumn _colUrl;
       private IGridViewColumn _colButtons;
+      private readonly NullableBooleanFormatter _booleanFormatter = new NullableBooleanFormatter();
+      private IGridViewColumn _colQualified;
+      private readonly ScreenBinder<ITemplatePresenter> _screenBinder = new ScreenBinder<ITemplatePresenter> {BindingMode = BindingMode.TwoWay};
 
       public TemplateView(IImageListRetriever imageListRetriever, Shell shell)
          : base(shell)
@@ -77,7 +83,7 @@ namespace PKSim.UI.Views
          if (!editableTemplates.Any())
             return;
 
-         var deleteSelectedMenuItem = new DXMenuItem(PKSimConstants.MenuNames.Delete, (obj, args) => _presenter.Delete(editableTemplates), ApplicationIcons.Delete);
+         var deleteSelectedMenuItem = new DXMenuItem(PKSimConstants.MenuNames.Delete, (obj, args) => _presenter.Delete(editableTemplates)){SvgImage = ApplicationIcons.Delete };
          gridViewMenu.Items.Insert(0, deleteSelectedMenuItem);
       }
 
@@ -118,6 +124,14 @@ namespace PKSim.UI.Views
          _colVersion = _gridViewBinder.AutoBind(x => x.Version)
             .AsReadOnly();
 
+         _colVersion.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Far;
+
+         _colQualified = _gridViewBinder.AutoBind(x => x.Qualified)
+            .WithFormat(_booleanFormatter)
+            .AsReadOnly();
+
+         _colQualified.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
+
          _colUrl = _gridViewBinder.AutoBind(x => x.Url)
             .WithRepository(x => _urlRepository);
 
@@ -128,13 +142,17 @@ namespace PKSim.UI.Views
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(repositoryForTemplate)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);
 
          gridView.PreviewFieldName = colDescription.PropertyName;
          colDescription.Visible = false;
          colDatabaseType.XtraColumn.GroupIndex = 0;
 
          _editRemoveRepository.ButtonClick += (o, e) => OnEvent(() => editRemoveRepositoryButtonClick(o, e, _gridViewBinder.FocusedElement));
+
+         _screenBinder.Bind(x => x.ShowOnlyQualifiedTemplate)
+            .To(chkShowQualifiedTemplate)
+            .WithCaption(PKSimConstants.UI.OnlyShowQualifiedTemplates);
       }
 
       private RepositoryItem repositoryForTemplate(TemplateDTO templateDTO)
@@ -144,11 +162,11 @@ namespace PKSim.UI.Views
 
       private RepositoryItemButtonEdit createEditRemoveButtonRepository()
       {
-         var schemaItemButtonRepository = new RepositoryItemButtonEdit {TextEditStyle = TextEditStyles.HideTextEditor};
-         schemaItemButtonRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
-         schemaItemButtonRepository.Buttons[0].ToolTip = PKSimConstants.MenuNames.Rename;
-         schemaItemButtonRepository.Buttons.Add(new EditorButton(ButtonPredefines.Delete) {ToolTip = PKSimConstants.MenuNames.Delete});
-         return schemaItemButtonRepository;
+         var repository = new RepositoryItemButtonEdit {TextEditStyle = TextEditStyles.HideTextEditor};
+         repository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
+         repository.Buttons[0].ToolTip = PKSimConstants.MenuNames.Rename;
+         repository.Buttons.Add(new EditorButton(ButtonPredefines.Delete) {ToolTip = PKSimConstants.MenuNames.Delete});
+         return repository;
       }
 
       private void editRemoveRepositoryButtonClick(object sender, ButtonPressedEventArgs e, TemplateDTO templateDTO)
@@ -172,11 +190,7 @@ namespace PKSim.UI.Views
          _presenter = presenter;
       }
 
-      public void SetIcon(ApplicationIcon icon)
-      {
-         Icon = icon;
-      }
-
+    
       public void SelectTemplate(TemplateDTO templateDTO)
       {
          if (templateDTO == null)
@@ -190,9 +204,22 @@ namespace PKSim.UI.Views
       public void BindTo(IReadOnlyList<TemplateDTO> availableTemplates)
       {
          _gridViewBinder.BindToSource(availableTemplates);
-         _colUrl.Visible = availableTemplates.Any(x => x.Url.StringIsNotEmpty());
-         _colVersion.Visible = availableTemplates.Any(x => x.Version.StringIsNotEmpty());
+         //First column is name
+         var colIndex = 1;
+         updateColumnVisibility(_colVersion, availableTemplates.Any(x => x.Version.StringIsNotEmpty()), colIndex++);
+         updateColumnVisibility(_colQualified, availableTemplates.Any(x => x.Qualified.HasValue), colIndex++);
+         updateColumnVisibility(_colUrl, availableTemplates.Any(x => x.Url.StringIsNotEmpty()), colIndex++);
+         updateColumnVisibility(_colButtons, availableTemplates.Any(_presenter.CanEdit), colIndex++);
+
          gridView.BestFitColumns();
+         _screenBinder.BindToSource(_presenter);
+      }
+
+      private void updateColumnVisibility(IGridViewColumn column, bool visible, int visibleIndex)
+      {
+         column.XtraColumn.Visible = visible;
+         if (visible)
+            column.XtraColumn.VisibleIndex = visibleIndex;
       }
 
       public string Description

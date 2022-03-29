@@ -254,6 +254,7 @@ namespace PKSim.Core.Model
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
          parameter.IsDefault = parameterMetaData.IsDefault;
          parameter.ValueOrigin.UpdateAllFrom(parameterMetaData.ValueOrigin);
+         parameter.ContainerCriteria = parameterMetaData.ContainerCriteria;
 
          if (!string.IsNullOrEmpty(parameterMetaData.DefaultUnit))
             parameter.DisplayUnit = parameter.Dimension.Unit(parameterMetaData.DefaultUnit);

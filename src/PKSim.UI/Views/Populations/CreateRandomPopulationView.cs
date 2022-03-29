@@ -1,10 +1,8 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
-
+﻿using OSPSuite.Assets;
+using PKSim.Assets;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Populations
 {
@@ -23,7 +21,7 @@ namespace PKSim.UI.Views.Populations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Population.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Population;
          Caption = PKSimConstants.UI.CreatePopulation;
       }
    }

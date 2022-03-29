@@ -1,16 +1,16 @@
 using System.Windows.Forms;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
 using DevExpress.XtraBars;
-using PKSim.Assets;
-using PKSim.Presentation.Presenters.Individuals;
-using PKSim.Presentation.Views.Individuals;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
+using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -61,9 +61,8 @@ namespace PKSim.UI.Views.Individuals
 
       public void ActivateView(IView expressionsView)
       {
-         panelExpression.FillWith(expressionsView);
+          panelExpression.FillWith(expressionsView);
       }
-
 
       public void AttachPresenter(IMoleculesPresenter presenter)
       {

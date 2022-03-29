@@ -18,7 +18,12 @@ namespace PKSim.Core.Snapshots.Mappers
 {
    public class ProjectContext
    {
-      public bool RunSimulations { get; set; }
+      public ProjectContext(bool runSimulations)
+      {
+         RunSimulations = runSimulations;
+      }
+
+      public bool RunSimulations { get;  }
    }
 
    public class ProjectMapper : SnapshotMapperBase<ModelProject, SnapshotProject, ProjectContext>
@@ -96,11 +101,6 @@ namespace PKSim.Core.Snapshots.Mappers
             Creation = _creationMetaDataFactory.Create()
          };
 
-         var simulationContext = new SimulationContext
-         {
-            Project = project,
-            Run = projectContext.RunSimulations
-         };
 
          project.Creation.InternalVersion = snapshot.Version;
          project.Creation.Version = ProjectVersions.FindBy(snapshot.Version)?.VersionDisplay;
@@ -110,7 +110,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await observedDataFrom(snapshot.ObservedData);
          observedData?.Each(repository => addObservedDataToProject(project, repository));
 
-         var allSimulations = await allSimulationsFrom(snapshot.Simulations, simulationContext);
+         var allSimulations = await allSimulationsFrom(project, projectContext,  snapshot.Simulations);
          allSimulations?.Each(simulation => addSimulationToProject(project, simulation));
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(snapshot.SimulationComparisons, project);
@@ -257,13 +257,16 @@ namespace PKSim.Core.Snapshots.Mappers
          project.GetOrCreateClassifiableFor<TClassifiableWrapper, TSubject>(subject);
       }
 
-      private async Task<IEnumerable<Model.Simulation>> allSimulationsFrom(Simulation[] snapshots, SimulationContext simulationContext)
+      private async Task<IEnumerable<Model.Simulation>> allSimulationsFrom(ModelProject project, ProjectContext projectContext, Simulation[] snapshots)
       {
          var simulations = new List<Model.Simulation>();
 
          if (snapshots == null)
             return simulations;
 
+         var simulationContext = new SimulationContext(project, projectContext.RunSimulations);
+         simulationContext.NumberOfSimulationsToLoad = snapshots.Length;
+         simulationContext.NumberOfSimulationsLoaded = 1;
          //do not run tasks in parallel as the same mapper instance may be used concurrently to load two different snapshots
          foreach (var snapshot in snapshots)
          {
@@ -271,6 +274,7 @@ namespace PKSim.Core.Snapshots.Mappers
             {
                var simulation = await _simulationMapper.MapToModel(snapshot, simulationContext);
                simulations.Add(simulation);
+               simulationContext.NumberOfSimulationsLoaded++;
             }
             catch (Exception e)
             {

@@ -158,7 +158,7 @@ namespace PKSim.UI.Views.Simulations
          rbPopulationFileSelection.Text = PKSimConstants.UI.UsePopulationFileCSV;
          rbPopulationSizeSelection.Text = PKSimConstants.UI.NewPopulationFromSize;
 
-         Icon = ApplicationIcons.PopulationSimulationLoad.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.PopulationSimulationLoad;
          Caption = PKSimConstants.UI.ImportPopulationSimulation;
 
          tbLog.Properties.ReadOnly = true;

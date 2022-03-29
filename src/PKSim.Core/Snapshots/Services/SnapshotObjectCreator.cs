@@ -138,7 +138,7 @@ namespace PKSim.Core.Snapshots.Services
          var snapshotSimulation = await SnapshotSimulationFor(simulationConstruction);
          project.Simulations = new[] {snapshotSimulation};
 
-         var pksimProject = await _projectMapper.MapToModel(project, new ProjectContext {RunSimulations = false});
+         var pksimProject = await _projectMapper.MapToModel(project, new ProjectContext(runSimulations:false));
          return pksimProject.BuildingBlockByName<Model.Simulation>(simulationConstruction.SimulationName);
       }
    }

@@ -71,7 +71,6 @@ namespace PKSim.Presentation.Presenters.Charts
          ChartEditorPresenter.SetShowDataColumnInDataBrowserDefinition(IsColumnVisibleInDataBrowser);
          ChartDisplayPresenter.DragDrop += OnDragDrop;
          ChartDisplayPresenter.DragOver += OnDragOver;
-         ChartDisplayPresenter.ExportToPDF = () => _chartTask.ExportToPDF(Chart);
          AddAllButtons();
          _chartDisplayMode = ChartDisplayMode.Chart;
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();

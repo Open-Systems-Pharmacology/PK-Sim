@@ -20,6 +20,7 @@ using PKSim.Presentation.Views.Compounds;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Binders;
 using PKSim.Core.Model;
+using static OSPSuite.UI.UIConstants.Size;
 using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.Compounds
@@ -100,7 +101,7 @@ namespace PKSim.UI.Views.Compounds
             Control = _rgPlasmaBindingPartner,
             Text = PKSimConstants.UI.FractionUnboundBindingType.FormatForLabel()
          };
-         _layoutItemBindingMode.AdjustControlHeight(UIConstants.Size.RADIO_GROUP_HEIGHT);
+         _layoutItemBindingMode.AdjustControlHeight(RADIO_GROUP_HEIGHT);
          _layoutItemBindingMode.Move(layoutItemGrid, InsertType.Top);
          _rgPlasmaBindingPartner.SelectedIndexChanged += (o, e) => OnEvent(bindingPartnerChanged);
       }

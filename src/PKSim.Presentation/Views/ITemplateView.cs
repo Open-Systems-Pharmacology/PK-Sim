@@ -8,7 +8,6 @@ namespace PKSim.Presentation.Views
 {
    public interface ITemplateView : IModalView<ITemplatePresenter>
    {
-      void SetIcon(ApplicationIcon icon);
       void SelectTemplate(TemplateDTO template);
       void BindTo(IReadOnlyList<TemplateDTO> availableTemplates);
       string Description { get; set; }

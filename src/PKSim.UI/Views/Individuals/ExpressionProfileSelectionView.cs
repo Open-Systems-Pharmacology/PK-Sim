@@ -42,7 +42,6 @@ namespace PKSim.UI.Views.Individuals
 
          btnCreate.Click += (o, e) => OnEvent(_presenter.CreateExpressionProfile);
          btnLoad.Click += (o, e) => OnEvent(_presenter.LoadExpressionProfileAsync);
-
       }
 
       public override bool HasError => _screenBinder.HasError;
@@ -66,11 +65,8 @@ namespace PKSim.UI.Views.Individuals
          layoutItemLoad.AdjustButtonSizeWithImageOnly();
          cbExpressionProfile.Properties.AllowHtmlDraw = DefaultBoolean.True;
          layoutItemExpressionProfileSelection.TextVisible = false;
-      }
-
-      public override ApplicationIcon ApplicationIcon
-      {
-         set => Icon = value.WithSize(IconSizes.Size16x16);
+         cbExpressionProfile.Properties.AutoHeight = false;
+         cbExpressionProfile.Height = btnLoad.Height;
       }
    }
 }

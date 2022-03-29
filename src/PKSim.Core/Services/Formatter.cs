@@ -1,6 +1,6 @@
-using PKSim.Assets;
-using OSPSuite.Utility.Format;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Format;
+using PKSim.Assets;
 
 namespace PKSim.Core.Services
 {
@@ -41,4 +41,14 @@ namespace PKSim.Core.Services
       }
    }
 
+   public class NullableBooleanFormatter : IFormatter<bool?>
+   {
+      public string Format(bool? valueToFormat)
+      {
+         if (valueToFormat == null)
+            return string.Empty;
+
+         return valueToFormat.Value ? PKSimConstants.UI.Yes : PKSimConstants.UI.No;
+      }
+   }
 }

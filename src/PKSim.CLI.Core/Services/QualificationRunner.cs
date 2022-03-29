@@ -102,7 +102,12 @@ namespace PKSim.CLI.Core.Services
          {
             OutputFolder = projectOutputFolder,
             //We run the output, this is for the old matlab implementation where we need xml. Otherwise, we only need pkml export
-            ExportMode = runOptions.Run ?   SimulationExportMode.Xml | SimulationExportMode.Csv  :  SimulationExportMode.Pkml
+            ExportMode = runOptions.Run ? SimulationExportMode.Xml | SimulationExportMode.Csv : SimulationExportMode.Pkml,
+
+            Simulations = config.Simulations,
+
+            //We only want to export what is required in this case
+            ExportAllSimulationsIfListIsEmpty = false
          };
 
          //Using absolute path for simulation folder. We need them to be relative
@@ -124,13 +129,16 @@ namespace PKSim.CLI.Core.Services
          await _jsonSerializer.Serialize(mapping, config.MappingFile);
          _logger.AddDebug($"Project mapping for '{project.Name}' exported to '{config.MappingFile}'", project.Name);
 
-         var projectFile = Path.Combine(config.TempFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
-         _workspacePersistor.SaveSession(_workspace, projectFile);
-         _logger.AddDebug($"Project saved to '{projectFile}'", project.Name);
+         if (runOptions.ExportProjectFiles)
+         {
+            var projectFile = Path.Combine(config.TempFolder, $"{project.Name}{CoreConstants.Filter.PROJECT_EXTENSION}");
+            _workspacePersistor.SaveSession(_workspace, projectFile);
+            _logger.AddDebug($"Project saved to '{projectFile}'", project.Name);
 
-         var snapshotFile = Path.Combine(config.TempFolder, $"{project.Name}{Constants.Filter.JSON_EXTENSION}");
-         await _snapshotTask.ExportModelToSnapshotAsync(project, snapshotFile);
-         _logger.AddDebug($"Project snapshot saved to '{snapshotFile}'", project.Name);
+            var snapshotFile = Path.Combine(config.TempFolder, $"{project.Name}{Constants.Filter.JSON_EXTENSION}");
+            await _snapshotTask.ExportModelToSnapshotAsync(project, snapshotFile);
+            _logger.AddDebug($"Project snapshot saved to '{snapshotFile}'", project.Name);
+         }
 
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
@@ -140,7 +148,15 @@ namespace PKSim.CLI.Core.Services
       private PlotMapping[] retrievePlotDefinitionsFrom(Project snapshotProject, QualifcationConfiguration configuration)
       {
          var plotMappings = configuration.SimulationPlots?.SelectMany(x => retrievePlotDefinitionsForSimulation(x, snapshotProject));
-         return plotMappings?.ToArray() ?? Array.Empty<PlotMapping>();
+         var plotMappingsArray = plotMappings?.ToArray() ?? Array.Empty<PlotMapping>();
+         var exportedSimulations = configuration.Simulations?.ToArray() ?? Array.Empty<string>();
+         var unmappedSimulations = plotMappingsArray.Select(x => x.Simulation).Distinct().Where(x => !exportedSimulations.Contains(x)).ToList();
+
+         //All simulations referenced in the the plot mapping are also exported. We are good
+         if (!unmappedSimulations.Any())
+            return plotMappingsArray;
+
+         throw new QualificationRunException(SimulationUsedInPlotsAreNotExported(unmappedSimulations, snapshotProject.Name));
       }
 
       private void validateInputs(Project snapshotProject, QualifcationConfiguration configuration)

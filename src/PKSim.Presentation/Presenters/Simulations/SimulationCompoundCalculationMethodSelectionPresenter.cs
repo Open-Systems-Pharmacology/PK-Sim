@@ -13,7 +13,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly ICalculationMethodSelectionPresenterForSimulation _calculationMethodSelectionPresenter;
 
       public SimulationCompoundCalculationMethodSelectionPresenter(
-         ISimulationCompoundCalculationMethodSelectionView view, ICalculationMethodSelectionPresenterForSimulation calculationMethodSelectionPresenter)
+         ISimulationCompoundCalculationMethodSelectionView view, 
+         ICalculationMethodSelectionPresenterForSimulation calculationMethodSelectionPresenter)
          : base(view)
       {
          _calculationMethodSelectionPresenter = calculationMethodSelectionPresenter;

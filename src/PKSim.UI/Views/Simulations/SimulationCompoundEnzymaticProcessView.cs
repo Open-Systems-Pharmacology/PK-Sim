@@ -4,7 +4,6 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -44,7 +43,7 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(getAddRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
          _addAndRemoveRepository.ButtonClick += (o, e) => OnEvent(() => buttonRepositoryButtonClick(e, _gridViewPartialBinder.FocusedElement));
          _addAndDisableRemoveRepository.ButtonClick += (o, e) => OnEvent(() => buttonRepositoryButtonClick(e, _gridViewPartialBinder.FocusedElement));

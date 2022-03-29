@@ -36,9 +36,9 @@ namespace PKSim.Presentation
          _subPresenterManager = SubPresenterHelper.Create<IPopulationItemPresenter>();
          _propertiesMapper = A.Fake<IBuildingBlockPropertiesMapper>();
          _view = A.Fake<ICreateRandomPopulationView>();
-         _popSettingsPresenter = _subPresenterManager.CreateFake(RamdomPopulationItems.Settings);
-         _popAdvancedParameterPresenter = _subPresenterManager.CreateFake(RamdomPopulationItems.AdvancedParameters);
-         _popDistributionPresenter = _subPresenterManager.CreateFake(RamdomPopulationItems.ParameterDistribution);
+         _popSettingsPresenter = _subPresenterManager.CreateFake(RandomPopulationItems.Settings);
+         _popAdvancedParameterPresenter = _subPresenterManager.CreateFake(RandomPopulationItems.AdvancedParameters);
+         _popDistributionPresenter = _subPresenterManager.CreateFake(RandomPopulationItems.ParameterDistribution);
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _allIndividuals = new List<Individual>();
@@ -60,7 +60,7 @@ namespace PKSim.Presentation
 
       protected override Task Because()
       {
-         sut.WizardNext(RamdomPopulationItems.Settings.Index);
+         sut.WizardNext(RandomPopulationItems.Settings.Index);
          return _completed;
       }
 
@@ -172,9 +172,9 @@ namespace PKSim.Presentation
       [Observation]
       public void should_only_enable_the_setting_view()
       {
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.Settings, true)).MustHaveHappened();
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.AdvancedParameters, true)).MustNotHaveHappened();
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.ParameterDistribution, true)).MustNotHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.Settings, true)).MustHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.AdvancedParameters, true)).MustNotHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.ParameterDistribution, true)).MustNotHaveHappened();
       }
    }
 
@@ -240,7 +240,7 @@ namespace PKSim.Presentation
    {
       protected override Task Because()
       {
-         sut.WizardNext(RamdomPopulationItems.Settings.Index);
+         sut.WizardNext(RandomPopulationItems.Settings.Index);
          return _completed;
       }
 
@@ -329,13 +329,13 @@ namespace PKSim.Presentation
       [Observation]
       public void should_enable_the_advanced_parameter_tab()
       {
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.AdvancedParameters, true)).MustHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.AdvancedParameters, true)).MustHaveHappened();
       }
 
       [Observation]
       public void should_enable_the_distribution_parameter_tab()
       {
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.ParameterDistribution, true)).MustHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.ParameterDistribution, true)).MustHaveHappened();
       }
    }
 
@@ -356,13 +356,13 @@ namespace PKSim.Presentation
       [Observation]
       public void should_disable_the_advanced_parameter_tab()
       {
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.AdvancedParameters, false)).MustHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.AdvancedParameters, false)).MustHaveHappened();
       }
 
       [Observation]
       public void should_disable_the_distribution_parameter_tab()
       {
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.ParameterDistribution, false)).MustHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.ParameterDistribution, false)).MustHaveHappened();
       }
    }
 }

@@ -74,7 +74,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(getButtonRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
          _addButtonRepository.ButtonClick += (o, e) => OnEvent(addFixedLimit);
          _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(addOrRemoveFixedLimit, e);

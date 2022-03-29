@@ -17,7 +17,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public CreateScatterAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager, IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory) :
          base(view, subPresenterItemManager, ScatterItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
-         View.Image = ApplicationIcons.ScatterAnalysis;
+         View.ApplicationIcon = ApplicationIcons.ScatterAnalysis;
       }
       protected override string AnalysisType => PKSimConstants.UI.Scatter;
 

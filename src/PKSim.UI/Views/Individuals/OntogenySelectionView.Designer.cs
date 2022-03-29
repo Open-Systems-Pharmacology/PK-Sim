@@ -30,29 +30,29 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.cbOntogey = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.cbOntogeny = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
          this.btnLoadOntogenyFromFile = new DevExpress.XtraEditors.SimpleButton();
          this.btnShowOntogeny = new DevExpress.XtraEditors.SimpleButton();
          this.layoutItemOntogeny = new DevExpress.XtraEditors.LabelControl();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbOntogey.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbOntogeny.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          this.tablePanel.SuspendLayout();
          this.SuspendLayout();
          // 
          // cbOntogey
          // 
-         this.tablePanel.SetColumn(this.cbOntogey, 1);
-         this.cbOntogey.Location = new System.Drawing.Point(124, 4);
-         this.cbOntogey.Margin = new System.Windows.Forms.Padding(4);
-         this.cbOntogey.Name = "cbOntogey";
-         this.cbOntogey.Properties.AutoHeight = false;
-         this.cbOntogey.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+         this.tablePanel.SetColumn(this.cbOntogeny, 1);
+         this.cbOntogeny.Location = new System.Drawing.Point(124, 4);
+         this.cbOntogeny.Margin = new System.Windows.Forms.Padding(4);
+         this.cbOntogeny.Name = "cbOntogeny";
+         
+         this.cbOntogeny.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.tablePanel.SetRow(this.cbOntogey, 0);
-         this.cbOntogey.Size = new System.Drawing.Size(262, 26);
-         this.cbOntogey.TabIndex = 0;
+         this.tablePanel.SetRow(this.cbOntogeny, 0);
+         this.cbOntogeny.Size = new System.Drawing.Size(262, 26);
+         this.cbOntogeny.TabIndex = 0;
          // 
          // tablePanel
          // 
@@ -64,7 +64,7 @@
          this.tablePanel.Controls.Add(this.btnLoadOntogenyFromFile);
          this.tablePanel.Controls.Add(this.btnShowOntogeny);
          this.tablePanel.Controls.Add(this.layoutItemOntogeny);
-         this.tablePanel.Controls.Add(this.cbOntogey);
+         this.tablePanel.Controls.Add(this.cbOntogeny);
          this.tablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tablePanel.Location = new System.Drawing.Point(0, 0);
          this.tablePanel.Name = "tablePanel";
@@ -113,7 +113,7 @@
          this.Name = "OntogenySelectionView";
          this.Size = new System.Drawing.Size(647, 61);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbOntogey.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbOntogeny.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
          this.tablePanel.ResumeLayout(false);
          this.tablePanel.PerformLayout();
@@ -123,7 +123,7 @@
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbOntogey;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbOntogeny;
       private DevExpress.Utils.Layout.TablePanel tablePanel;
       private DevExpress.XtraEditors.LabelControl layoutItemOntogeny;
       private DevExpress.XtraEditors.SimpleButton btnLoadOntogenyFromFile;

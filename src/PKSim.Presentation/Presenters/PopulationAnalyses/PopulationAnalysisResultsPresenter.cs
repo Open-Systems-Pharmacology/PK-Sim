@@ -1,4 +1,6 @@
-﻿using OSPSuite.Utility.Events;
+﻿using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
@@ -6,8 +8,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -57,7 +57,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _view.SetFieldSelectionView(_fieldSelectionPresenter.BaseView);
          _view.SetChartView(populationAnalysisChartPresenter.BaseView);
          _populationAnalysisChartPresenter.OnExportDataToExcel += (o, e) => exportDataToExcel();
-         _populationAnalysisChartPresenter.OnExportToPDF += (o, e) => exportToPDF();
 
          populationAnalysisChartPresenter.Initialize();
       }
@@ -93,11 +92,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       }
 
       protected abstract ChartData<TXValue, TYValue> CreateChartData();
-
-      private void exportToPDF()
-      {
-         _populationAnalysisTask.ExportToPDF(Chart);
-      }
 
       private void exportDataToExcel()
       {

@@ -1,4 +1,6 @@
-﻿using OSPSuite.Assets;
+﻿using System.Windows.Forms;
+using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -40,7 +42,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
 
       public void BindTo(ExpressionProfileDTO expressionProfileDTO)
       {
-         Icon = expressionProfileDTO.Icon.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = expressionProfileDTO.Icon;
          cbMoleculeName.FillWith(expressionProfileDTO.AllMolecules);
          layoutItemMoleculeName.Text = expressionProfileDTO.MoleculeType.FormatForLabel();
          _screenBinder.BindToSource(expressionProfileDTO);
@@ -71,6 +73,8 @@ namespace PKSim.UI.Views.ExpressionProfiles
          base.InitializeResources();
          layoutItemCategory.Text = PKSimConstants.UI.ExpressionProfileCategory.FormatForLabel();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
+         labelCategoryDescription.AsDescription();
+         labelCategoryDescription.Text = PKSimConstants.UI.ExpressionProfileCategoryDescription.FormatForDescription();
       }
 
       protected override void SetActiveControl()

@@ -29,6 +29,7 @@ using PKSim.Core;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.UI.Views.Core;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -156,7 +157,7 @@ namespace PKSim.UI.Views.Parameters
       {
          _columnFavorites = _gridViewBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
-            .WithWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithWidth(EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));

@@ -108,7 +108,7 @@ namespace PKSim.UI.Views
          layoutItemLoad.AdjustButtonSizeWithImageOnly();
          layoutItemCreate.AdjustButtonSizeWithImageOnly();
          //Make combo box same size as button
-         layoutItemBuildingBlock.AdjustSize(0, UIConstants.Size.BUTTON_HEIGHT);
+         layoutItemBuildingBlock.AdjustSize(0, OSPSuite.UI.UIConstants.Size.BUTTON_HEIGHT);
          cbBuildingBlocks.Properties.AllowHtmlDraw = DefaultBoolean.True;
       }
    }

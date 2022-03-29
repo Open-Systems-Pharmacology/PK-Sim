@@ -106,8 +106,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.PKMLSave)
             .AsDisabledIf(simulation.IsImported);
 
-         yield return ExportToPDFMenuFor(simulation);
-
          yield return AddToJournalMenuFor(simulation);
       }
    }

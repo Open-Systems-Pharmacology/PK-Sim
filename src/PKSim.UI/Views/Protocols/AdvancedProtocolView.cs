@@ -159,7 +159,7 @@ namespace PKSim.UI.Views.Protocols
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => schemaButtonRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
 
          _gridProtocolBinder.Changed += NotifyViewChanged;
@@ -210,7 +210,7 @@ namespace PKSim.UI.Views.Protocols
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => schemaItemButtonRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
 
          schemaItemBinder.Changed += NotifyViewChanged;
 

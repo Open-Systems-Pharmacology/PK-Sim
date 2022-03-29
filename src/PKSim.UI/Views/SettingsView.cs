@@ -3,7 +3,6 @@ using PKSim.Assets;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
 using OSPSuite.Assets;
-using OSPSuite.Presentation;
 using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views
@@ -24,19 +23,16 @@ namespace PKSim.UI.Views
          _presenter = presenter;
       }
 
-      public override XtraTabControl TabControl
-      {
-         get { return tabSettings; }
-      }
+      public override XtraTabControl TabControl => tabSettings;
 
       public override void InitializeResources()
       {
          base.InitializeResources();
          ExtraVisible = true;
-         Icon = ApplicationIcons.Settings;
+         ApplicationIcon = ApplicationIcons.Settings;
          Caption = PKSimConstants.UI.Options;
-         btnExtra.Text = PKSimConstants.UI.ResetLayout;
-         btnExtra.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetLayoutSettingsToolTip);
+         ExtraCaption = PKSimConstants.UI.ResetLayout;
+         ButtonExtra.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetLayoutSettingsToolTip);
          ActiveControl = TabControl;
       }
       protected override void SetActiveControl()

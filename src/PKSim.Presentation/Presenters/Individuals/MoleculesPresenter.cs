@@ -151,9 +151,9 @@ namespace PKSim.Presentation.Presenters.Individuals
          //needs to be done as soon as the view is available to allow proper resizing
          _view.ActivateView(_activePresenter.BaseView);
          _activePresenter.DisableEdit();
-         _activePresenter.OntogenyVisible = _simulationSubject.IsAgeDependent;
-         _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>();
          _activePresenter.ActivateMolecule(molecule);
+         _activePresenter.OntogenyVisible = _simulationSubject.IsAgeDependent;
+         _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>(); 
       }
 
       public void NodeDoubleClicked(ITreeNode node)

@@ -51,6 +51,8 @@ namespace PKSim.Presentation.DTO
 
       public string Url => RemoteTemplate?.RepositoryUrl;
 
+      public bool? Qualified => RemoteTemplate?.Qualified;
+
       public ApplicationIcon Icon
       {
          get

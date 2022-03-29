@@ -30,7 +30,6 @@ namespace PKSim.BatchTool.Views
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
          ApplicationIcon = ApplicationIcons.PKSim;
-         Icon = ApplicationIcon.WithSize(IconSizes.Size32x32);
       }
 
       public override void InitializeBinding()

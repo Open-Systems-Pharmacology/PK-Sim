@@ -115,9 +115,9 @@ namespace PKSim.Core.Model
       {
          //that should never happen. Just in case
          var bbWithTheSameName = All(buildingBlockToAdd.BuildingBlockType)
-            .Where(bb => string.Equals(bb.Name, buildingBlockToAdd.Name));
+            .Where(bb => bb.IsNamed(buildingBlockToAdd.Name));
 
-         if (bbWithTheSameName.Count() != 0)
+         if (bbWithTheSameName.Any())
             throw new BuildingBlockAlreadyExistsInProjectException(buildingBlockToAdd);
 
          _allBuildingBlocks.Add(buildingBlockToAdd);

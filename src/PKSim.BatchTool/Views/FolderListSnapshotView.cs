@@ -67,7 +67,7 @@ namespace PKSim.BatchTool.Views
             .WithCaption(UIConstants.EMPTY_COLUMN)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _deleteRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
          _gridViewBinder.Changed += NotifyViewChanged;
 

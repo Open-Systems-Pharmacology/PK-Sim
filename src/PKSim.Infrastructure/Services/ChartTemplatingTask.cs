@@ -29,6 +29,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IQuantityPathToQuantityDisplayPathMapper _quantityDisplayPathMapper;
       private readonly ICurveChartToCurveChartTemplateMapper _chartTemplateMapper;
       private readonly IExecutionContext _executionContext;
+      private readonly ICloneManager _cloneManager;
       private readonly IChartTask _chartTask;
 
       public ChartTemplatingTask(IChartFromTemplateService chartFromTemplateService, IProjectRetriever projectRetriever, IChartTemplatePersistor chartTemplatePersistor, IChartUpdater chartUpdater, IDialogCreator dialogCreator,
@@ -42,6 +43,7 @@ namespace PKSim.Infrastructure.Services
          _quantityDisplayPathMapper = quantityDisplayPathMapper;
          _chartTemplateMapper = chartTemplateMapper;
          _executionContext = executionContext;
+         _cloneManager = cloneManager;
          _chartTask = chartTask;
       }
 
@@ -91,7 +93,7 @@ namespace PKSim.Infrastructure.Services
       public SimulationTimeProfileChart CloneChart(SimulationTimeProfileChart originalChart, IndividualSimulation simulation)
       {
          var clonedChart = _chartFactory.Create(originalChart.GetType()).WithName(originalChart.Name);
-         clonedChart.UpdateFrom(originalChart);
+         clonedChart.UpdatePropertiesFrom(originalChart, _cloneManager);
 
          initializeFromTemplate(originalChart, clonedChart, simulation);
 
@@ -103,12 +105,15 @@ namespace PKSim.Infrastructure.Services
          var allAvailableColumns = new List<DataColumn>();
          addSimulationResults(simulation, allAvailableColumns);
          addObservedDataColumns(simulation, allAvailableColumns);
-         Func<DataColumn, string> curveNameDefinition = c => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, c);
+         string curveNameDefinition(DataColumn c) => _quantityDisplayPathMapper.DisplayPathAsStringFor(simulation, c);
          _chartFromTemplateService.InitializeChartFromTemplate(clonedChart, allAvailableColumns, _chartTemplateMapper.MapFrom(originalChart), curveNameDefinition);
       }
 
       private void addSimulationResults(IndividualSimulation simulation, List<DataColumn> allAvailableColumns)
       {
+         if (simulation.DataRepository.IsNull())
+            return;
+
          allAvailableColumns.AddRange(simulation.DataRepository);
       }
 

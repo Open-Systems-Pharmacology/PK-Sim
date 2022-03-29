@@ -4,6 +4,12 @@ namespace PKSim.Presentation.Views
 {
    public interface IConfigurableContainerLayoutView : IView
    {
+
+      /// <summary>
+      /// Adds finishing touches to the view once it's been configured
+      /// </summary>
+      void StartAddingViews();
+
       /// <summary>
       /// Adds a view dynamically to the list of views shown
       /// </summary>
@@ -18,7 +24,7 @@ namespace PKSim.Presentation.Views
 
    public interface IAccordionLayoutView : IConfigurableContainerLayoutView
    {
-
+      
    }
 
    public interface ITabbedLayoutView : IConfigurableContainerLayoutView

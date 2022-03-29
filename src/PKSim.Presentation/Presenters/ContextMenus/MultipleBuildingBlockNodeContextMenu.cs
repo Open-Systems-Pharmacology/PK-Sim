@@ -61,7 +61,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem SaveAsSystemTemplateMenuFor(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSytemTemplate)
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSystemTemplate)
             .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .ForDeveloper();

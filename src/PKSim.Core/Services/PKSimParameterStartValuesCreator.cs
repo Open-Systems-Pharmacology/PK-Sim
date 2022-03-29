@@ -4,7 +4,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using static PKSim.Core.CoreConstants.CalculationMethod;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
@@ -78,9 +77,9 @@ namespace PKSim.Core.Services
 
       private void updateMoleculeParametersValues(IndividualMolecule molecule, Individual individual, Simulation simulation)
       {
-         var allProteinParameters = individual.AllMoleculeParametersFor(molecule);
+         var allMoleculeParameters = individual.AllMoleculeParametersFor(molecule);
          var modelConfiguration = simulation.ModelConfiguration;
-         allProteinParameters.Each(p => setParameter(p, modelConfiguration.ModelName == CoreConstants.Model.FOUR_COMP));
+         allMoleculeParameters.Each(p => setParameter(p, modelConfiguration.ModelName == CoreConstants.Model.FOUR_COMP));
       }
 
       private void setParameter(IParameter parameter, bool isSmallMolecule)
@@ -89,13 +88,16 @@ namespace PKSim.Core.Services
          if (parameter.HasAncestorNamed(CoreConstants.Compartment.ENDOSOME) && isSmallMolecule)
             return;
 
-         var parameterStartValue = getOrCreateStartValueFor(parameter);
+         //We do not generate value for this parameter by default. Exit
+         var parameterStartValue = getStartValueFor(parameter);
+         if (parameterStartValue == null)
+            return;
 
          if (parameter.Formula.IsExplicit())
          {
             var formula = _formulaFactory.RateFor(EXPRESSION_PARAMETERS, parameter.Formula.Name, _defaultStartValues.FormulaCache);
             parameterStartValue.Formula = formula;
-            //There if a formula, make sure we use it. We set this flag to false to ensure that the formula will not be replaced with a constant formula
+            //There is a formula, make sure we use it. We set this flag to false to ensure that the formula will not be replaced with a constant formula
             parameterStartValue.OverrideFormulaWithValue = false;
          }
 
@@ -123,6 +125,12 @@ namespace PKSim.Core.Services
          _defaultStartValues.Add(parameterStartValue);
 
          return parameterStartValue;
+      }
+
+      private IParameterStartValue getStartValueFor(IParameter parameter)
+      {
+         var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
+         return _defaultStartValues[parameterPath];
       }
    }
 }

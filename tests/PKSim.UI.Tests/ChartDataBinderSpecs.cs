@@ -9,7 +9,7 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.UI.Views.PopulationAnalyses;
 
-namespace PKSim.UI.Tests
+namespace PKSim.UI
 {
    public abstract class concern_for_ChartDataBinder : ContextSpecification<IChartsDataBinder<BoxWhiskerXValue, BoxWhiskerYValue>>
    {
@@ -21,7 +21,6 @@ namespace PKSim.UI.Tests
       {
          _imageListRetriever = A.Fake<IImageListRetriever>();
          _toolTipCreator = A.Fake<IToolTipCreator>();
-         A.CallTo(() => _imageListRetriever.AllImages16x16).Returns(new ImageCollection());
          _view = new BoxWhiskerChartView(_imageListRetriever, _toolTipCreator);
          sut = _view.ChartsDataBinder;
       }

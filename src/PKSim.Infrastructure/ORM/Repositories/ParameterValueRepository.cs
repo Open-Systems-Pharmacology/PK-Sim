@@ -23,9 +23,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public ParameterValueRepository(
          IFlatParameterValueRepository flatParameterValueRepo,
          IFlatContainerRepository flatContainerRepo,
-         IValueOriginRepository valueOriginRepository
-         ) :
-         base(flatParameterValueRepo, flatContainerRepo,valueOriginRepository)
+         IValueOriginRepository valueOriginRepository,
+         IFlatContainerParameterDescriptorConditionRepository flatContainerParameterDescriptorConditionRepository,
+         ICriteriaConditionToDescriptorConditionMapper descriptorConditionMapper
+      ) :
+         base(flatParameterValueRepo, flatContainerRepo, valueOriginRepository, flatContainerParameterDescriptorConditionRepository, descriptorConditionMapper)
       {
       }
    }

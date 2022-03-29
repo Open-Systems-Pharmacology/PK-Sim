@@ -97,9 +97,7 @@ namespace PKSim.UI.Views.Compounds
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
       }
 
-      private ICompoundParameterGroupWithCalculatedDefaultPresenter withCalculatedDefaultPresenter
-      {
-         get { return _presenter.DowncastTo<ICompoundParameterGroupWithCalculatedDefaultPresenter>(); }
-      }
+      private ICompoundParameterGroupWithCalculatedDefaultPresenter withCalculatedDefaultPresenter => 
+         _presenter.DowncastTo<ICompoundParameterGroupWithCalculatedDefaultPresenter>();
    }
 }

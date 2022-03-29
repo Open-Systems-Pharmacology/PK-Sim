@@ -906,6 +906,9 @@ namespace PKSim.Assets
 
          public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
 
+         public static string SimulationUsedInPlotsAreNotExported(IReadOnlyList<string> simulationNames, string project)
+            => $"{ObjectTypes.Simulation.PluralizeIf(simulationNames)} {simulationNames.ToString(", ", "'")} used in plots {"is".PluralizeIf(simulationNames)} not found in the list of exported simulations for {ObjectTypes.Project} {project}";
+
          public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
             $"Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
 
@@ -923,6 +926,10 @@ namespace PKSim.Assets
 
          public static string NoProteinExpressionDatabaseAssociatedTo(string speciesName) =>
             $"No protein expression database available for species '{speciesName}'";
+
+         public static string MultipleOperatorFoundForContainer(int containerId, string parameterName) =>
+            $"Multiple operator values found for container id '{containerId}' and parameter '{parameterName}'";
+
       }
 
       public static class Information
@@ -1070,7 +1077,7 @@ namespace PKSim.Assets
 
          public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from {ObjectTypes.Snapshot.ToLower()}";
 
-         public static string LoadingSimulation(string simulationName) => $"Loading simulation '{simulationName}'...";
+         public static string LoadingSimulation(string simulationName, int count, int total) => $"Loading simulation '{simulationName}' ({count}/{total})...";
 
          public static string StartingQualificationPlan(string qualificationPlan) => Starting(ObjectTypes.QualificationPlan, qualificationPlan);
 
@@ -1084,7 +1091,7 @@ namespace PKSim.Assets
 
          public static readonly string LoadFromTemplate = UI.LoadFromTemplate;
          public static readonly string SaveAsTemplate = UI.SaveAsTemplate;
-         public static readonly string SaveAsSytemTemplate = "Save as System Template...";
+         public static readonly string SaveAsSystemTemplate = "Save as System Template...";
          public static readonly string Reset = "Reset";
          public static readonly string Undo = "Undo";
          public static readonly string Diff = "Show Differences...";
@@ -1725,6 +1732,8 @@ namespace PKSim.Assets
          public static readonly string CalculationMethods = "Calculation methods";
          public static readonly string ReferencePopulation = "Reference Population";
          public static readonly string ExpressionProfileCategory = "Phenotype";
+         public static readonly string ExpressionProfileCategoryDescription =
+            "Multiple expression profiles of the same protein can be defined to describe different phenotypes or disease states (e.g. Healthy, Extensive etc.)";
          public static readonly string Category = "Category";
          public static readonly string CreateIndividual = "Create Individual";
          public static readonly string CreateSimulationSettings = "Create Simulation Settings";
@@ -1957,7 +1966,6 @@ namespace PKSim.Assets
          public static readonly string ExportSimulationToCpp = $"Export simulation to C++ code";
          public static readonly string ExportODEForMatlab = "Export simulation to Matlab® ODE";
          public static readonly string ExportODEForR = "Export simulation to R ODE";
-         public static readonly string ReallyCancel = "Do you really want to cancel?";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string BuildingBlockType = "Building Block Type";
          public static readonly string MetabolizingEnzyme = "Metabolizing Enzyme";
@@ -2049,6 +2057,7 @@ namespace PKSim.Assets
          public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string CheckForUpdate = "Check for Update";
          public static readonly string Template = "Template";
+         public static readonly string OnlyShowQualifiedTemplates = "Only show qualified templates";
          public static readonly string BuildingBlock = "Building Block";
          public static readonly string BuildingBlocks = "Building Blocks";
          public static readonly string AllowAging = "Allow aging";
@@ -2364,7 +2373,7 @@ namespace PKSim.Assets
 
          public static string AddParameterAsFavorites(string parameterName) => $"Add '{parameterName}' as favorite";
 
-         public static string ProductIsUptodate(string productName) => $"{productName} is up to date!";
+         public static string ProductIsUpToDate(string productName) => $"{productName} is up to date!";
 
          public static string ImportSimulationPKAnalysesDescription
          {
@@ -2411,9 +2420,9 @@ namespace PKSim.Assets
 
          public static string HalfLifeIntestineDescription(string moleculeType) => $"Apparent half life intestine of the affected {moleculeType.ToLower()}";
 
-         public static string ConfigureSimulation(string simulatioName) => $"Configure Simulation: {simulatioName}";
+         public static string ConfigureSimulation(string simulationName) => $"Configure Simulation: {simulationName}";
 
-         public static string CloningSimulation(string simulatioName) => $"Cloning Simulation: {simulatioName}";
+         public static string CloningSimulation(string simulationName) => $"Cloning Simulation: {simulationName}";
 
          public static string CreateGroupParameterAlternativeCaption(string groupName) => $"Create new {groupName.ToLower()} value";
 

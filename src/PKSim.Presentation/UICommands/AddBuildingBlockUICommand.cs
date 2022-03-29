@@ -29,11 +29,11 @@ namespace PKSim.Presentation.UICommands
       }
    }
 
-   public class AddExpressionProfileCommand<TMolecule>:IUICommand where TMolecule : IndividualMolecule
+   public class AddExpressionProfileCommand<TMolecule> : IUICommand where TMolecule : IndividualMolecule
    {
       private readonly IExpressionProfileTask _expressionProfileTask;
 
-      public AddExpressionProfileCommand(IExpressionProfileTask expressionProfileTask) 
+      public AddExpressionProfileCommand(IExpressionProfileTask expressionProfileTask)
       {
          _expressionProfileTask = expressionProfileTask;
       }
@@ -92,5 +92,4 @@ namespace PKSim.Presentation.UICommands
       {
       }
    }
-
 }

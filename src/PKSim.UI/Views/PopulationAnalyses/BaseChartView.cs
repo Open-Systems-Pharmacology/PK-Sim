@@ -10,6 +10,7 @@ using DevExpress.XtraCharts;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
@@ -55,7 +56,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _pnlChart.FillWith(Chart);
          Chart.RefreshDataOnRepaint = false;
          Chart.CacheToMemory = true;
-
+         Chart.Legend.MarkerSize = OSPSuite.UI.UIConstants.Chart.LEGEND_MARKER_SIZE;
          DragDropEnabled = false;
          initializeChart(imageListRetriever);
       }
@@ -198,7 +199,6 @@ namespace PKSim.UI.Views.PopulationAnalyses
             Chart.AddPopupMenu(MenuNames.Edit, _presenter.Edit, ApplicationIcons.Edit);
 
          Chart.AddPopupMenu(MenuNames.ExportToExcel, _presenter.ExportDataToExcel, ApplicationIcons.Excel);
-         Chart.AddPopupMenu(MenuNames.ExportToPDF, _presenter.ExportToPDF, ApplicationIcons.PDF);
       }
 
       private void copyToClipboard()

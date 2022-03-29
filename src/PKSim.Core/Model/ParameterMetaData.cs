@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Descriptors;
 
 namespace PKSim.Core.Model
 {
@@ -11,14 +12,17 @@ namespace PKSim.Core.Model
       public ParameterBuildMode BuildMode { get; set; }
       public int? ValueOriginId { get; set; }
       public ValueOrigin ValueOrigin { get; set; }
+      public DescriptorCriteria ContainerCriteria { get; set; }
 
       /// <summary>
-      /// Species if the parameter is a parameter set by the user or a input parameter parameter set in the DB. Default value is <c>false</c>
+      ///    Species if the parameter is a parameter set by the user or a input parameter parameter set in the DB. Default value
+      ///    is <c>false</c>
       /// </summary>
       public bool IsInput { get; set; } = false;
 
       /// <summary>
-      /// Species if the parameter is a parameter set by the user or a default parameter parameter set in the DB. Default value is <c>true</c>
+      ///    Species if the parameter is a parameter set by the user or a default parameter parameter set in the DB. Default
+      ///    value is <c>true</c>
       /// </summary>
       public bool IsDefault
       {
@@ -39,6 +43,20 @@ namespace PKSim.Core.Model
       public override string ToString()
       {
          return $"{ContainerName}-{ParameterName}";
+      }
+
+      public virtual void UpdatePropertiesFrom(ParameterMetaData parameterMetaData)
+      {
+         ParameterName = parameterMetaData.ParameterName;
+         ContainerId = parameterMetaData.ContainerId;
+         ContainerType = parameterMetaData.ContainerType;
+         ContainerName = parameterMetaData.ContainerName;
+         BuildMode = parameterMetaData.BuildMode;
+         ValueOriginId = parameterMetaData.ValueOriginId;
+         ValueOrigin = parameterMetaData.ValueOrigin;
+         ContainerCriteria = parameterMetaData.ContainerCriteria;
+         Dimension = parameterMetaData.Dimension;
+         base.UpdatePropertiesFrom(parameterMetaData);
       }
    }
 }

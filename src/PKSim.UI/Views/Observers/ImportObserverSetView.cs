@@ -13,6 +13,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Observers;
 using PKSim.Presentation.Presenters.Observers;
 using PKSim.Presentation.Views.Observers;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Observers
 {
@@ -86,7 +87,7 @@ namespace PKSim.UI.Views.Observers
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(_presenter.RemoveObserver, _gridViewBinder.FocusedElement);
 

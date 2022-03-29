@@ -3,7 +3,6 @@ using System.Collections;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using OSPSuite.Assets;
 using DevExpress.Data;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
@@ -12,12 +11,12 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using OSPSuite.Assets;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Views.ProteinExpression;
-using OSPSuite.Presentation;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.ProteinExpression
 {
@@ -25,13 +24,10 @@ namespace PKSim.UI.Views.ProteinExpression
    {
       private IMappingPresenter _presenter;
 
-      public MappingView(Shell shell): base(shell)
+      public MappingView(Shell shell) : base(shell)
       {
          InitializeComponent();
          InitializeResources();
-
-         btnCancel.Click += onCancelClick;
-         btnOk.Click += onOkClick;
 
          layoutControl1.AllowCustomization = false;
          var view = grdMappping.MainView as GridView;
@@ -48,6 +44,12 @@ namespace PKSim.UI.Views.ProteinExpression
          view.OptionsMenu.EnableGroupPanelMenu = false;
       }
 
+      protected override void CancelClicked()
+      {
+         base.CancelClicked();
+         _presenter.CancelChanged(grdMappping.DataSource as DataTable);
+      }
+
       public void AttachPresenter(IMappingPresenter presenter)
       {
          _presenter = presenter;
@@ -59,14 +61,10 @@ namespace PKSim.UI.Views.ProteinExpression
          Text = PKSimConstants.ProteinExpressions.MappingView.Caption;
       }
 
-      private void onOkClick(object sender, EventArgs e)
+      protected override void OkClicked()
       {
+         base.OkClicked();
          _presenter.SaveMapping(grdMappping.DataSource as DataTable);
-      }
-
-      private void onCancelClick(object sender, EventArgs e)
-      {
-         _presenter.CancelChanged(grdMappping.DataSource as DataTable);
       }
 
       public void SetData(DataTable mapping, DataTable containerTable, ICollection tissueLov)
@@ -99,6 +97,7 @@ namespace PKSim.UI.Views.ProteinExpression
             else if (container.Length > 0)
                containerComboBoxEditor.Items.Add(new ImageComboBoxItem(displayName, container));
          }
+
          containerComboBoxEditor.Items.EndUpdate();
          col.ColumnEdit = containerComboBoxEditor;
 
@@ -138,7 +137,7 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      ///   This event handler mask all changed cells in the mapping view with a different backround color.
+      ///    This event handler mask all changed cells in the mapping view with a different backround color.
       /// </summary>
       private static void onRowCellStyle(object sender, RowCellStyleEventArgs e)
       {
@@ -155,8 +154,9 @@ namespace PKSim.UI.Views.ProteinExpression
             e.Appearance.BackColor = Color.LightGray;
             e.Appearance.BackColor2 = Color.White;
          }
+
          if (row.RowState == DataRowState.Unchanged) return;
-         
+
          if (e.Column.UnboundType == UnboundColumnType.Bound && row.HasVersion(DataRowVersion.Original))
          {
             if (!Equals(row[e.Column.FieldName, DataRowVersion.Current], row[e.Column.FieldName, DataRowVersion.Original]))
@@ -171,8 +171,9 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      ///   This event handler is needed because the image combo box does not allow values which are not in the combo box list.
-      ///   The event handler shows the real value of the data as display text if there is no image value in the image combo box.
+      ///    This event handler is needed because the image combo box does not allow values which are not in the combo box list.
+      ///    The event handler shows the real value of the data as display text if there is no image value in the image combo
+      ///    box.
       /// </summary>
       private static void OnCustomColumnDisplayText(object sender, CustomColumnDisplayTextEventArgs e)
       {
@@ -203,7 +204,8 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      ///   This event handler mask all cells with special coloring if the cell value is not present in the combo box list of values for that column.
+      ///    This event handler mask all cells with special coloring if the cell value is not present in the combo box list of
+      ///    values for that column.
       /// </summary>
       private static void OnCustomDrawCell(object sender, RowCellCustomDrawEventArgs e)
       {
@@ -219,6 +221,7 @@ namespace PKSim.UI.Views.ProteinExpression
             var comboBox = e.Column.ColumnEdit as RepositoryItemComboBox;
             if (comboBox != null) isValueInList |= comboBox.Items.Contains(e.CellValue);
          }
+
          isValueInList |= (e.CellValue.ToString().Length == 0);
 
          e.Appearance.BeginUpdate();
@@ -227,11 +230,12 @@ namespace PKSim.UI.Views.ProteinExpression
             e.Appearance.ForeColor = Color.Blue;
             e.Appearance.BackColor2 = Color.LightYellow;
          }
+
          e.Appearance.EndUpdate();
       }
 
       /// <summary>
-      ///   This event resets value to the original value by right mouse button click.
+      ///    This event resets value to the original value by right mouse button click.
       /// </summary>
       private static void OnRowCellClick(object sender, RowCellClickEventArgs e)
       {

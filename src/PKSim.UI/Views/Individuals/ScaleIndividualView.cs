@@ -20,7 +20,7 @@ namespace PKSim.UI.Views.Individuals
       public ScaleIndividualView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.INDIVIDUAL_VIEW_WIDTH, CoreConstants.UI.INDIVIDUAL_VIEW_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.INDIVIDUAL_VIEW_WIDTH, UIConstants.Size.INDIVIDUAL_VIEW_HEIGHT);
       }
 
       public override void InitializeBinding()
@@ -50,7 +50,7 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.ScaleIndividual.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.ScaleIndividual;
          layoutItemIndividualName.Text = PKSimConstants.UI.Name.FormatForLabel();
       }
    }

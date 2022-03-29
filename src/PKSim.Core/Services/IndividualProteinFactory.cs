@@ -3,6 +3,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -17,8 +18,10 @@ namespace PKSim.Core.Services
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
-         IIndividualPathWithRootExpander individualPathWithRootExpander, IIdGenerator idGenerator) : base(objectBaseFactory, parameterFactory, objectPathFactory,
-         entityPathResolver, idGenerator)
+         IIndividualPathWithRootExpander individualPathWithRootExpander,
+         IIdGenerator idGenerator,
+         IParameterRateRepository parameterRateRepository) :
+         base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, idGenerator, parameterRateRepository, CoreConstants.ORM.PROTEIN)
       {
          _individualPathWithRootExpander = individualPathWithRootExpander;
       }
@@ -27,7 +30,7 @@ namespace PKSim.Core.Services
       {
          var molecule = CreateMolecule(moleculeName);
 
-         if(HasAgeParameter(simulationSubject))
+         if (HasAgeParameter(simulationSubject))
             AddOntogenyParameterTo(molecule);
 
          //default localization
@@ -36,7 +39,7 @@ namespace PKSim.Core.Services
          AddGlobalExpression(molecule,
             RelExpParam(REL_EXP_BLOOD_CELLS),
             FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS, CoreConstants.Rate.ONE_RATE),
-            FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.PARAM_F_EXP_BC_MEMBRANE, editable: false)
+            FractionParam(FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE, CoreConstants.Rate.PARAM_F_EXP_BC_MEMBRANE)
          );
 
          AddGlobalExpression(molecule, RelExpParam(REL_EXP_PLASMA));
@@ -45,7 +48,7 @@ namespace PKSim.Core.Services
             RelExpParam(REL_EXP_VASCULAR_ENDOTHELIUM),
             FractionParam(FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME, CoreConstants.Rate.ONE_RATE),
             FractionParam(FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE, CoreConstants.Rate.ZERO_RATE),
-            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE, CoreConstants.Rate.PARAM_F_EXP_VASC_TISSUE_SIDE, editable: false)
+            FractionParam(FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE, CoreConstants.Rate.PARAM_F_EXP_VASC_TISSUE_SIDE)
          );
 
          addVascularSystemInitialConcentration(simulationSubject, moleculeName);
@@ -80,7 +83,7 @@ namespace PKSim.Core.Services
          organism.NonGITissueContainers.Each(x => AddTissueParameters(x, moleculeName));
          organism.GITissueContainers.Each(x => AddTissueParameters(x, moleculeName));
       }
-      
+
       protected void AddTissueParameters(IContainer organ, string moleculeName)
       {
          AddContainerExpression(organ.Container(CoreConstants.Compartment.BLOOD_CELLS), moleculeName,
@@ -102,7 +105,7 @@ namespace PKSim.Core.Services
          );
 
          AddContainerExpression(organ.Container(CoreConstants.Compartment.INTERSTITIAL), moleculeName,
-            FractionParam(FRACTION_EXPRESSED_INTERSTITIAL, CoreConstants.Rate.PARAM_F_EXP_INTERSTITIAL, editable: false),
+            FractionParam(FRACTION_EXPRESSED_INTERSTITIAL, CoreConstants.Rate.PARAM_F_EXP_INTERSTITIAL),
             InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTERSTITIAL)
          );
       }

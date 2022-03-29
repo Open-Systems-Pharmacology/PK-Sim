@@ -3,7 +3,6 @@ using OSPSuite.Assets;
 using PKSim.Presentation.Presenters.Events;
 using PKSim.Presentation.Views.Events;
 using PKSim.UI.Views.Core;
-using OSPSuite.Presentation;
 
 namespace PKSim.UI.Views.Events
 {
@@ -22,7 +21,7 @@ namespace PKSim.UI.Views.Events
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Event.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Event;
          Caption = PKSimConstants.UI.CreateEvent;
       }
    }

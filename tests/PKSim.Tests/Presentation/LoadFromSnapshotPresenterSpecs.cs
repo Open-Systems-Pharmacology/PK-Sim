@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Services;
@@ -88,7 +89,7 @@ namespace PKSim.Presentation
 
    public class When_the_user_selects_a_snapshot_file_in_load_from_snapshot_presenter : concern_for_LoadFromSnapshotPresenter
    {
-      private readonly string _snapshotFile = "SnaphsotFileName";
+      private readonly string _snapshotFile = "SnapshotFileName";
 
       protected override void Context()
       {
@@ -108,7 +109,40 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_loading_models_from_snapshot_and_the_load_action_was_succesful : concern_for_LoadFromSnapshotPresenter
+   public class When_loading_a_snapshot_from_file_and_the_user_cancels_the_action : concern_for_LoadFromSnapshotPresenter
+   {
+      private Individual _individual;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individual = new Individual();
+         A.CallTo(() => _view.Canceled).Returns(false);
+         var snapshotFile = "SnapshotFile";
+         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(snapshotFile);
+         _loadFromSnapshotDTO.SnapshotFile = snapshotFile;
+         A.CallTo(() => _snapshotTask.LoadModelsFromSnapshotFileAsync<Individual>(snapshotFile)).Returns(new[] {_individual});
+         A.CallTo(() => _view.Display())
+            .Invokes(x => sut.StartAsync().Wait());
+         sut.LoadModelFromSnapshot();
+      }
+
+      [Observation]
+      public void should_not_close_the_view_if_the_user_cancels()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(Captions.ReallyCancel, ViewResult.Yes)).Returns(ViewResult.No);
+         sut.ShouldClose.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_close_the_view_if_the_user_accepts()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(Captions.ReallyCancel, ViewResult.Yes)).Returns(ViewResult.Yes);
+         sut.ShouldClose.ShouldBeTrue();
+      }
+   }
+
+   public class When_loading_models_from_snapshot_and_the_load_action_was_successful : concern_for_LoadFromSnapshotPresenter
    {
       private IEnumerable<Individual> _individuals;
       private Individual _individual;
@@ -153,7 +187,7 @@ namespace PKSim.Presentation
       public void should_have_disable_all_ui_buttons_and_enabled_them_once_the_run_was_finished()
       {
          A.CallTo(() => _view.EnableButtons(false, false, false)).MustHaveHappened();
-         A.CallTo(() => _view.EnableButtons(true, true, true)).MustHaveHappened();
+         A.CallTo(() => _view.EnableButtons(true, true, !sut.ModelIsDefined)).MustHaveHappened();
       }
    }
 
@@ -188,7 +222,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_enable_the_ok_button()
       {
-         A.CallTo(() => _view.EnableButtons(true, false, true)).MustHaveHappened();
+         A.CallTo(() => _view.EnableButtons(true, false, !sut.ModelIsDefined)).MustHaveHappened();
       }
    }
 }

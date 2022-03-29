@@ -210,30 +210,30 @@ namespace PKSim.UI
 
       public IconSize IconSizeTab
       {
-         get => UIConstants.ICON_SIZE_TAB;
+         get => OSPSuite.UI.UIConstants.ICON_SIZE_TAB;
          set
          {
-            UIConstants.ICON_SIZE_TAB = value;
+            OSPSuite.UI.UIConstants.ICON_SIZE_TAB = value;
             OnPropertyChanged(() => IconSizeTab);
          }
       }
 
       public IconSize IconSizeTreeView
       {
-         get => UIConstants.ICON_SIZE_TREE_VIEW;
+         get => OSPSuite.UI.UIConstants.ICON_SIZE_TREE_VIEW;
          set
          {
-            UIConstants.ICON_SIZE_TREE_VIEW = value;
+            OSPSuite.UI.UIConstants.ICON_SIZE_TREE_VIEW = value;
             OnPropertyChanged(() => IconSizeTreeView);
          }
       }
 
       public IconSize IconSizeContextMenu
       {
-         get => UIConstants.ICON_SIZE_CONTEXT_MENU;
+         get => OSPSuite.UI.UIConstants.ICON_SIZE_CONTEXT_MENU;
          set
          {
-            UIConstants.ICON_SIZE_CONTEXT_MENU = value;
+            OSPSuite.UI.UIConstants.ICON_SIZE_CONTEXT_MENU = value;
             OnPropertyChanged(() => IconSizeContextMenu);
          }
       }

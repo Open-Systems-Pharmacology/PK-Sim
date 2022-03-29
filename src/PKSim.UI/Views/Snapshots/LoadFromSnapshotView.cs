@@ -1,4 +1,5 @@
-﻿using OSPSuite.Assets;
+﻿using System.Windows.Forms;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -27,7 +28,7 @@ namespace PKSim.UI.Views.Snapshots
          InitializeComponent();
       }
 
-      public override void InitializeBinding()
+     public override void InitializeBinding()
       {
          base.InitializeBinding();
          _screenBinder.Bind(x => x.SnapshotFile)
@@ -56,8 +57,8 @@ namespace PKSim.UI.Views.Snapshots
 
       public void EnableButtons(bool cancelEnabled, bool okEnabled = false, bool startEnabled = false)
       {
-         btnCancel.Enabled = cancelEnabled;
-         btnOk.Enabled = okEnabled;
+         OkEnabled = okEnabled;
+         CancelEnabled = cancelEnabled;
          buttonStart.Enabled = startEnabled;
       }
 
@@ -75,9 +76,11 @@ namespace PKSim.UI.Views.Snapshots
          layoutItemStartButton.AdjustLongButtonSize();
          buttonStart.InitWithImage(ApplicationIcons.Run, PKSimConstants.UI.StartImport);
          layoutItemButtonSelectSnapshot.Text = PKSimConstants.UI.SnapshotFile.FormatForLabel();
-         Icon = ApplicationIcons.Snapshot;
+         ApplicationIcon = ApplicationIcons.Snapshot;
       }
 
       public override bool HasError => _screenBinder.HasError;
+
+      protected override bool ShouldClose => _presenter.ShouldClose;
    }
 }

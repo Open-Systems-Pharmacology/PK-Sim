@@ -88,7 +88,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void the_created_simulation_should_have_a_kdiney_GFR_clearance_process_created_based_on_the_one_defined_in_the_compound()
+      public void the_created_simulation_should_have_a_kidney_GFR_clearance_process_created_based_on_the_one_defined_in_the_compound()
       {
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>());
          allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(_processGFR.Name);

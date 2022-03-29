@@ -27,6 +27,7 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
 using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.PopulationAnalyses
@@ -121,7 +122,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(getAddRemoveRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);
 
          gridView.FocusedRowChanged += (o, e) => OnEvent(gridViewRowChanged, e);
          gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);

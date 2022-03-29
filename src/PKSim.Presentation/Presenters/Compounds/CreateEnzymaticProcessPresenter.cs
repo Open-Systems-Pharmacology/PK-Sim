@@ -33,7 +33,7 @@ namespace PKSim.Presentation.Presenters.Compounds
          IBuildingBlockRepository buildingBlockRepository)
          : base(view, compoundProcessTask, partialProcessMapper, parameterEditPresenter, processMapper, usedMoleculeRepository, speciesRepository)
       {
-         view.SetIcon(ApplicationIcons.Metabolite);
+         view.ApplicationIcon = ApplicationIcons.Metabolite;
          view.Caption = PKSimConstants.UI.CreateMetabolizingEnzyme;
          view.MoleculeCaption = PKSimConstants.UI.MetabolizingEnzyme;
          _buildingBlockRepository = buildingBlockRepository;

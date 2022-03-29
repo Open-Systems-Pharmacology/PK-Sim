@@ -25,9 +25,9 @@ namespace PKSim.Presentation
          _workspace = A.Fake<ICoreWorkspace>();
          _view = A.Fake<IEditRandomPopulationView>();
          _subPresenterManager = SubPresenterHelper.Create<IPopulationItemPresenter>();
-         _popSettingsPresenter = _subPresenterManager.CreateFake(RamdomPopulationItems.Settings);
-         _popAdvancedParameterPresenter = _subPresenterManager.CreateFake(RamdomPopulationItems.AdvancedParameters);
-         _popDistributionPresenter = _subPresenterManager.CreateFake(RamdomPopulationItems.ParameterDistribution);
+         _popSettingsPresenter = _subPresenterManager.CreateFake(RandomPopulationItems.Settings);
+         _popAdvancedParameterPresenter = _subPresenterManager.CreateFake(RandomPopulationItems.AdvancedParameters);
+         _popDistributionPresenter = _subPresenterManager.CreateFake(RandomPopulationItems.ParameterDistribution);
          //This line is required because of some generic issues
          A.CallTo(_subPresenterManager).WithReturnType<IPopulationSettingsPresenter<RandomPopulation>>().Returns(_popSettingsPresenter);
          _randomPopulation = A.Fake<RandomPopulation>();
@@ -48,21 +48,21 @@ namespace PKSim.Presentation
       public void should_load_the_population_settings_and_enable_the_setting_tab()
       {
          A.CallTo(() => _popSettingsPresenter.LoadPopulation(_randomPopulation)).MustHaveHappened();
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.Settings, true)).MustHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.Settings, true)).MustHaveHappened();
       }
 
       [Observation]
       public void should_load_the_parameter_distributions_and_activate_the_distribution_tab()
       {
          A.CallTo(() => _popDistributionPresenter.EditPopulation(_randomPopulation)).MustHaveHappened();
-         A.CallTo(() => _view.ActivateControl(RamdomPopulationItems.ParameterDistribution)).MustHaveHappened();
+         A.CallTo(() => _view.ActivateControl(RandomPopulationItems.ParameterDistribution)).MustHaveHappened();
       }
 
       [Observation]
       public void should_edit_the_advanced_parameters()
       {
          A.CallTo(() => _popAdvancedParameterPresenter.EditPopulation(_randomPopulation)).MustHaveHappened();
-         A.CallTo(() => _view.SetControlEnabled(RamdomPopulationItems.AdvancedParameters, true)).MustHaveHappened();
+         A.CallTo(() => _view.SetControlEnabled(RandomPopulationItems.AdvancedParameters, true)).MustHaveHappened();
       }
    }
 

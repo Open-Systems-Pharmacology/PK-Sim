@@ -13,7 +13,7 @@ namespace PKSim.UI.Views.Individuals
       public CreateIndividualView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.INDIVIDUAL_VIEW_WIDTH, CoreConstants.UI.INDIVIDUAL_VIEW_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.INDIVIDUAL_VIEW_WIDTH, UIConstants.Size.INDIVIDUAL_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ICreateIndividualPresenter presenter)
@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Individual.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Individual;
          Caption = PKSimConstants.UI.CreateIndividual;
       }
    }

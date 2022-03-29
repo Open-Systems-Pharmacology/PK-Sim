@@ -107,6 +107,7 @@ namespace PKSim.UI.Views.Parameters
          base.InitializeResources();
          layoutControl.InitializeDisabledColors();
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
+         Height = cbUnit.Height;
       }
 
       public void RegisterEditParameterEvents(IParameterValuePresenter editParameterPresenter)

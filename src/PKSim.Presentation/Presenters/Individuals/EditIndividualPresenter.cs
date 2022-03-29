@@ -25,7 +25,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public override void Edit(Individual individualToEdit)
       {
          _subPresenterItemManager.AllSubPresenters.Each(presenter => presenter.EditIndividual(individualToEdit));
-         _view.UpdateIcon(ApplicationIcons.IconByName(individualToEdit.Species.Icon));
+         _view.ApplicationIcon = ApplicationIcons.IconByName(individualToEdit.Species.Icon);
          _view.EnableControl(IndividualItems.Settings);
          _view.EnableControl(IndividualItems.Parameters);
          _view.EnableControl(IndividualItems.Expression);

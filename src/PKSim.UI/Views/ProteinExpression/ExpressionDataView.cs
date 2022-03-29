@@ -3,21 +3,19 @@ using System.Collections;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using OSPSuite.UI.Services;
-using OSPSuite.Assets;
-using DevExpress.Charts.Native;
 using DevExpress.Data;
 using DevExpress.Data.Filtering;
 using DevExpress.Data.PivotGrid;
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
 using DevExpress.XtraPivotGrid;
+using OSPSuite.Assets;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.ProteinExpression;
 using PKSim.Presentation.Views.ProteinExpression;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.ProteinExpression
 {
@@ -47,8 +45,8 @@ namespace PKSim.UI.Views.ProteinExpression
       private string _selectedUnit;
       private bool _isFieldFilterChanging;
       private bool _isPrefilterCriteriaChanging;
-      
-      public ExpressionDataView(IImageListRetriever imageListRetriever, IProteinExpressionToolTipCreator toolTipCreator )
+
+      public ExpressionDataView(IImageListRetriever imageListRetriever, IProteinExpressionToolTipCreator toolTipCreator)
       {
          _toolTipCreator = toolTipCreator;
          InitializeComponent();
@@ -69,7 +67,6 @@ namespace PKSim.UI.Views.ProteinExpression
          ApplicationIcon = ApplicationIcons.Histogram;
       }
 
-
       public override void InitializeResources()
       {
          base.InitializeResources();
@@ -77,7 +74,7 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      /// This event handler hides the unused reload data menu entry.
+      ///    This event handler hides the unused reload data menu entry.
       /// </summary>
       private void onPopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
       {
@@ -97,9 +94,9 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      /// This function handle the event which takes care of tool tips.
-      /// The code checks on which area the mouse currently is positioned.
-      /// Depending on the area and the field and the field value different tool tips are generated.
+      ///    This function handle the event which takes care of tool tips.
+      ///    The code checks on which area the mouse currently is positioned.
+      ///    Depending on the area and the field and the field value different tool tips are generated.
       /// </summary>
       /// <remarks>The object reference for a new ToolTipControlInfo object can be any unique string.</remarks>
       private void onGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
@@ -129,7 +126,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForVariantHeader(_fieldVariantName.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion;
+
                #region Database
 
                else if (hi.HeaderField == _fieldDataBase)
@@ -137,7 +136,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForDataBaseHeader(_fieldDataBase.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region DatabaseRecId
 
                else if (hi.HeaderField == _fieldDataBaseRecId)
@@ -145,7 +146,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForDataBaseRecIdHeader(_fieldDataBaseRecId.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region Gender
 
                else if (hi.HeaderField == _fieldGender)
@@ -153,7 +156,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForGenderHeader(_fieldGender.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region Tissue
 
                else if (hi.HeaderField == _fieldTissue)
@@ -161,7 +166,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForTissueHeader(_fieldTissue.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region HealthState
 
                else if (hi.HeaderField == _fieldHealthState)
@@ -169,7 +176,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForTissueHeader(_fieldHealthState.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion;
+
                #region SampleSource
 
                else if (hi.HeaderField == _fieldSampleSource)
@@ -177,7 +186,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForSampleSourceHeader(_fieldSampleSource.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion;
+
                #region Age
 
                else if (hi.HeaderField == _fieldAge)
@@ -185,7 +196,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForAgeHeader(_fieldAge.Caption, _fieldAgeMin.Caption, _fieldAgeMax.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion;
+
                #region AgeMin
 
                else if (hi.HeaderField == _fieldAgeMin)
@@ -193,7 +206,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForAgeMinHeader(_fieldAgeMin.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region AgeMax
 
                else if (hi.HeaderField == _fieldAgeMax)
@@ -201,7 +216,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForAgeMaxHeader(_fieldAgeMax.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region Ratio
 
                else if (hi.HeaderField == _fieldRatio)
@@ -209,7 +226,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForRatioHeader(_fieldRatio.Caption, _fieldSampleCount.Caption, _fieldTotalCount.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region SampleCount
 
                else if (hi.HeaderField == _fieldSampleCount)
@@ -217,7 +236,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForSampleCountHeader(_fieldSampleCount.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region TotalCount
 
                else if (hi.HeaderField == _fieldTotalCount)
@@ -225,7 +246,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForTotalCountHeader(_fieldTotalCount.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region Unit
 
                else if (hi.HeaderField == _fieldUnit)
@@ -233,7 +256,9 @@ namespace PKSim.UI.Views.ProteinExpression
                   e.Info.SuperTip = _toolTipCreator.GetTipForUnitHeader(_fieldUnit.Caption);
                   e.Info.ToolTipType = ToolTipType.SuperTip;
                }
+
                #endregion
+
                #region Container
 
                else if (hi.HeaderField == _fieldContainer)
@@ -300,7 +325,7 @@ namespace PKSim.UI.Views.ProteinExpression
                   // Get the database of that record id
                   PivotDrillDownDataSource ds = hi.ValueInfo.CreateDrillDownDataSource();
                   PivotDrillDownDataRow row = ds[0];
-                  var database = (string)row[_fieldDataBase];
+                  var database = (string) row[_fieldDataBase];
 
                   if (hi.ValueInfo.Value != null)
                   {
@@ -309,7 +334,9 @@ namespace PKSim.UI.Views.ProteinExpression
                      e.Info.ToolTipType = ToolTipType.SuperTip;
                   }
                }
+
                #endregion
+
                #region Gender
 
                else if (hi.ValueInfo.Field == _fieldGender)
@@ -320,8 +347,11 @@ namespace PKSim.UI.Views.ProteinExpression
                      e.Info.ToolTipType = ToolTipType.SuperTip;
                   }
                }
+
                #endregion
+
                #region Tissue
+
                else if (hi.ValueInfo.Field == _fieldTissue)
                {
                   if (hi.ValueInfo.Value != null)
@@ -330,8 +360,11 @@ namespace PKSim.UI.Views.ProteinExpression
                      e.Info.ToolTipType = ToolTipType.SuperTip;
                   }
                }
+
                #endregion
+
                #region Container
+
                else if (hi.ValueInfo.Field == _fieldContainer)
                {
                   if (hi.ValueInfo.Value != null)
@@ -340,7 +373,9 @@ namespace PKSim.UI.Views.ProteinExpression
                      e.Info.ToolTipType = ToolTipType.SuperTip;
                   }
                }
+
                #endregion
+
                #region Health State
 
                else if (hi.ValueInfo.Field == _fieldHealthState)
@@ -351,7 +386,9 @@ namespace PKSim.UI.Views.ProteinExpression
                      e.Info.ToolTipType = ToolTipType.SuperTip;
                   }
                }
+
                #endregion
+
                #region Sample Source
 
                else if (hi.ValueInfo.Field == _fieldSampleSource)
@@ -401,7 +438,9 @@ namespace PKSim.UI.Views.ProteinExpression
                      e.Info.ToolTipType = ToolTipType.SuperTip;
                   }
                }
+
                #endregion
+
                #region Unit
 
                else if (hi.ValueInfo.Field == _fieldUnit)
@@ -432,6 +471,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      object o = string.Format("Cell:{0}-{1}-{2}-{3}", hi.CellInfo.RowField, hi.CellInfo.Item.RowIndex, hi.CellInfo.ColumnField, hi.CellInfo.Item.ColumnIndex);
                      e.Info = new ToolTipControlInfo(o, hi.CellInfo.Value.ToString());
                   }
+
                   e.Info.SuperTip = new SuperToolTip() {AllowHtmlText = DefaultBoolean.True};
                   e.Info.SuperTip.Items.AddTitle(hi.CellInfo.DataField.Caption);
                   e.Info.SuperTip.Items.Add(hi.CellInfo.Value.ToString());
@@ -540,7 +580,7 @@ namespace PKSim.UI.Views.ProteinExpression
 
       public void SetLayoutSettings(string layoutSettings)
       {
-         Stream  ms = new MemoryStream();
+         Stream ms = new MemoryStream();
          var sw = new StreamWriter(ms);
          sw.Write(layoutSettings, 0, layoutSettings.Length);
          sw.Flush();
@@ -559,7 +599,7 @@ namespace PKSim.UI.Views.ProteinExpression
          ms.Position = 0;
          string layoutSettings = sr.ReadToEnd();
          sr.Close();
-         return layoutSettings;       
+         return layoutSettings;
       }
 
       public void ActualizeData(DataTable expressionDataTable)
@@ -624,6 +664,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      if (value <= maximum) continue;
                      maximum = value;
                   }
+
                   foreach (SeriesPoint point in expSeries.Points)
                   {
                      double value = point.Values[0];
@@ -631,7 +672,7 @@ namespace PKSim.UI.Views.ProteinExpression
                      if (maximum == 0)
                         values.Add(0);
                      else
-                        values.Add(value/maximum);
+                        values.Add(value / maximum);
                      values.Add(expSeries.Name);
                      ret.Rows.Add(values.ToArray());
                   }
@@ -643,10 +684,11 @@ namespace PKSim.UI.Views.ProteinExpression
             chrtExpressionData.SeriesDataMember = oldDataMember;
             chrtExpressionData.SeriesTemplate.ArgumentDataMember = oldArgument;
          }
+
          return ret;
       }
 
-      private SeriesPoint[] customSummary(Series series, object argument, string[] functionArguments, 
+      private SeriesPoint[] customSummary(Series series, object argument, string[] functionArguments,
          DataSourceValues[] values, object[] colors)
       {
          double sumCount = 0;
@@ -663,8 +705,9 @@ namespace PKSim.UI.Views.ProteinExpression
          {
             double average = Convert.ToDouble(values[i][functionArguments[0]]);
             double count = Convert.ToDouble(values[i][functionArguments[1]]);
-            weightedAverage += average*count/sumCount;
+            weightedAverage += average * count / sumCount;
          }
+
          // Create an array of the resulting series points.
          var points = new SeriesPoint[1];
          points[0] = new SeriesPoint(argument, weightedAverage);
@@ -685,10 +728,10 @@ namespace PKSim.UI.Views.ProteinExpression
          chart.SeriesTemplate.ArgumentDataMember = _fieldContainer.FieldName;
          setTitleForXAxes(_fieldContainer.HeaderDisplayText);
          chart.SeriesTemplate.ValueDataMembers.AddRange(new[]
-                                                           {
-                                                              _fieldNormValue.FieldName + "_" +
-                                                              _fieldNormValue.SummaryType
-                                                           });
+         {
+            _fieldNormValue.FieldName + "_" +
+            _fieldNormValue.SummaryType
+         });
 
          //set chart data
          PivotSummaryDataSource chartData = pgrdExpressionData.CreateSummaryDataSource();
@@ -705,15 +748,15 @@ namespace PKSim.UI.Views.ProteinExpression
          // Count
          var argument2Description =
             new SummaryFunctionArgumentDescription("Count", ScaleType.Numerical);
-         
+
          // Register the summary function in chart.
          const string STR_CUSTOM_SUMMARY_FUNCTION_NAME = "WeightedAverage";
          const string STR_CUSTOM_SUMMARY_FUNCTION_DISPLAY_NAME = "WeightedAverage";
          chart.RegisterSummaryFunction(STR_CUSTOM_SUMMARY_FUNCTION_NAME, STR_CUSTOM_SUMMARY_FUNCTION_DISPLAY_NAME, 1,
-                                       new[] {argument1Description, argument2Description},
-                                       customSummary);
-         
-         chart.SeriesTemplate.QualitativeSummaryOptions.SummaryFunction = 
+            new[] {argument1Description, argument2Description},
+            customSummary);
+
+         chart.SeriesTemplate.QualitativeSummaryOptions.SummaryFunction =
             $"{STR_CUSTOM_SUMMARY_FUNCTION_NAME}([{_fieldNormValue.FieldName + "_" + _fieldNormValue.SummaryType}],[{_fieldNormValue2.FieldName + "_" + _fieldNormValue2.SummaryType}])";
 
          //config layout
@@ -722,7 +765,7 @@ namespace PKSim.UI.Views.ProteinExpression
          chart.Legend.EnableAntialiasing = DefaultBoolean.True;
          chart.Legend.Border.Thickness = 1;
          chart.SeriesSorting = SortingMode.Ascending;
-         chart.SeriesTemplate.LabelsVisibility =DefaultBoolean.True;
+         chart.SeriesTemplate.LabelsVisibility = DefaultBoolean.True;
 
          //Axis Layout
          barView.AxisX.Label.Angle = 270;
@@ -735,24 +778,22 @@ namespace PKSim.UI.Views.ProteinExpression
 
          var barLabel = chart.SeriesTemplate.Label as BarSeriesLabel;
          if (barLabel != null)
-            chart.SeriesTemplate.LabelsVisibility =  DefaultBoolean.False;
+            chart.SeriesTemplate.LabelsVisibility = DefaultBoolean.False;
 
          chart.Titles.Clear();
          var title = new ChartTitle
-                        {
-                           Text = titleText,
-                           TextColor = Color.Blue,
-                           EnableAntialiasing = DefaultBoolean.True,
-                           Alignment = StringAlignment.Center
-                        };
+         {
+            Text = titleText,
+            TextColor = Color.Blue,
+            EnableAntialiasing = DefaultBoolean.True,
+            Alignment = StringAlignment.Center
+         };
          chart.Titles.Add(title);
 
          chart.SelectionMode = ElementSelectionMode.Multiple;
          chart.ObjectSelected += onChartControlObjectSelected;
          chart.ObjectHotTracked += onChartControlObjectHotTracked;
       }
-
-     
 
       private static void onChartControlObjectSelected(object sender, HotTrackEventArgs e)
       {
@@ -908,11 +949,11 @@ namespace PKSim.UI.Views.ProteinExpression
          //create an unbound field for the age grouping
          const string STR_AGE = "AGE";
          _fieldAge = new PivotGridField(STR_AGE, PivotArea.FilterArea)
-                        {
-                           UnboundType = UnboundColumnType.String,
-                           UnboundFieldName = STR_AGE,
-                           Caption = PKSimConstants.ProteinExpressions.ColumnCaptions.ExpressionData.COL_AGE
-                        };
+         {
+            UnboundType = UnboundColumnType.String,
+            UnboundFieldName = STR_AGE,
+            Caption = PKSimConstants.ProteinExpressions.ColumnCaptions.ExpressionData.COL_AGE
+         };
          pgrdExpressionData.Fields.Add(_fieldAge);
 
          pgrdExpressionData.RefreshData();
@@ -995,10 +1036,11 @@ namespace PKSim.UI.Views.ProteinExpression
             sampleSum += (double) row[_fieldSampleCount];
             totalSum += (double) row[_fieldTotalCount];
          }
+
          // Calculate the ratio.
          if (ds.RowCount > 0)
          {
-            e.CustomValue = sampleSum/totalSum;
+            e.CustomValue = sampleSum / totalSum;
          }
       }
 
@@ -1072,10 +1114,12 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      /// In this event all data filters are displayed as prefilters.
+      ///    In this event all data filters are displayed as prefilters.
       /// </summary>
-      /// <remarks>Has been adopted from DevExpress help page.
-      /// http://www.devexpress.com/Support/Center/e/E1678.aspx </remarks>
+      /// <remarks>
+      ///    Has been adopted from DevExpress help page.
+      ///    http://www.devexpress.com/Support/Center/e/E1678.aspx
+      /// </remarks>
       private void onFieldFilterChanged(object sender, PivotFieldEventArgs e)
       {
          if (_isPrefilterCriteriaChanging) return;
@@ -1104,6 +1148,7 @@ namespace PKSim.UI.Views.ProteinExpression
                {
                   newFilter = new InOperator(field.FieldName, filterValues.ValuesIncluded);
                }
+
                if (field.FilterValues.ShowBlanks)
                {
                   var newGroup = new GroupOperator(GroupOperatorType.Or);
@@ -1115,6 +1160,7 @@ namespace PKSim.UI.Views.ProteinExpression
                {
                   rootGroup.Operands.Add(newFilter);
                }
+
                pgrdExpressionData.Prefilter.Enabled = true;
             }
 
@@ -1152,7 +1198,7 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      /// Remove recursively all operands according to given fieldName.
+      ///    Remove recursively all operands according to given fieldName.
       /// </summary>
       private static void removeCriteria(GroupOperator parent, String fieldName, CriteriaOperator criteria)
       {
@@ -1211,12 +1257,13 @@ namespace PKSim.UI.Views.ProteinExpression
             for (int i = op.Operands.Count - 1; i >= 0; i--) removeCriteria(op, fieldName, op.Operands[i]);
 
             if (op.Operands.Count == 0)
-               if (!ReferenceEquals(parent, op)) parent.Operands.Remove(op);
+               if (!ReferenceEquals(parent, op))
+                  parent.Operands.Remove(op);
          }
       }
 
       /// <summary>
-      /// If the prefilter has been changed all field filters are resetted to no filter.
+      ///    If the prefilter has been changed all field filters are resetted to no filter.
       /// </summary>
       private void onPrefilterCriteriaChanged(object sender, EventArgs e)
       {

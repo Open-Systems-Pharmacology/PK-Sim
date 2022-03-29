@@ -56,7 +56,7 @@ namespace PKSim.UI.Views.Parameters
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => _removePointRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
          _gridViewBinder.Changed += () => OnEvent(_presenter.ViewChanged);
          btnImportPoints.Click += (o, e) => OnEvent(_presenter.ImportTable);

@@ -1,3 +1,4 @@
+using System.Drawing;
 using PKSim.Assets;
 using OSPSuite.Assets;
 using PKSim.Presentation.Presenters.Compounds;
@@ -12,6 +13,7 @@ namespace PKSim.UI.Views.Compounds
       public CreateCompoundView(Shell shell) : base(shell)
       {
          InitializeComponent();
+         ClientSize = new Size(UIConstants.Size.COMPOUND_VIEW_WIDTH, UIConstants.Size.COMPOUND_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ICreateCompoundPresenter presenter)
@@ -22,7 +24,7 @@ namespace PKSim.UI.Views.Compounds
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Compound.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.Compound;
          Caption = PKSimConstants.UI.CreateCompound;
       }
    }

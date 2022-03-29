@@ -21,7 +21,6 @@ namespace PKSim.Presentation
    {
       protected ITemplateTaskQuery _templateTaskQuery;
       protected ITemplateView _view;
-      private ITreeNodeContextMenuFactory _contextMenuFactory;
       private IApplicationController _applicationController;
       protected IDialogCreator _dialogCreator;
       protected IStartOptions _startOptions;
@@ -31,13 +30,21 @@ namespace PKSim.Presentation
       {
          _view = A.Fake<ITemplateView>();
          _templateTaskQuery = A.Fake<ITemplateTaskQuery>();
-         _contextMenuFactory = A.Fake<ITreeNodeContextMenuFactory>();
          _applicationController = A.Fake<IApplicationController>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _startOptions = A.Fake<IStartOptions>();
          _configuration = A.Fake<IApplicationConfiguration>();
-         sut = new TemplatePresenter(_view, _templateTaskQuery, _contextMenuFactory, _applicationController, _dialogCreator, _startOptions, _configuration);
+         sut = new TemplatePresenter(_view, _templateTaskQuery,  _applicationController, _dialogCreator, _startOptions, _configuration);
          return _completed;
+      }
+   }
+
+   public class When_initializing_the_template_presenter : concern_for_TemplatePresenter
+   {
+      [Observation]
+      public void should_only_show_qualified_templates_by_default()
+      {
+         sut.ShowOnlyQualifiedTemplate.ShouldBeTrue();
       }
    }
 
@@ -187,8 +194,8 @@ namespace PKSim.Presentation
          await base.Context();
 
          _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
-         _remoteTemplateInvalid = new RemoteTemplate {MinVersion = "13.0"};
-         _remoteTemplateValid = new RemoteTemplate {Name = "Template2", Id = "Id2"};
+         _remoteTemplateInvalid = new RemoteTemplate {MinVersion = "13.0", Qualified = true};
+         _remoteTemplateValid = new RemoteTemplate {Name = "Template2", Id = "Id2", Qualified = true };
          A.CallTo(() => _configuration.Version).Returns("12.0");
          _templates = new List<Template> {_template1, _remoteTemplateValid, _remoteTemplateInvalid};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
@@ -205,6 +212,82 @@ namespace PKSim.Presentation
       public void should_filter_out_templates_that_are_not_valid_for_this_version()
       {
          _allTemplateDTOs.Select(x => x.Template).ShouldOnlyContain(_template1, _remoteTemplateValid);
+      }
+   }
+
+   public class When_loading_templates_from_local_and_remote_locations_only_showing_qualified_templates : concern_for_TemplatePresenter
+   {
+      private List<Template> _templates;
+      private Template _template1;
+      private Template _remoteTemplateValidNotQualified;
+      private RemoteTemplate _remoteTemplateInvalid;
+      private IReadOnlyList<TemplateDTO> _allTemplateDTOs;
+      private RemoteTemplate _remoteTemplateValidQualified;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         sut.ShowOnlyQualifiedTemplate = true;
+         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
+         _remoteTemplateInvalid = new RemoteTemplate { MinVersion = "13.0", Qualified = true };
+         _remoteTemplateValidNotQualified = new RemoteTemplate { Name = "Template2", Id = "Id2", Qualified = false };
+         _remoteTemplateValidQualified = new RemoteTemplate { Name = "Template3", Id = "Id3", Qualified = true };
+         A.CallTo(() => _configuration.Version).Returns("12.0");
+         _templates = new List<Template> { _template1, _remoteTemplateValidNotQualified, _remoteTemplateInvalid, _remoteTemplateValidQualified };
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<TemplateDTO>>._))
+            .Invokes(x => _allTemplateDTOs = x.GetArgument<IReadOnlyList<TemplateDTO>>(0));
+      }
+
+      protected override async Task Because()
+      {
+         await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_filter_out_templates_that_are_not_valid_for_this_version_or_that_are_not_qualified()
+      {
+         _allTemplateDTOs.Select(x => x.Template).ShouldOnlyContain(_template1, _remoteTemplateValidQualified);
+      }
+   }
+
+   public class When_switching_the_show_qualification_templates_flag_from_true_to_false : concern_for_TemplatePresenter
+   {
+      private List<Template> _templates;
+      private Template _template1;
+      private Template _remoteTemplateValidNotQualified;
+      private RemoteTemplate _remoteTemplateInvalid;
+      private IReadOnlyList<TemplateDTO> _allTemplateDTOs;
+      private RemoteTemplate _remoteTemplateValidQualified;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         sut.ShowOnlyQualifiedTemplate = true;
+         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
+         _remoteTemplateInvalid = new RemoteTemplate { MinVersion = "13.0", Qualified = true };
+         _remoteTemplateValidNotQualified = new RemoteTemplate { Name = "Template2", Id = "Id2", Qualified = false };
+         _remoteTemplateValidQualified = new RemoteTemplate { Name = "Template3", Id = "Id3", Qualified = true };
+         A.CallTo(() => _configuration.Version).Returns("12.0");
+         _templates = new List<Template> { _template1, _remoteTemplateValidNotQualified, _remoteTemplateInvalid, _remoteTemplateValidQualified };
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<TemplateDTO>>._))
+            .Invokes(x => _allTemplateDTOs = x.GetArgument<IReadOnlyList<TemplateDTO>>(0));
+
+         await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+
+      }
+
+      protected override Task Because()
+      {
+         sut.ShowOnlyQualifiedTemplate = false;
+         return _completed;
+      }
+
+      [Observation]
+      public void should_filter_out_templates_that_are_not_valid_for_this_version()
+      {
+         _allTemplateDTOs.Select(x => x.Template).ShouldOnlyContain(_template1, _remoteTemplateValidNotQualified, _remoteTemplateValidQualified);
       }
    }
 

@@ -40,6 +40,7 @@ namespace PKSim.Presentation.Presenters
          if (allViews.Count > 1)
          {
             var configurableView = _configurableContainerLayoutViewFactory.Create();
+            configurableView.StartAddingViews();
             allViews.Each(configurableView.AddView);
             configurableView.FinishedAddingViews();
             _view.SetView(configurableView);

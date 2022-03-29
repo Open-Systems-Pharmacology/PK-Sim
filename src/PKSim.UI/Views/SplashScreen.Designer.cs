@@ -1,142 +1,136 @@
-namespace PKSim.UI.Views
+﻿namespace PKSim.UI.Views
 {
-    partial class SplashScreen
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+   partial class SplashScreen
+   {
+      /// <summary>
+      /// Required designer variable.
+      /// </summary>
+      private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+      /// <summary>
+      /// Clean up any resources being used.
+      /// </summary>
+      /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+      protected override void Dispose(bool disposing)
+      {
+         if (disposing && (components != null))
+         {
+            components.Dispose();
+         }
+         base.Dispose(disposing);
+      }
 
-        #region Windows Form Designer generated code
+      #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+      /// <summary>
+      /// Required method for Designer support - do not modify
+      /// the contents of this method with the code editor.
+      /// </summary>
+      private void InitializeComponent()
+      {
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SplashScreen));
-         this.progressBar = new DevExpress.XtraEditors.ProgressBarControl();
-         this.lblProgress = new DevExpress.XtraEditors.LabelControl();
-         this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
-         this.buttonHide = new DevExpress.XtraEditors.SimpleButton();
-         this.pictureBox1 = new System.Windows.Forms.PictureBox();
+         this.progressBarControl = new DevExpress.XtraEditors.ProgressBarControl();
+         this.labelCopyright = new DevExpress.XtraEditors.LabelControl();
+         this.labelStatus = new DevExpress.XtraEditors.LabelControl();
+         this.peImage = new DevExpress.XtraEditors.PictureEdit();
+         this.peLogo = new DevExpress.XtraEditors.PictureEdit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.progressBar.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
-         this.tablePanel.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peImage.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peLogo.Properties)).BeginInit();
          this.SuspendLayout();
          // 
-         // progressBar
+         // progressBarControl
          // 
-         this.tablePanel.SetColumn(this.progressBar, 0);
-         this.tablePanel.SetColumnSpan(this.progressBar, 2);
-         this.progressBar.Location = new System.Drawing.Point(0, 135);
-         this.progressBar.Margin = new System.Windows.Forms.Padding(0);
-         this.progressBar.Name = "progressBar";
-         this.progressBar.Properties.LookAndFeel.SkinName = "Blue";
-         this.progressBar.Properties.LookAndFeel.UseDefaultLookAndFeel = false;
-         this.tablePanel.SetRow(this.progressBar, 2);
-         this.progressBar.Size = new System.Drawing.Size(505, 20);
-         this.progressBar.TabIndex = 7;
+         this.progressBarControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.progressBarControl.Location = new System.Drawing.Point(23, 167);
+         this.progressBarControl.Name = "progressBarControl";
+         this.progressBarControl.Size = new System.Drawing.Size(606, 16);
+         this.progressBarControl.TabIndex = 5;
          // 
-         // lblProgress
+         // labelCopyright
          // 
-         this.tablePanel.SetColumn(this.lblProgress, 0);
-         this.lblProgress.Location = new System.Drawing.Point(4, 115);
-         this.lblProgress.Margin = new System.Windows.Forms.Padding(4, 0, 0, 0);
-         this.lblProgress.Name = "lblProgress";
-         this.tablePanel.SetRow(this.lblProgress, 1);
-         this.lblProgress.Size = new System.Drawing.Size(63, 16);
-         this.lblProgress.TabIndex = 8;
-         this.lblProgress.Text = "lblProgress";
+         this.labelCopyright.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+         this.labelCopyright.Location = new System.Drawing.Point(24, 211);
+         this.labelCopyright.Name = "labelCopyright";
+         this.labelCopyright.Size = new System.Drawing.Size(47, 13);
+         this.labelCopyright.TabIndex = 6;
+         this.labelCopyright.Text = "Copyright";
          // 
-         // tablePanel
+         // labelStatus
          // 
-         this.tablePanel.Columns.AddRange(new DevExpress.Utils.Layout.TablePanelColumn[] {
-            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 53.73F),
-            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.AutoSize, 1.27F)});
-         this.tablePanel.Controls.Add(this.buttonHide);
-         this.tablePanel.Controls.Add(this.pictureBox1);
-         this.tablePanel.Controls.Add(this.progressBar);
-         this.tablePanel.Controls.Add(this.lblProgress);
-         this.tablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tablePanel.Location = new System.Drawing.Point(0, 0);
-         this.tablePanel.Name = "tablePanel";
-         this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 110.8001F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 23.59935F),
-            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
-         this.tablePanel.Size = new System.Drawing.Size(505, 155);
-         this.tablePanel.TabIndex = 9;
+         this.labelStatus.Location = new System.Drawing.Point(23, 150);
+         this.labelStatus.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+         this.labelStatus.Name = "labelStatus";
+         this.labelStatus.Size = new System.Drawing.Size(50, 13);
+         this.labelStatus.TabIndex = 7;
+         this.labelStatus.Text = "Starting...";
          // 
-         // buttonHide
+         // peImage
          // 
-         this.tablePanel.SetColumn(this.buttonHide, 1);
-         this.buttonHide.Location = new System.Drawing.Point(477, 114);
-         this.buttonHide.Name = "buttonHide";
-         this.tablePanel.SetRow(this.buttonHide, 1);
-         this.buttonHide.Size = new System.Drawing.Size(25, 18);
-         this.buttonHide.TabIndex = 10;
-         this.buttonHide.Text = "x";
+         this.peImage.Dock = System.Windows.Forms.DockStyle.Top;
+         this.peImage.EditValue = ((object)(resources.GetObject("peImage.EditValue")));
+         this.peImage.Location = new System.Drawing.Point(1, 1);
+         this.peImage.Name = "peImage";
+         this.peImage.Properties.AllowFocused = false;
+         this.peImage.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
+         this.peImage.Properties.Appearance.Options.UseBackColor = true;
+         this.peImage.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+         this.peImage.Properties.ShowMenu = false;
+         this.peImage.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+         this.peImage.Properties.SvgImageColorizationMode = DevExpress.Utils.SvgImageColorizationMode.None;
+         this.peImage.Size = new System.Drawing.Size(652, 142);
+         this.peImage.TabIndex = 9;
          // 
-         // pictureBox1
+         // peLogo
          // 
-         this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
-         this.tablePanel.SetColumn(this.pictureBox1, 0);
-         this.tablePanel.SetColumnSpan(this.pictureBox1, 2);
-         this.pictureBox1.Location = new System.Drawing.Point(3, 3);
-         this.pictureBox1.Name = "pictureBox1";
-         this.tablePanel.SetRow(this.pictureBox1, 0);
-         this.pictureBox1.Size = new System.Drawing.Size(499, 105);
-         this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-         this.pictureBox1.TabIndex = 9;
-         this.pictureBox1.TabStop = false;
+         this.peLogo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.peLogo.EditValue = ((object)(resources.GetObject("peLogo.EditValue")));
+         this.peLogo.Location = new System.Drawing.Point(368, 193);
+         this.peLogo.Name = "peLogo";
+         this.peLogo.Properties.AllowFocused = false;
+         this.peLogo.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
+         this.peLogo.Properties.Appearance.Options.UseBackColor = true;
+         this.peLogo.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+         this.peLogo.Properties.ShowMenu = false;
+         this.peLogo.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Squeeze;
+         this.peLogo.Size = new System.Drawing.Size(269, 42);
+         this.peLogo.TabIndex = 8;
          // 
          // SplashScreen
          // 
          this.Appearance.BackColor = System.Drawing.Color.White;
          this.Appearance.Options.UseBackColor = true;
-         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Caption = "SplashScreen";
-         this.ClientSize = new System.Drawing.Size(505, 155);
-         this.Controls.Add(this.tablePanel);
-         this.LookAndFeel.SkinName = "Blue";
-         this.LookAndFeel.UseDefaultLookAndFeel = false;
-         this.Margin = new System.Windows.Forms.Padding(5);
+         this.Caption = "SplashScreenNew";
+         this.ClientSize = new System.Drawing.Size(654, 245);
+         this.Controls.Add(this.peImage);
+         this.Controls.Add(this.peLogo);
+         this.Controls.Add(this.labelStatus);
+         this.Controls.Add(this.labelCopyright);
+         this.Controls.Add(this.progressBarControl);
+         this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.Name = "SplashScreen";
-         this.Text = "SplashScreen";
+         this.Padding = new System.Windows.Forms.Padding(1);
+         this.Text = "SplashScreenNew";
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.progressBar.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
-         this.tablePanel.ResumeLayout(false);
-         this.tablePanel.PerformLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peImage.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.peLogo.Properties)).EndInit();
          this.ResumeLayout(false);
+         this.PerformLayout();
 
-        }
+      }
 
-        #endregion
+      #endregion
 
-        private DevExpress.XtraEditors.ProgressBarControl progressBar;
-        private DevExpress.XtraEditors.LabelControl lblProgress;
-      private DevExpress.Utils.Layout.TablePanel tablePanel;
-      private System.Windows.Forms.PictureBox pictureBox1;
-      private DevExpress.XtraEditors.SimpleButton buttonHide;
+      private DevExpress.XtraEditors.ProgressBarControl progressBarControl;
+      private DevExpress.XtraEditors.LabelControl labelCopyright;
+      private DevExpress.XtraEditors.LabelControl labelStatus;
+      private DevExpress.XtraEditors.PictureEdit peLogo;
+      private DevExpress.XtraEditors.PictureEdit peImage;
    }
 }

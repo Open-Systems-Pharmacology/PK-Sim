@@ -21,13 +21,6 @@ namespace PKSim.UI.Views.Individuals
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon => _icon;
-
-      public void UpdateIcon(ApplicationIcon speciesIcon)
-      {
-         _icon = speciesIcon;
-      }
-
       public override XtraTabControl TabControl => tabEditIndividual;
    }
 }

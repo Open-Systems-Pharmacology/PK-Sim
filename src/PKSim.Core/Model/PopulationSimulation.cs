@@ -164,7 +164,7 @@ namespace PKSim.Core.Model
          if (pk == null)
             return missingDoubleValuesArray();
 
-         var allValues = pk.Values.ToDoubleArray();
+         var allValues = pk.ValuesAsArray.ToDoubleArray();
          if (allValues.Length == NumberOfItems)
             return allValues;
 

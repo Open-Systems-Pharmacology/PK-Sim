@@ -19,7 +19,7 @@ namespace PKSim.UI.Views.Simulations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Icon = ApplicationIcons.Reaction;
+         ApplicationIcon = ApplicationIcons.Reaction;
          Text = PKSimConstants.UI.ReactionDiagram;
          CancelVisible = false;
       }

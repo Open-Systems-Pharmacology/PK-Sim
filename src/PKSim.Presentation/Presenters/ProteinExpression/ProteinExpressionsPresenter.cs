@@ -19,14 +19,16 @@ using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {
-   public enum ColumnNamesOfTransferTable
+   public static class ColumnNamesOfTransferTable
    {
-      Container,
-      DisplayName,
-      RelativeExpressionOld,
-      ExpressionValue,
-      RelativeExpressionNew,
-      Unit
+      public static string Container = "Container";
+      public static string DisplayName = "DisplayName";
+      public static string RelativeExpressionOld = "RelativeExpressionOld";
+      public static string RelativeExpressionOldPercentage = "RelativeExpressionOldPercentage";
+      public static string ExpressionValue = "ExpressionValue";
+      public static string RelativeExpressionNew = "RelativeExpressionNew";
+      public static string RelativeExpressionNewPercentage = "RelativeExpressionNewPercentage";
+      public static string Unit = "Unit";
    };
 
    public interface IProteinExpressionsPresenter : IWizardPresenter, IPresenter<IProteinExpressionsView>

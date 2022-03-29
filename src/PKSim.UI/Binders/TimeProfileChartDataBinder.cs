@@ -62,10 +62,8 @@ namespace PKSim.UI.Binders
          var upperPoint = createExtremSeries(observedCurveData, y => y.UpperValue, MarkerKind.InvertedTriangle);
          var lowerPoint = createExtremSeries(observedCurveData, y => y.LowerValue, MarkerKind.Triangle);
 
-         series.AddRange(new[] {upperPoint, lowerPoint});
-         //puts the vertical line first so that it will be the one visible in legend
-         series.Insert(0,verticalLine);
-
+         series.AddRange(new[] {upperPoint, lowerPoint, verticalLine });
+      
          return series;
       }
 

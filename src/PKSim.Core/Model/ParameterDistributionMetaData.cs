@@ -30,5 +30,19 @@ namespace PKSim.Core.Model
          Deviation = distributionMetaData.Deviation;
          Distribution = distributionMetaData.Distribution;
       }
+
+      public override void UpdatePropertiesFrom(ParameterMetaData parameterMetaData)
+      {
+         base.UpdatePropertiesFrom(parameterMetaData);
+         if (!(parameterMetaData is ParameterDistributionMetaData parameterDistributionMetaData)) return;
+         ParameterValueVersion = parameterDistributionMetaData.ParameterValueVersion;
+         Population = parameterDistributionMetaData.Population;
+         Gender = parameterDistributionMetaData.Gender;
+         Age = parameterDistributionMetaData.Age;
+         GestationalAge = parameterDistributionMetaData.GestationalAge;
+         DistributionType = parameterDistributionMetaData.DistributionType;
+         Mean = parameterDistributionMetaData.Mean;
+         Deviation = parameterDistributionMetaData.Deviation;
+      }
    }
 }

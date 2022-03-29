@@ -206,12 +206,17 @@ namespace PKSim.Infrastructure.Services
 
       private (IReadOnlyList<MetaDataCategory>, DataImporterSettings) initializeSettings(Compound compound = null, bool allowCompoundNameEdit = false)
       {
-         var dataImporterSettings = new DataImporterSettings { Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", IconName = ApplicationIcons.ObservedData.IconName };
+         var dataImporterSettings = new DataImporterSettings
+         {
+            Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", 
+            IconName = ApplicationIcons.ObservedData.IconName,
+            // CheckMolWeightAgainstMolecule = true
+         };
          addNamingPatterns(dataImporterSettings);
          dataImporterSettings.NameOfMetaDataHoldingMoleculeInformation = Constants.ObservedData.MOLECULE;
          dataImporterSettings.NameOfMetaDataHoldingMolecularWeightInformation = Constants.ObservedData.MOLECULAR_WEIGHT;
 
-         var metaDataCategories = _dataImporter.DefaultMetaDataCategories().ToList();
+         var metaDataCategories = _dataImporter.DefaultMetaDataCategoriesForObservedData().ToList();
          populateMetaDataLists(metaDataCategories, compound, allowCompoundNameEdit);
 
          return (metaDataCategories, dataImporterSettings);
@@ -301,13 +306,13 @@ namespace PKSim.Infrastructure.Services
          return Enumerable.Empty<string>();
       }
 
-      public IReadOnlyList<string> DefaultMetaDataCategories => CoreConstants.ObservedData.DefaultProperties;
+      public IReadOnlyList<string> DefaultMetaDataCategories { get; } = CoreConstants.ObservedData.DefaultProperties;
 
-      public IReadOnlyList<string> ReadOnlyMetaDataCategories => new List<string> { };
+      public IReadOnlyList<string> ReadOnlyMetaDataCategories { get; } = new List<string> { };
+    
+      public bool MolWeightAlwaysEditable { get; } = false;
 
-      public bool MolWeightEditable => false;
-
-      public bool MolWeightVisible => true;
+      public bool MolWeightVisible { get; }=  true;
 
       private IEnumerable<string> predefinedGenders => predefinedValuesFor(addPredefinedGenderValues);
 
