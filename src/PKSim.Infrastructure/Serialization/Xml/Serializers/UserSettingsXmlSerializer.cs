@@ -56,7 +56,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.ChartEditorLayout);
          Map(x => x.JournalPageEditorSettings);
          Map(x => x.ParameterIdentificationFeedbackEditorSettings);
-         Map(x => x.ColorGroupObservedDataFromSameFolder);
          MapEnumerable(x => x.UsedDirectories, x => x.DirectoryMapSettings.AddUsedDirectory);
          MapEnumerable(x => x.ProjectFiles, x => x.ProjectFiles.Add).WithChildMappingName(CoreConstants.Serialization.ProjectFile);
       }
