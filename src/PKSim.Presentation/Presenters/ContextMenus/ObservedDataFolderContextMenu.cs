@@ -47,9 +47,9 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          if ( treeNode.HasChildren)
          {
             var colorGroupingButton = CreateMenuCheckButton.WithCaption(Captions.ColorGroupObservedDataContextMenu);
-            colorGroupingButton.Checked = userSettings.ColorGroupObservedDataFromSameFolder;
+            colorGroupingButton.WithChecked(userSettings.ColorGroupObservedDataFromSameFolder);
+            colorGroupingButton.WithCheckedAction(colorGroup => userSettings.ColorGroupObservedDataFromSameFolder = colorGroup);
 
-            colorGroupingButton.CheckedChanged += (o) => { userSettings.ColorGroupObservedDataFromSameFolder = o; };
             _view.AddMenuItem(colorGroupingButton);
          }
 
