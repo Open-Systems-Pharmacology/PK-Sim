@@ -1,6 +1,5 @@
 ﻿using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
 
@@ -15,7 +14,7 @@ namespace PKSim.Core.Comparison
       public IndividualDiffBuilder(
          ContainerDiffBuilder containerDiffBuilder,
          IObjectComparer comparer,
-         EnumerableComparer enumerableComparer )
+         EnumerableComparer enumerableComparer)
       {
          _containerDiffBuilder = containerDiffBuilder;
          _comparer = comparer;
