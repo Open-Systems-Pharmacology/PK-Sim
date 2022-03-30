@@ -134,6 +134,7 @@ namespace PKSim.UI.Views
          _colQualified.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center;
 
          _colUrl = _gridViewBinder.AutoBind(x => x.Url)
+            .WithCaption(PKSimConstants.UI.Url)
             .WithRepository(x => _urlRepository);
 
          var colDescription = _gridViewBinder.AutoBind(x => x.Description)

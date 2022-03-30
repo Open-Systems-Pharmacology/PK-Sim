@@ -44,7 +44,8 @@ namespace PKSim.UI.Views
          this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
          this.toolTipController = new DevExpress.Utils.ToolTipController(this.components);
          this.chkShowQualifiedTemplate = new DevExpress.XtraEditors.CheckEdit();
-         this.layoutItemShowQualifiedTemplate = new DevExpress.XtraLayout.LayoutControlItem();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
+         this.tablePanel.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -54,8 +55,14 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkShowQualifiedTemplate.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemShowQualifiedTemplate)).BeginInit();
          this.SuspendLayout();
+         // 
+         // tablePanel
+         // 
+         this.tablePanel.Controls.Add(this.chkShowQualifiedTemplate);
+         this.tablePanel.Location = new System.Drawing.Point(0, 724);
+         this.tablePanel.Size = new System.Drawing.Size(867, 43);
+         this.tablePanel.Controls.SetChildIndex(this.chkShowQualifiedTemplate, 0);
          // 
          // layoutControl
          // 
@@ -64,31 +71,27 @@ namespace PKSim.UI.Views
          this.layoutControl.Controls.Add(this.gridControl);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Margin = new System.Windows.Forms.Padding(4);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.layoutMainGroup;
-         this.layoutControl.Size = new System.Drawing.Size(1011, 887);
+         this.layoutControl.Size = new System.Drawing.Size(867, 724);
          this.layoutControl.TabIndex = 34;
          this.layoutControl.Text = "layoutControl1";
          // 
          // lblDescription
          // 
-         this.lblDescription.Location = new System.Drawing.Point(12, 12);
-         this.lblDescription.Margin = new System.Windows.Forms.Padding(4);
+         this.lblDescription.Location = new System.Drawing.Point(11, 10);
          this.lblDescription.Name = "lblDescription";
-         this.lblDescription.Size = new System.Drawing.Size(76, 16);
+         this.lblDescription.Size = new System.Drawing.Size(63, 13);
          this.lblDescription.StyleController = this.layoutControl;
          this.lblDescription.TabIndex = 5;
          this.lblDescription.Text = "lblDescription";
          // 
          // gridControl
          // 
-         this.gridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(5);
-         this.gridControl.Location = new System.Drawing.Point(12, 32);
+         this.gridControl.Location = new System.Drawing.Point(11, 27);
          this.gridControl.MainView = this.gridView;
-         this.gridControl.Margin = new System.Windows.Forms.Padding(4);
          this.gridControl.Name = "gridControl";
-         this.gridControl.Size = new System.Drawing.Size(987, 843);
+         this.gridControl.Size = new System.Drawing.Size(845, 687);
          this.gridControl.TabIndex = 4;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView});
@@ -96,7 +99,6 @@ namespace PKSim.UI.Views
          // gridView
          // 
          this.gridView.AllowsFiltering = true;
-         this.gridView.DetailHeight = 431;
          this.gridView.EnableColumnContextMenu = true;
          this.gridView.GridControl = this.gridControl;
          this.gridView.MultiSelect = false;
@@ -112,15 +114,15 @@ namespace PKSim.UI.Views
             this.layoutControlItem1,
             this.layoutItemDescription});
          this.layoutMainGroup.Name = "layoutMainGroup";
-         this.layoutMainGroup.Size = new System.Drawing.Size(1011, 887);
+         this.layoutMainGroup.Size = new System.Drawing.Size(867, 724);
          this.layoutMainGroup.TextVisible = false;
          // 
          // layoutControlItem1
          // 
          this.layoutControlItem1.Control = this.gridControl;
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 20);
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 17);
          this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(991, 847);
+         this.layoutControlItem1.Size = new System.Drawing.Size(849, 691);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
          // 
@@ -129,39 +131,34 @@ namespace PKSim.UI.Views
          this.layoutItemDescription.Control = this.lblDescription;
          this.layoutItemDescription.Location = new System.Drawing.Point(0, 0);
          this.layoutItemDescription.Name = "layoutItemDescription";
-         this.layoutItemDescription.Size = new System.Drawing.Size(991, 20);
+         this.layoutItemDescription.Size = new System.Drawing.Size(849, 17);
          this.layoutItemDescription.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemDescription.TextVisible = false;
          // 
          // chkShowQualifiedTemplate
          // 
-         this.chkShowQualifiedTemplate.Location = new System.Drawing.Point(13, 16);
+         this.tablePanel.SetColumn(this.chkShowQualifiedTemplate, 1);
+         this.chkShowQualifiedTemplate.Location = new System.Drawing.Point(236, 11);
          this.chkShowQualifiedTemplate.Name = "chkShowQualifiedTemplate";
          this.chkShowQualifiedTemplate.Properties.Caption = "chkShowQualifiedTemplate";
-         this.chkShowQualifiedTemplate.Size = new System.Drawing.Size(183, 24);
-         this.chkShowQualifiedTemplate.TabIndex = 33;
-         // 
-         // layoutItemShowQualifiedTemplate
-         // 
-         this.layoutItemShowQualifiedTemplate.ContentVertAlignment = DevExpress.Utils.VertAlignment.Center;
-         this.layoutItemShowQualifiedTemplate.Control = this.chkShowQualifiedTemplate;
-         this.layoutItemShowQualifiedTemplate.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemShowQualifiedTemplate.Name = "layoutItemShowQualifiedTemplate";
-         this.layoutItemShowQualifiedTemplate.Size = new System.Drawing.Size(187, 33);
-         this.layoutItemShowQualifiedTemplate.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemShowQualifiedTemplate.TextVisible = false;
+         this.tablePanel.SetRow(this.chkShowQualifiedTemplate, 0);
+         this.chkShowQualifiedTemplate.Size = new System.Drawing.Size(205, 20);
+         this.chkShowQualifiedTemplate.TabIndex = 3;
          // 
          // TemplateView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "BuildingBlockFromTemplateView";
-         this.ClientSize = new System.Drawing.Size(1011, 944);
+         this.ClientSize = new System.Drawing.Size(867, 767);
          this.Controls.Add(this.layoutControl);
-         this.Margin = new System.Windows.Forms.Padding(6);
+         this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
          this.Name = "TemplateView";
          this.Text = "BuildingBlockFromTemplateView";
+         this.Controls.SetChildIndex(this.tablePanel, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
+         this.tablePanel.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
@@ -171,7 +168,6 @@ namespace PKSim.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkShowQualifiedTemplate.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemShowQualifiedTemplate)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -188,6 +184,5 @@ namespace PKSim.UI.Views
       private DevExpress.XtraEditors.LabelControl lblDescription;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;
       private DevExpress.XtraEditors.CheckEdit chkShowQualifiedTemplate;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemShowQualifiedTemplate;
    }
 }
