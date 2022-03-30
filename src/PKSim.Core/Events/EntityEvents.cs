@@ -155,11 +155,11 @@ namespace PKSim.Core.Events
       }
    }
 
-   public class NoTranporterTemplateAvailableEvent
+   public class NoTransporterTemplateAvailableEvent
    {
       public IndividualTransporter Transporter { get; }
 
-      public NoTranporterTemplateAvailableEvent(IndividualTransporter transporter)
+      public NoTransporterTemplateAvailableEvent(IndividualTransporter transporter)
       {
          Transporter = transporter;
       }

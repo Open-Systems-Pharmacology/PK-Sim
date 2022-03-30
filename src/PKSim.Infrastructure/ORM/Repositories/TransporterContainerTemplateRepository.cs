@@ -14,6 +14,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatTransporterContainerTemplateRepository _flatTransporterContainerTemplateRepository;
       private readonly IFlatProteinSynonymRepository _flatProteinSynonymRepository;
       private readonly IList<TransporterContainerTemplate> _allTemplates;
+      private readonly List<string> _allTransporterNames = new List<string>();
 
       public TransporterContainerTemplateRepository(IFlatTransporterContainerTemplateRepository flatTransporterContainerTemplateRepository,
          IFlatProteinSynonymRepository flatProteinSynonymRepository)
@@ -55,6 +56,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return All().Where(t => t.Species == speciesName).Where(t => t.OrganName == containerName);
       }
 
+      public IReadOnlyList<string> AllTransporterNames => _allTransporterNames;
+
       public override IEnumerable<TransporterContainerTemplate> All()
       {
          Start();
@@ -72,6 +75,19 @@ namespace PKSim.Infrastructure.ORM.Repositories
             select flatTemplatePerTransport.ToList();
 
          flatTemplatesGroupByKeys.Each(t => _allTemplates.Add(mapFrom(t)));
+
+         cacheTransporterNames();
+      }
+
+      private void cacheTransporterNames()
+      {
+         var transporterNames = new List<string>();
+         _allTemplates.Each(x =>
+         {
+            transporterNames.Add(x.Name);
+            transporterNames.AddRange(x.Synonyms);
+         });
+         _allTransporterNames.AddRange(transporterNames.Distinct());
       }
 
       private TransporterContainerTemplate mapFrom(IList<FlatTransporterContainerTemplate> flatTemplatesGroupByKeys)
@@ -86,7 +102,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
             OrganName = flatTemplate.OrganName,
             Species = flatTemplate.Species,
             TransportType = flatTemplate.TransportType,
-            // TransportDirection = flatTemplate.TransportDirection
          };
 
          _flatProteinSynonymRepository.AddSynonymsTo(template);

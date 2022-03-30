@@ -36,5 +36,10 @@ namespace PKSim.Core.Repositories
       /// <param name="speciesName">Species where the transporter will be defined</param>
       /// <param name="containerName">Concrete transporter location (e.g Kidney, Liver etc...)</param>
       IEnumerable<TransporterContainerTemplate> TransportersFor(string speciesName, string containerName);
+
+      /// <summary>
+      /// Returns the name of all transporters defined in the PKSim Database (template transporters and their synonyms)
+      /// </summary>
+      IReadOnlyList<string> AllTransporterNames { get; }
    }
 }

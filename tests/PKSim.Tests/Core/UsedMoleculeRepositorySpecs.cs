@@ -17,11 +17,13 @@ namespace PKSim.Core
       private ExpressionProfile _expressionProfile;
       private IOntogenyRepository _ontogenyRepository;
       private IMoleculeParameterRepository _moleculeParameterRepository;
+      private ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
 
       protected override void Context()
       {
          _project = new PKSimProject();
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
+         _transporterContainerTemplateRepository= A.Fake<ITransporterContainerTemplateRepository>();
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
 
          _compound1 = A.Fake<Compound>();
@@ -42,11 +44,12 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_compound1);
          _project.AddBuildingBlock(_compound2);
          _project.AddBuildingBlock(_expressionProfile);
-         sut = new UsedMoleculeRepository(_projectRetriever, _ontogenyRepository, _moleculeParameterRepository);
+         sut = new UsedMoleculeRepository(_projectRetriever, _ontogenyRepository, _moleculeParameterRepository, _transporterContainerTemplateRepository);
 
          var molParam1 = new MoleculeParameter {MoleculeName = "DbB"};
          var molParam2 = new MoleculeParameter {MoleculeName = "DbA"};
          A.CallTo(() => _moleculeParameterRepository.All()).Returns(new[] {molParam1, molParam2});
+         A.CallTo(() => _transporterContainerTemplateRepository.AllTransporterNames).Returns(new[] {"ATRANS1", "TRANS2"});
 
          A.CallTo(() => _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN)).Returns(new[] {new DatabaseOntogeny {Name = "OntoC"}});
       }
@@ -64,7 +67,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_distinct_molecule_names_defined_in_loaded_compounds_and_expression_profile_first_followed_by_the_predefined_molecule_names()
       {
-         _moleculeNames.ShouldOnlyContainInOrder("ProjA", "ProjB", "ProjC", "ProjE", "DbA", "DbB", "OntoC");
+         _moleculeNames.ShouldOnlyContainInOrder("ProjA", "ProjB", "ProjC", "ProjE", "ATRANS1", "DbA", "DbB", "OntoC", "TRANS2");
       }
    }
 }

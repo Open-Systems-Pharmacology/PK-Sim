@@ -96,7 +96,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_notify_that_a_template_was_not_found()
       {
-         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTranporterTemplateAvailableEvent>._)).MustNotHaveHappened();
+         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTransporterTemplateAvailableEvent>._)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -139,7 +139,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_notify_that_a_template_was_not_found()
       {
-         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTranporterTemplateAvailableEvent>._)).MustHaveHappened();
+         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTransporterTemplateAvailableEvent>._)).MustHaveHappened();
       }
    }
 

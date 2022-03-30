@@ -73,7 +73,7 @@ namespace PKSim.Core.Services
       }
 
       public override IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName) =>
-         CreateFor(simulationSubject, moleculeName, TransportType.Efflux);
+         CreateFor(simulationSubject, moleculeName, CoreConstants.DEFAULT_TRANSPORTER_TYPE);
 
       protected override ApplicationIcon Icon => ApplicationIcons.Transporter;
 

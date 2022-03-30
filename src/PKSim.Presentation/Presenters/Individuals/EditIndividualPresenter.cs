@@ -34,19 +34,13 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.Display();
       }
 
-      public override object Subject
-      {
-         get { return Individual; }
-      }
+      public override object Subject => Individual;
 
       protected override void UpdateCaption()
       {
          _view.Caption = PKSimConstants.UI.EditIndividual(Individual.Name);
       }
 
-      public virtual Individual Individual
-      {
-         get { return PresenterAt(IndividualItems.Settings).Individual; }
-      }
+      public virtual Individual Individual => PresenterAt(IndividualItems.Settings).Individual;
    }
 }

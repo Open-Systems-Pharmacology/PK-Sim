@@ -3,6 +3,8 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -16,13 +18,16 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_IndividualTransporterExpressionsPresenter : ContextSpecification<IIndividualTransporterExpressionsPresenter>
    {
-      private IIndividualTransporterExpressionsView _view;
+      protected IIndividualTransporterExpressionsView _view;
       private IEditParameterPresenterTask _parameterTask;
       protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       private IIndividualTransporterToTransporterExpressionDTOMapper _transporterMapper;
       private IIndividualMoleculePropertiesPresenter<Individual> _moleculePropertiesPresenter;
       private ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
       protected ICommandCollector _commandCollector;
+      protected IndividualTransporter _transporter;
+      protected ISimulationSubject _simulationSubject;
+      protected IndividualTransporterDTO _transporterDTO;
 
       protected override void Context()
       {
@@ -38,6 +43,14 @@ namespace PKSim.Presentation
 
          _commandCollector = new PKSimMacroCommand();
          sut.InitializeWith(_commandCollector);
+
+
+         _transporter = new IndividualTransporter();
+         _simulationSubject = new Individual();
+         _transporterDTO = new IndividualTransporterDTO(_transporter);
+         sut.SimulationSubject = _simulationSubject;
+
+         A.CallTo(() => _transporterMapper.MapFrom(_transporter, _simulationSubject)).Returns(_transporterDTO);
       }
    }
 
@@ -74,6 +87,68 @@ namespace PKSim.Presentation
       {
          _commandCollector.All().Count().ShouldBeEqualTo(1);
          _commandCollector.All().ShouldOnlyContain(_command);
+      }
+   }
+
+   public class When_editing_a_transporter_that_was_loaded_from_database : concern_for_IndividualTransporterExpressionsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _transporterDTO.DefaultAvailableInDatabase = true;
+      }
+
+      protected override void Because()
+      {
+         sut.ActivateMolecule(_transporter);
+      }
+
+      [Observation]
+      public void should_not_show_the_warning()
+      {
+         A.CallTo(() => _view.ShowWarning(A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_editing_a_transporter_that_was_not_loaded_from_database_and_the_transporter_type_is_not_set_to_the_default_transporter_type : concern_for_IndividualTransporterExpressionsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _transporter.TransportType = TransportType.Influx;
+         _transporterDTO.DefaultAvailableInDatabase = false;
+      }
+
+      protected override void Because()
+      {
+         sut.ActivateMolecule(_transporter);
+      }
+
+      [Observation]
+      public void should_not_show_the_warning()
+      {
+         A.CallTo(() => _view.ShowWarning(A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_editing_a_transporter_that_was_not_loaded_from_database_and_the_transporter_type_is_set_to_the_default_transporter_type : concern_for_IndividualTransporterExpressionsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _transporter.TransportType = CoreConstants.DEFAULT_TRANSPORTER_TYPE;
+         _transporterDTO.DefaultAvailableInDatabase = false;
+      }
+
+      protected override void Because()
+      {
+         sut.ActivateMolecule(_transporter);
+      }
+
+      [Observation]
+      public void should_show_the_warning()
+      {
+         A.CallTo(() => _view.ShowWarning(A<string>._)).MustHaveHappened();
       }
    }
 }

@@ -1,4 +1,6 @@
-﻿using OSPSuite.DataBinding;
+﻿using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
@@ -46,13 +48,31 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.BindToSource(transporterExpressionDTO);
       }
 
+      public void ShowWarning(string warning)
+      {
+         layoutItemWarning.Visibility = LayoutVisibility.Always;
+         panelWarning.NoteText = warning;
+      }
+
+      public void HideWarning()
+      {
+         layoutItemWarning.Visibility = LayoutVisibility.Never;
+      }
+
       public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
 
       public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, view);
 
       public bool ReadOnly
       {
-         set => layoutItemTransporterDirection.Enabled = !value;
+         set
+         {
+            layoutItemTransporterDirection.Enabled = !value;
+
+            //Don't show warning in readonly mode
+            if (value)
+               HideWarning();
+         }
       }
 
       public override bool HasError => _screenBinder.HasError;
@@ -68,6 +88,8 @@ namespace PKSim.UI.Views.Individuals
          layoutGroupMoleculeProperties.ExpandButtonVisible = true;
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.DefaultTransporterDirection;
          layoutGroupMoleculeLocalization.ExpandButtonVisible = true;
+         HideWarning();
+         panelWarning.Image = ApplicationIcons.Warning;
       }
    }
 }

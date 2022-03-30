@@ -15,15 +15,18 @@ namespace PKSim.Core.Repositories
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IMoleculeParameterRepository _moleculeParameterRepository;
+      private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
 
       public UsedMoleculeRepository(
          IPKSimProjectRetriever projectRetriever, 
          IOntogenyRepository ontogenyRepository,
-         IMoleculeParameterRepository moleculeParameterRepository)
+         IMoleculeParameterRepository moleculeParameterRepository,
+         ITransporterContainerTemplateRepository transporterContainerTemplateRepository)
       {
          _projectRetriever = projectRetriever;
          _ontogenyRepository = ontogenyRepository;
          _moleculeParameterRepository = moleculeParameterRepository;
+         _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
       }
 
       public IEnumerable<string> All()
@@ -52,10 +55,9 @@ namespace PKSim.Core.Repositories
       private IEnumerable<string> allPredefinedMolecules()
       {
          //We use human as it has the most predefined molecules in the DB
-         return _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN)
-            .Select(x => x.Name)
-            .Union(_moleculeParameterRepository.All()
-               .Select(x => x.MoleculeName))
+         return _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN).Select(x => x.Name)
+            .Union(_moleculeParameterRepository.All().Select(x => x.MoleculeName))
+            .Union(_transporterContainerTemplateRepository.AllTransporterNames)
             .OrderBy(x => x);
       }
       private IEnumerable<TBuildingBlock> allLoadedBuildingBlocks<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock

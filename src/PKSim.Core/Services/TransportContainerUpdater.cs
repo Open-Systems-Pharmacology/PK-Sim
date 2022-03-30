@@ -52,7 +52,7 @@ namespace PKSim.Core.Services
             return;
 
          //No template was found for the given name. Raise event warning
-         _eventPublisher.PublishEvent(new NoTranporterTemplateAvailableEvent(transporter));
+         _eventPublisher.PublishEvent(new NoTransporterTemplateAvailableEvent(transporter));
       }
 
       public void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, TransportType transportType)
