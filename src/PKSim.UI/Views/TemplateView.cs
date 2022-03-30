@@ -127,6 +127,7 @@ namespace PKSim.UI.Views
          _colVersion.XtraColumn.AppearanceCell.TextOptions.HAlignment = HorzAlignment.Far;
 
          _colQualified = _gridViewBinder.AutoBind(x => x.Qualified)
+            .WithCaption(PKSimConstants.UI.OSPLibraryRelease)
             .WithFormat(_booleanFormatter)
             .AsReadOnly();
 

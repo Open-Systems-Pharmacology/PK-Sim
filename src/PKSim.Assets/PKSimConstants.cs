@@ -2057,7 +2057,7 @@ namespace PKSim.Assets
          public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string CheckForUpdate = "Check for Update";
          public static readonly string Template = "Template";
-         public static readonly string OnlyShowQualifiedTemplates = "Only show qualified templates";
+         public static readonly string OnlyShowQualifiedTemplates = "Only show OSP library released templates";
          public static readonly string BuildingBlock = "Building Block";
          public static readonly string BuildingBlocks = "Building Blocks";
          public static readonly string AllowAging = "Allow aging";
@@ -2069,7 +2069,7 @@ namespace PKSim.Assets
          public static readonly string SelectSimulationResultsFileToImport = "Select simulation results file to import...";
          public static readonly string SelectPKAnalysesFileToImport = "Select PK-Analyses file to import...";
          public static readonly string ResetLayoutSettingsToolTip = "Reset the application layout saved in the current user settings. This is necessary if the layout becomes corrupted.";
-         public static readonly string ReallyResetLayout = "Reseting the layout cannot be undone\nThe new layout will be implemented in the next PK-Sim start-up.";
+         public static readonly string ReallyResetLayout = "Resetting the layout cannot be undone\nThe new layout will be implemented in the next PK-Sim start-up.";
          public static readonly string ShowOntogeny = "Show ontogeny data defined in the database...";
          public static readonly string ImportOntogeny = "Load ontogeny from file...";
          public static readonly string ShowingOntogenyData = "Ontogeny data...";
@@ -2236,6 +2236,8 @@ namespace PKSim.Assets
          public static readonly string LocalizationVascularMembraneTissueSide = "Vascular endothelium membrane tissue-side";
          public static readonly string ShowInitialConcentrationParameter = "Show initial concentration";
          public static readonly string TemplateSource = "Template Source";
+         public static readonly string OSPLibraryRelease = "OSP Library Release";
+         public static readonly string Url = "Url";
          public static readonly string LoadExpressionFromDatabase = "Database Query";
          public static readonly string DiseaseState = "Disease State";
          public static readonly string Select = "Select";
