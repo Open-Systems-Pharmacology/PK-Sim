@@ -30,6 +30,7 @@ namespace PKSim.Core.Model
       PopulationSimulationAnalysisWorkflow = 1 << 10,
       ObserverSet = 1 << 11,
       ExpressionProfile = 1 << 12,
+      SimulationSubject = Individual | Population
    }
 
    public static class TemplateObjectTypeExtensions
