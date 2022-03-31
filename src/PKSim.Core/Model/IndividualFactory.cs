@@ -83,7 +83,7 @@ namespace PKSim.Core.Model
          var originData = new OriginData
          {
             Species = speciesToUse,
-            Gender = speciesToUse.IsHuman ? _genderRepository.Female : null,
+            Gender = speciesToUse.IsHuman ? _genderRepository.Female : _genderRepository.Undefined,
             Population = speciesToUse.DefaultPopulation
          };
          return createStandardIndividual(originData, x => x.CreateOrganStructureFor);

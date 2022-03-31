@@ -25,7 +25,7 @@ namespace PKSim.Core
       protected IParameter _height;
       protected IParameter _weight;
       protected IParameter _bmi;
-      private IGenderRepository _genderRepository;
+      protected IGenderRepository _genderRepository;
       protected IDiseaseStateImplementationFactory _diseaseStateImplementationRepository;
 
       protected override void Context()
@@ -247,6 +247,41 @@ namespace PKSim.Core
       public void should_return_an_individual_for_the_given_species_without_parameters()
       {
          A.CallTo(() => _individualModelTask.CreateOrganStructureFor(_individual)).MustHaveHappened();
+      }
+   }
+
+   public class When_told_to_create_an_individual_without_parameters_using_a_non_human_species : concern_for_IndividualFactory
+   {
+      private Individual _individual;
+      private Organism _organism;
+      private IContainer _neighborhoods;
+      private IRootContainer _rootContainer;
+      private Species _species;
+
+      protected override void Context()
+      {
+         base.Context();
+         _species = new Species { Name = CoreConstants.Species.RAT, Id = CoreConstants.Species.RAT };
+         _species.AddPopulation(new SpeciesPopulation());
+         _individual = new Individual();
+         _organism = A.Fake<Organism>();
+         _neighborhoods = A.Fake<IContainer>();
+         _rootContainer = new RootContainer();
+         A.CallTo(() => _entityBaseFactory.Create<IRootContainer>()).Returns(_rootContainer);
+         A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
+         A.CallTo(() => _entityBaseFactory.Create<Organism>()).Returns(_organism);
+         A.CallTo(() => _entityBaseFactory.Create<IContainer>()).Returns(_neighborhoods);
+      }
+
+      protected override void Because()
+      {
+         sut.CreateParameterLessIndividual(_species);
+      }
+
+      [Observation]
+      public void should_return_an_individual_using_the_given_species_and_undefined_gender()
+      {
+         _individual.OriginData.Gender.ShouldBeEqualTo(_genderRepository.Undefined);
       }
    }
 
