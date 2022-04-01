@@ -248,7 +248,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_added_dynamic_parameters()
       {
-         _newSettings.ParameterRange(_diseaseStateParameter.Name).ShouldBeEqualTo(_newDiseaseStateParameterRange);
+         _newSettings.ParameterRange(_diseaseStateParameter.Name).ShouldBeEqualTo(_newDiseaseStateParameterRange);    
       }
    }
 
