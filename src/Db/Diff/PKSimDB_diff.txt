@@ -1,4 +1,4 @@
-UPDATE tab_calculation_method_rates SET formula='(C_int_prp * V_int_prp + C_int_prc * V_int_prc + C_cell_prp * V_cell_prp + C_cell_prc * V_cell_prc)/(V_int_prp + V_int_prc + V_cell_prp + V_cell_prc)' WHERE calculation_method='Observer_PKSim_4Comp' AND formula_rate='OBS_Tissue_liv';
-UPDATE tab_disease_states SET display_name='Chronic Kidney Disease - No Dialysis (Malik et al, 2020) (experimental)' WHERE disease_state='CKD';
-UPDATE tab_species SET display_name='Cat (experimental)' WHERE species='Cat';
-UPDATE tab_species SET display_name='Cattle (IV only) (experimental)' WHERE species='Cattle';
+UPDATE tab_calculation_method_rates SET formula='Min(TM * kcat * (fu * max(C_pls;0))^alpha / ( Km^alpha + (fu * max(C_pls;0))^alpha) ; P_endothelial * SA * fu * C_pls) + TM * kcat * (K_water_int * max(C_int;0))^alpha / (Km^alpha + (K_water_int * max(C_int;0))^alpha)' WHERE calculation_method='LinksCommon' AND formula_rate='BrainPgPToPlasma_Hill';
+UPDATE tab_rate_generic_molecules SET alias='TM', use_amount=1 WHERE calculation_method='LinksCommon' AND formula_rate='BrainPgPToPlasma_Hill' AND path_id=366 AND molecule='DRUG';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='LinksCommon' AND formula_rate='BrainPgPToPlasma_Hill' AND path_id=343 AND parameter_name='Fraction interstitial';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='LinksCommon' AND formula_rate='BrainPgPToPlasma_Hill' AND path_id=343 AND parameter_name='Volume';
