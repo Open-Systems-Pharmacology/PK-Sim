@@ -94,20 +94,9 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshot.DiseaseStateParameters == null)
             return;
 
-         //Can only be null if someone messes around with snapshots or in tests
-         var diseaseState = randomPopulationSettings.BaseIndividual?.OriginData?.DiseaseState;
-         if (diseaseState == null)
-            return;
-
          foreach (var snapshotDiseaseStateParameter in snapshot.DiseaseStateParameters)
          {
-            var diseaseStateParameter = diseaseState.Parameter(snapshotDiseaseStateParameter.Name);
-            if (diseaseStateParameter == null)
-               continue;
-
-            var diseaseStateParameterRange = _populationSettingsMapper.ConstrainedParameterRangeFrom(diseaseStateParameter);
-            randomPopulationSettings.AddParameterRange(diseaseStateParameterRange);
-            await updateModelRange(snapshotDiseaseStateParameter, diseaseStateParameterRange);
+            await updateModelRange(randomPopulationSettings, snapshotDiseaseStateParameter.Name, snapshotDiseaseStateParameter);
          }
       }
 

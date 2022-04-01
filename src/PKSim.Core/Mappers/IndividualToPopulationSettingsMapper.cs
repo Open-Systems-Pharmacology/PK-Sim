@@ -11,7 +11,6 @@ namespace PKSim.Core.Mappers
 {
    public interface IIndividualToPopulationSettingsMapper : IMapper<Individual, RandomPopulationSettings>
    {
-      ParameterRange ConstrainedParameterRangeFrom(IParameter parameter);
    }
 
    public class IndividualToPopulationSettingsMapper : IIndividualToPopulationSettingsMapper
@@ -41,7 +40,7 @@ namespace PKSim.Core.Mappers
 
          var organism = individual.Organism;
          if (individual.IsAgeDependent)
-            populationSettings.AddParameterRange(ConstrainedParameterRangeFrom(organism.Parameter(AGE)));
+            populationSettings.AddParameterRange(constrainedParameterRangeFrom(organism.Parameter(AGE)));
 
          if (individual.IsPreterm)
          {
@@ -53,7 +52,7 @@ namespace PKSim.Core.Mappers
             populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(MEAN_HEIGHT)));
 
          var weightParameter = organism.Parameter(MEAN_WEIGHT);
-         populationSettings.AddParameterRange(population.IsAgeDependent ? parameterRangeFrom(weightParameter) : ConstrainedParameterRangeFrom(weightParameter));
+         populationSettings.AddParameterRange(population.IsAgeDependent ? parameterRangeFrom(weightParameter) : constrainedParameterRangeFrom(weightParameter));
 
          if (population.IsHeightDependent)
             populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(BMI)));
@@ -61,12 +60,12 @@ namespace PKSim.Core.Mappers
          individual.OriginData.DiseaseStateParameters.Each(x =>
          {
             var parameter = individual.OriginData.DiseaseState.Parameter(x.Name);
-            populationSettings.AddParameterRange(ConstrainedParameterRangeFrom(parameter));
+            populationSettings.AddParameterRange(constrainedParameterRangeFrom(parameter));
          });
          return populationSettings;
       }
 
-      public ParameterRange ConstrainedParameterRangeFrom(IParameter parameter)
+      private ParameterRange constrainedParameterRangeFrom(IParameter parameter)
       {
          var parameterRange = createParameterRange<ConstrainedParameterRange>(parameter);
          parameterRange.MinValue = parameter.MinValue;

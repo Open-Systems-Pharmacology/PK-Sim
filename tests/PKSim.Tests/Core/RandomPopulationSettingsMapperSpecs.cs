@@ -212,7 +212,6 @@ namespace PKSim.Core
          {
             OriginData = new OriginData()
          };
-         _newIndividual.OriginData.AddDiseaseStateParameter(_diseaseStateParameter);
 
          _newAgeRange = new ParameterRange {ParameterName = CoreConstants.Parameters.AGE};
          _newWeightRange = new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_WEIGHT};
@@ -224,13 +223,10 @@ namespace PKSim.Core
          A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newWeightRange)).Returns(_newWeightRange);
          A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _project)).Returns(_newIndividual);
 
-         var diseaseStateParameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(_diseaseStateParameter.Name);
-         _newIndividual.OriginData.DiseaseState = new DiseaseState { diseaseStateParameter };
-
          _newDiseaseStateParameterRange = new ConstrainedParameterRange {ParameterName = _diseaseStateParameter.Name};
-         A.CallTo(() => _populationSettingsMapper.ConstrainedParameterRangeFrom(diseaseStateParameter)).Returns(_newDiseaseStateParameterRange);
 
          _mappedSettings = new RandomPopulationSettings {BaseIndividual = _newIndividual};
+         _mappedSettings.AddParameterRange(_newDiseaseStateParameterRange);
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);
       }
 
@@ -246,9 +242,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_added_dynamic_parameters()
+      public void should_have_updated_dynamic_parameters()
       {
-         _newSettings.ParameterRange(_diseaseStateParameter.Name).ShouldBeEqualTo(_newDiseaseStateParameterRange);    
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_diseaseStateParameterRangeSnapshot, _newDiseaseStateParameterRange)).MustHaveHappened();
       }
    }
 
