@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -14,16 +16,19 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IGenderRepository _genderRepository;
       private readonly IIndividualToPopulationSettingsMapper _populationSettingsMapper;
       private readonly IndividualMapper _individualMapper;
+      private readonly IOSPSuiteLogger _logger;
 
       public RandomPopulationSettingsMapper(
          ParameterRangeMapper parameterRangeMapper,
          IndividualMapper individualMapper,
          IIndividualToPopulationSettingsMapper populationSettingsMapper,
-         IGenderRepository genderRepository)
+         IGenderRepository genderRepository, 
+         IOSPSuiteLogger logger)
       {
          _parameterRangeMapper = parameterRangeMapper;
          _populationSettingsMapper = populationSettingsMapper;
          _genderRepository = genderRepository;
+         _logger = logger;
          _individualMapper = individualMapper;
       }
 
@@ -79,11 +84,11 @@ namespace PKSim.Core.Snapshots.Mappers
          var settings = _populationSettingsMapper.MapFrom(individual);
          settings.NumberOfIndividuals = snapshot.NumberOfIndividuals;
          updateGenderRatios(settings, snapshot);
-         await updateModelRange(settings, CoreConstants.Parameters.AGE, snapshot.Age);
-         await updateModelRange(settings, CoreConstants.Parameters.MEAN_WEIGHT, snapshot.Weight);
-         await updateModelRange(settings, CoreConstants.Parameters.MEAN_HEIGHT, snapshot.Height);
-         await updateModelRange(settings, Constants.Parameters.GESTATIONAL_AGE, snapshot.GestationalAge);
-         await updateModelRange(settings, CoreConstants.Parameters.BMI, snapshot.BMI);
+         await updateModelRange(snapshot.Age, CoreConstants.Parameters.AGE, settings);
+         await updateModelRange(snapshot.Weight, CoreConstants.Parameters.MEAN_WEIGHT, settings);
+         await updateModelRange(snapshot.Height, CoreConstants.Parameters.MEAN_HEIGHT, settings);
+         await updateModelRange(snapshot.GestationalAge, Constants.Parameters.GESTATIONAL_AGE, settings);
+         await updateModelRange(snapshot.BMI, CoreConstants.Parameters.BMI, settings);
 
          await addDiseaseStateParameters(settings, snapshot);
          return settings;
@@ -96,17 +101,19 @@ namespace PKSim.Core.Snapshots.Mappers
 
          foreach (var snapshotDiseaseStateParameter in snapshot.DiseaseStateParameters)
          {
-            await updateModelRange(randomPopulationSettings, snapshotDiseaseStateParameter.Name, snapshotDiseaseStateParameter);
+            await updateModelRange(snapshotDiseaseStateParameter, snapshotDiseaseStateParameter.Name, randomPopulationSettings);
          }
       }
 
-      private Task updateModelRange(RandomPopulationSettings randomPopulationSettings, string parameterName, ParameterRange parameterRange)
+      private Task updateModelRange(ParameterRange parameterRange, string parameterName, RandomPopulationSettings randomPopulationSettings)
       {
-         return updateModelRange(parameterRange, randomPopulationSettings.ParameterRange(parameterName));
-      }
+         var modelParameterRange = randomPopulationSettings.ParameterRange(parameterName);
+         if (modelParameterRange == null)
+         {
+            _logger.AddWarning(PKSimConstants.Warning.ParameterRangeNotFoundInPopulation(parameterName));
+            return  Task.CompletedTask;
+         }
 
-      private Task updateModelRange(ParameterRange parameterRange, Model.ParameterRange modelParameterRange)
-      {
          return _parameterRangeMapper.MapToModel(parameterRange, modelParameterRange);
       }
 
