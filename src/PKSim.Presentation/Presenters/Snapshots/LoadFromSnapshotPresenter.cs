@@ -48,7 +48,6 @@ namespace PKSim.Presentation.Presenters.Snapshots
       private readonly IEventPublisher _eventPublisher;
       private readonly ILogPresenter _logPresenter;
       private readonly LoadFromSnapshotDTO _loadFromSnapshotDTO = new LoadFromSnapshotDTO();
-      private readonly IStartOptions _startOptions;
       private IEnumerable<T> _model;
 
       public LoadFromSnapshotPresenter(
@@ -67,12 +66,11 @@ namespace PKSim.Presentation.Presenters.Snapshots
          _logger = logger;
          _logPresenter = logPresenter;
          _eventPublisher = eventPublisher;
-         _startOptions = startOptions;
          AddSubPresenters(_logPresenter);
          _view.Caption = PKSimConstants.UI.LoadObjectFromSnapshot(typeToLoad);
          _view.AddLogView(_logPresenter.BaseView);
          _view.BindTo(_loadFromSnapshotDTO);
-         _view.RunSimulationsSwitchVisible = _startOptions.IsDeveloperMode;
+         _view.RunSimulationsSwitchVisible = startOptions.IsDeveloperMode;
       }
 
       public override bool ShouldClose
