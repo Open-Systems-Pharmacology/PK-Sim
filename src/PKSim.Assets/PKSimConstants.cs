@@ -403,7 +403,7 @@ namespace PKSim.Assets
          public static string DistributionUnknown(string distribution) => $"Distribution '{distribution}' is unknown.";
          public const string NameIsRequired = "Name is required.";
          public const string MoleculeIsRequired = "Molecule is required.";
-         public const string CategoryIsRequired = "Category is required.";
+         public static readonly string CategoryIsRequired = $"{UI.ExpressionProfileCategory} is required.";
          public const string SpeciesIsRequired = "Species is required.";
          public const string DataSourceIsRequired = "Data source is required.";
          public static string ProteinExpressionFactoryNotFound(string enzymeType) => $"Cannot retrieve enzyme expression factory for enzyme type '{enzymeType}'.";
@@ -1731,7 +1731,7 @@ namespace PKSim.Assets
          public static readonly string SubPopulation = "Sub Population";
          public static readonly string CalculationMethods = "Calculation methods";
          public static readonly string ReferencePopulation = "Reference Population";
-         public static readonly string ExpressionProfileCategory = "Phenotype";
+         public const string ExpressionProfileCategory = "Phenotype";
          public static readonly string ExpressionProfileCategoryDescription =
             "Multiple expression profiles of the same protein can be defined to describe different phenotypes or disease states (e.g. Healthy, Extensive etc.)";
          public static readonly string Category = "Category";
