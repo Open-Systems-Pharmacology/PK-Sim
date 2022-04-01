@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -9,6 +10,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation.DTO.Snapshots;
 using PKSim.Presentation.Views.Snapshots;
 
 namespace PKSim.Presentation.Presenters.Snapshots
@@ -36,8 +38,9 @@ namespace PKSim.Presentation.Presenters.Snapshots
          IOSPSuiteLogger logger,
          IEventPublisher eventPublisher,
          SimulationMapper simulationMapper,
-         IPKSimProjectRetriever projectRetriever
-      ) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)
+         IPKSimProjectRetriever projectRetriever,
+         IStartOptions startOptions
+      ) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher, startOptions)
       {
          _simulationMapper = simulationMapper;
          _projectRetriever = projectRetriever;
@@ -49,10 +52,10 @@ namespace PKSim.Presentation.Presenters.Snapshots
          return models?.FirstOrDefault();
       }
 
-      protected override async Task<IEnumerable<Simulation>> LoadModelAsync(string snapshotFile)
+      protected override  async Task<IEnumerable<Simulation>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
       {
-         var snapshots = await _snapshotTask.LoadSnapshotsAsync<PKSim.Core.Snapshots.Simulation>(snapshotFile);
-         var simulationContext = new SimulationContext(_projectRetriever.Current, run: true);
+         var snapshots = await _snapshotTask.LoadSnapshotsAsync<PKSim.Core.Snapshots.Simulation>(loadFromSnapshotDTO.SnapshotFile);
+         var simulationContext = new SimulationContext(_projectRetriever.Current, run: loadFromSnapshotDTO.RunSimulations);
          var tasks = snapshots.Select(x => _simulationMapper.MapToModel(x, simulationContext));
          return await Task.WhenAll(tasks);
       }

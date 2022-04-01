@@ -80,7 +80,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_load_the_snapshot_from_file()
       {
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_snapshotFile)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_snapshotFile, true)).MustHaveHappened();
       }
 
       [Observation]
@@ -162,7 +162,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_load_the_snapshot_from_file()
       {
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_snapshotFile)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_snapshotFile, true)).MustHaveHappened();
       }
 
       [Observation]

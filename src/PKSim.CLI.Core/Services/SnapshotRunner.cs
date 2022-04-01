@@ -40,8 +40,6 @@ namespace PKSim.CLI.Core.Services
       //For testing purposes only
       public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
 
-
-
       public SnapshotRunner(
          ICoreWorkspace workspace,
          ISnapshotTask snapshotTask,
@@ -53,7 +51,7 @@ namespace PKSim.CLI.Core.Services
          _workspacePersistor = workspacePersistor;
          _logger = logger;
          AllFilesFrom = allFilesFrom;
-      }  
+      }
 
       public async Task RunBatchAsync(SnapshotRunOptions runOptions)
       {
@@ -93,6 +91,7 @@ namespace PKSim.CLI.Core.Services
                _workspace.Project = null;
             }
          }
+
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
