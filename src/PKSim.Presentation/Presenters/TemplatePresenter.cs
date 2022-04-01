@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -56,7 +55,7 @@ namespace PKSim.Presentation.Presenters
       void SelectedTemplatesChanged(IReadOnlyList<TemplateDTO> templates);
 
       /// <summary>
-      /// Specifies of only qualified templates should be displayed or not. This filtering only applied to remote templates
+      ///    Specifies of only qualified templates should be displayed or not. This filtering only applied to remote templates
       /// </summary>
       bool ShowOnlyQualifiedTemplate { get; set; }
    }
@@ -121,6 +120,10 @@ namespace PKSim.Presentation.Presenters
          if (!selectionSupportsReference(templateType))
             return false;
 
+         //For simulation subject always save linked expression profiles
+         if (templateType.Is(TemplateType.SimulationSubject))
+            return true;
+
          var message = getMessageForLoadWithReference(templateType);
          return _dialogCreator.MessageBoxYesNo(message) == ViewResult.Yes;
       }
@@ -132,7 +135,7 @@ namespace PKSim.Presentation.Presenters
             case TemplateType.Compound:
                return PKSimConstants.UI.DoYouWantToLoadMetabolites(_selectedTemplates.Count);
             default:
-               return PKSimConstants.UI.DoYouWantToLoadExpressionProfiles(_selectedTemplates.Count);
+               throw new ArgumentOutOfRangeException(nameof(templateType));
          }
       }
 
@@ -253,7 +256,6 @@ namespace PKSim.Presentation.Presenters
             _templateTaskQuery.DeleteTemplate(template);
             _availableTemplates.Remove(template);
             _selectedTemplates.Remove(template);
-
          });
 
          updateView();

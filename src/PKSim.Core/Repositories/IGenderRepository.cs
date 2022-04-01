@@ -7,6 +7,7 @@ namespace PKSim.Core.Repositories
    {
       Gender Male { get; }
       Gender Female { get; }
+      Gender Undefined { get;  }
       Gender FindByIndex(int index);
    }
 }

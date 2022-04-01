@@ -100,7 +100,6 @@ namespace PKSim.Presentation.Services
          }
       }
 
-
       public bool Delete<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocksToDelete) where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (!buildingBlocksToDelete.Any())
@@ -284,12 +283,17 @@ namespace PKSim.Presentation.Services
 
       public async Task<IReadOnlyList<IPKSimBuildingBlock>> LoadFromTemplateAsync(PKSimBuildingBlockType buildingBlockType)
       {
+         IReadOnlyList<IPKSimBuildingBlock> buildingBlocks;
          using (var presenter = _applicationController.Start<ITemplatePresenter>())
          {
-            var buildingBlocks = await presenter.LoadFromTemplateAsync<IPKSimBuildingBlock>(typeFrom(buildingBlockType));
-
-            return addBuildingBlocksToProject(buildingBlocks).ToList();
+            buildingBlocks = await presenter.LoadFromTemplateAsync<IPKSimBuildingBlock>(typeFrom(buildingBlockType));
          }
+
+         var addedBuildingBlocks = addBuildingBlocksToProject(buildingBlocks).ToList();
+         if (buildingBlockType.Is(PKSimBuildingBlockType.SimulationSubject))
+            addExpressionProfileReference(addedBuildingBlocks);
+
+         return addedBuildingBlocks;
       }
 
       public async Task<TBuildingBlock> LoadSingleFromTemplateAsync<TBuildingBlock>(PKSimBuildingBlockType buildingBlockType) where TBuildingBlock : class, IPKSimBuildingBlock
@@ -304,6 +308,15 @@ namespace PKSim.Presentation.Services
             var buildingBlocks = presenter.LoadModelFromSnapshot();
             return addBuildingBlocksToProject(buildingBlocks).ToList();
          }
+      }
+
+      private void addExpressionProfileReference(List<IPKSimBuildingBlock> allBuildingBlocks)
+      {
+         var simulationSubject = allBuildingBlocks.OfType<ISimulationSubject>().FirstOrDefault();
+         var allExpressionProfiles = allBuildingBlocks.OfType<ExpressionProfile>().ToList();
+
+         if (simulationSubject != null)
+            allExpressionProfiles.Each(simulationSubject.AddExpressionProfile);
       }
 
       private IEnumerable<TBuildingBlock> addBuildingBlocksToProject<TBuildingBlock>(IReadOnlyList<TBuildingBlock> buildingBlocks) where TBuildingBlock : class, IPKSimBuildingBlock
@@ -435,11 +448,6 @@ namespace PKSim.Presentation.Services
       {
          return _buildingBlockTask.AddToProject(buildingBlock, editBuildingBlock, addToHistory);
       }
-
-      /*protected virtual Task<IReadOnlyList<TBuildingBlock>> LoadFromTemplateAsync(PKSimBuildingBlockType buildingBlockType)
-      {
-         return _buildingBlockTask.LoadFromTemplateAsync(buildingBlockType)
-      }*/
 
       protected virtual IReadOnlyList<TBuildingBlock> LoadFromSnapshot(PKSimBuildingBlockType buildingBlockType)
       {

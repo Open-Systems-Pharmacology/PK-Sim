@@ -7,7 +7,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -34,7 +33,7 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _startOptions = A.Fake<IStartOptions>();
          _configuration = A.Fake<IApplicationConfiguration>();
-         sut = new TemplatePresenter(_view, _templateTaskQuery,  _applicationController, _dialogCreator, _startOptions, _configuration);
+         sut = new TemplatePresenter(_view, _templateTaskQuery, _applicationController, _dialogCreator, _startOptions, _configuration);
          return _completed;
       }
    }
@@ -137,6 +136,50 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_loading_a_individual_with_references_to_expression_profile : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<IPKSimBuildingBlock> _allTemplates;
+      private List<Template> _templates;
+      private LocalTemplate _template1;
+      private LocalTemplate _template2;
+      private IPKSimBuildingBlock _individual;
+      private IPKSimBuildingBlock _expressionProfile;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _individual = new Individual();
+         _expressionProfile = new ExpressionProfile();
+
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
+         _template1.References.Add(_template2);
+         _templates = new List<Template> {_template1, _template2};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Individual)).Returns(_templates);
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<IPKSimBuildingBlock>(_template1)).Returns(_individual);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<IPKSimBuildingBlock>(_template2)).Returns(_expressionProfile);
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _individual)).Returns(new[] {_template2});
+      }
+
+      protected override async Task Because()
+      {
+         _allTemplates = await sut.LoadFromTemplateAsync<IPKSimBuildingBlock>(TemplateType.Individual);
+      }
+
+      [Observation]
+      public void should_load_individual_an_expression_profile()
+      {
+         _allTemplates.ShouldOnlyContain(_individual, _expressionProfile);
+      }
+
+      [Observation]
+      public void should_not_ask_the_user_to_load_expression_profile()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
+      }
+   }
+
    public class When_selecting_multiple_templates_at_the_same_time : concern_for_TemplatePresenter
    {
       private IReadOnlyList<Compound> _allTemplates;
@@ -195,7 +238,7 @@ namespace PKSim.Presentation
 
          _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
          _remoteTemplateInvalid = new RemoteTemplate {MinVersion = "13.0", Qualified = true};
-         _remoteTemplateValid = new RemoteTemplate {Name = "Template2", Id = "Id2", Qualified = true };
+         _remoteTemplateValid = new RemoteTemplate {Name = "Template2", Id = "Id2", Qualified = true};
          A.CallTo(() => _configuration.Version).Returns("12.0");
          _templates = new List<Template> {_template1, _remoteTemplateValid, _remoteTemplateInvalid};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
@@ -228,12 +271,12 @@ namespace PKSim.Presentation
       {
          await base.Context();
          sut.ShowOnlyQualifiedTemplate = true;
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
-         _remoteTemplateInvalid = new RemoteTemplate { MinVersion = "13.0", Qualified = true };
-         _remoteTemplateValidNotQualified = new RemoteTemplate { Name = "Template2", Id = "Id2", Qualified = false };
-         _remoteTemplateValidQualified = new RemoteTemplate { Name = "Template3", Id = "Id3", Qualified = true };
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _remoteTemplateInvalid = new RemoteTemplate {MinVersion = "13.0", Qualified = true};
+         _remoteTemplateValidNotQualified = new RemoteTemplate {Name = "Template2", Id = "Id2", Qualified = false};
+         _remoteTemplateValidQualified = new RemoteTemplate {Name = "Template3", Id = "Id3", Qualified = true};
          A.CallTo(() => _configuration.Version).Returns("12.0");
-         _templates = new List<Template> { _template1, _remoteTemplateValidNotQualified, _remoteTemplateInvalid, _remoteTemplateValidQualified };
+         _templates = new List<Template> {_template1, _remoteTemplateValidNotQualified, _remoteTemplateInvalid, _remoteTemplateValidQualified};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          A.CallTo(() => _view.BindTo(A<IReadOnlyList<TemplateDTO>>._))
             .Invokes(x => _allTemplateDTOs = x.GetArgument<IReadOnlyList<TemplateDTO>>(0));
@@ -264,18 +307,17 @@ namespace PKSim.Presentation
       {
          await base.Context();
          sut.ShowOnlyQualifiedTemplate = true;
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
-         _remoteTemplateInvalid = new RemoteTemplate { MinVersion = "13.0", Qualified = true };
-         _remoteTemplateValidNotQualified = new RemoteTemplate { Name = "Template2", Id = "Id2", Qualified = false };
-         _remoteTemplateValidQualified = new RemoteTemplate { Name = "Template3", Id = "Id3", Qualified = true };
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _remoteTemplateInvalid = new RemoteTemplate {MinVersion = "13.0", Qualified = true};
+         _remoteTemplateValidNotQualified = new RemoteTemplate {Name = "Template2", Id = "Id2", Qualified = false};
+         _remoteTemplateValidQualified = new RemoteTemplate {Name = "Template3", Id = "Id3", Qualified = true};
          A.CallTo(() => _configuration.Version).Returns("12.0");
-         _templates = new List<Template> { _template1, _remoteTemplateValidNotQualified, _remoteTemplateInvalid, _remoteTemplateValidQualified };
+         _templates = new List<Template> {_template1, _remoteTemplateValidNotQualified, _remoteTemplateInvalid, _remoteTemplateValidQualified};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
          A.CallTo(() => _view.BindTo(A<IReadOnlyList<TemplateDTO>>._))
             .Invokes(x => _allTemplateDTOs = x.GetArgument<IReadOnlyList<TemplateDTO>>(0));
 
          await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
-
       }
 
       protected override Task Because()

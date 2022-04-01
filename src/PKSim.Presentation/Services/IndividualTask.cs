@@ -1,13 +1,15 @@
-using PKSim.Assets;
+using System.Collections.Generic;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Individuals;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Services
 {
@@ -53,6 +55,14 @@ namespace PKSim.Presentation.Services
 
             _buildingBlockTask.AddCommandToHistory(overallCommand);
          }
+      }
+
+      protected override void SaveAsTemplate(IReadOnlyList<Individual> individuals, TemplateDatabaseType templateDatabaseType)
+      {
+         //We need to save expression profiles for individuals
+         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
+         individuals.Each(x => cache[x] = x.AllExpressionProfiles());
+         _buildingBlockTask.SaveAsTemplate(cache, templateDatabaseType);
       }
    }
 }

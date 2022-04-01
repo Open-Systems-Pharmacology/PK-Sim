@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using OSPSuite.Assets;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -11,6 +10,7 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -122,7 +122,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          contextMenu.Show(_view, popupLocation);
       }
 
-
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);
@@ -134,7 +133,9 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void ActivateNode(ITreeNode node)
       {
-         if (node == null) return;
+         if (node == null)
+            return;
+
          //one of the root has been selected
          if (nodeRepresentsMoleculeFolder(node))
          {
@@ -146,6 +147,9 @@ namespace PKSim.Presentation.Presenters.Individuals
          var rootNode = node.ParentNode.DowncastTo<RootNode>();
          var molecule = moleculeFrom(node);
          var expressionProfile = _simulationSubject.ExpressionProfileFor(molecule);
+         if (expressionProfile == null)
+            throw new PKSimException(PKSimConstants.Error.ExpressionProfileForMoleculeNotFound(molecule.Name, _simulationSubject.Name, _entityTask.TypeFor(_simulationSubject)));
+
          _view.LinkedExpressionProfileCaption = PKSimConstants.UI.LinkedExpressionProfileIs(expressionProfile.Name);
          _activePresenter = presenterFor(rootNode);
          //needs to be done as soon as the view is available to allow proper resizing
@@ -153,7 +157,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _activePresenter.DisableEdit();
          _activePresenter.ActivateMolecule(molecule);
          _activePresenter.OntogenyVisible = _simulationSubject.IsAgeDependent;
-         _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>(); 
+         _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>();
       }
 
       public void NodeDoubleClicked(ITreeNode node)
@@ -186,7 +190,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          return moleculeNode?.TagAsObject as IndividualMolecule;
       }
-
 
       private void editMolecule(IndividualMolecule molecule)
       {

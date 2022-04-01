@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -425,6 +424,51 @@ namespace PKSim.Presentation
       public void should_add_the_building_block_the_project()
       {
          _command.ShouldBeAnInstanceOf<AddBuildingBlockToProjectCommand>();
+      }
+   }
+
+   public class When_loading_an_individual_from_template_referencing_an_expression_profile : concern_for_BuildingBlockTask
+   {
+      private ITemplatePresenter _templatePresenter;
+      private ISimulationSubject _templateIndividual;
+      private ISimulationSubject _individual;
+      private IPKSimCommand _command;
+      private IPKSimBuildingBlock _templateExpressionProfile;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _templatePresenter = A.Fake<ITemplatePresenter>();
+         _templateIndividual = new Individual();
+         _templateExpressionProfile = new ExpressionProfile();
+         A.CallTo(() => _applicationController.Start<ITemplatePresenter>()).Returns(_templatePresenter);
+         A.CallTo(_templatePresenter).WithReturnType<Task<IReadOnlyList<IPKSimBuildingBlock>>>().Returns(new[] {_templateIndividual, _templateExpressionProfile});
+
+         A.CallTo(() => _executionContext.AddToHistory((A<IPKSimCommand>._)))
+            .Invokes(x => _command = x.GetArgument<IPKSimCommand>(0));
+      }
+
+      protected override async Task Because()
+      {
+         _individual = await sut.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+      }
+
+      [Observation]
+      public void should_retrieve_the_available_template_from_the_template_database()
+      {
+         _individual.ShouldBeAnInstanceOf<Individual>();
+      }
+
+      [Observation]
+      public void should_add_the_building_block_the_project()
+      {
+         _command.ShouldBeAnInstanceOf<AddBuildingBlockToProjectCommand>();
+      }
+
+      [Observation]
+      public void should_add_the_expression_profile_to_the_individual()
+      {
+         _templateIndividual.AllExpressionProfiles().ShouldContain(_templateExpressionProfile);
       }
    }
 

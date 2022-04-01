@@ -85,8 +85,16 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private IReadOnlyList<RemoteTemplate> expressionProfileFor(RemoteTemplate remoteTemplate, ISimulationSubject simulationSubject)
       {
-         //TODO Not implemented yet. It will be done with the profile defined for individual as separate building block
-         return Array.Empty<RemoteTemplate>();
+         //This will for now assume that the expression profile templates are in the same file
+         return simulationSubject.AllExpressionProfiles()
+            .Select(x => x.Name)
+            .Select(name => new RemoteTemplate
+            {
+               Url = remoteTemplate.Url,
+               Type = TemplateType.ExpressionProfile,
+               Name = name
+            })
+            .ToList();
       }
 
       private IReadOnlyList<RemoteTemplate> metabolitesFor(RemoteTemplate remoteTemplate, Compound compound)

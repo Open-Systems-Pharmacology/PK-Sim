@@ -61,6 +61,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public Gender Female => this.FindByName(CoreConstants.Gender.FEMALE);
 
+      public Gender Undefined => this.FindByName(CoreConstants.Gender.UNDEFINED);
+
       public Gender FindByIndex(int index) => All().FirstOrDefault(x => x.Index == index);
    }
 }

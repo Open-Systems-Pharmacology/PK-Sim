@@ -5,6 +5,8 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Populations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Services
 {
@@ -31,6 +33,13 @@ namespace PKSim.Presentation.Services
          {
             presenter.ExctractIndividuals(population, individualIds);
          }
+      }
+      protected override void SaveAsTemplate(IReadOnlyList<Population> populations, TemplateDatabaseType templateDatabaseType)
+      {
+         //We need to save expression profiles for populations
+         var cache = new Cache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>();
+         populations.Each(x => cache[x] = x.AllExpressionProfiles());
+         _buildingBlockTask.SaveAsTemplate(cache, templateDatabaseType);
       }
    }
 }
