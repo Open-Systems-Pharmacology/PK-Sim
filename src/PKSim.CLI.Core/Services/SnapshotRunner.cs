@@ -102,7 +102,7 @@ namespace PKSim.CLI.Core.Services
       private async Task createProjectFromSnapshotFile(FileMap file)
       {
          _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
-         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile);
+         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile );
          if (project == null)
             return;
 

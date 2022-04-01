@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -25,6 +26,7 @@ namespace PKSim.Presentation
       protected ILogPresenter _logPresenter;
       protected IRegistrationTask _registrationTask;
       protected IQualiticationPlanRunner _qualificationPlanRunner;
+      private IStartOptions _startOptions;
 
       protected override void Context()
       {
@@ -37,7 +39,19 @@ namespace PKSim.Presentation
          _logPresenter = A.Fake<ILogPresenter>();
          _registrationTask = A.Fake<IRegistrationTask>();
          _qualificationPlanRunner = A.Fake<IQualiticationPlanRunner>();
-         sut = new LoadProjectFromSnapshotPresenter(_view, _logPresenter, _snapshotTask, _dialogCreator, _objectTypeResolver, _logger, _eventPublisher, _qualificationPlanRunner, _registrationTask);
+         _startOptions= A.Fake<IStartOptions>();   
+
+         sut = new LoadProjectFromSnapshotPresenter(
+            _view, 
+            _logPresenter,
+            _snapshotTask,
+            _dialogCreator,
+            _objectTypeResolver,
+            _logger,
+            _eventPublisher,
+            _qualificationPlanRunner,
+            _registrationTask, 
+            _startOptions);
       }
    }
 
@@ -55,7 +69,7 @@ namespace PKSim.Presentation
          _qualificationPlan = new QualificationPlan();
          _newProject.AddQualificationPlan(_qualificationPlan);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_fileName)).Returns(_newProject);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_fileName, true)).Returns(_newProject);
          A.CallTo(() => _view.Display())
             .Invokes(x => sut.StartAsync().Wait());
       }

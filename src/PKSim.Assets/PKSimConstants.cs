@@ -2588,8 +2588,9 @@ namespace PKSim.Assets
 
          public static string  LoadObjectFromSnapshot(string objectType) => $"Load {objectType.ToLowerInvariant()} from snapshot";
 
-         public static string LoadFromSnapshot => "Load Snapshot";
-         public static string SelectExpressionProfile => "Select an expression profile";
+         public static string LoadFromSnapshot = "Load Snapshot";
+         public static string SelectExpressionProfile = "Select an expression profile";
+         public static string RunSimulations = "Run Simulations";
 
          public static string NumberOfTemplatesSelectedIs(int number, string templateType) => $"{number} {templateType.PluralizeIf(number).ToLowerInvariant()} selected";
 

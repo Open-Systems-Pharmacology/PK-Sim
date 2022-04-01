@@ -38,7 +38,7 @@ namespace PKSim.Core.Snapshots.Services
 
       Task<IEnumerable<T>> LoadModelsFromSnapshotFileAsync<T>(string fileName) where T : class;
 
-      Task<PKSimProject> LoadProjectFromSnapshotFileAsync(string fileName);
+      Task<PKSimProject> LoadProjectFromSnapshotFileAsync(string fileName, bool runSimulations = true);
 
       Task<PKSimProject> LoadProjectFromSnapshotAsync(Project snapshot, bool runSimulations);
 
@@ -175,10 +175,10 @@ namespace PKSim.Core.Snapshots.Services
          return models.FirstOrDefault();
       }
 
-      public async Task<PKSimProject> LoadProjectFromSnapshotFileAsync(string fileName)
+      public async Task<PKSimProject> LoadProjectFromSnapshotFileAsync(string fileName, bool runSimulations = true)
       {
          var projectSnapshot = await LoadSnapshotFromFileAsync<Project>(fileName);
-         var project = await LoadProjectFromSnapshotAsync(projectSnapshot, runSimulations: true);
+         var project = await LoadProjectFromSnapshotAsync(projectSnapshot, runSimulations);
          return projectWithUpdatedProperties(project, FileHelper.FileNameFromFileFullPath(fileName));
       }
 

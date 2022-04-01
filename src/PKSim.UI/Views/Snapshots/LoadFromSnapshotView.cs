@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -31,8 +32,13 @@ namespace PKSim.UI.Views.Snapshots
      public override void InitializeBinding()
       {
          base.InitializeBinding();
+
          _screenBinder.Bind(x => x.SnapshotFile)
             .To(buttonEditSelectSnapshot);
+
+         _screenBinder.Bind(x => x.RunSimulations)
+            .To(chkRunSimulations)
+            .WithCaption(PKSimConstants.UI.RunSimulations);
 
          buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(() => _presenter.SelectFile());
          buttonStart.Click += (o, e) => OnEvent(() => _presenter.StartAsync());
@@ -62,6 +68,11 @@ namespace PKSim.UI.Views.Snapshots
          buttonStart.Enabled = startEnabled;
       }
 
+      public bool RunSimulationsSwitchVisible
+      {
+         set => layoutItemRunSimulations.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+      }
+
       protected override void SetOkButtonEnable()
       {
          base.SetOkButtonEnable();
@@ -73,7 +84,7 @@ namespace PKSim.UI.Views.Snapshots
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemStartButton.AdjustLongButtonSize();
+         layoutItemStartButton.AdjustLargeButtonSize();
          buttonStart.InitWithImage(ApplicationIcons.Run, PKSimConstants.UI.StartImport);
          layoutItemButtonSelectSnapshot.Text = PKSimConstants.UI.SnapshotFile.FormatForLabel();
          ApplicationIcon = ApplicationIcons.Snapshot;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Assets;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -47,6 +48,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
       private readonly IEventPublisher _eventPublisher;
       private readonly ILogPresenter _logPresenter;
       private readonly LoadFromSnapshotDTO _loadFromSnapshotDTO = new LoadFromSnapshotDTO();
+      private readonly IStartOptions _startOptions;
       private IEnumerable<T> _model;
 
       public LoadFromSnapshotPresenter(
@@ -56,7 +58,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          IDialogCreator dialogCreator,
          IObjectTypeResolver objectTypeResolver,
          IOSPSuiteLogger logger,
-         IEventPublisher eventPublisher) : base(view)
+         IEventPublisher eventPublisher, 
+         IStartOptions startOptions) : base(view)
       {
          _snapshotTask = snapshotTask;
          _dialogCreator = dialogCreator;
@@ -64,10 +67,12 @@ namespace PKSim.Presentation.Presenters.Snapshots
          _logger = logger;
          _logPresenter = logPresenter;
          _eventPublisher = eventPublisher;
+         _startOptions = startOptions;
          AddSubPresenters(_logPresenter);
          _view.Caption = PKSimConstants.UI.LoadObjectFromSnapshot(typeToLoad);
          _view.AddLogView(_logPresenter.BaseView);
          _view.BindTo(_loadFromSnapshotDTO);
+         _view.RunSimulationsSwitchVisible = _startOptions.IsDeveloperMode;
       }
 
       public override bool ShouldClose
@@ -119,7 +124,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
             _logPresenter.ClearLog();
             _view.EnableButtons(false);
             _logger.AddInfo(PKSimConstants.Information.LoadingSnapshot(_loadFromSnapshotDTO.SnapshotFile, typeToLoad));
-            await Task.Run(() => PerformLoadAsync(_loadFromSnapshotDTO.SnapshotFile));
+            await Task.Run(performLoadAsync);
             _logger.AddInfo(PKSimConstants.Information.SnapshotLoaded(typeToLoad));
          }
          catch (Exception e)
@@ -137,10 +142,10 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       public string SnapshotFile => _loadFromSnapshotDTO.SnapshotFile;
 
-      protected async Task PerformLoadAsync(string snapshotFile)
+      private async Task performLoadAsync()
       {
          ClearModel();
-         _model = await LoadModelAsync(snapshotFile);
+         _model = await LoadModelAsync(_loadFromSnapshotDTO);
       }
 
       protected virtual void ClearModel()
@@ -154,9 +159,9 @@ namespace PKSim.Presentation.Presenters.Snapshots
          /*override if something needs to be done for specific loading case*/
       }
 
-      protected virtual Task<IEnumerable<T>> LoadModelAsync(string snapshotFile)
+      protected virtual Task<IEnumerable<T>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
       {
-         return _snapshotTask.LoadModelsFromSnapshotFileAsync<T>(snapshotFile);
+         return _snapshotTask.LoadModelsFromSnapshotFileAsync<T>(loadFromSnapshotDTO.SnapshotFile);
       }
 
       protected override void Cleanup()
