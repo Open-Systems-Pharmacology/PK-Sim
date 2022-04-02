@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Core.Services;
+using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -13,23 +16,27 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IGenderRepository _genderRepository;
       private readonly IIndividualToPopulationSettingsMapper _populationSettingsMapper;
       private readonly IndividualMapper _individualMapper;
+      private readonly IOSPSuiteLogger _logger;
 
       public RandomPopulationSettingsMapper(
          ParameterRangeMapper parameterRangeMapper,
          IndividualMapper individualMapper,
          IIndividualToPopulationSettingsMapper populationSettingsMapper,
-         IGenderRepository genderRepository)
+         IGenderRepository genderRepository, 
+         IOSPSuiteLogger logger)
       {
          _parameterRangeMapper = parameterRangeMapper;
          _populationSettingsMapper = populationSettingsMapper;
          _genderRepository = genderRepository;
+         _logger = logger;
          _individualMapper = individualMapper;
       }
 
       public override async Task<PopulationSettings> MapToSnapshot(RandomPopulationSettings randomPopulationSettings)
       {
          var snapshot = await SnapshotFrom(randomPopulationSettings);
-         snapshot.Individual = await _individualMapper.MapToSnapshot(randomPopulationSettings.BaseIndividual);
+         var individual = randomPopulationSettings.BaseIndividual;
+         snapshot.Individual = await _individualMapper.MapToSnapshot(individual);
          snapshot.NumberOfIndividuals = randomPopulationSettings.NumberOfIndividuals;
          snapshot.ProportionOfFemales = proportionOfFemalesFrom(randomPopulationSettings);
          snapshot.Age = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.AGE);
@@ -37,17 +44,38 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Height = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.MEAN_HEIGHT);
          snapshot.GestationalAge = await snapshotRangeFor(randomPopulationSettings, Constants.Parameters.GESTATIONAL_AGE);
          snapshot.BMI = await snapshotRangeFor(randomPopulationSettings, CoreConstants.Parameters.BMI);
+         snapshot.DiseaseStateParameters = await snapshotDiseaseStateParameters(individual, randomPopulationSettings);
+
          return snapshot;
+      }
+
+      private async Task<ParameterRange[]> snapshotDiseaseStateParameters(Model.Individual individual, RandomPopulationSettings randomPopulationSettings)
+      {
+         var diseaseStateParameterRanges = individual.OriginData?.DiseaseStateParameters
+            .Select(x => randomPopulationSettings.ParameterRange(x.Name))
+            .ToList();
+
+         if (diseaseStateParameterRanges == null)
+            return null;
+
+         if (!diseaseStateParameterRanges.Any())
+            return null;
+
+         var snapshotParameterRanges = new List<ParameterRange>();
+
+         foreach (var parameterRange in diseaseStateParameterRanges)
+         {
+            var snapshot = await _parameterRangeMapper.MapToSnapshot(parameterRange);
+            snapshot.Name = parameterRange.ParameterName;
+            snapshotParameterRanges.Add(snapshot);
+         }
+
+         return snapshotParameterRanges.ToArray();
       }
 
       private Task<ParameterRange> snapshotRangeFor(RandomPopulationSettings randomPopulationSettings, string parameterName)
       {
          return _parameterRangeMapper.MapToSnapshot(randomPopulationSettings.ParameterRange(parameterName));
-      }
-
-      private Task updateModelRange(RandomPopulationSettings randomPopulationSettings, string parameterName, ParameterRange parameterRange)
-      {
-         return _parameterRangeMapper.MapToModel(parameterRange, randomPopulationSettings.ParameterRange(parameterName));
       }
 
       public override async Task<RandomPopulationSettings> MapToModel(PopulationSettings snapshot, PKSimProject project)
@@ -56,12 +84,37 @@ namespace PKSim.Core.Snapshots.Mappers
          var settings = _populationSettingsMapper.MapFrom(individual);
          settings.NumberOfIndividuals = snapshot.NumberOfIndividuals;
          updateGenderRatios(settings, snapshot);
-         await updateModelRange(settings, CoreConstants.Parameters.AGE, snapshot.Age);
-         await updateModelRange(settings, CoreConstants.Parameters.MEAN_WEIGHT, snapshot.Weight);
-         await updateModelRange(settings, CoreConstants.Parameters.MEAN_HEIGHT, snapshot.Height);
-         await updateModelRange(settings, Constants.Parameters.GESTATIONAL_AGE, snapshot.GestationalAge);
-         await updateModelRange(settings, CoreConstants.Parameters.BMI, snapshot.BMI);
+         await updateModelRange(snapshot.Age, CoreConstants.Parameters.AGE, settings);
+         await updateModelRange(snapshot.Weight, CoreConstants.Parameters.MEAN_WEIGHT, settings);
+         await updateModelRange(snapshot.Height, CoreConstants.Parameters.MEAN_HEIGHT, settings);
+         await updateModelRange(snapshot.GestationalAge, Constants.Parameters.GESTATIONAL_AGE, settings);
+         await updateModelRange(snapshot.BMI, CoreConstants.Parameters.BMI, settings);
+
+         await addDiseaseStateParameters(settings, snapshot);
          return settings;
+      }
+
+      private async Task addDiseaseStateParameters(RandomPopulationSettings randomPopulationSettings, PopulationSettings snapshot)
+      {
+         if (snapshot.DiseaseStateParameters == null)
+            return;
+
+         foreach (var snapshotDiseaseStateParameter in snapshot.DiseaseStateParameters)
+         {
+            await updateModelRange(snapshotDiseaseStateParameter, snapshotDiseaseStateParameter.Name, randomPopulationSettings);
+         }
+      }
+
+      private Task updateModelRange(ParameterRange parameterRange, string parameterName, RandomPopulationSettings randomPopulationSettings)
+      {
+         var modelParameterRange = randomPopulationSettings.ParameterRange(parameterName);
+         if (modelParameterRange == null)
+         {
+            _logger.AddWarning(PKSimConstants.Warning.ParameterRangeNotFoundInPopulation(parameterName));
+            return  Task.CompletedTask;
+         }
+
+         return _parameterRangeMapper.MapToModel(parameterRange, modelParameterRange);
       }
 
       private void updateGenderRatios(RandomPopulationSettings randomPopulationSettings, PopulationSettings snapshot)
@@ -83,7 +136,5 @@ namespace PKSim.Core.Snapshots.Mappers
          var female = _genderRepository.Female;
          return randomPopulationSettings.GenderRatio(female)?.Ratio;
       }
-
-    
    }
 }

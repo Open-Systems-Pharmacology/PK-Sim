@@ -80,6 +80,8 @@ namespace PKSim.Assets
          {
             return $"Expression profiles defined for '{sourceIndividualSpecies}' cannot be used for '{targetIndividualSpecies}' and will be removed.";
          }
+
+         public static string ParameterRangeNotFoundInPopulation(string parameterName) => $"Parameter range '{parameterName}' was not found in population.";
       }
 
       public static class Command
