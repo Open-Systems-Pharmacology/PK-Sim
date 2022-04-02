@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -31,6 +32,7 @@ namespace PKSim.Core
       protected RandomPopulationSettings _randomPopulationSettings;
       protected PopulationSettings _snapshot;
       protected OriginDataParameter _diseaseStateParameter;
+      protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
       {
@@ -38,7 +40,8 @@ namespace PKSim.Core
          _parameterRangeMapper = A.Fake<ParameterRangeMapper>();
          _genderRepository = A.Fake<IGenderRepository>();
          _populationSettingsMapper = A.Fake<IIndividualToPopulationSettingsMapper>();
-         sut = new RandomPopulationSettingsMapper(_parameterRangeMapper, _individualMapper, _populationSettingsMapper, _genderRepository);
+         _logger= A.Fake<IOSPSuiteLogger>();
+         sut = new RandomPopulationSettingsMapper(_parameterRangeMapper, _individualMapper, _populationSettingsMapper, _genderRepository, _logger);
 
          _ageParameterRange = new ConstrainedParameterRange {ParameterName = CoreConstants.Parameters.AGE};
          _weightParameterRange = new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_WEIGHT};
