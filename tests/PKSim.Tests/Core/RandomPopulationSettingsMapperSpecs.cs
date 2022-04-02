@@ -152,6 +152,9 @@ namespace PKSim.Core
 
          _mappedSettings = new RandomPopulationSettings();
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);
+         _mappedSettings.AddParameterRange(_newAgeRange);
+         _mappedSettings.AddParameterRange(_newWeightRange);
+
          _maleRatio = new GenderRatio
          {
             Gender = _genderRepository.Male,
@@ -192,7 +195,7 @@ namespace PKSim.Core
       public void should_have_updated_the_parameter_as_expected()
       {
          A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newSettings.ParameterRange(CoreConstants.Parameters.AGE))).MustHaveHappened();
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Height, _newSettings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT))).MustHaveHappened();
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newSettings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT))).MustHaveHappened();
       }
    }
 
