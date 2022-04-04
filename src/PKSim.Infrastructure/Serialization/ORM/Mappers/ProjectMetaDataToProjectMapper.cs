@@ -150,6 +150,9 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
             if (!buildingBlockIsLazyLoaded(_buildingBlock))
                deserialize(buildingBlockMetaData);
 
+            //This should be done after deserialization to ensure that all references are updated properly 
+            //as deserializing a complex object like population may reset the individual 
+            updateExpressionProfiles(_buildingBlock as ISimulationSubject, buildingBlockMetaData as SimulationSubjectMetaData);
             return _buildingBlock;
          }
          finally
@@ -160,8 +163,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       private void deserialize(BuildingBlockMetaData buildingBlockMetaData) => _serializationManager.Deserialize(_buildingBlock, buildingBlockMetaData.Content.Data);
 
-      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock)
-         => buildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation, PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population);
+      //Only simulations are lazy loaded now that we have references to Expression Profiles in building blocks
+      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock) => buildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation);
 
       private T deserializeProperty<T>(IMetaDataWithProperties metaData, SerializationContext serializationContext = null)
       {
@@ -184,7 +187,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          {
             OriginData = deserializeProperty<OriginData>(individualMetaData)
          };
-         updateExpressionProfiles(individual, individualMetaData);
          _buildingBlock = individual;
       }
 
@@ -194,7 +196,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
          {
             Settings = _serializationManager.Deserialize<RandomPopulationSettings>(randomPopulationMetaData.Properties.Data)
          };
-         updateExpressionProfiles(population, randomPopulationMetaData);
          _buildingBlock = population;
       }
 
@@ -202,12 +203,14 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       {
          var population = new ImportPopulation();
          _serializationManager.Deserialize(population.Settings, importPopulation.Properties.Data);
-         updateExpressionProfiles(population, importPopulation);
          _buildingBlock = population;
       }
 
       private void updateExpressionProfiles(ISimulationSubject simulationSubject, SimulationSubjectMetaData simulationSubjectMetaData)
       {
+         if (simulationSubject == null || simulationSubjectMetaData == null)
+            return;
+
          var allExpressionProfileIds = simulationSubjectMetaData.ExpressionProfileIds?.Split('|') ?? Array.Empty<string>();
 
          allExpressionProfileIds.Each(id =>
