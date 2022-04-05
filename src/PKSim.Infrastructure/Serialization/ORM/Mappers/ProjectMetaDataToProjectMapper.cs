@@ -163,8 +163,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       private void deserialize(BuildingBlockMetaData buildingBlockMetaData) => _serializationManager.Deserialize(_buildingBlock, buildingBlockMetaData.Content.Data);
 
-      //Only simulations are lazy loaded now that we have references to Expression Profiles in building blocks
-      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock) => buildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation);
+      private bool buildingBlockIsLazyLoaded(IPKSimBuildingBlock buildingBlock) => 
+         buildingBlock.BuildingBlockType.IsOneOf(PKSimBuildingBlockType.Simulation, PKSimBuildingBlockType.Individual, PKSimBuildingBlockType.Population);
 
       private T deserializeProperty<T>(IMetaDataWithProperties metaData, SerializationContext serializationContext = null)
       {
