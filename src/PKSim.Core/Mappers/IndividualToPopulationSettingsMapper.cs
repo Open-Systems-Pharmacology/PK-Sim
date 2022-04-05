@@ -32,7 +32,7 @@ namespace PKSim.Core.Mappers
          populationSettings.BaseIndividual = individual;
          populationSettings.NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
 
-         int genderCount = individual.AvailableGenders.Count;
+         var genderCount = individual.AvailableGenders.Count;
          foreach (var gender in individual.AvailableGenders)
          {
             populationSettings.AddGenderRatio(new GenderRatio {Gender = gender, Ratio = 100 / genderCount});
@@ -48,14 +48,14 @@ namespace PKSim.Core.Mappers
             populationSettings.AddParameterRange(discreteParameterRangeFrom(gestationalAgeParameter, numericListOfValues(gestationalAgeParameter)));
          }
 
-         if (population.IsHeightDependent)
-            populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(MEAN_HEIGHT)));
-
          var weightParameter = organism.Parameter(MEAN_WEIGHT);
          populationSettings.AddParameterRange(population.IsAgeDependent ? parameterRangeFrom(weightParameter) : constrainedParameterRangeFrom(weightParameter));
 
          if (population.IsHeightDependent)
+         {
+            populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(MEAN_HEIGHT)));
             populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(BMI)));
+         }
 
          individual.OriginData.DiseaseStateParameters.Each(x =>
          {
