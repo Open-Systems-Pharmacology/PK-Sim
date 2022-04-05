@@ -50,6 +50,9 @@ namespace PKSim.UI.Views.Individuals
 
       public void ShowWarning(string warning)
       {
+         if(ReadOnly) 
+            return;
+
          layoutItemWarning.Visibility = LayoutVisibility.Always;
          panelWarning.NoteText = warning;
       }
@@ -73,6 +76,7 @@ namespace PKSim.UI.Views.Individuals
             if (value)
                HideWarning();
          }
+         get => !layoutItemTransporterDirection.Enabled;
       }
 
       public override bool HasError => _screenBinder.HasError;

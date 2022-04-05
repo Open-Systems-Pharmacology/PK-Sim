@@ -124,7 +124,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _moleculePropertiesPresenter.DisableEdit();
          _transporterExpressionParametersPresenter.DisableEdit();
-         _view.ReadOnly = false;
+         _view.ReadOnly = true;
       }
 
       private void rebind()
