@@ -19,6 +19,7 @@ namespace PKSim.Presentation
       protected IPKSimProjectRetriever _projectRetriever;
       protected IMoleculePropertiesMapper _moleculePropertiesMapper;
       protected ExpressionProfile _expressionProfile1;
+      protected IUsedExpressionProfileCategoryRepository _usedExpressionProfileCategoryRepository;
 
       protected override void Context()
       {
@@ -26,10 +27,16 @@ namespace PKSim.Presentation
          _usedMoleculeRepository = A.Fake<IUsedMoleculeRepository>();
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
          _moleculePropertiesMapper = A.Fake<IMoleculePropertiesMapper>();
-
-         sut = new ExpressionProfileToExpressionProfileDTOMapper(_speciesRepository, _usedMoleculeRepository, _projectRetriever, _moleculePropertiesMapper);
+         _usedExpressionProfileCategoryRepository = A.Fake<IUsedExpressionProfileCategoryRepository>();
+         sut = new ExpressionProfileToExpressionProfileDTOMapper(
+            _speciesRepository,
+            _usedMoleculeRepository,
+            _projectRetriever,
+            _moleculePropertiesMapper,
+            _usedExpressionProfileCategoryRepository);
 
          A.CallTo(() => _usedMoleculeRepository.All()).Returns(new[] {"A", "B"});
+         A.CallTo(() => _usedExpressionProfileCategoryRepository.All()).Returns(new[] {"CatA", "CatB"});
          A.CallTo(() => _speciesRepository.All()).Returns(new[] {new Species {Name = "Human"}, new Species {Name = "Rat"}});
 
          _expressionProfile1 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>("DOG", "CYP3A4", "Sick");
@@ -85,6 +92,12 @@ namespace PKSim.Presentation
       public void should_have_set_the_list_of_available_molecules_to_the_one_defined_in_the_project()
       {
          _dto.AllMolecules.ShouldBeEqualTo(_usedMoleculeRepository.All());
+      }
+
+      [Observation]
+      public void should_have_set_the_list_of_available_categories_to_the_one_defined_in_the_project()
+      {
+         _dto.AllCategories.ShouldBeEqualTo(_usedExpressionProfileCategoryRepository.All());
       }
 
       [Observation]

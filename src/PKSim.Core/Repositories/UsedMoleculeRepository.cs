@@ -33,7 +33,7 @@ namespace PKSim.Core.Repositories
       {
          //First add User defined molecules
          return allMoleculesDefinedInCompounds()
-            .Union(allExpressionProfiles())
+            .Union(allMoleculeDefinedInExpressionProfiles())
             .OrderBy(x => x)
             //Then predefined molecules
             .Union(allPredefinedMolecules())
@@ -47,7 +47,7 @@ namespace PKSim.Core.Repositories
             .Select(proc => proc.MoleculeName);
       }
 
-      private IEnumerable<string> allExpressionProfiles()
+      private IEnumerable<string> allMoleculeDefinedInExpressionProfiles()
       {
          return allLoadedBuildingBlocks<ExpressionProfile>().Select(x => x.MoleculeName);
       }
