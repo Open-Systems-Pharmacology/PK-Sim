@@ -148,6 +148,7 @@ namespace PKSim.ProjectConverter.v11
          _allPopulations = All<Population>();
          _allIndividuals = All<Individual>();
          _allPopulations.Each(Load);
+         _allIndividuals.Each(Load);
       }
 
       [Observation]
@@ -168,17 +169,16 @@ namespace PKSim.ProjectConverter.v11
       [Observation]
       public void should_have_set_the_parameter_fraction_expressed_basolateral_that_are_hidden_to_unchanged()
       {
-         var ind = _allIndividuals.FindByName("ind");
-         var trans = ind.MoleculeByName<IndividualEnzyme>("TRANS");
+         var ind = _allIndividuals.FindByName("Ind");
+         var trans = ind.MoleculeByName<IndividualTransporter>("TRANS");
          var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(trans.Name, ind.Species, ind.Name));
          expressionProfile.ShouldNotBeNull();
-        var allHiddenFixedParameters= expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
+         var allHiddenFixedParameters = expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
             .Where(x => !x.Visible)
             .Where(x => x.IsFixedValue).ToList();
 
-        allHiddenFixedParameters.ShouldBeEmpty();
+         allHiddenFixedParameters.ShouldBeEmpty();
       }
-
 
       [Observation]
       public void should_have_set_the_initial_concentration_parameter_to_not_variable_in_population()
