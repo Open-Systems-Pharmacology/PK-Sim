@@ -54,7 +54,7 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
       {
          private static IBusinessRule moleculeNotEmpty { get; } = GenericRules.NonEmptyRule<ExpressionProfileDTO>(x => x.MoleculeName, PKSimConstants.Error.MoleculeIsRequired);
 
-         private static IBusinessRule dataSourceNotEmpty { get; } = GenericRules.NonEmptyRule<ExpressionProfileDTO>(x => x.Category, PKSimConstants.Error.CategoryIsRequired);
+         private static IBusinessRule categoryNotEmpty { get; } = GenericRules.NonEmptyRule<ExpressionProfileDTO>(x => x.Category, PKSimConstants.Error.CategoryIsRequired);
 
          private static IBusinessRule speciesNotNull { get; } = GenericRules.NotNull<ExpressionProfileDTO, Species>(x => x.Species, PKSimConstants.Error.SpeciesIsRequired);
 
@@ -77,7 +77,7 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
          {
             yield return speciesNotNull;
             yield return moleculeNotEmpty;
-            yield return dataSourceNotEmpty;
+            yield return categoryNotEmpty;
             yield return moleculeNameValid;
             yield return categoryValid;
             yield return speciesValid;
