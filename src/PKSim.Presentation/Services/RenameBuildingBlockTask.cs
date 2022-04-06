@@ -116,29 +116,35 @@ namespace PKSim.Presentation.Services
          renameSimulation(individualSimulation, newName);
       }
 
-      public void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
+      public void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string newName)
       {
+         //Perform rename of molecule in expression profile first as it relies on the old name still being present
+         renameMoleculeNameInExpressionProfile(templateBuildingBlock, newName);
+         renameUsageOfBuildingBlockInObservedData(templateBuildingBlock, newName);
+
+         //update the name
+         templateBuildingBlock.Name = newName;
+
+         //Update dependencies
          renameUsageOfBuildingBlockInSimulations(templateBuildingBlock);
-         renameUsageOfBuildingBlockInObservedData(templateBuildingBlock, oldBuildingBlockName);
-         renameExpressionProfile(templateBuildingBlock, oldBuildingBlockName);
       }
 
-      private void renameExpressionProfile(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
+      private void renameMoleculeNameInExpressionProfile(IPKSimBuildingBlock templateBuildingBlock, string newExpressionProfileName)
       {
          var expressionProfile = templateBuildingBlock as ExpressionProfile;
          if (expressionProfile == null)
             return;
 
-         var (oldMoleculeName, _, _) = CoreConstants.ContainerName.NamesFromExpressionProfileName(oldBuildingBlockName);
-         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile, expressionProfile.MoleculeName, oldMoleculeName);
+         var (newMoleculeName, _, _) = CoreConstants.ContainerName.NamesFromExpressionProfileName(newExpressionProfileName);
+         _expressionProfileUpdater.UpdateMoleculeName(expressionProfile, newMoleculeName);
       }
 
-      private void renameUsageOfBuildingBlockInObservedData(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName)
+      private void renameUsageOfBuildingBlockInObservedData(IPKSimBuildingBlock templateBuildingBlock, string newName)
       {
          var compound = templateBuildingBlock as Compound;
          if (compound == null) return;
 
-         _projectRetriever.CurrentProject.AllObservedData.Each(x => renameMoleculeNameIn(x, oldBuildingBlockName, compound.Name));
+         _projectRetriever.CurrentProject.AllObservedData.Each(x => renameMoleculeNameIn(x, compound.Name, newName));
       }
 
       private void renameMoleculeNameIn(DataRepository observedData, string oldBuildingBlockName, string newBuildingBlockName)
@@ -153,7 +159,7 @@ namespace PKSim.Presentation.Services
       {
          var allSimulationUsingBuildingBlocks = _buildingBlockInProjectManager.SimulationsUsing(templateBuildingBlock).ToList();
 
-         //only starts heavywork manager if one simulation is not loaded
+         //only starts heavy-work manager if one simulation is not loaded
          if (allSimulationUsingBuildingBlocks.Any(x => !x.IsLoaded))
             _heavyWorkManager.Start(() => renameBuildingBlockInSimulation(allSimulationUsingBuildingBlocks, templateBuildingBlock), PKSimConstants.Information.RenamingBuildingBlock(templateBuildingBlock.BuildingBlockType.ToString()));
          else

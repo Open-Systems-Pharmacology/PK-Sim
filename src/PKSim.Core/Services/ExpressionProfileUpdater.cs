@@ -21,12 +21,6 @@ namespace PKSim.Core.Services
       ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName);
 
       /// <summary>
-      ///    Update the molecule name in <paramref name="expressionProfile" /> to be <paramref name="newMoleculeName" /> from
-      ///    <paramref name="oldMoleculeName" />
-      /// </summary>
-      ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName, string oldMoleculeName);
-
-      /// <summary>
       ///    Updates the value from the <paramref name="expressionProfile" /> into the <paramref name="simulationSubject" />.
       ///    ExpressionProfile => SimulationSubject
       /// </summary>
@@ -105,33 +99,30 @@ namespace PKSim.Core.Services
 
       public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName)
       {
-         return UpdateMoleculeName(expressionProfile, newMoleculeName, expressionProfile.MoleculeName);
-      }
-
-      public ICommand UpdateMoleculeName(ExpressionProfile expressionProfile, string newMoleculeName, string oldMoleculeName)
-      {
          var command = new PKSimMacroCommand();
 
+         var oldMoleculeName = expressionProfile.MoleculeName;
          //we are not renaming anything
          if (string.Equals(newMoleculeName, oldMoleculeName))
             return command;
 
-         var (molecule, individual) = expressionProfile;
-         var mainCommand = renameMolecule(molecule, individual, newMoleculeName);
+         var (_, individual) = expressionProfile;
+         var mainCommand = renameMoleculeReferences(individual, oldMoleculeName, newMoleculeName);
          command.Add(mainCommand);
          command.UpdatePropertiesFrom(mainCommand);
          allSimulationSubjectsUsing(expressionProfile).Each(x =>
          {
             _lazyLoadTask.Load(x);
-            command.Add(renameMolecule(x.MoleculeByName(oldMoleculeName), x, newMoleculeName));
+            command.Add(renameMoleculeReferences(x, oldMoleculeName, newMoleculeName));
          });
+
 
          return command;
       }
 
-      private IOSPSuiteCommand renameMolecule(IndividualMolecule molecule, ISimulationSubject simulationSubject, string newMoleculeName)
+      private IOSPSuiteCommand renameMoleculeReferences(ISimulationSubject simulationSubject, string oldMoleculeName, string newMoleculeName)
       {
-         return new RenameMoleculeInSimulationSubjectCommand(molecule, simulationSubject, newMoleculeName, _executionContext).Run(_executionContext);
+         return new RenameMoleculeReferenceInSimulationSubjectCommand(simulationSubject, oldMoleculeName, newMoleculeName, _executionContext).Run(_executionContext);
       }
 
       private void synchronizeExpressionProfiles(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)
