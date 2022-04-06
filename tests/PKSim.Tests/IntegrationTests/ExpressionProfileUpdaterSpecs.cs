@@ -99,7 +99,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         sut.UpdateMoleculeName(_expressionProfileForEnzyme, "TOTO", _expressionProfileForEnzyme.MoleculeName);
+         sut.UpdateMoleculeName(_expressionProfileForEnzyme, "TOTO");
       }
 
       [Observation]

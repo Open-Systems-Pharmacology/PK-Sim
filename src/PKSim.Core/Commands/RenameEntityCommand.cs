@@ -56,8 +56,8 @@ namespace PKSim.Core.Commands
                renameBuildingBlockTask.RenameSimulation(simulation, _newName);
                break;
             case IPKSimBuildingBlock entityAsBuildingBlock:
-               _entity.Name = _newName;
-               renameBuildingBlockTask.RenameBuildingBlock(entityAsBuildingBlock, _oldName);
+               //Renaming the building block is performed in a special task 
+               renameBuildingBlockTask.RenameBuildingBlock(entityAsBuildingBlock, _newName);
                break;
             default:
                _entity.Name = _newName;

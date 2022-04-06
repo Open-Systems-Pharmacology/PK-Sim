@@ -42,7 +42,12 @@ namespace PKSim.Core.Model
          set
          {
             if (string.Equals(Name, value))
+            {
+               //Even if the name has not changed, we raise the even here as the underlying composite name may have changed
+               //Small performance loss but easier to see updates in the UI when using the standard logic of updating the name directly
+               OnPropertyChanged(() => Name);
                return;
+            }
 
             var (moleculeName, _, category) = NamesFromExpressionProfileName(value);
             if (string.IsNullOrEmpty(moleculeName))
@@ -54,7 +59,7 @@ namespace PKSim.Core.Model
             if (Molecule != null)
                Molecule.Name = moleculeName;
 
-            OnPropertyChanged();
+            OnPropertyChanged(() => Name);
          }
       }
 

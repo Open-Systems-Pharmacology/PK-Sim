@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using FakeItEasy;
-using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -13,7 +12,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -59,20 +57,20 @@ namespace PKSim.Presentation
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
          _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
          _curveNamer = A.Fake<ICurveNamer>();
-         _expressionProfileUpdater= A.Fake<IExpressionProfileUpdater>();   
+         _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
 
          sut = new RenameBuildingBlockTask(
-            _buildingBlockTask, 
-            _buildingBlockInProjectManager, 
-            _applicationController, 
+            _buildingBlockTask,
+            _buildingBlockInProjectManager,
+            _applicationController,
             _lazyloadTask,
-            _containerTask, 
-            _heavyWorkManager, 
-            _renameAbsolutePathVisitor, 
-            _objectReferencingRetriever, 
-            _projectRetriever, 
-            _parameterIdentificationSimulationPathUpdater, 
-            _dataRepositoryNamer, 
+            _containerTask,
+            _heavyWorkManager,
+            _renameAbsolutePathVisitor,
+            _objectReferencingRetriever,
+            _projectRetriever,
+            _parameterIdentificationSimulationPathUpdater,
+            _dataRepositoryNamer,
             _curveNamer,
             _expressionProfileUpdater);
 
@@ -108,7 +106,7 @@ namespace PKSim.Presentation
          _f2.AddObjectPath(new FormulaUsablePath("Drug", "LogP"));
          _f3.AddObjectPath(new FormulaUsablePath(_initialSimulationName, "Liver", "Cell"));
          _f3.AddObjectPath(new FormulaUsablePath(_initialSimulationName, "LogP"));
-         _f4.AddTableObjectPath(new FormulaUsablePath(_initialSimulationName, "SolubilityTable"){Alias = "Sol"});
+         _f4.AddTableObjectPath(new FormulaUsablePath(_initialSimulationName, "SolubilityTable") {Alias = "Sol"});
 
          var p1 = new PKSimParameter().WithName("P1").WithFormula(_f1);
          var p2 = new PKSimParameter().WithName("P2").WithFormula(_f2);
@@ -287,23 +285,32 @@ namespace PKSim.Presentation
    public class When_renaming_an_expression_profile_molecule : concern_for_RenameBuildingBlockTask
    {
       private ExpressionProfile _expressionProfile;
-      private string _oldExpressionProfileName;
+      private string _newName;
+      private string _newMoleculeName;
 
       protected override void Context()
       {
          base.Context();
          _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
-         _oldExpressionProfileName = CoreConstants.ContainerName.ExpressionProfileName("CYP", _expressionProfile.Species, "SICK");
-
+         _newMoleculeName = "CYP";
+         _newName = CoreConstants.ContainerName.ExpressionProfileName(_newMoleculeName, _expressionProfile.Species, "SICK");
       }
+
       protected override void Because()
       {
-         sut.RenameBuildingBlock(_expressionProfile, _oldExpressionProfileName);
+         sut.RenameBuildingBlock(_expressionProfile, _newName);
       }
+
+      [Observation]
+      public void should_have_renamed_the_expression_profile()
+      {
+         _expressionProfile.Name.ShouldBeEqualTo(_newName);
+      }
+
       [Observation]
       public void should_also_rename_all_associated_simulation_subject()
       {
-         A.CallTo(() => _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfile.MoleculeName, "CYP")).MustHaveHappened();
+         A.CallTo(() => _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _newMoleculeName)).MustHaveHappened();
       }
    }
 }

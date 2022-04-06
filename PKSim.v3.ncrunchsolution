@@ -7,6 +7,7 @@
     <EngineMode>
       <Name>No Nightly</Name>
       <Settings>
+        <EngineModeColor>a255, r0, g128, b255</EngineModeColor>
         <TestsToExecuteAutomatically>(DoesNotHaveCategory 'NightlyOnly' AND DoesNotHaveCategory 'LocalOnly' AND DoesNotHaveCategory 'Reporting' AND DoesNotHaveCategory 'ProjectConverter')</TestsToExecuteAutomatically>
       </Settings>
     </EngineMode>
