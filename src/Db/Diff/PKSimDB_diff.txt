@@ -96,11 +96,11 @@ UPDATE tab_rate_generic_molecules SET alias='M_int_prc', use_amount=1 WHERE calc
 UPDATE tab_rate_generic_molecules SET alias='M_bc_prp', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4693 AND molecule='DRUG';
 UPDATE tab_rate_generic_molecules SET alias='M_bc_prc', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4698 AND molecule='DRUG';
 UPDATE tab_rate_generic_molecules SET alias='M_cell_prp', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4703 AND molecule='DRUG';
-UPDATE tab_rate_generic_molecules SET use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4708 AND molecule='DRUG';
-UPDATE tab_rate_generic_molecules SET use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4713 AND molecule='DRUG';
-UPDATE tab_rate_generic_molecules SET use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4718 AND molecule='DRUG';
-UPDATE tab_rate_generic_molecules SET use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4723 AND molecule='DRUG';
-UPDATE tab_rate_generic_molecules SET use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4728 AND molecule='DRUG';
+UPDATE tab_rate_generic_molecules SET alias='M_cell_prc', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4708 AND molecule='DRUG';
+UPDATE tab_rate_generic_molecules SET alias='M_pls_prp', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4713 AND molecule='DRUG';
+UPDATE tab_rate_generic_molecules SET alias='M_pls_prc', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4718 AND molecule='DRUG';
+UPDATE tab_rate_generic_molecules SET alias='M_end_prp', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4723 AND molecule='DRUG';
+UPDATE tab_rate_generic_molecules SET alias='M_end_prc', use_amount=1 WHERE calculation_method='Observer_PKSim_2Poren' AND formula_rate='OBS_WholeOrgan_liv' AND path_id=4728 AND molecule='DRUG';
 UPDATE tab_rate_generic_molecules SET alias='M_bc_prp', use_amount=1 WHERE calculation_method='Observer_PKSim_4Comp' AND formula_rate='OBS_Concentration_liv_bc' AND path_id=4693 AND molecule='DRUG';
 UPDATE tab_rate_generic_molecules SET alias='M_bc_prc', use_amount=1 WHERE calculation_method='Observer_PKSim_4Comp' AND formula_rate='OBS_Concentration_liv_bc' AND path_id=4698 AND molecule='DRUG';
 UPDATE tab_rate_generic_molecules SET alias='M_cell_prp', use_amount=1 WHERE calculation_method='Observer_PKSim_4Comp' AND formula_rate='OBS_Concentration_liv_cell' AND path_id=4703 AND molecule='DRUG';
