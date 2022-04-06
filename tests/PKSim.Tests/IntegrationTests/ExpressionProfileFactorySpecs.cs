@@ -11,11 +11,13 @@ namespace PKSim.IntegrationTests
    public abstract class concern_for_ExpressionProfileFactory : ContextForIntegration<IExpressionProfileFactory>
    {
       protected ISpeciesRepository _speciesRepository;
+      protected IUsedExpressionProfileCategoryRepository _usedExpressionProfileCategoryRepository;
 
       protected override void Context()
       {
          sut = IoC.Resolve<IExpressionProfileFactory>();
          _speciesRepository = IoC.Resolve<ISpeciesRepository>();
+         _usedExpressionProfileCategoryRepository = IoC.Resolve<IUsedExpressionProfileCategoryRepository>();
       }
    }
 
@@ -34,6 +36,13 @@ namespace PKSim.IntegrationTests
          _expressionProfile.Individual.ShouldNotBeNull();
          _expressionProfile.Species.ShouldBeEqualTo(_speciesRepository.DefaultSpecies);
       }
+
+      [Observation]
+      public void should_set_the_default_category_to_the_first_entry_available_in_the_used_category_repository()
+      {
+         _expressionProfile.Category.ShouldBeEqualTo(_usedExpressionProfileCategoryRepository.All().FirstOrDefault());
+      }
+
 
       [Observation]
       public void should_have_created_a_molecule_for_the_given_molecule_type()

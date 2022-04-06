@@ -2243,6 +2243,9 @@ namespace PKSim.Assets
          public static readonly string LoadExpressionFromDatabase = "Database Query";
          public static readonly string DiseaseState = "Disease State";
          public static readonly string Select = "Select";
+         public static readonly string Healthy = "Healthy";
+
+         public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
 
          public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
 
@@ -2389,6 +2392,7 @@ namespace PKSim.Assets
                return sb.ToString();
             }
          }
+
 
          public static string ReallyRemoveFieldUsedInGrouping(string fieldName, IEnumerable<string> referencingFields )
          {

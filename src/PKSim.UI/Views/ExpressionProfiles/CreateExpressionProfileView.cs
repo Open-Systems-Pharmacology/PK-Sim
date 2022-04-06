@@ -44,6 +44,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
       {
          ApplicationIcon = expressionProfileDTO.Icon;
          cbMoleculeName.FillWith(expressionProfileDTO.AllMolecules);
+         cbCategory.FillWith(expressionProfileDTO.AllCategories);
          layoutItemMoleculeName.Text = expressionProfileDTO.MoleculeType.FormatForLabel();
          _screenBinder.BindToSource(expressionProfileDTO);
       }
@@ -61,7 +62,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
             .To(cbMoleculeName);
 
          _screenBinder.Bind(x => x.Category)
-            .To(tbCategory);
+            .To(cbCategory);
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
@@ -25,17 +26,21 @@ namespace PKSim.Core.Model
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly IPKSimObjectBaseFactory _objectBaseFactory;
       private readonly IIndividualFactory _individualFactory;
+      private readonly IUsedExpressionProfileCategoryRepository _usedExpressionProfileCategoryRepository;
 
       public ExpressionProfileFactory(
          ISpeciesRepository speciesRepository,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
          IPKSimObjectBaseFactory objectBaseFactory,
-         IIndividualFactory individualFactory)
+         IIndividualFactory individualFactory,
+         IUsedExpressionProfileCategoryRepository usedExpressionProfileCategoryRepository
+         )
       {
          _speciesRepository = speciesRepository;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _objectBaseFactory = objectBaseFactory;
          _individualFactory = individualFactory;
+         _usedExpressionProfileCategoryRepository = usedExpressionProfileCategoryRepository;
       }
 
       public ExpressionProfile Create<TMolecule>() where TMolecule : IndividualMolecule => Create(typeof(TMolecule));
@@ -50,6 +55,7 @@ namespace PKSim.Core.Model
       {
          var expressionProfile = _objectBaseFactory.Create<ExpressionProfile>();
          expressionProfile.IsLoaded = true;
+         expressionProfile.Category = _usedExpressionProfileCategoryRepository.All().FirstOrDefault();
          updateSpecies(expressionProfile, species, moleculeType, moleculeName);
          return expressionProfile;
       }

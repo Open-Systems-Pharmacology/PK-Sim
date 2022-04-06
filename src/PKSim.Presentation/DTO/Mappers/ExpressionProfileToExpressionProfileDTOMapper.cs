@@ -19,17 +19,20 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly IUsedMoleculeRepository _usedMoleculeRepository;
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IMoleculePropertiesMapper _moleculePropertiesMapper;
+      private readonly IUsedExpressionProfileCategoryRepository _usedExpressionProfileCategoryRepository;
 
       public ExpressionProfileToExpressionProfileDTOMapper(
          ISpeciesRepository speciesRepository,
          IUsedMoleculeRepository usedMoleculeRepository,
          IPKSimProjectRetriever projectRetriever,
-         IMoleculePropertiesMapper moleculePropertiesMapper)
+         IMoleculePropertiesMapper moleculePropertiesMapper,
+         IUsedExpressionProfileCategoryRepository usedExpressionProfileCategoryRepository)
       {
          _speciesRepository = speciesRepository;
          _usedMoleculeRepository = usedMoleculeRepository;
          _projectRetriever = projectRetriever;
          _moleculePropertiesMapper = moleculePropertiesMapper;
+         _usedExpressionProfileCategoryRepository = usedExpressionProfileCategoryRepository;
       }
 
       public ExpressionProfileDTO MapFrom(ExpressionProfile expressionProfile)
@@ -41,6 +44,7 @@ namespace PKSim.Presentation.DTO.Mappers
             Category = expressionProfile.Category,
             MoleculeName = moleculeNameFor(expressionProfile),
             AllMolecules = _usedMoleculeRepository.All(),
+            AllCategories = _usedExpressionProfileCategoryRepository.All(),
             AllSpecies = _speciesRepository.All(),
             MoleculeType = _moleculePropertiesMapper.MoleculeDisplayFor(expressionProfile.Molecule),
          };

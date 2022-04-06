@@ -38,6 +38,8 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
       public IEnumerable<Species> AllSpecies { get; set; }
 
       public IEnumerable<string> AllMolecules { get; set; }
+      
+      public IEnumerable<string> AllCategories { get; set; }
 
       public string MoleculeType { get; set; }
 
