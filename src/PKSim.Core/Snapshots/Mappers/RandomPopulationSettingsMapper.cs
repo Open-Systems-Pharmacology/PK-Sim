@@ -101,14 +101,14 @@ namespace PKSim.Core.Snapshots.Mappers
 
          foreach (var snapshotDiseaseStateParameter in snapshot.DiseaseStateParameters)
          {
-            await updateModelRange(snapshotDiseaseStateParameter, snapshotDiseaseStateParameter.Name, randomPopulationSettings);
+            await updateModelRange(snapshotDiseaseStateParameter, snapshotDiseaseStateParameter.Name, randomPopulationSettings, isDiseaseStateParameter: true);
          }
       }
 
-      private Task updateModelRange(ParameterRange parameterRange, string parameterName, RandomPopulationSettings randomPopulationSettings)
+      private Task updateModelRange(ParameterRange parameterRange, string parameterName, RandomPopulationSettings randomPopulationSettings, bool isDiseaseStateParameter = false)
       {
          var modelParameterRange = randomPopulationSettings.ParameterRange(parameterName);
-         if (modelParameterRange == null)
+         if (modelParameterRange == null && isDiseaseStateParameter)
          {
             _logger.AddWarning(PKSimConstants.Warning.ParameterRangeNotFoundInPopulation(parameterName));
             return  Task.CompletedTask;

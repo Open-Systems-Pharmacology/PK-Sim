@@ -38,7 +38,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private Action _createExpressionProfileAction;
       private Func<Task>_loadExpressionProfileAsync;
       private IReadOnlyCollection<ExpressionProfile> _allExpressionProfilesForMoleculeType;
-      private Species _species;
+      private ISimulationSubject _simulationSubject;
 
       public ExpressionProfileSelectionPresenter(
          IExpressionProfileSelectionView view, 
@@ -56,7 +56,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public ExpressionProfile SelectExpressionProfile<TMolecule>(ISimulationSubject simulationSubject) where TMolecule : IndividualMolecule
       {
          _moleculeType = typeof(TMolecule);
-         _species = simulationSubject.Species;
+         _simulationSubject = simulationSubject;
          _createExpressionProfileAction = () =>
          {
             _expressionProfileTask.AddForMoleculeToProject<TMolecule>();
@@ -92,7 +92,9 @@ namespace PKSim.Presentation.Presenters.Individuals
       }
 
       private bool canSelect(ExpressionProfile expressionProfile) =>
-         expressionProfile.Molecule.IsAnImplementationOf(_moleculeType) && Equals(expressionProfile.Species, _species);
+         expressionProfile.Molecule.IsAnImplementationOf(_moleculeType)
+         && Equals(expressionProfile.Species, _simulationSubject.Species)
+         && !_simulationSubject.Uses(expressionProfile);
 
       public IEnumerable<ExpressionProfile> AllExpressionProfiles() => _allExpressionProfilesForMoleculeType;
 

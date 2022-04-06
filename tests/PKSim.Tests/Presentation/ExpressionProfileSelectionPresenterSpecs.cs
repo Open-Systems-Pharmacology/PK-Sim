@@ -28,6 +28,7 @@ namespace PKSim.Presentation
       protected ExpressionProfile _expressionProfile2;
       protected ExpressionProfile _expressionProfile3;
       protected ExpressionProfile _expressionProfile4;
+      protected ExpressionProfile _expressionProfile5;
       protected Func<ExpressionProfile, bool> _predicate;
       protected Individual _individual;
 
@@ -49,12 +50,15 @@ namespace PKSim.Presentation
          _expressionProfile2 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(speciesName:"Human");
          _expressionProfile3 = DomainHelperForSpecs.CreateExpressionProfile<IndividualTransporter>(speciesName:"Human");
          _expressionProfile4 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(speciesName:"Dog");
+         _expressionProfile5 = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(speciesName: "Human");
 
          _allExpressionProfiles = new List<ExpressionProfile> {_expressionProfile1, _expressionProfile2};
 
          A.CallTo(() => _buildingBlockRepository.All(A<Func<ExpressionProfile, bool>>._))
             .Invokes(x => _predicate = x.GetArgument<Func<ExpressionProfile, bool>>(0))
             .Returns(_allExpressionProfiles);
+
+         _individual.AddExpressionProfile(_expressionProfile5);
       }
    }
 
@@ -84,6 +88,13 @@ namespace PKSim.Presentation
          _predicate(_expressionProfile2).ShouldBeTrue();
          _predicate(_expressionProfile3).ShouldBeFalse();
          _predicate(_expressionProfile4).ShouldBeFalse();
+      }
+
+
+      [Observation]
+      public void should_filter_out_all_expression_profile_already_added_to_the_simulation_subject()
+      {
+         _predicate(_expressionProfile5).ShouldBeFalse();
       }
 
       [Observation]

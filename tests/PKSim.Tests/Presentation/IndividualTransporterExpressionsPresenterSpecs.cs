@@ -22,8 +22,8 @@ namespace PKSim.Presentation
       private IEditParameterPresenterTask _parameterTask;
       protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       private IIndividualTransporterToTransporterExpressionDTOMapper _transporterMapper;
-      private IIndividualMoleculePropertiesPresenter<Individual> _moleculePropertiesPresenter;
-      private ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
+      protected IIndividualMoleculePropertiesPresenter<Individual> _moleculePropertiesPresenter;
+      protected ITransporterExpressionParametersPresenter _transporterExpressionParametersPresenter;
       protected ICommandCollector _commandCollector;
       protected IndividualTransporter _transporter;
       protected ISimulationSubject _simulationSubject;
@@ -128,6 +128,28 @@ namespace PKSim.Presentation
       public void should_not_show_the_warning()
       {
          A.CallTo(() => _view.ShowWarning(A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_disabling_edit_for_an_individual_transporter : concern_for_IndividualTransporterExpressionsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.ActivateMolecule(_transporter);
+      }
+
+      protected override void Because()
+      {
+         sut.DisableEdit();
+      }
+
+      [Observation]
+      public void should_disable_edits_for_sub_presenter_and_male_the_view_readonly()
+      {
+         A.CallTo(() => _moleculePropertiesPresenter.DisableEdit()).MustHaveHappened(); ;
+         A.CallTo(() => _transporterExpressionParametersPresenter.DisableEdit()).MustHaveHappened();
+         _view.ReadOnly.ShouldBeTrue();
       }
    }
 
