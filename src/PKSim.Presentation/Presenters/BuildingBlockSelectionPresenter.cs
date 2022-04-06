@@ -81,7 +81,10 @@ namespace PKSim.Presentation.Presenters
          {
             var allTemplateBuildingBlocks = _buildingBlockRepository.All<TBuildingBlock>()
                .Where(ExtraFilter)
-               .Select(x => x.DowncastTo<IPKSimBuildingBlock>()).ToList();
+               .OrderBy(x => x.BuildingBlockType)
+               .ThenBy(x => x.Name)
+               .Select(x => x.DowncastTo<IPKSimBuildingBlock>())
+               .ToList();
 
             if (_buildingBlockDTO.AllowEmptySelection)
                yield return _emptySelection;
@@ -90,7 +93,7 @@ namespace PKSim.Presentation.Presenters
             if (_editedBuildingBlock != null && !allTemplateBuildingBlocks.Contains(_editedBuildingBlock))
                yield return _editedBuildingBlock;
 
-            foreach (var templateBuildingBlock in allTemplateBuildingBlocks.OrderBy(x => x.Name))
+            foreach (var templateBuildingBlock in allTemplateBuildingBlocks)
             {
                yield return templateBuildingBlock;
             }

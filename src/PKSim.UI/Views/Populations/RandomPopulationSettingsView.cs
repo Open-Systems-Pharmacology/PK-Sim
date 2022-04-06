@@ -186,10 +186,7 @@ namespace PKSim.UI.Views.Populations
       {
          CreatingPopulation = true;
          var visibility = LayoutVisibilityConvertor.FromBoolean(false);
-         tablePanel.RowFor(lblIndividual).Visible = false;
-         tablePanel.RowFor(lblDescription).Visible = false;
-         tablePanel.RowFor(lblPopulation).Visible = false;
-         tablePanel.RowFor(lblDiseaseState).Visible = false;
+         layoutGroupIndividualSelection.Visibility = visibility;
          layoutItemStop.Visibility = visibility;
       }
 
