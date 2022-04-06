@@ -232,7 +232,7 @@ namespace PKSim.Infrastructure.ORM.DAS
          get
          {
             if (IsConnected)
-               return String.IsNullOrEmpty(Connection.Database)
+               return string.IsNullOrEmpty(Connection.Database)
                   ? Connection.DataSource
                   : Connection.Database;
             throw new NotConnectedException();
