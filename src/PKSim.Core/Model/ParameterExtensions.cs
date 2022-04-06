@@ -214,7 +214,6 @@ namespace PKSim.Core.Model
             parameter.DeviationParameter.Value *= factorValue;
 
          parameter.IsFixedValue = false;
-
       }
    }
 }

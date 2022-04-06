@@ -39,7 +39,6 @@ namespace PKSim.ProjectConverter.v11
          expressionProfile.ShouldNotBeNull();
       }
 
-
       [Observation]
       public void should_have_converted_the_origin_data_value_to_origin_data_parameters()
       {
@@ -104,7 +103,6 @@ namespace PKSim.ProjectConverter.v11
          expressionProfile.ShouldNotBeNull();
       }
 
-
       [Observation]
       public void should_have_converted_the_origin_data_value_to_origin_data_parameters()
       {
@@ -150,12 +148,13 @@ namespace PKSim.ProjectConverter.v11
          _allPopulations = All<Population>();
          _allIndividuals = All<Individual>();
          _allPopulations.Each(Load);
+         _allIndividuals.Each(Load);
       }
 
       [Observation]
       public void should_be_able_to_read_the_population_of_all_individuals_before_loading_them()
       {
-         _allIndividuals.Each(x=>x.OriginData.Population.ShouldNotBeNull());
+         _allIndividuals.Each(x => x.OriginData.Population.ShouldNotBeNull());
       }
 
       [Observation]
@@ -168,12 +167,25 @@ namespace PKSim.ProjectConverter.v11
       }
 
       [Observation]
-      public void  should_have_set_the_initial_concentration_parameter_to_not_variable_in_population()
+      public void should_have_set_the_parameter_fraction_expressed_basolateral_that_are_hidden_to_unchanged()
+      {
+         var ind = _allIndividuals.FindByName("Ind");
+         var trans = ind.MoleculeByName<IndividualTransporter>("TRANS");
+         var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(trans.Name, ind.Species, ind.Name));
+         expressionProfile.ShouldNotBeNull();
+         var allHiddenFixedParameters = expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
+            .Where(x => !x.Visible)
+            .Where(x => x.IsFixedValue).ToList();
+
+         allHiddenFixedParameters.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_have_set_the_initial_concentration_parameter_to_not_variable_in_population()
       {
          var pop = _allPopulations.FindByName("Pop");
          var allInitialConcentrationParameters = pop.FirstIndividual.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION));
-         allInitialConcentrationParameters.Each(x=>x.CanBeVariedInPopulation.ShouldBeFalse());
+         allInitialConcentrationParameters.Each(x => x.CanBeVariedInPopulation.ShouldBeFalse());
       }
-
    }
 }

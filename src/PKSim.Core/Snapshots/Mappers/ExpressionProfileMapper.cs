@@ -152,6 +152,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return LocalizationConverter.ConvertToLocalization(tissueLocation, membraneLocation, intracellularVascularEndoLocation);
       }
 
-      private bool isV9Format(SnapshotExpressionProfile snapshot) => snapshot.Localization == null;
+      private bool isV9Format(SnapshotExpressionProfile snapshot)
+      {
+         //Localization is only defined for protein and was added in v10
+         return snapshot.Localization == null && snapshot.TransportType == null;
+      }
    }
 }
