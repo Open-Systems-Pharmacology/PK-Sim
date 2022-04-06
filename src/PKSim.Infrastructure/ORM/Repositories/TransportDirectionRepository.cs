@@ -4,7 +4,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Core;
-using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
