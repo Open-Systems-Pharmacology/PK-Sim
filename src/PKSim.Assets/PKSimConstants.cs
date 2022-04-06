@@ -1514,7 +1514,7 @@ namespace PKSim.Assets
          public static readonly string Influx = "Influx";
          public static readonly string Efflux = "Efflux";
          public static readonly string BiDirectional = "Bi-Directional";
-         public static readonly string PgpLike = "Pgp-Like";
+         public static readonly string PgpLike = "<b>[DEPRECATED]</b> Pgp-Like - <i>Will be removed in version 12 of the software</i>";
          public static readonly string EmptyName = "Empty";
          public static readonly string EmptyDescription = "<Empty>";
          public static readonly string Discrete = "Constant";

@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraLayout.Utils;
+﻿using DevExpress.Utils;
+using DevExpress.XtraLayout.Utils;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -86,6 +87,7 @@ namespace PKSim.UI.Views.Individuals
          base.InitializeResources();
          layoutItemTransporterDirection.TextVisible = false;
          cbTransporterType.SetImages(_imageListRetriever);
+         cbTransporterType.Properties.AllowHtmlDraw = DefaultBoolean.True;
          layoutItemMoleculeProperties.TextVisible = false;
          layoutItemExpressionParameters.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
