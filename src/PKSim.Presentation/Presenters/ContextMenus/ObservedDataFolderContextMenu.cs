@@ -14,6 +14,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Assets;
+using System;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -23,10 +24,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          ITreeNode<RootNodeType> treeNode,
          IMenuBarItemRepository repository,
          IBuildingBlockRepository buildingBlockRepository,
-         IBuildingBlockExplorerPresenter presenter)
+         IBuildingBlockExplorerPresenter presenter,
+         IUserSettings userSettings)
       {
          var allCompounds = buildingBlockRepository.All<Compound>().ToList();
-
 
          //create sub menu containing all compounds
          var addObservedDataFor = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.AddObservedDataFor)
@@ -43,6 +44,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          if (allCompounds.Any())
             _view.AddMenuItem(addObservedDataFor);
 
+         if ( treeNode.HasChildren)
+         {
+            var colorGroupingButton = CreateMenuCheckButton.WithCaption(Captions.ColorGroupObservedDataContextMenu);
+            colorGroupingButton.WithChecked(userSettings.ColorGroupObservedDataFromSameFolder);
+            colorGroupingButton.WithCheckedAction(colorGroup => userSettings.ColorGroupObservedDataFromSameFolder = colorGroup);
+
+            _view.AddMenuItem(colorGroupingButton);
+         }
+
+            
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithCommand<LoadObservedDataFromTemplateUICommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate)
@@ -88,16 +99,18 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    public class ObservedDataFolderTreeNodeContextMenuFactory : RootNodeContextMenuFactory
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IUserSettings _userSettings;
 
-      public ObservedDataFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
+      public ObservedDataFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository, IUserSettings userSettings)
          : base(RootNodeTypes.ObservedDataFolder, repository)
       {
          _buildingBlockRepository = buildingBlockRepository;
+         _userSettings = userSettings;
       }
 
       public override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new ObservedDataFolderContextMenu(treeNode, _repository, _buildingBlockRepository, presenter.DowncastTo<IBuildingBlockExplorerPresenter>());
+         return new ObservedDataFolderContextMenu(treeNode, _repository, _buildingBlockRepository, presenter.DowncastTo<IBuildingBlockExplorerPresenter>(), _userSettings);
       }
    }
 }
