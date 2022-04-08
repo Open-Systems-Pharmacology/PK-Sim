@@ -28,28 +28,19 @@ namespace PKSim.BatchTool.DTO
 
       private static class AllRules
       {
-         public static IBusinessRule FolderDefined
-         {
-            get { return GenericRules.NonEmptyRule<FolderDTO>(x => x.Folder); }
-         }
+         public static IBusinessRule FolderDefined { get; } = GenericRules.NonEmptyRule<FolderDTO>(x => x.Folder);
 
-         public static IBusinessRule FolderExists
-         {
-            get
+         public static IBusinessRule FolderExists { get; } = CreateRule.For<FolderDTO>()
+            .Property(item => item.Folder)
+            .WithRule((dto, folder) =>
             {
-               return CreateRule.For<FolderDTO>()
-                  .Property(item => item.Folder)
-                  .WithRule((dto, folder) =>
-                  {
-                     if (string.IsNullOrEmpty(folder))
-                        return false;
+               if (string.IsNullOrEmpty(folder))
+                  return false;
 
-                     new DirectoryInfo(folder);
-                     return true;
-                  })
-                  .WithError(PKSimConstants.Error.ValueIsRequired);
-            }
-         }
+               new DirectoryInfo(folder);
+               return true;
+            })
+            .WithError(PKSimConstants.Error.ValueIsRequired);
       }
    }
 }

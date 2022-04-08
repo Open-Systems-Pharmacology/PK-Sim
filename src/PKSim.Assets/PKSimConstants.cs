@@ -1449,24 +1449,24 @@ namespace PKSim.Assets
             
             public static string ValueShouldBeGreaterThanOrEqualToZero(string parameterName) => $"{parameterName} value should be greater than or equal to 0.";
 
-            public static string MinGreaterThanDbMinValue(string parameterName, double? dbMinValue, string unit)
+            public static string MinGreaterThanDbMinValue(string parameterName, string displayMinValue, string unit)
             {
-               return $"Minimum value for {parameterName} should be greater than or equal to {dbMinValue} {unit}.";
+               return $"Minimum value for {parameterName} should be greater than or equal to {displayMinValue} {unit}.";
             }
 
-            public static string MaxGreaterThanDbMinValue(string parameterName, double? dbMinValue, string unit)
+            public static string MaxGreaterThanDbMinValue(string parameterName, string displayMinValue, string unit)
             {
-               return $"Maximum value for {parameterName} should be greater than or equal to {dbMinValue} {unit}.";
+               return $"Maximum value for {parameterName} should be greater than or equal to {displayMinValue} {unit}.";
             }
 
-            public static string MaxLessThanDbMaxValue(string parameterName, double? dbMaxValue, string unit)
+            public static string MaxLessThanDbMaxValue(string parameterName, string displayMaxValue, string unit)
             {
-               return $"Maximum value for {parameterName} should be less than or equal to {dbMaxValue} {unit}.";
+               return $"Maximum value for {parameterName} should be less than or equal to {displayMaxValue} {unit}.";
             }
 
-            public static string MinLessThanDbMaxValue(string parameterName, double? dbMaxValue, string unit)
+            public static string MinLessThanDbMaxValue(string parameterName, string displayMaxValue, string unit)
             {
-               return $"Minimum value for {parameterName} should be less than or equal to {dbMaxValue} {unit}.";
+               return $"Minimum value for {parameterName} should be less than or equal to {displayMaxValue} {unit}.";
             }
 
             public static string ValueSmallerThanMax(string parameterName, string value, string unit)
