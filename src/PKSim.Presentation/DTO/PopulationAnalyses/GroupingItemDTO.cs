@@ -79,10 +79,7 @@ namespace PKSim.Presentation.DTO.PopulationAnalyses
 
       private static class AllRules
       {
-         private static IBusinessRule labelDefined
-         {
-            get { return GenericRules.NonEmptyRule<GroupingItemDTO>(x => x.Label); }
-         }
+         private static IBusinessRule labelDefined { get; } = GenericRules.NonEmptyRule<GroupingItemDTO>(x => x.Label);
 
          public static IEnumerable<IBusinessRule> All
          {

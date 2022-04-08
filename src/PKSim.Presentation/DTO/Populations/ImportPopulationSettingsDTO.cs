@@ -22,27 +22,15 @@ namespace PKSim.Presentation.DTO.Populations
 
       private static class AllRules
       {
-         private static IBusinessRule atLeastOneFileDefined
-         {
-            get
-            {
-               return CreateRule.For<ImportPopulationSettingsDTO>()
-                  .Property(item => item.PopulationFiles)
-                  .WithRule((item, files) => files.Any())
-                  .WithError((item, files) => PKSimConstants.Error.AtLeastOneFileRequiredToStartPopulationImport);
-            }
-         }
+         private static IBusinessRule atLeastOneFileDefined { get; } = CreateRule.For<ImportPopulationSettingsDTO>()
+            .Property(item => item.PopulationFiles)
+            .WithRule((item, files) => files.Any())
+            .WithError((item, files) => PKSimConstants.Error.AtLeastOneFileRequiredToStartPopulationImport);
 
-         private static IBusinessRule individualDefined
-         {
-            get
-            {
-               return CreateRule.For<ImportPopulationSettingsDTO>()
-                  .Property(item => item.Individual)
-                  .WithRule((item, ind) => ind != null)
-                  .WithError((dto, ind) => PKSimConstants.Error.BuildingBlockNotDefined(PKSimConstants.ObjectTypes.Individual));
-            }
-         }
+         private static IBusinessRule individualDefined { get; } = CreateRule.For<ImportPopulationSettingsDTO>()
+            .Property(item => item.Individual)
+            .WithRule((item, ind) => ind != null)
+            .WithError((dto, ind) => PKSimConstants.Error.BuildingBlockNotDefined(PKSimConstants.ObjectTypes.Individual));
 
          internal static IEnumerable<IBusinessRule> All()
          {

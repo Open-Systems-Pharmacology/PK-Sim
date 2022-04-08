@@ -85,24 +85,18 @@ namespace PKSim.Presentation.DTO.Populations
       private static class AllRules
       {
          private static IBusinessRule namingPatternDefined { get; } = GenericRules.NonEmptyRule<ExtractIndividualsDTO>(x => x.NamingPattern);
-         private static IBusinessRule indiviudalIdsDefined { get; } = GenericRules.NonEmptyRule<ExtractIndividualsDTO>(x => x.IndividualIdsExpression);
+         private static IBusinessRule individualIdsDefined { get; } = GenericRules.NonEmptyRule<ExtractIndividualsDTO>(x => x.IndividualIdsExpression);
 
-         private static IBusinessRule indiviudalIdsWellFormatted
-         {
-            get
-            {
-               return CreateRule.For<ExtractIndividualsDTO>()
-                  .Property(dto => dto.IndividualIdsExpression)
-                  .WithRule((dto, individualIds) => dto.CountFor(individualIds) > 0)
-                  .WithError((dto, individualIds) => PKSimConstants.Error.AtLeastOneIndividualIdRequiredToPerformPopulationExtraction);
-            }
-         }
+         private static IBusinessRule individualIdsWellFormatted { get; } = CreateRule.For<ExtractIndividualsDTO>()
+            .Property(dto => dto.IndividualIdsExpression)
+            .WithRule((dto, individualIds) => dto.CountFor(individualIds) > 0)
+            .WithError((dto, individualIds) => PKSimConstants.Error.AtLeastOneIndividualIdRequiredToPerformPopulationExtraction);
 
          internal static IEnumerable<IBusinessRule> All()
          {
             yield return namingPatternDefined;
-            yield return indiviudalIdsDefined;
-            yield return indiviudalIdsWellFormatted;
+            yield return individualIdsDefined;
+            yield return individualIdsWellFormatted;
          }
       }
    }
