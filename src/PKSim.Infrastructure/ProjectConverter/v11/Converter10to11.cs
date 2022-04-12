@@ -178,12 +178,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
       private void addExpressionProfilesUsedBySimulationSubjectToProject(ISimulationSubject simulationSubject)
       {
+         var project = _projectRetriever.Current;
          foreach (var molecule in simulationSubject.AllMolecules())
          {
+            var defaultExpressionProfileName = CoreConstants.ContainerName.ExpressionProfileName(molecule.Name, simulationSubject.Species, simulationSubject.Name);
+
+            var expressionProfileName = _containerTask.CreateUniqueName(project.All<ExpressionProfile>(), defaultExpressionProfileName, canUseBaseName: true);
             var expressionProfile = _expressionProfileFactory.Create(molecule.GetType(), simulationSubject.Species, molecule.Name);
 
-            //Make sure the name does not have our separator
-            expressionProfile.Category = simulationSubject.Name;
+            //Use a unique name in project
+            expressionProfile.Name = expressionProfileName;
             _expressionProfileUpdater.SynchronizeExpressionProfileWithSimulationSubject(expressionProfile, simulationSubject);
 
             //Some parameters are probably marked as FixedValue event thought they have not changed (Formula=>constant) due to change in 
@@ -195,7 +199,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
             //only add at the end once the expression profile has been updated
             simulationSubject.AddExpressionProfile(expressionProfile);
-            _projectRetriever.Current.AddBuildingBlock(expressionProfile);
+            project.AddBuildingBlock(expressionProfile);
             _registrationTask.Register(expressionProfile);
             _eventPublisher.PublishEvent(new BuildingBlockAddedEvent(expressionProfile, _projectRetriever.Current));
          }
