@@ -3,7 +3,6 @@ using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
-using PKSim.BatchTool.Views;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Presentation;
@@ -24,9 +23,6 @@ namespace PKSim.BatchTool
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>();
          container.Register<IDiagramModel, CLIDiagramModel>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
-
-
-         container.Register(typeof(IInputAndOutputBatchView<>), typeof(InputAndOutputBatchView<>));
       }
    }
 }

@@ -1,23 +1,26 @@
-﻿using OSPSuite.DataBinding;
+﻿using OSPSuite.Core.Extensions;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
+using OSPSuite.Utility;
 using PKSim.BatchTool.Presenters;
 using PKSim.CLI.Core.RunOptions;
+using PKSim.Core.Services;
 
 namespace PKSim.BatchTool.Views
 {
-   public partial class InputAndOutputBatchView<TStartOptions> : BatchView, IInputAndOutputBatchView<TStartOptions> where TStartOptions : IWithInputAndOutputFolders
+   public partial class JsonSimulationBatchView : BatchView, IJsonSimulationBatchView
    {
-      private IInputAndOutputBatchPresenter _presenter;
-      private readonly ScreenBinder<TStartOptions> _screenBinder = new ScreenBinder<TStartOptions>();
+      private IJsonSimulationBatchPresenter _presenter;
+      private readonly ScreenBinder<JsonRunOptions> _screenBinder = new ScreenBinder<JsonRunOptions>();
 
-      public InputAndOutputBatchView()
+      public JsonSimulationBatchView()
       {
          InitializeComponent();
       }
 
-      public void AttachPresenter(IInputAndOutputBatchPresenter presenter)
+      public void AttachPresenter(IJsonSimulationBatchPresenter presenter)
       {
          _presenter = presenter;
          base.AttachPresenter(presenter);
@@ -33,7 +36,7 @@ namespace PKSim.BatchTool.Views
          panelLog.FillWith(view);
       }
 
-      public void BindTo(TStartOptions startOptions)
+      public void BindTo(JsonRunOptions startOptions)
       {
          _screenBinder.BindToSource(startOptions);
       }
@@ -43,6 +46,10 @@ namespace PKSim.BatchTool.Views
          base.InitializeBinding();
          _screenBinder.Bind(x => x.InputFolder).To(btnInputFolder);
          _screenBinder.Bind(x => x.OutputFolder).To(btnOutputFolder);
+         _screenBinder.Bind(x => x.JacobianUse)
+            .To(cbJacobianUse)
+            .WithValues(EnumHelper.AllValuesFor<JacobianUse>())
+            .AndDisplays(x => x.ToString().SplitToUpperCase());
 
          btnInputFolder.ButtonClick += (o, e) => OnEvent(() => _presenter.SelectInputFolder());
          btnOutputFolder.ButtonClick += (o, e) => OnEvent(() => _presenter.SelectOutputFolder());

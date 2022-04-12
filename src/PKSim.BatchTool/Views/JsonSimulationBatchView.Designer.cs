@@ -1,6 +1,6 @@
 ﻿namespace PKSim.BatchTool.Views
 {
-   partial class InputAndOutputBatchView<TStartOptions>
+   partial class JsonSimulationBatchView
    {
       /// <summary>
       /// Required designer variable.
@@ -42,6 +42,8 @@
          this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.cbJacobianUse = new DevExpress.XtraEditors.ComboBoxEdit();
+         this.layoutItemJacobian = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
@@ -55,10 +57,14 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbJacobianUse.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemJacobian)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl1
          // 
+         this.layoutControl1.AllowCustomization = false;
+         this.layoutControl1.Controls.Add(this.cbJacobianUse);
          this.layoutControl1.Controls.Add(this.panelLog);
          this.layoutControl1.Controls.Add(this.btnOutputFolder);
          this.layoutControl1.Controls.Add(this.btnCalculate);
@@ -74,18 +80,18 @@
          // 
          // panelLog
          // 
-         this.panelLog.Location = new System.Drawing.Point(12, 60);
+         this.panelLog.Location = new System.Drawing.Point(12, 84);
          this.panelLog.Name = "panelLog";
-         this.panelLog.Size = new System.Drawing.Size(784, 517);
+         this.panelLog.Size = new System.Drawing.Size(784, 493);
          this.panelLog.TabIndex = 8;
          // 
          // btnOutputFolder
          // 
-         this.btnOutputFolder.Location = new System.Drawing.Point(86, 36);
+         this.btnOutputFolder.Location = new System.Drawing.Point(95, 36);
          this.btnOutputFolder.Name = "btnOutputFolder";
          this.btnOutputFolder.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.btnOutputFolder.Size = new System.Drawing.Size(710, 20);
+         this.btnOutputFolder.Size = new System.Drawing.Size(701, 20);
          this.btnOutputFolder.StyleController = this.layoutControl1;
          this.btnOutputFolder.TabIndex = 7;
          // 
@@ -100,11 +106,11 @@
          // 
          // btnInputFolder
          // 
-         this.btnInputFolder.Location = new System.Drawing.Point(86, 12);
+         this.btnInputFolder.Location = new System.Drawing.Point(95, 12);
          this.btnInputFolder.Name = "btnInputFolder";
          this.btnInputFolder.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.btnInputFolder.Size = new System.Drawing.Size(710, 20);
+         this.btnInputFolder.Size = new System.Drawing.Size(701, 20);
          this.btnInputFolder.StyleController = this.layoutControl1;
          this.btnInputFolder.TabIndex = 5;
          // 
@@ -128,8 +134,8 @@
             this.layoutControlItem2,
             this.layoutControlItem3,
             this.layoutControlItem4,
-            this.layoutControlItem5});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem5,
+            this.layoutItemJacobian});
          this.layoutControlGroup1.Name = "layoutControlGroup1";
          this.layoutControlGroup1.Size = new System.Drawing.Size(808, 641);
          this.layoutControlGroup1.TextVisible = false;
@@ -186,19 +192,38 @@
          // layoutControlItem5
          // 
          this.layoutControlItem5.Control = this.panelLog;
-         this.layoutControlItem5.Location = new System.Drawing.Point(0, 48);
+         this.layoutControlItem5.Location = new System.Drawing.Point(0, 72);
          this.layoutControlItem5.Name = "layoutControlItem5";
-         this.layoutControlItem5.Size = new System.Drawing.Size(788, 521);
+         this.layoutControlItem5.Size = new System.Drawing.Size(788, 497);
          this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem5.TextVisible = false;
          // 
-         // InputAndOutputBatchView
+         // cbJacobianUse
+         // 
+         this.cbJacobianUse.Location = new System.Drawing.Point(95, 60);
+         this.cbJacobianUse.Name = "cbJacobianUse";
+         this.cbJacobianUse.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.cbJacobianUse.Size = new System.Drawing.Size(701, 20);
+         this.cbJacobianUse.StyleController = this.layoutControl1;
+         this.cbJacobianUse.TabIndex = 9;
+         // 
+         // layoutItemJacobian
+         // 
+         this.layoutItemJacobian.Control = this.cbJacobianUse;
+         this.layoutItemJacobian.Location = new System.Drawing.Point(0, 48);
+         this.layoutItemJacobian.Name = "layoutItemJacobian";
+         this.layoutItemJacobian.Size = new System.Drawing.Size(788, 24);
+         this.layoutItemJacobian.Text = "Jacobian Use:";
+         this.layoutItemJacobian.TextSize = new System.Drawing.Size(71, 13);
+         // 
+         // JsonSimulationBatchView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(808, 641);
          this.Controls.Add(this.layoutControl1);
-         this.Name = "InputAndOutputBatchView";
+         this.Name = "JsonSimulationBatchView";
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
@@ -212,6 +237,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbJacobianUse.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemJacobian)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -231,6 +258,8 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
       private DevExpress.XtraEditors.PanelControl panelLog;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
+      private DevExpress.XtraEditors.ComboBoxEdit cbJacobianUse;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemJacobian;
    }
 }
 

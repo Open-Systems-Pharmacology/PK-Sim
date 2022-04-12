@@ -71,8 +71,26 @@ namespace PKSim.Core.Services
          else
             updatePersistableFromSettings(simulation);
 
+         updateSolverSettings(simulation);
          await simulationEngine.RunAsync(simulation, _simulationRunOptions);
          simulation.HasChanged = true;
+      }
+
+      private void updateSolverSettings<TSimulation>(TSimulation simulation) where TSimulation : Simulation
+      {
+         switch (_simulationRunOptions.JacobianUse)
+         {
+            case JacobianUse.AsIs:
+               return;
+            case JacobianUse.TurnOff:
+               simulation.Solver.UseJacobian = false;
+               return;
+            case JacobianUse.TurnOn:
+               simulation.Solver.UseJacobian = true;
+               return;
+            default:
+               throw new ArgumentOutOfRangeException();
+         }
       }
    }
 }

@@ -11,7 +11,9 @@ using PKSim.Core.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
+
 {
+  
    [Flags]
    public enum SimulationExportMode
    {
@@ -130,7 +132,7 @@ namespace PKSim.CLI.Core.Services
             tasks.Add(exportSimulationResultsToCsv(individualSimulation, simulationExportOptions));
 
          // Population always exported no matter what
-         if(populationSimulation != null)
+         if (populationSimulation != null)
             tasks.Add(exportPopulationToCsvAsync(populationSimulation, simulationExportOptions));
 
          if (exportMode.HasFlag(SimulationExportMode.Csv) && populationSimulation != null)
@@ -141,7 +143,7 @@ namespace PKSim.CLI.Core.Services
 
          if (exportMode.HasFlag(SimulationExportMode.Xlsx) && individualSimulation != null)
             tasks.Add(exportIndividualSimulationResultsToExcelAsync(individualSimulation, simulationExportOptions));
-         
+
          if (exportMode.HasFlag(SimulationExportMode.Xml))
             tasks.Add(exportSimModelXmlAsync(simulation, simulationExportOptions));
 
@@ -219,7 +221,7 @@ namespace PKSim.CLI.Core.Services
 
          var resultFileName = CoreConstants.DefaultResultsExportNameFor(simulation.Name);
          var simulationResultFileFullPath = simulationExportOptions.TargetPathFor(resultFileName, Constants.Filter.XLSX_EXTENSION);
-         await _simulationExportTask.ExportResultsToExcelAsync(simulation, simulationResultFileFullPath, launchExcel:false);
+         await _simulationExportTask.ExportResultsToExcelAsync(simulation, simulationResultFileFullPath, launchExcel: false);
          _logger.AddDebug($"Exporting simulation results to '{simulationResultFileFullPath}'", simulationExportOptions.LogCategory);
       }
    }
