@@ -217,7 +217,7 @@ namespace PKSim.ProjectConverter.v11
       public void should_have_created_an_expression_profile_named_differently()
       {
          _ind.Uses(_existingExpressionProfile).ShouldBeFalse();
-         var expressionProfile = FindByName<ExpressionProfile>($"{_existingExpressionProfile.Name}_1");
+         var expressionProfile = FindByName<ExpressionProfile>($"{_existingExpressionProfile.Name} 1");
          expressionProfile.ShouldNotBeNull();
          _ind.Uses(expressionProfile).ShouldBeTrue();
       }
