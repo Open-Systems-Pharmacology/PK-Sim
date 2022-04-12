@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using DevExpress.LookAndFeel;
+using DevExpress.XtraEditors;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
@@ -17,6 +19,10 @@ namespace PKSim.BatchTool
       {
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(false);
+
+         WindowsFormsSettings.SetDPIAware();
+         WindowsFormsSettings.SetPerMonitorDpiAware();
+         WindowsFormsSettings.TouchUIMode = TouchUIMode.False;
 
          try
          {
