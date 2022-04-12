@@ -64,7 +64,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          _screenBinder.Bind(x => x.Category)
             .To(cbCategory);
 
-         RegisterValidationFor(_screenBinder, NotifyViewChanged);
+         RegisterValidationFor(_screenBinder,statusChangingNotify:NotifyViewChanged,  statusChangedNotify: NotifyViewChanged);
       }
 
       public override bool HasError => _screenBinder.HasError;

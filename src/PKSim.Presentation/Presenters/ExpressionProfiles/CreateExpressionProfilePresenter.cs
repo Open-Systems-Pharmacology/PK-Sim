@@ -1,6 +1,7 @@
 ﻿using System;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -66,5 +67,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          base.ViewChanged();
          View.OkEnabled = CanClose;
       }
+
+      public override bool CanClose => base.CanClose && _dto.IsValid();
    }
 }

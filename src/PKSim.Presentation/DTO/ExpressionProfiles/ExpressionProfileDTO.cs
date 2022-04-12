@@ -26,29 +26,34 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
       public virtual string Category
       {
          get => _category;
-         set => SetProperty(ref _category, value.TrimmedValue());
+         set
+         {
+            SetProperty(ref _category, value.TrimmedValue());
+            OnPropertyChanged(() => Name);
+         }
       }
 
       public virtual string MoleculeName
       {
          get => _moleculeName;
-         set => SetProperty(ref _moleculeName, value.TrimmedValue());
+         set
+         {
+            SetProperty(ref _moleculeName, value.TrimmedValue());
+            OnPropertyChanged(() => Name);
+         }
       }
 
       public IEnumerable<Species> AllSpecies { get; set; }
 
       public IEnumerable<string> AllMolecules { get; set; }
-      
+
       public IEnumerable<string> AllCategories { get; set; }
 
       public string MoleculeType { get; set; }
 
       private readonly List<string> _allExistingExpressionProfileNames = new List<string>();
 
-      private bool moleculeSpeciesCategoryValid(string moleculeName, Species species, string category)
-      {
-         return !_allExistingExpressionProfileNames.Contains(ExpressionProfileName(moleculeName, species, category));
-      }
+      private bool moleculeSpeciesCategoryValid(string name) => !_allExistingExpressionProfileNames.Contains(name);
 
       public string Name => ExpressionProfileName(MoleculeName, Species, Category);
 
@@ -60,29 +65,17 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
          private static IBusinessRule speciesNotNull { get; } = GenericRules.NotNull<ExpressionProfileDTO, Species>(x => x.Species, PKSimConstants.Error.SpeciesIsRequired);
 
-         private static IBusinessRule moleculeNameValid { get; } = CreateRule.For<ExpressionProfileDTO>()
-            .Property(item => item.MoleculeName)
-            .WithRule((dto, moleculeName) => dto.moleculeSpeciesCategoryValid(moleculeName, dto.Species, dto.Category))
-            .WithError((dto, moleculeName) => PKSimConstants.Error.NameAlreadyExistsInContainerType(moleculeName, PKSimConstants.ObjectTypes.Project));
-
-         private static IBusinessRule categoryValid { get; } = CreateRule.For<ExpressionProfileDTO>()
-            .Property(item => item.Category)
-            .WithRule((dto, category) => dto.moleculeSpeciesCategoryValid(dto.MoleculeName, dto.Species, category))
-            .WithError((dto, category) => PKSimConstants.Error.NameAlreadyExistsInContainerType(category, PKSimConstants.ObjectTypes.Project));
-
-         private static IBusinessRule speciesValid { get; } = CreateRule.For<ExpressionProfileDTO>()
-            .Property(item => item.Species)
-            .WithRule((dto, species) => dto.moleculeSpeciesCategoryValid(dto.MoleculeName, species, dto.Category))
-            .WithError((dto, species) => PKSimConstants.Error.NameAlreadyExistsInContainerType(species.Name, PKSimConstants.ObjectTypes.Project));
+         private static IBusinessRule nameValid { get; } = CreateRule.For<ExpressionProfileDTO>()
+            .Property(item => item.Name)
+            .WithRule((dto, name) => dto.moleculeSpeciesCategoryValid(name))
+            .WithError((dto, name) => PKSimConstants.Error.NameAlreadyExistsInContainerType(name, PKSimConstants.ObjectTypes.Project));
 
          internal static IEnumerable<IBusinessRule> All()
          {
             yield return speciesNotNull;
             yield return moleculeNotEmpty;
             yield return categoryNotEmpty;
-            yield return moleculeNameValid;
-            yield return categoryValid;
-            yield return speciesValid;
+            yield return nameValid;
          }
       }
 
