@@ -147,6 +147,7 @@ namespace PKSim.ProjectConverter.v11
          LoadProject("expression_v10");
          _allPopulations = All<Population>();
          _allIndividuals = All<Individual>();
+
          _allPopulations.Each(Load);
          _allIndividuals.Each(Load);
       }
@@ -186,6 +187,39 @@ namespace PKSim.ProjectConverter.v11
          var pop = _allPopulations.FindByName("Pop");
          var allInitialConcentrationParameters = pop.FirstIndividual.GetAllChildren<IParameter>(x => x.IsNamed(CoreConstants.Parameters.INITIAL_CONCENTRATION));
          allInitialConcentrationParameters.Each(x => x.CanBeVariedInPopulation.ShouldBeFalse());
+      }
+   }
+
+   public class When_converting_the_expression_v10_project_to_11_and_an_expression_profile_is_added_with_the_name_that_would_be_created_from_conversion : ContextWithLoadedProject<Converter10to11>
+   {
+      private Individual _ind;
+      private ExpressionProfile _existingExpressionProfile;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("expression_v10");
+         var individuals = All<Individual>();
+         _ind = individuals.FindByName("Ind");
+      }
+
+      protected override void Because()
+      {
+         //add an expression profile with the name
+         _existingExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>(_ind.Species.Name, "CYP3A4", _ind.Name);
+         _project.AddBuildingBlock(_existingExpressionProfile);
+
+         //now load to trigger conversion
+         Load(_ind);
+      }
+
+      [Observation]
+      public void should_have_created_an_expression_profile_named_differently()
+      {
+         _ind.Uses(_existingExpressionProfile).ShouldBeFalse();
+         var expressionProfile = FindByName<ExpressionProfile>($"{_existingExpressionProfile.Name}_1");
+         expressionProfile.ShouldNotBeNull();
+         _ind.Uses(expressionProfile).ShouldBeTrue();
       }
    }
 }
