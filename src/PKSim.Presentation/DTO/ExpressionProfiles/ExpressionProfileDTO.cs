@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -53,7 +54,7 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
       private readonly List<string> _allExistingExpressionProfileNames = new List<string>();
 
-      private bool moleculeSpeciesCategoryValid(string name) => !_allExistingExpressionProfileNames.Contains(name);
+      private bool moleculeSpeciesCategoryValid(string name) => !_allExistingExpressionProfileNames.Contains(name?.TrimmedValue()?.ToLower());
 
       public string Name => ExpressionProfileName(MoleculeName, Species, Category);
 
@@ -81,7 +82,7 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
       public void AddExistingExpressionProfileNames(IEnumerable<string> existingNames)
       {
-         _allExistingExpressionProfileNames.AddRange(existingNames);
+         _allExistingExpressionProfileNames.AddRange(existingNames.Select(x => x.ToLower()));
       }
    }
 }

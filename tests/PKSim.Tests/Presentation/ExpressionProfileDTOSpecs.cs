@@ -41,9 +41,20 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_false_if_the_category__species_and_molecule_name_combination_already_exists_in_the_project()
+      public void should_return_false_if_the_category_species_and_molecule_name_combination_already_exists_in_the_project()
       {
          sut.AddExistingExpressionProfileNames(new[] {CoreConstants.ContainerName.ExpressionProfileName("MOL", _human, "CAT")});
+         sut.Category = "CAT";
+         sut.MoleculeName = "MOL";
+         sut.Species = _human;
+         sut.IsValid().ShouldBeFalse();
+      }
+
+
+      [Observation]
+      public void should_return_false_if_the_category_species_and_molecule_name_combination_already_exists_in_the_project_with_other_case()
+      {
+         sut.AddExistingExpressionProfileNames(new[] { CoreConstants.ContainerName.ExpressionProfileName("MOL  ", _human, "cat") });
          sut.Category = "CAT";
          sut.MoleculeName = "MOL";
          sut.Species = _human;
