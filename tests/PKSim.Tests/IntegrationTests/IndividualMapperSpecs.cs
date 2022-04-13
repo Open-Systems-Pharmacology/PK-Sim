@@ -93,6 +93,29 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_loading_a_snapshot_file_containing_transporter_expression_created_in_v9 : ContextWithLoadedSnapshot
+   {
+      private Individual _individual;
+      private ExpressionProfile _expressionProfileTrans;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadSnapshot("ind_expression_trans_v9");
+         _individual = FindByName<Individual>("Individual");
+         _expressionProfileTrans = FindByName<ExpressionProfile>("TRANS2|Human|Individual");
+      }
+
+      [Observation]
+      public void should_have_converted_the_global_molecule_parameters_as_expected()
+      {
+         var (enzyme, _) = _expressionProfileTrans;
+         enzyme.ReferenceConcentration.ValueInDisplayUnit.ShouldBeEqualTo(1.2);
+         enzyme.HalfLifeLiver.ValueInDisplayUnit.ShouldBeEqualTo(36);
+         enzyme.HalfLifeIntestine.ValueInDisplayUnit.ShouldBeEqualTo(23);
+      }
+   }
+
    public class When_loading_a_snapshot_file_containing_expression_created_in_v9 : ContextWithLoadedSnapshot
    {
       private Individual _individual;
