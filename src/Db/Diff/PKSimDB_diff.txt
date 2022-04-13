@@ -1,10 +1,3 @@
-UPDATE tab_object_paths SET description='SOURCE\\TRANSPORTER' WHERE path_id=366;
-UPDATE tab_object_paths SET description='TARGET\\TRANSPORTER' WHERE path_id=368;
-DELETE FROM tab_rate_generic_molecules WHERE calculation_method='LinksCommon' AND formula_rate='BrainPgPToPlasma_Hill' AND path_id=366 AND molecule='DRUG';
-INSERT INTO tab_rate_generic_molecules(calculation_method,formula_rate,path_id,molecule,alias,use_amount) VALUES('LinksCommon','BrainPgPToPlasma_Hill',368,'DRUG','TM',1);
-DELETE FROM tab_rate_generic_molecules WHERE calculation_method='LinksCommon' AND formula_rate='BrainPgPToPlasma_MM' AND path_id=366 AND molecule='DRUG';
-INSERT INTO tab_rate_generic_molecules(calculation_method,formula_rate,path_id,molecule,alias,use_amount) VALUES('LinksCommon','BrainPgPToPlasma_MM',368,'DRUG','TM',1);
-DELETE FROM tab_rate_generic_molecules WHERE calculation_method='LinksCommon' AND formula_rate='PgpSpecific_Hill' AND path_id=366 AND molecule='DRUG';
-INSERT INTO tab_rate_generic_molecules(calculation_method,formula_rate,path_id,molecule,alias,use_amount) VALUES('LinksCommon','PgpSpecific_Hill',368,'DRUG','TM',1);
-DELETE FROM tab_rate_generic_molecules WHERE calculation_method='LinksCommon' AND formula_rate='PgpSpecific_MM' AND path_id=366 AND molecule='DRUG';
-INSERT INTO tab_rate_generic_molecules(calculation_method,formula_rate,path_id,molecule,alias,use_amount) VALUES('LinksCommon','PgpSpecific_MM',368,'DRUG','TM',1);
+UPDATE tab_calculation_method_rates SET formula='V * CLspec * C_pls * fu' WHERE calculation_method='LinksCommon' AND formula_rate='ClearanceKidneyPls';
+UPDATE tab_rate_generic_molecules SET alias='C_pls', use_amount=0 WHERE calculation_method='LinksCommon' AND formula_rate='ClearanceKidneyPls' AND path_id=341 AND molecule='DRUG';
+INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('LinksCommon','ClearanceKidneyPls',343,'Volume','V');
