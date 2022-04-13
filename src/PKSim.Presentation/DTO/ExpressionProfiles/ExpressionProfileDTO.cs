@@ -27,21 +27,13 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
       public virtual string Category
       {
          get => _category;
-         set
-         {
-            SetProperty(ref _category, value.TrimmedValue());
-            OnPropertyChanged(() => Name);
-         }
+         set => SetProperty(ref _category, value.TrimmedValue());
       }
 
       public virtual string MoleculeName
       {
          get => _moleculeName;
-         set
-         {
-            SetProperty(ref _moleculeName, value.TrimmedValue());
-            OnPropertyChanged(() => Name);
-         }
+         set => SetProperty(ref _moleculeName, value.TrimmedValue());
       }
 
       public IEnumerable<Species> AllSpecies { get; set; }
