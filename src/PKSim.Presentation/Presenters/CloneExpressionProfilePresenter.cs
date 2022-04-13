@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Presenters
       public void Save()
       {
          //We have a slightly different behavior for expression profile as the name is a composite name and we need to validate the object after the fact
-         var rules = _dto.Validate(x => x.Name);
+         var rules = _dto.Validate();
          if (rules.IsEmpty)
          {
             _view.CloseView();
