@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -26,7 +27,7 @@ namespace PKSim.Core.Snapshots.Mappers
          IOntogenyTask ontogenyTask,
          IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask,
          IExpressionProfileFactory expressionProfileFactory
-      ) 
+      )
       {
          _parameterMapper = parameterMapper;
          _expressionContainerMapper = expressionContainerMapper;
@@ -38,7 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
       }
 
       public override async Task<SnapshotExpressionProfile> MapToSnapshot(ModelExpressionProfile expressionProfile)
-      { 
+      {
          var (molecule, individual) = expressionProfile;
          //We do not use the base method here as we want to save the name differently using the composite part of the name
          var snapshot = new SnapshotExpressionProfile
@@ -55,7 +56,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateMoleculeSpecificPropertiesToSnapshot(snapshot, molecule);
          return snapshot;
-         
       }
 
       private Task<LocalizedParameter[]> allParametersChangedByUserFrom(ModelIndividual individual)
@@ -154,8 +154,16 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private bool isV9Format(SnapshotExpressionProfile snapshot)
       {
-         //Localization is only defined for protein and was added in v10
-         return snapshot.Localization == null && snapshot.TransportType == null;
+         //This was a protein
+         if (snapshot.TransportType == null)
+            return snapshot.Localization == null;
+
+         //this is a transporter
+         if (snapshot.Expression == null)
+            return true;
+
+         //We have the Membrane location flag that has disappeared in v10 and above
+         return snapshot.Expression.Any(x => x.MembraneLocation != null);
       }
    }
 }

@@ -95,14 +95,13 @@ namespace PKSim.IntegrationTests
 
    public class When_loading_a_snapshot_file_containing_transporter_expression_created_in_v9 : ContextWithLoadedSnapshot
    {
-      private Individual _individual;
       private ExpressionProfile _expressionProfileTrans;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
+         
          LoadSnapshot("ind_expression_trans_v9");
-         _individual = FindByName<Individual>("Individual");
          _expressionProfileTrans = FindByName<ExpressionProfile>("TRANS2|Human|Individual");
       }
 
