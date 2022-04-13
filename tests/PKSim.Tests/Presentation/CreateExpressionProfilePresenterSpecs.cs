@@ -134,6 +134,9 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
+         _expressionProfileDTO.Category = "A";
+         _expressionProfileDTO.Species = new Species().WithName("B");
+         _expressionProfileDTO.Category = "C";
          sut.Create<IndividualEnzyme>();
       }
 

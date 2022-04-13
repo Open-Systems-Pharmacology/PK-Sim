@@ -2,7 +2,6 @@
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
@@ -66,7 +65,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          _screenBinder.Bind(x => x.Category)
             .To(cbCategory);
 
-         RegisterValidationFor(_screenBinder, statusChangingNotify:NotifyViewChanged);
+         RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
       public override bool HasError => _screenBinder.HasError;
@@ -88,9 +87,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ActiveControl = cbMoleculeName;
       }
 
-      protected override void OkClicked()
-      {
-         _presenter.Save();
-      }
+      protected override void OkClicked() => _presenter.Save();
    }
 }
