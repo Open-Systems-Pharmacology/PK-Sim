@@ -52,8 +52,6 @@ namespace PKSim.Presentation.Presenters
          if (_view.Canceled)
             return null;
 
-         //We have a slightly different behavior for expression profile as the name is a composite name and we need to validate the object after the fact
-
          //create a new expression profile using the same molecule name as the original so that we can update the values. Then we rename
          var newExpressionProfile = _expressionProfileFactory.Create(molecule.MoleculeType, _dto.Species.Name, molecule.Name);
          newExpressionProfile.Category = _dto.Category;
