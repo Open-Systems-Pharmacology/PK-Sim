@@ -725,6 +725,9 @@ namespace PKSim.IntegrationTests
       {
          //disable precipitation
          PrecipitatedDrugSoluble = true;
+
+         _simulation.Solver.AbsTol = 1e-10;
+         _simulation.Solver.RelTol = 1e-6;
       }
 
       [Observation]
