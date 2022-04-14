@@ -2,6 +2,9 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
@@ -23,6 +26,7 @@ namespace PKSim.Presentation
       protected IMoleculeParameterTask _moleculeParameterTask;
       protected ExpressionProfileDTO _expressionProfileDTO;
       protected ExpressionProfile _updatedExpressionProfile;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -30,7 +34,8 @@ namespace PKSim.Presentation
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
          _expressionProfileDTOMapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
          _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
-         sut = new CreateExpressionProfilePresenter(_view, _expressionProfileFactory, _expressionProfileDTOMapper, _moleculeParameterTask);
+         _dialogCreator = A.Fake<IDialogCreator>();
+         sut = new CreateExpressionProfilePresenter(_view, _expressionProfileFactory, _expressionProfileDTOMapper, _moleculeParameterTask, _dialogCreator);
 
          _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
          _updatedExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
@@ -121,6 +126,60 @@ namespace PKSim.Presentation
       public void should_return_an_empty_command()
       {
          _result.IsEmpty().ShouldBeTrue();
+      }
+   }
+
+   public class When_saving_a_new_expression_profile_to_the_project_that_is_in_valid_state : concern_for_CreateExpressionProfilePresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfileDTO.Category = "A";
+         _expressionProfileDTO.Species = new Species().WithName("B");
+         _expressionProfileDTO.Category = "C";
+         sut.Create<IndividualEnzyme>();
+      }
+
+      protected override void Because()
+      {
+         sut.Save();
+      }
+
+      [Observation]
+      public void should_close_the_view()
+      {
+         A.CallTo(() => _view.CloseView()).MustHaveHappened();
+      }
+   }
+
+   public class When_saving_a_new_expression_profile_to_the_project_that_is_not_in_a_valid_state : concern_for_CreateExpressionProfilePresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Create<IndividualEnzyme>();
+         _expressionProfileDTO.Category = "A";
+         _expressionProfileDTO.Species = new Species().WithName("B");
+         _expressionProfileDTO.Category = "C";
+
+         _expressionProfileDTO.AddExistingExpressionProfileNames(new[] {_expressionProfileDTO.Name});
+      }
+
+      protected override void Because()
+      {
+         sut.Save();
+      }
+
+      [Observation]
+      public void should_not_close_the_view()
+      {
+         A.CallTo(() => _view.CloseView()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_notify_the_user_that_something_is_wrong()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(_expressionProfileDTO.Validate().Message)).MustHaveHappened();
       }
    }
 }

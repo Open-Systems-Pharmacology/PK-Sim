@@ -1,6 +1,4 @@
 ﻿using System.Windows.Forms;
-using DevExpress.XtraLayout.Utils;
-using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -20,6 +18,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
    {
       private readonly IImageListRetriever _imageListRetriever;
       private readonly ScreenBinder<ExpressionProfileDTO> _screenBinder = new ScreenBinder<ExpressionProfileDTO>();
+      private IExpressionProfilePresenter _presenter;
 
       //only for design time
       public CreateExpressionProfileView() : this(null, null)
@@ -34,10 +33,12 @@ namespace PKSim.UI.Views.ExpressionProfiles
 
       public void AttachPresenter(ICloneExpressionProfilePresenter presenter)
       {
+         _presenter = presenter;
       }
 
       public void AttachPresenter(ICreateExpressionProfilePresenter presenter)
       {
+         _presenter = presenter;
       }
 
       public void BindTo(ExpressionProfileDTO expressionProfileDTO)
@@ -76,11 +77,16 @@ namespace PKSim.UI.Views.ExpressionProfiles
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
          labelCategoryDescription.AsDescription();
          labelCategoryDescription.Text = PKSimConstants.UI.ExpressionProfileCategoryDescription.FormatForDescription();
+
+         //Do not close on OK
+         ButtonOk.DialogResult = DialogResult.None;
       }
 
       protected override void SetActiveControl()
       {
          ActiveControl = cbMoleculeName;
       }
+
+      protected override void OkClicked() => _presenter.Save();
    }
 }

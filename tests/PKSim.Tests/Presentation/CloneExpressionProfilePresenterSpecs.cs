@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -17,6 +18,7 @@ namespace PKSim.Presentation
       protected IExpressionProfileToExpressionProfileDTOMapper _mapper;
       protected IExpressionProfileUpdater _expressionProfileUpdater;
       protected IExpressionProfileFactory _expressionProfileFactory;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -24,7 +26,8 @@ namespace PKSim.Presentation
          _mapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
          _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
-         sut = new CloneExpressionProfilePresenter(_view, _mapper, _expressionProfileUpdater, _expressionProfileFactory);
+         _dialogCreator= A.Fake<IDialogCreator>();
+         sut = new CloneExpressionProfilePresenter(_view, _mapper, _expressionProfileUpdater, _expressionProfileFactory, _dialogCreator);
       }
    }
 
