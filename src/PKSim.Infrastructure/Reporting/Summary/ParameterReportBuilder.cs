@@ -1,32 +1,32 @@
 using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Assets;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.DTO.Mappers;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
    public class ParameterReportBuilder : ReportBuilder<IParameter>
    {
       private readonly IRepresentationInfoRepository _representationInfoRepository;
-      private readonly IParameterToParameterDTOMapper _parameterMapper;
+      private readonly IParameterListOfValuesRetriever _parameterListOfValuesRetriever;
 
-      public ParameterReportBuilder(IRepresentationInfoRepository representationInfoRepository, IParameterToParameterDTOMapper parameterMapper)
+      public ParameterReportBuilder(IRepresentationInfoRepository representationInfoRepository,
+         IParameterListOfValuesRetriever parameterListOfValuesRetriever)
       {
          _representationInfoRepository = representationInfoRepository;
-         _parameterMapper = parameterMapper;
+         _parameterListOfValuesRetriever = parameterListOfValuesRetriever;
       }
 
       protected override void FillUpReport(IParameter parameter, ReportPart reportPart)
       {
-         var parameterDTO = _parameterMapper.MapFrom(parameter);
-         var displayName= _representationInfoRepository.DisplayNameFor(parameter);
+         var displayName = _representationInfoRepository.DisplayNameFor(parameter);
          var displayValue = ParameterMessages.DisplayValueFor(parameter);
-
-         if (parameterDTO.ListOfValues.Any())
-            displayValue = parameterDTO.ListOfValues[parameter.Value];
+         var listOfValues = _parameterListOfValuesRetriever.ListOfValuesFor(parameter);
+         if (listOfValues.Any())
+            displayValue = listOfValues[parameter.Value];
 
          reportPart.AddToContent(PKSimConstants.UI.ReportIs(displayName, displayValue));
       }

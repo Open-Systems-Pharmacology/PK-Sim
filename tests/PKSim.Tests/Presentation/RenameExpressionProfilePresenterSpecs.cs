@@ -98,7 +98,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_close_the_view()
       {
-         A.CallTo(() => _view.CloseView()).MustHaveHappened();
+         A.CallTo(() => _view.CloseView()).MustNotHaveHappened();
       }
 
       [Observation]
