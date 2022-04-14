@@ -178,6 +178,7 @@ namespace PKSim.CLI.Core.Services
          {
             Plot = plot,
             SectionId = simulationPlot.SectionId,
+            SectionReference = simulationPlot.SectionReference,
             Simulation = simulationName,
             Project = snapshotProject.Name
          });
@@ -244,6 +245,7 @@ namespace PKSim.CLI.Core.Services
          return new InputMapping
          {
             SectionId = input.SectionId,
+            SectionReference = input.SectionReference,
             Path = relativePath(fileFullPath, configuration.OutputFolder)
          };
       }
