@@ -115,7 +115,7 @@ namespace PKSim.IntegrationTests
       {
          var receptorOccupancy = _observers.FindByName(CoreConstants.Observer.ObserverNameFrom(CoreConstants.Observer.RECEPTOR_OCCUPANCY, _complexProductName));
          receptorOccupancy.ShouldNotBeNull();
-         receptorOccupancy.Formula.DowncastTo<ExplicitFormula>().FormulaString.ShouldBeEqualTo("Complex/(Protein + Complex)");
+         receptorOccupancy.Formula.DowncastTo<ExplicitFormula>().FormulaString.ShouldBeEqualTo("Protein + Complex > 0 ? Complex/(Protein + Complex) : 0");
          receptorOccupancy.MoleculeNames().ShouldOnlyContain(_complexProductName);
       }
 
