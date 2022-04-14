@@ -1,3 +1,1 @@
-UPDATE tab_calculation_method_rates SET formula='V * CLspec * C_pls * fu' WHERE calculation_method='LinksCommon' AND formula_rate='ClearanceKidneyPls';
-UPDATE tab_rate_generic_molecules SET alias='C_pls', use_amount=0 WHERE calculation_method='LinksCommon' AND formula_rate='ClearanceKidneyPls' AND path_id=341 AND molecule='DRUG';
-INSERT INTO tab_rate_generic_parameters(calculation_method,formula_rate,path_id,parameter_name,alias) VALUES('LinksCommon','ClearanceKidneyPls',343,'Volume','V');
+UPDATE tab_calculation_method_rates SET formula='0.0003' WHERE calculation_method='Formulation' AND formula_rate='PARAM_WaterLayerThickness';
