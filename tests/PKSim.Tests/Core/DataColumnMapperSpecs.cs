@@ -66,8 +66,8 @@ namespace PKSim.Core
          _dataInfo = new DataInfo(ColumnOrigins.BaseGrid);
          _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
 
-         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).Returns(_dataInfo);
-         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).Returns(_quantityInfo);
+         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
+         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);
       }
 
       protected override async Task Because()
@@ -97,8 +97,8 @@ namespace PKSim.Core
          _dataInfo = new DataInfo(ColumnOrigins.Observation);
          _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
 
-         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).Returns(_dataInfo);
-         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).Returns(_quantityInfo);
+         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
+         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);
       }
 
       protected override async Task Because()

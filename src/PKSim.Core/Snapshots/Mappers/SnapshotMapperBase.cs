@@ -15,13 +15,9 @@ namespace PKSim.Core.Snapshots.Mappers
       where TSnapshot : new()
       where TSnapshotContext : SnapshotContext
    {
+      public virtual async Task<object> MapToSnapshot(object model) => await MapToSnapshot(model.DowncastTo<TModel>());
 
-       //TODO why async await here
-       public Task<TModel> MapToModelWithContext(TSnapshot snapshot, SnapshotContext snapshotContext) => MapToModel(snapshot, snapshotContext.DowncastTo<TSnapshotContext>());
-
-       public virtual async Task<object> MapToSnapshot(object model) => await MapToSnapshot(model.DowncastTo<TModel>());
-
-      public Task<object> MapToModel(object snapshot) => Task.FromException<object>(new SnapshotMapToModelNotSupportedException<TModel, TSnapshotContext>());
+      public async Task<object> MapToModel(object snapshot, SnapshotContext snapshotContext) => await MapToModel(snapshot.DowncastTo<TSnapshot>(), snapshotContext.DowncastTo<TSnapshotContext>());
 
       public abstract Task<TModel> MapToModel(TSnapshot snapshot, TSnapshotContext context);
 

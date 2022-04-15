@@ -49,7 +49,7 @@ namespace PKSim.Core
          _baseGridSnapshot = new Snapshots.DataColumn();
          A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataColumn)).Returns(_dataColumnSnapshot);
          A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).Returns(_extendedPropertySnapshot);
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot)).Returns(_extendedProperty);
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot, A<SnapshotContext>._)).Returns(_extendedProperty);
          A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataRepository.BaseGrid)).Returns(_baseGridSnapshot);
          
          return Task.FromResult(true);

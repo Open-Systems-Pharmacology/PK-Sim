@@ -102,7 +102,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_curve);
          _context = new SimulationAnalysisContext(new[] {_dataRepository}, new SnapshotContext());
          _newModelCurveOptions = new CurveOptions {Color = Color.Aqua};
-         A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions)).Returns(_newModelCurveOptions);
+         A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions, _context)).Returns(_newModelCurveOptions);
       }
 
       protected override async Task Because()
@@ -137,7 +137,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_curve);
          _context = new SimulationAnalysisContext(null, new SnapshotContext()) { RunSimulation =false};
          _newModelCurveOptions = new CurveOptions { Color = Color.Aqua };
-         A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions)).Returns(_newModelCurveOptions);
+         A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions, A<SnapshotContext>._)).Returns(_newModelCurveOptions);
       }
 
       protected override async Task Because()

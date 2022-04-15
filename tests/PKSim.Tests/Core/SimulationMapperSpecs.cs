@@ -514,10 +514,10 @@ namespace PKSim.Core
          A.CallTo(() => _outputSelectionMapper.MapToModel(_snapshot.OutputSelections, A<SnapshotContextWithSimulation>.That.Matches(x => x.Simulation == individualSimulation))).Returns(_outputSelection);
 
          _solver = new SolverSettings();
-         A.CallTo(() => _solverSettingsMapper.MapToModel(_snapshot.Solver)).Returns(_solver);
+         A.CallTo(() => _solverSettingsMapper.MapToModel(_snapshot.Solver, A<SnapshotContext>._)).Returns(_solver);
 
          _outputSchema = new OutputSchema();
-         A.CallTo(() => _outputSchemaMapper.MapToModel(_snapshot.OutputSchema)).Returns(_outputSchema);
+         A.CallTo(() => _outputSchemaMapper.MapToModel(_snapshot.OutputSchema, A<SnapshotContext>._)).Returns(_outputSchema);
 
          A.CallTo(() => _curveChartMapper.MapToModel(_snapshotSimulationTimeProfile, A<SimulationAnalysisContext>._))
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))

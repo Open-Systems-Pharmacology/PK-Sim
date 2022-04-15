@@ -217,7 +217,7 @@ namespace PKSim.Core
 
          _snapshot.Processes = new[] {_snapshotProcess1};
          _newProcess = new EnzymaticProcess();
-         A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1)).Returns(_newProcess);
+         A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1, A<SnapshotContext>._)).Returns(_newProcess);
       }
 
       private void clearCompound()

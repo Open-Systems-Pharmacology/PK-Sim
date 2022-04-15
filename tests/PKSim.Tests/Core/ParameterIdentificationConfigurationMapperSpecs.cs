@@ -85,8 +85,8 @@ namespace PKSim.Core
          _newParameterConfiguration = new ParameterIdentificationConfiguration();
          _newAlgorithProperties = new OptimizationAlgorithmProperties("HOLA");
          _newRunMode = new MultipleParameterIdentificationRunMode();
-         A.CallTo(() => _algorithmMapper.MapToModel(_snapshotAlgorithmProperties)).Returns(_newAlgorithProperties);
-         A.CallTo(() => _parameterIdentificationRunModeMapper.MapToModel(_snapshotRunMode)).Returns(_newRunMode);
+         A.CallTo(() => _algorithmMapper.MapToModel(_snapshotAlgorithmProperties, A<SnapshotContext>._)).Returns(_newAlgorithProperties);
+         A.CallTo(() => _parameterIdentificationRunModeMapper.MapToModel(_snapshotRunMode, A<SnapshotContext>._)).Returns(_newRunMode);
          _parameterIdentification = new ParameterIdentification();
          _parameterIdentificationConfiguration = _parameterIdentification.Configuration;
       }

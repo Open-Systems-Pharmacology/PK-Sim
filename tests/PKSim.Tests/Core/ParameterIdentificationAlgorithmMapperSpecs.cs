@@ -70,7 +70,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_algoProperties);
          _newExtendedProperties = new ExtendedProperty<string> { Name = "Hello", Value = "Val", FullName = "This is full", Description = "Description" };
 
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_snapshotExtendedProperty)).Returns(_newExtendedProperties);
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_snapshotExtendedProperty, A<SnapshotContext>._)).Returns(_newExtendedProperties);
       }
 
       protected override async Task Because()

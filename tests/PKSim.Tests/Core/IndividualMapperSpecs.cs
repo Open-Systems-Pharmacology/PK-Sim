@@ -153,7 +153,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_expressionProfile2);
 
          _newOriginData = new Model.OriginData();
-         A.CallTo(() => _originDataMapper.MapToModel(_snapshot.OriginData)).Returns(_newOriginData);
+         A.CallTo(() => _originDataMapper.MapToModel(_snapshot.OriginData, A<SnapshotContext>._)).Returns(_newOriginData);
 
          A.CallTo(() => _individualFactory.CreateAndOptimizeFor(_newOriginData, _snapshot.Seed))
             .Returns(_individual);

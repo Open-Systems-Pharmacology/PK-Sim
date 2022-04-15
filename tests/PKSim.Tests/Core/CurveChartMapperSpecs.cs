@@ -108,7 +108,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_curveChart);
          _snapshot.Axes = new[] {_snapshotAxis,};
 
-         A.CallTo(() => _axisMapper.MapToModel(_snapshotAxis)).Returns(_axis);
+         A.CallTo(() => _axisMapper.MapToModel(_snapshotAxis, _context)).Returns(_axis);
          A.CallTo(() => _curveMapper.MapToModel(_snapshotCurve, _context)).Returns(_curve);
 
          A.CallTo(() => _idGenerator.NewId()).Returns(_newId);

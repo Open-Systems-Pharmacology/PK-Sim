@@ -109,7 +109,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await allBuildingBlocksFrom(snapshot, snapshotContext);
 
-         var observedData = await observedDataFrom(snapshot.ObservedData);
+         var observedData = await observedDataFrom(snapshot.ObservedData, snapshotContext);
          observedData?.Each(repository => addObservedDataToProject(project, repository));
 
          var allSimulations = await allSimulationsFrom(project, projectContext, snapshot.Simulations, snapshotContext);
@@ -140,9 +140,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return mapModelsToSnapshot<ModelDataRepository, SnapshotDataRepository>(allObservedData, snapshotMapper.MapToSnapshot);
       }
 
-      private Task<ModelDataRepository[]> observedDataFrom(SnapshotDataRepository[] snapshotRepositories)
+      private Task<ModelDataRepository[]> observedDataFrom(DataRepository[] snapshotRepositories, SnapshotContext snapshotContext)
       {
-         return awaitAs<ModelDataRepository>(mapSnapshotsToModels(snapshotRepositories));
+         return awaitAs<ModelDataRepository>(mapSnapshotsToModels(snapshotRepositories, snapshotContext));
       }
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, SnapshotContext snapshotContext)
@@ -317,12 +317,12 @@ namespace PKSim.Core.Snapshots.Mappers
          return array.Any() ? array : null;
       }
 
-      private IEnumerable<Task<object>> mapSnapshotsToModels(IEnumerable<object> snapshots)
+      private IEnumerable<Task<object>> mapSnapshotsToModels(IEnumerable<object> snapshots, SnapshotContext snapshotContext)
       {
          if (snapshots == null)
             return Enumerable.Empty<Task<object>>();
 
-         return snapshots.Select(snapshotMapper.MapToModel);
+         return snapshots.Select(x => snapshotMapper.MapToModel(x, snapshotContext));
       }
 
       private async Task<IEnumerable<IPKSimBuildingBlock>> mapSnapshotToBuildingBlocks<TModel, TSnapshot>(IEnumerable<TSnapshot> snapshots, SnapshotContext snapshotContext) where TModel : IPKSimBuildingBlock
@@ -348,8 +348,8 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshot == null)
             return null;
 
-         var mapper = snapshotMapper.MapperFor(snapshot) as ISnapshotMapperWithContext<TModel, TSnapshot, SnapshotContext>;
-         return await mapper.MapToModel(snapshot, snapshotContext);
+         var mapper = snapshotMapper.MapperFor(snapshot);
+         return await mapper.MapToModel(snapshot, snapshotContext) as IPKSimBuildingBlock;
       }
 
       private ISnapshotMapper snapshotMapper => _snapshotMapper.Value;

@@ -316,27 +316,27 @@ namespace PKSim.Core
          A.CallTo(() => _individualSnapshotMapper.MapToModel(_individualSnapshot, A<SnapshotContext>._)).Returns(_individual);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_expressionProfileSnapshot)).Returns(_defaultMapper);
-         A.CallTo(() => _defaultMapper.MapToModel(_expressionProfileSnapshot)).Returns(_expressionProfile);
+         A.CallTo(() => _defaultMapper.MapToModel(_expressionProfileSnapshot, A<SnapshotContext>._)).Returns(_expressionProfile);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_compoundSnapshot)).Returns(_defaultMapper);
-         A.CallTo(() => _defaultMapper.MapToModel(_compoundSnapshot)).Returns(_compound);
+         A.CallTo(() => _defaultMapper.MapToModel(_compoundSnapshot, A<SnapshotContext>._)).Returns(_compound);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_protocolSnapshot)).Returns(_defaultMapper);
-         A.CallTo(() => _defaultMapper.MapToModel(_protocolSnapshot)).Returns(_protocol);
+         A.CallTo(() => _defaultMapper.MapToModel(_protocolSnapshot, A<SnapshotContext>._)).Returns(_protocol);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_formulationSnapshot)).Returns(_defaultMapper);
-         A.CallTo(() => _defaultMapper.MapToModel(_formulationSnapshot)).Returns(_formulation);
+         A.CallTo(() => _defaultMapper.MapToModel(_formulationSnapshot, A<SnapshotContext>._)).Returns(_formulation);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_eventSnapshot)).Returns(_defaultMapper);
-         A.CallTo(() => _defaultMapper.MapToModel(_eventSnapshot)).Returns(_event);
+         A.CallTo(() => _defaultMapper.MapToModel(_eventSnapshot, A<SnapshotContext>._)).Returns(_event);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_populationSnapshot)).Returns(_defaultMapper);
-         A.CallTo(() => _defaultMapper.MapToModel(_populationSnapshot)).Returns(_population);
+         A.CallTo(() => _defaultMapper.MapToModel(_populationSnapshot, A<SnapshotContext>._)).Returns(_population);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_observerSetSnapshot)).Returns(_defaultMapper);
-         A.CallTo(() => _defaultMapper.MapToModel(_observerSetSnapshot)).Returns(_observerSet);
+         A.CallTo(() => _defaultMapper.MapToModel(_observerSetSnapshot, A<SnapshotContext>._)).Returns(_observerSet);
 
-         A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
+         A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot, A<SnapshotContext>._)).Returns(_observedData);
          A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).Returns(_simulation);
          A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<SimulationContext>._)).Throws(new Exception());
          A.CallTo(() => _simulationComparisonMapper.MapToModel(_simulationComparisonSnapshot, A<SnapshotContext>._)).Returns(_simulationComparison);

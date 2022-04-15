@@ -72,7 +72,7 @@ namespace PKSim.Core
          _snapshot.Description = "The description that will be deserialized";
 
          _newObserverBuilder  =new ContainerObserverBuilder();
-         A.CallTo(() => _observerMapper.MapToModel(_observerSnapshot)).Returns(_newObserverBuilder);
+         A.CallTo(() => _observerMapper.MapToModel(_observerSnapshot, A<SnapshotContext>._)).Returns(_newObserverBuilder);
       }
 
       protected override async Task Because()

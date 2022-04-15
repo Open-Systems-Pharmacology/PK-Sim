@@ -43,11 +43,12 @@ namespace PKSim.Core.Snapshots.Mappers
       ///    Given a <paramref name="snapshot" /> object, returns the corresponding model.
       /// </summary>
       /// <param name="snapshot">Snapshot object convert to model</param>
+      /// <param name="snapshotContext">Snapshot context</param>
       /// <exception cref="SnapshotNotFoundException">
       ///    is thrown if a snapshot could not be found for the given
       ///    <paramref name="snapshot" />
       /// </exception>
-      Task<object> MapToModel(object snapshot);
+      Task<object> MapToModel(object snapshot, SnapshotContext snapshotContext);
 
       /// <summary>
       ///    Returns the snapshot type for the model type <typeparamref name="T" />
@@ -71,19 +72,6 @@ namespace PKSim.Core.Snapshots.Mappers
       /// </summary>
       ISnapshotMapper MapperFor(Type modelOrSnapshotType);
    }
-
-   // public interface ISnapshotMapperWithContext<TModel, TSnapshot> : ISnapshotMapper
-   // {
-   //    /// <summary>
-   //    ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="project" />
-   //    ///    as context
-   //    /// </summary>
-   //    /// <exception cref="SnapshotNotFoundException">
-   //    ///    is thrown if a snapshot could not be found for the given
-   //    ///    <paramref name="snapshot" />
-   //    /// </exception>
-   //    Task<TModel> MapToModelWithContext(TSnapshot snapshot, SnapshotContext snapshotContext);
-   // }
 
    public interface ISnapshotMapperWithContext<TModel, TSnapshot, in TSnapshotContext>: ISnapshotMapper where TSnapshotContext : SnapshotContext
    {
@@ -109,7 +97,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public Task<object> MapToSnapshot(object model) => MapperFor(model).MapToSnapshot(model);
 
-      public Task<object> MapToModel(object snapshot) => MapperFor(snapshot).MapToModel(snapshot);
+      public Task<object> MapToModel(object snapshot, SnapshotContext snapshotContext) => MapperFor(snapshot).MapToModel(snapshot, snapshotContext);
 
       public Type SnapshotTypeFor<T>()
       {

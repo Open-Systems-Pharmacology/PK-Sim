@@ -141,7 +141,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProtocol = (await sut.MapToModel(_snapshot)).DowncastTo<SimpleProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot, A<SnapshotContext>._)).DowncastTo<SimpleProtocol>();
       }
 
       [Observation]
@@ -175,12 +175,12 @@ namespace PKSim.Core
          _snapshot.Description = "The description that will be deserialized";
 
          _newSchema = new Schema().WithName("I am a new schema");
-         A.CallTo(() => _schemaMapper.MapToModel(_snapshotSchema)).Returns(_newSchema);
+         A.CallTo(() => _schemaMapper.MapToModel(_snapshotSchema, A<SnapshotContext>._)).Returns(_newSchema);
       }
 
       protected override async Task Because()
       {
-         _newProtocol = (await sut.MapToModel(_snapshot)).DowncastTo<AdvancedProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot, A<SnapshotContext>._)).DowncastTo<AdvancedProtocol>();
       }
 
       [Observation]

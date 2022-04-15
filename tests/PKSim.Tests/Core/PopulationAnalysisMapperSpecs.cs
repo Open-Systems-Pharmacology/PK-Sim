@@ -129,8 +129,8 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_populationPivotAnalysis);
          _newPivotAnalysis = new PopulationPivotAnalysis();
 
-         A.CallTo(() => _fieldMapper.MapToModel(_snapshotField1)).Returns(_field1);
-         A.CallTo(() => _fieldMapper.MapToModel(_snapshotField2)).Returns(_field2);
+         A.CallTo(() => _fieldMapper.MapToModel(_snapshotField1, A<SnapshotContext>._)).Returns(_field1);
+         A.CallTo(() => _fieldMapper.MapToModel(_snapshotField2, A<SnapshotContext>._)).Returns(_field2);
       }
 
       protected override async Task Because()

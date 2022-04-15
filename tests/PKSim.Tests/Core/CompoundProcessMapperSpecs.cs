@@ -155,7 +155,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newEnzymaticProcess = await sut.MapToModel(_snapshot) as EnzymaticProcess;
+         _newEnzymaticProcess = await sut.MapToModel(_snapshot, new SnapshotContext()) as EnzymaticProcess;
       }
 
       [Observation]
@@ -210,7 +210,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newEnzymaticProcess = await sut.MapToModel(_snapshot) as EnzymaticProcessWithSpecies;
+         _newEnzymaticProcess = await sut.MapToModel(_snapshot, new SnapshotContext()) as EnzymaticProcessWithSpecies;
       }
 
     [Observation]
