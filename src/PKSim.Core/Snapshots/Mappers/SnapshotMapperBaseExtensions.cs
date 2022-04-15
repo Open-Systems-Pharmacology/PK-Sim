@@ -75,11 +75,10 @@ namespace PKSim.Core.Snapshots.Mappers
       /// <summary>
       ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this ObjectBaseSnapshotMapperBase<TModel, TSnapshot,  TSnapshotContext, TModelContext> mapper, IEnumerable<TModel> models, TModelContext modelContext)
+      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TSnapshotContext, TModelContext>(this ObjectBaseSnapshotMapperBase<TModel, TSnapshot,  TSnapshotContext, TModelContext> mapper, IEnumerable<TModel> models, TModelContext modelContext)
          where TSnapshot : IWithName, IWithDescription, new() 
-         where TModel : IWithName, IWithDescription 
-         where TModelContext : SnapshotContext 
-         where TSnapshotContext : SnapshotContext
+         where TModel : IWithName, IWithDescription
+         where TSnapshotContext : SnapshotContext 
       {
          return MapTo(models, m => mapper.MapToSnapshot(m, modelContext));
       }

@@ -78,7 +78,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Populations = await mapBuildingBlocksToSnapshots<Population>(project.All<Model.Population>());
          snapshot.ObserverSets = await mapBuildingBlocksToSnapshots<ObserverSet>(project.All<Model.ObserverSet>());
          snapshot.ObservedData = await mapObservedDataToSnapshots(project.AllObservedData);
-         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>());
+         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
          snapshot.ParameterIdentifications = await mapParameterIdentificationToSnapshots(project.AllParameterIdentifications);
          snapshot.SimulationComparisons = await mapSimulationComparisonsToSnapshots(project.AllSimulationComparisons);
          snapshot.QualificationPlans = await mapQualificationPlansToSnapshots(project.AllQualificationPlans);
@@ -164,10 +164,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return await _simulationComparisonMapper.MapToSnapshots(allSimulationComparisons);
       }
 
-      private async Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations)
+      private async Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations, ModelProject project)
       {
          allSimulations.Each(loadSimulation);
-         return await _simulationMapper.MapToSnapshots(allSimulations);
+         return await _simulationMapper.MapToSnapshots(allSimulations, project);
       }
 
       private async Task<QualificationPlan[]> mapQualificationPlansToSnapshots(IReadOnlyCollection<Model.QualificationPlan> allQualificationPlans)
