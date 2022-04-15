@@ -353,13 +353,13 @@ namespace PKSim.Core
       public void should_return_a_project_with_the_expected_building_blocks()
       {
          _newProject.All<Compound>().ShouldContain(_compound);
-         _newProject.All<Individual>().ShouldContain(_individual);
          _newProject.All<PKSimEvent>().ShouldContain(_event);
          _newProject.All<Formulation>().ShouldContain(_formulation);
          _newProject.All<Protocol>().ShouldContain(_protocol);
          _newProject.All<Population>().ShouldContain(_population);
          _newProject.All<ObserverSet>().ShouldContain(_observerSet);
          _newProject.All<ExpressionProfile>().ShouldContain(_expressionProfile);
+         _newProject.All<Individual>().ShouldContain(_individual);
       }
 
       [Observation]

@@ -106,23 +106,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_an_advanced_parameter_snapshot_to_snapshot_using_the_wrong_overload : concern_for_AdvancedParameterMapper
-   {
-      private Snapshots.AdvancedParameter _snapshot;
-
-      protected override async Task Context()
-      {
-         await base.Context();
-         _snapshot = await sut.MapToSnapshot(_advancedParameter);
-      }
-
-      [Observation]
-      public void should_throw_an_exception()
-      {
-         The.Action(() => sut.MapToModel(_snapshot, A<SnapshotContext>._)).ShouldThrowAn<NotSupportedException>();
-      }
-   }
-
    public class When_mapping_an_advanced_parameter_snapshot_to_snapshot_for_a_well_defined_parameter : concern_for_AdvancedParameterMapper
    {
       private Snapshots.AdvancedParameter _snapshot;

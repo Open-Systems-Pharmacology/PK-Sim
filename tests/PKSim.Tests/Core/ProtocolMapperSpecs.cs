@@ -141,7 +141,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProtocol = (await sut.MapToModel(_snapshot, A<SnapshotContext>._)).DowncastTo<SimpleProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot, new SnapshotContext())).DowncastTo<SimpleProtocol>();
       }
 
       [Observation]
@@ -180,7 +180,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProtocol = (await sut.MapToModel(_snapshot, A<SnapshotContext>._)).DowncastTo<AdvancedProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot, new SnapshotContext())).DowncastTo<AdvancedProtocol>();
       }
 
       [Observation]

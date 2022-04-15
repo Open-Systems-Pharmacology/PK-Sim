@@ -246,7 +246,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newParameterField = await sut.MapToModel(_snapshot, A<SnapshotContext>._) as PopulationAnalysisParameterField;
+         _newParameterField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisParameterField;
       }
 
       [Observation]
@@ -271,7 +271,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newPKParameterField = await sut.MapToModel(_snapshot, A<SnapshotContext>._) as PopulationAnalysisPKParameterField;
+         _newPKParameterField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisPKParameterField;
       }
 
       [Observation]
@@ -298,7 +298,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCovariateField = await sut.MapToModel(_snapshot, A<SnapshotContext>._) as PopulationAnalysisCovariateField;
+         _newCovariateField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisCovariateField;
       }
 
       [Observation]
@@ -322,7 +322,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOutputField = await sut.MapToModel(_snapshot, A<SnapshotContext>._) as PopulationAnalysisOutputField;
+         _newOutputField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisOutputField;
       }
 
       [Observation]
