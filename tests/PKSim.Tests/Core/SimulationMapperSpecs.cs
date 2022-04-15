@@ -132,7 +132,7 @@ namespace PKSim.Core
 
 
          _event = new PKSimEvent {Name = "Event"};
-         _population = new RandomPopulation() {Name = "POP", Id="PopTemplateId"};
+         _population = new RandomPopulation() {Name = "POP", Id = "PopTemplateId"};
          _observedData = new DataRepository("OBS_ID").WithName("OBS");
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(_compound);
@@ -261,7 +261,7 @@ namespace PKSim.Core
          _outputSelectionSnapshot = new OutputSelections();
          A.CallTo(() => _outputSelectionMapper.MapToSnapshot(_individualSimulation.OutputSelections)).Returns(_outputSelectionSnapshot);
 
-         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotInteraction, _inductionProcess)).Returns(_interactionSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotInteraction, A<CompoundProcessSnapshotContext>.That.Matches(x => x.Process == _inductionProcess))).Returns(_interactionSelection);
 
          return _completed;
       }
@@ -511,7 +511,7 @@ namespace PKSim.Core
 
          _outputSelection = new OSPSuite.Core.Domain.OutputSelections();
          _outputSelection.AddOutput(new QuantitySelection("PATH", QuantityType.BaseGrid));
-         A.CallTo(() => _outputSelectionMapper.MapToModel(_snapshot.OutputSelections, individualSimulation)).Returns(_outputSelection);
+         A.CallTo(() => _outputSelectionMapper.MapToModel(_snapshot.OutputSelections, A<SnapshotContextWithSimulation>.That.Matches(x => x.Simulation == individualSimulation))).Returns(_outputSelection);
 
          _solver = new SolverSettings();
          A.CallTo(() => _solverSettingsMapper.MapToModel(_snapshot.Solver)).Returns(_solver);
@@ -531,13 +531,13 @@ namespace PKSim.Core
          A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, A<SimulationRunOptions>._))
             .Invokes(x => { individualSimulation.DataRepository = _calculatedDataRepository; });
 
-         A.CallTo(() => _eventMappingMapper.MapToModel(_eventSelection, _project)).Returns(_eventMapping);
-         A.CallTo(() => _observerSetMappingMapper.MapToModel(_observerSetSelection, _project)).Returns(_observerSetMapping);
+         A.CallTo(() => _eventMappingMapper.MapToModel(_eventSelection, A<SnapshotContext>._)).Returns(_eventMapping);
+         A.CallTo(() => _observerSetMappingMapper.MapToModel(_observerSetSelection, A<SnapshotContext>._)).Returns(_observerSetMapping);
       }
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(_project, run: true));
+         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(run: true, new SnapshotContext(_project, ProjectVersions.Current)));
       }
 
       [Observation]
@@ -632,6 +632,7 @@ namespace PKSim.Core
    {
       private Model.Simulation _simulation;
       private SimulationAnalysisContext _context;
+      private SimulationContext _snapshotSimulationContext;
 
       protected override async Task Context()
       {
@@ -655,11 +656,13 @@ namespace PKSim.Core
          A.CallTo(() => _populationAnalysisChartMapper.MapToModel(_snapshotPopulationAnalysisChart, A<SimulationAnalysisContext>._))
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .Returns(_populationSimulationAnalysisChart);
+
+         _snapshotSimulationContext = new SimulationContext(run: false, new SnapshotContext());
       }
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(_project, run: false));
+         _simulation = await sut.MapToModel(_snapshot, _snapshotSimulationContext);
       }
 
       [Observation]
@@ -667,7 +670,7 @@ namespace PKSim.Core
       {
          _simulation.ShouldBeAnInstanceOf<PopulationSimulation>();
          var populationSimulation = _simulation.DowncastTo<PopulationSimulation>();
-         A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, populationSimulation)).MustHaveHappened();
+         A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, populationSimulation, _snapshotSimulationContext)).MustHaveHappened();
       }
 
       [Observation]

@@ -106,15 +106,18 @@ namespace PKSim.Core
       private RandomPopulation _randomPopulation;
       private RandomPopulationSettings _newPopulationSettings;
       private PKSimProject _project;
+      private SnapshotContext _snapshotContext;
 
       protected override async Task Context()
       {
          await base.Context();
          _project = new PKSimProject();
+         _snapshotContext = new SnapshotContext(_project,ProjectVersions.Current);
+         
          _randomPopulation = CreateRandomPopulation();
          _newPopulationSettings = new RandomPopulationSettings();
          _snapshot = await sut.MapToSnapshot(_randomPopulation);
-         A.CallTo(() => _randomPopulationSettingsMapper.MapToModel(_snapshot.Settings, _project)).Returns(_newPopulationSettings);
+         A.CallTo(() => _randomPopulationSettingsMapper.MapToModel(_snapshot.Settings, _snapshotContext)).Returns(_newPopulationSettings);
          var mappedPopulation = A.Fake<RandomPopulation>();
          mappedPopulation.SetAdvancedParameters(new AdvancedParameterCollection());
          A.CallTo(() => _randomPopulationFactory.CreateFor(_newPopulationSettings, CancellationToken.None, _snapshot.Seed, false)).Returns(mappedPopulation);
@@ -122,7 +125,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newPopulation = await sut.MapToModel(_snapshot, _project) as RandomPopulation;
+         _newPopulation = await sut.MapToModel(_snapshot, _snapshotContext) as RandomPopulation;
       }
 
       [Observation]
@@ -141,7 +144,7 @@ namespace PKSim.Core
       [Observation]
       public void should_map_all_advanced_parameters()
       {
-         A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, _newPopulation)).MustHaveHappened();
+         A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, _newPopulation, _snapshotContext)).MustHaveHappened();
       }
    }
 

@@ -156,7 +156,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name, A<SnapshotContext>._)).MustHaveHappened();
      }
    }
 
@@ -199,7 +199,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name, A<SnapshotContext>._)).MustHaveHappened();
       }
    }
 

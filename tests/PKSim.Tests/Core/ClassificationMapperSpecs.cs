@@ -45,7 +45,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_child, ClassificationType.ObservedData);
+         _result = await sut.MapToModel(_child, new ClassificationSnapshotContext(ClassificationType.ObservedData, new SnapshotContext()));
       }
 
       [Observation]

@@ -83,43 +83,43 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot)
+      public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot, SnapshotContext snapshotContext)
       {
          var expressionProfile = _expressionProfileFactory.Create(snapshot.Type, snapshot.Species, snapshot.Molecule);
          expressionProfile.Description = snapshot.Description;
          expressionProfile.Category = snapshot.Category;
 
          var (molecule, individual) = expressionProfile;
-         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, !isV9Format(snapshot));
+         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, !isV9Format(snapshot));
 
          updateMoleculePropertiesToMolecule(molecule, snapshot, individual);
 
-         var ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, individual);
+         var snapshotWithSubjectContext = new SnapshotContextWithSubject(individual, snapshotContext);
+         var ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, snapshotWithSubjectContext);
          _ontogenyTask.SetOntogenyForMolecule(molecule, ontogeny, individual);
 
-         var context = new ExpressionContainerMapperContext
+         var context = new ExpressionContainerMapperContext(snapshotContext)
          {
             Molecule = molecule,
             ExpressionParameters = individual.AllExpressionParametersFor(molecule),
-            MoleculeExpressionContainers = individual.AllMoleculeContainersFor(molecule)
+            MoleculeExpressionContainers = individual.AllMoleculeContainersFor(molecule),
          };
-
          await _expressionContainerMapper.MapToModels(snapshot.Expression, context);
 
          //We need to normalize relative expressions when loading from old format
          if (isV9Format(snapshot))
          {
             //Global parameters were saved directly under the snapshot parameter 
-            await updateGlobalMoleculeParameters(snapshot, molecule);
+            await updateGlobalMoleculeParameters(snapshot, molecule, snapshotContext);
             NormalizeRelativeExpressionCommand.NormalizeExpressions(individual, molecule);
          }
 
          return expressionProfile;
       }
 
-      private Task updateGlobalMoleculeParameters(SnapshotExpressionProfile snapshot, IndividualMolecule molecule)
+      private Task updateGlobalMoleculeParameters(SnapshotExpressionProfile snapshot, IndividualMolecule molecule, SnapshotContext snapshotContext)
       {
-         return _parameterMapper.MapParameters(snapshot.Parameters, molecule, molecule.Name);
+         return _parameterMapper.MapParameters(snapshot.Parameters, molecule, molecule.Name, snapshotContext);
       }
 
       private void updateMoleculePropertiesToMolecule(IndividualMolecule molecule, SnapshotExpressionProfile snapshot, ModelIndividual individual)

@@ -10,16 +10,26 @@ using SnapshotAdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class AdvancedParameterMapper : ParameterContainerSnapshotMapperBase<ModelAdvancedParameter, SnapshotAdvancedParameter, PathCache<IParameter>>
+   public class AdvancedParameterSnapshotContext : SnapshotContext
+   {
+      public PathCache<IParameter> AllParameters { get; }
+
+      public AdvancedParameterSnapshotContext(PathCache<IParameter> allParameters, SnapshotContext baseContext) : base(baseContext)
+      {
+         AllParameters = allParameters;
+      }
+   }
+
+   public class AdvancedParameterMapper : ParameterContainerSnapshotMapperBase<ModelAdvancedParameter, SnapshotAdvancedParameter, AdvancedParameterSnapshotContext>
    {
       private readonly IAdvancedParameterFactory _advancedParameterFactory;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IOSPSuiteLogger _logger;
 
       public AdvancedParameterMapper(
-         ParameterMapper parameterMapper, 
-         IAdvancedParameterFactory advancedParameterFactory, 
-         IEntityPathResolver entityPathResolver, 
+         ParameterMapper parameterMapper,
+         IAdvancedParameterFactory advancedParameterFactory,
+         IEntityPathResolver entityPathResolver,
          IOSPSuiteLogger logger) : base(parameterMapper)
       {
          _advancedParameterFactory = advancedParameterFactory;
@@ -43,8 +53,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return AddParametersToSnapshot(model.AllParameters, snapshot);
       }
 
-      public override async Task<ModelAdvancedParameter> MapToModel(SnapshotAdvancedParameter snapshot, PathCache<IParameter> allParameters)
+      public override async Task<ModelAdvancedParameter> MapToModel(SnapshotAdvancedParameter snapshot, AdvancedParameterSnapshotContext snapshotContext)
       {
+         var allParameters = snapshotContext.AllParameters;
          var parameter = allParameters[snapshot.Name];
          if (parameter == null)
          {
@@ -55,11 +66,11 @@ namespace PKSim.Core.Snapshots.Mappers
          var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.ById(snapshot.DistributionType));
          advancedParameter.Seed = snapshot.Seed;
 
-         await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter);
+         await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter, snapshotContext);
          return advancedParameter;
       }
 
-      public virtual async Task MapToModel(SnapshotAdvancedParameter[] snapshotAdvancedParameters, IAdvancedParameterContainer advancedParameterContainer)
+      public virtual async Task MapToModel(SnapshotAdvancedParameter[] snapshotAdvancedParameters, IAdvancedParameterContainer advancedParameterContainer, SnapshotContext snapshotContext)
       {
          if (snapshotAdvancedParameters == null || advancedParameterContainer == null)
             return;
@@ -67,7 +78,7 @@ namespace PKSim.Core.Snapshots.Mappers
          advancedParameterContainer.RemoveAllAdvancedParameters();
          var parameterCache = advancedParameterContainer.AllParameters(_entityPathResolver);
 
-         var advancedParameters = await this.MapToModels(snapshotAdvancedParameters, parameterCache);
+         var advancedParameters = await this.MapToModels(snapshotAdvancedParameters, new AdvancedParameterSnapshotContext(parameterCache, snapshotContext));
 
          advancedParameters.Each(x => advancedParameterContainer.AddAdvancedParameter(x, generateRandomValues: true));
       }

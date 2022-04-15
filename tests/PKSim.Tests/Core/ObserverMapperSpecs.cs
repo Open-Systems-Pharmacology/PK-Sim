@@ -113,7 +113,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -162,7 +162,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

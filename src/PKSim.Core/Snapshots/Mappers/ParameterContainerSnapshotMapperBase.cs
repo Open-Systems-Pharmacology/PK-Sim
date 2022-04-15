@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot> : ObjectBaseSnapshotMapperBase<TModel, TSnapshot>
+   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> : ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext>
       where TModel : IContainer
       where TSnapshot : ParameterContainerSnapshotBase, new()
+      where TSnapshotContext : SnapshotContext
    {
       protected readonly ParameterMapper _parameterMapper;
 
@@ -39,42 +39,35 @@ namespace PKSim.Core.Snapshots.Mappers
 
       protected virtual bool ShouldExportParameterToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
 
-      protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, string containerDescriptor = null)
+      protected Task UpdateParametersFromSnapshot(TSnapshot snapshot, IContainer container, SnapshotContext snapshotContext, string containerDescriptor = null)
       {
-         return _parameterMapper.MapParameters(snapshot.Parameters, container, containerDescriptor ?? container.Name);
+         return _parameterMapper.MapParameters(snapshot.Parameters, container, containerDescriptor ?? container.Name, snapshotContext);
       }
    }
 
-   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TContext> : ParameterContainerSnapshotMapperBase<TModel, TSnapshot>
+   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext, TModelContext> :
+      ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext>
       where TModel : IContainer
-      where TSnapshot : ParameterContainerSnapshotBase, new()
+      where TSnapshot : ParameterContainerSnapshotBase, new() where TSnapshotContext : SnapshotContext
    {
       protected ParameterContainerSnapshotMapperBase(ParameterMapper parameterMapper) : base(parameterMapper)
       {
       }
 
-      public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
-
-      public override Task<TModel> MapToModel(TSnapshot snapshot)
-      {
-         return Task.FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
-      }
-   }
-
-   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> :
-      ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TModelContext>
-      where TModel : IContainer
-      where TSnapshot : ParameterContainerSnapshotBase, new()
-   {
-      protected ParameterContainerSnapshotMapperBase(ParameterMapper parameterMapper) : base(parameterMapper)
-      {
-      }
-
-      public abstract Task<TSnapshot> MapToSnapshot(TModel model, TSnapshotContext context);
+      public abstract Task<TSnapshot> MapToSnapshot(TModel model, TModelContext context);
 
       public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
       {
-         return Task.FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TSnapshotContext>());
+         return Task.FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TModelContext>());
+      }
+   }
+
+   public abstract class ParameterContainerSnapshotMapperBase<TModel, TSnapshot> : ParameterContainerSnapshotMapperBase<TModel, TSnapshot, SnapshotContext>
+      where TModel : IContainer
+      where TSnapshot : ParameterContainerSnapshotBase, new()
+   {
+      protected ParameterContainerSnapshotMapperBase(ParameterMapper parameterMapper) : base(parameterMapper)
+      {
       }
    }
 }

@@ -112,7 +112,7 @@ namespace PKSim.R.Services
 
       private OriginData originDataFrom(Core.Snapshots.OriginData originData)
       {
-         return _originDataMapper.MapToModel(originData).Result;
+         return _originDataMapper.MapToModel(originData, new SnapshotContext()).Result;
       }
 
       private ParameterValueWithUnit parameterValueFrom(IParameter parameter)

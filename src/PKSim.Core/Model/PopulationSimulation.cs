@@ -22,7 +22,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual ParameterValuesCache ParameterValuesCache { get; private set; }
 
-      public virtual AgingData AgingData { get; private set; }
+      public virtual AgingData AgingData { get; }
 
       public PopulationSimulation()
       {
@@ -201,7 +201,6 @@ namespace PKSim.Core.Model
       {
          return PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
       }
-
 
       public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
 

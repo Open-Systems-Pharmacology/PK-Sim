@@ -12,7 +12,7 @@ using PKSim.Core.Snapshots.Mappers;
 using CalculationMethodCache = PKSim.Core.Snapshots.CalculationMethodCache;
 using Compound = PKSim.Core.Snapshots.Compound;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
-using ValueOrigin = OSPSuite.Core.Domain.ValueOrigin;
+using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core
 {
@@ -33,8 +33,8 @@ namespace PKSim.Core
       private ParameterAlternativeGroup _compoundIntestinalPermeabilityAlternativeGroup;
       private ParameterAlternative _calculatedAlternative;
       protected ValueOriginMapper _valueOriginMapper;
-      protected Snapshots.ValueOrigin _snapshotValueOrigin;
-      protected ValueOrigin _pkaValueOrigin;
+      protected ValueOrigin _snapshotValueOrigin;
+      protected OSPSuite.Core.Domain.ValueOrigin _pkaValueOrigin;
       private IParameter _molweightParameter;
       private IParameter _halogenFParameter;
 
@@ -45,16 +45,16 @@ namespace PKSim.Core
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
          _processMapper = A.Fake<CompoundProcessMapper>();
          _compoundFactory = A.Fake<ICompoundFactory>();
-         _valueOriginMapper= A.Fake<ValueOriginMapper>();
-         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper,_valueOriginMapper, _compoundFactory);
+         _valueOriginMapper = A.Fake<ValueOriginMapper>();
+         sut = new CompoundMapper(_parameterMapper, _alternativeMapper, _calculationMethodCacheMapper, _processMapper, _valueOriginMapper, _compoundFactory);
 
          _compound = new Model.Compound
          {
             Name = "Compound",
             Description = "Description"
          };
-         _pkaValueOrigin = new ValueOrigin { Method = ValueOriginDeterminationMethods.InVitro, Description = "PKA" };
-         _snapshotValueOrigin = new Snapshots.ValueOrigin { Method = ValueOriginDeterminationMethodId.InVivo, Description = "PKA" };
+         _pkaValueOrigin = new OSPSuite.Core.Domain.ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro, Description = "PKA"};
+         _snapshotValueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethodId.InVivo, Description = "PKA"};
 
          addPkAParameters(_compound, 0, 8, CompoundType.Base);
          addPkAParameters(_compound, 1, 4, CompoundType.Acid);
@@ -206,13 +206,14 @@ namespace PKSim.Core
          _snapshot.PkaTypes = new[]
          {
             new PkaType {Pka = 1, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin},
-            new PkaType {Pka = 2, Type = CompoundType.Base,ValueOrigin = _snapshotValueOrigin},
+            new PkaType {Pka = 2, Type = CompoundType.Base, ValueOrigin = _snapshotValueOrigin},
             new PkaType {Pka = 3, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin},
          };
 
          _fractionUnboundAlternative = new ParameterAlternative().WithName("Alternative");
          _fractionUnboundParameterGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND);
-         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], _fractionUnboundParameterGroup)).Returns(_fractionUnboundAlternative);
+         A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], A<AlternativeMapperSnapshotContext>.That.Matches(x => x.ParameterAlternativeGroup == _fractionUnboundParameterGroup)))
+            .Returns(_fractionUnboundAlternative);
 
          _snapshot.Processes = new[] {_snapshotProcess1};
          _newProcess = new EnzymaticProcess();
@@ -226,7 +227,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCompound = await sut.MapToModel(_snapshot);
+         _newCompound = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -294,7 +295,6 @@ namespace PKSim.Core
          _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[2].Type);
          _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE3).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
       }
-
 
       [Observation]
       public void should_have_ensured_that_the_mol_weight_and_halogen_parameters_share_the_same_value_origin()

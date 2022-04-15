@@ -295,7 +295,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -366,7 +366,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -394,7 +394,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -426,7 +426,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -484,7 +484,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

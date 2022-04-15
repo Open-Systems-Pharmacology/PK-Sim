@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Chart;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using CurveChart = PKSim.Core.Snapshots.CurveChart;
 
 namespace PKSim.Core
@@ -100,12 +99,12 @@ namespace PKSim.Core
    {
       private SimulationAnalysisContext _context;
       private SimulationTimeProfileChart _newChart;
-      private string _newId = "NewChartId";
+      private readonly string _newId = "NewChartId";
 
       protected override async Task Context()
       {
          await base.Context();
-         _context = new SimulationAnalysisContext();
+         _context = new SimulationAnalysisContext(null, new SnapshotContext());
          _snapshot = await sut.MapToSnapshot(_curveChart);
          _snapshot.Axes = new[] {_snapshotAxis,};
 
@@ -123,7 +122,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_basic_chart_properties()
       {
-         A.CallTo(() => _chartMapper.MapToModel(_snapshot, _newChart)).MustHaveHappened();
+         A.CallTo(() => _chartMapper.MapToModel(_snapshot, A<ChartSnapshotContext>.That.Matches(x => x.Chart == _newChart))).MustHaveHappened();
       }
 
       [Observation]

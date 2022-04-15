@@ -139,7 +139,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOntogeny = await sut.MapToModel(_snapshot, _simulationSubject);
+         _newOntogeny = await sut.MapToModel(_snapshot, new SnapshotContextWithSubject(_simulationSubject, new SnapshotContext()));
       }
 
       [Observation]

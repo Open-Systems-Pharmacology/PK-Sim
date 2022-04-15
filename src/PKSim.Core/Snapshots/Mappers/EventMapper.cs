@@ -22,11 +22,11 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override async Task<ModelEvent> MapToModel(SnapshotEvent snapshotEvent)
+      public override async Task<ModelEvent> MapToModel(SnapshotEvent snapshotEvent, SnapshotContext snapshotContext)
       {
          var modelEvent = _eventFactory.Create(snapshotEvent.Template);
          MapSnapshotPropertiesToModel(snapshotEvent, modelEvent);
-         await UpdateParametersFromSnapshot(snapshotEvent, modelEvent, snapshotEvent.Template);
+         await UpdateParametersFromSnapshot(snapshotEvent, modelEvent, snapshotContext, snapshotEvent.Template);
          return modelEvent;
       }
    }

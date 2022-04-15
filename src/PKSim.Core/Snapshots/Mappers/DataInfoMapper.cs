@@ -44,7 +44,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return null;
       }
 
-      public override async Task<ModelDataInfo> MapToModel(SnapshotDataInfo snapshot)
+      public override async Task<ModelDataInfo> MapToModel(SnapshotDataInfo snapshot, SnapshotContext snapshotContext)
       {
          var origin = ModelValueFor(snapshot.Origin, ColumnOrigins.Undefined);
          var dataInfo = new ModelDataInfo(origin)
@@ -58,7 +58,7 @@ namespace PKSim.Core.Snapshots.Mappers
             Source = ModelValueFor(snapshot.Source)
          };
 
-         var extendedProperties = await _extendedPropertyMapper.MapToModels(snapshot.ExtendedProperties);
+         var extendedProperties = await _extendedPropertyMapper.MapToModels(snapshot.ExtendedProperties, snapshotContext);
          extendedProperties?.Each(dataInfo.ExtendedProperties.Add);
 
          return dataInfo;

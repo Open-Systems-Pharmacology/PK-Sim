@@ -1,14 +1,22 @@
 ﻿using System.Threading.Tasks;
-using OSPSuite.Core.Domain.UnitSystem;
-using PKSim.Assets;
-using SnapshoParameterRange = PKSim.Core.Snapshots.ParameterRange;
+using SnapshotParameterRange = PKSim.Core.Snapshots.ParameterRange;
 using ModelParameterRange = PKSim.Core.Model.ParameterRange;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterRangeMapper : SnapshotMapperBase<ModelParameterRange, SnapshoParameterRange, ModelParameterRange>
+   public class ParameterRangeSnapshotContext : SnapshotContext
    {
-      public override async Task<SnapshoParameterRange> MapToSnapshot(ModelParameterRange parameterRange)
+      public ModelParameterRange ParameterRange { get; }
+
+      public ParameterRangeSnapshotContext(ModelParameterRange parameterRange, SnapshotContext baseContext) : base(baseContext)
+      {
+         ParameterRange = parameterRange;
+      }
+   }
+
+   public class ParameterRangeMapper : SnapshotMapperBase<ModelParameterRange, SnapshotParameterRange, ParameterRangeSnapshotContext>
+   {
+      public override async Task<SnapshotParameterRange> MapToSnapshot(ModelParameterRange parameterRange)
       {
          if (parameterRange == null)
             return null;
@@ -25,8 +33,10 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelParameterRange> MapToModel(SnapshoParameterRange snapshot, ModelParameterRange parameterRange)
+      public override Task<ModelParameterRange> MapToModel(SnapshotParameterRange snapshot, ParameterRangeSnapshotContext snapshotContext)
       {
+         var parameterRange = snapshotContext.ParameterRange;
+
          //Range not available in population or snapshot range not defined. Nothing to do
          if (parameterRange == null || snapshot == null)
             return Task.FromResult(parameterRange);

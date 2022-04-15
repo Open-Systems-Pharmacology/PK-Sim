@@ -85,7 +85,7 @@ namespace PKSim.Matlab
          return DistributionsFor(matlabOriginData, Enumerable.Empty<MoleculeOntogeny>());
       }
 
-      private Core.Model.OriginData originDataFrom(OriginData matlabOriginData) => _originDataMapper.MapToModel(matlabOriginData).Result;
+      private Core.Model.OriginData originDataFrom(OriginData matlabOriginData) => _originDataMapper.MapToModel(matlabOriginData, new SnapshotContext()).Result;
 
       private DistributedParameterValue distributedParameterValueFrom(IDistributedParameter parameter)
       {

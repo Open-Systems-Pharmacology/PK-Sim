@@ -7,6 +7,27 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
+   public class SnapshotContext
+   {
+      public int Version { get; }
+      public PKSimProject Project { get; }
+
+      //This constructor should only be called when initiation the project load and the project is not available
+      public SnapshotContext() : this(new PKSimProject(), ProjectVersions.Current)
+      {
+      }
+
+      public SnapshotContext(PKSimProject project, int version)
+      {
+         Project = project;
+         Version = version;
+      }
+
+      public SnapshotContext(SnapshotContext baseContext) : this(baseContext.Project, baseContext.Version)
+      {
+      }
+   }
+
    public interface ISnapshotMapper
    {
       /// <summary>
@@ -21,6 +42,7 @@ namespace PKSim.Core.Snapshots.Mappers
       /// <summary>
       ///    Given a <paramref name="snapshot" /> object, returns the corresponding model.
       /// </summary>
+      /// <param name="snapshot">Snapshot object convert to model</param>
       /// <exception cref="SnapshotNotFoundException">
       ///    is thrown if a snapshot could not be found for the given
       ///    <paramref name="snapshot" />
@@ -28,37 +50,52 @@ namespace PKSim.Core.Snapshots.Mappers
       Task<object> MapToModel(object snapshot);
 
       /// <summary>
-      /// Returns the snapshot type for the model type <typeparamref name="T"/>
+      ///    Returns the snapshot type for the model type <typeparamref name="T" />
       /// </summary>
       /// <typeparam name="T">Model type for which the snapshot type should be found</typeparam>
       /// <exception cref="SnapshotNotFoundException">
       ///    is thrown if a snapshot could not be found for the given
-      ///    model type <typeparamref name="T"/>
+      ///    model type <typeparamref name="T" />
       /// </exception>
       Type SnapshotTypeFor<T>();
 
       /// <summary>
-      /// Returns the mapper associated with a given <paramref name="modelOrSnapshotType"/>
-      /// <exception cref="SnapshotNotFoundException">Is thrown if no mapper could be found for the given type</exception>
+      ///    Returns the mapper associated with a given <paramref name="modelOrSnapshotType" />
+      ///    <exception cref="SnapshotNotFoundException">Is thrown if no mapper could be found for the given type</exception>
       /// </summary>
       ISnapshotMapper MapperFor(object modelOrSnapshotType);
+
       /// <summary>
-      /// Returns the mapper associated with a given <paramref name="modelOrSnapshotType"/>
-      /// <exception cref="SnapshotNotFoundException">Is thrown if no mapper could be found for the given type</exception>
+      ///    Returns the mapper associated with a given <paramref name="modelOrSnapshotType" />
+      ///    <exception cref="SnapshotNotFoundException">Is thrown if no mapper could be found for the given type</exception>
       /// </summary>
       ISnapshotMapper MapperFor(Type modelOrSnapshotType);
    }
 
-   public interface ISnapshotMapperWithProjectAsContext<TModel, TSnapshot>: ISnapshotMapper
+   // public interface ISnapshotMapperWithContext<TModel, TSnapshot> : ISnapshotMapper
+   // {
+   //    /// <summary>
+   //    ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="project" />
+   //    ///    as context
+   //    /// </summary>
+   //    /// <exception cref="SnapshotNotFoundException">
+   //    ///    is thrown if a snapshot could not be found for the given
+   //    ///    <paramref name="snapshot" />
+   //    /// </exception>
+   //    Task<TModel> MapToModelWithContext(TSnapshot snapshot, SnapshotContext snapshotContext);
+   // }
+
+   public interface ISnapshotMapperWithContext<TModel, TSnapshot, in TSnapshotContext>: ISnapshotMapper where TSnapshotContext : SnapshotContext
    {
       /// <summary>
-      ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="project"/> as context
+      ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="project" />
+      ///    as context
       /// </summary>
       /// <exception cref="SnapshotNotFoundException">
       ///    is thrown if a snapshot could not be found for the given
       ///    <paramref name="snapshot" />
       /// </exception>
-      Task<TModel> MapToModel(TSnapshot snapshot, PKSimProject project );
+      Task<TModel> MapToModel(TSnapshot snapshot, TSnapshotContext snapshotContext);
    }
 
    public class SnapshotMapper : ISnapshotMapper
@@ -84,7 +121,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public ISnapshotMapper MapperFor(Type modelOrSnapshotType)
       {
-         var mapper =  _allMappers.FirstOrDefault(x => x.IsSatisfiedBy(modelOrSnapshotType));
+         var mapper = _allMappers.FirstOrDefault(x => x.IsSatisfiedBy(modelOrSnapshotType));
          if (mapper != null)
             return mapper;
 

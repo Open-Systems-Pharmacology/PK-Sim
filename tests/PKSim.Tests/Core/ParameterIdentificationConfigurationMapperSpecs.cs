@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using ParameterIdentificationConfiguration = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationConfiguration;
 using ParameterIdentificationRunMode = PKSim.Core.Snapshots.ParameterIdentificationRunMode;
 
@@ -70,11 +71,12 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_parameter_identification_configuration_snapshot_to_parameer_identification_configuration : concern_for_ParameterIdentificationConfigurationMapper
+   public class When_mapping_a_parameter_identification_configuration_snapshot_to_parameter_identification_configuration : concern_for_ParameterIdentificationConfigurationMapper
    {
       private ParameterIdentificationConfiguration _newParameterConfiguration;
       private OptimizationAlgorithmProperties _newAlgorithProperties;
       private OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationRunMode _newRunMode;
+      private ParameterIdentification _parameterIdentification;
 
       protected override async Task Context()
       {
@@ -85,11 +87,13 @@ namespace PKSim.Core
          _newRunMode = new MultipleParameterIdentificationRunMode();
          A.CallTo(() => _algorithmMapper.MapToModel(_snapshotAlgorithmProperties)).Returns(_newAlgorithProperties);
          A.CallTo(() => _parameterIdentificationRunModeMapper.MapToModel(_snapshotRunMode)).Returns(_newRunMode);
+         _parameterIdentification = new ParameterIdentification();
+         _parameterIdentificationConfiguration = _parameterIdentification.Configuration;
       }
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot, _newParameterConfiguration);
+         return sut.MapToModel(_snapshot, new ParameterIdentificationContext(_parameterIdentification, new SnapshotContext()));
       }
 
       [Observation]

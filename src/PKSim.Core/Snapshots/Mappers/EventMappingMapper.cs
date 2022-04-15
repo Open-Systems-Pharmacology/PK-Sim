@@ -3,7 +3,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class EventMappingMapper : SnapshotMapperBase<EventMapping, EventSelection, PKSimProject, PKSimProject>
+   public class EventMappingMapper : SnapshotMapperBase<EventMapping, EventSelection, SnapshotContext, PKSimProject>
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly IEventMappingFactory _eventMappingFactory;
@@ -25,11 +25,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<EventMapping> MapToModel(EventSelection snapshot, PKSimProject project)
+      public override async Task<EventMapping> MapToModel(EventSelection snapshot, SnapshotContext snapshotContext)
       {
-         var pksimEvent = project.BuildingBlockByName<PKSimEvent>(snapshot.Name);
+         var pksimEvent = snapshotContext.Project.BuildingBlockByName<PKSimEvent>(snapshot.Name);
          var eventMapping = _eventMappingFactory.Create(pksimEvent);
-         await _parameterMapper.MapToModel(snapshot.StartTime, eventMapping.StartTime);
+         await _parameterMapper.MapToModel(snapshot.StartTime, new ParameterSnapshotContext(eventMapping.StartTime, snapshotContext));
          return eventMapping;
       }
    }

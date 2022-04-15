@@ -5,7 +5,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ObserverSetMappingMapper : SnapshotMapperBase<ObserverSetMapping, ObserverSetSelection, PKSimProject, PKSimProject>
+   public class ObserverSetMappingMapper : SnapshotMapperBase<ObserverSetMapping, ObserverSetSelection, SnapshotContext, PKSimProject>
    {
       private readonly IOSPSuiteLogger _logger;
 
@@ -20,9 +20,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return SnapshotFrom(observerSetMapping, x => { x.Name = observerSetBuildingBlock.Name; });
       }
 
-      public override Task<ObserverSetMapping> MapToModel(ObserverSetSelection snapshot, PKSimProject project)
+      public override Task<ObserverSetMapping> MapToModel(ObserverSetSelection snapshot, SnapshotContext snapshotContextContext)
       {
-         var observerSet = project.BuildingBlockByName<Model.ObserverSet>(snapshot.Name);
+         var observerSet = snapshotContextContext.Project.BuildingBlockByName<Model.ObserverSet>(snapshot.Name);
          if (observerSet == null)
          {
             _logger.AddError(PKSimConstants.Error.CannotFindObserverSetForMapping(snapshot.Name));

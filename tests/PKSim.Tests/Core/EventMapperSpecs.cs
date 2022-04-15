@@ -94,7 +94,7 @@ namespace PKSim.Core
 
       protected override async void Because()
       {
-         _newEvent = await sut.MapToModel(_snapshot);
+         _newEvent = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -107,7 +107,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newEvent, _event.TemplateName)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newEvent, _event.TemplateName, A<SnapshotContext>._)).MustHaveHappened();
       }
    }
 }

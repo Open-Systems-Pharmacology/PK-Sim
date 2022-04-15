@@ -9,11 +9,11 @@ using SnapshotObservedDataCollection = PKSim.Core.Snapshots.ObservedDataCollecti
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ObservedDataCollectionMappper : SnapshotMapperBase<ModelObservedDataCollection, SnapshotObservedDataCollection, SimulationAnalysisContext>
+   public class ObservedDataCollectionMapper : SnapshotMapperBase<ModelObservedDataCollection, SnapshotObservedDataCollection, SimulationAnalysisContext>
    {
       private readonly CurveOptionsMapper _curveOptionsMapper;
 
-      public ObservedDataCollectionMappper(CurveOptionsMapper curveOptionsMapper)
+      public ObservedDataCollectionMapper(CurveOptionsMapper curveOptionsMapper)
       {
          _curveOptionsMapper = curveOptionsMapper;
       }
@@ -69,12 +69,12 @@ namespace PKSim.Core.Snapshots.Mappers
          allObservedDataRepositories.Each(observedDataCollection.AddObservedData);
 
          var allObservedDataColumns = allObservedDataRepositories.SelectMany(x => x.ObservationColumns()).ToList();
-         var observedDataCurveOptions = await Task.WhenAll(snapshot.CurveOptions.Select(x => curveOptionsFrom(x, allObservedDataColumns)));
+         var observedDataCurveOptions = await Task.WhenAll(snapshot.CurveOptions.Select(x => curveOptionsFrom(x, allObservedDataColumns, simulationAnalysisContext)));
          observedDataCurveOptions.Each(observedDataCollection.AddCurveOptions);
          return observedDataCollection;
       }
 
-      private async Task<ModelObservedDataCurveOptions> curveOptionsFrom(ObservedDataCurveOptions snapshot, List<OSPSuite.Core.Domain.Data.DataColumn> allObservedDataColumns)
+      private async Task<ModelObservedDataCurveOptions> curveOptionsFrom(ObservedDataCurveOptions snapshot, List<OSPSuite.Core.Domain.Data.DataColumn> allObservedDataColumns, SnapshotContext snapshotContext)
       {
          var column = allObservedDataColumns.Find(x => string.Equals(x.PathAsString, snapshot.Path));
          if (column == null)
@@ -85,7 +85,7 @@ namespace PKSim.Core.Snapshots.Mappers
             ColumnId = column.Id,
             Caption = snapshot.Caption,
          };
-         observedDataCurveOption.CurveOptions.UpdateFrom(await _curveOptionsMapper.MapToModel(snapshot.CurveOptions));
+         observedDataCurveOption.CurveOptions.UpdateFrom(await _curveOptionsMapper.MapToModel(snapshot.CurveOptions, snapshotContext));
          return observedDataCurveOption;
       }
    }

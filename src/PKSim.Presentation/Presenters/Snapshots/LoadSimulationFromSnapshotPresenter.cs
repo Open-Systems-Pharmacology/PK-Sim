@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
@@ -52,10 +53,10 @@ namespace PKSim.Presentation.Presenters.Snapshots
          return models?.FirstOrDefault();
       }
 
-      protected override  async Task<IEnumerable<Simulation>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
+      protected override async Task<IEnumerable<Simulation>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
       {
          var snapshots = await _snapshotTask.LoadSnapshotsAsync<PKSim.Core.Snapshots.Simulation>(loadFromSnapshotDTO.SnapshotFile);
-         var simulationContext = new SimulationContext(_projectRetriever.Current, run: loadFromSnapshotDTO.RunSimulations);
+         var simulationContext = new SimulationContext(run: loadFromSnapshotDTO.RunSimulations, new SnapshotContext(project: _projectRetriever.Current, version: ProjectVersions.Current));
          var tasks = snapshots.Select(x => _simulationMapper.MapToModel(x, simulationContext));
          return await Task.WhenAll(tasks);
       }

@@ -4,7 +4,7 @@ using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SimulationAnalysisContext
+   public class SimulationAnalysisContext : SnapshotContext
    {
       private readonly List<ModelDataRepository> _dataRepositories = new List<ModelDataRepository>();
 
@@ -12,11 +12,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public IReadOnlyList<ModelDataRepository> DataRepositories => _dataRepositories;
 
-      public SimulationAnalysisContext()
-      {
-      }
 
-      public SimulationAnalysisContext(IEnumerable<ModelDataRepository> dataRepositories)
+      public SimulationAnalysisContext(IEnumerable<ModelDataRepository> dataRepositories, SnapshotContext baseContext) : base(baseContext)
       {
          AddDataRepositories(dataRepositories);
       }
@@ -28,7 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public void AddDataRepository(ModelDataRepository dataRepository)
       {
-         if(dataRepository!=null)
+         if (dataRepository != null)
             _dataRepositories.Add(dataRepository);
       }
    }

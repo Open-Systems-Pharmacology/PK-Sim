@@ -135,7 +135,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, _newPivotAnalysis);
+         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newPivotAnalysis, new SnapshotContext()));
       }
 
       [Observation]
@@ -172,11 +172,11 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, _newStatisticalAnalysis);
+         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newStatisticalAnalysis, new SnapshotContext()));
       }
 
       [Observation]
-      public void should_return_a_snapshot_containing_only_the_selected_statistical_aggreation()
+      public void should_return_a_snapshot_containing_only_the_selected_statistical_aggregation()
       {
          _newStatisticalAnalysis.SelectedStatistics.ShouldOnlyContain(_selectedStatisticalAnalysis);
          _selectedStatisticalAnalysis.LineStyle.ShouldBeEqualTo(_snapshot.Statistics[0].LineStyle);
@@ -196,7 +196,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, _newBoxWhiskerAnalysis);
+         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newBoxWhiskerAnalysis, new SnapshotContext()));
       }
 
       [Observation]

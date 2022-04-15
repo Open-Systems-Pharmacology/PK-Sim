@@ -35,7 +35,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return dbValueOrigin.Equals(valueOrigin);
       }
 
-      public override Task<ModelValueOrigin> MapToModel(SnapshotValueOrigin snapshot)
+      public override Task<ModelValueOrigin> MapToModel(SnapshotValueOrigin snapshot, SnapshotContext snapshotContext)
       {
          return Task.FromException<ModelValueOrigin>(new SnapshotMapToModelNotSupportedException<ModelValueOrigin, ModelValueOrigin>());
       }

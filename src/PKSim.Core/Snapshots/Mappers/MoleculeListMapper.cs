@@ -17,7 +17,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelMoleculeList> MapToModel(SnapshotMoleculeList snapshot)
+      public override Task<ModelMoleculeList> MapToModel(SnapshotMoleculeList snapshot, SnapshotContext snapshotContext)
       {
          var moleculeList = new ModelMoleculeList {ForAll = snapshot.ForAll};
 

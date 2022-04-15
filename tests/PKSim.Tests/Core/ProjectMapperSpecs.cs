@@ -299,7 +299,7 @@ namespace PKSim.Core
       private Simulation _corruptedSimulationSnapshot;
       private CreationMetaData _creationMetaData;
       private ISnapshotMapper _defaultMapper;
-      private ISnapshotMapperWithProjectAsContext<Individual, Snapshots.Individual> _individualSnapshotMapper;
+      private ISnapshotMapperWithContext<Individual, Snapshots.Individual, SnapshotContext> _individualSnapshotMapper;
 
       protected override async Task Context()
       {
@@ -311,9 +311,9 @@ namespace PKSim.Core
          _corruptedSimulationSnapshot = new Simulation();
          _snapshot.Simulations = new[] {_snapshot.Simulations[0], _corruptedSimulationSnapshot,};
          _defaultMapper = A.Fake<ISnapshotMapper>();
-         _individualSnapshotMapper = A.Fake<ISnapshotMapperWithProjectAsContext<Individual, Snapshots.Individual>>();
+         _individualSnapshotMapper = A.Fake<ISnapshotMapperWithContext<Individual, Snapshots.Individual, SnapshotContext>>();
          A.CallTo(() => _snapshotMapper.MapperFor(_individualSnapshot)).Returns(_individualSnapshotMapper);
-         A.CallTo(() => _individualSnapshotMapper.MapToModel(_individualSnapshot, A<PKSimProject>._)).Returns(_individual);
+         A.CallTo(() => _individualSnapshotMapper.MapToModel(_individualSnapshot, A<SnapshotContext>._)).Returns(_individual);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_expressionProfileSnapshot)).Returns(_defaultMapper);
          A.CallTo(() => _defaultMapper.MapToModel(_expressionProfileSnapshot)).Returns(_expressionProfile);
@@ -339,9 +339,9 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot)).Returns(_observedData);
          A.CallTo(() => _simulationMapper.MapToModel(_simulationSnapshot, A<SimulationContext>._)).Returns(_simulation);
          A.CallTo(() => _simulationMapper.MapToModel(_corruptedSimulationSnapshot, A<SimulationContext>._)).Throws(new Exception());
-         A.CallTo(() => _simulationComparisonMapper.MapToModel(_simulationComparisonSnapshot, A<PKSimProject>._)).Returns(_simulationComparison);
-         A.CallTo(() => _parameterIdentificationMapper.MapToModel(_parameterIdentificationSnapshot, A<PKSimProject>._)).Returns(_parameterIdentification);
-         A.CallTo(() => _qualificationPlanMapper.MapToModel(_qualificationPlanSnapshot, A<PKSimProject>._)).Returns(_qualificationPlan);
+         A.CallTo(() => _simulationComparisonMapper.MapToModel(_simulationComparisonSnapshot, A<SnapshotContext>._)).Returns(_simulationComparison);
+         A.CallTo(() => _parameterIdentificationMapper.MapToModel(_parameterIdentificationSnapshot, A<SnapshotContext>._)).Returns(_parameterIdentification);
+         A.CallTo(() => _qualificationPlanMapper.MapToModel(_qualificationPlanSnapshot, A<SnapshotContext>._)).Returns(_qualificationPlan);
       }
 
       protected override async Task Because()
@@ -403,31 +403,31 @@ namespace PKSim.Core
       [Observation]
       public void should_update_project_classification_for_observed_data()
       {
-         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(_snapshot.ObservedDataClassifications, _newProject, _newProject.AllObservedData)).MustHaveHappened();
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(_snapshot.ObservedDataClassifications, A<SnapshotContext>._, _newProject.AllObservedData)).MustHaveHappened();
       }
 
       [Observation]
       public void should_update_project_classification_for_simulation()
       {
-         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableSimulation, Model.Simulation>(_snapshot.SimulationClassifications, _newProject, A<IReadOnlyCollection<Model.Simulation>>._)).MustHaveHappened();
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableSimulation, Model.Simulation>(_snapshot.SimulationClassifications, A<SnapshotContext>._, A<IReadOnlyCollection<Model.Simulation>>._)).MustHaveHappened();
       }
 
       [Observation]
       public void should_update_project_classification_for_simulation_comparison()
       {
-         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableComparison, ISimulationComparison>(_snapshot.SimulationComparisonClassifications, _newProject, _newProject.AllSimulationComparisons)).MustHaveHappened();
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableComparison, ISimulationComparison>(_snapshot.SimulationComparisonClassifications, A<SnapshotContext>._, _newProject.AllSimulationComparisons)).MustHaveHappened();
       }
 
       [Observation]
       public void should_update_project_classification_for_qualification_plan()
       {
-         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, QualificationPlan>(_snapshot.QualificationPlanClassifications, _newProject, _newProject.AllQualificationPlans)).MustHaveHappened();
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, QualificationPlan>(_snapshot.QualificationPlanClassifications, A<SnapshotContext>._, _newProject.AllQualificationPlans)).MustHaveHappened();
       }
 
       [Observation]
       public void should_update_project_classification_for_parameter_identification()
       {
-         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification>(_snapshot.ParameterIdentificationClassifications, _newProject, _newProject.AllParameterIdentifications))
+         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification>(_snapshot.ParameterIdentificationClassifications, A<SnapshotContext>._, _newProject.AllParameterIdentifications))
             .MustHaveHappened();
       }
 

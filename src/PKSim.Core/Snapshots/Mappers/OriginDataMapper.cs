@@ -91,7 +91,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameterFrom(parameter, dimension);
       }
 
-      public override Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot)
+      public override Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot, SnapshotContext snapshotContext)
       {
          var originData = new ModelOriginData {Species = speciesFrom(snapshot)};
 

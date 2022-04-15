@@ -31,13 +31,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelExplicitFormula> MapToModel(SnapshotExplicitFormula snapshot)
+      public override async Task<ModelExplicitFormula> MapToModel(SnapshotExplicitFormula snapshot, SnapshotContext snapshotContext)
       {
          var formula = _objectBaseFactory.Create<ModelExplicitFormula>();
          MapSnapshotPropertiesToModel(snapshot, formula);
          formula.FormulaString = snapshot.Formula;
          formula.Dimension = _dimensionRepository.DimensionByName(snapshot.Dimension);
-         var objectsPaths = await _formulaUsablePathMapper.MapToModels(snapshot.References);
+         var objectsPaths = await _formulaUsablePathMapper.MapToModels(snapshot.References, snapshotContext);
          objectsPaths?.Each(formula.AddObjectPath);
          return formula;
       }

@@ -28,10 +28,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelOutputSchema> MapToModel(SnapshotOutputSchema snapshot)
+      public override async Task<ModelOutputSchema> MapToModel(SnapshotOutputSchema snapshot, SnapshotContext snapshotContext)
       {
          var outputSchema = _outputSchemaFactory.CreateEmpty();
-         var intervals = await _outputIntervalMapper.MapToModels(snapshot);
+         var intervals = await _outputIntervalMapper.MapToModels(snapshot, snapshotContext);
          intervals?.Each(interval =>
          {
             interval.Name = _containerTask.CreateUniqueName(outputSchema, interval.Name);

@@ -182,7 +182,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_update_the_parameters_from_snapshot()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters , _newEnzymaticProcess, _snapshot.InternalName)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters , _newEnzymaticProcess, _snapshot.InternalName, A<SnapshotContext>._)).MustHaveHappened();
       }
    }
 

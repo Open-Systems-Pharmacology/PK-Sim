@@ -10,6 +10,7 @@ namespace PKSim.Core
    {
       protected ParameterRange _parameterRange;
       protected Snapshots.ParameterRange _snapshot;
+      protected ParameterRangeSnapshotContext _parameterRangeContext;
 
       protected override Task Context()
       {
@@ -21,6 +22,7 @@ namespace PKSim.Core
          _parameterRange.MaxValueInDisplayUnit = 180;
          _parameterRange.MinValueInDisplayUnit = 120;
 
+         _parameterRangeContext = new ParameterRangeSnapshotContext(_parameterRange, new SnapshotContext());
          return Task.FromResult(true);
       }
    }
@@ -39,7 +41,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_parameter_range_wiotut_constraints_to_snapshot : concern_for_ParameterRangeMapper
+   public class When_mapping_a_parameter_range_without_constraints_to_snapshot : concern_for_ParameterRangeMapper
    {
       protected override async Task Because()
       {
@@ -82,7 +84,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result= await sut.MapToModel(null, _parameterRange);
+         _result= await sut.MapToModel(null, _parameterRangeContext);
       }
 
       [Observation]
@@ -103,7 +105,7 @@ namespace PKSim.Core
       }
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, _parameterRange);
+         await sut.MapToModel(_snapshot, _parameterRangeContext);
       }
 
       [Observation]

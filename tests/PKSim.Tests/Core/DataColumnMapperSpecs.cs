@@ -72,7 +72,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, _contextDataRepository);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContextWithDataRepository(_contextDataRepository, new SnapshotContext()));
       }
 
       [Observation]
@@ -103,7 +103,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, _contextDataRepository);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContextWithDataRepository(_contextDataRepository, new SnapshotContext()));
       }
 
       [Observation]

@@ -75,7 +75,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newAlgorithmProperties = await sut.MapToModel(_snapshot);
+         _newAlgorithmProperties = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

@@ -100,7 +100,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_curve);
-         _context = new SimulationAnalysisContext(new[] {_dataRepository});
+         _context = new SimulationAnalysisContext(new[] {_dataRepository}, new SnapshotContext());
          _newModelCurveOptions = new CurveOptions {Color = Color.Aqua};
          A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions)).Returns(_newModelCurveOptions);
       }
@@ -135,7 +135,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_curve);
-         _context = new SimulationAnalysisContext(){ RunSimulation =false};
+         _context = new SimulationAnalysisContext(null, new SnapshotContext()) { RunSimulation =false};
          _newModelCurveOptions = new CurveOptions { Color = Color.Aqua };
          A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions)).Returns(_newModelCurveOptions);
       }
@@ -172,7 +172,7 @@ namespace PKSim.Core
          _anotherRepository = DomainHelperForSpecs.ObservedData();
          _y2Column = _anotherRepository.AllButBaseGrid().First();
          _y2Column.QuantityInfo.Path = new[] {"D", "E", "F"};
-         _context = new SimulationAnalysisContext(new[] {_dataRepository, _anotherRepository,});
+         _context = new SimulationAnalysisContext(new[] {_dataRepository, _anotherRepository,}, new SnapshotContext());
          _snapshot.CurveOptions.Color = Color.Aqua;
          _snapshot.X = _y2Column.PathAsString;
       }

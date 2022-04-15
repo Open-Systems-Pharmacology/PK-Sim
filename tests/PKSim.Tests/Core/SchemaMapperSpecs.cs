@@ -110,7 +110,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSchema = await sut.MapToModel(_snapshot);
+         _newSchema = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -123,7 +123,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newSchema, PKSimConstants.ObjectTypes.Schema)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newSchema, PKSimConstants.ObjectTypes.Schema, A<SnapshotContext>._)).MustHaveHappened();
       }
 
       [Observation]

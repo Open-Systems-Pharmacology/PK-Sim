@@ -6,7 +6,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
@@ -35,7 +34,7 @@ namespace PKSim.Core
          _parameterMapper = A.Fake<ParameterMapper>();
          _logger = A.Fake<IOSPSuiteLogger>();
 
-         sut = new ExpressionContainerMapper(_parameterMapper,  _logger);
+         sut = new ExpressionContainerMapper(_parameterMapper, _logger);
 
          _relativeExpressionParameter =
             DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
@@ -53,12 +52,12 @@ namespace PKSim.Core
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 
          _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
-         _expressionContainerMapperContext = new ExpressionContainerMapperContext
+         _expressionContainerMapperContext = new ExpressionContainerMapperContext(new SnapshotContext())
          {
          };
 
          _enzyme = new IndividualEnzyme {_moleculeExpressionContainer};
-         _transporter = new IndividualTransporter {_transporterExpressionContainer, _bloodCellsExpressionContainer };
+         _transporter = new IndividualTransporter {_transporterExpressionContainer, _bloodCellsExpressionContainer};
          return _completed;
       }
    }
@@ -101,15 +100,13 @@ namespace PKSim.Core
       {
          _snapshot.TransportDirection.ShouldBeEqualTo(_bloodCellsExpressionContainer.TransportDirection);
       }
-
    }
-
 
    public class when_updating_a_undefined_expression_container_from_snapshot : concern_for_ExpressionContainerMapper
    {
       protected override Task Because()
       {
-         return sut.MapToModel(null, new ExpressionContainerMapperContext());
+         return sut.MapToModel(null, _expressionContainerMapperContext);
       }
 
       [Observation]
@@ -136,7 +133,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_expression_container_with_the_expected_value()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot, _relativeExpressionParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot, A<ParameterSnapshotContext>.That.Matches(x => x.Parameter == _relativeExpressionParameter))).MustHaveHappened();
       }
    }
 
@@ -164,7 +161,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_expression_container_with_the_expected_value()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot, _transporterRelativeExpressionParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot, A<ParameterSnapshotContext>.That.Matches(x => x.Parameter == _transporterRelativeExpressionParameter))).MustHaveHappened();
       }
    }
 }

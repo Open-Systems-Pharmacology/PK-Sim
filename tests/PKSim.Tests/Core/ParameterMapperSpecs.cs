@@ -122,7 +122,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -169,7 +169,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -206,7 +206,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -234,7 +234,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -293,7 +293,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+         await sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext());
       }
 
       [Observation]
@@ -321,7 +321,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new ParameterSnapshotContext(null, new SnapshotContext()));
       }
 
       [Observation]
@@ -352,7 +352,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]
@@ -381,7 +381,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]

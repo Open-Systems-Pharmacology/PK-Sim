@@ -46,7 +46,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterIdentificationAnalysisChartMapper.MapToSnapshot(parameterIdentificationAnalysisChart);
       }
 
-      public override async Task<ISimulationAnalysis> MapToModel(ParameterIdentificationAnalysis snapshot, ParameterIdentificationContext context)
+      public override async Task<ISimulationAnalysis> MapToModel(ParameterIdentificationAnalysis snapshot, ParameterIdentificationContext snapshotContext)
       {
          var simulationAnalysis = createAnalysisFrom(snapshot.Type);
 
@@ -54,9 +54,9 @@ namespace PKSim.Core.Snapshots.Mappers
             simulationAnalysis.Id = _idGenerator.NewId();
          else
          {
-            var localDataRepositories = await _dataRepositoryMapper.MapToModels(snapshot.DataRepositories);
-            var simulationAnalysisContext = new SimulationAnalysisContext(localDataRepositories);
-            simulationAnalysisContext.AddDataRepositories(context.Project.AllDataRepositories());
+            var localDataRepositories = await _dataRepositoryMapper.MapToModels(snapshot.DataRepositories, snapshotContext);
+            var simulationAnalysisContext = new SimulationAnalysisContext(localDataRepositories, snapshotContext);
+            simulationAnalysisContext.AddDataRepositories(snapshotContext.Project.AllDataRepositories());
             _parameterIdentificationAnalysisChartMapper.ChartFactoryFunc = () => createChartFrom(snapshot.Type);
             simulationAnalysis = await _parameterIdentificationAnalysisChartMapper.MapToModel(snapshot.Chart, simulationAnalysisContext);
          }

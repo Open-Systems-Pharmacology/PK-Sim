@@ -5,7 +5,6 @@ using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 using PopulationAnalysis = PKSim.Core.Snapshots.PopulationAnalysis;
 using PopulationAnalysisChart = PKSim.Core.Snapshots.PopulationAnalysisChart;
 
@@ -19,14 +18,14 @@ namespace PKSim.Core
       protected PopulationAnalysis _snapshotPopulationAnalysis;
       protected PopulationAnalysisChart _snapshot;
       protected IPopulationAnalysisChartFactory _populationAnalysisChartFactory;
-      protected ObservedDataCollectionMappper _observedDataCollectionMapper;
+      protected ObservedDataCollectionMapper _observedDataCollectionMapper;
 
       protected override Task Context()
       {
          _chartMapper = A.Fake<ChartMapper>();
          _populationAnalysisMapper = A.Fake<PopulationAnalysisMapper>();
          _populationAnalysisChartFactory = A.Fake<IPopulationAnalysisChartFactory>();
-         _observedDataCollectionMapper= A.Fake<ObservedDataCollectionMappper>();
+         _observedDataCollectionMapper = A.Fake<ObservedDataCollectionMapper>();
 
          sut = new PopulationAnalysisChartMapper(_chartMapper, _populationAnalysisMapper, _observedDataCollectionMapper, _populationAnalysisChartFactory);
 
@@ -90,10 +89,10 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _context = new SimulationAnalysisContext();
+         _context = new SimulationAnalysisContext(null, new SnapshotContext());
          _snapshot = await sut.MapToSnapshot(_bowWiskerChart);
-         var boxWiskerAnalysisChart = new BoxWhiskerAnalysisChart {PopulationAnalysis = new PopulationBoxWhiskerAnalysis()};
-         A.CallTo(() => _populationAnalysisChartFactory.Create(PopulationAnalysisType.BoxWhisker)).Returns(boxWiskerAnalysisChart);
+         var boxWhiskerAnalysisChart = new BoxWhiskerAnalysisChart {PopulationAnalysis = new PopulationBoxWhiskerAnalysis()};
+         A.CallTo(() => _populationAnalysisChartFactory.Create(PopulationAnalysisType.BoxWhisker)).Returns(boxWhiskerAnalysisChart);
       }
 
       protected override async Task Because()
@@ -118,13 +117,13 @@ namespace PKSim.Core
       [Observation]
       public void should_map_the_basic_chart_properties()
       {
-         A.CallTo(() => _chartMapper.MapToModel(_snapshot, _newPopulationAnalysis)).MustHaveHappened();
+         A.CallTo(() => _chartMapper.MapToModel(_snapshot, A<ChartSnapshotContext>.That.Matches(x => x.Chart == _newPopulationAnalysis))).MustHaveHappened();
       }
 
       [Observation]
       public void should_map_population_analysis()
       {
-         A.CallTo(() => _populationAnalysisMapper.MapToModel(_snapshot.Analysis, _newPopulationAnalysis.BasePopulationAnalysis)).MustHaveHappened();
+         A.CallTo(() => _populationAnalysisMapper.MapToModel(_snapshot.Analysis, A<PopulationAnalysisSnapshotContext>.That.Matches(x => x.PopulationAnalysis == _newPopulationAnalysis.BasePopulationAnalysis))).MustHaveHappened();
       }
    }
 }

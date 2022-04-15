@@ -30,7 +30,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelSolverSettings> MapToModel(SnapshotSolverSettings snapshot)
+      public override Task<ModelSolverSettings> MapToModel(SnapshotSolverSettings snapshot, SnapshotContext snapshotContext)
       {
          var solverSettings = _solverSettingsFactory.CreateDefault();
          if (snapshot == null)

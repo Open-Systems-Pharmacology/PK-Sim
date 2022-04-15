@@ -47,7 +47,7 @@ namespace PKSim.Matlab
 
       public IParameterValueCache CreatePopulation(PopulationSettings matlabPopulationSettings, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
       {
-         var populationSettings = _populationSettingsMapper.MapToModel(matlabPopulationSettings, new PKSimProject()).Result;
+         var populationSettings = _populationSettingsMapper.MapToModel(matlabPopulationSettings, new SnapshotContext()).Result;
          var population = _randomPopulationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
 
          foreach (var moleculeOntogeny in moleculeOntogenies)

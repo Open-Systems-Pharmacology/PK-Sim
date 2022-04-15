@@ -29,6 +29,7 @@ namespace PKSim.Core
       protected PopulationSimulation _referenceSimulation;
       protected IObjectBaseFactory _objectBaseFactory;
       protected PKSimProject _project;
+      protected SnapshotContext _snapshotContext;
 
       protected override Task Context()
       {
@@ -82,6 +83,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_populationSimulation2);
          _project.AddBuildingBlock(_referenceSimulation);
 
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.V10);
          return _completed;
       }
    }
@@ -135,7 +137,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulationComparison = await sut.MapToModel(_snapshot, _project);
+         _simulationComparison = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]
@@ -202,7 +204,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulationComparison = await sut.MapToModel(_snapshot, _project) as PopulationSimulationComparison;
+         _simulationComparison = await sut.MapToModel(_snapshot, _snapshotContext) as PopulationSimulationComparison;
       }
 
       [Observation]

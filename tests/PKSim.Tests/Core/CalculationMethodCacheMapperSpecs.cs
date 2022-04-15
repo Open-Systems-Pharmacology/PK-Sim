@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using CalculationMethodCache = OSPSuite.Core.Domain.CalculationMethodCache;
-using OSPSuite.Core.Services;
 
 namespace PKSim.Core
 {
@@ -32,9 +29,9 @@ namespace PKSim.Core
       {
          _calculationMethodRepository = A.Fake<ICalculationMethodRepository>();
          _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
-         _logger= A.Fake<IOSPSuiteLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
-         sut = new CalculationMethodCacheMapper(_calculationMethodRepository, _calculationMethodCategoryRepository,_logger);
+         sut = new CalculationMethodCacheMapper(_calculationMethodRepository, _calculationMethodCategoryRepository, _logger);
          _singleCategory = new CalculationMethodCategory {Name = "Multiple"};
          _multipleCategory = new CalculationMethodCategory {Name = "Single"};
 
@@ -59,7 +56,7 @@ namespace PKSim.Core
             Category = _multipleCategory.Name
          };
 
-         A.CallTo(() => _calculationMethodRepository.All()).Returns(new []{_calculationMethodWithMultipleOptions, _anotherCalculationMethodInMultipleOptions, _calculationMethodWithSingleOption, });
+         A.CallTo(() => _calculationMethodRepository.All()).Returns(new[] {_calculationMethodWithMultipleOptions, _anotherCalculationMethodInMultipleOptions, _calculationMethodWithSingleOption,});
 
          _singleCategory.Add(_calculationMethodWithSingleOption);
          _multipleCategory.Add(_calculationMethodWithMultipleOptions);
@@ -103,7 +100,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot,_calculationMethodCache);
+         return sut.MapToModel(_snapshot, new CalculationMethodCacheSnapshotContext(_calculationMethodCache, new SnapshotContext()));
       }
 
       [Observation]
@@ -130,7 +127,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot, _calculationMethodCache);
+         return sut.MapToModel(_snapshot, new CalculationMethodCacheSnapshotContext(_calculationMethodCache, new SnapshotContext()));
       }
 
       [Observation]

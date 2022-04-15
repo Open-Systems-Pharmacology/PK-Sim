@@ -73,7 +73,7 @@ namespace PKSim.UI.Starter.Presenters
             Gender = CoreConstants.Gender.MALE
          };
 
-         var modelOriginData = _originDataMapper.MapToModel(originData).Result;
+         var modelOriginData = _originDataMapper.MapToModel(originData, new SnapshotContext()).Result;
          var individual = _individualFactory.CreateAndOptimizeFor(modelOriginData);
 
          return individual;
