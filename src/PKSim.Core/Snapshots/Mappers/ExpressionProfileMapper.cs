@@ -89,9 +89,8 @@ namespace PKSim.Core.Snapshots.Mappers
          expressionProfile.Description = snapshot.Description;
          expressionProfile.Category = snapshot.Category;
 
-         var isV9 = isV9Format(snapshotContext);
          var (molecule, individual) = expressionProfile;
-         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, !isV9);
+         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, !snapshotContext.IsV9Format);
 
          updateMoleculePropertiesToMolecule(molecule, snapshot, individual, snapshotContext);
 
@@ -108,7 +107,7 @@ namespace PKSim.Core.Snapshots.Mappers
          await _expressionContainerMapper.MapToModels(snapshot.Expression, context);
 
          //We need to normalize relative expressions when loading from old format
-         if (isV9)
+         if (snapshotContext.IsV9Format)
          {
             //Global parameters were saved directly under the snapshot parameter 
             await updateGlobalMoleculeParameters(snapshot, molecule, snapshotContext);
@@ -142,7 +141,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private Localization retrieveLocalizationFrom(SnapshotExpressionProfile snapshot, SnapshotContext snapshotContext)
       {
-         if (!isV9Format(snapshotContext))
+         if (!snapshotContext.IsV9Format)
             return ModelValueFor(snapshot.Localization);
 
          //reset ot ensure we update all parameters 
@@ -153,6 +152,5 @@ namespace PKSim.Core.Snapshots.Mappers
          return LocalizationConverter.ConvertToLocalization(tissueLocation, membraneLocation, intracellularVascularEndoLocation);
       }
 
-      private bool isV9Format(SnapshotContext snapshotContext) => snapshotContext.Version <= ProjectVersions.V9;
    }
 }

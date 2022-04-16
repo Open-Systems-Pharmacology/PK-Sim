@@ -87,10 +87,8 @@ namespace PKSim.Core.Snapshots.Mappers
          if (!(molecule is IndividualTransporter transporter))
             return null;
 
-         var isV9Format = !snapshot.TransportDirection.HasValue;
-
          var expressionsContainers = expressionContainerParameters.OfType<TransporterExpressionContainer>()
-            .Where(queryPredicate(isV9Format, snapshot))
+            .Where(queryPredicate(snapshotContext.IsV9Format, snapshot))
             .Where(x => x.TransportDirection != TransportDirectionId.None)
             .ToList();
 
@@ -102,7 +100,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var firstExpressionContainer = expressionsContainers[0];
          //This is the new format
-         if (!isV9Format)
+         if (!snapshotContext.IsV9Format)
          {
             //we should only have one
             firstExpressionContainer.TransportDirection = snapshot.TransportDirection.Value;

@@ -26,6 +26,16 @@ namespace PKSim.Core.Snapshots.Mappers
       public SnapshotContext(SnapshotContext baseContext) : this(baseContext.Project, baseContext.Version)
       {
       }
+
+      /// <summary>
+      /// Returns true if the format is V9 or earlier
+      /// </summary>
+      public bool IsV9Format => Version <= ProjectVersions.V9;
+
+      /// <summary>
+      /// Returns true if the format is V10 or earlier
+      /// </summary>
+      public bool IsV10Format => Version <= ProjectVersions.V10;
    }
 
    public interface ISnapshotMapper
