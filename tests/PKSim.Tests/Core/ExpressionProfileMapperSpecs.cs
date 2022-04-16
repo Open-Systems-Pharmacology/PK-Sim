@@ -171,7 +171,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_valid_enzyme_expression_profile_snapshot_to_a_expression_profile : concern_for_ExpressionProfileMapper
+   public class When_mapping_a_valid_enzyme_expression_profile_snapshot_v9_to_a_expression_profile : concern_for_ExpressionProfileMapper
    {
       private Model.ExpressionProfile _newExpressionProfile;
 
@@ -208,7 +208,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), ProjectVersions.V9));
       }
 
       [Observation]

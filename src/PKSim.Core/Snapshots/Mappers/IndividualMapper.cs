@@ -61,7 +61,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          await updateIndividualParameters(individualSnapshot, individual, snapshotContext);
 
-         if (isV10Format(individualSnapshot))
+         if (isV10Format(snapshotContext))
             await convertMoleculesToExpressionProfiles(individualSnapshot, snapshotContext);
 
          individualSnapshot.ExpressionProfiles?.Each(x =>
@@ -102,12 +102,12 @@ namespace PKSim.Core.Snapshots.Mappers
          individualSnapshot.ExpressionProfiles = expressionProfiles.AllNames().ToArray();
       }
 
-      private bool isV10Format(SnapshotIndividual snapshot) => snapshot.Molecules != null;
+      private bool isV10Format(SnapshotContext snapshotContext) => snapshotContext.Version <= ProjectVersions.V10;
 
       private Task updateIndividualParameters(SnapshotIndividual snapshot, ModelIndividual individual, SnapshotContext snapshotContext)
       {
          //We do not show warning for v10 format as we will FOR SURE have missing parameters
-         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, showParameterNotFoundWarning: !isV10Format(snapshot));
+         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, showParameterNotFoundWarning: !isV10Format(snapshotContext));
       }
    }
 }

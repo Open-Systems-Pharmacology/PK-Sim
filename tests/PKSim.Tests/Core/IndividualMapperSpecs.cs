@@ -137,7 +137,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_individual);
          _project = new PKSimProject();
 
-         _snapshotContext = new SnapshotContext(_project, ProjectVersions.V10);
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.V11);
 
          _snapshot.Name = "New individual";
          _snapshot.Description = "The description that will be deserialized";
