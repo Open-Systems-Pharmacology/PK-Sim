@@ -59,7 +59,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newStandardRunMode = await sut.MapToModel(_snapshot, A<SnapshotContext>._) as StandardParameterIdentificationRunMode;
+         _newStandardRunMode = await sut.MapToModel(_snapshot, new SnapshotContext()) as StandardParameterIdentificationRunMode;
       }
 
       [Observation]

@@ -299,7 +299,6 @@ namespace PKSim.Core
       private Simulation _corruptedSimulationSnapshot;
       private CreationMetaData _creationMetaData;
       private ISnapshotMapper _defaultMapper;
-      private ISnapshotMapperWithContext<Individual, Snapshots.Individual, SnapshotContext> _individualSnapshotMapper;
 
       protected override async Task Context()
       {
@@ -311,9 +310,8 @@ namespace PKSim.Core
          _corruptedSimulationSnapshot = new Simulation();
          _snapshot.Simulations = new[] {_snapshot.Simulations[0], _corruptedSimulationSnapshot,};
          _defaultMapper = A.Fake<ISnapshotMapper>();
-         _individualSnapshotMapper = A.Fake<ISnapshotMapperWithContext<Individual, Snapshots.Individual, SnapshotContext>>();
-         A.CallTo(() => _snapshotMapper.MapperFor(_individualSnapshot)).Returns(_individualSnapshotMapper);
-         A.CallTo(() => _individualSnapshotMapper.MapToModel(_individualSnapshot, A<SnapshotContext>._)).Returns(_individual);
+         A.CallTo(() => _snapshotMapper.MapperFor(_individualSnapshot)).Returns(_defaultMapper);
+         A.CallTo(() => _defaultMapper.MapToModel(_individualSnapshot, A<SnapshotContext>._)).Returns(_individual);
 
          A.CallTo(() => _snapshotMapper.MapperFor(_expressionProfileSnapshot)).Returns(_defaultMapper);
          A.CallTo(() => _defaultMapper.MapToModel(_expressionProfileSnapshot, A<SnapshotContext>._)).Returns(_expressionProfile);

@@ -657,7 +657,7 @@ namespace PKSim.Core
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .Returns(_populationSimulationAnalysisChart);
 
-         _snapshotSimulationContext = new SimulationContext(run: false, new SnapshotContext());
+         _snapshotSimulationContext = new SimulationContext(run: false, new SnapshotContext(_project, 10));
       }
 
       protected override async Task Because()

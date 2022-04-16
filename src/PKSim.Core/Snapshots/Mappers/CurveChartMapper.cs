@@ -39,9 +39,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var curveChart = ChartFactoryFunc().WithId(_idGenerator.NewId());
          MapSnapshotPropertiesToModel(snapshot, curveChart);
-         var chartContext = new ChartSnapshotContext(curveChart, simulationAnalysisContext);
-         await _chartMapper.MapToModel(snapshot, chartContext);
-         await updateChartAxes(curveChart, snapshot.Axes, chartContext);
+         await _chartMapper.MapToModel(snapshot, new ChartSnapshotContext(curveChart, simulationAnalysisContext));
+         await updateChartAxes(curveChart, snapshot.Axes, simulationAnalysisContext);
          await updateChartCurves(curveChart, snapshot.Curves, simulationAnalysisContext);
          return curveChart;
       }

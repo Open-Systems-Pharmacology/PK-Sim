@@ -74,7 +74,7 @@ namespace PKSim.Core
    public class When_mapping_a_parameter_identification_configuration_snapshot_to_parameter_identification_configuration : concern_for_ParameterIdentificationConfigurationMapper
    {
       private ParameterIdentificationConfiguration _newParameterConfiguration;
-      private OptimizationAlgorithmProperties _newAlgorithProperties;
+      private OptimizationAlgorithmProperties _newAlgorithmProperties;
       private OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationRunMode _newRunMode;
       private ParameterIdentification _parameterIdentification;
 
@@ -82,13 +82,12 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_parameterIdentificationConfiguration);
-         _newParameterConfiguration = new ParameterIdentificationConfiguration();
-         _newAlgorithProperties = new OptimizationAlgorithmProperties("HOLA");
+         _newAlgorithmProperties = new OptimizationAlgorithmProperties("HOLA");
          _newRunMode = new MultipleParameterIdentificationRunMode();
-         A.CallTo(() => _algorithmMapper.MapToModel(_snapshotAlgorithmProperties, A<SnapshotContext>._)).Returns(_newAlgorithProperties);
+         A.CallTo(() => _algorithmMapper.MapToModel(_snapshotAlgorithmProperties, A<SnapshotContext>._)).Returns(_newAlgorithmProperties);
          A.CallTo(() => _parameterIdentificationRunModeMapper.MapToModel(_snapshotRunMode, A<SnapshotContext>._)).Returns(_newRunMode);
          _parameterIdentification = new ParameterIdentification();
-         _parameterIdentificationConfiguration = _parameterIdentification.Configuration;
+         _newParameterConfiguration = _parameterIdentification.Configuration;
       }
 
       protected override Task Because()
@@ -107,7 +106,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_mapped_the_algorithm_properties()
       {
-         _newParameterConfiguration.AlgorithmProperties.ShouldBeEqualTo(_newAlgorithProperties);
+         _newParameterConfiguration.AlgorithmProperties.ShouldBeEqualTo(_newAlgorithmProperties);
       }
 
       [Observation]
