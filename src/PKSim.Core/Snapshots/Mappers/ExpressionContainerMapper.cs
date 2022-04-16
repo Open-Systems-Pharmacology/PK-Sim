@@ -88,7 +88,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return null;
 
          var expressionsContainers = expressionContainerParameters.OfType<TransporterExpressionContainer>()
-            .Where(queryPredicate(snapshotContext.IsV9Format, snapshot))
+            .Where(queryPredicate(snapshotContext.IsInV9Format, snapshot))
             .Where(x => x.TransportDirection != TransportDirectionId.None)
             .ToList();
 
@@ -100,7 +100,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var firstExpressionContainer = expressionsContainers[0];
          //This is the new format
-         if (!snapshotContext.IsV9Format)
+         if (!snapshotContext.IsInV9Format)
          {
             //we should only have one
             firstExpressionContainer.TransportDirection = snapshot.TransportDirection.Value;
