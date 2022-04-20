@@ -129,6 +129,7 @@ namespace PKSim.Core
       private ModelIndividual _newIndividual;
       private Model.OriginData _newOriginData;
       private PKSimProject _project;
+      private SnapshotContext _snapshotContext;
 
       protected override async Task Context()
       {
@@ -136,6 +137,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_individual);
          _project = new PKSimProject();
 
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.V11);
 
          _snapshot.Name = "New individual";
          _snapshot.Description = "The description that will be deserialized";
@@ -151,7 +153,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_expressionProfile2);
 
          _newOriginData = new Model.OriginData();
-         A.CallTo(() => _originDataMapper.MapToModel(_snapshot.OriginData)).Returns(_newOriginData);
+         A.CallTo(() => _originDataMapper.MapToModel(_snapshot.OriginData, A<SnapshotContext>._)).Returns(_newOriginData);
 
          A.CallTo(() => _individualFactory.CreateAndOptimizeFor(_newOriginData, _snapshot.Seed))
             .Returns(_individual);
@@ -160,7 +162,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newIndividual = await sut.MapToModel(_snapshot, _project);
+         _newIndividual = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]
@@ -186,7 +188,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_parameter_previously_set_by_the_user()
       {
-         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual, true)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapLocalizedParameters(_snapshot.Parameters, _individual,_snapshotContext , true)).MustHaveHappened();
       }
    }
 }

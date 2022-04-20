@@ -17,6 +17,7 @@ namespace PKSim.Core
       protected T _qualificationStep;
       protected QualificationStep _snapshot;
       protected PKSimProject _project;
+      protected SnapshotContext _snapshotContext;
 
       protected override Task Context()
       {
@@ -24,6 +25,7 @@ namespace PKSim.Core
          sut = new QualificationStepMapper(_logger);
 
          _project = new PKSimProject();
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
          return _completed;
       }
    }
@@ -73,7 +75,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newQualificationStep = await sut.MapToModel(_snapshot, _project) as RunParameterIdentificationQualificationStep;
+         _newQualificationStep = await sut.MapToModel(_snapshot, _snapshotContext) as RunParameterIdentificationQualificationStep;
       }
 
       [Observation]
@@ -105,7 +107,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newQualificationStep = await sut.MapToModel(_snapshot, _project) as RunSimulationQualificationStep;
+         _newQualificationStep = await sut.MapToModel(_snapshot, _snapshotContext) as RunSimulationQualificationStep;
       }
 
       [Observation]
@@ -115,7 +117,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_set_the_reference_to_the_used_simuation()
+      public void should_have_set_the_reference_to_the_used_simulation()
       {
          _newQualificationStep.Simulation.ShouldBeEqualTo(_simulation);
       }

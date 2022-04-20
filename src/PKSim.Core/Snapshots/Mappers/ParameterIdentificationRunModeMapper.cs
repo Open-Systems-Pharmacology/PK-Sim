@@ -53,7 +53,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return cache;
       }
 
-      public override Task<ModelParameterIdentificationRunMode> MapToModel(SnapshotParameterIdentificationRunMode snapshot)
+      public override Task<ModelParameterIdentificationRunMode> MapToModel(SnapshotParameterIdentificationRunMode snapshot, SnapshotContext snapshotContext)
       {
          return Task.FromResult(mapRunModeFrom(snapshot));
       }

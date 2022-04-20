@@ -11,10 +11,10 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly ChartMapper _chartMapper;
       private readonly PopulationAnalysisMapper _populationAnalysisMapper;
-      private readonly ObservedDataCollectionMappper _observedDataCollectionMapper;
+      private readonly ObservedDataCollectionMapper _observedDataCollectionMapper;
       private readonly IPopulationAnalysisChartFactory _populationAnalysisChartFactory;
 
-      public PopulationAnalysisChartMapper(ChartMapper chartMapper, PopulationAnalysisMapper populationAnalysisMapper, ObservedDataCollectionMappper observedDataCollectionMapper, IPopulationAnalysisChartFactory populationAnalysisChartFactory)
+      public PopulationAnalysisChartMapper(ChartMapper chartMapper, PopulationAnalysisMapper populationAnalysisMapper, ObservedDataCollectionMapper observedDataCollectionMapper, IPopulationAnalysisChartFactory populationAnalysisChartFactory)
       {
          _chartMapper = chartMapper;
          _populationAnalysisMapper = populationAnalysisMapper;
@@ -47,8 +47,8 @@ namespace PKSim.Core.Snapshots.Mappers
          populationAnalysisChart.PrimaryYAxisSettings = snapshot.YAxisSettings;
          snapshot.SecondaryYAxisSettings.Each(populationAnalysisChart.AddSecondaryAxis);
 
-         await _chartMapper.MapToModel(snapshot, populationAnalysisChart);
-         await _populationAnalysisMapper.MapToModel(snapshot.Analysis, populationAnalysisChart.BasePopulationAnalysis);
+         await _chartMapper.MapToModel(snapshot, new ChartSnapshotContext(populationAnalysisChart, simulationAnalysisContext));
+         await _populationAnalysisMapper.MapToModel(snapshot.Analysis, new PopulationAnalysisSnapshotContext(populationAnalysisChart.BasePopulationAnalysis, simulationAnalysisContext));
 
          var observedDataCollection = await _observedDataCollectionMapper.MapToModel(snapshot.ObservedDataCollection, simulationAnalysisContext);
          populationAnalysisChart.ObservedDataCollection.UpdateFrom(observedDataCollection);

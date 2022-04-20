@@ -25,7 +25,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<IFormulaUsablePath> MapToModel(SnapshotFormulaUsablePath snapshot)
+      public override Task<IFormulaUsablePath> MapToModel(SnapshotFormulaUsablePath snapshot, SnapshotContext snapshotContext)
       {
          IFormulaUsablePath formulaUsablePath;
          if (snapshot.Alias == Constants.TIME)

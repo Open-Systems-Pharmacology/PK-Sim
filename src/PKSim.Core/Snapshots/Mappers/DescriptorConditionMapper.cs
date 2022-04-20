@@ -27,7 +27,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override Task<IDescriptorCondition> MapToModel(SnapshotDescriptorCondition snapshot)
+      public override Task<IDescriptorCondition> MapToModel(SnapshotDescriptorCondition snapshot, SnapshotContext snapshotContext)
       {
          return Task.FromResult(descriptorConditionFrom(snapshot));
       }

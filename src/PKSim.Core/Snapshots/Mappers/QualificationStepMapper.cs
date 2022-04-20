@@ -8,7 +8,7 @@ using SnapshotQualificationStep = PKSim.Core.Snapshots.QualificationStep;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class QualificationStepMapper : SnapshotMapperBase<IQualificationStep, SnapshotQualificationStep, PKSimProject>
+   public class QualificationStepMapper : SnapshotMapperBase<IQualificationStep, SnapshotQualificationStep>
    {
       private readonly IOSPSuiteLogger _logger;
       private const string QUALIFICATION_STEP_SUFFIX = "QualificationStep";
@@ -42,7 +42,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private string friendlyNameFor(string qualificationStepType) => qualificationStepType.Replace(QUALIFICATION_STEP_SUFFIX, "");
 
-      public override Task<IQualificationStep> MapToModel(SnapshotQualificationStep snapshot, PKSimProject project)
+      public override Task<IQualificationStep> MapToModel(SnapshotQualificationStep snapshot, SnapshotContext snapshotContext)
       {
          var qualificationStep = createQualificationStepFrom(snapshot.Type);
          if (qualificationStep == null)
@@ -51,7 +51,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return Task.FromResult<IQualificationStep>(null);
          }
 
-         mapQualificationStepPropertiesToModel(qualificationStep, snapshot, project);
+         mapQualificationStepPropertiesToModel(qualificationStep, snapshot, snapshotContext.Project);
 
          return Task.FromResult(qualificationStep);
       }
@@ -81,7 +81,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private IQualificationStep createQualificationStepFrom(string qualificationStepType)
       {
-         return createIf<RunParameterIdentificationQualificationStep>(qualificationStepType)??
+         return createIf<RunParameterIdentificationQualificationStep>(qualificationStepType) ??
                 createIf<RunSimulationQualificationStep>(qualificationStepType);
       }
 

@@ -3,7 +3,17 @@ using OSPSuite.Core.Chart;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ChartMapper : ObjectBaseSnapshotMapperBase<IChart, Chart, IChart, Chart>
+   public class ChartSnapshotContext : SnapshotContext
+   {
+      public IChart Chart { get; }
+
+      public ChartSnapshotContext(IChart chart, SnapshotContext baseContext) : base(baseContext)
+      {
+         Chart = chart;
+      }
+   }
+
+   public class ChartMapper : ObjectBaseSnapshotMapperBase<IChart, Chart, ChartSnapshotContext, Chart>
    {
       public override Task<Chart> MapToSnapshot(IChart chart, Chart snapshot)
       {
@@ -17,8 +27,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return Task.FromResult(snapshot);
       }
 
-      public override Task<IChart> MapToModel(Chart snapshot, IChart chart)
+      public override Task<IChart> MapToModel(Chart snapshot, ChartSnapshotContext snapshotContext)
       {
+         var chart = snapshotContext.Chart;
          MapSnapshotPropertiesToModel(snapshot, chart);
          chart.ChartSettings.UpdatePropertiesFrom(snapshot.Settings);
          chart.FontAndSize.UpdatePropertiesFrom(snapshot.FontAndSize);

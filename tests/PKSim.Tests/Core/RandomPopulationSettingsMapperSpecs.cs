@@ -2,7 +2,6 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -33,6 +32,8 @@ namespace PKSim.Core
       protected PopulationSettings _snapshot;
       protected OriginDataParameter _diseaseStateParameter;
       protected IOSPSuiteLogger _logger;
+      private PKSimProject _project;
+      protected SnapshotContext _snapshotContext;
 
       protected override Task Context()
       {
@@ -40,7 +41,7 @@ namespace PKSim.Core
          _parameterRangeMapper = A.Fake<ParameterRangeMapper>();
          _genderRepository = A.Fake<IGenderRepository>();
          _populationSettingsMapper = A.Fake<IIndividualToPopulationSettingsMapper>();
-         _logger= A.Fake<IOSPSuiteLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          sut = new RandomPopulationSettingsMapper(_parameterRangeMapper, _individualMapper, _populationSettingsMapper, _genderRepository, _logger);
 
          _ageParameterRange = new ConstrainedParameterRange {ParameterName = CoreConstants.Parameters.AGE};
@@ -81,6 +82,9 @@ namespace PKSim.Core
 
          A.CallTo(() => _genderRepository.Female).Returns(new Gender {Id = "Female", Name = "Female"});
          A.CallTo(() => _genderRepository.Male).Returns(new Gender {Id = "Male", Name = "Male"});
+
+         _project = new PKSimProject();
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
          return Task.FromResult(true);
       }
    }
@@ -132,12 +136,10 @@ namespace PKSim.Core
       private GenderRatio _maleRatio;
       private GenderRatio _femaleRatio;
       private readonly int _proportionOfFemale = 30;
-      private PKSimProject _project;
 
       protected override async Task Context()
       {
          await base.Context();
-         _project = new PKSimProject();
          _newIndividual = new Individual();
          _newAgeRange = new ParameterRange {ParameterName = CoreConstants.Parameters.AGE};
          _newWeightRange = new ParameterRange {ParameterName = CoreConstants.Parameters.MEAN_WEIGHT};
@@ -146,9 +148,9 @@ namespace PKSim.Core
 
          _snapshot.ProportionOfFemales = _proportionOfFemale;
 
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newAgeRange)).Returns(_newAgeRange);
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newWeightRange)).Returns(_newWeightRange);
-         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _project)).Returns(_newIndividual);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, A<ParameterRangeSnapshotContext>.That.Matches(x => x.ParameterRange == _newAgeRange))).Returns(_newAgeRange);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, A<ParameterRangeSnapshotContext>.That.Matches(x => x.ParameterRange == _newWeightRange))).Returns(_newWeightRange);
+         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _snapshotContext)).Returns(_newIndividual);
 
          _mappedSettings = new RandomPopulationSettings();
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);
@@ -175,7 +177,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSettings = await sut.MapToModel(_snapshot, _project);
+         _newSettings = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]
@@ -194,8 +196,8 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_parameter_as_expected()
       {
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newSettings.ParameterRange(CoreConstants.Parameters.AGE))).MustHaveHappened();
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newSettings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT))).MustHaveHappened();
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, A<ParameterRangeSnapshotContext>.That.Matches(x => x.ParameterRange == _newSettings.ParameterRange(CoreConstants.Parameters.AGE)))).MustHaveHappened();
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, A<ParameterRangeSnapshotContext>.That.Matches(x => x.ParameterRange == _newSettings.ParameterRange(CoreConstants.Parameters.MEAN_WEIGHT)))).MustHaveHappened();
       }
    }
 
@@ -225,9 +227,9 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_randomPopulationSettings);
          _snapshot.ProportionOfFemales = _proportionOfFemale;
 
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, _newAgeRange)).Returns(_newAgeRange);
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, _newWeightRange)).Returns(_newWeightRange);
-         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _project)).Returns(_newIndividual);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Age, A<ParameterRangeSnapshotContext>.That.Matches(x => x.ParameterRange == _newAgeRange))).Returns(_newAgeRange);
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_snapshot.Weight, A<ParameterRangeSnapshotContext>.That.Matches(x => x.ParameterRange == _newWeightRange))).Returns(_newWeightRange);
+         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _snapshotContext)).Returns(_newIndividual);
 
          _newDiseaseStateParameterRange = new ConstrainedParameterRange {ParameterName = _diseaseStateParameter.Name};
 
@@ -238,7 +240,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSettings = await sut.MapToModel(_snapshot, _project);
+         _newSettings = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]
@@ -250,7 +252,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_dynamic_parameters()
       {
-         A.CallTo(() => _parameterRangeMapper.MapToModel(_diseaseStateParameterRangeSnapshot, _newDiseaseStateParameterRange)).MustHaveHappened();
+         A.CallTo(() => _parameterRangeMapper.MapToModel(_diseaseStateParameterRangeSnapshot, A<ParameterRangeSnapshotContext>.That.Matches(x => x.ParameterRange == _newDiseaseStateParameterRange))).MustHaveHappened();
       }
    }
 
@@ -267,10 +269,10 @@ namespace PKSim.Core
          await base.Context();
          _newIndividual = new Individual();
          _project = new PKSimProject();
-
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
          _snapshot = await sut.MapToSnapshot(_randomPopulationSettings);
          _snapshot.ProportionOfFemales = null;
-         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _project)).Returns(_newIndividual);
+         A.CallTo(() => _individualMapper.MapToModel(_snapshotIndividual, _snapshotContext)).Returns(_newIndividual);
 
          _mappedSettings = new RandomPopulationSettings();
          A.CallTo(() => _populationSettingsMapper.MapFrom(_newIndividual)).Returns(_mappedSettings);
@@ -284,7 +286,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSettings = await sut.MapToModel(_snapshot, _project);
+         _newSettings = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]

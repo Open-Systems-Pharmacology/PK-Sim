@@ -26,12 +26,12 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override async Task<ModelSchemaItem> MapToModel(SnapshotSchemaItem snapshot)
+      public override async Task<ModelSchemaItem> MapToModel(SnapshotSchemaItem snapshot, SnapshotContext snapshotContext)
       {
          var applicationType = ApplicationTypes.ByName(snapshot.ApplicationType);
          var schemaItem = _schemaItemFactory.Create(applicationType);
          MapSnapshotPropertiesToModel(snapshot, schemaItem);
-         await UpdateParametersFromSnapshot(snapshot, schemaItem, PKSimConstants.ObjectTypes.SchemaItem);
+         await UpdateParametersFromSnapshot(snapshot, schemaItem, snapshotContext, PKSimConstants.ObjectTypes.SchemaItem);
          schemaItem.FormulationKey = snapshot.FormulationKey;
          schemaItem.TargetOrgan = snapshot.TargetOrgan;
          schemaItem.TargetCompartment = snapshot.TargetCompartment;

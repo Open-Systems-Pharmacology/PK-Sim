@@ -80,7 +80,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSolverSettings = await sut.MapToModel(_snapshot);
+         _newSolverSettings = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

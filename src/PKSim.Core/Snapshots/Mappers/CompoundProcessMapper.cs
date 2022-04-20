@@ -64,9 +64,9 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private string speciesNameFor(ModelCompoundProcess process) => SnapshotValueFor((process as ISpeciesDependentCompoundProcess)?.Species.Name);
 
-      public override async Task<ModelCompoundProcess> MapToModel(SnapshotCompoundProcess snapshot)
+      public override async Task<ModelCompoundProcess> MapToModel(SnapshotCompoundProcess snapshot, SnapshotContext snapshotContext)
       {
-         var process = await retrieveProcessFrom(snapshot);
+         var process = await retrieveProcessFrom(snapshot, snapshotContext);
          if (process == null)
             return null;
 
@@ -90,7 +90,7 @@ namespace PKSim.Core.Snapshots.Mappers
             enzymaticProcess.MetaboliteName = snapshot.Metabolite;
       }
 
-      private async Task<ModelCompoundProcess> retrieveProcessFrom(SnapshotCompoundProcess snapshot)
+      private async Task<ModelCompoundProcess> retrieveProcessFrom(CompoundProcess snapshot, SnapshotContext snapshotContext)
       {
          var template = _compoundProcessRepository.ProcessByName(snapshot.InternalName);
          if (template == null)
@@ -105,7 +105,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (process.IsAnImplementationOf<ISpeciesDependentCompoundProcess>())
             updateSpeciesDependentParameter(process, snapshot);
 
-         await UpdateParametersFromSnapshot(snapshot, process, process.InternalName);
+         await UpdateParametersFromSnapshot(snapshot, process, snapshotContext, process.InternalName);
 
          return process;
       }

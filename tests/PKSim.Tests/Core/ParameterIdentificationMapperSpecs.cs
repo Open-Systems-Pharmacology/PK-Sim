@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using IdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
-using OSPSuite.Core.Services;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using OutputMapping = OSPSuite.Core.Domain.ParameterIdentifications.OutputMapping;
 using Simulation = PKSim.Core.Model.Simulation;
@@ -36,6 +36,7 @@ namespace PKSim.Core
       protected ParameterIdentificationAnalysis _snapshotParameterIdentificationAnalysis;
       protected IObjectBaseFactory _objectBaseFactory;
       protected IOSPSuiteLogger _logger;
+      protected SnapshotContext _snapshotContext;
 
       protected override Task Context()
       {
@@ -47,6 +48,7 @@ namespace PKSim.Core
          _logger = A.Fake<IOSPSuiteLogger>();
 
          _project = new PKSimProject();
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
          _simulation = new IndividualSimulation().WithName("S1");
          _project.AddBuildingBlock(_simulation);
 
@@ -126,6 +128,7 @@ namespace PKSim.Core
    public class When_mapping_a_parameter_identification_snapshot_to_parameter_identification : concern_for_ParameterIdentificationMapper
    {
       private ModelParameterIdentification _newParameterIdentification;
+      private SnapshotContext _context;
 
       protected override async Task Context()
       {
@@ -136,11 +139,13 @@ namespace PKSim.Core
          A.CallTo(() => _parameterIdentificationAnalysisMapper.MapToModel(_snapshotParameterIdentificationAnalysis, A<ParameterIdentificationContext>._)).Returns(_parameterIdentificationAnalysis);
 
          A.CallTo(() => _objectBaseFactory.Create<ModelParameterIdentification>()).Returns(new ModelParameterIdentification());
+
+         _context = new SnapshotContext(_project, 1);
       }
 
       protected override async Task Because()
       {
-         _newParameterIdentification = await sut.MapToModel(_snapshot, _project);
+         _newParameterIdentification = await sut.MapToModel(_snapshot, _context);
       }
 
       [Observation]
@@ -152,7 +157,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_mapped_the_parameter_identification_configuration()
       {
-         A.CallTo(() => _parameterIdentificationConfigurationMapper.MapToModel(_snapshot.Configuration, _newParameterIdentification.Configuration)).MustHaveHappened();
+         A.CallTo(() => _parameterIdentificationConfigurationMapper.MapToModel(_snapshot.Configuration, A<ParameterIdentificationContext>.That.Matches(x => x.ParameterIdentification == _newParameterIdentification))).MustHaveHappened();
       }
 
       [Observation]
@@ -188,7 +193,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot, _project);
+         return sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]

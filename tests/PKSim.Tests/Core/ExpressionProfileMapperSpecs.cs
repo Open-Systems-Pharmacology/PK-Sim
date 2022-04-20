@@ -49,11 +49,11 @@ namespace PKSim.Core
          _ontogenyTask = A.Fake<IOntogenyTask>();
          _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
          sut = new ExpressionProfileMapper(
-            _parameterMapper, 
-            _expressionContainerMapper, 
-            _ontogenyMapper, 
-            _ontogenyTask, 
-            _moleculeExpressionTask, 
+            _parameterMapper,
+            _expressionContainerMapper,
+            _ontogenyMapper,
+            _ontogenyTask,
+            _moleculeExpressionTask,
             _expressionProfileFactory);
 
          _ontogeny = new DatabaseOntogeny
@@ -171,7 +171,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_valid_enzyme_expression_profile_snapshot_to_a_expression_profile : concern_for_ExpressionProfileMapper
+   public class When_mapping_a_valid_enzyme_expression_profile_snapshot_v9_to_a_expression_profile : concern_for_ExpressionProfileMapper
    {
       private Model.ExpressionProfile _newExpressionProfile;
 
@@ -195,7 +195,7 @@ namespace PKSim.Core
             .Invokes(x => _relativeExpressionParameter1.Value = _relativeExpressionContainerSnapshot1.Value.Value);
 
          _newExpressionProfile.Molecule.Ontogeny = null;
-         A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, _newExpressionProfile.Individual)).Returns(_ontogeny);
+         A.CallTo(() => _ontogenyMapper.MapToModel(_snapshot.Ontogeny, A<SnapshotContextWithSubject>.That.Matches(x => x.SimulationSubject == _newExpressionProfile.Individual))).Returns(_ontogeny);
 
          var enzyme = _newExpressionProfile.Molecule.DowncastTo<IndividualEnzyme>();
          //Localization is now set in task. We override behavior here and pretend that command was executed
@@ -208,7 +208,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newExpressionProfile = await sut.MapToModel(_snapshot);
+         _newExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), ProjectVersions.V9));
       }
 
       [Observation]
@@ -252,7 +252,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newTransporterExpressionProfile = await sut.MapToModel(_snapshot);
+         _newTransporterExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -283,7 +283,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOtherProteinExpressionProfile = await sut.MapToModel(_snapshot);
+         _newOtherProteinExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

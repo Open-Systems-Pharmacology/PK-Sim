@@ -87,11 +87,11 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newInContainer = await sut.MapToModel(_inContainerSnapshot);
-         _newNotInContainer = await sut.MapToModel(_notInContainerSnapshot);
-         _newMatchAllCondition = await sut.MapToModel(_matchAllConditionSnapshot);
-         _newNotMatchAllCondition = await sut.MapToModel(_notMatchAllConditionSnapshot);
-         _newNotMatchCondition = await sut.MapToModel(_notMatchConditionSnapshot);
+         _newInContainer = await sut.MapToModel(_inContainerSnapshot, new SnapshotContext());
+         _newNotInContainer = await sut.MapToModel(_notInContainerSnapshot, new SnapshotContext());
+         _newMatchAllCondition = await sut.MapToModel(_matchAllConditionSnapshot, new SnapshotContext());
+         _newNotMatchAllCondition = await sut.MapToModel(_notMatchAllConditionSnapshot, new SnapshotContext());
+         _newNotMatchCondition = await sut.MapToModel(_notMatchConditionSnapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -142,7 +142,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_invalid);
+         _result = await sut.MapToModel(_invalid, new SnapshotContext());
       }
 
       [Observation]

@@ -11,16 +11,17 @@ namespace PKSim.Core.Snapshots.Mappers
    {
    }
 
-   public abstract class SnapshotMapperBase<TModel, TSnapshot> : ISnapshotMapperSpecification
+   public abstract class SnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> : ISnapshotMapperSpecification, ISnapshotMapperWithContext<TModel, TSnapshot, TSnapshotContext>
       where TSnapshot : new()
+      where TSnapshotContext : SnapshotContext
    {
       public virtual async Task<object> MapToSnapshot(object model) => await MapToSnapshot(model.DowncastTo<TModel>());
 
-      public virtual async Task<object> MapToModel(object snapshot) => await MapToModel(snapshot.DowncastTo<TSnapshot>());
+      public async Task<object> MapToModel(object snapshot, SnapshotContext snapshotContext) => await MapToModel(snapshot.DowncastTo<TSnapshot>(), snapshotContext.DowncastTo<TSnapshotContext>());
+
+      public abstract Task<TModel> MapToModel(TSnapshot snapshot, TSnapshotContext context);
 
       public abstract Task<TSnapshot> MapToSnapshot(TModel model);
-
-      public abstract Task<TModel> MapToModel(TSnapshot snapshot);
 
       public Type SnapshotTypeFor<T>() => typeof(TSnapshot);
 
@@ -75,25 +76,18 @@ namespace PKSim.Core.Snapshots.Mappers
       }
    }
 
-   public abstract class SnapshotMapperBase<TModel, TSnapshot, TContext> : SnapshotMapperBase<TModel, TSnapshot>
-      where TSnapshot : new()
+   public abstract class SnapshotMapperBase<TModel, TSnapshot, TSnapshotContext, TModelContext> : SnapshotMapperBase<TModel, TSnapshot, TSnapshotContext>
+      where TSnapshot : new() where TSnapshotContext : SnapshotContext
    {
-      public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
-
-      public sealed override Task<TModel> MapToModel(TSnapshot snapshot)
-      {
-         return Task.FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
-      }
-   }
-
-   public abstract class SnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> : SnapshotMapperBase<TModel, TSnapshot, TModelContext>
-      where TSnapshot : new()
-   {
-      public abstract Task<TSnapshot> MapToSnapshot(TModel model, TSnapshotContext context);
+      public abstract Task<TSnapshot> MapToSnapshot(TModel model, TModelContext context);
 
       public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
       {
-         return Task.FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TSnapshotContext>());
+         return Task.FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TModelContext>());
       }
+   }
+
+   public abstract class SnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot, SnapshotContext> where TSnapshot : new()
+   {
    }
 }

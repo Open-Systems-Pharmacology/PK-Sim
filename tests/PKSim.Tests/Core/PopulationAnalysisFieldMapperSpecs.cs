@@ -246,7 +246,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newParameterField = await sut.MapToModel(_snapshot) as PopulationAnalysisParameterField;
+         _newParameterField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisParameterField;
       }
 
       [Observation]
@@ -271,7 +271,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newPKParameterField = await sut.MapToModel(_snapshot) as PopulationAnalysisPKParameterField;
+         _newPKParameterField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisPKParameterField;
       }
 
       [Observation]
@@ -298,7 +298,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCovariateField = await sut.MapToModel(_snapshot) as PopulationAnalysisCovariateField;
+         _newCovariateField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisCovariateField;
       }
 
       [Observation]
@@ -322,7 +322,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOutputField = await sut.MapToModel(_snapshot) as PopulationAnalysisOutputField;
+         _newOutputField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisOutputField;
       }
 
       [Observation]
@@ -346,12 +346,12 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_groupingField);
          _newGroupingDefinition = A.Fake<GroupingDefinition>();
-         A.CallTo(() => _groupingDefinitionMapper.MapToModel(_snapshot.GroupingDefinition)).Returns(_newGroupingDefinition);
+         A.CallTo(() => _groupingDefinitionMapper.MapToModel(_snapshot.GroupingDefinition, A<SnapshotContext>._)).Returns(_newGroupingDefinition);
       }
 
       protected override async Task Because()
       {
-         _newGroupingField = await sut.MapToModel(_snapshot) as PopulationAnalysisGroupingField;
+         _newGroupingField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisGroupingField;
       }
 
       [Observation]

@@ -30,10 +30,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameter.NameIsOneOf(Constants.Parameters.START_TIME, Constants.Parameters.END_TIME, Constants.Parameters.RESOLUTION) || base.ShouldExportParameterToSnapshot(parameter);
       }
 
-      public override async Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot)
+      public override async Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot, SnapshotContext snapshotContext)
       {
          var outputInterval = _outputIntervalFactory.CreateDefault();
-         await UpdateParametersFromSnapshot(snapshot, outputInterval, Constants.OUTPUT_INTERVAL);
+         await UpdateParametersFromSnapshot(snapshot, outputInterval, snapshotContext, Constants.OUTPUT_INTERVAL);
          return outputInterval;
       }
    }

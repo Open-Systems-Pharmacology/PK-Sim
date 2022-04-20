@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
@@ -30,9 +29,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<IPopulationAnalysisField> MapToModel(PopulationAnalysisField snapshot)
+      public override async Task<IPopulationAnalysisField> MapToModel(PopulationAnalysisField snapshot, SnapshotContext snapshotContext)
       {
-         var populationAnalysisField = await createFieldFrom(snapshot);
+         var populationAnalysisField = await createFieldFrom(snapshot, snapshotContext);
          MapSnapshotPropertiesToModel(snapshot, populationAnalysisField);
          mapIf<PopulationAnalysisParameterField>(snapshot, populationAnalysisField, mapParameterFieldToModel);
          mapIf<PopulationAnalysisPKParameterField>(snapshot, populationAnalysisField, mapPKParameterFieldToModel);
@@ -135,7 +134,7 @@ namespace PKSim.Core.Snapshots.Mappers
          mapAction(snapshot, field);
       }
 
-      private async Task<IPopulationAnalysisField> createFieldFrom(PopulationAnalysisField snapshot)
+      private async Task<IPopulationAnalysisField> createFieldFrom(PopulationAnalysisField snapshot, SnapshotContext snapshotContext)
       {
          if (snapshot.ParameterPath != null)
             return new PopulationAnalysisParameterField();
@@ -148,7 +147,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (snapshot.GroupingDefinition != null)
          {
-            var groupingDefinition = await _groupingDefinitionMapper.MapToModel(snapshot.GroupingDefinition);
+            var groupingDefinition = await _groupingDefinitionMapper.MapToModel(snapshot.GroupingDefinition, snapshotContext);
             return new PopulationAnalysisGroupingField(groupingDefinition);
          }
 

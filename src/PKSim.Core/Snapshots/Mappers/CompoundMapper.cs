@@ -50,22 +50,22 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelCompound> MapToModel(SnapshotCompound snapshot)
+      public override async Task<ModelCompound> MapToModel(SnapshotCompound snapshot, SnapshotContext snapshotContext)
       {
          var compound = _compoundFactory.Create();
          MapSnapshotPropertiesToModel(snapshot, compound);
          _calculationMethodCacheMapper.UpdateCalculationMethodCache(compound, snapshot.CalculationMethods);
 
-         await updateAlternatives(compound, snapshot.Lipophilicity, COMPOUND_LIPOPHILICITY);
-         await updateAlternatives(compound, snapshot.FractionUnbound, COMPOUND_FRACTION_UNBOUND);
-         await updateAlternatives(compound, snapshot.Solubility, COMPOUND_SOLUBILITY);
-         await updateAlternatives(compound, snapshot.IntestinalPermeability, COMPOUND_INTESTINAL_PERMEABILITY);
-         await updateAlternatives(compound, snapshot.Permeability, COMPOUND_PERMEABILITY);
+         await updateAlternatives(compound, snapshot.Lipophilicity, COMPOUND_LIPOPHILICITY, snapshotContext);
+         await updateAlternatives(compound, snapshot.FractionUnbound, COMPOUND_FRACTION_UNBOUND, snapshotContext);
+         await updateAlternatives(compound, snapshot.Solubility, COMPOUND_SOLUBILITY, snapshotContext);
+         await updateAlternatives(compound, snapshot.IntestinalPermeability, COMPOUND_INTESTINAL_PERMEABILITY, snapshotContext);
+         await updateAlternatives(compound, snapshot.Permeability, COMPOUND_PERMEABILITY, snapshotContext);
 
          updatePkaTypes(compound, snapshot);
 
-         await updateProcesses(snapshot, compound);
-         await UpdateParametersFromSnapshot(snapshot, compound);
+         await updateProcesses(snapshot, compound, snapshotContext);
+         await UpdateParametersFromSnapshot(snapshot, compound, snapshotContext);
 
          synchronizeMolWeightValueOrigins(compound);
          return compound;
@@ -78,13 +78,13 @@ namespace PKSim.Core.Snapshots.Mappers
          compound.PlasmaProteinBindingPartner = ModelValueFor(snapshot.PlasmaProteinBindingPartner, PlasmaProteinBindingPartner.Unknown);
       }
 
-      private async Task updateProcesses(SnapshotCompound snapshot, ModelCompound compound)
+      private async Task updateProcesses(SnapshotCompound snapshot, ModelCompound compound, SnapshotContext snapshotContext)
       {
-         var processes = await _processMapper.MapToModels(snapshot.Processes);
+         var processes = await _processMapper.MapToModels(snapshot.Processes, snapshotContext);
          processes?.Each(compound.AddProcess);
       }
 
-      private async Task updateAlternatives(ModelCompound compound, Alternative[] snapshotAlternatives, string alternativeGroupName)
+      private async Task updateAlternatives(ModelCompound compound, Alternative[] snapshotAlternatives, string alternativeGroupName, SnapshotContext snapshotContext)
       {
          if (snapshotAlternatives == null)
             return;
@@ -97,11 +97,12 @@ namespace PKSim.Core.Snapshots.Mappers
          //Reset the default flag that will be read from snapshot
          alternativeGroup.AllAlternatives.Each(x => x.IsDefault = false);
 
-         var alternatives = await _alternativeMapper.MapToModels(snapshotAlternatives, alternativeGroup);
+         var alternativeSnapshotContext = new AlternativeMapperSnapshotContext(alternativeGroup, snapshotContext);
+         var alternatives = await _alternativeMapper.MapToModels(snapshotAlternatives, alternativeSnapshotContext);
 
          alternatives?.Each(alternativeGroup.AddAlternative);
 
-         //Ensure that we have at least one default alternative (might not be the case if only calcualted alternatives were saved)
+         //Ensure that we have at least one default alternative (might not be the case if only calculated alternatives were saved)
          var defaultAlternative = alternativeGroup.DefaultAlternative;
          if (defaultAlternative != null)
             defaultAlternative.IsDefault = true;

@@ -215,7 +215,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, _enzymaticProcess) as EnzymaticProcessSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_enzymaticProcess, new SnapshotContext())) as EnzymaticProcessSelection;
       }
 
       [Observation]
@@ -240,7 +240,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, _specificBindingProcess) as ProcessSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_specificBindingProcess, new SnapshotContext())) as ProcessSelection;
       }
 
       [Observation]
@@ -264,7 +264,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, _transportSystemicProcess) as SystemicProcessSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_transportSystemicProcess, new SnapshotContext())) as SystemicProcessSelection;
       }
 
       [Observation]
@@ -289,7 +289,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, _interactionProcess) as InteractionSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_interactionProcess, new SnapshotContext())) as InteractionSelection;
       }
 
       [Observation]

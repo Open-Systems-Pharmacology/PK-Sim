@@ -7,7 +7,17 @@ using ModelOntogeny = PKSim.Core.Model.Ontogeny;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OntogenyMapper : ObjectBaseSnapshotMapperBase<ModelOntogeny, SnapshotOntogeny, ISimulationSubject>
+   public class SnapshotContextWithSubject : SnapshotContext
+   {
+      public ISimulationSubject SimulationSubject { get; }
+
+      public SnapshotContextWithSubject(ISimulationSubject simulationSubject, SnapshotContext snapshotContext) : base(snapshotContext)
+      {
+         SimulationSubject = simulationSubject;
+      }
+   }
+
+   public class OntogenyMapper : ObjectBaseSnapshotMapperBase<ModelOntogeny, SnapshotOntogeny, SnapshotContextWithSubject>
    {
       private readonly DistributedTableFormulaMapper _distributedTableFormulaMapper;
       private readonly IOntogenyRepository _ontogenyRepository;
@@ -34,18 +44,18 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelOntogeny> MapToModel(SnapshotOntogeny snapshot, ISimulationSubject simulationSubject)
+      public override async Task<ModelOntogeny> MapToModel(SnapshotOntogeny snapshot, SnapshotContextWithSubject snapshotContextContext)
       {
          if (snapshot == null)
             return new NullOntogeny();
 
-         var speciesName = simulationSubject.Species.Name;
+         var speciesName = snapshotContextContext.SimulationSubject.Species.Name;
          if (snapshot.Table == null)
             return _ontogenyRepository.AllFor(speciesName).FindByName(snapshot.Name);
 
          var ontogeny = new UserDefinedOntogeny
          {
-            Table = await _distributedTableFormulaMapper.MapToModel(snapshot.Table),
+            Table = await _distributedTableFormulaMapper.MapToModel(snapshot.Table, snapshotContextContext),
             SpeciesName = speciesName
          };
 

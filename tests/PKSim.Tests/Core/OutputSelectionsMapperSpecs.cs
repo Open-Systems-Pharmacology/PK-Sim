@@ -5,13 +5,10 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using OSPSuite.Core.Services;
-using OutputSelections = OSPSuite.Core.Domain.OutputSelections;
-using Parameter = OSPSuite.Core.Domain.Parameter;
 
 namespace PKSim.Core
 {
@@ -29,7 +26,7 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _entitiesInContainerRetriever = A.Fake<IEntitiesInContainerRetriever>();
-         _logger= A.Fake<IOSPSuiteLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          sut = new OutputSelectionsMapper(_entitiesInContainerRetriever, _logger);
 
          _quantitySelection1 = new QuantitySelection("PATH1", QuantityType.Drug);
@@ -82,7 +79,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOutputSelections = await sut.MapToModel(_snapshot,_simulation);
+         _newOutputSelections = await sut.MapToModel(_snapshot, new SnapshotContextWithSimulation(_simulation, new SnapshotContext()));
       }
 
       [Observation]
@@ -111,7 +108,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot, _simulation);
+         return sut.MapToModel(_snapshot, new SnapshotContextWithSimulation(_simulation, new SnapshotContext()));
       }
 
       [Observation]

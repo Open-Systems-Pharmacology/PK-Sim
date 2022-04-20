@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using ModelGroupingDefinition = PKSim.Core.Model.PopulationAnalyses.GroupingDefinition;
@@ -31,7 +30,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override Task<ModelGroupingDefinition> MapToModel(SnapshotGroupingDefinition snapshot)
+      public override Task<ModelGroupingDefinition> MapToModel(SnapshotGroupingDefinition snapshot, SnapshotContext snapshotContext)
       {
          var groupingDefinition = createGroupingFrom(snapshot);
          mapIf<ValueMappingGroupingDefinition>(snapshot, groupingDefinition, mapValueGroupingToModel);
@@ -70,8 +69,8 @@ namespace PKSim.Core.Snapshots.Mappers
          groupingDefinition.EndColor = ModelValueFor(snapshot.EndColor);
          groupingDefinition.NamingPattern = snapshot.NamingPattern;
          groupingDefinition.Strategy = LabelGenerationStrategies.ById(ModelValueFor(snapshot.Strategy));
-
       }
+
       private void mapFixedLimitsGroupingToSnapshot(SnapshotGroupingDefinition snapshot, FixedLimitsGroupingDefinition groupingDefinition)
       {
          mapIntervalGroupingToSnapshot(snapshot, groupingDefinition);

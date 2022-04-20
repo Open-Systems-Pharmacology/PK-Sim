@@ -90,7 +90,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, new PathCacheForSpecs<IParameter>());
+         _result = await sut.MapToModel(_snapshot, new AdvancedParameterSnapshotContext(new PathCacheForSpecs<IParameter>(), new SnapshotContext()));
       }
 
       [Observation]
@@ -103,23 +103,6 @@ namespace PKSim.Core
       public void should_return_null()
       {
          _result.ShouldBeNull();
-      }
-   }
-
-   public class When_mapping_an_advanced_parameter_snapshot_to_snapshot_usign_the_wrong_overload : concern_for_AdvancedParameterMapper
-   {
-      private Snapshots.AdvancedParameter _snapshot;
-
-      protected override async Task Context()
-      {
-         await base.Context();
-         _snapshot = await sut.MapToSnapshot(_advancedParameter);
-      }
-
-      [Observation]
-      public void should_throw_an_exception()
-      {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<NotSupportedException>();
       }
    }
 
@@ -143,7 +126,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newAdvancedParameter = await sut.MapToModel(_snapshot, _pathCache);
+         _newAdvancedParameter = await sut.MapToModel(_snapshot, new AdvancedParameterSnapshotContext(_pathCache, new SnapshotContext()));
       }
 
       [Observation]
@@ -161,7 +144,7 @@ namespace PKSim.Core
       [Observation]
       public void should_map_distribution_parameters_from_snapshot()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newAdvancedParameter.DistributedParameter, _newAdvancedParameter.DistributedParameter.Name)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newAdvancedParameter.DistributedParameter, _newAdvancedParameter.DistributedParameter.Name, A<SnapshotContext>._)).MustHaveHappened();
       }
    }
 
@@ -188,7 +171,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(new[] {_snapshot}, _advancedParameterContainer);
+         await sut.MapToModel(new[] {_snapshot}, _advancedParameterContainer, new SnapshotContext());
       }
 
       [Observation]

@@ -33,12 +33,12 @@ namespace PKSim.Core.Snapshots.Mappers
             CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS) || base.ShouldExportParameterToSnapshot(parameter);
       }
 
-      public override async Task<ModelSchema> MapToModel(SnapshotSchema snapshot)
+      public override async Task<ModelSchema> MapToModel(SnapshotSchema snapshot, SnapshotContext snapshotContext)
       {
          var schema = _schemaFactory.Create();
          MapSnapshotPropertiesToModel(snapshot, schema);
-         await UpdateParametersFromSnapshot(snapshot, schema, PKSimConstants.ObjectTypes.Schema);
-         var schemaItems = await _schemaItemMapper.MapToModels(snapshot.SchemaItems);
+         await UpdateParametersFromSnapshot(snapshot, schema, snapshotContext, PKSimConstants.ObjectTypes.Schema);
+         var schemaItems = await _schemaItemMapper.MapToModels(snapshot.SchemaItems, snapshotContext);
          schemaItems?.Each(schema.AddSchemaItem);
          return schema;
       }

@@ -83,13 +83,13 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newEventMapping = await sut.MapToModel(_snapshot, _project);
+         _newEventMapping = await sut.MapToModel(_snapshot, new SnapshotContext(_project, 1));
       }
 
       [Observation]
       public void should_map_start_time_parameters_according_to_snapshot()
       {
-         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.StartTime, _newEventMapping.StartTime)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapToModel(_snapshot.StartTime, A<ParameterSnapshotContext>.That.Matches(x => x.Parameter == _newEventMapping.StartTime))).MustHaveHappened();
       }
    }
 }

@@ -11,7 +11,17 @@ using ModelCalculationMethodCache = OSPSuite.Core.Domain.CalculationMethodCache;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class CalculationMethodCacheMapper : SnapshotMapperBase<ModelCalculationMethodCache, SnapshotCalculationMethodCache, ModelCalculationMethodCache>
+   public class CalculationMethodCacheSnapshotContext : SnapshotContext
+   {
+      public ModelCalculationMethodCache CalculationMethodCache { get; }
+
+      public CalculationMethodCacheSnapshotContext(ModelCalculationMethodCache calculationMethodCache, SnapshotContext baseContext) : base(baseContext)
+      {
+         CalculationMethodCache = calculationMethodCache;
+      }
+   }
+
+   public class CalculationMethodCacheMapper : SnapshotMapperBase<ModelCalculationMethodCache, SnapshotCalculationMethodCache, CalculationMethodCacheSnapshotContext>
    {
       private readonly ICalculationMethodRepository _calculationMethodRepository;
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
@@ -69,10 +79,10 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Add(calculationMethod.Name);
       }
 
-      public override Task<ModelCalculationMethodCache> MapToModel(SnapshotCalculationMethodCache snapshot, ModelCalculationMethodCache calculationMethodCache)
+      public override Task<ModelCalculationMethodCache> MapToModel(SnapshotCalculationMethodCache snapshot, CalculationMethodCacheSnapshotContext snapshotContext)
       {
-         UpdateCalculationMethodCache(calculationMethodCache, snapshot);
-         return Task.FromResult(calculationMethodCache);
+         UpdateCalculationMethodCache(snapshotContext.CalculationMethodCache, snapshot);
+         return Task.FromResult(snapshotContext.CalculationMethodCache);
       }
 
       public virtual void UpdateCalculationMethodCache(IWithCalculationMethods withCalculationMethods, SnapshotCalculationMethodCache snapshot)

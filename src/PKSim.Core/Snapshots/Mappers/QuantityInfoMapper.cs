@@ -19,7 +19,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelQuantityInfo> MapToModel(SnapshotQuantityInfo snapshot)
+      public override Task<ModelQuantityInfo> MapToModel(SnapshotQuantityInfo snapshot, SnapshotContext snapshotContext)
       {
          var name = ModelValueFor(snapshot.Name);
          var type = ModelValueFor(snapshot.Type, QuantityType.Undefined);

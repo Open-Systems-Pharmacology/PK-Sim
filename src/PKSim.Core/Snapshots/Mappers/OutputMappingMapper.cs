@@ -45,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return weights;
       }
 
-      public override Task<ModelOutputMapping> MapToModel(SnapshotOutputMapping snapshot, ParameterIdentificationContext context)
+      public override Task<ModelOutputMapping> MapToModel(SnapshotOutputMapping snapshot,  ParameterIdentificationContext context)
       {
          var outputSelection = outputSelectionFrom(snapshot.Path, context.Project);
          if (outputSelection == null)

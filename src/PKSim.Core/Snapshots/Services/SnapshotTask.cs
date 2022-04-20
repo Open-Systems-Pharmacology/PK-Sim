@@ -58,6 +58,7 @@ namespace PKSim.Core.Snapshots.Services
       private readonly IDialogCreator _dialogCreator;
       private readonly IExecutionContext _executionContext;
       private readonly IObjectTypeResolver _objectTypeResolver;
+      private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly ProjectMapper _projectMapper;
       private readonly IJsonSerializer _jsonSerializer;
       private readonly ISnapshotMapper _snapshotMapper;
@@ -68,11 +69,13 @@ namespace PKSim.Core.Snapshots.Services
          ISnapshotMapper snapshotMapper,
          IExecutionContext executionContext,
          IObjectTypeResolver objectTypeResolver,
+         IPKSimProjectRetriever projectRetriever,
          ProjectMapper projectMapper)
       {
          _dialogCreator = dialogCreator;
          _executionContext = executionContext;
          _objectTypeResolver = objectTypeResolver;
+         _projectRetriever = projectRetriever;
          _projectMapper = projectMapper;
          _jsonSerializer = jsonSerializer;
          _snapshotMapper = snapshotMapper;
@@ -156,17 +159,20 @@ namespace PKSim.Core.Snapshots.Services
          return await loadModelsFromSnapshotsAsync<T>(snapshots);
       }
 
-      private async Task<IEnumerable<T>> loadModelsFromSnapshotsAsync<T>(IEnumerable<object> snapshots) 
+      private async Task<IEnumerable<T>> loadModelsFromSnapshotsAsync<T>(IEnumerable<object> snapshots)
       {
          if (snapshots == null)
             return Enumerable.Empty<T>();
 
-         var tasks = snapshots.Select(_snapshotMapper.MapToModel);
+         //This method is typically called when loading a building block snapshot directly (e.g exported as dev).
+         //In this case, we are not supporting any project conversion and we just create one with the current version
+         var snapshotContext = new SnapshotContext(_projectRetriever.Current, ProjectVersions.Current);
+         var tasks = snapshots.Select(x => _snapshotMapper.MapToModel(x, snapshotContext));
          var models = await Task.WhenAll(tasks);
          return models.OfType<T>();
       }
 
-      private async Task<T> loadModelFromSnapshot<T>(object snapshot) 
+      private async Task<T> loadModelFromSnapshot<T>(object snapshot)
       {
          if (snapshot == null)
             return default(T);

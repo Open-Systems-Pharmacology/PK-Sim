@@ -10,7 +10,7 @@ using ModelOutputSelections = OSPSuite.Core.Domain.OutputSelections;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OutputSelectionsMapper : SnapshotMapperBase<ModelOutputSelections, SnapshotOutputSelections, Model.Simulation>
+   public class OutputSelectionsMapper : SnapshotMapperBase<ModelOutputSelections, SnapshotOutputSelections, SnapshotContextWithSimulation>
    {
       private readonly IEntitiesInContainerRetriever _entitiesInContainerRetriever;
       private readonly IOSPSuiteLogger _logger;
@@ -31,13 +31,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override Task<ModelOutputSelections> MapToModel(SnapshotOutputSelections snapshot, Model.Simulation simulation)
+      public override Task<ModelOutputSelections> MapToModel(SnapshotOutputSelections snapshot, SnapshotContextWithSimulation snapshotContext)
       {
          var outputSelections = new ModelOutputSelections();
          if (snapshot == null)
             return Task.FromResult(outputSelections);
 
-         var allQuantities = _entitiesInContainerRetriever.QuantitiesFrom(simulation);
+         var allQuantities = _entitiesInContainerRetriever.QuantitiesFrom(snapshotContext.Simulation);
 
          snapshot.Each(path =>
          {

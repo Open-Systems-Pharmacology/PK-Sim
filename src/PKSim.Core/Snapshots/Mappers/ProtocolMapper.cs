@@ -35,20 +35,20 @@ namespace PKSim.Core.Snapshots.Mappers
          return null;
       }
 
-      public override async Task<ModelProtocol> MapToModel(SnapshotProtocol snapshotProtocol)
+      public override async Task<ModelProtocol> MapToModel(SnapshotProtocol snapshotProtocol, SnapshotContext snapshotContext)
       {
-         var modelProtocol = await createModelProtocolFrom(snapshotProtocol);
+         var modelProtocol = await createModelProtocolFrom(snapshotProtocol, snapshotContext);
          MapSnapshotPropertiesToModel(snapshotProtocol, modelProtocol);
-         await UpdateParametersFromSnapshot(snapshotProtocol, modelProtocol);
+         await UpdateParametersFromSnapshot(snapshotProtocol, modelProtocol, snapshotContext);
          return modelProtocol;
       }
 
-      private Task<ModelProtocol> createModelProtocolFrom(SnapshotProtocol snapshotProtocol)
+      private Task<ModelProtocol> createModelProtocolFrom(SnapshotProtocol snapshotProtocol, SnapshotContext snapshotContext)
       {
          if (snapshotProtocol.IsSimple)
             return createSimpleProtocolFrom(snapshotProtocol);
 
-         return createAdvancedProtocolFrom(snapshotProtocol);
+         return createAdvancedProtocolFrom(snapshotProtocol, snapshotContext);
       }
 
       private async Task<SnapshotProtocol> createSnapshotFromAdvancedProtocol(AdvancedProtocol advancedProtocol)
@@ -58,7 +58,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      private async Task<ModelProtocol> createAdvancedProtocolFrom(SnapshotProtocol snapshotProtocol)
+      private async Task<ModelProtocol> createAdvancedProtocolFrom(SnapshotProtocol snapshotProtocol, SnapshotContext snapshotContext)
       {
          var advancedProtocol = _protocolFactory.Create(ProtocolMode.Advanced).DowncastTo<AdvancedProtocol>();
          advancedProtocol.RemoveAllSchemas();
@@ -67,7 +67,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshotProtocol.Schemas == null)
             return advancedProtocol;
 
-         advancedProtocol.AddChildren(await _schemaMapper.MapToModels(snapshotProtocol.Schemas));
+         advancedProtocol.AddChildren(await _schemaMapper.MapToModels(snapshotProtocol.Schemas, snapshotContext));
          return advancedProtocol;
       }
 

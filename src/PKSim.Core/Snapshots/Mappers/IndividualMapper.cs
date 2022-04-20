@@ -9,7 +9,7 @@ using ModelIndividual = PKSim.Core.Model.Individual;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class IndividualMapper : ObjectBaseSnapshotMapperBase<ModelIndividual, SnapshotIndividual, PKSimProject>, ISnapshotMapperWithProjectAsContext<ModelIndividual, SnapshotIndividual>
+   public class IndividualMapper : ObjectBaseSnapshotMapperBase<ModelIndividual, SnapshotIndividual>
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly ExpressionProfileMapper _expressionProfileMapper;
@@ -53,20 +53,20 @@ namespace PKSim.Core.Snapshots.Mappers
          return _parameterMapper.LocalizedParametersFrom(changedParameters);
       }
 
-      public override async Task<ModelIndividual> MapToModel(SnapshotIndividual individualSnapshot, PKSimProject project)
+      public override async Task<ModelIndividual> MapToModel(SnapshotIndividual individualSnapshot, SnapshotContext snapshotContext)
       {
-         var originData = await _originDataMapper.MapToModel(individualSnapshot.OriginData);
+         var originData = await _originDataMapper.MapToModel(individualSnapshot.OriginData, snapshotContext);
          var individual = _individualFactory.CreateAndOptimizeFor(originData, individualSnapshot.Seed);
          MapSnapshotPropertiesToModel(individualSnapshot, individual);
 
-         await updateIndividualParameters(individualSnapshot, individual);
+         await updateIndividualParameters(individualSnapshot, individual, snapshotContext);
 
-         if (isV10Format(individualSnapshot))
-            await convertMoleculesToExpressionProfiles(individualSnapshot, project);
+         if (snapshotContext.IsV10FormatOrEarlier)
+            await convertMoleculesToExpressionProfiles(individualSnapshot, snapshotContext);
 
          individualSnapshot.ExpressionProfiles?.Each(x =>
          {
-            var expressionProfile = project.BuildingBlockByName<Model.ExpressionProfile>(x);
+            var expressionProfile = snapshotContext.Project.BuildingBlockByName<Model.ExpressionProfile>(x);
             _moleculeExpressionTask.AddExpressionProfile(individual, expressionProfile);
          });
 
@@ -74,9 +74,14 @@ namespace PKSim.Core.Snapshots.Mappers
          return individual;
       }
 
-      private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot, PKSimProject project)
+      private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot, SnapshotContext snapshotContext)
       {
          var expressionProfilesSnapshot = individualSnapshot.Molecules;
+         if (expressionProfilesSnapshot == null)
+            return;
+
+         var project = snapshotContext.Project;
+
          expressionProfilesSnapshot.Each(x =>
          {
             x.Species = individualSnapshot.OriginData.Species;
@@ -84,7 +89,7 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Molecule = x.Name;
          });
 
-         var expressionProfiles = await _expressionProfileMapper.MapToModels(expressionProfilesSnapshot);
+         var expressionProfiles = await _expressionProfileMapper.MapToModels(expressionProfilesSnapshot, snapshotContext);
          foreach (var expressionProfile in expressionProfiles)
          {
             var (_, individual) = expressionProfile;
@@ -94,18 +99,16 @@ namespace PKSim.Core.Snapshots.Mappers
                project.AddBuildingBlock(expressionProfile);
 
             //this needs to happen here since molecule parameters were defined in individual in v10
-            await updateIndividualParameters(individualSnapshot, individual);
+            await updateIndividualParameters(individualSnapshot, individual, snapshotContext);
          }
 
          individualSnapshot.ExpressionProfiles = expressionProfiles.AllNames().ToArray();
       }
 
-      private bool isV10Format(SnapshotIndividual snapshot) => snapshot.Molecules != null;
-
-      private Task updateIndividualParameters(SnapshotIndividual snapshot, ModelIndividual individual)
+      private Task updateIndividualParameters(SnapshotIndividual snapshot, ModelIndividual individual, SnapshotContext snapshotContext)
       {
          //We do not show warning for v10 format as we will FOR SURE have missing parameters
-         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, showParameterNotFoundWarning: !isV10Format(snapshot));
+         return _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, showParameterNotFoundWarning: !snapshotContext.IsV10FormatOrEarlier);
       }
    }
 }

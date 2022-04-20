@@ -8,7 +8,17 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class AlternativeMapper : ParameterContainerSnapshotMapperBase<ParameterAlternative, Alternative, ParameterAlternativeGroup>
+   public class AlternativeMapperSnapshotContext : SnapshotContext
+   {
+      public ParameterAlternativeGroup ParameterAlternativeGroup { get; }
+
+      public AlternativeMapperSnapshotContext(ParameterAlternativeGroup parameterAlternativeGroup, SnapshotContext baseContext) : base(baseContext)
+      {
+         ParameterAlternativeGroup = parameterAlternativeGroup;
+      }
+   }
+
+   public class AlternativeMapper : ParameterContainerSnapshotMapperBase<ParameterAlternative, Alternative, AlternativeMapperSnapshotContext>
    {
       private const bool DEFAULT_IS_DEFAULT = true;
 
@@ -31,7 +41,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (parameterAlternative.IsCalculated)
             return null;
 
-         var snapshot =  await SnapshotFrom(parameterAlternative, x =>
+         var snapshot = await SnapshotFrom(parameterAlternative, x =>
          {
             x.IsDefault = SnapshotValueFor(parameterAlternative.IsDefault, DEFAULT_IS_DEFAULT);
             x.Species = (parameterAlternative as ParameterAlternativeWithSpecies)?.Species.Name;
@@ -40,15 +50,16 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ParameterAlternative> MapToModel(Alternative snapshot, ParameterAlternativeGroup parameterAlternativeGroup)
+      public override async Task<ParameterAlternative> MapToModel(Alternative snapshot, AlternativeMapperSnapshotContext snapshotContext)
       {
+         var parameterAlternativeGroup = snapshotContext.ParameterAlternativeGroup;
          var alternative = _parameterAlternativeFactory.CreateAlternativeFor(parameterAlternativeGroup);
          alternative.IsDefault = ModelValueFor(snapshot.IsDefault, DEFAULT_IS_DEFAULT);
          MapSnapshotPropertiesToModel(snapshot, alternative);
 
-         await UpdateParametersFromSnapshot(snapshot, alternative, parameterAlternativeGroup.Name);
+         await UpdateParametersFromSnapshot(snapshot, alternative, snapshotContext, parameterAlternativeGroup.Name);
 
-         if(parameterAlternativeGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY))
+         if (parameterAlternativeGroup.IsNamed(CoreConstants.Groups.COMPOUND_SOLUBILITY))
             updateSolubilityAlternative(alternative);
 
          var alternativeWithSpecies = alternative as ParameterAlternativeWithSpecies;
@@ -71,6 +82,5 @@ namespace PKSim.Core.Snapshots.Mappers
 
          _compoundAlternativeTask.PrepareSolubilityAlternativeForTableSolubility(solubilityAlternative);
       }
-
    }
 }

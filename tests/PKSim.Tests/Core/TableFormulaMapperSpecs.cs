@@ -94,7 +94,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newTableFormula = await sut.MapToModel(_snapshot);
+         _newTableFormula = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

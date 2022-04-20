@@ -122,7 +122,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -158,7 +158,7 @@ namespace PKSim.Core
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
          _snapshotParameter.TableFormula = new TableFormula();
          var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
-         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula)).Returns(modelTableFormula);
+         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula, A<SnapshotContext>._)).Returns(modelTableFormula);
 
          //Ensure that the first value is the parameter value
          modelTableFormula.AddPoint(0, _parameterValue);
@@ -169,7 +169,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -195,7 +195,7 @@ namespace PKSim.Core
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
          _snapshotParameter.TableFormula = new TableFormula();
          var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
-         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula)).Returns(modelTableFormula);
+         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula, A<SnapshotContext>._)).Returns(modelTableFormula);
 
          //Set a first value that is not the parameter value
          modelTableFormula.AddPoint(0, 1122);
@@ -206,7 +206,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -234,7 +234,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -293,7 +293,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+         await sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext());
       }
 
       [Observation]
@@ -321,7 +321,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new ParameterSnapshotContext(null, new SnapshotContext()));
       }
 
       [Observation]
@@ -352,7 +352,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]
@@ -381,7 +381,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]

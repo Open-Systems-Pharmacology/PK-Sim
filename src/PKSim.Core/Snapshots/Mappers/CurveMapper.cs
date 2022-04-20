@@ -39,7 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelCurve> MapToModel(SnapshotCurve snapshot, SimulationAnalysisContext simulationAnalysisContext)
       {
          var curve = new ModelCurve {Name = snapshot.Name};
-         var curveOptions = await _curveOptionsMapper.MapToModel(snapshot.CurveOptions);
+         var curveOptions = await _curveOptionsMapper.MapToModel(snapshot.CurveOptions, simulationAnalysisContext);
          curve.CurveOptions.UpdateFrom(curveOptions);
 
          var yData = findCurveWithPath(snapshot.Y, simulationAnalysisContext.DataRepositories);

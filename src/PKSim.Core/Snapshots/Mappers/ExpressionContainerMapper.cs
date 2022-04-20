@@ -12,7 +12,7 @@ using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ExpressionContainerMapperContext
+   public class ExpressionContainerMapperContext : SnapshotContext
    {
       public IndividualMolecule Molecule { get; set; }
 
@@ -20,6 +20,10 @@ namespace PKSim.Core.Snapshots.Mappers
       public ICache<string, IParameter> ExpressionParameters { get; set; }
 
       public IReadOnlyList<MoleculeExpressionContainer> MoleculeExpressionContainers { get; set; }
+
+      public ExpressionContainerMapperContext( SnapshotContext baseContext) : base(baseContext)
+      {
+      }
    }
 
    public class ExpressionContainerMapper : SnapshotMapperBase<MoleculeExpressionContainer, ExpressionContainer, ExpressionContainerMapperContext>
@@ -49,21 +53,21 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             x.Name = isSurrogate ? expressionContainer.Name : expressionContainer.LogicalContainerName;
             // No compartment for surrogate container
-            x.CompartmentName = isSurrogate ? null :  expressionContainer.CompartmentName;
+            x.CompartmentName = isSurrogate ? null : expressionContainer.CompartmentName;
             x.TransportDirection = transportedExpressionContainer.TransportDirection;
          });
 
          return snapshot;
       }
 
-      public override async Task<MoleculeExpressionContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext context)
+      public override async Task<MoleculeExpressionContainer> MapToModel(ExpressionContainer snapshot, ExpressionContainerMapperContext snapshotContext)
       {
          if (snapshot == null)
             return null;
 
-         var molecule = context.Molecule;
-         var expressionParameterCache = context.ExpressionParameters;
-         var expressionContainerParameters = context.MoleculeExpressionContainers;
+         var molecule = snapshotContext.Molecule;
+         var expressionParameterCache = snapshotContext.ExpressionParameters;
+         var expressionContainerParameters = snapshotContext.MoleculeExpressionContainers;
 
          //Value was only defined for older version of the snapshot
          if (snapshot.Value.HasValue)
@@ -75,7 +79,7 @@ namespace PKSim.Core.Snapshots.Mappers
                return null;
             }
 
-            await _parameterMapper.MapToModel(snapshot, relExp);
+            await _parameterMapper.MapToModel(snapshot, new ParameterSnapshotContext(relExp, snapshotContext));
          }
 
 
@@ -83,10 +87,8 @@ namespace PKSim.Core.Snapshots.Mappers
          if (!(molecule is IndividualTransporter transporter))
             return null;
 
-         var isV9Format = !snapshot.TransportDirection.HasValue;
-
          var expressionsContainers = expressionContainerParameters.OfType<TransporterExpressionContainer>()
-            .Where(queryPredicate(isV9Format, snapshot))
+            .Where(queryPredicate(snapshotContext.IsV9FormatOrEarlier, snapshot))
             .Where(x => x.TransportDirection != TransportDirectionId.None)
             .ToList();
 
@@ -98,7 +100,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var firstExpressionContainer = expressionsContainers[0];
          //This is the new format
-         if (!isV9Format)
+         if (!snapshotContext.IsV9FormatOrEarlier)
          {
             //we should only have one
             firstExpressionContainer.TransportDirection = snapshot.TransportDirection.Value;

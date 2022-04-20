@@ -104,7 +104,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _extendedProperty = await sut.MapToModel(_snapshot);
+         _extendedProperty = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

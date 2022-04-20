@@ -5,7 +5,7 @@ using SnapshotAxis = PKSim.Core.Snapshots.Axis;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class AxisMapper : SnapshotMapperBase<ModelAxis, SnapshotAxis>
+   public class AxisMapper : SnapshotMapperBase<ModelAxis, SnapshotAxis, SnapshotContext>
    {
       private readonly IDimensionRepository _dimensionRepository;
 
@@ -33,7 +33,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelAxis> MapToModel(SnapshotAxis snapshot)
+      public override Task<ModelAxis> MapToModel(SnapshotAxis snapshot, SnapshotContext snapshotContext)
       {
          var axis = new ModelAxis(snapshot.Type)
          {

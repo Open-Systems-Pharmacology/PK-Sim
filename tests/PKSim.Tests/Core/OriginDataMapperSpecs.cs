@@ -278,7 +278,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -295,7 +295,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -317,7 +317,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -333,7 +333,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -349,7 +349,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -366,7 +366,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -394,7 +394,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -426,7 +426,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -451,7 +451,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -484,7 +484,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
