@@ -164,7 +164,8 @@ namespace PKSim.Core.Snapshots.Services
          if (snapshots == null)
             return Enumerable.Empty<T>();
 
-         //TODO check if this is correct
+         //This method is typically called when loading a building block snapshot directly (e.g exported as dev).
+         //In this case, we are not supporting any project conversion and we just create one with the current version
          var snapshotContext = new SnapshotContext(_projectRetriever.Current, ProjectVersions.Current);
          var tasks = snapshots.Select(x => _snapshotMapper.MapToModel(x, snapshotContext));
          var models = await Task.WhenAll(tasks);

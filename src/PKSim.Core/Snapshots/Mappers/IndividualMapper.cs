@@ -77,6 +77,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private async Task convertMoleculesToExpressionProfiles(SnapshotIndividual individualSnapshot, SnapshotContext snapshotContext)
       {
          var expressionProfilesSnapshot = individualSnapshot.Molecules;
+         if (expressionProfilesSnapshot == null)
+            return;
+
          var project = snapshotContext.Project;
 
          expressionProfilesSnapshot.Each(x =>
