@@ -44,16 +44,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          if (allCompounds.Any())
             _view.AddMenuItem(addObservedDataFor);
 
-         if ( treeNode.HasChildren)
-         {
-            var colorGroupingButton = CreateMenuCheckButton.WithCaption(Captions.ColorGroupObservedDataContextMenu);
-            colorGroupingButton.WithChecked(userSettings.ColorGroupObservedDataFromSameFolder);
-            colorGroupingButton.WithCheckedAction(colorGroup => userSettings.ColorGroupObservedDataFromSameFolder = colorGroup);
+         if ( treeNode.HasChildren) 
+            _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.ColorGroupObservedData(userSettings));
 
-            _view.AddMenuItem(colorGroupingButton);
-         }
 
-            
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithCommand<LoadObservedDataFromTemplateUICommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate)
@@ -66,7 +60,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
            
 
          if (treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
-            _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.CreateEditMultipleMetaDataMenuButton(treeNode).AsGroupStarter());
+            _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(treeNode).AsGroupStarter());
 
 
          _view.AddMenuItem(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(treeNode, presenter));
