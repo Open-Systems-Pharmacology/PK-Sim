@@ -64,7 +64,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_baseGrid);
          _contextDataRepository = DomainHelperForSpecs.ObservedData();
          _dataInfo = new DataInfo(ColumnOrigins.BaseGrid);
-         _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
+         _quantityInfo = new QuantityInfo(new[] { "path" }, QuantityType.Undefined);
 
          A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
          A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);
@@ -95,7 +95,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_dataColumn);
          _contextDataRepository = DomainHelperForSpecs.ObservedData();
          _dataInfo = new DataInfo(ColumnOrigins.Observation);
-         _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
+         _quantityInfo = new QuantityInfo(new[] { "path" }, QuantityType.Undefined);
 
          A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
          A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);

@@ -124,7 +124,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
          {
             var baseGrid = observedData.BaseGrid;
             var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] { observedData.Name, baseGridName }, QuantityType.Time);
+            baseGrid.QuantityInfo = new QuantityInfo(new[] { observedData.Name, baseGridName }, QuantityType.Time);
          }
          _converted = true;
       }

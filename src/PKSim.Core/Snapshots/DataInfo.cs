@@ -7,8 +7,6 @@ namespace PKSim.Core.Snapshots
    {
       public ColumnOrigins? Origin { get; set; }
       public AuxiliaryType AuxiliaryType { get; set; }
-      public DateTime Date { get; set; }
-      public string Source { get; set; }
       public string Category { get; set; }
       public double? MolWeight { get; set; }
       public ExtendedProperty[] ExtendedProperties { get; set; }

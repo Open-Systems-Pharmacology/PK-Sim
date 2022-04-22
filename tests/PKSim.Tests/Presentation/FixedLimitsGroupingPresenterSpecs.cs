@@ -59,9 +59,9 @@ namespace PKSim.Presentation
          base.Context();
          _minimumInDisplayUnit = 0.1;
          _maximumInDisplayUnit = 0.3;
-         A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_unit, 1)).Returns(_minimumInDisplayUnit);
-         A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_unit, 2)).Returns(0.2);
-         A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_unit, 3)).Returns(_maximumInDisplayUnit);
+         A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_unit, 1.0)).Returns(_minimumInDisplayUnit);
+         A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_unit, 2.0)).Returns(0.2);
+         A.CallTo(() => _dimension.BaseUnitValueToUnitValue(_unit, 3.0)).Returns(_maximumInDisplayUnit);
       }
 
       protected override void Because()

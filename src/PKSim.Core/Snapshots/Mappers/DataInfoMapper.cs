@@ -27,11 +27,9 @@ namespace PKSim.Core.Snapshots.Mappers
             x.AuxiliaryType = dataInfo.AuxiliaryType;
             x.Category = SnapshotValueFor(dataInfo.Category);
             x.ComparisonThreshold = dataInfo.ComparisonThreshold;
-            x.Date = dataInfo.Date;
             x.LLOQ = dataInfo.LLOQ;
             x.MolWeight = molWeightToDisplayValue(dataInfo);
             x.Origin = SnapshotValueFor(dataInfo.Origin, ColumnOrigins.Undefined);
-            x.Source = SnapshotValueFor(dataInfo.Source);
          });
          snapshot.ExtendedProperties = await _extendedPropertyMapper.MapToSnapshots(dataInfo.ExtendedProperties);
          return snapshot;
@@ -52,10 +50,8 @@ namespace PKSim.Core.Snapshots.Mappers
             AuxiliaryType = snapshot.AuxiliaryType,
             Category = snapshot.Category,
             ComparisonThreshold = snapshot.ComparisonThreshold,
-            Date = snapshot.Date,
             LLOQ = snapshot.LLOQ,
             MolWeight = molWeightToBaseValue(snapshot),
-            Source = ModelValueFor(snapshot.Source)
          };
 
          var extendedProperties = await _extendedPropertyMapper.MapToModels(snapshot.ExtendedProperties, snapshotContext);

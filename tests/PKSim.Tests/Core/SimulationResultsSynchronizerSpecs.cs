@@ -55,11 +55,11 @@ namespace PKSim.Core
          _newBaseGrid = new BaseGrid("baseGrid1", "baseGrid1", dimension);
          _newColumn = new DataColumn("col1", "col1", dimension, _newBaseGrid)
          {
-            QuantityInfo = new QuantityInfo("Obs", new List<string> {"Sim", "Liver", "Cell", "Drug", "Obs"}, QuantityType.Observer | QuantityType.Drug)
+            QuantityInfo = new QuantityInfo(new List<string> {"Sim", "Liver", "Cell", "Drug", "Obs"}, QuantityType.Observer | QuantityType.Drug)
          };
          _otherColumn = new DataColumn("col2", "col2", dimension, _newBaseGrid)
          {
-            QuantityInfo = new QuantityInfo("Obs", new List<string> {"Sim", "Liver", "Cell", "Sp1", "Obs"}, QuantityType.Observer | QuantityType.Metabolite)
+            QuantityInfo = new QuantityInfo(new List<string> {"Sim", "Liver", "Cell", "Sp1", "Obs"}, QuantityType.Observer | QuantityType.Metabolite)
          };
          _dataRepository.Add(_newBaseGrid);
          _dataRepository.Add(_newColumn);
@@ -137,9 +137,9 @@ namespace PKSim.Core
          _newBaseGrid.Values = new float[] {1, 2, 3, 4};
          _newColumn = new DataColumn("col1", "col1", dimension, _newBaseGrid);
          _newColumn.Values = new float[] {1, 1, 1, 1};
-         _newColumn.QuantityInfo = new QuantityInfo("sp1", new List<string> {"Liver", "Cell", "Drug", "Obs1"}, QuantityType.Observer | QuantityType.Drug);
+         _newColumn.QuantityInfo = new QuantityInfo(new List<string> {"Liver", "Cell", "Drug", "Obs1"}, QuantityType.Observer | QuantityType.Drug);
          _newExistingColumn = new DataColumn("col2", "col2", dimension, _newBaseGrid);
-         _newExistingColumn.QuantityInfo = new QuantityInfo("sp2", new List<string> {"Liver", "Cell", "Drug", "Obs2"}, QuantityType.Observer | QuantityType.Metabolite);
+         _newExistingColumn.QuantityInfo = new QuantityInfo(new List<string> {"Liver", "Cell", "Drug", "Obs2"}, QuantityType.Observer | QuantityType.Metabolite);
          _newExistingColumn.Values = new float[] {2, 2, 2, 2};
 
          _newDataRepository.Add(_newBaseGrid);
@@ -153,9 +153,9 @@ namespace PKSim.Core
          _oldBaseGrid.Values = new float[] {1, 2, 3};
          _oldColumn = new DataColumn("col3", "col3", dimension, _oldBaseGrid);
          _oldColumn.Values = new float[] {3, 3, 3};
-         _oldColumn.QuantityInfo = new QuantityInfo("sp3", new List<string> {"Liver", "Cell", "Drug", "Obs3"}, QuantityType.Observer | QuantityType.Drug);
+         _oldColumn.QuantityInfo = new QuantityInfo(new List<string> {"Liver", "Cell", "Drug", "Obs3"}, QuantityType.Observer | QuantityType.Drug);
          _oldExistingColumn = new DataColumn("col4", "col4", dimension, _oldBaseGrid);
-         _oldExistingColumn.QuantityInfo = new QuantityInfo("sp2", new List<string> {"Liver", "Cell", "Drug", "Obs2"}, QuantityType.Observer | QuantityType.Drug);
+         _oldExistingColumn.QuantityInfo = new QuantityInfo(new List<string> {"Liver", "Cell", "Drug", "Obs2"}, QuantityType.Observer | QuantityType.Drug);
          _oldExistingColumn.Values = new float[] {2, 2, 2};
 
          _oldDataRepository.Add(_oldBaseGrid);
