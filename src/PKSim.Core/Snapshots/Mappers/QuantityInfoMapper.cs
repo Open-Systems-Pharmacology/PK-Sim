@@ -15,17 +15,15 @@ namespace PKSim.Core.Snapshots.Mappers
             snapshot.OrderIndex = SnapshotValueFor(quantityInfo.OrderIndex);
             snapshot.Path = SnapshotValueFor(quantityInfo.PathAsString);
             snapshot.Type = SnapshotValueFor(quantityInfo.Type, QuantityType.Undefined);
-            snapshot.Name = SnapshotValueFor(quantityInfo.Name);
          });
       }
 
       public override Task<ModelQuantityInfo> MapToModel(SnapshotQuantityInfo snapshot, SnapshotContext snapshotContext)
       {
-         var name = ModelValueFor(snapshot.Name);
          var type = ModelValueFor(snapshot.Type, QuantityType.Undefined);
          var path = ModelValueFor(snapshot.Path);
 
-         var quantityInfo = new ModelQuantityInfo(name, path.ToPathArray(), type)
+         var quantityInfo = new ModelQuantityInfo(path.ToPathArray(), type)
          {
             OrderIndex = ModelValueFor(snapshot.OrderIndex)
          };

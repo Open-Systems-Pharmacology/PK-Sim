@@ -18,8 +18,8 @@ namespace PKSim.Core
          _venousBloodPlasma.Name = CoreConstants.Observer.CONCENTRATION_IN_CONTAINER;
          _venousBloodUnboundPlasma = new DataColumn {DataInfo = new DataInfo(ColumnOrigins.Calculation)};
          _venousBloodUnboundPlasma.Name = CoreConstants.Compartment.PLASMA;
-         _venousBloodPlasma.QuantityInfo = new QuantityInfo("Concentration", new[] {CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, "Drug"}, QuantityType.Drug);
-         _venousBloodUnboundPlasma.QuantityInfo = new QuantityInfo("Concentration", new[] {CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Observer.PLASMA_UNBOUND}, QuantityType.Drug);
+         _venousBloodPlasma.QuantityInfo = new QuantityInfo(new[] {CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, "Drug"}, QuantityType.Drug);
+         _venousBloodUnboundPlasma.QuantityInfo = new QuantityInfo(new[] {CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Observer.PLASMA_UNBOUND}, QuantityType.Drug);
       }
 
       [Observation]

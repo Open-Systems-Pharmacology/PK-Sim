@@ -175,14 +175,14 @@ namespace PKSim.Core.Services
          return pkParameter.Description;
       }
 
-      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysys = null)
+      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis = null)
       {
          var timeValue = dataColumn.BaseGrid.Values;
          var dimension = _dimensionRepository.MergedDimensionFor(dataColumn);
          var umolPerLiterUnit = dimension.UnitOrDefault(CoreConstants.Units.MicroMolPerLiter);
-         var concentrationValueInMolL = dataColumn.Values.Select(v => dimension.BaseUnitValueToUnitValue(umolPerLiterUnit, v)).ToFloatArray();
+         var concentrationValueInMolL = dataColumn.Values.Select(v => dimension.BaseUnitValueToUnitValue(umolPerLiterUnit, v)).ToArray();
          var pkAnalysis = _pkMapper.MapFrom(dataColumn, _pkValuesCalculator.CalculatePK(timeValue, concentrationValueInMolL, options), options.PKParameterMode, moleculeName);
-         addWarningsTo(pkAnalysis, globalPKAnalysys, moleculeName);
+         addWarningsTo(pkAnalysis, globalPKAnalysis, moleculeName);
          return new IndividualPKAnalysis(dataColumn, pkAnalysis);
       }
 

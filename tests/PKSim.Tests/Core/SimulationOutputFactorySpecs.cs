@@ -26,10 +26,9 @@ namespace PKSim.Core
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _outputIntervalFactory = A.Fake<IOutputIntervalFactory>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
-         _timeDimension = A.Fake<IDimension>();
-         _dayUnit = A.Fake<Unit>();
+         _timeDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         _dayUnit = _timeDimension.Unit(CoreConstants.Units.Days);
          A.CallTo(() => _dimensionRepository.Time).Returns(_timeDimension);
-         A.CallTo(() => _timeDimension.Unit(CoreConstants.Units.Days)).Returns(_dayUnit);
          sut = new OutputSchemaFactory(_objectBaseFactory, _outputIntervalFactory, _dimensionRepository);
       }
    }
@@ -43,7 +42,7 @@ namespace PKSim.Core
       private double _currentEndTimeInHours;
       private OutputInterval _highResolutionInterval;
       private OutputInterval _lowResolutionInterval;
-      private readonly double _offsetInMinutes = 100;
+      private readonly double _offsetInMinutes = 1440; //1 days in minutes
 
       protected override void Context()
       {
@@ -56,7 +55,6 @@ namespace PKSim.Core
          _highResolutionInterval = A.Fake<OutputInterval>();
          _lowResolutionInterval = A.Fake<OutputInterval>();
 
-         A.CallTo(() => _timeDimension.UnitValueToBaseUnitValue(_dayUnit, 1)).Returns(_offsetInMinutes);
          A.CallTo(() => _objectBaseFactory.Create<OutputSchema>()).Returns(new OutputSchema());
          A.CallTo(() => _outputIntervalFactory.Create(0, CoreConstants.HIGH_RESOLUTION_END_TIME_IN_MIN, CoreConstants.HIGH_RESOLUTION_IN_PTS_PER_MIN)).Returns(_highResolutionInterval);
          A.CallTo(() => _outputIntervalFactory.Create(CoreConstants.HIGH_RESOLUTION_END_TIME_IN_MIN, _currentEndTimeInMinutes + _offsetInMinutes, CoreConstants.LOW_RESOLUTION_IN_PTS_PER_MIN)).Returns(_lowResolutionInterval);

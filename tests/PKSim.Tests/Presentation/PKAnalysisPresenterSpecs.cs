@@ -62,9 +62,9 @@ namespace PKSim.Presentation
          var dataRepository = new DataRepository();
 
          _baseGrid = new BaseGrid("Base", _timeDim);
-         _col1 = new DataColumn {DataInfo = new DataInfo(ColumnOrigins.Calculation, AuxiliaryType.Undefined, "mg", DateTime.Now, string.Empty, string.Empty, 5), Dimension = _concentrationDim};
-         _col2 = new DataColumn {Dimension = _concentrationDim, DataInfo = new DataInfo(ColumnOrigins.Calculation, AuxiliaryType.Undefined, "mg", DateTime.Now, string.Empty, string.Empty, 5)};
-         _col3 = new DataColumn {Dimension = _concentrationDim, DataInfo = new DataInfo(ColumnOrigins.Calculation, AuxiliaryType.Undefined, "mg", DateTime.Now, string.Empty, string.Empty, 5)};
+         _col1 = new DataColumn {DataInfo = new DataInfo(ColumnOrigins.Calculation, AuxiliaryType.Undefined, "mg",  string.Empty, 5), Dimension = _concentrationDim};
+         _col2 = new DataColumn {Dimension = _concentrationDim, DataInfo = new DataInfo(ColumnOrigins.Calculation, AuxiliaryType.Undefined, "mg", string.Empty, 5)};
+         _col3 = new DataColumn {Dimension = _concentrationDim, DataInfo = new DataInfo(ColumnOrigins.Calculation, AuxiliaryType.Undefined, "mg", string.Empty, 5)};
          dataRepository.Add(_col1);
          dataRepository.Add(_col2);
          _simulation.DataRepository = dataRepository;

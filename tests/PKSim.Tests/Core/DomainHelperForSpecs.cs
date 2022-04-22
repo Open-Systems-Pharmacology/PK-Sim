@@ -192,6 +192,7 @@ namespace PKSim.Core
          {
             _timeDimension = new Dimension(new BaseDimensionRepresentation {TimeExponent = 1}, Constants.Dimension.TIME, "min");
             _timeDimension.AddUnit(new Unit("h", 60, 0));
+            _timeDimension.AddUnit(new Unit("day(s)", 60 * 24, 0));
          }
 
          return _timeDimension;
@@ -301,7 +302,7 @@ namespace PKSim.Core
          {
             Values = new[] {10f, 20f, 30f},
             DataInfo = {Origin = ColumnOrigins.Calculation},
-            QuantityInfo = new QuantityInfo("Concentration", new[] {simulationName, "Comp", "Liver", "Cell", "Concentration"}, QuantityType.Drug)
+            QuantityInfo = new QuantityInfo(new[] {simulationName, "Comp", "Liver", "Cell", "Concentration"}, QuantityType.Drug)
          };
 
          simulationResults.Add(data);

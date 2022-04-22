@@ -88,8 +88,8 @@ namespace PKSim.Presentation
          var schemaItemDTO1 = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, startTimeValue: 10); //min
          var schemaItemDTO2 = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous, startTimeValue: 20); //min
          _allSchemaItemsDTOForCompoundCache.Add(new Compound(), new[] {schemaItemDTO1, schemaItemDTO2});
-         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 10)).Returns(100);
-         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 20)).Returns(200);
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 10.0)).Returns(100);
+         A.CallTo(() => _timeDimension.BaseUnitValueToUnitValue(_timeDisplayUnit, 20.0)).Returns(200);
          base.Context();
       }
 

@@ -271,12 +271,12 @@ namespace PKSim.Infrastructure.Services
          {
             //needs to match the path in simulation ROOT\ORGANISM\ORGAN\COMPARTMENT\MOLECULE\Name
             var colName = col.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            col.QuantityInfo = new QuantityInfo(col.Name, new[] { observedData.Name, CoreConstants.ContainerName.ObservedData, organ, compartment, moleculeName, colName }, QuantityType.Undefined);
+            col.QuantityInfo = new QuantityInfo(new[] { observedData.Name, CoreConstants.ContainerName.ObservedData, organ, compartment, moleculeName, colName }, QuantityType.Undefined);
          }
 
          var baseGrid = observedData.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(baseGrid.Name, new[] { observedData.Name, baseGridName }, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(new[] { observedData.Name, baseGridName }, QuantityType.Time);
       }
 
 
