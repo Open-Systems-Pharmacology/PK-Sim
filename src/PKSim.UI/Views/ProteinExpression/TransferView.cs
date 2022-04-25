@@ -193,7 +193,7 @@ namespace PKSim.UI.Views.ProteinExpression
 
             return Convert.ToInt32(allValues.Max());
          }
-         catch (Exception e)
+         catch (Exception)
          {
             return 100;
          }

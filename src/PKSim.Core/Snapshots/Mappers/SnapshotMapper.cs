@@ -86,7 +86,7 @@ namespace PKSim.Core.Snapshots.Mappers
    public interface ISnapshotMapperWithContext<TModel, TSnapshot, in TSnapshotContext>: ISnapshotMapper where TSnapshotContext : SnapshotContext
    {
       /// <summary>
-      ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="project" />
+      ///    Given a <paramref name="snapshot" /> object, returns the corresponding model using the <paramref name="snapshotContext" />
       ///    as context
       /// </summary>
       /// <exception cref="SnapshotNotFoundException">

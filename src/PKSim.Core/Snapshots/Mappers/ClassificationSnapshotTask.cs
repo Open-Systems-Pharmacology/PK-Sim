@@ -12,7 +12,7 @@ namespace PKSim.Core.Snapshots.Mappers
    public interface IClassificationSnapshotTask
    {
       /// <summary>
-      ///    Maps the <paramref name="snapshots" /> into classifications  and adds them to the <paramref name="project" />.
+      ///    Maps the <paramref name="snapshots" /> into classifications and adds them to the project defined in <paramref name="snapshotContext" />.
       ///    Also added to the project will be classifiables contained in the classifications and those will have the subjects
       ///    configured correctly from the list of <paramref name="subjects" />.
       /// </summary>

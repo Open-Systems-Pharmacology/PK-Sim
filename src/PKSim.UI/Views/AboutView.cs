@@ -1,16 +1,15 @@
 ﻿using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using OSPSuite.UI.Extensions;
 using DevExpress.XtraEditors.Controls;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation;
-using OSPSuite.Assets;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views
 {
