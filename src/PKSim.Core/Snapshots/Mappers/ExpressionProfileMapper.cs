@@ -90,9 +90,11 @@ namespace PKSim.Core.Snapshots.Mappers
          expressionProfile.Category = snapshot.Category;
 
          var (molecule, individual) = expressionProfile;
-         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, !snapshotContext.IsV9FormatOrEarlier);
-
+         //Update molecule properties first
          updateMoleculePropertiesToMolecule(molecule, snapshot, individual, snapshotContext);
+
+         //Then override all parameters that were set 
+         await _parameterMapper.MapLocalizedParameters(snapshot.Parameters, individual, snapshotContext, !snapshotContext.IsV9FormatOrEarlier);
 
          var snapshotWithSubjectContext = new SnapshotContextWithSubject(individual, snapshotContext);
          var ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, snapshotWithSubjectContext);
