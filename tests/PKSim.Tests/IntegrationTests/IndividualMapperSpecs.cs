@@ -100,7 +100,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         
+
          LoadSnapshot("ind_expression_trans_v9");
          _expressionProfileTrans = FindByName<ExpressionProfile>("TRANS2|Human|Individual");
       }
@@ -178,6 +178,27 @@ namespace PKSim.IntegrationTests
       {
          _individual.ShouldNotBeNull();
          _pop.ShouldNotBeNull();
+      }
+   }
+
+   public class When_loading_a_snapshot_file_containing_expression_created_in_v10_with_fraction_expressed_apical_set_to_zero : ContextWithLoadedSnapshot
+   {
+      private ExpressionProfile _expressionProfileTransporter;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadSnapshot("ind_expression_apical_set_to_zero_v11");
+         _expressionProfileTransporter = FindByName<ExpressionProfile>("Intestine1|Human|Standard");
+      }
+
+      [Observation]
+      public void should_have_set_the_value_of_the_fraction_expressed_apical_to_zero()
+      {
+         _expressionProfileTransporter.ShouldNotBeNull();
+         var (transporter, individual) = _expressionProfileTransporter;
+         var fractionExpressedApical = individual.Organism.EntityAt<IParameter>("SmallIntestine", "Mucosa", "LowerIleum", "Intracellular", "Intestine1", "Fraction expressed apical");
+         fractionExpressedApical.Value.ShouldBeEqualTo(0);
       }
    }
 }
