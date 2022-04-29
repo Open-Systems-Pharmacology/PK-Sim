@@ -32,10 +32,10 @@ namespace PKSim.Core.Services
       private readonly IContainerTask _containerTask;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IDimension _dimensionForGFR;
-      public static readonly string TARGET_GFR = "eGFR";
+      public const string TARGET_GFR = "eGFR";
       private readonly IDimension _ageDimension;
       private const int CKD_VALUE_ORIGIN_ID = 92;
-      private const string GFR_UNIT = "ml/min/1.73m²";
+      public const string GFR_UNIT = "ml/min/1.73m²";
 
       public CKDDiseaseStateImplementation(
          IValueOriginRepository valueOriginRepository,

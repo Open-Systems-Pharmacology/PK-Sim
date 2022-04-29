@@ -127,7 +127,7 @@ namespace PKSim.Core.Snapshots.Mappers
             var snapshotParameter = snapshot.DiseaseStateParameters.FindByName(x.Name);
             if (snapshotParameter != null)
             {
-               diseaseStateParameter.Value = snapshotParameter.Value ?? x.Value;
+               diseaseStateParameter.Value = baseParameterValueFrom(snapshotParameter, x.Value);
                diseaseStateParameter.Unit = snapshotParameter.Unit;
             }
 
@@ -205,10 +205,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return species ?? throw new PKSimException(PKSimConstants.Error.CouldNotFindSpecies(snapshot.Species, _speciesRepository.AllNames()));
       }
 
-      private double baseParameterValueFrom(Parameter snapshot, IDimension dimension, double defaultValue)
+      private double baseParameterValueFrom(Parameter snapshot, double defaultValueInBaseUnit) =>
+         baseParameterValueFrom(snapshot, _dimensionRepository.DimensionForUnit(snapshot.Unit), defaultValueInBaseUnit);
+
+      private double baseParameterValueFrom(Parameter snapshot, IDimension dimension, double defaultValueInBaseUnit)
       {
          if (snapshot?.Value == null)
-            return defaultValue;
+            return defaultValueInBaseUnit;
 
          var unit = dimension.Unit(ModelValueFor(snapshot.Unit));
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
