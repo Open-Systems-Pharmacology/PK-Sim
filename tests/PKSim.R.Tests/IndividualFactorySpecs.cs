@@ -6,9 +6,9 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.R.Domain;
 using PKSim.R.Services;
+using static PKSim.Core.Services.CKDDiseaseStateImplementation;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
@@ -97,7 +97,7 @@ namespace PKSim.R
             Gender = CoreConstants.Gender.MALE,
             DiseaseState = CoreConstants.DiseaseStates.CKD
          };
-         _individualCharacteristics.AddDiseaseStateParameter(new Parameter {Name = CKDDiseaseStateImplementation.TARGET_GFR, Value = 0.005});
+         _individualCharacteristics.AddDiseaseStateParameter(new Parameter {Name = TARGET_GFR, Value = 0.005, Unit = GFR_UNIT});
       }
 
       protected override void Because()
@@ -105,7 +105,7 @@ namespace PKSim.R
          _results = sut.CreateIndividual(_individualCharacteristics);
       }
 
-      [Test]
+      [Observation]
       public void should_return_all_individual_parameters_defined_by_the_create_individual_algorithm()
       {
          _results.DistributedParameters.Length.ShouldBeGreaterThan(0);

@@ -100,12 +100,19 @@ namespace PKSim.Core
 
    public class When_mapping_an_origin_data_to_snapshot_with_disease_state : concern_for_OriginDataMapper
    {
+      private OriginDataParameter _diseaseStateParameter;
+      private IDimension _timeDimension;
+
       protected override async Task Context()
       {
          await base.Context();
          _originData.DiseaseState = new DiseaseState {Name = "CKD"};
-         _originData.AddDiseaseStateParameter(new OriginDataParameter {Name = "Param", Value = 10, Unit = "mg"});
-         A.CallTo(() => _parameterMapper.ParameterFrom(10, "mg", A<IDimension>._)).Returns(new Parameter {Value = 10, Unit = "mg"});
+         _diseaseStateParameter = new OriginDataParameter {Name = "Param", Value = 60, Unit = "h"};
+         _originData.AddDiseaseStateParameter(_diseaseStateParameter);
+         _timeDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         A.CallTo(() => _dimensionRepository.DimensionForUnit(_diseaseStateParameter.Unit)).Returns(_timeDimension);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_diseaseStateParameter.Value, _diseaseStateParameter.Unit, _timeDimension))
+            .Returns(new Parameter {Value = 1, Unit = "h"});
       }
 
       protected override async Task Because()
@@ -120,8 +127,8 @@ namespace PKSim.Core
          _snapshot.DiseaseStateParameters.Length.ShouldBeEqualTo(1);
          var param = _snapshot.DiseaseStateParameters[0];
          param.Name.ShouldBeEqualTo("Param");
-         param.Unit.ShouldBeEqualTo("mg");
-         param.Value.ShouldBeEqualTo(10);
+         param.Unit.ShouldBeEqualTo(_diseaseStateParameter.Unit);
+         param.Value.ShouldBeEqualTo(1); //60 in base unit converted to display unit
       }
    }
 
@@ -379,13 +386,19 @@ namespace PKSim.Core
    public class When_mapping_an_origin_data_from_snapshot_with_disease_state : concern_for_OriginDataMapper
    {
       private Model.OriginData _newOriginData;
+      private IDimension _timeDimension;
+      private Parameter _diseaseStateParameter;
 
       protected override async Task Context()
       {
          await base.Context();
+         _timeDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
          _snapshot = await sut.MapToSnapshot(_originData);
          _snapshot.DiseaseState = "Disease";
-         _snapshot.DiseaseStateParameters = new[] {new Parameter {Name = "P1", Value = 10, Unit = "ng"}};
+         _diseaseStateParameter = new Parameter {Name = "P1", Value = 1, Unit = "h"};
+         _snapshot.DiseaseStateParameters = new[] {_diseaseStateParameter};
+
+         A.CallTo(() => _dimensionRepository.DimensionForUnit(_diseaseStateParameter.Unit)).Returns(_timeDimension);
 
          var diseaseState = new DiseaseState {Name = "Disease"};
          diseaseState.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName("P1"));
@@ -403,8 +416,8 @@ namespace PKSim.Core
          _newOriginData.DiseaseState.Name.ShouldBeEqualTo("Disease");
          _newOriginData.DiseaseStateParameters.Count.ShouldBeEqualTo(1);
          var param = _newOriginData.DiseaseStateParameters[0];
-         param.Value.ShouldBeEqualTo(10);
-         param.Unit.ShouldBeEqualTo("ng");
+         param.Value.ShouldBeEqualTo(60);
+         param.Unit.ShouldBeEqualTo("h");
       }
    }
 
@@ -417,7 +430,7 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_originData);
          _snapshot.DiseaseState = "Disease";
-         _snapshot.DiseaseStateParameters = new[] {new Parameter {Name = "Unknown", Value = 10, Unit = "ng"}};
+         _snapshot.DiseaseStateParameters = new[] {new Parameter {Name = "Unknown", Value = 10, Unit = "h"}};
 
          var diseaseState = new DiseaseState {Name = "Disease"};
          diseaseState.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName("P1"));
