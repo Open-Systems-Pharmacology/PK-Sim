@@ -196,7 +196,7 @@ namespace PKSim.IntegrationTests
       public void should_have_set_the_value_of_the_fraction_expressed_apical_to_zero()
       {
          _expressionProfileTransporter.ShouldNotBeNull();
-         var (transporter, individual) = _expressionProfileTransporter;
+         var (_, individual) = _expressionProfileTransporter;
          var fractionExpressedApical = individual.Organism.EntityAt<IParameter>("SmallIntestine", "Mucosa", "LowerIleum", "Intracellular", "Intestine1", "Fraction expressed apical");
          fractionExpressedApical.Value.ShouldBeEqualTo(0);
       }
