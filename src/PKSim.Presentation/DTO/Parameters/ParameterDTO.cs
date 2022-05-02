@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Validation;
@@ -78,8 +77,13 @@ namespace PKSim.Presentation.DTO.Parameters
       {
          get
          {
-            var (result,_) = Parameter.TryGetValueInDisplayUnit();
+            var (result, success) = Parameter.TryGetValueInDisplayUnit();
             //Permeability cannot be read in compound as references cannot be resolved
+            //We return zero for now so that the rules are not showing a broken state (>=0). 
+            //We probably need to update the rules framework to not evaluate on NaN.
+            if (!success)
+               return 0;
+            
             return result;
 
          }

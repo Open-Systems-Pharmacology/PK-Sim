@@ -1469,26 +1469,6 @@ namespace PKSim.Assets
                return $"Minimum value for {parameterName} should be less than or equal to {displayMaxValue} {unit}.";
             }
 
-            public static string ValueSmallerThanMax(string parameterName, string value, string unit)
-            {
-               return $"Value for {parameterName} should be less than or equal to {value} {unit}";
-            }
-
-            public static string ValueBiggerThanMin(string parameterName, string value, string unit)
-            {
-               return $"Value for {parameterName} should be greater than or equal to {value} {unit}";
-            }
-
-            public static string ValueStrictBiggerThanMin(string parameterName, string value, string unit)
-            {
-               return $"Value for {parameterName} should be strictly greater than {value} {unit}";
-            }
-
-            public static string ValueStrictSmallerThanMax(string parameterName, string value, string unit)
-            {
-               return $"Value for {parameterName} should be strictly less than {value} {unit}";
-            }
-
             public static readonly string ProportionOfFemaleBetween0And100 = "Proportion of females should be between 0 and 100";
             public static readonly string NumberOfIndividualShouldBeBiggerThan2 = "Number of individuals should be greater than or equal to 2";
             public static readonly string NumberOfIndividualShouldBeSmallerThan10000 = "Number of individuals should be less than or equal to 10000";
