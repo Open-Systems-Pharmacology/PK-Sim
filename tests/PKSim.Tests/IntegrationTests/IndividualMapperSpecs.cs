@@ -214,11 +214,12 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_have_set_the_value_of_the_fraction_expressed_apical_to_zero()
+      public void should_have_set_the_value_of_the_global_molecule_parameters_as_expected()
       {
          _expressionProfile.ShouldNotBeNull();
          var (molecule, _) = _expressionProfile;
           molecule.ReferenceConcentration.ValueInDisplayUnit.ShouldBeEqualTo(4.32, 1E-2);
+          molecule.HalfLifeLiver.ValueInDisplayUnit.ShouldBeEqualTo(36.0, 1E-2);
       }
    }
 
