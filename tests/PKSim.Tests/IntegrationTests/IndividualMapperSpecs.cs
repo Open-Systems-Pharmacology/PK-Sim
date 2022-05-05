@@ -201,4 +201,25 @@ namespace PKSim.IntegrationTests
          fractionExpressedApical.Value.ShouldBeEqualTo(0);
       }
    }
+
+   public class When_loading_a_snapshot_file_containing_expression_created_in_v11_with_reference_concentration_changed_from_default : ContextWithLoadedSnapshot
+   {
+      private ExpressionProfile _expressionProfile;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadSnapshot("Atazanavir-Model_1Sim");
+         _expressionProfile = FindByName<ExpressionProfile>("CYP3A4|Human|Acosta2007");
+      }
+
+      [Observation]
+      public void should_have_set_the_value_of_the_fraction_expressed_apical_to_zero()
+      {
+         _expressionProfile.ShouldNotBeNull();
+         var (molecule, _) = _expressionProfile;
+          molecule.ReferenceConcentration.ValueInDisplayUnit.ShouldBeEqualTo(4.32, 1E-2);
+      }
+   }
+
 }

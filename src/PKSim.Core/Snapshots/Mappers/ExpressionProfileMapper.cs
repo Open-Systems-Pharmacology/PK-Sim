@@ -18,6 +18,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOntogenyTask _ontogenyTask;
       private readonly IMoleculeExpressionTask<ModelIndividual> _moleculeExpressionTask;
       private readonly IExpressionProfileFactory _expressionProfileFactory;
+      private readonly IMoleculeParameterTask _moleculeParameterTask;
       private readonly OntogenyMapper _ontogenyMapper;
 
       public ExpressionProfileMapper(
@@ -26,7 +27,8 @@ namespace PKSim.Core.Snapshots.Mappers
          OntogenyMapper ontogenyMapper,
          IOntogenyTask ontogenyTask,
          IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask,
-         IExpressionProfileFactory expressionProfileFactory
+         IExpressionProfileFactory expressionProfileFactory,
+         IMoleculeParameterTask moleculeParameterTask 
       )
       {
          _parameterMapper = parameterMapper;
@@ -34,6 +36,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _ontogenyTask = ontogenyTask;
          _moleculeExpressionTask = moleculeExpressionTask;
          _expressionProfileFactory = expressionProfileFactory;
+         _moleculeParameterTask = moleculeParameterTask;
 
          _ontogenyMapper = ontogenyMapper;
       }
@@ -111,6 +114,9 @@ namespace PKSim.Core.Snapshots.Mappers
          //We need to normalize relative expressions when loading from old format
          if (snapshotContext.IsV9FormatOrEarlier)
          {
+            //Make sure we load the default parameters from db just in case we were dealing with a standard molecule
+            _moleculeParameterTask.SetDefaultMoleculeParameters(molecule);
+
             //Global parameters were saved directly under the snapshot parameter 
             await updateGlobalMoleculeParameters(snapshot, molecule, snapshotContext);
             NormalizeRelativeExpressionCommand.NormalizeExpressions(individual, molecule);
