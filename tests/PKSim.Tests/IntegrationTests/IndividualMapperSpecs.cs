@@ -219,7 +219,7 @@ namespace PKSim.IntegrationTests
          _expressionProfile.ShouldNotBeNull();
          var (molecule, _) = _expressionProfile;
           molecule.ReferenceConcentration.ValueInDisplayUnit.ShouldBeEqualTo(4.32, 1E-2);
-          molecule.HalfLifeLiver.ValueInDisplayUnit.ShouldBeEqualTo(36.0, 1E-2);
+          molecule.HalfLifeLiver.ValueInDisplayUnit.ShouldBeEqualTo(22.0, 1E-2);
       }
    }
 

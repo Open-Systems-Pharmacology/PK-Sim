@@ -84,7 +84,7 @@
           "Parameters": [
             {
               "Name": "t1/2 (liver)",
-              "Value": 36.0,
+              "Value": 22.0,
               "Unit": "h",
               "ValueOrigin": {
                 "Source": "Unknown"
