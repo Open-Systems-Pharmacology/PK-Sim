@@ -191,11 +191,16 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
             _expressionProfileUpdater.SynchronizeExpressionProfileWithSimulationSubject(expressionProfile, simulationSubject);
 
             //Some parameters are probably marked as FixedValue event thought they have not changed (Formula=>constant) due to change in 
-            //definition of Fraction expressed basolateral going from a constant to a formula. We reset
+            //definition of Fraction expressed basolateral going from a constant to a formula. We reset is fixed value and default state
             expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
                .Where(x => !x.Visible)
                .Where(x => x.IsFixedValue)
                .Each(x => x.IsFixedValue = false);
+
+            expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
+                 .Where(x => !x.Editable)
+                 .Where(x => !x.IsDefault)
+                 .Each(x => x.IsDefault = true);
 
             //only add at the end once the expression profile has been updated
             simulationSubject.AddExpressionProfile(expressionProfile);

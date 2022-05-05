@@ -39,6 +39,7 @@ namespace PKSim.Core
       protected Model.ExpressionProfile _expressionProfileEnzyme;
       protected Model.ExpressionProfile _expressionProfileTransporter;
       protected Model.ExpressionProfile _expressionProfileOtherProtein;
+      protected IMoleculeParameterTask _moleculeParameterTask;
 
       protected override Task Context()
       {
@@ -48,13 +49,15 @@ namespace PKSim.Core
          _ontogenyMapper = A.Fake<OntogenyMapper>();
          _ontogenyTask = A.Fake<IOntogenyTask>();
          _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
+         _moleculeParameterTask= A.Fake<IMoleculeParameterTask>();
          sut = new ExpressionProfileMapper(
             _parameterMapper,
             _expressionContainerMapper,
             _ontogenyMapper,
             _ontogenyTask,
             _moleculeExpressionTask,
-            _expressionProfileFactory);
+            _expressionProfileFactory,
+            _moleculeParameterTask);
 
          _ontogeny = new DatabaseOntogeny
          {
