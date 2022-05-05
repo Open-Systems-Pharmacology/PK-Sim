@@ -177,8 +177,13 @@ namespace PKSim.ProjectConverter.v11
          var allHiddenFixedParameters = expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
             .Where(x => !x.Visible)
             .Where(x => x.IsFixedValue).ToList();
-
          allHiddenFixedParameters.ShouldBeEmpty();
+
+         var allNonEditableNonDefault = expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
+            .Where(x => !x.Editable)
+            .Where(x =>!x.IsDefault).ToList();
+
+         allNonEditableNonDefault.ShouldBeEmpty();
       }
 
       [Observation]

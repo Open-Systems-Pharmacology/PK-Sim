@@ -198,9 +198,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
                .Each(x => x.IsFixedValue = false);
 
             expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
-               .Where(x => !x.Visible)
-               .Where(x => !x.IsDefault)
-               .Each(x => x.IsDefault = true);
+                 .Where(x => !x.Editable)
+                 .Where(x => !x.IsDefault)
+                 .Each(x => x.IsDefault = true);
 
             //only add at the end once the expression profile has been updated
             simulationSubject.AddExpressionProfile(expressionProfile);
