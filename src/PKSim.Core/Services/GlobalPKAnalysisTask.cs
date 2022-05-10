@@ -272,27 +272,26 @@ namespace PKSim.Core.Services
          simpleIvProtocol.StartTime.Value = simulationSingleDosingItem.StartTime.Value;
 
          var ivSimulation = _globalPKAnalysisRunner.RunForBioavailability(simpleIvProtocol, individualSimulation, compound);
-         var venousBloodCurve = ivSimulation.DataRepository.VenousBloodColumn(compoundName);
+         var venousBloodCurve = ivSimulation.VenousBloodColumn(compoundName);
          var pkVenousBlood = _pkAnalysisTask.CalculateFor(ivSimulation, venousBloodCurve).PKAnalysis;
          individualSimulation.CompoundPKFor(compoundName).AucIV = pkParameterValue(pkVenousBlood, Constants.PKParameters.AUC_inf);
       }
 
       public void CalculateDDIRatioFor(Simulation simulation, string compoundName)
       {
-         var individualSimulation = simulation as IndividualSimulation;
-         if (individualSimulation == null) return;
+         if (simulation == null) return;
 
          var compound = simulation.Compounds.FindByName(compoundName);
          var applicationType = applicationTypeFor(simulation, compound);
 
          var aucPKParameterName = pkParameterNameForAUCRatio(applicationType);
          var cmaxPKParameterName = pkParameterNameForCmaxRatio(applicationType);
-         var ddiRatioSimulation = _globalPKAnalysisRunner.RunForDDIRatio(individualSimulation);
-         individualSimulation.CompoundPKFor(compoundName).AucDDI = pkParameterInBloodCurveFor(ddiRatioSimulation, compoundName, aucPKParameterName);
-         individualSimulation.CompoundPKFor(compoundName).CmaxDDI = pkParameterInBloodCurveFor(ddiRatioSimulation, compoundName, cmaxPKParameterName);
+         var ddiRatioSimulation = _globalPKAnalysisRunner.RunForDDIRatio(simulation);
+         simulation.CompoundPKFor(compoundName).AucDDI = pkParameterInBloodCurveFor(ddiRatioSimulation, compoundName, aucPKParameterName);
+         simulation.CompoundPKFor(compoundName).CmaxDDI = pkParameterInBloodCurveFor(ddiRatioSimulation, compoundName, cmaxPKParameterName);
       }
 
-      private double? pkParameterInBloodCurveFor(IndividualSimulation simulation, string compoundName, string pkParameterName)
+      private double? pkParameterInBloodCurveFor(Simulation simulation, string compoundName, string pkParameterName)
       {
          var pkAnalysis = bloodPkAnalysisFor(simulation, compoundName);
          return pkParameterValue(pkAnalysis, pkParameterName);
@@ -304,10 +303,10 @@ namespace PKSim.Core.Services
          return parameter?.Value;
       }
 
-      private PKAnalysis bloodPkAnalysisFor(IndividualSimulation simulation, string compoundName)
+      private PKAnalysis bloodPkAnalysisFor(Simulation simulation, string compoundName)
       {
-         var peripheralVenousBloodCurve = simulation.DataRepository.PeripheralVenousBloodColumn(compoundName);
-         var venousBloodCurve = simulation.DataRepository.VenousBloodColumn(compoundName);
+         var peripheralVenousBloodCurve = simulation.PeripheralVenousBloodColumn(compoundName);
+         var venousBloodCurve = simulation.VenousBloodColumn(compoundName);
          if (peripheralVenousBloodCurve == null || venousBloodCurve == null)
             return new PKAnalysis();
 

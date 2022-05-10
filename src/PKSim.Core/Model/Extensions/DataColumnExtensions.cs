@@ -17,13 +17,13 @@ namespace PKSim.Core.Model.Extensions
          if (simulation == null || !simulation.HasResults)
             return false;
 
+         if (simulation.IsAnImplementationOf<PopulationSimulation>())
+            return true;
+
          if (dataColumn.DataInfo.Origin != ColumnOrigins.Calculation)
             return false;
 
-         if (individualSimulationContainsColumn(dataColumn, simulation))
-            return true;
-
-         return simulation.IsAnImplementationOf<PopulationSimulation>();
+         return individualSimulationContainsColumn(dataColumn, simulation);
       }
 
       private static bool individualSimulationContainsColumn(DataColumn dataColumn, Simulation simulation)
