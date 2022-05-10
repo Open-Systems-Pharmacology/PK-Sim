@@ -282,7 +282,22 @@ namespace PKSim.Core.Model
 
       private DataColumn aggregateDataColumns(IEnumerable<DataColumn> columns)
       {
-         return columns.First();
+         var column = columns.First();
+         if (column == null)
+            return column;
+         var count = column.Values.Count;
+         var values = new float[count];
+         foreach (var x in columns)
+         {
+            for (var i = 0; i < count; i++)
+            {
+               values[i] += x.Values[i] / count;
+            }
+         }
+         return new DataColumn(column.Id, column.Dimension, column.BaseGrid)
+         {
+            Values = values
+         };
       }
 
       public override DataColumn PeripheralVenousBloodColumn(string compoundName)
