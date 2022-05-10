@@ -24,16 +24,21 @@ namespace PKSim.Presentation.Presenters.Simulations
       private IEnumerable<PopulationPKAnalysis> _allPKAnalyses;
       private IPopulationDataCollector _populationDataCollector;
       private readonly IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
+      private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
 
       public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysesTask pkAnalysesTask, 
          IPKAnalysisExportTask exportTask, IPopulationPKAnalysisToPKAnalysisDTOMapper populationPKAnalysisToDTOMapper, 
-         IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask)
+         IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask,
+         IGlobalPKAnalysisPresenter globalPKAnalysisPresenter)
          : base(view, pkParameterRepository, presentationSettingsTask)
       {
          _pkAnalysesTask = pkAnalysesTask;
          _exportTask = exportTask;
          _allAnalyses = new List<PopulationPKAnalysis>();
          _populationPKAnalysisToDTOMapper = populationPKAnalysisToDTOMapper;
+         _globalPKAnalysisPresenter = globalPKAnalysisPresenter;
+         AddSubPresenters(_globalPKAnalysisPresenter);
+         _view.AddGlobalPKAnalysisView(_globalPKAnalysisPresenter.View);
       }
 
       public void CalculatePKAnalysis(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData)
@@ -44,6 +49,8 @@ namespace PKSim.Presentation.Presenters.Simulations
          _allAnalyses.AddRange(_allPKAnalyses);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
+
+         _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });
       }
 
       protected override void BindToPKAnalysis()

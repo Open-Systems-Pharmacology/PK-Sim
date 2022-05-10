@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -58,17 +59,9 @@ namespace PKSim.Core.Services
          _cloner = cloner;
       }
 
-      public GlobalPKAnalysis CalculateGlobalPKAnalysisFor(IEnumerable<Simulation> simulations)
+      private GlobalPKAnalysis calculateGlobalPKAnalysisFor(Simulation simulation)
       {
          var globalPKAnalysis = new GlobalPKAnalysis();
-
-         var allSimulations = simulations.ToList();
-         if (allSimulations.Count != 1)
-            return globalPKAnalysis;
-
-         var simulation = allSimulations[0] as IndividualSimulation;
-         if (simulation == null)
-            return globalPKAnalysis;
 
          //one container per compound
          foreach (var compound in simulation.Compounds)
@@ -77,8 +70,8 @@ namespace PKSim.Core.Services
             var container = new Container().WithName(compoundName);
             globalPKAnalysis.Add(container);
 
-            var peripheralVenousBloodCurve = simulation.DataRepository.PeripheralVenousBloodColumn(compoundName);
-            var venousBloodCurve = simulation.DataRepository.VenousBloodColumn(compoundName);
+            var peripheralVenousBloodCurve = simulation.PeripheralVenousBloodColumn(compoundName);
+            var venousBloodCurve = simulation.VenousBloodColumn(compoundName);
 
             if (peripheralVenousBloodCurve == null || venousBloodCurve == null)
                continue;
@@ -139,13 +132,13 @@ namespace PKSim.Core.Services
                vssPlasma.Value *= bioAvailabilityValue;
                vdPlasma.Value *= bioAvailabilityValue;
                totalPlasmaCL.Value *= bioAvailabilityValue;
-               fractionAbsorbedWarningParameters.AddRange(new[] {vssPlasma, vdPlasma});
-               pkValues.AddRange(new[] {vssPlasma, vdPlasma, totalPlasmaCL, bioAvailability});
+               fractionAbsorbedWarningParameters.AddRange(new[] { vssPlasma, vdPlasma });
+               pkValues.AddRange(new[] { vssPlasma, vdPlasma, totalPlasmaCL, bioAvailability });
             }
             else
             {
-               fractionAbsorbedWarningParameters.AddRange(new[] {vssPlasmaOverF, vdPlasmaOverF});
-               pkValues.AddRange(new[] {vssPlasmaOverF, vdPlasmaOverF, totalPlasmaCLOverF, bioAvailability});
+               fractionAbsorbedWarningParameters.AddRange(new[] { vssPlasmaOverF, vdPlasmaOverF });
+               pkValues.AddRange(new[] { vssPlasmaOverF, vdPlasmaOverF, totalPlasmaCLOverF, bioAvailability });
             }
 
 
@@ -166,6 +159,17 @@ namespace PKSim.Core.Services
          return globalPKAnalysis;
       }
 
+      public GlobalPKAnalysis CalculateGlobalPKAnalysisFor(IEnumerable<Simulation> simulations)
+      {
+         var globalPKAnalysis = new GlobalPKAnalysis();
+
+         var allSimulations = simulations.ToList();
+         if (allSimulations.Count != 1)
+            return globalPKAnalysis;
+
+         return calculateGlobalPKAnalysisFor(allSimulations[0]);
+      }
+
       private void addFractionAbsorbedWarningTo(IParameter fractionAbsorbed, IReadOnlyList<IParameter> pkParameters)
       {
          if (ValueComparer.AreValuesEqual(fractionAbsorbed.Value, 1, CoreConstants.DOUBLE_RELATIVE_EPSILON))
@@ -182,9 +186,9 @@ namespace PKSim.Core.Services
             .WithError((param, value) => warning);
       }
 
-      private IParameter fractionAbsorbedFor(IndividualSimulation simulation, string compoundName)
+      private IParameter fractionAbsorbedFor(Simulation simulation, string compoundName)
       {
-         var fabsOralObserver = simulation.DataRepository.FabsOral(compoundName);
+         var fabsOralObserver = simulation.FabsOral(compoundName);
          double? fractionAbsorbedValue = null;
          if (fabsOralObserver != null)
             fractionAbsorbedValue = fabsOralObserver.Values.Last();
@@ -210,7 +214,7 @@ namespace PKSim.Core.Services
          return peripheralVenousBloodCurve;
       }
 
-      private double calculateVSSPhysChemFor(IndividualSimulation simulation, string compoundName)
+      private double calculateVSSPhysChemFor(Simulation simulation, string compoundName)
       {
          return _vssCalculator.VSSPhysChemFor(simulation, compoundName).Value;
       }

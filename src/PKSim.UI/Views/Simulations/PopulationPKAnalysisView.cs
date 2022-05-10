@@ -24,6 +24,11 @@ namespace PKSim.UI.Views.Simulations
          _screenBinder = new ScreenBinder<PKAnalysisDTO>();
       }
 
+      public void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view)
+      {
+         globalPKParametersPanelControl.FillWith(view);
+      }
+
       private void addPopulationPKAnalysisView(IPKAnalysisPivotView view)
       {
          populationPKAnalysisPanel.FillWith(view);
@@ -59,6 +64,7 @@ namespace PKSim.UI.Views.Simulations
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize();
          populationPKAnalysisItem.TextVisible = false;
+         layoutControlItemGlobalPKAnalysis.TextVisible = false;
       }
    }
 }
