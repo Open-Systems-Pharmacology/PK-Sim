@@ -24,7 +24,7 @@ namespace PKSim.Core.Model
 
       public virtual AgingData AgingData { get; }
 
-      public PopulationSimulation()
+      public PopulationSimulation() : base()
       {
          ParameterValuesCache = new ParameterValuesCache();
          AgingData = new AgingData();
@@ -278,6 +278,50 @@ namespace PKSim.Core.Model
          base.UpdateFromOriginalSimulation(originalSimulation);
          var sourcePopSimulation = originalSimulation as PopulationSimulation;
          sourcePopSimulation?.AdvancedParameters.Each(x => AddAdvancedParameter(x, generateRandomValues: true));
+      }
+
+      private DataColumn aggregateDataColumns(IEnumerable<DataColumn> columns)
+      {
+         return columns.First();
+      }
+
+      public override DataColumn PeripheralVenousBloodColumn(string compoundName)
+      {
+         return aggregateDataColumns(drugColumnFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName));
+      }
+
+      /// <summary>
+      ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
+      /// </summary>
+      public override DataColumn VenousBloodColumn(string compoundName)
+      {
+         return aggregateDataColumns(drugColumnFor(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName));
+      }
+
+      public override DataColumn FabsOral(string compoundName)
+      {
+         return aggregateDataColumns(drugColumnFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName));
+      }
+
+      private IEnumerable<DataColumn> drugColumnFor(string organ, string compartment, string columnName, string compoundName)
+      {
+         return Results.Select(x => columnsFor(x, organ, compartment, columnName, QuantityType.Drug));
+      }
+
+      private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, QuantityType quantityType)
+      {
+         var column = results.FirstOrDefault(x =>
+               x.QuantityPath.Contains(organ) &&
+               x.QuantityPath.Contains(compartment) &&
+               x.QuantityPath.Contains(columnName)
+            );
+         if (column == null) 
+            return null;
+
+         return new DataColumn(column.ColumnId, Constants.Dimension.NO_DIMENSION, new BaseGrid() { Values = column.Time.Values })
+         {
+            Values =  column.Values
+         };
       }
    }
 }

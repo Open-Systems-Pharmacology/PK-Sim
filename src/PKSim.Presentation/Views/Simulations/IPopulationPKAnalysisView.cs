@@ -9,5 +9,7 @@ namespace PKSim.Presentation.Views.Simulations
    {
       void BindTo(PKAnalysisDTO dataTable);
       DataTable GetSummaryData();
+
+      void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view);
    }
 }
