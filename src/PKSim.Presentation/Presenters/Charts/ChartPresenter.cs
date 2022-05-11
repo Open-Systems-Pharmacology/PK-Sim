@@ -208,14 +208,14 @@ namespace PKSim.Presentation.Presenters.Charts
          }
       }
 
-      protected virtual void AddColorGroupedObservedData(IReadOnlyList<IReadOnlyList<DataRepository>> observedData)
+      protected virtual void AddColorGroupedObservedData(IReadOnlyList<IReadOnlyList<DataRepository>> observedDataListGroupedByFolder)
       {
          using (_chartUpdater.UpdateTransaction(Chart))
          {
-            foreach (var observedDataNodesList in observedData)
+            foreach (var observesDataListInFolder in observedDataListGroupedByFolder)
             {
-               AddDataRepositoriesToEditor(observedDataNodesList);
-               var columnsToAdd = observedDataNodesList.SelectMany(x => x.ObservationColumns());
+               AddDataRepositoriesToEditor(observesDataListInFolder);
+               var columnsToAdd = observesDataListInFolder.SelectMany(x => x.ObservationColumns());
                ChartEditorPresenter.AddCurvesWithSameColorForColumn(columnsToAdd.ToList());
             }
          }
@@ -230,8 +230,8 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          if (_userSettings.ColorGroupObservedDataFromSameFolder)
          {
-            var droppedObservedDataWithFolderAddress = _observedDataDragDropBinder.DroppedObservedDataWithFolderPathFrom(e);
-            AddColorGroupedObservedData(droppedObservedDataWithFolderAddress);
+            var observedDataListGroupedByFolder = _observedDataDragDropBinder.DroppedObservedDataWithFolderPathFrom(e);
+            AddColorGroupedObservedData(observedDataListGroupedByFolder);
          }
          else
          {
