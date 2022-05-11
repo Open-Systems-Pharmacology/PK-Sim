@@ -376,7 +376,7 @@ namespace PKSim.Core
       private Compound _compound;
       private Protocol _ivProtocol;
       private IndividualSimulation _originalSimulation;
-      private IndividualSimulation _simulationForBioavailability;
+      private Simulation _simulationForBioavailability;
       private Protocol _originalProtocol;
       private IndividualSimulation _clonedSimulation;
 
@@ -441,7 +441,7 @@ namespace PKSim.Core
    public class When_creating_a_simulation_for_ddi_ratio_calculation : concern_for_SimulationFactory
    {
       private IndividualSimulation _originalSimulation;
-      private IndividualSimulation _simulationForDDI;
+      private Simulation _simulationForDDI;
       private IParameter _parameter;
       private IndividualSimulation _pkSimulation;
       private IndividualSimulation _clonedSimulation;

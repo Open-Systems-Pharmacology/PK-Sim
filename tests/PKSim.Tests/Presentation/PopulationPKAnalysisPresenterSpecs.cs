@@ -42,6 +42,7 @@ namespace PKSim.Presentation
       protected IPopulationPKAnalysisToDataTableMapper _populationPKAnalysisToDataTableMapper;
       private IPKParameterRepository _pkParameterRepository;
       protected IPresentationSettingsTask _presenterSettingsTask;
+      protected IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
 
       protected override void Context()
       {
@@ -53,7 +54,8 @@ namespace PKSim.Presentation
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
 
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
-         sut = new PopulationPKAnalysisPresenter(_view, _pkAnalysesTask, _exportTask, _populationPKAnalysisToDTOMapper, _pkParameterRepository, _presenterSettingsTask);
+         _globalPKAnalysisPresenter = A.Fake<IGlobalPKAnalysisPresenter>();
+         sut = new PopulationPKAnalysisPresenter(_view, _pkAnalysesTask, _exportTask, _populationPKAnalysisToDTOMapper, _pkParameterRepository, _presenterSettingsTask, _globalPKAnalysisPresenter);
 
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          _timeProfileChartData = new ChartData<TimeProfileXValue, TimeProfileYValue>(null, null);
