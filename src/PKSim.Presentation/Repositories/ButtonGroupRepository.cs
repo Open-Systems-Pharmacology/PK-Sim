@@ -42,7 +42,7 @@ namespace PKSim.Presentation.Repositories
          yield return runSensitivityAnalysisButtonGroup;
          yield return parameterIdentificationAnalysisButtonGroup;
          yield return parameterIdentificationConfidenceIntervalButtonGroup;
-         yield return senstivityAnalysisButtonGroup;
+         yield return sensitivityAnalysisButtonGroup;
       }
 
       private IButtonGroup projectButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.File)
@@ -243,7 +243,7 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisFeedbackView)))
          .WithId(ButtonGroupIds.RunSensitivityAnalysis);
 
-      private IButtonGroup senstivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
+      private IButtonGroup sensitivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisPKParameterAnalysis)))
          .WithId(ButtonGroupIds.SensitivityAnalysisPKParameterAnalyses);
 
