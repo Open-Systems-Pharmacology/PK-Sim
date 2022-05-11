@@ -136,7 +136,7 @@ namespace PKSim.UI.Views.Individuals
          this.uxHeight.Name = "uxHeight";
          this.tablePanel.SetRow(this.uxHeight, 3);
          this.uxHeight.Size = new System.Drawing.Size(393, 22);
-         this.uxHeight.TabIndex = 9;
+         this.uxHeight.TabIndex = 10;
          this.uxHeight.ToolTip = "";
          // 
          // gridParameterValueVersions
@@ -305,7 +305,7 @@ namespace PKSim.UI.Views.Individuals
          this.uxGestationalAge.Name = "uxGestationalAge";
          this.tablePanel.SetRow(this.uxGestationalAge, 1);
          this.uxGestationalAge.Size = new System.Drawing.Size(393, 22);
-         this.uxGestationalAge.TabIndex = 14;
+         this.uxGestationalAge.TabIndex = 8;
          this.uxGestationalAge.ToolTip = "";
          // 
          // uxWeight
@@ -319,7 +319,7 @@ namespace PKSim.UI.Views.Individuals
          this.uxWeight.Name = "uxWeight";
          this.tablePanel.SetRow(this.uxWeight, 2);
          this.uxWeight.Size = new System.Drawing.Size(393, 22);
-         this.uxWeight.TabIndex = 8;
+         this.uxWeight.TabIndex = 9;
          this.uxWeight.ToolTip = "";
          // 
          // uxBMI
@@ -333,7 +333,7 @@ namespace PKSim.UI.Views.Individuals
          this.uxBMI.Name = "uxBMI";
          this.tablePanel.SetRow(this.uxBMI, 4);
          this.uxBMI.Size = new System.Drawing.Size(393, 22);
-         this.uxBMI.TabIndex = 10;
+         this.uxBMI.TabIndex = 11;
          this.uxBMI.ToolTip = "";
          // 
          // btnMeanValues
@@ -355,7 +355,8 @@ namespace PKSim.UI.Views.Individuals
          this.uxDiseaseParameter.MinimumSize = new System.Drawing.Size(0, 21);
          this.uxDiseaseParameter.Name = "uxDiseaseParameter";
          this.uxDiseaseParameter.Size = new System.Drawing.Size(417, 21);
-         this.uxDiseaseParameter.TabIndex = 18;
+         this.uxDiseaseParameter.TabIndex = 13;
+         this.uxDiseaseParameter.TabStop = false;
          this.uxDiseaseParameter.ToolTip = "";
          // 
          // lblDescription
@@ -376,7 +377,8 @@ namespace PKSim.UI.Views.Individuals
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cbDiseaseState.Size = new System.Drawing.Size(417, 20);
          this.cbDiseaseState.StyleController = this.layoutControl;
-         this.cbDiseaseState.TabIndex = 16;
+         this.cbDiseaseState.TabIndex = 12;
+         this.cbDiseaseState.TabStop = false;
          // 
          // cbPopulation
          // 

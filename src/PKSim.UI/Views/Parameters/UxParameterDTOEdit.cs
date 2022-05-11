@@ -7,6 +7,7 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.UI.Extensions;
 
@@ -87,6 +88,7 @@ namespace PKSim.UI.Views.Parameters
 
 
          _screenBinder.BindToSource(parameterDTO);
+         layoutControlItemUnit.AdjustControlWidth(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH);
       }
 
       public override bool HasError => _screenBinder.HasError;
