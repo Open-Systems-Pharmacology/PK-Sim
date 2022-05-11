@@ -98,7 +98,7 @@ namespace PKSim.Core
          compoundProperties.CalculationMethodCache.AddCalculationMethod(_originalCalculationMethod);
          _templateSimulation.Properties.AddCompoundProperties(compoundProperties);
 
-         A.CallTo(() => _cloner.Clone(_templateSimulation)).Returns(_templateSimulation);
+         A.CallTo(() => _cloner.Clone<Simulation>(_templateSimulation)).Returns(_templateSimulation);
          A.CallTo(() => _objectBaseFactory.Create<IndividualSimulation>()).ReturnsLazily(() => new IndividualSimulation());
       }
 
@@ -391,7 +391,7 @@ namespace PKSim.Core
          _clonedSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Individual", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
          var compoundProperties = new CompoundProperties { Compound = _compound };
 
-         A.CallTo(() => _cloner.Clone(_originalSimulation)).Returns(_clonedSimulation);
+         A.CallTo(() => _cloner.Clone<Simulation>(_originalSimulation)).Returns(_clonedSimulation);
          _clonedSimulation.Properties.AddCompoundProperties(compoundProperties);
 
          _originalProtocol = new SimpleProtocol().WithName("Original").WithId("Original");
@@ -451,7 +451,7 @@ namespace PKSim.Core
          base.Context();
          _originalSimulation = new IndividualSimulation { Properties = new SimulationProperties() };
          _clonedSimulation = A.Fake<IndividualSimulation>();
-         A.CallTo(() => _cloner.Clone(_originalSimulation)).Returns(_clonedSimulation);
+         A.CallTo(() => _cloner.Clone<Simulation>(_originalSimulation)).Returns(_clonedSimulation);
          _pkSimulation = A.Fake<IndividualSimulation>().WithId("Clone");
          var interactionContainer = new Container();
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.KI);
