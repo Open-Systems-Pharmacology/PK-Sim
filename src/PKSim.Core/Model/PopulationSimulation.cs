@@ -285,6 +285,7 @@ namespace PKSim.Core.Model
          var column = columns.First();
          if (column == null)
             return column;
+
          var count = column.Values.Count;
          var values = new float[count];
          foreach (var x in columns)
