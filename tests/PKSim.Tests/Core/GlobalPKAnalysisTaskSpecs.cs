@@ -170,14 +170,6 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         var protocol = A.Fake<Protocol>();
-         _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.HUMAN;
-
-
-         var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Intravenous };
-         schemaItem.Add(new PKSimParameter { Name = Constants.Parameters.INFUSION_TIME });
-         A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
 
          _population = new RandomPopulation() { Name = "POP", Id = "PopTemplateId" };
 
@@ -238,7 +230,19 @@ namespace PKSim.Core
    public class When_calculating_the_global_pk_analyses_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_human_species_for_population : Population_based
    {
       private GlobalPKAnalysis _results;
-      
+
+      protected override void Context()
+      {
+         base.Context();
+         var protocol = A.Fake<Protocol>();
+         _compoundProperties.ProtocolProperties.Protocol = protocol;
+         _species.Name = CoreConstants.Species.HUMAN;
+
+
+         var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Intravenous };
+         schemaItem.Add(new PKSimParameter { Name = Constants.Parameters.INFUSION_TIME });
+         A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
+      }
 
       protected override void Because()
       {
@@ -294,6 +298,41 @@ namespace PKSim.Core
       }
    }
 
+   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_without_previous_calculation_of_bioavailability_for_population : Population_based
+   {
+      private GlobalPKAnalysis _results;
+
+      protected override void Context()
+      {
+         base.Context();
+         var protocol = A.Fake<Protocol>();
+         _compoundProperties.ProtocolProperties.Protocol = protocol;
+         _species.Name = CoreConstants.Species.HUMAN;
+
+
+         var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Oral };
+         A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
+      }
+
+      protected override void Because()
+      {
+         _results = sut.CalculateGlobalPKAnalysisFor(new[] { _populationSimulation });
+      }
+
+      [Observation]
+      public void should_return_over_F_values_for_parameters()
+      {
+         var vss = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VssPlasmaOverF);
+         vss.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vss"].Value);
+
+         var vdplasma = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VdPlasmaOverF);
+         vdplasma.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vd"].Value);
+
+         var totalCL = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.TotalPlasmaCLOverF);
+         totalCL.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["CL"].Value);
+      }
+   }
+
    public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_with_previous_calculation_of_bioavailability : concern_for_GlobalPKAnalysisTask
    {
       private GlobalPKAnalysis _results;
@@ -315,6 +354,43 @@ namespace PKSim.Core
       protected override void Because()
       {
          _results = sut.CalculateGlobalPKAnalysisFor(new[] {_simulation});
+      }
+
+      [Observation]
+      public void should_return_IV_values_for_parameters()
+      {
+         var vss = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VssPlasma);
+         vss.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vss"].Value * _bioaValue);
+
+         var vdplasma = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VdPlasma);
+         vdplasma.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vd"].Value * _bioaValue);
+
+         var totalCL = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.TotalPlasmaCL);
+         totalCL.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["CL"].Value * _bioaValue);
+      }
+   }
+
+   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_with_previous_calculation_of_bioavailability_for_population : Population_based
+   {
+      private GlobalPKAnalysis _results;
+      private double _bioaValue;
+
+      protected override void Context()
+      {
+         base.Context();
+         var protocol = A.Fake<Protocol>();
+         _compoundProperties.ProtocolProperties.Protocol = protocol;
+         _species.Name = CoreConstants.Species.HUMAN;
+         _populationSimulation.CompoundPKFor(_compoundName).AucIV = 5;
+         _bioaValue = _venousBloodPK[Constants.PKParameters.AUC_inf].Value / _populationSimulation.AucIVFor(_compoundName).Value;
+
+         var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Oral };
+         A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
+      }
+
+      protected override void Because()
+      {
+         _results = sut.CalculateGlobalPKAnalysisFor(new[] { _populationSimulation });
       }
 
       [Observation]
@@ -375,6 +451,35 @@ namespace PKSim.Core
       protected override void Because()
       {
          _result = sut.CalculateGlobalPKAnalysisFor(new[] {_simulation});
+      }
+
+      [Observation]
+      public void should_not_crash()
+      {
+         _result.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_not_contain_value_for_fraction_absorbed()
+      {
+         _result.PKParameter(_compoundName, CoreConstants.PKAnalysis.FractionAbsorbed).ShouldBeNull();
+      }
+   }
+
+   public class When_calculating_the_global_pk_analyses_for_a_compound_that_was_not_applied_for_population : Population_based
+   {
+      private GlobalPKAnalysis _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compoundProperties.ProtocolProperties.Protocol = null;
+         A.CallTo(() => _protocolMapper.MapFrom(null)).Throws<NullReferenceException>();
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CalculateGlobalPKAnalysisFor(new[] { _populationSimulation });
       }
 
       [Observation]
