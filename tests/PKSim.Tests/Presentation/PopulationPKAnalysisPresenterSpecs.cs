@@ -114,6 +114,12 @@ namespace PKSim.Presentation
       {
          _pkSimParameter.DisplayUnit.ShouldBeEqualTo(_newUnit);
       }
+
+      [Observation]
+      public void should_calculate_pk_analysis()
+      {
+         A.CallTo(() => _globalPKAnalysisPresenter.CalculatePKAnalysis(A<IReadOnlyList<Simulation>>.Ignored)).MustHaveHappened();
+      }
    }
 
    public class When_the_population_pk_analysis_presenter_is_exporting_the_analysis_to_excel : concern_for_PopulationPKAnalysisPresenter
