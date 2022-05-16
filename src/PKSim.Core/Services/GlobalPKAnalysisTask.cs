@@ -161,11 +161,9 @@ namespace PKSim.Core.Services
 
       public GlobalPKAnalysis CalculateGlobalPKAnalysisFor(IEnumerable<Simulation> simulations)
       {
-         var globalPKAnalysis = new GlobalPKAnalysis();
-
          var allSimulations = simulations.ToList();
          if (allSimulations.Count != 1)
-            return globalPKAnalysis;
+            return new GlobalPKAnalysis();
 
          return calculateGlobalPKAnalysisFor(allSimulations[0]);
       }
