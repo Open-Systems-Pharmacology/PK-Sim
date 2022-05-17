@@ -41,7 +41,7 @@ namespace PKSim.Presentation.Presenters.Main
 
    public class SimulationExplorerPresenter : ExplorerPresenter<ISimulationExplorerView, ISimulationExplorerPresenter>, ISimulationExplorerPresenter
    {
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       private readonly IObservedDataInSimulationManager _observedDataInSimulationManager;
       private readonly ISimulationComparisonTask _simulationComparisonTask;
@@ -54,7 +54,7 @@ namespace PKSim.Presentation.Presenters.Main
          IBuildingBlockIconRetriever buildingBlockIconRetriever,
          IRegionResolver regionResolver,
          IBuildingBlockTask buildingBlockTask,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager,
+         IBuildingBlockInProjectManager buildingBlockInProjectManager,
          IToolTipPartCreator toolTipPartCreator,
          IProjectRetriever projectRetriever,
          IClassificationPresenter classificationPresenter,
@@ -64,7 +64,7 @@ namespace PKSim.Presentation.Presenters.Main
          base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver,
             buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
          _observedDataInSimulationManager = observedDataInSimulationManager;
          _simulationComparisonTask = simulationComparisonTask;
@@ -265,7 +265,7 @@ namespace PKSim.Presentation.Presenters.Main
          if (buildingBlock.IsAnImplementationOf<Simulation>())
             updateSimulationNode(buildingBlock.DowncastTo<Simulation>());
          else
-            _buildingBlockInSimulationManager.SimulationsUsing(buildingBlock).Each(updateSimulationNode);
+            _buildingBlockInProjectManager.SimulationsUsing(buildingBlock).Each(updateSimulationNode);
 
          RefreshTreeAfterRename();
       }

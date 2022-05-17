@@ -3,12 +3,10 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Services;
-using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
@@ -16,16 +14,11 @@ namespace PKSim.Presentation
    {
       protected IEventPublisher _eventPublisher;
       private IProjectRetriever _projectRetriever;
-      protected ExportChartToPDFCommand _exportChartToPDFCommand;
-      private IContainer _container;
 
       protected override void Context()
       {
          _projectRetriever = A.Fake<IProjectRetriever>();
-         _exportChartToPDFCommand = A.Fake<ExportChartToPDFCommand>();
-         _container = A.Fake<IContainer>();
-         A.CallTo(() => _container.Resolve<ExportChartToPDFCommand>()).Returns(_exportChartToPDFCommand);
-         sut = new ChartTask(_projectRetriever, _container);
+         sut = new ChartTask(_projectRetriever);
       }
    }
 

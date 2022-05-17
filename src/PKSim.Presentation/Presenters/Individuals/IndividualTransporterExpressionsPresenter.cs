@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
@@ -11,7 +13,9 @@ using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
-   public interface IIndividualTransporterExpressionsPresenter : IIndividualMoleculeExpressionsPresenter, IEditParameterPresenter
+   public interface IIndividualTransporterExpressionsPresenter :
+      IIndividualMoleculeExpressionsPresenter,
+      IEditParameterPresenter
    {
       /// <summary>
       ///    Update the transport direction for the given transporter container
@@ -48,7 +52,8 @@ namespace PKSim.Presentation.Presenters.Individuals
       public ISimulationSubject SimulationSubject { get; set; }
 
       public IndividualTransporterExpressionsPresenter(
-         IIndividualTransporterExpressionsView view, IEditParameterPresenterTask parameterTask,
+         IIndividualTransporterExpressionsView view,
+         IEditParameterPresenterTask parameterTask,
          IMoleculeExpressionTask<TSimulationSubject> moleculeExpressionTask,
          IIndividualTransporterToTransporterExpressionDTOMapper transporterExpressionDTOMapper,
          IIndividualMoleculePropertiesPresenter<TSimulationSubject> moleculePropertiesPresenter,
@@ -99,10 +104,34 @@ namespace PKSim.Presentation.Presenters.Individuals
          rebind();
       }
 
+      private void updateWarning()
+      {
+         if (_transporterExpressionDTO.DefaultAvailableInDatabase)
+            return;
+
+         //The transporter type does not have the default type. This means that the value was changed by the user.
+         //nothing to show
+         if (_transporter.TransportType != CoreConstants.DEFAULT_TRANSPORTER_TYPE)
+         {
+            _view.HideWarning();
+            return;
+         }
+
+         _view.ShowWarning(PKSimConstants.Warning.NoTransporterTemplateFoundForTransporter(_transporter.Name, _transporter.TransportType.ToString()));
+      }
+
+      public void DisableEdit()
+      {
+         _moleculePropertiesPresenter.DisableEdit();
+         _transporterExpressionParametersPresenter.DisableEdit();
+         _view.ReadOnly = true;
+      }
+
       private void rebind()
       {
          _moleculePropertiesPresenter.Edit(_transporter, SimulationSubject.DowncastTo<TSimulationSubject>());
          _transporterExpressionParametersPresenter.Edit(_transporterExpressionDTO.AllExpressionParameters);
+         updateWarning();
       }
    }
 }

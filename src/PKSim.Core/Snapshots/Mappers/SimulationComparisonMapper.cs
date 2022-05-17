@@ -9,7 +9,7 @@ using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.Populat
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SimulationComparisonMapper : ObjectBaseSnapshotMapperBase<ISimulationComparison, SimulationComparison, PKSimProject>
+   public class SimulationComparisonMapper : ObjectBaseSnapshotMapperBase<ISimulationComparison, SimulationComparison>
    {
       private readonly IndividualSimulationComparisonMapper _individualSimulationComparisonMapper;
       private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
@@ -53,40 +53,41 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.IndividualComparison = await _individualSimulationComparisonMapper.MapToSnapshot(individualSimulationComparison);
       }
 
-      public override async Task<ISimulationComparison> MapToModel(SimulationComparison snapshot, PKSimProject project)
+      public override async Task<ISimulationComparison> MapToModel(SimulationComparison snapshot, SnapshotContext snapshotContext)
       {
-         var simulationComparison = await createSimulationComparisonFrom(snapshot, project);
+         var simulationComparison = await createSimulationComparisonFrom(snapshot, snapshotContext);
          MapSnapshotPropertiesToModel(snapshot, simulationComparison);
          simulationComparison.IsLoaded = true;
          return simulationComparison;
       }
 
-      private async Task<ISimulationComparison> createSimulationComparisonFrom(SimulationComparison snapshot, PKSimProject project)
+      private async Task<ISimulationComparison> createSimulationComparisonFrom(SimulationComparison snapshot, SnapshotContext snapshotContext)
       {
+         var project = snapshotContext.Project;
          if (snapshot.IndividualComparison != null)
          {
-            var individualSimulationComparison = await createIndividualComparisonModel(snapshot, project);
+            var individualSimulationComparison = await createIndividualComparisonModel(snapshot, snapshotContext);
             return addSimulationsToComparison(individualSimulationComparison, snapshot, project);
          }
 
          var populationSimulationComparison = _objectBaseFactory.Create<PopulationSimulationComparison>();
-         await updatePopulationComparisonModel(populationSimulationComparison, snapshot, project);
+         await updatePopulationComparisonModel(populationSimulationComparison, snapshot, snapshotContext);
          return addSimulationsToComparison(populationSimulationComparison, snapshot, project);
       }
 
-      private async Task updatePopulationComparisonModel(PopulationSimulationComparison populationSimulationComparison, SimulationComparison snapshot, PKSimProject project)
+      private async Task updatePopulationComparisonModel(PopulationSimulationComparison populationSimulationComparison, SimulationComparison snapshot, SnapshotContext snapshotContext)
       {
-         var simulationComparisonContext = new SimulationAnalysisContext(project.AllObservedData);
+         var simulationComparisonContext = new SimulationAnalysisContext(snapshotContext.Project.AllObservedData, snapshotContext);
          var allPopulationAnalysis = await _populationAnalysisChartMapper.MapToModels(snapshot.PopulationComparisons, simulationComparisonContext);
          allPopulationAnalysis?.Each(populationSimulationComparison.AddAnalysis);
          populationSimulationComparison.ReferenceGroupingItem = snapshot.ReferenceGroupingItem;
-         populationSimulationComparison.ReferenceSimulation = project.BuildingBlockByName<PopulationSimulation>(snapshot.ReferenceSimulation);
+         populationSimulationComparison.ReferenceSimulation = snapshotContext.Project.BuildingBlockByName<PopulationSimulation>(snapshot.ReferenceSimulation);
       }
 
-      private Task<IndividualSimulationComparison> createIndividualComparisonModel(SimulationComparison snapshot, PKSimProject project)
+      private Task<IndividualSimulationComparison> createIndividualComparisonModel(SimulationComparison snapshot, SnapshotContext snapshotContext)
       {
-         var simulationComparisonContext = new SimulationAnalysisContext(project.AllObservedData);
-         var comparedSimulations = allComparedSimulationsFrom<IndividualSimulation>(snapshot, project);
+         var simulationComparisonContext = new SimulationAnalysisContext(snapshotContext.Project.AllObservedData, snapshotContext);
+         var comparedSimulations = allComparedSimulationsFrom<IndividualSimulation>(snapshot, snapshotContext.Project);
          comparedSimulations.Each(s => simulationComparisonContext.AddDataRepository(s.DataRepository));
          return _individualSimulationComparisonMapper.MapToModel(snapshot.IndividualComparison, simulationComparisonContext);
       }

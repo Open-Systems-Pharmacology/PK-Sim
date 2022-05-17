@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
-using PKSim.Extensions;
 
 namespace PKSim.Core
 {
@@ -21,6 +20,8 @@ namespace PKSim.Core
       protected ISnapshotMapper _snapshotMapper;
       private Snapshots.Classification _subClassification;
       protected Classification _subModelClassification;
+      protected PKSimProject _project;
+      protected SnapshotContext _snapshotContext;
 
       protected override Task Context()
       {
@@ -42,11 +43,17 @@ namespace PKSim.Core
 
          _classifications.Add(_modelClassification);
          A.CallTo(() => _classificationMapper.MapToSnapshot(_modelClassification, A<ClassificationContext>._)).Returns(_snapshotClassification);
-         A.CallTo(() => _classificationMapper.MapToModel(_snapshotClassification, ClassificationType.ObservedData)).Returns(_modelClassification);
-         A.CallTo(() => _classificationMapper.MapToModel(_subClassification, ClassificationType.ObservedData)).Returns(_subModelClassification);
+         A.CallTo(() => _classificationMapper.MapToModel(_snapshotClassification, A<ClassificationSnapshotContext>.That.Matches(x => x.ClassificationType == ClassificationType.ObservedData)))
+            .Returns(_modelClassification);
+
+         A.CallTo(() => _classificationMapper.MapToModel(_subClassification, A<ClassificationSnapshotContext>.That.Matches(x => x.ClassificationType == ClassificationType.ObservedData)))
+            .Returns(_subModelClassification);
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
 
+         _project = new PKSimProject();
+
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.V10);
          return _completed;
       }
    }
@@ -54,23 +61,21 @@ namespace PKSim.Core
    public class When_updating_project_classifications_from_snapshot : concern_for_ClassificationSnapshotTask
    {
       private IReadOnlyCollection<DataRepository> _subjects;
-      private PKSimProject _project;
 
       protected override async Task Context()
       {
          await base.Context();
 
-         _project = new PKSimProject();
          _subjects = new List<DataRepository> {DomainHelperForSpecs.ObservedData().WithName("subject")};
       }
 
       protected override async Task Because()
       {
-         await sut.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(new[] {_snapshotClassification}, _project, _subjects);
+         await sut.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(new[] {_snapshotClassification}, _snapshotContext, _subjects);
       }
 
       [Observation]
-      public void the_heirarchy_should_be_configured()
+      public void the_hierarchy_should_be_configured()
       {
          _subModelClassification.Parent.ShouldBeEqualTo(_modelClassification);
       }
@@ -83,10 +88,9 @@ namespace PKSim.Core
       }
    }
 
-   public class When_updating_project_classsification_for_non_existing_classification_snapshot : concern_for_ClassificationSnapshotTask
+   public class When_updating_project_classification_for_non_existing_classification_snapshot : concern_for_ClassificationSnapshotTask
    {
       private IReadOnlyCollection<DataRepository> _subjects;
-      private PKSimProject _project;
       private DataRepository _observedData;
       private ClassifiableObservedData _originalClassifiable;
 
@@ -94,7 +98,6 @@ namespace PKSim.Core
       {
          await base.Context();
 
-         _project = new PKSimProject();
          _observedData = DomainHelperForSpecs.ObservedData().WithName("subject");
          _originalClassifiable = _project.GetOrCreateClassifiableFor<ClassifiableObservedData, DataRepository>(_observedData);
          _subjects = new List<DataRepository> {_observedData};
@@ -102,7 +105,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(null, _project, _subjects);
+         await sut.UpdateProjectClassifications<ClassifiableObservedData, DataRepository>(null, _snapshotContext, _subjects);
       }
 
       [Observation]
@@ -115,14 +118,12 @@ namespace PKSim.Core
    public class When_mapping_project_classifications_to_snapshots : concern_for_ClassificationSnapshotTask
    {
       private Snapshots.Classification[] _result;
-      private PKSimProject _project;
       private DataRepository _obsData;
 
       protected override async Task Context()
       {
          await base.Context();
          _obsData = DomainHelperForSpecs.ObservedData().WithName("subject");
-         _project = new PKSimProject();
          _project.AddClassifiable(new ClassifiableObservedData {Subject = _obsData});
          _project.AddClassification(_modelClassification);
       }

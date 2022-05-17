@@ -142,6 +142,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       ///    Event is raised whenever the selection of parameters in the UI has changed
       /// </summary>
       event Action OnSelectedParametersChanged;
+
+      void DisableEdit();
    }
 
    public class MultiParameterEditPresenter : ParameterSetPresenter<IMultiParameterEditView, IMultiParameterEditPresenter>, IMultiParameterEditPresenter
@@ -359,6 +361,12 @@ namespace PKSim.Presentation.Presenters.Parameters
          base.AddCommand(command);
          RefreshData();
       }
+
+      public void DisableEdit()
+      {
+         _view.ReadOnly = true;
+      }
+
 
       public void ShowContextMenu(IParameterDTO parameterDTO, Point popupLocation)
       {

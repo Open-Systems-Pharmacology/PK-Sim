@@ -9,5 +9,6 @@ namespace PKSim.Presentation.Views.Snapshots
       void AddLogView(IView view);
       void BindTo(LoadFromSnapshotDTO loadFromSnapshotDTO);
       void EnableButtons(bool cancelEnabled, bool okEnabled = false, bool startEnabled=false);
+      bool RunSimulationsSwitchVisible { set; }
    }
 }

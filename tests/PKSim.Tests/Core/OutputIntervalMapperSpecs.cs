@@ -93,13 +93,13 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-        _newInteval= await sut.MapToModel(_snapshot);
+        _newInteval= await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
       public void should_return_a_new_interval_with_updated_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newInteval, Constants.OUTPUT_INTERVAL)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newInteval, Constants.OUTPUT_INTERVAL, A<SnapshotContext>._)).MustHaveHappened();
       }
    }
 }

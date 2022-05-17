@@ -52,7 +52,7 @@ namespace PKSim.BatchTool.Views
          base.InitializeResources();
          ShowInTaskbar = true;
          StartPosition = FormStartPosition.CenterScreen;
-         Icon = ApplicationIcons.PKSim.WithSize(IconSizes.Size32x32);
+         ApplicationIcon = ApplicationIcons.PKSim;
       }
 
       public virtual void AddLogView(IView view)

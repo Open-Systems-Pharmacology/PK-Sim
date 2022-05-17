@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
@@ -9,7 +11,18 @@ namespace PKSim.Core.Services
    public interface IIndividualModelTask
    {
       void CreateModelFor(Individual individual);
+      /// <summary>
+      /// Creates the model structure (containers and neighborhoods)
+      /// </summary>
+      /// <param name="individual"></param>
       void CreateModelStructureFor(Individual individual);
+
+      /// <summary>
+      /// Creates the organ structure (containers only)
+      /// </summary>
+      /// <param name="individual"></param>
+      void CreateOrganStructureFor(Individual individual);
+      
       IParameter MeanAgeFor(OriginData originData);
       IParameter MeanGestationalAgeFor(OriginData originData);
       IParameter MeanWeightFor(OriginData originData);
@@ -20,6 +33,7 @@ namespace PKSim.Core.Services
       ///    Returns a BMI Parameter as a function of height and weight
       /// </summary>
       IParameter BMIBasedOn(OriginData originData, IParameter parameterWeight, IParameter parameterHeight);
+
    }
 
    public class IndividualModelTask : IIndividualModelTask
@@ -30,8 +44,11 @@ namespace PKSim.Core.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IPopulationAgeRepository _populationAgeRepository;
 
-      public IndividualModelTask(IParameterContainerTask parameterContainerTask, ISpeciesContainerQuery speciesContainerQuery,
-         IBuildingBlockFinalizer buildingBlockFinalizer, IFormulaFactory formulaFactory,
+      public IndividualModelTask(
+         IParameterContainerTask parameterContainerTask, 
+         ISpeciesContainerQuery speciesContainerQuery,
+         IBuildingBlockFinalizer buildingBlockFinalizer, 
+         IFormulaFactory formulaFactory,
          IPopulationAgeRepository populationAgeRepository)
       {
          _parameterContainerTask = parameterContainerTask;
@@ -45,12 +62,17 @@ namespace PKSim.Core.Services
       {
          addModelStructureTo(individual.Organism, individual.OriginData, addParameter: true);
          setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameters.AGE),
-            individual.OriginData.SpeciesPopulation.Name, setValueAndDisplayUnit: false);
+            individual.OriginData.Population.Name, setValueAndDisplayUnit: false);
          addWeightParameterTags(individual);
 
          addModelStructureTo(individual.Neighborhoods, individual.OriginData, addParameter: true);
 
          _buildingBlockFinalizer.Finalize(individual);
+      }
+
+      public void CreateOrganStructureFor(Individual individual)
+      {
+         addModelStructureTo(individual.Organism, individual.OriginData, addParameter: false);
       }
 
       public void CreateModelStructureFor(Individual individual)
@@ -62,7 +84,7 @@ namespace PKSim.Core.Services
       public IParameter MeanAgeFor(OriginData originData)
       {
          var ageParameter = MeanOrganismParameter(originData, CoreConstants.Parameters.AGE);
-         setAgeSettings(ageParameter, originData.SpeciesPopulation.Name, setValueAndDisplayUnit: true);
+         setAgeSettings(ageParameter, originData.Population.Name, setValueAndDisplayUnit: true);
 
          return ageParameter;
       }
@@ -104,7 +126,7 @@ namespace PKSim.Core.Services
       {
          var param = MeanOrganismParameter(originData, Constants.Parameters.GESTATIONAL_AGE);
          //for population not preterm where the parameter is actually defined, the value of the parameter should be set to another default
-         if (param != null && !originData.SpeciesPopulation.IsPreterm)
+         if (param != null && !originData.Population.IsPreterm)
             param.Value = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
          return param;
       }
@@ -146,7 +168,7 @@ namespace PKSim.Core.Services
          if (addParameter)
             _parameterContainerTask.AddIndividualParametersTo(container, originData);
 
-         foreach (var subContainer in _speciesContainerQuery.SubContainersFor(originData.SpeciesPopulation, container))
+         foreach (var subContainer in _speciesContainerQuery.SubContainersFor(originData.Population, container))
          {
             container.Add(subContainer);
             addModelStructureTo(subContainer, originData, addParameter);

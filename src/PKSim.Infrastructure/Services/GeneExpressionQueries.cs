@@ -317,7 +317,7 @@ namespace PKSim.Infrastructure.Services
       /// <summary>
       ///    This method validates the schema of the database.
       /// </summary>
-      /// <exception cref="PKSimException">Thrown when an error occured.</exception>
+      /// <exception cref="PKSimException">Thrown when an error occurred.</exception>
       public void ValidateDatabase()
       {
          try

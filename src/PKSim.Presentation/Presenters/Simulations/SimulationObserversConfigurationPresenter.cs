@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -19,7 +20,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       IEnumerable<ObserverSet> AllUnmappedObserverSets(ObserverSetMappingDTO currentObserverSetMappingDTO = null);
       void AddObserverSet();
       void RemoveObserverSetMapping(ObserverSetMappingDTO observerSetMappingDTO);
-      void LoadObserverSetFor(ObserverSetMappingDTO observerSetMappingDTO);
+      Task LoadObserverSetForAsync(ObserverSetMappingDTO observerSetMappingDTO);
       void CreateObserverFor(ObserverSetMappingDTO observerSetMappingDTO);
       IEnumerable<ToolTipPart> ToolTipFor(ObserverSetMappingDTO observerSetMappingDTO);
       string DisplayNameFor(ObserverSet observerSet);
@@ -93,9 +94,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          OnStatusChanged();
       }
 
-      public void LoadObserverSetFor(ObserverSetMappingDTO observerSetMappingDTO)
+      public async Task LoadObserverSetForAsync(ObserverSetMappingDTO observerSetMappingDTO)
       {
-         updateObserverSetInMapping(observerSetMappingDTO, _observerSetTask.LoadSingleFromTemplate());
+         updateObserverSetInMapping(observerSetMappingDTO, await _observerSetTask.LoadSingleFromTemplateAsync());
       }
 
       public void CreateObserverFor(ObserverSetMappingDTO observerSetMappingDTO)

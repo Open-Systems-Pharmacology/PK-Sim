@@ -35,8 +35,9 @@ namespace PKSim.Presentation.Presenters.Charts
       ISimulationAnalysisPresenter<IndividualSimulation>
 
    {
-      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdateTask) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false)
+      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask,
+         IChartUpdater chartUpdateTask, IUserSettings userSettings) :
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false, userSettings)
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
       }
@@ -46,6 +47,13 @@ namespace PKSim.Presentation.Presenters.Charts
          base.AddObservedData(observedData, asResultOfDragAndDrop);
          if (asResultOfDragAndDrop)
             _observedDataTask.AddObservedDataToAnalysable(observedData, Simulation);
+      }
+
+      protected override void AddColorGroupedObservedData(IReadOnlyList<IReadOnlyList<DataRepository>> observedDataListGroupedByFolder)
+      {
+         base.AddColorGroupedObservedData(observedDataListGroupedByFolder);
+         // Observed data added via color grouping are always done so via drag and drop. Therefor we also add them to the simulation
+         _observedDataTask.AddObservedDataToAnalysable(observedDataListGroupedByFolder.SelectMany(x => x).ToList(), Simulation);
       }
 
       protected override void NotifyProjectChanged()

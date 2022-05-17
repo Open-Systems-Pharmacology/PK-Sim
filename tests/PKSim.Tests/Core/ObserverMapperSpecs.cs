@@ -67,10 +67,10 @@ namespace PKSim.Core
             _logger);
 
          A.CallTo(() => _explicitFormulaMapper.MapToSnapshot(_formula)).Returns(_snapshotFormula);
-         A.CallTo(() => _explicitFormulaMapper.MapToModel(_snapshotFormula)).Returns(_newFormula);
+         A.CallTo(() => _explicitFormulaMapper.MapToModel(_snapshotFormula, A<SnapshotContext>._)).Returns(_newFormula);
          A.CallTo(() => _moleculeListMapper.MapToSnapshot(_amountObserver.MoleculeList)).Returns(_moleculeListSnapshot);
          A.CallTo(() => _moleculeListMapper.MapToSnapshot(_containerObserver.MoleculeList)).Returns(_moleculeListSnapshot);
-         A.CallTo(() => _moleculeListMapper.MapToModel(_moleculeListSnapshot)).Returns(_newMoleculeList);
+         A.CallTo(() => _moleculeListMapper.MapToModel(_moleculeListSnapshot, A<SnapshotContext>._)).Returns(_newMoleculeList);
 
          A.CallTo(() => _dimensionRepository.DimensionByName(_dimension.Name)).Returns(_dimension);
          A.CallTo(() => _objectBaseFactory.Create<AmountObserverBuilder>()).Returns(new AmountObserverBuilder());
@@ -113,7 +113,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -162,7 +162,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

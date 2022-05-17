@@ -12,6 +12,7 @@ namespace PKSim.Core.Snapshots
       public ParameterRange Height { get; set; }
       public ParameterRange GestationalAge { get; set; }
       public ParameterRange BMI { get; set; }
+      public ParameterRange[] DiseaseStateParameters { get; set; }
 
       [Required]
       public Individual Individual { get; set; }

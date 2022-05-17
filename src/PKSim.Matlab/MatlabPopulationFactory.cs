@@ -8,7 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
-using PKSim.Matlab.Mappers;
+using PKSim.Core.Snapshots.Mappers;
 
 namespace PKSim.Matlab
 {
@@ -19,7 +19,7 @@ namespace PKSim.Matlab
 
    public class MatlabPopulationFactory : IMatlabPopulationFactory
    {
-      private readonly IMatlabPopulationSettingsToPopulationSettingsMapper _populationSettingsMapper;
+      private readonly RandomPopulationSettingsMapper _populationSettingsMapper;
       private readonly IRandomPopulationFactory _randomPopulationFactory;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IMoleculeOntogenyVariabilityUpdater _ontogenyVariabilityUpdater;
@@ -30,12 +30,12 @@ namespace PKSim.Matlab
          ApplicationStartup.Initialize();
       }
 
-      public MatlabPopulationFactory() : this(IoC.Resolve<IMatlabPopulationSettingsToPopulationSettingsMapper>(), IoC.Resolve<IRandomPopulationFactory>(),
+      public MatlabPopulationFactory() : this(IoC.Resolve<RandomPopulationSettingsMapper>(), IoC.Resolve<IRandomPopulationFactory>(),
          IoC.Resolve<IOntogenyRepository>(), IoC.Resolve<IMoleculeOntogenyVariabilityUpdater>(), IoC.Resolve<IIndividualEnzymeFactory>())
       {
       }
 
-      public MatlabPopulationFactory(IMatlabPopulationSettingsToPopulationSettingsMapper populationSettingsMapper, IRandomPopulationFactory randomPopulationFactory,
+      public MatlabPopulationFactory(RandomPopulationSettingsMapper populationSettingsMapper, IRandomPopulationFactory randomPopulationFactory,
          IOntogenyRepository ontogenyRepository, IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater, IIndividualEnzymeFactory individualEnzymeFactory)
       {
          _populationSettingsMapper = populationSettingsMapper;
@@ -47,7 +47,7 @@ namespace PKSim.Matlab
 
       public IParameterValueCache CreatePopulation(PopulationSettings matlabPopulationSettings, IEnumerable<MoleculeOntogeny> moleculeOntogenies)
       {
-         var populationSettings = _populationSettingsMapper.MapFrom(matlabPopulationSettings);
+         var populationSettings = _populationSettingsMapper.MapToModel(matlabPopulationSettings, new SnapshotContext()).Result;
          var population = _randomPopulationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
 
          foreach (var moleculeOntogeny in moleculeOntogenies)

@@ -5,14 +5,14 @@ using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_NewIndividualCommand : ContextSpecification<NewIndividualCommand>
+   public abstract class concern_for_NewIndividualCommand : ContextSpecification<AddIndividualCommand>
    {
       protected IIndividualTask _individualTask;
 
       protected override void Context()
       {
          _individualTask = A.Fake<IIndividualTask>();
-         sut = new NewIndividualCommand(_individualTask);
+         sut = new AddIndividualCommand(_individualTask);
       }
    }
 

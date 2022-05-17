@@ -17,7 +17,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_MultipleUsedBuildingBlockNodeContextMenuFactory : ContextSpecificationWithLocalContainer<MultipleUsedBuildingBlockNodeContextMenuFactory>
    {
       protected IExecutionContext _executionContext;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected List<ITreeNode> _usedBuildingBlocksTreeNode;
       protected IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> _presenter;
       protected UsedBuildingBlock _usedIndividual1;
@@ -33,8 +33,8 @@ namespace PKSim.Presentation
       {
          _executionContext = A.Fake<IExecutionContext>();
          _simulationBuildingBlockUpdater= A.Fake<ISimulationBuildingBlockUpdater>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
-         sut = new MultipleUsedBuildingBlockNodeContextMenuFactory(_buildingBlockInSimulationManager, _executionContext);
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
+         sut = new MultipleUsedBuildingBlockNodeContextMenuFactory(_buildingBlockInProjectManager, _executionContext);
 
          _usedBuildingBlocksTreeNode = new List<ITreeNode>();
          _presenter = A.Fake<IPresenterWithContextMenu<IReadOnlyList<ITreeNode>>>();
@@ -73,8 +73,8 @@ namespace PKSim.Presentation
 
          _simulation1.AddUsedBuildingBlock(_usedIndividual1);
          _simulation2.AddUsedBuildingBlock(_usedIndividual2);
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationUsing(_usedIndividual1)).Returns(_simulation1);
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationUsing(_usedIndividual2)).Returns(_simulation2);
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationUsing(_usedIndividual1)).Returns(_simulation1);
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationUsing(_usedIndividual2)).Returns(_simulation2);
 
          A.CallTo(() => _simulationBuildingBlockUpdater.BuildingBlockSupportsQuickUpdate(_buildingBlock1)).Returns(true);
 
@@ -122,8 +122,8 @@ namespace PKSim.Presentation
 
          _simulation1.AddUsedBuildingBlock(_usedIndividual1);
          _simulation2.AddUsedBuildingBlock(_usedIndividual2);
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationUsing(_usedIndividual1)).Returns(_simulation1);
-         A.CallTo(() => _buildingBlockInSimulationManager.SimulationUsing(_usedIndividual2)).Returns(_simulation2);
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationUsing(_usedIndividual1)).Returns(_simulation1);
+         A.CallTo(() => _buildingBlockInProjectManager.SimulationUsing(_usedIndividual2)).Returns(_simulation2);
 
          A.CallTo(() => _buildingBlock1.BuildingBlockType).Returns(PKSimBuildingBlockType.Population);
       }

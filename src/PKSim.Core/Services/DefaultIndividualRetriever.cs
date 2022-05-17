@@ -55,7 +55,9 @@ namespace PKSim.Core.Services
                Population = speciesPopulation.Name,
                Gender = DefaultGenderFor(speciesPopulation).Name
             };
-            var originData = _originDataMapper.MapToModel(originDataSnapshot).Result;
+
+            //We do not need to pass any valid snapshot context in this case.
+            var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext()).Result;
             _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(originData);
          }
 

@@ -68,11 +68,6 @@ namespace PKSim.UI.Views.Compounds
          set => lblProcessDescription.Text = value.FormatForDescription();
       }
 
-      public void SetIcon(ApplicationIcon icon)
-      {
-         Icon = icon;
-      }
-
       public void AdjustParametersHeight(int optimalHeight)
       {
          layoutControl.DoInBatch(() => layoutItemParameters.AdjustControlHeight(optimalHeight));

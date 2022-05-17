@@ -9,6 +9,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using Compound = PKSim.Core.Model.Compound;
 using Formulation = PKSim.Core.Model.Formulation;
@@ -24,7 +25,7 @@ namespace PKSim.Infrastructure
          var defaultIndividualRetriever = IoC.Resolve<IDefaultIndividualRetriever>();
          var populationRepository = IoC.Resolve<IPopulationRepository>();
          var cloneManager = IoC.Resolve<ICloneManagerForBuildingBlock>();
-         return cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache());
+         return cloneManager.Clone(defaultIndividualRetriever.DefaultIndividualFor(populationRepository.FindByName(population)), new FormulaCache()).WithName("Individual");
       }
 
       public static Compound CreateStandardCompound()
@@ -33,7 +34,7 @@ namespace PKSim.Infrastructure
          var compoundMapper = IoC.Resolve<Core.Snapshots.Mappers.CompoundMapper>();
 
          var compoundSnapshot = objectCreator.StandardCompound(lipophilicity: -2, fractionUnbound: 0.8, molWeight: 400, solubilityAtRefPh: 1e-7).Result;
-         return compoundMapper.MapToModel(compoundSnapshot).Result;
+         return compoundMapper.MapToModel(compoundSnapshot, new SnapshotContext()).Result;
       }
 
       public static Protocol CreateStandardIVBolusProtocol()
@@ -64,6 +65,14 @@ namespace PKSim.Infrastructure
          formulation.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? CoreConstants.Parameters.POLYDISPERSE : CoreConstants.Parameters.MONODISPERSE;
 
          return formulation;
+      }
+
+      public static ExpressionProfile CreateExpressionProfile<TMolecule>(string moleculeName = "CYP3A4") where TMolecule:IndividualMolecule
+      {
+         var expressionProfileFactory = IoC.Resolve<IExpressionProfileFactory>();
+         var expressionProfile = expressionProfileFactory.Create<TMolecule>(moleculeName);
+         expressionProfile.Category = "Standard";
+         return expressionProfile;
       }
 
       public static IndividualSimulation CreateDefaultSimulation()

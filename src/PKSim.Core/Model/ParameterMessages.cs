@@ -57,7 +57,7 @@ namespace PKSim.Core.Model
       {
          return PKSimConstants.Command.ResetParameterValueDescription(parameterDisplayName,
             DisplayValueFor(parameter, oldValue),
-            DisplayValueFor(parameter, parameter.Value));
+            DisplayValueFor(parameter, tryGetValue(parameter)));
       }
 
       public static string DisplayValueFor(IParameter parameter, double baseValue, bool numericalDisplayOnly = false)

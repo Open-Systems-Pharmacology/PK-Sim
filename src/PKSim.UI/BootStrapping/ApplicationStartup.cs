@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Services;
 using OSPSuite.Presentation.Core;
@@ -28,7 +27,6 @@ using PKSim.Infrastructure;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views;
 using PKSim.UI.Views.Core;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -53,12 +51,13 @@ namespace PKSim.UI.BootStrapping
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+         ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
 
          updateGoDiagramKey();
-
+         initializeSynchronizationContext();
 
          var container = InfrastructureRegister.Initialize();
-         container.RegisterImplementationOf(getCurrentContext());
+         container.RegisterImplementationOf(SynchronizationContext.Current);
 
          container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
          container.Register<PKSimApplication, PKSimApplication>(LifeStyle.Singleton);
@@ -101,15 +100,10 @@ namespace PKSim.UI.BootStrapping
          UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
       }
 
-      private SynchronizationContext getCurrentContext()
+      private void initializeSynchronizationContext()
       {
-         var context = SynchronizationContext.Current;
-         if (context == null)
-         {
-            context = new WindowsFormsSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(context);
-         }
-         return SynchronizationContext.Current;
+         var context = new WindowsFormsSynchronizationContext();
+         SynchronizationContext.SetSynchronizationContext(context);
       }
 
       public void Start()
@@ -157,10 +151,9 @@ namespace PKSim.UI.BootStrapping
          //Create one instance of the invokers so that the object is available in the application 
          //since the object is not created anywhere and is only used as event listener
          container.Resolve<ICloseSubjectPresenterInvoker>();
-         container.Resolve<IExportToPDFInvoker>();
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
-         container.RegisterImplementationOf((IChangePropagator)mainPresenter);
+         container.RegisterImplementationOf((IChangePropagator) mainPresenter);
 
          //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
          container.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);

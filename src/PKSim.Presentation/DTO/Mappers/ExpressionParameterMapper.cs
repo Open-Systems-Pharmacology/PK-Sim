@@ -42,10 +42,13 @@ namespace PKSim.Presentation.DTO.Mappers
 
          //Parameters are located in a molecule which is in a compartment => Parent.Parent
          var compartment = parameter.ParentContainer.ParentContainer;
+
+         //Organ may be null for old simulations (v9.1 and below)
          var organ = compartment.ParentContainer;
+
          //Relative expression parameters not in lumen should be displayed directly under the organism
          var compartmentName = parameter.IsExpression() && !parameter.IsInLumen() ? string.Empty : compartment.Name;
-         return createExpressionContainerParameterDTOFrom(organ.Name, compartmentName, groupName, parameter);
+         return createExpressionContainerParameterDTOFrom(organ?.Name, compartmentName, groupName, parameter);
       }
 
       private TExpressionParameterDTO createExpressionContainerParameterDTOFrom(string containerName, string compartmentName,

@@ -24,11 +24,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelObserverSet> MapToModel(SnapshotObserverSet snapshot)
+      public override async Task<ModelObserverSet> MapToModel(SnapshotObserverSet snapshot, SnapshotContext snapshotContext)
       {
          var observerSet = _observerSetFactory.Create();
          MapSnapshotPropertiesToModel(snapshot, observerSet);
-         var observers = await _observerMapper.MapToModels(snapshot.Observers);
+         var observers = await _observerMapper.MapToModels(snapshot.Observers, snapshotContext);
          observers?.Each(x => observerSet.Add(x));
          return observerSet;
       }

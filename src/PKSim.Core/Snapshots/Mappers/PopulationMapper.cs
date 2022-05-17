@@ -48,14 +48,14 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.AdvancedParameters = await _advancedParameterMapper.MapToSnapshots(randomPopulation.AdvancedParameters.ToList());
       }
 
-      public override async Task<ModelPopulation> MapToModel(SnapshotPopulation snapshot)
+      public override async Task<ModelPopulation> MapToModel(SnapshotPopulation snapshot, SnapshotContext snapshotContext)
       {
-         var randomPopulationSettings = await _randomPopulationSettingsMapper.MapToModel(snapshot.Settings);
+         var randomPopulationSettings = await _randomPopulationSettingsMapper.MapToModel(snapshot.Settings, snapshotContext);
 
          //Do not add default molecule variability as this will be loaded from snapshot
-         var population = await _randomPopulationFactory.CreateFor(randomPopulationSettings, CancellationToken.None, snapshot.Seed, addMoleculeParametersVariability:false);
+         var population = await _randomPopulationFactory.CreateFor(randomPopulationSettings, CancellationToken.None, snapshot.Seed, addMoleculeParametersVariability: false);
          MapSnapshotPropertiesToModel(snapshot, population);
-         await _advancedParameterMapper.MapToModel(snapshot.AdvancedParameters, population);
+         await _advancedParameterMapper.MapToModel(snapshot.AdvancedParameters, population, snapshotContext);
          return population;
       }
    }

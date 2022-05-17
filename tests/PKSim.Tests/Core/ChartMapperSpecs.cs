@@ -32,7 +32,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_upading_a_snapshot_chart_from_a_chart : concern_for_ChartMapper
+   public class When_updating_a_snapshot_chart_from_a_chart : concern_for_ChartMapper
    {
       protected override async Task Because()
       {
@@ -59,45 +59,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_updating_a_snapshot_from_a_chart_for_which_settings_and_font_have_not_changed : concern_for_ChartMapper
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _chart = new CurveChart
-         {
-            Name = "Hello",
-            Description = "Tralala"
-         };
-      }
-
-      protected override async Task Because()
-      {
-         await sut.MapToSnapshot(_chart, _snapshot);
-      }
-
-      [Observation]
-      public void should_save_the_expected_snapshot_properties()
-      {
-         _snapshot.Name.ShouldBeEqualTo(_chart.Name);
-         _snapshot.Description.ShouldBeEqualTo(_chart.Description);
-      }
-
-      [Observation]
-      public void should_set_settings_to_null()
-      {
-         _snapshot.Settings.ShouldBeNull();
-      }
-
-      [Observation]
-      public void should_set_font_to_null()
-      {
-         _snapshot.FontAndSize.ShouldBeNull();
-      }
-   }
-
-
-   public class When_upading_a_chart_from_a_snapshot_chart : concern_for_ChartMapper
+   public class When_updating_a_chart_from_a_snapshot_chart : concern_for_ChartMapper
    {
       private CurveChart _newChart;
 
@@ -113,7 +75,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, _newChart);
+         await sut.MapToModel(_snapshot, new ChartSnapshotContext(_newChart, new SnapshotContext()));
       }
 
       [Observation]

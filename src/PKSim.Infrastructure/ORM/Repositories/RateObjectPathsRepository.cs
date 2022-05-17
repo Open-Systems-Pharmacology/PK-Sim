@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatRateObjectPathRepository : MetaDataRepository<FlatRateObjectPath>, IFlatRateObjectPathRepository
    {
       public FlatRateObjectPathRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatRateObjectPath> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewRateObjectPaths)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_RATE_OBJECT_PATHS)
       {
       }
    }

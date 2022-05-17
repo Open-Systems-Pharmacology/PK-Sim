@@ -9,20 +9,16 @@ namespace PKSim.Presentation.DTO.Simulations
 {
    public class CompoundParameterSelectionDTO : DxValidatableDTO
    {
-      private readonly ParameterAlternativeGroup _compoundParameterGroup;
       public ParameterAlternative SelectedAlternative { get; set; }
       public string ParameterName { get; set; }
 
       public CompoundParameterSelectionDTO(ParameterAlternativeGroup compoundParameterGroup)
       {
-         _compoundParameterGroup = compoundParameterGroup;
+         CompoundParameterGroup = compoundParameterGroup;
          Rules.AddRange(AllRules.All());
       }
 
-      public ParameterAlternativeGroup CompoundParameterGroup
-      {
-         get { return _compoundParameterGroup; }
-      }
+      public ParameterAlternativeGroup CompoundParameterGroup { get; }
 
       private static class AllRules
       {
@@ -32,15 +28,9 @@ namespace PKSim.Presentation.DTO.Simulations
          }
       }
 
-      private static IBusinessRule selectionNotEmpty
-      {
-         get
-         {
-            return CreateRule.For<CompoundParameterSelectionDTO>()
-               .Property(item => item.SelectedAlternative)
-               .WithRule((param, value) => value != null)
-               .WithError((param, value) => PKSimConstants.Error.CompoundParameterSelectionNeededFor(param.ParameterName));
-         }
-      }
+      private static IBusinessRule selectionNotEmpty { get; } = CreateRule.For<CompoundParameterSelectionDTO>()
+         .Property(item => item.SelectedAlternative)
+         .WithRule((param, value) => value != null)
+         .WithError((param, value) => PKSimConstants.Error.CompoundParameterSelectionNeededFor(param.ParameterName));
    }
 }

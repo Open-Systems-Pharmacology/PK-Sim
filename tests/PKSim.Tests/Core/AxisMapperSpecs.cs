@@ -126,7 +126,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newAxis = await sut.MapToModel(_snapshot);
+         _newAxis = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

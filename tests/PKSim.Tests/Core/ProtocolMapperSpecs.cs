@@ -141,7 +141,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProtocol = (await sut.MapToModel(_snapshot)).DowncastTo<SimpleProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot, new SnapshotContext())).DowncastTo<SimpleProtocol>();
       }
 
       [Observation]
@@ -156,7 +156,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name, A<SnapshotContext>._)).MustHaveHappened();
      }
    }
 
@@ -175,12 +175,12 @@ namespace PKSim.Core
          _snapshot.Description = "The description that will be deserialized";
 
          _newSchema = new Schema().WithName("I am a new schema");
-         A.CallTo(() => _schemaMapper.MapToModel(_snapshotSchema)).Returns(_newSchema);
+         A.CallTo(() => _schemaMapper.MapToModel(_snapshotSchema, A<SnapshotContext>._)).Returns(_newSchema);
       }
 
       protected override async Task Because()
       {
-         _newProtocol = (await sut.MapToModel(_snapshot)).DowncastTo<AdvancedProtocol>();
+         _newProtocol = (await sut.MapToModel(_snapshot, new SnapshotContext())).DowncastTo<AdvancedProtocol>();
       }
 
       [Observation]
@@ -199,7 +199,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newProtocol, _newProtocol.Name, A<SnapshotContext>._)).MustHaveHappened();
       }
    }
 

@@ -29,6 +29,7 @@ using PKSim.Core;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.UI.Views.Core;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -50,6 +51,12 @@ namespace PKSim.UI.Views.Parameters
       private RepositoryItem _favoriteRepository;
       protected IGridViewColumn _columnFavorites;
       protected readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
+
+      //Design only
+      public ParameterSetView()
+      {
+         InitializeComponent();
+      }
 
       public ParameterSetView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
@@ -150,7 +157,7 @@ namespace PKSim.UI.Views.Parameters
       {
          _columnFavorites = _gridViewBinder.Bind(x => x.IsFavorite)
             .WithCaption(PKSimConstants.UI.Favorites)
-            .WithWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithWidth(EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _favoriteRepository)
             .WithToolTip(PKSimConstants.UI.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetFavorite(o, e.NewValue)));
@@ -186,7 +193,8 @@ namespace PKSim.UI.Views.Parameters
          if (parameterDTO.FormulaType == FormulaType.Table)
             return parameterDTO.Editable ? _editTableParameterRepository : _showTableParameterRepository;
 
-         if (_presenter.IsSetByUser(parameterDTO))
+         //We only show the fixed parameter if the column is not readonly. Otherwise, no need to show the button
+         if (_presenter.IsSetByUser(parameterDTO) && !_columnValue.ReadOnly)
             return _isFixedParameterEditRepository;
 
          return _standardParameterEditRepository;
@@ -270,6 +278,15 @@ namespace PKSim.UI.Views.Parameters
       }
 
       public override bool HasError => _gridViewBinder.HasError;
+
+      public bool ReadOnly
+      {
+         set
+         {
+            _columnValue.ReadOnly = value;
+            _valueOriginBinder.ValueOriginColumn.ReadOnly = value;
+         }
+      }
 
       private void updateRowCellStyle(object sender, RowCellStyleEventArgs e)
       {

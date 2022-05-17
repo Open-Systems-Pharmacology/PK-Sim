@@ -42,7 +42,7 @@ namespace PKSim.Presentation.Repositories
          yield return runSensitivityAnalysisButtonGroup;
          yield return parameterIdentificationAnalysisButtonGroup;
          yield return parameterIdentificationConfidenceIntervalButtonGroup;
-         yield return senstivityAnalysisButtonGroup;
+         yield return sensitivityAnalysisButtonGroup;
       }
 
       private IButtonGroup projectButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.File)
@@ -86,7 +86,6 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationToPkml)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationResultsToExcel)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationResultsToCSV)))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationToPDF)))
          .WithId(ButtonGroupIds.ExportIndividualSimulation);
 
       private IButtonGroup exportPopulationSimulationGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Export)
@@ -96,21 +95,19 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationResultsToCSV)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationPKAnalysesToCSV)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationForClusterComputations)))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportActiveSimulationToPDF)))
          .WithId(ButtonGroupIds.ExportPopulationSimulation);
 
       private IButtonGroup exportProjectGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.ExportProject)
          .WithButton(
             CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportGroup))
                .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportExcel))
-               .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportPDF))
                .WithStyle(ItemStyle.Large)
          )
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ProjectReport)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportProjectToSnapshot)))
          .WithId(ButtonGroupIds.ExportProject);
 
       private IButtonGroup createButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Create)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExpressionProfile)).WithCaption(PKSimConstants.Ribbons.ExpressionProfile))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(PKSimConstants.Ribbons.Individual))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewPopulation)).WithCaption(PKSimConstants.Ribbons.Population))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewCompound)).WithCaption(PKSimConstants.Ribbons.Compound))
@@ -246,7 +243,7 @@ namespace PKSim.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisFeedbackView)))
          .WithId(ButtonGroupIds.RunSensitivityAnalysis);
 
-      private IButtonGroup senstivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
+      private IButtonGroup sensitivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisPKParameterAnalysis)))
          .WithId(ButtonGroupIds.SensitivityAnalysisPKParameterAnalyses);
 

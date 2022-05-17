@@ -11,19 +11,22 @@ namespace PKSim.Core.Snapshots.Mappers
    /// </summary>
    public static class SnapshotMapperBaseExtensions
    {
-     
       /// <summary>
       ///    Maps a list of snapshot to the corresponding model arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TModel[]> MapToModels<TModel, TSnapshot>(this SnapshotMapperBase<TModel, TSnapshot> mapper, IEnumerable<TSnapshot> snapshots) where TSnapshot : new()
+      public static Task<TModel[]> MapToModels<TModel, TSnapshot, TSnapshotContext>(this SnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> mapper, IEnumerable<TSnapshot> snapshots, TSnapshotContext snapshotContext) 
+         where TSnapshot : new() 
+         where TSnapshotContext : SnapshotContext
       {
-         return MapToModels(mapper, snapshots, mapper.MapToModel);
+         return MapToModels(mapper, snapshots, s => mapper.MapToModel(s, snapshotContext));
       }
 
       /// <summary>
       ///    Maps a list of snapshot to the corresponding model arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TModel[]> MapToModels<TModel, TSnapshot>(this SnapshotMapperBase<TModel, TSnapshot> mapper, IEnumerable<TSnapshot> snapshots, Func<TSnapshot, Task<TModel>> mapToModelFunc) where TSnapshot : new()
+      public static Task<TModel[]> MapToModels<TModel, TSnapshot, TSnapshotContext>(this SnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> mapper, IEnumerable<TSnapshot> snapshots, Func<TSnapshot, Task<TModel>> mapToModelFunc) 
+         where TSnapshot : new() 
+         where TSnapshotContext : SnapshotContext
       {
          return MapTo(snapshots, mapToModelFunc);
       }
@@ -31,23 +34,21 @@ namespace PKSim.Core.Snapshots.Mappers
       /// <summary>
       ///    Maps a list of snapshot to the corresponding model arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TModel[]> MapToModels<TModel, TSnapshot, TContext>(this SnapshotMapperBase<TModel, TSnapshot, TContext> mapper, IEnumerable<TSnapshot> snapshots, TContext context) where TSnapshot : new()
+      public static Task<TModel[]> MapToModels<TModel, TSnapshot, TSnapshotContext>(this ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> mapper, IEnumerable<TSnapshot> snapshots, TSnapshotContext context) 
+         where TSnapshot : IWithName, IWithDescription, new()
+         where TModel : IWithName, IWithDescription 
+         where TSnapshotContext : SnapshotContext
       {
-         return MapToModels(mapper, snapshots, s => mapper.MapToModel(s, context));
+         return MapToModels(mapper, snapshots, s => mapper.MapToModel(s,  context));
       }
 
       /// <summary>
       ///    Maps a list of snapshot to the corresponding model arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TModel[]> MapToModels<TModel, TSnapshot, TContext>(this ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TContext> mapper, IEnumerable<TSnapshot> snapshots, TContext context) where TSnapshot : IWithName, IWithDescription, new() where TModel : IWithName, IWithDescription
-      {
-         return MapToModels(mapper, snapshots, s => mapper.MapToModel(s, context));
-      }
-
-      /// <summary>
-      ///    Maps a list of snapshot to the corresponding model arrays. If the list if null or empty, null will be returned
-      /// </summary>
-      public static Task<TModel[]> MapToModels<TModel, TSnapshot, TContext>(this ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TContext> mapper, IEnumerable<TSnapshot> snapshots, TContext context) where TSnapshot : ParameterContainerSnapshotBase, new() where TModel : IContainer
+      public static Task<TModel[]> MapToModels<TModel, TSnapshot, TSnapshotContext>(this ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> mapper, IEnumerable<TSnapshot> snapshots, TSnapshotContext context) 
+         where TSnapshot : ParameterContainerSnapshotBase, new()
+         where TModel : IContainer 
+         where TSnapshotContext : SnapshotContext
       {
          return MapToModels(mapper, snapshots, s => mapper.MapToModel(s, context));
       }
@@ -55,7 +56,8 @@ namespace PKSim.Core.Snapshots.Mappers
       /// <summary>
       ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot>(this SnapshotMapperBase<TModel, TSnapshot> mapper, IEnumerable<TModel> models) where TSnapshot : new()
+      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TSnapshotContext>(this SnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> mapper, IEnumerable<TModel> models) where TSnapshot : new()
+         where TSnapshotContext : SnapshotContext
       {
          return MapTo(models, mapper.MapToSnapshot);
       }
@@ -63,26 +65,33 @@ namespace PKSim.Core.Snapshots.Mappers
       /// <summary>
       ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this SnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> mapper, IEnumerable<TModel> models, TSnapshotContext snapshotContext) where TSnapshot : new()
+      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TSnapshotContext, TModelContext>(this SnapshotMapperBase<TModel, TSnapshot,  TSnapshotContext, TModelContext> mapper, IEnumerable<TModel> models, TModelContext modelContext) 
+         where TSnapshot : new() 
+         where TSnapshotContext : SnapshotContext
       {
-         return MapTo(models, m => mapper.MapToSnapshot(m, snapshotContext));
+         return MapTo(models, m => mapper.MapToSnapshot(m, modelContext));
       }
 
       /// <summary>
       ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> mapper, IEnumerable<TModel> models, TSnapshotContext snapshotContext) where TSnapshot : IWithName, IWithDescription, new() where TModel : IWithName, IWithDescription
+      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TSnapshotContext, TModelContext>(this ObjectBaseSnapshotMapperBase<TModel, TSnapshot,  TSnapshotContext, TModelContext> mapper, IEnumerable<TModel> models, TModelContext modelContext)
+         where TSnapshot : IWithName, IWithDescription, new() 
+         where TModel : IWithName, IWithDescription
+         where TSnapshotContext : SnapshotContext 
       {
-         return MapTo(models, m => mapper.MapToSnapshot(m, snapshotContext));
+         return MapTo(models, m => mapper.MapToSnapshot(m, modelContext));
       }
-
 
       /// <summary>
       ///    Maps a list of models to the corresponding snapshot arrays. If the list if null or empty, null will be returned
       /// </summary>
-      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> mapper, IEnumerable<TModel> models, TSnapshotContext snapshotContext) where TSnapshot : ParameterContainerSnapshotBase, new() where TModel : IContainer
+      public static Task<TSnapshot[]> MapToSnapshots<TModel, TSnapshot, TModelContext, TSnapshotContext>(this ParameterContainerSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext, TModelContext> mapper, IEnumerable<TModel> models, TModelContext modelContext)
+         where TSnapshot : ParameterContainerSnapshotBase, new() 
+         where TModel : IContainer 
+         where TSnapshotContext : SnapshotContext
       {
-         return MapTo(models, m => mapper.MapToSnapshot(m, snapshotContext));
+         return MapTo(models, m => mapper.MapToSnapshot(m,  modelContext));
       }
 
       public static async Task<TTarget[]> MapTo<TSource, TTarget>(IEnumerable<TSource> sources, Func<TSource, Task<TTarget>> mapToFunc)
@@ -92,8 +101,8 @@ namespace PKSim.Core.Snapshots.Mappers
          if (list == null || !list.Any())
             return null;
 
-         var targets = (await Task.WhenAll(list.Select(mapToFunc))).Where(x=>x!=null).ToArray();
-         
+         var targets = (await Task.WhenAll(list.Select(mapToFunc))).Where(x => x != null).ToArray();
+
          return !targets.Any() ? null : targets;
       }
    }

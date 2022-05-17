@@ -4,7 +4,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Core;
-using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
@@ -15,7 +14,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          new Cache<TransportDirectionId, TransportDirection>(x => x.Id);
 
       public TransportDirectionRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<TransportDirection> mapper) :
-         base(dbGateway, mapper, CoreConstants.ORM.ViewTransportDirections)
+         base(dbGateway, mapper, CoreConstants.ORM.VIEW_TRANSPORT_DIRECTIONS)
       {
       }
 

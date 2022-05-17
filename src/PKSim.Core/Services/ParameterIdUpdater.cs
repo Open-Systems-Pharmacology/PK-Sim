@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
@@ -37,6 +38,13 @@ namespace PKSim.Core.Services
       ///    <remarks>Same is defined as "having the same name"</remarks>
       /// </summary>
       void UpdateParameterIds(IContainer sourceContainer, IEnumerable<IParameter> targetParameters);
+
+      /// <summary>
+      ///    Update the origin parameter ids of a parameter in the target enumeration with the id of the same parameter
+      ///    in the source container, if available.
+      ///    <remarks>Same is defined as "having the same path"</remarks>
+      /// </summary>
+      void UpdateParameterIds(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters);
 
       /// <summary>
       ///    Update the building block if of all parameters to the id of the building block given as parameter
@@ -96,6 +104,16 @@ namespace PKSim.Core.Services
             if (targetParameter == null) continue;
 
             UpdateParameterId(sourceParameter, targetParameter);
+         }
+      }
+
+      public void UpdateParameterIds(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
+      {
+         foreach (var sourceParameterKeyValue in sourceParameters.KeyValues)
+         {
+            var targetParameter = targetParameters[sourceParameterKeyValue.Key];
+            if(targetParameter!=null)
+               UpdateParameterId(sourceParameterKeyValue.Value, targetParameter);
          }
       }
 

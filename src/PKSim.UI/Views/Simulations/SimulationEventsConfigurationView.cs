@@ -19,6 +19,7 @@ using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -63,18 +64,18 @@ namespace PKSim.UI.Views.Simulations
         _colCreateEvent= _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => createButtonRepository);
 
         _colLoadEvent = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => loadButtonRepository);
 
         _colRemoveEvent =  _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => _removeButtonRepository);
 
@@ -82,7 +83,8 @@ namespace PKSim.UI.Views.Simulations
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;
          gridView.HiddenEditor += (o, e) => { _comboBoxUnit.Visible = false; };
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveEventMapping(_gridViewBinder.FocusedElement));
-         loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadEventFor(_gridViewBinder.FocusedElement));
+
+         loadButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadEventAsync(_gridViewBinder.FocusedElement));
          createButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.CreateEventFor(_gridViewBinder.FocusedElement));
       }
 
@@ -109,7 +111,7 @@ namespace PKSim.UI.Views.Simulations
 
       private RepositoryItemButtonEdit loadEventButtonRepository()
       {
-         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.Event));
+         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplate(PKSimConstants.ObjectTypes.Event));
       }
 
       private void setParameterValue(IParameterDTO parameterDTO, double newValue)

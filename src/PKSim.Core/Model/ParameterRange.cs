@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Format;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
@@ -18,6 +19,7 @@ namespace PKSim.Core.Model
       public double? MaxValue { get; set; }
       public IDimension Dimension { get; set; }
       public Unit Unit { get; set; }
+      private static readonly NumericFormatter<double> _numericFormatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
 
       public ParameterRange()
       {
@@ -57,6 +59,10 @@ namespace PKSim.Core.Model
          set => MaxValue = baseValueFrom(value);
       }
 
+      public double? DbMinValueInDisplayUnit => displayValueFrom(DbMinValue);
+
+      public double? DbMaxValueInDisplayUnit => displayValueFrom(DbMaxValue);
+
       private double? baseValueFrom(double? displayValue)
       {
          if (!displayValue.HasValue)
@@ -86,71 +92,35 @@ namespace PKSim.Core.Model
 
       private static class AllRules
       {
-         public static IBusinessRule MinLessThanMax
-         {
-            get
-            {
-               return CreateRule.For<ParameterRange>()
-                  .Property(item => item.MinValueInDisplayUnit)
-                  .WithRule(minLessThanMax)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanMax(param.ParameterName));
-            }
-         }
+         public static IBusinessRule MinLessThanMax { get; } = CreateRule.For<ParameterRange>()
+            .Property(item => item.MinValueInDisplayUnit)
+            .WithRule(minLessThanMax)
+            .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanMax(param.ParameterName));
 
-         public static IBusinessRule MaxGreaterThanMin
-         {
-            get
-            {
-               return CreateRule.For<ParameterRange>()
-                  .Property(item => item.MaxValueInDisplayUnit)
-                  .WithRule(maxGreaterThanMin)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanMin(param.ParameterName));
-            }
-         }
+         public static IBusinessRule MaxGreaterThanMin { get; } = CreateRule.For<ParameterRange>()
+            .Property(item => item.MaxValueInDisplayUnit)
+            .WithRule(maxGreaterThanMin)
+            .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanMin(param.ParameterName));
 
-         public static IBusinessRule MinGreaterThanDbMin
-         {
-            get
-            {
-               return CreateRule.For<ParameterRange>()
-                  .Property(item => item.MinValueInDisplayUnit)
-                  .WithRule(minGreaterThanDbMin)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinGreaterThanDbMinValue(param.ParameterName, param.DbMinValue, param.Unit.ToString()));
-            }
-         }
+         public static IBusinessRule MinGreaterThanDbMin { get; } = CreateRule.For<ParameterRange>()
+            .Property(item => item.MinValueInDisplayUnit)
+            .WithRule(minGreaterThanDbMin)
+            .WithError((param, value) => PKSimConstants.Rules.Parameter.MinGreaterThanDbMinValue(param.ParameterName, displayFor(param.DbMinValueInDisplayUnit), param.Unit.ToString()));
 
-         public static IBusinessRule MaxLessThanDbMax
-         {
-            get
-            {
-               return CreateRule.For<ParameterRange>()
-                  .Property(item => item.MaxValueInDisplayUnit)
-                  .WithRule(maxLessThanDbMax)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxLessThanDbMaxValue(param.ParameterName, param.DbMaxValue, param.Unit.ToString()));
-            }
-         }
+         public static IBusinessRule MaxLessThanDbMax { get; } = CreateRule.For<ParameterRange>()
+            .Property(item => item.MaxValueInDisplayUnit)
+            .WithRule(maxLessThanDbMax)
+            .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxLessThanDbMaxValue(param.ParameterName, displayFor(param.DbMaxValueInDisplayUnit), param.Unit.ToString()));
 
-         public static IBusinessRule MinLessThanDbMax
-         {
-            get
-            {
-               return CreateRule.For<ParameterRange>()
-                  .Property(item => item.MinValueInDisplayUnit)
-                  .WithRule(minLessThanDbMax)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanDbMaxValue(param.ParameterName, param.DbMaxValue, param.Unit.ToString()));
-            }
-         }
+         public static IBusinessRule MinLessThanDbMax { get; } = CreateRule.For<ParameterRange>()
+            .Property(item => item.MinValueInDisplayUnit)
+            .WithRule(minLessThanDbMax)
+            .WithError((param, value) => PKSimConstants.Rules.Parameter.MinLessThanDbMaxValue(param.ParameterName, displayFor(param.DbMaxValueInDisplayUnit), param.Unit.ToString()));
 
-         public static IBusinessRule MaxGreaterThanDbMin
-         {
-            get
-            {
-               return CreateRule.For<ParameterRange>()
-                  .Property(item => item.MaxValueInDisplayUnit)
-                  .WithRule(maxGreaterThanDbMin)
-                  .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanDbMinValue(param.ParameterName, param.DbMinValue, param.Unit.ToString()));
-            }
-         }
+         public static IBusinessRule MaxGreaterThanDbMin { get; } = CreateRule.For<ParameterRange>()
+            .Property(item => item.MaxValueInDisplayUnit)
+            .WithRule(maxGreaterThanDbMin)
+            .WithError((param, value) => PKSimConstants.Rules.Parameter.MaxGreaterThanDbMinValue(param.ParameterName, displayFor(param.DbMinValueInDisplayUnit), param.Unit.ToString()));
 
          private static bool minLessThanMax(ParameterRange param, double? minValueInDisplayUnit)
          {
@@ -212,6 +182,8 @@ namespace PKSim.Core.Model
 
             return false;
          }
+
+         private static string displayFor(double? value) => _numericFormatter.Format(value ?? double.NaN);
       }
 
       public virtual void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)

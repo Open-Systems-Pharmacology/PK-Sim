@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatProteinSynonymRepository : MetaDataRepository<FlatProteinSynonym>, IFlatProteinSynonymRepository
    {
       public FlatProteinSynonymRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatProteinSynonym> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewProteinSynonyms)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_PROTEIN_SYNONYMS)
       {
       }
 

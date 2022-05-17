@@ -94,7 +94,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_edit_the_new_tempalte()
+      public void should_edit_the_new_template()
       {
          A.CallTo(() => _eventSettings.EditEvent(_event)).MustHaveHappened();
       }

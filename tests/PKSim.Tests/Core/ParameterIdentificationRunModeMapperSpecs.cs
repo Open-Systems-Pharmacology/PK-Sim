@@ -59,7 +59,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newStandardRunMode = await sut.MapToModel(_snapshot) as StandardParameterIdentificationRunMode;
+         _newStandardRunMode = await sut.MapToModel(_snapshot, new SnapshotContext()) as StandardParameterIdentificationRunMode;
       }
 
       [Observation]
@@ -112,7 +112,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newMultipleRun = await sut.MapToModel(_snapshot) as MultipleParameterIdentificationRunMode;
+         _newMultipleRun = await sut.MapToModel(_snapshot, new SnapshotContext()) as MultipleParameterIdentificationRunMode;
       }
 
       [Observation]
@@ -172,7 +172,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot) as CategorialParameterIdentificationRunMode;
+         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot, new SnapshotContext()) as CategorialParameterIdentificationRunMode;
       }
 
       [Observation]
@@ -239,7 +239,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot) as CategorialParameterIdentificationRunMode;
+         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot, new SnapshotContext()) as CategorialParameterIdentificationRunMode;
       }
 
       [Observation]

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -84,7 +83,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       protected IEnumerable<ISubPresenterItem<ISimulationItemPresenter>> AllSimulationItemsAfterModel => new ISubPresenterItem<ISimulationItemPresenter>[]
-      {
+      {   
          SimulationItems.Compounds, SimulationItems.CompoundsProcesses, SimulationItems.CompoundProtocols, SimulationItems.Events, SimulationItems.Observers
       };
 

@@ -25,12 +25,12 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override async Task<ModelFormulation> MapToModel(SnapshotFormulation snapshotFormulation)
+      public override async Task<ModelFormulation> MapToModel(SnapshotFormulation snapshotFormulation, SnapshotContext snapshotContext)
       {
          var template = _formulationRepository.FormulationBy(snapshotFormulation.FormulationType);
          var formulation = _cloner.Clone(template);
          MapSnapshotPropertiesToModel(snapshotFormulation, formulation);
-         await UpdateParametersFromSnapshot(snapshotFormulation, formulation);
+         await UpdateParametersFromSnapshot(snapshotFormulation, formulation, snapshotContext);
          formulation.UpdateParticleParametersVisibility();
          return formulation;
       }

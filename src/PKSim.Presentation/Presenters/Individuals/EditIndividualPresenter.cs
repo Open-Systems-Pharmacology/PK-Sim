@@ -15,7 +15,9 @@ namespace PKSim.Presentation.Presenters.Individuals
 
    public class EditIndividualPresenter : SingleStartContainerPresenter<IEditIndividualView, IEditIndividualPresenter, Individual, IIndividualItemPresenter>, IEditIndividualPresenter
    {
-      public EditIndividualPresenter(IEditIndividualView view, ISubPresenterItemManager<IIndividualItemPresenter> subPresenterItemManager)
+      public EditIndividualPresenter(
+         IEditIndividualView view, 
+         ISubPresenterItemManager<IIndividualItemPresenter> subPresenterItemManager)
          : base(view, subPresenterItemManager, IndividualItems.All)
       {
       }
@@ -23,7 +25,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public override void Edit(Individual individualToEdit)
       {
          _subPresenterItemManager.AllSubPresenters.Each(presenter => presenter.EditIndividual(individualToEdit));
-         _view.UpdateIcon(ApplicationIcons.IconByName(individualToEdit.Species.Icon));
+         _view.ApplicationIcon = ApplicationIcons.IconByName(individualToEdit.Species.Icon);
          _view.EnableControl(IndividualItems.Settings);
          _view.EnableControl(IndividualItems.Parameters);
          _view.EnableControl(IndividualItems.Expression);
@@ -32,19 +34,13 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.Display();
       }
 
-      public override object Subject
-      {
-         get { return Individual; }
-      }
+      public override object Subject => Individual;
 
       protected override void UpdateCaption()
       {
          _view.Caption = PKSimConstants.UI.EditIndividual(Individual.Name);
       }
 
-      public virtual Individual Individual
-      {
-         get { return PresenterAt(IndividualItems.Settings).Individual; }
-      }
+      public virtual Individual Individual => PresenterAt(IndividualItems.Settings).Individual;
    }
 }

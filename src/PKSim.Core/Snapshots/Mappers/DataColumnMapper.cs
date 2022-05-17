@@ -12,7 +12,17 @@ using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class DataColumnMapper : SnapshotMapperBase<ModelDataColumn, SnapshotDataColumn, ModelDataRepository>
+   public class SnapshotContextWithDataRepository : SnapshotContext
+   {
+      public ModelDataRepository DataRepository { get; }
+
+      public SnapshotContextWithDataRepository(ModelDataRepository dataRepository, SnapshotContext baseContext) : base(baseContext)
+      {
+         DataRepository = dataRepository;
+      }
+   }
+
+   public class DataColumnMapper : SnapshotMapperBase<ModelDataColumn, SnapshotDataColumn, SnapshotContextWithDataRepository>
    {
       private readonly DataInfoMapper _dataInfoMapper;
       private readonly QuantityInfoMapper _quantityInfoMapper;
@@ -51,18 +61,19 @@ namespace PKSim.Core.Snapshots.Mappers
          return dataColumn.ConvertToDisplayValues(dataColumn.Values).ToList();
       }
 
-      public override async Task<ModelDataColumn> MapToModel(SnapshotDataColumn snapshot, ModelDataRepository dataRepository)
+      public override async Task<ModelDataColumn> MapToModel(SnapshotDataColumn snapshot, SnapshotContextWithDataRepository snapshotContext)
       {
-         var dataInfo = await _dataInfoMapper.MapToModel(snapshot.DataInfo);
+         var dataRepository = snapshotContext.DataRepository;
+         var dataInfo = await _dataInfoMapper.MapToModel(snapshot.DataInfo, snapshotContext);
          var dimension = dimensionFrom(snapshot);
          var dataColumn = dataInfo.Origin == ColumnOrigins.BaseGrid ? new BaseGrid(snapshot.Name, dimension) : new ModelDataColumn(snapshot.Name, dimension, dataRepository.BaseGrid);
          dataColumn.DisplayUnit = displayUnitFor(dimension, snapshot.Unit);
          dataColumn.Values = valuesInBaseUnits(dataColumn, snapshot.Values);
-         
-         dataColumn.DataInfo = dataInfo;
-         dataColumn.QuantityInfo = await _quantityInfoMapper.MapToModel(snapshot.QuantityInfo);
 
-         var relatedColumns = await this.MapToModels(snapshot.RelatedColumns, dataRepository);
+         dataColumn.DataInfo = dataInfo;
+         dataColumn.QuantityInfo = await _quantityInfoMapper.MapToModel(snapshot.QuantityInfo, snapshotContext);
+
+         var relatedColumns = await this.MapToModels(snapshot.RelatedColumns, snapshotContext);
          relatedColumns?.Each(dataColumn.AddRelatedColumn);
 
          return dataColumn;

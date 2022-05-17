@@ -64,15 +64,15 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_baseGrid);
          _contextDataRepository = DomainHelperForSpecs.ObservedData();
          _dataInfo = new DataInfo(ColumnOrigins.BaseGrid);
-         _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
+         _quantityInfo = new QuantityInfo(new[] { "path" }, QuantityType.Undefined);
 
-         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).Returns(_dataInfo);
-         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).Returns(_quantityInfo);
+         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
+         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);
       }
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, _contextDataRepository);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContextWithDataRepository(_contextDataRepository, new SnapshotContext()));
       }
 
       [Observation]
@@ -95,15 +95,15 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_dataColumn);
          _contextDataRepository = DomainHelperForSpecs.ObservedData();
          _dataInfo = new DataInfo(ColumnOrigins.Observation);
-         _quantityInfo = new QuantityInfo("quantityInfo", new[] { "path" }, QuantityType.Undefined);
+         _quantityInfo = new QuantityInfo(new[] { "path" }, QuantityType.Undefined);
 
-         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo)).Returns(_dataInfo);
-         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo)).Returns(_quantityInfo);
+         A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
+         A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);
       }
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, _contextDataRepository);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContextWithDataRepository(_contextDataRepository, new SnapshotContext()));
       }
 
       [Observation]

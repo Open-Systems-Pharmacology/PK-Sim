@@ -32,6 +32,7 @@ namespace PKSim.Core
       private ParameterIdentification _parameterIdentification;
       private PKSimProject _project;
       protected IIdentificationParameterTask _identificationParameterTask;
+      private SnapshotContext _snapshotContext;
 
       protected override Task Context()
       {
@@ -69,8 +70,9 @@ namespace PKSim.Core
 
          _project = new PKSimProject();
          _project.AddBuildingBlock(_simulation);
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
          _parameterIdentification = new ParameterIdentification();
-         _parameterIdentificationContext = new ParameterIdentificationContext(_parameterIdentification, _project);
+         _parameterIdentificationContext = new ParameterIdentificationContext(_parameterIdentification, _snapshotContext);
          return _completed;
       }
    }

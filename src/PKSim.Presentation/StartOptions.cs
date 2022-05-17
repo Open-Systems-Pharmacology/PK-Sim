@@ -31,7 +31,7 @@ namespace PKSim.Presentation
       /// <summary>
       ///    Specifies if the app should be started in developer mode. Default is <c>false</c>
       /// </summary>
-      public bool IsDeveloperMode { get; private set; } = false;
+      public bool IsDeveloperMode { get; private set; }
 
       /// <summary>
       ///    Loading a project or a simulation file

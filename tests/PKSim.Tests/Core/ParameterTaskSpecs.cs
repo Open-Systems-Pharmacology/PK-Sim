@@ -74,7 +74,7 @@ namespace PKSim.Core
       [Observation]
       public void the_command_used_should_be_correct_implementation()
       {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
+         _command.ShouldBeAnInstanceOf<SetExpressionProfileValueCommand>();
       }
    }
 
@@ -109,7 +109,7 @@ namespace PKSim.Core
       [Observation]
       public void the_command_used_should_be_correct_implementation()
       {
-         _command.ShouldBeAnInstanceOf<SetRelativeExpressionCommand>();
+         _command.ShouldBeAnInstanceOf<SetExpressionProfileValueCommand>();
       }
    }
 

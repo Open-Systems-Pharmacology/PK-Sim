@@ -3,7 +3,7 @@ using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Simulations
 {
-   public interface ISimulationCompoundProcessSummaryView : IView<ISimulationCompoundProcessSummaryPresenter>, IResizableView
+   public interface ISimulationCompoundProcessSummaryView : IView<ISimulationCompoundProcessSummaryPresenter>, IResizableWithDefaultHeightView
    {
       void AddProcessView(IResizableView view);
    }

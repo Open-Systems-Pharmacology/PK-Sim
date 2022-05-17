@@ -16,16 +16,10 @@ namespace PKSim.Presentation.DTO.Parameters
 
       private static class AllRules
       {
-         private static IBusinessRule factorBiggerThanZero
-         {
-            get
-            {
-               return CreateRule.For<ParameterScaleWithFactorDTO>()
-                  .Property(item => item.Factor)
-                  .WithRule((param, value) => value > 0)
-                  .WithError((param, value) => PKSimConstants.Error.FactorShouldBeBiggerThanZero);
-            }
-         }
+         private static IBusinessRule factorBiggerThanZero { get; } = CreateRule.For<ParameterScaleWithFactorDTO>()
+            .Property(item => item.Factor)
+            .WithRule((param, value) => value > 0)
+            .WithError((param, value) => PKSimConstants.Error.FactorShouldBeBiggerThanZero);
 
          public static IEnumerable<IBusinessRule> All()
          {

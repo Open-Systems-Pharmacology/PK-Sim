@@ -17,6 +17,7 @@ namespace PKSim.Core.Comparison
       {
          _containerDiffBuilder.Compare(comparison);
          CompareValues(x => x.Localization, PKSimConstants.UI.Localization, comparison);
+         CompareValues(x => x.Ontogeny, PKSimConstants.UI.Ontogeny, comparison);
       }
    }
 }

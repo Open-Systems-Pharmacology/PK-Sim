@@ -16,7 +16,7 @@ namespace PKSim.Core.Model
       Individual CreateAndOptimizeFor(OriginData originData, int? seed = null);
 
       Individual CreateStandardFor(OriginData originData);
-      Individual CreateParameterLessIndividual();
+      Individual CreateParameterLessIndividual(Species species = null);
    }
 
    public class IndividualFactory : IIndividualFactory
@@ -28,9 +28,19 @@ namespace PKSim.Core.Model
       private readonly IEntityValidator _entityValidator;
       private readonly IReportGenerator _reportGenerator;
       private readonly IMoleculeOntogenyVariabilityUpdater _ontogenyVariabilityUpdater;
+      private readonly IGenderRepository _genderRepository;
+      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
 
-      public IndividualFactory(IIndividualModelTask individualModelTask, IObjectBaseFactory objectBaseFactory, ICreateIndividualAlgorithm createIndividualAlgorithm,
-         ISpeciesRepository speciesRepository, IEntityValidator entityValidator, IReportGenerator reportGenerator, IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater)
+      public IndividualFactory(
+         IIndividualModelTask individualModelTask,
+         IObjectBaseFactory objectBaseFactory,
+         ICreateIndividualAlgorithm createIndividualAlgorithm,
+         ISpeciesRepository speciesRepository,
+         IEntityValidator entityValidator,
+         IReportGenerator reportGenerator,
+         IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater,
+         IGenderRepository genderRepository,
+         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
       {
          _individualModelTask = individualModelTask;
          _objectBaseFactory = objectBaseFactory;
@@ -39,6 +49,8 @@ namespace PKSim.Core.Model
          _entityValidator = entityValidator;
          _reportGenerator = reportGenerator;
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
+         _genderRepository = genderRepository;
+         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
       }
 
       public Individual CreateAndOptimizeFor(OriginData originData, int? seed = null)
@@ -47,8 +59,15 @@ namespace PKSim.Core.Model
          if (seed.HasValue)
             individual.Seed = seed.Value;
 
+         //this creates a healthy individual
          _createIndividualAlgorithm.Optimize(individual);
+
+         //Apply disease states if required
+         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+         diseaseStateImplementation.ApplyTo(individual);
+
          validate(individual);
+
          return individual;
       }
 
@@ -57,15 +76,17 @@ namespace PKSim.Core.Model
          return createStandardIndividual(originData, x => x.CreateModelFor);
       }
 
-      public Individual CreateParameterLessIndividual()
+      public Individual CreateParameterLessIndividual(Species species = null)
       {
-         var species = _speciesRepository.FindByName(CoreConstants.Species.HUMAN);
+         var speciesToUse = species ?? _speciesRepository.FindByName(CoreConstants.Species.HUMAN);
+
          var originData = new OriginData
          {
-            Species = species,
-            SpeciesPopulation = species.PopulationByName(CoreConstants.Population.ICRP)
+            Species = speciesToUse,
+            Gender = speciesToUse.IsHuman ? _genderRepository.Female : _genderRepository.Undefined,
+            Population = speciesToUse.DefaultPopulation
          };
-         return createStandardIndividual(originData, x => x.CreateModelStructureFor);
+         return createStandardIndividual(originData, x => x.CreateOrganStructureFor);
       }
 
       private Individual createStandardIndividual(OriginData originData, Func<IIndividualModelTask, Action<Individual>> createAction)
@@ -86,15 +107,15 @@ namespace PKSim.Core.Model
          createAction(_individualModelTask)(individual);
 
          //Update parameters defined in origin data and also in individual
-         setParameter(individual, CoreConstants.Parameters.AGE, originData.Age, originData.AgeUnit);
-         setParameter(individual, Constants.Parameters.GESTATIONAL_AGE, originData.GestationalAge, originData.GestationalAgeUnit, individual.IsPreterm);
-         setParameter(individual, CoreConstants.Parameters.HEIGHT, originData.Height, originData.HeightUnit);
+         setParameter(individual, CoreConstants.Parameters.AGE, originData.Age);
+         setParameter(individual, Constants.Parameters.GESTATIONAL_AGE, originData.GestationalAge, individual.IsPreterm);
+         setParameter(individual, CoreConstants.Parameters.HEIGHT, originData.Height);
 
          //Do not update value for BMI and weight in individual as this parameter are defined as formula parameter
-         setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.WeightUnit, originData.ValueOrigin);
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.WEIGHT, originData.Weight.Unit, originData.ValueOrigin);
 
          //Do not update value origin for BMI as this is not an input from the user
-         setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMIUnit);
+         setParameterDisplayUnit(individual, CoreConstants.Parameters.BMI, originData.BMI?.Unit);
 
          //update ontogeny parameters 
          _ontogenyVariabilityUpdater.UpdatePlasmaProteinsOntogenyFor(individual);
@@ -115,6 +136,11 @@ namespace PKSim.Core.Model
             var results = _entityValidator.Validate(individual);
             if (results.ValidationState == ValidationState.Invalid)
                throw new CannotCreateIndividualWithConstraintsException(_reportGenerator.StringReportFor(individual.OriginData));
+
+            //Apply disease states if required
+            var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+            //This will throw if not valid
+            diseaseStateImplementation.Validate(individual.OriginData);
          }
          finally
          {
@@ -134,9 +160,9 @@ namespace PKSim.Core.Model
          parameter.DisplayUnit = parameter.Dimension.UnitOrDefault(unit);
       }
 
-      private void setParameter(Individual individual, string parameterName, double? value, string unit = null, bool visible = true)
+      private void setParameter(Individual individual, string parameterName, OriginDataParameter originDataParameter, bool visible = true)
       {
-         if (!value.HasValue)
+         if (originDataParameter == null)
             return;
 
          var parameter = individual.Organism.Parameter(parameterName);
@@ -144,8 +170,8 @@ namespace PKSim.Core.Model
             return;
 
          var valueOrigin = individual.OriginData.ValueOrigin;
-
-         parameter.Value = value.Value;
+         var (value, unit) = originDataParameter;
+         parameter.Value = value;
          parameter.UpdateValueOriginFrom(valueOrigin);
 
          setParameterDisplayUnit(individual, parameterName, unit);

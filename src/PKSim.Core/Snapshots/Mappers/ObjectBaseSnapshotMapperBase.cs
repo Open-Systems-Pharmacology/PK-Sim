@@ -4,9 +4,10 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot>
+   public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext> : SnapshotMapperBase<TModel, TSnapshot, TSnapshotContext>
       where TModel : IWithName, IWithDescription
-      where TSnapshot : IWithName, IWithDescription, new()
+      where TSnapshot : IWithName, IWithDescription, new() 
+      where TSnapshotContext : SnapshotContext
    {
       protected void MapModelPropertiesToSnapshot(TModel model, TSnapshot snapshot)
       {
@@ -30,27 +31,24 @@ namespace PKSim.Core.Snapshots.Mappers
       }
    }
 
-   public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TContext> : ObjectBaseSnapshotMapperBase<TModel, TSnapshot>
+   public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext, TModelContext> : ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TSnapshotContext>
       where TModel : IWithName, IWithDescription
-      where TSnapshot : IWithName, IWithDescription, new()
+      where TSnapshot : IWithName, IWithDescription, new() 
+      where TSnapshotContext : SnapshotContext
    {
-      public abstract Task<TModel> MapToModel(TSnapshot snapshot, TContext context);
-
-      public sealed override Task<TModel> MapToModel(TSnapshot snapshot)
-      {
-         return Task.FromException<TModel>(new SnapshotMapToModelNotSupportedException<TModel, TContext>());
-      }
-   }
-
-   public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TModelContext, TSnapshotContext> : ObjectBaseSnapshotMapperBase<TModel, TSnapshot, TModelContext>
-      where TModel : IWithName, IWithDescription
-      where TSnapshot : IWithName, IWithDescription, new()
-   {
-      public abstract Task<TSnapshot> MapToSnapshot(TModel model, TSnapshotContext context);
+      public abstract Task<TSnapshot> MapToSnapshot(TModel model, TModelContext context);
 
       public sealed override Task<TSnapshot> MapToSnapshot(TModel model)
       {
          return Task.FromException<TSnapshot>(new ModelMapToSnapshotNotSupportedException<TSnapshot, TSnapshotContext>());
       }
    }
+
+   public abstract class ObjectBaseSnapshotMapperBase<TModel, TSnapshot> : ObjectBaseSnapshotMapperBase<TModel, TSnapshot, SnapshotContext> 
+      where TModel : IWithName, IWithDescription 
+      where TSnapshot : IWithName, IWithDescription, new()
+   {
+
+   }
+
 }

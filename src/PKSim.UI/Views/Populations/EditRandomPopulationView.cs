@@ -21,7 +21,11 @@ namespace PKSim.UI.Views.Populations
          _presenter = presenter;
       }
 
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.Population;
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         ApplicationIcon = ApplicationIcons.Population;
+      }
 
       public override XtraTabControl TabControl => tabEditPopulation;
    }

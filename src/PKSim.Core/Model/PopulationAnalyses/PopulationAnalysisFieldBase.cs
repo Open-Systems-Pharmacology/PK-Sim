@@ -62,30 +62,21 @@ namespace PKSim.Core.Model.PopulationAnalyses
             }
          }
 
-         private static IBusinessRule nameNotEmpty
-         {
-            get { return GenericRules.NonEmptyRule<PopulationAnalysisFieldBase>(x => x.Name); }
-         }
+         private static IBusinessRule nameNotEmpty { get; } = GenericRules.NonEmptyRule<PopulationAnalysisFieldBase>(x => x.Name);
 
-         private static IBusinessRule nameUnique
-         {
-            get
+         private static IBusinessRule nameUnique { get; } = CreateRule.For<PopulationAnalysisFieldBase>()
+            .Property(x => x.Name)
+            .WithRule((field, name) =>
             {
-               return CreateRule.For<PopulationAnalysisFieldBase>()
-                  .Property(x => x.Name)
-                  .WithRule((field, name) =>
-                  {
-                     var populationAnalysis = field.PopulationAnalysis;
+               var populationAnalysis = field.PopulationAnalysis;
 
-                     var otherField = populationAnalysis?.FieldByName(name);
-                     if (otherField == null)
-                        return true;
+               var otherField = populationAnalysis?.FieldByName(name);
+               if (otherField == null)
+                  return true;
 
-                     return otherField == field;
-                  })
-                  .WithError((field, name) => PKSimConstants.Error.NameAlreadyExistsInContainerType(name, PKSimConstants.ObjectTypes.PopulationAnalysis));
-            }
-         }
+               return otherField == field;
+            })
+            .WithError((field, name) => PKSimConstants.Error.NameAlreadyExistsInContainerType(name, PKSimConstants.ObjectTypes.PopulationAnalysis));
       }
    }
 }

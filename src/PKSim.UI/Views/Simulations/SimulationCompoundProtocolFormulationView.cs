@@ -15,6 +15,7 @@ using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -84,7 +85,7 @@ namespace PKSim.UI.Views.Simulations
 
          _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => createFormulationButton);
 
@@ -92,12 +93,12 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => loadFormulationButton);
 
          _gridViewBinder.Changed += () => _presenter.ViewChanged();
          createFormulationButton.ButtonClick += (o, e) => OnEvent(() => _presenter.CreateFormulationFor(_gridViewBinder.FocusedElement));
-         loadFormulationButton.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadFormulationFor(_gridViewBinder.FocusedElement));
+         loadFormulationButton.ButtonClick += (o, e) => OnEvent(() => _presenter.LoadFormulationForAsync(_gridViewBinder.FocusedElement));
       }
 
       private RepositoryItemButtonEdit createdFormulationButtonRepository()
@@ -107,7 +108,7 @@ namespace PKSim.UI.Views.Simulations
 
       private RepositoryItemButtonEdit loadFormulationButtonRepository()
       {
-         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockFromTemplate(PKSimConstants.ObjectTypes.Formulation));
+         return new UxRepositoryItemButtonImage(ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplate(PKSimConstants.ObjectTypes.Formulation));
       }
 
       private void configureFormulation(BaseEdit baseEdit, FormulationMappingDTO formulationMappingDTO)

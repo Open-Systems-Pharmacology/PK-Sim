@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
@@ -11,6 +12,7 @@ using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
@@ -70,7 +72,7 @@ namespace PKSim.CLI.Core.Services
       public async Task<SimulationMapping[]> ExportSimulationsIn(PKSimProject project, ExportRunOptions exportRunOptions)
       {
          var nameOfSimulationsToExport = (exportRunOptions.Simulations ?? Enumerable.Empty<string>()).ToList();
-         if (!nameOfSimulationsToExport.Any())
+         if (!nameOfSimulationsToExport.Any() && exportRunOptions.ExportAllSimulationsIfListIsEmpty)
             nameOfSimulationsToExport.AddRange(project.All<Simulation>().AllNames());
 
          var simulationExports = new List<SimulationMapping>();

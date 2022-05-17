@@ -1,10 +1,7 @@
 ﻿using System;
 using DevExpress.XtraLayout.Utils;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
-using PKSim.Assets;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 
@@ -12,8 +9,8 @@ namespace PKSim.UI.Views.Individuals
 {
    public partial class IndividualMoleculePropertiesView : BaseContainerUserControl, IIndividualMoleculePropertiesView
    {
-      private IResizableView _ontogenyView;
       private IResizableView _moleculeParametersView;
+      private IResizableView _ontogenyView;
       public event EventHandler<ViewResizedEventArgs> HeightChanged = delegate { };
 
       public IndividualMoleculePropertiesView()
@@ -28,9 +25,10 @@ namespace PKSim.UI.Views.Individuals
       public void AddOntogenyView(IResizableView view)
       {
          OntogenyVisible = true;
-         AddViewTo(layoutItemOntogeny, view);
          _ontogenyView = view;
+         AddViewTo(layoutItemOntogeny, view);
       }
+
       public void AddMoleculeParametersView(IResizableView view)
       {
          _moleculeParametersView = view;
@@ -52,7 +50,7 @@ namespace PKSim.UI.Views.Individuals
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemOntogeny.Text = PKSimConstants.UI.OntogenyVariabilityLike.FormatForLabel();
+         layoutItemOntogeny.TextVisible = false;
          layoutItemMoleculeParameters.TextVisible = false;
          OntogenyVisible = false;
       }
@@ -67,8 +65,7 @@ namespace PKSim.UI.Views.Individuals
          layoutControl.Refresh();
       }
 
-      //For some reasons, an extra 10 pixel is required that cannot be inferred from anywhere. Using the Root group does not returns the right height
       public int OptimalHeight => (MoleculeParametersVisible ? _moleculeParametersView.OptimalHeight : 0) +
-                                  (OntogenyVisible ? _ontogenyView.OptimalHeight : 0) + 10 ;
+                                  (OntogenyVisible ? _ontogenyView.OptimalHeight : 0);
    }
 }

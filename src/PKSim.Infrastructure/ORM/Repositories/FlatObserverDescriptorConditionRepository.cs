@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
       public FlatObserverDescriptorConditionRepository(IDbGateway dbGateway,
                                                       IDataTableToMetaDataMapper<FlatObserverDescriptorCondition> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewObserverDescriptorConditions)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_OBSERVER_DESCRIPTOR_CONDITIONS)
       {
       }
    }

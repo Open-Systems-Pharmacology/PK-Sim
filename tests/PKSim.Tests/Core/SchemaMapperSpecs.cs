@@ -101,16 +101,16 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_schema);
          A.CallTo(() => _schemaFactory.Create(null)).Returns(_schema);
 
-         _snapshot.Name = "New SChema";
+         _snapshot.Name = "New Schema";
          _snapshot.Description = "The description that will be deserialized";
 
          _newSchemaItem = new SchemaItem().WithName("I am a new schema");
-         A.CallTo(() => _schemaItemMapper.MapToModel(_snapshot.SchemaItems.FindByName(_schemaItem.Name))).Returns(_newSchemaItem);
+         A.CallTo(() => _schemaItemMapper.MapToModel(_snapshot.SchemaItems.FindByName(_schemaItem.Name), A<SnapshotContext>._)).Returns(_newSchemaItem);
       }
 
       protected override async Task Because()
       {
-         _newSchema = await sut.MapToModel(_snapshot);
+         _newSchema = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -123,7 +123,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_all_visible_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newSchema, PKSimConstants.ObjectTypes.Schema)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapParameters(_snapshot.Parameters, _newSchema, PKSimConstants.ObjectTypes.Schema, A<SnapshotContext>._)).MustHaveHappened();
       }
 
       [Observation]

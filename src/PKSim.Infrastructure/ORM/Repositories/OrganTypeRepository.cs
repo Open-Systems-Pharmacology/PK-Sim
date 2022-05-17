@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly Cache<string, OrganType> _cache = new Cache<string, OrganType>(x => OrganType.Unknown);
 
       public OrganTypeRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatOrganType> mapper) :
-         base(dbGateway, mapper, CoreConstants.ORM.ViewOrganTypes)
+         base(dbGateway, mapper, CoreConstants.ORM.VIEW_ORGAN_TYPES)
       {
       }
 

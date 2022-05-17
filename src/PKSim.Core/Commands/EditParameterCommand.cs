@@ -38,17 +38,17 @@ namespace PKSim.Core.Commands
          setBuildingBlockAlteredFlag(context);
 
          //Command dependent implementation
-         ExecuteUpdateParameter(context);
+         ExecuteUpdateParameter(_parameter, context);
 
          //Once values have been updated, update dependent objects
-         UpdateDependenciesOnParameter(context);
+         UpdateDependenciesOnParameter(_parameter, context);
       }
 
-      protected abstract void ExecuteUpdateParameter(IExecutionContext context);
+      protected abstract void ExecuteUpdateParameter(IParameter parameter, IExecutionContext context);
 
-      protected void UpdateDependenciesOnParameter(IExecutionContext context)
+      protected virtual void UpdateDependenciesOnParameter(IParameter parameter, IExecutionContext context)
       {
-         context.UpdateDependenciesOn(_parameter);
+         context.UpdateDependenciesOn(parameter);
       }
 
       private void updateBuildingBlockProperties(IExecutionContext context)

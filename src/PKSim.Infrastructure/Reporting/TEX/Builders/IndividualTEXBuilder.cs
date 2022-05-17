@@ -107,7 +107,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       private bool valueShouldBeExportedForAnatomy(IParameter parameter)
       {
          if (!parameter.Visible) return false;
-         if (parameter.IsIndividualMolecule()) return false;
+         if (parameter.IsExpressionProfile()) return false;
          if (!parameter.ValueDiffersFromDefault()) return false;
          return true;
       }

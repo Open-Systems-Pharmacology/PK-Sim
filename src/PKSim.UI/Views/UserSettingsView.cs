@@ -1,16 +1,16 @@
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
-using OSPSuite.UI.Controls;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Assets;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Services;
 
 namespace PKSim.UI.Views
 {
@@ -52,6 +52,10 @@ namespace PKSim.UI.Views
          _screenBinder.Bind(x => x.ShowUpdateNotification)
             .To(chkShowUpdateNotification)
             .WithCaption(PKSimConstants.UI.ShowUpdateNotification);
+
+         _screenBinder.Bind(x => x.ColorGroupObservedDataFromSameFolder)
+            .To(chckColorGroupObservedData)
+            .WithCaption(Captions.ShouldColorGroupObservedData);
 
          _screenBinder.Bind(x => x.ActiveSkin)
             .To(cbActiveSkin)
@@ -103,7 +107,7 @@ namespace PKSim.UI.Views
          _screenBinder.Bind(x => x.DefaultFractionUnboundName).To(cbDefaultFuName);
          _screenBinder.Bind(x => x.DefaultLipophilicityName).To(cbDefaultLipoName);
          _screenBinder.Bind(x => x.DefaultSolubilityName).To(cbDefaultSolName);
- 
+
          _screenBinder.Bind(x => x.DefaultPopulationAnalysis)
             .To(cbDefaultPopulationAnalysis)
             .WithImages(populationAnalysisType => _imageListRetriever.ImageIndex(_presenter.PopulationIconNameFor(populationAnalysisType)))
@@ -133,6 +137,7 @@ namespace PKSim.UI.Views
          else
             _presenter.CreateTemplateDatabase();
       }
+
       public void BindTo(IUserSettings userSettings)
       {
          _screenBinder.BindToSource(userSettings);
@@ -194,6 +199,5 @@ namespace PKSim.UI.Views
          cbDefaultLipoName.FillWith(PKSimConstants.UI.PredefinedLipophilicityAlternatives());
          ApplicationIcon = ApplicationIcons.UserSettings;
       }
-
    }
 }

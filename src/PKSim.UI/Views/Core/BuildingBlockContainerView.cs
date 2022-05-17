@@ -16,7 +16,7 @@ namespace PKSim.UI.Views.Core
       private ScreenBinder<ObjectBaseDTO> _screenBinder;
       protected IContainerPresenter _presenter;
 
-      public BuildingBlockContainerView(Shell shell) : base(shell)
+      public BuildingBlockContainerView(Shell shell) 
       {
          InitializeComponent();
       }
@@ -43,7 +43,7 @@ namespace PKSim.UI.Views.Core
          base.InitializeResources();
          layoutItemName.Text = PKSimConstants.UI.Name.FormatForLabel();
       }
-
+      
       public override void AddSubItemView(ISubPresenterItem subPresenterItem, IView viewToAdd)
       {
          panel.FillWith(viewToAdd);

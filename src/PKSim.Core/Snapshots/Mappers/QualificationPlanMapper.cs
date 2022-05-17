@@ -7,7 +7,7 @@ using ModelQualificationPlan = PKSim.Core.Model.QualificationPlan;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class QualificationPlanMapper : ObjectBaseSnapshotMapperBase<ModelQualificationPlan, SnapshotQualificationPlan, PKSimProject>
+   public class QualificationPlanMapper : ObjectBaseSnapshotMapperBase<ModelQualificationPlan, SnapshotQualificationPlan>
    {
       private readonly QualificationStepMapper _qualificationStepMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
@@ -20,17 +20,17 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<SnapshotQualificationPlan> MapToSnapshot(ModelQualificationPlan qualificationPlan)
       {
-         var snaphsot = await SnapshotFrom(qualificationPlan);
-         snaphsot.Steps = await _qualificationStepMapper.MapToSnapshots(qualificationPlan.Steps);
-         return snaphsot;
+         var snapshot = await SnapshotFrom(qualificationPlan);
+         snapshot.Steps = await _qualificationStepMapper.MapToSnapshots(qualificationPlan.Steps);
+         return snapshot;
       }
 
-      public override async Task<ModelQualificationPlan> MapToModel(SnapshotQualificationPlan snapshot, PKSimProject project)
+      public override async Task<ModelQualificationPlan> MapToModel(SnapshotQualificationPlan snapshot, SnapshotContext snapshotContext)
       {
          var qualificationPlan = _objectBaseFactory.Create<ModelQualificationPlan>();
          MapSnapshotPropertiesToModel(snapshot, qualificationPlan);
 
-         var qualificationSteps = await _qualificationStepMapper.MapToModels(snapshot.Steps, project);
+         var qualificationSteps = await _qualificationStepMapper.MapToModels(snapshot.Steps, snapshotContext);
          qualificationSteps?.Each(qualificationPlan.Add);
          return qualificationPlan;
       }

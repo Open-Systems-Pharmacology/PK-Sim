@@ -30,21 +30,17 @@
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.buttonStart = new DevExpress.XtraEditors.SimpleButton();
          this.logPanel = new DevExpress.XtraEditors.PanelControl();
          this.buttonEditSelectSnapshot = new DevExpress.XtraEditors.ButtonEdit();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemButtonSelectSnapshot = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemLogPanel = new DevExpress.XtraLayout.LayoutControlItem();
-         this.buttonStart = new DevExpress.XtraEditors.SimpleButton();
          this.layoutItemStartButton = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).BeginInit();
-         this.layoutControlBase.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).BeginInit();
+         this.chkRunSimulations = new DevExpress.XtraEditors.CheckEdit();
+         this.layoutItemRunSimulations = new DevExpress.XtraLayout.LayoutControlItem();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -55,55 +51,19 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemLogPanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemStartButton)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkRunSimulations.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRunSimulations)).BeginInit();
          this.SuspendLayout();
          // 
-         // btnCancel
+         // tablePanel
          // 
-         this.btnCancel.Location = new System.Drawing.Point(626, 12);
-         this.btnCancel.Size = new System.Drawing.Size(131, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(468, 12);
-         this.btnOk.Size = new System.Drawing.Size(154, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 578);
-         this.layoutControlBase.Size = new System.Drawing.Size(769, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnExtra, 0);
-         // 
-         // btnExtra
-         // 
-         this.btnExtra.Size = new System.Drawing.Size(224, 22);
-         // 
-         // layoutControlGroupBase
-         // 
-         this.layoutControlGroupBase.Size = new System.Drawing.Size(769, 46);
-         // 
-         // layoutItemOK
-         // 
-         this.layoutItemOK.Location = new System.Drawing.Point(456, 0);
-         this.layoutItemOK.Size = new System.Drawing.Size(158, 26);
-         // 
-         // layoutItemCancel
-         // 
-         this.layoutItemCancel.Location = new System.Drawing.Point(614, 0);
-         this.layoutItemCancel.Size = new System.Drawing.Size(135, 26);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Location = new System.Drawing.Point(228, 0);
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(228, 26);
-         // 
-         // layoutItemExtra
-         // 
-         this.layoutItemExtra.Size = new System.Drawing.Size(228, 26);
+         this.tablePanel.Location = new System.Drawing.Point(0, 581);
+         this.tablePanel.Size = new System.Drawing.Size(769, 43);
          // 
          // layoutControl
          // 
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.chkRunSimulations);
          this.layoutControl.Controls.Add(this.buttonStart);
          this.layoutControl.Controls.Add(this.logPanel);
          this.layoutControl.Controls.Add(this.buttonEditSelectSnapshot);
@@ -111,24 +71,33 @@
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.layoutControlGroup;
-         this.layoutControl.Size = new System.Drawing.Size(769, 578);
+         this.layoutControl.Size = new System.Drawing.Size(769, 581);
          this.layoutControl.TabIndex = 38;
          this.layoutControl.Text = "layoutControl1";
          // 
+         // buttonStart
+         // 
+         this.buttonStart.Location = new System.Drawing.Point(386, 547);
+         this.buttonStart.Name = "buttonStart";
+         this.buttonStart.Size = new System.Drawing.Size(371, 22);
+         this.buttonStart.StyleController = this.layoutControl;
+         this.buttonStart.TabIndex = 6;
+         this.buttonStart.Text = "buttonStart";
+         // 
          // logPanel
          // 
-         this.logPanel.Location = new System.Drawing.Point(12, 36);
+         this.logPanel.Location = new System.Drawing.Point(12, 60);
          this.logPanel.Name = "logPanel";
-         this.logPanel.Size = new System.Drawing.Size(745, 504);
+         this.logPanel.Size = new System.Drawing.Size(745, 483);
          this.logPanel.TabIndex = 5;
          // 
          // buttonEditSelectSnapshot
          // 
-         this.buttonEditSelectSnapshot.Location = new System.Drawing.Point(173, 12);
+         this.buttonEditSelectSnapshot.Location = new System.Drawing.Point(182, 12);
          this.buttonEditSelectSnapshot.Name = "buttonEditSelectSnapshot";
          this.buttonEditSelectSnapshot.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton()});
-         this.buttonEditSelectSnapshot.Size = new System.Drawing.Size(584, 20);
+         this.buttonEditSelectSnapshot.Size = new System.Drawing.Size(575, 20);
          this.buttonEditSelectSnapshot.StyleController = this.layoutControl;
          this.buttonEditSelectSnapshot.TabIndex = 4;
          // 
@@ -140,10 +109,10 @@
             this.layoutItemButtonSelectSnapshot,
             this.layoutItemLogPanel,
             this.layoutItemStartButton,
-            this.emptySpaceItem1});
-         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
+            this.emptySpaceItem1,
+            this.layoutItemRunSimulations});
          this.layoutControlGroup.Name = "layoutControlGroup";
-         this.layoutControlGroup.Size = new System.Drawing.Size(769, 578);
+         this.layoutControlGroup.Size = new System.Drawing.Size(769, 581);
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutItemButtonSelectSnapshot
@@ -154,28 +123,19 @@
          this.layoutItemButtonSelectSnapshot.Size = new System.Drawing.Size(749, 24);
          this.layoutItemButtonSelectSnapshot.TextSize = new System.Drawing.Size(158, 13);
          // 
-         // layoutControlItem1
+         // layoutItemLogPanel
          // 
          this.layoutItemLogPanel.Control = this.logPanel;
-         this.layoutItemLogPanel.Location = new System.Drawing.Point(0, 24);
+         this.layoutItemLogPanel.Location = new System.Drawing.Point(0, 48);
          this.layoutItemLogPanel.Name = "layoutItemLogPanel";
-         this.layoutItemLogPanel.Size = new System.Drawing.Size(749, 508);
+         this.layoutItemLogPanel.Size = new System.Drawing.Size(749, 487);
          this.layoutItemLogPanel.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemLogPanel.TextVisible = false;
          // 
-         // buttonStart
-         // 
-         this.buttonStart.Location = new System.Drawing.Point(386, 544);
-         this.buttonStart.Name = "buttonStart";
-         this.buttonStart.Size = new System.Drawing.Size(371, 22);
-         this.buttonStart.StyleController = this.layoutControl;
-         this.buttonStart.TabIndex = 6;
-         this.buttonStart.Text = "buttonStart";
-         // 
-         // layoutControlItem2
+         // layoutItemStartButton
          // 
          this.layoutItemStartButton.Control = this.buttonStart;
-         this.layoutItemStartButton.Location = new System.Drawing.Point(374, 532);
+         this.layoutItemStartButton.Location = new System.Drawing.Point(374, 535);
          this.layoutItemStartButton.Name = "layoutItemStartButton";
          this.layoutItemStartButton.Size = new System.Drawing.Size(375, 26);
          this.layoutItemStartButton.TextSize = new System.Drawing.Size(0, 0);
@@ -184,10 +144,28 @@
          // emptySpaceItem1
          // 
          this.emptySpaceItem1.AllowHotTrack = false;
-         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 532);
+         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 535);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
          this.emptySpaceItem1.Size = new System.Drawing.Size(374, 26);
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
+         // 
+         // chkRunSimulations
+         // 
+         this.chkRunSimulations.Location = new System.Drawing.Point(12, 36);
+         this.chkRunSimulations.Name = "chkRunSimulations";
+         this.chkRunSimulations.Properties.Caption = "chkRunSimulations";
+         this.chkRunSimulations.Size = new System.Drawing.Size(745, 20);
+         this.chkRunSimulations.StyleController = this.layoutControl;
+         this.chkRunSimulations.TabIndex = 0;
+         // 
+         // layoutControlItem1
+         // 
+         this.layoutItemRunSimulations.Control = this.chkRunSimulations;
+         this.layoutItemRunSimulations.Location = new System.Drawing.Point(0, 24);
+         this.layoutItemRunSimulations.Name = "layoutItemRunSimulations";
+         this.layoutItemRunSimulations.Size = new System.Drawing.Size(749, 24);
+         this.layoutItemRunSimulations.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemRunSimulations.TextVisible = false;
          // 
          // LoadFromSnapshotView
          // 
@@ -198,15 +176,9 @@
          this.Controls.Add(this.layoutControl);
          this.Name = "LoadFromSnapshotView";
          this.Text = "LoadFromSnapshotView";
-         this.Controls.SetChildIndex(this.layoutControlBase, 0);
+         this.Controls.SetChildIndex(this.tablePanel, 0);
          this.Controls.SetChildIndex(this.layoutControl, 0);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlBase)).EndInit();
-         this.layoutControlBase.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemOK)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCancel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItemBase)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemExtra)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
@@ -217,6 +189,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemLogPanel)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemStartButton)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkRunSimulations.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRunSimulations)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -233,5 +207,7 @@
       private DevExpress.XtraEditors.SimpleButton buttonStart;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemStartButton;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
+      private DevExpress.XtraEditors.CheckEdit chkRunSimulations;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemRunSimulations;
    }
 }

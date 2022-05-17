@@ -10,7 +10,6 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Mappers;
@@ -29,12 +28,12 @@ namespace PKSim.Presentation.Presenters.Parameters
       void ActivateNode(ITreeNode node);
 
       /// <summary>
-      ///    Intitlize the parameter group presenter with the container for which the parameter should be displayed
+      ///    Initialize the parameter group presenter with the container for which the parameter should be displayed
       /// </summary>
       void InitializeWith(IContainer container);
 
       /// <summary>
-      ///    Intitlize the parameter group presenter with the container for which the parameter filtered with the predicate
+      ///    Initialize the parameter group presenter with the container for which the parameter filtered with the predicate
       ///    should be displayed
       /// </summary>
       /// <param name="container">root container</param>
@@ -42,14 +41,14 @@ namespace PKSim.Presentation.Presenters.Parameters
       void InitializeWith(IContainer container, Func<IParameter, bool> predicate);
 
       /// <summary>
-      ///    Intitlize the parameter group presenter with the container for which then given parameter should be displayed
+      ///    Initialize the parameter group presenter with the container for which then given parameter should be displayed
       /// </summary>
       /// <param name="container">root container</param>
       /// <param name="allParameters">Parameters to display</param>
       void InitializeWith(IContainer container, IEnumerable<IParameter> allParameters);
 
       /// <summary>
-      ///    Caption to dissplay when no group is being selected
+      ///    Caption to display when no group is being selected
       /// </summary>
       string NoSelectionCaption { get; set; }
 
@@ -68,7 +67,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private readonly IParameterGroupTask _parameterGroupTask;
       private readonly IParameterGroupNodeCreator _groupNodeCreator;
       private readonly IParameterContainerToTreeNodeMapper _containerNodeMapper;
-      private readonly INodeToCustomableParametersPresenterMapper _parametersPresenterMapper;
+      private readonly INodeToCustomizableParametersPresenterMapper _parametersPresenterMapper;
       private readonly INoItemInSelectionPresenter _noItemInSelectionPresenter;
       private readonly IGroupRepository _groupRepository;
       private readonly IUserSettings _userSettings;
@@ -89,7 +88,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       public ParameterGroupsPresenter(IParameterGroupsView view, IParameterGroupTask parameterGroupTask,
          IParameterGroupNodeCreator groupNodeCreator,
          IParameterContainerToTreeNodeMapper containerNodeMapper,
-         INodeToCustomableParametersPresenterMapper parametersPresenterMapper,
+         INodeToCustomizableParametersPresenterMapper parametersPresenterMapper,
          INoItemInSelectionPresenter noItemInSelectionPresenter,
          ITreeNodeFactory treeNodeFactory, IGroupRepository groupRepository, IUserSettings userSettings,
          IPresentationSettingsTask presentationSettingsTask, ITreeNodeContextMenuFactory treeNodeContextMenuFactory)
@@ -114,8 +113,6 @@ namespace PKSim.Presentation.Presenters.Parameters
       public void ActivateNode(ITreeNode node)
       {
          if (node == null) return;
-
-         _view.GroupCaption = node.FullPath(PKSimConstants.UI.DisplayPathSeparator);
 
          var alreadyLoaded = _parameterPresenterCache.Contains(node);
          _activePresenter = presenterFor(node);

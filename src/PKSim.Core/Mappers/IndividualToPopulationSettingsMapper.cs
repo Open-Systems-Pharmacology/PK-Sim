@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
+using static OSPSuite.Core.Domain.Constants.Parameters;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Mappers
 {
@@ -27,46 +28,40 @@ namespace PKSim.Core.Mappers
          if (individual == null)
             return populationSettings;
 
-         var population = individual.OriginData.SpeciesPopulation;
+         var population = individual.OriginData.Population;
          populationSettings.BaseIndividual = individual;
          populationSettings.NumberOfIndividuals = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_IN_POPULATION;
 
-         int genderCount = individual.AvailableGenders().Count();
-         foreach (var gender in individual.AvailableGenders())
+         var genderCount = individual.AvailableGenders.Count;
+         foreach (var gender in individual.AvailableGenders)
          {
             populationSettings.AddGenderRatio(new GenderRatio {Gender = gender, Ratio = 100 / genderCount});
          }
 
+         var organism = individual.Organism;
          if (individual.IsAgeDependent)
-         {
-            var ageParameter = individual.Organism.Parameter(CoreConstants.Parameters.AGE);
-            populationSettings.AddParameterRange(constrainedParameterRangeFrom(ageParameter));
-         }
+            populationSettings.AddParameterRange(constrainedParameterRangeFrom(organism.Parameter(AGE)));
 
          if (individual.IsPreterm)
          {
-            var gestationalAgeParameter = individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE);
+            var gestationalAgeParameter = organism.Parameter(GESTATIONAL_AGE);
             populationSettings.AddParameterRange(discreteParameterRangeFrom(gestationalAgeParameter, numericListOfValues(gestationalAgeParameter)));
          }
 
-         if (population.IsHeightDependent)
-         {
-            var heightParameter = individual.Organism.Parameter(CoreConstants.Parameters.MEAN_HEIGHT);
-            populationSettings.AddParameterRange(parameterRangeFrom(heightParameter));
-         }
-
-         var weightParameter = individual.Organism.Parameter(CoreConstants.Parameters.MEAN_WEIGHT);
-
-         if (population.IsAgeDependent)
-            populationSettings.AddParameterRange(parameterRangeFrom(weightParameter));
-         else
-            populationSettings.AddParameterRange(constrainedParameterRangeFrom(weightParameter));
+         var weightParameter = organism.Parameter(MEAN_WEIGHT);
+         populationSettings.AddParameterRange(population.IsAgeDependent ? parameterRangeFrom(weightParameter) : constrainedParameterRangeFrom(weightParameter));
 
          if (population.IsHeightDependent)
          {
-            var bmiParameter = individual.Organism.Parameter(CoreConstants.Parameters.BMI);
-            populationSettings.AddParameterRange(parameterRangeFrom(bmiParameter));
+            populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(MEAN_HEIGHT)));
+            populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(BMI)));
          }
+
+         individual.OriginData.DiseaseStateParameters.Each(x =>
+         {
+            var parameter = individual.OriginData.DiseaseState.Parameter(x.Name);
+            populationSettings.AddParameterRange(constrainedParameterRangeFrom(parameter));
+         });
          return populationSettings;
       }
 

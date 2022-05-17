@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.Win32;
 using OSPSuite.Assets;
 using OSPSuite.Core;
@@ -13,6 +14,8 @@ namespace PKSim.Infrastructure
       public string PKSimDbPath { get; set; }
       public string TemplateSystemDatabasePath { get; }
       public string TemplateUserDatabaseTemplatePath { get; }
+      public string RemoteTemplateSummaryPath { get; }
+      public string RemoteTemplateFolderPath { get; }
       public string DefaultTemplateUserDatabasePath { get; }
       public override string ProductName { get; } = CoreConstants.PRODUCT_NAME;
       public override int InternalVersion { get; } = ProjectVersions.Current;
@@ -22,7 +25,7 @@ namespace PKSim.Infrastructure
       public override string UserSettingsFileName { get; } = "UserSettings.xml";
       public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = CoreConstants.ISSUE_TRACKER_URL;
-      protected override string[] LatestVersionWithOtherMajor { get; } = {"7.4", "6.3", "5.6"};
+      protected override string[] LatestVersionWithOtherMajor { get; } = {"10.0", "9.1", "9.0", "8.0"};
       public override string WatermarkOptionLocation { get; } = "Options -> Settings -> Application";
       public override string ApplicationFolderPathName { get; } = CoreConstants.APPLICATION_FOLDER_PATH;
 
@@ -33,6 +36,31 @@ namespace PKSim.Infrastructure
          TemplateSystemDatabasePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_SYSTEM_DATABASE);
          TemplateUserDatabaseTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.TEMPLATE_USER_DATABASE_TEMPLATE);
          DefaultTemplateUserDatabasePath = CurrentUserFile(CoreConstants.TEMPLATE_USER_DATABASE);
+         
+         RemoteTemplateFolderPath = Path.Combine(CurrentUserFolderPath, CoreConstants.REMOTE_FOLDER_PATH);
+         if (!DirectoryHelper.DirectoryExists(RemoteTemplateFolderPath))
+            DirectoryHelper.CreateDirectory(RemoteTemplateFolderPath);
+
+         //The summary file is installed in All user paths but needs to be copied in current user to be updated 
+         RemoteTemplateSummaryPath = CurrentUserFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
+         tryCopyRemoteTemplate();
+      }
+
+      private void tryCopyRemoteTemplate()
+      {
+         var installTemplatePath = LocalOrAllUsersPathForFile(CoreConstants.REMOTE_TEMPLATE_SUMMARY);
+
+         if (FileHelper.FileExists(RemoteTemplateSummaryPath))
+            return;
+
+         try
+         {
+            FileHelper.Copy(installTemplatePath, RemoteTemplateSummaryPath);
+         }
+         catch (IOException )
+         {
+            //the file is probably used by the process, happens in parallel unit testing
+         }
       }
 
       private void createDefaultSettingsFolder()

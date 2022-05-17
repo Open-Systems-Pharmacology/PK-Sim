@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -123,10 +123,10 @@ namespace PKSim.Core.Services
                continue;
             }
 
-            var schemaItem = singleDosingItem(simulation, compound);
             var pkValues = new List<IParameter>();
             var bioAvailabilityCalculated = !double.IsNaN(bioAvailabilityValue);
 
+            var schemaItem = singleDosingItem(simulation, compound);
             if (isIntravenous(schemaItem))
             {
                container.AddChildren(vssPlasma, vdPlasma, vssPhysChem, totalPlasmaCL);
@@ -319,17 +319,23 @@ namespace PKSim.Core.Services
 
       private static bool isOral(ISchemaItem schemaItem)
       {
+         if (schemaItem == null)
+            return false;
+
          return schemaItem.ApplicationType == ApplicationTypes.Oral;
       }
 
       private static bool isIntravenous(ISchemaItem schemaItem)
       {
+         if (schemaItem == null)
+            return false;
+
          return schemaItem.ApplicationType == ApplicationTypes.Intravenous || schemaItem.ApplicationType == ApplicationTypes.IntravenousBolus;
       }
 
       private ApplicationType applicationTypeFor(Simulation simulation, Compound compound)
       {
-         var numberOfApplications = schemaItemsFrom(simulation, compound).Count;
+         var numberOfApplications = simulation.AllApplicationParametersOrderedByStartTimeFor(compound.Name).Count;
          if (numberOfApplications == 1)
             return ApplicationType.Single;
 
@@ -338,7 +344,8 @@ namespace PKSim.Core.Services
 
       private ISchemaItem singleDosingItem(Simulation simulation, Compound compound)
       {
-         return schemaItemsFrom(simulation, compound)[0];
+         //this may be null for compound created by metabolization process only
+         return schemaItemsFrom(simulation, compound).FirstOrDefault();
       }
 
       private IReadOnlyList<ISchemaItem> schemaItemsFrom(Simulation simulation, Compound compound)

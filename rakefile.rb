@@ -34,14 +34,15 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 	harvest_ignored_files = [
 		'PKSim.exe',
 		'PKSimDB.sqlite',
-		'PKSimTemplateDBSystem.TemplateDBSystem'
+		'PKSimTemplateDBSystem.TemplateDBSystem',
+		'templates.json'
 	]
 
 	#Files required for setup creation only and that will not be harvested automatically
 	setup_files	 = [
 		"#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
 		"#{relative_src_dir}/TeXTemplates/**/*.*",
-		'examples/**/*.{wxs,pksim5}',
+		'examples/*.txt',
 		'src/PKSim.Assets.Images/Resources/*.ico',
 		'Open Systems Pharmacology Suite License.pdf',
 		'documentation/*.pdf',
@@ -86,7 +87,7 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 	]
 
 	setup_folders = [
-		'examples/**/*.pksim5',
+		'examples/*.md',
 		"#{setup_temp_dir}/**/*.*",
 	]
 
@@ -111,7 +112,7 @@ task :postclean do |t, args|
 	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '10.0')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '11.0')
 
 	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml

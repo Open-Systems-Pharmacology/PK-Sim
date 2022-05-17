@@ -5,6 +5,7 @@ using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
@@ -12,7 +13,6 @@ using PKSim.Core.Snapshots.Mappers;
 using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Snapshots.CompoundProperties;
 using Formulation = PKSim.Core.Model.Formulation;
-using OSPSuite.Core.Services;
 using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Model.Simulation;
 
@@ -50,6 +50,7 @@ namespace PKSim.Core
       protected CompoundProcessSelection _snapshotProcess5;
       private EnzymaticProcessSelection _noEnzymaticPartialProcessSelection;
       private EnzymaticProcess _anotherEnzymaticProcess;
+      protected SnapshotContext _baseSnapshotContext;
 
       protected override Task Context()
       {
@@ -57,6 +58,7 @@ namespace PKSim.Core
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _logger = A.Fake<IOSPSuiteLogger>();
          _project = new PKSimProject();
+         _baseSnapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
          _calculationMethodSnapshot = new CalculationMethodCache();
          sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper, _processMappingMapper, _logger);
 
@@ -142,11 +144,11 @@ namespace PKSim.Core
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_noEnzymaticSystemicProcessSelection)).Returns(_snapshotProcess4);
          A.CallTo(() => _processMappingMapper.MapToSnapshot(_noEnzymaticPartialProcessSelection)).Returns(_snapshotProcess5);
 
-         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess1, _enzymaticProcess)).Returns(_enzymaticPartialProcessSelection);
-         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess2, _specificBindingProcess)).Returns(_specificBindingPartialProcessSelection);
-         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess3, _gfrTransportProcess)).Returns(_transportSystemicProcessSelection);
-         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess4, A<NotSelectedSystemicProcess>._)).Returns(_noEnzymaticSystemicProcessSelection);
-         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess5, A<EnzymaticProcess>._)).Returns(_noEnzymaticPartialProcessSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess1, A<CompoundProcessSnapshotContext>.That.Matches(x => x.Process == _enzymaticProcess))).Returns(_enzymaticPartialProcessSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess2, A<CompoundProcessSnapshotContext>.That.Matches(x => x.Process == _specificBindingProcess))).Returns(_specificBindingPartialProcessSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess3, A<CompoundProcessSnapshotContext>.That.Matches(x => x.Process == _gfrTransportProcess))).Returns(_transportSystemicProcessSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess4, A<CompoundProcessSnapshotContext>.That.Matches(x => x.Process.IsAnImplementationOf<NotSelectedSystemicProcess>()))).Returns(_noEnzymaticSystemicProcessSelection);
+         A.CallTo(() => _processMappingMapper.MapToModel(_snapshotProcess5, A<CompoundProcessSnapshotContext>.That.Matches(x => x.Process.IsAnImplementationOf<EnzymaticProcess>()))).Returns(_noEnzymaticPartialProcessSelection);
 
          return _completed;
       }
@@ -197,7 +199,7 @@ namespace PKSim.Core
 
    public class When_mapping_a_compound_property_snapshot_to_model : concern_for_CompoundPropertiesMapper
    {
-      private CompoundPropertiesContext _context;
+      private SnapshotContextWithSimulation _context;
       private Simulation _simulation;
       private ISimulationSubject _simulationSubject;
 
@@ -213,7 +215,7 @@ namespace PKSim.Core
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
 
          A.CallTo(() => _simulation.CompoundPropertiesFor(_snapshot.Name)).Returns(newModelCompoundProperties);
-         _context = new CompoundPropertiesContext(_project, _simulation);
+         _context = new SnapshotContextWithSimulation(_simulation, _baseSnapshotContext);
       }
 
       protected override async Task Because()
@@ -231,13 +233,14 @@ namespace PKSim.Core
       [Observation]
       public void should_map_calculation_method_used_in_the_snapshot()
       {
-         A.CallTo(() => _calculationMethodCacheMapper.MapToModel(_snapshot.CalculationMethods, _mappedCompoundProperties.CalculationMethodCache)).MustHaveHappened();
+         A.CallTo(() => _calculationMethodCacheMapper.MapToModel(_snapshot.CalculationMethods,
+            A<CalculationMethodCacheSnapshotContext>.That.Matches(x => x.CalculationMethodCache == _mappedCompoundProperties.CalculationMethodCache))).MustHaveHappened();
       }
    }
 
    public class When_mapping_a_compound_property_snapshot_to_model_with_a_snapshot_process_mapping_that_has_a_molecule_that_does_not_exist_in_the_individual : concern_for_CompoundPropertiesMapper
    {
-      private CompoundPropertiesContext _context;
+      private SnapshotContextWithSimulation _context;
       private Simulation _simulation;
       private ISimulationSubject _simulationSubject;
 
@@ -249,11 +252,11 @@ namespace PKSim.Core
          _simulationSubject = A.Fake<ISimulationSubject>();
          A.CallTo(() => _simulationSubject.MoleculeByName("CYP3A4")).Returns(null);
          A.CallTo(() => _simulation.BuildingBlock<ISimulationSubject>()).Returns(_simulationSubject);
-         var newModelCompoundProperties = new Model.CompoundProperties { Compound = _compoundProperties.Compound };
+         var newModelCompoundProperties = new Model.CompoundProperties {Compound = _compoundProperties.Compound};
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
 
          A.CallTo(() => _simulation.CompoundPropertiesFor(_snapshot.Name)).Returns(newModelCompoundProperties);
-         _context = new CompoundPropertiesContext(_project, _simulation);
+         _context = new SnapshotContextWithSimulation(_simulation, _baseSnapshotContext);
       }
 
       protected override async Task Because()
@@ -272,7 +275,7 @@ namespace PKSim.Core
 
    public class When_mapping_a_compound_property_snapshot_to_model_with_a_snapshot_process_mapping_that_has_no_molecule_nor_type : concern_for_CompoundPropertiesMapper
    {
-      private CompoundPropertiesContext _context;
+      private SnapshotContextWithSimulation _context;
       private Simulation _simulation;
       private ISimulationSubject _simulationSubject;
 
@@ -284,13 +287,13 @@ namespace PKSim.Core
          _snapshot.Processes = new List<CompoundProcessSelection>(_snapshot.Processes) {new CompoundProcessSelection()}.ToArray();
          _simulation = A.Fake<Simulation>();
          _simulationSubject = A.Fake<ISimulationSubject>();
-         A.CallTo(() => _simulationSubject.MoleculeByName("CYP3A4")).Returns(new IndividualEnzyme { Name = "CYP3A4" });
+         A.CallTo(() => _simulationSubject.MoleculeByName("CYP3A4")).Returns(new IndividualEnzyme {Name = "CYP3A4"});
          A.CallTo(() => _simulation.BuildingBlock<ISimulationSubject>()).Returns(_simulationSubject);
          var newModelCompoundProperties = new Model.CompoundProperties {Compound = _compoundProperties.Compound};
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
 
          A.CallTo(() => _simulation.CompoundPropertiesFor(_snapshot.Name)).Returns(newModelCompoundProperties);
-         _context = new CompoundPropertiesContext(_project, _simulation);
+         _context = new SnapshotContextWithSimulation(_simulation, _baseSnapshotContext);
       }
 
       protected override async Task Because()
@@ -308,7 +311,7 @@ namespace PKSim.Core
 
    public class When_mapping_a_compound_property_snapshot_to_model_and_the_parameter_group_is_not_found_in_the_compound_alternative : concern_for_CompoundPropertiesMapper
    {
-      private CompoundPropertiesContext _context;
+      private SnapshotContextWithSimulation _context;
       private Simulation _simulation;
 
       protected override async Task Context()
@@ -321,7 +324,7 @@ namespace PKSim.Core
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
 
          A.CallTo(() => _simulation.CompoundPropertiesFor(_snapshot.Name)).Returns(newModelCompoundProperties);
-         _context = new CompoundPropertiesContext(_project, _simulation);
+         _context = new SnapshotContextWithSimulation(_simulation, _baseSnapshotContext);
 
          _snapshot.Alternatives[0].GroupName = "UNKNOWN";
       }
@@ -340,7 +343,7 @@ namespace PKSim.Core
 
    public class When_mapping_a_compound_property_snapshot_to_model_and_the_parameter_group_is_not_found_in_the_compound : concern_for_CompoundPropertiesMapper
    {
-      private CompoundPropertiesContext _context;
+      private SnapshotContextWithSimulation _context;
       private Simulation _simulation;
 
       protected override async Task Context()
@@ -353,7 +356,7 @@ namespace PKSim.Core
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
 
          A.CallTo(() => _simulation.CompoundPropertiesFor(_snapshot.Name)).Returns(newModelCompoundProperties);
-         _context = new CompoundPropertiesContext(_project, _simulation);
+         _context = new SnapshotContextWithSimulation(_simulation, _baseSnapshotContext);
 
          _parameterAlternativeGroupWithTwoAlternatives.Name = "UNKNOWN";
       }
@@ -372,7 +375,7 @@ namespace PKSim.Core
 
    public class When_mapping_a_compound_property_snapshot_to_model_and_the_parameter_group_alternative_is_not_found_in_the_compound : concern_for_CompoundPropertiesMapper
    {
-      private CompoundPropertiesContext _context;
+      private SnapshotContextWithSimulation _context;
       private Simulation _simulation;
 
       protected override async Task Context()
@@ -385,7 +388,7 @@ namespace PKSim.Core
          _compoundProperties.CompoundGroupSelections.Each(newModelCompoundProperties.AddCompoundGroupSelection);
 
          A.CallTo(() => _simulation.CompoundPropertiesFor(_snapshot.Name)).Returns(newModelCompoundProperties);
-         _context = new CompoundPropertiesContext(_project, _simulation);
+         _context = new SnapshotContextWithSimulation(_simulation, _baseSnapshotContext);
 
          _snapshot.Alternatives[0].AlternativeName = "UNKNOWN";
       }

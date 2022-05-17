@@ -40,8 +40,6 @@ namespace PKSim.CLI.Core.Services
       //For testing purposes only
       public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
 
-
-
       public SnapshotRunner(
          ICoreWorkspace workspace,
          ISnapshotTask snapshotTask,
@@ -53,7 +51,7 @@ namespace PKSim.CLI.Core.Services
          _workspacePersistor = workspacePersistor;
          _logger = logger;
          AllFilesFrom = allFilesFrom;
-      }  
+      }
 
       public async Task RunBatchAsync(SnapshotRunOptions runOptions)
       {
@@ -93,6 +91,7 @@ namespace PKSim.CLI.Core.Services
                _workspace.Project = null;
             }
          }
+
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
@@ -102,7 +101,7 @@ namespace PKSim.CLI.Core.Services
       private async Task createProjectFromSnapshotFile(FileMap file)
       {
          _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
-         var project = await _snapshotTask.LoadProjectFromSnapshotFile(file.SnapshotFile);
+         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile);
          if (project == null)
             return;
 
@@ -119,7 +118,7 @@ namespace PKSim.CLI.Core.Services
          _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
          _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
 
-         await _snapshotTask.ExportModelToSnapshot(_workspace.Project, file.SnapshotFile);
+         await _snapshotTask.ExportModelToSnapshotAsync(_workspace.Project, file.SnapshotFile);
          _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");
       }
 

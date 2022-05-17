@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
@@ -36,10 +36,12 @@ namespace PKSim.Core
       protected PKValues _peripheralVenousBloodPK;
       protected Species _species;
       protected SimpleProtocol _protocol;
-      protected List<SchemaItem> _simulationSchemaItems;
       private IInteractionTask _interactionTask;
       protected Compound _compound;
       private ICloner _cloner;
+      protected EventGroup _eventGroup;
+      private Container _application1;
+      protected Container _application2;
 
       protected override void Context()
       {
@@ -65,10 +67,8 @@ namespace PKSim.Core
 
          _compound = new Compound().WithName(_compoundName);
          _compoundProperties = new CompoundProperties {Compound = _compound};
-         _simulationSchemaItems = new List<SchemaItem>();
          _protocol = new SimpleProtocol();
          _compoundProperties.ProtocolProperties.Protocol = _protocol;
-         A.CallTo(() => _protocolMapper.MapFrom(_protocol)).Returns(_simulationSchemaItems);
 
          _simulation = new IndividualSimulation {Properties = new SimulationProperties()};
 
@@ -76,7 +76,19 @@ namespace PKSim.Core
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) {BuildingBlock = _compound});
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndividualId", PKSimBuildingBlockType.Individual) {BuildingBlock = _individual});
          _simulation.DataRepository = new DataRepository {_venousBloodPlasma, _peripheralVenousBloodPlasma};
-
+         _simulation.SimulationSettings = new SimulationSettings();
+         _simulation.OutputSchema = new OutputSchema();
+         _simulation.OutputSchema.AddInterval(new OutputInterval {DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME)});
+         _simulation.Model = new OSPSuite.Core.Domain.Model {Root = new Container()};
+         _eventGroup = new EventGroup();
+         _application1 = new Container().WithName("App1").WithContainerType(ContainerType.Application);
+         _application1.Add(new MoleculeAmount().WithName(_compoundName));
+         _application1.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(Constants.Parameters.START_TIME));
+         _application2 = new Container().WithName("App2").WithContainerType(ContainerType.Application);
+         _application2.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(Constants.Parameters.START_TIME));
+         _application2.Add(new MoleculeAmount().WithName(_compoundName));
+         _simulation.Model.Root.Add(_eventGroup);
+         _eventGroup.Add(_application1);
          _venousBloodPK = new PKValues();
          _venousBloodPK.AddValue(Constants.PKParameters.Vss, 10);
          _venousBloodPK.AddValue(Constants.PKParameters.Vd, 11);
@@ -113,7 +125,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_human_species : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_global_pk_analyses_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_human_species : concern_for_GlobalPKAnalysisTask
    {
       private GlobalPKAnalysis _results;
 
@@ -309,7 +321,8 @@ namespace PKSim.Core
          var startTime = DomainHelperForSpecs.ConstantParameterWithValue(3);
          A.CallTo(() => schemaItem.Dose).Returns(inputDose);
          A.CallTo(() => schemaItem.StartTime).Returns(startTime);
-         _simulationSchemaItems.Add(schemaItem);
+
+         A.CallTo(() => _protocolMapper.MapFrom(_protocol)).Returns(new[] {schemaItem,});
       }
 
       protected override void Because()
@@ -361,8 +374,6 @@ namespace PKSim.Core
 
          A.CallTo(() => _globalPKAnalysisRunner.RunForDDIRatio(_simulation)).Returns(_ddiRatioSimulation);
          A.CallTo(() => _pkAnalysisTask.CalculateFor(_ddiRatioSimulation, _peripheralVenousBloodPlasma)).Returns(new IndividualPKAnalysis(_peripheralVenousBloodPlasma, _pkAnalysis));
-         //single dosing
-         _simulationSchemaItems.Add(new SchemaItem());
       }
 
       protected override void Because()
@@ -444,7 +455,7 @@ namespace PKSim.Core
          A.CallTo(() => _globalPKAnalysisRunner.RunForDDIRatio(_simulation)).Returns(_ddiRatioSimulation);
          A.CallTo(() => _pkAnalysisTask.CalculateFor(_ddiRatioSimulation, _peripheralVenousBloodPlasma)).Returns(new IndividualPKAnalysis(_peripheralVenousBloodPlasma, _pkAnalysis));
          //multiple dosing
-         _simulationSchemaItems.AddRange(new[] {new SchemaItem(), new SchemaItem()});
+         _eventGroup.Add(_application2);
       }
 
       protected override void Because()

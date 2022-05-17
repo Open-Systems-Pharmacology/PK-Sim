@@ -33,16 +33,6 @@
          ((System.ComponentModel.ISupportInitialize)(this.tabSettings)).BeginInit();
          this.SuspendLayout();
          // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(373, 12);
-         this.btnCancel.Size = new System.Drawing.Size(75, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(280, 12);
-         this.btnOk.Size = new System.Drawing.Size(89, 22);
-         // 
          // tabSettings
          // 
          this.tabSettings.Dock = System.Windows.Forms.DockStyle.Fill;

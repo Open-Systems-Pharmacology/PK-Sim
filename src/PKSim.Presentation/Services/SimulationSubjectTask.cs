@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -55,9 +55,9 @@ namespace PKSim.Presentation.Services
          throw new NotSupportedException("Do not call Edit for a simulation subject. Use the dedicated method instead");
       }
 
-      public IReadOnlyList<ISimulationSubject> LoadFromTemplate()
+      public Task<IReadOnlyList<IPKSimBuildingBlock>> LoadFromTemplateAsync()
       {
-         return _buildingBlockTask.LoadFromTemplate<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
+         return _buildingBlockTask.LoadFromTemplateAsync(PKSimBuildingBlockType.SimulationSubject);
       }
 
       public IReadOnlyList<ISimulationSubject> LoadFromSnapshot()
@@ -65,10 +65,7 @@ namespace PKSim.Presentation.Services
          throw new NotSupportedException("Do not call LoadFromSnapshot for a simulation subject. Use the dedicated method instead");
       }
 
-      public ISimulationSubject LoadSingleFromTemplate()
-      {
-         return LoadFromTemplate().FirstOrDefault();
-      }
+      public Task<ISimulationSubject> LoadSingleFromTemplateAsync() => _buildingBlockTask.LoadSingleFromTemplateAsync<ISimulationSubject>(PKSimBuildingBlockType.SimulationSubject);
 
       public void Load(ISimulationSubject buildingBlockToLoad)
       {

@@ -332,13 +332,13 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private IFormula getReceptorOccupancyFormula(IObserverBuildingBlock observerBuildingBlock, IMoleculeBuilder protein, IMoleculeBuilder complex)
       {
-         string receptorOccupancyObserver = $"ReceptorOccupancyObserver_{complex.Name}";
+         var receptorOccupancyObserver = $"ReceptorOccupancyObserver_{complex.Name}";
          if (observerBuildingBlock.FormulaCache.Contains(receptorOccupancyObserver))
             return observerBuildingBlock.FormulaCache[receptorOccupancyObserver];
 
          var receptorOccupancy = _objectBaseFactory.Create<ExplicitFormula>()
             .WithName(receptorOccupancyObserver)
-            .WithFormulaString("Complex/(Protein + Complex)")
+            .WithFormulaString("Protein + Complex > 0 ? Complex/(Protein + Complex) : 0")
             .WithDimension(_dimensionRepository.Fraction);
 
 

@@ -47,7 +47,7 @@ namespace PKSim.Presentation.Services
       private readonly IJournalTask _journalTask;
       private readonly IJournalRetriever _journalRetriever;
       private readonly ISnapshotTask _snapshotTask;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       public ProjectTask(IWorkspace workspace,
          IApplicationController applicationController,
@@ -59,8 +59,8 @@ namespace PKSim.Presentation.Services
          IJournalTask journalTask,
          IJournalRetriever journalRetriever,
          ISnapshotTask snapshotTask,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager
-         )
+         IBuildingBlockInProjectManager buildingBlockInProjectManager 
+      )
       {
          _workspace = workspace;
          _applicationController = applicationController;
@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Services
          _journalTask = journalTask;
          _journalRetriever = journalRetriever;
          _snapshotTask = snapshotTask;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
       }
 
       public void NewProject()
@@ -244,7 +244,7 @@ namespace PKSim.Presentation.Services
       public Task ExportCurrentProjectToSnapshot()
       {
          var project = _workspace.Project;
-         var anySimulationInChangedState = project.All<Simulation>().Any(x => _buildingBlockInSimulationManager.StatusFor(x) == BuildingBlockStatus.Red);
+         var anySimulationInChangedState = project.All<Simulation>().Any(x => _buildingBlockInProjectManager.StatusFor(x) == BuildingBlockStatus.Red);
          var projectExportWillCreateNoise = !_snapshotTask.IsVersionCompatibleWithSnapshotExport(project);
 
          if (exitIf(anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation))
@@ -256,7 +256,7 @@ namespace PKSim.Presentation.Services
          if (exitIf(!anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersion))
             return Task.CompletedTask;
 
-         return _snapshotTask.ExportModelToSnapshot(project);
+         return _snapshotTask.ExportModelToSnapshotAsync(project);
       }
 
       private bool exitIf(bool condition, string message)
@@ -268,7 +268,7 @@ namespace PKSim.Presentation.Services
          return (proceed == ViewResult.No);
       }
 
-      public  Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFile(snapshotFileFullPath);
+      public Task<PKSimProject> LoadProjectFromSnapshotFile(string snapshotFileFullPath) => _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFileFullPath);
 
       private void openSimulationForPopulationSimulation(string simulationFile)
       {
@@ -322,6 +322,11 @@ namespace PKSim.Presentation.Services
          if (projectNeedsToBeConvertedFromVersion4(projectFile))
             throw new PKSimException(PKSimConstants.Error.ProjectFileVersion4IsNotSupportedAnymore(projectFile));
 
+         void openProject()
+         {
+            _workspace.OpenProject(projectFile);
+         }
+
          try
          {
             if (!tryLockFile(projectFile))
@@ -330,12 +335,12 @@ namespace PKSim.Presentation.Services
             _executionContext.PublishEvent(new DisableUIEvent());
             if (shouldStartWorker)
             {
-               var success = _heavyWorkManager.Start(() => _workspace.OpenProject(projectFile), PKSimConstants.UI.LoadingProject);
+               var success = _heavyWorkManager.Start(openProject, PKSimConstants.UI.LoadingProject);
                if (!success)
                   createNewProject();
             }
             else
-               _workspace.OpenProject(projectFile);
+               openProject();
 
             if (_userSettings.ShouldRestoreWorkspaceLayout)
                _workspaceLayoutUpdater.RestoreLayout();

@@ -6,6 +6,5 @@ namespace PKSim.Presentation.Views.PopulationAnalyses
 {
    public interface ICreatePopulationAnalysisView : IWizardView, IModalView<ICreatePopulationAnalysisPresenter>
    {
-      ApplicationIcon Image {  set; }
    }
 }

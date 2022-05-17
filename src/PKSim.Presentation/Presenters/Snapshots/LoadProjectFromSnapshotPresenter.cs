@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -8,6 +9,7 @@ using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
+using PKSim.Presentation.DTO.Snapshots;
 using PKSim.Presentation.Views.Snapshots;
 
 namespace PKSim.Presentation.Presenters.Snapshots
@@ -26,15 +28,16 @@ namespace PKSim.Presentation.Presenters.Snapshots
       private readonly IQualiticationPlanRunner _qualificationPlanRunner;
       private readonly IRegistrationTask _registrationTask;
 
-      public LoadProjectFromSnapshotPresenter(ILoadFromSnapshotView view, 
-         ILogPresenter logPresenter, 
-         ISnapshotTask snapshotTask, 
-         IDialogCreator dialogCreator, 
-         IObjectTypeResolver objectTypeResolver, 
-         IOSPSuiteLogger logger, 
+      public LoadProjectFromSnapshotPresenter(ILoadFromSnapshotView view,
+         ILogPresenter logPresenter,
+         ISnapshotTask snapshotTask,
+         IDialogCreator dialogCreator,
+         IObjectTypeResolver objectTypeResolver,
+         IOSPSuiteLogger logger,
          IEventPublisher eventPublisher,
          IQualiticationPlanRunner qualificationPlanRunner,
-         IRegistrationTask registrationTask) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)
+         IRegistrationTask registrationTask, 
+         IStartOptions startOptions) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher, startOptions)
       {
          _qualificationPlanRunner = qualificationPlanRunner;
          _registrationTask = registrationTask;
@@ -46,9 +49,9 @@ namespace PKSim.Presentation.Presenters.Snapshots
          return models?.FirstOrDefault();
       }
 
-      protected override async Task<IEnumerable<PKSimProject>> LoadModelAsync(string snapshotFile)
+      protected override async Task<IEnumerable<PKSimProject>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
       {
-         var project = await _snapshotTask.LoadProjectFromSnapshotFile(snapshotFile);
+         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(loadFromSnapshotDTO.SnapshotFile, loadFromSnapshotDTO.RunSimulations);
          _registrationTask.RegisterProject(project);
          await runQualificationPlans(project);
          return new[] { project };

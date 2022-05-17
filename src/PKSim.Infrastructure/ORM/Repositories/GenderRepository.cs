@@ -18,7 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatGenderRepository : MetaDataRepository<FlatGender>, IFlatGenderRepository
    {
       public FlatGenderRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatGender> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewGenders)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_GENDERS)
       {
       }
    }
@@ -57,9 +57,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
          gender.DisplayName = representationInfo.DisplayName;
       }
 
-      public Gender Male => this.FindByName(CoreConstants.Gender.Male);
+      public Gender Male => this.FindByName(CoreConstants.Gender.MALE);
 
-      public Gender Female => this.FindByName(CoreConstants.Gender.Female);
+      public Gender Female => this.FindByName(CoreConstants.Gender.FEMALE);
+
+      public Gender Undefined => this.FindByName(CoreConstants.Gender.UNDEFINED);
 
       public Gender FindByIndex(int index) => All().FirstOrDefault(x => x.Index == index);
    }

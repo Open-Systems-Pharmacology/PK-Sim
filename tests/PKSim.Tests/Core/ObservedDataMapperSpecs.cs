@@ -49,7 +49,7 @@ namespace PKSim.Core
          _baseGridSnapshot = new Snapshots.DataColumn();
          A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataColumn)).Returns(_dataColumnSnapshot);
          A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).Returns(_extendedPropertySnapshot);
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot)).Returns(_extendedProperty);
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot, A<SnapshotContext>._)).Returns(_extendedProperty);
          A.CallTo(() => _dataColumnMapper.MapToSnapshot(_dataRepository.BaseGrid)).Returns(_baseGridSnapshot);
          
          return Task.FromResult(true);
@@ -74,13 +74,13 @@ namespace PKSim.Core
          _mappedRelatedColumn = new DataColumn("RelatedColumn", DomainHelperForSpecs.ConcentrationDimensionForSpecs(), _baseGrid);
          _mappedDataColumn.AddRelatedColumn(_mappedRelatedColumn);
 
-         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.BaseGrid, A<DataRepository>._)).Returns(_baseGrid);
-         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.Columns.First(), A<DataRepository>._)).Returns(_mappedDataColumn);
+         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.BaseGrid, A<SnapshotContextWithDataRepository>._)).Returns(_baseGrid);
+         A.CallTo(() => _dataColumnMapper.MapToModel(_snapshot.Columns.First(), A<SnapshotContextWithDataRepository>._)).Returns(_mappedDataColumn);
       }
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]

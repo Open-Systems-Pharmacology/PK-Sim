@@ -8,15 +8,15 @@ namespace PKSim.Presentation.Services
 {
    public class CannotDeleteBuildingBlockException : OSPSuiteException
    {
-      public CannotDeleteBuildingBlockException(string buildingBlockType, string buildingBlockName, IReadOnlyList<Simulation> simulationsUsingBuildingBlock)
+      public CannotDeleteBuildingBlockException(string buildingBlockType, string buildingBlockName, IReadOnlyList<IPKSimBuildingBlock> buildingBlocksUsingBuildingBlockToDelete)
       {
          Message = Error.CannotDeleteBuildingBlockUsedBy(buildingBlockName, buildingBlockType,
-            simulationsUsingBuildingBlock.Select(simulationNamed).ToList());
+            buildingBlocksUsingBuildingBlockToDelete.Select(CannotDeleteBuildingBlockException.buildingBlockName).ToList());
       }
 
-      private static string simulationNamed(Simulation x)
+      private static string buildingBlockName(IPKSimBuildingBlock x)
       {
-         return $"{ObjectTypes.Simulation.ToLowerInvariant()} '{x.Name}'";
+         return $"{x.BuildingBlockType.ToString().ToLowerInvariant()} '{x.Name}'";
       }
 
       public override string Message { get; }

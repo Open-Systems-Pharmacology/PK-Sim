@@ -11,28 +11,28 @@ namespace PKSim.Presentation.Presenters.Populations
    public class EditRandomPopulationPresenter : EditPopulationPresenter<IEditRandomPopulationView, IEditRandomPopulationPresenter, RandomPopulation>, IEditRandomPopulationPresenter
    {
       public EditRandomPopulationPresenter(IEditRandomPopulationView view, ISubPresenterItemManager<IPopulationItemPresenter> subPresenterItemManager)
-         : base(view, subPresenterItemManager, RamdomPopulationItems.All)
+         : base(view, subPresenterItemManager, RandomPopulationItems.All)
       {
       }
 
       protected override ISubPresenterItem<IPopulationSettingsPresenter<RandomPopulation>> SettingPresenterItem
       {
-         get { return RamdomPopulationItems.Settings; }
+         get { return RandomPopulationItems.Settings; }
       }
 
       protected override ISubPresenterItem<IPopulationAdvancedParameterDistributionPresenter> DistributionPresenterItem
       {
-         get { return RamdomPopulationItems.ParameterDistribution; }
+         get { return RandomPopulationItems.ParameterDistribution; }
       }
 
       protected override ISubPresenterItem<IPopulationAdvancedParametersPresenter> AdvancedParameterPresenterItem
       {
-         get { return RamdomPopulationItems.AdvancedParameters; }
+         get { return RandomPopulationItems.AdvancedParameters; }
       }
 
       protected override ISubPresenterItem<IPopulationMoleculesPresenter> MoleculesPresenterItem
       {
-         get { return RamdomPopulationItems.Molecules; }
+         get { return RandomPopulationItems.Molecules; }
       }
    }
 }

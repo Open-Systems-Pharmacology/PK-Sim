@@ -10,7 +10,7 @@ using SnapshotParameterIdentification = PKSim.Core.Snapshots.ParameterIdentifica
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterIdentificationMapper : ObjectBaseSnapshotMapperBase<ModelParameterIdentification, SnapshotParameterIdentification,  PKSimProject>
+   public class ParameterIdentificationMapper : ObjectBaseSnapshotMapperBase<ModelParameterIdentification, SnapshotParameterIdentification>
    {
       private readonly ParameterIdentificationConfigurationMapper _parameterIdentificationConfigurationMapper;
       private readonly OutputMappingMapper _outputMappingMapper;
@@ -46,15 +46,15 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelParameterIdentification> MapToModel(SnapshotParameterIdentification snapshot, PKSimProject project)
+      public override async Task<ModelParameterIdentification> MapToModel(SnapshotParameterIdentification snapshot, SnapshotContext snapshotContext)
       {
          var parameterIdentification = _objectBaseFactory.Create<ModelParameterIdentification>();
-         var parameterIdentificationContext = new ParameterIdentificationContext(parameterIdentification, project);
+         var parameterIdentificationContext = new ParameterIdentificationContext(parameterIdentification, snapshotContext);
          MapSnapshotPropertiesToModel(snapshot, parameterIdentification);
 
-         snapshot.Simulations?.Each(s => { addSimulation(s, parameterIdentification, project); });
+         snapshot.Simulations?.Each(s => { addSimulation(s, parameterIdentification, snapshotContext.Project); });
 
-         await _parameterIdentificationConfigurationMapper.MapToModel(snapshot.Configuration, parameterIdentification.Configuration);
+         await _parameterIdentificationConfigurationMapper.MapToModel(snapshot.Configuration, parameterIdentificationContext);
 
          var outputMappings = await _outputMappingMapper.MapToModels(snapshot.OutputMappings, parameterIdentificationContext);
          outputMappings?.Each(parameterIdentification.AddOutputMapping);

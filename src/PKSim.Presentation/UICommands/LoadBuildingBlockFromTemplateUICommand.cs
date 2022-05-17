@@ -1,3 +1,4 @@
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.MenuAndBars;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -17,9 +18,9 @@ namespace PKSim.Presentation.UICommands
          _buildingBlockTask = buildingBlockTask;
       }
 
-      public void Execute()
+      public async void Execute()
       {
-         _buildingBlockTask.LoadSingleFromTemplate();
+         await _buildingBlockTask.SecureAwait(x => x.LoadSingleFromTemplateAsync());
       }
    }
 
@@ -73,6 +74,13 @@ namespace PKSim.Presentation.UICommands
    public class LoadObserverSetCommand : LoadBuildingBlockFromTemplateUICommand<ObserverSet, IObserverSetTask>
    {
       public LoadObserverSetCommand(IObserverSetTask observerSetTask) : base(observerSetTask)
+      {
+      }
+   }
+
+   public class LoadExpressionProfileCommand : LoadBuildingBlockFromTemplateUICommand<ExpressionProfile, IExpressionProfileTask>
+   {
+      public LoadExpressionProfileCommand(IExpressionProfileTask expressionProfileTask) : base(expressionProfileTask)
       {
       }
    }

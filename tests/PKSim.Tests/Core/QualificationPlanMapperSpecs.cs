@@ -19,6 +19,7 @@ namespace PKSim.Core
       protected IQualificationStep _qualificationStep;
       protected QualificationStep _qualificationStepSnapshot;
       protected PKSimProject _project;
+      protected SnapshotContext _snapshotContext;
 
       protected override Task Context()
       {
@@ -33,6 +34,7 @@ namespace PKSim.Core
          A.CallTo(() => _qualificationStepMapper.MapToSnapshot(_qualificationStep)).Returns(_qualificationStepSnapshot);
 
          _project = new PKSimProject();
+         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
          return _completed;
       }
    }
@@ -45,7 +47,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_snapshot_having_the_expeted_properties()
+      public void should_return_a_snapshot_having_the_expected_properties()
       {
          _snapshot.Name.ShouldBeEqualTo(_qualificationPlan.Name);
       }
@@ -66,16 +68,16 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_qualificationPlan);
          A.CallTo(() => _objectBaseFactory.Create<QualificationPlan>()).Returns(new QualificationPlan());
-         A.CallTo(() => _qualificationStepMapper.MapToModel(_qualificationStepSnapshot, _project)).Returns(_qualificationStep);
+         A.CallTo(() => _qualificationStepMapper.MapToModel(_qualificationStepSnapshot, _snapshotContext)).Returns(_qualificationStep);
       }
 
       protected override async Task Because()
       {
-         _newQualificationPlan = await sut.MapToModel(_snapshot, _project);
+         _newQualificationPlan = await sut.MapToModel(_snapshot, _snapshotContext);
       }
 
       [Observation]
-      public void should_return_a_qualification_plan_having_the_expeted_properties()
+      public void should_return_a_qualification_plan_having_the_expected_properties()
       {
          _newQualificationPlan.Name.ShouldBeEqualTo(_qualificationPlan.Name);
       }

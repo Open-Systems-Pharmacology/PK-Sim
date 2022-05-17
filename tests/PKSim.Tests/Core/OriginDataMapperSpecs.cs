@@ -35,6 +35,7 @@ namespace PKSim.Core
       private CalculationMethodCacheMapper _calculationMethodCacheMapper;
       protected ValueOriginMapper _valueOriginMapper;
       protected ValueOrigin _valueOriginSnapshot;
+      protected IDiseaseStateRepository _diseaseStateRepository;
 
       protected override Task Context()
       {
@@ -45,8 +46,17 @@ namespace PKSim.Core
          _individualModelTask = A.Fake<IIndividualModelTask>();
          _speciesRepository = A.Fake<ISpeciesRepository>();
          _valueOriginMapper = A.Fake<ValueOriginMapper>();
+         _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
 
-         sut = new OriginDataMapper(_parameterMapper, _calculationMethodCacheMapper, _valueOriginMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
+         sut = new OriginDataMapper(
+            _parameterMapper,
+            _calculationMethodCacheMapper,
+            _valueOriginMapper,
+            _originDataTask,
+            _dimensionRepository,
+            _individualModelTask,
+            _speciesRepository,
+            _diseaseStateRepository);
 
          _ageSnapshotParameter = new Parameter {Value = 1};
          _heightSnapshotParameter = new Parameter {Value = 2};
@@ -66,28 +76,59 @@ namespace PKSim.Core
 
          _originData = new Model.OriginData
          {
-            Age = 35,
-            AgeUnit = "years",
-            Height = 17.8,
-            HeightUnit = "m",
-            Weight = 73,
-            WeightUnit = "kg",
+            Age = new OriginDataParameter(35, "years"),
+            Height = new OriginDataParameter(1.78, "m"),
+            Weight = new OriginDataParameter(73, "kg"),
             Species = _species,
-            SpeciesPopulation = _speciesPopulation,
+            Population = _speciesPopulation,
             Gender = _gender,
-            GestationalAge = 40
+            GestationalAge = new OriginDataParameter(40)
          };
 
          A.CallTo(() => _parameterMapper.ParameterFrom(null, A<string>._, A<IDimension>._)).Returns(null);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Age, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Height, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Weight, A<string>._, A<IDimension>._)).Returns(_weightSnapshotParameter);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.GestationalAge, A<string>._, A<IDimension>._)).Returns(_gestationalAgeSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Age.Value, A<string>._, A<IDimension>._)).Returns(_ageSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Height.Value, A<string>._, A<IDimension>._)).Returns(_heightSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.Weight.Value, A<string>._, A<IDimension>._)).Returns(_weightSnapshotParameter);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_originData.GestationalAge.Value, A<string>._, A<IDimension>._)).Returns(_gestationalAgeSnapshotParameter);
 
 
          _valueOriginSnapshot = new ValueOrigin();
          A.CallTo(() => _valueOriginMapper.MapToSnapshot(_originData.ValueOrigin)).Returns(_valueOriginSnapshot);
          return _completed;
+      }
+   }
+
+   public class When_mapping_an_origin_data_to_snapshot_with_disease_state : concern_for_OriginDataMapper
+   {
+      private OriginDataParameter _diseaseStateParameter;
+      private IDimension _timeDimension;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _originData.DiseaseState = new DiseaseState {Name = "CKD"};
+         _diseaseStateParameter = new OriginDataParameter {Name = "Param", Value = 60, Unit = "h"};
+         _originData.AddDiseaseStateParameter(_diseaseStateParameter);
+         _timeDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         A.CallTo(() => _dimensionRepository.DimensionForUnit(_diseaseStateParameter.Unit)).Returns(_timeDimension);
+         A.CallTo(() => _parameterMapper.ParameterFrom(_diseaseStateParameter.Value, _diseaseStateParameter.Unit, _timeDimension))
+            .Returns(new Parameter {Value = 1, Unit = "h"});
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_originData);
+      }
+
+      [Observation]
+      public void should_save_the_origin_data_disease_state_properties()
+      {
+         _snapshot.DiseaseState.ShouldBeEqualTo(_originData.DiseaseState.Name);
+         _snapshot.DiseaseStateParameters.Length.ShouldBeEqualTo(1);
+         var param = _snapshot.DiseaseStateParameters[0];
+         param.Name.ShouldBeEqualTo("Param");
+         param.Unit.ShouldBeEqualTo(_diseaseStateParameter.Unit);
+         param.Value.ShouldBeEqualTo(1); //60 in base unit converted to display unit
       }
    }
 
@@ -109,13 +150,16 @@ namespace PKSim.Core
       public void should_save_the_origin_data_properties()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
-         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.Population.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
          _snapshot.Weight.ShouldBeEqualTo(_weightSnapshotParameter);
          _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
          _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
          _snapshot.GestationalAge.ShouldBeEqualTo(_gestationalAgeSnapshotParameter);
+
+         _snapshot.DiseaseState.ShouldBeNull();
+         _snapshot.DiseaseStateParameters.ShouldBeNull();
       }
 
       [Observation]
@@ -134,7 +178,7 @@ namespace PKSim.Core
          _speciesPopulation.AddGender(_anotherGender);
 
          A.CallTo(() => _individualModelTask.MeanAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Age.Value));
-         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight));
+         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight.Value));
       }
 
       protected override async Task Because()
@@ -146,7 +190,7 @@ namespace PKSim.Core
       public void should_save_the_value_for_height_and_gestational_ag()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
-         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.Population.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
          _snapshot.Height.ShouldBeEqualTo(_heightSnapshotParameter);
@@ -175,7 +219,7 @@ namespace PKSim.Core
          _speciesPopulation.AddGender(_anotherGender);
 
          A.CallTo(() => _individualModelTask.MeanAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Age.Value));
-         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight));
+         A.CallTo(() => _individualModelTask.MeanWeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Weight.Value));
          A.CallTo(() => _individualModelTask.MeanGestationalAgeFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.GestationalAge.Value));
          A.CallTo(() => _individualModelTask.MeanHeightFor(_originData)).Returns(DomainHelperForSpecs.ConstantParameterWithValue(_originData.Height.Value));
       }
@@ -189,7 +233,7 @@ namespace PKSim.Core
       public void should_not_save_any_default_parameters_except_age()
       {
          _snapshot.Species.ShouldBeEqualTo(_originData.Species.Name);
-         _snapshot.Population.ShouldBeEqualTo(_originData.SpeciesPopulation.Name);
+         _snapshot.Population.ShouldBeEqualTo(_originData.Population.Name);
          _snapshot.Gender.ShouldBeEqualTo(_originData.Gender.Name);
 
          _snapshot.Height.ShouldBeNull();
@@ -202,10 +246,9 @@ namespace PKSim.Core
       {
          _snapshot.Age.ShouldBeEqualTo(_ageSnapshotParameter);
       }
-
    }
 
-   public class When_mappping_an_origin_data_for_a_species_population_that_is_not_age_or_heigt_dependent_to_snapshot : concern_for_OriginDataMapper
+   public class When_mapping_an_origin_data_for_a_species_population_that_is_not_age_or_heigt_dependent_to_snapshot : concern_for_OriginDataMapper
    {
       protected override async Task Context()
       {
@@ -242,7 +285,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -259,13 +302,13 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
       public void should_use_the_default_population()
       {
-         _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_speciesPopulation);
+         _newOriginData.Population.ShouldBeEqualTo(_speciesPopulation);
       }
    }
 
@@ -281,7 +324,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -297,7 +340,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -313,7 +356,7 @@ namespace PKSim.Core
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(() => sut.MapToModel(_snapshot)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -330,13 +373,98 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
       public void should_use_the_default_gender()
       {
          _newOriginData.Gender.ShouldBeEqualTo(_gender);
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_with_disease_state : concern_for_OriginDataMapper
+   {
+      private Model.OriginData _newOriginData;
+      private IDimension _timeDimension;
+      private Parameter _diseaseStateParameter;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _timeDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.DiseaseState = "Disease";
+         _diseaseStateParameter = new Parameter {Name = "P1", Value = 1, Unit = "h"};
+         _snapshot.DiseaseStateParameters = new[] {_diseaseStateParameter};
+
+         A.CallTo(() => _dimensionRepository.DimensionForUnit(_diseaseStateParameter.Unit)).Returns(_timeDimension);
+
+         var diseaseState = new DiseaseState {Name = "Disease"};
+         diseaseState.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName("P1"));
+         A.CallTo(() => _diseaseStateRepository.AllFor(_speciesPopulation)).Returns(new[] {diseaseState});
+      }
+
+      protected override async Task Because()
+      {
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
+      }
+
+      [Observation]
+      public void should_set_the_disease_state_and_parameters()
+      {
+         _newOriginData.DiseaseState.Name.ShouldBeEqualTo("Disease");
+         _newOriginData.DiseaseStateParameters.Count.ShouldBeEqualTo(1);
+         var param = _newOriginData.DiseaseStateParameters[0];
+         param.Value.ShouldBeEqualTo(60);
+         param.Unit.ShouldBeEqualTo("h");
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_with_disease_state_parameter_unknown : concern_for_OriginDataMapper
+   {
+      private Model.OriginData _newOriginData;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.DiseaseState = "Disease";
+         _snapshot.DiseaseStateParameters = new[] {new Parameter {Name = "Unknown", Value = 10, Unit = "h"}};
+
+         var diseaseState = new DiseaseState {Name = "Disease"};
+         diseaseState.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName("P1"));
+         A.CallTo(() => _diseaseStateRepository.AllFor(_speciesPopulation)).Returns(new[] {diseaseState});
+      }
+
+      protected override async Task Because()
+      {
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
+      }
+
+      [Observation]
+      public void should_set_the_disease_state_and_parameters_as_default_from_the_disease_state()
+      {
+         _newOriginData.DiseaseState.Name.ShouldBeEqualTo("Disease");
+         _newOriginData.DiseaseStateParameters.Count.ShouldBeEqualTo(1);
+         var param = _newOriginData.DiseaseStateParameters[0];
+         param.Value.ShouldBeEqualTo(20);
+      }
+   }
+
+   public class When_mapping_an_origin_data_from_snapshot_with_disease_state_that_is_unknown : concern_for_OriginDataMapper
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_originData);
+         _snapshot.DiseaseState = "UnknownDiseaseState";
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 
@@ -352,7 +480,7 @@ namespace PKSim.Core
 
          var meanWeightParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanWeightFor(A<Model.OriginData>._)).Returns(meanWeightParameter);
-         A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight);
+         A.CallTo(() => meanWeightParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Weight.Value.Value)).Returns(_originData.Weight.Value);
 
          var meanHeightParameter = A.Fake<IParameter>();
          A.CallTo(() => _individualModelTask.MeanHeightFor(A<Model.OriginData>._)).Returns(meanHeightParameter);
@@ -362,26 +490,26 @@ namespace PKSim.Core
          A.CallTo(() => _individualModelTask.MeanAgeFor(A<Model.OriginData>._)).Returns(meanAgeParameter);
          A.CallTo(() => meanAgeParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.Age.Value.Value)).Returns(_originData.Age.Value);
 
-         var meanGestionalAgeParameter = A.Fake<IParameter>();
-         A.CallTo(() => _individualModelTask.MeanGestationalAgeFor(A<Model.OriginData>._)).Returns(meanGestionalAgeParameter);
-         A.CallTo(() => meanGestionalAgeParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.GestationalAge.Value.Value)).Returns(_originData.GestationalAge.Value);
+         var meanGestationalAgeParameter = A.Fake<IParameter>();
+         A.CallTo(() => _individualModelTask.MeanGestationalAgeFor(A<Model.OriginData>._)).Returns(meanGestationalAgeParameter);
+         A.CallTo(() => meanGestationalAgeParameter.Dimension.UnitValueToBaseUnitValue(A<Unit>._, _snapshot.GestationalAge.Value.Value)).Returns(_originData.GestationalAge.Value);
       }
 
       protected override async Task Because()
       {
-         _newOriginData = await sut.MapToModel(_snapshot);
+         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
       public void should_use_the_expected_individual_origin_data_to_create_the_individual()
       {
          _newOriginData.Species.ShouldBeEqualTo(_originData.Species);
-         _newOriginData.SpeciesPopulation.ShouldBeEqualTo(_originData.SpeciesPopulation);
+         _newOriginData.Population.ShouldBeEqualTo(_originData.Population);
          _newOriginData.Gender.ShouldBeEqualTo(_originData.Gender);
-         _newOriginData.Weight.ShouldBeEqualTo(_originData.Weight);
-         _newOriginData.Height.ShouldBeEqualTo(_originData.Height);
-         _newOriginData.Age.ShouldBeEqualTo(_originData.Age);
-         _newOriginData.GestationalAge.ShouldBeEqualTo(_originData.GestationalAge);
+         _newOriginData.Weight.Value.ShouldBeEqualTo(_originData.Weight.Value);
+         _newOriginData.Height.Value.ShouldBeEqualTo(_originData.Height.Value);
+         _newOriginData.Age.Value.ShouldBeEqualTo(_originData.Age.Value);
+         _newOriginData.GestationalAge.Value.ShouldBeEqualTo(_originData.GestationalAge.Value);
       }
 
       [Observation]

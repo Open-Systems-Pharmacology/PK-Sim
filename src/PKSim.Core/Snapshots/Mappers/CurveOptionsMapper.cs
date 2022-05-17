@@ -4,7 +4,7 @@ using SnapshotCurveOptions = PKSim.Core.Snapshots.CurveOptions;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class CurveOptionsMapper : SnapshotMapperBase<ModelCurveOptions, SnapshotCurveOptions>
+   public class CurveOptionsMapper : SnapshotMapperBase<ModelCurveOptions, SnapshotCurveOptions, SnapshotContext>
    {
       private readonly ModelCurveOptions _defaultCurveOption;
 
@@ -29,7 +29,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<ModelCurveOptions> MapToModel(SnapshotCurveOptions snapshot)
+      public override Task<ModelCurveOptions> MapToModel(SnapshotCurveOptions snapshot, SnapshotContext snapshotContext)
       {
          return  Task.FromResult(new ModelCurveOptions
          {

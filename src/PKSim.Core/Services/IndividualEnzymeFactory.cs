@@ -3,6 +3,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -19,14 +20,18 @@ namespace PKSim.Core.Services
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
-         IIndividualPathWithRootExpander individualPathWithRootExpander, IIdGenerator idGenerator) :
-         base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, individualPathWithRootExpander, idGenerator)
+         IIndividualPathWithRootExpander individualPathWithRootExpander,
+         IIdGenerator idGenerator,
+         IParameterRateRepository parameterRateRepository) :
+         base(objectBaseFactory, parameterFactory, objectPathFactory, entityPathResolver, individualPathWithRootExpander, idGenerator, parameterRateRepository)
       {
       }
 
       public IndividualEnzyme AddUndefinedLiverTo(Individual individual)
       {
          var undefinedLiver = CreateMolecule(CoreConstants.Molecule.UndefinedLiver);
+         AddOntogenyParameterTo(undefinedLiver);
+
          undefinedLiver.Localization = Localization.Intracellular;
          undefinedLiver.ReferenceConcentration.Visible = false;
          undefinedLiver.HalfLifeLiver.Visible = false;
@@ -35,11 +40,17 @@ namespace PKSim.Core.Services
          CoreConstants.Compartment.LiverZones.Each(zoneName =>
          {
             var zone = liver.Container(zoneName);
-            AddContainerExpression(zone.Container(CoreConstants.Compartment.INTRACELLULAR), undefinedLiver.Name,
-               RelExpParam(REL_EXP, defaultValue: 1),
+            var intracellular = zone.Container(CoreConstants.Compartment.INTRACELLULAR);
+            AddContainerExpression(intracellular, undefinedLiver.Name,
+               RelExpParam(REL_EXP),
                FractionParam(FRACTION_EXPRESSED_INTRACELLULAR, CoreConstants.Rate.ONE_RATE),
                InitialConcentrationParam(CoreConstants.Rate.INITIAL_CONCENTRATION_INTRACELLULAR)
             );
+
+            var relExpParameter = intracellular.EntityAt<IParameter>(undefinedLiver.Name, REL_EXP);
+            relExpParameter.Value = 1;
+            relExpParameter.DefaultValue = 1;
+
          });
          _individualPathWithRootExpander.AddRootToPathIn(individual, undefinedLiver.Name);
          individual.AddMolecule(undefinedLiver);

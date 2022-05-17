@@ -63,6 +63,15 @@ namespace PKSim.UI.Views.Individuals
          _colDirection.XtraColumn.OptionsColumn.AllowMerge = DefaultBoolean.True;
       }
 
+      public override bool ReadOnly
+      {
+         set
+         {
+            base.ReadOnly = value;
+            _colDirection.ReadOnly = value;
+         }
+      }
+
       protected override bool ShouldMergeCell(GridColumn column, TransporterExpressionParameterDTO p1, TransporterExpressionParameterDTO p2,
          bool representSameOrgan)
       {

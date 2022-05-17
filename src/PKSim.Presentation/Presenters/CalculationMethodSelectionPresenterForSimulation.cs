@@ -14,7 +14,8 @@ namespace PKSim.Presentation.Presenters
 
    public class CalculationMethodSelectionPresenterForSimulation : CalculationMethodSelectionPresenter<ICalculationMethodSelectionViewForSimulation, ICalculationMethodSelectionPresenterForSimulation>, ICalculationMethodSelectionPresenterForSimulation
    {
-      public CalculationMethodSelectionPresenterForSimulation(ICalculationMethodSelectionViewForSimulation view,
+      public CalculationMethodSelectionPresenterForSimulation(
+         ICalculationMethodSelectionViewForSimulation view,
          ICalculationMethodToCategoryCalculationMethodDTOMapper mapper,
          ICompoundCalculationMethodCategoryRepository compoundCalculationMethodCategoryRepository)
          : base(view, mapper, compoundCalculationMethodCategoryRepository)
@@ -29,7 +30,7 @@ namespace PKSim.Presentation.Presenters
 
       public bool ReadOnly
       {
-         set { _view.SetReadOnly(readOnly: value); }
+         set => _view.SetReadOnly(readOnly: value);
       }
    }
 }

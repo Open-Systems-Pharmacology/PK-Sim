@@ -397,7 +397,7 @@ namespace PKSim.IntegrationTests
          _irreversibleProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.IRREVERSIBLE_INHIBITION)
             .DowncastTo<InhibitionProcess>());
          _irreversibleProcess.Name = "IrreversibleProcess";
-         _irreversibleProcess.Parameter(CoreConstantsForSpecs.Parameter.KINACT).Value = 2;
+         _irreversibleProcess.Parameter(CoreConstantsForSpecs.Parameters.KINACT).Value = 2;
          _compound.AddProcess(_irreversibleProcess);
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] {_compound}, new[] {_protocol})
@@ -434,7 +434,7 @@ namespace PKSim.IntegrationTests
          _induction = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.INDUCTION)
             .DowncastTo<InductionProcess>());
          _induction.Name = "Induction";
-         _induction.Parameter(CoreConstantsForSpecs.Parameter.EC50).Value = 10;
+         _induction.Parameter(CoreConstantsForSpecs.Parameters.EC50).Value = 10;
          _compound.AddProcess(_induction);
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] {_compound}, new[] {_protocol})
@@ -473,13 +473,13 @@ namespace PKSim.IntegrationTests
          _induction = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.INDUCTION)
             .DowncastTo<InductionProcess>());
          _induction.Name = "Induction";
-         _induction.Parameter(CoreConstantsForSpecs.Parameter.EC50).Value = 10;
+         _induction.Parameter(CoreConstantsForSpecs.Parameters.EC50).Value = 10;
          _compound.AddProcess(_induction);
 
          _irreversibleInhibition = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.IRREVERSIBLE_INHIBITION)
             .DowncastTo<InhibitionProcess>());
          _irreversibleInhibition.Name = "IrreversibleProcess";
-         _irreversibleInhibition.Parameter(CoreConstantsForSpecs.Parameter.KINACT).Value = 10;
+         _irreversibleInhibition.Parameter(CoreConstantsForSpecs.Parameters.KINACT).Value = 10;
          _compound.AddProcess(_irreversibleInhibition);
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] {_compound}, new[] {_protocol})

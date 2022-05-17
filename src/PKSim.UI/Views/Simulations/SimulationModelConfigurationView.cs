@@ -3,9 +3,11 @@ using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
+using static PKSim.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -46,6 +48,9 @@ namespace PKSim.UI.Views.Simulations
 
          layoutGroupCompoundsSelection.Text = PKSimConstants.UI.CompoundsSelection;
          layoutGroupSubjectSelection.Text = PKSimConstants.ObjectTypes.IndividualOrPopulation;
+         layoutGroupModelSettings.Text = PKSimConstants.UI.ModelSettings;
+
+         layoutItemModelSelectionView.AdjustControlHeight(MODEL_PICTURE_HEIGHT);
       }
    }
 }

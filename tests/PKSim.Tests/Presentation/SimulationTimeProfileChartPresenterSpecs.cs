@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
@@ -14,10 +15,14 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Charts;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Presentation.Settings;
+using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.Charts;
@@ -45,6 +50,7 @@ namespace PKSim.Presentation
       protected IChartTemplatingTask _chartTemplatingTask;
       private IProjectRetriever _projectRetriever;
       protected ChartPresenterContext _chartPresenterContext;
+      protected IUserSettings _userSettings;
       private ICurveNamer _curveNamer;
       private IChartUpdater _chartUpdateTask;
       private IPresentationSettingsTask _presentationSettingsTask;
@@ -65,6 +71,7 @@ namespace PKSim.Presentation
          _chartUpdateTask = A.Fake<IChartUpdater>();
          _presentationSettingsTask = A.Fake<IPresentationSettingsTask>();
          _allTemplates = new List<ChartEditorLayoutTemplate>();
+         _userSettings = A.Fake<IUserSettings>();
          A.CallTo(() => _chartLayoutTask.AllTemplates()).Returns(_allTemplates);
          A.CallTo(() => _chartEditorAndDisplayPresenter.EditorPresenter).Returns(_chartEditorPresenter);
          A.CallTo(() => _chartEditorAndDisplayPresenter.DisplayPresenter).Returns(_chartDisplayPresenter);
@@ -76,7 +83,7 @@ namespace PKSim.Presentation
          _chartPresenterContext = new ChartPresenterContext(_chartEditorAndDisplayPresenter, _curveNamer, _dataColumnToPathElementsMapper, _chartTemplatingTask, _presentationSettingsTask, _chartLayoutTask, _projectRetriever, _dimensionFactory);
          _curveNamer = A.Fake<ICurveNamer>();
 
-         sut = new SimulationTimeProfileChartPresenter(_view, _chartPresenterContext, _pkAnalysisPresenter, _chartTask, _observedDataTask, _chartTemplatingTask, _chartUpdateTask);
+         sut = new SimulationTimeProfileChartPresenter(_view, _chartPresenterContext, _pkAnalysisPresenter, _chartTask, _observedDataTask, _chartTemplatingTask, _chartUpdateTask, _userSettings);
       }
    }
 
@@ -125,7 +132,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_use_the_default_tempalte()
+      public void should_use_the_default_template()
       {
          A.CallTo(() => _chartTemplatingTask.InitFromTemplate(
             A<CurveChart>._, A<IChartEditorAndDisplayPresenter>._,
@@ -511,6 +518,96 @@ namespace PKSim.Presentation
       public void should_not_update_the_view_caption()
       {
          _view.Caption.ShouldNotBeEqualTo(_newName);
+      }
+   }
+
+   public class When_adding_observed_data_via_drag_and_drop_without_color_grouping : concern_for_SimulationTimeProfileChartPresenter
+   {
+      private IDragEvent _dragEvent;
+      private Classification _classification;
+      private ClassificationNode _observedDataFolderTree;
+      private DataRepository _observedData;
+      private ObservedDataNode _observedDataNode;
+      private IndividualSimulation _simulation;
+      private List<DataRepository> _allDataRepositories;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation
+         {
+            DataRepository = new NullDataRepository()
+         };
+         _dragEvent = A.Fake<IDragEvent>();
+         _observedData = DomainHelperForSpecs.ObservedData();
+         _classification = new Classification {ClassificationType = ClassificationType.ObservedData};
+
+         _observedDataFolderTree = new ClassificationNode(_classification);
+         _observedDataNode = new ObservedDataNode(new ClassifiableObservedData {Subject = _observedData});
+         _observedDataFolderTree.AddChild(_observedDataNode);
+         A.CallTo(() => _dragEvent.Data<IEnumerable<ITreeNode>>()).Returns(new List<ITreeNode> {_observedDataFolderTree});
+         sut.UpdateAnalysisBasedOn(_simulation);
+
+         A.CallTo(() => _observedDataTask.AddObservedDataToAnalysable(A<IReadOnlyList<DataRepository>>._, _simulation))
+            .Invokes(x => _allDataRepositories = x.GetArgument<IReadOnlyList<DataRepository>>(0).ToList());
+
+         _userSettings.ColorGroupObservedDataFromSameFolder = false;
+      }
+
+      protected override void Because()
+      {
+         _chartDisplayPresenter.DragDrop += Raise.With(_dragEvent);
+      }
+
+      [Observation]
+      public void should_added_them_also_to_the_underlying_simulation()
+      {
+         _allDataRepositories.Contains(_observedData).ShouldBeTrue();
+      }
+   }
+
+   public class When_adding_observed_data_via_color_grouping : concern_for_SimulationTimeProfileChartPresenter
+   {
+      private IDragEvent _dragEvent;
+      private Classification _classification;
+      private ClassificationNode _observedDataFolderTree;
+      private DataRepository _observedData;
+      private ObservedDataNode _observedDataNode;
+      private IndividualSimulation _simulation;
+      private List<DataRepository> _allDataRepositories;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation
+         {
+            DataRepository = new NullDataRepository()
+         };
+         _dragEvent = A.Fake<IDragEvent>();
+         _observedData = DomainHelperForSpecs.ObservedData();
+         _classification = new Classification {ClassificationType = ClassificationType.ObservedData};
+
+         _observedDataFolderTree = new ClassificationNode(_classification);
+         _observedDataNode = new ObservedDataNode(new ClassifiableObservedData {Subject = _observedData});
+         _observedDataFolderTree.AddChild(_observedDataNode);
+         A.CallTo(() => _dragEvent.Data<IEnumerable<ITreeNode>>()).Returns(new List<ITreeNode> {_observedDataFolderTree});
+         sut.UpdateAnalysisBasedOn(_simulation);
+
+         A.CallTo(() => _observedDataTask.AddObservedDataToAnalysable(A<IReadOnlyList<DataRepository>>._, _simulation))
+            .Invokes(x => _allDataRepositories = x.GetArgument<IReadOnlyList<DataRepository>>(0).ToList());
+
+         _userSettings.ColorGroupObservedDataFromSameFolder = true;
+      }
+
+      protected override void Because()
+      {
+         _chartDisplayPresenter.DragDrop += Raise.With(_dragEvent);
+      }
+
+      [Observation]
+      public void should_added_them_also_to_the_underlying_simulation()
+      {
+         _allDataRepositories.Contains(_observedData).ShouldBeTrue();
       }
    }
 }

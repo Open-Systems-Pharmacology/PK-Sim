@@ -12,19 +12,7 @@ using ModelCompoundProperties = PKSim.Core.Model.CompoundProperties;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class CompoundPropertiesContext
-   {
-      public PKSimProject Project { get; }
-      public Model.Simulation Simulation { get; }
-
-      public CompoundPropertiesContext(PKSimProject project, Model.Simulation simulation)
-      {
-         Project = project;
-         Simulation = simulation;
-      }
-   }
-
-   public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperties, SnapshotCompoundProperties, CompoundPropertiesContext, PKSimProject>
+   public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperties, SnapshotCompoundProperties, SnapshotContextWithSimulation, PKSimProject>
    {
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
       private readonly ProcessMappingMapper _processMappingMapper;
@@ -98,16 +86,16 @@ namespace PKSim.Core.Snapshots.Mappers
          return new FormulationSelection {Name = formulation.Name, Key = formulationMapping.FormulationKey};
       }
 
-      public override async Task<ModelCompoundProperties> MapToModel(SnapshotCompoundProperties snapshot, CompoundPropertiesContext context)
+      public override async Task<ModelCompoundProperties> MapToModel(SnapshotCompoundProperties snapshot, SnapshotContextWithSimulation snapshotContext)
       {
-         var simulation = context.Simulation;
+         var simulation = snapshotContext.Simulation;
          var compoundProperties = simulation.CompoundPropertiesFor(snapshot.Name);
          var simulationSubject = simulation.BuildingBlock<ISimulationSubject>();
 
-         await _calculationMethodCacheMapper.MapToModel(snapshot.CalculationMethods, compoundProperties.CalculationMethodCache);
+         await _calculationMethodCacheMapper.MapToModel(snapshot.CalculationMethods, new CalculationMethodCacheSnapshotContext(compoundProperties.CalculationMethodCache, snapshotContext));
          updateAlternativeSelections(snapshot.Alternatives, compoundProperties);
-         compoundProperties.Processes = await modelProcessSelectionFrom(snapshot.Processes, compoundProperties.Compound, simulationSubject);
-         compoundProperties.ProtocolProperties = modelProtocolPropertiesFrom(snapshot.Protocol, context.Project);
+         compoundProperties.Processes = await modelProcessSelectionFrom(snapshot.Processes, compoundProperties.Compound, simulationSubject, snapshotContext);
+         compoundProperties.ProtocolProperties = modelProtocolPropertiesFrom(snapshot.Protocol, snapshotContext.Project);
 
          return compoundProperties;
       }
@@ -139,7 +127,7 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      private async Task<CompoundProcessesSelection> modelProcessSelectionFrom(CompoundProcessSelection[] snapshotProcesses, Model.Compound compound, ISimulationSubject simulationSubject)
+      private async Task<CompoundProcessesSelection> modelProcessSelectionFrom(CompoundProcessSelection[] snapshotProcesses, Model.Compound compound, ISimulationSubject simulationSubject, SnapshotContext snapshotContext)
       {
          var compoundProcessesSelection = new CompoundProcessesSelection();
          if (snapshotProcesses == null)
@@ -158,16 +146,17 @@ namespace PKSim.Core.Snapshots.Mappers
 
             }
 
-            await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process);
+            await addProcessToProcessSelection(compoundProcessesSelection, snapshotProcess, process, snapshotContext);
          }
 
          return compoundProcessesSelection;
       }
 
-      private async Task addProcessToProcessSelection(CompoundProcessesSelection compoundProcessesSelection, CompoundProcessSelection snapshotCompoundProcessSelection, Model.CompoundProcess process)
+      private async Task addProcessToProcessSelection(CompoundProcessesSelection compoundProcessesSelection, CompoundProcessSelection snapshotCompoundProcessSelection, Model.CompoundProcess process, SnapshotContext snapshotContext)
       {
          var processSelectionGroup = selectionGroupFor(compoundProcessesSelection, process);
-         var processSelection = await _processMappingMapper.MapToModel(snapshotCompoundProcessSelection, process);
+         var processContext = new CompoundProcessSnapshotContext(process, snapshotContext);
+         var processSelection = await _processMappingMapper.MapToModel(snapshotCompoundProcessSelection, processContext);
          processSelectionGroup.AddProcessSelection(processSelection);
       }
 

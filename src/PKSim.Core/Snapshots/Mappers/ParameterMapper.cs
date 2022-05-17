@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 using SnapshotTableFormula = PKSim.Core.Snapshots.TableFormula;
@@ -14,19 +15,36 @@ using ModelTableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterMapper : ObjectBaseSnapshotMapperBase<IParameter, SnapshotParameter, IParameter>
+   public class ParameterSnapshotContext : SnapshotContext
+   {
+      public IParameter Parameter { get; }
+
+      public ParameterSnapshotContext(IParameter parameter, SnapshotContext baseContext) : base(baseContext)
+      {
+         Parameter = parameter;
+      }
+   }
+
+   public class ParameterMapper : ObjectBaseSnapshotMapperBase<IParameter, SnapshotParameter, ParameterSnapshotContext>
    {
       private readonly TableFormulaMapper _tableFormulaMapper;
       private readonly ValueOriginMapper _valueOriginMapper;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IOSPSuiteLogger _logger;
+      private readonly IContainerTask _containerTask;
 
-      public ParameterMapper(TableFormulaMapper tableFormulaMapper, ValueOriginMapper valueOriginMapper, IEntityPathResolver entityPathResolver, IOSPSuiteLogger logger)
+      public ParameterMapper(
+         TableFormulaMapper tableFormulaMapper,
+         ValueOriginMapper valueOriginMapper,
+         IEntityPathResolver entityPathResolver,
+         IOSPSuiteLogger logger,
+         IContainerTask containerTask)
       {
          _tableFormulaMapper = tableFormulaMapper;
          _valueOriginMapper = valueOriginMapper;
          _entityPathResolver = entityPathResolver;
          _logger = logger;
+         _containerTask = containerTask;
       }
 
       public override Task<SnapshotParameter> MapToSnapshot(IParameter modelParameter)
@@ -66,13 +84,15 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, IParameter parameter)
+      public override async Task<IParameter> MapToModel(SnapshotParameter snapshot, ParameterSnapshotContext snapshotContext)
       {
+         var parameter = snapshotContext.Parameter;
+         ;
          _valueOriginMapper.UpdateValueOrigin(parameter.ValueOrigin, snapshot.ValueOrigin);
 
          //only update formula if required
          if (snapshot.TableFormula != null)
-            parameter.Formula = await _tableFormulaMapper.MapToModel(snapshot.TableFormula);
+            parameter.Formula = await _tableFormulaMapper.MapToModel(snapshot.TableFormula, snapshotContext);
 
          if (snapshot.Value == null)
             return parameter;
@@ -127,21 +147,22 @@ namespace PKSim.Core.Snapshots.Mappers
          return localizedParameters?.OrderBy(x => x.Path).ToArray();
       }
 
-      public virtual Task MapLocalizedParameters(IReadOnlyList<LocalizedParameter> localizedParameters, IContainer container)
+      public virtual Task MapLocalizedParameters(IReadOnlyList<LocalizedParameter> localizedParameters, IContainer container, SnapshotContext snapshotContext, bool showParameterNotFoundWarning = true)
       {
-         if (localizedParameters == null || !localizedParameters.Any())
+         //undefined or empty or actually not localized parameters (coming from conversions probably)
+         if (localizedParameters == null || !localizedParameters.Any() || localizedParameters.All(x => x.Path.IsNullOrEmpty()))
             return Task.FromResult(false);
 
-         var allParameters = new PathCache<IParameter>(_entityPathResolver).For(container.GetAllChildren<IParameter>());
-         return mapParameters(localizedParameters, x => allParameters[x.Path], x => x.Path, container.Name);
+         var allParameters = _containerTask.CacheAllChildren<IParameter>(container);
+         return mapParameters(localizedParameters, x => allParameters[x.Path], x => x.Path, container.Name, snapshotContext, showParameterNotFoundWarning);
       }
 
-      public virtual Task MapParameters(IReadOnlyList<SnapshotParameter> snapshots, IContainer container, string containerDescriptor)
+      public virtual Task MapParameters(IReadOnlyList<SnapshotParameter> snapshots, IContainer container, string containerDescriptor, SnapshotContext snapshotContext)
       {
-         return mapParameters(snapshots, x => container.Parameter(x.Name), x => x.Name, containerDescriptor);
+         return mapParameters(snapshots, x => container.Parameter(x.Name), x => x.Name, containerDescriptor, snapshotContext);
       }
 
-      private Task mapParameters<T>(IReadOnlyList<T> snapshots, Func<T, IParameter> parameterRetrieverFunc, Func<T, string> parameterIdentifierFunc, string containerDescriptor) where T : SnapshotParameter
+      private Task mapParameters<T>(IReadOnlyList<T> snapshots, Func<T, IParameter> parameterRetrieverFunc, Func<T, string> parameterIdentifierFunc, string containerDescriptor, SnapshotContext snapshotContext, bool showParameterNotFoundWarning = true) where T : SnapshotParameter
       {
          if (snapshots == null || !snapshots.Any())
             return Task.FromResult(false);
@@ -153,9 +174,12 @@ namespace PKSim.Core.Snapshots.Mappers
             var parameter = parameterRetrieverFunc(snapshot);
 
             if (parameter == null)
-               _logger.AddWarning(PKSimConstants.Error.SnapshotParameterNotFoundInContainer(parameterIdentifierFunc(snapshot), containerDescriptor));
+            {
+               if (showParameterNotFoundWarning)
+                  _logger.AddWarning(PKSimConstants.Error.SnapshotParameterNotFoundInContainer(parameterIdentifierFunc(snapshot), containerDescriptor));
+            }
             else
-               tasks.Add(MapToModel(snapshot, parameter));
+               tasks.Add(MapToModel(snapshot, new ParameterSnapshotContext(parameter, snapshotContext)));
          }
 
          return Task.WhenAll(tasks);

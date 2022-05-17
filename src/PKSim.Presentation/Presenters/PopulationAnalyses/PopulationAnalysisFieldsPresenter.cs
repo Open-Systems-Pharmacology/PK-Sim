@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
@@ -41,7 +42,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       /// <summary>
       ///    Creates a derived field based on the <paramref name="populationAnalysisField" /> given as parameter.
-      ///    if the dervied field was not specified, simply use the first field defined in the analysis
+      ///    if the derived field was not specified, simply use the first field defined in the analysis
       /// </summary>
       void CreateDerivedFieldFor(IPopulationAnalysisField populationAnalysisField);
 
@@ -92,7 +93,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       /// <summary>
       ///    Loads a derived field from the template database for the input field <paramref name="populationAnalysisDataField" />
       /// </summary>
-      void LoadDerivedFieldFromTemplateFor(PopulationAnalysisDataField populationAnalysisDataField);
+      Task LoadDerivedFieldFromTemplateForAsync(PopulationAnalysisDataField populationAnalysisDataField);
 
       void SaveDerivedFieldToTemplate(PopulationAnalysisDerivedField derivedField);
 
@@ -280,9 +281,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _eventPublisher.PublishEvent(new PopulationAnalysisChartSettingsChangedEvent(_populationAnalysis));
       }
 
-      public void LoadDerivedFieldFromTemplateFor(PopulationAnalysisDataField populationAnalysisDataField)
+      public async Task LoadDerivedFieldFromTemplateForAsync(PopulationAnalysisDataField populationAnalysisDataField)
       {
-         var newDerivedField = _populationAnalysisTemplateTask.LoadDerivedFieldFor(_populationAnalysis, populationAnalysisDataField);
+         var newDerivedField = await _populationAnalysisTemplateTask.LoadDerivedFieldForAsync(_populationAnalysis, populationAnalysisDataField);
          if (newDerivedField == null)
             return;
 

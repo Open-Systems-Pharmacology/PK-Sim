@@ -1,12 +1,15 @@
-using OSPSuite.BDDHelper;
+using System.Collections.Generic;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Collections;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
@@ -27,7 +30,7 @@ namespace PKSim.Presentation
          _executionContext = A.Fake<IExecutionContext>();
          _applicationController = A.Fake<IApplicationController>();
          A.CallTo(() => _executionContext.CurrentProject).Returns(A.Fake<PKSimProject>());
-         _individual = A.Fake<Individual>();
+         _individual = new Individual();
          A.CallTo(() => _applicationController.Start<ICreateIndividualPresenter>()).Returns(_createIndividualPresenter);
          A.CallTo(() => _applicationController.Start<IScaleIndividualPresenter>()).Returns(_scaleIndividualPresenter);
          A.CallTo(() => _createIndividualPresenter.BuildingBlock).Returns(_individual);
@@ -82,7 +85,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_individual_creation_was_successfull : concern_for_IndividualTask
+   public class When_the_individual_creation_was_successful : concern_for_IndividualTask
    {
       private IPKSimCommand _createIndividualCommand;
 
@@ -120,7 +123,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_scaling_an_indiviual : concern_for_IndividualTask
+   public class When_scaling_an_individual : concern_for_IndividualTask
    {
       protected override void Because()
       {
@@ -163,6 +166,33 @@ namespace PKSim.Presentation
       public void should_not_add_anything_to_the_history()
       {
          A.CallTo(() => _buildingBlockTask.AddCommandToHistory(A<IPKSimCommand>.Ignored)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_saving_an_individual_with_expression_profile_to_template : concern_for_IndividualTask
+   {
+      private ExpressionProfile _expressionProfile;
+      private ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>> _cache;
+
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfile = new ExpressionProfile();
+         _individual.AddExpressionProfile(_expressionProfile);
+
+         A.CallTo(() => _buildingBlockTask.SaveAsTemplate(A<ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>>._, TemplateDatabaseType.User))
+            .Invokes(x => _cache = x.GetArgument<ICache<IPKSimBuildingBlock, IReadOnlyList<IPKSimBuildingBlock>>>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.SaveAsTemplate(new[] {_individual});
+      }
+
+      [Observation]
+      public void should_also_save_the_associated_expression_profile()
+      {
+         _cache[_individual].ShouldContain(_expressionProfile);
       }
    }
 }

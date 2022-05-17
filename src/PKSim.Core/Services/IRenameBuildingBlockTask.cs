@@ -12,14 +12,11 @@ namespace PKSim.Core.Services
       void RenameSimulation(Simulation simulation, string newName);
 
       /// <summary>
-      ///    Update build the building block names of simulation using the given building block;
+      ///    Renames the building block to <paramref name="newName" /> and ensures that all dependent objects are
+      ///    updated accordingly
       /// </summary>
-      void RenameUsageOfBuildingBlockInProject(IPKSimBuildingBlock templateBuildingBlock, string oldBuildingBlockName);
-
-      /// <summary>
-      ///    Change the name of the compound used in the simulation. The <paramref name="targetSimulation"/> was created using the compound
-      /// named <paramref name="newCompoundName"/> but might be using properties still referencing <paramref name="oldCompoundName"/>
-      /// </summary>
-      void SynchronizeCompoundNameIn(Simulation targetSimulation, string oldCompoundName, string newCompoundName);
+      /// <param name="templateBuildingBlock">Building block to be renamed</param>
+      /// <param name="newName">new building block name name</param>
+      void RenameBuildingBlock(IPKSimBuildingBlock templateBuildingBlock, string newName);
    }
 }

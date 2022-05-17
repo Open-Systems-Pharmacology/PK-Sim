@@ -18,7 +18,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory) :
             base(view, subPresenterItemManager, RangeItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
-         View.Image = ApplicationIcons.RangeAnalysis;
+         View.ApplicationIcon = ApplicationIcons.RangeAnalysis;
       }
 
       protected override string AnalysisType => PKSimConstants.UI.Range;

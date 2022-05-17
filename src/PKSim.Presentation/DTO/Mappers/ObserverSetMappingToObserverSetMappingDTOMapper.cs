@@ -14,12 +14,12 @@ namespace PKSim.Presentation.DTO.Mappers
    public class ObserverSetMappingToObserverSetMappingDTOMapper : IObserverSetMappingToObserverSetMappingDTOMapper
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
-      public ObserverSetMappingToObserverSetMappingDTOMapper(IBuildingBlockRepository buildingBlockRepository, IBuildingBlockInSimulationManager buildingBlockInSimulationManager)
+      public ObserverSetMappingToObserverSetMappingDTOMapper(IBuildingBlockRepository buildingBlockRepository, IBuildingBlockInProjectManager buildingBlockInProjectManager)
       {
          _buildingBlockRepository = buildingBlockRepository;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
       }
 
       public ObserverSetMappingDTO MapFrom(ObserverSetMapping observerSetMapping, Simulation simulation)
@@ -28,7 +28,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
          var usedTemplateObserverSet = simulation.UsedBuildingBlockByTemplateId(observerSetMapping.TemplateObserverSetId);
          //simulation was already using an event based on template. Retrieved the building block used
-         var templateObserverSet = _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy<ObserverSet>(usedTemplateObserverSet) ??
+         var templateObserverSet = _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<ObserverSet>(usedTemplateObserverSet) ??
                                    _buildingBlockRepository.All<ObserverSet>().FindById(observerSetMapping.TemplateObserverSetId);
 
          observerSetMappingDTO.ObserverSet = templateObserverSet;

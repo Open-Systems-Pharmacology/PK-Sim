@@ -12,7 +12,6 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -25,6 +24,7 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -45,7 +45,6 @@ namespace PKSim.UI.Views.Compounds
       protected readonly ComboBoxUnitParameter _comboBoxUnit;
       protected readonly GridViewBinder<TParameterAlternativeDTO> _gridViewBinder;
       private IGridViewColumn _colButtons;
-    
 
       public CompoundParameterWithDefaultAlternativeBaseView()
       {
@@ -89,16 +88,16 @@ namespace PKSim.UI.Views.Compounds
          var colDefault = _gridViewBinder.Bind(x => x.IsDefault)
             .WithCaption(PKSimConstants.UI.IsDefault)
             .WithRepository(dto => _isDefaultRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH);
+            .WithFixedWidth(EMBEDDED_CHECK_BOX_WIDTH);
 
          colDefault.OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsDefaultFor(o, e.NewValue));
          _colDefault = colDefault;
 
-        _colButtons = _gridViewBinder.AddUnboundColumn()
+         _colButtons = _gridViewBinder.AddUnboundColumn()
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(GetButtonRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);
 
          _addAndRemoveButtonRepository.ButtonClick += (o, e) => OnEvent(() => buttonRepositoryButtonClick(e, _gridViewBinder.FocusedElement));
          _addButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.AddAlternative());
@@ -111,7 +110,6 @@ namespace PKSim.UI.Views.Compounds
       {
          return Equals(_colButtons?.XtraColumn, column);
       }
-
 
       protected override bool ColumnIsCheckBox(GridColumn column)
       {
@@ -130,7 +128,7 @@ namespace PKSim.UI.Views.Compounds
       protected void UpdateButtonImage(int buttonIndex, RepositoryItemButtonEdit repositoryItemButtonEdit, ApplicationIcon image)
       {
          repositoryItemButtonEdit.Buttons[buttonIndex].Kind = ButtonPredefines.Glyph;
-         repositoryItemButtonEdit.Buttons[buttonIndex].Image = image;
+         repositoryItemButtonEdit.Buttons[buttonIndex].ImageOptions.SetImage(image);
       }
 
       private void updateValueOrigin(TParameterAlternativeDTO parameterAlternativeDTO, ValueOrigin newValueOrigin)

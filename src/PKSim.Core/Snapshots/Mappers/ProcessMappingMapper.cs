@@ -3,7 +3,17 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ProcessMappingMapper : SnapshotMapperBase<IProcessMapping, CompoundProcessSelection, Model.CompoundProcess>
+   public class CompoundProcessSnapshotContext : SnapshotContext
+   {
+      public Model.CompoundProcess Process { get; }
+
+      public CompoundProcessSnapshotContext(Model.CompoundProcess process, SnapshotContext baseContext) : base(baseContext)
+      {
+         Process = process;
+      }
+   }
+
+   public class ProcessMappingMapper : SnapshotMapperBase<IProcessMapping, CompoundProcessSelection, CompoundProcessSnapshotContext>
    {
       public override async Task<CompoundProcessSelection> MapToSnapshot(IProcessMapping partialProcessMapping)
       {
@@ -30,9 +40,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override Task<IProcessMapping> MapToModel(CompoundProcessSelection snapshot, Model.CompoundProcess process)
+      public override Task<IProcessMapping> MapToModel(CompoundProcessSelection snapshot, CompoundProcessSnapshotContext snapshotContext)
       {
          IProcessMapping processMapping;
+         var process = snapshotContext.Process;
          switch (process)
          {
             case SystemicProcess systemicProcess:

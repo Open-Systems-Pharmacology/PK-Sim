@@ -19,12 +19,18 @@ namespace PKSim.UI.Views.Individuals
       {
          _presenter = presenter;
       }
-      
+
       public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
 
       public void AddLocalizationView(IView view) => AddViewTo(layoutItemPanelLocalization, view);
 
       public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemPanelExpressionParameters, view);
+
+      public bool ReadOnly
+      {
+         set => layoutItemPanelLocalization.Enabled = !value;
+         get => !layoutItemPanelLocalization.Enabled;
+      }
 
       public override void InitializeResources()
       {

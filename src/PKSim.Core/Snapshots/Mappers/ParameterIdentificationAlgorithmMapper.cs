@@ -21,10 +21,10 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<OptimizationAlgorithmProperties> MapToModel(OptimizationAlgorithm snapshot)
+      public override async Task<OptimizationAlgorithmProperties> MapToModel(OptimizationAlgorithm snapshot, SnapshotContext snapshotContext)
       {
          var algoritmProperties = new OptimizationAlgorithmProperties(snapshot.Name);
-         var properties = await _extendedPropertyMapper.MapToModels(snapshot.Properties);
+         var properties = await _extendedPropertyMapper.MapToModels(snapshot.Properties, snapshotContext);
          properties?.Each(algoritmProperties.Add);
          return algoritmProperties;
          ;

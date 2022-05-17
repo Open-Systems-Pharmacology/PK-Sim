@@ -52,7 +52,7 @@ namespace PKSim.Core.Services
             return;
 
          //No template was found for the given name. Raise event warning
-         _eventPublisher.PublishEvent(new NoTranporterTemplateAvailableEvent(transporter));
+         _eventPublisher.PublishEvent(new NoTransporterTemplateAvailableEvent(transporter));
       }
 
       public void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, TransportType transportType)
@@ -60,17 +60,21 @@ namespace PKSim.Core.Services
          foreach (var transporterContainer in simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
             updateTransporterContainerFromTemplate(transporterContainer, null, transportType);
-            updateFractionExpressedEpithelial(transporterContainer, transportType);
+            updateFractionExpressedApical(transporterContainer, transportType);
          }
       }
 
-      private void updateFractionExpressedEpithelial(TransporterExpressionContainer transporterContainer, TransportType transportType)
+      private void updateFractionExpressedApical(TransporterExpressionContainer transporterContainer, TransportType transportType)
       {
          if (!transportType.IsOneOf(TransportType.Efflux, TransportType.Influx, TransportType.PgpLike))
             return;
          
          var fractionExpressedApical = transporterContainer.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
          if (fractionExpressedApical == null)
+            return;
+
+         //Parameter is a hidden parameter. This is used for consistency purpose only and should not be updated
+         if (!fractionExpressedApical.Visible)
             return;
 
          //value was set by the user.

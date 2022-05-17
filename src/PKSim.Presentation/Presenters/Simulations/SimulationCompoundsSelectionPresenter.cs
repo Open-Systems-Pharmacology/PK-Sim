@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using PKSim.Assets;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Collections;
@@ -33,7 +34,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       /// <summary>
       ///    Loads a compound into the project
       /// </summary>
-      void LoadCompound();
+      Task LoadCompoundAsync();
 
       /// <summary>
       ///    Returns the compounds selected by the user
@@ -52,17 +53,17 @@ namespace PKSim.Presentation.Presenters.Simulations
    public class SimulationCompoundsSelectionPresenter : AbstractSubPresenter<ISimulationCompoundsSelectionView, ISimulationCompoundsSelectionPresenter>, ISimulationCompoundsSelectionPresenter
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly ICompoundTask _compoundTask;
       private readonly IBuildingBlockSelectionDisplayer _buildingBlockSelectionDisplayer;
       private readonly NotifyList<CompoundSelectionDTO> _compoundSelectionDTOs;
 
       public SimulationCompoundsSelectionPresenter(ISimulationCompoundsSelectionView view, IBuildingBlockRepository buildingBlockRepository,
-         IBuildingBlockInSimulationManager buildingBlockInSimulationManager, ICompoundTask compoundTask, IBuildingBlockSelectionDisplayer buildingBlockSelectionDisplayer)
+         IBuildingBlockInProjectManager buildingBlockInProjectManager, ICompoundTask compoundTask, IBuildingBlockSelectionDisplayer buildingBlockSelectionDisplayer)
          : base(view)
       {
          _buildingBlockRepository = buildingBlockRepository;
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _compoundTask = compoundTask;
          _buildingBlockSelectionDisplayer = buildingBlockSelectionDisplayer;
          _compoundSelectionDTOs = new NotifyList<CompoundSelectionDTO>();
@@ -72,7 +73,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void EditSimulation(Simulation simulation, CreationMode creationMode)
       {
-         bindToCompounds(_buildingBlockInSimulationManager.TemplateBuildingBlocksUsedBy<Compound>(simulation));
+         bindToCompounds(_buildingBlockInProjectManager.TemplateBuildingBlocksUsedBy<Compound>(simulation));
       }
 
       public void UpdateSelectedCompound(Compound templateCompound)
@@ -132,9 +133,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          _compoundSelectionDTOs.Add(mapFrom(compoundAdded, isSelected: true));
       }
 
-      public void LoadCompound()
+      public async Task LoadCompoundAsync()
       {
-         addToSelection(_compoundTask.LoadSingleFromTemplate());
+         addToSelection(await _compoundTask.LoadSingleFromTemplateAsync());
       }
 
       public override void Initialize()

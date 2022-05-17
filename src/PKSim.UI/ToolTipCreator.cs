@@ -1,10 +1,19 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using DevExpress.Utils;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Services;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Mappers;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
+using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO;
@@ -12,16 +21,6 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.DTO.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Services;
-using OSPSuite.Assets;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Mappers;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 
 namespace PKSim.UI
 {
@@ -34,7 +33,7 @@ namespace PKSim.UI
       SuperToolTip ToolTipForPKAnalysis(string parameterDisplayName, string displayValue, string warning);
       SuperToolTip CreateToolTip(string content, string title);
       SuperToolTip CreateToolTip(string content);
-      SuperToolTip CreateToolTip(string content, Image image);
+      SuperToolTip CreateToolTip(string content, ApplicationIcon image);
       SuperToolTip WarningToolTip(string warning);
       SuperToolTip ToolTipFor(ParameterAlternativeDTO parameterAlternativeDTO);
       SuperToolTip ToolTipFor(IEnumerable<ToolTipPart> toolTipParts);
@@ -45,7 +44,6 @@ namespace PKSim.UI
       SuperToolTip ToolTipFor<TX, TY>(CurveData<TX, TY> curveData, double xDisplayValue, double yDisplayValue)
          where TX : IXValue
          where TY : IYValue;
-
    }
 
    public class ToolTipCreator : OSPSuite.UI.Services.ToolTipCreator, IToolTipCreator
@@ -81,7 +79,7 @@ namespace PKSim.UI
             return null;
 
          var path = new List<string>();
-         if(!string.IsNullOrEmpty(containerDTO.ContainerName))
+         if (!string.IsNullOrEmpty(containerDTO.ContainerName))
             path.Add(containerDTO.ContainerName);
 
          if (!string.IsNullOrEmpty(containerDTO.CompartmentName))
@@ -113,7 +111,8 @@ namespace PKSim.UI
          if (simulationResultsFileSelectionDTO.Status == NotificationType.Error)
             message = simulationResultsFileSelectionDTO.Message;
 
-         return CreateToolTip(message, simulationResultsFileSelectionDTO.FilePath, simulationResultsFileSelectionDTO.Image);
+         // return CreateToolTip(message, simulationResultsFileSelectionDTO.FilePath, simulationResultsFileSelectionDTO.Image);
+         return CreateToolTip(message, simulationResultsFileSelectionDTO.FilePath, ApplicationIcons.About);
       }
 
       public SuperToolTip ToolTipFor(QuantityPKParameterDTO quantityPKParameterDTO)
@@ -169,12 +168,14 @@ namespace PKSim.UI
             toolTip.Items.AddSeparator();
             toolTip.WithTitle(PKSimConstants.UI.Warning);
             var item = toolTip.Items.Add(warning);
-            item.Image = ApplicationIcons.Warning;
+            item.ImageOptions.SvgImage = ApplicationIcons.Warning;
+            item.ImageOptions.SvgImageSize = IconSizes.Size16x16;
          }
+
          return toolTip;
       }
 
-      public SuperToolTip CreateToolTip(string content, Image image)
+      public SuperToolTip CreateToolTip(string content, ApplicationIcon image)
       {
          return CreateToolTip(content, string.Empty, image);
       }

@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatParameterDistributionRepository : MetaDataRepository<ParameterDistributionMetaData>, IFlatParameterDistributionRepository
    {
       public FlatParameterDistributionRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<ParameterDistributionMetaData> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewParameterDistributions)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_PARAMETER_DISTRIBUTIONS)
       {
       }
    }
@@ -23,8 +23,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public ParameterDistributionRepository(
          IFlatParameterDistributionRepository flatParameterDistributionRepo,
          IFlatContainerRepository flatContainerRepository,
-         IValueOriginRepository valueOriginRepository) :
-         base(flatParameterDistributionRepo, flatContainerRepository, valueOriginRepository)
+         IValueOriginRepository valueOriginRepository,
+         IFlatContainerParameterDescriptorConditionRepository flatContainerParameterDescriptorConditionRepository,
+         ICriteriaConditionToDescriptorConditionMapper descriptorConditionMapper) :
+         base(flatParameterDistributionRepo, flatContainerRepository, valueOriginRepository, flatContainerParameterDescriptorConditionRepository, descriptorConditionMapper)
       {
       }
    }

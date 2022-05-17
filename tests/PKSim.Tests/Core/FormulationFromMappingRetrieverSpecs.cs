@@ -12,13 +12,13 @@ namespace PKSim.Core
    public abstract class concern_for_FormulationFromMappingRetriever : ContextSpecification<IFormulationFromMappingRetriever>
    {
       protected Simulation _simulation;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSmulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInSmulationManager;
       protected IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
          _simulation = new IndividualSimulation();
-         _buildingBlockInSmulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInSmulationManager = A.Fake<IBuildingBlockInProjectManager>();
          _buildingBlockRepository= A.Fake<IBuildingBlockRepository>();
          sut = new FormulationFromMappingRetriever(_buildingBlockInSmulationManager,_buildingBlockRepository);
       }

@@ -19,7 +19,7 @@ namespace PKSim.UI.Extensions
          panel.Margin = new Padding(0);
          panel.FillWith((IView) buildingBlockSelection);
          panel.BorderStyle = BorderStyles.NoBorder;
-         var size = new Size(layoutControlItem.Size.Width, CoreConstants.UI.BUILDING_BLOCK_SELECTION_SIZE);
+         var size = new Size(layoutControlItem.Size.Width, UIConstants.Size.BUILDING_BLOCK_SELECTION_SIZE);
          layoutControlItem.SizeConstraintsType = SizeConstraintsType.Custom;
          layoutControlItem.MinSize = size;
          layoutControlItem.Size = size;

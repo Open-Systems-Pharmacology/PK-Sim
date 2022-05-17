@@ -29,7 +29,7 @@ namespace PKSim.Infrastructure
    public class When_retrieving_the_full_version_of_the_assembly : concern_for_PKSimConfiguration
    {
       [Observation]
-      public void should_return_a_string_containing_the_revison_number_or_the_info_number()
+      public void should_return_a_string_containing_the_revision_number_or_the_info_number()
       {
          sut.FullVersion.StartsWith($"{sut.Version}").ShouldBeTrue();
       }
@@ -48,7 +48,7 @@ namespace PKSim.Infrastructure
       public void should_return_the_one_for_the_current_version_first_and_the_latest_version_with_a_small_major_last()
       {
          _possibleApplicationPaths[0].ShouldBeEqualTo(sut.ApplicationSettingsFilePath);
-         _possibleApplicationPaths.Last().StartsWith(Path.Combine(EnvironmentHelper.ApplicationDataFolder(), CoreConstants.APPLICATION_FOLDER_PATH, "5.6")).ShouldBeTrue();
+         _possibleApplicationPaths.Last().StartsWith(Path.Combine(EnvironmentHelper.ApplicationDataFolder(), CoreConstants.APPLICATION_FOLDER_PATH, "8.0")).ShouldBeTrue();
       }
    }
 

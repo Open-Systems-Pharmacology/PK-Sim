@@ -17,6 +17,7 @@ namespace PKSim.Core
       protected IEventPublisher _eventPublisher;
       protected ITransportDirectionRepository _transportDirectionRepository;
       protected IParameter _fractionExpressedApical;
+      protected IParameter _fractionExpressedApicalBone;
       protected IParameter _fractionExpressedApicalMucosa;
       protected ISimulationSubject _individual;
       protected TransporterExpressionContainer _transporterWithTemplate;
@@ -26,6 +27,7 @@ namespace PKSim.Core
       protected TransporterContainerTemplate _transporterContainerTemplate;
       protected IndividualTransporter _transporter;
       private TransporterExpressionContainer _transporterInMucosa;
+      private TransporterExpressionContainer _transporterInBone;
 
       protected override void Context()
       {
@@ -35,6 +37,9 @@ namespace PKSim.Core
          sut = new TransportContainerUpdater(_repository, _eventPublisher);
          _fractionExpressedApical = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
          _fractionExpressedApicalMucosa = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
+         _fractionExpressedApicalBone = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
+         //Indicates that this parameter should not be visible to the user and therefore remains unchanged
+         _fractionExpressedApicalBone.Visible = false;
          _individual = A.Fake<ISimulationSubject>();
          _individual.Species.Name = _species;
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "toto"};
@@ -44,6 +49,8 @@ namespace PKSim.Core
          var liverCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(liver);
          var kidney = new Container().WithName(CoreConstants.Organ.KIDNEY).WithParentContainer(organism);
          var kidneyCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(kidney);
+         var bone = new Container().WithName(CoreConstants.Organ.BONE).WithParentContainer(organism);
+         var boneInterstitial = new Container().WithName(CoreConstants.Compartment.INTERSTITIAL).WithParentContainer(bone);
          _transporterWithTemplate = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}
             .WithParentContainer(liverCell);
          _transporterWithoutTemplate = new TransporterExpressionContainer
@@ -52,11 +59,16 @@ namespace PKSim.Core
 
          _transporterInMucosa = new TransporterExpressionContainer {TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular}
             .WithParentContainer(mucosa);
+
+         _transporterInBone = new TransporterExpressionContainer { TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular }
+            .WithParentContainer(boneInterstitial);
+         
          _transporterInMucosa.Add(_fractionExpressedApicalMucosa);
          _transporterWithoutTemplate.Add(_fractionExpressedApical);
+         _transporterInBone.Add(_fractionExpressedApicalBone);
 
          A.CallTo(() => _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter))
-            .Returns(new[] {_transporterWithTemplate, _transporterWithoutTemplate, _transporterInMucosa });
+            .Returns(new[] {_transporterWithTemplate, _transporterWithoutTemplate, _transporterInMucosa, _transporterInBone });
 
          _transporterContainerTemplate = new TransporterContainerTemplate {TransportType = TransportType.Influx};
          _allTransporterTemplates.Add(_transporterContainerTemplate);
@@ -84,7 +96,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_notify_that_a_template_was_not_found()
       {
-         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTranporterTemplateAvailableEvent>._)).MustNotHaveHappened();
+         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTransporterTemplateAvailableEvent>._)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -127,7 +139,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_notify_that_a_template_was_not_found()
       {
-         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTranporterTemplateAvailableEvent>._)).MustHaveHappened();
+         A.CallTo(() => _eventPublisher.PublishEvent(A<NoTransporterTemplateAvailableEvent>._)).MustHaveHappened();
       }
    }
 
@@ -139,7 +151,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_one()
+      public void should_set_the_value_of_the_fraction_expressed_apical_to_one()
       {
          _fractionExpressedApical.Value.ShouldBeEqualTo(1);
       }
@@ -153,19 +165,26 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_zero_in_all_non_mucosa_compartment()
+      public void should_set_the_value_of_the_fraction_expressed_apical_to_zero_in_all_non_mucosa_compartment()
       {
          _fractionExpressedApical.Value.ShouldBeEqualTo(0);
       }
 
+
       [Observation]
-      public void should_set_the_value_of_the_fraction_expressed_epithelial_to_one_in_all_mucosa_compartment()
+      public void should_not_change_the_value_of_fraction_expressed_apical_for_organ_that_only_have_this_parameter_for_consistency_purpose_such_as_bone()
+      {
+         _fractionExpressedApicalBone.Value.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_set_the_value_of_the_fraction_expressed_apical_to_one_in_all_mucosa_compartment()
       {
          _fractionExpressedApicalMucosa.Value.ShouldBeEqualTo(1);
       }
    }
 
-   public class When_updating_the_transport_type_from_efflux_to_influx_and_the_fraction_expressed_epithelial_was_changed_by_the_user : concern_for_TransportContainerUpdater
+   public class When_updating_the_transport_type_from_efflux_to_influx_and_the_fraction_expressed_apical_was_changed_by_the_user : concern_for_TransportContainerUpdater
    {
       protected override void Context()
       {

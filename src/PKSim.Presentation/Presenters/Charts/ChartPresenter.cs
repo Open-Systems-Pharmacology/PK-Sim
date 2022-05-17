@@ -7,6 +7,7 @@ using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -38,6 +39,7 @@ namespace PKSim.Presentation.Presenters.Charts
       protected readonly IObservedDataTask _observedDataTask;
       private readonly IChartUpdater _chartUpdater;
       private readonly bool _useSimulationNameToCreateCurveName;
+      private readonly IUserSettings _userSettings;
 
       protected ChartDisplayMode _chartDisplayMode;
       protected readonly ICache<DataRepository, IndividualSimulation> _repositoryCache;
@@ -51,7 +53,8 @@ namespace PKSim.Presentation.Presenters.Charts
          IIndividualPKAnalysisPresenter pkAnalysisPresenter,
          IChartTask chartTask, 
          IObservedDataTask observedDataTask, 
-         IChartUpdater chartUpdater, bool useSimulationNameToCreateCurveName)
+         IChartUpdater chartUpdater, bool useSimulationNameToCreateCurveName,
+         IUserSettings userSettings)
          : base(view, chartPresenterContext)
       {
          _chartTask = chartTask;
@@ -68,10 +71,10 @@ namespace PKSim.Presentation.Presenters.Charts
          ChartEditorPresenter.SetShowDataColumnInDataBrowserDefinition(IsColumnVisibleInDataBrowser);
          ChartDisplayPresenter.DragDrop += OnDragDrop;
          ChartDisplayPresenter.DragOver += OnDragOver;
-         ChartDisplayPresenter.ExportToPDF = () => _chartTask.ExportToPDF(Chart);
          AddAllButtons();
          _chartDisplayMode = ChartDisplayMode.Chart;
          _observedDataDragDropBinder = new ObservedDataDragDropBinder();
+         _userSettings = userSettings;
       }
 
       public override void InitializeAnalysis(TChart chart)
@@ -205,6 +208,19 @@ namespace PKSim.Presentation.Presenters.Charts
          }
       }
 
+      protected virtual void AddColorGroupedObservedData(IReadOnlyList<IReadOnlyList<DataRepository>> observedDataListGroupedByFolder)
+      {
+         using (_chartUpdater.UpdateTransaction(Chart))
+         {
+            foreach (var observesDataListInFolder in observedDataListGroupedByFolder)
+            {
+               AddDataRepositoriesToEditor(observesDataListInFolder);
+               var columnsToAdd = observesDataListInFolder.SelectMany(x => x.ObservationColumns());
+               ChartEditorPresenter.AddCurvesWithSameColorForColumn(columnsToAdd.ToList());
+            }
+         }
+      }
+
       protected virtual void OnDragOver(object sender, IDragEvent e)
       {
          _observedDataDragDropBinder.PrepareDrag(e);
@@ -212,8 +228,16 @@ namespace PKSim.Presentation.Presenters.Charts
 
       protected virtual void OnDragDrop(object sender, IDragEvent e)
       {
-         var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e).ToList();
-         AddObservedData(droppedObservedData, asResultOfDragAndDrop: true);
+         if (_userSettings.ColorGroupObservedDataFromSameFolder)
+         {
+            var observedDataListGroupedByFolder = _observedDataDragDropBinder.DroppedObservedDataWithFolderPathFrom(e);
+            AddColorGroupedObservedData(observedDataListGroupedByFolder);
+         }
+         else
+         {
+            var droppedObservedData = _observedDataDragDropBinder.DroppedObservedDataFrom(e).ToList();
+            AddObservedData(droppedObservedData, asResultOfDragAndDrop: true);
+         }
       }
 
       protected override void ConfigureColumns()

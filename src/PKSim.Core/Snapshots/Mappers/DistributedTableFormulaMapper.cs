@@ -39,7 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
          }).ToList();
       }
 
-      public override Task<ModelTableFormula> MapToModel(SnapshotTableFormula snapshot)
+      public override Task<ModelTableFormula> MapToModel(SnapshotTableFormula snapshot, SnapshotContext snapshotContext)
       {
          var tableFormula = _formulaFactory.CreateDistributedTableFormula();
          _tableFormulaMapper.UpdateModelProperties(tableFormula, snapshot);

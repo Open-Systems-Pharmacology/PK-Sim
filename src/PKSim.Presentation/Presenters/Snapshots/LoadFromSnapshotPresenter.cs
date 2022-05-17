@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -16,11 +19,12 @@ namespace PKSim.Presentation.Presenters.Snapshots
    public interface ILoadFromSnapshotPresenter : IPresenter<ILoadFromSnapshotView>, IDisposablePresenter
    {
       /// <summary>
-      /// Starts the snapshot file selection process. Returns <c>true</c> if a file was selected of <c>false</c> if the selection was canceled
+      ///    Starts the snapshot file selection process. Returns <c>true</c> if a file was selected of <c>false</c> if the
+      ///    selection was canceled
       /// </summary>
       bool SelectFile();
 
-      Task Start();
+      Task StartAsync();
 
       bool ModelIsDefined { get; }
 
@@ -32,7 +36,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
    public interface ILoadFromSnapshotPresenter<T> : ILoadFromSnapshotPresenter where T : class, IObjectBase
    {
-      IEnumerable<T> LoadModelFromSnapshot();
+      IReadOnlyList<T> LoadModelFromSnapshot();
    }
 
    public class LoadFromSnapshotPresenter<T> : AbstractDisposablePresenter<ILoadFromSnapshotView, ILoadFromSnapshotPresenter>, ILoadFromSnapshotPresenter<T> where T : class, IObjectBase
@@ -53,7 +57,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          IDialogCreator dialogCreator,
          IObjectTypeResolver objectTypeResolver,
          IOSPSuiteLogger logger,
-         IEventPublisher eventPublisher) : base(view)
+         IEventPublisher eventPublisher, 
+         IStartOptions startOptions) : base(view)
       {
          _snapshotTask = snapshotTask;
          _dialogCreator = dialogCreator;
@@ -65,16 +70,29 @@ namespace PKSim.Presentation.Presenters.Snapshots
          _view.Caption = PKSimConstants.UI.LoadObjectFromSnapshot(typeToLoad);
          _view.AddLogView(_logPresenter.BaseView);
          _view.BindTo(_loadFromSnapshotDTO);
+         _view.RunSimulationsSwitchVisible = startOptions.IsDeveloperMode;
       }
 
-      public IEnumerable<T> LoadModelFromSnapshot()
+      public override bool ShouldClose
+      {
+         get
+         {
+            if (!ModelIsDefined)
+               return true;
+
+            var shouldCancel = _dialogCreator.MessageBoxYesNo(Captions.ReallyCancel);
+            return shouldCancel == ViewResult.Yes;
+         }
+      }
+
+      public IReadOnlyList<T> LoadModelFromSnapshot()
       {
          if (!SelectFile())
             return null;
 
          _view.Display();
          ClearModel(_model);
-         return _view.Canceled ? null : _model;
+         return _view.Canceled ? null : _model.ToList();
       }
 
       public bool SelectFile()
@@ -82,6 +100,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          var fileName = selectSnapshotFile();
          if (string.IsNullOrEmpty(fileName))
             return false;
+
+         ClearModel();
 
          _loadFromSnapshotDTO.SnapshotFile = fileName;
          return true;
@@ -95,14 +115,14 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       private string typeToLoad => _objectTypeResolver.TypeFor<T>();
 
-      public async Task Start()
+      public async Task StartAsync()
       {
          try
          {
             _logPresenter.ClearLog();
             _view.EnableButtons(false);
             _logger.AddInfo(PKSimConstants.Information.LoadingSnapshot(_loadFromSnapshotDTO.SnapshotFile, typeToLoad));
-            await Task.Run(() => PerformLoad(_loadFromSnapshotDTO.SnapshotFile));
+            await Task.Run(performLoadAsync);
             _logger.AddInfo(PKSimConstants.Information.SnapshotLoaded(typeToLoad));
          }
          catch (Exception e)
@@ -111,7 +131,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          }
          finally
          {
-            _view.EnableButtons(cancelEnabled: true, okEnabled: ModelIsDefined, startEnabled: CanClose);
+            //Start is disabled if the model was loaded successfully
+            _view.EnableButtons(cancelEnabled: true, okEnabled: ModelIsDefined, startEnabled: !ModelIsDefined);
          }
       }
 
@@ -119,10 +140,16 @@ namespace PKSim.Presentation.Presenters.Snapshots
 
       public string SnapshotFile => _loadFromSnapshotDTO.SnapshotFile;
 
-      protected async Task PerformLoad(string snapshotFile)
+      private async Task performLoadAsync()
+      {
+         ClearModel();
+         _model = await LoadModelAsync(_loadFromSnapshotDTO);
+      }
+
+      protected virtual void ClearModel()
       {
          ClearModel(_model);
-         _model = await LoadModelAsync(snapshotFile);
+         _model = null;
       }
 
       protected virtual void ClearModel(IEnumerable<T> model)
@@ -130,9 +157,9 @@ namespace PKSim.Presentation.Presenters.Snapshots
          /*override if something needs to be done for specific loading case*/
       }
 
-      protected virtual Task<IEnumerable<T>> LoadModelAsync(string snapshotFile)
+      protected virtual Task<IEnumerable<T>> LoadModelAsync(LoadFromSnapshotDTO loadFromSnapshotDTO)
       {
-         return _snapshotTask.LoadModelsFromSnapshotFile<T>(snapshotFile);
+         return _snapshotTask.LoadModelsFromSnapshotFileAsync<T>(loadFromSnapshotDTO.SnapshotFile);
       }
 
       protected override void Cleanup()

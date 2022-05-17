@@ -4,8 +4,10 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -86,6 +88,43 @@ namespace PKSim.Presentation
       {
          _workspace.WorkspaceLayout.LayoutItems.Count(x => _existingWorkspaceLayout.LayoutItems.Contains(x)).ShouldBeEqualTo(1);
          _workspace.WorkspaceLayout.LayoutItems.First(x => _existingWorkspaceLayout.LayoutItems.Contains(x)).WasOpenOnSave.ShouldBeFalse();
+      }
+   }
+
+   public class When_updating_workspace_layout_with_nonpersistent_subject_presenters : concern_for_WorkspaceLayoutCreator
+   {
+      private ISingleStartPresenter _presenter1;
+      private ISingleStartPresenter _presenter2;
+      private Individual _individual;
+      private ParameterIdentificationFeedback _feedback;
+      private IWorkspaceLayout _existingWorkspaceLayout;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individual = new Individual().WithId("individual");
+         _feedback = new ParameterIdentificationFeedback(new ParameterIdentification());
+
+         _presenter1 = A.Fake<ISingleStartPresenter>();
+         A.CallTo(() => _presenter1.Subject).Returns(_individual);
+         _presenter2 = A.Fake<ISingleStartPresenter>();
+         A.CallTo(() => _presenter2.Subject).Returns(_feedback);
+         A.CallTo(() => _applicationController.OpenedPresenters()).Returns(new[] { _presenter1, _presenter2 });
+
+         _existingWorkspaceLayout = A.Fake<IWorkspaceLayout>();
+         _workspace.WorkspaceLayout = _existingWorkspaceLayout;
+         A.CallTo(() => _existingWorkspaceLayout.LayoutItems).Returns(new List<WorkspaceLayoutItem> { new WorkspaceLayoutItem() });
+      }
+
+      protected override void Because()
+      {
+         sut.SaveCurrentLayout();
+      }
+
+      [Observation]
+      public void should_ignore_non_persistent_subject_presenters()
+      {
+         _workspace.WorkspaceLayout.LayoutItems.Count().ShouldBeEqualTo(2);
       }
    }
 }

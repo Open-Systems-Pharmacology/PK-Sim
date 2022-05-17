@@ -61,20 +61,20 @@
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(691, 238, 250, 350);
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1008, 456, 945, 695);
          this.layoutControl.OptionsView.UseSkinIndents = false;
          this.layoutControl.Root = this.layoutControlGroup;
-         this.layoutControl.Size = new System.Drawing.Size(497, 42);
+         this.layoutControl.Size = new System.Drawing.Size(497, 22);
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl1";
          // 
          // cbUnit
          // 
-         this.cbUnit.Location = new System.Drawing.Point(376, 0);
+         this.cbUnit.Location = new System.Drawing.Point(428, 0);
          this.cbUnit.Name = "cbUnit";
          this.cbUnit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbUnit.Size = new System.Drawing.Size(121, 20);
+         this.cbUnit.Size = new System.Drawing.Size(69, 20);
          this.cbUnit.StyleController = this.layoutControl;
          this.cbUnit.TabIndex = 5;
          // 
@@ -88,11 +88,11 @@
          // 
          // cbDiscreteValue
          // 
-         this.cbDiscreteValue.Location = new System.Drawing.Point(0, 20);
+         this.cbDiscreteValue.Location = new System.Drawing.Point(374, 0);
          this.cbDiscreteValue.Name = "cbDiscreteValue";
          this.cbDiscreteValue.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbDiscreteValue.Size = new System.Drawing.Size(372, 20);
+         this.cbDiscreteValue.Size = new System.Drawing.Size(50, 20);
          this.cbDiscreteValue.StyleController = this.layoutControl;
          this.cbDiscreteValue.TabIndex = 6;
          // 
@@ -104,12 +104,10 @@
             this.layoutControlItemValue,
             this.layoutControlItemUnit,
             this.layoutItemDiscreteValue});
-         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup.Name = "layoutControlGroup";
+         this.layoutControlGroup.Name = "Root";
          this.layoutControlGroup.OptionsItemText.TextToControlDistance = 5;
          this.layoutControlGroup.ShowInCustomizationForm = false;
-         this.layoutControlGroup.Size = new System.Drawing.Size(497, 42);
-         this.layoutControlGroup.Text = "layoutControlGroup";
+         this.layoutControlGroup.Size = new System.Drawing.Size(497, 22);
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutControlItemValue
@@ -119,37 +117,31 @@
          this.layoutControlItemValue.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItemValue.Name = "layoutControlItemValue";
          this.layoutControlItemValue.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 2, 0, 0);
-         this.layoutControlItemValue.Size = new System.Drawing.Size(374, 20);
-         this.layoutControlItemValue.Text = "layoutControlItemValue";
+         this.layoutControlItemValue.Size = new System.Drawing.Size(374, 22);
          this.layoutControlItemValue.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemValue.TextToControlDistance = 0;
          this.layoutControlItemValue.TextVisible = false;
          // 
          // layoutControlItemUnit
          // 
          this.layoutControlItemUnit.Control = this.cbUnit;
          this.layoutControlItemUnit.CustomizationFormText = "layoutControlItemUnit";
-         this.layoutControlItemUnit.Location = new System.Drawing.Point(374, 0);
+         this.layoutControlItemUnit.Location = new System.Drawing.Point(426, 0);
          this.layoutControlItemUnit.Name = "layoutControlItemUnit";
          this.layoutControlItemUnit.Padding = new DevExpress.XtraLayout.Utils.Padding(2, 0, 0, 0);
          this.layoutControlItemUnit.ShowInCustomizationForm = false;
-         this.layoutControlItemUnit.Size = new System.Drawing.Size(123, 42);
-         this.layoutControlItemUnit.Text = "layoutControlItemUnit";
+         this.layoutControlItemUnit.Size = new System.Drawing.Size(71, 22);
          this.layoutControlItemUnit.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemUnit.TextToControlDistance = 0;
          this.layoutControlItemUnit.TextVisible = false;
          // 
          // layoutItemDiscreteValue
          // 
          this.layoutItemDiscreteValue.Control = this.cbDiscreteValue;
          this.layoutItemDiscreteValue.CustomizationFormText = "layoutItemDiscreteValue";
-         this.layoutItemDiscreteValue.Location = new System.Drawing.Point(0, 20);
+         this.layoutItemDiscreteValue.Location = new System.Drawing.Point(374, 0);
          this.layoutItemDiscreteValue.Name = "layoutItemDiscreteValue";
          this.layoutItemDiscreteValue.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 2, 0, 0);
-         this.layoutItemDiscreteValue.Size = new System.Drawing.Size(374, 22);
-         this.layoutItemDiscreteValue.Text = "layoutItemDiscreteValue";
+         this.layoutItemDiscreteValue.Size = new System.Drawing.Size(52, 22);
          this.layoutItemDiscreteValue.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemDiscreteValue.TextToControlDistance = 0;
          this.layoutItemDiscreteValue.TextVisible = false;
          // 
          // UxParameterDTOEdit
@@ -157,9 +149,10 @@
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
+         this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
          this.MinimumSize = new System.Drawing.Size(0, 21);
          this.Name = "UxParameterDTOEdit";
-         this.Size = new System.Drawing.Size(497, 42);
+         this.Size = new System.Drawing.Size(497, 22);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);

@@ -11,6 +11,8 @@ namespace PKSim.Core.Model
 {
    public class Individual : PKSimBuildingBlock, ISimulationSubject
    {
+      private readonly List<ExpressionProfile> _allExpressionProfiles = new List<ExpressionProfile>();
+
       /// <summary>
       ///    Seed used to initialize the random generator while creating the individual
       /// </summary>
@@ -35,35 +37,23 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Population used to create the individual (based on the selected species)
       /// </summary>
-      public virtual SpeciesPopulation Population => OriginData.SpeciesPopulation;
+      public virtual SpeciesPopulation Population => OriginData.Population;
 
       /// <summary>
       ///    all available organs in the individual
       /// </summary>
-      public virtual IEnumerable<Organ> AllOrgans() => Organism.OrgansByType(OrganType.Tissue | OrganType.VascularSystem);
+      public virtual IEnumerable<Organ> AllOrgans => Organism.OrgansByType(OrganType.Tissue | OrganType.VascularSystem);
 
       /// <summary>
       ///    Returns the available genders defined for the population in which the individual belongs
       /// </summary>
-      public virtual IEnumerable<Gender> AvailableGenders()
-      {
-         return OriginData.SpeciesPopulation.Genders;
-      }
+      public virtual IReadOnlyList<Gender> AvailableGenders => OriginData.Population.Genders;
 
-      public virtual bool IsAgeDependent => OriginData.SpeciesPopulation.IsAgeDependent;
+      public virtual bool IsAgeDependent => OriginData.Population.IsAgeDependent;
 
       public virtual bool IsHuman => Species.IsHuman;
 
-      public virtual bool IsPreterm
-      {
-         get
-         {
-            if (!Population.IsPreterm)
-               return false;
-
-            return OriginData.GestationalAge.HasValue && OriginData.GestationalAge.Value <= CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
-         }
-      }
+      public virtual bool IsPreterm => Population.IsPreterm && OriginData.IsPreterm;
 
       public virtual Species Species => OriginData.Species;
 
@@ -84,6 +74,27 @@ namespace PKSim.Core.Model
       /// </summary>
       /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
       public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
+
+      public ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule) => AllExpressionProfiles().Find(x => string.Equals(x.MoleculeName, molecule.Name));
+
+      public void AddExpressionProfile(ExpressionProfile expressionProfile)
+      {
+         if (Uses(expressionProfile))
+            return;
+
+         _allExpressionProfiles.Add(expressionProfile);
+      }
+
+      public void RemoveExpressionProfile(ExpressionProfile expressionProfile) => _allExpressionProfiles.Remove(expressionProfile);
+
+      public IReadOnlyList<ExpressionProfile> AllExpressionProfiles() => _allExpressionProfiles;
+
+      public IndividualMolecule MoleculeFor(ExpressionProfile expressionProfile)
+      {
+         return MoleculeByName(expressionProfile.MoleculeName);
+      }
+
+      public bool Uses(ExpressionProfile expressionProfile) => _allExpressionProfiles.Contains(expressionProfile);
 
       public virtual void AddMolecule(IndividualMolecule molecule) => Add(molecule);
 
@@ -117,17 +128,17 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Input age of the individual.
       /// </summary>
-      public virtual double Age => OriginData.Age ?? 0;
-
-      /// <summary>
-      ///    Input height of the individual.
-      /// </summary>
-      public virtual double InputWeight => OriginData.Weight;
+      public virtual double Age => OriginData.Age?.Value ?? 0;
 
       /// <summary>
       ///    Input Weight of the individual.
       /// </summary>
-      public virtual double InputHeight => OriginData.Height ?? 0;
+      public virtual double InputWeight => OriginData.Weight.Value;
+
+      /// <summary>
+      ///    Input Height of the individual.
+      /// </summary>
+      public virtual double InputHeight => OriginData.Height?.Value ?? 0;
 
       /// <summary>
       ///    Mean height as defined in the database for the organism
@@ -139,7 +150,7 @@ namespace PKSim.Core.Model
             if (OriginData == null)
                return double.NaN;
 
-            if (OriginData.SpeciesPopulation.IsHeightDependent)
+            if (OriginData.Population.IsHeightDependent)
                return Organism.Parameter(CoreConstants.Parameters.MEAN_HEIGHT).Value;
 
             return double.NaN;
@@ -156,6 +167,11 @@ namespace PKSim.Core.Model
       ///    Actual weight of the individual (might differ from input weight and mean weight if volumes were changed)
       /// </summary>
       public virtual IParameter WeightParameter => Organism.Parameter(CoreConstants.Parameters.WEIGHT);
+
+      /// <summary>
+      ///    Actual age of the individual
+      /// </summary>
+      public virtual IParameter AgeParameter => Organism.Parameter(CoreConstants.Parameters.AGE);
 
       /// <summary>
       ///    Returns <c>true</c> if at least one molecule is defined in the individual otherwise false
@@ -176,6 +192,7 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(individual, cloneManager);
          OriginData = individual.OriginData.Clone();
          Seed = individual.Seed;
+         individual.AllExpressionProfiles().Each(AddExpressionProfile);
       }
 
       /// <summary>

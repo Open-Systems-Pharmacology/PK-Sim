@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 
 namespace PKSim.Core.Model
@@ -28,5 +29,7 @@ namespace PKSim.Core.Model
       }
 
       public virtual IReadOnlyList<Gender> Genders => _allGenders;
+
+      public virtual Gender DefaultGender => _allGenders.First();
    }
 }

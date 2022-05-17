@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    {
        public FlatApplicationProcessRepository(IDbGateway dbGateway,
                                          IDataTableToMetaDataMapper<FlatApplicationProcess> mapper)
-           : base(dbGateway, mapper, CoreConstants.ORM.ViewApplicationProcesses)
+           : base(dbGateway, mapper, CoreConstants.ORM.VIEW_APPLICATION_PROCESSES)
        {}
 
        public IEnumerable<string> ProcessNamesFor(string applicationName)

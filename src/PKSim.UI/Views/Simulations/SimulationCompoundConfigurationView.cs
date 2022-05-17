@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraLayout;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
-using PKSim.UI.Views.Core;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.Utility.Extensions;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -43,11 +42,6 @@ namespace PKSim.UI.Views.Simulations
       protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, IResizableView view, int height)
       {
          base.AdjustLayoutItemSize(layoutControlItem, view, height);
-         raiseHeightChangedEvent();
-      }
-
-      private void raiseHeightChangedEvent()
-      {
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
@@ -62,5 +56,7 @@ namespace PKSim.UI.Views.Simulations
       {
          _subViews.Each(view => view.Repaint());
       }
+
+      public int DefaultHeight => UIConstants.Size.SIMULATION_COMPOUND_CONFIGURATION_DEFAULT_HEIGHT;
    }
 }

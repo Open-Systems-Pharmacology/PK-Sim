@@ -31,16 +31,15 @@ namespace PKSim.Core
          sut = new DataInfoMapper(_extendedPropertyMapper, dimensionRepository);
 
          _extendedPropertySnapshot = new ExtendedProperty();
-         _dateTime = DateTime.Parse("January 1, 2017");
 
-         _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", _dateTime, "source", "category", 2.3) {LLOQ = 0.4f};
+         _dataInfo = new DataInfo(ColumnOrigins.Observation, AuxiliaryType.GeometricStdDev, "unitName", "category", 2.3) {LLOQ = 0.4f};
          _extendedProperty = new ExtendedProperty<string> {Name = "Hello"};
          _dataInfo.ExtendedProperties.Add(_extendedProperty);
          A.CallTo(() => molWeightDimension.BaseUnitValueToUnitValue(molWeightDimension.DefaultUnit, _dataInfo.MolWeight.Value)).Returns(5.0);
          A.CallTo(() => molWeightDimension.UnitValueToBaseUnitValue(molWeightDimension.DefaultUnit, 5.0)).Returns(_dataInfo.MolWeight.Value);
 
          A.CallTo(() => _extendedPropertyMapper.MapToSnapshot(_extendedProperty)).Returns(_extendedPropertySnapshot);
-         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot)).Returns(_extendedProperty);
+         A.CallTo(() => _extendedPropertyMapper.MapToModel(_extendedPropertySnapshot, A<SnapshotContext>._)).Returns(_extendedProperty);
 
          return Task.FromResult(true);
       }
@@ -59,7 +58,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -74,11 +73,9 @@ namespace PKSim.Core
          _result.AuxiliaryType.ShouldBeEqualTo(_dataInfo.AuxiliaryType);
          _result.Category.ShouldBeEqualTo(_dataInfo.Category);
          _result.ComparisonThreshold.ShouldBeEqualTo(_dataInfo.ComparisonThreshold);
-         _result.Date.ShouldBeEqualTo(_dataInfo.Date);
          _result.LLOQ.ShouldBeEqualTo(_dataInfo.LLOQ);
          _result.MolWeight.ShouldBeEqualTo(_dataInfo.MolWeight);
          _result.Origin.ShouldBeEqualTo(_dataInfo.Origin);
-         _result.Source.ShouldBeEqualTo(_dataInfo.Source);
       }
    }
 
@@ -103,11 +100,9 @@ namespace PKSim.Core
          _snapshot.AuxiliaryType.ShouldBeEqualTo(_dataInfo.AuxiliaryType);
          _snapshot.Category.ShouldBeEqualTo(_dataInfo.Category);
          _snapshot.ComparisonThreshold.ShouldBeEqualTo(_dataInfo.ComparisonThreshold);
-         _snapshot.Date.ShouldBeEqualTo(_dataInfo.Date);
          _snapshot.LLOQ.ShouldBeEqualTo(_dataInfo.LLOQ);
          _snapshot.MolWeight.ShouldBeEqualTo(5.0);
          _snapshot.Origin.ShouldBeEqualTo(_dataInfo.Origin);
-         _snapshot.Source.ShouldBeEqualTo(_dataInfo.Source);
       }
    }
 }

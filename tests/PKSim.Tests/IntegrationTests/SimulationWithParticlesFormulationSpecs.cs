@@ -63,7 +63,7 @@ namespace PKSim.IntegrationTests
 
          //store initial drug mass
          _appliedDrugMass = Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
-                            .Parameter(CoreConstantsForSpecs.Parameter.DRUG_MASS).Value.ToFloat();
+                            .Parameter(CoreConstantsForSpecs.Parameters.DRUG_MASS).Value.ToFloat();
 
          //Get paths for output quantities of interest
          (var lumenPaths, var binSolidDrugPaths, var binInsolubleDrugPaths,
@@ -122,13 +122,13 @@ namespace PKSim.IntegrationTests
 
       protected double ParticleRadiusDissolved
       {
-         get => MoleculeProperties(CoreConstantsForSpecs.Parameter.PARTICLE_RADIUS_DISSOLVED).Value;
-         set => MoleculeProperties(CoreConstantsForSpecs.Parameter.PARTICLE_RADIUS_DISSOLVED).Value=value;
+         get => MoleculeProperties(CoreConstantsForSpecs.Parameters.PARTICLE_RADIUS_DISSOLVED).Value;
+         set => MoleculeProperties(CoreConstantsForSpecs.Parameters.PARTICLE_RADIUS_DISSOLVED).Value=value;
       }
 
       protected IParameter IntestinalTransitRateFor(string segment)
       {
-         return Lumen.Container(segment).Parameter(CoreConstantsForSpecs.Parameter.INTESTINAL_TRANSIT_RATE_ABSOLUTE);
+         return Lumen.Container(segment).Parameter(CoreConstantsForSpecs.Parameters.INTESTINAL_TRANSIT_RATE_ABSOLUTE);
       }
 
       /// <summary>
@@ -608,7 +608,7 @@ namespace PKSim.IntegrationTests
          MoleculeProperties("Reference pH").Value = 7;
 
          Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
-            .Parameter(CoreConstantsForSpecs.Parameter.DRUG_MASS).Value = 22.2015;
+            .Parameter(CoreConstantsForSpecs.Parameters.DRUG_MASS).Value = 22.2015;
       }
 
       private void compareSimulatedValues(float[] newValues, float[] prototypeValues, string location)
@@ -725,6 +725,9 @@ namespace PKSim.IntegrationTests
       {
          //disable precipitation
          PrecipitatedDrugSoluble = true;
+
+         _simulation.Solver.AbsTol = 1e-10;
+         _simulation.Solver.RelTol = 1e-6;
       }
 
       [Observation]

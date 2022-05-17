@@ -1,10 +1,11 @@
 using System.ComponentModel;
 using FakeItEasy;
-using PKSim.Presentation.DTO.Parameters;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Validation;
+using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation
 {
@@ -51,7 +52,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_perfoning_validation_for_a_given_property : concern_for_ParameterDTO
+   public class When_performing_validation_for_a_given_property : concern_for_ParameterDTO
    {
       private double _valueInDisplayUnit;
       private double _kernelValue;
@@ -78,7 +79,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_perfoning_validation_for_a_given_property_for_a_parameter_that_is_not_editable : concern_for_ParameterDTO
+   public class When_performing_validation_for_a_given_property_for_a_parameter_that_is_not_editable : concern_for_ParameterDTO
    {
       private double _valueToValidate;
 
@@ -141,7 +142,8 @@ namespace PKSim.Presentation
          base.Context();
          _parameter.Value = 20;
          _convertedValue = 30;
-         _parameter.ValueInDisplayUnit = _convertedValue;
+         A.CallTo(() => _parameter.TryGetValueInDisplayUnit())
+            .Returns((_convertedValue, true));
       }
 
       [Observation]
@@ -163,6 +165,21 @@ namespace PKSim.Presentation
       public void should_return_the_value_of_the_parameter()
       {
          sut.KernelValue.ShouldBeEqualTo(_parameter.Value);
+      }
+   }
+
+   public class When_retrieving_the_value_of_a_parameter_dto_for_which_the_underlying_parameter_formula_cannot_be_computed : concern_for_ParameterDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Formula = new ExplicitFormula("A + 5");
+      }
+
+      [Observation]
+      public void should_return_a_value_of_zero()
+      {
+         sut.Value.ShouldBeEqualTo(0);
       }
    }
 }

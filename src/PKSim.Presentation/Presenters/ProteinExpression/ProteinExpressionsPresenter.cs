@@ -12,20 +12,23 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Views.ProteinExpression;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {
-   public enum ColumnNamesOfTransferTable
+   public static class ColumnNamesOfTransferTable
    {
-      Container,
-      DisplayName,
-      RelativeExpressionOld,
-      ExpressionValue,
-      RelativeExpressionNew,
-      Unit
+      public static string Container = "Container";
+      public static string DisplayName = "DisplayName";
+      public static string RelativeExpressionOld = "RelativeExpressionOld";
+      public static string RelativeExpressionOldPercentage = "RelativeExpressionOldPercentage";
+      public static string ExpressionValue = "ExpressionValue";
+      public static string RelativeExpressionNew = "RelativeExpressionNew";
+      public static string RelativeExpressionNewPercentage = "RelativeExpressionNewPercentage";
+      public static string Unit = "Unit";
    };
 
    public interface IProteinExpressionsPresenter : IWizardPresenter, IPresenter<IProteinExpressionsView>
@@ -235,6 +238,8 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          {
             _view.ActivateControl(ExpressionItems.ProteinSelection);
             PresenterAt(ExpressionItems.ProteinSelection).ActualizeSelection();
+            if(querySettings.MoleculeName.StringIsNotEmpty())
+               PresenterAt(ExpressionItems.ProteinSelection).InitWithProteinName(querySettings.MoleculeName);
             SetWizardButtonEnabled(ExpressionItems.ProteinSelection);
          }
       }
@@ -274,9 +279,9 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
       private string getQueryDescription()
       {
          var description = new StringBuilder();
-         description.AppendLine(String.Format("Selected protein: {0}", _proteinName));
+         description.AppendLine($"Selected protein: {_proteinName}");
          var selectedUnit = PresenterAt(ExpressionItems.Transfer).GetSelectedUnit();
-         description.AppendLine(String.Format("Selected unit: {0}", selectedUnit));
+         description.AppendLine($"Selected unit: {selectedUnit}");
          var filterInfo = PresenterAt(ExpressionItems.ExpressionData).GetFilterInformation();
          if (!String.IsNullOrEmpty(filterInfo))
          {
@@ -293,8 +298,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
                if (String.IsNullOrEmpty(tissue)) continue;
                var container = row[DatabaseConfiguration.MappingColumns.COL_CONTAINER].ToString();
                if (String.IsNullOrEmpty(container)) continue;
-               description.AppendLine(String.Format("Tissue [{0}] -> Container [{1}]", tissue,
-                  container));
+               description.AppendLine($"Tissue [{tissue}] -> Container [{container}]");
             }
          }
 
@@ -313,7 +317,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
             //filter on current unit and join with containers
             var expDataView = selectedData.DefaultView;
-            expDataView.RowFilter = String.Format("[{0}] = '{1}'", ColumnNamesOfTransferTable.Unit, unit);
+            expDataView.RowFilter = $"[{ColumnNamesOfTransferTable.Unit}] = '{unit}'";
             var expData = joinTransferDataWithContainers(expDataView.ToTable());
             //fill out unit for outer joined containers
             foreach (DataRow row in expData.Rows)

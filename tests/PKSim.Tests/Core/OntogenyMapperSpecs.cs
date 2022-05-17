@@ -134,12 +134,12 @@ namespace PKSim.Core
          };
 
          _snapshot = await sut.MapToSnapshot(_ontogeny);
-         A.CallTo(() => _distributedTableFormulaMapper.MapToModel(_snapshotTable)).Returns(_distributedTableFormula);
+         A.CallTo(() => _distributedTableFormulaMapper.MapToModel(_snapshotTable, A<SnapshotContext>._)).Returns(_distributedTableFormula);
       }
 
       protected override async Task Because()
       {
-         _newOntogeny = await sut.MapToModel(_snapshot, _simulationSubject);
+         _newOntogeny = await sut.MapToModel(_snapshot, new SnapshotContextWithSubject(_simulationSubject, new SnapshotContext()));
       }
 
       [Observation]

@@ -15,7 +15,7 @@ namespace PKSim.Core
       protected override Task Context()
       {
          sut = new QuantityInfoMapper();
-         _quantityInfo = new QuantityInfo("name", new[] { "the", "path" }, QuantityType.Time) { OrderIndex = 9 };
+         _quantityInfo = new QuantityInfo(new[] { "the", "path" }, QuantityType.Time) { OrderIndex = 9 };
          return Task.FromResult(true);
       }
    }
@@ -33,7 +33,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot);
+         _result = await sut.MapToModel(_snapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -42,7 +42,6 @@ namespace PKSim.Core
          _result.OrderIndex.ShouldBeEqualTo(_quantityInfo.OrderIndex);
          _result.Path.ShouldOnlyContainInOrder(_quantityInfo.Path);
          _result.Type.ShouldBeEqualTo(_quantityInfo.Type);
-         _result.Name.ShouldBeEqualTo(_quantityInfo.Name);
       }
    }
 
@@ -66,7 +65,6 @@ namespace PKSim.Core
          _snapshot.OrderIndex.ShouldBeEqualTo(_quantityInfo.OrderIndex);
          _snapshot.Path.ShouldBeEqualTo(_quantityInfo.PathAsString);
          _snapshot.Type.ShouldBeEqualTo(_quantityInfo.Type);
-         _snapshot.Name.ShouldBeEqualTo(_quantityInfo.Name);
       }
    }
 }

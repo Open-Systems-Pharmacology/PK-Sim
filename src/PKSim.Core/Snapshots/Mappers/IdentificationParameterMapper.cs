@@ -46,17 +46,17 @@ namespace PKSim.Core.Snapshots.Mappers
          return !linkedParameters.Any() ? null : linkedParameters.Select(x => x.FullQuantityPath).ToArray();
       }
 
-      public override async Task<ModelIdentificationParameter> MapToModel(SnapshotIdentificationParameter snapshot, ParameterIdentificationContext context)
+      public override async Task<ModelIdentificationParameter> MapToModel(SnapshotIdentificationParameter snapshot, ParameterIdentificationContext snapshotContext)
       {
          if (snapshot.LinkedParameters == null || !snapshot.LinkedParameters.Any())
             return null;
 
-         var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, context.Project));
+         var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, snapshotContext.Project));
 
-         var identificationParameter = _identificationParameterFactory.CreateFor(parameterSelections, context.ParameterIdentification);
+         var identificationParameter = _identificationParameterFactory.CreateFor(parameterSelections, snapshotContext.ParameterIdentification);
          if (identificationParameter == null)
          {
-            _logger.AddWarning(PKSimConstants.Error.CannotCreateIdentificationParameter(snapshot.LinkedParameters[0], context.ParameterIdentification.Name));
+            _logger.AddWarning(PKSimConstants.Error.CannotCreateIdentificationParameter(snapshot.LinkedParameters[0], snapshotContext.ParameterIdentification.Name));
             return null;
          }
 
@@ -68,7 +68,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if(identificationParameter.UseAsFactor)
             _identificationParameterTask.UpdateParameterRange(identificationParameter);
 
-         await UpdateParametersFromSnapshot(snapshot, identificationParameter);
+         await UpdateParametersFromSnapshot(snapshot, identificationParameter, snapshotContext);
 
          return identificationParameter;
       }

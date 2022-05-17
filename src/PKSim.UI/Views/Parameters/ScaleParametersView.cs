@@ -8,6 +8,7 @@ using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
 using PKSim.UI.Extensions;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -37,10 +38,7 @@ namespace PKSim.UI.Views.Parameters
          btnScale.Enabled = !HasError;
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public void AttachPresenter(IScaleParametersPresenter presenter)
       {
@@ -54,16 +52,13 @@ namespace PKSim.UI.Views.Parameters
 
       public bool ReadOnly
       {
-         set { layoutControl.Enabled = !value; }
+         set => layoutControl.Enabled = !value;
       }
 
       public override void InitializeResources()
       {
-         var resetImage = ApplicationIcons.Reset.ToImage(IconSizes.Size16x16);
-         btnReset.Text = PKSimConstants.UI.ResetAll;
-         btnReset.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetAllVisibleButtonToolTip, PKSimConstants.UI.ResetAll, resetImage);
-         btnReset.Image = resetImage;
-         btnReset.ImageLocation = ImageLocation.MiddleLeft;
+         btnReset.InitWithImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetAll);
+         btnReset.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetAllVisibleButtonToolTip, PKSimConstants.UI.ResetAll, ApplicationIcons.Reset);
          btnScale.Text = PKSimConstants.UI.ScaleButton;
          btnScale.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ScaleButtonToolTip, PKSimConstants.UI.ScaleButton);
          layoutControl.InitializeDisabledColors();

@@ -47,9 +47,8 @@ namespace PKSim.IntegrationTests
          LoadProject("BuildingBlockRename_611");
          _formulation = FindByName<Formulation>("Weibull");
          _oldName = _formulation.Name;
-         _formulation.Name = "NEW F";
          _simulation = FindByName<IndividualSimulation>("S3");
-         sut.RenameUsageOfBuildingBlockInProject(_formulation, _oldName);
+         sut.RenameBuildingBlock(_formulation, "NEW F");
       }
 
       [Observation]
@@ -91,11 +90,8 @@ namespace PKSim.IntegrationTests
          _s2 = FindByName<IndividualSimulation>("S2");
          _s3 = FindByName<IndividualSimulation>("S3");
 
-         _iv.Name = "NEW_IV";
-         sut.RenameUsageOfBuildingBlockInProject(_iv, "IV");
-
-         _oral.Name = "NEW_ORAL";
-         sut.RenameUsageOfBuildingBlockInProject(_oral, "ORAL");
+         sut.RenameBuildingBlock(_iv, "NEW_IV");
+         sut.RenameBuildingBlock(_oral, "NEW_ORAL");
       }
 
       [Observation]
@@ -127,8 +123,7 @@ namespace PKSim.IntegrationTests
          _iv = FindByName<Protocol>("aa");
          _s1 = FindByName<IndividualSimulation>("aa");
 
-         _iv.Name = "bb";
-         sut.RenameUsageOfBuildingBlockInProject(_iv, "IV");
+         sut.RenameBuildingBlock(_iv, "bb");
       }
 
       [Observation]

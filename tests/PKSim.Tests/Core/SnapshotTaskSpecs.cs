@@ -28,6 +28,7 @@ namespace PKSim.Core
       protected ISnapshotMapper _snapshotMapper;
       protected IObjectTypeResolver _objectTypeResolver;
       protected ProjectMapper _projectMapper;
+      private IPKSimProjectRetriever _projectRetriever;
 
       protected override Task Context()
       {
@@ -36,8 +37,9 @@ namespace PKSim.Core
          _jsonSerializer = A.Fake<IJsonSerializer>();
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         _projectRetriever= A.Fake<IPKSimProjectRetriever>();
          _projectMapper = A.Fake<ProjectMapper>();
-         sut = new SnapshotTask(_dialogCreator, _jsonSerializer, _snapshotMapper, _executionContext, _objectTypeResolver, _projectMapper);
+         sut = new SnapshotTask(_dialogCreator, _jsonSerializer, _snapshotMapper, _executionContext, _objectTypeResolver,_projectRetriever, _projectMapper);
 
          _parameter = A.Fake<IParameter>();
          _parameter.Name = "Param";
@@ -59,7 +61,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.ExportModelToSnapshot(_parameter);
+         await sut.ExportModelToSnapshotAsync(_parameter);
       }
 
       [Observation]
@@ -90,7 +92,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.ExportModelToSnapshot(_parameter);
+         await sut.ExportModelToSnapshotAsync(_parameter);
       }
 
       [Observation]
@@ -141,13 +143,13 @@ namespace PKSim.Core
          A.CallTo(() => _snapshotMapper.SnapshotTypeFor<Formulation>()).Returns(_snapshotType);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
          A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, _snapshotType)).Returns(new[] {_snapshot1, _snapshot2});
-         A.CallTo(() => _snapshotMapper.MapToModel(_snapshot1)).Returns(_formulation1);
-         A.CallTo(() => _snapshotMapper.MapToModel(_snapshot2)).Returns(_formulation2);
+         A.CallTo(() => _snapshotMapper.MapToModel(_snapshot1, A<SnapshotContext>._)).Returns(_formulation1);
+         A.CallTo(() => _snapshotMapper.MapToModel(_snapshot2, A<SnapshotContext>._)).Returns(_formulation2);
       }
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadModelsFromSnapshotFile<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelsFromSnapshotFileAsync<Formulation>()).ToList();
       }
 
       [Observation]
@@ -175,7 +177,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _formulations = (await sut.LoadModelsFromSnapshotFile<Formulation>()).ToList();
+         _formulations = (await sut.LoadModelsFromSnapshotFileAsync<Formulation>()).ToList();
       }
 
       [Observation]
@@ -208,7 +210,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _project = await sut.LoadProjectFromSnapshotFile(_fileName);
+         _project = await sut.LoadProjectFromSnapshotFileAsync(_fileName);
       }
 
       [Observation]

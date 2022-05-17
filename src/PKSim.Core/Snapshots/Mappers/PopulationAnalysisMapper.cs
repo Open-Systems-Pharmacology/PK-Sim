@@ -10,7 +10,17 @@ using SnapshotPopulationAnalysis = PKSim.Core.Snapshots.PopulationAnalysis;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class PopulationAnalysisMapper : SnapshotMapperBase<ModelPopulationAnalysis, SnapshotPopulationAnalysis, ModelPopulationAnalysis>
+   public class PopulationAnalysisSnapshotContext : SnapshotContext
+   {
+      public ModelPopulationAnalysis PopulationAnalysis { get; }
+
+      public PopulationAnalysisSnapshotContext(ModelPopulationAnalysis populationAnalysis, SnapshotContext baseContext) : base(baseContext)
+      {
+         PopulationAnalysis = populationAnalysis;
+      }
+   }
+
+   public class PopulationAnalysisMapper : SnapshotMapperBase<ModelPopulationAnalysis, SnapshotPopulationAnalysis, PopulationAnalysisSnapshotContext>
    {
       private readonly PopulationAnalysisFieldMapper _populationAnalysisFieldMapper;
 
@@ -87,9 +97,10 @@ namespace PKSim.Core.Snapshots.Mappers
          }).ToArray();
       }
 
-      public override async Task<ModelPopulationAnalysis> MapToModel(SnapshotPopulationAnalysis snapshot, ModelPopulationAnalysis populationAnalysis)
+      public override async Task<ModelPopulationAnalysis> MapToModel(SnapshotPopulationAnalysis snapshot, PopulationAnalysisSnapshotContext snapshotContext)
       {
-         var fields = await _populationAnalysisFieldMapper.MapToModels(snapshot.Fields);
+         var populationAnalysis = snapshotContext.PopulationAnalysis;
+         var fields = await _populationAnalysisFieldMapper.MapToModels(snapshot.Fields, snapshotContext);
          fields?.Each(populationAnalysis.Add);
          updateModelFieldPositions(populationAnalysis, snapshot.Fields);
          mapIf<PopulationBoxWhiskerAnalysis>(snapshot, populationAnalysis, mapBowWiskerAnalysisToModel);
@@ -99,11 +110,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void updateModelFieldPositions(ModelPopulationAnalysis populationAnalysis, PopulationAnalysisField[] fields)
       {
-         var pivotPopulatonAnalysis = populationAnalysis as PopulationPivotAnalysis;
-         if (pivotPopulatonAnalysis == null)
+         var pivotPopulationAnalysis = populationAnalysis as PopulationPivotAnalysis;
+         if (pivotPopulationAnalysis == null)
             return;
 
-         fields?.Each(x => pivotPopulatonAnalysis.SetPosition(x.Name, x.Area, x.Index));
+         fields?.Each(x => pivotPopulationAnalysis.SetPosition(x.Name, x.Area, x.Index));
       }
    }
 }

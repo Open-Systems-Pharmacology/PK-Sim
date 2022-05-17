@@ -58,7 +58,3 @@ test:
     - PKSim.Tests.dll
     - PKSim.UI.Tests.dll
     - PKSim.Matlab.Tests.dll
-
-  categories:
-    except:
-      - Reporting

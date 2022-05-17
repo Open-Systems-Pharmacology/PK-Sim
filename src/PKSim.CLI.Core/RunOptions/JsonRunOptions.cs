@@ -1,6 +1,7 @@
 ﻿using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using PKSim.CLI.Core.Services;
+using PKSim.Core.Services;
 
 namespace PKSim.CLI.Core.RunOptions
 {
@@ -12,10 +13,16 @@ namespace PKSim.CLI.Core.RunOptions
       public SimulationExportMode ExportMode { get; set; }
 
       /// <summary>
-      /// Indicates whether all outputs of the simulation should be exported or only the one actually selected in the simulation.
-      /// Default value is <c>TRUE</c>
+      ///    Indicates whether all outputs of the simulation should be exported or only the one actually selected in the
+      ///    simulation.
+      ///    Default value is <c>TRUE</c>
       /// </summary>
       public bool RunForAllOutputs { get; set; } = true;
+
+      /// <summary>
+      ///    How do we deal with Jacobian. As is to stay compatible with version prior to v11
+      /// </summary>
+      public JacobianUse JacobianUse { get; set; } = JacobianUse.AsIs;
 
       public JsonRunOptions()
       {
@@ -36,6 +43,13 @@ namespace PKSim.CLI.Core.RunOptions
       {
          get => _outputFolder;
          set => SetProperty(ref _outputFolder, value);
+      }
+
+      public void Deconstruct(out string inputFolder, out string outputFolder, out SimulationExportMode exportMode)
+      {
+         inputFolder = InputFolder;
+         outputFolder = OutputFolder;
+         exportMode = ExportMode;
       }
    }
 }

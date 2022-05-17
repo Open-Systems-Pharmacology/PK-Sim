@@ -41,7 +41,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          _gridViewBinder.Bind(x => x.Selected)
             .WithRepository(x => _selectionRepository)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
             .WithOnChanged(_presenter.SelectionChanged);
 
          _gridViewBinder.Bind(x => x.Name).AsReadOnly();

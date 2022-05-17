@@ -1,4 +1,6 @@
-﻿using OSPSuite.Assets;
+﻿using System.Windows.Forms;
+using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -17,19 +19,29 @@ namespace PKSim.UI.Views.Snapshots
       private ILoadFromSnapshotPresenter _presenter;
       private readonly ScreenBinder<LoadFromSnapshotDTO> _screenBinder = new ScreenBinder<LoadFromSnapshotDTO>();
 
-      public LoadFromSnapshotView()
+      //only for design time
+      public LoadFromSnapshotView() : this(null)
+      {
+      }
+
+      public LoadFromSnapshotView(IShell shell) : base(shell)
       {
          InitializeComponent();
       }
 
-      public override void InitializeBinding()
+     public override void InitializeBinding()
       {
          base.InitializeBinding();
+
          _screenBinder.Bind(x => x.SnapshotFile)
             .To(buttonEditSelectSnapshot);
 
-         buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(()=>_presenter.SelectFile());
-         buttonStart.Click += (o, e) => OnEvent(() => _presenter.Start());
+         _screenBinder.Bind(x => x.RunSimulations)
+            .To(chkRunSimulations)
+            .WithCaption(PKSimConstants.UI.RunSimulations);
+
+         buttonEditSelectSnapshot.ButtonClick += (o, e) => OnEvent(() => _presenter.SelectFile());
+         buttonStart.Click += (o, e) => OnEvent(() => _presenter.StartAsync());
 
          RegisterValidationFor(_screenBinder);
       }
@@ -51,9 +63,14 @@ namespace PKSim.UI.Views.Snapshots
 
       public void EnableButtons(bool cancelEnabled, bool okEnabled = false, bool startEnabled = false)
       {
-         btnCancel.Enabled = cancelEnabled;
-         btnOk.Enabled = okEnabled;
+         OkEnabled = okEnabled;
+         CancelEnabled = cancelEnabled;
          buttonStart.Enabled = startEnabled;
+      }
+
+      public bool RunSimulationsSwitchVisible
+      {
+         set => layoutItemRunSimulations.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       protected override void SetOkButtonEnable()
@@ -67,12 +84,14 @@ namespace PKSim.UI.Views.Snapshots
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemStartButton.AdjustLongButtonSize();
+         layoutItemStartButton.AdjustLargeButtonSize();
          buttonStart.InitWithImage(ApplicationIcons.Run, PKSimConstants.UI.StartImport);
          layoutItemButtonSelectSnapshot.Text = PKSimConstants.UI.SnapshotFile.FormatForLabel();
-         Icon = ApplicationIcons.Snapshot;
+         ApplicationIcon = ApplicationIcons.Snapshot;
       }
 
       public override bool HasError => _screenBinder.HasError;
+
+      protected override bool ShouldClose => _presenter.ShouldClose;
    }
 }

@@ -7,6 +7,7 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Core
 {
@@ -34,7 +35,7 @@ namespace PKSim.UI.Views.Core
       {
          base.InitializeResources();
          layoutItemName.Text = PKSimConstants.UI.Name.FormatForLabel();
-         this.ReziseForCurrentScreen(fractionHeight: UIConstants.Size.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.Size.SCREEN_RESIZE_FRACTION);
+         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
 
       public virtual void BindToProperties(ObjectBaseDTO populationPropertiesDTO)

@@ -84,7 +84,7 @@ namespace PKSim.Core
          A.CallTo(() => _parameter.DeviationParameter).Returns(deviationParameter);
          A.CallTo(() => _distrFormulaFactory.CreateNormalDistributionFormulaFor(_parameter,meanParameter, deviationParameter)).Returns(new NormalDistributionFormula());
 
-         _originData = new OriginData {Age = 12};
+         _originData = new OriginData {Age = new OriginDataParameter(12)};
       }
 
       protected override void Because()

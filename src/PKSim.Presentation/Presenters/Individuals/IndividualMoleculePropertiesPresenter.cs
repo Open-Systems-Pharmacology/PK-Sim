@@ -16,17 +16,18 @@ namespace PKSim.Presentation.Presenters.Individuals
    public interface IIndividualMoleculePropertiesPresenter<TSimulationSubject> : IIndividualMoleculePropertiesPresenter where TSimulationSubject : ISimulationSubject
    {
       void Edit(IndividualMolecule molecule, TSimulationSubject simulationSubject);
+      void DisableEdit();
    }
 
    public class IndividualMoleculePropertiesPresenter<TSimulationSubject> : EditParameterPresenter<IIndividualMoleculePropertiesView, IIndividualMoleculePropertiesPresenter>, IIndividualMoleculePropertiesPresenter<TSimulationSubject> where TSimulationSubject : ISimulationSubject
    {
-      private readonly IOntogenySelectionPresenter<TSimulationSubject> _ontogenySelectionPresenter;
+      private readonly IOntogenySelectionPresenter _ontogenySelectionPresenter;
       private readonly IMultiParameterEditPresenter _moleculeParametersPresenter;
 
       public IndividualMoleculePropertiesPresenter(
          IIndividualMoleculePropertiesView view,
          IEditParameterPresenterTask editParameterPresenterTask,
-         IOntogenySelectionPresenter<TSimulationSubject> ontogenySelectionPresenter,
+         IOntogenySelectionPresenter ontogenySelectionPresenter,
          IMultiParameterEditPresenter moleculeParametersPresenter)
          : base(view, editParameterPresenterTask)
       {
@@ -56,6 +57,12 @@ namespace PKSim.Presentation.Presenters.Individuals
          _moleculeParametersPresenter.Edit(parameters);
          _ontogenySelectionPresenter.Edit(molecule, simulationSubject);     
          RefreshView();
+      }
+
+      public void DisableEdit()
+      {
+         _ontogenySelectionPresenter.DisableEdit();
+         _moleculeParametersPresenter.DisableEdit();
       }
 
       public void RefreshView()

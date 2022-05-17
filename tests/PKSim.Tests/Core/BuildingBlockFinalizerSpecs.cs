@@ -13,7 +13,7 @@ namespace PKSim.Core
       protected IReferencesResolver _referenceResolver;
       protected IKeywordReplacerTask _keywordReplacerTask;
       protected INeighborhoodFinalizer _neighborhoodFinalizer;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected IIndividualPathWithRootExpander _individualPathWithRootExpander;
       protected IFormulaTask _formulaTask;
 
@@ -22,10 +22,10 @@ namespace PKSim.Core
          _referenceResolver = A.Fake<IReferencesResolver>();
          _keywordReplacerTask = A.Fake<IKeywordReplacerTask>();
          _neighborhoodFinalizer = A.Fake<INeighborhoodFinalizer>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _individualPathWithRootExpander = A.Fake<IIndividualPathWithRootExpander>();
          _formulaTask= A.Fake<IFormulaTask>();
-         sut = new BuildingBlockFinalizer(_referenceResolver, _keywordReplacerTask, _neighborhoodFinalizer, _buildingBlockInSimulationManager, _individualPathWithRootExpander, _formulaTask);
+         sut = new BuildingBlockFinalizer(_referenceResolver, _keywordReplacerTask, _neighborhoodFinalizer, _buildingBlockInProjectManager, _individualPathWithRootExpander, _formulaTask);
       }
    }
 
@@ -126,7 +126,7 @@ namespace PKSim.Core
       [Observation]
       public void should_update_the_name_of_used_building_block_in_the_simulation()
       {
-         A.CallTo(() => _buildingBlockInSimulationManager.UpdateBuildingBlockNamesUsedIn(_simulation)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockInProjectManager.UpdateBuildingBlockNamesUsedIn(_simulation)).MustHaveHappened();
       }
    }
 }

@@ -12,7 +12,7 @@ using ObservedDataCurveOptions = PKSim.Core.Model.PopulationAnalyses.ObservedDat
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ObservedDataCollectionMappper : ContextSpecificationAsync<ObservedDataCollectionMappper>
+   public abstract class concern_for_ObservedDataCollectionMapper : ContextSpecificationAsync<ObservedDataCollectionMapper>
    {
       private CurveOptionsMapper _curveOptionsMapper;
       protected ObservedDataCollection _snapshot;
@@ -25,7 +25,7 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _curveOptionsMapper = A.Fake<CurveOptionsMapper>();
-         sut = new ObservedDataCollectionMappper(_curveOptionsMapper);
+         sut = new ObservedDataCollectionMapper(_curveOptionsMapper);
 
          _observedDataRepository = DomainHelperForSpecs.ObservedData("ID").WithName("ObsData");
          _observedDataCollection = new Model.PopulationAnalyses.ObservedDataCollection();
@@ -45,7 +45,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_an_empty_observed_data_collection_to_snapshot : concern_for_ObservedDataCollectionMappper
+   public class When_mapping_an_empty_observed_data_collection_to_snapshot : concern_for_ObservedDataCollectionMapper
    {
       protected override async Task Because()
       {
@@ -59,7 +59,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_observed_data_collection_to_snapshot : concern_for_ObservedDataCollectionMappper
+   public class When_mapping_observed_data_collection_to_snapshot : concern_for_ObservedDataCollectionMapper
    {
       protected override async Task Because()
       {
@@ -87,13 +87,13 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_null_observed_data_collection_snapshot_to_observed_data_collection : concern_for_ObservedDataCollectionMappper
+   public class When_mapping_null_observed_data_collection_snapshot_to_observed_data_collection : concern_for_ObservedDataCollectionMapper
    {
       private Model.PopulationAnalyses.ObservedDataCollection _result;
 
       protected override async Task Because()
       {
-         _result =  await sut.MapToModel(null, new SimulationAnalysisContext());
+         _result =  await sut.MapToModel(null, new SimulationAnalysisContext(null, new SnapshotContext()));
       }
 
       [Observation]
@@ -103,7 +103,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_observed_data_collection_snapshot_to_observed_data_collection : concern_for_ObservedDataCollectionMappper
+   public class When_mapping_observed_data_collection_snapshot_to_observed_data_collection : concern_for_ObservedDataCollectionMapper
    {
       private Model.PopulationAnalyses.ObservedDataCollection _newObservedDataCollection;
       private SimulationAnalysisContext _simulationAnalysisContext;
@@ -111,7 +111,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _simulationAnalysisContext = new SimulationAnalysisContext(new []{_observedDataRepository, });
+         _simulationAnalysisContext = new SimulationAnalysisContext(new []{_observedDataRepository }, new SnapshotContext());
          _snapshot = await sut.MapToSnapshot(_observedDataCollection);
       }
 

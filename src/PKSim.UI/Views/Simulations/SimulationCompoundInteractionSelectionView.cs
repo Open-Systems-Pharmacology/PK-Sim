@@ -15,6 +15,7 @@ using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -24,7 +25,6 @@ namespace PKSim.UI.Views.Simulations
       private readonly GridViewBinder<SimulationInteractionProcessSelectionDTO> _gridViewBinder;
       private readonly UxRepositoryItemComboBox _compoundProcessRepository;
       private readonly UxRepositoryItemComboBox _individualMoleculeRepository;
-      private readonly RepositoryItemTextEdit _repositoryItemDisabled = new RepositoryItemTextEdit();
       private readonly UxRepositoryItemButtonEdit _removeField;
 
       public SimulationCompoundInteractionSelectionView()
@@ -35,8 +35,6 @@ namespace PKSim.UI.Views.Simulations
          _individualMoleculeRepository = new UxRepositoryItemComboBox(gridView);
          gridView.AllowsFiltering = false;
          gridView.ShowRowIndicator = false;
-         _repositoryItemDisabled.Enabled = false;
-         _repositoryItemDisabled.ReadOnly = true;
          _removeField = new UxRemoveButtonRepository();
       }
 
@@ -99,7 +97,7 @@ namespace PKSim.UI.Views.Simulations
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeField)
-            .WithFixedWidth(UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH);
       }
 
       public override void InitializeResources()

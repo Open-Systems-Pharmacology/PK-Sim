@@ -50,6 +50,7 @@
          // 
          // layoutControl
          // 
+         this.layoutControl.AllowCustomization = false;
          this.layoutControl.Controls.Add(this.buttonMoveDown);
          this.layoutControl.Controls.Add(this.buttonMoveUp);
          this.layoutControl.Controls.Add(this.panelParameters);
@@ -81,9 +82,9 @@
          // 
          // panelParameters
          // 
-         this.panelParameters.Location = new System.Drawing.Point(2, 2);
+         this.panelParameters.Location = new System.Drawing.Point(0, 0);
          this.panelParameters.Name = "panelParameters";
-         this.panelParameters.Size = new System.Drawing.Size(416, 356);
+         this.panelParameters.Size = new System.Drawing.Size(420, 360);
          this.panelParameters.TabIndex = 4;
          // 
          // layoutControlGroup
@@ -95,7 +96,6 @@
             this.emptySpaceItem,
             this.layoutItemButtonMoveUp,
             this.layoutItemButtonMoveDown});
-         this.layoutControlGroup.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup.Size = new System.Drawing.Size(518, 360);
@@ -106,6 +106,7 @@
          this.layoutItemParameters.Control = this.panelParameters;
          this.layoutItemParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutItemParameters.Name = "layoutItemParameters";
+         this.layoutItemParameters.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutItemParameters.Size = new System.Drawing.Size(420, 360);
          this.layoutItemParameters.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemParameters.TextVisible = false;

@@ -33,7 +33,8 @@ namespace PKSim.Presentation.DTO.Mappers
          IPathToPathElementsMapper parameterDisplayPathMapper,
          IFavoriteRepository favoriteRepository,
          IEntityPathResolver entityPathResolver,
-         IParameterListOfValuesRetriever parameterListOfValuesRetriever)
+         IParameterListOfValuesRetriever parameterListOfValuesRetriever
+      )
       {
          _representationInfoRepository = representationInfoRepository;
          _formulaTypeMapper = formulaTypeMapper;

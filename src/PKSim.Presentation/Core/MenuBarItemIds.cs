@@ -46,10 +46,14 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId LoadProtocol = createMenuBarItemId("LoadProtocol");
       public static MenuBarItemId NewObserverSet = createMenuBarItemId("NewObserverSet");
       public static MenuBarItemId LoadObserverSet = createMenuBarItemId("LoadObserverSet");
+      public static MenuBarItemId NewExpressionProfile = createMenuBarItemId("NewExpressionProfile");
+      public static MenuBarItemId NewExpressionProfileEnzyme = createMenuBarItemId("NewExpressionProfileEnzyme");
+      public static MenuBarItemId NewExpressionProfileTransporter = createMenuBarItemId("NewExpressionProfileTransporter");
+      public static MenuBarItemId NewExpressionProfileSpecificBindingPartner = createMenuBarItemId("NewExpressionProfileSpecificBindingPartner");
+      public static MenuBarItemId LoadExpressionProfile = createMenuBarItemId("LoadExpressionProfile");
       public static MenuBarItemId NewFormulation = createMenuBarItemId("NewFormulation");
       public static MenuBarItemId LoadFormulationFromTemplate = createMenuBarItemId("LoadFormulationFromTemplate");
       public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");
-      public static MenuBarItemId ProjectReport = createMenuBarItemId("ProjectReport");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId NewEvent = createMenuBarItemId("NewEvent");
       public static MenuBarItemId LoadEvent = createMenuBarItemId("LoadEvent");
@@ -61,7 +65,6 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId GeneratePKMLTemplates = createMenuBarItemId("GeneratePKMLTemplates");
       public static MenuBarItemId HistoryReportGroup = createMenuBarItemId("HistoryReportGroup");
       public static MenuBarItemId HistoryReportExcel = createMenuBarItemId("HistoryReportExcel");
-      public static MenuBarItemId HistoryReportPDF = createMenuBarItemId("HistoryReportPDF");
       public static MenuBarItemId ImportActiveSimulationResults = createMenuBarItemId("ImportActiveSimulationResults");
       public static MenuBarItemId ImportActiveSimulationPKParameters = createMenuBarItemId("ImportActiveSimulationPKParameters");
       public static MenuBarItemId ExportActiveSimulationToMoBi = createMenuBarItemId("ExportActiveSimulationToMoBi");
@@ -71,7 +74,6 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId ExportActiveSimulationPKAnalysesToCSV = createMenuBarItemId("ExportActiveSimulationPKAnalysesToCSV");
       public static MenuBarItemId ExportActiveSimulationPopulationToExcel = createMenuBarItemId("ExportActiveSimulationPopulationToExcel");
       public static MenuBarItemId ExportActiveSimulationForClusterComputations = createMenuBarItemId("ExportActiveSimulationForClusterComputations");
-      public static MenuBarItemId ExportActiveSimulationToPDF = createMenuBarItemId("ExportActiveSimulationToPDF");
       public static MenuBarItemId CloneActiveSimulation = createMenuBarItemId("CloneActiveSimulation");
       public static MenuBarItemId ConfigureActiveSimulation = createMenuBarItemId("ConfigureActiveSimulation");
       public static MenuBarItemId GenerateGroupsTemplate = createMenuBarItemId("GenerateGroupsTemplate");

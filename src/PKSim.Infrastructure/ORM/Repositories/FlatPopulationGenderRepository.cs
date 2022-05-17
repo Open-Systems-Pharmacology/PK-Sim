@@ -13,7 +13,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
     {
         public FlatPopulationGenderRepository(IDbGateway dbGateway,
                                           IDataTableToMetaDataMapper<FlatPopulationGender> mapper)
-            : base(dbGateway, mapper, CoreConstants.ORM.ViewPopulationGenders)
+            : base(dbGateway, mapper, CoreConstants.ORM.VIEW_POPULATION_GENDERS)
         {
         }
     }

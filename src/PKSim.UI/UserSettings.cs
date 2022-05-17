@@ -3,16 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq.Expressions;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Format;
-using OSPSuite.Utility.Validation;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -22,7 +15,13 @@ using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
-using OSPSuite.UI;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Format;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Presentation;
 
 namespace PKSim.UI
 {
@@ -33,7 +32,6 @@ namespace PKSim.UI
       private readonly INumericFormatterOptions _numericFormatterOptions;
       private readonly ISkinManager _skinManager;
       public Scalings DefaultChartYScaling { get; set; }
-      private readonly DirectoryMapSettings _directoryMapSettings;
       public bool ShouldRestoreWorkspaceLayout { get; set; }
       public ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }
       public string MainViewLayout { get; set; }
@@ -63,6 +61,7 @@ namespace PKSim.UI
       public JournalPageEditorSettings JournalPageEditorSettings { get; set; }
       public string LastIgnoredVersion { get; set; }
       public OutputSelections OutputSelections { get; set; }
+      public bool ColorGroupObservedDataFromSameFolder { get; set; }
       public DisplayUnitsManager DisplayUnits { get; set; }
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
@@ -77,10 +76,10 @@ namespace PKSim.UI
          _ribbonManager = ribbonManager;
          _numericFormatterOptions = numericFormatterOptions;
          _skinManager = skinManager;
-         _directoryMapSettings = directoryMapSettings;
+         DirectoryMapSettings = directoryMapSettings;
 
          DisplayUnits = new DisplayUnitsManager();
-         ComparerSettings = new ComparerSettings { CompareHiddenEntities = false };
+         ComparerSettings = new ComparerSettings {CompareHiddenEntities = false};
          ProjectFiles = new List<string>();
          Rules.AddRange(AllRules.All());
          DiagramOptions = new DiagramOptions();
@@ -118,9 +117,9 @@ namespace PKSim.UI
          DefaultChartEditorLayout = Constants.DEFAULT_CHART_LAYOUT;
       }
 
-      public DirectoryMapSettings DirectoryMapSettings => _directoryMapSettings;
+      public DirectoryMapSettings DirectoryMapSettings { get; }
 
-      public IEnumerable<DirectoryMap> UsedDirectories => _directoryMapSettings.UsedDirectories;
+      public IEnumerable<DirectoryMap> UsedDirectories => DirectoryMapSettings.UsedDirectories;
 
       public void RestoreLayout()
       {
@@ -209,30 +208,30 @@ namespace PKSim.UI
 
       public IconSize IconSizeTab
       {
-         get => UIConstants.ICON_SIZE_TAB;
+         get => OSPSuite.UI.UIConstants.ICON_SIZE_TAB;
          set
          {
-            UIConstants.ICON_SIZE_TAB = value;
+            OSPSuite.UI.UIConstants.ICON_SIZE_TAB = value;
             OnPropertyChanged(() => IconSizeTab);
          }
       }
 
       public IconSize IconSizeTreeView
       {
-         get => UIConstants.ICON_SIZE_TREE_VIEW;
+         get => OSPSuite.UI.UIConstants.ICON_SIZE_TREE_VIEW;
          set
          {
-            UIConstants.ICON_SIZE_TREE_VIEW = value;
+            OSPSuite.UI.UIConstants.ICON_SIZE_TREE_VIEW = value;
             OnPropertyChanged(() => IconSizeTreeView);
          }
       }
 
       public IconSize IconSizeContextMenu
       {
-         get => UIConstants.ICON_SIZE_CONTEXT_MENU;
+         get => OSPSuite.UI.UIConstants.ICON_SIZE_CONTEXT_MENU;
          set
          {
-            UIConstants.ICON_SIZE_CONTEXT_MENU = value;
+            OSPSuite.UI.UIConstants.ICON_SIZE_CONTEXT_MENU = value;
             OnPropertyChanged(() => IconSizeContextMenu);
          }
       }
@@ -289,21 +288,12 @@ namespace PKSim.UI
 
       private static class AllRules
       {
-         private static IBusinessRule nonEmpty(Expression<Func<ICoreUserSettings, string>> expression)
-         {
-            return GenericRules.NonEmptyRule(expression);
-         }
+         private static IBusinessRule nonEmpty(Expression<Func<ICoreUserSettings, string>> expression) => GenericRules.NonEmptyRule(expression);
 
-         private static IBusinessRule numberOfCoreSmallerThanNumberOfProcessor
-         {
-            get
-            {
-               return CreateRule.For<ICoreUserSettings>()
-                  .Property(x => x.MaximumNumberOfCoresToUse)
-                  .WithRule((x, numCore) => numCore > 0 && numCore <= Environment.ProcessorCount)
-                  .WithError(OSPSuite.Assets.Error.NumberOfCoreToUseShouldBeInferiorAsTheNumberOfProcessor(Environment.ProcessorCount));
-            }
-         }
+         private static IBusinessRule numberOfCoreSmallerThanNumberOfProcessor { get; } = CreateRule.For<ICoreUserSettings>()
+            .Property(x => x.MaximumNumberOfCoresToUse)
+            .WithRule((x, numCore) => numCore > 0 && numCore <= Environment.ProcessorCount)
+            .WithError(Error.NumberOfCoreToUseShouldBeInferiorAsTheNumberOfProcessor(Environment.ProcessorCount));
 
          public static IEnumerable<IBusinessRule> All()
          {
@@ -316,6 +306,5 @@ namespace PKSim.UI
             };
          }
       }
-
    }
 }

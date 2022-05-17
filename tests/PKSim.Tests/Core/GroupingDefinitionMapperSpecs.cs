@@ -174,7 +174,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newValueMappingGrouping = await sut.MapToModel(_snapshot) as ValueMappingGroupingDefinition;
+         _newValueMappingGrouping = await sut.MapToModel(_snapshot, new SnapshotContext()) as ValueMappingGroupingDefinition;
       }
 
       [Observation]
@@ -199,7 +199,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newFixedLimitsGrouping = await sut.MapToModel(_snapshot) as FixedLimitsGroupingDefinition;
+         _newFixedLimitsGrouping = await sut.MapToModel(_snapshot, new SnapshotContext()) as FixedLimitsGroupingDefinition;
       }
 
       [Observation]
@@ -231,7 +231,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newNumberOfBinsGrouping = await sut.MapToModel(_snapshot) as NumberOfBinsGroupingDefinition;
+         _newNumberOfBinsGrouping = await sut.MapToModel(_snapshot, new SnapshotContext()) as NumberOfBinsGroupingDefinition;
       }
 
       [Observation]

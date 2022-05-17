@@ -19,6 +19,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       void Edit(IReadOnlyList<TExpressionParameterDTO> expressionParameters);
       bool ShowInitialConcentration { get; set; }
       void SetExpressionParameterValue(IParameterDTO expressionParameterDTO, double value);
+      void DisableEdit();
    }
 
    public interface IExpressionParametersPresenter : IExpressionParametersPresenter<ExpressionParameterDTO>
@@ -85,6 +86,11 @@ namespace PKSim.Presentation.Presenters.Individuals
             return;
 
          normalizeExpressionValues();
+      }
+
+      public void DisableEdit()
+      {
+         _view.ReadOnly = true;
       }
    }
 

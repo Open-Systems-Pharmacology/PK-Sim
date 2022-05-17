@@ -1,4 +1,7 @@
-﻿using OSPSuite.DataBinding;
+﻿using DevExpress.Utils;
+using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
@@ -46,9 +49,36 @@ namespace PKSim.UI.Views.Individuals
          _screenBinder.BindToSource(transporterExpressionDTO);
       }
 
+      public void ShowWarning(string warning)
+      {
+         if(ReadOnly) 
+            return;
+
+         layoutItemWarning.Visibility = LayoutVisibility.Always;
+         panelWarning.NoteText = warning;
+      }
+
+      public void HideWarning()
+      {
+         layoutItemWarning.Visibility = LayoutVisibility.Never;
+      }
+
       public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
 
       public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, view);
+
+      public bool ReadOnly
+      {
+         set
+         {
+            layoutItemTransporterDirection.Enabled = !value;
+
+            //Don't show warning in readonly mode
+            if (value)
+               HideWarning();
+         }
+         get => !layoutItemTransporterDirection.Enabled;
+      }
 
       public override bool HasError => _screenBinder.HasError;
 
@@ -57,12 +87,15 @@ namespace PKSim.UI.Views.Individuals
          base.InitializeResources();
          layoutItemTransporterDirection.TextVisible = false;
          cbTransporterType.SetImages(_imageListRetriever);
+         cbTransporterType.Properties.AllowHtmlDraw = DefaultBoolean.True;
          layoutItemMoleculeProperties.TextVisible = false;
          layoutItemExpressionParameters.TextVisible = false;
          layoutGroupMoleculeProperties.Text = PKSimConstants.UI.Properties;
          layoutGroupMoleculeProperties.ExpandButtonVisible = true;
          layoutGroupMoleculeLocalization.Text = PKSimConstants.UI.DefaultTransporterDirection;
          layoutGroupMoleculeLocalization.ExpandButtonVisible = true;
+         HideWarning();
+         panelWarning.Image = ApplicationIcons.Warning;
       }
    }
 }

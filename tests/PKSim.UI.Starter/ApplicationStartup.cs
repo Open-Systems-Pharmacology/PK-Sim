@@ -72,7 +72,7 @@ namespace PKSim.UI.Starter
             LifeStyle.Singleton);
          container.Register<IProgressUpdater, NoneProgressUpdater>();
          container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
-         container.Register<IOntogenyTask<Individual>, CLIIndividualOntogenyTask>();
+         container.Register<IOntogenyTask, CLIIndividualOntogenyTask>();
          container.Register<IExceptionManager, CLIExceptionManager>();
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>();
          container.Register<IDiagramModel, CLIDiagramModel>();

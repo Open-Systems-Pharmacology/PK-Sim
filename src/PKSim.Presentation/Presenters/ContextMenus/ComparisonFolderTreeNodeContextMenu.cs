@@ -16,7 +16,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          _view.AddMenuItem(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(treeNode, presenter));
          _view.AddMenuItem(ClassificationCommonContextMenuItems.RemoveClassificationFolderMainMenu(treeNode, presenter).AsGroupStarter());
-         _view.AddMenuItem(GenericMenu.ExportCollectionToPDFMenuFor<ISimulationComparison>().AsGroupStarter());
       }
    }
 

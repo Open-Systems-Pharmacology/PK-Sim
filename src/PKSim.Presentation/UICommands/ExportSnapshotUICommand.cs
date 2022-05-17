@@ -16,7 +16,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override async void PerformExecute()
       {
-         await _snapshotTask.SecureAwait(x => x.ExportModelToSnapshot(Subject));
+         await _snapshotTask.SecureAwait(x => x.ExportModelToSnapshotAsync(Subject));
       }
    }
 }

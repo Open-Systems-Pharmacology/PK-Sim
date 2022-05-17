@@ -21,6 +21,7 @@ namespace PKSim.Core
       protected IOSPSuiteLogger _logger;
       protected ValueOriginMapper _valueOriginMapper;
       protected ValueOrigin _snapshotValueOrigin;
+      private IContainerTask _containerTask;
 
       protected override Task Context()
       {
@@ -28,8 +29,8 @@ namespace PKSim.Core
          _valueOriginMapper = A.Fake<ValueOriginMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _logger = A.Fake<IOSPSuiteLogger>();
-
-         sut = new ParameterMapper(_tableFormulaMapper, _valueOriginMapper, _entityPathResolver, _logger);
+         _containerTask = new ContainerTaskForSpecs();
+         sut = new ParameterMapper(_tableFormulaMapper, _valueOriginMapper, _entityPathResolver, _logger, _containerTask);
 
          //5 mm is the value
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(10)
@@ -121,7 +122,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -157,7 +158,7 @@ namespace PKSim.Core
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
          _snapshotParameter.TableFormula = new TableFormula();
          var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
-         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula)).Returns(modelTableFormula);
+         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula, A<SnapshotContext>._)).Returns(modelTableFormula);
 
          //Ensure that the first value is the parameter value
          modelTableFormula.AddPoint(0, _parameterValue);
@@ -168,7 +169,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -194,7 +195,7 @@ namespace PKSim.Core
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
          _snapshotParameter.TableFormula = new TableFormula();
          var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
-         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula)).Returns(modelTableFormula);
+         A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula, A<SnapshotContext>._)).Returns(modelTableFormula);
 
          //Set a first value that is not the parameter value
          modelTableFormula.AddPoint(0, 1122);
@@ -205,7 +206,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -233,7 +234,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshotParameter, _parameter);
+         await sut.MapToModel(_snapshotParameter, new ParameterSnapshotContext(_parameter, new SnapshotContext()));
       }
 
       [Observation]
@@ -284,16 +285,15 @@ namespace PKSim.Core
 
          _localParameter = new LocalizedParameter
          {
-            Path = "LOCALIZED_PATH",
+            Path = "ORG|P1",
             Value = 5,
             Unit = _parameter.DisplayUnit.Name
          };
-         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_localParameter.Path);
       }
 
       protected override async Task Because()
       {
-         await sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+         await sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext());
       }
 
       [Observation]
@@ -315,13 +315,13 @@ namespace PKSim.Core
 
          _localParameter = new LocalizedParameter
          {
-            Path = "UNKNOW_PATH",
+            Path = "UNKNOWN_PATH",
          };
       }
 
       protected override Task Because()
       {
-         return sut.MapLocalizedParameters(new[] {_localParameter}, _container);
+         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new ParameterSnapshotContext(null, new SnapshotContext()));
       }
 
       [Observation]
@@ -352,7 +352,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]
@@ -362,7 +362,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_mapping_a_snaphsot_parameter_by_name_that_is_not_found_in_the_container : concern_for_ParameterMapper
+   public class When_mapping_a_snapshot_parameter_by_name_that_is_not_found_in_the_container : concern_for_ParameterMapper
    {
       private Container _container;
       private SnapshotParameter _snapshot;
@@ -381,7 +381,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name);
+         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]

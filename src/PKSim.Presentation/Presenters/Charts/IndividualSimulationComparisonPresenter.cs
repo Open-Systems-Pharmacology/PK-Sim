@@ -43,11 +43,10 @@ namespace PKSim.Presentation.Presenters.Charts
    public class IndividualSimulationComparisonPresenter : ChartPresenter<IndividualSimulationComparison, IIndividualSimulationComparisonView, IIndividualSimulationComparisonPresenter>, IIndividualSimulationComparisonPresenter
    {
       private readonly ILazyLoadTask _lazyLoadTask;
-
       public event EventHandler Closing = delegate { };
 
-      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater, useSimulationNameToCreateCurveName:true)
+      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IUserSettings userSettings) :
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater, useSimulationNameToCreateCurveName:true, userSettings)
       {
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;

@@ -20,6 +20,13 @@ namespace PKSim.Core.Model
       ///    Indicates if a loaded building block was changed and hence needs to be saved
       /// </summary>
       bool HasChanged { get; set; }
+
+      /// <summary>
+      /// A building block might use building block internally to hold structure
+      /// (ExpressionProfile or Population have an internal individual instance).
+      /// In this case, this would be the reference to the parent building block
+      /// </summary>
+      PKSimBuildingBlock OwnedBy { get; set; }
    }
 
    public abstract class PKSimBuildingBlock : Entity, IPKSimBuildingBlock
@@ -32,6 +39,8 @@ namespace PKSim.Core.Model
       public virtual int Version { get; set; }
       public virtual int StructureVersion { get; set; }
       private IRootContainer _root;
+
+      public virtual PKSimBuildingBlock OwnedBy { get; set; }
 
       public virtual IRootContainer Root
       {

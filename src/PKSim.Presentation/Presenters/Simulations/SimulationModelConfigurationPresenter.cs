@@ -55,7 +55,9 @@ namespace PKSim.Presentation.Presenters.Simulations
       public bool SimulationCreated { get; private set; }
       public Simulation Simulation { get; private set; }
 
-      public SimulationModelConfigurationPresenter(ISimulationModelConfigurationView view, ISubPresenterItemManager<ISimulationModelConfigurationItemPresenter> subPresenterItemManager,
+      public SimulationModelConfigurationPresenter(
+         ISimulationModelConfigurationView view, 
+         ISubPresenterItemManager<ISimulationModelConfigurationItemPresenter> subPresenterItemManager,
          ISimulationFactory simulationFactory)
          : base(view, subPresenterItemManager, SimulationModelConfigurationItems.All)
       {
@@ -75,7 +77,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          base.InitializeWith(commandRegister);
          subjectConfigurationPresenter.SubjectSelectionChanged += updateModelSelectionBasedOnCurrentSubject;
 
-         //triggers once after initalization
+         //triggers once after initialization
          updateModelSelectionBasedOnCurrentSubject();
       }
 

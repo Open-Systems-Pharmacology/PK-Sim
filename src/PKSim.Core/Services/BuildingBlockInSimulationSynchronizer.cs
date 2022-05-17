@@ -14,13 +14,13 @@ namespace PKSim.Core.Services
 
    public class BuildingBlockInSimulationSynchronizer : IBuildingBlockInSimulationSynchronizer
    {
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly ICloner _cloner;
       private readonly ICompoundPropertiesUpdater _compoundPropertiesUpdater;
 
-      public BuildingBlockInSimulationSynchronizer(IBuildingBlockInSimulationManager buildingBlockInSimulationManager, ICloner cloner, ICompoundPropertiesUpdater compoundPropertiesUpdater)
+      public BuildingBlockInSimulationSynchronizer(IBuildingBlockInProjectManager buildingBlockInProjectManager, ICloner cloner, ICompoundPropertiesUpdater compoundPropertiesUpdater)
       {
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _cloner = cloner;
          _compoundPropertiesUpdater = compoundPropertiesUpdater;
       }
@@ -30,7 +30,7 @@ namespace PKSim.Core.Services
          //only required for compound at the moment since they are the only one that can actually get out of sync.
          foreach (var usedBuildingBlock in simulation.UsedBuildingBlocksInSimulation<Compound>())
          {
-            var templateBuildingBlock = _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy(usedBuildingBlock);
+            var templateBuildingBlock = _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy(usedBuildingBlock);
 
             //not using a template building block so we simply keep this guy
             if (Equals(templateBuildingBlock, usedBuildingBlock.BuildingBlock))

@@ -7,16 +7,16 @@ namespace PKSim.Infrastructure.Reporting.Summary
 {
    public class UsedBuildingBlockReportBuilder : ReportBuilder<UsedBuildingBlock>
    {
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
-      public UsedBuildingBlockReportBuilder(IBuildingBlockInSimulationManager buildingBlockInSimulationManager)
+      public UsedBuildingBlockReportBuilder(IBuildingBlockInProjectManager buildingBlockInProjectManager)
       {
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
       }
 
       protected override void FillUpReport(UsedBuildingBlock usedBuildingBlock, ReportPart reportPart)
       {
-         var status = _buildingBlockInSimulationManager.StatusFor(usedBuildingBlock);
+         var status = _buildingBlockInProjectManager.StatusFor(usedBuildingBlock);
          if (status == BuildingBlockStatus.Green) return;
          reportPart.Title = PKSimConstants.UI.Warning;
          reportPart.AddToContent(PKSimConstants.Information.BuildingBlockSettingsDoNotMatchWithTemplate(usedBuildingBlock.BuildingBlockType.ToString()));

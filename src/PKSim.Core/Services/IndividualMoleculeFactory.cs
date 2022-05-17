@@ -6,8 +6,8 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;
-using static OSPSuite.Core.Domain.Constants.Dimension;
 using FormulaCache = OSPSuite.Core.Domain.Formulas.FormulaCache;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -22,6 +22,12 @@ namespace PKSim.Core.Services
       IndividualMolecule CreateEmpty();
 
       IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
+
+      /// <summary>
+      ///    Add all predefined ontogeny parameters to the global molecule. This is only required for actual SimulationSubject
+      /// </summary>
+      /// <param name="individualMolecule"></param>
+      void AddOntogenyParameterTo(IndividualMolecule individualMolecule);
    }
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
@@ -30,6 +36,8 @@ namespace PKSim.Core.Services
    {
       protected readonly IEntityPathResolver _entityPathResolver;
       private readonly IIdGenerator _idGenerator;
+      protected readonly IParameterRateRepository _parameterRateRepository;
+      private readonly string _containerPath;
       protected readonly IObjectBaseFactory _objectBaseFactory;
       protected readonly IObjectPathFactory _objectPathFactory;
       protected readonly IParameterFactory _parameterFactory;
@@ -39,84 +47,75 @@ namespace PKSim.Core.Services
          IParameterFactory parameterFactory,
          IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
-         IIdGenerator idGenerator)
+         IIdGenerator idGenerator,
+         IParameterRateRepository parameterRateRepository,
+         string containerPath)
       {
          _objectBaseFactory = objectBaseFactory;
          _parameterFactory = parameterFactory;
          _objectPathFactory = objectPathFactory;
          _entityPathResolver = entityPathResolver;
          _idGenerator = idGenerator;
+         _parameterRateRepository = parameterRateRepository;
+         _containerPath = containerPath;
       }
 
       public bool IsSatisfiedBy(Type item) => item.IsAnImplementationOf<TMolecule>();
 
       protected abstract ApplicationIcon Icon { get; }
 
-      public virtual IndividualMolecule CreateEmpty() => CreateMolecule(string.Empty);
+      public virtual IndividualMolecule CreateEmpty()
+      {
+         var molecule = CreateMolecule(string.Empty);
+         AddOntogenyParameterTo(molecule);
+         return molecule;
+      }
 
       public abstract IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
 
-      protected ParameterValueMetaData RelExpParam(string paramName, double defaultValue = 0) => new ParameterValueMetaData
+      protected bool HasAgeParameter(ISimulationSubject simulationSubject)
       {
-         ParameterName = paramName,
-         Dimension = DIMENSIONLESS,
-         DefaultValue = defaultValue,
-         GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-         BuildingBlockType = PKSimBuildingBlockType.Individual,
-         IsDefault = true,
-         MinValue = 0,
-         MinIsAllowed = true
-      };
+         return simulationSubject?.Individual?.AgeParameter != null;
+      }
 
-      protected ParameterRateMetaData FractionParam(string paramName, string rate,
-         bool editable = true, bool visible = true) =>
-         new ParameterRateMetaData
-         {
-            ParameterName = paramName,
-            Rate = rate,
-            CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            CanBeVaried = true,
-            CanBeVariedInPopulation = false,
-            ReadOnly = !editable,
-            Visible = visible,
-            Dimension = CoreConstants.Dimension.Fraction,
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            IsDefault = true,
-            MinValue = 0,
-            MaxValue = 1,
-            MinIsAllowed = true,
-            MaxIsAllowed = true,
-         };
+      protected ParameterRateMetaData RelExpParam(string paramName)
+      {
+         return _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
+      }
 
-      protected ParameterRateMetaData InitialConcentrationParam(string rate) =>
-         new ParameterRateMetaData
-         {
-            ParameterName = INITIAL_CONCENTRATION,
-            Rate = rate,
-            CalculationMethod = CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS,
-            BuildingBlockType = PKSimBuildingBlockType.Individual,
-            CanBeVaried = true,
-            CanBeVariedInPopulation = true,
-            Dimension = MOLAR_CONCENTRATION,
-            GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            MinValue = 0,
-            MinIsAllowed = true
-         };
+      protected ParameterRateMetaData FractionParam(string paramName, string rate, bool? visible = null)
+      {
+         var param = rateParam(paramName, rate);
+         param.Visible = visible.GetValueOrDefault(param.Visible);
+         return param;
+      }
 
+      protected ParameterRateMetaData InitialConcentrationParam(string rate) => rateParam(INITIAL_CONCENTRATION, rate);
+
+      private ParameterRateMetaData rateParam(string paramName, string rate)
+      {
+         var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
+         var parameterRateMetaData = new ParameterRateMetaData();
+         parameterRateMetaData.UpdatePropertiesFrom(parameterMetaData);
+         parameterRateMetaData.Rate = rate;
+         return parameterRateMetaData;
+      }
 
       protected TMolecule CreateMolecule(string moleculeName)
       {
          var molecule = _objectBaseFactory.Create<TMolecule>().WithIcon(Icon.IconName).WithName(moleculeName);
-         CreateMoleculeParameterIn(molecule, REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE, MOLAR_CONCENTRATION);
-         CreateMoleculeParameterIn(molecule, HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN, TIME);
-         CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN, TIME);
-
-         OntogenyFactors.Each(parameterName => CreateMoleculeParameterIn(molecule, parameterName, 1, DIMENSIONLESS,
-            CoreConstants.Groups.ONTOGENY_FACTOR,
-            canBeVariedInPopulation: false));
+         CreateMoleculeParameterIn(molecule, REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE);
+         CreateMoleculeParameterIn(molecule, HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN);
+         CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
+         CreateMoleculeParameterIn(molecule, DISEASE_FACTOR, CoreConstants.DEFAULT_DISEASE_FACTOR);
 
          return molecule;
+      }
+
+      public void AddOntogenyParameterTo(IndividualMolecule molecule)
+      {
+         OntogenyFactors.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR)
+         );
       }
 
       protected IParameter CreateFormulaParameterIn(
@@ -167,27 +166,12 @@ namespace PKSim.Core.Services
          return parameter;
       }
 
-      protected IParameter CreateMoleculeParameterIn(IContainer parameterContainer, string parameterName, double defaultValue, string dimensionName,
-         string groupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-         bool canBeVaried = true,
-         bool canBeVariedInPopulation = true,
-         bool visible = true,
-         string displayUnit = null,
-         PKSimBuildingBlockType buildingBlockType = PKSimBuildingBlockType.Individual)
+      protected IParameter CreateMoleculeParameterIn(IContainer parameterContainer, string parameterName, double defaultValue)
       {
-         var parameterValue = new ParameterValueMetaData
-         {
-            ParameterName = parameterName,
-            DefaultValue = defaultValue,
-            Dimension = dimensionName,
-            GroupName = groupName,
-            CanBeVaried = canBeVaried,
-            CanBeVariedInPopulation = canBeVariedInPopulation,
-            Visible = visible,
-            DefaultUnit = displayUnit,
-            BuildingBlockType = buildingBlockType
-         };
-
+         var parameterRateMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, parameterName);
+         var parameterValue = new ParameterValueMetaData();
+         parameterValue.UpdatePropertiesFrom(parameterRateMetaData);
+         parameterValue.DefaultValue = defaultValue;
          return CreateConstantParameterIn(parameterContainer, parameterValue);
       }
 
@@ -205,6 +189,5 @@ namespace PKSim.Core.Services
          parameters.Each(p => AddParameterIn(expressionContainer, p, moleculeName));
          return expressionContainer;
       }
-
    }
 }

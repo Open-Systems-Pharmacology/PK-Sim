@@ -18,7 +18,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.Core;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Individual = PKSim.Core.Snapshots.Individual;
 using Simulation = PKSim.Core.Snapshots.Simulation;
@@ -119,8 +118,8 @@ namespace PKSim.CLI
 
          _projectSnapshot = new SnapshotProject().WithName(PROJECT_SNAPSHOT_NAME);
          _project = new PKSimProject().WithName(PROJECT_NAME);
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshot(_projectSnapshot, _runOptions.Run)).Returns(_project);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotAsync(_projectSnapshot, _runOptions.Run)).Returns(_project);
          FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile);
       }
    }
@@ -202,7 +201,7 @@ namespace PKSim.CLI
          _input = new Input {Project = PROJECT_NAME, Name = _simulationName, SectionId = 2, Type = PKSimBuildingBlockType.Simulation, SectionLevel = 5};
 
          _expectedSimulationPath = Path.Combine(_expectedOutputPath, _simulationName);
-         _simulationExport = new SimulationMapping { Project = PROJECT_NAME, Simulation = _simulationName, Path = _expectedSimulationPath};
+         _simulationExport = new SimulationMapping {Project = PROJECT_NAME, Simulation = _simulationName, Path = _expectedSimulationPath};
          _simulationExports = new[] {_simulationExport};
          A.CallTo(() => _exportSimulationRunner.ExportSimulationsIn(_project, A<ExportRunOptions>._))
             .Invokes(x => _exportOptions = x.GetArgument<ExportRunOptions>(1))
@@ -221,6 +220,7 @@ namespace PKSim.CLI
 
          _project.AddBuildingBlock(_individualSimulation);
          _qualificationConfiguration.Inputs = new[] {_input};
+         _qualificationConfiguration.Simulations = new[] {_simulationName,};
          _runOptions.Run = true;
       }
 
@@ -252,6 +252,13 @@ namespace PKSim.CLI
       {
          _exportOptions.OutputFolder.ShouldBeEqualTo(_expectedOutputPath);
          _exportOptions.ExportMode.ShouldBeEqualTo(SimulationExportMode.Csv | SimulationExportMode.Xml);
+      }
+
+      [Observation]
+      public void should_only_export_the_simulation_required_for_the_qualification()
+      {
+         _exportOptions.Simulations.ShouldBeEqualTo(_qualificationConfiguration.Simulations);
+         _exportOptions.ExportAllSimulationsIfListIsEmpty.ShouldBeFalse();
       }
 
       [Observation]
@@ -371,7 +378,7 @@ namespace PKSim.CLI
             SnapshotFile = "RefSnapshotPathDoesNotExist"
          };
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns((SnapshotProject) null);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns((SnapshotProject) null);
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
       }
 
@@ -399,7 +406,7 @@ namespace PKSim.CLI
 
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
          _refSnapshotProject = new SnapshotProject();
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -429,7 +436,7 @@ namespace PKSim.CLI
          _qualificationConfiguration.BuildingBlocks = new[] {_buildingBlockSwap};
          _refIndividual = new Individual().WithName(_buildingBlockSwap.Name);
          _refSnapshotProject = new SnapshotProject {Individuals = new[] {_refIndividual}};
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -483,7 +490,7 @@ namespace PKSim.CLI
          _refIndividual = new Individual().WithName(_buildingBlockSwap.Name);
          _refSnapshotProject = new SnapshotProject {Individuals = new[] {_refIndividual}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_buildingBlockSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       private Individual _originalIndividual;
@@ -529,7 +536,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
          _projectSnapshot.Simulations = new[] {_originalSimulation};
       }
 
@@ -572,7 +579,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -602,7 +609,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject();
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -634,7 +641,7 @@ namespace PKSim.CLI
 
          _refSnapshotProject = new SnapshotProject {Simulations = new[] {_refSimulation}};
 
-         A.CallTo(() => _snapshotTask.LoadSnapshotFromFile<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_simulationParameterSwap.SnapshotFile)).Returns(_refSnapshotProject);
       }
 
       [Observation]
@@ -685,7 +692,7 @@ namespace PKSim.CLI
          };
          _projectSnapshot.Simulations = new[] {simulation};
          _qualificationConfiguration.SimulationPlots = new[] {_simulationPlot};
-
+         _qualificationConfiguration.Simulations = new[] {simulation.Name};
          A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
       }
@@ -717,6 +724,35 @@ namespace PKSim.CLI
       {
          _mapping.Inputs.ShouldNotBeNull();
          _mapping.Inputs.ShouldBeEmpty();
+      }
+   }
+
+   public class When_running_the_qualification_runner_with_a_configuration_defining_charts_for_a_simulation_that_is_not_exported : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private SimulationPlot _simulationPlot;
+      private CurveChart _curveChart;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var simulation = new Simulation().WithName("Sim");
+
+
+         _curveChart = new CurveChart();
+         simulation.IndividualAnalyses = new[] {_curveChart};
+         _simulationPlot = new SimulationPlot
+         {
+            SectionId = 2,
+            Simulation = simulation.Name
+         };
+         _projectSnapshot.Simulations = new[] {simulation};
+         _qualificationConfiguration.SimulationPlots = new[] {_simulationPlot};
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.RunBatchAsync(_runOptions)).ShouldThrowAn<QualificationRunException>();
       }
    }
 

@@ -46,6 +46,17 @@ namespace PKSim.Core.Snapshots
 
       public ValueOrigin ValueOrigin { get; set; }
 
+      /// <summary>
+      /// Name of disease state associated with OriginData. Null if no disease state defined
+      /// </summary>
+      public string DiseaseState { get; set; }
+
+      /// <summary>
+      /// List of disease state parameters associated with the selected disease state
+      /// </summary>
+      public Parameter[] DiseaseStateParameters { get; set; }
+
+
       public void AddCalculationMethods(params string[] calculationMethods)
       {
          if (CalculationMethods == null)

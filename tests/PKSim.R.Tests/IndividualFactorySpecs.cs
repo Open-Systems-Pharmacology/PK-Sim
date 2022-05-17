@@ -8,6 +8,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.R.Domain;
 using PKSim.R.Services;
+using static PKSim.Core.Services.CKDDiseaseStateImplementation;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 
@@ -50,7 +51,7 @@ namespace PKSim.R
                Value = 175,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 
@@ -60,6 +61,51 @@ namespace PKSim.R
       }
 
       [Test]
+      public void should_return_all_individual_parameters_defined_by_the_create_individual_algorithm()
+      {
+         _results.DistributedParameters.Length.ShouldBeGreaterThan(0);
+         _results.DerivedParameters.Length.ShouldBeGreaterThan(0);
+      }
+   }
+
+   public class When_creating_an_individual_based_on_a_valid_origin_data_and_disease_state : concern_for_IndividualFactory
+   {
+      private CreateIndividualResults _results;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualCharacteristics = new IndividualCharacteristics
+         {
+            Species = CoreConstants.Species.HUMAN,
+            Population = CoreConstants.Population.ICRP,
+            Age = new Parameter
+            {
+               Value = 30,
+               Unit = "year(s)",
+            },
+            Weight = new Parameter
+            {
+               Value = 75,
+               Unit = "kg",
+            },
+            Height = new Parameter
+            {
+               Value = 175,
+               Unit = "cm",
+            },
+            Gender = CoreConstants.Gender.MALE,
+            DiseaseState = CoreConstants.DiseaseStates.CKD
+         };
+         _individualCharacteristics.AddDiseaseStateParameter(new Parameter {Name = TARGET_GFR, Value = 0.005, Unit = GFR_UNIT});
+      }
+
+      protected override void Because()
+      {
+         _results = sut.CreateIndividual(_individualCharacteristics);
+      }
+
+      [Observation]
       public void should_return_all_individual_parameters_defined_by_the_create_individual_algorithm()
       {
          _results.DistributedParameters.Length.ShouldBeGreaterThan(0);
@@ -119,8 +165,8 @@ namespace PKSim.R
                Value = 17.5,
                Unit = "dm",
             },
-            Gender = CoreConstants.Gender.Female,
-            Seed =  1234
+            Gender = CoreConstants.Gender.FEMALE,
+            Seed = 1234
          };
       }
 
@@ -158,7 +204,7 @@ namespace PKSim.R
       public void should_have_added_the_age_parameter_as_a_distributed_parameter()
       {
          var age = _results.DistributedParameters.FirstOrDefault(x =>
-            x.ParameterPath == new[] { Constants.ORGANISM, CoreConstants.Parameters.AGE }.ToPathString());
+            x.ParameterPath == new[] {Constants.ORGANISM, CoreConstants.Parameters.AGE}.ToPathString());
 
          age.ShouldNotBeNull();
          age.Value.ShouldBeEqualTo(30);
@@ -169,7 +215,7 @@ namespace PKSim.R
       public void should_have_added_the_gestational_age_parameter_as_a_distributed_parameter()
       {
          var ga = _results.DistributedParameters.FirstOrDefault(x =>
-            x.ParameterPath == new[] { Constants.ORGANISM, Constants.Parameters.GESTATIONAL_AGE }.ToPathString());
+            x.ParameterPath == new[] {Constants.ORGANISM, Constants.Parameters.GESTATIONAL_AGE}.ToPathString());
 
          ga.ShouldNotBeNull();
          ga.Value.ShouldBeEqualTo(CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS);
@@ -204,7 +250,7 @@ namespace PKSim.R
                Value = 175,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 
@@ -224,8 +270,6 @@ namespace PKSim.R
       {
          _results.Count(x => !string.IsNullOrEmpty(x.Unit)).ShouldBeGreaterThan(0);
       }
-
-     
    }
 
    public class When_retrieving_the_distributed_parameter_based_on_a_valid_origin_data_with_ontogeny : concern_for_IndividualFactory
@@ -255,7 +299,7 @@ namespace PKSim.R
                Value = 60,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
       }
 

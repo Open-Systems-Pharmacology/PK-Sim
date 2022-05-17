@@ -14,6 +14,7 @@ namespace PKSim.Core.Snapshots
 
       public string Name { get; set; }
       public string Description { get; set; }
+      public ExpressionProfile[] ExpressionProfiles { get; set; }
       public Individual[] Individuals { get; set; }
       public Population[] Populations { get; set; }
       public Compound[] Compounds { get; set; }
@@ -36,6 +37,8 @@ namespace PKSim.Core.Snapshots
       {
          switch (buildingBlockType)
          {
+            case PKSimBuildingBlockType.ExpressionProfile:
+               return ExpressionProfiles;
             case PKSimBuildingBlockType.Compound:
                return Compounds;
             case PKSimBuildingBlockType.Formulation:
@@ -88,6 +91,8 @@ namespace PKSim.Core.Snapshots
                return swap(Events, originalBuildingBlock, newBuildingBlock);
             case PKSimBuildingBlockType.ObserverSet:
                return swap(ObserverSets, originalBuildingBlock, newBuildingBlock);
+            case PKSimBuildingBlockType.ExpressionProfile:
+               return swap(ExpressionProfiles, originalBuildingBlock, newBuildingBlock);
             default:
                return false;
          }

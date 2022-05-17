@@ -10,6 +10,7 @@ namespace PKSim.Presentation.Views.ProteinExpression
       void ActualizeSelection();
       DataRow SelectedProteinData { get; }
       bool SelectionChanged { get; }
+      string SearchCriteria {  set; }
       void Activate();
    }
 }

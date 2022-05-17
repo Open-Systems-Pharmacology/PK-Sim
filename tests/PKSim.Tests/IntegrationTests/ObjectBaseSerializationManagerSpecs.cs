@@ -1,17 +1,19 @@
 using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
+using System.Linq;
 using NUnit.Framework;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Infrastructure;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Infrastructure;
 using IContainer = OSPSuite.Core.Domain.IContainer;
-using ValueComparer = OSPSuite.Core.Domain.Services.ValueComparer;
 
 namespace PKSim.IntegrationTests
 {
@@ -32,16 +34,17 @@ namespace PKSim.IntegrationTests
       protected PathCache<IParameter> _allTargetParameters;
 
       protected TBuildingBlock _sourceBuildingBlock;
+      protected TBuildingBlock _deserializedBuildingBlock;
 
       protected override void Because()
       {
          var stream = sut.Serialize(_sourceBuildingBlock);
-         var resultingBuildingBlock = sut.Deserialize<TBuildingBlock>(stream);
+         _deserializedBuildingBlock = sut.Deserialize<TBuildingBlock>(stream);
          _allSourceParameters = _containerTask.CacheAllChildren<IParameter>(_sourceBuildingBlock);
-         _allTargetParameters = _containerTask.CacheAllChildren<IParameter>(resultingBuildingBlock);
+         _allTargetParameters = _containerTask.CacheAllChildren<IParameter>(_deserializedBuildingBlock);
       }
 
-      protected void CheckParametersAreEqualsInBuidlingBlocks()
+      protected void CheckParametersAreEqualsInBuildingBlocks()
       {
          var errorList = new List<string>();
 
@@ -98,7 +101,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_parameters_of_the_resulting_individual_should_have_the_same_values_as_the_parameter_in_the_original_individual()
       {
-         CheckParametersAreEqualsInBuidlingBlocks();
+         CheckParametersAreEqualsInBuildingBlocks();
       }
    }
 
@@ -113,7 +116,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_parameters_of_the_resulting_compound_should_have_the_same_values_as_the_parameter_in_the_original_compound()
       {
-         CheckParametersAreEqualsInBuidlingBlocks();
+         CheckParametersAreEqualsInBuildingBlocks();
       }
    }
 
@@ -128,7 +131,34 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_parameters_of_the_resulting_protocol_should_have_the_same_values_as_the_parameter_in_the_original_protocol()
       {
-         CheckParametersAreEqualsInBuidlingBlocks();
+         CheckParametersAreEqualsInBuildingBlocks();
+      }
+   }
+
+   public class When_deserializing_a_serialized_individual_with_a_disease_state : When_serializing_two_building_blocks<Individual>
+   {
+      private DiseaseState _diseaseState;
+
+      protected override void Context()
+      {
+         base.Context();
+         var diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
+         _sourceBuildingBlock = DomainFactoryForSpecs.CreateStandardIndividual();
+         _diseaseState = diseaseStateRepository.AllFor(_sourceBuildingBlock.OriginData.Population).FirstOrDefault();
+
+         _sourceBuildingBlock.OriginData.DiseaseState = _diseaseState;
+         _sourceBuildingBlock.OriginData.AddDiseaseStateParameter(new OriginDataParameter(40, "mg"){Name = "TEST"});
+      }
+
+      [Observation]
+      public void the_parameters_of_the_resulting_individual_should_have_the_same_values_as_the_parameter_in_the_original_individual()
+      {
+         CheckParametersAreEqualsInBuildingBlocks();
+         _deserializedBuildingBlock.OriginData.DiseaseState.ShouldBeEqualTo(_diseaseState);
+         var diseaseStateParam = _deserializedBuildingBlock.OriginData.DiseaseStateParameters.FindByName("TEST");
+         diseaseStateParam.ShouldNotBeNull();
+         diseaseStateParam.Value.ShouldBeEqualTo(40);
+         diseaseStateParam.Unit.ShouldBeEqualTo("mg");
       }
    }
 }

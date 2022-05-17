@@ -6,6 +6,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.UICommands;
 
@@ -79,7 +80,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewSimulation)
             .WithId(MenuBarItemIds.NewSimulation)
-            .WithCommand<NewSimulationCommand>()
+            .WithCommand<AddSimulationCommand>()
             .WithDescription(PKSimConstants.UI.NewSimulationDescription)
             .WithIcon(ApplicationIcons.Simulation)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.S);
@@ -98,7 +99,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewIndividual)
             .WithId(MenuBarItemIds.NewIndividual)
-            .WithCommand<NewIndividualCommand>()
+            .WithCommand<AddIndividualCommand>()
             .WithDescription(PKSimConstants.UI.NewIndividualDescription)
             .WithIcon(ApplicationIcons.Individual)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.I);
@@ -110,7 +111,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewPopulation)
             .WithId(MenuBarItemIds.NewPopulation)
-            .WithCommand<NewRandomPopulationCommand>()
+            .WithCommand<AddRandomPopulationCommand>()
             .WithDescription(PKSimConstants.UI.NewPopulationDescription)
             .WithIcon(ApplicationIcons.Population)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.P);
@@ -128,7 +129,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewAdministrationProtocol)
             .WithId(MenuBarItemIds.NewProtocol)
-            .WithCommand<NewProtocolCommand>()
+            .WithCommand<AddProtocolCommand>()
             .WithDescription(PKSimConstants.UI.NewProtocolDescription)
             .WithIcon(ApplicationIcons.Protocol)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.A);
@@ -140,7 +141,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewFormulation)
             .WithId(MenuBarItemIds.NewFormulation)
-            .WithCommand<NewFormulationCommand>()
+            .WithCommand<AddFormulationCommand>()
             .WithDescription(PKSimConstants.UI.NewFormulationDescription)
             .WithIcon(ApplicationIcons.Formulation)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.F);
@@ -152,7 +153,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewEvent)
             .WithId(MenuBarItemIds.NewEvent)
-            .WithCommand<NewEventCommand>()
+            .WithCommand<AddEventCommand>()
             .WithDescription(PKSimConstants.UI.NewEventDescription)
             .WithIcon(ApplicationIcons.Event)
             .WithShortcut(Keys.Control | Keys.Alt | Keys.E);
@@ -164,7 +165,7 @@ namespace PKSim.Presentation.Repositories
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.NewObservers)
             .WithId(MenuBarItemIds.NewObserverSet)
-            .WithCommand<NewObserverSetCommand>()
+            .WithCommand<AddObserverSetCommand>()
             .WithDescription(PKSimConstants.UI.NewObserversDescription)
             .WithIcon(ApplicationIcons.Observer);
 //            .WithShortcut(Keys.Control | Keys.Alt | Keys.O);
@@ -172,6 +173,37 @@ namespace PKSim.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
             .WithId(MenuBarItemIds.LoadObserverSet)
             .WithCommand<LoadObserverSetCommand>()
+            .WithIcon(ApplicationIcons.LoadFromTemplate);
+
+         var newExpressionProfile = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.NewExpressionProfile)
+            .WithIcon(ApplicationIcons.ExpressionProfile)
+            .WithDescription(PKSimConstants.UI.NewExpressionProfileDescription)
+            .WithId(MenuBarItemIds.NewExpressionProfile);
+
+         var newEnzyme = CreateMenuButton.WithCaption(PKSimConstants.UI.AddMetabolizingEnzyme)
+            .WithId(MenuBarItemIds.NewExpressionProfileEnzyme)
+            .WithCommand<AddExpressionProfileCommand<IndividualEnzyme>>()
+            .WithIcon(ApplicationIcons.Enzyme);
+
+         var newTransporter = CreateMenuButton.WithCaption(PKSimConstants.UI.AddTransportProtein)
+            .WithId(MenuBarItemIds.NewExpressionProfileTransporter)
+            .WithCommand<AddExpressionProfileCommand<IndividualTransporter>>()
+            .WithIcon(ApplicationIcons.Transporter);
+
+         var newSpecificBinding = CreateMenuButton.WithCaption(PKSimConstants.UI.AddSpecificBindingPartner)
+            .WithId(MenuBarItemIds.NewExpressionProfileSpecificBindingPartner)
+            .WithCommand<AddExpressionProfileCommand<IndividualOtherProtein>>()
+            .WithIcon(ApplicationIcons.SpecificBinding);
+
+         newExpressionProfile.AddItem(newEnzyme);
+         newExpressionProfile.AddItem(newTransporter);
+         newExpressionProfile.AddItem(newSpecificBinding);
+
+         yield return newExpressionProfile;
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
+            .WithId(MenuBarItemIds.LoadExpressionProfile)
+            .WithCommand<LoadExpressionProfileCommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.About)
@@ -336,12 +368,6 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<ImportConcentrationDataCommand>()
             .WithIcon(ApplicationIcons.ObservedData);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ProjectReport)
-            .WithId(MenuBarItemIds.ProjectReport)
-            .WithDescription(PKSimConstants.UI.ProjectReportDescription)
-            .WithCommand<ExportProjectToPDFCommand>()
-            .WithIcon(ApplicationIcons.PDF);
-
          yield return CreateSubMenu.WithCaption(PKSimConstants.MenuNames.ExportHistory)
             .WithId(MenuBarItemIds.HistoryReportGroup)
             .WithIcon(ApplicationIcons.HistoryExport);
@@ -351,12 +377,6 @@ namespace PKSim.Presentation.Repositories
             .WithDescription(PKSimConstants.UI.ExportHistoryToExcelDescription)
             .WithCommand<ExportHistoryToExcelCommand>()
             .WithIcon(ApplicationIcons.Excel);
-
-         yield return CreateMenuButton.WithCaption(MenuNames.ExportToPDF)
-            .WithId(MenuBarItemIds.HistoryReportPDF)
-            .WithDescription(PKSimConstants.UI.ExportHistoryToPDFDescription)
-            .WithIcon(ApplicationIcons.PDF)
-            .WithCommand<ExportHistoryToPDFCommand>();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.CloneMenu)
             .WithId(MenuBarItemIds.CloneActiveSimulation)
@@ -420,11 +440,6 @@ namespace PKSim.Presentation.Repositories
             .WithId(MenuBarItemIds.ImportActiveSimulationPKParameters)
             .WithIcon(ApplicationIcons.PKAnalysesImportFromCSV)
             .WithCommand<ImportPKAnalysesCommand>();
-
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationToPDFMenu)
-            .WithId(MenuBarItemIds.ExportActiveSimulationToPDF)
-            .WithIcon(ApplicationIcons.ExportToPDF)
-            .WithCommand<ExportActiveSimulationToPDFCommand>();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadPopulationAnalysisWorkflowFromTemplateMenu)
             .WithId(MenuBarItemIds.LoadPopulationSimulationWorkflow)

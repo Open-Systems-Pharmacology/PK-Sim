@@ -81,7 +81,7 @@ namespace PKSim.Core.Services
 
          try
          {
-            return base.CalculateFor(populationSimulation, populationSimulation.NumberOfItems, populationSimulation.Results, (individualId) => { updateBodyWeightFromCurrentIndividual(bodyWeightParameter, allBodyWeights, individualId); });
+            return base.CalculateFor(populationSimulation, populationSimulation.Results, (individualId) => { updateBodyWeightFromCurrentIndividual(bodyWeightParameter, allBodyWeights, individualId); });
          }
          finally
          {
@@ -175,14 +175,14 @@ namespace PKSim.Core.Services
          return pkParameter.Description;
       }
 
-      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysys = null)
+      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis = null)
       {
          var timeValue = dataColumn.BaseGrid.Values;
          var dimension = _dimensionRepository.MergedDimensionFor(dataColumn);
          var umolPerLiterUnit = dimension.UnitOrDefault(CoreConstants.Units.MicroMolPerLiter);
-         var concentrationValueInMolL = dataColumn.Values.Select(v => dimension.BaseUnitValueToUnitValue(umolPerLiterUnit, v)).ToFloatArray();
+         var concentrationValueInMolL = dataColumn.Values.Select(v => dimension.BaseUnitValueToUnitValue(umolPerLiterUnit, v)).ToArray();
          var pkAnalysis = _pkMapper.MapFrom(dataColumn, _pkValuesCalculator.CalculatePK(timeValue, concentrationValueInMolL, options), options.PKParameterMode, moleculeName);
-         addWarningsTo(pkAnalysis, globalPKAnalysys, moleculeName);
+         addWarningsTo(pkAnalysis, globalPKAnalysis, moleculeName);
          return new IndividualPKAnalysis(dataColumn, pkAnalysis);
       }
 
@@ -191,10 +191,10 @@ namespace PKSim.Core.Services
          if (globalPKAnalysis == null)
             return;
 
-         addFractionAbsorvedWarningTo(pkAnalysis, globalPKAnalysis, moleculeName);
+         addFractionAbsorbedWarningTo(pkAnalysis, globalPKAnalysis, moleculeName);
       }
 
-      private void addFractionAbsorvedWarningTo(PKAnalysis pkAnalysis, GlobalPKAnalysis globalPKAnalysis, string moleculeName)
+      private void addFractionAbsorbedWarningTo(PKAnalysis pkAnalysis, GlobalPKAnalysis globalPKAnalysis, string moleculeName)
       {
          var fractionAbsorbed = globalPKAnalysis.PKParameter(moleculeName, CoreConstants.PKAnalysis.FractionAbsorbed);
          if (fractionAbsorbed == null)

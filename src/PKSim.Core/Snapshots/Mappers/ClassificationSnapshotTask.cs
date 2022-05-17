@@ -12,7 +12,7 @@ namespace PKSim.Core.Snapshots.Mappers
    public interface IClassificationSnapshotTask
    {
       /// <summary>
-      ///    Maps the <paramref name="snapshots" /> into classifications  and adds them to the <paramref name="project" />.
+      ///    Maps the <paramref name="snapshots" /> into classifications and adds them to the project defined in <paramref name="snapshotContext" />.
       ///    Also added to the project will be classifiables contained in the classifications and those will have the subjects
       ///    configured correctly from the list of <paramref name="subjects" />.
       /// </summary>
@@ -21,7 +21,7 @@ namespace PKSim.Core.Snapshots.Mappers
       ///    created classification />
       /// </typeparam>
       /// <typeparam name="TSubject">This is the type of the subject for the classifiable</typeparam>
-      Task UpdateProjectClassifications<TClassifiable, TSubject>(SnapshotClassification[] snapshots, PKSimProject project, IReadOnlyCollection<TSubject> subjects)
+      Task UpdateProjectClassifications<TClassifiable, TSubject>(SnapshotClassification[] snapshots, SnapshotContext snapshotContext, IReadOnlyCollection<TSubject> subjects)
          where TClassifiable : Classifiable<TSubject>, new() where TSubject : IObjectBase;
 
       Task<SnapshotClassification[]> MapClassificationsToSnapshots<TClassifiable>(PKSimProject project) where TClassifiable : class, IClassifiableWrapper, new();
@@ -36,21 +36,22 @@ namespace PKSim.Core.Snapshots.Mappers
          _classificationMapper = classificationMapper;
       }
 
-      public Task UpdateProjectClassifications<TClassifiable, TSubject>(SnapshotClassification[] snapshots, PKSimProject project, IReadOnlyCollection<TSubject> subjects)
+      public Task UpdateProjectClassifications<TClassifiable, TSubject>(SnapshotClassification[] snapshots, SnapshotContext snapshotContext, IReadOnlyCollection<TSubject> subjects)
          where TClassifiable : Classifiable<TSubject>, new() where TSubject : IObjectBase
       {
          if (snapshots == null)
             return Task.FromResult(false);
 
-         var tasks = snapshots.Select(snapshot => updateProjectFor<TClassifiable, TSubject>(project, snapshot, subjects));
+         var tasks = snapshots.Select(snapshot => updateProjectFor<TClassifiable, TSubject>(snapshot, subjects, snapshotContext));
          return Task.WhenAll(tasks);
       }
 
-      private async Task updateProjectFor<TClassifiable, TSubject>(PKSimProject project, SnapshotClassification snapshot, IReadOnlyCollection<TSubject> subjects, ModelClassification parent = null)
+      private async Task updateProjectFor<TClassifiable, TSubject>(Classification snapshot, IReadOnlyCollection<TSubject> subjects, SnapshotContext snapshotContext, ModelClassification parent = null)
          where TClassifiable : Classifiable<TSubject>, new() where TSubject : IObjectBase
       {
-         var classification = await _classificationMapper.MapToModel(snapshot, classificationTypeFor<TClassifiable>());
+         var classification = await _classificationMapper.MapToModel(snapshot, new ClassificationSnapshotContext(classificationTypeFor<TClassifiable>(), snapshotContext));
          classification.Parent = parent;
+         var project = snapshotContext.Project;
          project.AddClassification(classification);
 
          snapshot.Classifiables?.Each(snapshotClassifiable =>
@@ -65,7 +66,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (snapshot.Classifications != null)
          {
-            var tasks = snapshot.Classifications.Select(x => updateProjectFor<TClassifiable, TSubject>(project, x, subjects, classification));
+            var tasks = snapshot.Classifications.Select(x => updateProjectFor<TClassifiable, TSubject>(x, subjects, snapshotContext, classification));
             await Task.WhenAll(tasks);
          }
       }

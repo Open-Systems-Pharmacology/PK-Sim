@@ -123,7 +123,7 @@ namespace PKSim.Core.Services
       {
          var newColumn = new DataColumn(columnId, columnName, dimension, timeColumn)
          {
-            QuantityInfo = new QuantityInfo(columnName, path, quantity.QuantityType),
+            QuantityInfo = new QuantityInfo(path, quantity.QuantityType),
             DataInfo = newDataInfo(dimension),
          };
 
@@ -141,7 +141,7 @@ namespace PKSim.Core.Services
          var time = simulationResults.Time;
          return new BaseGrid(dataColumnIdFrom(time), Constants.TIME, _dimensionRepository.Time)
          {
-            QuantityInfo = new QuantityInfo(Constants.TIME, new[] {Constants.TIME}, QuantityType.Time),
+            QuantityInfo = new QuantityInfo(new[] {Constants.TIME}, QuantityType.Time),
             Values = time.Values
          };
       }

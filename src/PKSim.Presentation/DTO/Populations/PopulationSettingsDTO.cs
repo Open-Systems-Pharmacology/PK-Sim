@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Validation;
-using PKSim.Core;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Validation;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.DTO.Populations
 {
@@ -15,7 +15,7 @@ namespace PKSim.Presentation.DTO.Populations
       public virtual uint NumberOfIndividuals { get; set; }
 
       public virtual int ProportionOfFemales { get; set; }
-      public virtual ICache<string, ParameterRangeDTO> Parameters { get; private set; }
+      public virtual ICache<string, ParameterRangeDTO> Parameters { get; }
 
       //Based Individual used to create the population
       public virtual Individual Individual { get; set; }
@@ -26,9 +26,17 @@ namespace PKSim.Presentation.DTO.Populations
          Rules.AddRange(AllRules.All());
       }
 
-      public virtual IEnumerable<Gender> AvailableGenders()
+      public virtual IReadOnlyList<Gender> AvailableGenders => Individual?.AvailableGenders ?? new List<Gender>();
+
+      public string DiseaseState
       {
-         return Individual != null ? Individual.AvailableGenders() : new List<Gender>();
+         get
+         {
+            var diseaseState = Individual?.OriginData?.DiseaseState;
+            if (diseaseState == null)
+               return string.Empty;
+            return diseaseState.DisplayName;
+         }
       }
 
       public virtual string Population
@@ -37,59 +45,33 @@ namespace PKSim.Presentation.DTO.Populations
          {
             if (Individual == null)
                return string.Empty;
-            return Individual.OriginData.SpeciesPopulation.DisplayName;
+
+            return Individual.OriginData.Population.DisplayName;
          }
       }
 
-      public virtual bool HasMultipleGenders
-      {
-         get { return AvailableGenders().Count() > 1; }
-      }
+      public virtual bool HasMultipleGenders => AvailableGenders.Count() > 1;
 
-      public virtual Gender Female
-      {
-         get { return AvailableGenders().FindByName(CoreConstants.Gender.Female); }
-      }
+      public virtual Gender Female => AvailableGenders.FindByName(CoreConstants.Gender.FEMALE);
 
-      public virtual Gender Male
-      {
-         get { return AvailableGenders().FindByName(CoreConstants.Gender.Male); }
-      }
+      public virtual Gender Male => AvailableGenders.FindByName(CoreConstants.Gender.MALE);
 
       private static class AllRules
       {
-         private static IBusinessRule proportionOfFemaleBetween0And100
-         {
-            get
-            {
-               return CreateRule.For<PopulationSettingsDTO>()
-                  .Property(x => x.ProportionOfFemales)
-                  .WithRule((dto, value) => (value <= 100 && value >= 0))
-                  .WithError(PKSimConstants.Rules.Parameter.ProportionOfFemaleBetween0And100);
-            }
-         }
+         private static IBusinessRule proportionOfFemaleBetween0And100 { get; } = CreateRule.For<PopulationSettingsDTO>()
+            .Property(x => x.ProportionOfFemales)
+            .WithRule((dto, value) => (value <= 100 && value >= 0))
+            .WithError(PKSimConstants.Rules.Parameter.ProportionOfFemaleBetween0And100);
 
-         private static IBusinessRule numberOfIndividualShouldBeBiggerThan2
-         {
-            get
-            {
-               return CreateRule.For<PopulationSettingsDTO>()
-                  .Property(x => x.NumberOfIndividuals)
-                  .WithRule((dto, value) => (value >= 2))
-                  .WithError(PKSimConstants.Rules.Parameter.NumberOfIndividualShouldBeBiggerThan2);
-            }
-         }
+         private static IBusinessRule numberOfIndividualShouldBeBiggerThan2 { get; } = CreateRule.For<PopulationSettingsDTO>()
+            .Property(x => x.NumberOfIndividuals)
+            .WithRule((dto, value) => (value >= 2))
+            .WithError(PKSimConstants.Rules.Parameter.NumberOfIndividualShouldBeBiggerThan2);
 
-         private static IBusinessRule numberOfIndividualShouldBeSmallerThan10000
-         {
-            get
-            {
-               return CreateRule.For<PopulationSettingsDTO>()
-                  .Property(x => x.NumberOfIndividuals)
-                  .WithRule((dto, value) => (value <= 10000))
-                  .WithError(PKSimConstants.Rules.Parameter.NumberOfIndividualShouldBeSmallerThan10000);
-            }
-         }
+         private static IBusinessRule numberOfIndividualShouldBeSmallerThan10000 { get; } = CreateRule.For<PopulationSettingsDTO>()
+            .Property(x => x.NumberOfIndividuals)
+            .WithRule((dto, value) => (value <= 10000))
+            .WithError(PKSimConstants.Rules.Parameter.NumberOfIndividualShouldBeSmallerThan10000);
 
          public static IEnumerable<IBusinessRule> All()
          {

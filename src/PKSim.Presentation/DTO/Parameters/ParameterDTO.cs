@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Validation;
@@ -78,18 +77,15 @@ namespace PKSim.Presentation.DTO.Parameters
       {
          get
          {
-            try
-            {
-               return Parameter.ValueInDisplayUnit;
-            }
-            catch (Exception exception)
-
-            {
-               Debug.Write(exception.Message);
-               //Maybe implement a way to ask if a value can be computed instead of catching exception
-               //Permeability cannot be read in compound as references cannot be resolved
+            var (result, success) = Parameter.TryGetValueInDisplayUnit();
+            //Permeability cannot be read in compound as references cannot be resolved
+            //We return zero for now so that the rules are not showing a broken state (>=0). 
+            //We probably need to update the rules framework to not evaluate on NaN.
+            if (!success)
                return 0;
-            }
+            
+            return result;
+
          }
          set
          {
@@ -223,7 +219,7 @@ namespace PKSim.Presentation.DTO.Parameters
       public WritableParameterDTO(IParameter parameter)
          : base(parameter)
       {
-         //base rules are not added for editeable parameter. We need them in that case however
+         //base rules are not added for editable parameter. We need them in that case however
          if (!parameter.Editable)
             Rules.Add(ParameterDTORules.ParameterIsValid());
       }

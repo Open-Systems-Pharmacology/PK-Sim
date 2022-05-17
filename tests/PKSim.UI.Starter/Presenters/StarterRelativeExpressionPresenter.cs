@@ -70,10 +70,10 @@ namespace PKSim.UI.Starter.Presenters
                Value = 175,
                Unit = "cm",
             },
-            Gender = CoreConstants.Gender.Male
+            Gender = CoreConstants.Gender.MALE
          };
 
-         var modelOriginData = _originDataMapper.MapToModel(originData).Result;
+         var modelOriginData = _originDataMapper.MapToModel(originData, new SnapshotContext()).Result;
          var individual = _individualFactory.CreateAndOptimizeFor(modelOriginData);
 
          return individual;

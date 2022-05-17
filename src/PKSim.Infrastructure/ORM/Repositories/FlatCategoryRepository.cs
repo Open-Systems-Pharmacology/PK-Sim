@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatCategoryRepository : MetaDataRepository<FlatCategory>, IFlatCategoryRepository
    {
       public FlatCategoryRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatCategory> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.ViewCategory)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_CATEGORY)
       {
       }
 

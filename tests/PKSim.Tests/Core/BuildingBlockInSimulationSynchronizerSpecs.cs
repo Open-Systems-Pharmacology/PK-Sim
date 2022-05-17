@@ -10,16 +10,16 @@ namespace PKSim.Core
    public abstract class concern_for_BuildingBlockInSimulationSynchronizer : ContextSpecification<IBuildingBlockInSimulationSynchronizer>
    {
       protected ICloner _cloner;
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected ICompoundPropertiesUpdater _compoundPropertiesUpdater;
 
       protected override void Context()
       {
          _cloner= A.Fake<ICloner>();
-         _buildingBlockInSimulationManager= A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager= A.Fake<IBuildingBlockInProjectManager>();
          _compoundPropertiesUpdater= A.Fake<ICompoundPropertiesUpdater>();
 
-         sut = new BuildingBlockInSimulationSynchronizer(_buildingBlockInSimulationManager,_cloner,_compoundPropertiesUpdater);
+         sut = new BuildingBlockInSimulationSynchronizer(_buildingBlockInProjectManager,_cloner,_compoundPropertiesUpdater);
       }
    }
 
@@ -60,8 +60,8 @@ namespace PKSim.Core
          _simulation.AddUsedBuildingBlock(_usedProtocol);
 
 
-         A.CallTo(() => _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy(_usedCompound1)).Returns(_compound1);
-         A.CallTo(() => _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy(_usedCompound2)).Returns(_templateCompound2);
+         A.CallTo(() => _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy(_usedCompound1)).Returns(_compound1);
+         A.CallTo(() => _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy(_usedCompound2)).Returns(_templateCompound2);
 
          A.CallTo(() => _cloner.Clone<IPKSimBuildingBlock>(_templateCompound2)).Returns(_cloneOfTemplateCompound2);
       }

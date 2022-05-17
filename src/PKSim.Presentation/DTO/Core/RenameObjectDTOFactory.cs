@@ -10,7 +10,9 @@ namespace PKSim.Presentation.DTO.Core
    {
       private readonly IPKSimProjectRetriever _projectRetriever;
 
-      public RenameObjectDTOFactory(IPKSimProjectRetriever projectRetriever, IObjectTypeResolver objectTypeResolver) : base(projectRetriever, objectTypeResolver)
+      public RenameObjectDTOFactory(
+         IPKSimProjectRetriever projectRetriever, 
+         IObjectTypeResolver objectTypeResolver) : base(projectRetriever, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
       }

@@ -8,6 +8,7 @@ namespace PKSim.Presentation.Views.Individuals
    {
       void AddMoleculePropertiesView(IView view);
       void AddExpressionParametersView(IView view);
+      bool ReadOnly { get; set; }
    }
 
    public interface IIndividualProteinExpressionsView : IView<IIndividualProteinExpressionsPresenter>, IIndividualMoleculeView
@@ -18,5 +19,7 @@ namespace PKSim.Presentation.Views.Individuals
    public interface IIndividualTransporterExpressionsView : IView<IIndividualTransporterExpressionsPresenter>, IIndividualMoleculeView
    {
       void BindTo(IndividualTransporterDTO transporterExpressionDTO);
+      void ShowWarning(string warning);
+      void HideWarning();
    }
 }

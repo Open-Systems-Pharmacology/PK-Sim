@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Linq;
 using DevExpress.XtraLayout.Utils;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.UI.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.Presentation.Presenters.Parameters;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -73,14 +76,19 @@ namespace PKSim.UI.Views.Parameters
          layoutControlItemValue.Visibility = LayoutVisibilityConvertor.FromBoolean(!parameterDTO.IsDiscrete);
 
          if (!parameterDTO.IsDiscrete)
+         {
             _screenBinder.Remove(_discreteValueElementBinder);
+            cbUnit.Enabled = parameterDTO.AllUnits.Count() > 1;
+         }
          else
          {
             _screenBinder.Remove(_valueElementBinder);
             cbUnit.Enabled = false;
          }
 
+
          _screenBinder.BindToSource(parameterDTO);
+         layoutControlItemUnit.AdjustControlWidth(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH);
       }
 
       public override bool HasError => _screenBinder.HasError;
@@ -101,6 +109,7 @@ namespace PKSim.UI.Views.Parameters
          base.InitializeResources();
          layoutControl.InitializeDisabledColors();
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
+         Height = cbUnit.Height;
       }
 
       public void RegisterEditParameterEvents(IParameterValuePresenter editParameterPresenter)

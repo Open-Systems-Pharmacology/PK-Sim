@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using ModelParameterIdentificationConfiguration =  OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationConfiguration;
+using ModelParameterIdentificationConfiguration = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationConfiguration;
 using SnapshotParameterIdentificationConfiguration = PKSim.Core.Snapshots.ParameterIdentificationConfiguration;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterIdentificationConfigurationMapper : SnapshotMapperBase<ModelParameterIdentificationConfiguration, SnapshotParameterIdentificationConfiguration, ModelParameterIdentificationConfiguration>
+   public class ParameterIdentificationConfigurationMapper : SnapshotMapperBase<ModelParameterIdentificationConfiguration, SnapshotParameterIdentificationConfiguration, ParameterIdentificationContext>
    {
       private readonly ParameterIdentificationRunModeMapper _parameterIdentificationRunModeMapper;
       private readonly ParameterIdentificationAlgorithmMapper _parameterIdentificationAlgorithmMapper;
@@ -30,17 +30,18 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.RunMode = await _parameterIdentificationRunModeMapper.MapToSnapshot(configuration.RunMode);
          snapshot.Algorithm = await _parameterIdentificationAlgorithmMapper.MapToSnapshot(configuration.AlgorithmProperties);
 
-         return snapshot;         
+         return snapshot;
       }
 
-      public override async Task<ModelParameterIdentificationConfiguration> MapToModel(SnapshotParameterIdentificationConfiguration snapshot, ModelParameterIdentificationConfiguration parameterIdentificationConfiguration)
+      public override async Task<ModelParameterIdentificationConfiguration> MapToModel(SnapshotParameterIdentificationConfiguration snapshot, ParameterIdentificationContext snapshotContext)
       {
-         parameterIdentificationConfiguration.LLOQMode = LLOQModes.ByName(snapshot.LLOQMode); 
+         var parameterIdentificationConfiguration = snapshotContext.ParameterIdentification.Configuration;
+         parameterIdentificationConfiguration.LLOQMode = LLOQModes.ByName(snapshot.LLOQMode);
          parameterIdentificationConfiguration.RemoveLLOQMode = RemoveLLOQModes.ByName(snapshot.RemoveLLOQMode);
          parameterIdentificationConfiguration.CalculateJacobian = snapshot.CalculateJacobian;
 
-         parameterIdentificationConfiguration.AlgorithmProperties = await _parameterIdentificationAlgorithmMapper.MapToModel(snapshot.Algorithm);
-         parameterIdentificationConfiguration.RunMode = await _parameterIdentificationRunModeMapper.MapToModel(snapshot.RunMode);
+         parameterIdentificationConfiguration.AlgorithmProperties = await _parameterIdentificationAlgorithmMapper.MapToModel(snapshot.Algorithm, snapshotContext);
+         parameterIdentificationConfiguration.RunMode = await _parameterIdentificationRunModeMapper.MapToModel(snapshot.RunMode, snapshotContext);
 
          return parameterIdentificationConfiguration;
       }

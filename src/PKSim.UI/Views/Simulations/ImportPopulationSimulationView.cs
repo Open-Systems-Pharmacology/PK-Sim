@@ -23,7 +23,7 @@ namespace PKSim.UI.Views.Simulations
       private IImportPopulationSimulationPresenter _presenter;
       private readonly ScreenBinder<ImportPopulationSimulationDTO> _screenBinder;
       private readonly UxBuildingBlockSelection _uxPopulationSelection;
-      private readonly Cache<PopulationImportMode, RadioButton> _allRadionButtons;
+      private readonly Cache<PopulationImportMode, RadioButton> _allRadioButtons;
       private ImportPopulationSimulationDTO _importPopulationSimulationDTO;
 
       public ImportPopulationSimulationView(Shell shell) : base(shell)
@@ -36,7 +36,7 @@ namespace PKSim.UI.Views.Simulations
          rbPopulationFileSelection.Tag = PopulationImportMode.File;
          rbPopulationSizeSelection.Tag = PopulationImportMode.Size;
 
-         _allRadionButtons = new Cache<PopulationImportMode, RadioButton>(importModeFrom)
+         _allRadioButtons = new Cache<PopulationImportMode, RadioButton>(importModeFrom)
          {
             rbBuildingBockSelection,
             rbPopulationFileSelection,
@@ -58,20 +58,20 @@ namespace PKSim.UI.Views.Simulations
       {
          _importPopulationSimulationDTO = importPopulationSimulationDTO;
          _screenBinder.BindToSource(importPopulationSimulationDTO);
-         _allRadionButtons[importPopulationSimulationDTO.PopulationImportMode].Checked = true;
+         _allRadioButtons[importPopulationSimulationDTO.PopulationImportMode].Checked = true;
          layoutItemBuildingBlockSelection.Text = _uxPopulationSelection.BuildingBlockType.FormatForLabel();
       }
 
       public bool ImportEnabled
       {
-         get { return btnStartImport.Enabled; }
-         set { btnStartImport.Enabled = value; }
+         get => btnStartImport.Enabled;
+         set => btnStartImport.Enabled = value;
       }
 
       public bool SimulationSelectionVisible
       {
-         get { return layoutControlGroupSimulationFileSelection.Visible; }
-         set { layoutControlGroupSimulationFileSelection.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         get => layoutControlGroupSimulationFileSelection.Visible;
+         set => layoutControlGroupSimulationFileSelection.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       public override void InitializeBinding()
@@ -96,7 +96,7 @@ namespace PKSim.UI.Views.Simulations
          btnStartImport.Click += (o, e) => OnEvent(_presenter.StartImport);
          tbSimulationFile.Click += (o, e) => OnEvent(_presenter.SelectSimulationFile, notifyViewChanged: true);
          tbPopulationFile.Click += (o, e) => OnEvent(_presenter.SelectPopulationFile, notifyViewChanged: true);
-         _allRadionButtons.Each(rb => rb.CheckedChanged += (o, e) => OnEvent(() => updateImportMode(importModeFrom(rb), rb.Checked)));
+         _allRadioButtons.Each(rb => rb.CheckedChanged += (o, e) => OnEvent(() => updateImportMode(importModeFrom(rb), rb.Checked)));
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -154,19 +154,16 @@ namespace PKSim.UI.Views.Simulations
          layoutControlGroupSimulationFileSelection.Text = PKSimConstants.ObjectTypes.Simulation;
          layoutControlGroupPopulationSelection.Text = PKSimConstants.ObjectTypes.Population;
 
-         rbBuildingBockSelection.Text = PKSimConstants.UI.UsePopulationBuidlingBlock;
+         rbBuildingBockSelection.Text = PKSimConstants.UI.UsePopulationBuildingBlock;
          rbPopulationFileSelection.Text = PKSimConstants.UI.UsePopulationFileCSV;
          rbPopulationSizeSelection.Text = PKSimConstants.UI.NewPopulationFromSize;
 
-         Icon = ApplicationIcons.PopulationSimulationLoad.WithSize(IconSizes.Size16x16);
+         ApplicationIcon = ApplicationIcons.PopulationSimulationLoad;
          Caption = PKSimConstants.UI.ImportPopulationSimulation;
 
          tbLog.Properties.ReadOnly = true;
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
    }
 }

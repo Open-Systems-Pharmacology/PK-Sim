@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using FakeItEasy;
-using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -13,7 +12,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -27,7 +25,7 @@ namespace PKSim.Presentation
    {
       protected IApplicationController _applicationController;
       protected IBuildingBlockTask _buildingBlockTask;
-      private IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private ILazyLoadTask _lazyloadTask;
       private IHeavyWorkManager _heavyWorkManager;
       protected IObjectPathFactory _objectPathFactory;
@@ -42,12 +40,13 @@ namespace PKSim.Presentation
       protected string _initialSimulationName;
       protected IDataRepositoryNamer _dataRepositoryNamer;
       protected ICurveNamer _curveNamer;
+      protected IExpressionProfileUpdater _expressionProfileUpdater;
 
       protected override void Context()
       {
          _applicationController = A.Fake<IApplicationController>();
          _buildingBlockTask = A.Fake<IBuildingBlockTask>();
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
          _lazyloadTask = A.Fake<ILazyLoadTask>();
          _heavyWorkManager = A.Fake<IHeavyWorkManager>();
          _containerTask = A.Fake<IContainerTask>();
@@ -58,9 +57,22 @@ namespace PKSim.Presentation
          _parameterIdentificationSimulationPathUpdater = A.Fake<IParameterIdentificationSimulationPathUpdater>();
          _dataRepositoryNamer = A.Fake<IDataRepositoryNamer>();
          _curveNamer = A.Fake<ICurveNamer>();
+         _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
 
-         sut = new RenameBuildingBlockTask(_buildingBlockTask, _buildingBlockInSimulationManager, _applicationController, _lazyloadTask,
-            _containerTask, _heavyWorkManager, _renameAbsolutePathVisitor, _objectReferencingRetriever, _projectRetriever, _parameterIdentificationSimulationPathUpdater, _dataRepositoryNamer, _curveNamer);
+         sut = new RenameBuildingBlockTask(
+            _buildingBlockTask,
+            _buildingBlockInProjectManager,
+            _applicationController,
+            _lazyloadTask,
+            _containerTask,
+            _heavyWorkManager,
+            _renameAbsolutePathVisitor,
+            _objectReferencingRetriever,
+            _projectRetriever,
+            _parameterIdentificationSimulationPathUpdater,
+            _dataRepositoryNamer,
+            _curveNamer,
+            _expressionProfileUpdater);
 
          _initialSimulationName = "S";
          _individualSimulation = new IndividualSimulation().WithName(_initialSimulationName);
@@ -94,7 +106,7 @@ namespace PKSim.Presentation
          _f2.AddObjectPath(new FormulaUsablePath("Drug", "LogP"));
          _f3.AddObjectPath(new FormulaUsablePath(_initialSimulationName, "Liver", "Cell"));
          _f3.AddObjectPath(new FormulaUsablePath(_initialSimulationName, "LogP"));
-         _f4.AddTableObjectPath(new FormulaUsablePath(_initialSimulationName, "SolubilityTable"){Alias = "Sol"});
+         _f4.AddTableObjectPath(new FormulaUsablePath(_initialSimulationName, "SolubilityTable") {Alias = "Sol"});
 
          var p1 = new PKSimParameter().WithName("P1").WithFormula(_f1);
          var p2 = new PKSimParameter().WithName("P2").WithFormula(_f2);
@@ -232,52 +244,6 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_renaming_the_compound_used_in_a_simulation : concern_for_RenameBuildingBlockTask
-   {
-      private IndividualResults _individualResults;
-      private PathCache<IQuantity> _quantityCache;
-
-      protected override void Context()
-      {
-         base.Context();
-         var results = new SimulationResults {Time = new QuantityValues {ColumnId = "0", QuantityPath = "baseGrid"}};
-
-         _individualResults = new IndividualResults {IndividualId = 1};
-         results.Add(_individualResults);
-
-         _quantityCache = new PathCacheForSpecs<IQuantity>
-         {
-            {"C|Liver|Cell|C2", new MoleculeAmount {QuantityType = QuantityType.Drug}},
-            {"C|Liver|Cell|Meta", new MoleculeAmount {QuantityType = QuantityType.Metabolite}}
-         };
-
-         _individualResults.Add(new QuantityValues {ColumnId = "1", PathList = new[] {"C", "Liver", "Cell", "C"}.ToList()});
-         _individualResults.Add(new QuantityValues {ColumnId = "3", PathList = new[] {"C", "Liver", "Cell", "Meta"}.ToList()});
-         _individualResults.Add(new QuantityValues {ColumnId = "4", PathList = new[] {"S", "Liver", "Cell"}.ToList()});
-
-         A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(_quantityCache);
-         _individualSimulation.Results = results;
-      }
-
-      protected override void Because()
-      {
-         sut.SynchronizeCompoundNameIn(_individualSimulation, "C", "C2");
-      }
-
-      [Observation]
-      public void should_have_renamed_all_entry_containing_the_compound_name_for_a_calcualted_drug()
-      {
-         _individualResults.ValuesFor("C|Liver|Cell|C2").ShouldNotBeNull();
-      }
-
-      [Observation]
-      public void should_have_kept_the_other_values_untouched()
-      {
-         _individualResults.ValuesFor("C|Liver|Cell|Meta").ShouldNotBeNull();
-         _individualResults.ValuesFor("S|Liver|Cell").ShouldNotBeNull();
-      }
-   }
-
    public class When_renaming_a_compound : concern_for_RenameBuildingBlockTask
    {
       private string _oldName;
@@ -305,7 +271,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.RenameUsageOfBuildingBlockInProject(_compound, _oldName);
+         sut.RenameBuildingBlock(_compound, _oldName);
       }
 
       [Observation]
@@ -313,6 +279,38 @@ namespace PKSim.Presentation
       {
          _observedData1.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo(_compound.Name);
          _observedData2.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo("NOT USING");
+      }
+   }
+
+   public class When_renaming_an_expression_profile_molecule : concern_for_RenameBuildingBlockTask
+   {
+      private ExpressionProfile _expressionProfile;
+      private string _newName;
+      private string _newMoleculeName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _newMoleculeName = "CYP";
+         _newName = CoreConstants.ContainerName.ExpressionProfileName(_newMoleculeName, _expressionProfile.Species, "SICK");
+      }
+
+      protected override void Because()
+      {
+         sut.RenameBuildingBlock(_expressionProfile, _newName);
+      }
+
+      [Observation]
+      public void should_have_renamed_the_expression_profile()
+      {
+         _expressionProfile.Name.ShouldBeEqualTo(_newName);
+      }
+
+      [Observation]
+      public void should_also_rename_all_associated_simulation_subject()
+      {
+         A.CallTo(() => _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _newMoleculeName)).MustHaveHappened();
       }
    }
 }

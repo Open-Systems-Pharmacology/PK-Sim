@@ -12,6 +12,7 @@ using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
@@ -46,6 +47,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Starting batch run: {DateTime.Now.ToIsoFormat()}");
          
          _simulationRunOptions.RunForAllOutputs = runOptions.RunForAllOutputs;
+         _simulationRunOptions.JacobianUse = runOptions.JacobianUse;
          await Task.Run(() => startJsonSimulationRun(runOptions));
 
          _logger.AddInfo($"Batch run finished: {DateTime.Now.ToIsoFormat()}");
@@ -53,9 +55,7 @@ namespace PKSim.CLI.Core.Services
 
       private async Task startJsonSimulationRun(JsonRunOptions runOptions)
       {
-         var inputFolder = runOptions.InputFolder;
-         var outputFolder = runOptions.OutputFolder;
-         var exportMode = runOptions.ExportMode;
+          var (inputFolder, outputFolder, exportMode) = runOptions;
 
          clear();
          
@@ -133,7 +133,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Starting batch simulation export for file '{projectFile}'");
          try
          {
-            var project = await _snapshotTask.LoadProjectFromSnapshotFile(projectFile.FullName);
+            var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(projectFile.FullName);
             var simulations = project.All<Simulation>();
             var numberOfSimulations = simulations.Count;
             _logger.AddInfo($"{numberOfSimulations} {"simulation".PluralizeIf(numberOfSimulations)} found in file '{projectFile}'", project.Name);

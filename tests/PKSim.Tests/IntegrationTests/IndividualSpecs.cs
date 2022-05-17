@@ -56,6 +56,7 @@ namespace PKSim.IntegrationTests
       {
          sut.OriginData.CalculationMethodFor(ConverterConstants.Category.BSA).Name.ShouldBeEqualTo(ConverterConstants.CalculationMethod.BSA_Mosteller);
       }
+
    }
 
    public class When_creating_an_individual_for_each_population_defined_in_the_database :   concern_for_Individual
@@ -75,8 +76,12 @@ namespace PKSim.IntegrationTests
          {
             var individual = DomainFactoryForSpecs.CreateStandardIndividual(population: x.Name);
             individual.ShouldNotBeNull();
+
+            //check that the sum of the organ weights is equal to the input weight
+            individual.InputWeight.ShouldBeEqualTo(individual.WeightParameter.Value, 1e-5, x.Name);
          });
       }
+
    }
 
    public class When_creating_rabbit : concern_for_Individual
@@ -97,6 +102,92 @@ namespace PKSim.IntegrationTests
       public void individual_should_not_have_BSA_parameter()
       {
          sut.Organism.Parameter(CoreConstants.Parameters.BSA).ShouldBeNull();
+      }
+   }
+
+   public class When_creating_cat : concern_for_Individual
+   {
+      private Individual _beagle;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         sut = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.CAT);
+         _beagle = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.BEAGLE);
+      }
+
+      [Observation]
+      public void individual_species_should_be_cat()
+      {
+         sut.Population.Species.ShouldBeEqualTo(CoreConstants.Species.CAT);
+      }
+
+      [Observation]
+      public void individual_should_not_have_BSA_parameter()
+      {
+         sut.Organism.Parameter(CoreConstants.Parameters.BSA).ShouldBeNull();
+      }
+
+      [Observation]
+      public void all_parameters_with_value_origin_copied_from_beagle_should_have_the_same_value_as_in_beagle()
+      {
+         var allConstCatParameter = sut.Organism.GetAllChildren<Parameter>().Where(p => p.IsConstantParameter()).OrderBy(p=>p.EntityPath()).ToArray();
+         var allConstBeagleParameter = _beagle.Organism.GetAllChildren<Parameter>().Where(p => p.IsConstantParameter()).OrderBy(p => p.EntityPath()).ToArray();
+
+         allConstCatParameter.Length.ShouldBeGreaterThan(0);
+         allConstCatParameter.Length.ShouldBeEqualTo(allConstBeagleParameter.Length);
+
+         for (var i = 0; i < allConstCatParameter.Length; i++)
+         {
+            var catParameter = allConstCatParameter[i];
+            if (catParameter.ValueOrigin.Description != "Copied from Beagle")
+               continue;
+
+            catParameter.Value.ShouldBeEqualTo(allConstBeagleParameter[i].Value, 1e-5);
+         }
+      }
+   }
+
+   public class When_creating_cattle : concern_for_Individual
+   {
+      private Individual _minipig;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         sut = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.CATTLE);
+         _minipig = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Species.MINIPIG);
+      }
+
+      [Observation]
+      public void individual_species_should_be_cattle()
+      {
+         sut.Population.Species.ShouldBeEqualTo(CoreConstants.Species.CATTLE);
+      }
+
+      [Observation]
+      public void individual_should_not_have_BSA_parameter()
+      {
+         sut.Organism.Parameter(CoreConstants.Parameters.BSA).ShouldBeNull();
+      }
+
+      [Observation]
+      public void all_parameters_with_value_origin_copied_from_minipig_should_have_the_same_value_as_in_minipig()
+      {
+         var allConstCattleParameter = sut.Organism.GetAllChildren<Parameter>().Where(p => p.IsConstantParameter()).OrderBy(p => p.EntityPath()).ToArray();
+         var allConstMinipigParameter = _minipig.Organism.GetAllChildren<Parameter>().Where(p => p.IsConstantParameter()).OrderBy(p => p.EntityPath()).ToArray();
+
+         allConstCattleParameter.Length.ShouldBeGreaterThan(0);
+         allConstCattleParameter.Length.ShouldBeEqualTo(allConstMinipigParameter.Length);
+
+         for (var i = 0; i < allConstCattleParameter.Length; i++)
+         {
+            var catParameter = allConstCattleParameter[i];
+            if (catParameter.ValueOrigin.Description != "Copied from Minipig")
+               continue;
+
+            catParameter.Value.ShouldBeEqualTo(allConstMinipigParameter[i].Value, 1e-5);
+         }
       }
    }
 

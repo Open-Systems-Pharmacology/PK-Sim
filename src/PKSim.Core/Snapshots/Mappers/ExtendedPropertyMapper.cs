@@ -38,12 +38,12 @@ namespace PKSim.Core.Snapshots.Mappers
          return Task.FromResult<ModelExtendedProperty>(extendedProperty);
       }
 
-      public override Task<ModelExtendedProperty> MapToModel(SnapshotExtendedProperty snapshot)
+      public override Task<ModelExtendedProperty> MapToModel(SnapshotExtendedProperty snapshot, SnapshotContext snapshotContext)
       {
-         if (double.TryParse(snapshot.Value.ToString(), out double doubleResult))
+         if (double.TryParse(snapshot.Value.ToString(), out var doubleResult))
             return mapExtendedProperty(snapshot, option => double.Parse(option.ToString()), doubleResult);
 
-         if (bool.TryParse(snapshot.Value.ToString(), out bool boolResult))
+         if (bool.TryParse(snapshot.Value.ToString(), out var boolResult))
             return mapExtendedProperty(snapshot, option => bool.Parse(option.ToString()), boolResult);
 
 

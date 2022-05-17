@@ -3,7 +3,6 @@ using PKSim.Assets;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
@@ -27,8 +26,9 @@ namespace PKSim.Presentation.Presenters.ContextMenus
                .WithActionCommand(() => presenter.CreateDerivedFieldFor(populationAnalysisDataField))
                .WithIcon(ApplicationIcons.Create);
 
+            //TODO action command async
             yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadDerivedFieldFromTemplate)
-               .WithActionCommand(() => presenter.LoadDerivedFieldFromTemplateFor(populationAnalysisDataField))
+               .WithActionCommand(() => presenter.LoadDerivedFieldFromTemplateForAsync(populationAnalysisDataField))
                .WithIcon(ApplicationIcons.LoadFromTemplate);
          }
 

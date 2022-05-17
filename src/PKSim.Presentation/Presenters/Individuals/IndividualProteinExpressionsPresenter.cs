@@ -1,4 +1,3 @@
-using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -112,6 +111,13 @@ namespace PKSim.Presentation.Presenters.Individuals
       }
 
       public void ActivateMolecule(IndividualMolecule molecule) => Activate(molecule.DowncastTo<TProtein>());
+
+      public void DisableEdit()
+      {
+         _expressionParametersPresenter.DisableEdit();
+         _moleculePropertiesPresenter.DisableEdit();
+         _view.ReadOnly = true;
+      }
 
       protected virtual void Activate(TProtein protein)
       {

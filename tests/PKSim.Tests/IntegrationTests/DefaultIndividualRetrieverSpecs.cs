@@ -28,8 +28,8 @@ namespace PKSim.IntegrationTests
       public void should_return_the_expected_results()
       {
          _individual.Species.Name.ShouldBeEqualTo(CoreConstants.Species.HUMAN);
-         _individual.OriginData.Gender.Name.ShouldBeEqualTo(CoreConstants.Gender.Male);
-         _individual.OriginData.Age.ShouldBeEqualTo(30);
+         _individual.OriginData.Gender.Name.ShouldBeEqualTo(CoreConstants.Gender.MALE);
+         _individual.OriginData.Age.Value.ShouldBeEqualTo(30);
       }
    }
 }

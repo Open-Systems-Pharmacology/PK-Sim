@@ -1,6 +1,6 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Comparison;
+using PKSim.Assets;
 using PKSim.Core.Model;
-using OSPSuite.Core.Comparison;
 
 namespace PKSim.Core.Comparison
 {
@@ -17,6 +17,7 @@ namespace PKSim.Core.Comparison
       {
          _containerDiffBuilder.Compare(comparison);
          CompareValues(x => x.TransportType, PKSimConstants.UI.DefaultTransporterDirection, comparison);
+         CompareValues(x => x.Ontogeny, PKSimConstants.UI.Ontogeny, comparison);
       }
    }
 }

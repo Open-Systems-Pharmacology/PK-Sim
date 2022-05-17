@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using OSPSuite.BDDHelper;
-using OSPSuite.Serializer;
-using OSPSuite.Serializer.Xml;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Reflection;
 using NUnit.Framework;
-using PKSim.Core.Model;
-using PKSim.Core.Model.PopulationAnalyses;
-using PKSim.Infrastructure.ORM.FlatObjects;
-using PKSim.Infrastructure.Serialization.Xml.Serializers;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Serializer;
+using OSPSuite.Serializer.Xml;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Reflection;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Snapshots.Services;
+using PKSim.Infrastructure.ORM.FlatObjects;
+using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using EntityRules = PKSim.Core.Model.EntityRules;
 
 namespace PKSim.IntegrationTests
@@ -27,22 +27,22 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void each_concrete_domain_model_object_should_have_a_defined_serializer_or_attribute_mapper()
       {
-         var domainModelAssembly = typeof (PKSimProject).Assembly;
+         var domainModelAssembly = typeof(PKSimProject).Assembly;
 
          //in namespace domain model and not a test!
          var allModelType = from type in ReflectionHelper.GetConcreteTypesFromAssembly(domainModelAssembly, true)
-            where type.Namespace.StartsWith(typeof (PKSimProject).Namespace)
+            where type.Namespace.StartsWith(typeof(PKSimProject).Namespace)
             where type.IsAnImplementationOf<StaticContextSpecification>() == false
             select type;
 
-         var serializerAssembly = typeof (BaseXmlSerializer<>).Assembly;
+         var serializerAssembly = typeof(BaseXmlSerializer<>).Assembly;
          var allSerializerTypes = ReflectionHelper.GetConcreteTypesFromAssemblyImplementing<IXmlSerializer>(serializerAssembly, true);
          var allImplementationType = new Collection<Type>();
 
          //cache all serializer
          foreach (var type in allSerializerTypes)
          {
-            foreach (var typeForGenericType in type.GetDeclaredTypesForGeneric(typeof (IXmlSerializer<,>)))
+            foreach (var typeForGenericType in type.GetDeclaredTypesForGeneric(typeof(IXmlSerializer<,>)))
             {
                if (allImplementationType.Contains(typeForGenericType.DeclaredType)) continue;
                allImplementationType.Add(typeForGenericType.DeclaredType);
@@ -74,98 +74,102 @@ namespace PKSim.IntegrationTests
          if (type.IsAnImplementationOf<Exception>()) return true;
          if (type.Name.Contains("Exception")) return true;
          if (type.Name.Contains("Factory")) return true;
-         if (type.Equals(typeof (PKSimContainerType))) return true;
-         if (type.Equals(typeof (PlasmaProteinBindingPartner))) return true;
-         if (type.Equals(typeof (PivotArea))) return true;
-         if (type.Equals(typeof (PopulationAgeSettings))) return true;
-         if (type.Equals(typeof (CompoundType))) return true;
-         if (type.Equals(typeof (RateKey))) return true;
-         if (type.Equals(typeof (CalculationMethodCategory))) return true;
-         if (type.Equals(typeof (Template))) return true;
-         if (type.Equals(typeof (TransporterContainerTemplate))) return true;
-         if (type.Equals(typeof (ParameterValueVersionCategory))) return true;
-         if (type.Equals(typeof (LabelGenerationStrategy))) return true;
-         if (type.Equals(typeof (DosingIntervalId))) return true;
-         if (type.Equals(typeof (LabelGenerationStrategyId))) return true;
-         if (type.Equals(typeof (SystemicProcessTypeId))) return true;
-         if (type.Equals(typeof (CategoryType))) return true;
-         if (type.Equals(typeof (ProcessActionType))) return true;
-         if (type.Equals(typeof(GlobalPKAnalysis))) return true;
-         if (type.Equals(typeof (NullIndividualMolecule))) return true;
-         if (type.Equals(typeof (NoInteractionProcess))) return true;
-         if (type.Equals(typeof (EntityRules))) return true;
-         if (type.Equals(typeof(NullPopulationSimulationPKAnalyses))) return true;
-         if (type.Equals(typeof (NotSelectedSystemicProcess))) return true;
-         if (type.Equals(typeof (NotAvailableSystemicProcess))) return true;
-         if (type.Equals(typeof (NullSystemicProcess))) return true;
-         if (type.Equals(typeof (SimulationPartialProcessStatus))) return true;
-         if (type.Equals(typeof (CompoundProcessParameterMapping))) return true;
-         if (type.Equals(typeof (MoleculeStartFormula))) return true;
-         if (type.Equals(typeof (MoleculeParameter))) return true;
-         if (type.Equals(typeof (SimulationPartialProcess))) return true;
-         if (type.Equals(typeof (FormulaType))) return true;
-         if (type.Equals(typeof (ExpressionResult))) return true;
-         if (type.Equals(typeof (ExpressionContainerInfo))) return true;
-         if (type.Equals(typeof (QueryExpressionResults))) return true;
-         if (type.Equals(typeof (QueryExpressionSettings))) return true;
-         if (type.Equals(typeof (OntogenyMetaData))) return true;
-         if (type.Equals(typeof (DistributedParameterValue))) return true;
-         if (type.Equals(typeof (QuantityValues))) return true;
-         if (type.Equals(typeof(PopulationSimulationImport))) return true;
-         if (type.Equals(typeof(GroupingItem))) return true;
-         if (type.Equals(typeof(NullOntogeny))) return true;
-         if (type.Equals(typeof(NullNumericField))) return true;
-         if (type.Equals(typeof(NullOutputField))) return true;
-         if (type.Equals(typeof(NullSimulation))) return true;
-         if (type.Equals(typeof(NullParameter))) return true;
-     
-         //this type are always generated on the fly in PKSim and do not need to be serialied
-         if (type.Equals(typeof (PKSimTransport))) return true;
-         if (type.Equals(typeof (PKSimSpatialStructure))) return true;
-         if (type.Equals(typeof (PKSimReaction))) return true;
-         if (type.Equals(typeof (PKSimObserverBuilder))) return true;
-         if (type.Equals(typeof (PKSimTransport))) return true;
+         if (type == typeof(RemoteTemplate)) return true;
+         if (type == typeof(LocalTemplate)) return true;
+         if (type == typeof(RemoteTemplates)) return true;
+         if (type == typeof(PopulationAgeSettings)) return true;
+         if (type == typeof(RateKey)) return true;
+         if (type == typeof(CalculationMethodCategory)) return true;
+         if (type == typeof(Template)) return true;
+         if (type == typeof(TransporterContainerTemplate)) return true;
+         if (type == typeof(ParameterValueVersionCategory)) return true;
+         if (type == typeof(LabelGenerationStrategy)) return true;
+         if (type == typeof(GlobalPKAnalysis)) return true;
+         if (type == typeof(NullIndividualMolecule)) return true;
+         if (type == typeof(NoInteractionProcess)) return true;
+         if (type == typeof(EntityRules)) return true;
+         if (type == typeof(NullPopulationSimulationPKAnalyses)) return true;
+         if (type == typeof(NotSelectedSystemicProcess)) return true;
+         if (type == typeof(NotAvailableSystemicProcess)) return true;
+         if (type == typeof(NullSystemicProcess)) return true;
+         if (type == typeof(CompoundProcessParameterMapping)) return true;
+         if (type == typeof(MoleculeStartFormula)) return true;
+         if (type == typeof(MoleculeParameter)) return true;
+         if (type == typeof(SimulationPartialProcess)) return true;
+         if (type == typeof(ExpressionResult)) return true;
+         if (type == typeof(ExpressionContainerInfo)) return true;
+         if (type == typeof(QueryExpressionResults)) return true;
+         if (type == typeof(QueryExpressionSettings)) return true;
+         if (type == typeof(OntogenyMetaData)) return true;
+         if (type == typeof(DistributedParameterValue)) return true;
+         if (type == typeof(QuantityValues)) return true;
+         if (type == typeof(PopulationSimulationImport)) return true;
+         if (type == typeof(GroupingItem)) return true;
+         if (type == typeof(NullOntogeny)) return true;
+         if (type == typeof(NullNumericField)) return true;
+         if (type == typeof(NullOutputField)) return true;
+         if (type == typeof(NullSimulation)) return true;
+         if (type == typeof(NullParameter)) return true;
+
+         //this type are always generated on the fly in PKSim and do not need to be serialized
+         if (type == typeof(PKSimTransport)) return true;
+         if (type == typeof(PKSimSpatialStructure)) return true;
+         if (type == typeof(PKSimReaction)) return true;
+         if (type == typeof(PKSimObserverBuilder)) return true;
+         if (type == typeof(PKSimTransport)) return true;
+
 
          //help classes that are not stored in our domain objects
-         if (type.Equals(typeof(NumericFieldContext))) return true;
-         if (type.Equals(typeof (ParameterValueMetaData))) return true;
-         if (type.Equals(typeof (ParameterMetaData))) return true;
-         if (type.Equals(typeof (TemplateType))) return true;
-         if (type.Equals(typeof (RateObjectPaths))) return true;
-         if (type.Equals(typeof (NullObjectPaths))) return true;
-         if (type.Equals(typeof (FloatMatrix))) return true;
-         if (type.Equals(typeof (PivotResult))) return true;
-         if (type.Equals(typeof (DynamicGroup))) return true;
-         if (type.Equals(typeof (PKAnalysis))) return true;
-         if (type.Equals(typeof (ParameterRateMetaData))) return true;
-         if (type.Equals(typeof (StatisticalAggregationType))) return true;
-         if (type.Equals(typeof (RepresentationObjectType))) return true;
-         if (type.Equals(typeof (RepresentationInfo))) return true;
-         if (type.Equals(typeof (EmptyRepresentationInfo))) return true;
-         if (type.Equals(typeof (NullDataRepository))) return true;
-         if (type.Equals(typeof (ParameterDistributionMetaData))) return true;
-         if (type.Equals(typeof (BinInterval))) return true;
-         if (type.Equals(typeof (ContinuousDistributionData))) return true;
-         if (type.Equals(typeof (DiscreteDistributionData))) return true;
-         if (type.Equals(typeof (TransportDirection))) return true;
-         if (type.Equals(typeof (TransportTemplate))) return true;
+         if (type == typeof(NumericFieldContext)) return true;
+         if (type == typeof(ParameterValueMetaData)) return true;
+         if (type == typeof(ParameterMetaData)) return true;
+         if (type == typeof(RateObjectPaths)) return true;
+         if (type == typeof(NullObjectPaths)) return true;
+         if (type == typeof(FloatMatrix)) return true;
+         if (type == typeof(PivotResult)) return true;
+         if (type == typeof(DynamicGroup)) return true;
+         if (type == typeof(PKAnalysis)) return true;
+         if (type == typeof(ParameterRateMetaData)) return true;
+         if (type == typeof(RepresentationInfo)) return true;
+         if (type == typeof(EmptyRepresentationInfo)) return true;
+         if (type == typeof(NullDataRepository)) return true;
+         if (type == typeof(ParameterDistributionMetaData)) return true;
+         if (type == typeof(BinInterval)) return true;
+         if (type == typeof(ContinuousDistributionData)) return true;
+         if (type == typeof(DiscreteDistributionData)) return true;
+         if (type == typeof(TransportDirection)) return true;
+         if (type == typeof(TransportTemplate)) return true;
 
          //enum are created on the fly
-         if (type.Equals(typeof (TransportDirectionId))) return true;
-         if (type.Equals(typeof (OrganType))) return true;
-         if (type.Equals(typeof(InteractionType))) return true;
-         if (type.Equals(typeof (ProtocolMode))) return true;
-         if (type.Equals(typeof (BuildingBlockStatus))) return true;
-         if (type.Equals(typeof (TemplateDatabaseType))) return true;
-         if (type.Equals(typeof (MembraneLocation))) return true;
-         if (type.Equals(typeof(ClassificationType))) return true;
-         if (type.Equals(typeof(PopulationAnalysisType))) return true;
-         if (type.Equals(typeof(Localization))) return true;
+         if (type == typeof(SimulationPartialProcessStatus)) return true;
+         if (type == typeof(FormulaType)) return true;
+         if (type == typeof(TemplateType)) return true;
+         if (type == typeof(StatisticalAggregationType)) return true;
+         if (type == typeof(RepresentationObjectType)) return true;
+         if (type == typeof(TransportDirectionId)) return true;
+         if (type == typeof(OrganType)) return true;
+         if (type == typeof(InteractionType)) return true;
+         if (type == typeof(ProtocolMode)) return true;
+         if (type == typeof(BuildingBlockStatus)) return true;
+         if (type == typeof(TemplateDatabaseType)) return true;
+         if (type == typeof(MembraneLocation)) return true;
+         if (type == typeof(ClassificationType)) return true;
+         if (type == typeof(PopulationAnalysisType)) return true;
+         if (type == typeof(Localization)) return true;
+         if (type == typeof(PKSimContainerType)) return true;
+         if (type == typeof(PlasmaProteinBindingPartner)) return true;
+         if (type == typeof(PivotArea)) return true;
+         if (type == typeof(CompoundType)) return true;
+         if (type == typeof(DosingIntervalId)) return true;
+         if (type == typeof(LabelGenerationStrategyId)) return true;
+         if (type == typeof(SystemicProcessTypeId)) return true;
+         if (type == typeof(CategoryType)) return true;
+         if (type == typeof(ProcessActionType)) return true;
 
          //TODO not serialized yet
-         if (type.Equals(typeof(QualificationPlan))) return true;
-         if (type.Equals(typeof(RunParameterIdentificationQualificationStep))) return true;
-         if (type.Equals(typeof(RunSimulationQualificationStep))) return true;
+         if (type == typeof(QualificationPlan)) return true;
+         if (type == typeof(RunParameterIdentificationQualificationStep)) return true;
+         if (type == typeof(RunSimulationQualificationStep)) return true;
 
          return false;
       }
@@ -174,7 +178,7 @@ namespace PKSim.IntegrationTests
       {
          var allAttributesTypes = ReflectionHelper.GetConcreteTypesFromAssemblyImplementing<IAttributeMapper>(serializerAssembly, true);
          return from type in allAttributesTypes
-                from typeForGenericType in type.GetDeclaredTypesForGeneric(typeof(IAttributeMapper<,>))
+            from typeForGenericType in type.GetDeclaredTypesForGeneric(typeof(IAttributeMapper<,>))
             select typeForGenericType.DeclaredType;
       }
    }

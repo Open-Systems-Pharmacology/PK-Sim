@@ -64,7 +64,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelObserver> MapToModel(SnapshotObserver snapshot)
+      public override async Task<ModelObserver> MapToModel(SnapshotObserver snapshot, SnapshotContext snapshotContext)
       {
          var observer = createObserverFrom(snapshot);
          if (observer == null)
@@ -72,13 +72,13 @@ namespace PKSim.Core.Snapshots.Mappers
 
          MapSnapshotPropertiesToModel(snapshot, observer);
          observer.Dimension = _dimensionRepository.DimensionByName(snapshot.Dimension);
-         var allDescriptorConditions = await _descriptorConditionMapper.MapToModels(snapshot.ContainerCriteria);
+         var allDescriptorConditions = await _descriptorConditionMapper.MapToModels(snapshot.ContainerCriteria, snapshotContext);
 
          observer.ContainerCriteria = new DescriptorCriteria();
          allDescriptorConditions?.Each(observer.ContainerCriteria.Add);
 
-         observer.Formula = await _explicitFormulaMapper.MapToModel(snapshot.Formula);
-         var moleculeList = await _moleculeListMapper.MapToModel(snapshot.MoleculeList);
+         observer.Formula = await _explicitFormulaMapper.MapToModel(snapshot.Formula, snapshotContext);
+         var moleculeList = await _moleculeListMapper.MapToModel(snapshot.MoleculeList, snapshotContext);
          observer.MoleculeList.Update(moleculeList);
          return observer;
 

@@ -1,24 +1,22 @@
 using System.Windows.Forms;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
 using DevExpress.XtraBars;
-using PKSim.Assets;
-using PKSim.Presentation.Presenters.Individuals;
-using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Presentation;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
+using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.UI.Views.Individuals
 {
    public partial class MoleculesView : BaseUserControl, IMoleculesView, IViewWithPopup
    {
       private IMoleculesPresenter _presenter;
-      private readonly BarManager _barManager;
       public bool Updating { get; private set; }
 
       public MoleculesView(IImageListRetriever imageListRetriever)
@@ -26,7 +24,7 @@ namespace PKSim.UI.Views.Individuals
          InitializeComponent();
          treeView.StateImageList = imageListRetriever.AllImagesForTreeView;
          treeView.OptionsBehavior.AllowExpandOnDblClick = false;
-         _barManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
+         PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
       }
 
       public override void InitializeBinding()
@@ -56,14 +54,14 @@ namespace PKSim.UI.Views.Individuals
          }
       }
 
-      public void ActivateView(IView expressionsView)
+      public string LinkedExpressionProfileCaption
       {
-         groupExpressions.FillWith(expressionsView);
+         set => lblLinkedExpressionProfile.Text = value;
       }
 
-      public string GroupCaption
+      public void ActivateView(IView expressionsView)
       {
-         set => groupExpressions.Text = value;
+          panelExpression.FillWith(expressionsView);
       }
 
       public void AttachPresenter(IMoleculesPresenter presenter)
@@ -90,7 +88,7 @@ namespace PKSim.UI.Views.Individuals
          this.DoWithinWaitCursor(() => OnEvent(() => _presenter.ActivateNode(proteinNode)));
       }
 
-      public BarManager PopupBarManager => _barManager;
+      public BarManager PopupBarManager { get; }
 
       public void BeginUpdate()
       {
@@ -102,6 +100,13 @@ namespace PKSim.UI.Views.Individuals
       {
          treeView.EndUpdate();
          Updating = false;
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         lblLinkedExpressionProfile.AsDescription();
+         lblLinkedExpressionProfile.Text = string.Empty;
       }
    }
 }

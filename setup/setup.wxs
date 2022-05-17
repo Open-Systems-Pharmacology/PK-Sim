@@ -93,6 +93,10 @@
                 <File Name='OSPSuite.PKParameters.xml' Id='OSPSuite.PKParameters' Source='$(var.DeployDir)/OSPSuite.PKParameters.xml' KeyPath='yes' />
               </Component>
 
+              <Component Id='templates' Guid='EF33C51B-BCE8-40BA-A7AB-035B22BBFF4D'>
+                <File Name='templates.json' Id='templates' Source='$(var.DeployDir)/templates.json' KeyPath='yes' />
+              </Component>
+
               <Component Id="PKSimTemplateDBSystem" Guid="DF39FF9D-DAB8-4A6A-9E3E-FEFD68489F3C">
                 <File Name="PKSimTemplateDBSystem.templateDbSystem" Id="PKSimTemplateDBSystem" Source="$(var.DeployDir)/PKSimTemplateDBSystem.templateDbSystem" KeyPath="yes" />
               </Component>
@@ -123,6 +127,10 @@
                 <Component Id="ExampleFolderShortCut" Guid="21CC8E07-4C3B-4613-B237-28F17160E474" Win64="yes">
                   <Shortcut Id="ExampleFolderShortCut" Name="$(var.ProductName) Examples" Directory="OSPSuiteMenuDir" />
                   <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="Examples" KeyPath="yes" />
+                </Component>
+
+                <Component Id="ExamplesReadMe" Guid="E3C8F2A6-24F3-4810-BD11-C4A4EA440661">
+                  <File Name="README.txt" Id="ExamplesReadMe" Source="$(var.DeployDir)/README.txt" KeyPath="yes" />
                 </Component>
               </Directory>
             </Directory>
@@ -161,7 +169,6 @@
       <ComponentGroupRef Id="App" />
       <ComponentGroupRef Id="ChartLayouts" />
       <ComponentGroupRef Id="OSPSuite.TeXReporting" />
-      <ComponentGroupRef Id="Examples" />
 
       <ComponentRef Id="PKSim.exe" />
       <ComponentRef Id="OSPSuiteMenuDir" />
@@ -176,8 +183,10 @@
       <ComponentRef Id="TeXTemplatesFolder" />
       <ComponentRef Id="ExamplesFolder" />
       <ComponentRef Id="ExampleFolderShortCut" />
+      <ComponentRef Id="ExamplesReadMe" />
       <ComponentRef Id="OSPSuite.Dimensions" />
       <ComponentRef Id="OSPSuite.PKParameters" />
+      <ComponentRef Id="templates" />
 
       <MergeRef Id="msxml4sys32" />
       <MergeRef Id="msxml4sxs32" />

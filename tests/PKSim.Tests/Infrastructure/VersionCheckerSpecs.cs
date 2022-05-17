@@ -31,7 +31,8 @@ namespace PKSim.Infrastructure
 
       protected override async Task Because()
       {
-         _result = await sut.NewVersionIsAvailableAsync();
+          await sut.DownloadLatestVersionInfoAsync();
+          _result = sut.NewVersionIsAvailable;
       }
 
       [Observation]
@@ -61,7 +62,8 @@ namespace PKSim.Infrastructure
 
       protected override async Task Because()
       {
-         _result = await sut.NewVersionIsAvailableAsync();
+         await sut.DownloadLatestVersionInfoAsync();
+         _result = sut.NewVersionIsAvailable;
       }
 
       [Observation]
@@ -85,7 +87,8 @@ namespace PKSim.Infrastructure
 
       protected override async Task Because()
       {
-         _result = await sut.NewVersionIsAvailableAsync();
+         await sut.DownloadLatestVersionInfoAsync();
+         _result = sut.NewVersionIsAvailable;
       }
 
       [Observation]
@@ -107,7 +110,7 @@ namespace PKSim.Infrastructure
 
       protected override async Task Because()
       {
-         await sut.NewVersionIsAvailableAsync();
+         await sut.DownloadLatestVersionInfoAsync();
       }
 
       [Observation]

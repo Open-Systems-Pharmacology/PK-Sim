@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Windows.Forms;
 using DevExpress.LookAndFeel;
 using DevExpress.Utils;
+using DevExpress.Utils.Layout;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
@@ -11,7 +13,6 @@ using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
@@ -20,11 +21,14 @@ using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Extensions;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Individuals;
+using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Extensions;
+using Padding = System.Windows.Forms.Padding;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -35,8 +39,9 @@ namespace PKSim.UI.Views.Individuals
       private readonly UserLookAndFeel _lookAndFeel;
       private IIndividualSettingsPresenter _presenter;
 
-      private readonly ScreenBinder<IndividualSettingsDTO> _settingsBinder;
-      private readonly ScreenBinder<IndividualSettingsDTO> _parameterBinder;
+      private readonly ScreenBinder<IndividualSettingsDTO> _settingsBinder = new ScreenBinder<IndividualSettingsDTO>();
+      private readonly ScreenBinder<IndividualSettingsDTO> _diseaseStateBinder = new ScreenBinder<IndividualSettingsDTO>();
+      private readonly ScreenBinder<IndividualSettingsDTO> _parameterBinder = new ScreenBinder<IndividualSettingsDTO>();
       private readonly GridViewBinder<CategoryParameterValueVersionDTO> _gridParameterValueVersionsBinder;
       private readonly GridViewBinder<CategoryCalculationMethodDTO> _gridCalculationMethodsBinder;
 
@@ -55,8 +60,6 @@ namespace PKSim.UI.Views.Individuals
          _toolTipCreator = toolTipCreator;
          _lookAndFeel = lookAndFeel;
 
-         _settingsBinder = new ScreenBinder<IndividualSettingsDTO>();
-         _parameterBinder = new ScreenBinder<IndividualSettingsDTO>();
          _gridParameterValueVersionsBinder = new GridViewBinder<CategoryParameterValueVersionDTO>(gridViewParameterValueVersions);
          _gridCalculationMethodsBinder = new GridViewBinder<CategoryCalculationMethodDTO>(gridViewCalculationMethods);
          _repositoryForParameterValueVersions = new UxRepositoryItemComboBox(gridViewParameterValueVersions);
@@ -84,7 +87,7 @@ namespace PKSim.UI.Views.Individuals
             .AndDisplays(species => species.DisplayName)
             .Changed += () => _presenter.SpeciesChanged();
 
-         _settingsBinder.Bind(dto => dto.SpeciesPopulation)
+         _settingsBinder.Bind(dto => dto.Population)
             .To(cbPopulation)
             .WithValues(dto => _presenter.PopulationsFor(dto.Species))
             .AndDisplays(pop => pop.DisplayName)
@@ -92,18 +95,22 @@ namespace PKSim.UI.Views.Individuals
 
          _settingsBinder.Bind(dto => dto.Gender)
             .To(cbGender)
-            .WithValues(dto => _presenter.GenderFor(dto.SpeciesPopulation))
+            .WithValues(dto => _presenter.GenderFor(dto.Population))
             .AndDisplays(gender => gender.DisplayName)
             .Changed += () => _presenter.GenderChanged();
 
-         _gridParameterValueVersionsBinder.Bind(pvv => pvv.DisplayName).AsReadOnly();
+         _gridParameterValueVersionsBinder.Bind(pvv => pvv.DisplayName)
+            .AsReadOnly();
+
          _gridParameterValueVersionsBinder.Bind(pvv => pvv.ParameterValueVersion)
             .WithRepository(pvv => _repositoryForParameterValueVersions)
             .WithEditorConfiguration(updatePvvListForCategory)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
          _gridParameterValueVersionsBinder.Changed += settingsChanged;
 
-         _gridCalculationMethodsBinder.Bind(cm => cm.DisplayName).AsReadOnly();
+         _gridCalculationMethodsBinder.Bind(cm => cm.DisplayName)
+            .AsReadOnly();
+
          _gridCalculationMethodsBinder.Bind(cm => cm.CalculationMethod)
             .WithRepository(cm => _repositoryForCalculationMethods)
             .WithEditorConfiguration(updateCmListForCategory)
@@ -122,10 +129,24 @@ namespace PKSim.UI.Views.Individuals
          _parameterBinder.Bind(dto => dto.ParameterWeight).To(uxWeight);
          _parameterBinder.Bind(dto => dto.ParameterBMI).To(uxBMI);
 
+         _diseaseStateBinder.Bind(dto => dto.DiseaseState)
+            .To(cbDiseaseState)
+            .WithValues(dto => _presenter.AllDiseaseStatesFor(dto.Population))
+            .AndDisplays(diseaseState => diseaseState.DisplayName)
+            .Changed += () => _presenter.DiseaseStateChanged();
+
+         _diseaseStateBinder.Bind(dto => dto.DiseaseState)
+            .To(lblDescription)
+            .WithFormat(x => x.Description);
+
+         _diseaseStateBinder.Bind(dto => dto.DiseaseStateParameter)
+            .To(uxDiseaseParameter);
+
          btnMeanValues.Click += (o, e) => this.DoWithinWaitCursor(() => OnEvent(_presenter.RetrieveMeanValues));
 
          RegisterValidationFor(_settingsBinder, settingsChanged, settingsChanged);
          RegisterValidationFor(_parameterBinder, settingsChanged, settingsChanged);
+         RegisterValidationFor(_diseaseStateBinder, settingsChanged, settingsChanged);
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
@@ -190,7 +211,25 @@ namespace PKSim.UI.Views.Individuals
          });
 
          layoutItemCalculationMethods.AdjustControlHeight(gridViewCalculationMethods.OptimalHeight);
+
          settingsChanged();
+      }
+
+      public void BindToDiseaseState(IndividualSettingsDTO individualSettingsDTO)
+      {
+         this.DoWithinLatch(() =>
+         {
+            //One is healthy. We show the selection if we have more than one
+            var hasDiseaseState = _presenter.AllDiseaseStatesFor(individualSettingsDTO.Population).HasAtLeastTwo();
+            layoutGroupDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(hasDiseaseState);
+            _diseaseStateBinder.BindToSource(individualSettingsDTO);
+            var diseaseStateParameter = individualSettingsDTO.DiseaseStateParameter;
+            var hasParameter = !diseaseStateParameter.IsNull();
+            if (hasParameter)
+               layoutItemDiseaseParameter.Text = diseaseStateParameter.DisplayName.FormatForLabel(checkCase: false);
+
+            layoutItemDiseaseParameter.Visibility = LayoutVisibilityConvertor.FromBoolean(hasParameter);
+         });
       }
 
       public void BindToSubPopulation(IEnumerable<CategoryParameterValueVersionDTO> subPopulation)
@@ -206,6 +245,7 @@ namespace PKSim.UI.Views.Individuals
       }
 
       public void RefreshAllIndividualList()
+
       {
          _settingsBinder.RefreshListElements();
          settingsChanged();
@@ -213,38 +253,41 @@ namespace PKSim.UI.Views.Individuals
 
       public bool AgeVisible
       {
-         set
-         {
-            layoutItemAge.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            emptySpaceAge.Visibility = layoutItemAge.Visibility;
-         }
-         get => LayoutVisibilityConvertor.ToBoolean(layoutItemAge.Visibility);
+         set => tablePanel.RowFor(uxAge).Visible = value;
+         get => tablePanel.RowFor(uxAge).Visible;
       }
 
       public bool GestationalAgeVisible
       {
          set
          {
-            layoutItemGestationalAge.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            layoutItemAge.Text = (value ? PKSimConstants.UI.PostnatalAge : PKSimConstants.UI.Age).FormatForLabel();
+            tablePanel.RowFor(uxGestationalAge).Visible = value;
+            labelAge.Text = (value ? PKSimConstants.UI.PostnatalAge : PKSimConstants.UI.Age).FormatForLabel();
          }
-         get => LayoutVisibilityConvertor.ToBoolean(layoutItemGestationalAge.Visibility);
+         get => tablePanel.RowFor(uxGestationalAge).Visible;
       }
 
       public void AddValueOriginView(IView view)
       {
-         AddViewTo(layoutItemValueOrigin, view);
+         var control = view.DowncastTo<Control>();
+         var row = tablePanel.RowFor(labelValueOrigin);
+         var rowIndex = tablePanel.GetRow(labelValueOrigin);
+         var colIndex = tablePanel.GetColumn(uxAge);
+         tablePanel.Controls.Add(control);
+         tablePanel.SetCell(control, rowIndex, colIndex);
+         control.Margin = uxAge.Margin;
+         row.Height = tablePanel.RowFor(uxAge).Height;
+         control.Height = cbSpecies.Height;
       }
 
       public bool HeightAndBMIVisible
       {
          set
          {
-            layoutItemHeight.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            layoutItemBMI.Visibility = layoutItemHeight.Visibility;
-            emptySpaceBMI.Visibility = layoutItemBMI.Visibility;
+            tablePanel.RowFor(uxHeight).Visible = value;
+            tablePanel.RowFor(uxBMI).Visible = value;
          }
-         get => LayoutVisibilityConvertor.ToBoolean(layoutItemHeight.Visibility);
+         get => tablePanel.RowFor(uxHeight).Visible;
       }
 
       public bool IsReadOnly
@@ -253,6 +296,7 @@ namespace PKSim.UI.Views.Individuals
          {
             layoutControlGroupPopulationProperties.Enabled = !value;
             layoutControlGroupPopulationParameters.Enabled = layoutControlGroupPopulationProperties.Enabled;
+            layoutGroupDiseaseState.Enabled = layoutControlGroupPopulationProperties.Enabled;
          }
          get => !layoutControlGroupPopulationProperties.Enabled;
       }
@@ -275,7 +319,7 @@ namespace PKSim.UI.Views.Individuals
          layoutControl.EndUpdate();
       }
 
-      public override bool HasError => _settingsBinder.HasError || _parameterBinder.HasError;
+      public override bool HasError => _settingsBinder.HasError || _parameterBinder.HasError || _diseaseStateBinder.HasError;
 
       public override void InitializeResources()
       {
@@ -283,21 +327,26 @@ namespace PKSim.UI.Views.Individuals
          layoutItemPopulation.Text = PKSimConstants.UI.Population.FormatForLabel();
          layoutItemSpecies.Text = PKSimConstants.UI.Species.FormatForLabel();
          layoutItemGender.Text = PKSimConstants.UI.Gender.FormatForLabel();
-         layoutItemAge.Text = PKSimConstants.UI.Age.FormatForLabel();
-         layoutItemGestationalAge.Text = PKSimConstants.UI.GestationalAge.FormatForLabel();
-         layoutItemWeight.Text = PKSimConstants.UI.Weight.FormatForLabel();
-         layoutItemHeight.Text = PKSimConstants.UI.Height.FormatForLabel();
-         layoutItemBMI.Text = PKSimConstants.UI.BMI.FormatForLabel(checkCase: false);
+         labelAge.Text = PKSimConstants.UI.Age.FormatForLabel();
+         labelGestationalAge.Text = PKSimConstants.UI.GestationalAge.FormatForLabel();
+         labelWeight.Text = PKSimConstants.UI.Weight.FormatForLabel();
+         labelHeight.Text = PKSimConstants.UI.Height.FormatForLabel();
+         labelBMI.Text = PKSimConstants.UI.BMI.FormatForLabel(checkCase: false);
          layoutItemSubPopulation.Text = PKSimConstants.UI.SubPopulation.FormatForLabel();
          layoutItemSubPopulation.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
          layoutItemCalculationMethods.Text = PKSimConstants.UI.CalculationMethods.FormatForLabel();
          layoutControlGroupPopulationParameters.Text = PKSimConstants.UI.IndividualParameters;
          layoutControlGroupPopulationProperties.Text = PKSimConstants.UI.PopulationProperties;
-         layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
+         layoutGroupDiseaseState.Text = PKSimConstants.UI.DiseaseState;
+         labelValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          btnMeanValues.Text = PKSimConstants.UI.MeanValues;
          layoutControl.InitializeDisabledColors(_lookAndFeel);
          uxBMI.Enabled = false;
          cbSpecies.SetImages(_imageListRetriever);
+         layoutItemDiseaseState.Text = PKSimConstants.UI.Select.FormatForLabel();
+         lblDescription.AsDescription();
+         btnMeanValues.Margin = new Padding(btnMeanValues.Margin.Left, uxHeight.Margin.Top, btnMeanValues.Margin.Right, btnMeanValues.Margin.Bottom);
+         tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
       }
 
       public override string Caption => PKSimConstants.UI.Biometrics;

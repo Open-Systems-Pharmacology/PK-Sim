@@ -46,6 +46,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.MaximumNumberOfCoresToUse);
          Map(x => x.DefaultPopulationAnalysis);
          Map(x => x.OutputSelections);
+         Map(x => x.ColorGroupObservedDataFromSameFolder);
          Map(x => x.PreferredViewLayout);
          Map(x => x.DefaultChartYScaling);
          Map(x => x.DisplayUnits);

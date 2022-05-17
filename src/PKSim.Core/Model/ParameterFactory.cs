@@ -142,7 +142,7 @@ namespace PKSim.Core.Model
 
       private ParameterDistributionMetaData closestDistributionMetaDataFor(IReadOnlyList<ParameterDistributionMetaData> distributions, OriginData originData)
       {
-         if (!originData.Age.HasValue)
+         if (originData.Age == null)
             return distributions.First();
 
          var samples = distributions.Select(x => new Sample<ParameterDistributionMetaData>(x.Age, x));
@@ -254,6 +254,7 @@ namespace PKSim.Core.Model
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
          parameter.IsDefault = parameterMetaData.IsDefault;
          parameter.ValueOrigin.UpdateAllFrom(parameterMetaData.ValueOrigin);
+         parameter.ContainerCriteria = parameterMetaData.ContainerCriteria;
 
          if (!string.IsNullOrEmpty(parameterMetaData.DefaultUnit))
             parameter.DisplayUnit = parameter.Dimension.Unit(parameterMetaData.DefaultUnit);

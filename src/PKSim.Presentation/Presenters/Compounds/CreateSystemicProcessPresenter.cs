@@ -1,3 +1,4 @@
+using OSPSuite.Assets;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -6,7 +7,6 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -28,7 +28,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       protected override void EditProcess(SystemicProcess systemicProcess, Compound compound)
       {
-         _view.SetIcon(ApplicationIcons.IconByName(systemicProcess.SystemicProcessType.IconName));
+         _view.ApplicationIcon = ApplicationIcons.IconByName(systemicProcess.SystemicProcessType.IconName);
          _view.Caption = PKSimConstants.UI.CreateSystemicProcess(systemicProcess.SystemicProcessType.DisplayName);
          _systemicProcessDTO = _systemicProcessDTOMapper.MapFrom(systemicProcess, compound);
          _view.BindTo(_systemicProcessDTO);

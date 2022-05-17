@@ -29,7 +29,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_the_snapshot_for_the_given_subject()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshot(_parameter)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_parameter)).MustHaveHappened();
       }
    }
 }	

@@ -444,11 +444,11 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the endtime of the simulation in kernel unit
+      ///    Returns the end time of the simulation in kernel unit
       /// </summary>
       public virtual double? EndTime
       {
-         get { return OutputSchema.Intervals.Select(x => x.EndTime.Value).Max(); }
+         get { return OutputSchema?.Intervals.Select(x => x.EndTime.Value).Max(); }
       }
 
       /// <summary>

@@ -9,15 +9,14 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -30,7 +29,7 @@ namespace PKSim.UI.Views.Protocols
       public CreateProtocolView(Shell shell) : base(shell)
       {
          InitializeComponent();
-         ClientSize = new Size(CoreConstants.UI.PROTOCOL_VIEW_WIDTH, CoreConstants.UI.PROTOCOL_VIEW_HEIGHT);
+         ClientSize = new Size(UIConstants.Size.PROTOCOL_VIEW_WIDTH, UIConstants.Size.PROTOCOL_VIEW_HEIGHT);
       }
 
       public void AttachPresenter(ICreateProtocolPresenter presenter)
@@ -105,8 +104,8 @@ namespace PKSim.UI.Views.Protocols
 
          layoutItemName.Text = PKSimConstants.UI.Name.FormatForLabel();
          Caption = PKSimConstants.UI.CreateAdministrationProtocol;
-         Icon = ApplicationIcons.Protocol.WithSize(IconSizes.Size16x16);
-         this.ReziseForCurrentScreen(fractionHeight: UIConstants.Size.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.Size.SCREEN_RESIZE_FRACTION);
+         ApplicationIcon = ApplicationIcons.Protocol;
+         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
 
       public override void AddSubItemView(ISubPresenterItem subPresenterItem, IView viewToAdd)

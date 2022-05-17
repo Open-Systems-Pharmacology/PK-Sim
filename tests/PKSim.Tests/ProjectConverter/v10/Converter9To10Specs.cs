@@ -6,11 +6,52 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v10;
 using PKSim.IntegrationTests;
 
 namespace PKSim.ProjectConverter.v10
 {
+   public class When_converting_the_9_1_P1_project_to_10 : ContextWithLoadedProject<Converter9To10>
+   {
+      private List<Simulation> _allSimulations;
+      private Simulation _simulation;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("9.1_P1");
+         _allSimulations = All<Simulation>().ToList();
+         _allSimulations.Each(Load);
+         _simulation = _allSimulations.First();
+      }
+
+      [Observation]
+      public void should_make_all_normalized_parameter_readonly_and_hidden()
+      {
+         var allRelExpNorms = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.IsNamed(ConverterConstants.Parameters.REL_EXP_NORM));
+         allRelExpNorms.Any().ShouldBeTrue();
+         allRelExpNorms.Each(x=>x.Visible.ShouldBeFalse());
+         allRelExpNorms.Each(x => x.Editable.ShouldBeFalse());
+      }
+
+
+      [Observation]
+      public void should_make_all_global_normalized_parameter_readonly_and_hidden()
+      {
+         var allGlobalRelExpNorms = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.NameIsOneOf(
+            ConverterConstants.Parameters.REL_EXP_BLOOD_CELLS_NORM,
+            ConverterConstants.Parameters.REL_EXP_PLASMA_NORM,
+            ConverterConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM_NORM
+            ));
+         allGlobalRelExpNorms.Any().ShouldBeTrue();
+         allGlobalRelExpNorms.Each(x => x.Visible.ShouldBeFalse());
+         allGlobalRelExpNorms.Each(x => x.Editable.ShouldBeFalse());
+      }
+   }
+
+
+
    public class When_converting_the_simple_project_730_project_to_10 : ContextWithLoadedProject<Converter9To10>
    {
       private List<PopulationSimulation> _allSimulations;
@@ -32,8 +73,8 @@ namespace PKSim.ProjectConverter.v10
       [Observation]
       public void should_have_converted_the_individual_enzyme_and_protein_to_use_the_new_localization_concept()
       {
-         verifyIndividuals(_allSimulations.Select(x => x.BuildingBlock<Individual>()));
          verifyIndividuals(_allIndividuals);
+         verifyIndividuals(_allSimulations.Select(x => x.BuildingBlock<Individual>()));
          verifyIndividuals(_allPopulations.Select(x => x.FirstIndividual));
 
          var ind = _allIndividuals.FindByName("Human");

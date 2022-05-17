@@ -54,7 +54,6 @@ namespace PKSim.Presentation
 
             //This specific objects needs to be register as Singleton
             scan.ExcludeType<CloseSubjectPresenterInvoker>();
-            scan.ExcludeType<ExportToPDFInvoker>();
             scan.ExcludeType<ButtonGroupRepository>();
             scan.ExcludeType<MenuBarItemRepository>();
 
@@ -72,7 +71,6 @@ namespace PKSim.Presentation
             scan.AssemblyContainingType<PresenterRegister>();
 
             scan.IncludeType<CloseSubjectPresenterInvoker>();
-            scan.IncludeType<ExportToPDFInvoker>();
             scan.IncludeType<ButtonGroupRepository>();
             scan.IncludeType<MenuBarItemRepository>();
 
@@ -119,7 +117,6 @@ namespace PKSim.Presentation
          container.Register(typeof(IIndividualTransporterExpressionsPresenter<>), typeof(IndividualTransporterExpressionsPresenter<>));
          container.Register(typeof(IExpressionLocalizationPresenter<>), typeof(ExpressionLocalizationPresenter<>));
          container.Register(typeof(IIndividualMoleculePropertiesPresenter<>), typeof(IndividualMoleculePropertiesPresenter<>));
-         container.Register(typeof(IOntogenySelectionPresenter<>), typeof(OntogenySelectionPresenter<>));
          container.Register(typeof(ILoadFromSnapshotPresenter<>), typeof(LoadFromSnapshotPresenter<>));
          container.Register(typeof(IExpressionParameterMapper<>), typeof(ExpressionParameterMapper<>));
 
@@ -129,7 +126,6 @@ namespace PKSim.Presentation
 
          container.Register<IFormatterFactory, FormatterFactory>();
 
-         ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
          Captions.SimulationPath = PKSimConstants.UI.Simulation;
          Captions.ContainerPath = PKSimConstants.UI.Organ;
          Captions.BottomCompartmentPath = PKSimConstants.UI.Compartment;

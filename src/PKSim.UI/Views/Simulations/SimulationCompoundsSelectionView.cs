@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Assets;
+using System.Linq;
 using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraLayout.Utils;
-using PKSim.Assets;
-using PKSim.Presentation.DTO.Simulations;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
+using PKSim.Assets;
+using PKSim.Presentation.DTO.Simulations;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -38,7 +39,6 @@ namespace PKSim.UI.Views.Simulations
          toolTipController.Initialize(imageListRetriever);
          toolTipController.GetActiveObjectInfo += (o, e) => OnEvent(onToolTipControllerGetActiveObjectInfo, o, e);
          gridControl.ToolTipController = toolTipController;
-
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
@@ -83,7 +83,7 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder.Changed += NotifyViewChanged;
 
          btnCreateCompound.Click += (o, e) => OnEvent(_presenter.AddCompound);
-         btnLoadCompound.Click += (o, e) => OnEvent(_presenter.LoadCompound);
+         btnLoadCompound.Click += (o, e) => OnEvent(_presenter.LoadCompoundAsync);
       }
 
       private RepositoryItem selectRepository(CompoundSelectionDTO dto)
@@ -101,7 +101,10 @@ namespace PKSim.UI.Views.Simulations
          get
          {
             var warningHeight = layoutItemWarning.Visible ? layoutItemWarning.Height : 1;
-            return layoutItemCompounds.Padding.Height + gridView.OptimalHeight + layoutItemAddCompound.Height + warningHeight;
+            if (!_gridViewBinder.Source?.Any() ?? false)
+               warningHeight += emptySpaceItem1.Height;
+
+            return layoutItemCompounds.Padding.Height + gridView.OptimalHeight + layoutItemAddCompound.Height + warningHeight + emptySpaceItem2.Height;
          }
       }
 
@@ -109,7 +112,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          initButton(btnCreateCompound, ApplicationIcons.Create, PKSimConstants.UI.CreateBuildingBlockHint);
-         initButton(btnLoadCompound, ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadBuildingBlockHint);
+         initButton(btnLoadCompound, ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplateHint);
 
          layoutItemAddCompound.AdjustButtonSizeWithImageOnly();
          layoutItemLoadCompound.AdjustButtonSizeWithImageOnly();

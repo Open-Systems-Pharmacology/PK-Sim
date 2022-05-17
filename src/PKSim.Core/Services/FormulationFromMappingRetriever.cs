@@ -36,12 +36,12 @@ namespace PKSim.Core.Services
 
    public class FormulationFromMappingRetriever : IFormulationFromMappingRetriever
    {
-      private readonly IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public FormulationFromMappingRetriever(IBuildingBlockInSimulationManager buildingBlockInSimulationManager, IBuildingBlockRepository buildingBlockRepository)
+      public FormulationFromMappingRetriever(IBuildingBlockInProjectManager buildingBlockInProjectManager, IBuildingBlockRepository buildingBlockRepository)
       {
-         _buildingBlockInSimulationManager = buildingBlockInSimulationManager;
+         _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _buildingBlockRepository = buildingBlockRepository;
       }
 
@@ -52,7 +52,7 @@ namespace PKSim.Core.Services
 
       public Formulation TemplateFormulationUsedBy(Simulation simulation, FormulationMapping formulationMapping)
       {
-         return retrieveFormulation(simulation, formulationMapping, _buildingBlockInSimulationManager.TemplateBuildingBlockUsedBy<Formulation>);
+         return retrieveFormulation(simulation, formulationMapping, _buildingBlockInProjectManager.TemplateBuildingBlockUsedBy<Formulation>);
       }
 
       private Formulation retrieveFormulation(Simulation simulation, FormulationMapping formulationMapping, Func<UsedBuildingBlock, Formulation> formulationRetriever)

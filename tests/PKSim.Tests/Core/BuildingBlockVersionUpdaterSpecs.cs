@@ -9,12 +9,12 @@ namespace PKSim.Core
 {
    public abstract class concern_for_BuildingBlockVersionUpdater : ContextSpecification<IBuildingBlockVersionUpdater>
    {
-      protected IBuildingBlockInSimulationManager _buildingBlockInSimulationManager;
+      protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
 
       protected override void Context()
       {
-         _buildingBlockInSimulationManager = A.Fake<IBuildingBlockInSimulationManager>();
-         sut = new BuildingBlockVersionUpdater(_buildingBlockInSimulationManager);
+         _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
+         sut = new BuildingBlockVersionUpdater(_buildingBlockInProjectManager);
       }
    }
 
@@ -52,7 +52,7 @@ namespace PKSim.Core
       [Observation]
       public void should_notify_all_simulation_using_the_building_block_that_their_status_might_have_changed()
       {
-         A.CallTo(() => _buildingBlockInSimulationManager.UpdateStatusForSimulationUsing(_buildingBlock)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockInProjectManager.UpdateStatusForSimulationUsing(_buildingBlock)).MustHaveHappened();
       }
    }
 
@@ -91,7 +91,7 @@ namespace PKSim.Core
       [Observation]
       public void should_notify_all_simulation_using_the_building_block_that_their_status_might_have_changed()
       {
-         A.CallTo(() => _buildingBlockInSimulationManager.UpdateStatusForSimulationUsing(_buildingBlock)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockInProjectManager.UpdateStatusForSimulationUsing(_buildingBlock)).MustHaveHappened();
       }
    }
 
@@ -197,7 +197,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_notify_any_change_for_the_underlying_simulation()
       {
-         A.CallTo(() => _buildingBlockInSimulationManager.UpdateStatusForSimulationUsing(_buildingBlock)).MustNotHaveHappened();
+         A.CallTo(() => _buildingBlockInProjectManager.UpdateStatusForSimulationUsing(_buildingBlock)).MustNotHaveHappened();
       }
    }
 }
