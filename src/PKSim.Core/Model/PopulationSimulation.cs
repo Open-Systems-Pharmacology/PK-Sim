@@ -24,7 +24,7 @@ namespace PKSim.Core.Model
 
       public virtual AgingData AgingData { get; }
 
-      public PopulationSimulation() : base()
+      public PopulationSimulation()
       {
          ParameterValuesCache = new ParameterValuesCache();
          AgingData = new AgingData();
@@ -321,15 +321,16 @@ namespace PKSim.Core.Model
 
       private IEnumerable<DataColumn> drugColumnFor(string organ, string compartment, string columnName, string compoundName)
       {
-         return Results.Select(x => columnsFor(x, organ, compartment, columnName, QuantityType.Drug));
+         return Results.Select(x => columnsFor(x, organ, compartment, columnName, QuantityType.Drug, compoundName));
       }
 
-      private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, QuantityType quantityType)
+      private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, QuantityType quantityType, string compoundName)
       {
          var column = results.FirstOrDefault(x =>
                x.QuantityPath.Contains(organ) &&
                x.QuantityPath.Contains(compartment) &&
-               x.QuantityPath.Contains(columnName)
+               x.QuantityPath.Contains(columnName) &&
+               x.QuantityPath.Contains(compoundName)
             );
          if (column == null) 
             return null;

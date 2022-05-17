@@ -15,7 +15,7 @@ namespace PKSim.Core.Model
    {
       private DataRepository _dataRepository;
 
-      public IndividualSimulation() : base()
+      public IndividualSimulation()
       {
       }
 
