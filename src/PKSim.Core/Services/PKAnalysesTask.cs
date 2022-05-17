@@ -162,7 +162,7 @@ namespace PKSim.Core.Services
 
          return new[] 
          { 
-            new DataColumn("", curveData.YAxis.Dimension, baseGrid)
+            new DataColumn(string.Empty, curveData.YAxis.Dimension, baseGrid)
             {
                Values = curveData.YValues.Select(y => y.Y).ToList(),
                DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},

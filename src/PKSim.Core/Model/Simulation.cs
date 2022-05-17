@@ -68,10 +68,7 @@ namespace PKSim.Core.Model
          _compoundPKCache = new Cache<string, CompoundPK>(x => x.CompoundName, x => new CompoundPK());
       }
 
-      public void ClearPKCache()
-      {
-         _compoundPKCache.Clear();
-      }
+      public void ClearPKCache() => _compoundPKCache.Clear();
 
 
       public CompoundPK CompoundPKFor(string compoundName)

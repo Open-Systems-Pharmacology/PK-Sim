@@ -370,43 +370,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_with_previous_calculation_of_bioavailability_for_population : Population_based
-   {
-      private GlobalPKAnalysis _results;
-      private double _bioaValue;
-
-      protected override void Context()
-      {
-         base.Context();
-         var protocol = A.Fake<Protocol>();
-         _compoundProperties.ProtocolProperties.Protocol = protocol;
-         _species.Name = CoreConstants.Species.HUMAN;
-         _populationSimulation.CompoundPKFor(_compoundName).AucIV = 5;
-         _bioaValue = _venousBloodPK[Constants.PKParameters.AUC_inf].Value / _populationSimulation.AucIVFor(_compoundName).Value;
-
-         var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Oral };
-         A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
-      }
-
-      protected override void Because()
-      {
-         _results = sut.CalculateGlobalPKAnalysisFor(new[] { _populationSimulation });
-      }
-
-      [Observation]
-      public void should_return_IV_values_for_parameters()
-      {
-         var vss = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VssPlasma);
-         vss.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vss"].Value * _bioaValue);
-
-         var vdplasma = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VdPlasma);
-         vdplasma.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vd"].Value * _bioaValue);
-
-         var totalCL = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.TotalPlasmaCL);
-         totalCL.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["CL"].Value * _bioaValue);
-      }
-   }
-
    public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_mouse_species : concern_for_GlobalPKAnalysisTask
    {
       private GlobalPKAnalysis _results;
