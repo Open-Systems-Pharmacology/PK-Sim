@@ -184,13 +184,13 @@ namespace PKSim.Core
             new IndividualResults()
             {
                new QuantityValues() {
-                  QuantityPath = "Organism|PeripheralVenousBlood|R-omeprazole|Plasma (Peripheral Venous Blood)",
+                  QuantityPath = "Organism|PeripheralVenousBlood|DRUG|Plasma (Peripheral Venous Blood)",
                   Time = new QuantityValues() {Values = new [] { 0.0f } },
                   Values = new [] { 0.0f }
                },
                new QuantityValues()
                {
-                  QuantityPath = "Organism|VenousBlood|Plasma|Esomeprazole|Concentration in container",
+                  QuantityPath = "Organism|VenousBlood|Plasma|DRUG|Concentration in container",
                   Time = new QuantityValues() {Values = new [] { 1.0f } },
                   Values = new [] { 1.0f }
                }
@@ -198,13 +198,13 @@ namespace PKSim.Core
             new IndividualResults()
             {
                new QuantityValues() {
-                  QuantityPath = "Organism|PeripheralVenousBlood|R-omeprazole|Plasma (Peripheral Venous Blood)",
+                  QuantityPath = "Organism|PeripheralVenousBlood|DRUG|Plasma (Peripheral Venous Blood)",
                   Time = new QuantityValues() {Values = new [] { 0.0f } },
                   Values = new [] { 0.0f }
                },
                new QuantityValues()
                {
-                  QuantityPath = "Organism|VenousBlood|Plasma|Esomeprazole|Concentration in container",
+                  QuantityPath = "Organism|VenousBlood|Plasma|DRUG|Concentration in container",
                   Time = new QuantityValues() {Values = new [] { 1.0f } },
                   Values = new [] { 1.0f }
                }
