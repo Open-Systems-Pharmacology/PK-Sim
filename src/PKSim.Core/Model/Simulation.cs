@@ -22,23 +22,14 @@ namespace PKSim.Core.Model
       private SimulationResults _results;
       private readonly ICache<string, CompoundPK> _compoundPKCache;
 
-      public virtual DataColumn PeripheralVenousBloodColumn(string compoundName)
-      {
-         return null;
-      }
+      public abstract DataColumn PeripheralVenousBloodColumn(string compoundName);
 
       /// <summary>
       ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
       /// </summary>
-      public virtual DataColumn VenousBloodColumn(string compoundName)
-      {
-         return null;
-      }
+      public abstract DataColumn VenousBloodColumn(string compoundName);
 
-      public virtual DataColumn FabsOral(string compoundName)
-      {
-         return null;
-      }
+      public abstract DataColumn FabsOral(string compoundName);
 
       /// <summary>
       ///    Returns the version that the simulation had when it was run and the simulation was saved

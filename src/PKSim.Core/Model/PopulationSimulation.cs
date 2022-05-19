@@ -282,7 +282,7 @@ namespace PKSim.Core.Model
 
       private DataColumn aggregateDataColumns(IEnumerable<DataColumn> columns)
       {
-         var column = columns.First();
+         var column = columns?.First();
          if (column == null)
             return column;
 
