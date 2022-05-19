@@ -286,18 +286,12 @@ namespace PKSim.Core.Model
          if (column == null)
             return column;
 
-         var count = column.Values.Count;
-         var values = new float[count];
-         foreach (var x in columns)
-         {
-            for (var i = 0; i < count; i++)
-            {
-               values[i] += x.Values[i] / count;
-            }
-         }
          return new DataColumn(column.Id, column.Dimension, column.BaseGrid)
          {
-            Values = values
+            Values = Enumerable.Range(0, column.Values.Count)
+               .Select(i => 
+                  columns.Select(x => x.Values[i]).ToList().ArithmeticMean()
+               ).ToList()
          };
       }
 
