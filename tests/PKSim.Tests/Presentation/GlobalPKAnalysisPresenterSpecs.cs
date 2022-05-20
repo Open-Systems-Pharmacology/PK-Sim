@@ -28,6 +28,7 @@ namespace PKSim.Presentation
       protected string _compoundName;
       protected IReadOnlyList<Simulation> _simulations;
       protected GlobalPKAnalysis _globalPKAnalysis;
+      protected ISimulationRunner _simulationRunner;
 
       protected override void Context()
       {
@@ -37,7 +38,8 @@ namespace PKSim.Presentation
          var heavyWorkManager = A.Fake<IHeavyWorkManager>();
          var representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
-         sut = new GlobalPKAnalysisPresenter(_view, _globalPKAnalysisTask, globalPKAnalysisDTOMapper, heavyWorkManager, representationInfoRepository, _presenterSettingsTask);
+         _simulationRunner = A.Fake<ISimulationRunner>();
+         sut = new GlobalPKAnalysisPresenter(_view, _globalPKAnalysisTask, globalPKAnalysisDTOMapper, heavyWorkManager, representationInfoRepository, _presenterSettingsTask, _simulationRunner);
 
          _simulations = new List<Simulation>();
          _compoundName = "DRUG";
@@ -116,6 +118,22 @@ namespace PKSim.Presentation
       public void should_return_true()
       {
          sut.ShouldCalculateBioAvailability(_compoundName, CoreConstants.PKAnalysis.Bioavailability).ShouldBeTrue();
+      }
+   }
+
+   public class When_asked_of_the_pk_analysis_calculation_is_available_for_all_simple_pk_parameter_that_were_not_calculated_yet : concern_for_GlobalPKAnalysisPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _globalPKAnalysisTask.CalculateGlobalPKAnalysisFor(_simulations)).Returns(PKAnalysisHelperForSpecs.GenerateEmptyGlobalPKAnalysis(_compoundName));
+         sut.CalculatePKAnalysis(_simulations);
+      }
+
+      [Observation]
+      public void should_return_true()
+      {
+         sut.ShouldCalculateAll().ShouldBeTrue();
       }
    }
 

@@ -1987,6 +1987,9 @@ namespace PKSim.Assets
          public static readonly string MolWeight = "Molecular weight [g/mol]";
          public static readonly string CalculateBioavailability = "Calculate Bioavailability";
          public static readonly string CalculateDDIRatio = "Calculate DDI Ratio";
+         public static readonly string CalculateAll = "Calculate once";
+         public static readonly string RunForResults = "Include Venous Blood to the outputs and run for results";
+         public static readonly string RunForResultsDescription = "Run_| = Run once to calculate results";
          public static readonly string ExportPKAnalysesToExcel = $"Export to {Excel}";
          public static readonly string AnatomyAndPhysiology = "Anatomy && Physiology";
          public static readonly string AnatomyAndPhysiologyText = "All anatomical and physiological parameters are set according to selected species, (population,) gender, age, weight and height except the manually changed parameters listed in {0}.";
@@ -2629,6 +2632,7 @@ namespace PKSim.Assets
          public static readonly string Unit = UI.Unit;
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
+         public static string VenousBloodPath(string compound) => $"Organism|VenousBlood|Plasma|{compound}|Concentration in container";
       }
 
       public static class Comparison

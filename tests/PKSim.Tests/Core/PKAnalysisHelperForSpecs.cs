@@ -49,5 +49,14 @@ namespace PKSim.Core
 
          return globalPKAnalysis;
       }
+
+      public static GlobalPKAnalysis GenerateEmptyGlobalPKAnalysis(string drugName)
+      {
+         var globalPKAnalysis = new GlobalPKAnalysis();
+         var container = new Container().WithName(drugName);
+         globalPKAnalysis.Add(container);
+
+         return globalPKAnalysis;
+      }
    }
 }

@@ -25,8 +25,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       GlobalPKAnalysis GlobalPKAnalysis { get; }
       bool ShouldCalculateBioAvailability(string compoundName, string parameterName);
       bool ShouldCalculateDDIRatio(string compoundName, string parameterName);
+      bool ShouldCalculateAll();
       void CalculateBioAvailability(string compoundName);
       void CalculateDDIRatioFor(string compoundName);
+      void CalculateAll();
       string DisplayNameFor(string parameterName);
       bool HasParameters();
    }
@@ -38,6 +40,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private IReadOnlyList<Simulation> _simulations;
+      private readonly ISimulationRunner _simulationRunner;
 
       public GlobalPKAnalysis GlobalPKAnalysis { get; private set; }
       private GlobalPKAnalysisDTO _globalPKAnalysisDTO;
@@ -45,7 +48,9 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IPresentationSettingsTask _presentationSettingsTask;
 
       public GlobalPKAnalysisPresenter(IGlobalPKAnalysisView view, IGlobalPKAnalysisTask globalPKAnalysisTask,
-         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper, IHeavyWorkManager heavyWorkManager, IRepresentationInfoRepository representationInfoRepository, IPresentationSettingsTask presentationSettingsTask) : base(view)
+         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper, IHeavyWorkManager heavyWorkManager, 
+         IRepresentationInfoRepository representationInfoRepository, IPresentationSettingsTask presentationSettingsTask,
+         ISimulationRunner simulationRunner) : base(view)
       {
          _globalPKAnalysisTask = globalPKAnalysisTask;
          _globalPKAnalysisDTOMapper = globalPKAnalysisDTOMapper;
@@ -53,6 +58,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _representationInfoRepository = representationInfoRepository;
          _presentationSettingsTask = presentationSettingsTask;
          _settings = new DefaultPresentationSettings();
+         _simulationRunner = simulationRunner;
       }
 
       public void CalculatePKAnalysis(IReadOnlyList<Simulation> simulations)
@@ -78,6 +84,11 @@ namespace PKSim.Presentation.Presenters.Simulations
                 shouldCalculateGlobalPKParameter(compoundName, parameterName, CoreConstants.PKAnalysis.C_maxRatio);
       }
 
+      public bool ShouldCalculateAll()
+      {
+         return !GlobalPKAnalysis.Children.SelectMany(x => (x as IContainer).Children).Any();
+      }
+
       private bool shouldCalculateGlobalPKParameter(string compoundName, string parameterName,string globalPKParameterName)
       {
          if (!string.Equals(parameterName, globalPKParameterName))
@@ -94,6 +105,16 @@ namespace PKSim.Presentation.Presenters.Simulations
       public void CalculateDDIRatioFor(string compoundName)
       {
          calculateGlobalPKAnalysis(x => x.CalculateDDIRatioFor(firstSimulation, compoundName));
+      }
+
+      public void CalculateAll()
+      {         
+         calculateGlobalPKAnalysis(x => {
+            foreach (var compound in firstSimulation.CompoundNames)
+               firstSimulation.OutputSelections.AddOutput(new QuantitySelection(PKSimConstants.PKAnalysis.VenousBloodPath(compound), QuantityType.Drug));
+
+            _simulationRunner.RunSimulation(firstSimulation).Wait();
+         });
       }
 
       private void calculateGlobalPKAnalysis(Action<IGlobalPKAnalysisTask> calculationAction)
@@ -146,12 +167,14 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private IParameter pkParameterNamed(string parameterName)
       {
-         return GlobalPKAnalysis.PKParameters(parameterName).First();
+         return GlobalPKAnalysis.PKParameters(parameterName).FirstOrDefault();
       }
 
       public string DisplayNameFor(string parameterName)
       {
          var parameter = pkParameterNamed(parameterName);
+         if (parameter == null)
+            return string.Empty;
          var displayName = _representationInfoRepository.DisplayNameFor(parameter);
          return Constants.NameWithUnitFor(displayName, parameter.DisplayUnit);
       }

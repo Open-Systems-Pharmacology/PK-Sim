@@ -22,6 +22,7 @@ namespace PKSim.UI.Views.Simulations
       private readonly PivotGridField _compoundField;
       private readonly UxRepositoryItemButtonEdit _calculateBioAvailabilityRepository;
       private readonly UxRepositoryItemButtonEdit _calculateDDIRatioRepository;
+      private readonly UxRepositoryItemButtonEdit _calculateAllRepository;
       private readonly PivotGridUnitsMenuBinder _columUnitsMenuBinder;
       private readonly PivotGridField _parameterField;
       private readonly PivotGridField _valueField;
@@ -37,6 +38,7 @@ namespace PKSim.UI.Views.Simulations
 
          _calculateBioAvailabilityRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Run, PKSimConstants.UI.CalculateBioavailability);
          _calculateDDIRatioRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Run, PKSimConstants.UI.CalculateDDIRatio);
+         _calculateAllRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Run, PKSimConstants.UI.CalculateAll);
 
          _compoundField = new PivotGridField(PKSimConstants.PKAnalysis.Compound, PivotArea.ColumnArea);
          _parameterField = new PivotGridField(PKSimConstants.PKAnalysis.ParameterName, PivotArea.RowArea);
@@ -61,6 +63,7 @@ namespace PKSim.UI.Views.Simulations
          pivotGrid.CustomCellEdit += (o, e) => OnEvent(onCustomCellEdit, e);
          _calculateBioAvailabilityRepository.ButtonClick += (o, e) => OnEvent(calculateBioAvailability, e);
          _calculateDDIRatioRepository.ButtonClick += (o, e) => OnEvent(calculateDDIRatio, e);
+         _calculateAllRepository.ButtonClick += (o, e) => OnEvent(calculateAll, e);
          _pkAnalysisToolTipManager.CreateForPivotGrid(pivotGrid);
       }
 
@@ -87,6 +90,11 @@ namespace PKSim.UI.Views.Simulations
          _presenter.CalculateDDIRatioFor(compoundName);
       }
 
+      private void calculateAll(ButtonPressedEventArgs e)
+      {
+         _presenter.CalculateAll();
+      }
+
       private void onCustomCellEdit(PivotCustomCellEditEventArgs e)
       {
          if (e.DataField != _valueField) return;
@@ -100,6 +108,9 @@ namespace PKSim.UI.Views.Simulations
          else if (_presenter.ShouldCalculateDDIRatio(compoundName, parameterName))
             e.RepositoryItem = _calculateDDIRatioRepository;
 
+         else if (_presenter.ShouldCalculateAll())
+            e.RepositoryItem = _calculateAllRepository;
+
          else if (hasWarning(ds))
             e.RepositoryItem = _warningRepositoryEdit;
       }
@@ -112,6 +123,11 @@ namespace PKSim.UI.Views.Simulations
 
       public void BindTo(GlobalPKAnalysisDTO globalPKAnalysisDTO)
       {
+         if (globalPKAnalysisDTO.DataTable.Rows.Count == 0)
+         {
+            globalPKAnalysisDTO.DataTable.Rows.Add(new object[] { PKSimConstants.UI.RunForResults, PKSimConstants.UI.RunForResults, double.NaN, string.Empty, string.Empty, PKSimConstants.UI.RunForResultsDescription, string.Empty });
+         }
+
          pivotGrid.DataSource = globalPKAnalysisDTO.DataTable;
          pivotGrid.BestFitRowArea();
       }
