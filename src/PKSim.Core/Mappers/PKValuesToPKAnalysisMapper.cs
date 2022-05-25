@@ -7,12 +7,13 @@ using OSPSuite.Core.Domain.Data;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Services;
+using System.Collections.Generic;
 
 namespace PKSim.Core.Mappers
 {
    public interface IPKValuesToPKAnalysisMapper
    {
-      PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName);
+      PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName, bool forPopulation);
    }
 
    public class PKValuesToPKAnalysisMapper : IPKValuesToPKAnalysisMapper
@@ -31,13 +32,18 @@ namespace PKSim.Core.Mappers
          _displayUnitRetriever = displayUnitRetriever;
       }
 
-      public PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName)
+      public PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName, bool forPopulation)
       {
          var pk = new PKAnalysis().WithName(moleculeName);
-         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode)).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
+         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode) && (!forPopulation || !filterOnPopulationForDisplayName(parameter.DisplayName))).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
 
          pk.MolWeight = dataColumn.DataInfo.MolWeight;
          return pk;
+      }
+
+      private bool filterOnPopulationForDisplayName(string displayName)
+      {
+         return displayName.EndsWith("_norm") || displayName.EndsWith("/F");
       }
 
       private IParameter createPKParameter(PKParameter pkParameter, PKValues pkValues)

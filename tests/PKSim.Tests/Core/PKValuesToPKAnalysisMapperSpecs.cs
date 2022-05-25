@@ -64,7 +64,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_col, _pkValues, _mode, _drugName);
+         _result = sut.MapFrom(_col, _pkValues, _mode, _drugName, false);
       }
 
       [Observation]
@@ -100,6 +100,50 @@ namespace PKSim.Core
          {
             A.CallTo(() => _displayUnitRetriever.PreferredUnitFor(p)).MustHaveHappened();
          });
+      }
+   }
+
+   public class When_mapping_pk_values_from_population_to_pk_analysis : concern_for_PKValuesToPKAnalysisMapper
+   {
+      private DataColumn _col;
+      private PKValues _pkValues;
+      private PKParameterMode _mode;
+      private string _drugName;
+      private PKAnalysis _result;
+      private PKParameter _pk1;
+      private PKParameter _pk2;
+      private PKParameter _pk3;
+
+      protected override void Context()
+      {
+         base.Context();
+         _pkValues = new PKValues();
+         _pkValues.AddValue("AUC_inf_norm", 10f);
+         _pkValues.AddValue("Vss(plasma)/F", 10f);
+         _mode = PKParameterMode.Single;
+         _drugName = "TOTO";
+         _pk1 = new PKParameter { Mode = _mode, Name = "AUC_inf_norm", DisplayName = "AUC_inf_norm", Dimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs() };
+         _pk2 = new PKParameter { Mode = _mode, Name = "Vss(plasma)/F", DisplayName = "Vss(plasma)/F",  Dimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs() };
+         _pk3 = new PKParameter { Mode = PKParameterMode.Multi, Name = "P3" };
+         var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimensionForSpecs());
+         _col = new DataColumn("COL", DomainHelperForSpecs.ConcentrationDimensionForSpecs(), baseGrid) { DataInfo = { MolWeight = 150 } };
+         A.CallTo(() => _pkParameterRepository.All()).Returns(new[] { _pk1, _pk2, _pk3 });
+         A.CallTo(() => _parameterFactory.CreateFor(A<string>._, A<double>._, A<string>._, PKSimBuildingBlockType.Simulation))
+            .ReturnsLazily(x => DomainHelperForSpecs.ConstantParameterWithValue(x.GetArgument<double>(1)).WithName(x.GetArgument<string>(0)));
+
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_col, _pkValues, _mode, _drugName, true);
+      }
+
+      [Observation]
+      public void should_create_one_parameter_for_each_available_pk_value_available_but_not_for_those_dependent_on_body_weight()
+      {
+         _result.PKParameters(_pk1.Name).Any().ShouldBeFalse();
+         _result.PKParameters(_pk2.Name).Any().ShouldBeFalse();
+         _result.PKParameters(_pk3.Name).Any().ShouldBeFalse();
       }
    }
 }	
