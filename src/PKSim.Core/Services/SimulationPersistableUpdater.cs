@@ -7,8 +7,7 @@ namespace PKSim.Core.Services
 {
    public interface ISimulationPersistableUpdater : OSPSuite.Core.Domain.Services.ISimulationPersistableUpdater
    {
-      void UpdatePersistableFromSettings(IndividualSimulation individualSimulation);
-      void UpdatePersistableFromSettings(PopulationSimulation populationSimulation);
+      void UpdatePersistableFromSettings(Simulation populationSimulation);
       void ResetPersistable(Simulation simulation);
    }
 
@@ -18,18 +17,13 @@ namespace PKSim.Core.Services
       {
       }
 
-      public void UpdatePersistableFromSettings(IndividualSimulation individualSimulation)
+      public void UpdatePersistableFromSettings(Simulation individualSimulation)
       {
          UpdateSimulationPersistable(individualSimulation);
 
          var organism = individualSimulation.Model.Root.Container(Constants.ORGANISM);
 
          individualSimulation.Compounds.Each(compound => addRequiredOutputForSimulation(organism, compound));
-      }
-
-      public void UpdatePersistableFromSettings(PopulationSimulation populationSimulation)
-      {
-         UpdateSimulationPersistable(populationSimulation);
       }
 
       private void addRequiredOutputForSimulation(IContainer organism, Compound compound)
@@ -68,11 +62,6 @@ namespace PKSim.Core.Services
          setUrineFecesAndBilePersitable(simulation, setMoleculeAmountToPersistableIn);
       }
 
-      private void setUrineFecesAndBileConcentrationToNonPersitable(Simulation simulation)
-      {
-         setUrineFecesAndBilePersitable(simulation, setConcentrationObserversToNonPersistableIn);
-      }
-
       private void setUrineFecesAndBilePersitable(Simulation simulation, Action<IContainer> updatePersitableInContainerAction)
       {
          var organism = simulation.Model.Root.Container(Constants.ORGANISM);
@@ -93,12 +82,6 @@ namespace PKSim.Core.Services
       {
          if (container == null) return;
          SetPersistable(container.GetAllChildren<IMoleculeAmount>(), true);
-      }
-
-      private void setConcentrationObserversToNonPersistableIn(IContainer container)
-      {
-         if (container == null) return;
-         SetPersistable(container.GetAllChildren<IObserver>(x => x.NameIsOneOf(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER)), false);
       }
 
       private void setApplicationObserversNonPersistable(Simulation simulation)
