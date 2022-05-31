@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain.Data;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Services;
-using System.Collections.Generic;
 
 namespace PKSim.Core.Mappers
 {
@@ -35,15 +34,16 @@ namespace PKSim.Core.Mappers
       public PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName, bool forPopulation)
       {
          var pk = new PKAnalysis().WithName(moleculeName);
-         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode) && (!forPopulation || !filterOnPopulationForDisplayName(parameter.DisplayName))).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
+         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode) && (!forPopulation || !filterOnPopulationForDisplayName(parameter.Name, pkValues))).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
 
          pk.MolWeight = dataColumn.DataInfo.MolWeight;
          return pk;
       }
 
-      private bool filterOnPopulationForDisplayName(string displayName)
+      private bool filterOnPopulationForDisplayName(string displayName, PKValues pkValues)
       {
-         return displayName.EndsWith("_norm") || displayName.EndsWith("/F");
+         var value = pkValues.ValueFor(displayName);
+         return value == null || float.IsNaN((float)value);
       }
 
       private IParameter createPKParameter(PKParameter pkParameter, PKValues pkValues)

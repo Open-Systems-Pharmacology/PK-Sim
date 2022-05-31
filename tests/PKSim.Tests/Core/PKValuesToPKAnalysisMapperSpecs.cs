@@ -118,8 +118,9 @@ namespace PKSim.Core
       {
          base.Context();
          _pkValues = new PKValues();
-         _pkValues.AddValue("AUC_inf_norm", 10f);
-         _pkValues.AddValue("Vss(plasma)/F", 10f);
+         _pkValues.AddValue("AUC_inf_norm", float.NaN);
+         _pkValues.AddValue("Vss(plasma)/F", float.NaN);
+         _pkValues.AddValue("P3", 10.0f);
          _mode = PKParameterMode.Single;
          _drugName = "TOTO";
          _pk1 = new PKParameter { Mode = _mode, Name = "AUC_inf_norm", DisplayName = "AUC_inf_norm", Dimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs() };
