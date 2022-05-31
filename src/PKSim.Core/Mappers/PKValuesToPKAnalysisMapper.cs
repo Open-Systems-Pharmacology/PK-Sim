@@ -34,16 +34,16 @@ namespace PKSim.Core.Mappers
       public PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName, bool forPopulation)
       {
          var pk = new PKAnalysis().WithName(moleculeName);
-         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode) && (!forPopulation || !filterOnPopulationForDisplayName(parameter.Name, pkValues))).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
+         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode) && (!forPopulation || !filteNaNValues(parameter.Name, pkValues))).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
 
          pk.MolWeight = dataColumn.DataInfo.MolWeight;
          return pk;
       }
 
-      private bool filterOnPopulationForDisplayName(string displayName, PKValues pkValues)
+      private bool filteNaNValues(string name, PKValues pkValues)
       {
-         var value = pkValues.ValueFor(displayName);
-         return value == null || float.IsNaN((float)value);
+         var pkValue = pkValues.ValueFor(name);
+         return (!pkValue.HasValue || float.IsNaN(pkValue.Value));
       }
 
       private IParameter createPKParameter(PKParameter pkParameter, PKValues pkValues)
