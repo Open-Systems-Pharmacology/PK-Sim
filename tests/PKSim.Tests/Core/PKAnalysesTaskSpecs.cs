@@ -77,7 +77,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _populationDataCollector.MolWeightFor("PATH")).Returns(100);
 
-         A.CallTo(() => _pkMapper.MapFrom(A<DataColumn>._, A<PKValues>._, A<PKParameterMode>._, A<string>._, A<bool>._))
+         A.CallTo(() => _pkMapper.MapFrom(A<DataColumn>._, A<PKValues>._, A<PKParameterMode>._, A<string>._))
             .Invokes(x => _dataColumn.Add(x.GetArgument<DataColumn>(0)));
 
          _dataColumn = new List<DataColumn>();
@@ -129,7 +129,7 @@ namespace PKSim.Core
          };
          pane.AddCurve(curve);
 
-         A.CallTo(() => _pkMapper.MapFrom(A<DataColumn>._, A<PKValues>._, A<PKParameterMode>._, A<string>._, A<bool>._))
+         A.CallTo(() => _pkMapper.MapFrom(A<DataColumn>._, A<PKValues>._, A<PKParameterMode>._, A<string>._))
             .Invokes(x => _dataColumn = x.GetArgument<DataColumn>(0));
       }
 
@@ -199,8 +199,8 @@ namespace PKSim.Core
             DomainHelperForSpecs.ConstantParameterWithValue(4).WithName(Constants.PKParameters.Tmax)
          };
 
-         A.CallTo(() => _pkMapper.MapFrom(_dataColumn1, A<PKValues>._, A<PKParameterMode>._, "C1", false)).Returns(_pkC1);
-         A.CallTo(() => _pkMapper.MapFrom(_dataColumn2, A<PKValues>._, A<PKParameterMode>._, "C2", false)).Returns(_pkC2);
+         A.CallTo(() => _pkMapper.MapFrom(_dataColumn1, A<PKValues>._, A<PKParameterMode>._, "C1")).Returns(_pkC1);
+         A.CallTo(() => _pkMapper.MapFrom(_dataColumn2, A<PKValues>._, A<PKParameterMode>._, "C2")).Returns(_pkC2);
 
          _defaultNumberOfRules = DomainHelperForSpecs.ConstantParameterWithValue(3).Rules.Count;
       }

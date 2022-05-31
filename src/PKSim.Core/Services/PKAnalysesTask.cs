@@ -195,21 +195,21 @@ namespace PKSim.Core.Services
 
       private IndividualPKAnalysis calculatePKForPopulation(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis = null)
       {
-         return calculatePKFor(dataColumn, moleculeName, options, globalPKAnalysis, true);
+         return calculatePKFor(dataColumn, moleculeName, options, globalPKAnalysis);
       }
 
       private IndividualPKAnalysis calculatePKForIndividual(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis = null)
       {
-         return calculatePKFor(dataColumn, moleculeName, options, globalPKAnalysis, false);
+         return calculatePKFor(dataColumn, moleculeName, options, globalPKAnalysis);
       }
 
-      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis, bool forPopulation)
+      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis)
       {
          var timeValue = dataColumn.BaseGrid.Values;
          var dimension = _dimensionRepository.MergedDimensionFor(dataColumn);
          var umolPerLiterUnit = dimension.UnitOrDefault(CoreConstants.Units.MicroMolPerLiter);
          var concentrationValueInMolL = dataColumn.Values.Select(v => dimension.BaseUnitValueToUnitValue(umolPerLiterUnit, v)).ToArray();
-         var pkAnalysis = _pkMapper.MapFrom(dataColumn, _pkValuesCalculator.CalculatePK(timeValue, concentrationValueInMolL, options), options.PKParameterMode, moleculeName, forPopulation);
+         var pkAnalysis = _pkMapper.MapFrom(dataColumn, _pkValuesCalculator.CalculatePK(timeValue, concentrationValueInMolL, options), options.PKParameterMode, moleculeName);
          addWarningsTo(pkAnalysis, globalPKAnalysis, moleculeName);
          return new IndividualPKAnalysis(dataColumn, pkAnalysis);
       }

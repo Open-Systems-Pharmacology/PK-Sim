@@ -64,7 +64,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_col, _pkValues, _mode, _drugName, false);
+         _result = sut.MapFrom(_col, _pkValues, _mode, _drugName);
       }
 
       [Observation]
@@ -136,7 +136,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_col, _pkValues, _mode, _drugName, true);
+         _result = sut.MapFrom(_col, _pkValues, _mode, _drugName);
       }
 
       [Observation]
