@@ -34,10 +34,22 @@ namespace PKSim.Core.Mappers
       public PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName)
       {
          var pk = new PKAnalysis().WithName(moleculeName);
-         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode)).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
+         _pkParameterRepository.All().Where(parameter => shouldExport(parameter, pkValues, mode)).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
 
          pk.MolWeight = dataColumn.DataInfo.MolWeight;
          return pk;
+      }
+
+      private bool shouldExport(PKParameter parameter, PKValues pkValues, PKParameterMode mode)
+      {
+         if (!parameter.Mode.Is(mode))
+            return false;
+         
+         var pkValue = pkValues.ValueFor(parameter.Name);
+         if (!pkValue.HasValue)
+            return false;
+
+         return !float.IsNaN(pkValue.Value);
       }
 
       private IParameter createPKParameter(PKParameter pkParameter, PKValues pkValues)
