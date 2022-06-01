@@ -105,7 +105,7 @@ namespace PKSim.Core.Services
          {
             var moleculeName = columnsByMolecule.Key;
             var options = _pkCalculationOptionsFactory.CreateFor(populationDataCollector, moleculeName);
-            pkAnalyses.AddRange(columnsByMolecule.Select(pkAnalysisData => new PopulationPKAnalysis(pkAnalysisData.curveData, calculatePKForPopulation(pkAnalysisData.column, moleculeName, options).PKAnalysis, pkAnalysisData.column.Name)));
+            pkAnalyses.AddRange(columnsByMolecule.Select(pkAnalysisData => new PopulationPKAnalysis(pkAnalysisData.curveData, calculatePKFor(pkAnalysisData.column, moleculeName, options).PKAnalysis, pkAnalysisData.column.Name)));
          }
 
          return pkAnalyses;
@@ -122,7 +122,7 @@ namespace PKSim.Core.Services
             {
                var moleculeName = columnsByMolecule.Key;
                var options = _pkCalculationOptionsFactory.CreateFor(simulation, moleculeName);
-               allPKAnalysis.AddRange(columnsByMolecule.Select(c => calculatePKForIndividual(c, moleculeName, options, globalPKAnalysis)));
+               allPKAnalysis.AddRange(columnsByMolecule.Select(c => calculatePKFor(c, moleculeName, options, globalPKAnalysis)));
             }
          }
 
@@ -132,7 +132,7 @@ namespace PKSim.Core.Services
             {
                var moleculeName = observedDataColumn.Repository.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
                var observedDataPKOptions = _pkCalculationOptionsFactory.CreateForObservedData(simulations, moleculeName);
-               return calculatePKForIndividual(observedDataColumn, moleculeName, observedDataPKOptions);
+               return calculatePKFor(observedDataColumn, moleculeName, observedDataPKOptions);
             }));
 
          return allPKAnalysis;
@@ -193,17 +193,7 @@ namespace PKSim.Core.Services
          return pkParameter.Description;
       }
 
-      private IndividualPKAnalysis calculatePKForPopulation(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis = null)
-      {
-         return calculatePKFor(dataColumn, moleculeName, options, globalPKAnalysis);
-      }
-
-      private IndividualPKAnalysis calculatePKForIndividual(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis = null)
-      {
-         return calculatePKFor(dataColumn, moleculeName, options, globalPKAnalysis);
-      }
-
-      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis)
+      private IndividualPKAnalysis calculatePKFor(DataColumn dataColumn, string moleculeName, PKCalculationOptions options, GlobalPKAnalysis globalPKAnalysis = null)
       {
          var timeValue = dataColumn.BaseGrid.Values;
          var dimension = _dimensionRepository.MergedDimensionFor(dataColumn);
