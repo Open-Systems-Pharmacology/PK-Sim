@@ -1,5 +1,4 @@
 ﻿using OSPSuite.UI.Controls;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Simulations
 {

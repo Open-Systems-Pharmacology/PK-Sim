@@ -49,13 +49,13 @@ namespace PKSim.Presentation.Presenters.Simulations
          _allAnalyses.AddRange(_allPKAnalyses);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
-
          _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });
       }
 
       protected override void BindToPKAnalysis()
       {
-         _view.BindTo(_populationPKAnalysisToDTOMapper.MapFrom(_allAnalyses));
+         //ToDo: Actually pass both dtos
+         _view.BindTo(_populationPKAnalysisToDTOMapper.MapFrom(_allAnalyses), _populationPKAnalysisToDTOMapper.MapFrom(_allAnalyses));
       }
 
       protected override IEnumerable<PKAnalysis> AllPKAnalyses

@@ -7,20 +7,23 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using System.Collections.Generic;
 
 namespace PKSim.UI.Views.Simulations
 {
    public partial class PopulationPKAnalysisView : BaseUserControl, IPopulationPKAnalysisView
    {
-      private readonly IPKAnalysisPivotView _populationAnalysisPivotView;
+      private readonly IPKAnalysisPivotView _populationAnalysisPivotViewOnCurve;
+      private readonly IPKAnalysisPivotView _populationAnalysisPivotViewOnIndividuals;
       private IPopulationPKAnalysisPresenter _presenter;
       private readonly ScreenBinder<PKAnalysisDTO> _screenBinder;
 
-      public PopulationPKAnalysisView(IPKAnalysisPivotView populationAnalysisPivotView)
+      public PopulationPKAnalysisView(IPKAnalysisPivotView populationAnalysisPivotView, IPKAnalysisPivotView populationAnalysisPivotViewOnIndividuals)
       {
-         _populationAnalysisPivotView = populationAnalysisPivotView;
+         _populationAnalysisPivotViewOnCurve = populationAnalysisPivotView;
+         _populationAnalysisPivotViewOnIndividuals = populationAnalysisPivotViewOnIndividuals;
          InitializeComponent();
-         addPopulationPKAnalysisView(_populationAnalysisPivotView);
+         addPopulationPKAnalysisView(_populationAnalysisPivotViewOnCurve, _populationAnalysisPivotViewOnIndividuals);
          _screenBinder = new ScreenBinder<PKAnalysisDTO>();
       }
 
@@ -29,26 +32,31 @@ namespace PKSim.UI.Views.Simulations
          globalPKParametersPanelControl.FillWith(view);
       }
 
-      private void addPopulationPKAnalysisView(IPKAnalysisPivotView view)
+      private void addPopulationPKAnalysisView(IPKAnalysisPivotView viewOnCurve, IPKAnalysisPivotView viewOnIndividuals)
       {
-         populationPKAnalysisPanel.FillWith(view);
+         populationPKAnalysisPanelOnCurve.FillWith(viewOnCurve);
+         populationPKAnalysisPanelOnIndividuals.FillWith(viewOnIndividuals);
       }
 
-      public void BindTo(PKAnalysisDTO pkAnalysisDTO)
+      public void BindTo(PKAnalysisDTO pkAnalysisOnCurveDTO, PKAnalysisDTO pkAnalysisOnIndividualsDTO)
       {
-         _screenBinder.BindToSource(pkAnalysisDTO);
-         _populationAnalysisPivotView.BindTo(pkAnalysisDTO.DataTable);
+         _screenBinder.BindToSource(pkAnalysisOnCurveDTO);
+         _populationAnalysisPivotViewOnCurve.BindTo(pkAnalysisOnCurveDTO.DataTable);
+         _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisOnIndividualsDTO.DataTable);
       }
 
       public DataTable GetSummaryData()
       {
-         return _populationAnalysisPivotView.GetSummaryData();
+         return populationPKAnalysisXtraTabControl.SelectedTabPageIndex == 0 
+            ? _populationAnalysisPivotViewOnCurve.GetSummaryData() 
+            : _populationAnalysisPivotViewOnIndividuals.GetSummaryData();
       }
 
       public void AttachPresenter(IPopulationPKAnalysisPresenter presenter)
       {
          _presenter = presenter;
-         _populationAnalysisPivotView.BindUnitsMenuToPresenter(presenter);
+         _populationAnalysisPivotViewOnCurve.BindUnitsMenuToPresenter(presenter);
+         _populationAnalysisPivotViewOnIndividuals.BindUnitsMenuToPresenter(presenter);
       }
 
       public override void InitializeBinding()
@@ -63,7 +71,6 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize();
-         populationPKAnalysisItem.TextVisible = false;
          layoutControlItemGlobalPKAnalysis.TextVisible = false;
       }
    }

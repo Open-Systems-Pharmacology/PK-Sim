@@ -2629,6 +2629,8 @@ namespace PKSim.Assets
          public static readonly string Unit = UI.Unit;
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
+         public static readonly string OnCurve = "On curves";
+         public static readonly string OnIndividuals = "On individuals";
       }
 
       public static class Comparison

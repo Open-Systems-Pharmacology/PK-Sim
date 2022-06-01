@@ -7,7 +7,7 @@ namespace PKSim.Presentation.Views.Simulations
 {
    public interface IPopulationPKAnalysisView : IView<IPopulationPKAnalysisPresenter>
    {
-      void BindTo(PKAnalysisDTO dataTable);
+      void BindTo(PKAnalysisDTO pkAnalysisOnCurveDTO, PKAnalysisDTO pkAnalysisOnIndividualsDTO);
       DataTable GetSummaryData();
 
       void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view);
