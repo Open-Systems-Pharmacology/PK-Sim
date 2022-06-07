@@ -7,7 +7,6 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using System.Collections.Generic;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -45,9 +44,14 @@ namespace PKSim.UI.Views.Simulations
          _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisOnIndividualsDTO.DataTable);
       }
 
+      public bool IsOnCurvesSelected()
+      {
+         return populationPKAnalysisXtraTabControl.SelectedTabPageIndex == 0;
+      }
+
       public DataTable GetSummaryData()
       {
-         return populationPKAnalysisXtraTabControl.SelectedTabPageIndex == 0 
+         return IsOnCurvesSelected()
             ? _populationAnalysisPivotViewOnCurve.GetSummaryData() 
             : _populationAnalysisPivotViewOnIndividuals.GetSummaryData();
       }

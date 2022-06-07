@@ -79,6 +79,11 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          return _chartDataCreator.CreateFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
       }
+      
+      private IEnumerable<PopulationPKAnalysis> aggregatePKAnalysis(IEnumerable<IEnumerable<PopulationPKAnalysis>> setOfAnalysis)
+      {
+         return _chartDataCreator.Aggregate(PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, setOfAnalysis);
+      }
 
       public virtual void OnDragOver(object sender, IDragEvent e)
       {
@@ -183,7 +188,10 @@ namespace PKSim.Presentation.Presenters.Charts
       private void calculatePKAnalysis()
       {
          var chartData = CreateChartData();
-         _pkAnalysisPresenter.CalculatePKAnalysis(PopulationDataCollector, chartData);
+         _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(PopulationDataCollector, chartData);
+
+         var chartDataSet = _chartDataCreator.CreateSetFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
+         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, chartDataSet, aggregatePKAnalysis);
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)

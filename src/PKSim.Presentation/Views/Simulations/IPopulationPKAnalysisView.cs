@@ -9,7 +9,7 @@ namespace PKSim.Presentation.Views.Simulations
    {
       void BindTo(PKAnalysisDTO pkAnalysisOnCurveDTO, PKAnalysisDTO pkAnalysisOnIndividualsDTO);
       DataTable GetSummaryData();
-
       void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view);
+      bool IsOnCurvesSelected();
    }
 }

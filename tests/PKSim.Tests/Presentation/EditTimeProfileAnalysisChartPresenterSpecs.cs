@@ -154,7 +154,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_calculate_the_pk_analysis_for_the_current_chart_data()
       {
-         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysis(_populationDataCollector, _chartData)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(_populationDataCollector, _chartData)).MustHaveHappened();
       }
 
       [Observation]
@@ -243,7 +243,7 @@ namespace PKSim.Presentation
       [Observation]
       public void the_analysis_should_be_updated_at_the_same_time()
       {
-         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysis(A<IPopulationDataCollector>._, A<ChartData<TimeProfileXValue, TimeProfileYValue>>._)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(A<IPopulationDataCollector>._, A<ChartData<TimeProfileXValue, TimeProfileYValue>>._)).MustHaveHappened();
       }
    }
 

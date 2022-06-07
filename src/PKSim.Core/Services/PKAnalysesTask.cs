@@ -28,7 +28,7 @@ namespace PKSim.Core.Services
       /// <returns>The PopulationSimulationPKAnalyses containing all calculated values</returns>
       PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation);
 
-      IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData);
+      IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData, bool firstOnCurves = true);
 
       /// <summary>
       ///    Calculates the <see cref="IndividualPKAnalysis" /> for the given <paramref name="dataColumns" /> corresponding to
@@ -89,7 +89,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      public IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData)
+      public IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData, bool firstOnCurves = true)
       {
          var pkAnalyses = new List<PopulationPKAnalysis>();
 

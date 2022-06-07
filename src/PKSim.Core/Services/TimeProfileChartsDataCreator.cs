@@ -48,6 +48,66 @@ namespace PKSim.Core.Services
          return _analysis.AllFieldsOn(PivotArea.DataArea).Any() && statisticalAnalysis.SelectedStatistics.Any();
       }
 
+      protected override IEnumerable<ChartData<TimeProfileXValue, TimeProfileYValue>> BuildChartsDataSet()
+      {
+         var statisticalAnalysis = _analysis.DowncastTo<PopulationStatisticalAnalysis>();
+         var paneFieldNames = _analysis.StringFieldNamesOn(PivotArea.RowArea);
+         var paneFieldComparers = GetFieldComparers(PivotArea.RowArea);
+         var seriesFieldNames = new List<string> { _dataColumnName, STATISTICAL_AGGREGATION_DISPLAY_NAME };
+         if (_analysis.ColorField != null)
+            seriesFieldNames.Add(_analysis.ColorField.Name);
+
+         var seriesFieldComparers = GetFieldComparers(PivotArea.ColumnArea);
+         var timeField = new TimeField { Dimension = _dimensionRepository.Time, DisplayUnit = statisticalAnalysis.TimeUnit };
+
+         _data.AddColumn<StatisticalAggregation>(STATISTICAL_AGGREGATION);
+         _data.AddColumn<string>(STATISTICAL_AGGREGATION_DISPLAY_NAME);
+         _data.AddColumn<Tuple<QuantityValues, FloatMatrix>>(TIME_AND_VALUES);
+
+         // Create rows for each combination of row<=>DATA_FIELD value and selected STATISTICAL_AGGREGATION
+         var dataCopy = _data.Copy();
+         _data.Clear();
+
+         foreach (DataRow row in dataCopy.Rows)
+         {
+            var timeAndAllValues = getTimeAndAllValuesFor(row); // calculate once because expensive
+
+            foreach (var statisticalAggregation in statisticalAnalysis.SelectedStatistics)
+            {
+               row[STATISTICAL_AGGREGATION] = statisticalAggregation;
+               row[STATISTICAL_AGGREGATION_DISPLAY_NAME] = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
+               row[TIME_AND_VALUES] = timeAndAllValues;
+               _data.ImportRow(row);
+            }
+         }
+
+         var charts = new List<ChartData<TimeProfileXValue, TimeProfileYValue>>();
+         for (var index = 0; index < _data.Rows.Count; index++)
+         {
+            var chart = CreateChart(timeField, paneFieldComparers);
+
+            // Create series for each row (combination of DATA_FIELD value and selected STATISTICAL_AGGREGATION)
+            foreach (DataRow row in _data.Rows)
+            {
+               var yAxisField = DataField<PopulationAnalysisOutputField>(row);
+               var series = GetCurveData(row, paneFieldNames, paneFieldComparers, seriesFieldNames, seriesFieldComparers, chart, yAxisField);
+               setFlatSeriesValues(series, row, index);
+            }
+
+            //add observed data if available
+            addObservedDataToChart(chart);
+            charts.Add(chart);
+         }
+         return charts;
+      }
+
+      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IEnumerable<IEnumerable<PopulationPKAnalysis>> setOfAnalysis)
+      {
+
+         //_statisticalDataCalculator.StatisticalDataFor(quantityResults, selectedStatistics.First()).ToList();
+         return setOfAnalysis.First();
+      }
+
       protected override ChartData<TimeProfileXValue, TimeProfileYValue> BuildChartsData()
       {
          var statisticalAnalysis = _analysis.DowncastTo<PopulationStatisticalAnalysis>();
@@ -154,6 +214,22 @@ namespace PKSim.Core.Services
          FloatMatrix allValues = timeAndAllValues.Item2;
 
          var results = getResultsFor(statisticalAggregation, allValues);
+         for (int i = 0; i < time.Length; i++)
+         {
+            var yValue = results[i];
+            if (yValue.IsValid)
+               series.Add(new TimeProfileXValue(time[i]), yValue);
+         }
+      }
+
+      private void setFlatSeriesValues(CurveData<TimeProfileXValue, TimeProfileYValue> series, DataRow row, int index)
+      {
+         var timeAndAllValues = (Tuple<QuantityValues, FloatMatrix>)row[TIME_AND_VALUES];
+
+         QuantityValues time = timeAndAllValues.Item1;
+         FloatMatrix allValues = timeAndAllValues.Item2;
+
+         var results = new List<TimeProfileYValue>(allValues.SliceAt(index).Select(value => new TimeProfileYValue { Y = value }));
          for (int i = 0; i < time.Length; i++)
          {
             var yValue = results[i];
