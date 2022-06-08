@@ -37,6 +37,7 @@ namespace PKSim.Core
       protected IDimension _mergedDimensionLiverCell;
       protected const string _singleCurveId = "SingleCurve";
       protected const string _percentileId = "Percentile";
+      protected IPKValuesToPKAnalysisMapper _pkMapper;
 
       protected override void Context()
       {
@@ -69,8 +70,10 @@ namespace PKSim.Core
             .WhenArgumentsMatch((IWithDimension context) => Equals((context as NumericFieldContext)?.NumericValueField, _outputFieldLiverCell))
             .Returns(_mergedDimensionLiverCell);
 
+         _pkMapper = A.Fake<IPKValuesToPKAnalysisMapper>();
+
          sut = new TimeProfileChartDataCreator(_dimensionRepository, _pivotResultCreator, _representationInfoRepository,
-            _statisticalDataCalculator, _lazyLoadTask, _observedCurveDataMapper);
+            _statisticalDataCalculator, _lazyLoadTask, _observedCurveDataMapper, _pkMapper);
       }
    }
 

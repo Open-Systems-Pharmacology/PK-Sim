@@ -145,13 +145,13 @@ namespace PKSim.Core.Services
          if (curveData.IsRange())
             return new[] 
             {
-               new DataColumn(" (Lower)", curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(PKSimConstants.PKAnalysis.LowerSubfix(string.Empty), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
                   QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
                },
-               new DataColumn(" (Upper)", curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(PKSimConstants.PKAnalysis.UpperSubfix(string.Empty), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
@@ -203,6 +203,8 @@ namespace PKSim.Core.Services
          addWarningsTo(pkAnalysis, globalPKAnalysis, moleculeName);
          return new IndividualPKAnalysis(dataColumn, pkAnalysis);
       }
+
+
 
       private void addWarningsTo(PKAnalysis pkAnalysis, GlobalPKAnalysis globalPKAnalysis, string moleculeName)
       {

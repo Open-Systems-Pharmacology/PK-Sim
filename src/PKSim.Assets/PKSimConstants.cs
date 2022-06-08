@@ -2631,6 +2631,8 @@ namespace PKSim.Assets
          public static readonly string Warning = "Warning";
          public static readonly string OnCurve = "On curves";
          public static readonly string OnIndividuals = "On individuals";
+         public static string LowerSubfix(string text) => $"{text} (Lower)";
+         public static string UpperSubfix(string text) => $"{text} (Upper)";
       }
 
       public static class Comparison

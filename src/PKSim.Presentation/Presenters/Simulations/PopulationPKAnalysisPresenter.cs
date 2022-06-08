@@ -9,6 +9,7 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Services;
 using System;
+using OSPSuite.Utility.Data;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -16,7 +17,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       void CalculatePKAnalysisOnCurves(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData);
 
-      void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<ChartData<TimeProfileXValue, TimeProfileYValue>> timeProfileChartDataSet, Func<IEnumerable<IEnumerable<PopulationPKAnalysis>>, IEnumerable<PopulationPKAnalysis>> aggregate);
+      void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<ChartData<TimeProfileXValue, TimeProfileYValue>> timeProfileChartDataSet, Func<IEnumerable<IEnumerable<PopulationPKAnalysis>>, IEnumerable<PopulationPKAnalysis>> aggregateFunction);
    }
 
    public class PopulationPKAnalysisPresenter : PKAnalysisPresenter<IPopulationPKAnalysisView, IPopulationPKAnalysisPresenter>, IPopulationPKAnalysisPresenter

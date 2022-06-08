@@ -29,15 +29,17 @@ namespace PKSim.Core.Services
       private const string STATISTICAL_AGGREGATION = "STATISTICAL_AGGREGATION";
       private const string STATISTICAL_AGGREGATION_DISPLAY_NAME = "STATISTICAL_AGGREGATION_DISPLAY_NAME";
       private const string TIME_AND_VALUES = "TIME_AND_VALUES";
+      private readonly IPKValuesToPKAnalysisMapper _pkMapper;
 
       public TimeProfileChartDataCreator(IDimensionRepository dimensionRepository, IPivotResultCreator pivotResultCreator, IRepresentationInfoRepository representationInfoRepository,
-         IStatisticalDataCalculator statisticalDataCalculator, ILazyLoadTask lazyLoadTask, IDataRepositoryToObservedCurveDataMapper observedCurveDataMapper)
+         IStatisticalDataCalculator statisticalDataCalculator, ILazyLoadTask lazyLoadTask, IDataRepositoryToObservedCurveDataMapper observedCurveDataMapper, IPKValuesToPKAnalysisMapper pkMapper)
          : base(dimensionRepository, pivotResultCreator)
       {
          _representationInfoRepository = representationInfoRepository;
          _statisticalDataCalculator = statisticalDataCalculator;
          _lazyLoadTask = lazyLoadTask;
          _observedCurveDataMapper = observedCurveDataMapper;
+         _pkMapper = pkMapper;
       }
 
       protected override bool CheckFields()
@@ -82,7 +84,8 @@ namespace PKSim.Core.Services
          }
 
          var charts = new List<ChartData<TimeProfileXValue, TimeProfileYValue>>();
-         for (var index = 0; index < _data.Rows.Count; index++)
+         var individualsAmount = ((Tuple<QuantityValues, FloatMatrix>)_data.Rows[0][TIME_AND_VALUES]).Item2.SortedValueAt(0).Count();
+         for (var index = 0; index < individualsAmount; index++)
          {
             var chart = CreateChart(timeField, paneFieldComparers);
 
@@ -103,9 +106,66 @@ namespace PKSim.Core.Services
 
       public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IEnumerable<IEnumerable<PopulationPKAnalysis>> setOfAnalysis)
       {
+         var names = setOfAnalysis.First().First().PKAnalysis.AllPKParameterNames;
+         var pkAnalysisPerMolecules = setOfAnalysis.First().Select((pk, index) => (
+            pk.CurveData,  
+            new PKAnalysis()
+            {
+               MolWeight = pk.PKAnalysis.MolWeight,
+               Name = pk.PKAnalysis.Name,
+            },
+            index
+         ));
+         var results = new List<PopulationPKAnalysis>();
+         pkAnalysisPerMolecules.Each(tuple => {
+            var pk = tuple.Item2;
+            var moleculeIndex = tuple.Item3;
+            var matrix = new FloatMatrix();
+            names.Each(name =>
+               matrix.AddSortedValues(
+                  setOfAnalysis.Select(
+                     individuals => (float)individuals.ElementAt(moleculeIndex).PKAnalysis.PKParameters(name).First().Value
+                  ).ToArray()
+               )
+            );
 
-         //_statisticalDataCalculator.StatisticalDataFor(quantityResults, selectedStatistics.First()).ToList();
-         return setOfAnalysis.First();
+            var statisticalAnalysis = selectedStatistics.FirstOrDefault(s => _representationInfoRepository.DisplayNameFor(s) == tuple.Item1.FieldValues[1]);
+            var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
+
+            for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
+            {
+               results.Add(buildPopulationPKAnalysis(buildCurveData(tuple.Item1, aggregated, aggregationIndex), pk, aggregated[aggregationIndex], names));
+            }
+         });
+         return results;
+      }
+
+      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(CurveData<TimeProfileXValue, TimeProfileYValue> source, List<float[]> values, int index)
+      {
+         var caption = (values.Count > 1) ? (index == 0 ? PKSimConstants.PKAnalysis.LowerSubfix(source.Caption) : PKSimConstants.PKAnalysis.UpperSubfix(source.Caption)) : source.Caption;
+         var curveData = new CurveData<TimeProfileXValue, TimeProfileYValue>(source.FieldKeyValues)
+         {
+            Id = source.Id,
+            Caption = caption,
+            YDimension = source.YDimension,
+            QuantityPath = source.QuantityPath,
+            Pane = source.Pane
+         };
+         for (var i = 0; i < source.XValues.Count; i++)
+         {
+            curveData.Add(source.XValues[i], source.YValues[i]);
+         }
+         return curveData;
+      }
+
+      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, PKAnalysis pk, float[] values, IReadOnlyList<string> names)
+      {
+         var pkValues = new PKValues();
+         for (var i = 0; i < names.Count; i++)
+         {
+            pkValues.AddValue(names[i], values[i]);
+         }
+         return new PopulationPKAnalysis(curveData, _pkMapper.MapFrom(pk.MolWeight, pkValues, OSPSuite.Core.Domain.PKAnalyses.PKParameterMode.Single, pk.Name));
       }
 
       protected override ChartData<TimeProfileXValue, TimeProfileYValue> BuildChartsData()

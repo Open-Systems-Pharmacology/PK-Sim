@@ -7,6 +7,7 @@ using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
