@@ -50,122 +50,51 @@ namespace PKSim.Core.Services
          return _analysis.AllFieldsOn(PivotArea.DataArea).Any() && statisticalAnalysis.SelectedStatistics.Any();
       }
 
-      protected override IEnumerable<ChartData<TimeProfileXValue, TimeProfileYValue>> BuildChartsDataSet()
+      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks)
       {
-         var statisticalAnalysis = _analysis.DowncastTo<PopulationStatisticalAnalysis>();
-         var paneFieldNames = _analysis.StringFieldNamesOn(PivotArea.RowArea);
-         var paneFieldComparers = GetFieldComparers(PivotArea.RowArea);
-         var seriesFieldNames = new List<string> { _dataColumnName, STATISTICAL_AGGREGATION_DISPLAY_NAME };
-         if (_analysis.ColorField != null)
-            seriesFieldNames.Add(_analysis.ColorField.Name);
+         var names = pks.Select(x => x.Name).Distinct();
+         var matrix = new FloatMatrix();
+         pks.Each(pk => {   
+            matrix.AddSortedValues(pk.ValuesAsArray);
+         });
 
-         var seriesFieldComparers = GetFieldComparers(PivotArea.ColumnArea);
-         var timeField = new TimeField { Dimension = _dimensionRepository.Time, DisplayUnit = statisticalAnalysis.TimeUnit };
-
-         _data.AddColumn<StatisticalAggregation>(STATISTICAL_AGGREGATION);
-         _data.AddColumn<string>(STATISTICAL_AGGREGATION_DISPLAY_NAME);
-         _data.AddColumn<Tuple<QuantityValues, FloatMatrix>>(TIME_AND_VALUES);
-
-         // Create rows for each combination of row<=>DATA_FIELD value and selected STATISTICAL_AGGREGATION
-         var dataCopy = _data.Copy();
-         _data.Clear();
-
-         foreach (DataRow row in dataCopy.Rows)
-         {
-            var timeAndAllValues = getTimeAndAllValuesFor(row); // calculate once because expensive
-
-            foreach (var statisticalAggregation in statisticalAnalysis.SelectedStatistics)
-            {
-               row[STATISTICAL_AGGREGATION] = statisticalAggregation;
-               row[STATISTICAL_AGGREGATION_DISPLAY_NAME] = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
-               row[TIME_AND_VALUES] = timeAndAllValues;
-               _data.ImportRow(row);
-            }
-         }
-
-         var charts = new List<ChartData<TimeProfileXValue, TimeProfileYValue>>();
-         var individualsAmount = ((Tuple<QuantityValues, FloatMatrix>)_data.Rows[0][TIME_AND_VALUES]).Item2.SortedValueAt(0).Count();
-         for (var index = 0; index < individualsAmount; index++)
-         {
-            var chart = CreateChart(timeField, paneFieldComparers);
-
-            // Create series for each row (combination of DATA_FIELD value and selected STATISTICAL_AGGREGATION)
-            foreach (DataRow row in _data.Rows)
-            {
-               var yAxisField = DataField<PopulationAnalysisOutputField>(row);
-               var series = GetCurveData(row, paneFieldNames, paneFieldComparers, seriesFieldNames, seriesFieldComparers, chart, yAxisField);
-               setFlatSeriesValues(series, row, index);
-            }
-
-            //add observed data if available
-            addObservedDataToChart(chart);
-            charts.Add(chart);
-         }
-         return charts;
-      }
-
-      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IEnumerable<IEnumerable<PopulationPKAnalysis>> setOfAnalysis)
-      {
-         var names = setOfAnalysis.First().First().PKAnalysis.AllPKParameterNames;
-         var pkAnalysisPerMolecules = setOfAnalysis.First().Select((pk, index) => (
-            pk.CurveData,  
-            new PKAnalysis()
-            {
-               MolWeight = pk.PKAnalysis.MolWeight,
-               Name = pk.PKAnalysis.Name,
-            },
-            index
-         ));
          var results = new List<PopulationPKAnalysis>();
-         pkAnalysisPerMolecules.Each(tuple => {
-            var pk = tuple.Item2;
-            var moleculeIndex = tuple.Item3;
-            var matrix = new FloatMatrix();
-            names.Each(name =>
-               matrix.AddSortedValues(
-                  setOfAnalysis.Select(
-                     individuals => (float)individuals.ElementAt(moleculeIndex).PKAnalysis.PKParameters(name).First().Value
-                  ).ToArray()
-               )
-            );
-
-            var statisticalAnalysis = selectedStatistics.FirstOrDefault(s => _representationInfoRepository.DisplayNameFor(s) == tuple.Item1.FieldValues[1]);
+         selectedStatistics.Each(statisticalAnalysis => {
             var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
-
             for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
             {
-               results.Add(buildPopulationPKAnalysis(buildCurveData(tuple.Item1, aggregated, aggregationIndex), pk, aggregated[aggregationIndex], names));
+               var pk = pks.ElementAt(aggregationIndex);
+               var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis);
+               results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => curveData.Caption.Contains(x.Name)), aggregated[aggregationIndex], names));
             }
          });
          return results;
       }
 
-      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(CurveData<TimeProfileXValue, TimeProfileYValue> source, List<float[]> values, int index)
+      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation)
       {
-         var caption = (values.Count > 1) ? (index == 0 ? PKSimConstants.PKAnalysis.LowerSubfix(source.Caption) : PKSimConstants.PKAnalysis.UpperSubfix(source.Caption)) : source.Caption;
-         var curveData = new CurveData<TimeProfileXValue, TimeProfileYValue>(source.FieldKeyValues)
+         var caption = $"{pk.QuantityPath}|{_representationInfoRepository.DisplayNameFor(statisticalAggregation)}";
+         if (values.Count > 1) 
+            caption = index == 0 ? PKSimConstants.PKAnalysis.LowerSubfix(pk.QuantityPath) : PKSimConstants.PKAnalysis.UpperSubfix(pk.QuantityPath);
+
+         var curveData = new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
-            Id = source.Id,
+            Id = pk.Id,
             Caption = caption,
-            YDimension = source.YDimension,
-            QuantityPath = source.QuantityPath,
-            Pane = source.Pane
+            YDimension = pk.Dimension,
+            QuantityPath = pk.QuantityPath,
          };
-         for (var i = 0; i < source.XValues.Count; i++)
-         {
-            curveData.Add(source.XValues[i], source.YValues[i]);
-         }
          return curveData;
       }
 
-      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, PKAnalysis pk, float[] values, IReadOnlyList<string> names)
+      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IEnumerable<string> names)
       {
          var pkValues = new PKValues();
-         for (var i = 0; i < names.Count; i++)
+         for (var i = 0; i < names.Count(); i++)
          {
-            pkValues.AddValue(names[i], values[i]);
+            pkValues.AddValue(names.ElementAt(i), values[i]);
          }
-         return new PopulationPKAnalysis(curveData, _pkMapper.MapFrom(pk.MolWeight, pkValues, OSPSuite.Core.Domain.PKAnalyses.PKParameterMode.Single, pk.Name));
+         return new PopulationPKAnalysis(curveData, _pkMapper.MapFrom(compound.MolWeight, pkValues, OSPSuite.Core.Domain.PKAnalyses.PKParameterMode.Single, compound.Name));
       }
 
       protected override ChartData<TimeProfileXValue, TimeProfileYValue> BuildChartsData()
@@ -274,22 +203,6 @@ namespace PKSim.Core.Services
          FloatMatrix allValues = timeAndAllValues.Item2;
 
          var results = getResultsFor(statisticalAggregation, allValues);
-         for (int i = 0; i < time.Length; i++)
-         {
-            var yValue = results[i];
-            if (yValue.IsValid)
-               series.Add(new TimeProfileXValue(time[i]), yValue);
-         }
-      }
-
-      private void setFlatSeriesValues(CurveData<TimeProfileXValue, TimeProfileYValue> series, DataRow row, int index)
-      {
-         var timeAndAllValues = (Tuple<QuantityValues, FloatMatrix>)row[TIME_AND_VALUES];
-
-         QuantityValues time = timeAndAllValues.Item1;
-         FloatMatrix allValues = timeAndAllValues.Item2;
-
-         var results = new List<TimeProfileYValue>(allValues.SliceAt(index).Select(value => new TimeProfileYValue { Y = value }));
          for (int i = 0; i < time.Length; i++)
          {
             var yValue = results[i];

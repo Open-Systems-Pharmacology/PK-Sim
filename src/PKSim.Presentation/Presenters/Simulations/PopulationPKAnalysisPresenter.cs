@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Services;
 using System;
 using OSPSuite.Utility.Data;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -17,7 +18,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       void CalculatePKAnalysisOnCurves(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData);
 
-      void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<ChartData<TimeProfileXValue, TimeProfileYValue>> timeProfileChartDataSet, Func<IEnumerable<IEnumerable<PopulationPKAnalysis>>, IEnumerable<PopulationPKAnalysis>> aggregateFunction);
+      void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pks);
    }
 
    public class PopulationPKAnalysisPresenter : PKAnalysisPresenter<IPopulationPKAnalysisView, IPopulationPKAnalysisPresenter>, IPopulationPKAnalysisPresenter
@@ -59,11 +60,11 @@ namespace PKSim.Presentation.Presenters.Simulations
          _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });
       }
 
-      public void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<ChartData<TimeProfileXValue, TimeProfileYValue>> timeProfileChartDataSet, Func<IEnumerable<IEnumerable<PopulationPKAnalysis>>, IEnumerable<PopulationPKAnalysis>> aggregate)
+      public void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pks)
       {
          _allAnalysesOnIndividuals.Clear();
          _populationDataCollector = populationDataCollector;
-         _allPKAnalysesOnIndividuals = aggregate(timeProfileChartDataSet.Select(timeProfileChartData => _pkAnalysesTask.CalculateFor(populationDataCollector, timeProfileChartData)));
+         _allPKAnalysesOnIndividuals = pks;
          _allAnalysesOnIndividuals.AddRange(_allPKAnalysesOnIndividuals);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();

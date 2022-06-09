@@ -7,7 +7,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -81,9 +80,9 @@ namespace PKSim.Presentation.Presenters.Charts
          return _chartDataCreator.CreateFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
       }
       
-      private IEnumerable<PopulationPKAnalysis> aggregatePKAnalysis(IEnumerable<IEnumerable<PopulationPKAnalysis>> setOfAnalysis)
+      private IEnumerable<PopulationPKAnalysis> aggregatePKAnalysis(IPopulationDataCollector populationDataCollector, IEnumerable<QuantityPKParameter> pks)
       {
-         return _chartDataCreator.Aggregate(PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, setOfAnalysis);
+         return _chartDataCreator.Aggregate(PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, populationDataCollector.Compounds, pks);
       }
 
       public virtual void OnDragOver(object sender, IDragEvent e)
@@ -191,8 +190,10 @@ namespace PKSim.Presentation.Presenters.Charts
          var chartData = CreateChartData();
          _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(PopulationDataCollector, chartData);
 
-         var chartDataSet = _chartDataCreator.CreateSetFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
-         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, chartDataSet, aggregatePKAnalysis);
+         var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
+         var pks = fields.SelectMany(x => ((PopulationSimulation)PopulationDataCollector).PKAnalyses.AllPKParametersFor(x));
+         
+         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pks));
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)

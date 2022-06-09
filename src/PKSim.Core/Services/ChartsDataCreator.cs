@@ -19,8 +19,7 @@ namespace PKSim.Core.Services
       ChartData<TX, TY> CreateFor(PivotResult pivotResult);
       ChartData<TX, TY> CreateFor<TPopulationAnalysis>(PopulationAnalysisChart<TPopulationAnalysis> populationAnalysisChart, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis;
       ChartData<TX, TY> CreateFor<TPopulationAnalysis>(TPopulationAnalysis populationAnalysis, IPopulationDataCollector populationDataCollector, ObservedDataCollection observedDataCollection, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis;
-      IEnumerable<ChartData<TX, TY>> CreateSetFor<TPopulationAnalysis>(PopulationAnalysisChart<TPopulationAnalysis> populationAnalysisChart, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis;
-      IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IEnumerable<IEnumerable<PopulationPKAnalysis>> setOfAnalysis);
+      IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks);
    }
 
    public abstract class ChartDataCreator<TX, TY> : IChartDataCreator<TX, TY> where TX : IXValue where TY : IYValue
@@ -47,8 +46,7 @@ namespace PKSim.Core.Services
       protected abstract bool CheckFields();
 
       protected abstract ChartData<TX, TY> BuildChartsData();
-      protected virtual IEnumerable<ChartData<TX, TY>> BuildChartsDataSet() { return null; }
-
+      
       public virtual ChartData<TX, TY> CreateFor(PivotResult pivotResult)
       {
          try
@@ -79,38 +77,6 @@ namespace PKSim.Core.Services
          }
       }
 
-      public virtual IEnumerable<ChartData<TX, TY>> CreateSetFor(PivotResult pivotResult)
-      {
-         try
-         {
-            _analysis = pivotResult.Analysis;
-            _data = pivotResult.PivotedData;
-            _aggregationName = pivotResult.AggregationName;
-            _dataColumnName = pivotResult.DataColumnName;
-            _populationDataCollector = pivotResult.PopulationDataCollector;
-            _observedDataCollection = pivotResult.ObservedDataCollection;
-
-            if (!CheckFields())
-               return null;
-
-            var charts = BuildChartsDataSet();
-            charts.Each(chart =>
-            {
-               chart.CreatePaneOrder();
-               chart.Panes.Each(x => x.CreateCurveOrder());
-            });
-
-            return charts;
-         }
-         finally
-         {
-            _analysis = null;
-            _data = null;
-            _populationDataCollector = null;
-            _observedDataCollection = null;
-         }
-      }
-
       public ChartData<TX, TY> CreateFor<TPopulationAnalysis>(PopulationAnalysisChart<TPopulationAnalysis> populationAnalysisChart, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis
       {
          return CreateFor(populationAnalysisChart.PopulationAnalysis, populationAnalysisChart.Analysable.DowncastTo<IPopulationDataCollector>(), populationAnalysisChart.ObservedDataCollection, aggregate);
@@ -124,11 +90,6 @@ namespace PKSim.Core.Services
       protected virtual PivotResult CreateResult<TPopulationAnalysis>(TPopulationAnalysis populationAnalysis, IPopulationDataCollector populationDataCollector, ObservedDataCollection observedDataCollection, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis
       {
          return _pivotResultCreator.Create(populationAnalysis, populationDataCollector, observedDataCollection, aggregate);
-      }
-
-      public IEnumerable<ChartData<TX, TY>> CreateSetFor<TPopulationAnalysis>(PopulationAnalysisChart<TPopulationAnalysis> populationAnalysisChart, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis
-      {
-         return CreateSetFor(CreateResult(populationAnalysisChart.PopulationAnalysis, populationAnalysisChart.Analysable.DowncastTo<IPopulationDataCollector>(), populationAnalysisChart.ObservedDataCollection, aggregate));
       }
 
       protected virtual IReadOnlyDictionary<string, string> GetFieldValues(IEnumerable<string> fieldNames, DataRow row)
@@ -295,9 +256,9 @@ namespace PKSim.Core.Services
          return _analysis.AllFieldsOn(area);
       }
 
-      public virtual IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IEnumerable<IEnumerable<PopulationPKAnalysis>> setOfAnalysis)
+      public virtual IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks)
       {
-         return setOfAnalysis.First();
+         return null;
       }
    }
 }
