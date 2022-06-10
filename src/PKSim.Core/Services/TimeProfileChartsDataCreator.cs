@@ -29,17 +29,17 @@ namespace PKSim.Core.Services
       private const string STATISTICAL_AGGREGATION = "STATISTICAL_AGGREGATION";
       private const string STATISTICAL_AGGREGATION_DISPLAY_NAME = "STATISTICAL_AGGREGATION_DISPLAY_NAME";
       private const string TIME_AND_VALUES = "TIME_AND_VALUES";
-      private readonly IPKValuesToPKAnalysisMapper _pkMapper;
+      private readonly IPKAnalysesTask _pKAnalysesTask;
 
       public TimeProfileChartDataCreator(IDimensionRepository dimensionRepository, IPivotResultCreator pivotResultCreator, IRepresentationInfoRepository representationInfoRepository,
-         IStatisticalDataCalculator statisticalDataCalculator, ILazyLoadTask lazyLoadTask, IDataRepositoryToObservedCurveDataMapper observedCurveDataMapper, IPKValuesToPKAnalysisMapper pkMapper)
+         IStatisticalDataCalculator statisticalDataCalculator, ILazyLoadTask lazyLoadTask, IDataRepositoryToObservedCurveDataMapper observedCurveDataMapper, IPKAnalysesTask pKAnalysesTask)
          : base(dimensionRepository, pivotResultCreator)
       {
          _representationInfoRepository = representationInfoRepository;
          _statisticalDataCalculator = statisticalDataCalculator;
          _lazyLoadTask = lazyLoadTask;
          _observedCurveDataMapper = observedCurveDataMapper;
-         _pkMapper = pkMapper;
+         _pKAnalysesTask = pKAnalysesTask;
       }
 
       protected override bool CheckFields()
@@ -50,7 +50,7 @@ namespace PKSim.Core.Services
          return _analysis.AllFieldsOn(PivotArea.DataArea).Any() && statisticalAnalysis.SelectedStatistics.Any();
       }
 
-      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks)
+      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks, Simulation simulation)
       {
          var names = pks.Select(x => x.Name).Distinct();
          var matrix = new FloatMatrix();
@@ -65,7 +65,7 @@ namespace PKSim.Core.Services
             {
                var pk = pks.ElementAt(aggregationIndex);
                var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis);
-               results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => curveData.Caption.Contains(x.Name)), aggregated[aggregationIndex], names));
+               results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => curveData.Caption.Contains(x.Name)), aggregated[aggregationIndex], names, simulation));
             }
          });
          return results;
@@ -87,14 +87,14 @@ namespace PKSim.Core.Services
          return curveData;
       }
 
-      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IEnumerable<string> names)
+      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IEnumerable<string> names, Simulation simulation)
       {
          var pkValues = new PKValues();
          for (var i = 0; i < names.Count(); i++)
          {
             pkValues.AddValue(names.ElementAt(i), values[i]);
          }
-         return new PopulationPKAnalysis(curveData, _pkMapper.MapFrom(compound.MolWeight, pkValues, OSPSuite.Core.Domain.PKAnalyses.PKParameterMode.Single, compound.Name));
+         return new PopulationPKAnalysis(curveData, _pKAnalysesTask.MapFrom(compound.MolWeight, pkValues, compound.Name, simulation));
       }
 
       protected override ChartData<TimeProfileXValue, TimeProfileYValue> BuildChartsData()

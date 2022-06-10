@@ -82,7 +82,7 @@ namespace PKSim.Presentation.Presenters.Charts
       
       private IEnumerable<PopulationPKAnalysis> aggregatePKAnalysis(IPopulationDataCollector populationDataCollector, IEnumerable<QuantityPKParameter> pks)
       {
-         return _chartDataCreator.Aggregate(PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, populationDataCollector.Compounds, pks);
+         return _chartDataCreator.Aggregate(PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, populationDataCollector.Compounds, pks, populationDataCollector as Simulation);
       }
 
       public virtual void OnDragOver(object sender, IDragEvent e)

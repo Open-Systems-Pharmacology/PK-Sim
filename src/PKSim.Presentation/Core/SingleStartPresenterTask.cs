@@ -37,7 +37,7 @@ namespace PKSim.Presentation.Core
          {
             presenter.Edit(subject);
          }
-         catch (Exception)
+         catch (Exception e)
          {
             //exception while loading the subject. We need to close the presenter to avoid memory leaks
             _applicationController.Close(subject);

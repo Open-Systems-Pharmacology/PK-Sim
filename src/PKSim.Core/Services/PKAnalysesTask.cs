@@ -40,6 +40,8 @@ namespace PKSim.Core.Services
 
       IndividualPKAnalysis CalculateFor(Simulation simulation, DataColumn dataColumn);
       PKValues CalculatePK(DataColumn column, PKCalculationOptions options);
+
+      PKAnalysis MapFrom(double? molWeight, PKValues pkValues, string moleculeName, Simulation simulation);
    }
 
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
@@ -252,6 +254,12 @@ namespace PKSim.Core.Services
             return;
 
          bodyWeightParameter.Value = allBodyWeights.Count > individualId ? allBodyWeights[individualId] : double.NaN;
+      }
+
+      public PKAnalysis MapFrom(double? molWeight, PKValues pkValues, string moleculeName, Simulation simulation)
+      {
+         var options = _pkCalculationOptionsFactory.CreateFor(simulation, moleculeName);
+         return _pkMapper.MapFrom(molWeight, pkValues, options.PKParameterMode, moleculeName);
       }
    }
 }

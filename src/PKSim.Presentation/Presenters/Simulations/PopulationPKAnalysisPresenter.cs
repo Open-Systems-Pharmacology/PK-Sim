@@ -27,8 +27,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IPKAnalysisExportTask _exportTask;
       private readonly List<PopulationPKAnalysis> _allAnalysesOnCurves;
       private readonly List<PopulationPKAnalysis> _allAnalysesOnIndividuals;
-      private IEnumerable<PopulationPKAnalysis> _allPKAnalysesOnCurves;
-      private IEnumerable<PopulationPKAnalysis> _allPKAnalysesOnIndividuals;
+      private List<PopulationPKAnalysis> _allPKAnalysesOnCurves = new List<PopulationPKAnalysis>();
+      private List<PopulationPKAnalysis> _allPKAnalysesOnIndividuals = new List<PopulationPKAnalysis>();
       private IPopulationDataCollector _populationDataCollector;
       private readonly IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
       private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
@@ -59,11 +59,12 @@ namespace PKSim.Presentation.Presenters.Simulations
          CalculatePKAnalysis(populationDataCollector, _allAnalysesOnIndividuals, pks, _allPKAnalysesOnIndividuals);
       }
 
-      private void CalculatePKAnalysis(IPopulationDataCollector populationDataCollector, List<PopulationPKAnalysis> allAnalysis, IEnumerable<PopulationPKAnalysis> sourcePKs, IEnumerable<PopulationPKAnalysis> targetPKs)
+      private void CalculatePKAnalysis(IPopulationDataCollector populationDataCollector, List<PopulationPKAnalysis> allAnalysis, IEnumerable<PopulationPKAnalysis> sourcePKs, List<PopulationPKAnalysis> targetPKs)
       {
          allAnalysis.Clear();
          _populationDataCollector = populationDataCollector;
-         targetPKs = sourcePKs;
+         targetPKs.Clear();
+         targetPKs.AddRange(sourcePKs);
          allAnalysis.AddRange(targetPKs);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
