@@ -33,6 +33,7 @@ namespace PKSim.Core.Services
       private IPopulationDataCollector _populationDataCollector;
       protected string _dataColumnName;
       protected ObservedDataCollection _observedDataCollection;
+      protected const string STATISTICAL_AGGREGATION_DISPLAY_NAME = "STATISTICAL_AGGREGATION_DISPLAY_NAME";
 
       protected ChartDataCreator(IDimensionRepository dimensionRepository, IPivotResultCreator pivotResultCreator)
       {
@@ -206,8 +207,8 @@ namespace PKSim.Core.Services
 
       private CurveData<TX, TY> getOrCreateCurve(PaneData<TX, TY> pane, IReadOnlyDictionary<string, string> seriesFieldValues, INumericValueField yAxisField)
       {
-         string curveCaption = captionFor(seriesFieldValues.Values);
-         string curveId = idFromCaption(curveCaption);
+         string curveCaption = captionFor(new[] { seriesFieldValues[STATISTICAL_AGGREGATION_DISPLAY_NAME] });
+         string curveId = idFromCaption(captionFor(seriesFieldValues.Values));
          var series = pane.Curves[curveId];
          if (series != null)
             return series;
