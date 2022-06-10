@@ -51,21 +51,20 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void CalculatePKAnalysisOnCurves(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData)
       {
-         _allAnalysesOnCurves.Clear();
-         _populationDataCollector = populationDataCollector;
-         _allPKAnalysesOnCurves = _pkAnalysesTask.CalculateFor(populationDataCollector, timeProfileChartData);
-         _allAnalysesOnCurves.AddRange(_allPKAnalysesOnCurves);
-         LoadPreferredUnitsForPKAnalysis();
-         BindToPKAnalysis();
-         _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });
+         CalculatePKAnalysis(populationDataCollector, _allAnalysesOnCurves, _pkAnalysesTask.CalculateFor(populationDataCollector, timeProfileChartData), _allPKAnalysesOnCurves);
       }
 
       public void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pks)
       {
-         _allAnalysesOnIndividuals.Clear();
+         CalculatePKAnalysis(populationDataCollector, _allAnalysesOnIndividuals, pks, _allPKAnalysesOnIndividuals);
+      }
+
+      private void CalculatePKAnalysis(IPopulationDataCollector populationDataCollector, List<PopulationPKAnalysis> allAnalysis, IEnumerable<PopulationPKAnalysis> sourcePKs, IEnumerable<PopulationPKAnalysis> targetPKs)
+      {
+         allAnalysis.Clear();
          _populationDataCollector = populationDataCollector;
-         _allPKAnalysesOnIndividuals = pks;
-         _allAnalysesOnIndividuals.AddRange(_allPKAnalysesOnIndividuals);
+         targetPKs = sourcePKs;
+         allAnalysis.AddRange(targetPKs);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
          _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });
