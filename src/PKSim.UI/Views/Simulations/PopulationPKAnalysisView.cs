@@ -44,14 +44,14 @@ namespace PKSim.UI.Views.Simulations
          _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisOnIndividualsDTO.DataTable);
       }
 
-      public bool IsOnCurvesSelected()
+      public bool IsOnCurvesSelected
       {
-         return populationPKAnalysisXtraTabControl.SelectedTabPageIndex == 0;
+         get => populationPKAnalysisXtraTabControl.SelectedTabPageIndex == 0;
       }
 
       public DataTable GetSummaryData()
       {
-         return IsOnCurvesSelected()
+         return IsOnCurvesSelected
             ? _populationAnalysisPivotViewOnCurve.GetSummaryData() 
             : _populationAnalysisPivotViewOnIndividuals.GetSummaryData();
       }

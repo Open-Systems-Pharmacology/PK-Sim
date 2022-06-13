@@ -49,20 +49,18 @@ namespace PKSim.Core.Services
          return _analysis.AllFieldsOn(PivotArea.DataArea).Any() && statisticalAnalysis.SelectedStatistics.Any();
       }
 
-      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks, Simulation simulation)
+      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pkParameters, Simulation simulation)
       {
-         var names = pks.Select(x => x.Name).Distinct();
+         var names = pkParameters.Select(x => x.Name).Distinct();
          var matrix = new FloatMatrix();
-         pks.Each(pk => {   
-            matrix.AddSortedValues(pk.ValuesAsArray);
-         });
+         pkParameters.Each(pkParameter => matrix.AddSortedValues(pkParameter.ValuesAsArray));
 
          var results = new List<PopulationPKAnalysis>();
          selectedStatistics.Each(statisticalAnalysis => {
             var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
             for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
             {
-               var pk = pks.ElementAt(aggregationIndex);
+               var pk = pkParameters.ElementAt(aggregationIndex);
                var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis);
                results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => pk.QuantityPath.Contains(x.Name)), aggregated[aggregationIndex], names, simulation));
             }

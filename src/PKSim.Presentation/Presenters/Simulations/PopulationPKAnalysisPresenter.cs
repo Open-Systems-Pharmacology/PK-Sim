@@ -8,9 +8,6 @@ using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Services;
-using System;
-using OSPSuite.Utility.Data;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -78,7 +75,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       protected override IEnumerable<PKAnalysis> AllPKAnalyses
       {
-         get { return (View.IsOnCurvesSelected() ? _allPKAnalysesOnCurves : _allPKAnalysesOnIndividuals).Select(x => x.PKAnalysis); }
+         get { return (View.IsOnCurvesSelected ? _allPKAnalysesOnCurves : _allPKAnalysesOnIndividuals).Select(x => x.PKAnalysis); }
       }
 
       public override void ExportToExcel()
