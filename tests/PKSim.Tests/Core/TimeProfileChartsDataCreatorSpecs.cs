@@ -591,7 +591,7 @@ namespace PKSim.Core
             new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|Compound 1", _values = new[] { 0.0f,   2.5f,   5.0f,   7.5f,   1.0f   } }
          };
          
-         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { _compound }, pkParameters, _simulation, string.Empty);
+         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { _compound }, pkParameters, _simulation, "Compound 1");
       }
 
       [Observation]
@@ -600,12 +600,12 @@ namespace PKSim.Core
          _pkAnalyses.ShouldNotBeEmpty();
          A.CallTo(() => _pkAnalysesTask.CreatePKAnalysisFromValues(
             A<PKValues>.That.Matches(p => p.Values.Contains(0.05f) && p.Values.Contains(0.5f) && p.Values.Contains(5f)),
-            _simulation,
-            _compound
+            A<Simulation>.Ignored,
+            A<Compound>.Ignored
          )).MustHaveHappened();
          _pkAnalyses.Count().ShouldBeEqualTo(1);
          var curveData = _pkAnalyses.First().CurveData;
-         curveData.Caption.ShouldBeEqualTo("Percentile");
+         curveData.Caption.ShouldBeEqualTo("Compound 1-Percentile");
          curveData.QuantityPath.ShouldBeEqualTo("Organism|Compound 1");
       }
    }
