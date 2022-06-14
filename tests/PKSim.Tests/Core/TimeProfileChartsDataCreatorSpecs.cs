@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
@@ -552,6 +553,53 @@ namespace PKSim.Core
       public void should_not_crash()
       {
          _chartData.ShouldNotBeNull();
+      }
+   }
+
+   public class When_aggregating_pk_parameters_from_individuals : concern_for_TimeProfileChartsDataCreator
+   {
+      class TestQuantityPKParameter : QuantityPKParameter
+      {
+         public float[] _values { get; set; }
+
+         public override float[] ValuesAsArray { get => _values; }
+      }
+
+      class TestCompund : Compound
+      {
+         public override double MolWeight => 1;
+      }
+
+      private IEnumerable<PopulationPKAnalysis> _pkAnalyses;
+      private Simulation _simulation = A.Fake<Simulation>();
+
+      protected override void Because()
+      {
+         Compound compound = new TestCompund() { Name = "Compound 1" };
+         var pkParameters = new[] 
+         { 
+            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|Compound 1", _values = new[] { 0.000f, 0.025f, 0.050f, 0.075f, 1.000f } },
+            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|Compound 1", _values = new[] { 0.00f,  0.25f,  0.50f,  0.75f,  1.00f  } },
+            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|Compound 1", _values = new[] { 0.0f,   2.5f,   5.0f,   7.5f,   1.0f   } }
+         };
+         
+         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { compound }, pkParameters, _simulation);
+      }
+
+      [Observation]
+      public void should_aggregate_correctly()
+      {
+         _pkAnalyses.ShouldNotBeEmpty();
+         A.CallTo(() => _pkAnalysesTask.MapFrom(
+            1,
+            A<PKValues>.That.Matches(p => p.Values.Contains(0.05f) && p.Values.Contains(0.5f) && p.Values.Contains(5f)),
+            "Compound 1",
+            _simulation
+         )).MustHaveHappened();
+         _pkAnalyses.Count().ShouldBeEqualTo(1);
+         var curveData = _pkAnalyses.First().CurveData;
+         curveData.Caption.ShouldBeEqualTo("Percentile");
+         curveData.QuantityPath.ShouldBeEqualTo("Organism|Compound 1");
       }
    }
 }
