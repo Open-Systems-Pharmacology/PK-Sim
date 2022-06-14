@@ -571,11 +571,19 @@ namespace PKSim.Core
       }
 
       private IEnumerable<PopulationPKAnalysis> _pkAnalyses;
-      private Simulation _simulation = A.Fake<Simulation>();
+      private Simulation _simulation;
+      private Compound _compound;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         _compound = new TestCompund() { Name = "Compound 1" };
+      }
 
       protected override void Because()
       {
-         Compound compound = new TestCompund() { Name = "Compound 1" };
+         Compound _compound = new TestCompund() { Name = "Compound 1" };
          var pkParameters = new[] 
          { 
             new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|Compound 1", _values = new[] { 0.000f, 0.025f, 0.050f, 0.075f, 1.000f } },
@@ -583,18 +591,17 @@ namespace PKSim.Core
             new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|Compound 1", _values = new[] { 0.0f,   2.5f,   5.0f,   7.5f,   1.0f   } }
          };
          
-         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { compound }, pkParameters, _simulation);
+         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { _compound }, pkParameters, _simulation, string.Empty);
       }
 
       [Observation]
       public void should_aggregate_correctly()
       {
          _pkAnalyses.ShouldNotBeEmpty();
-         A.CallTo(() => _pkAnalysesTask.MapFrom(
-            1,
+         A.CallTo(() => _pkAnalysesTask.CreatePKAnalysisFromValues(
             A<PKValues>.That.Matches(p => p.Values.Contains(0.05f) && p.Values.Contains(0.5f) && p.Values.Contains(5f)),
-            "Compound 1",
-            _simulation
+            _simulation,
+            _compound
          )).MustHaveHappened();
          _pkAnalyses.Count().ShouldBeEqualTo(1);
          var curveData = _pkAnalyses.First().CurveData;

@@ -50,7 +50,7 @@ namespace PKSim.Core.Services
          return _analysis.AllFieldsOn(PivotArea.DataArea).Any() && statisticalAnalysis.SelectedStatistics.Any();
       }
 
-      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pkParameters, Simulation simulation)
+      public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pkParameters, Simulation simulation, string captionPrefix)
       {
          var names = pkParameters.Select(x => x.Name).Distinct();
          var matrix = new FloatMatrix();
@@ -62,18 +62,19 @@ namespace PKSim.Core.Services
             for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
             {
                var pk = pkParameters.ElementAt(aggregationIndex);
-               var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis);
+               var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis, captionPrefix);
                results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => curveData.Caption.Contains(x.Name)), aggregated[aggregationIndex], names, simulation));
             }
          });
          return results;
       }
 
-      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation)
+      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation, string captionPrefix)
       {
-         var caption = $"{pk.QuantityPath}|{_representationInfoRepository.DisplayNameFor(statisticalAggregation)}";
-         if (values.Count > 1) 
-            caption = index == 0 ? PKSimConstants.PKAnalysis.LowerSubfix(pk.QuantityPath) : PKSimConstants.PKAnalysis.UpperSubfix(pk.QuantityPath);
+         var suffix = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
+         if (values.Count > 1)
+            suffix = index == 0 ? PKSimConstants.PKAnalysis.LowerSuffix(suffix) : PKSimConstants.PKAnalysis.UpperSuffix(suffix);
+         var caption = captionFor(new[] { captionPrefix, suffix });
 
          var curveData = new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
@@ -92,7 +93,7 @@ namespace PKSim.Core.Services
          {
             pkValues.AddValue(names.ElementAt(i), values[i]);
          }
-         return new PopulationPKAnalysis(curveData, _pKAnalysesTask.MapFrom(compound.MolWeight, pkValues, compound.Name, simulation));
+         return new PopulationPKAnalysis(curveData, _pKAnalysesTask.CreatePKAnalysisFromValues(pkValues, simulation, compound));
       }
 
       protected override ChartData<TimeProfileXValue, TimeProfileYValue> BuildChartsData()

@@ -41,7 +41,7 @@ namespace PKSim.Core.Services
       IndividualPKAnalysis CalculateFor(Simulation simulation, DataColumn dataColumn);
       PKValues CalculatePK(DataColumn column, PKCalculationOptions options);
 
-      PKAnalysis MapFrom(double? molWeight, PKValues pkValues, string moleculeName, Simulation simulation);
+      PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound);
    }
 
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
@@ -147,13 +147,13 @@ namespace PKSim.Core.Services
          if (curveData.IsRange())
             return new[] 
             {
-               new DataColumn(PKSimConstants.PKAnalysis.LowerSubfix(string.Empty), curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(PKSimConstants.PKAnalysis.LowerSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
                   QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
                },
-               new DataColumn(PKSimConstants.PKAnalysis.UpperSubfix(string.Empty), curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(PKSimConstants.PKAnalysis.UpperSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
@@ -164,7 +164,7 @@ namespace PKSim.Core.Services
 
          return new[] 
          { 
-            new DataColumn(string.Empty, curveData.YAxis.Dimension, baseGrid)
+            new DataColumn(curveData.Caption, curveData.YAxis.Dimension, baseGrid)
             {
                Values = curveData.YValues.Select(y => y.Y).ToList(),
                DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
@@ -256,10 +256,10 @@ namespace PKSim.Core.Services
          bodyWeightParameter.Value = allBodyWeights.Count > individualId ? allBodyWeights[individualId] : double.NaN;
       }
 
-      public PKAnalysis MapFrom(double? molWeight, PKValues pkValues, string moleculeName, Simulation simulation)
+      public PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound)
       {
-         var options = _pkCalculationOptionsFactory.CreateFor(simulation, moleculeName);
-         return _pkMapper.MapFrom(molWeight, pkValues, options.PKParameterMode, moleculeName);
+         var options = _pkCalculationOptionsFactory.CreateFor(simulation, compound.Name);
+         return _pkMapper.MapFrom(compound.MolWeight, pkValues, options.PKParameterMode, compound.Name);
       }
    }
 }

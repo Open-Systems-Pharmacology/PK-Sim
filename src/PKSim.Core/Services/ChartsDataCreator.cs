@@ -19,7 +19,7 @@ namespace PKSim.Core.Services
       ChartData<TX, TY> CreateFor(PivotResult pivotResult);
       ChartData<TX, TY> CreateFor<TPopulationAnalysis>(PopulationAnalysisChart<TPopulationAnalysis> populationAnalysisChart, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis;
       ChartData<TX, TY> CreateFor<TPopulationAnalysis>(TPopulationAnalysis populationAnalysis, IPopulationDataCollector populationDataCollector, ObservedDataCollection observedDataCollection, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis;
-      IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks, Simulation simulation);
+      IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks, Simulation simulation, string captionPrefix);
    }
 
    public abstract class ChartDataCreator<TX, TY> : IChartDataCreator<TX, TY> where TX : IXValue where TY : IYValue
@@ -241,7 +241,7 @@ namespace PKSim.Core.Services
          return _dimensionRepository.MergedDimensionFor(new NumericFieldContext(numericValueField, _populationDataCollector));
       }
 
-      private static string captionFor(IEnumerable<string> fieldValues)
+      protected static string captionFor(IEnumerable<string> fieldValues)
       {
          return fieldValues.DefaultIfEmpty(string.Empty).ToString(Constants.DISPLAY_PATH_SEPARATOR);
       }
@@ -256,7 +256,7 @@ namespace PKSim.Core.Services
          return _analysis.AllFieldsOn(area);
       }
 
-      public virtual IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks, Simulation simulation)
+      public virtual IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pks, Simulation simulation, string captionPrefix)
       {
          return null;
       }

@@ -80,9 +80,9 @@ namespace PKSim.Presentation.Presenters.Charts
          return _chartDataCreator.CreateFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
       }
       
-      private IEnumerable<PopulationPKAnalysis> aggregatePKAnalysis(IPopulationDataCollector populationDataCollector, IEnumerable<QuantityPKParameter> pks)
+      private IEnumerable<PopulationPKAnalysis> aggregatePKAnalysis(IPopulationDataCollector populationDataCollector, IEnumerable<QuantityPKParameter> pks, string captionPrefix)
       {
-         return _chartDataCreator.Aggregate(PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, populationDataCollector.Compounds, pks, populationDataCollector as Simulation);
+         return _chartDataCreator.Aggregate(PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, populationDataCollector.Compounds, pks, populationDataCollector as Simulation, captionPrefix);
       }
 
       public virtual void OnDragOver(object sender, IDragEvent e)
@@ -192,8 +192,9 @@ namespace PKSim.Presentation.Presenters.Charts
 
          var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
          var pks = fields.SelectMany(x => ((PopulationSimulation)PopulationDataCollector).PKAnalyses.AllPKParametersFor(x));
-         
-         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pks));
+         var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
+
+         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pks, captionPrefix[0]));
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)
