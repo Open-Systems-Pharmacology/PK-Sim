@@ -27,6 +27,7 @@ namespace PKSim.Core.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IDataRepositoryToObservedCurveDataMapper _observedCurveDataMapper;
       private const string STATISTICAL_AGGREGATION = "STATISTICAL_AGGREGATION";
+      private const string STATISTICAL_AGGREGATION_DISPLAY_NAME = "STATISTICAL_AGGREGATION_DISPLAY_NAME";
       private const string TIME_AND_VALUES = "TIME_AND_VALUES";
       private readonly IPKAnalysesTask _pKAnalysesTask;
 
@@ -62,7 +63,7 @@ namespace PKSim.Core.Services
             {
                var pk = pkParameters.ElementAt(aggregationIndex);
                var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis);
-               results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => pk.QuantityPath.Contains(x.Name)), aggregated[aggregationIndex], names, simulation));
+               results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => curveData.Caption.Contains(x.Name)), aggregated[aggregationIndex], names, simulation));
             }
          });
          return results;
@@ -70,9 +71,9 @@ namespace PKSim.Core.Services
 
       private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation)
       {
-         var caption = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
+         var caption = $"{pk.QuantityPath}|{_representationInfoRepository.DisplayNameFor(statisticalAggregation)}";
          if (values.Count > 1) 
-            caption = index == 0 ? PKSimConstants.PKAnalysis.LowerSubfix(caption) : PKSimConstants.PKAnalysis.UpperSubfix(caption);
+            caption = index == 0 ? PKSimConstants.PKAnalysis.LowerSubfix(pk.QuantityPath) : PKSimConstants.PKAnalysis.UpperSubfix(pk.QuantityPath);
 
          var curveData = new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
