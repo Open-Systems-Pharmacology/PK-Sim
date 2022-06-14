@@ -8,6 +8,7 @@ using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Services;
+using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -70,7 +71,11 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       protected override void BindToPKAnalysis()
       {
-         _view.BindTo(_populationPKAnalysisToDTOMapper.MapFrom(_allAnalysesOnCurves), _populationPKAnalysisToDTOMapper.MapFrom(_allAnalysesOnIndividuals));
+         _view.BindTo(new IntegratedPKAnalysisDTO()
+         {
+            OnCurves = _populationPKAnalysisToDTOMapper.MapFrom(_allAnalysesOnCurves),
+            OnIndividuals = _populationPKAnalysisToDTOMapper.MapFrom(_allAnalysesOnIndividuals)
+         });
       }
 
       protected override IEnumerable<PKAnalysis> AllPKAnalyses

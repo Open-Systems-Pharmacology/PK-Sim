@@ -74,7 +74,7 @@ namespace PKSim.Presentation
 
 
          A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationDataCollector, _timeProfileChartData, true)).Returns(_allPKAnalysis);
-         A.CallTo(() => _view.BindTo(A<PKAnalysisDTO>._, A<PKAnalysisDTO>._)).Invokes(x => _dataTable = x.GetArgument<PKAnalysisDTO>(0).DataTable);
+         A.CallTo(() => _view.BindTo(A<IntegratedPKAnalysisDTO>._)).Invokes(x => _dataTable = x.GetArgument<PKAnalysisDTO>(0).DataTable);
          A.CallTo(() => _populationPKAnalysisToDataTableMapper.MapFrom(A<IReadOnlyList<PopulationPKAnalysis>>._, true)).Returns(_dataTable);
       }
    }
@@ -170,7 +170,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_view()
       {
-         A.CallTo(() => _view.BindTo(A<PKAnalysisDTO>._, A<PKAnalysisDTO>._)).MustHaveHappenedTwiceExactly();
+         A.CallTo(() => _view.BindTo(A<IntegratedPKAnalysisDTO>._)).MustHaveHappenedTwiceExactly();
       }
    }
 

@@ -37,11 +37,11 @@ namespace PKSim.UI.Views.Simulations
          populationPKAnalysisPanelOnIndividuals.FillWith(viewOnIndividuals);
       }
 
-      public void BindTo(PKAnalysisDTO pkAnalysisOnCurveDTO, PKAnalysisDTO pkAnalysisOnIndividualsDTO)
+      public void BindTo(IntegratedPKAnalysisDTO pkAnalysisDTO)
       {
-         _screenBinder.BindToSource(pkAnalysisOnCurveDTO);
-         _populationAnalysisPivotViewOnCurve.BindTo(pkAnalysisOnCurveDTO.DataTable);
-         _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisOnIndividualsDTO.DataTable);
+         _screenBinder.BindToSource(pkAnalysisDTO.OnCurves);
+         _populationAnalysisPivotViewOnCurve.BindTo(pkAnalysisDTO.OnCurves.DataTable);
+         _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisDTO.OnIndividuals.DataTable);
       }
 
       public bool IsOnCurvesSelected

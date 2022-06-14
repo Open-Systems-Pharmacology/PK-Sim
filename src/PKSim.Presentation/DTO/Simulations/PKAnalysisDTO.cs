@@ -24,4 +24,10 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public bool HasRows => DataTable.Rows.Count > 0;
    }
+
+   public class IntegratedPKAnalysisDTO
+   {
+      public PKAnalysisDTO OnIndividuals { get; set; }
+      public PKAnalysisDTO OnCurves { get; set; }
+   }
 }
