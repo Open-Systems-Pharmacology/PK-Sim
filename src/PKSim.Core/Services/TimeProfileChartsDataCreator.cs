@@ -54,7 +54,7 @@ namespace PKSim.Core.Services
       {
          var names = pkParameters.Select(x => x.Name).Distinct();
          var matrix = new FloatMatrix();
-         pkParameters.Each(pkParameter => matrix.AddSortedValues(pkParameter.ValuesAsArray));
+         pkParameters.Each(pkParameter => matrix.AddValuesAndSort(pkParameter.ValuesAsArray));
 
          var results = new List<PopulationPKAnalysis>();
          selectedStatistics.Each(statisticalAnalysis => {
