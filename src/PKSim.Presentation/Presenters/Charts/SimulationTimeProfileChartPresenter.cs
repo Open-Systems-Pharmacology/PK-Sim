@@ -40,6 +40,7 @@ namespace PKSim.Presentation.Presenters.Charts
          base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false, userSettings)
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
+         PostEditorLayout = setColumnGroupingsAndVisibility;
       }
 
       protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
@@ -111,7 +112,18 @@ namespace PKSim.Presentation.Presenters.Charts
          if (!canHandle(eventToHandle)) return;
          _chartTask.SetOriginTextFor(Simulation.Name, Chart);
       }
-
+      private void groupByCategoryColumn()
+      {
+         var categoryColumnSettings = Column(BrowserColumns.Category);
+         categoryColumnSettings.Visible = false;
+         categoryColumnSettings.GroupIndex = 1;
+         ChartEditorPresenter.ApplyColumnSettings(categoryColumnSettings);
+      }
+      private void setColumnGroupingsAndVisibility()
+      {
+         ChartEditorPresenter.SetGroupRowFormat(GridGroupRowFormats.HideColumnName);
+         groupByCategoryColumn();
+      }
       protected override void ConfigureColumns()
       {
          base.ConfigureColumns();
@@ -139,6 +151,8 @@ namespace PKSim.Presentation.Presenters.Charts
 
          Column(BrowserColumns.Used).Visible = true;
          Column(BrowserColumns.Used).VisibleIndex = 5;
+
+         setColumnGroupingsAndVisibility();
       }
 
       public void Handle(RenamedEvent eventToHandle)

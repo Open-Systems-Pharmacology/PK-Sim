@@ -8,6 +8,7 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using System;
 
@@ -302,6 +303,8 @@ namespace PKSim.Core.Model
       ///    All charts defined for the simulation
       /// </summary>
       public virtual IEnumerable<CurveChart> Charts => _allSimulationAnalyses.OfType<CurveChart>();
+
+      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
       /// <summary>
       ///    remove the chart from the simulation
