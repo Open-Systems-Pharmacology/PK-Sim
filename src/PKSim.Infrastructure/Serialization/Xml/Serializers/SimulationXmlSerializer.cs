@@ -17,6 +17,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.ReactionDiagramModel);
          Map(x => x.Reactions);
          Map(x => x.SimulationSettings);
+         Map(x => x.OutputMappings);
          MapEnumerable(x => x.UsedBuildingBlocks, x => x.AddUsedBuildingBlock);
          MapEnumerable(x => x.UsedObservedData, x => x.AddUsedObservedData);
 
