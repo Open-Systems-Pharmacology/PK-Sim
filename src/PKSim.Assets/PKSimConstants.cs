@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Utility.Extensions;
 
@@ -2632,27 +2631,6 @@ namespace PKSim.Assets
          public static readonly string Warning = "Warning";
          public static readonly string OnCurve = "On curves";
          public static readonly string OnIndividuals = "On individuals";
-         public static string LowerSuffix(string text)
-         {
-            var regex = new Regex(@"^(.*)Range (\d*)% to (\d*)%");
-            var match = regex.Match(text);
-
-            if (!match.Success)
-               return text;
-
-            return $"{match.Groups[1]}{match.Groups[2]}%";
-         }
-
-         public static string UpperSuffix(string text)
-         {
-            var regex = new Regex(@"(.*)Range (\d*)% to (\d*)%");
-            var match = regex.Match(text);
-
-            if (!match.Success)
-               return text;
-
-            return $"{match.Groups[1]}{match.Groups[3]}%";
-         }
       }
 
       public static class Comparison

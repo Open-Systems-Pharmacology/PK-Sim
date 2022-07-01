@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -42,6 +43,8 @@ namespace PKSim.Core.Services
       PKValues CalculatePK(DataColumn column, PKCalculationOptions options);
 
       PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound);
+      string LowerSuffix(string text);
+      string UpperSuffix(string text);
    }
 
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
@@ -147,13 +150,13 @@ namespace PKSim.Core.Services
          if (curveData.IsRange())
             return new[] 
             {
-               new DataColumn(PKSimConstants.PKAnalysis.LowerSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(LowerSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
                   QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
                },
-               new DataColumn(PKSimConstants.PKAnalysis.UpperSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(UpperSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
@@ -260,6 +263,40 @@ namespace PKSim.Core.Services
       {
          var options = _pkCalculationOptionsFactory.CreateFor(simulation, compound.Name);
          return _pkMapper.MapFrom(compound.MolWeight, pkValues, options.PKParameterMode, compound.Name);
+      }
+
+      private Regex _rangeRegex => new Regex(@"^(.*)Range (\d*)% to (\d*)%");
+
+      /// <summary>
+      /// Will extract the range values from texts with the following format: Range 5% to 95%
+      /// </summary>
+      /// <param name="text">Range 5% to 95%</param>
+      /// <returns>5%</returns>
+      public string LowerSuffix(string text)
+      {
+         var regex = _rangeRegex;
+         var match = regex.Match(text);
+
+         if (!match.Success)
+            return text;
+
+         return $"{match.Groups[1]}{match.Groups[2]}%";
+      }
+
+      /// <summary>
+      /// Will extract the range values from texts with the following format: Range 5% to 95%
+      /// </summary>
+      /// <param name="text">Range 5% to 95%</param>
+      /// <returns>95%</returns>
+      public string UpperSuffix(string text)
+      {
+         var regex = _rangeRegex;
+         var match = regex.Match(text);
+
+         if (!match.Success)
+            return text;
+
+         return $"{match.Groups[1]}{match.Groups[3]}%";
       }
    }
 }

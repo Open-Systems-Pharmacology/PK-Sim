@@ -73,7 +73,7 @@ namespace PKSim.Core.Services
       {
          var suffix = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
          if (values.Count > 1)
-            suffix = index == 0 ? PKSimConstants.PKAnalysis.LowerSuffix(suffix) : PKSimConstants.PKAnalysis.UpperSuffix(suffix);
+            suffix = index == 0 ? _pKAnalysesTask.LowerSuffix(suffix) : _pKAnalysesTask.UpperSuffix(suffix);
          var caption = captionFor(new[] { captionPrefix, suffix });
 
          var curveData = new CurveData<TimeProfileXValue, TimeProfileYValue>()
