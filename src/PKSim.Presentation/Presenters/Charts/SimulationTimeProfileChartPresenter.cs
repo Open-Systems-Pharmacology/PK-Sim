@@ -40,7 +40,7 @@ namespace PKSim.Presentation.Presenters.Charts
          base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false, userSettings)
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
-         PostEditorLayout = setColumnGroupingsAndVisibility;
+         PostEditorLayout = configureEditor;
       }
 
       protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
@@ -66,6 +66,7 @@ namespace PKSim.Presentation.Presenters.Charts
       public void UpdateAnalysisBasedOn(IndividualSimulation individualSimulation)
       {
          base.UpdateAnalysisBasedOn(individualSimulation, individualSimulation.DataRepository);
+         ChartEditorPresenter.SetOutputMappings(individualSimulation.OutputMappings);
       }
 
       public void InitializeAnalysis(ISimulationAnalysis simulationAnalysis, IAnalysable analysable)
@@ -119,21 +120,20 @@ namespace PKSim.Presentation.Presenters.Charts
          categoryColumnSettings.GroupIndex = 1;
          ChartEditorPresenter.ApplyColumnSettings(categoryColumnSettings);
       }
-      private void setColumnGroupingsAndVisibility()
+      private void configureEditor()
       {
+         ChartEditorPresenter.AddLinkSimDataMenuItem();
          ChartEditorPresenter.SetGroupRowFormat(GridGroupRowFormats.HideColumnName);
          groupByCategoryColumn();
       }
       protected override void ConfigureColumns()
       {
          base.ConfigureColumns();
-         Column(BrowserColumns.RepositoryName).GroupIndex = 0;
          Column(BrowserColumns.RepositoryName).Visible = true;
          Column(BrowserColumns.RepositoryName).VisibleIndex = 0;
 
          Column(BrowserColumns.Container).Visible = true;
          Column(BrowserColumns.Container).Caption = PKSimConstants.UI.Organ;
-         Column(BrowserColumns.Container).GroupIndex = 1;
          Column(BrowserColumns.Container).VisibleIndex = 1;
 
          Column(BrowserColumns.Molecule).Visible = true;
@@ -152,7 +152,7 @@ namespace PKSim.Presentation.Presenters.Charts
          Column(BrowserColumns.Used).Visible = true;
          Column(BrowserColumns.Used).VisibleIndex = 5;
 
-         setColumnGroupingsAndVisibility();
+         configureEditor();
       }
 
       public void Handle(RenamedEvent eventToHandle)
