@@ -286,6 +286,12 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<ShowSimulationResultsCommand>()
             .WithIcon(ApplicationIcons.TimeProfileAnalysis);
 
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.PredictedVsObservedSimulation)
+            .WithId(MenuBarItemIds.PredictedVsObservedSimulation);
+            //.WithDescription(PKSimConstants.UI.ShowIndividualResultsDescription)
+            //.WithCommand<ShowSimulationResultsCommand>()
+            //.WithIcon(ApplicationIcons.TimeProfileAnalysis);
+
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.BoxWhiskerAnalysis)
             .WithId(MenuBarItemIds.BoxWhiskerAnalysis)
             .WithDescription(PKSimConstants.UI.BoxWhiskerAnalysisDescription)

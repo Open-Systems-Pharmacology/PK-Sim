@@ -196,6 +196,7 @@ namespace PKSim.Presentation.Repositories
          .WithId(ButtonGroupIds.RunSimulation);
 
       private IButtonGroup individualSimulationAnalysesButtonGroup => CreateButtonGroup.WithCaption(PKSimConstants.Ribbons.Analyses)
+         //.WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ShowIndividualResults)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ShowIndividualResults)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.IndividualSimulationComparisonInAnalyze)))
          .WithId(ButtonGroupIds.IndividualSimulationAnalyses);

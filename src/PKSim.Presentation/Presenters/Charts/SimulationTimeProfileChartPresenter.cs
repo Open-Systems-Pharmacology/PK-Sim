@@ -47,6 +47,7 @@ namespace PKSim.Presentation.Presenters.Charts
          base.AddObservedData(observedData, asResultOfDragAndDrop);
          if (asResultOfDragAndDrop)
             _observedDataTask.AddObservedDataToAnalysable(observedData, Simulation);
+         ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
 
       protected override void AddColorGroupedObservedData(IReadOnlyList<IReadOnlyList<DataRepository>> observedDataListGroupedByFolder)
