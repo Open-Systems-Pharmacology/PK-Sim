@@ -52,7 +52,7 @@ namespace PKSim.Core.Services
 
       public override IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pkParameters, Simulation simulation, string captionPrefix)
       {
-         var names = pkParameters.Select(x => x.Name).Distinct();
+         var names = pkParameters.Select(x => x.Name).Distinct().ToList();
          var matrix = new FloatMatrix();
          pkParameters.Each(pkParameter => matrix.AddValuesAndSort(pkParameter.ValuesAsArray));
 
@@ -72,26 +72,27 @@ namespace PKSim.Core.Services
       private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation, string captionPrefix)
       {
          var suffix = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
+         //For those metrics returning two values, the first is the lower value and the second
+         //is the upper value so depending on the index we use lower or upper suffix.
          if (values.Count > 1)
             suffix = index == 0 ? _pKAnalysesTask.LowerSuffix(suffix) : _pKAnalysesTask.UpperSuffix(suffix);
          var caption = captionFor(new[] { captionPrefix, suffix });
 
-         var curveData = new CurveData<TimeProfileXValue, TimeProfileYValue>()
+         return new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
             Id = pk.Id,
             Caption = caption,
             YDimension = pk.Dimension,
             QuantityPath = pk.QuantityPath,
          };
-         return curveData;
       }
 
-      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IEnumerable<string> names, Simulation simulation)
+      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IReadOnlyList<string> names, Simulation simulation)
       {
          var pkValues = new PKValues();
-         for (var i = 0; i < names.Count(); i++)
+         for (var i = 0; i < names.Count; i++)
          {
-            pkValues.AddValue(names.ElementAt(i), values[i]);
+            pkValues.AddValue(names[i], values[i]);
          }
          return new PopulationPKAnalysis(curveData, _pKAnalysesTask.CreatePKAnalysisFromValues(pkValues, simulation, compound));
       }

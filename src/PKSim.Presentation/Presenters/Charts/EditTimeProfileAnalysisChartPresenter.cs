@@ -191,8 +191,10 @@ namespace PKSim.Presentation.Presenters.Charts
          _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(PopulationDataCollector, chartData);
 
          var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
-         var pks = fields.SelectMany(x => ((PopulationSimulation)PopulationDataCollector).PKAnalyses.AllPKParametersFor(x));
+         var pks = fields.SelectMany(x => (PopulationDataCollector as PopulationSimulation)?.PKAnalyses?.AllPKParametersFor(x)).Where(x => x != null);
          var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
+         if (!pks.Any())
+            return;
 
          _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pks, captionPrefix[0]));
       }
