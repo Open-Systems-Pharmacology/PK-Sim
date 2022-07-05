@@ -2280,7 +2280,7 @@ namespace PKSim.Assets
          public static string NamingPatternDescription(string iterationPattern, string startPattern, string endPattern)
          {
             var sb = new StringBuilder();
-            sb.AppendLine("Automatically generates labels replacing the occurence in the naming pattern of:");
+            sb.AppendLine("Automatically generates labels replacing the occurrence in the naming pattern of:");
             sb.AppendFormat(" -   <b>{0}</b> with an identifier generated using the selected template\n", iterationPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the start of the interval and n the number of digits\n", startPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the end of the interval and n the number of digits\n", endPattern);
@@ -2294,7 +2294,7 @@ namespace PKSim.Assets
             sb.AppendFormat(" -   Use <b>{0}</b> for a unique identifier using the selected template.\n", iterationPattern);
             sb.AppendFormat(" -   Use <b>{0}</b> for the start of the interval.\n", startPattern);
             sb.AppendFormat(" -   Use <b>{0}</b> for the end of the interval.\n", endPattern);
-            sb.AppendFormat(" -   Change <b>n</b> to specificy the number of digits to use, (i.e. n= 1, 2, 3 etc... ");
+            sb.AppendFormat(" -   Change <b>n</b> to specify the number of digits to use, (i.e. n= 1, 2, 3 etc... ");
             sb.AppendLine("if n is not specified, the value defined in the user settings will be used.");
             sb.AppendLine();
             sb.AppendLine("<i>Examples:</i>");
