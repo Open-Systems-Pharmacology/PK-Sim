@@ -49,6 +49,11 @@ namespace PKSim.UI.Views.Simulations
          get => populationPKAnalysisXtraTabControl.SelectedTabPageIndex == 0;
       }
 
+      public void EnablePKAnalysisOnIndividualsTab(bool enabled)
+      {
+         this.xtraTabPage4.PageEnabled = enabled;
+      }
+
       public DataTable GetSummaryData()
       {
          return IsOnCurvesSelected

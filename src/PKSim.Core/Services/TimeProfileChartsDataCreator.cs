@@ -63,7 +63,7 @@ namespace PKSim.Core.Services
             {
                var pk = pkParameters.ElementAt(aggregationIndex);
                var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis, captionPrefix);
-               results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => curveData.Caption.Contains(x.Name)), aggregated[aggregationIndex], names, simulation));
+               results.Add(buildPopulationPKAnalysis(curveData, compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name), aggregated[aggregationIndex], names, simulation));
             }
          });
          return results;

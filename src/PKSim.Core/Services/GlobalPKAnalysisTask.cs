@@ -63,6 +63,9 @@ namespace PKSim.Core.Services
       {
          var globalPKAnalysis = new GlobalPKAnalysis();
 
+         if (simulation == null)
+            return globalPKAnalysis;
+
          //one container per compound
          foreach (var compound in simulation.Compounds)
          {

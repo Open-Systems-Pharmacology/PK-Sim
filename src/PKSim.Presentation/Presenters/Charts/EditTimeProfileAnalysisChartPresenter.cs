@@ -185,17 +185,35 @@ namespace PKSim.Presentation.Presenters.Charts
          _timeProfileAnalysisChartView.ShowPKAnalysisView();
       }
 
+      private bool populationDataCollectorSupportsDifferentAggregations(IPopulationDataCollector populationDataCollector)
+      {
+         return populationDataCollector is PopulationSimulation;
+      }
+
+      private IEnumerable<QuantityPKParameter> extractPKParameters(PopulationSimulation populationSimulation)
+      {
+         if (populationSimulation == null)
+            return Enumerable.Empty<QuantityPKParameter>();
+         var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
+         return fields.SelectMany(x => populationSimulation.PKAnalyses.AllPKParametersFor(x));
+      }
+
       private void calculatePKAnalysis()
       {
          var chartData = CreateChartData();
          _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(PopulationDataCollector, chartData);
+         _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = false;
+         if (!populationDataCollectorSupportsDifferentAggregations(PopulationDataCollector))
+            return;
+         _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = true;
 
-         var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
-         var pks = fields.SelectMany(x => (PopulationDataCollector as PopulationSimulation)?.PKAnalyses?.AllPKParametersFor(x)).Where(x => x != null);
+         var pks = extractPKParameters(PopulationDataCollector.DowncastTo<PopulationSimulation>());
          var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
          if (!pks.Any())
             return;
 
+         //ToDo:
+         //refactor from chartdatacreator
          _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pks, captionPrefix[0]));
       }
 

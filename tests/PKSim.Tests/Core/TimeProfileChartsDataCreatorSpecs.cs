@@ -577,21 +577,28 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
+         var model = A.Fake<IModel>();
+         A.CallTo(() => model.MoleculeNameFor("Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)")).Returns("Esomeprazole");
+         A.CallTo(() => model.MoleculeNameFor("Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)")).Returns("Esomeprazole-2");
          _simulation = A.Fake<Simulation>();
-         _compound = new TestCompund() { Name = "Compound 1" };
+         A.CallTo(() => _simulation.Model).Returns(model);
+         _compound = new TestCompund() { Name = "Esomeprazole" };
       }
 
       protected override void Because()
       {
-         Compound _compound = new TestCompund() { Name = "Compound 1" };
+         Compound _compound = new TestCompund() { Name = "Esomeprazole" };
          var pkParameters = new[] 
          { 
-            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|Compound 1", _values = new[] { 0.000f, 0.050f, 0.025f, 0.075f, 1.000f } },
-            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|Compound 1", _values = new[] { 0.00f,  0.25f,  0.75f,  0.50f,  1.00f  } },
-            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|Compound 1", _values = new[] { 0.0f,   2.5f,   5.0f,   7.5f,   10.0f  } }
+            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] {  0.000f, 0.050f, 0.025f, 0.075f, 1.000f } },
+            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] {  0.00f,  0.25f,  0.75f,  0.50f,  1.00f  } },
+            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] {  0.0f,   2.5f,   5.0f,   7.5f,   10.0f  } },
+            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
+            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
+            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } }
          };
          
-         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { _compound }, pkParameters, _simulation, "Compound 1");
+         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { _compound }, pkParameters, _simulation, "Esomeprazole");
       }
 
       [Observation]
@@ -605,8 +612,8 @@ namespace PKSim.Core
          )).MustHaveHappened();
          _pkAnalyses.Count().ShouldBeEqualTo(1);
          var curveData = _pkAnalyses.First().CurveData;
-         curveData.Caption.ShouldBeEqualTo("Compound 1-Percentile");
-         curveData.QuantityPath.ShouldBeEqualTo("Organism|Compound 1");
+         curveData.Caption.ShouldBeEqualTo("Esomeprazole-Percentile");
+         curveData.QuantityPath.ShouldBeEqualTo("Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)");
       }
    }
 }

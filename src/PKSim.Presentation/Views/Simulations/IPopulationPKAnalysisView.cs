@@ -11,5 +11,6 @@ namespace PKSim.Presentation.Views.Simulations
       DataTable GetSummaryData();
       void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view);
       bool IsOnCurvesSelected { get; }
+      void EnablePKAnalysisOnIndividualsTab(bool enabled);
    }
 }
