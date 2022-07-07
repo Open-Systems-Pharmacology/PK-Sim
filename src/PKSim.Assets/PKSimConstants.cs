@@ -2630,7 +2630,9 @@ namespace PKSim.Assets
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
          public static readonly string OnCurve = "On curves";
+         public static readonly string OnCurveTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
          public static readonly string OnIndividuals = "On individuals";
+         public static readonly string OnIndividualsTooltip = "PK parameter values are aggregated from individual values";
       }
 
       public static class Comparison

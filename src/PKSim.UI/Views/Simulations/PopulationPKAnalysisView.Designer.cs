@@ -125,6 +125,7 @@ namespace PKSim.UI.Views.Simulations
          this.xtraTabPage3.Name = "xtraTabPage3";
          this.xtraTabPage3.Size = new System.Drawing.Size(641, 336);
          this.xtraTabPage3.Text = PKSimConstants.PKAnalysis.OnCurve;
+         this.xtraTabPage3.Tooltip = PKSimConstants.PKAnalysis.OnCurveTooltip;
          // 
          // xtraTabPage4
          // 
@@ -132,6 +133,7 @@ namespace PKSim.UI.Views.Simulations
          this.xtraTabPage4.Name = "xtraTabPage4";
          this.xtraTabPage4.Size = new System.Drawing.Size(641, 336);
          this.xtraTabPage4.Text = PKSimConstants.PKAnalysis.OnIndividuals;
+         this.xtraTabPage4.Tooltip = PKSimConstants.PKAnalysis.OnIndividualsTooltip;
          // 
          // layoutControl1
          // 
