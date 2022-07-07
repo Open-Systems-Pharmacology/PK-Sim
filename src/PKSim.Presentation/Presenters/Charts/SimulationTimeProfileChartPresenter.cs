@@ -41,6 +41,7 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
          PostEditorLayout = configureEditor;
+         ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
 
       protected override void AddObservedData(IReadOnlyList<DataRepository> observedData, bool asResultOfDragAndDrop)
@@ -122,7 +123,6 @@ namespace PKSim.Presentation.Presenters.Charts
       }
       private void configureEditor()
       {
-         ChartEditorPresenter.AddLinkSimDataMenuItem();
          ChartEditorPresenter.SetGroupRowFormat(GridGroupRowFormats.HideColumnName);
          groupByCategoryColumn();
       }
