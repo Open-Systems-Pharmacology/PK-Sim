@@ -78,6 +78,12 @@ namespace PKSim.CLI.Core.MinimalImplementations
          throw new NotSupportedException();
       }
 
+      public string AskForInput(string caption, string text, string defaultValue = null, IEnumerable<string> forbiddenValues = null, IEnumerable<string> predefinedValues = null,
+         string iconName = null)
+      {
+         throw new NotImplementedException();
+      }
+
       public string AskForInput(string caption, string text, string defaultValue = null, IEnumerable<string> forbiddenValues = null, IEnumerable<string> predefinedValues = null)
       {
          throw new NotSupportedException();
