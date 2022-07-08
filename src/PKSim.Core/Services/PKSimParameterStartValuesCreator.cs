@@ -104,6 +104,8 @@ namespace PKSim.Core.Services
          if (parameter.IsConstantParameter())
          {
             parameterStartValue.StartValue = parameter.Value;
+            //we reset the formula to null to ensure that the start value will be used when constructing the simulation
+            parameterStartValue.Formula = null;
          }
       }
 
