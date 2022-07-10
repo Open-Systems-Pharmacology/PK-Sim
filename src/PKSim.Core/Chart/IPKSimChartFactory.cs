@@ -8,6 +8,7 @@ namespace PKSim.Core.Chart
    {
       ChartWithObservedData Create(Type chartType);
       SimulationTimeProfileChart CreateChartFor(IndividualSimulation individualSimulation);
+      SimulationPredictedVsObservedChart CreatePredictedVsObservedChartFor(IndividualSimulation individualSimulation);
       ISimulationComparison CreateSummaryChart();
    }
 }

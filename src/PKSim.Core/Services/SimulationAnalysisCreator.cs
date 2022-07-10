@@ -10,7 +10,8 @@ namespace PKSim.Core.Services
 {
    public interface ISimulationAnalysisCreator : OSPSuite.Core.Domain.Services.ISimulationAnalysisCreator
    {
-      ISimulationAnalysis CreateAnalysisFor(Simulation simulation);
+      ISimulationAnalysis CreateAnalysisFor(Simulation simulation); //probably here we should add the simulationType, when we figure out what to do with the visitor
+      ISimulationAnalysis CreatePredictedVsObservedAnalysisFor(IndividualSimulation simulation);
       ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector);
       ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector, PopulationAnalysisType populationAnalysisType);
    }
@@ -52,6 +53,24 @@ namespace PKSim.Core.Services
          }
       }
 
+      public ISimulationAnalysis CreatePredictedVsObservedAnalysisFor(IndividualSimulation simulation)
+      {
+         try
+         {
+            if (simulation != null)
+            {
+               _simulationAnalysis = _chartFactory.CreatePredictedVsObservedChartFor(simulation);
+               AddSimulationAnalysisTo(simulation, _simulationAnalysis);
+            }
+
+            return _simulationAnalysis;
+         }
+         finally
+         {
+            _simulationAnalysis = null;
+         }
+      }
+
       public ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector)
       {
          return CreatePopulationAnalysisFor(populationDataCollector, _userSettings.DefaultPopulationAnalysis);
@@ -64,7 +83,7 @@ namespace PKSim.Core.Services
          return populationSimulationAnalysis;
       }
 
-      public void Visit(IndividualSimulation simulation)
+      public void Visit(IndividualSimulation simulation)//OK, so now I am afraid we are going to break the visitor when adding the new analysis
       {
          _simulationAnalysis = _chartFactory.CreateChartFor(simulation);
          AddSimulationAnalysisTo(simulation, _simulationAnalysis);

@@ -255,6 +255,7 @@ namespace PKSim.Presentation.Presenters.Main
       private void updateResultsVisibility(bool shouldShowIndividualResults)
       {
          _menuBarItemRepository[MenuBarItemIds.ShowIndividualResults].Visible = shouldShowIndividualResults;
+         _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedSimulationAnalysis].Visible = true; //not sure we need this here
       }
 
       private void disableSimulationItems()
@@ -293,6 +294,7 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.LoadPopulationSimulationWorkflow].Enabled = enablePopSimulationItems;
 
          _menuBarItemRepository[MenuBarItemIds.ShowIndividualResults].Enabled = resultsEnabled;
+         _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedSimulationAnalysis].Enabled = resultsEnabled;
          enablePopulationAnalysesItems = resultsEnabled;
       }
 

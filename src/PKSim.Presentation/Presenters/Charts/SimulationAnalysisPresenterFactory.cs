@@ -18,6 +18,9 @@ namespace PKSim.Presentation.Presenters.Charts
          if (simulationAnalysis.IsAnImplementationOf<SimulationTimeProfileChart>())
             return container.Resolve<ISimulationTimeProfileChartPresenter>();
 
+         if (simulationAnalysis.IsAnImplementationOf<SimulationPredictedVsObservedChart>())
+            return container.Resolve<ISimulationPredictedVsObservedChartPresenter>();
+
          if (simulationAnalysis.IsAnImplementationOf<BoxWhiskerAnalysisChart>())
             return container.Resolve<IEditBoxWhiskerAnalysisChartPresenter>();
 

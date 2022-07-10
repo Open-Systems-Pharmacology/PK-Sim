@@ -32,6 +32,14 @@ namespace PKSim.Presentation.Views.Charts
          return chart;
       }
 
+      public SimulationPredictedVsObservedChart CreatePredictedVsObservedChartFor(IndividualSimulation individualSimulation)
+      {
+         var chart = Create<SimulationPredictedVsObservedChart>();
+         _chartTask.UpdateObservedDataInChartFor(individualSimulation, chart);
+         _chartTask.SetOriginTextFor(individualSimulation.Name, chart);
+         return chart;
+      }
+
       public ISimulationComparison CreateSummaryChart()
       {
          return Create<IndividualSimulationComparison>();

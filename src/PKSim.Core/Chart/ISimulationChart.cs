@@ -7,4 +7,10 @@ namespace PKSim.Core.Chart
    {
       public IAnalysable Analysable { get; set; }
    }
+
+   //create a SimulationChart interface for them just to extend
+   public class SimulationPredictedVsObservedChart : ChartWithObservedData, ISimulationAnalysis
+   {
+      public IAnalysable Analysable { get; set; }
+   }
 }

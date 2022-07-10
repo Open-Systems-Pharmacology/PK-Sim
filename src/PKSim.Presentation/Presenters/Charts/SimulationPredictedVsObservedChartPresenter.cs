@@ -20,7 +20,7 @@ using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
 
 namespace PKSim.Presentation.Presenters.Charts
 {
-   public interface ISimulationTimeProfileChartPresenter : IChartPresenter<SimulationTimeProfileChart>,
+   public interface ISimulationPredictedVsObservedChartPresenter : IChartPresenter<SimulationPredictedVsObservedChart>,
       ISimulationAnalysisPresenter,
       IPKAnalysisWithChartPresenter,
       IListener<RenamedEvent>,
@@ -30,14 +30,14 @@ namespace PKSim.Presentation.Presenters.Charts
    {
    }
 
-   public class SimulationTimeProfileChartPresenter : ChartPresenter<SimulationTimeProfileChart, ISimulationTimeProfileChartView, ISimulationTimeProfileChartPresenter>,
-      ISimulationTimeProfileChartPresenter,
+   public class SimulationPredictedVsObservedChartPresenter : ChartPresenter<SimulationPredictedVsObservedChart, ISimulationPredictedVsObservedChartView, ISimulationPredictedVsObservedChartPresenter>,
+      ISimulationPredictedVsObservedChartPresenter,
       ISimulationAnalysisPresenter<IndividualSimulation>
 
    {
-      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask,
-         IChartUpdater chartUpdateTask, IUserSettings userSettings) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false, userSettings)
+      public SimulationPredictedVsObservedChartPresenter(ISimulationPredictedVsObservedChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask,
+         IChartUpdater chartUpdateTask, IUserSettings userSettings) 
+         : base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false, userSettings)
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
          PostEditorLayout = configureEditor;
@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
       public void InitializeAnalysis(ISimulationAnalysis simulationAnalysis, IAnalysable analysable)
       {
-         base.InitializeAnalysis(simulationAnalysis.DowncastTo<SimulationTimeProfileChart>());
+         base.InitializeAnalysis(simulationAnalysis.DowncastTo<SimulationPredictedVsObservedChart>());
          UpdateAnalysisBasedOn(analysable);
       }
 
