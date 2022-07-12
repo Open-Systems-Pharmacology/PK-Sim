@@ -113,6 +113,7 @@ namespace PKSim.UI.Views.Simulations
       public void BindTo(GlobalPKAnalysisDTO globalPKAnalysisDTO)
       {
          pivotGrid.DataSource = globalPKAnalysisDTO.DataTable;
+         pivotGrid.Enabled = globalPKAnalysisDTO.HasRows;
          pivotGrid.BestFitRowArea();
       }
 

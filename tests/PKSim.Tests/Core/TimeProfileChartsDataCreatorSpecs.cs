@@ -590,9 +590,9 @@ namespace PKSim.Core
          Compound _compound = new TestCompund() { Name = "Esomeprazole" };
          var pkParameters = new[] 
          { 
-            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] {  0.000f, 0.050f, 0.025f, 0.075f, 1.000f } },
-            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] {  0.00f,  0.25f,  0.75f,  0.50f,  1.00f  } },
-            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] {  0.0f,   2.5f,   5.0f,   7.5f,   10.0f  } },
+            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.000f, 0.050f, 0.025f, 0.075f, 1.000f } },
+            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.00f,  0.25f,  0.75f,  0.50f,  1.00f  } },
+            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.0f,   2.5f,   5.0f,   7.5f,   10.0f  } },
             new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
             new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
             new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } }
