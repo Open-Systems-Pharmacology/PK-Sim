@@ -114,7 +114,17 @@ namespace PKSim.UI.Views.Simulations
       {
          pivotGrid.DataSource = globalPKAnalysisDTO.DataTable;
          pivotGrid.Enabled = globalPKAnalysisDTO.HasRows;
+         labelControl.Text = "lolo";
          pivotGrid.BestFitRowArea();
+         if (!globalPKAnalysisDTO.HasRows)
+         {
+            layoutItemPivotGrid.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+            labelControl.Show();
+         } else
+         {
+            layoutItemPivotGrid.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+            labelControl.Hide();
+         }
       }
 
       public void AttachPresenter(IGlobalPKAnalysisPresenter presenter)
