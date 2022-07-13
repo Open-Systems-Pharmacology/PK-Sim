@@ -78,6 +78,9 @@ namespace PKSim.Core.Model
          }
       }
 
+      public override DataRepository ResultRepository => _dataRepository; //OK, we should probably write this a bit differently, so it does not get the 
+                                                                          // _dataRepository. then it is really the same as DataRepository DataRepository
+
       public override bool HasResults => !DataRepository.IsNull() && DataRepository.Any();
 
       public override TBuildingBlock BuildingBlock<TBuildingBlock>()

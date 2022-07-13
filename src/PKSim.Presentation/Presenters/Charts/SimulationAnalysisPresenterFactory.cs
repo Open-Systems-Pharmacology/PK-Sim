@@ -1,3 +1,4 @@
+using OSPSuite.Core.Chart;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;

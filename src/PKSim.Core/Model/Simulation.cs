@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics.Financial;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
@@ -324,6 +325,8 @@ namespace PKSim.Core.Model
             ResultsHaveChanged = true;
          }
       }
+
+      public virtual DataRepository ResultRepository { get; }
 
       /// <summary>
       ///    Returns true if the simulation originated from PK-Sim. Otherwise false

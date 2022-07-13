@@ -21,10 +21,6 @@ namespace PKSim.Presentation.Views.Charts
    {
    }
 
-   public interface ISimulationPredictedVsObservedChartView : IChartView<ISimulationPredictedVsObservedChartPresenter>
-   {
-   }
-
    public interface ISimulationAnalysisChartView : ISimulationAnalysisView, IView<IEditPopulationAnalysisChartPresenter>
    {
       void UpdateIcon(ApplicationIcon icon);

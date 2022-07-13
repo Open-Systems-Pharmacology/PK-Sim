@@ -61,8 +61,8 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.0" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.9-fkxgudkq" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.1.9-fkxgudkq" />
+    <PackageReference Include="OSPSuite.Core" Version="11.1.9-wxkmhuyw" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.1.9-wxkmhuyw" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.51" GeneratePathProperty="true" />
