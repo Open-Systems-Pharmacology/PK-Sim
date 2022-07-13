@@ -14,6 +14,7 @@ using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Presentation.Extensions;
+using DevExpress.XtraLayout.Utils;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -122,8 +123,8 @@ namespace PKSim.UI.Views.Simulations
 
       private void showRightComponent(bool dataAvailable)
       {
-         layoutItemPivotGrid.Visibility = dataAvailable ? DevExpress.XtraLayout.Utils.LayoutVisibility.Always : DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-         layoutControlItemLabel.Visibility = dataAvailable ? DevExpress.XtraLayout.Utils.LayoutVisibility.Never : DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+         layoutItemPivotGrid.Visibility = LayoutVisibilityConvertor.FromBoolean(dataAvailable);
+         layoutControlItemLabel.Visibility = LayoutVisibilityConvertor.FromBoolean(!dataAvailable);
       }
 
       public void AttachPresenter(IGlobalPKAnalysisPresenter presenter)
