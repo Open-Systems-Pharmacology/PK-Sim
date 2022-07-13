@@ -32,18 +32,18 @@ namespace PKSim.UI.Views.Simulations
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.labelControl = new DevExpress.XtraEditors.LabelControl();
          this.pivotGrid = new OSPSuite.UI.Controls.PKAnalysisPivotGridControl();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemPivotGrid = new DevExpress.XtraLayout.LayoutControlItem();
-         this.labelControl = new DevExpress.XtraEditors.LabelControl();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItemLabel = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.pivotGrid)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPivotGrid)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemLabel)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
@@ -55,21 +55,31 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.layoutControl.Name = "layoutControl";
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(3407, 27, 812, 500);
          this.layoutControl.Root = this.layoutControlGroup;
          this.layoutControl.Size = new System.Drawing.Size(778, 511);
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl1";
          // 
+         // labelControl
+         // 
+         this.labelControl.Location = new System.Drawing.Point(2, 493);
+         this.labelControl.Name = "labelControl";
+         this.labelControl.Size = new System.Drawing.Size(319, 16);
+         this.labelControl.StyleController = this.layoutControl;
+         this.labelControl.TabIndex = 5;
+         this.labelControl.Text = "Please re-run the simulation to calculate PK-parameters";
+         // 
          // pivotGrid
          // 
          this.pivotGrid.ExceptionManager = null;
-         this.pivotGrid.Location = new System.Drawing.Point(124, 0);
+         this.pivotGrid.Location = new System.Drawing.Point(122, 0);
          this.pivotGrid.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.pivotGrid.Name = "pivotGrid";
          this.pivotGrid.OptionsDataField.RowHeaderWidth = 117;
          this.pivotGrid.OptionsView.RowTreeOffset = 24;
          this.pivotGrid.OptionsView.RowTreeWidth = 117;
-         this.pivotGrid.Size = new System.Drawing.Size(654, 491);
+         this.pivotGrid.Size = new System.Drawing.Size(656, 491);
          this.pivotGrid.TabIndex = 4;
          // 
          // layoutControlGroup
@@ -79,8 +89,8 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControlGroup.GroupBordersVisible = false;
          this.layoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemPivotGrid,
-            this.layoutControlItem1});
-         this.layoutControlGroup.Name = "layoutControlGroup";
+            this.layoutControlItemLabel});
+         this.layoutControlGroup.Name = "Root";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup.Size = new System.Drawing.Size(778, 511);
          this.layoutControlGroup.TextVisible = false;
@@ -95,23 +105,14 @@ namespace PKSim.UI.Views.Simulations
          this.layoutItemPivotGrid.Size = new System.Drawing.Size(778, 491);
          this.layoutItemPivotGrid.TextSize = new System.Drawing.Size(110, 16);
          // 
-         // labelControl
-         // 
-         this.labelControl.Location = new System.Drawing.Point(2, 493);
-         this.labelControl.Name = "labelControl";
-         this.labelControl.Size = new System.Drawing.Size(75, 16);
-         this.labelControl.StyleController = this.layoutControl;
-         this.labelControl.TabIndex = 5;
-         this.labelControl.Text = PKSimConstants.UI.RerunSimulationToSeeResults;
-         // 
          // layoutControlItem1
          // 
-         this.layoutControlItem1.Control = this.labelControl;
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 491);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(778, 20);
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextVisible = false;
+         this.layoutControlItemLabel.Control = this.labelControl;
+         this.layoutControlItemLabel.Location = new System.Drawing.Point(0, 491);
+         this.layoutControlItemLabel.Name = "layoutControlItem1";
+         this.layoutControlItemLabel.Size = new System.Drawing.Size(778, 20);
+         this.layoutControlItemLabel.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItemLabel.TextVisible = false;
          // 
          // GlobalPKAnalysisView
          // 
@@ -127,7 +128,7 @@ namespace PKSim.UI.Views.Simulations
          ((System.ComponentModel.ISupportInitialize)(this.pivotGrid)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPivotGrid)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemLabel)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -139,6 +140,6 @@ namespace PKSim.UI.Views.Simulations
       private PKAnalysisPivotGridControl pivotGrid;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemPivotGrid;
       private DevExpress.XtraEditors.LabelControl labelControl;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemLabel;
    }
 }

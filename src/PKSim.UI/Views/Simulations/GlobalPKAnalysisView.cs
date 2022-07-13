@@ -13,6 +13,7 @@ using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Presentation.Extensions;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -31,6 +32,8 @@ namespace PKSim.UI.Views.Simulations
       public GlobalPKAnalysisView(IPKAnalysisToolTipManager pkAnalysisToolTipManager, IExceptionManager exceptionManager, IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
+
+         labelControl.Text = PKSimConstants.UI.RerunSimulationToSeeResults.FormatForLabel();
 
          pivotGrid.OptionsBehavior.EditorShowMode = EditorShowMode.MouseDown;
          pivotGrid.ExceptionManager = exceptionManager;
@@ -113,18 +116,14 @@ namespace PKSim.UI.Views.Simulations
       public void BindTo(GlobalPKAnalysisDTO globalPKAnalysisDTO)
       {
          pivotGrid.DataSource = globalPKAnalysisDTO.DataTable;
-         pivotGrid.Enabled = globalPKAnalysisDTO.HasRows;
-         labelControl.Text = "lolo";
          pivotGrid.BestFitRowArea();
-         if (!globalPKAnalysisDTO.HasRows)
-         {
-            layoutItemPivotGrid.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-            labelControl.Show();
-         } else
-         {
-            layoutItemPivotGrid.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
-            labelControl.Hide();
-         }
+         showRightComponent(globalPKAnalysisDTO.HasRows);
+      }
+
+      private void showRightComponent(bool dataAvailable)
+      {
+         layoutItemPivotGrid.Visibility = dataAvailable ? DevExpress.XtraLayout.Utils.LayoutVisibility.Always : DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+         layoutControlItemLabel.Visibility = dataAvailable ? DevExpress.XtraLayout.Utils.LayoutVisibility.Never : DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
       }
 
       public void AttachPresenter(IGlobalPKAnalysisPresenter presenter)
