@@ -17,6 +17,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       void CalculatePKAnalysisOnCurves(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData);
       bool PKAnalysisOnIndividualsEnabled { get; set; }
       void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pks);
+      void HandleTabChanged();
    }
 
    public class PopulationPKAnalysisPresenter : PKAnalysisPresenter<IPopulationPKAnalysisView, IPopulationPKAnalysisPresenter>, IPopulationPKAnalysisPresenter
@@ -81,6 +82,11 @@ namespace PKSim.Presentation.Presenters.Simulations
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
          _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });
+      }
+
+      public void HandleTabChanged()
+      {
+         BindToPKAnalysis();
       }
 
       protected override void BindToPKAnalysis()

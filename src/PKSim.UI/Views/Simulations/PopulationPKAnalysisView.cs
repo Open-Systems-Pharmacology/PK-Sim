@@ -81,6 +81,7 @@ namespace PKSim.UI.Views.Simulations
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize();
          layoutControlItemGlobalPKAnalysis.TextVisible = false;
+         populationPKAnalysisXtraTabControl.SelectedPageChanged += (o, e) => OnEvent(_presenter.HandleTabChanged);
       }
    }
 }
