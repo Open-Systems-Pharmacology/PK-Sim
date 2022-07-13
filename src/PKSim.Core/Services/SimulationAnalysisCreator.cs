@@ -12,6 +12,7 @@ namespace PKSim.Core.Services
    {
       ISimulationAnalysis CreateAnalysisFor(Simulation simulation); //probably here we should add the simulationType, when we figure out what to do with the visitor
       ISimulationAnalysis CreatePredictedVsObservedAnalysisFor(IndividualSimulation simulation);
+      ISimulationAnalysis CreateResidualsVsTimeAnalysisFor(IndividualSimulation simulation);
       ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector);
       ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector, PopulationAnalysisType populationAnalysisType);
    }
@@ -60,6 +61,24 @@ namespace PKSim.Core.Services
             if (simulation != null)
             {
                _simulationAnalysis = _chartFactory.CreatePredictedVsObservedChartFor(simulation);
+               AddSimulationAnalysisTo(simulation, _simulationAnalysis);
+            }
+
+            return _simulationAnalysis;
+         }
+         finally
+         {
+            _simulationAnalysis = null;
+         }
+      }
+
+      public ISimulationAnalysis CreateResidualsVsTimeAnalysisFor(IndividualSimulation simulation)
+      {
+         try
+         {
+            if (simulation != null)
+            {
+               _simulationAnalysis = _chartFactory.CreateResidualsVsTimeChartFor(simulation);
                AddSimulationAnalysisTo(simulation, _simulationAnalysis);
             }
 

@@ -39,6 +39,7 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId Stop = createMenuBarItemId("Stop");
       public static MenuBarItemId ShowIndividualResults = createMenuBarItemId("ShowIndividualResults");
       public static MenuBarItemId PredictedVsObservedSimulationAnalysis = createMenuBarItemId("PredictedVsObserved");
+      public static MenuBarItemId ResidualsVsTimeSimulationAnalysis = createMenuBarItemId("ResidualsVsTime");
       public static MenuBarItemId BoxWhiskerAnalysis = createMenuBarItemId("BoxWhiskerAnalysis");
       public static MenuBarItemId ScatterAnalysis = createMenuBarItemId("ScatterAnalysis");
       public static MenuBarItemId RangeAnalysis = createMenuBarItemId("RangeAnalysis");

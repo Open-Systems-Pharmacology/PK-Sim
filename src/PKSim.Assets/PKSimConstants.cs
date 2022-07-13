@@ -1168,6 +1168,7 @@ namespace PKSim.Assets
          public static readonly string BoxWhiskerAnalysis = UI.BoxWhisker;
          public static readonly string TimeProfileAnalysis = UI.TimeProfile;
          public static readonly string PredictedVsObservedSimulation = "Predicted vs Observed";
+         public static readonly string ResidualsVsTimeSimulation = "Residuals vs Time";
          public static readonly string ScatterAnalysis = UI.Scatter;
          public static readonly string RangeAnalysis = UI.Range;
          public static readonly string ChartSettingsView = UI.ChartSettings;
