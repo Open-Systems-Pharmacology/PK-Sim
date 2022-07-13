@@ -16,7 +16,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
-using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
@@ -38,7 +37,7 @@ namespace PKSim.Core
       protected IDimension _mergedDimensionLiverCell;
       protected const string _singleCurveId = "SingleCurve";
       protected const string _percentileId = "Percentile";
-      protected IPKAnalysesTask _pkAnalysesTask;
+      
 
       protected override void Context()
       {
@@ -71,10 +70,8 @@ namespace PKSim.Core
             .WhenArgumentsMatch((IWithDimension context) => Equals((context as NumericFieldContext)?.NumericValueField, _outputFieldLiverCell))
             .Returns(_mergedDimensionLiverCell);
 
-         _pkAnalysesTask = A.Fake<IPKAnalysesTask>();
-
          sut = new TimeProfileChartDataCreator(_dimensionRepository, _pivotResultCreator, _representationInfoRepository,
-            _statisticalDataCalculator, _lazyLoadTask, _observedCurveDataMapper, _pkAnalysesTask);
+            _statisticalDataCalculator, _lazyLoadTask, _observedCurveDataMapper);
       }
    }
 
@@ -553,67 +550,6 @@ namespace PKSim.Core
       public void should_not_crash()
       {
          _chartData.ShouldNotBeNull();
-      }
-   }
-
-   public class When_aggregating_pk_parameters_from_individuals : concern_for_TimeProfileChartsDataCreator
-   {
-      class TestQuantityPKParameter : QuantityPKParameter
-      {
-         public float[] _values { get; set; }
-
-         public override float[] ValuesAsArray { get => _values; }
-      }
-
-      class TestCompund : Compound
-      {
-         public override double MolWeight => 1;
-      }
-
-      private IEnumerable<PopulationPKAnalysis> _pkAnalyses;
-      private Simulation _simulation;
-      private Compound _compound;
-
-      protected override void Context()
-      {
-         base.Context();
-         var model = A.Fake<IModel>();
-         A.CallTo(() => model.MoleculeNameFor("Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)")).Returns("Esomeprazole");
-         A.CallTo(() => model.MoleculeNameFor("Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)")).Returns("Esomeprazole-2");
-         _simulation = A.Fake<Simulation>();
-         A.CallTo(() => _simulation.Model).Returns(model);
-         _compound = new TestCompund() { Name = "Esomeprazole" };
-      }
-
-      protected override void Because()
-      {
-         Compound _compound = new TestCompund() { Name = "Esomeprazole" };
-         var pkParameters = new[] 
-         { 
-            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.000f, 0.050f, 0.025f, 0.075f, 1.000f } },
-            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.00f,  0.25f,  0.75f,  0.50f,  1.00f  } },
-            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.0f,   2.5f,   5.0f,   7.5f,   10.0f  } },
-            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
-            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
-            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } }
-         };
-         
-         _pkAnalyses = sut.Aggregate(new[] { _percentileStatisticalAggregation }, new[] { _compound }, pkParameters, _simulation, "Esomeprazole");
-      }
-
-      [Observation]
-      public void should_aggregate_correctly()
-      {
-         _pkAnalyses.ShouldNotBeEmpty();
-         A.CallTo(() => _pkAnalysesTask.CreatePKAnalysisFromValues(
-            A<PKValues>.That.Matches(p => p.Values.Contains(0.05f) && p.Values.Contains(0.5f) && p.Values.Contains(5f)),
-            A<Simulation>.Ignored,
-            A<Compound>.Ignored
-         )).MustHaveHappened();
-         _pkAnalyses.Count().ShouldBeEqualTo(1);
-         var curveData = _pkAnalyses.First().CurveData;
-         curveData.Caption.ShouldBeEqualTo("Esomeprazole-Percentile");
-         curveData.QuantityPath.ShouldBeEqualTo("Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)");
       }
    }
 }

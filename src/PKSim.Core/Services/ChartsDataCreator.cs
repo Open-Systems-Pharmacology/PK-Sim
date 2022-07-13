@@ -19,7 +19,6 @@ namespace PKSim.Core.Services
       ChartData<TX, TY> CreateFor(PivotResult pivotResult);
       ChartData<TX, TY> CreateFor<TPopulationAnalysis>(PopulationAnalysisChart<TPopulationAnalysis> populationAnalysisChart, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis;
       ChartData<TX, TY> CreateFor<TPopulationAnalysis>(TPopulationAnalysis populationAnalysis, IPopulationDataCollector populationDataCollector, ObservedDataCollection observedDataCollection, Aggregate aggregate) where TPopulationAnalysis : PopulationPivotAnalysis;
-      IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pkParameters, Simulation simulation, string captionPrefix);
    }
 
    public abstract class ChartDataCreator<TX, TY> : IChartDataCreator<TX, TY> where TX : IXValue where TY : IYValue
@@ -254,11 +253,6 @@ namespace PKSim.Core.Services
       protected IReadOnlyList<IComparer<object>> GetFieldComparers(PivotArea area)
       {
          return _analysis.AllFieldsOn(area);
-      }
-
-      public virtual IEnumerable<PopulationPKAnalysis> Aggregate(IEnumerable<StatisticalAggregation> selectedStatistics, IReadOnlyList<Compound> compounds, IEnumerable<QuantityPKParameter> pkParameters, Simulation simulation, string captionPrefix)
-      {
-         return null;
       }
    }
 }
