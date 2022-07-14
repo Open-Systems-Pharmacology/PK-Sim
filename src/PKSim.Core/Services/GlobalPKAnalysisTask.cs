@@ -256,9 +256,6 @@ namespace PKSim.Core.Services
 
       public void CalculateBioavailabilityFor(Simulation simulation, string compoundName)
       {
-         var individualSimulation = simulation as IndividualSimulation;
-         if (individualSimulation == null) return;
-
          var compound = simulation.Compounds.FindByName(compoundName);
 
          //BA calculated with a Simple IV with 15 min infusion
@@ -272,10 +269,10 @@ namespace PKSim.Core.Services
          simpleIvProtocol.Dose.Value = simulationSingleDosingItem.Dose.Value;
          simpleIvProtocol.StartTime.Value = simulationSingleDosingItem.StartTime.Value;
 
-         var ivSimulation = _globalPKAnalysisRunner.RunForBioavailability(simpleIvProtocol, individualSimulation, compound);
+         var ivSimulation = _globalPKAnalysisRunner.RunForBioavailability(simpleIvProtocol, simulation, compound);
          var venousBloodCurve = ivSimulation.VenousBloodColumn(compoundName);
          var pkVenousBlood = _pkAnalysisTask.CalculateFor(ivSimulation, venousBloodCurve).PKAnalysis;
-         individualSimulation.CompoundPKFor(compoundName).AucIV = pkParameterValue(pkVenousBlood, Constants.PKParameters.AUC_inf);
+         simulation.CompoundPKFor(compoundName).AucIV = pkParameterValue(pkVenousBlood, Constants.PKParameters.AUC_inf);
       }
 
       public void CalculateDDIRatioFor(Simulation simulation, string compoundName)
