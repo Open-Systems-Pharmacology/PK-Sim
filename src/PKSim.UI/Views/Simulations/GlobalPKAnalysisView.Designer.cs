@@ -68,7 +68,7 @@ namespace PKSim.UI.Views.Simulations
          this.labelControl.Size = new System.Drawing.Size(319, 16);
          this.labelControl.StyleController = this.layoutControl;
          this.labelControl.TabIndex = 5;
-         this.labelControl.Text = "Please re-run the simulation to calculate PK-parameters";
+         this.labelControl.Text = "labelControl";
          // 
          // pivotGrid
          // 

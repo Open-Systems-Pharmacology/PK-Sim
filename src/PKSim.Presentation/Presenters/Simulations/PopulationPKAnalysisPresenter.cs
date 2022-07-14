@@ -31,6 +31,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       private IPopulationDataCollector _populationDataCollector;
       private readonly IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
       private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
+      private bool _pkAnalysisOnIndividualsEnabled = true;
 
       public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysesTask pkAnalysesTask, 
          IPKAnalysisExportTask exportTask, IPopulationPKAnalysisToPKAnalysisDTOMapper populationPKAnalysisToDTOMapper, 
@@ -53,12 +54,10 @@ namespace PKSim.Presentation.Presenters.Simulations
          CalculatePKAnalysis(populationDataCollector, _allAnalysesOnCurves, _pkAnalysesTask.CalculateFor(populationDataCollector, timeProfileChartData), _allPKAnalysesOnCurves);
       }
 
-      public void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pks)
+      public void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pkAnalyses)
       {
-         CalculatePKAnalysis(populationDataCollector, _allAnalysesOnIndividuals, pks, _allPKAnalysesOnIndividuals);
+         CalculatePKAnalysis(populationDataCollector, _allAnalysesOnIndividuals, pkAnalyses, _allPKAnalysesOnIndividuals);
       }
-
-      private bool _pkAnalysisOnIndividualsEnabled = true;
 
       public bool PKAnalysisOnIndividualsEnabled { 
          get
@@ -72,13 +71,13 @@ namespace PKSim.Presentation.Presenters.Simulations
          }
       }
 
-      private void CalculatePKAnalysis(IPopulationDataCollector populationDataCollector, List<PopulationPKAnalysis> allAnalysis, IEnumerable<PopulationPKAnalysis> sourcePKs, List<PopulationPKAnalysis> targetPKs)
+      private void CalculatePKAnalysis(IPopulationDataCollector populationDataCollector, List<PopulationPKAnalysis> allAnalysis, IEnumerable<PopulationPKAnalysis> sourcePKAnalyses, List<PopulationPKAnalysis> targetPKAnalyses)
       {
          allAnalysis.Clear();
          _populationDataCollector = populationDataCollector;
-         targetPKs.Clear();
-         targetPKs.AddRange(sourcePKs);
-         allAnalysis.AddRange(targetPKs);
+         targetPKAnalyses.Clear();
+         targetPKAnalyses.AddRange(sourcePKAnalyses);
+         allAnalysis.AddRange(targetPKAnalyses);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
          _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });

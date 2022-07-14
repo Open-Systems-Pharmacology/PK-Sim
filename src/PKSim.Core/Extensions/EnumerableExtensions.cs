@@ -47,7 +47,7 @@ namespace PKSim.Core.Extensions
       /// </summary>
       /// <param name="fieldValues"></param>
       /// <returns></returns>
-      public static string CaptionFrom(this IEnumerable<string> fieldValues)
+      public static string ToCaption(this IEnumerable<string> fieldValues)
       {
          return fieldValues.DefaultIfEmpty(string.Empty).ToString(Constants.DISPLAY_PATH_SEPARATOR);
       }

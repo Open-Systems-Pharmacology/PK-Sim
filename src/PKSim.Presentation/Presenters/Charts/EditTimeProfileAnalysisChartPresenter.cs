@@ -118,7 +118,7 @@ namespace PKSim.Presentation.Presenters.Charts
          //is the upper value so depending on the index we use lower or upper suffix.
          if (values.Count > 1)
             suffix = index == 0 ? _pKAnalysesTask.LowerSuffix(suffix) : _pKAnalysesTask.UpperSuffix(suffix);
-         var caption = (new[] { captionPrefix, suffix }).CaptionFrom();
+         var caption = (new[] { captionPrefix, suffix }).ToCaption();
 
          return new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
@@ -246,8 +246,6 @@ namespace PKSim.Presentation.Presenters.Charts
 
       private IEnumerable<QuantityPKParameter> extractPKParameters(PopulationSimulation populationSimulation)
       {
-         if (populationSimulation == null)
-            return Enumerable.Empty<QuantityPKParameter>();
          var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
          return fields.SelectMany(x => populationSimulation.PKAnalyses.AllPKParametersFor(x));
       }
@@ -259,14 +257,15 @@ namespace PKSim.Presentation.Presenters.Charts
          _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = false;
          if (!populationDataCollectorSupportsDifferentAggregations(PopulationDataCollector))
             return;
+
          _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = true;
 
-         var pks = extractPKParameters(PopulationDataCollector.DowncastTo<PopulationSimulation>());
-         var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
-         if (!pks.Any())
+         var pkParameters = extractPKParameters(PopulationDataCollector.DowncastTo<PopulationSimulation>());
+         if (!pkParameters.Any())
             return;
 
-         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pks, captionPrefix[0]));
+         var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
+         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pkParameters, captionPrefix[0]));
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)

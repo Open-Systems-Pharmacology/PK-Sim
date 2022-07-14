@@ -42,8 +42,27 @@ namespace PKSim.Core.Services
       IndividualPKAnalysis CalculateFor(Simulation simulation, DataColumn dataColumn);
       PKValues CalculatePK(DataColumn column, PKCalculationOptions options);
 
+      /// <summary>
+      /// Resolves options and use the mapper to create a PKAnalysis out of the values and a simulation for a given compound
+      /// </summary>
+      /// <param name="pkValues">values to use</param>
+      /// <param name="simulation">the simulation</param>
+      /// <param name="compound">the compound containing its name and molweight</param>
+      /// <returns></returns>
       PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound);
+
+      /// <summary>
+      /// Suffix for the lower value of a range, e.g. refers to the 5% on the Range 5% to 95%
+      /// </summary>
+      /// <param name="text">text containing the explaination, e.g. Range 5% to 95%</param>
+      /// <returns>the lower value text, e.g. 5%</returns>
       string LowerSuffix(string text);
+
+      /// <summary>
+      /// Suffix for the upper value of a range, e.g. refers to the 95% on the Range 5% to 95%
+      /// </summary>
+      /// <param name="text">text containing the explaination, e.g. Range 5% to 95%</param>
+      /// <returns>the upper value text, e.g. 95%</returns>
       string UpperSuffix(string text);
    }
 
@@ -56,6 +75,7 @@ namespace PKSim.Core.Services
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private readonly IPKParameterRepository _pkParameterRepository;
+      private readonly Regex _rangeRegex = new Regex(@"^(.*)Range (\d*)% to (\d*)%");
 
       public PKAnalysesTask(ILazyLoadTask lazyLoadTask,
          IPKValuesCalculator pkValuesCalculator,
@@ -265,8 +285,6 @@ namespace PKSim.Core.Services
          return _pkMapper.MapFrom(compound.MolWeight, pkValues, options.PKParameterMode, compound.Name);
       }
 
-      private Regex _rangeRegex => new Regex(@"^(.*)Range (\d*)% to (\d*)%");
-
       /// <summary>
       /// Will extract the range values from texts with the following format: Range 5% to 95%
       /// </summary>
@@ -274,8 +292,7 @@ namespace PKSim.Core.Services
       /// <returns>5%</returns>
       public string LowerSuffix(string text)
       {
-         var regex = _rangeRegex;
-         var match = regex.Match(text);
+         var match = _rangeRegex.Match(text);
 
          if (!match.Success)
             return text;
@@ -290,8 +307,7 @@ namespace PKSim.Core.Services
       /// <returns>95%</returns>
       public string UpperSuffix(string text)
       {
-         var regex = _rangeRegex;
-         var match = regex.Match(text);
+         var match = _rangeRegex.Match(text);
 
          if (!match.Success)
             return text;
