@@ -80,6 +80,8 @@ namespace PKSim.Core.Services
          addToCache<CurveChart>(PKSimConstants.UI.TimeProfileAnalysis);
          addToCache<DataRepository>(PKSimConstants.ObjectTypes.ObservedData);
          addToCache<TimeProfileAnalysisChart>(PKSimConstants.UI.TimeProfileAnalysis);
+         addToCache<SimulationResidualVsTimeChart>(Captions.ParameterIdentification.ResidualsVsTimeAnalysis);
+         addToCache<SimulationPredictedVsObservedChart>(Captions.ParameterIdentification.PredictedVsObservedAnalysis);
          addToCache<ScatterAnalysisChart>(PKSimConstants.UI.ScatterAnalysis);
          addToCache<RangeAnalysisChart>(PKSimConstants.UI.RangeAnalysis);
          addToCache<BoxWhiskerAnalysisChart>(PKSimConstants.UI.BoxWhiskerAnalysis);
