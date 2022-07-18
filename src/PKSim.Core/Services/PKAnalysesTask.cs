@@ -312,11 +312,17 @@ namespace PKSim.Core.Services
             var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
             for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
             {
-               var curveData = buildCurveData(
-                  pkParameters.ElementAt(aggregationIndex), 
-                  correctNameFromMetric(_representationInfoRepository.DisplayNameFor(statisticalAnalysis), aggregated.Count > 1, aggregationIndex == 0, captionPrefix)
+               results.Add(
+                  buildPopulationPKAnalysis(
+                     buildCurveData(
+                        pkParameters.ElementAt(aggregationIndex),
+                        correctNameFromMetric(_representationInfoRepository.DisplayNameFor(statisticalAnalysis), aggregated.Count > 1, aggregationIndex == 0, captionPrefix)
+                     ),  
+                     aggregated[aggregationIndex], 
+                     names, 
+                     simulation
+                  )
                );
-               results.Add(buildPopulationPKAnalysis(curveData, simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name), aggregated[aggregationIndex], names, simulation));
             }
          });
          return results;
@@ -343,13 +349,14 @@ namespace PKSim.Core.Services
          };
       }
 
-      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IReadOnlyList<string> names, Simulation simulation)
+      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, float[] values, IReadOnlyList<string> names, Simulation simulation)
       {
          var pkValues = new PKValues();
          for (var i = 0; i < names.Count; i++)
          {
             pkValues.AddValue(names[i], values[i]);
          }
+         var compound = simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name);
          return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound));
       }
    }
