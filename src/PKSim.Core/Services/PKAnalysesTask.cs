@@ -312,29 +312,34 @@ namespace PKSim.Core.Services
             var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
             for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
             {
-               var pk = pkParameters.ElementAt(aggregationIndex);
-               var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis, captionPrefix);
+               var curveData = buildCurveData(
+                  pkParameters.ElementAt(aggregationIndex), 
+                  correctNameFromMetric(_representationInfoRepository.DisplayNameFor(statisticalAnalysis), aggregated.Count > 1, aggregationIndex == 0, captionPrefix)
+               );
                results.Add(buildPopulationPKAnalysis(curveData, simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name), aggregated[aggregationIndex], names, simulation));
             }
          });
          return results;
       }
 
-      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation, string captionPrefix)
+      private string correctNameFromMetric(string originalText, bool multipleValues, bool isLowerValue, string captionPrefix)
       {
-         var suffix = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
+         var suffix = originalText;
          //For those metrics returning two values, the first is the lower value and the second
          //is the upper value so depending on the index we use lower or upper suffix.
-         if (values.Count > 1)
-            suffix = index == 0 ? LowerSuffix(suffix) : UpperSuffix(suffix);
-         var caption = (new[] { captionPrefix, suffix }).ToCaption();
+         if (multipleValues)
+            suffix = isLowerValue ? LowerSuffix(suffix) : UpperSuffix(suffix);
+         return (new[] { captionPrefix, suffix }).ToCaption();
+      }
 
+      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter quantityPKParameter, string caption)
+      {
          return new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
-            Id = pk.Id,
+            Id = quantityPKParameter.Id,
             Caption = caption,
-            YDimension = pk.Dimension,
-            QuantityPath = pk.QuantityPath,
+            YDimension = quantityPKParameter.Dimension,
+            QuantityPath = quantityPKParameter.QuantityPath,
          };
       }
 
