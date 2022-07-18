@@ -18,6 +18,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       bool PKAnalysisOnIndividualsEnabled { get; set; }
       void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pks);
       void HandleTabChanged();
+      bool SupportsDifferentAggregations();
    }
 
    public class PopulationPKAnalysisPresenter : PKAnalysisPresenter<IPopulationPKAnalysisView, IPopulationPKAnalysisPresenter>, IPopulationPKAnalysisPresenter
@@ -108,5 +109,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       public override string PresentationKey => PresenterConstants.PresenterKeys.PopulationPKAnalysisPresenter;
+
+      public bool SupportsDifferentAggregations()
+      {
+         return _pkAnalysesTask?.PopulationDataCollectorSupportsDifferentAggregations(_populationDataCollector) ?? false;
+      }
    }
 }

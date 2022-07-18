@@ -8,6 +8,8 @@ using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using DevExpress.XtraLayout.Utils;
+using OSPSuite.Presentation.Extensions;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -27,8 +29,6 @@ namespace PKSim.UI.Views.Simulations
          addPopulationPKAnalysisView(_populationAnalysisPivotViewOnCurve, _populationAnalysisPivotViewOnIndividuals);
          _screenBinder = new ScreenBinder<PKAnalysisDTO>();
          _imageListRetriever = imageListRetriever;
-         xtraTabPageOnIndividuals.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.PopulationSimulation);
-         xtraTabPageOnCurve.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
       }
 
       public void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view)
@@ -84,10 +84,14 @@ namespace PKSim.UI.Views.Simulations
       public override void InitializeResources()
       {
          base.InitializeResources();
+         xtraTabPageOnIndividuals.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.PopulationSimulation);
+         xtraTabPageOnCurve.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize();
          layoutControlItemGlobalPKAnalysis.TextVisible = false;
-         populationPKAnalysisXtraTabControl.SelectedPageChanged += (o, e) => OnEvent(_presenter.HandleTabChanged);
+         populationPKAnalysisXtraTabControl.SelectedPageChanged += (o, e) => OnEvent(_presenter.HandleTabChanged); 
+         layoutControlItemGlobalPKAnalysisDescription.Visibility = LayoutVisibilityConvertor.FromBoolean(!_presenter.SupportsDifferentAggregations());
+         labelControlGlobalPKAnalysisDescription.Text = PKSimConstants.UI.GlobalPKAnalysisDescription.FormatForLabel();
       }
    }
 }

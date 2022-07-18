@@ -199,7 +199,7 @@ namespace PKSim.Presentation.Presenters.Charts
          var chartData = CreateChartData();
          _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(PopulationDataCollector, chartData);
          _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = false;
-         if (!populationDataCollectorSupportsDifferentAggregations(PopulationDataCollector))
+         if (!_pKAnalysesTask.PopulationDataCollectorSupportsDifferentAggregations(PopulationDataCollector))
             return;
 
          _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = true;

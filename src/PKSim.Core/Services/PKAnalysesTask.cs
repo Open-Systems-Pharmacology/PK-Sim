@@ -54,6 +54,13 @@ namespace PKSim.Core.Services
       PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound);
 
       IEnumerable<PopulationPKAnalysis> AggregatePKAnalysis(Simulation populationDataCollector, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> SelectedStatistics, string captionPrefix);
+
+      /// <summary>
+      /// Supported only by population simulation so far.
+      /// </summary>
+      /// <param name="populationDataCollector">the population data collector</param>
+      /// <returns>true if supports different aggregation methods, e.g. based on aggregated curve or aggregated from all individuals</returns>
+      bool PopulationDataCollectorSupportsDifferentAggregations(IPopulationDataCollector populationDataCollector);
    }
 
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
@@ -358,6 +365,11 @@ namespace PKSim.Core.Services
          }
          var compound = simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name);
          return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound));
+      }
+
+      public bool PopulationDataCollectorSupportsDifferentAggregations(IPopulationDataCollector populationDataCollector)
+      {
+         return populationDataCollector is PopulationSimulation;
       }
    }
 }

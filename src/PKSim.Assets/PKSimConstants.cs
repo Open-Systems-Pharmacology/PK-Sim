@@ -2225,6 +2225,7 @@ namespace PKSim.Assets
          public static readonly string Select = "Select";
          public static readonly string Healthy = "Healthy";
          public static readonly string RerunSimulationToSeeResults = "Please re-run the simulation to calculate PK-parameters.";
+         public static readonly string GlobalPKAnalysisDescription = "Values calculated for the mean population curve";
 
          public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
 
