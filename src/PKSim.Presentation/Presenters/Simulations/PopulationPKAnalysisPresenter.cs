@@ -99,7 +99,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       protected override IEnumerable<PKAnalysis> AllPKAnalyses
       {
-         get { return (View.IsOnCurvesSelected ? _allPKAnalysesOnCurves : _allPKAnalysesOnIndividuals).Select(x => x.PKAnalysis); }
+         get { return (!View.IsOnCurvesSelected ? _allPKAnalysesOnCurves : _allPKAnalysesOnIndividuals).Select(x => x.PKAnalysis); }
       }
 
       public override void ExportToExcel()

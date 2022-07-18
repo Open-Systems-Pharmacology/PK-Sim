@@ -51,7 +51,7 @@ namespace PKSim.UI.Views.Simulations
 
       public void EnablePKAnalysisOnIndividualsTab(bool enabled)
       {
-         this.xtraTabPage4.PageEnabled = enabled;
+         this.xtraTabPageOnIndividuals.PageEnabled = enabled;
       }
 
       public DataTable GetSummaryData()

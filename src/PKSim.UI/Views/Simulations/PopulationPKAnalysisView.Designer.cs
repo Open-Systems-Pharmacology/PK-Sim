@@ -34,10 +34,10 @@ namespace PKSim.UI.Views.Simulations
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.populationPKAnalysisXtraTabControl = new DevExpress.XtraTab.XtraTabControl();
-         this.xtraTabPage3 = new DevExpress.XtraTab.XtraTabPage();
+         this.xtraTabPageOnCurve = new DevExpress.XtraTab.XtraTabPage();
          this.populationPKAnalysisPanelOnCurve = new DevExpress.XtraEditors.PanelControl();
          this.populationPKAnalysisPanelOnIndividuals = new DevExpress.XtraEditors.PanelControl();
-         this.xtraTabPage4 = new DevExpress.XtraTab.XtraTabPage();
+         this.xtraTabPageOnIndividuals = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
          this.globalPKParametersPanelControl = new OSPSuite.UI.Controls.UxPanelControl();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -56,7 +56,7 @@ namespace PKSim.UI.Views.Simulations
          this.populationPKAnalysisXtraTabControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnCurve)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnIndividuals)).BeginInit();
-         this.xtraTabPage4.SuspendLayout();
+         this.xtraTabPageOnIndividuals.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.globalPKParametersPanelControl)).BeginInit();
@@ -90,12 +90,12 @@ namespace PKSim.UI.Views.Simulations
          // 
          this.populationPKAnalysisXtraTabControl.Location = new System.Drawing.Point(2, 218);
          this.populationPKAnalysisXtraTabControl.Name = "populationPKAnalysisXtraTabControl";
-         this.populationPKAnalysisXtraTabControl.SelectedTabPage = this.xtraTabPage3;
+         this.populationPKAnalysisXtraTabControl.SelectedTabPage = this.xtraTabPageOnCurve;
          this.populationPKAnalysisXtraTabControl.Size = new System.Drawing.Size(643, 366);
          this.populationPKAnalysisXtraTabControl.TabIndex = 0;
          this.populationPKAnalysisXtraTabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
-            this.xtraTabPage3,
-            this.xtraTabPage4});
+            this.xtraTabPageOnCurve,
+            this.xtraTabPageOnIndividuals});
          // 
          // populationPKAnalysisPanelOnCurve
          // 
@@ -119,21 +119,21 @@ namespace PKSim.UI.Views.Simulations
          this.populationPKAnalysisPanelOnIndividuals.Size = new System.Drawing.Size(641, 336);
          this.populationPKAnalysisPanelOnIndividuals.TabIndex = 8;
          // 
-         // xtraTabPage3
+         // xtraTabPageOnCurve
          // 
-         this.xtraTabPage3.Controls.Add(this.populationPKAnalysisPanelOnCurve); 
-         this.xtraTabPage3.Name = "xtraTabPage3";
-         this.xtraTabPage3.Size = new System.Drawing.Size(641, 336);
-         this.xtraTabPage3.Text = PKSimConstants.PKAnalysis.OnCurve;
-         this.xtraTabPage3.Tooltip = PKSimConstants.PKAnalysis.OnCurveTooltip;
+         this.xtraTabPageOnCurve.Controls.Add(this.populationPKAnalysisPanelOnCurve); 
+         this.xtraTabPageOnCurve.Name = "xtraTabPageOnCurve";
+         this.xtraTabPageOnCurve.Size = new System.Drawing.Size(641, 336);
+         this.xtraTabPageOnCurve.Text = PKSimConstants.PKAnalysis.OnCurve;
+         this.xtraTabPageOnCurve.Tooltip = PKSimConstants.PKAnalysis.OnCurveTooltip;
          // 
-         // xtraTabPage4
+         // xtraTabPageOnIndividuals
          // 
-         this.xtraTabPage4.Controls.Add(this.populationPKAnalysisPanelOnIndividuals);
-         this.xtraTabPage4.Name = "xtraTabPage4";
-         this.xtraTabPage4.Size = new System.Drawing.Size(641, 336);
-         this.xtraTabPage4.Text = PKSimConstants.PKAnalysis.OnIndividuals;
-         this.xtraTabPage4.Tooltip = PKSimConstants.PKAnalysis.OnIndividualsTooltip;
+         this.xtraTabPageOnIndividuals.Controls.Add(this.populationPKAnalysisPanelOnIndividuals);
+         this.xtraTabPageOnIndividuals.Name = "xtraTabPageOnIndividuals";
+         this.xtraTabPageOnIndividuals.Size = new System.Drawing.Size(641, 336);
+         this.xtraTabPageOnIndividuals.Text = PKSimConstants.PKAnalysis.OnIndividuals;
+         this.xtraTabPageOnIndividuals.Tooltip = PKSimConstants.PKAnalysis.OnIndividualsTooltip;
          // 
          // layoutControl1
          // 
@@ -258,8 +258,8 @@ namespace PKSim.UI.Views.Simulations
          this.populationPKAnalysisXtraTabControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnCurve)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnIndividuals)).EndInit();
-         this.xtraTabPage4.ResumeLayout(false);
-         this.xtraTabPage4.PerformLayout();
+         this.xtraTabPageOnIndividuals.ResumeLayout(false);
+         this.xtraTabPageOnIndividuals.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.globalPKParametersPanelControl)).EndInit();
@@ -291,8 +291,8 @@ namespace PKSim.UI.Views.Simulations
       private OSPSuite.UI.Controls.UxPanelControl globalPKParametersPanelControl;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraTab.XtraTabControl populationPKAnalysisXtraTabControl;
-      private DevExpress.XtraTab.XtraTabPage xtraTabPage3;
-      private DevExpress.XtraTab.XtraTabPage xtraTabPage4;
+      private DevExpress.XtraTab.XtraTabPage xtraTabPageOnCurve;
+      private DevExpress.XtraTab.XtraTabPage xtraTabPageOnIndividuals;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
    }
 }
