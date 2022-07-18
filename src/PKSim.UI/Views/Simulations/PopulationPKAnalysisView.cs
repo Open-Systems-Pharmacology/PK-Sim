@@ -7,6 +7,7 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -16,14 +17,18 @@ namespace PKSim.UI.Views.Simulations
       private readonly IPKAnalysisPivotView _populationAnalysisPivotViewOnIndividuals;
       private IPopulationPKAnalysisPresenter _presenter;
       private readonly ScreenBinder<PKAnalysisDTO> _screenBinder;
+      private readonly IImageListRetriever _imageListRetriever;
 
-      public PopulationPKAnalysisView(IPKAnalysisPivotView populationAnalysisPivotView, IPKAnalysisPivotView populationAnalysisPivotViewOnIndividuals)
+      public PopulationPKAnalysisView(IPKAnalysisPivotView populationAnalysisPivotView, IPKAnalysisPivotView populationAnalysisPivotViewOnIndividuals, IImageListRetriever imageListRetriever)
       {
          _populationAnalysisPivotViewOnCurve = populationAnalysisPivotView;
          _populationAnalysisPivotViewOnIndividuals = populationAnalysisPivotViewOnIndividuals;
          InitializeComponent();
          addPopulationPKAnalysisView(_populationAnalysisPivotViewOnCurve, _populationAnalysisPivotViewOnIndividuals);
          _screenBinder = new ScreenBinder<PKAnalysisDTO>();
+         _imageListRetriever = imageListRetriever;
+         xtraTabPageOnIndividuals.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.PopulationSimulation);
+         xtraTabPageOnCurve.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
       }
 
       public void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view)
@@ -51,7 +56,8 @@ namespace PKSim.UI.Views.Simulations
 
       public void EnablePKAnalysisOnIndividualsTab(bool enabled)
       {
-         this.xtraTabPageOnIndividuals.PageEnabled = enabled;
+         xtraTabPageOnIndividuals.PageEnabled = enabled;
+         populationPKAnalysisXtraTabControl.Images = _imageListRetriever.AllImages16x16;
       }
 
       public DataTable GetSummaryData()
