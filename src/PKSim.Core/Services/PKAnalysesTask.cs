@@ -12,9 +12,11 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core.Chart;
+using PKSim.Core.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
@@ -51,19 +53,7 @@ namespace PKSim.Core.Services
       /// <returns></returns>
       PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound);
 
-      /// <summary>
-      /// Suffix for the lower value of a range, e.g. refers to the 5% on the Range 5% to 95%
-      /// </summary>
-      /// <param name="text">text containing the explaination, e.g. Range 5% to 95%</param>
-      /// <returns>the lower value text, e.g. 5%</returns>
-      string LowerSuffix(string text);
-
-      /// <summary>
-      /// Suffix for the upper value of a range, e.g. refers to the 95% on the Range 5% to 95%
-      /// </summary>
-      /// <param name="text">text containing the explaination, e.g. Range 5% to 95%</param>
-      /// <returns>the upper value text, e.g. 95%</returns>
-      string UpperSuffix(string text);
+      IEnumerable<PopulationPKAnalysis> AggregatePKAnalysis(Simulation populationDataCollector, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> SelectedStatistics, string captionPrefix);
    }
 
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
@@ -76,6 +66,8 @@ namespace PKSim.Core.Services
       private readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private readonly IPKParameterRepository _pkParameterRepository;
       private readonly Regex _rangeRegex = new Regex(@"^(.*)Range (\d*)% to (\d*)%");
+      private readonly IStatisticalDataCalculator _statisticalDataCalculator;
+      private readonly IRepresentationInfoRepository _representationInfoRepository;
 
       public PKAnalysesTask(ILazyLoadTask lazyLoadTask,
          IPKValuesCalculator pkValuesCalculator,
@@ -83,7 +75,9 @@ namespace PKSim.Core.Services
          IPKCalculationOptionsFactory pkCalculationOptionsFactory,
          IEntityPathResolver entityPathResolver,
          IPKValuesToPKAnalysisMapper pkMapper,
-         IDimensionRepository dimensionRepository) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
+         IDimensionRepository dimensionRepository,
+         IStatisticalDataCalculator statisticalDataCalculator,
+         IRepresentationInfoRepository representationInfoRepository) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
       {
          _lazyLoadTask = lazyLoadTask;
          _entityPathResolver = entityPathResolver;
@@ -92,6 +86,8 @@ namespace PKSim.Core.Services
          _pkValuesCalculator = pkValuesCalculator;
          _pkCalculationOptionsFactory = pkCalculationOptionsFactory;
          _pkParameterRepository = pkParameterRepository;
+         _statisticalDataCalculator = statisticalDataCalculator;
+         _representationInfoRepository = representationInfoRepository;
       }
 
       public PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation)
@@ -285,12 +281,7 @@ namespace PKSim.Core.Services
          return _pkMapper.MapFrom(compound.MolWeight, pkValues, options.PKParameterMode, compound.Name);
       }
 
-      /// <summary>
-      /// Will extract the range values from texts with the following format: Range 5% to 95%
-      /// </summary>
-      /// <param name="text">Range 5% to 95%</param>
-      /// <returns>5%</returns>
-      public string LowerSuffix(string text)
+      private string LowerSuffix(string text)
       {
          var match = _rangeRegex.Match(text);
 
@@ -300,12 +291,7 @@ namespace PKSim.Core.Services
          return $"{match.Groups[1]}{match.Groups[2]}%";
       }
 
-      /// <summary>
-      /// Will extract the range values from texts with the following format: Range 5% to 95%
-      /// </summary>
-      /// <param name="text">Range 5% to 95%</param>
-      /// <returns>95%</returns>
-      public string UpperSuffix(string text)
+      private string UpperSuffix(string text)
       {
          var match = _rangeRegex.Match(text);
 
@@ -313,6 +299,53 @@ namespace PKSim.Core.Services
             return text;
 
          return $"{match.Groups[1]}{match.Groups[3]}%";
+      }
+
+      public IEnumerable<PopulationPKAnalysis> AggregatePKAnalysis(Simulation simulation, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> selectedStatistics, string captionPrefix)
+      {
+         var names = pkParameters.Select(x => x.Name).Distinct().ToList();
+         var matrix = new FloatMatrix();
+         pkParameters.Each(pkParameter => matrix.AddValuesAndSort(pkParameter.ValuesAsArray));
+
+         var results = new List<PopulationPKAnalysis>();
+         selectedStatistics.Each(statisticalAnalysis => {
+            var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
+            for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
+            {
+               var pk = pkParameters.ElementAt(aggregationIndex);
+               var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis, captionPrefix);
+               results.Add(buildPopulationPKAnalysis(curveData, simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name), aggregated[aggregationIndex], names, simulation));
+            }
+         });
+         return results;
+      }
+
+      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation, string captionPrefix)
+      {
+         var suffix = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
+         //For those metrics returning two values, the first is the lower value and the second
+         //is the upper value so depending on the index we use lower or upper suffix.
+         if (values.Count > 1)
+            suffix = index == 0 ? LowerSuffix(suffix) : UpperSuffix(suffix);
+         var caption = (new[] { captionPrefix, suffix }).ToCaption();
+
+         return new CurveData<TimeProfileXValue, TimeProfileYValue>()
+         {
+            Id = pk.Id,
+            Caption = caption,
+            YDimension = pk.Dimension,
+            QuantityPath = pk.QuantityPath,
+         };
+      }
+
+      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IReadOnlyList<string> names, Simulation simulation)
+      {
+         var pkValues = new PKValues();
+         for (var i = 0; i < names.Count; i++)
+         {
+            pkValues.AddValue(names[i], values[i]);
+         }
+         return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound));
       }
    }
 }

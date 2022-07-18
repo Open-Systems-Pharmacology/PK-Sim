@@ -28,6 +28,8 @@ namespace PKSim.Core
       private IPKParameterRepository _pkParameterRepository;
       private ILazyLoadTask _lazyLoadTask;
       private IEntityPathResolver _entityPathResolver;
+      protected IStatisticalDataCalculator _statisticalDataCalculator;
+      protected IRepresentationInfoRepository _representationInfoRepository;
 
       protected override void Context()
       {
@@ -38,7 +40,9 @@ namespace PKSim.Core
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
          _entityPathResolver= A.Fake<IEntityPathResolver>();
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator,_pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository);
+         _statisticalDataCalculator = new StatisticalDataCalculator();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator,_pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository);
       }
    }
 

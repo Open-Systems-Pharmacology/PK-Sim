@@ -65,7 +65,7 @@ namespace PKSim.Presentation
          _statisticalDataCalculator = new StatisticalDataCalculator();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          sut = new EditTimeProfileAnalysisChartPresenter(_view, _timeProfilerChartPresenter, _timeProfileChartDataCreator,
-            _populationSimulationAnalysisStarter, _populationAnalysisTask, _colorGenerator, _observedDataTask, _pkAnalysisPresenter, _dimensionRepository, _presenterSettingsTask, _representationInfoRepository, _statisticalDataCalculator, _pkAnalysesTask);
+            _populationSimulationAnalysisStarter, _populationAnalysisTask, _colorGenerator, _observedDataTask, _pkAnalysisPresenter, _dimensionRepository, _presenterSettingsTask, _pkAnalysesTask);
 
          _timeProfileAnalysisChart = new TimeProfileAnalysisChart();
          _populationStatisticalAnalysis = new PopulationStatisticalAnalysis();
@@ -267,99 +267,6 @@ namespace PKSim.Presentation
       public void should_notify_the_user_that_the_action_cannot_be_performed()
       {
          The.Action(() => sut.AddObservedData(new[] { _observedDataRepository })).ShouldThrowAn<PKSimException>();
-      }
-   }
-
-   public class When_aggregating_pk_parameters_from_individuals : concern_for_EditTimeProfileAnalysisChartPresenter
-   {
-      class TestQuantityPKParameter : QuantityPKParameter
-      {
-         public float[] _values { get; set; }
-
-         public override float[] ValuesAsArray { get => _values; }
-      }
-
-      class TestEditTimeProfileAnalysisChartPresenter : EditTimeProfileAnalysisChartPresenter
-      {
-         public TestEditTimeProfileAnalysisChartPresenter(
-               IEditTimeProfileAnalysisChartView view,
-            ITimeProfileChartPresenter timeProfileChartPresenter,
-            ITimeProfileChartDataCreator timeProfileChartDataCreator,
-            IPopulationSimulationAnalysisStarter populationSimulationAnalysisStarter,
-            IPopulationAnalysisTask populationAnalysisTask,
-            IColorGenerator colorGenerator,
-            IObservedDataTask observedDataTask,
-            IPopulationPKAnalysisPresenter pkAnalysisPresenter,
-            IDimensionRepository dimensionRepository,
-            IPresentationSettingsTask presentationSettingsTask,
-            IRepresentationInfoRepository representationInfoRepository,
-            IStatisticalDataCalculator statisticalDataCalculator,
-            IPKAnalysesTask pKAnalysesTask) : base (view, timeProfileChartPresenter, timeProfileChartDataCreator, populationSimulationAnalysisStarter,
-               populationAnalysisTask, colorGenerator, observedDataTask, pkAnalysisPresenter, dimensionRepository, presentationSettingsTask,
-               representationInfoRepository, statisticalDataCalculator, pKAnalysesTask)
-         { }
-
-         public IEnumerable<PopulationPKAnalysis> AggregatePKAnalysis(IPopulationDataCollector populationDataCollector, IEnumerable<QuantityPKParameter> pkParameters, string captionPrefix)
-         {
-            return aggregatePKAnalysis(populationDataCollector, pkParameters, captionPrefix);
-         }
-      }
-
-      private IEnumerable<PopulationPKAnalysis> _pkAnalyses;
-      private PopulationSimulation _simulation;
-      protected PercentileStatisticalAggregation _percentileStatisticalAggregation;
-      protected const string _percentileId = "Percentile";
-
-      protected override void Context()
-      {
-         base.Context();
-
-         _percentileStatisticalAggregation = new PercentileStatisticalAggregation { Selected = true, Percentile = 50 };
-         _populationStatisticalAnalysis.AddStatistic(_percentileStatisticalAggregation);
-         A.CallTo(() => _representationInfoRepository.DisplayNameFor(_percentileStatisticalAggregation)).Returns(_percentileId);
-         sut = new TestEditTimeProfileAnalysisChartPresenter(_view, _timeProfilerChartPresenter, _timeProfileChartDataCreator,
-            _populationSimulationAnalysisStarter, _populationAnalysisTask, _colorGenerator, _observedDataTask, _pkAnalysisPresenter, _dimensionRepository, _presenterSettingsTask, _representationInfoRepository, _statisticalDataCalculator, _pkAnalysesTask);
-
-         var model = A.Fake<IModel>();
-         A.CallTo(() => model.MoleculeNameFor("Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)")).Returns("Esomeprazole");
-         A.CallTo(() => model.MoleculeNameFor("Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)")).Returns("Esomeprazole-2");
-         _simulation = A.Fake<PopulationSimulation>();
-         A.CallTo(() => _simulation.Model).Returns(model);
-         A.CallTo(() => _simulation.Compounds).Returns(new[] { new Compound() { Name = "Esomeprazole" }, new Compound() { Name = "Esomeprazole-2" } });
-         _simulation.AddCompoundPK(new CompoundPK() { CompoundName = "Esomeprazol-2" });
-         var analysis = new TimeProfileAnalysisChart();
-         analysis.PopulationAnalysis = _populationStatisticalAnalysis;
-         sut.InitializeAnalysis(analysis, _simulation);
-      }
-
-      protected override void Because()
-      {
-         var pkParameters = new[]
-         {
-            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.000f, 0.050f, 0.025f, 0.075f, 1.000f } },
-            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.00f,  0.25f,  0.75f,  0.50f,  1.00f  } },
-            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)",   _values = new[] { 0.0f,   2.5f,   5.0f,   7.5f,   10.0f  } },
-            new TestQuantityPKParameter() { Name = "Name 1", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
-            new TestQuantityPKParameter() { Name = "Name 2", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } },
-            new TestQuantityPKParameter() { Name = "Name 3", QuantityPath = "Organism|PeripheralVenousBlood|Esomeprazole-2|Plasma (Peripheral Venous Blood)", _values = new[] { 0f,     0f,     0f,     0f,     0f } }
-         };
-
-         _pkAnalyses = (sut as TestEditTimeProfileAnalysisChartPresenter).AggregatePKAnalysis(_simulation, pkParameters, "Esomeprazole");
-      }
-
-      [Observation]
-      public void should_aggregate_correctly()
-      {
-         _pkAnalyses.ShouldNotBeEmpty();
-         A.CallTo(() => _pkAnalysesTask.CreatePKAnalysisFromValues(
-            A<PKValues>.That.Matches(p => p.Values.ContainsItem(0.05f) && p.Values.ContainsItem(0.5f) && p.Values.ContainsItem(5f)),
-            A<Simulation>.Ignored,
-            A<Compound>.Ignored
-         )).MustHaveHappened();
-         _pkAnalyses.Count().ShouldBeEqualTo(1);
-         var curveData = _pkAnalyses.First().CurveData;
-         curveData.Caption.ShouldBeEqualTo("Esomeprazole-Percentile");
-         curveData.QuantityPath.ShouldBeEqualTo("Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)");
       }
    }
 }

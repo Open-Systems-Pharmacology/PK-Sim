@@ -19,7 +19,6 @@ using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Charts;
-using PKSim.Core.Extensions;
 
 namespace PKSim.Presentation.Presenters.Charts
 {
@@ -40,8 +39,6 @@ namespace PKSim.Presentation.Presenters.Charts
       private readonly IPresentationSettingsTask _presentationSettingsTask;
       private ChartDisplayMode _chartDisplayMode;
       private const string CHART_DISPLAY_MODE_SETTING = "chartDisplayMode";
-      private readonly IRepresentationInfoRepository _representationInfoRepository;
-      private readonly IStatisticalDataCalculator _statisticalDataCalculator;
       private readonly IPKAnalysesTask _pKAnalysesTask;
 
       public EditTimeProfileAnalysisChartPresenter(
@@ -55,8 +52,6 @@ namespace PKSim.Presentation.Presenters.Charts
          IPopulationPKAnalysisPresenter pkAnalysisPresenter, 
          IDimensionRepository dimensionRepository, 
          IPresentationSettingsTask presentationSettingsTask,
-         IRepresentationInfoRepository representationInfoRepository,
-         IStatisticalDataCalculator statisticalDataCalculator,
          IPKAnalysesTask pKAnalysesTask)
          : base(view, timeProfileChartPresenter, timeProfileChartDataCreator, populationSimulationAnalysisStarter, populationAnalysisTask, ApplicationIcons.TimeProfileAnalysis)
       {
@@ -66,8 +61,6 @@ namespace PKSim.Presentation.Presenters.Charts
          _dimensionRepository = dimensionRepository;
          _presentationSettingsTask = presentationSettingsTask;
          _timeProfileAnalysisChartView = view;
-         _representationInfoRepository = representationInfoRepository;
-         _statisticalDataCalculator = statisticalDataCalculator;
          _pKAnalysesTask = pKAnalysesTask;
          timeProfileChartPresenter.DragDrop += OnDragDrop;
          timeProfileChartPresenter.DragOver += OnDragOver;
@@ -88,55 +81,6 @@ namespace PKSim.Presentation.Presenters.Charts
       protected override ChartData<TimeProfileXValue, TimeProfileYValue> CreateChartData()
       {
          return _chartDataCreator.CreateFor(PopulationAnalysisChart, AggregationFunctions.QuantityAggregation);
-      }
-      
-      protected IEnumerable<PopulationPKAnalysis> aggregatePKAnalysis(IPopulationDataCollector populationDataCollector, IEnumerable<QuantityPKParameter> pkParameters, string captionPrefix)
-      {
-         var names = pkParameters.Select(x => x.Name).Distinct().ToList();
-         var matrix = new FloatMatrix();
-         pkParameters.Each(pkParameter => matrix.AddValuesAndSort(pkParameter.ValuesAsArray));
-
-         var results = new List<PopulationPKAnalysis>();
-         var selectedStatistics = PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics;
-         var simulation = populationDataCollector as Simulation;
-         selectedStatistics.Each(statisticalAnalysis => {
-            var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
-            for (var aggregationIndex = 0; aggregationIndex < aggregated.Count; aggregationIndex++)
-            {
-               var pk = pkParameters.ElementAt(aggregationIndex);
-               var curveData = buildCurveData(pk, aggregated, aggregationIndex, statisticalAnalysis, captionPrefix);
-               results.Add(buildPopulationPKAnalysis(curveData, populationDataCollector.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name), aggregated[aggregationIndex], names, simulation));
-            }
-         });
-         return results;
-      }
-
-      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter pk, List<float[]> values, int index, StatisticalAggregation statisticalAggregation, string captionPrefix)
-      {
-         var suffix = _representationInfoRepository.DisplayNameFor(statisticalAggregation);
-         //For those metrics returning two values, the first is the lower value and the second
-         //is the upper value so depending on the index we use lower or upper suffix.
-         if (values.Count > 1)
-            suffix = index == 0 ? _pKAnalysesTask.LowerSuffix(suffix) : _pKAnalysesTask.UpperSuffix(suffix);
-         var caption = (new[] { captionPrefix, suffix }).ToCaption();
-
-         return new CurveData<TimeProfileXValue, TimeProfileYValue>()
-         {
-            Id = pk.Id,
-            Caption = caption,
-            YDimension = pk.Dimension,
-            QuantityPath = pk.QuantityPath,
-         };
-      }
-
-      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, Compound compound, float[] values, IReadOnlyList<string> names, Simulation simulation)
-      {
-         var pkValues = new PKValues();
-         for (var i = 0; i < names.Count; i++)
-         {
-            pkValues.AddValue(names[i], values[i]);
-         }
-         return new PopulationPKAnalysis(curveData, _pKAnalysesTask.CreatePKAnalysisFromValues(pkValues, simulation, compound));
       }
 
       public virtual void OnDragOver(object sender, IDragEvent e)
@@ -265,7 +209,11 @@ namespace PKSim.Presentation.Presenters.Charts
             return;
 
          var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
-         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(PopulationDataCollector, aggregatePKAnalysis(PopulationDataCollector, pkParameters, captionPrefix[0]));
+
+         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(
+            PopulationDataCollector, 
+            _pKAnalysesTask.AggregatePKAnalysis(PopulationDataCollector as Simulation, pkParameters, PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, captionPrefix[0])
+         );
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)
