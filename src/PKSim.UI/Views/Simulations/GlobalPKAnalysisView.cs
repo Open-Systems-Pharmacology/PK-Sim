@@ -34,7 +34,7 @@ namespace PKSim.UI.Views.Simulations
       {
          InitializeComponent();
 
-         labelControl.Text = PKSimConstants.UI.RerunSimulationToSeeResults.FormatForLabel();
+         labelControl.Text = PKSimConstants.UI.RerunSimulationToSeeResults;
 
          pivotGrid.OptionsBehavior.EditorShowMode = EditorShowMode.MouseDown;
          pivotGrid.ExceptionManager = exceptionManager;
