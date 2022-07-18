@@ -86,6 +86,9 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void HandleTabChanged()
       {
+         //When changing tabs, the units are not properly shown for those rows in the lower table that are not present in the old tab,
+         //so if change from first tab to the second, all those rows for normalized values will not show the unit because they were
+         //not shown for the first tab but for the second
          BindToPKAnalysis();
       }
 
