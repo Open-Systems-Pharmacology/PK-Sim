@@ -39,6 +39,7 @@ namespace PKSim.Presentation.Presenters.Charts
       private readonly IPresentationSettingsTask _presentationSettingsTask;
       private ChartDisplayMode _chartDisplayMode;
       private const string CHART_DISPLAY_MODE_SETTING = "chartDisplayMode";
+      private readonly IPKAnalysesTask _pKAnalysesTask;
 
       public EditTimeProfileAnalysisChartPresenter(
          IEditTimeProfileAnalysisChartView view, 
@@ -50,7 +51,8 @@ namespace PKSim.Presentation.Presenters.Charts
          IObservedDataTask observedDataTask, 
          IPopulationPKAnalysisPresenter pkAnalysisPresenter, 
          IDimensionRepository dimensionRepository, 
-         IPresentationSettingsTask presentationSettingsTask)
+         IPresentationSettingsTask presentationSettingsTask,
+         IPKAnalysesTask pKAnalysesTask)
          : base(view, timeProfileChartPresenter, timeProfileChartDataCreator, populationSimulationAnalysisStarter, populationAnalysisTask, ApplicationIcons.TimeProfileAnalysis)
       {
          _colorGenerator = colorGenerator;
@@ -59,6 +61,7 @@ namespace PKSim.Presentation.Presenters.Charts
          _dimensionRepository = dimensionRepository;
          _presentationSettingsTask = presentationSettingsTask;
          _timeProfileAnalysisChartView = view;
+         _pKAnalysesTask = pKAnalysesTask;
          timeProfileChartPresenter.DragDrop += OnDragDrop;
          timeProfileChartPresenter.DragOver += OnDragOver;
          timeProfileChartPresenter.ObservedDataSettingsChanged += RefreshData;
@@ -180,10 +183,37 @@ namespace PKSim.Presentation.Presenters.Charts
          _timeProfileAnalysisChartView.ShowPKAnalysisView();
       }
 
+      private bool populationDataCollectorSupportsDifferentAggregations(IPopulationDataCollector populationDataCollector)
+      {
+         return populationDataCollector is PopulationSimulation;
+      }
+
+      private IEnumerable<QuantityPKParameter> extractPKParameters(PopulationSimulation populationSimulation)
+      {
+         var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
+         return fields.SelectMany(x => populationSimulation.PKAnalyses.AllPKParametersFor(x));
+      }
+
       private void calculatePKAnalysis()
       {
          var chartData = CreateChartData();
-         _pkAnalysisPresenter.CalculatePKAnalysis(PopulationDataCollector, chartData);
+         _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(PopulationDataCollector, chartData);
+         _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = false;
+         if (!_pKAnalysesTask.PopulationDataCollectorSupportsDifferentAggregations(PopulationDataCollector))
+            return;
+
+         _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = true;
+
+         var pkParameters = extractPKParameters(PopulationDataCollector.DowncastTo<PopulationSimulation>());
+         if (!pkParameters.Any())
+            return;
+
+         var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
+
+         _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(
+            PopulationDataCollector, 
+            _pKAnalysesTask.AggregatePKAnalysis(PopulationDataCollector as Simulation, pkParameters, PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, captionPrefix[0])
+         );
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)

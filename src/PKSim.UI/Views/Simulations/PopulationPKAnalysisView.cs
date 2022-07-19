@@ -7,21 +7,28 @@ using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using DevExpress.XtraLayout.Utils;
+using OSPSuite.Presentation.Extensions;
 
 namespace PKSim.UI.Views.Simulations
 {
    public partial class PopulationPKAnalysisView : BaseUserControl, IPopulationPKAnalysisView
    {
-      private readonly IPKAnalysisPivotView _populationAnalysisPivotView;
+      private readonly IPKAnalysisPivotView _populationAnalysisPivotViewOnCurve;
+      private readonly IPKAnalysisPivotView _populationAnalysisPivotViewOnIndividuals;
       private IPopulationPKAnalysisPresenter _presenter;
       private readonly ScreenBinder<PKAnalysisDTO> _screenBinder;
+      private readonly IImageListRetriever _imageListRetriever;
 
-      public PopulationPKAnalysisView(IPKAnalysisPivotView populationAnalysisPivotView)
+      public PopulationPKAnalysisView(IPKAnalysisPivotView populationAnalysisPivotView, IPKAnalysisPivotView populationAnalysisPivotViewOnIndividuals, IImageListRetriever imageListRetriever)
       {
-         _populationAnalysisPivotView = populationAnalysisPivotView;
+         _populationAnalysisPivotViewOnCurve = populationAnalysisPivotView;
+         _populationAnalysisPivotViewOnIndividuals = populationAnalysisPivotViewOnIndividuals;
          InitializeComponent();
-         addPopulationPKAnalysisView(_populationAnalysisPivotView);
+         addPopulationPKAnalysisView(_populationAnalysisPivotViewOnCurve, _populationAnalysisPivotViewOnIndividuals);
          _screenBinder = new ScreenBinder<PKAnalysisDTO>();
+         _imageListRetriever = imageListRetriever;
       }
 
       public void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view)
@@ -29,26 +36,42 @@ namespace PKSim.UI.Views.Simulations
          globalPKParametersPanelControl.FillWith(view);
       }
 
-      private void addPopulationPKAnalysisView(IPKAnalysisPivotView view)
+      private void addPopulationPKAnalysisView(IPKAnalysisPivotView viewOnCurve, IPKAnalysisPivotView viewOnIndividuals)
       {
-         populationPKAnalysisPanel.FillWith(view);
+         populationPKAnalysisPanelOnCurve.FillWith(viewOnCurve);
+         populationPKAnalysisPanelOnIndividuals.FillWith(viewOnIndividuals);
       }
 
-      public void BindTo(PKAnalysisDTO pkAnalysisDTO)
+      public void BindTo(IntegratedPKAnalysisDTO pkAnalysisDTO)
       {
-         _screenBinder.BindToSource(pkAnalysisDTO);
-         _populationAnalysisPivotView.BindTo(pkAnalysisDTO.DataTable);
+         _screenBinder.BindToSource(pkAnalysisDTO.OnCurves);
+         _populationAnalysisPivotViewOnCurve.BindTo(pkAnalysisDTO.OnCurves.DataTable);
+         _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisDTO.OnIndividuals.DataTable);
+      }
+
+      public bool IsOnCurvesSelected
+      {
+         get => populationPKAnalysisXtraTabControl.SelectedTabPageIndex == 0;
+      }
+
+      public void EnablePKAnalysisOnIndividualsTab(bool enabled)
+      {
+         xtraTabPageOnIndividuals.PageEnabled = enabled;
+         populationPKAnalysisXtraTabControl.Images = _imageListRetriever.AllImages16x16;
       }
 
       public DataTable GetSummaryData()
       {
-         return _populationAnalysisPivotView.GetSummaryData();
+         return IsOnCurvesSelected
+            ? _populationAnalysisPivotViewOnCurve.GetSummaryData() 
+            : _populationAnalysisPivotViewOnIndividuals.GetSummaryData();
       }
 
       public void AttachPresenter(IPopulationPKAnalysisPresenter presenter)
       {
          _presenter = presenter;
-         _populationAnalysisPivotView.BindUnitsMenuToPresenter(presenter);
+         _populationAnalysisPivotViewOnCurve.BindUnitsMenuToPresenter(presenter);
+         _populationAnalysisPivotViewOnIndividuals.BindUnitsMenuToPresenter(presenter);
       }
 
       public override void InitializeBinding()
@@ -61,10 +84,14 @@ namespace PKSim.UI.Views.Simulations
       public override void InitializeResources()
       {
          base.InitializeResources();
+         xtraTabPageOnIndividuals.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.PopulationSimulation);
+         xtraTabPageOnCurve.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize();
-         populationPKAnalysisItem.TextVisible = false;
          layoutControlItemGlobalPKAnalysis.TextVisible = false;
+         populationPKAnalysisXtraTabControl.SelectedPageChanged += (o, e) => OnEvent(_presenter.HandleTabChanged); 
+         layoutControlItemGlobalPKAnalysisDescription.Visibility = LayoutVisibilityConvertor.FromBoolean(!_presenter.SupportsDifferentAggregations());
+         labelControlGlobalPKAnalysisDescription.Text = PKSimConstants.UI.GlobalPKAnalysisDescription.FormatForLabel();
       }
    }
 }

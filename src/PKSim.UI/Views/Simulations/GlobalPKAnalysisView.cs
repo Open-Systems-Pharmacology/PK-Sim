@@ -13,6 +13,8 @@ using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Presentation.Extensions;
+using DevExpress.XtraLayout.Utils;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -31,6 +33,8 @@ namespace PKSim.UI.Views.Simulations
       public GlobalPKAnalysisView(IPKAnalysisToolTipManager pkAnalysisToolTipManager, IExceptionManager exceptionManager, IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
+
+         labelControl.Text = PKSimConstants.UI.RerunSimulationToSeeResults;
 
          pivotGrid.OptionsBehavior.EditorShowMode = EditorShowMode.MouseDown;
          pivotGrid.ExceptionManager = exceptionManager;
@@ -114,6 +118,13 @@ namespace PKSim.UI.Views.Simulations
       {
          pivotGrid.DataSource = globalPKAnalysisDTO.DataTable;
          pivotGrid.BestFitRowArea();
+         showRightComponent(globalPKAnalysisDTO.HasRows);
+      }
+
+      private void showRightComponent(bool dataAvailable)
+      {
+         layoutItemPivotGrid.Visibility = LayoutVisibilityConvertor.FromBoolean(dataAvailable);
+         layoutControlItemLabel.Visibility = LayoutVisibilityConvertor.FromBoolean(!dataAvailable);
       }
 
       public void AttachPresenter(IGlobalPKAnalysisPresenter presenter)
