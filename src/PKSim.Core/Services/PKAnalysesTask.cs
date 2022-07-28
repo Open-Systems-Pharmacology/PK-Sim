@@ -168,18 +168,18 @@ namespace PKSim.Core.Services
 
       private IEnumerable<DataColumn> columnsFor(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, IPopulationDataCollector populationDataCollector)
       {
-         var baseGrid = new BaseGrid("Time", curveData.XAxis.Dimension) { Values = curveData.XValues.Select(x => x.X).ToList() };
+         var baseGrid = new BaseGrid(Constants.TIME, curveData.XAxis.Dimension) { Values = curveData.XValues.Select(x => x.X).ToList() };
 
          if (curveData.IsRange())
             return new[] 
             {
-               new DataColumn(LowerSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(lowerSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
                   QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
                },
-               new DataColumn(UpperSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(upperSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
                   DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
@@ -288,7 +288,7 @@ namespace PKSim.Core.Services
          return _pkMapper.MapFrom(compound.MolWeight, pkValues, options.PKParameterMode, compound.Name);
       }
 
-      private string LowerSuffix(string text)
+      private string lowerSuffix(string text)
       {
          var match = _rangeRegex.Match(text);
 
@@ -298,7 +298,7 @@ namespace PKSim.Core.Services
          return $"{match.Groups[1]}{match.Groups[2]}%";
       }
 
-      private string UpperSuffix(string text)
+      private string upperSuffix(string text)
       {
          var match = _rangeRegex.Match(text);
 
@@ -341,7 +341,7 @@ namespace PKSim.Core.Services
          //For those metrics returning two values, the first is the lower value and the second
          //is the upper value so depending on the index we use lower or upper suffix.
          if (multipleValues)
-            suffix = isLowerValue ? LowerSuffix(suffix) : UpperSuffix(suffix);
+            suffix = isLowerValue ? lowerSuffix(suffix) : upperSuffix(suffix);
          return (new[] { captionPrefix, suffix }).ToCaption();
       }
 

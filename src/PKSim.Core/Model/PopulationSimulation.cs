@@ -106,10 +106,7 @@ namespace PKSim.Core.Model
          return allParameters;
       }
 
-      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters)
-      {
-         Add(advancedParameters);
-      }
+      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters) => Add(advancedParameters);
 
       private AdvancedParameterCollection advancedParameterCollection
       {
@@ -187,20 +184,11 @@ namespace PKSim.Core.Model
          return new T[NumberOfItems].InitializeWith(defaultValue);
       }
 
-      public virtual QuantityPKParameter PKParameterFor(string quantityPath, string pkParameter)
-      {
-         return PKAnalyses.PKParameterFor(quantityPath, pkParameter);
-      }
+      public virtual QuantityPKParameter PKParameterFor(string quantityPath, string pkParameter) => PKAnalyses.PKParameterFor(quantityPath, pkParameter);
 
-      public virtual IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath)
-      {
-         return PKAnalyses.AllPKParametersFor(quantityPath);
-      }
+      public virtual IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath) => PKAnalyses.AllPKParametersFor(quantityPath);
 
-      public virtual bool HasPKParameterFor(string quantityPath, string pkParameter)
-      {
-         return PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
-      }
+      public virtual bool HasPKParameterFor(string quantityPath, string pkParameter) => PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
 
       public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
 
@@ -280,11 +268,11 @@ namespace PKSim.Core.Model
          sourcePopSimulation?.AdvancedParameters.Each(x => AddAdvancedParameter(x, generateRandomValues: true));
       }
 
-      private DataColumn aggregateDataColumns(IEnumerable<DataColumn> columns)
+      private DataColumn aggregateDataColumns(IReadOnlyList<DataColumn> columns)
       {
-         var column = columns?.First();
+         var column = columns?.FirstOrDefault();
          if (column == null)
-            return column;
+            return null;
 
          return new DataColumn(column.Id, column.Dimension, column.BaseGrid)
          {
@@ -313,12 +301,12 @@ namespace PKSim.Core.Model
          return aggregateDataColumns(drugColumnFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName));
       }
 
-      private IEnumerable<DataColumn> drugColumnFor(string organ, string compartment, string columnName, string compoundName)
+      private IReadOnlyList<DataColumn> drugColumnFor(string organ, string compartment, string columnName, string compoundName)
       {
-         return Results.Select(x => columnsFor(x, organ, compartment, columnName, QuantityType.Drug, compoundName));
+         return Results.Select(x => columnsFor(x, organ, compartment, columnName, compoundName)).ToList();
       }
 
-      private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, QuantityType quantityType, string compoundName)
+      private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, string compoundName)
       {
          var column = results.FirstOrDefault(x =>
                x.QuantityPath.Contains(organ) &&
@@ -328,8 +316,9 @@ namespace PKSim.Core.Model
             );
          if (column == null) 
             return null;
-
-         return new DataColumn(column.ColumnId, Constants.Dimension.NO_DIMENSION, new BaseGrid() { Values = column.Time.Values })
+         
+         //We use no dimension here because we are only interested in getting the values 
+         return new DataColumn(column.ColumnId, Constants.Dimension.NO_DIMENSION, new BaseGrid(Constants.TIME, Constants.Dimension.NO_DIMENSION)  { Values = column.Time.Values  })
          {
             Values =  column.Values
          };

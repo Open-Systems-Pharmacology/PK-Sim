@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.PKAnalyses;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.PKAnalyses;
-using OSPSuite.Core.Domain.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
@@ -33,16 +33,16 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _lazyLoadTask= A.Fake<ILazyLoadTask>(); 
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _pkCalculator = A.Fake<IPKValuesCalculator>();
          _pkMapper = A.Fake<IPKValuesToPKAnalysisMapper>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
-         _entityPathResolver= A.Fake<IEntityPathResolver>();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
          _statisticalDataCalculator = new StatisticalDataCalculator();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator,_pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository);
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository);
       }
    }
 
@@ -72,6 +72,7 @@ namespace PKSim.Core
 
          var rangeCurve = new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
+            Caption = "TOTO",
             Pane = pane,
             QuantityPath = "RANGE_PATH",
          };

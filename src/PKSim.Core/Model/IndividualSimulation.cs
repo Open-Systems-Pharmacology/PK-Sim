@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.Extensions;
 
@@ -14,10 +13,6 @@ namespace PKSim.Core.Model
    public class IndividualSimulation : Simulation
    {
       private DataRepository _dataRepository;
-
-      public IndividualSimulation()
-      {
-      }
 
       public virtual IEnumerable<SimulationTimeProfileChart> TimeProfileAnalyses => Analyses.OfType<SimulationTimeProfileChart>();
 
@@ -67,7 +62,7 @@ namespace PKSim.Core.Model
       public override void AcceptVisitor(IVisitor visitor)
       {
          base.AcceptVisitor(visitor);
-         if(HasResults)
+         if (HasResults)
             DataRepository.AcceptVisitor(visitor);
       }
 
@@ -79,14 +74,8 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
       /// </summary>
-      public override DataColumn VenousBloodColumn(string compoundName)
-      {
-         return DataRepository.VenousBloodColumn(compoundName);
-      }
+      public override DataColumn VenousBloodColumn(string compoundName) => DataRepository.VenousBloodColumn(compoundName);
 
-      public override DataColumn FabsOral(string compoundName)
-      {
-         return DataRepository.FabsOral(compoundName);
-      }
+      public override DataColumn FabsOral(string compoundName) => DataRepository.FabsOral(compoundName);
    }
 }
