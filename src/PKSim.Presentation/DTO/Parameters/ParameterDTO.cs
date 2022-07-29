@@ -6,12 +6,13 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Validation;
 using DevExpress.XtraEditors.DXErrorProvider;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
+using static PKSim.Core.CoreConstants;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Presentation.DTO.Parameters
 {
@@ -81,11 +82,11 @@ namespace PKSim.Presentation.DTO.Parameters
             //Permeability cannot be read in compound as references cannot be resolved
             //We return zero for now so that the rules are not showing a broken state (>=0). 
             //We probably need to update the rules framework to not evaluate on NaN.
-            if (!success)
-               return 0;
+            if (success)
+               return result;
             
-            return result;
-
+            //the returned value will be based on the parameter. For Initial concentration, we will return NaN, otherwise 0
+            return Parameter.IsNamed(INITIAL_CONCENTRATION) ? result : 0;
          }
          set
          {
@@ -143,7 +144,7 @@ namespace PKSim.Presentation.DTO.Parameters
 
       private void handlePropertyChanged(object sender, PropertyChangedEventArgs e)
       {
-         if (e.PropertyName.Equals(CoreConstants.VALUE_PROPERTY_NAME))
+         if (e.PropertyName.Equals(VALUE_PROPERTY_NAME))
          {
             ValueChanged(this, EventArgs.Empty);
          }
@@ -153,7 +154,7 @@ namespace PKSim.Presentation.DTO.Parameters
 
       public virtual void GetPropertyError(string propertyName, ErrorInfo info)
       {
-         if (!string.Equals(propertyName, CoreConstants.VALUE_PROPERTY_NAME))
+         if (!string.Equals(propertyName, VALUE_PROPERTY_NAME))
             return;
 
          var errors = this.Validate(propertyName);
