@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          Map(x => x.DecimalPlace);
-         Map(x => x.AllowsScientifcNotation);
+         Map(x => x.AllowsScientificNotation);
          Map(x => x.ActiveSkin);
          Map(x => x.IconSizeTab);
          Map(x => x.IconSizeTreeView);
@@ -56,6 +56,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.ChartEditorLayout);
          Map(x => x.JournalPageEditorSettings);
          Map(x => x.ParameterIdentificationFeedbackEditorSettings);
+         Map(x => x.LoadTemplateWithReference);
          MapEnumerable(x => x.UsedDirectories, x => x.DirectoryMapSettings.AddUsedDirectory);
          MapEnumerable(x => x.ProjectFiles, x => x.ProjectFiles.Add).WithChildMappingName(CoreConstants.Serialization.ProjectFile);
       }

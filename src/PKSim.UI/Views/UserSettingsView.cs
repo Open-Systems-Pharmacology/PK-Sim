@@ -1,13 +1,17 @@
+using System.Linq;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using OSPSuite.Assets;
+using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using OSPSuite.Utility;
 using PKSim.Assets;
+using PKSim.Core.Model;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
@@ -41,7 +45,7 @@ namespace PKSim.UI.Views
       {
          _screenBinder = new ScreenBinder<IUserSettings>();
 
-         _screenBinder.Bind(x => x.AllowsScientifcNotation)
+         _screenBinder.Bind(x => x.AllowsScientificNotation)
             .To(chkAllowsScientificNotation)
             .WithCaption(PKSimConstants.UI.AllowsScientificNotation);
 
@@ -108,6 +112,12 @@ namespace PKSim.UI.Views
          _screenBinder.Bind(x => x.DefaultLipophilicityName).To(cbDefaultLipoName);
          _screenBinder.Bind(x => x.DefaultSolubilityName).To(cbDefaultSolName);
 
+         var allBehaviors = EnumHelper.AllValuesFor<LoadTemplateWithReference>().ToList();
+         _screenBinder.Bind(x => x.LoadTemplateWithReference)
+            .To(cbTemplateReferenceBehavior)
+            .WithValues(allBehaviors)
+            .AndDisplays(allBehaviors.Select(v => v.ToString().SplitToUpperCase()));
+
          _screenBinder.Bind(x => x.DefaultPopulationAnalysis)
             .To(cbDefaultPopulationAnalysis)
             .WithImages(populationAnalysisType => _imageListRetriever.ImageIndex(_presenter.PopulationIconNameFor(populationAnalysisType)))
@@ -148,10 +158,7 @@ namespace PKSim.UI.Views
          _screenBinder.RefreshListElements();
       }
 
-      public override bool HasError
-      {
-         get { return _screenBinder.HasError; }
-      }
+      public override bool HasError => _screenBinder.HasError;
 
       public override void InitializeResources()
       {
@@ -187,6 +194,7 @@ namespace PKSim.UI.Views
          layoutItemDefaultSolName.Text = PKSimConstants.UI.DefaultSolubilityName.FormatForLabel();
          layoutItemDefaultPopulationAnalysis.Text = PKSimConstants.UI.DefaultPopulationAnalysisType.FormatForLabel();
          layoutItemPreferredViewLayout.Text = PKSimConstants.UI.PreferredViewLayout.FormatForLabel();
+         layoutItemTemplateRefBehavior.Text = PKSimConstants.UI.TemplateReferenceBehavior.FormatForLabel();
          layoutGroupDefaults.Text = PKSimConstants.UI.Defaults;
          Caption = PKSimConstants.UI.UserGeneral;
          tbTemplateDatabase.Properties.Buttons[0].SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.SelectTemplateDatabasePath, PKSimConstants.UI.TemplateDatabasePath, ApplicationIcons.ProjectOpen);

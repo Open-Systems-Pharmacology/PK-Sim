@@ -1686,6 +1686,7 @@ namespace PKSim.Assets
          public static readonly string DefaultSolubilityName = "Solubility";
          public static readonly string DefaultPopulationAnalysisType = "Population analysis";
          public static readonly string PreferredViewLayout = "Preferred View Layout";
+         public static readonly string TemplateReferenceBehavior = "Load metabolite when loading compound";
          public static readonly string Defaults = "Defaults";
          public static readonly string Default = "Default";
          public static readonly string Add = "Add";

@@ -69,6 +69,7 @@ namespace PKSim.Presentation.Presenters
       private bool _shouldAddItemIcons;
       private readonly IStartOptions _startOptions;
       private readonly IApplicationConfiguration _configuration;
+      private readonly IUserSettings _userSettings;
       private string _templateTypeDisplay = string.Empty;
       private readonly List<Template> _selectedTemplates = new List<Template>();
 
@@ -81,7 +82,8 @@ namespace PKSim.Presentation.Presenters
          IApplicationController applicationController,
          IDialogCreator dialogCreator,
          IStartOptions startOptions,
-         IApplicationConfiguration configuration)
+         IApplicationConfiguration configuration,
+         IUserSettings userSettings)
          : base(view)
       {
          _templateTaskQuery = templateTaskQuery;
@@ -89,6 +91,7 @@ namespace PKSim.Presentation.Presenters
          _dialogCreator = dialogCreator;
          _startOptions = startOptions;
          _configuration = configuration;
+         _userSettings = userSettings;
       }
 
       public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType)
@@ -124,8 +127,19 @@ namespace PKSim.Presentation.Presenters
          if (templateType.Is(TemplateType.SimulationSubject))
             return true;
 
-         var message = getMessageForLoadWithReference(templateType);
-         return _dialogCreator.MessageBoxYesNo(message) == ViewResult.Yes;
+         switch (_userSettings.LoadTemplateWithReference)
+         {
+            case LoadTemplateWithReference.Load:
+               return true;
+            case LoadTemplateWithReference.DoNotLoad:
+               return false;
+            case LoadTemplateWithReference.Ask:
+               var message = getMessageForLoadWithReference(templateType);
+               return _dialogCreator.MessageBoxYesNo(message) == ViewResult.Yes;
+            default:
+               throw new ArgumentOutOfRangeException();
+         }
+
       }
 
       private string getMessageForLoadWithReference(TemplateType templateType)
