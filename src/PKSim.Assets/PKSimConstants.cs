@@ -2224,6 +2224,8 @@ namespace PKSim.Assets
          public static readonly string DiseaseState = "Disease State";
          public static readonly string Select = "Select";
          public static readonly string Healthy = "Healthy";
+         public static readonly string RerunSimulationToSeeResults = "Please re-run the simulation to calculate PK-parameters.";
+         public static readonly string GlobalPKAnalysisDescription = "Values calculated for the mean population curve";
 
          public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
 
@@ -2629,6 +2631,10 @@ namespace PKSim.Assets
          public static readonly string Unit = UI.Unit;
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
+         public static readonly string OnCurves = "On Curves";
+         public static readonly string OnCurvesTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
+         public static readonly string OnIndividuals = "On Individuals";
+         public static readonly string OnIndividualsTooltip = "PK parameter values are aggregated from individual values";
       }
 
       public static class Comparison

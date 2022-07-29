@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -28,10 +29,10 @@ namespace PKSim.Presentation
    {
       protected IEditTimeProfileAnalysisChartView _view;
       protected ITimeProfileChartPresenter _timeProfilerChartPresenter;
-      private ITimeProfileChartDataCreator _timeProfileChartDataCreator;
-      private IPopulationSimulationAnalysisStarter _populationSimulationAnalysisStarter;
-      private IPopulationAnalysisTask _populationAnalysisTask;
-      private IColorGenerator _colorGenerator;
+      protected ITimeProfileChartDataCreator _timeProfileChartDataCreator;
+      protected IPopulationSimulationAnalysisStarter _populationSimulationAnalysisStarter;
+      protected IPopulationAnalysisTask _populationAnalysisTask;
+      protected IColorGenerator _colorGenerator;
       protected IObservedDataTask _observedDataTask;
       protected IPopulationPKAnalysisPresenter _pkAnalysisPresenter;
       protected TimeProfileAnalysisChart _timeProfileAnalysisChart;
@@ -39,10 +40,12 @@ namespace PKSim.Presentation
       protected ChartData<TimeProfileXValue, TimeProfileYValue> _chartData;
       protected DataRepository _observedDataRepository;
       protected IDragEvent _dragEventArgs;
-      private PaneData<TimeProfileXValue, TimeProfileYValue> _paneData;
-      private PopulationStatisticalAnalysis _populationStatisticalAnalysis;
-      private IDimensionRepository _dimensionRepository;
+      protected PaneData<TimeProfileXValue, TimeProfileYValue> _paneData;
+      protected PopulationStatisticalAnalysis _populationStatisticalAnalysis;
+      protected IDimensionRepository _dimensionRepository;
       protected IPresentationSettingsTask _presenterSettingsTask;
+      protected IStatisticalDataCalculator _statisticalDataCalculator;
+      protected IRepresentationInfoRepository _representationInfoRepository;
 
       protected override void Context()
       {
@@ -57,18 +60,21 @@ namespace PKSim.Presentation
          _dimensionRepository = A.Fake<IDimensionRepository>();
 
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
+         _statisticalDataCalculator = new StatisticalDataCalculator();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          sut = new EditTimeProfileAnalysisChartPresenter(_view, _timeProfilerChartPresenter, _timeProfileChartDataCreator,
             _populationSimulationAnalysisStarter, _populationAnalysisTask, _colorGenerator, _observedDataTask, _pkAnalysisPresenter, _dimensionRepository, _presenterSettingsTask);
 
          _timeProfileAnalysisChart = new TimeProfileAnalysisChart();
          _populationStatisticalAnalysis = new PopulationStatisticalAnalysis();
          _timeProfileAnalysisChart.PopulationAnalysis = _populationStatisticalAnalysis;
+         
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
          sut.InitializeAnalysis(_timeProfileAnalysisChart, _populationDataCollector);
 
          _observedDataRepository = DomainHelperForSpecs.ObservedData();
          _dragEventArgs = A.Fake<IDragEvent>();
-         A.CallTo(() => _dragEventArgs.Data<IEnumerable<ITreeNode>>()).Returns(new List<ITreeNode> { new ObservedDataNode(new ClassifiableObservedData { Subject = _observedDataRepository })});
+         A.CallTo(() => _dragEventArgs.Data<IEnumerable<ITreeNode>>()).Returns(new List<ITreeNode> { new ObservedDataNode(new ClassifiableObservedData { Subject = _observedDataRepository }) });
          _chartData = new ChartData<TimeProfileXValue, TimeProfileYValue>(null, null);
          var concentrationDimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          var yAxis = new AxisData(concentrationDimension, concentrationDimension.DefaultUnit, Scalings.Linear);
@@ -76,7 +82,7 @@ namespace PKSim.Presentation
          _chartData.AddPane(_paneData);
          A.CallTo(_timeProfileChartDataCreator).WithReturnType<ChartData<TimeProfileXValue, TimeProfileYValue>>().Returns(_chartData);
 
-         var outputField = new PopulationAnalysisOutputField {Dimension = DomainHelperForSpecs.MassConcentrationDimensionForSpecs()};
+         var outputField = new PopulationAnalysisOutputField { Dimension = DomainHelperForSpecs.MassConcentrationDimensionForSpecs() };
          _populationStatisticalAnalysis.Add(outputField);
 
          A.CallTo(() => _dimensionRepository.MergedDimensionFor(A<NumericFieldContext>._)).Returns(concentrationDimension);
@@ -96,7 +102,7 @@ namespace PKSim.Presentation
          _timeProfileAnalysisChart.AllObservedData().ShouldContain(_observedDataRepository);
       }
 
-   
+
       [Observation]
       public void should_refresh_the_chart()
       {
@@ -154,7 +160,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_calculate_the_pk_analysis_for_the_current_chart_data()
       {
-         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysis(_populationDataCollector, _chartData)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalyses(_populationDataCollector, _chartData, _populationStatisticalAnalysis)).MustHaveHappened();
       }
 
       [Observation]
@@ -243,7 +249,7 @@ namespace PKSim.Presentation
       [Observation]
       public void the_analysis_should_be_updated_at_the_same_time()
       {
-         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysis(A<IPopulationDataCollector>._, A<ChartData<TimeProfileXValue, TimeProfileYValue>>._)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalyses(A<IPopulationDataCollector>._, A<ChartData<TimeProfileXValue, TimeProfileYValue>>._, A<PopulationStatisticalAnalysis>._)).MustHaveHappened();
       }
    }
 
@@ -258,7 +264,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_notify_the_user_that_the_action_cannot_be_performed()
       {
-         The.Action(() => sut.AddObservedData(new[] {_observedDataRepository})).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.AddObservedData(new[] { _observedDataRepository })).ShouldThrowAn<PKSimException>();
       }
    }
 }

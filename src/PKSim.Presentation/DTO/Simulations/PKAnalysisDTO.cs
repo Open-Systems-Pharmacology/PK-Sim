@@ -14,7 +14,7 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public DataTable DataTable
       {
-         get { return _dataTable; }
+         get => _dataTable;
          private set
          {
             _dataTable = value;
@@ -23,5 +23,11 @@ namespace PKSim.Presentation.DTO.Simulations
       }
 
       public bool HasRows => DataTable.Rows.Count > 0;
+   }
+
+   public class IntegratedPKAnalysisDTO
+   {
+      public PKAnalysisDTO OnIndividuals { get; set; }
+      public PKAnalysisDTO OnCurves { get; set; }
    }
 }

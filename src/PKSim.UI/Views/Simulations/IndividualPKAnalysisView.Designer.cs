@@ -31,7 +31,7 @@ namespace PKSim.UI.Views.Simulations
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl(); 
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.panelControlIndividualAnalysis = new DevExpress.XtraEditors.PanelControl();
          this.panelControlGlobalAnalysis = new DevExpress.XtraEditors.PanelControl();
          this.btnExportToExcel = new DevExpress.XtraEditors.SimpleButton();
@@ -56,6 +56,7 @@ namespace PKSim.UI.Views.Simulations
          // 
          // layoutControl
          // 
+         this.layoutControl.AllowCustomization = false;
          this.layoutControl.Controls.Add(this.panelControlIndividualAnalysis);
          this.layoutControl.Controls.Add(this.panelControlGlobalAnalysis);
          this.layoutControl.Controls.Add(this.btnExportToExcel);
@@ -65,29 +66,32 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1306, 244, 250, 350);
          this.layoutControl.Root = this.layoutControlGroup1;
-         this.layoutControl.Size = new System.Drawing.Size(603, 392);
+         this.layoutControl.Size = new System.Drawing.Size(703, 482);
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl1";
          // 
          // panelControlIndividualAnalysis
          // 
-         this.panelControlIndividualAnalysis.Location = new System.Drawing.Point(154, 153);
+         this.panelControlIndividualAnalysis.Location = new System.Drawing.Point(190, 188);
+         this.panelControlIndividualAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.panelControlIndividualAnalysis.Name = "panelControlIndividualAnalysis";
-         this.panelControlIndividualAnalysis.Size = new System.Drawing.Size(447, 237);
+         this.panelControlIndividualAnalysis.Size = new System.Drawing.Size(511, 292);
          this.panelControlIndividualAnalysis.TabIndex = 6;
          // 
          // panelControlGlobalAnalysis
          // 
-         this.panelControlGlobalAnalysis.Location = new System.Drawing.Point(154, 28);
+         this.panelControlGlobalAnalysis.Location = new System.Drawing.Point(190, 33);
+         this.panelControlGlobalAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.panelControlGlobalAnalysis.Name = "panelControlGlobalAnalysis";
-         this.panelControlGlobalAnalysis.Size = new System.Drawing.Size(447, 116);
+         this.panelControlGlobalAnalysis.Size = new System.Drawing.Size(511, 139);
          this.panelControlGlobalAnalysis.TabIndex = 5;
          // 
          // btnExportToExcel
          // 
-         this.btnExportToExcel.Location = new System.Drawing.Point(303, 2);
+         this.btnExportToExcel.Location = new System.Drawing.Point(353, 2);
+         this.btnExportToExcel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.btnExportToExcel.Name = "btnExportToExcel";
-         this.btnExportToExcel.Size = new System.Drawing.Size(298, 22);
+         this.btnExportToExcel.Size = new System.Drawing.Size(348, 27);
          this.btnExportToExcel.StyleController = this.layoutControl;
          this.btnExportToExcel.TabIndex = 4;
          this.btnExportToExcel.Text = "btnExportToExcel";
@@ -103,44 +107,39 @@ namespace PKSim.UI.Views.Simulations
             this.layoutItemIndividualPKAnalysis,
             this.emptySpaceItem1,
             this.splitterItem});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup1.Name = "Root";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup1.Size = new System.Drawing.Size(603, 392);
-         this.layoutControlGroup1.Text = "Root";
+         this.layoutControlGroup1.Size = new System.Drawing.Size(703, 482);
          this.layoutControlGroup1.TextVisible = false;
          // 
-         // layoutControlItem1
+         // layoutItemExportToExcel
          // 
          this.layoutItemExportToExcel.Control = this.btnExportToExcel;
          this.layoutItemExportToExcel.CustomizationFormText = "layoutControlItem1";
-         this.layoutItemExportToExcel.Location = new System.Drawing.Point(301, 0);
+         this.layoutItemExportToExcel.Location = new System.Drawing.Point(351, 0);
          this.layoutItemExportToExcel.Name = "layoutItemExportToExcel";
-         this.layoutItemExportToExcel.Size = new System.Drawing.Size(302, 26);
+         this.layoutItemExportToExcel.Size = new System.Drawing.Size(352, 31);
          this.layoutItemExportToExcel.Text = "layoutControlItem1";
          this.layoutItemExportToExcel.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemExportToExcel.TextToControlDistance = 0;
          this.layoutItemExportToExcel.TextVisible = false;
          // 
          // layoutItemGlobalPKAnalysis
          // 
          this.layoutItemGlobalPKAnalysis.Control = this.panelControlGlobalAnalysis;
          this.layoutItemGlobalPKAnalysis.CustomizationFormText = "layoutItemGlobalPKAnalysis";
-         this.layoutItemGlobalPKAnalysis.Location = new System.Drawing.Point(0, 26);
+         this.layoutItemGlobalPKAnalysis.Location = new System.Drawing.Point(0, 31);
          this.layoutItemGlobalPKAnalysis.Name = "layoutItemGlobalPKAnalysis";
-         this.layoutItemGlobalPKAnalysis.Size = new System.Drawing.Size(603, 120);
-         this.layoutItemGlobalPKAnalysis.Text = "layoutItemGlobalPKAnalysis";
-         this.layoutItemGlobalPKAnalysis.TextSize = new System.Drawing.Size(149, 13);
+         this.layoutItemGlobalPKAnalysis.Size = new System.Drawing.Size(703, 143);
+         this.layoutItemGlobalPKAnalysis.TextSize = new System.Drawing.Size(174, 16);
          // 
          // layoutItemIndividualPKAnalysis
          // 
          this.layoutItemIndividualPKAnalysis.Control = this.panelControlIndividualAnalysis;
          this.layoutItemIndividualPKAnalysis.CustomizationFormText = "layoutItemIndividualPKAnalysis";
-         this.layoutItemIndividualPKAnalysis.Location = new System.Drawing.Point(0, 151);
+         this.layoutItemIndividualPKAnalysis.Location = new System.Drawing.Point(0, 186);
          this.layoutItemIndividualPKAnalysis.Name = "layoutItemIndividualPKAnalysis";
-         this.layoutItemIndividualPKAnalysis.Size = new System.Drawing.Size(603, 241);
-         this.layoutItemIndividualPKAnalysis.Text = "layoutItemIndividualPKAnalysis";
-         this.layoutItemIndividualPKAnalysis.TextSize = new System.Drawing.Size(149, 13);
+         this.layoutItemIndividualPKAnalysis.Size = new System.Drawing.Size(703, 296);
+         this.layoutItemIndividualPKAnalysis.TextSize = new System.Drawing.Size(174, 16);
          // 
          // emptySpaceItem1
          // 
@@ -148,25 +147,25 @@ namespace PKSim.UI.Views.Simulations
          this.emptySpaceItem1.CustomizationFormText = "emptySpaceItem1";
          this.emptySpaceItem1.Location = new System.Drawing.Point(0, 0);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(301, 26);
-         this.emptySpaceItem1.Text = "emptySpaceItem1";
+         this.emptySpaceItem1.Size = new System.Drawing.Size(351, 31);
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
          // 
          // splitterItem
          // 
          this.splitterItem.AllowHotTrack = true;
          this.splitterItem.CustomizationFormText = "splitterItem";
-         this.splitterItem.Location = new System.Drawing.Point(0, 146);
+         this.splitterItem.Location = new System.Drawing.Point(0, 174);
          this.splitterItem.Name = "splitterItem";
-         this.splitterItem.Size = new System.Drawing.Size(603, 5);
+         this.splitterItem.Size = new System.Drawing.Size(703, 12);
          // 
          // IndividualPKAnalysisView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
+         this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
          this.Name = "IndividualPKAnalysisView";
-         this.Size = new System.Drawing.Size(603, 392);
+         this.Size = new System.Drawing.Size(703, 482);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);

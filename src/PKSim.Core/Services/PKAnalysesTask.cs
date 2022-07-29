@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Assets;
+using System.Text.RegularExpressions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
@@ -11,9 +10,11 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core.Chart;
+using PKSim.Core.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
@@ -28,7 +29,7 @@ namespace PKSim.Core.Services
       /// <returns>The PopulationSimulationPKAnalyses containing all calculated values</returns>
       PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation);
 
-      IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData);
+      IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData, bool firstOnCurves = true);
 
       /// <summary>
       ///    Calculates the <see cref="IndividualPKAnalysis" /> for the given <paramref name="dataColumns" /> corresponding to
@@ -40,6 +41,17 @@ namespace PKSim.Core.Services
 
       IndividualPKAnalysis CalculateFor(Simulation simulation, DataColumn dataColumn);
       PKValues CalculatePK(DataColumn column, PKCalculationOptions options);
+
+      /// <summary>
+      ///    Resolves options and use the mapper to create a PKAnalysis out of the values and a simulation for a given compound
+      /// </summary>
+      /// <param name="pkValues">values to use</param>
+      /// <param name="simulation">the simulation</param>
+      /// <param name="compound">the compound containing its name and molweight</param>
+      /// <returns></returns>
+      PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound);
+
+      IReadOnlyList<PopulationPKAnalysis> AggregatePKAnalysis(Simulation populationDataCollector, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> selectedStatistics, string captionPrefix);
    }
 
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
@@ -51,6 +63,9 @@ namespace PKSim.Core.Services
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private readonly IPKParameterRepository _pkParameterRepository;
+      private readonly Regex _rangeRegex = new Regex(@"^(.*)Range (\d*)% to (\d*)%");
+      private readonly IStatisticalDataCalculator _statisticalDataCalculator;
+      private readonly IRepresentationInfoRepository _representationInfoRepository;
 
       public PKAnalysesTask(ILazyLoadTask lazyLoadTask,
          IPKValuesCalculator pkValuesCalculator,
@@ -58,7 +73,9 @@ namespace PKSim.Core.Services
          IPKCalculationOptionsFactory pkCalculationOptionsFactory,
          IEntityPathResolver entityPathResolver,
          IPKValuesToPKAnalysisMapper pkMapper,
-         IDimensionRepository dimensionRepository) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
+         IDimensionRepository dimensionRepository,
+         IStatisticalDataCalculator statisticalDataCalculator,
+         IRepresentationInfoRepository representationInfoRepository) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
       {
          _lazyLoadTask = lazyLoadTask;
          _entityPathResolver = entityPathResolver;
@@ -67,6 +84,8 @@ namespace PKSim.Core.Services
          _pkValuesCalculator = pkValuesCalculator;
          _pkCalculationOptionsFactory = pkCalculationOptionsFactory;
          _pkParameterRepository = pkParameterRepository;
+         _statisticalDataCalculator = statisticalDataCalculator;
+         _representationInfoRepository = representationInfoRepository;
       }
 
       public PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation)
@@ -89,16 +108,15 @@ namespace PKSim.Core.Services
          }
       }
 
-      public IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData)
+      public IEnumerable<PopulationPKAnalysis> CalculateFor(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData, bool firstOnCurves = true)
       {
          var pkAnalyses = new List<PopulationPKAnalysis>();
 
          if (timeProfileChartData == null)
             return pkAnalyses; // there are no analyses to calculate
 
-         var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).Select(x =>
-               new {curveData = x, column = columnFor(x, populationDataCollector)})
-            .Where(c => c.column != null)
+         var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).SelectMany(x =>
+               columnsFor(x, populationDataCollector).Select(column => new {curveData = x, column = column}))
             .Where(c => c.column.IsConcentration());
 
          var columnsByMolecules = allColumns.GroupBy(x => x.column.MoleculeName());
@@ -106,7 +124,7 @@ namespace PKSim.Core.Services
          {
             var moleculeName = columnsByMolecule.Key;
             var options = _pkCalculationOptionsFactory.CreateFor(populationDataCollector, moleculeName);
-            pkAnalyses.AddRange(columnsByMolecule.Select(pkAnalysisData => new PopulationPKAnalysis(pkAnalysisData.curveData, calculatePKFor(pkAnalysisData.column, moleculeName, options).PKAnalysis)));
+            pkAnalyses.AddRange(columnsByMolecule.Select(pkAnalysisData => new PopulationPKAnalysis(pkAnalysisData.curveData, calculatePKFor(pkAnalysisData.column, moleculeName, options).PKAnalysis, pkAnalysisData.column.Name)));
          }
 
          return pkAnalyses;
@@ -139,17 +157,36 @@ namespace PKSim.Core.Services
          return allPKAnalysis;
       }
 
-      private DataColumn columnFor(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, IPopulationDataCollector populationDataCollector)
+      private IEnumerable<DataColumn> columnsFor(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, IPopulationDataCollector populationDataCollector)
       {
-         if (curveData.IsRange())
-            return null;
+         var baseGrid = new BaseGrid(Constants.TIME, curveData.XAxis.Dimension) {Values = curveData.XValues.Select(x => x.X).ToList()};
 
-         var baseGrid = new BaseGrid("Time", curveData.XAxis.Dimension) {Values = curveData.XValues.Select(x => x.X).ToList()};
-         return new DataColumn("Col", curveData.YAxis.Dimension, baseGrid)
+         if (curveData.IsRange())
+            return new[]
+            {
+               new DataColumn(lowerSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
+               {
+                  Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
+                  DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
+                  QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+               },
+               new DataColumn(upperSuffix(curveData.Caption), curveData.YAxis.Dimension, baseGrid)
+               {
+                  Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
+                  DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
+                  QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+               }
+            };
+
+
+         return new[]
          {
-            Values = curveData.YValues.Select(y => y.Y).ToList(),
-            DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
-            QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+            new DataColumn(curveData.Caption, curveData.YAxis.Dimension, baseGrid)
+            {
+               Values = curveData.YValues.Select(y => y.Y).ToList(),
+               DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
+               QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+            }
          };
       }
 
@@ -213,13 +250,11 @@ namespace PKSim.Core.Services
             .Each(p => p.Rules.Add(warningRule(warning)));
       }
 
-      private IBusinessRule warningRule(string warning)
-      {
-         return CreateRule.For<IParameter>()
+      private IBusinessRule warningRule(string warning) =>
+         CreateRule.For<IParameter>()
             .Property(item => item.Value)
             .WithRule((param, value) => false)
             .WithError((param, value) => warning);
-      }
 
       private string bodyWeightParameterPathFrom(IParameter bodyWeightParameter)
       {
@@ -232,6 +267,86 @@ namespace PKSim.Core.Services
             return;
 
          bodyWeightParameter.Value = allBodyWeights.Count > individualId ? allBodyWeights[individualId] : double.NaN;
+      }
+
+      public PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound)
+      {
+         var options = _pkCalculationOptionsFactory.CreateFor(simulation, compound.Name);
+         return _pkMapper.MapFrom(compound.MolWeight, pkValues, options.PKParameterMode, compound.Name);
+      }
+
+      private string lowerSuffix(string text)
+      {
+         var match = _rangeRegex.Match(text);
+
+         if (!match.Success)
+            return text;
+
+         return $"{match.Groups[1]}{match.Groups[2]}%";
+      }
+
+      private string upperSuffix(string text)
+      {
+         var match = _rangeRegex.Match(text);
+
+         if (!match.Success)
+            return text;
+
+         return $"{match.Groups[1]}{match.Groups[3]}%";
+      }
+
+      public IReadOnlyList<PopulationPKAnalysis> AggregatePKAnalysis(Simulation simulation, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> selectedStatistics, string captionPrefix)
+      {
+         var pkParametersList = pkParameters.ToList();
+         var matrix = new FloatMatrix();
+         var names = pkParametersList.Select(x => x.Name).Distinct().ToList();
+         pkParametersList.Each(pkParameter => matrix.AddValuesAndSort(pkParameter.ValuesAsArray));
+
+         var results = new List<PopulationPKAnalysis>();
+         selectedStatistics.Each(statisticalAnalysis =>
+         {
+            var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
+            aggregated.Each((agg, index) =>
+            {
+               var name = correctNameFromMetric(_representationInfoRepository.DisplayNameFor(statisticalAnalysis), aggregated.Count > 1, index == 0, captionPrefix);
+               var pkAnalysis = buildPopulationPKAnalysis(buildCurveData(pkParametersList[index], name), agg, names, simulation);
+               results.Add(pkAnalysis);
+            });
+         });
+         return results;
+      }
+
+      private string correctNameFromMetric(string originalText, bool multipleValues, bool isLowerValue, string captionPrefix)
+      {
+         var suffix = originalText;
+         //For those metrics returning two values, the first is the lower value and the second
+         //is the upper value so depending on the index we use lower or upper suffix.
+         if (multipleValues)
+            suffix = isLowerValue ? lowerSuffix(suffix) : upperSuffix(suffix);
+         return (new[] {captionPrefix, suffix}).ToCaption();
+      }
+
+      private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter quantityPKParameter, string caption)
+      {
+         return new CurveData<TimeProfileXValue, TimeProfileYValue>()
+         {
+            Id = quantityPKParameter.Id,
+            Caption = caption,
+            YDimension = quantityPKParameter.Dimension,
+            QuantityPath = quantityPKParameter.QuantityPath,
+         };
+      }
+
+      private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, float[] values, IReadOnlyList<string> names, Simulation simulation)
+      {
+         var pkValues = new PKValues();
+         for (var i = 0; i < names.Count; i++)
+         {
+            pkValues.AddValue(names[i], values[i]);
+         }
+
+         var compound = simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name);
+         return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound));
       }
    }
 }

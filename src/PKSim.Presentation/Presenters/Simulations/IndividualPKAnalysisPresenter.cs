@@ -89,10 +89,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _view.BindTo(_pKAnalysisToDTOMapper.MapFrom(_allPKAnalysis.ToList(), _curveCache.All()));
       }
 
-      protected override IEnumerable<PKAnalysis> AllPKAnalyses
-      {
-         get { return _allPKAnalysis.Select(x => x.PKAnalysis); }
-      }
+      protected override IEnumerable<PKAnalysis> AllPKAnalyses => _allPKAnalysis.Select(x => x.PKAnalysis);
 
       public override void ExportToExcel()
       {

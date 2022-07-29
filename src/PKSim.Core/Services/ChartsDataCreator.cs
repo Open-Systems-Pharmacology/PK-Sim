@@ -8,6 +8,7 @@ using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
@@ -45,7 +46,7 @@ namespace PKSim.Core.Services
       protected abstract bool CheckFields();
 
       protected abstract ChartData<TX, TY> BuildChartsData();
-
+      
       public virtual ChartData<TX, TY> CreateFor(PivotResult pivotResult)
       {
          try
@@ -186,7 +187,7 @@ namespace PKSim.Core.Services
 
       private PaneData<TX, TY> getOrCreatePane(ChartData<TX, TY> chart, IReadOnlyDictionary<string, string> paneFieldValues, IReadOnlyList<IComparer<object>> curveFieldValueComparers, INumericValueField axisField)
       {
-         string paneCaption = captionFor(paneFieldValues.Values);
+         string paneCaption = paneFieldValues.Values.ToCaption();
          string paneId = idFromCaption(paneCaption); // Id cannot be empty string         
          var pane = chart.Panes.FindById(paneId);
          if (pane != null)
@@ -205,7 +206,7 @@ namespace PKSim.Core.Services
 
       private CurveData<TX, TY> getOrCreateCurve(PaneData<TX, TY> pane, IReadOnlyDictionary<string, string> seriesFieldValues, INumericValueField yAxisField)
       {
-         string curveCaption = captionFor(seriesFieldValues.Values);
+         string curveCaption = seriesFieldValues.Values.ToCaption();
          string curveId = idFromCaption(curveCaption);
          var series = pane.Curves[curveId];
          if (series != null)
@@ -240,9 +241,9 @@ namespace PKSim.Core.Services
          return _dimensionRepository.MergedDimensionFor(new NumericFieldContext(numericValueField, _populationDataCollector));
       }
 
-      private static string captionFor(IEnumerable<string> fieldValues)
+      protected static string captionFor(IEnumerable<string> fieldValues)
       {
-         return fieldValues.DefaultIfEmpty(string.Empty).ToString(Constants.DISPLAY_PATH_SEPARATOR);
+         return fieldValues.ToCaption();
       }
 
       private static string idFromCaption(string caption)
