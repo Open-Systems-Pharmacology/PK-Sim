@@ -53,7 +53,6 @@ namespace PKSim.UI.Views.Simulations
 
       public void ShowPKAnalysisOnIndividuals(bool visible)
       {
-
          var visibility = LayoutVisibilityConvertor.FromBoolean(visible);
          pageOnIndividuals.PageVisible = visible;
          splitter.Visibility = visibility;

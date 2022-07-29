@@ -87,11 +87,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          return fields.SelectMany(x => populationSimulation.PKAnalyses.AllPKParametersFor(x)).ToList();
       }
 
-      public bool PKAnalysisOnIndividualsVisible
-      {
-         set => View.ShowPKAnalysisOnIndividuals(value);
-      }
-
       private void updateView()
       {
          LoadPreferredUnitsForPKAnalysis();
