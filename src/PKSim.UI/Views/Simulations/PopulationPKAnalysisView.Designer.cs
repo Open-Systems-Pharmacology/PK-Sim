@@ -33,6 +33,7 @@ namespace PKSim.UI.Views.Simulations
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.labelControlGlobalPKAnalysisDescription = new DevExpress.XtraEditors.LabelControl();
          this.populationPKAnalysisXtraTabControl = new DevExpress.XtraTab.XtraTabControl();
          this.pageOnCurves = new DevExpress.XtraTab.XtraTabPage();
          this.populationPKAnalysisPanelOnCurve = new DevExpress.XtraEditors.PanelControl();
@@ -47,9 +48,8 @@ namespace PKSim.UI.Views.Simulations
          this.layoutItemExportToExcel = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem = new DevExpress.XtraLayout.EmptySpaceItem();
          this.layoutControlItemGlobalPKAnalysis = new DevExpress.XtraLayout.LayoutControlItem();
-         this.splitterItem1 = new DevExpress.XtraLayout.SplitterItem();
+         this.splitter = new DevExpress.XtraLayout.SplitterItem();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.labelControlGlobalPKAnalysisDescription = new DevExpress.XtraEditors.LabelControl();
          this.layoutControlItemGlobalPKAnalysisDescription = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
@@ -69,7 +69,7 @@ namespace PKSim.UI.Views.Simulations
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemExportToExcel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemGlobalPKAnalysis)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.splitterItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemGlobalPKAnalysisDescription)).BeginInit();
          this.SuspendLayout();
@@ -83,33 +83,42 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControl.Controls.Add(this.btnExportToExcel);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(3693, -142, 812, 500);
          this.layoutControl.Root = this.layoutControlGroup1;
-         this.layoutControl.Size = new System.Drawing.Size(647, 586);
+         this.layoutControl.Size = new System.Drawing.Size(555, 476);
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl1";
          // 
+         // labelControlGlobalPKAnalysisDescription
+         // 
+         this.labelControlGlobalPKAnalysisDescription.Location = new System.Drawing.Point(2, 28);
+         this.labelControlGlobalPKAnalysisDescription.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+         this.labelControlGlobalPKAnalysisDescription.Name = "labelControlGlobalPKAnalysisDescription";
+         this.labelControlGlobalPKAnalysisDescription.Size = new System.Drawing.Size(190, 13);
+         this.labelControlGlobalPKAnalysisDescription.StyleController = this.layoutControl;
+         this.labelControlGlobalPKAnalysisDescription.TabIndex = 8;
+         this.labelControlGlobalPKAnalysisDescription.Text = "labelControlGlobalPKAnalysisDescription";
+         // 
          // populationPKAnalysisXtraTabControl
          // 
-         this.populationPKAnalysisXtraTabControl.Location = new System.Drawing.Point(2, 218);
+         this.populationPKAnalysisXtraTabControl.Location = new System.Drawing.Point(2, 177);
+         this.populationPKAnalysisXtraTabControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.populationPKAnalysisXtraTabControl.Name = "populationPKAnalysisXtraTabControl";
          this.populationPKAnalysisXtraTabControl.SelectedTabPage = this.pageOnCurves;
-         this.populationPKAnalysisXtraTabControl.Size = new System.Drawing.Size(643, 366);
+         this.populationPKAnalysisXtraTabControl.Size = new System.Drawing.Size(551, 297);
          this.populationPKAnalysisXtraTabControl.TabIndex = 0;
          this.populationPKAnalysisXtraTabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.pageOnCurves,
             this.pageOnIndividuals});
          // 
-         // xtraTabPageOnCurve
+         // pageOnCurves
          // 
          this.pageOnCurves.Controls.Add(this.populationPKAnalysisPanelOnCurve);
+         this.pageOnCurves.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.pageOnCurves.Name = "pageOnCurves";
-         this.pageOnCurves.Size = new System.Drawing.Size(641, 336);
-         this.pageOnCurves.Text = "On curves";
-         this.pageOnCurves.Tooltip = "PK parameter values are calculated for the aggregated curves as shown in the char" +
-    "t";
+         this.pageOnCurves.Size = new System.Drawing.Size(549, 272);
+         this.pageOnCurves.Text = "pageOnCurves";
          // 
          // populationPKAnalysisPanelOnCurve
          // 
@@ -117,18 +126,17 @@ namespace PKSim.UI.Views.Simulations
          this.populationPKAnalysisPanelOnCurve.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
          this.populationPKAnalysisPanelOnCurve.Dock = System.Windows.Forms.DockStyle.Fill;
          this.populationPKAnalysisPanelOnCurve.Location = new System.Drawing.Point(0, 0);
-         this.populationPKAnalysisPanelOnCurve.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.populationPKAnalysisPanelOnCurve.Name = "populationPKAnalysisPanelOnCurve";
-         this.populationPKAnalysisPanelOnCurve.Size = new System.Drawing.Size(641, 336);
+         this.populationPKAnalysisPanelOnCurve.Size = new System.Drawing.Size(549, 272);
          this.populationPKAnalysisPanelOnCurve.TabIndex = 6;
          // 
-         // xtraTabPageOnIndividuals
+         // pageOnIndividuals
          // 
          this.pageOnIndividuals.Controls.Add(this.populationPKAnalysisPanelOnIndividuals);
+         this.pageOnIndividuals.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.pageOnIndividuals.Name = "pageOnIndividuals";
-         this.pageOnIndividuals.Size = new System.Drawing.Size(641, 336);
-         this.pageOnIndividuals.Text = "On individuals";
-         this.pageOnIndividuals.Tooltip = "PK parameter values are aggregated from individual values";
+         this.pageOnIndividuals.Size = new System.Drawing.Size(549, 272);
+         this.pageOnIndividuals.Text = "pageOnIndividuals";
          // 
          // populationPKAnalysisPanelOnIndividuals
          // 
@@ -136,27 +144,28 @@ namespace PKSim.UI.Views.Simulations
          this.populationPKAnalysisPanelOnIndividuals.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
          this.populationPKAnalysisPanelOnIndividuals.Dock = System.Windows.Forms.DockStyle.Fill;
          this.populationPKAnalysisPanelOnIndividuals.Location = new System.Drawing.Point(0, 0);
-         this.populationPKAnalysisPanelOnIndividuals.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.populationPKAnalysisPanelOnIndividuals.Name = "populationPKAnalysisPanelOnIndividuals";
-         this.populationPKAnalysisPanelOnIndividuals.Size = new System.Drawing.Size(641, 336);
+         this.populationPKAnalysisPanelOnIndividuals.Size = new System.Drawing.Size(549, 272);
          this.populationPKAnalysisPanelOnIndividuals.TabIndex = 8;
          // 
          // layoutControl1
          // 
          this.layoutControl1.Controls.Add(this.globalPKParametersPanelControl);
-         this.layoutControl1.Location = new System.Drawing.Point(210, 53);
+         this.layoutControl1.Location = new System.Drawing.Point(177, 43);
+         this.layoutControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.layoutControl1.Name = "layoutControl1";
          this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(874, 0, 812, 500);
          this.layoutControl1.Root = this.Root;
-         this.layoutControl1.Size = new System.Drawing.Size(435, 149);
+         this.layoutControl1.Size = new System.Drawing.Size(378, 122);
          this.layoutControl1.TabIndex = 7;
          this.layoutControl1.Text = "layoutControl1";
          // 
          // globalPKParametersPanelControl
          // 
          this.globalPKParametersPanelControl.Location = new System.Drawing.Point(2, 2);
+         this.globalPKParametersPanelControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.globalPKParametersPanelControl.Name = "globalPKParametersPanelControl";
-         this.globalPKParametersPanelControl.Size = new System.Drawing.Size(431, 145);
+         this.globalPKParametersPanelControl.Size = new System.Drawing.Size(374, 118);
          this.globalPKParametersPanelControl.TabIndex = 4;
          // 
          // Root
@@ -167,7 +176,7 @@ namespace PKSim.UI.Views.Simulations
             this.layoutControlItem2});
          this.Root.Name = "Root";
          this.Root.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.Root.Size = new System.Drawing.Size(435, 149);
+         this.Root.Size = new System.Drawing.Size(378, 122);
          this.Root.TextVisible = false;
          // 
          // layoutControlItem2
@@ -175,16 +184,15 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControlItem2.Control = this.globalPKParametersPanelControl;
          this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Size = new System.Drawing.Size(435, 149);
+         this.layoutControlItem2.Size = new System.Drawing.Size(378, 122);
          this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem2.TextVisible = false;
          // 
          // btnExportToExcel
          // 
-         this.btnExportToExcel.Location = new System.Drawing.Point(325, 2);
-         this.btnExportToExcel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+         this.btnExportToExcel.Location = new System.Drawing.Point(279, 2);
          this.btnExportToExcel.Name = "btnExportToExcel";
-         this.btnExportToExcel.Size = new System.Drawing.Size(320, 27);
+         this.btnExportToExcel.Size = new System.Drawing.Size(274, 22);
          this.btnExportToExcel.StyleController = this.layoutControl;
          this.btnExportToExcel.TabIndex = 5;
          this.btnExportToExcel.Text = "btnExportToExcel";
@@ -198,21 +206,21 @@ namespace PKSim.UI.Views.Simulations
             this.layoutItemExportToExcel,
             this.emptySpaceItem,
             this.layoutControlItemGlobalPKAnalysis,
-            this.splitterItem1,
+            this.splitter,
             this.layoutControlItem1,
             this.layoutControlItemGlobalPKAnalysisDescription});
          this.layoutControlGroup1.Name = "Root";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup1.Size = new System.Drawing.Size(647, 586);
+         this.layoutControlGroup1.Size = new System.Drawing.Size(555, 476);
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutItemExportToExcel
          // 
          this.layoutItemExportToExcel.Control = this.btnExportToExcel;
          this.layoutItemExportToExcel.CustomizationFormText = "layoutControlItem2";
-         this.layoutItemExportToExcel.Location = new System.Drawing.Point(323, 0);
+         this.layoutItemExportToExcel.Location = new System.Drawing.Point(277, 0);
          this.layoutItemExportToExcel.Name = "layoutItemExportToExcel";
-         this.layoutItemExportToExcel.Size = new System.Drawing.Size(324, 31);
+         this.layoutItemExportToExcel.Size = new System.Drawing.Size(278, 26);
          this.layoutItemExportToExcel.Text = "layoutControlItem2";
          this.layoutItemExportToExcel.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemExportToExcel.TextVisible = false;
@@ -223,59 +231,51 @@ namespace PKSim.UI.Views.Simulations
          this.emptySpaceItem.CustomizationFormText = "emptySpaceItem";
          this.emptySpaceItem.Location = new System.Drawing.Point(0, 0);
          this.emptySpaceItem.Name = "emptySpaceItem";
-         this.emptySpaceItem.Size = new System.Drawing.Size(323, 31);
+         this.emptySpaceItem.Size = new System.Drawing.Size(277, 26);
          this.emptySpaceItem.TextSize = new System.Drawing.Size(0, 0);
          // 
          // layoutControlItemGlobalPKAnalysis
          // 
          this.layoutControlItemGlobalPKAnalysis.Control = this.layoutControl1;
-         this.layoutControlItemGlobalPKAnalysis.Location = new System.Drawing.Point(0, 51);
+         this.layoutControlItemGlobalPKAnalysis.Location = new System.Drawing.Point(0, 43);
          this.layoutControlItemGlobalPKAnalysis.Name = "layoutControlItemGlobalPKAnalysis";
-         this.layoutControlItemGlobalPKAnalysis.Size = new System.Drawing.Size(647, 153);
-         this.layoutControlItemGlobalPKAnalysis.TextSize = new System.Drawing.Size(196, 16);
+         this.layoutControlItemGlobalPKAnalysis.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
+         this.layoutControlItemGlobalPKAnalysis.Size = new System.Drawing.Size(555, 122);
+         this.layoutControlItemGlobalPKAnalysis.TextSize = new System.Drawing.Size(167, 13);
          // 
-         // splitterItem1
+         // splitter
          // 
-         this.splitterItem1.AllowHotTrack = true;
-         this.splitterItem1.Location = new System.Drawing.Point(0, 204);
-         this.splitterItem1.Name = "splitterItem1";
-         this.splitterItem1.Size = new System.Drawing.Size(647, 12);
+         this.splitter.AllowHotTrack = true;
+         this.splitter.Location = new System.Drawing.Point(0, 165);
+         this.splitter.Name = "splitter";
+         this.splitter.Size = new System.Drawing.Size(555, 10);
          // 
          // layoutControlItem1
          // 
          this.layoutControlItem1.Control = this.populationPKAnalysisXtraTabControl;
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 216);
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 175);
          this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(647, 370);
+         this.layoutControlItem1.Size = new System.Drawing.Size(555, 301);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
-         // 
-         // labelControlGlobalPKAnalysisDescription
-         // 
-         this.labelControlGlobalPKAnalysisDescription.Location = new System.Drawing.Point(2, 33);
-         this.labelControlGlobalPKAnalysisDescription.Name = "labelControlGlobalPKAnalysisDescription";
-         this.labelControlGlobalPKAnalysisDescription.Size = new System.Drawing.Size(283, 20);
-         this.labelControlGlobalPKAnalysisDescription.StyleController = this.layoutControl;
-         this.labelControlGlobalPKAnalysisDescription.TabIndex = 8;
-         this.labelControlGlobalPKAnalysisDescription.Text = "labelControlGlobalPKAnalysisDescription";
          // 
          // layoutControlItemGlobalPKAnalysisDescription
          // 
          this.layoutControlItemGlobalPKAnalysisDescription.Control = this.labelControlGlobalPKAnalysisDescription;
-         this.layoutControlItemGlobalPKAnalysisDescription.Location = new System.Drawing.Point(0, 31);
+         this.layoutControlItemGlobalPKAnalysisDescription.Location = new System.Drawing.Point(0, 26);
          this.layoutControlItemGlobalPKAnalysisDescription.Name = "layoutControlItemGlobalPKAnalysisDescription";
-         this.layoutControlItemGlobalPKAnalysisDescription.Size = new System.Drawing.Size(647, 20);
+         this.layoutControlItemGlobalPKAnalysisDescription.Size = new System.Drawing.Size(555, 17);
          this.layoutControlItemGlobalPKAnalysisDescription.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemGlobalPKAnalysisDescription.TextVisible = false;
          // 
          // PopulationPKAnalysisView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
-         this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+         this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.Name = "PopulationPKAnalysisView";
-         this.Size = new System.Drawing.Size(647, 586);
+         this.Size = new System.Drawing.Size(555, 476);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
@@ -296,7 +296,7 @@ namespace PKSim.UI.Views.Simulations
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemExportToExcel)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemGlobalPKAnalysis)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.splitterItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitter)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemGlobalPKAnalysisDescription)).EndInit();
          this.ResumeLayout(false);
@@ -315,7 +315,7 @@ namespace PKSim.UI.Views.Simulations
       private DevExpress.XtraLayout.LayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemGlobalPKAnalysis;
-      private DevExpress.XtraLayout.SplitterItem splitterItem1;
+      private DevExpress.XtraLayout.SplitterItem splitter;
       private OSPSuite.UI.Controls.UxPanelControl globalPKParametersPanelControl;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraTab.XtraTabControl populationPKAnalysisXtraTabControl;

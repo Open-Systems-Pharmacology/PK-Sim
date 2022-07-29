@@ -36,20 +36,20 @@ namespace PKSim.UI.Views.Simulations
          this.pivotGrid = new OSPSuite.UI.Controls.PKAnalysisPivotGridControl();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemPivotGrid = new DevExpress.XtraLayout.LayoutControlItem();
+         this.groupWarning = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
          this.layoutControlItemLabel = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
-         this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
-         this.groupWarning = new DevExpress.XtraLayout.LayoutControlGroup();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.pivotGrid)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPivotGrid)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.groupWarning)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemLabel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.groupWarning)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
@@ -66,9 +66,9 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl1";
          // 
-         // labelControl
+         // lblWarning
          // 
-         this.lblWarning.Location = new System.Drawing.Point(305, 309);
+         this.lblWarning.Location = new System.Drawing.Point(305, 308);
          this.lblWarning.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.lblWarning.Name = "lblWarning";
          this.lblWarning.Size = new System.Drawing.Size(57, 13);
@@ -79,9 +79,9 @@ namespace PKSim.UI.Views.Simulations
          // pivotGrid
          // 
          this.pivotGrid.ExceptionManager = null;
-         this.pivotGrid.Location = new System.Drawing.Point(105, 0);
+         this.pivotGrid.Location = new System.Drawing.Point(107, 0);
          this.pivotGrid.Name = "pivotGrid";
-         this.pivotGrid.Size = new System.Drawing.Size(562, 217);
+         this.pivotGrid.Size = new System.Drawing.Size(560, 217);
          this.pivotGrid.TabIndex = 4;
          // 
          // layoutControlGroup
@@ -107,32 +107,6 @@ namespace PKSim.UI.Views.Simulations
          this.layoutItemPivotGrid.Size = new System.Drawing.Size(667, 217);
          this.layoutItemPivotGrid.TextSize = new System.Drawing.Size(95, 13);
          // 
-         // layoutControlItemLabel
-         // 
-         this.layoutControlItemLabel.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
-         this.layoutControlItemLabel.Control = this.lblWarning;
-         this.layoutControlItemLabel.Location = new System.Drawing.Point(0, 80);
-         this.layoutControlItemLabel.Name = "layoutControlItem1";
-         this.layoutControlItemLabel.Size = new System.Drawing.Size(645, 17);
-         this.layoutControlItemLabel.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemLabel.TextVisible = false;
-         // 
-         // emptySpaceItem1
-         // 
-         this.emptySpaceItem1.AllowHotTrack = false;
-         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 97);
-         this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(645, 81);
-         this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
-         // 
-         // emptySpaceItem2
-         // 
-         this.emptySpaceItem2.AllowHotTrack = false;
-         this.emptySpaceItem2.Location = new System.Drawing.Point(0, 0);
-         this.emptySpaceItem2.Name = "emptySpaceItem2";
-         this.emptySpaceItem2.Size = new System.Drawing.Size(645, 80);
-         this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
-         // 
          // groupWarning
          // 
          this.groupWarning.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
@@ -141,8 +115,36 @@ namespace PKSim.UI.Views.Simulations
             this.emptySpaceItem1});
          this.groupWarning.Location = new System.Drawing.Point(0, 217);
          this.groupWarning.Name = "groupWarning";
+         this.groupWarning.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.groupWarning.Size = new System.Drawing.Size(667, 198);
+         this.groupWarning.Spacing = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.groupWarning.TextVisible = false;
+         // 
+         // emptySpaceItem2
+         // 
+         this.emptySpaceItem2.AllowHotTrack = false;
+         this.emptySpaceItem2.Location = new System.Drawing.Point(0, 0);
+         this.emptySpaceItem2.Name = "emptySpaceItem2";
+         this.emptySpaceItem2.Size = new System.Drawing.Size(665, 88);
+         this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
+         // 
+         // layoutControlItemLabel
+         // 
+         this.layoutControlItemLabel.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Center;
+         this.layoutControlItemLabel.Control = this.lblWarning;
+         this.layoutControlItemLabel.Location = new System.Drawing.Point(0, 88);
+         this.layoutControlItemLabel.Name = "layoutControlItem1";
+         this.layoutControlItemLabel.Size = new System.Drawing.Size(665, 17);
+         this.layoutControlItemLabel.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItemLabel.TextVisible = false;
+         // 
+         // emptySpaceItem1
+         // 
+         this.emptySpaceItem1.AllowHotTrack = false;
+         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 105);
+         this.emptySpaceItem1.Name = "emptySpaceItem1";
+         this.emptySpaceItem1.Size = new System.Drawing.Size(665, 91);
+         this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
          // 
          // GlobalPKAnalysisView
          // 
@@ -158,10 +160,10 @@ namespace PKSim.UI.Views.Simulations
          ((System.ComponentModel.ISupportInitialize)(this.pivotGrid)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPivotGrid)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.groupWarning)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemLabel)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.groupWarning)).EndInit();
          this.ResumeLayout(false);
 
       }

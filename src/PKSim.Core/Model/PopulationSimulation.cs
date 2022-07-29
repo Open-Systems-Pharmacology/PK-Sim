@@ -192,6 +192,8 @@ namespace PKSim.Core.Model
 
       public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
 
+      public bool SupportsMultipleAggregations { get; }=true;
+
       public virtual int NumberOfItems => Population.NumberOfItems;
 
       public virtual ParameterDistributionSettingsCache SelectedDistributions => Population.SelectedDistributions;

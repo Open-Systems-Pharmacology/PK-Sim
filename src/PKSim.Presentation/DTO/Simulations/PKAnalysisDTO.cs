@@ -14,7 +14,7 @@ namespace PKSim.Presentation.DTO.Simulations
 
       public DataTable DataTable
       {
-         get { return _dataTable; }
+         get => _dataTable;
          private set
          {
             _dataTable = value;

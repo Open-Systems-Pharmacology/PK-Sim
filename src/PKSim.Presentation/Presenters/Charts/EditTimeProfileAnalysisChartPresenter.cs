@@ -183,36 +183,35 @@ namespace PKSim.Presentation.Presenters.Charts
          _timeProfileAnalysisChartView.ShowPKAnalysisView();
       }
 
-      private bool populationDataCollectorSupportsDifferentAggregations(IPopulationDataCollector populationDataCollector)
-      {
-         return populationDataCollector is PopulationSimulation;
-      }
 
-      private IEnumerable<QuantityPKParameter> extractPKParameters(PopulationSimulation populationSimulation)
+      private IReadOnlyList<QuantityPKParameter> extractPKParameters(PopulationSimulation populationSimulation)
       {
          var fields = PopulationAnalysisChart.PopulationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
-         return fields.SelectMany(x => populationSimulation.PKAnalyses.AllPKParametersFor(x));
+         return fields.SelectMany(x => populationSimulation.PKAnalyses.AllPKParametersFor(x)).ToList();
       }
 
       private void calculatePKAnalysis()
       {
          var chartData = CreateChartData();
+         _pkAnalysisPresenter.PKAnalysisOnIndividualsVisible = false;
          _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(PopulationDataCollector, chartData);
-         _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = false;
-         if (!_pKAnalysesTask.PopulationDataCollectorSupportsDifferentAggregations(PopulationDataCollector))
+
+         if (!PopulationDataCollector.SupportsMultipleAggregations)
             return;
 
-         _pkAnalysisPresenter.PKAnalysisOnIndividualsEnabled = true;
+         _pkAnalysisPresenter.PKAnalysisOnIndividualsVisible = true;
 
-         var pkParameters = extractPKParameters(PopulationDataCollector.DowncastTo<PopulationSimulation>());
+         //We are assuming using a population simulation from now on because we support  multiple aggregations
+         var simulation = PopulationDataCollector.DowncastTo<PopulationSimulation>();
+         var pkParameters = extractPKParameters(simulation);
          if (!pkParameters.Any())
             return;
 
          var captionPrefix = PopulationAnalysisChart.PopulationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
 
          _pkAnalysisPresenter.CalculatePKAnalysisOnIndividuals(
-            PopulationDataCollector, 
-            _pKAnalysesTask.AggregatePKAnalysis(PopulationDataCollector as Simulation, pkParameters, PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, captionPrefix[0])
+            simulation, 
+            _pKAnalysesTask.AggregatePKAnalysis(simulation, pkParameters, PopulationAnalysisChart.PopulationAnalysis.SelectedStatistics, captionPrefix[0])
          );
       }
 

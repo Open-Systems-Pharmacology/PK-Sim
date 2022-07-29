@@ -2,6 +2,7 @@
 using System.Linq;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -15,24 +16,20 @@ namespace PKSim.Presentation.Presenters.Simulations
    public interface IPopulationPKAnalysisPresenter : IPKAnalysisPresenter
    {
       void CalculatePKAnalysisOnCurves(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData);
-      bool PKAnalysisOnIndividualsEnabled { get; set; }
-      void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pks);
+      bool PKAnalysisOnIndividualsVisible { set; }
+      void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IReadOnlyList<PopulationPKAnalysis> pkAnalyses);
       void HandleTabChanged();
-      bool SupportsDifferentAggregations();
    }
 
    public class PopulationPKAnalysisPresenter : PKAnalysisPresenter<IPopulationPKAnalysisView, IPopulationPKAnalysisPresenter>, IPopulationPKAnalysisPresenter
    {
       private readonly IPKAnalysesTask _pkAnalysesTask;
       private readonly IPKAnalysisExportTask _exportTask;
-      private readonly List<PopulationPKAnalysis> _allAnalysesOnCurves;
-      private readonly List<PopulationPKAnalysis> _allAnalysesOnIndividuals;
       private readonly List<PopulationPKAnalysis> _allPKAnalysesOnCurves = new List<PopulationPKAnalysis>();
       private readonly List<PopulationPKAnalysis> _allPKAnalysesOnIndividuals = new List<PopulationPKAnalysis>();
       private IPopulationDataCollector _populationDataCollector;
       private readonly IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
       private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
-      private bool _pkAnalysisOnIndividualsEnabled = true;
 
       public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysesTask pkAnalysesTask,
          IPKAnalysisExportTask exportTask, IPopulationPKAnalysisToPKAnalysisDTOMapper populationPKAnalysisToDTOMapper,
@@ -42,8 +39,6 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          _pkAnalysesTask = pkAnalysesTask;
          _exportTask = exportTask;
-         _allAnalysesOnCurves = new List<PopulationPKAnalysis>();
-         _allAnalysesOnIndividuals = new List<PopulationPKAnalysis>();
          _populationPKAnalysisToDTOMapper = populationPKAnalysisToDTOMapper;
          _globalPKAnalysisPresenter = globalPKAnalysisPresenter;
          AddSubPresenters(_globalPKAnalysisPresenter);
@@ -52,34 +47,32 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void CalculatePKAnalysisOnCurves(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData)
       {
-         CalculatePKAnalysis(populationDataCollector, _allAnalysesOnCurves, _pkAnalysesTask.CalculateFor(populationDataCollector, timeProfileChartData), _allPKAnalysesOnCurves);
+         calculatePKAnalysis(populationDataCollector,  _pkAnalysesTask.CalculateFor(populationDataCollector, timeProfileChartData), _allPKAnalysesOnCurves);
       }
 
-      public void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IEnumerable<PopulationPKAnalysis> pkAnalyses)
+      public void CalculatePKAnalysisOnIndividuals(IPopulationDataCollector populationDataCollector, IReadOnlyList<PopulationPKAnalysis> pkAnalyses)
       {
-         CalculatePKAnalysis(populationDataCollector, _allAnalysesOnIndividuals, pkAnalyses, _allPKAnalysesOnIndividuals);
+         calculatePKAnalysis(populationDataCollector,  pkAnalyses, _allPKAnalysesOnIndividuals);
       }
 
-      public bool PKAnalysisOnIndividualsEnabled
+      public bool PKAnalysisOnIndividualsVisible
       {
-         get { return _pkAnalysisOnIndividualsEnabled; }
-         set
-         {
-            _pkAnalysisOnIndividualsEnabled = value;
-            View.EnablePKAnalysisOnIndividualsTab(value);
-         }
+         set => View.ShowPKAnalysisOnIndividuals(value);
       }
 
-      private void CalculatePKAnalysis(IPopulationDataCollector populationDataCollector, List<PopulationPKAnalysis> allAnalysis, IEnumerable<PopulationPKAnalysis> sourcePKAnalyses, List<PopulationPKAnalysis> targetPKAnalyses)
+      private void calculatePKAnalysis(IPopulationDataCollector populationDataCollector,  IEnumerable<PopulationPKAnalysis> sourcePKAnalyses, List<PopulationPKAnalysis> targetPKAnalyses)
       {
-         allAnalysis.Clear();
          _populationDataCollector = populationDataCollector;
          targetPKAnalyses.Clear();
          targetPKAnalyses.AddRange(sourcePKAnalyses);
-         allAnalysis.AddRange(targetPKAnalyses);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
-         _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] {populationDataCollector as Simulation});
+
+         if (_populationDataCollector.SupportsMultipleAggregations)
+         {
+            //We downcast here as this should only be made available for simulations and not comparisons
+            _globalPKAnalysisPresenter.CalculatePKAnalysis(new[] { populationDataCollector.DowncastTo<Simulation>() });
+         }
       }
 
       public void HandleTabChanged()
@@ -92,17 +85,14 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       protected override void BindToPKAnalysis()
       {
-         _view.BindTo(new IntegratedPKAnalysisDTO()
+         _view.BindTo(new IntegratedPKAnalysisDTO
          {
-            OnCurves = _populationPKAnalysisToDTOMapper.MapFrom(_allAnalysesOnCurves),
-            OnIndividuals = _populationPKAnalysisToDTOMapper.MapFrom(_allAnalysesOnIndividuals)
+            OnCurves = _populationPKAnalysisToDTOMapper.MapFrom(_allPKAnalysesOnCurves),
+            OnIndividuals = _populationPKAnalysisToDTOMapper.MapFrom(_allPKAnalysesOnIndividuals)
          });
       }
 
-      protected override IEnumerable<PKAnalysis> AllPKAnalyses
-      {
-         get { return (View.IsOnCurvesSelected ? _allPKAnalysesOnCurves : _allPKAnalysesOnIndividuals).Select(x => x.PKAnalysis); }
-      }
+      protected override IEnumerable<PKAnalysis> AllPKAnalyses => (View.IsOnCurvesSelected ? _allPKAnalysesOnCurves : _allPKAnalysesOnIndividuals).Select(x => x.PKAnalysis);
 
       public override void ExportToExcel()
       {
@@ -110,10 +100,5 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       public override string PresentationKey => PresenterConstants.PresenterKeys.PopulationPKAnalysisPresenter;
-
-      public bool SupportsDifferentAggregations()
-      {
-         return _pkAnalysesTask?.PopulationDataCollectorSupportsDifferentAggregations(_populationDataCollector) ?? false;
-      }
    }
 }

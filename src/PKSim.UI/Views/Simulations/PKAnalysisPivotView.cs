@@ -19,7 +19,7 @@ namespace PKSim.UI.Views.Simulations
    {
       private readonly IPKAnalysisToolTipManager _pkAnalysisToolTipManager;
       protected IToolTipCreator _toolTipCreator;
-      protected PivotGridUnitsMenuBinder _columUnitsMenuBinder;
+      protected PivotGridUnitsMenuBinder _columnUnitsMenuBinder;
       private IPKAnalysisPresenter _presenter;
       private readonly PivotGridField _valueField;
       private readonly RepositoryItemIconTextEdit _warningRepositoryEdit;
@@ -43,7 +43,7 @@ namespace PKSim.UI.Views.Simulations
          pivotGrid.AddField(curveField);
          pivotGrid.SetParameterDisplay(s => _presenter.DisplayNameFor(s));
          pivotGrid.ValueImages = imageListRetriever.AllImages16x16;
-         _columUnitsMenuBinder = new PivotGridUnitsMenuBinder(pivotGrid, parameterField);
+         _columnUnitsMenuBinder = new PivotGridUnitsMenuBinder(pivotGrid, parameterField);
          pivotGrid.PopupMenuShowing += (o, e) => OnEvent(() => onPopupMenuShowing(e));
          pivotGrid.CustomCellEdit += (o, e) => OnEvent(onCustomCellEdit, e);
          _warningRepositoryEdit = new RepositoryItemIconTextEdit
@@ -95,7 +95,7 @@ namespace PKSim.UI.Views.Simulations
       public void BindUnitsMenuToPresenter(IPKAnalysisPresenter presenter)
       {
          _presenter = presenter;
-         _columUnitsMenuBinder.BindTo(presenter);
+         _columnUnitsMenuBinder.BindTo(presenter);
       }
 
       private bool hasWarning(PivotDrillDownDataSource ds)

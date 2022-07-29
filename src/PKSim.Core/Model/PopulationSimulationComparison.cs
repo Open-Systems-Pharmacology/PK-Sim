@@ -179,6 +179,8 @@ namespace PKSim.Core.Model
 
       public IReadOnlyList<Compound> Compounds => _allSimulations.SelectMany(sim => sim.Compounds).ToList();
 
+      public bool SupportsMultipleAggregations { get; } = false;
+
       private class QuantityPKParameterComparerByName : IEqualityComparer<QuantityPKParameter>
       {
          public bool Equals(QuantityPKParameter x, QuantityPKParameter y)
