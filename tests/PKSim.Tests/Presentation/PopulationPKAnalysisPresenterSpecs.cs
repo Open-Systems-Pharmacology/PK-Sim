@@ -1,25 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Chart;
-using PKSim.Core.Mappers;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Simulations;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
+using PKSim.Core;
+using PKSim.Core.Chart;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Model.PopulationAnalyses;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.DTO.Simulations;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.Views.Simulations;
 using TimeProfileCurveData = PKSim.Core.Chart.CurveData<PKSim.Core.Chart.TimeProfileXValue, PKSim.Core.Chart.TimeProfileYValue>;
 
 namespace PKSim.Presentation
@@ -43,6 +44,7 @@ namespace PKSim.Presentation
       private IPKParameterRepository _pkParameterRepository;
       protected IPresentationSettingsTask _presenterSettingsTask;
       protected IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
+      protected PopulationStatisticalAnalysis _populationStatisticalAnalysis;
 
       protected override void Context()
       {
@@ -72,6 +74,7 @@ namespace PKSim.Presentation
             new PopulationPKAnalysis(_curve2, _pk2),
          };
 
+         _populationStatisticalAnalysis = new PopulationStatisticalAnalysis();
 
          A.CallTo(() => _view.IsOnCurvesSelected).Returns(true);
          A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationDataCollector, _timeProfileChartData, true)).Returns(_allPKAnalysis);
@@ -107,7 +110,7 @@ namespace PKSim.Presentation
       protected override void Because()
       {
          base.Because();
-         sut.CalculatePKAnalysisOnCurves(_populationDataCollector, _timeProfileChartData);
+         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]
@@ -116,21 +119,17 @@ namespace PKSim.Presentation
          _pkSimParameter.DisplayUnit.ShouldBeEqualTo(_newUnit);
       }
 
-      [Observation]
-      public void should_calculate_pk_analysis()
-      {
-         A.CallTo(() => _globalPKAnalysisPresenter.CalculatePKAnalysis(A<IReadOnlyList<Simulation>>.Ignored)).MustHaveHappened();
-      }
    }
 
    public class When_the_population_pk_analysis_presenter_is_exporting_the_analysis_to_excel : concern_for_PopulationPKAnalysisPresenter
    {
+
       protected override void Context()
       {
          base.Context();
 
          A.CallTo(() => _populationDataCollector.Name).Returns("TOTO");
-         sut.CalculatePKAnalysisOnCurves(_populationDataCollector, _timeProfileChartData);
+         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       protected override void Because()
@@ -154,7 +153,7 @@ namespace PKSim.Presentation
          base.Context();
          _newDisplayUnit = A.Fake<Unit>();
          _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC_tEnd));
-         sut.CalculatePKAnalysisOnCurves(_populationDataCollector, _timeProfileChartData);
+         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       protected override void Because()
@@ -184,7 +183,7 @@ namespace PKSim.Presentation
          base.Context();
          _newDisplayUnit = A.Fake<Unit>();
          _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC_tEnd));
-         sut.CalculatePKAnalysisOnCurves(_populationDataCollector, _timeProfileChartData);
+         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]
@@ -210,7 +209,7 @@ namespace PKSim.Presentation
            .WithName(Constants.PKParameters.AUC_tEnd)
            .WithDimension(_dimension));
 
-         sut.CalculatePKAnalysisOnCurves(_populationDataCollector, _timeProfileChartData);
+         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]
@@ -238,7 +237,7 @@ namespace PKSim.Presentation
             .WithName(Constants.PKParameters.AUC_tEnd)
             .WithDimension(_dimension));
          _pk1.Parameter(Constants.PKParameters.AUC_tEnd).DisplayUnit = A.Fake<Unit>();
-         sut.CalculatePKAnalysisOnCurves(_populationDataCollector, _timeProfileChartData);
+         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]

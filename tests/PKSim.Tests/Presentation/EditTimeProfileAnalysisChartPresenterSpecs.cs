@@ -44,7 +44,6 @@ namespace PKSim.Presentation
       protected PopulationStatisticalAnalysis _populationStatisticalAnalysis;
       protected IDimensionRepository _dimensionRepository;
       protected IPresentationSettingsTask _presenterSettingsTask;
-      protected IPKAnalysesTask _pkAnalysesTask;
       protected IStatisticalDataCalculator _statisticalDataCalculator;
       protected IRepresentationInfoRepository _representationInfoRepository;
 
@@ -61,11 +60,10 @@ namespace PKSim.Presentation
          _dimensionRepository = A.Fake<IDimensionRepository>();
 
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
-         _pkAnalysesTask = A.Fake<IPKAnalysesTask>();
          _statisticalDataCalculator = new StatisticalDataCalculator();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          sut = new EditTimeProfileAnalysisChartPresenter(_view, _timeProfilerChartPresenter, _timeProfileChartDataCreator,
-            _populationSimulationAnalysisStarter, _populationAnalysisTask, _colorGenerator, _observedDataTask, _pkAnalysisPresenter, _dimensionRepository, _presenterSettingsTask, _pkAnalysesTask);
+            _populationSimulationAnalysisStarter, _populationAnalysisTask, _colorGenerator, _observedDataTask, _pkAnalysisPresenter, _dimensionRepository, _presenterSettingsTask);
 
          _timeProfileAnalysisChart = new TimeProfileAnalysisChart();
          _populationStatisticalAnalysis = new PopulationStatisticalAnalysis();
@@ -162,7 +160,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_calculate_the_pk_analysis_for_the_current_chart_data()
       {
-         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(_populationDataCollector, _chartData)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalyses(_populationDataCollector, _chartData, _populationStatisticalAnalysis)).MustHaveHappened();
       }
 
       [Observation]
@@ -251,7 +249,7 @@ namespace PKSim.Presentation
       [Observation]
       public void the_analysis_should_be_updated_at_the_same_time()
       {
-         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalysisOnCurves(A<IPopulationDataCollector>._, A<ChartData<TimeProfileXValue, TimeProfileYValue>>._)).MustHaveHappened();
+         A.CallTo(() => _pkAnalysisPresenter.CalculatePKAnalyses(A<IPopulationDataCollector>._, A<ChartData<TimeProfileXValue, TimeProfileYValue>>._, A<PopulationStatisticalAnalysis>._)).MustHaveHappened();
       }
    }
 
