@@ -165,6 +165,7 @@ namespace PKSim.IntegrationTests
          if (type == typeof(SystemicProcessTypeId)) return true;
          if (type == typeof(CategoryType)) return true;
          if (type == typeof(ProcessActionType)) return true;
+         if (type == typeof(LoadTemplateWithReference)) return true;
 
          //TODO not serialized yet
          if (type == typeof(QualificationPlan)) return true;
