@@ -34,9 +34,9 @@ namespace PKSim.UI.Views.Simulations
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.populationPKAnalysisXtraTabControl = new DevExpress.XtraTab.XtraTabControl();
-         this.xtraTabPageOnCurve = new DevExpress.XtraTab.XtraTabPage();
+         this.pageOnCurves = new DevExpress.XtraTab.XtraTabPage();
          this.populationPKAnalysisPanelOnCurve = new DevExpress.XtraEditors.PanelControl();
-         this.xtraTabPageOnIndividuals = new DevExpress.XtraTab.XtraTabPage();
+         this.pageOnIndividuals = new DevExpress.XtraTab.XtraTabPage();
          this.populationPKAnalysisPanelOnIndividuals = new DevExpress.XtraEditors.PanelControl();
          this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
          this.globalPKParametersPanelControl = new OSPSuite.UI.Controls.UxPanelControl();
@@ -56,9 +56,9 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisXtraTabControl)).BeginInit();
          this.populationPKAnalysisXtraTabControl.SuspendLayout();
-         this.xtraTabPageOnCurve.SuspendLayout();
+         this.pageOnCurves.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnCurve)).BeginInit();
-         this.xtraTabPageOnIndividuals.SuspendLayout();
+         this.pageOnIndividuals.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnIndividuals)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
          this.layoutControl1.SuspendLayout();
@@ -95,20 +95,20 @@ namespace PKSim.UI.Views.Simulations
          // 
          this.populationPKAnalysisXtraTabControl.Location = new System.Drawing.Point(2, 218);
          this.populationPKAnalysisXtraTabControl.Name = "populationPKAnalysisXtraTabControl";
-         this.populationPKAnalysisXtraTabControl.SelectedTabPage = this.xtraTabPageOnCurve;
+         this.populationPKAnalysisXtraTabControl.SelectedTabPage = this.pageOnCurves;
          this.populationPKAnalysisXtraTabControl.Size = new System.Drawing.Size(643, 366);
          this.populationPKAnalysisXtraTabControl.TabIndex = 0;
          this.populationPKAnalysisXtraTabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
-            this.xtraTabPageOnCurve,
-            this.xtraTabPageOnIndividuals});
+            this.pageOnCurves,
+            this.pageOnIndividuals});
          // 
          // xtraTabPageOnCurve
          // 
-         this.xtraTabPageOnCurve.Controls.Add(this.populationPKAnalysisPanelOnCurve);
-         this.xtraTabPageOnCurve.Name = "xtraTabPageOnCurve";
-         this.xtraTabPageOnCurve.Size = new System.Drawing.Size(641, 336);
-         this.xtraTabPageOnCurve.Text = "On curves";
-         this.xtraTabPageOnCurve.Tooltip = "PK parameter values are calculated for the aggregated curves as shown in the char" +
+         this.pageOnCurves.Controls.Add(this.populationPKAnalysisPanelOnCurve);
+         this.pageOnCurves.Name = "pageOnCurves";
+         this.pageOnCurves.Size = new System.Drawing.Size(641, 336);
+         this.pageOnCurves.Text = "On curves";
+         this.pageOnCurves.Tooltip = "PK parameter values are calculated for the aggregated curves as shown in the char" +
     "t";
          // 
          // populationPKAnalysisPanelOnCurve
@@ -124,11 +124,11 @@ namespace PKSim.UI.Views.Simulations
          // 
          // xtraTabPageOnIndividuals
          // 
-         this.xtraTabPageOnIndividuals.Controls.Add(this.populationPKAnalysisPanelOnIndividuals);
-         this.xtraTabPageOnIndividuals.Name = "xtraTabPageOnIndividuals";
-         this.xtraTabPageOnIndividuals.Size = new System.Drawing.Size(641, 336);
-         this.xtraTabPageOnIndividuals.Text = "On individuals";
-         this.xtraTabPageOnIndividuals.Tooltip = "PK parameter values are aggregated from individual values";
+         this.pageOnIndividuals.Controls.Add(this.populationPKAnalysisPanelOnIndividuals);
+         this.pageOnIndividuals.Name = "pageOnIndividuals";
+         this.pageOnIndividuals.Size = new System.Drawing.Size(641, 336);
+         this.pageOnIndividuals.Text = "On individuals";
+         this.pageOnIndividuals.Tooltip = "PK parameter values are aggregated from individual values";
          // 
          // populationPKAnalysisPanelOnIndividuals
          // 
@@ -281,11 +281,11 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisXtraTabControl)).EndInit();
          this.populationPKAnalysisXtraTabControl.ResumeLayout(false);
-         this.xtraTabPageOnCurve.ResumeLayout(false);
-         this.xtraTabPageOnCurve.PerformLayout();
+         this.pageOnCurves.ResumeLayout(false);
+         this.pageOnCurves.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnCurve)).EndInit();
-         this.xtraTabPageOnIndividuals.ResumeLayout(false);
-         this.xtraTabPageOnIndividuals.PerformLayout();
+         this.pageOnIndividuals.ResumeLayout(false);
+         this.pageOnIndividuals.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnIndividuals)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
          this.layoutControl1.ResumeLayout(false);
@@ -319,8 +319,8 @@ namespace PKSim.UI.Views.Simulations
       private OSPSuite.UI.Controls.UxPanelControl globalPKParametersPanelControl;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraTab.XtraTabControl populationPKAnalysisXtraTabControl;
-      private DevExpress.XtraTab.XtraTabPage xtraTabPageOnCurve;
-      private DevExpress.XtraTab.XtraTabPage xtraTabPageOnIndividuals;
+      private DevExpress.XtraTab.XtraTabPage pageOnCurves;
+      private DevExpress.XtraTab.XtraTabPage pageOnIndividuals;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private DevExpress.XtraEditors.LabelControl labelControlGlobalPKAnalysisDescription;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemGlobalPKAnalysisDescription;

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain.PKAnalyses;
+using OSPSuite.Presentation.Services;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain.PKAnalyses;
-using OSPSuite.Presentation.Services;
-using PKSim.Presentation.DTO.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -27,15 +27,15 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IPKAnalysisExportTask _exportTask;
       private readonly List<PopulationPKAnalysis> _allAnalysesOnCurves;
       private readonly List<PopulationPKAnalysis> _allAnalysesOnIndividuals;
-      private List<PopulationPKAnalysis> _allPKAnalysesOnCurves = new List<PopulationPKAnalysis>();
-      private List<PopulationPKAnalysis> _allPKAnalysesOnIndividuals = new List<PopulationPKAnalysis>();
+      private readonly List<PopulationPKAnalysis> _allPKAnalysesOnCurves = new List<PopulationPKAnalysis>();
+      private readonly List<PopulationPKAnalysis> _allPKAnalysesOnIndividuals = new List<PopulationPKAnalysis>();
       private IPopulationDataCollector _populationDataCollector;
       private readonly IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
       private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
       private bool _pkAnalysisOnIndividualsEnabled = true;
 
-      public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysesTask pkAnalysesTask, 
-         IPKAnalysisExportTask exportTask, IPopulationPKAnalysisToPKAnalysisDTOMapper populationPKAnalysisToDTOMapper, 
+      public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysesTask pkAnalysesTask,
+         IPKAnalysisExportTask exportTask, IPopulationPKAnalysisToPKAnalysisDTOMapper populationPKAnalysisToDTOMapper,
          IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask,
          IGlobalPKAnalysisPresenter globalPKAnalysisPresenter)
          : base(view, pkParameterRepository, presentationSettingsTask)
@@ -60,11 +60,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          CalculatePKAnalysis(populationDataCollector, _allAnalysesOnIndividuals, pkAnalyses, _allPKAnalysesOnIndividuals);
       }
 
-      public bool PKAnalysisOnIndividualsEnabled { 
-         get
-         {
-            return _pkAnalysisOnIndividualsEnabled;
-         }
+      public bool PKAnalysisOnIndividualsEnabled
+      {
+         get { return _pkAnalysisOnIndividualsEnabled; }
          set
          {
             _pkAnalysisOnIndividualsEnabled = value;
@@ -81,7 +79,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          allAnalysis.AddRange(targetPKAnalyses);
          LoadPreferredUnitsForPKAnalysis();
          BindToPKAnalysis();
-         _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] { populationDataCollector as Simulation });
+         _globalPKAnalysisPresenter.CalculatePKAnalysis(new Simulation[] {populationDataCollector as Simulation});
       }
 
       public void HandleTabChanged()

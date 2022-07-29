@@ -1,20 +1,20 @@
-﻿using OSPSuite.UI.Services;
-using OSPSuite.Utility.Exceptions;
+﻿using System.Drawing;
 using DevExpress.Data.PivotGrid;
 using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraLayout.Utils;
 using DevExpress.XtraPivotGrid;
+using OSPSuite.Assets;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Binders;
-using OSPSuite.Assets;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Presentation.Extensions;
-using DevExpress.XtraLayout.Utils;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -24,17 +24,15 @@ namespace PKSim.UI.Views.Simulations
       private readonly PivotGridField _compoundField;
       private readonly UxRepositoryItemButtonEdit _calculateBioAvailabilityRepository;
       private readonly UxRepositoryItemButtonEdit _calculateDDIRatioRepository;
-      private readonly PivotGridUnitsMenuBinder _columUnitsMenuBinder;
+      private readonly PivotGridUnitsMenuBinder _columnUnitsMenuBinder;
       private readonly PivotGridField _parameterField;
       private readonly PivotGridField _valueField;
       private readonly IPKAnalysisToolTipManager _pkAnalysisToolTipManager;
-      private RepositoryItemIconTextEdit _warningRepositoryEdit;
+      private readonly RepositoryItemIconTextEdit _warningRepositoryEdit;
 
       public GlobalPKAnalysisView(IPKAnalysisToolTipManager pkAnalysisToolTipManager, IExceptionManager exceptionManager, IImageListRetriever imageListRetriever)
       {
          InitializeComponent();
-
-         labelControl.Text = PKSimConstants.UI.RerunSimulationToSeeResults;
 
          pivotGrid.OptionsBehavior.EditorShowMode = EditorShowMode.MouseDown;
          pivotGrid.ExceptionManager = exceptionManager;
@@ -51,7 +49,7 @@ namespace PKSim.UI.Views.Simulations
          pivotGrid.AddField(_compoundField);
          pivotGrid.SetParameterDisplay(s => _presenter.DisplayNameFor(s));
          pivotGrid.ValueImages = imageListRetriever.AllImages16x16;
-         _columUnitsMenuBinder = new PivotGridUnitsMenuBinder(pivotGrid, _parameterField);
+         _columnUnitsMenuBinder = new PivotGridUnitsMenuBinder(pivotGrid, _parameterField);
          _pkAnalysisToolTipManager = pkAnalysisToolTipManager;
          _warningRepositoryEdit = new RepositoryItemIconTextEdit
          {
@@ -68,7 +66,6 @@ namespace PKSim.UI.Views.Simulations
          _pkAnalysisToolTipManager.CreateForPivotGrid(pivotGrid);
       }
 
- 
       private void calculateBioAvailability(ButtonPressedEventArgs e)
       {
          var compoundName = getCompoundNameFromCurrentFocusedCell();
@@ -124,19 +121,22 @@ namespace PKSim.UI.Views.Simulations
       private void showRightComponent(bool dataAvailable)
       {
          layoutItemPivotGrid.Visibility = LayoutVisibilityConvertor.FromBoolean(dataAvailable);
-         layoutControlItemLabel.Visibility = LayoutVisibilityConvertor.FromBoolean(!dataAvailable);
+         groupWarning.Visibility = LayoutVisibilityConvertor.FromBoolean(!dataAvailable);
       }
 
       public void AttachPresenter(IGlobalPKAnalysisPresenter presenter)
       {
          _presenter = presenter;
-         _columUnitsMenuBinder.BindTo(presenter);
+         _columnUnitsMenuBinder.BindTo(presenter);
       }
 
       public override void InitializeResources()
       {
          base.InitializeResources();
          layoutItemPivotGrid.TextVisible = false;
+         lblWarning.Text = PKSimConstants.UI.RerunSimulationToSeeResults;
+         lblWarning.Font = new Font(lblWarning.Font.Name, 15f);
+         layoutControlItemLabel.ContentVertAlignment = VertAlignment.Center;
       }
    }
 }
