@@ -223,4 +223,21 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_loading_a_snapshot_with_an_expression_profile_where_the_initial_concentration_was_overwritten : ContextWithLoadedSnapshot
+   {
+      private ExpressionProfile _expressionProfile;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadSnapshot("ind_expression_with_modified_initial_conc");
+         _expressionProfile = First<ExpressionProfile>();
+      }
+
+      [Observation]
+      public void should_have_been_able_to_load_the_profile()
+      {
+         _expressionProfile.ShouldNotBeNull();
+      }
+   }
 }
