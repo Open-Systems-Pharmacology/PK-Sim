@@ -127,6 +127,16 @@ namespace PKSim.Core.Model
       }
    }
 
+   public enum LoadTemplateWithReference
+   {
+      //Always load (default)
+      Load,
+      //never load
+      DoNotLoad,
+      //Always ask
+      Ask
+   }
+
    public class RemoteTemplates
    {
       public string Version { get; set; }
