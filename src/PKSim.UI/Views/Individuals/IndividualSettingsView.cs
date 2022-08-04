@@ -65,8 +65,8 @@ namespace PKSim.UI.Views.Individuals
          _repositoryForParameterValueVersions = new UxRepositoryItemComboBox(gridViewParameterValueVersions);
          _repositoryForCalculationMethods = new UxRepositoryItemComboBox(gridViewCalculationMethods);
 
-         gridViewParameterValueVersions.AllowsFiltering = false;
          gridViewCalculationMethods.AllowsFiltering = false;
+         gridViewCalculationMethods.VertScrollVisibility = ScrollVisibility.Never;
          gridViewParameterValueVersions.ShowColumnHeaders = false;
          gridViewCalculationMethods.ShowColumnHeaders = false;
          gridViewCalculationMethods.ShowRowIndicator = false;
@@ -210,7 +210,7 @@ namespace PKSim.UI.Views.Individuals
             _gridCalculationMethodsBinder.BindToSource(individualSettingsDTO.CalculationMethods);
          });
 
-         layoutItemCalculationMethods.AdjustControlHeight(gridViewCalculationMethods.OptimalHeight, layoutControl);
+         layoutItemCalculationMethods.AdjustGridViewHeight(gridViewCalculationMethods, layoutControl);
 
          settingsChanged();
       }
@@ -278,6 +278,11 @@ namespace PKSim.UI.Views.Individuals
          control.Margin = uxAge.Margin;
          row.Height = tablePanel.RowFor(uxAge).Height;
          control.Height = cbSpecies.Height;
+      }
+
+      public void ResizePopulationSettingsView()
+      {
+         layoutItemPopulationProperties.AdjustTablePanelHeight(tablePanel, layoutControl);
       }
 
       public bool HeightAndBMIVisible

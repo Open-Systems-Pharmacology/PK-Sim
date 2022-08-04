@@ -20,6 +20,7 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
+using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
 
@@ -133,7 +134,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustHeight()
       {
-         layoutItemCompoundTypes.AdjustControlHeight( gridView.OptimalHeight, layoutControl);
+         layoutItemCompoundTypes.AdjustGridViewHeight(gridView, layoutControl);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
@@ -142,6 +143,6 @@ namespace PKSim.UI.Views.Compounds
          gridView.LayoutChanged();
       }
 
-      public int OptimalHeight => layoutControlGroup.Height + layoutControl.Margin.All;
+      public int OptimalHeight => layoutControlGroup.Height + layoutControl.Margin.Vertical;
    }
 }

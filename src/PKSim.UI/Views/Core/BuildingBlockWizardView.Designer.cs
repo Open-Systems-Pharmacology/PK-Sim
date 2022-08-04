@@ -48,40 +48,6 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemTabControl)).BeginInit();
          this.SuspendLayout();
          // 
-         // btnPrevious
-         // 
-         this.btnPrevious.Location = new System.Drawing.Point(22, 12);
-         this.btnPrevious.Size = new System.Drawing.Size(380, 22);
-         // 
-         // btnNext
-         // 
-         this.btnNext.Location = new System.Drawing.Point(406, 12);
-         this.btnNext.Size = new System.Drawing.Size(63, 22);
-         // 
-         // btnOk
-         // 
-         this.btnOk.Location = new System.Drawing.Point(473, 12);
-         this.btnOk.Size = new System.Drawing.Size(51, 22);
-         // 
-         // btnCancel
-         // 
-         this.btnCancel.Location = new System.Drawing.Point(528, 12);
-         this.btnCancel.Size = new System.Drawing.Size(119, 22);
-         // 
-         // layoutControlBase
-         // 
-         this.layoutControlBase.Location = new System.Drawing.Point(0, 504);
-         this.layoutControlBase.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(574, 236, 650, 400);
-         this.layoutControlBase.Size = new System.Drawing.Size(659, 46);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnPrevious, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnNext, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnOk, 0);
-         this.layoutControlBase.Controls.SetChildIndex(this.btnCancel, 0);
-         // 
-         // emptySpaceItemBase
-         // 
-         this.emptySpaceItemBase.Size = new System.Drawing.Size(10, 26);
-         // 
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;

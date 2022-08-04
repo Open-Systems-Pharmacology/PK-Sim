@@ -105,6 +105,7 @@ namespace PKSim.UI.Views
       {
          btnCreateBuildingBlock.InitWithImage(ApplicationIcons.Create, imageLocation: ImageLocation.MiddleCenter);
          btnLoadBuildingBlock.InitWithImage(ApplicationIcons.LoadFromTemplate, imageLocation: ImageLocation.MiddleCenter);
+         layoutControl.AutoScroll = false;
          layoutControl.BeginUpdate();
          layoutItemLoad.AdjustButtonSizeWithImageOnly();
          layoutItemCreate.AdjustButtonSizeWithImageOnly();

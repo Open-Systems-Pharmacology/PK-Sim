@@ -25,6 +25,7 @@ using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
+using static PKSim.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -194,7 +195,7 @@ namespace PKSim.UI.Views.Compounds
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
-      public virtual int OptimalHeight => _gridView.OptimalHeight + layoutItemGrid.Padding.Height;
+      public virtual int OptimalHeight => _gridView.OptimalHeight + COMPUTED_EXTRA_HEIGHT + layoutItemGrid.Padding.Height;
 
       public virtual void Repaint()
       {
