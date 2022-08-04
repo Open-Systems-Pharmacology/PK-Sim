@@ -33,6 +33,7 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder = new GridViewBinder<CompoundParameterSelectionDTO>(gridView);
          gridView.RowStyle += rowStyle;
          gridView.HorzScrollVisibility=ScrollVisibility.Never;
+         layoutControl.AutoScroll = false;
          _repositoryForParameterAlternatives.AllowDropDownWhenReadOnly = DefaultBoolean.False;
       }
 

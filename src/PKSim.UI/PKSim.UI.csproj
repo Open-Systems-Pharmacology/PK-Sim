@@ -79,7 +79,13 @@
     <Reference Include="Accessibility">
       <HintPath>..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\Accessibility\v4.0_4.0.0.0__b03f5f7f11d50a3a\Accessibility.dll</HintPath>
     </Reference>
+    <Reference Include="DevExpress.Sparkline.v21.2.Core">
+      <HintPath>..\..\..\..\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Sparkline.v21.2.Core\v4.0_21.2.3.0__b88d1754d700e49a\DevExpress.Sparkline.v21.2.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System.Data.Linq">
+      <HintPath>..\..\..\..\Windows\Microsoft.Net\assembly\GAC_MSIL\System.Data.Linq\v4.0_4.0.0.0__b77a5c561934e089\System.Data.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Deployment">
       <HintPath>..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Deployment\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Deployment.dll</HintPath>
     </Reference>
