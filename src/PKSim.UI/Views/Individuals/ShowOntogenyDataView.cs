@@ -1,15 +1,15 @@
-﻿using OSPSuite.DataBinding;
+﻿using DevExpress.Utils;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Services;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
-using DevExpress.Utils;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Individuals
 {
