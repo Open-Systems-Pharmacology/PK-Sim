@@ -210,7 +210,7 @@ namespace PKSim.UI.Views.Individuals
             _gridCalculationMethodsBinder.BindToSource(individualSettingsDTO.CalculationMethods);
          });
 
-         layoutItemCalculationMethods.AdjustControlHeight(gridViewCalculationMethods.OptimalHeight);
+         layoutItemCalculationMethods.AdjustControlHeight(layoutControl, gridViewCalculationMethods.OptimalHeight);
 
          settingsChanged();
       }

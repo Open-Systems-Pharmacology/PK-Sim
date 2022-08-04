@@ -70,7 +70,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustParametersHeight(int optimalHeight)
       {
-         layoutControl.DoInBatch(() => layoutItemParameters.AdjustControlHeight(optimalHeight));
+         layoutControl.DoInBatch(() => layoutItemParameters.AdjustControlHeight(layoutControl,  optimalHeight));
       }
 
       public string ProteinCaption

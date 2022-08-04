@@ -30,12 +30,12 @@ namespace PKSim.UI.Views.Simulations
       public void AddProcessView(IResizableView view)
       {
          _subViews.Add(view);
-         AddViewTo(layoutMainGroup, view);
+         AddViewTo(layoutMainGroup, layoutControl, view);
       }
 
-      protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, IResizableView view, int height)
+      protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, LayoutControl layoutControl, IResizableView view, int height)
       {
-         base.AdjustLayoutItemSize(layoutControlItem, view, height);
+         base.AdjustLayoutItemSize(layoutControlItem, layoutControl, view, height);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 

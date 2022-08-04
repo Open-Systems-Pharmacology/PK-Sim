@@ -114,8 +114,8 @@ namespace PKSim.UI.Views.Simulations
          initButton(btnCreateCompound, ApplicationIcons.Create, PKSimConstants.UI.CreateBuildingBlockHint);
          initButton(btnLoadCompound, ApplicationIcons.LoadFromTemplate, PKSimConstants.UI.LoadItemFromTemplateHint);
 
-         layoutItemAddCompound.AdjustButtonSizeWithImageOnly();
-         layoutItemLoadCompound.AdjustButtonSizeWithImageOnly();
+         layoutItemAddCompound.AdjustButtonSizeWithImageOnly(layoutControl);
+         layoutItemLoadCompound.AdjustButtonSizeWithImageOnly(layoutControl);
 
          uxHintPanel.Image = ApplicationIcons.ErrorHint;
       }

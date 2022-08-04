@@ -83,22 +83,22 @@ namespace PKSim.BatchTool.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemButtonAdd.AdjustButtonSizeWithImageOnly();
+         layoutItemButtonAdd.AdjustButtonSizeWithImageOnly(layoutControl);
          buttonAdd.InitWithImage(ApplicationIcons.Add, imageLocation: ImageLocation.MiddleCenter);
 
          layoutItemSelectFolder.TextVisible = false;
 
-         layoutItemButtonClearList.AdjustButtonSize();
+         layoutItemButtonClearList.AdjustButtonSize(layoutControl);
          buttonClearList.InitWithImage(ApplicationIcons.Delete, Text = Captions.ClearList);
 
-         layoutItemButtonExportList.AdjustButtonSize();
+         layoutItemButtonExportList.AdjustButtonSize(layoutControl);
          buttonExportList.InitWithImage(ApplicationIcons.Save, Text = Captions.ExportList);
 
-         layoutItemButtonImportList.AdjustButtonSize();
+         layoutItemButtonImportList.AdjustButtonSize(layoutControl);
          buttonImportList.InitWithImage(ApplicationIcons.LoadFromTemplate, Text = Captions.ImportList);
 
          Caption = Captions.SnapshotFolderList;
-         radioGroupExportMode.AddExportModes(layoutItemExportMode);
+         radioGroupExportMode.AddExportModes(layoutItemExportMode, layoutControl);
          layoutItemExportMode.TextVisible = false;
       }
 

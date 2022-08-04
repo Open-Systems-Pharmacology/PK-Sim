@@ -84,7 +84,7 @@ namespace PKSim.UI.Views.Snapshots
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemStartButton.AdjustLargeButtonSize();
+         layoutItemStartButton.AdjustLargeButtonSize(layoutControl);
          buttonStart.InitWithImage(ApplicationIcons.Run, PKSimConstants.UI.StartImport);
          layoutItemButtonSelectSnapshot.Text = PKSimConstants.UI.SnapshotFile.FormatForLabel();
          ApplicationIcon = ApplicationIcons.Snapshot;

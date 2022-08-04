@@ -70,7 +70,7 @@ namespace PKSim.UI.Views.Compounds
       public void AdjustParametersHeight(int parametersHeight)
       {
          layoutControl.BeginUpdate();
-         layoutItemParameters.AdjustControlHeight(parametersHeight);
+         layoutItemParameters.AdjustControlHeight(layoutControl, parametersHeight);
          layoutControl.EndUpdate();
       }
 

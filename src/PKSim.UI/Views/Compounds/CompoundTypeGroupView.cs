@@ -124,7 +124,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AddValueOriginView(IView view)
       {
-         AddViewTo(layoutItemValueOrigin, view);
+         AddViewTo(layoutItemValueOrigin,layoutControl,  view);
       }
 
       public override bool HasError => _gridViewBinder.HasError;
@@ -133,7 +133,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustHeight()
       {
-         layoutItemCompoundTypes.AdjustControlHeight(gridView.OptimalHeight);
+         layoutItemCompoundTypes.AdjustControlHeight(layoutControl,  gridView.OptimalHeight);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 

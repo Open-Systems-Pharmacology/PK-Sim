@@ -182,7 +182,7 @@ namespace PKSim.UI.Views.Simulations
          layoutControlItem.Visibility = LayoutVisibilityConvertor.FromBoolean(hasItems);
          layoutControlItem.SizeConstraintsType = SizeConstraintsType.Custom;
          gridView.BestFitColumns();
-         layoutControlItem.AdjustControlHeight(gridView.OptimalHeight);
+         layoutControlItem.AdjustControlHeight(layoutControl, gridView.OptimalHeight);
       }
 
       public override int OptimalHeight

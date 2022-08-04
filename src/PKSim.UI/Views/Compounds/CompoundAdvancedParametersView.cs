@@ -22,7 +22,7 @@ namespace PKSim.UI.Views.Compounds
 
       public override ApplicationIcon ApplicationIcon => ApplicationIcons.Parameters;
 
-      public void AddViewForGroup(ISubPresenterItem subPresenterItem, IView view) => AddViewTo(layoutMainGroup, view);
+      public void AddViewForGroup(ISubPresenterItem subPresenterItem, IView view) => AddViewTo(layoutMainGroup,layoutControl,  view);
 
       public void AddEmptyPlaceHolder() => AddEmptyPlaceHolder(layoutMainGroup);
 

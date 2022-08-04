@@ -27,7 +27,7 @@ namespace PKSim.UI.Views.Simulations
       public void AddCalculationMethodsView(IView view)
       {
          _resizableView = view as IResizableView;
-         AddViewToGroup(layoutControlGroup, view);
+         AddViewToGroup(layoutControlGroup, layoutControl, view);
          layoutControlGroup.Visibility = LayoutVisibility.Always;
       }
 
@@ -37,9 +37,9 @@ namespace PKSim.UI.Views.Simulations
          Caption = PKSimConstants.UI.CalculationMethods;
       }
 
-      protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, IResizableView view, int height)
+      protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, LayoutControl layoutControl, IResizableView view, int height)
       {
-         base.AdjustLayoutItemSize(layoutControlItem, view, height);
+         base.AdjustLayoutItemSize(layoutControlItem, layoutControl, view, height);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 

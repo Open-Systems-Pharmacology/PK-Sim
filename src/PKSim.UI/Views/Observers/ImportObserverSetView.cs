@@ -104,7 +104,7 @@ namespace PKSim.UI.Views.Observers
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemAddFile.AdjustLargeButtonSize();
+         layoutItemAddFile.AdjustLargeButtonSize(layoutControl);
          btnAddFile.InitWithImage(ApplicationIcons.Create, PKSimConstants.UI.AddFile);
          Caption = PKSimConstants.UI.ImportPopulationSettings;
          lblDescription.AsDescription();

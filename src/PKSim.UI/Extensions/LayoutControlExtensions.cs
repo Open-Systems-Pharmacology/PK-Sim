@@ -43,7 +43,7 @@ namespace PKSim.UI.Extensions
       public static LayoutControlItem AddButtonItemFor(this LayoutControl layoutControl, Control control)
       {
          var item = layoutControl.AddControlItemFor(control);
-         item.AdjustLongButtonSize();
+         item.AdjustLongButtonSize(layoutControl);
          return item;
       }
 

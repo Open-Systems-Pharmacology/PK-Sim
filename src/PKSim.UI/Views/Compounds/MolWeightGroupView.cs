@@ -169,7 +169,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AddValueOriginView(IView view)
       {
-         AddViewTo(layoutItemValueOrigin, view);
+         AddViewTo(layoutItemValueOrigin, layoutControl, view);
       }
 
       public void RefreshData()
@@ -181,7 +181,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustHeight()
       {
-         layoutItemMolWeight.AdjustControlHeight(_gridView.OptimalHeight);
+         layoutItemMolWeight.AdjustControlHeight(layoutControl, _gridView.OptimalHeight);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 

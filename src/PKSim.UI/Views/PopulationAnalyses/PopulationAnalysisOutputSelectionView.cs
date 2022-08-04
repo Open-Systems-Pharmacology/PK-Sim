@@ -68,8 +68,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemButtonRemove.AsRemoveButton();
-         layoutItemButtonAdd.AsAddButton();
+         layoutItemButtonRemove.AsRemoveButton(layoutControl);
+         layoutItemButtonAdd.AsAddButton(layoutControl);
          Caption = PKSimConstants.UI.Output;
          layoutItemTimeUnit.Text = PKSimConstants.UI.TimeUnit.FormatForLabel();
       }

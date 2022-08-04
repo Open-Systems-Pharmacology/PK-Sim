@@ -44,14 +44,14 @@ namespace PKSim.UI.Views.AdvancedParameters
 
       public bool AddEnabled
       {
-         set { btnAdd.Enabled = value; }
-         get { return btnAdd.Enabled; }
+         set => btnAdd.Enabled = value;
+         get => btnAdd.Enabled;
       }
 
       public bool RemoveEnabled
       {
-         set { btnRemove.Enabled = value; }
-         get { return btnRemove.Enabled; }
+         set => btnRemove.Enabled = value;
+         get => btnRemove.Enabled;
       }
 
       public void AddAdvancedParameterView(IView advancedParameterView)
@@ -62,8 +62,8 @@ namespace PKSim.UI.Views.AdvancedParameters
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemRemoveButton.AsRemoveButton();
-         layoutItemAddButton.AsAddButton();
+         layoutItemRemoveButton.AsRemoveButton(layoutControl);
+         layoutItemAddButton.AsAddButton(layoutControl);
       }
    }
 }

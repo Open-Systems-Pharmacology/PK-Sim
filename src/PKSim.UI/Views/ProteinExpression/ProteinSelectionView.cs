@@ -272,7 +272,7 @@ namespace PKSim.UI.Views.ProteinExpression
          btnSearch.Text = PKSimConstants.ProteinExpressions.PageSelection.ButtonSearch;
          Caption = PKSimConstants.ProteinExpressions.MainView.TabPageSelection;
          ApplicationIcon = ApplicationIcons.ProteinExpression;
-         layoutItemSearch.AdjustButtonSize();
+         layoutItemSearch.AdjustButtonSize(layoutControl);
       }
    }
 }

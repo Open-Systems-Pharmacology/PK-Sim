@@ -33,8 +33,8 @@ namespace PKSim.UI.Views.Simulations
          _presenter = presenter;
       }
 
-      public void AddMoleculeParametersView(IView view) => AddViewTo(layoutItemMoleculeParameters, view);
+      public void AddMoleculeParametersView(IView view) => AddViewTo(layoutItemMoleculeParameters, mainLayout, view);
 
-      public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, view);
+      public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, mainLayout, view);
    }
 }

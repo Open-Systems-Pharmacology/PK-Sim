@@ -9,7 +9,7 @@ namespace PKSim.BatchTool.Views
 {
    public static class ExportModeRadioGroupExtensions
    {
-      public static void AddExportModes(this RadioGroup radioGroup, LayoutControlItem layoutControlItem)
+      public static void AddExportModes(this RadioGroup radioGroup, LayoutControlItem layoutControlItem, LayoutControl layoutControl)
       {
          radioGroup.Properties.Items.AddRange(new[]
          {
@@ -17,7 +17,7 @@ namespace PKSim.BatchTool.Views
             new RadioGroupItem(SnapshotExportMode.Snapshot, Captions.SnapshotExportModeSnapshot)
          });
 
-         layoutControlItem.AdjustControlHeight(UIConstants.Size.RADIO_GROUP_HEIGHT);
+         layoutControlItem.AdjustControlHeight(layoutControl, UIConstants.Size.RADIO_GROUP_HEIGHT);
       }
    }
 }

@@ -32,7 +32,7 @@ namespace PKSim.UI.Views.Simulations
       private void fillIf(ISubPresenterItem current, IView view, ISubPresenterItem target, LayoutControlItem layoutControlItem)
       {
          if (current == target)
-            AddViewTo(layoutControlItem,view);
+            AddViewTo(layoutControlItem,layoutControl, view);
       }
 
       public override string Caption => PKSimConstants.UI.ModelStructure;
@@ -50,7 +50,7 @@ namespace PKSim.UI.Views.Simulations
          layoutGroupSubjectSelection.Text = PKSimConstants.ObjectTypes.IndividualOrPopulation;
          layoutGroupModelSettings.Text = PKSimConstants.UI.ModelSettings;
 
-         layoutItemModelSelectionView.AdjustControlHeight(MODEL_PICTURE_HEIGHT);
+         layoutItemModelSelectionView.AdjustControlHeight(layoutControl, MODEL_PICTURE_HEIGHT);
       }
    }
 }

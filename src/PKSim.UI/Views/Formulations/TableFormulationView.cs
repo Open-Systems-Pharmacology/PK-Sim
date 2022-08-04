@@ -1,8 +1,8 @@
-﻿using PKSim.Presentation.Presenters.Formulations;
-using PKSim.Presentation.Views.Formulations;
-using OSPSuite.Presentation.Views;
+﻿using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using PKSim.Presentation.Presenters.Formulations;
+using PKSim.Presentation.Views.Formulations;
 
 namespace PKSim.UI.Views.Formulations
 {
@@ -27,7 +27,7 @@ namespace PKSim.UI.Views.Formulations
 
       public void AddParametersView(IView view)
       {
-         AddViewTo(layoutItemParameters, view);
+         AddViewTo(layoutItemParameters, layoutControl, view);
       }
    }
 }

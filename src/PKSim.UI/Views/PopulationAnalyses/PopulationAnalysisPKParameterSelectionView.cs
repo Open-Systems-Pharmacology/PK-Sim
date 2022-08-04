@@ -28,10 +28,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          btnRemove.Click += (o, e) => OnEvent(_presenter.RemovePKParameters);
       }
 
-      public override ApplicationIcon ApplicationIcon
-      {
-         get { return ApplicationIcons.PKAnalysis; }
-      }
+      public override ApplicationIcon ApplicationIcon => ApplicationIcons.PKAnalysis;
 
       public override void InitializeResources()
       {

@@ -88,7 +88,7 @@ namespace PKSim.UI.Views.Parameters
 
 
          _screenBinder.BindToSource(parameterDTO);
-         layoutControlItemUnit.AdjustControlWidth(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH);
+         layoutControlItemUnit.AdjustControlWidth(layoutControl, OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH);
       }
 
       public override bool HasError => _screenBinder.HasError;
