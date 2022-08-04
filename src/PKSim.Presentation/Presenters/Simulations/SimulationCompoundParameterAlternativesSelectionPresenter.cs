@@ -23,7 +23,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       private CompoundProperties _compoundProperties;
       private Compound _compound;
 
-      public SimulationCompoundParameterAlternativesSelectionPresenter(ISimulationCompoundParameterAlternativesSelectionView view, ILazyLoadTask lazyLoadTask, ISimulationToSimulationCompoundParameterMappingDTOMapper simulationCompoundParameterMappingDTOMapper) : base(view)
+      public SimulationCompoundParameterAlternativesSelectionPresenter(
+         ISimulationCompoundParameterAlternativesSelectionView view, 
+         ILazyLoadTask lazyLoadTask, 
+         ISimulationToSimulationCompoundParameterMappingDTOMapper simulationCompoundParameterMappingDTOMapper) : base(view)
       {
          _lazyLoadTask = lazyLoadTask;
          _simulationCompoundParameterMappingDTOMapper = simulationCompoundParameterMappingDTOMapper;
