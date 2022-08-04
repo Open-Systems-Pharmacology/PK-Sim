@@ -1,8 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -10,7 +8,9 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
-using System;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace PKSim.Core.Model
 {
@@ -61,7 +61,6 @@ namespace PKSim.Core.Model
       }
 
       public void ClearPKCache() => _compoundPKCache.Clear();
-
 
       public CompoundPK CompoundPKFor(string compoundName)
       {
@@ -293,7 +292,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IEnumerable<ISimulationAnalysis> Analyses => _allSimulationAnalyses;
 
-
       /// <summary>
       ///    All analyses defined for the simulation
       /// </summary>
@@ -322,7 +320,7 @@ namespace PKSim.Core.Model
       }
 
       private IEnumerable<IWithObservedData> analysesWithObservedData => _allSimulationAnalyses.OfType<IWithObservedData>();
-      public virtual  IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
+      public virtual IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
 
       public virtual void AddUsedObservedData(UsedObservedData usedObservedData)
       {
@@ -452,11 +450,13 @@ namespace PKSim.Core.Model
                return;
 
             thisCompoundProperties.Compound = correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.Compound);
-            thisCompoundProperties.ProtocolProperties.Protocol = correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.ProtocolProperties.Protocol);
+            thisCompoundProperties.ProtocolProperties.Protocol =
+               correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.ProtocolProperties.Protocol);
          });
       }
 
-      private TBuildingBlock correspondingBuildingBlock<TBuildingBlock>(Simulation sourceSimulation, TBuildingBlock sourceBuildingBlock) where TBuildingBlock : class, IPKSimBuildingBlock
+      private TBuildingBlock correspondingBuildingBlock<TBuildingBlock>(Simulation sourceSimulation, TBuildingBlock sourceBuildingBlock)
+         where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (sourceBuildingBlock == null)
             return null;
@@ -630,9 +630,8 @@ namespace PKSim.Core.Model
       //This is not used in PKSim.
       public IBuildConfiguration BuildConfiguration { get; } = null;
 
-
       /// <summary>
-      ///    Returns the <see cref="OutputSelections"/> for the simulation
+      ///    Returns the <see cref="OutputSelections" /> for the simulation
       /// </summary>
       public virtual OutputSelections OutputSelections
       {
@@ -705,7 +704,6 @@ namespace PKSim.Core.Model
          get => Properties.EventProperties;
          set => Properties.EventProperties = value;
       }
-
 
       /// <summary>
       ///    Returns the observer set mappings used in the simulation configuration

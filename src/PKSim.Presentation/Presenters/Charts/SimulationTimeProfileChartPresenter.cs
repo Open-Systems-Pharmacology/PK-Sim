@@ -30,14 +30,18 @@ namespace PKSim.Presentation.Presenters.Charts
    {
    }
 
-   public class SimulationTimeProfileChartPresenter : ChartPresenter<SimulationTimeProfileChart, ISimulationTimeProfileChartView, ISimulationTimeProfileChartPresenter>,
+   public class SimulationTimeProfileChartPresenter :
+      ChartPresenter<SimulationTimeProfileChart, ISimulationTimeProfileChartView, ISimulationTimeProfileChartPresenter>,
       ISimulationTimeProfileChartPresenter,
       ISimulationAnalysisPresenter<IndividualSimulation>
 
    {
-      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, IChartTemplatingTask chartTemplatingTask,
+      public SimulationTimeProfileChartPresenter(ISimulationTimeProfileChartView view, ChartPresenterContext chartPresenterContext,
+         IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask,
+         IChartTemplatingTask chartTemplatingTask,
          IChartUpdater chartUpdateTask, IUserSettings userSettings) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask, useSimulationNameToCreateCurveName: false, userSettings)
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdateTask,
+            useSimulationNameToCreateCurveName: false, userSettings)
       {
          PresentationKey = PresenterConstants.PresenterKeys.SimulationTimeProfileChartPresenter;
          PostEditorLayout = configureEditor;
@@ -114,6 +118,7 @@ namespace PKSim.Presentation.Presenters.Charts
          if (!canHandle(eventToHandle)) return;
          _chartTask.SetOriginTextFor(Simulation.Name, Chart);
       }
+
       private void groupByCategoryColumn()
       {
          var categoryColumnSettings = Column(BrowserColumns.Category);
@@ -121,11 +126,13 @@ namespace PKSim.Presentation.Presenters.Charts
          categoryColumnSettings.GroupIndex = 1;
          ChartEditorPresenter.ApplyColumnSettings(categoryColumnSettings);
       }
+
       private void configureEditor()
       {
          ChartEditorPresenter.SetGroupRowFormat(GridGroupRowFormats.HideColumnName);
          groupByCategoryColumn();
       }
+
       protected override void ConfigureColumns()
       {
          base.ConfigureColumns();

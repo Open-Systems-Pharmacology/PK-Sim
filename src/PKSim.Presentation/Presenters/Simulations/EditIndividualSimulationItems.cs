@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using PKSim.Presentation.Views.Diagrams;
 using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.Simulations
