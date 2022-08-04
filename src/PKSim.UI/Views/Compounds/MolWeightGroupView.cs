@@ -181,7 +181,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustHeight()
       {
-         layoutItemMolWeight.AdjustControlHeight(layoutControl, _gridView.OptimalHeight);
+         layoutItemMolWeight.AdjustControlHeight(_gridView.OptimalHeight, layoutControl);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 

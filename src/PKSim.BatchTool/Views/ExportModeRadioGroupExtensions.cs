@@ -17,7 +17,7 @@ namespace PKSim.BatchTool.Views
             new RadioGroupItem(SnapshotExportMode.Snapshot, Captions.SnapshotExportModeSnapshot)
          });
 
-         layoutControlItem.AdjustControlHeight(layoutControl, UIConstants.Size.RADIO_GROUP_HEIGHT);
+         layoutControlItem.AdjustControlHeight(UIConstants.Size.RADIO_GROUP_HEIGHT, layoutControl);
       }
    }
 }

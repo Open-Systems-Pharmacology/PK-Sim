@@ -249,7 +249,7 @@ namespace PKSim.UI.Views.Populations
       private void adjustHeights()
       {
          gridParameters.Height = gridViewParameters.OptimalHeight;
-         layoutItemParameters.AdjustControlHeight(layoutControl, gridViewParameters.OptimalHeight);
+         layoutItemParameters.AdjustControlHeight(gridViewParameters.OptimalHeight, layoutControl);
       }
    }
 }

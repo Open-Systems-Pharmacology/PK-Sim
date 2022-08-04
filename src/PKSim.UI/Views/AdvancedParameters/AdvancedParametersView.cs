@@ -1,10 +1,11 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
+﻿using OSPSuite.Assets;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.Assets;
 using PKSim.Presentation.Presenters.AdvancedParameters;
 using PKSim.Presentation.Views.AdvancedParameters;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Controls;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.AdvancedParameters
 {
@@ -62,8 +63,11 @@ namespace PKSim.UI.Views.AdvancedParameters
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemRemoveButton.AsRemoveButton(layoutControl);
-         layoutItemAddButton.AsAddButton(layoutControl);
+         layoutControl.DoInBatch(() =>
+         {
+            layoutItemRemoveButton.AsRemoveButton();
+            layoutItemAddButton.AsAddButton();
+         });
       }
    }
 }

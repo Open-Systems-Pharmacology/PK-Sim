@@ -1,14 +1,15 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Assets;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI.Extensions;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -68,8 +69,11 @@ namespace PKSim.UI.Views.PopulationAnalyses
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemButtonRemove.AsRemoveButton(layoutControl);
-         layoutItemButtonAdd.AsAddButton(layoutControl);
+         layoutControl.DoInBatch(() =>
+         {
+            layoutItemButtonRemove.AsRemoveButton();
+            layoutItemButtonAdd.AsAddButton();
+         });
          Caption = PKSimConstants.UI.Output;
          layoutItemTimeUnit.Text = PKSimConstants.UI.TimeUnit.FormatForLabel();
       }

@@ -32,14 +32,13 @@ namespace PKSim.UI.Views.Simulations
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.labelControlGlobalPKAnalysisDescription = new DevExpress.XtraEditors.LabelControl();
          this.populationPKAnalysisXtraTabControl = new DevExpress.XtraTab.XtraTabControl();
          this.pageOnCurves = new DevExpress.XtraTab.XtraTabPage();
          this.populationPKAnalysisPanelOnCurve = new DevExpress.XtraEditors.PanelControl();
          this.pageOnIndividuals = new DevExpress.XtraTab.XtraTabPage();
          this.populationPKAnalysisPanelOnIndividuals = new DevExpress.XtraEditors.PanelControl();
-         this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
+         this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
          this.globalPKParametersPanelControl = new OSPSuite.UI.Controls.UxPanelControl();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -52,16 +51,14 @@ namespace PKSim.UI.Views.Simulations
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemGlobalPKAnalysisDescription = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
-         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisXtraTabControl)).BeginInit();
          this.populationPKAnalysisXtraTabControl.SuspendLayout();
          this.pageOnCurves.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnCurve)).BeginInit();
          this.pageOnIndividuals.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnIndividuals)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.globalPKParametersPanelControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
@@ -73,22 +70,6 @@ namespace PKSim.UI.Views.Simulations
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemGlobalPKAnalysisDescription)).BeginInit();
          this.SuspendLayout();
-         // 
-         // layoutControl
-         // 
-         this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.labelControlGlobalPKAnalysisDescription);
-         this.layoutControl.Controls.Add(this.populationPKAnalysisXtraTabControl);
-         this.layoutControl.Controls.Add(this.layoutControl1);
-         this.layoutControl.Controls.Add(this.btnExportToExcel);
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(3693, -142, 812, 500);
-         this.layoutControl.Root = this.layoutControlGroup1;
-         this.layoutControl.Size = new System.Drawing.Size(555, 476);
-         this.layoutControl.TabIndex = 0;
-         this.layoutControl.Text = "layoutControl1";
          // 
          // labelControlGlobalPKAnalysisDescription
          // 
@@ -150,15 +131,15 @@ namespace PKSim.UI.Views.Simulations
          // 
          // layoutControl1
          // 
-         this.layoutControl1.Controls.Add(this.globalPKParametersPanelControl);
-         this.layoutControl1.Location = new System.Drawing.Point(177, 43);
-         this.layoutControl1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(874, 0, 812, 500);
-         this.layoutControl1.Root = this.Root;
-         this.layoutControl1.Size = new System.Drawing.Size(378, 122);
-         this.layoutControl1.TabIndex = 7;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.Controls.Add(this.globalPKParametersPanelControl);
+         this.layoutControl.Location = new System.Drawing.Point(177, 43);
+         this.layoutControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(874, 0, 812, 500);
+         this.layoutControl.Root = this.Root;
+         this.layoutControl.Size = new System.Drawing.Size(378, 122);
+         this.layoutControl.TabIndex = 7;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // globalPKParametersPanelControl
          // 
@@ -236,7 +217,7 @@ namespace PKSim.UI.Views.Simulations
          // 
          // layoutControlItemGlobalPKAnalysis
          // 
-         this.layoutControlItemGlobalPKAnalysis.Control = this.layoutControl1;
+         this.layoutControlItemGlobalPKAnalysis.Control = this.layoutControl;
          this.layoutControlItemGlobalPKAnalysis.Location = new System.Drawing.Point(0, 43);
          this.layoutControlItemGlobalPKAnalysis.Name = "layoutControlItemGlobalPKAnalysis";
          this.layoutControlItemGlobalPKAnalysis.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
@@ -272,13 +253,10 @@ namespace PKSim.UI.Views.Simulations
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl);
          this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
          this.Name = "PopulationPKAnalysisView";
          this.Size = new System.Drawing.Size(555, 476);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
-         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisXtraTabControl)).EndInit();
          this.populationPKAnalysisXtraTabControl.ResumeLayout(false);
          this.pageOnCurves.ResumeLayout(false);
@@ -287,8 +265,8 @@ namespace PKSim.UI.Views.Simulations
          this.pageOnIndividuals.ResumeLayout(false);
          this.pageOnIndividuals.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.populationPKAnalysisPanelOnIndividuals)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.globalPKParametersPanelControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
@@ -305,14 +283,13 @@ namespace PKSim.UI.Views.Simulations
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.SimpleButton btnExportToExcel;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemExportToExcel;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem;
       private DevExpress.XtraEditors.PanelControl populationPKAnalysisPanelOnCurve;
       private DevExpress.XtraEditors.PanelControl populationPKAnalysisPanelOnIndividuals;
-      private DevExpress.XtraLayout.LayoutControl layoutControl1;
+      private DevExpress.XtraLayout.LayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemGlobalPKAnalysis;
       private DevExpress.XtraLayout.SplitterItem splitter;

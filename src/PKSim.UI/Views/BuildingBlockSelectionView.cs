@@ -10,6 +10,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Views;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views
 {
@@ -104,10 +105,11 @@ namespace PKSim.UI.Views
       {
          btnCreateBuildingBlock.InitWithImage(ApplicationIcons.Create, imageLocation: ImageLocation.MiddleCenter);
          btnLoadBuildingBlock.InitWithImage(ApplicationIcons.LoadFromTemplate, imageLocation: ImageLocation.MiddleCenter);
-         layoutItemLoad.AdjustButtonSizeWithImageOnly(layoutControl);
-         layoutItemCreate.AdjustButtonSizeWithImageOnly(layoutControl);
-         //Make combo box same size as button
-         layoutItemBuildingBlock.AdjustSize(layoutControl, 0, OSPSuite.UI.UIConstants.Size.BUTTON_HEIGHT);
+         layoutControl.BeginUpdate();
+         layoutItemLoad.AdjustButtonSizeWithImageOnly();
+         layoutItemCreate.AdjustButtonSizeWithImageOnly();
+         layoutItemBuildingBlock.AdjustControlHeight(BUTTON_HEIGHT);
+         layoutControl.EndUpdate();
          cbBuildingBlocks.Properties.AllowHtmlDraw = DefaultBoolean.True;
       }
    }

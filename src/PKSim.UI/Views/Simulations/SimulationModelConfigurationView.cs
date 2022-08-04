@@ -50,7 +50,7 @@ namespace PKSim.UI.Views.Simulations
          layoutGroupSubjectSelection.Text = PKSimConstants.ObjectTypes.IndividualOrPopulation;
          layoutGroupModelSettings.Text = PKSimConstants.UI.ModelSettings;
 
-         layoutItemModelSelectionView.AdjustControlHeight(layoutControl, MODEL_PICTURE_HEIGHT);
+         layoutItemModelSelectionView.AdjustControlHeight(MODEL_PICTURE_HEIGHT, layoutControl);
       }
    }
 }

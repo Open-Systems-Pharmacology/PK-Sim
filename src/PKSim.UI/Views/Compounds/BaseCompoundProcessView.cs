@@ -1,15 +1,15 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using DevExpress.LookAndFeel;
+﻿using DevExpress.LookAndFeel;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Controls;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -54,7 +54,7 @@ namespace PKSim.UI.Views.Compounds
 
       public bool SpeciesVisible
       {
-         set { layoutItemSpecies.Visibility = LayoutVisibilityConvertor.FromBoolean(value); }
+         set => layoutItemSpecies.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       public virtual void BindTo(TProcessDTO processDTO)
@@ -69,9 +69,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustParametersHeight(int parametersHeight)
       {
-         layoutControl.BeginUpdate();
-         layoutItemParameters.AdjustControlHeight(layoutControl, parametersHeight);
-         layoutControl.EndUpdate();
+         layoutItemParameters.AdjustControlHeight(parametersHeight);
       }
 
       public override void InitializeResources()
