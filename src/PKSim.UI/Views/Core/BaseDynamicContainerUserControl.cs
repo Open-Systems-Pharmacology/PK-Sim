@@ -1,10 +1,10 @@
-﻿using OSPSuite.Utility.Extensions;
-using DevExpress.LookAndFeel;
+﻿using DevExpress.LookAndFeel;
 using DevExpress.Utils;
 using DevExpress.XtraLayout;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.UI.Views.Core
 {
@@ -36,7 +36,7 @@ namespace PKSim.UI.Views.Core
             layoutControlItem.InitializeAsHeader(_lookAndFeel, view.Caption);
             mainLayoutGroup.AddItem(layoutControlItem);
 
-            AddViewTo(layoutControlItem, view);
+            AddViewTo(layoutControlItem, layoutControl, view);
 
             if (!view.Caption.IsNullOrEmpty())
                mainLayoutGroup.AddItem(new EmptySpaceItem());
@@ -45,6 +45,7 @@ namespace PKSim.UI.Views.Core
          {
             layoutControl.EndUpdate();
          }
+
          return layoutControlItem;
       }
    }

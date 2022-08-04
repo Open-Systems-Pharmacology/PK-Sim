@@ -92,8 +92,8 @@ namespace PKSim.UI.Views.Parameters
          btnImportPoints.ImageLocation = ImageLocation.MiddleCenter;
          btnAddPoint.Image = ApplicationIcons.Create.ToImage(IconSizes.Size16x16);
          btnAddPoint.ImageLocation = ImageLocation.MiddleCenter;
-         layoutItemImportPoints.AdjustButtonSizeWithImageOnly();
-         layoutItemButtonAddPoint.AdjustButtonSizeWithImageOnly();
+         layoutItemImportPoints.AdjustButtonSizeWithImageOnly(layoutControl1);
+         layoutItemButtonAddPoint.AdjustButtonSizeWithImageOnly(layoutControl1);
          lblImportDescription.Text = string.Empty;
          btnAddPoint.ToolTip = PKSimConstants.UI.AddPoint;
       }

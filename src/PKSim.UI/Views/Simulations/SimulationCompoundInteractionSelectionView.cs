@@ -105,7 +105,7 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
          layoutItemInteractionSelection.TextVisible = false;
          btnAddInteraction.InitWithImage(ApplicationIcons.Create, text: PKSimConstants.UI.AddInteraction);
-         layoutItemAddInteraction.AdjustLargeButtonSize();
+         layoutItemAddInteraction.AdjustLargeButtonSize(layoutControl);
       }
 
       protected void ConfigureBaseEdit<T>(BaseEdit baseEdit, IEnumerable<T> allItems)

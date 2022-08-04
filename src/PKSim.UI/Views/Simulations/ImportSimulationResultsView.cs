@@ -138,10 +138,10 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
 
          btnAddFile.InitWithImage(ApplicationIcons.Create, text: PKSimConstants.UI.AddFile);
-         layoutItemButtonAdd.AdjustLargeButtonSize();
+         layoutItemButtonAdd.AdjustLargeButtonSize(layoutControl);
 
          btnImport.InitWithImage(ApplicationIcons.Run, text: PKSimConstants.UI.StartImport);
-         layoutItemButtonImport.AdjustLargeButtonSize();
+         layoutItemButtonImport.AdjustLargeButtonSize(layoutControl);
 
          layoutGroupImportFolder.Text = PKSimConstants.UI.ImportFolder;
          layoutGroupImportSingleFiles.Text = PKSimConstants.UI.ImportFiles;

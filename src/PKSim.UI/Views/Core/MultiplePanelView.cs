@@ -18,7 +18,7 @@ namespace PKSim.UI.Views.Core
 
       public void ActivateView(IView view)
       {
-         AddViewTo(layoutControlGroup, view);
+         AddViewTo(layoutControlGroup,layoutControl,  view);
       }
 
 

@@ -26,7 +26,7 @@ namespace PKSim.UI.Views.Core
       public void SetView(IView view)
       {
          layoutMainControl.SuspendLayout();
-         var layoutItem = AddViewToGroup(layoutMainControl.Root, view);
+         var layoutItem = AddViewToGroup(layoutMainControl.Root,layoutMainControl,  view);
          layoutItem.Padding = new Padding(0);
          layoutMainControl.ResumeLayout();
       }

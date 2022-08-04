@@ -95,7 +95,7 @@ namespace PKSim.UI.Views.Simulations
          pageOnCurves.Tooltip = PKSimConstants.PKAnalysis.OnCurvesTooltip;
 
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
-         layoutItemExportToExcel.AdjustLargeButtonSize();
+         layoutItemExportToExcel.AdjustLargeButtonSize(layoutControl);
          layoutControlItemGlobalPKAnalysis.TextVisible = false;
          populationPKAnalysisXtraTabControl.SelectedPageChanged += (o, e) => OnEvent(_presenter.HandleTabChanged);
          labelControlGlobalPKAnalysisDescription.Text = PKSimConstants.UI.GlobalPKAnalysisDescription.FormatForLabel();

@@ -22,6 +22,7 @@ using PKSim.Assets;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
+using PKSim.UI.Extensions;
 using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Compounds
@@ -169,7 +170,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AddValueOriginView(IView view)
       {
-         AddViewTo(layoutItemValueOrigin, view);
+         AddViewTo(layoutItemValueOrigin, layoutControl, view);
       }
 
       public void RefreshData()
@@ -181,7 +182,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AdjustHeight()
       {
-         layoutItemMolWeight.AdjustControlHeight(_gridView.OptimalHeight);
+         layoutItemMolWeight.AdjustGridViewHeight(_gridView, layoutControl);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
@@ -190,7 +191,7 @@ namespace PKSim.UI.Views.Compounds
          _gridView.LayoutChanged();
       }
 
-      public int OptimalHeight => layoutControlGroup.Height + layoutControl.Margin.All;
+      public int OptimalHeight => layoutControlGroup.Height + layoutControl.Margin.Vertical;
 
       private void onShowingEditor(object sender, CancelEventArgs e)
       {

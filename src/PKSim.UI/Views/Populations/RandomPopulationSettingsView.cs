@@ -204,7 +204,7 @@ namespace PKSim.UI.Views.Populations
          lblDescription.AsDescription();
          Caption = PKSimConstants.UI.Demographics;
          layoutControl.InitializeDisabledColors();
-         layoutItemStop.AdjustButtonSize();
+         layoutItemStop.AdjustButtonSize(layoutControl);
          btnStop.InitWithImage(ApplicationIcons.Stop, PKSimConstants.UI.Stop);
          layoutItemStop.Visibility = LayoutVisibilityConvertor.FromBoolean(false);
          lblDiseaseState.Text = PKSimConstants.UI.DiseaseState.FormatForLabel();
@@ -248,8 +248,8 @@ namespace PKSim.UI.Views.Populations
 
       private void adjustHeights()
       {
-         gridParameters.Height = gridViewParameters.OptimalHeight;
-         layoutItemParameters.AdjustControlHeight(gridViewParameters.OptimalHeight);
+         layoutItemIndividualProperties.AdjustTablePanelHeight(tablePanel, layoutControl);
+         layoutItemParameters.AdjustGridViewHeight(gridViewParameters, layoutControl);
       }
    }
 }

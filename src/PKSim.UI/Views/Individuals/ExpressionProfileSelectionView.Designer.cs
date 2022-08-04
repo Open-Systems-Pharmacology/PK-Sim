@@ -29,7 +29,7 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnLoad = new DevExpress.XtraEditors.SimpleButton();
          this.btnCreate = new OSPSuite.UI.Controls.UxSimpleButton();
          this.cbExpressionProfile = new OSPSuite.UI.Controls.UxComboBoxEdit();
@@ -41,8 +41,8 @@
          this.layoutItemLoad = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbExpressionProfile.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).BeginInit();
@@ -54,19 +54,19 @@
          // 
          // layoutControl1
          // 
-         this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.btnLoad);
-         this.layoutControl1.Controls.Add(this.btnCreate);
-         this.layoutControl1.Controls.Add(this.cbExpressionProfile);
-         this.layoutControl1.Controls.Add(this.lblDescription);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(584, 94);
-         this.layoutControl1.TabIndex = 34;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.btnLoad);
+         this.layoutControl.Controls.Add(this.btnCreate);
+         this.layoutControl.Controls.Add(this.cbExpressionProfile);
+         this.layoutControl.Controls.Add(this.lblDescription);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(584, 94);
+         this.layoutControl.TabIndex = 34;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // btnLoad
          // 
@@ -74,7 +74,7 @@
          this.btnLoad.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.btnLoad.Name = "btnLoad";
          this.btnLoad.Size = new System.Drawing.Size(54, 27);
-         this.btnLoad.StyleController = this.layoutControl1;
+         this.btnLoad.StyleController = this.layoutControl;
          this.btnLoad.TabIndex = 9;
          this.btnLoad.Text = "btnLoad";
          // 
@@ -86,7 +86,7 @@
          this.btnCreate.Name = "btnCreate";
          this.btnCreate.Shortcut = System.Windows.Forms.Keys.None;
          this.btnCreate.Size = new System.Drawing.Size(66, 27);
-         this.btnCreate.StyleController = this.layoutControl1;
+         this.btnCreate.StyleController = this.layoutControl;
          this.btnCreate.TabIndex = 8;
          this.btnCreate.Text = "btnCreate";
          // 
@@ -99,7 +99,7 @@
          this.cbExpressionProfile.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
          this.cbExpressionProfile.Size = new System.Drawing.Size(205, 22);
-         this.cbExpressionProfile.StyleController = this.layoutControl1;
+         this.cbExpressionProfile.StyleController = this.layoutControl;
          this.cbExpressionProfile.TabIndex = 7;
          // 
          // lblDescription
@@ -108,7 +108,7 @@
          this.lblDescription.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.lblDescription.Name = "lblDescription";
          this.lblDescription.Size = new System.Drawing.Size(76, 16);
-         this.lblDescription.StyleController = this.layoutControl1;
+         this.lblDescription.StyleController = this.layoutControl;
          this.lblDescription.TabIndex = 6;
          this.lblDescription.Text = "lblDescription";
          // 
@@ -176,14 +176,14 @@
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "SimpleProteinView";
          this.ClientSize = new System.Drawing.Size(584, 151);
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
          this.Name = "ExpressionProfileSelectionView";
          this.Text = "SimpleProteinView";
-         this.Controls.SetChildIndex(this.layoutControl1, 0);
+         this.Controls.SetChildIndex(this.layoutControl, 0);
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.cbExpressionProfile.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).EndInit();
@@ -198,7 +198,7 @@
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraEditors.LabelControl lblDescription;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDescription;

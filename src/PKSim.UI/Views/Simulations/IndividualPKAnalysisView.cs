@@ -79,7 +79,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
-         layoutItemExportToExcel.AdjustLargeButtonSize();
+         layoutItemExportToExcel.AdjustLargeButtonSize(layoutControl);
 
          layoutItemGlobalPKAnalysis.TextVisible = false;
          layoutItemIndividualPKAnalysis.TextVisible = false;

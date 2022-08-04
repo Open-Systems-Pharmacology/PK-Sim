@@ -63,7 +63,7 @@ namespace PKSim.BatchTool.Views
          layoutItemOutputFolder.Text = Captions.SelectSnapshotOutputFolder.FormatForLabel();
          layoutItemExportMode.TextVisible = false;
          Caption = Captions.SnapshotSingleFolder;
-         radioGroupExportMode.AddExportModes(layoutItemExportMode);
+         radioGroupExportMode.AddExportModes(layoutItemExportMode, layoutControl);
       }
 
       public override bool HasError => _screenBinder.HasError;

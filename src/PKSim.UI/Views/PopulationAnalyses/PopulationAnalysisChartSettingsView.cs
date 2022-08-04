@@ -26,7 +26,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _layoutControlItemChartSettings.TextVisible = false;
          _layoutControlItemChartSettings.TextLocation = Locations.Top;
          _btnEdit.InitWithImage(ApplicationIcons.Edit, text: PKSimConstants.UI.EditPopulationAnalysisConfiguration);
-         _layoutControlItemEdit.AdjustLargeButtonSize();
+         _layoutControlItemEdit.AdjustLargeButtonSize(_layoutControl);
 
          chartSettingsLayoutGroup.Text = PKSimConstants.UI.ChartSettings;
          chartExportSettingsLayoutGroup.Text = PKSimConstants.UI.ExportSettings;
