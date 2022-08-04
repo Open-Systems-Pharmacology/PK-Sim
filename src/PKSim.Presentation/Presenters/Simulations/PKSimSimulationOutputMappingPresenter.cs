@@ -23,7 +23,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
    public class PKSimSimulationOutputMappingPresenter : SimulationOutputMappingPresenter, IPKSimSimulationOutputMappingPresenter
    {
-      public PKSimSimulationOutputMappingPresenter(ISimulationOutputMappingView view, IEntitiesInSimulationRetriever entitiesInSimulationRetriever, IObservedDataRepository observedDataRepository, ISimulationOutputMappingToOutputMappingDTOMapper outputMappingDTOMapper, IQuantityToSimulationQuantitySelectionDTOMapper simulationQuantitySelectionDTOMapper, IParameterIdentificationTask parameterIdentificationTask) : base(view, entitiesInSimulationRetriever, observedDataRepository, outputMappingDTOMapper, simulationQuantitySelectionDTOMapper, parameterIdentificationTask)
+      public PKSimSimulationOutputMappingPresenter(ISimulationOutputMappingView view, IEntitiesInSimulationRetriever entitiesInSimulationRetriever, IObservedDataRepository observedDataRepository, ISimulationOutputMappingToOutputMappingDTOMapper outputMappingDTOMapper, IQuantityToSimulationQuantitySelectionDTOMapper simulationQuantitySelectionDTOMapper, IParameterIdentificationTask parameterIdentificationTask) : base(view, entitiesInSimulationRetriever, observedDataRepository, outputMappingDTOMapper, simulationQuantitySelectionDTOMapper)
       {
       }
 
@@ -41,23 +41,5 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          SetSimulation(simulation);
       }
-
-      public void InitializeWith(ICommandCollector initializer)
-      {
-         //
-      }
-
-      public void AddCommand(ICommand command)
-      {
-         //
-      }
-
-      public IEnumerable<ICommand> All()
-      {
-         return new List<ICommand>();
-      }
-
-      public ICommandCollector CommandCollector { get; }
-      public ApplicationIcon Icon { get; }
    }
 }
