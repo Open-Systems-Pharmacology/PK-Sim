@@ -933,7 +933,7 @@ namespace PKSim.Assets
             $"Multiple operator values found for container id '{containerId}' and parameter '{parameterName}'";
 
          public static string ExpressionProfileForMoleculeNotFound(string molecule, string buildingBlockName, string buildingBlockType) =>
-            $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}.'";
+            $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}'.";
       }
 
       public static class Information
