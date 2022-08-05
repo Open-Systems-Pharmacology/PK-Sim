@@ -7,5 +7,6 @@ namespace PKSim.Presentation.Views.Main
     {
         string StatusInfo {  set; }
         double ProgressValue {  set; }
+        string VersionInfo { set; }
     }
 }

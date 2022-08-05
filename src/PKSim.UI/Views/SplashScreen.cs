@@ -28,7 +28,7 @@ namespace PKSim.UI.Views
 
       public string StatusInfo
       {
-         set => labelStatus.Text = $"{value}";
+         set => labelStatus.Text = value;
       }
 
       public double ProgressValue
@@ -36,9 +36,15 @@ namespace PKSim.UI.Views
          set => progressBarControl.EditValue = value;
       }
 
+      public string VersionInfo
+      {
+         set => labelVersion.Text = $"Version {value}";
+      }
+
       public override void InitializeResources()
       {
          labelStatus.Text = string.Empty;
+         labelVersion.Text = string.Empty;
          ApplicationIcon = ApplicationIcons.PKSim;
       }
    }

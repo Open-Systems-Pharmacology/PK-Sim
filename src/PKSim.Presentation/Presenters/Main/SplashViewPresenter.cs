@@ -1,6 +1,7 @@
 using OSPSuite.Utility.Events;
 using PKSim.Presentation.Views.Main;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -13,9 +14,12 @@ namespace PKSim.Presentation.Presenters.Main
 
    public class SplashViewPresenter : AbstractPresenter<ISplashView, ISplashViewPresenter>, ISplashViewPresenter
    {
-      public SplashViewPresenter(ISplashView splashView)
+      private readonly IPKSimConfiguration _configuration;
+
+      public SplashViewPresenter(ISplashView splashView, IPKSimConfiguration configuration)
          : base(splashView)
       {
+         _configuration = configuration;
       }
 
       public void Handle(ProgressDoneEvent eventToHandle)
@@ -26,6 +30,7 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(ProgressInitEvent eventToHandle)
       {
          View.ProgressValue = 0;
+         View.VersionInfo = _configuration.FullVersionDisplay;
          View.StatusInfo = eventToHandle.Message;
       }
 
