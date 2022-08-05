@@ -138,6 +138,29 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_loading_an_expression_profile_template : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<ExpressionProfile> _allTemplates;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var template = new LocalTemplate {Name = "Template1", Id = "Id1"};
+
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.ExpressionProfile)).Returns(new[] {template});
+      }
+
+      protected override async Task Because()
+      {
+         _allTemplates = await sut.LoadFromTemplateAsync<ExpressionProfile>(TemplateType.ExpressionProfile);
+      }
+
+      [Observation]
+      public void should_have_set_the_expected_caption()
+      {
+         _view.Caption.ShouldBeEqualTo(PKSimConstants.UI.LoadItemFromTemplate("Expression Profile"));
+      }
+   }
 
    public class When_loading_a_template_with_references_containing_recursive_references_and_user_settings_specify_do_not_ask_the_user : concern_for_TemplatePresenter
    {
@@ -154,18 +177,18 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2" };
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
-         _templates = new List<Template> { _template1, _template2 };
+         _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.SelectedTemplatesChanged(new[] { new TemplateDTO(_template1) });
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
 
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] { _template2 });
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] { _template1 });
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
          _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.Load;
       }
@@ -197,18 +220,18 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2" };
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
-         _templates = new List<Template> { _template1, _template2 };
+         _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.SelectedTemplatesChanged(new[] { new TemplateDTO(_template1) });
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
 
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] { _template2 });
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] { _template1 });
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
          _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.DoNotLoad;
       }
@@ -240,18 +263,18 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2" };
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
-         _templates = new List<Template> { _template1, _template2 };
+         _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.SelectedTemplatesChanged(new[] { new TemplateDTO(_template1) });
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
 
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] { _template2 });
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] { _template1 });
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
          _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.Ask;
       }
@@ -283,18 +306,18 @@ namespace PKSim.Presentation
          _compound1 = new Compound();
          _compound2 = new Compound();
 
-         _template1 = new LocalTemplate { Name = "Template1", Id = "Id1" };
-         _template2 = new LocalTemplate { Name = "Template2", Id = "Id2" };
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
          _template1.References.Add(_template2);
          _template2.References.Add(_template1);
-         _templates = new List<Template> { _template1, _template2 };
+         _templates = new List<Template> {_template1, _template2};
          A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
-         sut.SelectedTemplatesChanged(new[] { new TemplateDTO(_template1) });
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
          A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
 
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] { _template2 });
-         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] { _template1 });
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
          _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.Ask;
       }
