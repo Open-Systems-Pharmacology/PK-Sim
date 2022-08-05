@@ -11,7 +11,6 @@ namespace PKSim.Assets.Images
       private static readonly ICache<string, ApplicationImage> _allImages = new Cache<string, ApplicationImage>();
       private static IList<ApplicationImage> _allImageList;
 
-      public static readonly ApplicationImage Splash = createImageFrom(Images.PKSim, "PKSim");
       public static readonly ApplicationImage Model4Comp = createImageFrom(Images.SmallMoleculesStructure, "4Comp");
       public static readonly ApplicationImage Model4Comp2Pores = createImageFrom(Images.TwoPoresModelStructure, "TwoPores");
 

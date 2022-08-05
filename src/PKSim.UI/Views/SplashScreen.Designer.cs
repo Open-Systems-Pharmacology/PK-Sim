@@ -34,6 +34,7 @@
          this.labelStatus = new DevExpress.XtraEditors.LabelControl();
          this.peImage = new DevExpress.XtraEditors.PictureEdit();
          this.peLogo = new DevExpress.XtraEditors.PictureEdit();
+         this.labelVersion = new DevExpress.XtraEditors.LabelControl();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.progressBarControl.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.peImage.Properties)).BeginInit();
@@ -52,11 +53,11 @@
          // labelCopyright
          // 
          this.labelCopyright.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-         this.labelCopyright.Location = new System.Drawing.Point(24, 211);
+         this.labelCopyright.Location = new System.Drawing.Point(26, 218);
          this.labelCopyright.Name = "labelCopyright";
-         this.labelCopyright.Size = new System.Drawing.Size(47, 13);
+         this.labelCopyright.Size = new System.Drawing.Size(69, 13);
          this.labelCopyright.TabIndex = 6;
-         this.labelCopyright.Text = "Copyright";
+         this.labelCopyright.Text = "labelCopyright";
          // 
          // labelStatus
          // 
@@ -69,18 +70,19 @@
          // 
          // peImage
          // 
-         this.peImage.Dock = System.Windows.Forms.DockStyle.Top;
+         this.peImage.Anchor = System.Windows.Forms.AnchorStyles.None;
          this.peImage.EditValue = ((object)(resources.GetObject("peImage.EditValue")));
-         this.peImage.Location = new System.Drawing.Point(1, 1);
+         this.peImage.Location = new System.Drawing.Point(23, 2);
+         this.peImage.Margin = new System.Windows.Forms.Padding(0);
          this.peImage.Name = "peImage";
          this.peImage.Properties.AllowFocused = false;
          this.peImage.Properties.Appearance.BackColor = System.Drawing.Color.Transparent;
          this.peImage.Properties.Appearance.Options.UseBackColor = true;
          this.peImage.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
          this.peImage.Properties.ShowMenu = false;
-         this.peImage.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+         this.peImage.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom;
          this.peImage.Properties.SvgImageColorizationMode = DevExpress.Utils.SvgImageColorizationMode.None;
-         this.peImage.Size = new System.Drawing.Size(652, 142);
+         this.peImage.Size = new System.Drawing.Size(606, 142);
          this.peImage.TabIndex = 9;
          // 
          // peLogo
@@ -99,6 +101,15 @@
          this.peLogo.Size = new System.Drawing.Size(269, 42);
          this.peLogo.TabIndex = 8;
          // 
+         // labelVersion
+         // 
+         this.labelVersion.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+         this.labelVersion.Location = new System.Drawing.Point(26, 196);
+         this.labelVersion.Name = "labelVersion";
+         this.labelVersion.Size = new System.Drawing.Size(57, 13);
+         this.labelVersion.TabIndex = 10;
+         this.labelVersion.Text = "labelVersion";
+         // 
          // SplashScreen
          // 
          this.Appearance.BackColor = System.Drawing.Color.White;
@@ -107,6 +118,7 @@
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "SplashScreenNew";
          this.ClientSize = new System.Drawing.Size(654, 245);
+         this.Controls.Add(this.labelVersion);
          this.Controls.Add(this.peImage);
          this.Controls.Add(this.peLogo);
          this.Controls.Add(this.labelStatus);
@@ -132,5 +144,6 @@
       private DevExpress.XtraEditors.LabelControl labelStatus;
       private DevExpress.XtraEditors.PictureEdit peLogo;
       private DevExpress.XtraEditors.PictureEdit peImage;
+      private DevExpress.XtraEditors.LabelControl labelVersion;
    }
 }
