@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -96,7 +97,7 @@ namespace PKSim.Presentation.Presenters
 
       public Task<IReadOnlyList<T>> LoadFromTemplateAsync<T>(TemplateType templateType)
       {
-         _templateTypeDisplay = templateType.ToString();
+         _templateTypeDisplay = templateType.ToString().SplitToUpperCase();
          _view.Caption = PKSimConstants.UI.LoadItemFromTemplate(_templateTypeDisplay);
          _shouldAddItemIcons = !_templateTaskQuery.IsPrimitiveType(templateType);
 
