@@ -102,10 +102,5 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
       {
          UsedObservedData.Add(observedDataId);
       }
-
-      public virtual void AddOutputMappings(OutputMappings outputMappings)
-      {
-         OutputMappings = outputMappings;
-      }
    }
 }
