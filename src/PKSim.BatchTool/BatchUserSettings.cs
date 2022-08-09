@@ -10,6 +10,7 @@ using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
 using PKSim.CLI.Core.MinimalImplementations;
+using PKSim.Core.Model;
 using PKSim.Presentation;
 
 namespace PKSim.BatchTool
@@ -24,7 +25,7 @@ namespace PKSim.BatchTool
       public IconSize IconSizeTab { get; set; }
       public IconSize IconSizeContextMenu { get; set; }
       public uint DecimalPlace { get; set; }
-      public bool AllowsScientifcNotation { get; set; }
+      public bool AllowsScientificNotation { get; set; }
       public uint MRUListItemCount { get; set; }
       public ComparerSettings ComparerSettings { get; set; }
       public string MainViewLayout { get; set; }
@@ -69,5 +70,6 @@ namespace PKSim.BatchTool
       }
 
       public ViewLayout PreferredViewLayout { get; set; } = ViewLayouts.TabbedView;
+      public LoadTemplateWithReference LoadTemplateWithReference { get; set; } = LoadTemplateWithReference.Load;
    }
 }

@@ -1,10 +1,11 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
+﻿using OSPSuite.Assets;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.Assets;
 using PKSim.Presentation.Presenters.AdvancedParameters;
 using PKSim.Presentation.Views.AdvancedParameters;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Controls;
+using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.AdvancedParameters
 {
@@ -44,14 +45,14 @@ namespace PKSim.UI.Views.AdvancedParameters
 
       public bool AddEnabled
       {
-         set { btnAdd.Enabled = value; }
-         get { return btnAdd.Enabled; }
+         set => btnAdd.Enabled = value;
+         get => btnAdd.Enabled;
       }
 
       public bool RemoveEnabled
       {
-         set { btnRemove.Enabled = value; }
-         get { return btnRemove.Enabled; }
+         set => btnRemove.Enabled = value;
+         get => btnRemove.Enabled;
       }
 
       public void AddAdvancedParameterView(IView advancedParameterView)
@@ -62,8 +63,11 @@ namespace PKSim.UI.Views.AdvancedParameters
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemRemoveButton.AsRemoveButton();
-         layoutItemAddButton.AsAddButton();
+         layoutControl.DoInBatch(() =>
+         {
+            layoutItemRemoveButton.AsRemoveButton();
+            layoutItemAddButton.AsAddButton();
+         });
       }
    }
 }

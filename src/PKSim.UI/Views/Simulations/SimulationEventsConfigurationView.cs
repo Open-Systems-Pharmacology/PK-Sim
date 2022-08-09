@@ -133,7 +133,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          btnAddEvent.InitWithImage(ApplicationIcons.Add, PKSimConstants.UI.AddEvent);
-         layoutItemAddEvent.AdjustButtonSize();
+         layoutItemAddEvent.AdjustButtonSize(layoutControl);
       }
 
       public void AttachPresenter(ISimulationEventsConfigurationPresenter presenter)

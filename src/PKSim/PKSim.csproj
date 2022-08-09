@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <Version>11.0.0</Version>
-    <PackageVersion>11.0.0</PackageVersion>
-    <AssemblyVersion>11.0.0</AssemblyVersion>
-    <FileVersion>11.0.0</FileVersion>
-    <InformationalVersion>11.0.0</InformationalVersion>
+    <Version>11.1.0</Version>
+    <PackageVersion>11.1.0</PackageVersion>
+    <AssemblyVersion>11.1.0</AssemblyVersion>
+    <FileVersion>11.1.0</FileVersion>
+    <InformationalVersion>11.1.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <Authors>Open-Systems-Pharmacology</Authors>

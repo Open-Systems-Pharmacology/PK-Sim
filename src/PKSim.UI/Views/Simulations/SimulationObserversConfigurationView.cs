@@ -132,7 +132,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          btnAddObserverSet.InitWithImage(ApplicationIcons.Add, PKSimConstants.UI.AddObserverSet);
-         layoutItemAddObserverSet.AdjustButtonSize();
+         layoutItemAddObserverSet.AdjustButtonSize(layoutControl);
       }
 
       public override bool HasError => _gridViewBinder.HasError;

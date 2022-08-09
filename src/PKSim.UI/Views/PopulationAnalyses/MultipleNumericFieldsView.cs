@@ -79,8 +79,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
          base.InitializeResources();
          btnMoveUp.InitWithImage(ApplicationIcons.Up, imageLocation: ImageLocation.MiddleCenter, toolTip: PKSimConstants.UI.MoveUp);
          btnMoveDown.InitWithImage(ApplicationIcons.Down, imageLocation: ImageLocation.MiddleCenter, toolTip: PKSimConstants.UI.MoveDown);
-         layoutItemButtonUp.AdjustButtonSizeWithImageOnly();
-         layoutItemButtonDown.AdjustButtonSizeWithImageOnly();
+         layoutItemButtonUp.AdjustButtonSizeWithImageOnly(layoutControl);
+         layoutItemButtonDown.AdjustButtonSizeWithImageOnly(layoutControl);
          lblDescription.Text = PKSimConstants.UI.SelectedOutputs;
       }
    }

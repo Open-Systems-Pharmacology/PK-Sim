@@ -63,9 +63,9 @@ namespace PKSim.UI.Views.Individuals
          layoutItemWarning.Visibility = LayoutVisibility.Never;
       }
 
-      public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
+      public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, layoutControl, view);
 
-      public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, view);
+      public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemExpressionParameters, layoutControl, view);
 
       public bool ReadOnly
       {

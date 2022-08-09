@@ -76,7 +76,7 @@ namespace PKSim.UI.Views.Simulations
 
          layoutItemSelectFileToImport.Text = PKSimConstants.UI.FilePath.FormatForLabel();
          btnImport.InitWithImage(ApplicationIcons.Run, text: PKSimConstants.UI.StartImport);
-         layoutItemButtonImport.AdjustLargeButtonSize();
+         layoutItemButtonImport.AdjustLargeButtonSize(layoutControl);
 
          tbFileToImport.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
          Caption = PKSimConstants.UI.ImportSimulationPKAnalyses;

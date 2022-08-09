@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using OSPSuite.Utility.Extensions;
 using NHibernate;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Infrastructure.Serialization.ORM.MetaData
 {
@@ -44,7 +44,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
          BuildingBlocks.UpdateFrom<string, UsedBuildingBlockMetaData>(sourceSimulation.BuildingBlocks, session);
          updateObservedDataFrom(sourceSimulation.UsedObservedData);
 
-         
+
          //Update results and charts only if simulation is loaded
          if (!sourceChild.IsLoaded) return;
 

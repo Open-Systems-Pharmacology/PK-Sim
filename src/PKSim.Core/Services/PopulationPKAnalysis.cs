@@ -7,11 +7,13 @@ namespace PKSim.Core.Services
    {
       public CurveData<TimeProfileXValue, TimeProfileYValue> CurveData;
       public PKAnalysis PKAnalysis { get; set; }
+      public string ExtraDescription { get; private set; }
 
-      public PopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, PKAnalysis pkAnalysis)
+      public PopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, PKAnalysis pkAnalysis, string extraDescription = "")
       {
          CurveData = curveData;
          PKAnalysis = pkAnalysis;
+         ExtraDescription = extraDescription;
       }
    }
 }

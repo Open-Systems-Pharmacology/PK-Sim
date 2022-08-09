@@ -28,9 +28,8 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnRemove = new DevExpress.XtraEditors.SimpleButton();
          this.btnAdd = new DevExpress.XtraEditors.SimpleButton();
          this.panelSelectedParameters = new DevExpress.XtraEditors.PanelControl();
@@ -45,12 +44,10 @@
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
-         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
          this.splitContainerControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelSelectedParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
@@ -63,26 +60,13 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
-         // 
-         // layoutControl
-         // 
-         this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.splitContainerControl);
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsView.UseDefaultDragAndDropRendering = false;
-         this.layoutControl.Root = this.layoutControlGroup;
-         this.layoutControl.Size = new System.Drawing.Size(777, 493);
-         this.layoutControl.TabIndex = 0;
-         this.layoutControl.Text = "layoutControl1";
-         // 
+   // 
          // splitContainerControl
          // 
          this.splitContainerControl.Horizontal = false;
          this.splitContainerControl.Location = new System.Drawing.Point(2, 2);
          this.splitContainerControl.Name = "splitContainerControl";
-         this.splitContainerControl.Panel1.Controls.Add(this.layoutControl1);
+         this.splitContainerControl.Panel1.Controls.Add(this.layoutControl);
          this.splitContainerControl.Panel1.Text = "Panel1";
          this.splitContainerControl.Panel2.Text = "Panel2";
          this.splitContainerControl.Size = new System.Drawing.Size(773, 489);
@@ -92,25 +76,25 @@
          // 
          // layoutControl1
          // 
-         this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.btnRemove);
-         this.layoutControl1.Controls.Add(this.btnAdd);
-         this.layoutControl1.Controls.Add(this.panelSelectedParameters);
-         this.layoutControl1.Controls.Add(this.panelParameters);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(773, 265);
-         this.layoutControl1.TabIndex = 0;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.btnRemove);
+         this.layoutControl.Controls.Add(this.btnAdd);
+         this.layoutControl.Controls.Add(this.panelSelectedParameters);
+         this.layoutControl.Controls.Add(this.panelParameters);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(773, 265);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // btnRemove
          // 
          this.btnRemove.Location = new System.Drawing.Point(341, 138);
          this.btnRemove.Name = "btnRemove";
          this.btnRemove.Size = new System.Drawing.Size(93, 22);
-         this.btnRemove.StyleController = this.layoutControl1;
+         this.btnRemove.StyleController = this.layoutControl;
          this.btnRemove.TabIndex = 7;
          this.btnRemove.Text = "btnRemove";
          // 
@@ -119,7 +103,7 @@
          this.btnAdd.Location = new System.Drawing.Point(341, 112);
          this.btnAdd.Name = "btnAdd";
          this.btnAdd.Size = new System.Drawing.Size(93, 22);
-         this.btnAdd.StyleController = this.layoutControl1;
+         this.btnAdd.StyleController = this.layoutControl;
          this.btnAdd.TabIndex = 6;
          this.btnAdd.Text = "btnAdd";
          // 
@@ -241,16 +225,13 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl);
          this.Name = "PopulationAnalysisParameterSelectionView";
          this.Size = new System.Drawing.Size(777, 493);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
-         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
          this.splitContainerControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelSelectedParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
@@ -268,10 +249,9 @@
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.SimpleButton btnRemove;
       private DevExpress.XtraEditors.SimpleButton btnAdd;
       private DevExpress.XtraEditors.PanelControl panelSelectedParameters;

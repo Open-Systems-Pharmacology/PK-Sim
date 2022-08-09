@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Xml.Linq;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -28,9 +28,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       {
          //before deserializing, it is possible but unlikely that the name of the used building block has changed
          //it would be then overwritten when loading the simulation=>we save the name for the template building block
-         var usedBbNames = simulation.UsedBuildingBlocks.Select(ubb => new {ubb.TemplateId, ubb.Name}).ToList();
+         var usedBbNames = simulation.UsedBuildingBlocks.Select(ubb => new { ubb.TemplateId, ubb.Name }).ToList();
 
-         base.TypedDeserialize(simulation, simulationElement,context);
+         base.TypedDeserialize(simulation, simulationElement, context);
 
          //reset the names for the used building blocks
          usedBbNames.Each(ubb =>

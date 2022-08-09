@@ -13,6 +13,7 @@ namespace PKSim.Core.Mappers
    public interface IPKValuesToPKAnalysisMapper
    {
       PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName);
+      PKAnalysis MapFrom(double? molWeight, PKValues pkValues, PKParameterMode mode, string moleculeName);
    }
 
    public class PKValuesToPKAnalysisMapper : IPKValuesToPKAnalysisMapper
@@ -31,13 +32,30 @@ namespace PKSim.Core.Mappers
          _displayUnitRetriever = displayUnitRetriever;
       }
 
-      public PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName)
+      public PKAnalysis MapFrom(double? molWeight, PKValues pkValues, PKParameterMode mode, string moleculeName)
       {
          var pk = new PKAnalysis().WithName(moleculeName);
-         _pkParameterRepository.All().Where(parameter => parameter.Mode.Is(mode)).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
+         _pkParameterRepository.All().Where(parameter => shouldExport(parameter, pkValues, mode)).Each(parameter => pk.Add(createPKParameter(parameter, pkValues)));
 
-         pk.MolWeight = dataColumn.DataInfo.MolWeight;
+         pk.MolWeight = molWeight;
          return pk;
+      }
+
+      public PKAnalysis MapFrom(DataColumn dataColumn, PKValues pkValues, PKParameterMode mode, string moleculeName)
+      {
+         return MapFrom(dataColumn.DataInfo.MolWeight, pkValues, mode, moleculeName);
+      }
+
+      private bool shouldExport(PKParameter parameter, PKValues pkValues, PKParameterMode mode)
+      {
+         if (!parameter.Mode.Is(mode))
+            return false;
+         
+         var pkValue = pkValues.ValueFor(parameter.Name);
+         if (!pkValue.HasValue)
+            return false;
+
+         return !float.IsNaN(pkValue.Value);
       }
 
       private IParameter createPKParameter(PKParameter pkParameter, PKValues pkValues)

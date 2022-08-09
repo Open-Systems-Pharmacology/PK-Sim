@@ -42,13 +42,13 @@ namespace PKSim.Core.Model
       /// <param name="ivProtocol">IV Protocol for the <paramref name="compound" /></param>
       /// <param name="compound">Compound for which bioavailability will be determined</param>
       /// <param name="originalSimulation">Original simulation that will be used to create the new simulation</param>
-      IndividualSimulation CreateForBioAvailability(Protocol ivProtocol, Compound compound, IndividualSimulation originalSimulation);
+      Simulation CreateForBioAvailability(Protocol ivProtocol, Compound compound, Simulation originalSimulation);
 
       /// <summary>
       ///    Creates a full simulation (including model) where the all inhibition processes are turned off
       /// </summary>
       /// <param name="originalSimulation">Original simulation that will be used to create the new simulation</param>
-      IndividualSimulation CreateForDDIRatio(IndividualSimulation originalSimulation);
+      Simulation CreateForDDIRatio(Simulation originalSimulation);
 
       /// <summary>
       ///    Creates a full simulation (including model) where the protocal for the <paramref name="compound" /> is set to
@@ -205,7 +205,7 @@ namespace PKSim.Core.Model
          return simulation;
       }
 
-      public IndividualSimulation CreateForDDIRatio(IndividualSimulation originalSimulation)
+      public Simulation CreateForDDIRatio(Simulation originalSimulation)
       {
          //DDI Ratio=> manipulate inhibition parameters so that all DDI effects are effectively deactivated 
          var ddiRatioSimulation =  createModelLessSimulationBasedOn(originalSimulation);
@@ -240,7 +240,7 @@ namespace PKSim.Core.Model
          throw new OSPSuiteException(PKSimConstants.Error.CannotCalculateDDIRatioFor(parameterName));
       }
 
-      public IndividualSimulation CreateForBioAvailability(Protocol ivProtocol, Compound compound, IndividualSimulation originalSimulation)
+      public Simulation CreateForBioAvailability(Protocol ivProtocol, Compound compound, Simulation originalSimulation)
       {
          return createForPKCalculation(originalSimulation, compound, (pkSimulation, pkCompound, allProtocols) =>
          {
@@ -257,15 +257,18 @@ namespace PKSim.Core.Model
       ///    <paramref name="originalSimulation" />.
       ///    The resulting simulation should only be used for ad-hoc calculations and be discarded after use
       /// </summary>
-      private IndividualSimulation createModelLessSimulationBasedOn(IndividualSimulation originalSimulation)
+      private Simulation createModelLessSimulationBasedOn(Simulation originalSimulation)
       {
          var clonedSimulation = _cloner.Clone(originalSimulation);
 
-         return CreateFrom(clonedSimulation.Individual, clonedSimulation.Compounds, clonedSimulation.ModelProperties, clonedSimulation)
-            .DowncastTo<IndividualSimulation>();
+         var populationSimulation = clonedSimulation as PopulationSimulation;
+         if (populationSimulation == null)
+            return CreateFrom(clonedSimulation.Individual, clonedSimulation.Compounds, clonedSimulation.ModelProperties, clonedSimulation);
+         else
+            return CreateFrom(populationSimulation.Population, clonedSimulation.Compounds, clonedSimulation.ModelProperties, clonedSimulation);
       }
 
-      private IndividualSimulation createForPKCalculation(IndividualSimulation originalSimulation, Compound compound, Action<Simulation, Compound, List<Protocol>> updateUsedProtocolsForSimulation)
+      private Simulation createForPKCalculation(Simulation originalSimulation, Compound compound, Action<Simulation, Compound, List<Protocol>> updateUsedProtocolsForSimulation)
       {
          var pkSimulation = createModelLessSimulationBasedOn(originalSimulation);
 

@@ -276,7 +276,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
          base.InitializeResources();
          btnCreateDerivedField.InitWithImage(ApplicationIcons.Create, PKSimConstants.UI.CreateGrouping);
-         layoutItemCreatedDerivedField.AdjustLargeButtonSize();
+         layoutItemCreatedDerivedField.AdjustLargeButtonSize(layoutControl);
       }
    }
 }

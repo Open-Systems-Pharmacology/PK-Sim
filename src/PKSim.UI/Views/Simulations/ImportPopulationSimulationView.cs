@@ -149,7 +149,7 @@ namespace PKSim.UI.Views.Simulations
          layoutItemPopulationFileSelection.Text = PKSimConstants.UI.PopulationFilePath.FormatForLabel();
          layoutItemNumberOfIndividuals.Text = PKSimConstants.UI.NumberOfIndividuals.FormatForLabel();
          btnStartImport.InitWithImage(ApplicationIcons.Run, text: PKSimConstants.UI.StartImport);
-         layoutItemButtonImport.AdjustLargeButtonSize();
+         layoutItemButtonImport.AdjustLargeButtonSize(layoutControl);
 
          layoutControlGroupSimulationFileSelection.Text = PKSimConstants.ObjectTypes.Simulation;
          layoutControlGroupPopulationSelection.Text = PKSimConstants.ObjectTypes.Population;

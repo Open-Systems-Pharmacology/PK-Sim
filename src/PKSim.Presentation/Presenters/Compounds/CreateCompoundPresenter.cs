@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
    public class CreateCompoundPresenter : PKSimWizardPresenter<ICreateCompoundView, ICreateCompoundPresenter, ICompoundItemPresenter>, ICreateCompoundPresenter
    {
-      private ObjectBaseDTO _compoundPropertieDTO;
+      private ObjectBaseDTO _compoundPropertiesDTO;
       private readonly IObjectBaseDTOFactory _objectBaseDTOFactory;
       private readonly IBuildingBlockPropertiesMapper _propertiesMapper;
       private readonly ICompoundFactory _compoundFactory;
@@ -53,10 +53,10 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public IPKSimCommand Create()
       {
-         _compoundPropertieDTO = _objectBaseDTOFactory.CreateFor<Compound>();
+         _compoundPropertiesDTO = _objectBaseDTOFactory.CreateFor<Compound>();
          Compound = _compoundFactory.Create();
          _subPresenterItemManager.AllSubPresenters.Each(x => x.EditCompound(Compound));
-         _view.BindToProperties(_compoundPropertieDTO);
+         _view.BindToProperties(_compoundPropertiesDTO);
          _view.EnableControl(CompoundItems.Parameters);
          _view.EnableControl(CompoundItems.Processes);
          SetWizardButtonEnabled(CompoundItems.Parameters);
@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       private void updateCompoundProperties()
       {
-         _propertiesMapper.MapProperties(_compoundPropertieDTO, Compound);
+         _propertiesMapper.MapProperties(_compoundPropertiesDTO, Compound);
       }
 
       public Compound BuildingBlock

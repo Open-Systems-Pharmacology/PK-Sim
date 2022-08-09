@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.Simulations
 
       public void AddInteractionView(IView view)
       {
-         AddViewTo(layoutItemInhibitionSelection, view);
+         AddViewTo(layoutItemInhibitionSelection, layoutControl, view);
       }
 
       public bool ShowInteractionView

@@ -933,7 +933,7 @@ namespace PKSim.Assets
             $"Multiple operator values found for container id '{containerId}' and parameter '{parameterName}'";
 
          public static string ExpressionProfileForMoleculeNotFound(string molecule, string buildingBlockName, string buildingBlockType) =>
-            $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}.'";
+            $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}'.";
       }
 
       public static class Information
@@ -1688,6 +1688,7 @@ namespace PKSim.Assets
          public static readonly string DefaultSolubilityName = "Solubility";
          public static readonly string DefaultPopulationAnalysisType = "Population analysis";
          public static readonly string PreferredViewLayout = "Preferred View Layout";
+         public static readonly string TemplateReferenceBehavior = "Load metabolites when loading compound";
          public static readonly string Defaults = "Defaults";
          public static readonly string Default = "Default";
          public static readonly string Add = "Add";
@@ -2226,6 +2227,8 @@ namespace PKSim.Assets
          public static readonly string DiseaseState = "Disease State";
          public static readonly string Select = "Select";
          public static readonly string Healthy = "Healthy";
+         public static readonly string RerunSimulationToSeeResults = "Please re-run the simulation to calculate PK-parameters.";
+         public static readonly string GlobalPKAnalysisDescription = "Values calculated for the mean population curve";
 
          public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
 
@@ -2282,7 +2285,7 @@ namespace PKSim.Assets
          public static string NamingPatternDescription(string iterationPattern, string startPattern, string endPattern)
          {
             var sb = new StringBuilder();
-            sb.AppendLine("Automatically generates labels replacing the occurence in the naming pattern of:");
+            sb.AppendLine("Automatically generates labels replacing the occurrence in the naming pattern of:");
             sb.AppendFormat(" -   <b>{0}</b> with an identifier generated using the selected template\n", iterationPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the start of the interval and n the number of digits\n", startPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the end of the interval and n the number of digits\n", endPattern);
@@ -2296,7 +2299,7 @@ namespace PKSim.Assets
             sb.AppendFormat(" -   Use <b>{0}</b> for a unique identifier using the selected template.\n", iterationPattern);
             sb.AppendFormat(" -   Use <b>{0}</b> for the start of the interval.\n", startPattern);
             sb.AppendFormat(" -   Use <b>{0}</b> for the end of the interval.\n", endPattern);
-            sb.AppendFormat(" -   Change <b>n</b> to specificy the number of digits to use, (i.e. n= 1, 2, 3 etc... ");
+            sb.AppendFormat(" -   Change <b>n</b> to specify the number of digits to use, (i.e. n= 1, 2, 3 etc... ");
             sb.AppendLine("if n is not specified, the value defined in the user settings will be used.");
             sb.AppendLine();
             sb.AppendLine("<i>Examples:</i>");
@@ -2631,6 +2634,10 @@ namespace PKSim.Assets
          public static readonly string Unit = UI.Unit;
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
+         public static readonly string OnCurves = "On Curves";
+         public static readonly string OnCurvesTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
+         public static readonly string OnIndividuals = "On Individuals";
+         public static readonly string OnIndividualsTooltip = "PK parameter values are aggregated from individual values";
       }
 
       public static class Comparison

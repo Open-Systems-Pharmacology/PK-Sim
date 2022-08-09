@@ -1,7 +1,7 @@
 ﻿using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Simulations
 {

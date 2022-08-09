@@ -1,9 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics.Financial;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -11,6 +8,9 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace PKSim.Core.Model
 {
@@ -21,6 +21,16 @@ namespace PKSim.Core.Model
       private readonly List<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private SimulationProperties _properties;
       private SimulationResults _results;
+      private readonly ICache<string, CompoundPK> _compoundPKCache;
+
+      public abstract DataColumn PeripheralVenousBloodColumn(string compoundName);
+
+      /// <summary>
+      ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
+      /// </summary>
+      public abstract DataColumn VenousBloodColumn(string compoundName);
+
+      public abstract DataColumn FabsOral(string compoundName);
 
       /// <summary>
       ///    Returns the version that the simulation had when it was run and the simulation was saved
@@ -47,7 +57,45 @@ namespace PKSim.Core.Model
          ContainerType = ContainerType.Simulation;
          _results = new NullSimulationResults();
          ResultsHaveChanged = false;
+         _compoundPKCache = new Cache<string, CompoundPK>(x => x.CompoundName, x => new CompoundPK());
       }
+
+      public void ClearPKCache() => _compoundPKCache.Clear();
+
+      public CompoundPK CompoundPKFor(string compoundName)
+      {
+         if (!_compoundPKCache.Contains(compoundName))
+            _compoundPKCache.Add(new CompoundPK { CompoundName = compoundName });
+
+         return _compoundPKCache[compoundName];
+      }
+
+      public void AddCompoundPK(CompoundPK compoundPK)
+      {
+         _compoundPKCache.Add(compoundPK);
+      }
+
+      private double? compoundPKValue(string compoundName, Func<CompoundPK, double?> pkValueFunc)
+      {
+         return pkValueFunc(_compoundPKCache[compoundName]);
+      }
+
+      public double? AucIVFor(string compoundName)
+      {
+         return compoundPKValue(compoundName, x => x.AucIV);
+      }
+
+      public double? AucDDIFor(string compoundName)
+      {
+         return compoundPKValue(compoundName, x => x.AucDDI);
+      }
+
+      public double? CmaxDDIFor(string compoundName)
+      {
+         return compoundPKValue(compoundName, x => x.CmaxDDI);
+      }
+
+      public IEnumerable<CompoundPK> AllCompoundPK => _compoundPKCache;
 
       /// <summary>
       ///    Returns all building blocks used by the simulation.
@@ -244,7 +292,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IEnumerable<ISimulationAnalysis> Analyses => _allSimulationAnalyses;
 
-
       /// <summary>
       ///    All analyses defined for the simulation
       /// </summary>
@@ -273,7 +320,7 @@ namespace PKSim.Core.Model
       }
 
       private IEnumerable<IWithObservedData> analysesWithObservedData => _allSimulationAnalyses.OfType<IWithObservedData>();
-      public virtual  IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
+      public virtual IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
 
       public virtual void AddUsedObservedData(UsedObservedData usedObservedData)
       {
@@ -405,11 +452,13 @@ namespace PKSim.Core.Model
                return;
 
             thisCompoundProperties.Compound = correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.Compound);
-            thisCompoundProperties.ProtocolProperties.Protocol = correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.ProtocolProperties.Protocol);
+            thisCompoundProperties.ProtocolProperties.Protocol =
+               correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.ProtocolProperties.Protocol);
          });
       }
 
-      private TBuildingBlock correspondingBuildingBlock<TBuildingBlock>(Simulation sourceSimulation, TBuildingBlock sourceBuildingBlock) where TBuildingBlock : class, IPKSimBuildingBlock
+      private TBuildingBlock correspondingBuildingBlock<TBuildingBlock>(Simulation sourceSimulation, TBuildingBlock sourceBuildingBlock)
+         where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (sourceBuildingBlock == null)
             return null;
@@ -583,9 +632,8 @@ namespace PKSim.Core.Model
       //This is not used in PKSim.
       public IBuildConfiguration BuildConfiguration { get; } = null;
 
-
       /// <summary>
-      ///    Returns the <see cref="OutputSelections"/> for the simulation
+      ///    Returns the <see cref="OutputSelections" /> for the simulation
       /// </summary>
       public virtual OutputSelections OutputSelections
       {
@@ -658,7 +706,6 @@ namespace PKSim.Core.Model
          get => Properties.EventProperties;
          set => Properties.EventProperties = value;
       }
-
 
       /// <summary>
       ///    Returns the observer set mappings used in the simulation configuration

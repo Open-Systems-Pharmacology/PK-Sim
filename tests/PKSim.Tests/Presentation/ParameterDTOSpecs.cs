@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Validation;
 using PKSim.Presentation.DTO.Parameters;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Presentation
 {
@@ -173,13 +174,22 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _parameter.Formula = new ExplicitFormula("A + 5");
+         _parameter = new Parameter().WithFormula(new ExplicitFormula("A + 5"));
+         sut = new ParameterDTO(_parameter);
       }
 
       [Observation]
-      public void should_return_a_value_of_zero()
+      public void should_return_a_value_of_zero_for_any_parameter_not_called_initial_concentration()
       {
+         _parameter.Name = PARTICLE_LOG_VARIATION_COEFF;
          sut.Value.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void should_return_nan_for_initial_concentration()
+      {
+         _parameter.Name = INITIAL_CONCENTRATION;
+         sut.Value.ShouldBeEqualTo(double.NaN);
       }
    }
 }

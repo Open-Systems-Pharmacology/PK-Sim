@@ -45,10 +45,10 @@ namespace PKSim.Core.Services
          switch (simulation)
          {
             case IndividualSimulation individualSimulation:
-               return runSimulation<IndividualSimulation, SimulationRunResults>(individualSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
+               return runSimulation<IndividualSimulation, SimulationRunResults>(individualSimulation);
 
             case PopulationSimulation populationSimulation:
-               return runSimulation<PopulationSimulation, PopulationRunResults>(populationSimulation, _simulationPersistableUpdater.UpdatePersistableFromSettings);
+               return runSimulation<PopulationSimulation, PopulationRunResults>(populationSimulation);
          }
 
          return _simulationDidNotRun;
@@ -61,7 +61,7 @@ namespace PKSim.Core.Services
          _simulationEngine = null;
       }
 
-      private async Task runSimulation<TSimulation, TResult>(TSimulation simulation, Action<TSimulation> updatePersistableFromSettings) where TSimulation : Simulation
+      private async Task runSimulation<TSimulation, TResult>(TSimulation simulation) where TSimulation : Simulation
       {
          var simulationEngine = _simulationEngineFactory.Create<TSimulation, TResult>();
          _simulationEngine = simulationEngine;
@@ -69,7 +69,7 @@ namespace PKSim.Core.Services
          if (_simulationRunOptions.RunForAllOutputs)
             _simulationPersistableUpdater.ResetPersistable(simulation);
          else
-            updatePersistableFromSettings(simulation);
+            _simulationPersistableUpdater.UpdatePersistableFromSettings(simulation);
 
          updateSolverSettings(simulation);
          await simulationEngine.RunAsync(simulation, _simulationRunOptions);

@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <Version>11.0.0</Version>
-    <PackageVersion>11.0.0</PackageVersion>
-    <AssemblyVersion>11.0.0</AssemblyVersion>
-    <FileVersion>11.0.0</FileVersion>
-    <InformationalVersion>11.0.0</InformationalVersion>
+    <Version>11.1.0</Version>
+    <PackageVersion>11.1.0</PackageVersion>
+    <AssemblyVersion>11.1.0</AssemblyVersion>
+    <FileVersion>11.1.0</FileVersion>
+    <InformationalVersion>11.1.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -37,6 +37,11 @@
 
   
   <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
@@ -44,9 +49,18 @@
     </Compile>
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.1.12" />
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.0.2" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
@@ -78,7 +92,13 @@
     <Reference Include="Accessibility">
       <HintPath>..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\Accessibility\v4.0_4.0.0.0__b03f5f7f11d50a3a\Accessibility.dll</HintPath>
     </Reference>
+    <Reference Include="DevExpress.Sparkline.v21.2.Core">
+      <HintPath>..\..\..\..\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Sparkline.v21.2.Core\v4.0_21.2.3.0__b88d1754d700e49a\DevExpress.Sparkline.v21.2.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System.Data.Linq">
+      <HintPath>..\..\..\..\Windows\Microsoft.Net\assembly\GAC_MSIL\System.Data.Linq\v4.0_4.0.0.0__b77a5c561934e089\System.Data.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Deployment">
       <HintPath>..\..\..\..\WINDOWS\Microsoft.Net\assembly\GAC_MSIL\System.Deployment\v4.0_4.0.0.0__b03f5f7f11d50a3a\System.Deployment.dll</HintPath>
     </Reference>

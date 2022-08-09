@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.PKAnalyses;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.PKAnalyses;
-using OSPSuite.Core.Domain.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
@@ -28,17 +28,21 @@ namespace PKSim.Core
       private IPKParameterRepository _pkParameterRepository;
       private ILazyLoadTask _lazyLoadTask;
       private IEntityPathResolver _entityPathResolver;
+      protected IStatisticalDataCalculator _statisticalDataCalculator;
+      protected IRepresentationInfoRepository _representationInfoRepository;
 
       protected override void Context()
       {
-         _lazyLoadTask= A.Fake<ILazyLoadTask>(); 
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _pkCalculator = A.Fake<IPKValuesCalculator>();
          _pkMapper = A.Fake<IPKValuesToPKAnalysisMapper>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
-         _entityPathResolver= A.Fake<IEntityPathResolver>();
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator,_pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository);
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _statisticalDataCalculator = new StatisticalDataCalculator();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository);
       }
    }
 
@@ -47,7 +51,7 @@ namespace PKSim.Core
       private ChartData<TimeProfileXValue, TimeProfileYValue> _chartData;
       private IPopulationDataCollector _populationDataCollector;
       private List<PopulationPKAnalysis> _result;
-      private DataColumn _dataColumn;
+      private List<DataColumn> _dataColumn;
 
       protected override void Context()
       {
@@ -68,6 +72,7 @@ namespace PKSim.Core
 
          var rangeCurve = new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
+            Caption = "TOTO",
             Pane = pane,
             QuantityPath = "RANGE_PATH",
          };
@@ -78,7 +83,9 @@ namespace PKSim.Core
          A.CallTo(() => _populationDataCollector.MolWeightFor("PATH")).Returns(100);
 
          A.CallTo(() => _pkMapper.MapFrom(A<DataColumn>._, A<PKValues>._, A<PKParameterMode>._, A<string>._))
-            .Invokes(x => _dataColumn = x.GetArgument<DataColumn>(0));
+            .Invokes(x => _dataColumn.Add(x.GetArgument<DataColumn>(0)));
+
+         _dataColumn = new List<DataColumn>();
       }
 
       protected override void Because()
@@ -89,19 +96,19 @@ namespace PKSim.Core
       [Observation]
       public void should_return_curve_data_with_the_mol_weight_set()
       {
-         _dataColumn.DataInfo.MolWeight.ShouldBeEqualTo(100);
+         _dataColumn.First(x => x.DataInfo.MolWeight != null).DataInfo.MolWeight.ShouldBeEqualTo(100);
       }
 
       [Observation]
-      public void should_have_execluded_curve_representing_a_range_plot()
+      public void should_not_generate_two_curves_for_each_range_plot()
       {
-         _result.Count.ShouldBeEqualTo(1);
+         _result.Count.ShouldBeEqualTo(3);
       }
 
       [Observation]
       public void should_have_calculated_the_pk_analysis_with_the_expected_value()
       {
-         _dataColumn.Values.ShouldOnlyContainInOrder(10f, 20f);
+         _dataColumn.First(x => x.Values.Count == 2).Values.ShouldOnlyContainInOrder(10f, 20f);
       }
    }
 

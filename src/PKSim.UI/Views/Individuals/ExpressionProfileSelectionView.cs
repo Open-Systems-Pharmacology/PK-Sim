@@ -61,8 +61,8 @@ namespace PKSim.UI.Views.Individuals
          lblDescription.Text = PKSimConstants.UI.SelectExpressionProfile;
          btnCreate.InitWithImage(ApplicationIcons.Create, imageLocation: ImageLocation.MiddleCenter);
          btnLoad.InitWithImage(ApplicationIcons.LoadFromTemplate, imageLocation: ImageLocation.MiddleCenter);
-         layoutItemCreate.AdjustButtonSizeWithImageOnly();
-         layoutItemLoad.AdjustButtonSizeWithImageOnly();
+         layoutItemCreate.AdjustButtonSizeWithImageOnly(layoutControl);
+         layoutItemLoad.AdjustButtonSizeWithImageOnly(layoutControl);
          cbExpressionProfile.Properties.AllowHtmlDraw = DefaultBoolean.True;
          layoutItemExpressionProfileSelection.TextVisible = false;
          cbExpressionProfile.Properties.AutoHeight = false;

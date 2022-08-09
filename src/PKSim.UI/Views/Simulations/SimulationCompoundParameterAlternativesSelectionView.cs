@@ -33,6 +33,7 @@ namespace PKSim.UI.Views.Simulations
          _gridViewBinder = new GridViewBinder<CompoundParameterSelectionDTO>(gridView);
          gridView.RowStyle += rowStyle;
          gridView.HorzScrollVisibility=ScrollVisibility.Never;
+         layoutControl.AutoScroll = false;
          _repositoryForParameterAlternatives.AllowDropDownWhenReadOnly = DefaultBoolean.False;
       }
 
@@ -61,10 +62,7 @@ namespace PKSim.UI.Views.Simulations
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
       }
 
-      public override bool HasError
-      {
-         get { return _gridViewBinder.HasError; }
-      }
+      public override bool HasError => _gridViewBinder.HasError;
 
       private void rowStyle(object sender, RowStyleEventArgs e)
       {

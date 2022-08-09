@@ -50,7 +50,7 @@ namespace PKSim.Presentation.Presenters.Charts
          IObservedDataTask observedDataTask, 
          IPopulationPKAnalysisPresenter pkAnalysisPresenter, 
          IDimensionRepository dimensionRepository, 
-         IPresentationSettingsTask presentationSettingsTask)
+         IPresentationSettingsTask presentationSettingsTask )
          : base(view, timeProfileChartPresenter, timeProfileChartDataCreator, populationSimulationAnalysisStarter, populationAnalysisTask, ApplicationIcons.TimeProfileAnalysis)
       {
          _colorGenerator = colorGenerator;
@@ -183,7 +183,7 @@ namespace PKSim.Presentation.Presenters.Charts
       private void calculatePKAnalysis()
       {
          var chartData = CreateChartData();
-         _pkAnalysisPresenter.CalculatePKAnalysis(PopulationDataCollector, chartData);
+         _pkAnalysisPresenter.CalculatePKAnalyses(PopulationDataCollector, chartData, PopulationAnalysisChart.PopulationAnalysis);
       }
 
       private bool canHandle(AnalysableEvent analysableEvent)

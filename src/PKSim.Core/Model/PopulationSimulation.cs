@@ -106,10 +106,7 @@ namespace PKSim.Core.Model
          return allParameters;
       }
 
-      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters)
-      {
-         Add(advancedParameters);
-      }
+      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters) => Add(advancedParameters);
 
       private AdvancedParameterCollection advancedParameterCollection
       {
@@ -187,22 +184,15 @@ namespace PKSim.Core.Model
          return new T[NumberOfItems].InitializeWith(defaultValue);
       }
 
-      public virtual QuantityPKParameter PKParameterFor(string quantityPath, string pkParameter)
-      {
-         return PKAnalyses.PKParameterFor(quantityPath, pkParameter);
-      }
+      public virtual QuantityPKParameter PKParameterFor(string quantityPath, string pkParameter) => PKAnalyses.PKParameterFor(quantityPath, pkParameter);
 
-      public virtual IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath)
-      {
-         return PKAnalyses.AllPKParametersFor(quantityPath);
-      }
+      public virtual IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath) => PKAnalyses.AllPKParametersFor(quantityPath);
 
-      public virtual bool HasPKParameterFor(string quantityPath, string pkParameter)
-      {
-         return PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
-      }
+      public virtual bool HasPKParameterFor(string quantityPath, string pkParameter) => PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
 
       public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
+
+      public bool SupportsMultipleAggregations { get; }=true;
 
       public virtual int NumberOfItems => Population.NumberOfItems;
 
@@ -278,6 +268,62 @@ namespace PKSim.Core.Model
          base.UpdateFromOriginalSimulation(originalSimulation);
          var sourcePopSimulation = originalSimulation as PopulationSimulation;
          sourcePopSimulation?.AdvancedParameters.Each(x => AddAdvancedParameter(x, generateRandomValues: true));
+      }
+
+      private DataColumn aggregateDataColumns(IReadOnlyList<DataColumn> columns)
+      {
+         var column = columns?.FirstOrDefault();
+         if (column == null)
+            return null;
+
+         return new DataColumn(column.Id, column.Dimension, column.BaseGrid)
+         {
+            Values = Enumerable.Range(0, column.Values.Count)
+               .Select(i => 
+                  columns.Select(x => x.Values[i]).ToList().ArithmeticMean()
+               ).ToList()
+         };
+      }
+
+      public override DataColumn PeripheralVenousBloodColumn(string compoundName)
+      {
+         return aggregateDataColumns(drugColumnFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName));
+      }
+
+      /// <summary>
+      ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
+      /// </summary>
+      public override DataColumn VenousBloodColumn(string compoundName)
+      {
+         return aggregateDataColumns(drugColumnFor(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName));
+      }
+
+      public override DataColumn FabsOral(string compoundName)
+      {
+         return aggregateDataColumns(drugColumnFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName));
+      }
+
+      private IReadOnlyList<DataColumn> drugColumnFor(string organ, string compartment, string columnName, string compoundName)
+      {
+         return Results.Select(x => columnsFor(x, organ, compartment, columnName, compoundName)).ToList();
+      }
+
+      private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, string compoundName)
+      {
+         var column = results.FirstOrDefault(x =>
+               x.QuantityPath.Contains(organ) &&
+               x.QuantityPath.Contains(compartment) &&
+               x.QuantityPath.Contains(columnName) &&
+               x.QuantityPath.Contains(compoundName)
+            );
+         if (column == null) 
+            return null;
+         
+         //We use no dimension here because we are only interested in getting the values 
+         return new DataColumn(column.ColumnId, Constants.Dimension.NO_DIMENSION, new BaseGrid(Constants.TIME, Constants.Dimension.NO_DIMENSION)  { Values = column.Time.Values  })
+         {
+            Values =  column.Values
+         };
       }
    }
 }

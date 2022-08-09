@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core.Extensions;
 using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Model
@@ -38,6 +37,11 @@ namespace PKSim.Core.Model
       public float[] SortedValueAt(int index0)
       {
          return _rows[index0];
+      }
+
+      public float[] SliceAt(int index)
+      {
+         return _rows.Select(r => r[index]).ToArray();
       }
    }
 }

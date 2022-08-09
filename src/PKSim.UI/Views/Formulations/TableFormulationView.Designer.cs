@@ -28,15 +28,15 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl(); 
+         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl(); 
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.panelParameters = new DevExpress.XtraEditors.PanelControl();
          this.layoutItemParameters = new DevExpress.XtraLayout.LayoutControlItem();
          this.panelTable = new DevExpress.XtraEditors.PanelControl();
          this.layoutItemTable = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
+         this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).BeginInit();
@@ -46,15 +46,15 @@
          // 
          // layoutControl1
          // 
-         this.layoutControl1.Controls.Add(this.panelTable);
-         this.layoutControl1.Controls.Add(this.panelParameters);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup;
-         this.layoutControl1.Size = new System.Drawing.Size(436, 456);
-         this.layoutControl1.TabIndex = 0;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.Controls.Add(this.panelTable);
+         this.layoutControl.Controls.Add(this.panelParameters);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup;
+         this.layoutControl.Size = new System.Drawing.Size(436, 456);
+         this.layoutControl.TabIndex = 0;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // layoutControlGroup
          // 
@@ -105,12 +105,12 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl1);
+         this.Controls.Add(this.layoutControl);
          this.Name = "TableFormulationView";
          this.Size = new System.Drawing.Size(436, 456);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
+         this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameters)).EndInit();
@@ -122,7 +122,7 @@
 
       #endregion
 
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
+      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
       private DevExpress.XtraEditors.PanelControl panelTable;
       private DevExpress.XtraEditors.PanelControl panelParameters;

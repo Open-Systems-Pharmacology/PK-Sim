@@ -1,12 +1,11 @@
-﻿using OSPSuite.DataBinding;
+﻿using DevExpress.XtraTab;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using DevExpress.XtraTab;
-using PKSim.Assets;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using PKSim.Assets;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Core

@@ -51,7 +51,7 @@ namespace PKSim.UI.Views.Simulations
       public void AddFormulationMappingView(IView view)
       {
          _resizableView = view as IResizableView;
-         AddViewTo(layoutItemFormulation, view);
+         AddViewTo(layoutItemFormulation,layoutControl,  view);
       }
 
       public bool AllowEmptyProtocolSelection
@@ -60,9 +60,9 @@ namespace PKSim.UI.Views.Simulations
          get => _uxProtocolSelection.AllowEmptySelection;
       }
 
-      protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, IResizableView view, int height)
+      protected override void AdjustLayoutItemSize(LayoutControlItem layoutControlItem, LayoutControl layoutControl, IResizableView view, int height)
       {
-         base.AdjustLayoutItemSize(layoutControlItem, view, height);
+         base.AdjustLayoutItemSize(layoutControlItem, layoutControl, view, height);
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 

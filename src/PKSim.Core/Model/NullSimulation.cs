@@ -1,4 +1,5 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Domain.Data;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
@@ -17,6 +18,21 @@ namespace PKSim.Core.Model
       public override TBuildingBlock BuildingBlock<TBuildingBlock>()
       {
          return default(TBuildingBlock);
+      }
+
+      public override DataColumn FabsOral(string compoundName)
+      {
+         throw new System.NotImplementedException();
+      }
+
+      public override DataColumn PeripheralVenousBloodColumn(string compoundName)
+      {
+         throw new System.NotImplementedException();
+      }
+
+      public override DataColumn VenousBloodColumn(string compoundName)
+      {
+         throw new System.NotImplementedException();
       }
    }
 }
