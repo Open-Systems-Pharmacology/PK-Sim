@@ -65,7 +65,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       private void updateSimulationProperties(Simulation simulation, SimulationMetaData simMetaData)
       {
          simulation.UsedBuildingBlocks.Each(bb => simMetaData.AddBuildingBlock(mapFrom(bb)));
-         simMetaData.OutputMappings = simulation.OutputMappings;
          simMetaData.Properties.Data = _serializationManager.Serialize(simulation.Properties);
          simulation.UsedObservedData.Each(x => simMetaData.AddObservedData(x.Id));
          simulation.Analyses.Each(chart => simMetaData.AddChart(mapFrom(chart)));

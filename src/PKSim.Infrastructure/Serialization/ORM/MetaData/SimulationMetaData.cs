@@ -18,7 +18,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
       public virtual ICollection<UsedBuildingBlockMetaData> BuildingBlocks { get; set; }
       public virtual ICollection<string> UsedObservedData { get; set; }
       public virtual SimulationResults SimulationResults { get; set; }
-      public virtual OutputMappings OutputMappings { get; set; }
       public virtual SimulationAnalysesMetaData SimulationAnalyses { get; set; }
       public virtual ICollection<SimulationChartMetaData> Charts { get; set; }
 
