@@ -195,7 +195,7 @@ namespace PKSim.UI.Views.Compounds
          HeightChanged(this, new ViewResizedEventArgs(OptimalHeight));
       }
 
-      public virtual int OptimalHeight => _gridView.OptimalHeight + COMPUTED_EXTRA_HEIGHT + layoutItemGrid.Padding.Height;
+      public virtual int OptimalHeight => _gridView.OptimalHeight + layoutItemGrid.Padding.Height;
 
       public virtual void Repaint()
       {

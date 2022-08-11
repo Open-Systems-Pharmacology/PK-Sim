@@ -46,18 +46,6 @@ namespace PKSim.UI
          public static readonly int SIMULATION_COMPOUND_CONFIGURATION_DEFAULT_HEIGHT = ScaleForScreenDPI(280);
          public static readonly int SIMULATION_COMPOUND_PROCESS_DEFAULT_HEIGHT = ScaleForScreenDPI(250);
          public static readonly int SIMULATION_COMPOUND_PROTOCOL_DEFAULT_HEIGHT = ScaleForScreenDPI(50);
-
-         public static readonly int COMPUTED_EXTRA_HEIGHT = computedExtraRowHeight();
-
-         private static int computedExtraRowHeight()
-         {
-            //This extra constant seems to be what we need to have perfect height on 200% scaling.
-            const int extraHeight = 3;
-            var scaledExtraHeight = ScaleForScreenDPI(extraHeight);
-            var needExtraHeight = scaledExtraHeight != extraHeight;
-            //We return the extra row height (not scaled)
-            return needExtraHeight ? extraHeight : 0;
-         }
       }
    }
 }
