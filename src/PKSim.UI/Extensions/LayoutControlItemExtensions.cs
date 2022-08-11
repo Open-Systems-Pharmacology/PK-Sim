@@ -28,21 +28,6 @@ namespace PKSim.UI.Extensions
          layoutControlItem.SizeConstraintsType = SizeConstraintsType.Custom;
          layoutControlItem.MinSize = size;
          layoutControlItem.Size = size;
-      }
-
-      public static void AdjustGridViewHeight(this LayoutControlItem layoutControlItem, UxGridView gridView, LayoutControl layoutControl)
-      {
-         //We infer to see if we need some extra height for view based on scaling. Nothing else works
-
-         var optimalHeight = gridView.OptimalHeight + gridView.RowCount * COMPUTED_EXTRA_HEIGHT;
-         layoutControlItem.AdjustControlHeight(optimalHeight, layoutControl);
-      }
-
-      public static void AdjustTablePanelHeight(this LayoutControlItem layoutControlItem, TablePanel tablePanel, LayoutControl layoutControl)
-      {
-         var visibleRows = tablePanel.Rows.Where(x => x.Visible).ToList();
-         var visibleRowHeight = visibleRows.Sum(x => ScaleForScreenDPI(Convert.ToInt16(x.Height)) + COMPUTED_EXTRA_HEIGHT);
-         layoutControlItem.AdjustControlHeight(visibleRowHeight, layoutControl);
-      }
+     }
    }
 }

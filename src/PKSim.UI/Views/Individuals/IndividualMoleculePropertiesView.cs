@@ -51,6 +51,7 @@ namespace PKSim.UI.Views.Individuals
       {
          base.InitializeResources();
          layoutItemOntogeny.TextVisible = false;
+         layoutControl.AutoScroll = false;
          layoutItemMoleculeParameters.TextVisible = false;
          OntogenyVisible = false;
       }

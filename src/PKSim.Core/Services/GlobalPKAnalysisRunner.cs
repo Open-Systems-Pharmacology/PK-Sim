@@ -6,7 +6,7 @@ namespace PKSim.Core.Services
    public interface IGlobalPKAnalysisRunner
    {
       /// <summary>
-      /// Creates a <see cref="Simulation"/> based on the given <paramref name="individualSimulation"/> for bioavailability calculations and run the simulation
+      /// Creates a <see cref="Simulation"/> based on the given <paramref name="simulation"/> for bioavailability calculations and run the simulation
       /// </summary>
       /// <param name="simpleIvProtocol">Iv protocol that will be used in the created simulation for the <paramref name="compound"/></param>
       /// <param name="simulation">Base simulation</param>
