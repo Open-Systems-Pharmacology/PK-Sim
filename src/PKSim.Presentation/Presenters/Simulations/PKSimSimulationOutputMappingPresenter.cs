@@ -16,9 +16,8 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       public PKSimSimulationOutputMappingPresenter(ISimulationOutputMappingView view, IEntitiesInSimulationRetriever entitiesInSimulationRetriever,
          IObservedDataRepository observedDataRepository, ISimulationOutputMappingToOutputMappingDTOMapper outputMappingDTOMapper,
-         IQuantityToSimulationQuantitySelectionDTOMapper simulationQuantitySelectionDTOMapper,
-         IParameterIdentificationTask parameterIdentificationTask) : base(view, entitiesInSimulationRetriever, observedDataRepository,
-         outputMappingDTOMapper, simulationQuantitySelectionDTOMapper, parameterIdentificationTask)
+         IQuantityToSimulationQuantitySelectionDTOMapper simulationQuantitySelectionDTOMapper) : base(view, entitiesInSimulationRetriever, observedDataRepository,
+         outputMappingDTOMapper, simulationQuantitySelectionDTOMapper)
       {
       }
 

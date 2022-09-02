@@ -373,7 +373,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      public virtual DataRepository ResultRepository { get; }
+      public virtual DataRepository ResultsDataRepository { get; set; }
 
       /// <summary>
       ///    Returns true if the simulation originated from PK-Sim. Otherwise false

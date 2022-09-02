@@ -1,6 +1,7 @@
 using System;
 using PKSim.Core.Model;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Chart.Simulations;
 
 namespace PKSim.Core.Chart
 {

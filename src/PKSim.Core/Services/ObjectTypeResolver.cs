@@ -4,6 +4,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Chart.SensitivityAnalyses;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;

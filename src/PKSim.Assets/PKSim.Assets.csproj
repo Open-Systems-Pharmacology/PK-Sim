@@ -26,8 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="11.1.9-mmdcmdmc" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="11.1.9-mmdcmdmc" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.1.15-xynuvidv" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="11.1.15-xynuvidv" />
   </ItemGroup>
 
   <ItemGroup>
