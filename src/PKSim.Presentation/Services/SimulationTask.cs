@@ -101,11 +101,14 @@ namespace PKSim.Presentation.Services
          {
             var updateCommand = _blockParametersToSimulationUpdater.UpdateParametersFromBuildingBlockInSimulation(templateBuildingBlock, simulation);
             _buildingBlockTask.AddCommandToHistory(updateCommand);
-            _executionContext.PublishEvent(new SimulationUpdatedEvent(simulation));
          }
          else
             //we have to start the configuration workflow
             _configureSimulationTask.Configure(simulation, templateBuildingBlock);
+
+         //In any case, publish a simulation updated event to notify that a simulation was updated from building block
+         _executionContext.PublishEvent(new SimulationUpdatedEvent(simulation));
+
       }
 
       public void CommitBuildingBlockToRepository<TBuildingBlock>(TBuildingBlock templateBuildingBlock, UsedBuildingBlock usedBuildingBlock, Simulation simulation) where TBuildingBlock : class, IPKSimBuildingBlock

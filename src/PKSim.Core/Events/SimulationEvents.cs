@@ -28,6 +28,9 @@ namespace PKSim.Core.Events
    {
    }
 
+   /// <summary>
+   /// Event is thrown typically when a simulation is updated from building block
+   /// </summary>
    public class SimulationUpdatedEvent
    {
       public Simulation Simulation { get; }
