@@ -9,7 +9,9 @@ using PKSim.Presentation.Presenters.Simulations;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
+using PKSim.Core.Events;
 
 namespace PKSim.Presentation.Services
 {
@@ -62,9 +64,14 @@ namespace PKSim.Presentation.Services
       private readonly IBuildingBlockParametersToSimulationUpdater _blockParametersToSimulationUpdater;
       private readonly ISimulationParametersToBuildingBlockUpdater _simulationParametersToBlockUpdater;
 
-      public SimulationTask(IExecutionContext executionContext, IBuildingBlockTask buildingBlockTask, IApplicationController applicationController,
-         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater, IConfigureSimulationTask configureSimulationTask,
-         IBuildingBlockParametersToSimulationUpdater blockParametersToSimulationUpdater, ISimulationParametersToBuildingBlockUpdater simulationParametersToBlockUpdater)
+      public SimulationTask(
+         IExecutionContext executionContext, 
+         IBuildingBlockTask buildingBlockTask, 
+         IApplicationController applicationController,
+         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater, 
+         IConfigureSimulationTask configureSimulationTask,
+         IBuildingBlockParametersToSimulationUpdater blockParametersToSimulationUpdater, 
+         ISimulationParametersToBuildingBlockUpdater simulationParametersToBlockUpdater)
          : base(executionContext, buildingBlockTask, applicationController, PKSimBuildingBlockType.Simulation)
       {
          _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
@@ -94,6 +101,7 @@ namespace PKSim.Presentation.Services
          {
             var updateCommand = _blockParametersToSimulationUpdater.UpdateParametersFromBuildingBlockInSimulation(templateBuildingBlock, simulation);
             _buildingBlockTask.AddCommandToHistory(updateCommand);
+            _executionContext.PublishEvent(new SimulationUpdatedEvent(simulation));
          }
          else
             //we have to start the configuration workflow

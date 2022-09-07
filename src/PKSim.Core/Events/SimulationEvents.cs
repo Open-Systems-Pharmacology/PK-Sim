@@ -1,6 +1,6 @@
 using System;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Events
 {
@@ -10,8 +10,8 @@ namespace PKSim.Core.Events
 
    public class SimulationRunFinishedEvent
    {
-      public Simulation Simulation { get; private set; }
-      public TimeSpan ExecutionTime { get; private set; }
+      public Simulation Simulation { get; }
+      public TimeSpan ExecutionTime { get; }
 
       public SimulationRunFinishedEvent(Simulation simulation, TimeSpan executionTime)
       {
@@ -26,5 +26,15 @@ namespace PKSim.Core.Events
 
    public class RemoveOutputIntervalFromOutputIntervalEvent : RemoveEntityEvent<OutputInterval, OutputSchema>
    {
+   }
+
+   public class SimulationUpdatedEvent
+   {
+      public Simulation Simulation { get; }
+
+      public SimulationUpdatedEvent(Simulation simulation)
+      {
+         Simulation = simulation;
+      }
    }
 }
