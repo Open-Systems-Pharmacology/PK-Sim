@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Core.Chart.Simulations;
 
 namespace PKSim.Presentation.Views.Charts
 {
