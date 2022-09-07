@@ -48,6 +48,7 @@ namespace PKSim.UI.Views.Individuals
       public virtual bool ReadOnly
       {
          set => _colParameterValue.ReadOnly = value;
+         get => _colParameterValue.ReadOnly;
       }
 
       private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar
@@ -61,7 +62,6 @@ namespace PKSim.UI.Views.Individuals
 
       private readonly ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>> _screenBinder =
          new ScreenBinder<IExpressionParametersPresenter<TExpressionParameterDTO>>();
-
 
       public ExpressionParametersView(IToolTipCreator toolTipCreator, IImageListRetriever imageListRetriever)
       {
@@ -109,7 +109,7 @@ namespace PKSim.UI.Views.Individuals
       {
          //We only merge compartment values if they represent the same organ
          if (Equals(column, _colCompartment.XtraColumn))
-            return  representSameOrgan;
+            return representSameOrgan;
 
          return true;
       }
@@ -121,7 +121,7 @@ namespace PKSim.UI.Views.Individuals
 
          if (_gridView.FocusedColumn.ReadOnly)
             e.Cancel = true;
-         
+
          e.Cancel = !CanEditValueAt(_gridViewBinder.FocusedElement);
       }
 
@@ -238,7 +238,7 @@ namespace PKSim.UI.Views.Individuals
             .AsReadOnly();
 
 
-         _colCompartment= _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
+         _colCompartment = _gridViewBinder.AutoBind(item => item.CompartmentPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.CompartmentPathDTO))
             .WithCaption(PKSimConstants.UI.Compartment)
             .AsReadOnly();
@@ -282,9 +282,11 @@ namespace PKSim.UI.Views.Individuals
 
       private RepositoryItem repoForParameter(TExpressionParameterDTO expressionDTO)
       {
-         if (_presenter.IsSetByUser(expressionDTO.Parameter))
+         //Parameter changed by the user and the view in not readonly, we can show the update button
+         if (_presenter.IsSetByUser(expressionDTO.Parameter) && !ReadOnly)
             return _isFixedParameterEditRepository;
 
+         //in any other case, standard edit
          return _standardParameterEditRepository;
       }
 
