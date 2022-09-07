@@ -49,7 +49,7 @@ namespace PKSim.UI.Views.Simulations
          _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisDTO.OnIndividuals.DataTable);
       }
 
-      public bool IsOnCurvesSelected => populationPKAnalysisXtraTabControl.SelectedTabPage == pageOnCurves;
+      public bool IsOnCurvesSelected => populationPKAnalysisTabControl.SelectedTabPage == pageOnCurves;
 
       public void ShowPKAnalysisOnIndividuals(bool visible)
       {
@@ -84,7 +84,7 @@ namespace PKSim.UI.Views.Simulations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         populationPKAnalysisXtraTabControl.Images = _imageListRetriever.AllImages16x16;
+         populationPKAnalysisTabControl.Images = _imageListRetriever.AllImages16x16;
          
          pageOnIndividuals.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.Population);
          pageOnIndividuals.Text = PKSimConstants.PKAnalysis.OnIndividuals;
@@ -97,7 +97,7 @@ namespace PKSim.UI.Views.Simulations
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize(layoutControl);
          layoutControlItemGlobalPKAnalysis.TextVisible = false;
-         populationPKAnalysisXtraTabControl.SelectedPageChanged += (o, e) => OnEvent(_presenter.HandleTabChanged);
+         populationPKAnalysisTabControl.SelectedPageChanged += (o, e) => OnEvent(_presenter.HandleTabChanged);
          labelControlGlobalPKAnalysisDescription.Text = PKSimConstants.UI.GlobalPKAnalysisDescription.FormatForLabel();
       }
    }
