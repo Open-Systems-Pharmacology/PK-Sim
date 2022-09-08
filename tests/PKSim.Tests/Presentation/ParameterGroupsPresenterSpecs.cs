@@ -363,11 +363,11 @@ namespace PKSim.Presentation
 
    public class When_a_parameter_group_node_is_being_activated : concern_for_ParameterGroupsPresenter
    {
-      private ITreeNode<IGroup> _parameterGroupNode;
+      protected ITreeNode<IGroup> _parameterGroupNode;
       private IGroup _selectedGroup;
       private IParameter _visibleParameter;
       private IParameter _hiddenParameter;
-      private ICustomParametersPresenter _parameterEditPresenter;
+      protected ICustomParametersPresenter _parameterEditPresenter;
       private string _fullPath;
       private IGroup _group;
       private IGroup _anotherGroup;
@@ -618,6 +618,29 @@ namespace PKSim.Presentation
       public void should_edit_the_parameters_again()
       {
          A.CallTo(() => _alwaysRefreshPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappenedTwiceExactly();
+      }
+   }
+
+   public class When_refreshing_the_active_presenter : When_a_parameter_group_node_is_being_activated
+   {
+      private readonly IEnumerable<IParameter> _editedParameters = new List<IParameter>();
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.ActivateNode(_parameterGroupNode);
+         A.CallTo(() => _parameterEditPresenter.EditedParameters).Returns(_editedParameters);
+      }
+
+      protected override void Because()
+      {
+         sut.RefreshActivePresenter();
+      }
+
+      [Observation]
+      public void should_edit_the_active_presenter_with_the_parameters_previously_edited_thus_refreshing_the_view()
+      {
+         A.CallTo(() => _parameterEditPresenter.Edit(_editedParameters)).MustHaveHappened();
       }
    }
 }

@@ -23,8 +23,9 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IExpressionParametersPresenter _expressionParametersPresenter;
       private List<IParameter> _allParameters;
       public string Description { get; set; }
-      public bool ForcesDisplay { get; } = false;
-      public bool AlwaysRefresh { get; } = false;
+      public bool ForcesDisplay => false;
+      public bool AlwaysRefresh => false;
+
       public IEnumerable<IParameter> EditedParameters => _allParameters;
 
       public SimulationExpressionsPresenter(
