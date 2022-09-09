@@ -27,37 +27,42 @@ namespace PKSim.Core.Services
    public class TransportContainerUpdater : ITransportContainerUpdater
    {
       private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      private readonly ITransporterTemplateRepository _transporterTemplateRepository;
       private readonly IEventPublisher _eventPublisher;
 
       public TransportContainerUpdater(
          ITransporterContainerTemplateRepository transporterContainerTemplateRepository,
+         ITransporterTemplateRepository transporterTemplateRepository,
          IEventPublisher eventPublisher)
       {
          _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
+         _transporterTemplateRepository = transporterTemplateRepository;
          _eventPublisher = eventPublisher;
       }
 
       public void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, string transporterName)
       {
          var speciesName = simulationSubject.Species.Name;
-         var transportType = _transporterContainerTemplateRepository.TransportTypeFor(speciesName, transporterName);
+         var transportType = _transporterTemplateRepository.TransportTypeFor(speciesName, transporterName);
          transporter.TransportType = transportType;
+
+         if (!_transporterTemplateRepository.HasTransporterTemplateFor(speciesName, transporterName))
+         {
+            //No template was found for the given name. Raise event warning
+            _eventPublisher.PublishEvent(new NoTransporterTemplateAvailableEvent(transporter));
+            return;
+         }
+
 
          foreach (var transporterContainer in simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(transporter))
          {
-            //there is a db template
             var transporterTemplate = _transporterContainerTemplateRepository
-               .TransportersFor(speciesName, transporterContainer.LogicalContainerName, transporterName)
-               .FirstOrDefault();
+               .TransporterContainerTemplateFor(speciesName, transporterContainer.LogicalContainerName, transporterName);
 
             updateTransporterContainerFromTemplate(transporterContainer, transporterTemplate, transportType);
          }
 
-         if (_transporterContainerTemplateRepository.HasTransporterTemplateFor(speciesName, transporterName))
-            return;
-
-         //No template was found for the given name. Raise event warning
-         _eventPublisher.PublishEvent(new NoTransporterTemplateAvailableEvent(transporter));
+    
       }
 
       public void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, TransportType transportType)

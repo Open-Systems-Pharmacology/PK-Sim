@@ -14,14 +14,14 @@ namespace PKSim.Presentation
    {
       protected IExpressionParameterMapper<TransporterExpressionParameterDTO> _expressionParameterMapper;
       protected ITransportDirectionRepository _transporterDirectionRepository;
-      protected ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      protected ITransporterTemplateRepository _transporterTemplateRepository;
 
       protected override void Context()
       {
          _expressionParameterMapper = A.Fake<IExpressionParameterMapper<TransporterExpressionParameterDTO>>();
-         _transporterContainerTemplateRepository = A.Fake<ITransporterContainerTemplateRepository>();
+         _transporterTemplateRepository = A.Fake<ITransporterTemplateRepository>();
          _transporterDirectionRepository = A.Fake<ITransportDirectionRepository>();
-         sut = new IndividualTransporterToTransporterExpressionDTOMapper(_expressionParameterMapper, _transporterDirectionRepository, _transporterContainerTemplateRepository);
+         sut = new IndividualTransporterToTransporterExpressionDTOMapper(_expressionParameterMapper, _transporterDirectionRepository, _transporterTemplateRepository);
       }
    }
 
@@ -47,7 +47,7 @@ namespace PKSim.Presentation
          _transporterExpressionContainer.Add(_expressionParameter);
          _expressionParameterDTO = new TransporterExpressionParameterDTO();
          A.CallTo(() => _expressionParameterMapper.MapFrom(_expressionParameter)).Returns(_expressionParameterDTO);
-         A.CallTo(() => _transporterContainerTemplateRepository.HasTransporterTemplateFor(_simulationSubject.Species.Name, _transporter.Name)).Returns(true);
+         A.CallTo(() => _transporterTemplateRepository.HasTransporterTemplateFor(_simulationSubject.Species.Name, _transporter.Name)).Returns(true);
 
          A.CallTo(() => _simulationSubject.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)).Returns(new[] {_transporterExpressionContainer});
       }

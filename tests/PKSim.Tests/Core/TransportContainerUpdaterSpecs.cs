@@ -13,7 +13,7 @@ namespace PKSim.Core
 {
    public abstract class concern_for_TransportContainerUpdater : ContextSpecification<ITransportContainerUpdater>
    {
-      protected ITransporterContainerTemplateRepository _repository;
+      protected ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
       protected IEventPublisher _eventPublisher;
       protected ITransportDirectionRepository _transportDirectionRepository;
       protected IParameter _fractionExpressedApical;
@@ -23,18 +23,19 @@ namespace PKSim.Core
       protected TransporterExpressionContainer _transporterWithTemplate;
       protected TransporterExpressionContainer _transporterWithoutTemplate;
       protected const string _species = "human";
-      protected readonly List<TransporterContainerTemplate> _allTransporterTemplates = new List<TransporterContainerTemplate>();
       protected TransporterContainerTemplate _transporterContainerTemplate;
       protected IndividualTransporter _transporter;
       private TransporterExpressionContainer _transporterInMucosa;
       private TransporterExpressionContainer _transporterInBone;
+      protected ITransporterTemplateRepository _transporterTemplateRepository;
 
       protected override void Context()
       {
-         _repository = A.Fake<ITransporterContainerTemplateRepository>();
+         _transporterContainerTemplateRepository = A.Fake<ITransporterContainerTemplateRepository>();
+         _transporterTemplateRepository = A.Fake<ITransporterTemplateRepository>();
          _eventPublisher = A.Fake<IEventPublisher>();
          _transportDirectionRepository = A.Fake<ITransportDirectionRepository>();
-         sut = new TransportContainerUpdater(_repository, _eventPublisher);
+         sut = new TransportContainerUpdater(_transporterContainerTemplateRepository, _transporterTemplateRepository,  _eventPublisher);
          _fractionExpressedApical = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
          _fractionExpressedApicalMucosa = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
          _fractionExpressedApicalBone = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.FRACTION_EXPRESSED_APICAL);
@@ -71,12 +72,11 @@ namespace PKSim.Core
             .Returns(new[] {_transporterWithTemplate, _transporterWithoutTemplate, _transporterInMucosa, _transporterInBone });
 
          _transporterContainerTemplate = new TransporterContainerTemplate {TransportType = TransportType.Influx};
-         _allTransporterTemplates.Add(_transporterContainerTemplate);
 
-         A.CallTo(() => _repository.HasTransporterTemplateFor(_species, _transporter.Name)).Returns(true);
-         A.CallTo(() => _repository.TransportTypeFor(_species, _transporter.Name)).Returns(TransportType.Influx);
-         A.CallTo(() => _repository.TransportersFor(_species, liver.Name, _transporter.Name)).Returns(_allTransporterTemplates);
-         A.CallTo(() => _repository.TransportersFor(_species, kidney.Name, _transporter.Name)).Returns(new List<TransporterContainerTemplate>());
+         A.CallTo(() => _transporterTemplateRepository.HasTransporterTemplateFor(_species, _transporter.Name)).Returns(true);
+         A.CallTo(() => _transporterTemplateRepository.TransportTypeFor(_species, _transporter.Name)).Returns(TransportType.Influx);
+         A.CallTo(() => _transporterContainerTemplateRepository.TransporterContainerTemplateFor(_species, liver.Name, _transporter.Name)).Returns(_transporterContainerTemplate);
+         A.CallTo(() => _transporterContainerTemplateRepository.TransporterContainerTemplateFor(_species, kidney.Name, _transporter.Name)).Returns(null);
       }
    }
 
@@ -121,8 +121,8 @@ namespace PKSim.Core
          base.Context();
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "aa"};
 
-         A.CallTo(() => _repository.HasTransporterTemplateFor(_species, _transporterName)).Returns(false);
-         A.CallTo(() => _repository.TransportTypeFor(_species, _transporterName)).Returns(TransportType.Efflux);
+         A.CallTo(() => _transporterTemplateRepository.HasTransporterTemplateFor(_species, _transporterName)).Returns(false);
+         A.CallTo(() => _transporterTemplateRepository.TransportTypeFor(_species, _transporterName)).Returns(TransportType.Efflux);
       }
 
       protected override void Because()

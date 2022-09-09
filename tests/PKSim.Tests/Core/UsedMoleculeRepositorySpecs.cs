@@ -17,13 +17,13 @@ namespace PKSim.Core
       private ExpressionProfile _expressionProfile;
       private IOntogenyRepository _ontogenyRepository;
       private IMoleculeParameterRepository _moleculeParameterRepository;
-      private ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      private ITransporterTemplateRepository _transporterTemplateRepository;
 
       protected override void Context()
       {
          _project = new PKSimProject();
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
-         _transporterContainerTemplateRepository= A.Fake<ITransporterContainerTemplateRepository>();
+         _transporterTemplateRepository = A.Fake<ITransporterTemplateRepository>();
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
 
          _compound1 = A.Fake<Compound>();
@@ -44,12 +44,12 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_compound1);
          _project.AddBuildingBlock(_compound2);
          _project.AddBuildingBlock(_expressionProfile);
-         sut = new UsedMoleculeRepository(_projectRetriever, _ontogenyRepository, _moleculeParameterRepository, _transporterContainerTemplateRepository);
+         sut = new UsedMoleculeRepository(_projectRetriever, _ontogenyRepository, _moleculeParameterRepository, _transporterTemplateRepository);
 
          var molParam1 = new MoleculeParameter {MoleculeName = "DbB"};
          var molParam2 = new MoleculeParameter {MoleculeName = "DbA"};
          A.CallTo(() => _moleculeParameterRepository.All()).Returns(new[] {molParam1, molParam2});
-         A.CallTo(() => _transporterContainerTemplateRepository.AllTransporterNames).Returns(new[] {"ATRANS1", "TRANS2"});
+         A.CallTo(() => _transporterTemplateRepository.AllTransporterNames).Returns(new[] {"ATRANS1", "TRANS2"});
 
          A.CallTo(() => _ontogenyRepository.AllFor(CoreConstants.Species.HUMAN)).Returns(new[] {new DatabaseOntogeny {Name = "OntoC"}});
       }
