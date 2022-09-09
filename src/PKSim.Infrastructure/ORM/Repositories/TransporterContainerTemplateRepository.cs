@@ -102,6 +102,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
             OrganName = flatTemplate.OrganName,
             Species = flatTemplate.Species,
             TransportType = flatTemplate.TransportType,
+            MembraneLocation = flatTemplate.MembraneLocation,
          };
 
          _flatProteinSynonymRepository.AddSynonymsTo(template);

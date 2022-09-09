@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Model
 {
@@ -30,5 +31,8 @@ namespace PKSim.Core.Model
       public TransportType TransportType { get; set; }
 
       public override string Name => Gene;
+
+      //Default membrane location of this specific transport. This will override the default definition for TransportType
+      public MembraneLocation MembraneLocation { get; set; }
    }
 }
