@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Events;
@@ -61,8 +60,6 @@ namespace PKSim.Core.Services
 
             updateTransporterContainerFromTemplate(transporterContainer, transporterTemplate, transportType);
          }
-
-    
       }
 
       public void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, TransportType transportType)
@@ -108,7 +105,7 @@ namespace PKSim.Core.Services
             var fractionExpressedParameter = transporterContainer.Parameter(fractionExpressedParameterName);
             if (fractionExpressedParameter == null)
                return;
-            ;
+            
             fractionExpressedParameter.Value = value;
          }
 
