@@ -1,11 +1,11 @@
-﻿using OSPSuite.Utility.Events;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -24,8 +24,10 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IPopulationAnalysisAvailablePKParametersPresenter _allPKParametersPresenter;
       private readonly IPopulationAnalysisPKParameterFieldsPresenter _selectedPKParameterFieldsPresenter;
 
-      public PopulationAnalysisPKParameterSelectionPresenter(IPopulationAnalysisPKParameterSelectionView view,
-         IPopulationAnalysisAvailablePKParametersPresenter allPKParametersPresenter, IPopulationAnalysisPKParameterFieldsPresenter selectedPKParameterFieldsPresenter,
+      public PopulationAnalysisPKParameterSelectionPresenter(
+         IPopulationAnalysisPKParameterSelectionView view,
+         IPopulationAnalysisAvailablePKParametersPresenter allPKParametersPresenter,
+         IPopulationAnalysisPKParameterFieldsPresenter selectedPKParameterFieldsPresenter,
          IPopulationAnalysisFieldDistributionPresenter populationAnalysisFieldDistributionPresenter)
          : base(view, populationAnalysisFieldDistributionPresenter)
       {
@@ -43,10 +45,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          AddSubPresenters(_allPKParametersPresenter, _selectedPKParameterFieldsPresenter);
       }
 
-      private void drawDistributionFor(PKParameterFieldSelectedEventArgs e)
-      {
-         drawDistributionFor(e.PKParameter, e.PKParameterField);
-      }
+      private void drawDistributionFor(PKParameterFieldSelectedEventArgs e) => drawDistributionFor(e.PKParameter, e.PKParameterField);
 
       private void drawDistributionFor(QuantityPKParameter pkParameter, PopulationAnalysisPKParameterField populationAnalysisPKParameterField)
       {
@@ -78,8 +77,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public bool ScalingVisible
       {
-         set { _selectedPKParameterFieldsPresenter.ScalingVisible = value; }
-         get { return _selectedPKParameterFieldsPresenter.ScalingVisible; }
+         set => _selectedPKParameterFieldsPresenter.ScalingVisible = value;
+         get => _selectedPKParameterFieldsPresenter.ScalingVisible;
       }
 
       protected override void RedrawDistribution(PopulationAnalysisFieldEvent eventToHandle)

@@ -28,7 +28,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IPopulationAnalysisParameterFieldsPresenter _selectedPopulationParametersPresenter;
       private readonly IEntityPathResolver _entityPathResolver;
 
-      public PopulationAnalysisParameterSelectionPresenter(IPopulationAnalysisParameterSelectionView view, IPopulationParameterGroupsPresenter allPopulationParametersPresenter, IPopulationAnalysisParameterFieldsPresenter selectedPopulationParametersPresenter, IEntityPathResolver entityPathResolver, IPopulationAnalysisFieldDistributionPresenter populationAnalysisFieldDistributionPresenter)
+      public PopulationAnalysisParameterSelectionPresenter(
+         IPopulationAnalysisParameterSelectionView view, 
+         IPopulationParameterGroupsPresenter allPopulationParametersPresenter, 
+         IPopulationAnalysisParameterFieldsPresenter selectedPopulationParametersPresenter, 
+         IEntityPathResolver entityPathResolver, 
+         IPopulationAnalysisFieldDistributionPresenter populationAnalysisFieldDistributionPresenter)
          : base(view, populationAnalysisFieldDistributionPresenter)
       {
          _allPopulationParametersPresenter = allPopulationParametersPresenter;
