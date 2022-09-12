@@ -1,11 +1,10 @@
-﻿using PKSim.Assets;
-using OSPSuite.Assets;
+﻿using OSPSuite.Assets;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using PKSim.Assets;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Controls;
-using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -35,7 +34,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
       public void AddDistributionView(IView view)
       {
-         splitContainerControl.Panel2.FillWith(view);
+         panelDistribution.FillWith(view);
       }
 
       public override void InitializeResources()
