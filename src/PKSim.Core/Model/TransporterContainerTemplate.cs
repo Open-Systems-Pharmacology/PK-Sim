@@ -1,8 +1,9 @@
 using OSPSuite.Core.Domain;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Model
 {
-   public class TransporterContainerTemplate : WithSynonyms
+   public class TransporterContainerTemplate
    {
       /// <summary>
       ///    Gene associated with the template
@@ -15,20 +16,16 @@ namespace PKSim.Core.Model
       public string Species { get; set; }
 
       /// <summary>
-      ///    Organ where the transporter is defined
-      /// </summary>
-      public string OrganName { get; set; }
-
-      /// <summary>
-      ///    Compartment of the organ named OrganName where the transporter is defined
-      /// </summary>
-      public string CompartmentName { get; set; }
-
-      /// <summary>
       ///    Transporter type => Direction of transport
       /// </summary>
       public TransportType TransportType { get; set; }
 
-      public override string Name => Gene;
+      /// <summary>
+      ///    Organ where the transporter is defined
+      /// </summary>
+      public string ContainerName { get; set; }
+
+      //Default membrane location of this specific transport. This will override the default definition for TransportType
+      public MembraneLocation MembraneLocation { get; set; }
    }
 }

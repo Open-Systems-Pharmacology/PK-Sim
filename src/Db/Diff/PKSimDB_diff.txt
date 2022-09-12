@@ -1,94 +1,88 @@
-DROP TABLE tab_active_transports; -- due to schema mismatch
-CREATE TABLE [tab_active_transports](
-
-  [gene] text NOT NULL, 
-
-  [species] text NOT NULL REFERENCES [tab_species]([species]) ON UPDATE CASCADE, 
-
-  [container_type] text NOT NULL, 
-
-  [container_name] text NOT NULL, 
-
-  [compartment_type] text, 
-
-  [compartment_name] text, 
-
-  [membrane] text, 
-
-  [sequence] bigint NOT NULL, 
-
-  [transport_type] text, 
-
-  PRIMARY KEY([gene], [species], [container_type], [container_name]), 
-
-  FOREIGN KEY([container_type], [container_name]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE, 
-
-  FOREIGN KEY([compartment_type], [compartment_name]) REFERENCES [tab_container_names]([container_type], [container_name]) ON UPDATE CASCADE);
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCB1','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCB1','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCB1','Human','ORGAN','Brain','COMPARTMENT','Interstitial','BloodBrainBarrier',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCB1','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCB11','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCB11','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC2','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC2','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC2','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC2','Rat','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC3','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC3','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC4','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC4','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC4','Human','ORGAN','Brain','COMPARTMENT','Interstitial','BloodBrainBarrier',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC4','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC4','Rat','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC5','Human','ORGAN','Brain','COMPARTMENT','Interstitial','BloodBrainBarrier',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC6','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCC6','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCG2','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCG2','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('ABCG2','Human','ORGAN','Brain','COMPARTMENT','Interstitial','BloodBrainBarrier',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC10A1','Human','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC10A1','Human','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC21A1','Rat','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A1','Human','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A1','Human','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A1','Rat','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A11','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A2','Human','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A2','Rat','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A4','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A4','Rat','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A5','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A5','Rat','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A6','Human','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A6','Rat','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A7','Human','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A7','Human','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A7','Human','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A8','Human','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A8','Rat','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A9','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC22A9','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Basolateral',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC47A1','Human','COMPARTMENT','Pericentral','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC47A1','Human','COMPARTMENT','Periportal','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC47A1','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLC47A2','Human','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1A1','Rat','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1A1','Rat','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1A2','Human','ORGAN','Brain','COMPARTMENT','Plasma','BloodBrainBarrier',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1A3','Rat','ORGAN','Kidney','COMPARTMENT','Intracellular','Apical',1,'Efflux');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1A4','Rat','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1A4','Rat','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1B1','Human','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1B1','Human','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1B2','Rat','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1B2','Rat','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1B3','Human','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO1B3','Human','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO2B1','Human','COMPARTMENT','Pericentral','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO2B1','Human','COMPARTMENT','Periportal','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO2B1','Human','ORGAN','Brain','COMPARTMENT','Plasma','BloodBrainBarrier',1,'Influx');
-INSERT INTO tab_active_transports(gene,species,container_type,container_name,compartment_type,compartment_name,membrane,sequence,transport_type) VALUES('SLCO4C1','Human','ORGAN','Kidney','COMPARTMENT','Interstitial','Basolateral',1,'Influx');
-DROP TABLE tab_distribution_values;
-DROP TABLE tab_dts_properties;
-DROP TABLE tab_properties;
+DROP TABLE tab_active_transports;
+CREATE TABLE tab_known_transporters (gene text, species text REFERENCES tab_species, transport_type text, CONSTRAINT tab_known_transporters_dg_tmp_pk PRIMARY KEY (gene, species), CONSTRAINT tab_known_transporters_pk UNIQUE (gene, species));
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCB1','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCB11','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCC2','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCC2','Rat','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCC3','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCC4','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCC4','Rat','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCC5','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCC6','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('ABCG2','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC10A1','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC21A1','Rat','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A1','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A1','Rat','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A11','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A2','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A2','Rat','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A4','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A4','Rat','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A5','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A5','Rat','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A6','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A6','Rat','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A7','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A8','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A8','Rat','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC22A9','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC47A1','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLC47A2','Human','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO1A1','Rat','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO1A2','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO1A3','Rat','Efflux');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO1A4','Rat','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO1B1','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO1B2','Rat','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO1B3','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO2B1','Human','Influx');
+INSERT INTO tab_known_transporters(gene,species,transport_type) VALUES('SLCO4C1','Human','Influx');
+CREATE TABLE tab_known_transporters_containers
+(
+    gene           text,
+    species        text,
+    container_type text,
+    container_name text,
+    transport_type text,
+    membrane       text,
+    constraint tab_known_transporters_containers_pk
+        primary key (gene, species, container_type, container_name),
+    constraint tab_known_transporters_containers_tab_known_transporters_gene_species_fk
+        foreign key (gene, species) references tab_known_transporters (gene, species)
+);
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('ABCC3','Human','COMPARTMENT','Pericentral','Efflux','Basolateral');
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('ABCC3','Human','COMPARTMENT','Periportal','Efflux','Basolateral');
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('ABCC4','Human','COMPARTMENT','Pericentral','Efflux','Basolateral');
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('ABCC4','Human','COMPARTMENT','Periportal','Efflux','Basolateral');
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('ABCC6','Human','COMPARTMENT','Pericentral','Efflux','Basolateral');
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('ABCC6','Human','COMPARTMENT','Periportal','Efflux','Basolateral');
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('SLC22A9','Human','COMPARTMENT','Pericentral','Efflux','Basolateral');
+INSERT INTO tab_known_transporters_containers(gene,species,container_type,container_name,transport_type,membrane) VALUES('SLC22A9','Human','COMPARTMENT','Periportal','Efflux','Basolateral');
+DROP TABLE tab_transport_directions; -- due to schema mismatch
+CREATE TABLE tab_transport_directions (transport_direction text CONSTRAINT tab_transport_directions_pk PRIMARY KEY, display_name text NOT NULL, description text NOT NULL, icon text DEFAULT Influx);
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('BiDirectionalBloodCellsPlasma','Bi-directional plasma <-> blood cells','Bi-directional transport between blood plasma and blood cells','BiDirectional');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('BiDirectionalBrainInterstitialTissue','Bi-directional interstitial <-> intracellular','Bi-directional transport between interstitial and intracellular space','BiDirectional');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('BiDirectionalBrainPlasmaInterstitial','Bi-directional plasma <-> interstitial','Bi-directional transport across the blood-brain-barrier','BiDirectional');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('BiDirectionalInterstitialIntracellular','Bi-directional interstitial <-> intracellular','Bi-directional transport between interstitial and intracellular space','BiDirectional');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('BiDirectionalLumenMucosaIntracellular','Bi-directional lumen <-> mucosa','Bi-directional transport between intestinal lumen and mucosal cells','BiDirectional');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('BiDirectionalPlasmaInterstitial','Bi-directional plasma <-> interstitial','Bi-directional transport between blood plasma and interstitial space','BiDirectional');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('EffluxBloodCellsToPlasma','Efflux Blood Cells to Plasma','Efflux transport from blood cells to blood plasma across blood cell membrane','Efflux');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('EffluxBrainInterstitialToPlasma','Efflux Interstitial to Plasma','Efflux transport from interstitial space to blood plasma across the blood-brain-barrier','Efflux');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('EffluxBrainTissueToInterstitial','Efflux Intracellular to Interstitial','Efflux transport from intracellular into interstitial space across cell membrane','Efflux');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('EffluxInterstitialToPlasma','Efflux Interstitial to Plasma','Efflux transport from interstitial space to blood plasma across endothelial barrier','Efflux');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('EffluxIntracellularToInterstitial','Efflux Intracellular to Interstitial','Efflux transport from intracellular into interstitial space across cell membrane','Efflux');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('EffluxMucosaIntracellularToLumen','Efflux Mucosa/Intracellular to Lumen','Efflux transport from mucosal cells into gastrointestinal lumen','Efflux');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('ExcretionKidney','Excretion','Renal excretion from kidney intracellular into urine','Excretion');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('ExcretionLiver','Excretion','Biliary excretion from hepatic cells into gallbladder and duodenum lumen. The fraction excreted into duodenum is given by the parameter "EHC continuous fraction"','Excretion');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('InfluxBrainInterstitialToTissue','Influx Interstitial to Intracellular','Influx transport from interstitial into intracellular space across cell membrane','Influx');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('InfluxBrainPlasmaToInterstitial','Influx Plasma to Interstitial','Influx transport from blood plasma to interstitial space across the blood-brain-barrier','Influx');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('InfluxInterstitialToIntracellular','Influx Interstitial to Intracellular','Influx transport from interstitial into intracellular space across cell membrane','Influx');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('InfluxLumenToMucosaIntracellular','Influx Lumen To Mucosa/Intracellular','Active uptake from gastrointestinal lumen into mucosal cells','Influx');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('InfluxPlasmaToBloodCells','Influx Plasma to Blood Cells','Influx transport from blood plasma to blood cells across blood cell membrane','Influx');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('InfluxPlasmaToInterstitial','Influx Plasma to Interstitial','Influx transport from blood plasma to interstitial space across endothelial barrier','Influx');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('None','','','');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('PgpBrainInterstitialToPlasma','[DEPRECATED] Pgp Interstitial to plasma','[DEPRECATED] Pgp transport from interstitial space to blood plasma across the blood-brain-barrier accounting for the structural peculiarity of P-gp transporter. Will be removed in version 12 of the software','Pgp');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('PgpBrainTissueToInterstitial','[DEPRECATED] Pgp Intracellular to Interstitial','[DEPRECATED] Pgp transport from intracellular into interstitial space accounting for the structural peculiarity of P-gp transporter. Will be removed in version 12 of the software','Pgp');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('PgpIntracellularToInterstitial','[DEPRECATED] Pgp Intracellular to Interstitial','[DEPRECATED] Pgp transport from intracellular into interstitial space accounting for the structural peculiarity of P-gp transporter. Will be removed in version 12 of the software ','Pgp');
+INSERT INTO tab_transport_directions(transport_direction,display_name,description,icon) VALUES('PgpMucosaIntracellularToLumen','[DEPRECATED] Pgp Mucosa/Intracellular to Lumen','[DEPRECATED] Pgp transport from mucosal cells into gastrointestinal lumen accounting for the structural peculiarity of P-gp transporter. Will be removed in version 12 of the software','Pgp');
