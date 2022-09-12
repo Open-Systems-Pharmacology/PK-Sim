@@ -74,7 +74,7 @@ namespace PKSim.Core
          _transporterContainerTemplate = new TransporterContainerTemplate {TransportType = TransportType.Influx};
 
          A.CallTo(() => _transporterTemplateRepository.HasTransporterTemplateFor(_species, _transporter.Name)).Returns(true);
-         A.CallTo(() => _transporterTemplateRepository.TransportTypeFor(_species, _transporter.Name)).Returns(TransportType.Influx);
+         A.CallTo(() => _transporterTemplateRepository.TransportTypeOrDefaultFor(_species, _transporter.Name)).Returns(TransportType.Influx);
          A.CallTo(() => _transporterContainerTemplateRepository.TransporterContainerTemplateFor(_species, liver.Name, _transporter.Name)).Returns(_transporterContainerTemplate);
          A.CallTo(() => _transporterContainerTemplateRepository.TransporterContainerTemplateFor(_species, kidney.Name, _transporter.Name)).Returns(null);
       }
@@ -122,7 +122,7 @@ namespace PKSim.Core
          _transporter = new IndividualTransporter {TransportType = TransportType.Efflux, Name = "aa"};
 
          A.CallTo(() => _transporterTemplateRepository.HasTransporterTemplateFor(_species, _transporterName)).Returns(false);
-         A.CallTo(() => _transporterTemplateRepository.TransportTypeFor(_species, _transporterName)).Returns(TransportType.Efflux);
+         A.CallTo(() => _transporterTemplateRepository.TransportTypeOrDefaultFor(_species, _transporterName)).Returns(TransportType.Efflux);
       }
 
       protected override void Because()

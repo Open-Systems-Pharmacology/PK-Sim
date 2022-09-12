@@ -36,7 +36,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _allTemplates;
       }
 
-      public TransportType TransportTypeFor(string speciesName, string transporterName)
+      public TransportType TransportTypeOrDefaultFor(string speciesName, string transporterName)
       {
          var transporterTemplate = TransporterTemplateFor(speciesName, transporterName);
          return transporterTemplate?.TransportType ?? TransportType.Efflux;

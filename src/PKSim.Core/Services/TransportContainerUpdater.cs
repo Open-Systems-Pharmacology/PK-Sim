@@ -42,7 +42,7 @@ namespace PKSim.Core.Services
       public void SetDefaultSettingsForTransporter(ISimulationSubject simulationSubject, IndividualTransporter transporter, string transporterName)
       {
          var speciesName = simulationSubject.Species.Name;
-         var transportType = _transporterTemplateRepository.TransportTypeFor(speciesName, transporterName);
+         var transportType = _transporterTemplateRepository.TransportTypeOrDefaultFor(speciesName, transporterName);
          transporter.TransportType = transportType;
 
          if (!_transporterTemplateRepository.HasTransporterTemplateFor(speciesName, transporterName))
