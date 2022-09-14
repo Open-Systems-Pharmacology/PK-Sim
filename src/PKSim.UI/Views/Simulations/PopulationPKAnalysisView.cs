@@ -88,11 +88,11 @@ namespace PKSim.UI.Views.Simulations
          
          pageIndividualPKValues.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.Population);
          pageIndividualPKValues.Text = PKSimConstants.PKAnalysis.IndividualPKValues;
-         pageIndividualPKValues.Tooltip = PKSimConstants.PKAnalysis.OnIndividualsTooltip;
+         pageIndividualPKValues.Tooltip = PKSimConstants.PKAnalysis.IndivdualPKValuesTooltip;
 
          pageAggregatedPKValues.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
          pageAggregatedPKValues.Text = PKSimConstants.PKAnalysis.AggregatedPKValues;
-         pageAggregatedPKValues.Tooltip = PKSimConstants.PKAnalysis.OnCurvesTooltip;
+         pageAggregatedPKValues.Tooltip = PKSimConstants.PKAnalysis.AggregatedPKValuesTooltip;
 
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize(layoutControl);
