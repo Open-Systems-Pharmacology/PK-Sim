@@ -49,12 +49,12 @@ namespace PKSim.UI.Views.Simulations
          _populationAnalysisPivotViewOnIndividuals.BindTo(pkAnalysisDTO.OnIndividuals.DataTable);
       }
 
-      public bool IsOnCurvesSelected => populationPKAnalysisTabControl.SelectedTabPage == pageOnCurves;
+      public bool IsOnCurvesSelected => populationPKAnalysisTabControl.SelectedTabPage == pageAggregatedPKValues;
 
       public void ShowPKAnalysisOnIndividuals(bool visible)
       {
          var visibility = LayoutVisibilityConvertor.FromBoolean(visible);
-         pageOnIndividuals.PageVisible = visible;
+         pageIndividualPKValues.PageVisible = visible;
          splitter.Visibility = visibility;
          layoutControlItemGlobalPKAnalysis.Visibility = visibility;
          layoutControlItemGlobalPKAnalysisDescription.Visibility = visibility;
@@ -86,13 +86,13 @@ namespace PKSim.UI.Views.Simulations
          base.InitializeResources();
          populationPKAnalysisTabControl.Images = _imageListRetriever.AllImages16x16;
          
-         pageOnIndividuals.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.Population);
-         pageOnIndividuals.Text = PKSimConstants.PKAnalysis.IndividualPKValues;
-         pageOnIndividuals.Tooltip = PKSimConstants.PKAnalysis.OnIndividualsTooltip;
+         pageIndividualPKValues.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.Population);
+         pageIndividualPKValues.Text = PKSimConstants.PKAnalysis.IndividualPKValues;
+         pageIndividualPKValues.Tooltip = PKSimConstants.PKAnalysis.OnIndividualsTooltip;
 
-         pageOnCurves.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
-         pageOnCurves.Text = PKSimConstants.PKAnalysis.AggregatedPKValues;
-         pageOnCurves.Tooltip = PKSimConstants.PKAnalysis.OnCurvesTooltip;
+         pageAggregatedPKValues.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
+         pageAggregatedPKValues.Text = PKSimConstants.PKAnalysis.AggregatedPKValues;
+         pageAggregatedPKValues.Tooltip = PKSimConstants.PKAnalysis.OnCurvesTooltip;
 
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
          layoutItemExportToExcel.AdjustLargeButtonSize(layoutControl);
