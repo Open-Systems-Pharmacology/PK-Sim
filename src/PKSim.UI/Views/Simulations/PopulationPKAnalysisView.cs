@@ -87,11 +87,11 @@ namespace PKSim.UI.Views.Simulations
          populationPKAnalysisTabControl.Images = _imageListRetriever.AllImages16x16;
          
          pageOnIndividuals.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.Population);
-         pageOnIndividuals.Text = PKSimConstants.PKAnalysis.OnIndividuals;
+         pageOnIndividuals.Text = PKSimConstants.PKAnalysis.IndividualPKValues;
          pageOnIndividuals.Tooltip = PKSimConstants.PKAnalysis.OnIndividualsTooltip;
 
          pageOnCurves.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.TimeProfileAnalysis);
-         pageOnCurves.Text = PKSimConstants.PKAnalysis.OnCurves;
+         pageOnCurves.Text = PKSimConstants.PKAnalysis.AggregatedPKValues;
          pageOnCurves.Tooltip = PKSimConstants.PKAnalysis.OnCurvesTooltip;
 
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);

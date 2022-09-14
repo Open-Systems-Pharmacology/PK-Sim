@@ -2632,9 +2632,9 @@ namespace PKSim.Assets
          public static readonly string Unit = UI.Unit;
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
-         public static readonly string OnCurves = "On Curves";
+         public static readonly string AggregatedPKValues = "Aggregated PK Values";
          public static readonly string OnCurvesTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
-         public static readonly string OnIndividuals = "On Individuals";
+         public static readonly string IndividualPKValues = "Individual PK Values";
          public static readonly string OnIndividualsTooltip = "PK parameter values are aggregated from individual values";
       }
 
