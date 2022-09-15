@@ -32,7 +32,7 @@ namespace PKSim.Presentation
       protected IPopulationPKAnalysisView _view;
 
       protected ChartData<TimeProfileXValue, TimeProfileYValue> _timeProfileChartData;
-      protected IPopulationDataCollector _populationDataCollector;
+      protected PopulationSimulation _populationSimulation;
       protected TimeProfileCurveData _curve1;
       protected TimeProfileCurveData _curve2;
       protected PKAnalysis _pk1;
@@ -59,10 +59,14 @@ namespace PKSim.Presentation
          _globalPKAnalysisPresenter = A.Fake<IGlobalPKAnalysisPresenter>();
          sut = new PopulationPKAnalysisPresenter(_view, _pkAnalysesTask, _exportTask, _populationPKAnalysisToDTOMapper, _pkParameterRepository, _presenterSettingsTask, _globalPKAnalysisPresenter);
 
-         _populationDataCollector = A.Fake<IPopulationDataCollector>();
+         _populationSimulation = new PopulationSimulation { Name = "TOTO" };
+
+         _populationSimulation.PKAnalyses.AddPKAnalysis(new QuantityPKParameter { Name = "Name1", QuantityPath = "A|PATH" });
+         _populationSimulation.PKAnalyses.AddPKAnalysis(new QuantityPKParameter { Name = "Name2", QuantityPath = "B|PATH" });
+
          _timeProfileChartData = new ChartData<TimeProfileXValue, TimeProfileYValue>(null, null);
-         var pane = new PaneData<TimeProfileXValue, TimeProfileYValue>(null) {Caption = "TOTO"};
-         _curve1 = new TimeProfileCurveData {Caption = "A", Pane = pane};
+         var pane = new PaneData<TimeProfileXValue, TimeProfileYValue>(null) { Caption = "TOTO" };
+         _curve1 = new TimeProfileCurveData { Caption = "A", Pane = pane };
          _curve2 = new TimeProfileCurveData { Caption = "B", Pane = pane };
 
          _pk1 = new PKAnalysis();
@@ -75,9 +79,11 @@ namespace PKSim.Presentation
          };
 
          _populationStatisticalAnalysis = new PopulationStatisticalAnalysis();
+         _populationStatisticalAnalysis.Add(new PopulationAnalysisOutputField { Name = "Name1", QuantityPath = "A|PATH" });
+         _populationStatisticalAnalysis.Add(new PopulationAnalysisOutputField { Name = "Name2", QuantityPath = "B|PATH" });
 
          A.CallTo(() => _view.IsAggregatedPKValuesSelected).Returns(true);
-         A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationDataCollector, _timeProfileChartData, true)).Returns(_allPKAnalysis);
+         A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationSimulation, _timeProfileChartData, true)).Returns(_allPKAnalysis);
          A.CallTo(() => _view.BindTo(A<IntegratedPKAnalysisDTO>._)).Invokes(x => _dataTable = x.GetArgument<IntegratedPKAnalysisDTO>(0).AggregatedPKValues.DataTable);
          A.CallTo(() => _populationPKAnalysisToDataTableMapper.MapFrom(A<IReadOnlyList<PopulationPKAnalysis>>._, true)).Returns(_dataTable);
       }
@@ -97,20 +103,20 @@ namespace PKSim.Presentation
          _newUnit = new Unit("kl/f", 1000, 0);
          dimension.AddUnit(_newUnit);
 
-         _pkSimParameter = new PKSimParameter {Dimension = dimension};
+         _pkSimParameter = new PKSimParameter { Dimension = dimension };
 
          _allPKAnalysis.First().PKAnalysis.Add(_pkSimParameter);
          _settings = new DefaultPresentationSettings();
          A.CallTo(() => _presenterSettingsTask.PresentationSettingsFor<DefaultPresentationSettings>(A<IPresenterWithSettings>._, A<IWithId>._)).Returns(_settings);
          _settings.SetSetting(_pkSimParameter.Name, "kl/f");
-         A.CallTo(() => _populationDataCollector.Name).Returns("TOTO");
+
          sut.LoadSettingsForSubject(A.Fake<IWithId>());
       }
 
       protected override void Because()
       {
          base.Because();
-         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
+         sut.CalculatePKAnalyses(_populationSimulation, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]
@@ -121,15 +127,37 @@ namespace PKSim.Presentation
 
    }
 
+   public class When_the_population_pk_analysis_calculates_pk_analyses : concern_for_PopulationPKAnalysisPresenter
+   {
+      protected override void Because()
+      {
+         sut.CalculatePKAnalyses(_populationSimulation, _timeProfileChartData, _populationStatisticalAnalysis);
+      }
+
+      [Observation]
+      public void should_calculate_a_global_pk_analysis()
+      {
+         A.CallTo(() => _globalPKAnalysisPresenter.CalculatePKAnalysis(A<PopulationSimulation[]>.That.Contains(_populationSimulation))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_aggregate_a_pk_analysis_for_each_compound()
+      {
+         var quantityPKParameters = _populationSimulation.PKAnalyses.All().ToArray();
+
+         // Check to make sure the task is used to aggregate separate analyses for each compound name "Name1" and "Name2"
+         A.CallTo(() =>_pkAnalysesTask.AggregatePKAnalysis(_populationSimulation, A<IEnumerable<QuantityPKParameter>>.That.Contains(quantityPKParameters[0]), A<IEnumerable<StatisticalAggregation>>._, "Name1")).MustHaveHappened();
+         A.CallTo(() => _pkAnalysesTask.AggregatePKAnalysis(_populationSimulation, A<IEnumerable<QuantityPKParameter>>.That.Contains(quantityPKParameters[1]), A<IEnumerable<StatisticalAggregation>>._, "Name2")).MustHaveHappened();
+      }
+   }
+
    public class When_the_population_pk_analysis_presenter_is_exporting_the_analysis_to_excel : concern_for_PopulationPKAnalysisPresenter
    {
 
       protected override void Context()
       {
          base.Context();
-
-         A.CallTo(() => _populationDataCollector.Name).Returns("TOTO");
-         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
+         sut.CalculatePKAnalyses(_populationSimulation, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       protected override void Because()
@@ -140,7 +168,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_export_all_visible_analysis_to_excel()
       {
-         A.CallTo(() => _exportTask.ExportToExcel(A<DataTable>._, _populationDataCollector.Name)).MustHaveHappened();
+         A.CallTo(() => _exportTask.ExportToExcel(A<DataTable>._, _populationSimulation.Name)).MustHaveHappened();
       }
    }
 
@@ -153,7 +181,7 @@ namespace PKSim.Presentation
          base.Context();
          _newDisplayUnit = A.Fake<Unit>();
          _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC_tEnd));
-         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
+         sut.CalculatePKAnalyses(_populationSimulation, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       protected override void Because()
@@ -183,7 +211,7 @@ namespace PKSim.Presentation
          base.Context();
          _newDisplayUnit = A.Fake<Unit>();
          _pk1.Add(A.Fake<IParameter>().WithName(Constants.PKParameters.AUC_tEnd));
-         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
+         sut.CalculatePKAnalyses(_populationSimulation, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]
@@ -192,7 +220,7 @@ namespace PKSim.Presentation
          sut.ChangeUnit(Constants.PKParameters.AUC_inf, _newDisplayUnit);
       }
    }
-   
+
    public class When_the_population_pk_analysis_presenter_is_retrieving_the_available_units : concern_for_PopulationPKAnalysisPresenter
    {
       private IDimension _dimension;
@@ -209,7 +237,7 @@ namespace PKSim.Presentation
            .WithName(Constants.PKParameters.AUC_tEnd)
            .WithDimension(_dimension));
 
-         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
+         sut.CalculatePKAnalyses(_populationSimulation, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]
@@ -237,7 +265,7 @@ namespace PKSim.Presentation
             .WithName(Constants.PKParameters.AUC_tEnd)
             .WithDimension(_dimension));
          _pk1.Parameter(Constants.PKParameters.AUC_tEnd).DisplayUnit = A.Fake<Unit>();
-         sut.CalculatePKAnalyses(_populationDataCollector, _timeProfileChartData, _populationStatisticalAnalysis);
+         sut.CalculatePKAnalyses(_populationSimulation, _timeProfileChartData, _populationStatisticalAnalysis);
       }
 
       [Observation]

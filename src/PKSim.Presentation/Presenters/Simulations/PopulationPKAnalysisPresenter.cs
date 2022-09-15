@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -68,23 +69,26 @@ namespace PKSim.Presentation.Presenters.Simulations
          //Calculate first global PK that should always be updated
          _globalPKAnalysisPresenter.CalculatePKAnalysis(new[] { simulation });
 
-         var pkParameters = extractPKParameters(populationAnalysis, simulation);
-         if (!pkParameters.Any())
+         var pkParametersCache = extractPKParameters(populationAnalysis, simulation);
+         if (!pkParametersCache.Any())
             return;
 
-         var captionPrefix = populationAnalysis.AllFieldNamesOn(PivotArea.DataArea);
-
-         var pkAnalyses = _pkAnalysesTask.AggregatePKAnalysis(simulation, pkParameters, populationAnalysis.SelectedStatistics, captionPrefix[0]);
-         _allPKAnalysesIndividualPKValues.AddRange(pkAnalyses);
+         pkParametersCache.KeyValues.Each(pkParameters =>
+         {
+            var pkAnalyses = _pkAnalysesTask.AggregatePKAnalysis(simulation, pkParameters.Value, populationAnalysis.SelectedStatistics, pkParameters.Key);
+            _allPKAnalysesIndividualPKValues.AddRange(pkAnalyses);
+         });
 
          updateView();
       }
 
-
-      private IReadOnlyList<QuantityPKParameter> extractPKParameters(PopulationStatisticalAnalysis populationAnalysis, PopulationSimulation populationSimulation)
+      private Cache<string, IReadOnlyList<QuantityPKParameter>> extractPKParameters(PopulationStatisticalAnalysis populationAnalysis, PopulationSimulation populationSimulation)
       {
-         var fields = populationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().Select(x => x.QuantityPath);
-         return fields.SelectMany(x => populationSimulation.PKAnalyses.AllPKParametersFor(x)).ToList();
+         var cache = new Cache<string, IReadOnlyList<QuantityPKParameter>>();
+         var fields = populationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().ToList();
+
+         fields.Each(field => { cache.Add(field.Name, populationSimulation.PKAnalyses.AllPKParametersFor(field.QuantityPath).ToList()); });
+         return cache;
       }
 
       private void updateView()
