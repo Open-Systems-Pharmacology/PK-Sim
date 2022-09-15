@@ -76,9 +76,9 @@ namespace PKSim.Presentation
 
          _populationStatisticalAnalysis = new PopulationStatisticalAnalysis();
 
-         A.CallTo(() => _view.IsOnCurvesSelected).Returns(true);
+         A.CallTo(() => _view.IsAggregatedPKValuesSelected).Returns(true);
          A.CallTo(() => _pkAnalysesTask.CalculateFor(_populationDataCollector, _timeProfileChartData, true)).Returns(_allPKAnalysis);
-         A.CallTo(() => _view.BindTo(A<IntegratedPKAnalysisDTO>._)).Invokes(x => _dataTable = x.GetArgument<IntegratedPKAnalysisDTO>(0).OnCurves.DataTable);
+         A.CallTo(() => _view.BindTo(A<IntegratedPKAnalysisDTO>._)).Invokes(x => _dataTable = x.GetArgument<IntegratedPKAnalysisDTO>(0).AggregatedPKValues.DataTable);
          A.CallTo(() => _populationPKAnalysisToDataTableMapper.MapFrom(A<IReadOnlyList<PopulationPKAnalysis>>._, true)).Returns(_dataTable);
       }
    }
