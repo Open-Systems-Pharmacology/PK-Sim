@@ -12,6 +12,7 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
@@ -106,6 +107,15 @@ namespace PKSim.Infrastructure.Services
             return;
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
+
+         /*
+         var newOutputMapping = new OutputMapping();
+         mapMatchingOutput(observedData, newOutputMapping, simulation); //we could implement the same way
+
+         var newOutputMappingDTO = mapFrom(newOutputMapping);
+
+         if (newOutputMapping.Output != null)
+            simulation.OutputMappings.Add(newOutputMapping);*/
          _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
@@ -131,6 +141,49 @@ namespace PKSim.Infrastructure.Services
 
          usedObservedDataList.GroupBy(x => x.Simulation).Each(x => removeUsedObservedDataFromSimulation(x, x.Key.DowncastTo<Simulation>()));
       }
+
+      /*
+      private SimulationOutputMappingDTO mapFrom(OutputMapping outputMapping)
+      {
+         return _outputMappingDTOMapper.MapFrom(outputMapping, AllAvailableOutputs);
+      }
+      private void mapMatchingOutput(DataRepository observedData, OutputMapping newOutputMapping, ISimulation simulation)
+      {
+         var pathCache = _entitiesInSimulationRetriever.OutputsFrom(simulation);
+         var matchingOutputPath = pathCache.Keys.FirstOrDefault(x => observedDataMatchesOutput(observedData, x));
+
+         if (matchingOutputPath == null)
+         {
+            newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
+            return;
+         }
+
+         var matchingOutput = pathCache[matchingOutputPath];
+
+         newOutputMapping.OutputSelection =
+            new SimulationQuantitySelection(simulation, new QuantitySelection(matchingOutputPath, matchingOutput.QuantityType));
+         newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
+         newOutputMapping.Scaling = defaultScalingFor(matchingOutput);
+      }
+
+      private Scalings defaultScalingFor(IQuantity output)
+      {
+         return output.IsFraction() ? Scalings.Linear : Scalings.Log;
+      }*/
+
+      private bool observedDataMatchesOutput(DataRepository observedData, string outputPath)
+      {
+         var organ = observedData.ExtendedPropertyValueFor(Constants.ObservedData.ORGAN);
+         var compartment = observedData.ExtendedPropertyValueFor(Constants.ObservedData.COMPARTMENT);
+         var molecule = observedData.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
+
+         if (organ == null || compartment == null || molecule == null)
+            return false;
+
+         return outputPath.Contains(organ) && outputPath.Contains(compartment) && outputPath.Contains(molecule);
+      }
+
+
 
       private IEnumerable<ParameterIdentification> findParameterIdentificationsUsing(UsedObservedData usedObservedData)
       {
