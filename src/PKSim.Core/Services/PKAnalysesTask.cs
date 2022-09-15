@@ -299,6 +299,7 @@ namespace PKSim.Core.Services
       {
          var pkParametersList = pkParameters.ToList();
          var matrix = new FloatMatrix();
+         //WHY THE DISTINCT HERE. THis array is then used later in buildPopulationPKAnalysis by Index. 
          var names = pkParametersList.Select(x => x.Name).Distinct().ToList();
          pkParametersList.Each(pkParameter => matrix.AddValuesAndSort(pkParameter.ValuesAsArray));
 
@@ -340,12 +341,13 @@ namespace PKSim.Core.Services
       private PopulationPKAnalysis buildPopulationPKAnalysis(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, float[] values, IReadOnlyList<string> names, Simulation simulation)
       {
          var pkValues = new PKValues();
+         var compoundName = simulation.Model.MoleculeNameFor(curveData.QuantityPath);
          for (var i = 0; i < names.Count; i++)
          {
             pkValues.AddValue(names[i], values[i]);
          }
 
-         var compound = simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name);
+         var compound = simulation.Compounds.FindByName(compoundName);
          return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound));
       }
    }
