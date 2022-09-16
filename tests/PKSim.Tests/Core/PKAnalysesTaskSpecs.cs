@@ -72,7 +72,7 @@ namespace PKSim.Core
 
          var rangeCurve = new CurveData<TimeProfileXValue, TimeProfileYValue>()
          {
-            Caption = "TOTO",
+            Caption = "Compound-Peripheral Venous Blood-Plasma-Concentration-Range 2.5% to 97.5%",
             Pane = pane,
             QuantityPath = "RANGE_PATH",
          };
@@ -103,6 +103,13 @@ namespace PKSim.Core
       public void should_not_generate_two_curves_for_each_range_plot()
       {
          _result.Count.ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_name_the_generated_curves_by_the_correct_range_names()
+      {
+         _result.Select(x => x.ExtraDescription).ShouldContain("Compound-Peripheral Venous Blood-Plasma-Concentration-2.5%");
+         _result.Select(x => x.ExtraDescription).ShouldContain("Compound-Peripheral Venous Blood-Plasma-Concentration-97.5%");
       }
 
       [Observation]
