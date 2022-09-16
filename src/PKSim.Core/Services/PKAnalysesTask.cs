@@ -117,7 +117,7 @@ namespace PKSim.Core.Services
             return pkAnalyses; // there are no analyses to calculate
 
          var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).SelectMany(x =>
-               columnsFor(x, populationDataCollector).Select(column => new {curveData = x, column = column}))
+               columnsFor(x, populationDataCollector).Select(column => new { curveData = x, column = column }))
             .Where(c => c.column.IsConcentration());
 
          var columnsByMolecules = allColumns.GroupBy(x => x.column.MoleculeName());
@@ -160,7 +160,7 @@ namespace PKSim.Core.Services
 
       private IEnumerable<DataColumn> columnsFor(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, IPopulationDataCollector populationDataCollector)
       {
-         var baseGrid = new BaseGrid(Constants.TIME, curveData.XAxis.Dimension) {Values = curveData.XValues.Select(x => x.X).ToList()};
+         var baseGrid = new BaseGrid(Constants.TIME, curveData.XAxis.Dimension) { Values = curveData.XValues.Select(x => x.X).ToList() };
 
          if (curveData.IsRange())
          {
@@ -198,7 +198,7 @@ namespace PKSim.Core.Services
          if (dataColumn == null)
             return new NullIndividualPKAnalysis();
 
-         return CalculateFor(new[] {simulation}, new[] {dataColumn}).FirstOrDefault() ?? new NullIndividualPKAnalysis();
+         return CalculateFor(new[] { simulation }, new[] { dataColumn }).FirstOrDefault() ?? new NullIndividualPKAnalysis();
       }
 
       public PKValues CalculatePK(DataColumn column, PKCalculationOptions options)
@@ -279,22 +279,22 @@ namespace PKSim.Core.Services
       }
 
       /// <summary>
-      /// Returns the ranges strings when the <paramref name="text"/> contains 'Range 2.5% to 97.5%' language
+      /// Returns the range strings when the <paramref name="text"/> contains 'Range 2.5% to 97.5%' language
       /// </summary>
       /// <param name="text">The text being split</param>
       /// <returns>The individual range descriptions as an array with index 0 containing low range and index 1 containing high range.
       /// If the string cannot be split on 'Range', returns the original text in both indices of the array</returns>
       private string[] rangeDescriptions(string text)
       {
-         var splitStrings = text.Split(new[] {"Range"}, StringSplitOptions.RemoveEmptyEntries);
+         var splitStrings = text.Split(new[] { "Range" }, StringSplitOptions.RemoveEmptyEntries);
          var match = splitStrings.Length == 2;
 
          if (!match)
-            return new [] {text,text};
+            return new[] { text, text };
 
          var upperAndLowerRange = splitStrings.Last().Split(new[] { "to" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
-         return new[] { $"{splitStrings[0]}{upperAndLowerRange[0]}" , $"{splitStrings[0]}{upperAndLowerRange[1]}" } ;
+         return new[] { $"{splitStrings[0]}{upperAndLowerRange[0]}", $"{splitStrings[0]}{upperAndLowerRange[1]}" };
       }
 
       public IReadOnlyList<PopulationPKAnalysis> AggregatePKAnalysis(Simulation simulation, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> selectedStatistics, string captionPrefix)
@@ -329,7 +329,7 @@ namespace PKSim.Core.Services
             suffix = isLowerValue ? rangeText[0] : rangeText[1];
          }
 
-         return (new[] {captionPrefix, suffix}).ToCaption();
+         return (new[] { captionPrefix, suffix }).ToCaption();
       }
 
       private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter quantityPKParameter, string caption)
