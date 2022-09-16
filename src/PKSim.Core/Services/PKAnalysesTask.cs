@@ -164,16 +164,16 @@ namespace PKSim.Core.Services
 
          if (curveData.IsRange())
          {
-            var rangeText = rangeDescriptions(curveData.Caption);
+            var (lowerRange, upperRange) = rangeDescriptions(curveData.Caption);
             return new[]
             {
-               new DataColumn(rangeText[0], curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(lowerRange, curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
                   DataInfo = { MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath) },
                   QuantityInfo = { Path = curveData.QuantityPath.ToPathArray() }
                },
-               new DataColumn(rangeText[1], curveData.YAxis.Dimension, baseGrid)
+               new DataColumn(upperRange, curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
                   DataInfo = { MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath) },
@@ -282,19 +282,19 @@ namespace PKSim.Core.Services
       /// Returns the range strings when the <paramref name="text"/> contains 'Range 2.5% to 97.5%' language
       /// </summary>
       /// <param name="text">The text being split</param>
-      /// <returns>The individual range descriptions as an array with index 0 containing low range and index 1 containing high range.
-      /// If the string cannot be split on 'Range', returns the original text in both indices of the array</returns>
-      private string[] rangeDescriptions(string text)
+      /// <returns>The individual range descriptions as a tuple containing low range and high range.
+      /// If the string cannot be split on 'Range', returns the original text in both members of the tuple</returns>
+      private (string lowerRange, string upperRange) rangeDescriptions(string text)
       {
          var splitStrings = text.Split(new[] { "Range" }, StringSplitOptions.RemoveEmptyEntries);
          var match = splitStrings.Length == 2;
 
          if (!match)
-            return new[] { text, text };
+            return ( text, text );
 
          var upperAndLowerRange = splitStrings.Last().Split(new[] { "to" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
-         return new[] { $"{splitStrings[0]}{upperAndLowerRange[0]}", $"{splitStrings[0]}{upperAndLowerRange[1]}" };
+         return ($"{splitStrings[0]}{upperAndLowerRange[0]}", $"{splitStrings[0]}{upperAndLowerRange[1]}" );
       }
 
       public IReadOnlyList<PopulationPKAnalysis> AggregatePKAnalysis(Simulation simulation, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> selectedStatistics, string captionPrefix)
@@ -325,8 +325,8 @@ namespace PKSim.Core.Services
          //is the upper value so depending on the index we use lower or upper suffix.
          if (multipleValues)
          {
-            var rangeText = rangeDescriptions(suffix);
-            suffix = isLowerValue ? rangeText[0] : rangeText[1];
+            var (lowerRange, upperRange) = rangeDescriptions(suffix);
+            suffix = isLowerValue ? lowerRange : upperRange;
          }
 
          return (new[] { captionPrefix, suffix }).ToCaption();
