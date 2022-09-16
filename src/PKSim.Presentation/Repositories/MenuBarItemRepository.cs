@@ -286,19 +286,6 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<ShowSimulationResultsCommand>()
             .WithIcon(ApplicationIcons.TimeProfileAnalysis);
 
-         //actually not even sure the buttons should be here and not in Core in some MenuBarItemRepository
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.PredictedVsObservedSimulation)
-            .WithId(MenuBarItemIds.PredictedVsObservedSimulationAnalysis)
-            .WithDescription(MenuDescriptions.PredictedVsObservedAnalysisDescription)
-            .WithCommand<StartPredictedVsObservedSimulationAnalysisUICommand>()
-            .WithIcon(ApplicationIcons.PredictedVsObservedAnalysis);
-
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ResidualsVsTimeSimulation)
-            .WithId(MenuBarItemIds.ResidualsVsTimeSimulationAnalysis)
-            .WithDescription(MenuDescriptions.ResidualsVsTimeAnalysisDescription)
-            .WithCommand<StartResidualVsTimeSimulationAnalysisUICommand>()
-            .WithIcon(ApplicationIcons.ResidualVsTimeAnalysis);
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.BoxWhiskerAnalysis)
             .WithId(MenuBarItemIds.BoxWhiskerAnalysis)
             .WithDescription(PKSimConstants.UI.BoxWhiskerAnalysisDescription)
@@ -323,11 +310,25 @@ namespace PKSim.Presentation.Repositories
             .WithDescription(PKSimConstants.UI.TimeProfileAnalysisDescription)
             .WithIcon(ApplicationIcons.TimeProfileAnalysis);
 
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.PredictedVsObservedSimulation)
+            .WithId(MenuBarItemIds.PredictedVsObservedSimulationAnalysis)
+            .WithDescription(MenuDescriptions.PredictedVsObservedAnalysisDescription)
+            .WithCommand<StartPredictedVsObservedSimulationAnalysisUICommand>()
+            .WithIcon(ApplicationIcons.PredictedVsObservedAnalysis);
+
+
+
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.IndividualSimulationComparison)
             .WithId(MenuBarItemIds.IndividualSimulationComparison)
             .WithDescription(PKSimConstants.UI.IndividualSimulationComparisonDescription)
             .WithCommand<CreateIndividualSimulationComparisonUICommand>()
             .WithIcon(ApplicationIcons.IndividualSimulationComparison);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ResidualsVsTimeSimulation)
+            .WithId(MenuBarItemIds.ResidualsVsTimeSimulationAnalysis)
+            .WithDescription(MenuDescriptions.ResidualsVsTimeAnalysisDescription)
+            .WithCommand<StartResidualVsTimeSimulationAnalysisUICommand>()
+            .WithIcon(ApplicationIcons.ResidualVsTimeAnalysis);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Comparison)
             .WithId(MenuBarItemIds.IndividualSimulationComparisonInAnalyze)

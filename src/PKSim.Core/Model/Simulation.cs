@@ -346,6 +346,18 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
+      ///    Remove the output mappings mapped to the dataRepository
+      /// </summary>
+      public void RemoveOutputMappings(DataRepository dataRepository)
+      {
+         var outputsMatchingDeletedObservedData = OutputMappings.OutputMappingsUsingDataRepository(dataRepository).ToList();
+         foreach (var outputMapping in outputsMatchingDeletedObservedData)
+         {
+            OutputMappings.Remove(outputMapping);
+         }
+      }
+
+      /// <summary>
       ///    returns true if the observed data is used in the current simulation otherwise false
       /// </summary>
       public virtual bool UsesObservedData(DataRepository dataRepository)

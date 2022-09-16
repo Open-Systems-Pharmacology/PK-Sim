@@ -255,8 +255,8 @@ namespace PKSim.Presentation.Presenters.Main
       private void updateResultsVisibility(bool shouldShowIndividualResults)
       {
          _menuBarItemRepository[MenuBarItemIds.ShowIndividualResults].Visible = shouldShowIndividualResults;
-         _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedSimulationAnalysis].Visible = true; //not sure we need this here
-         _menuBarItemRepository[MenuBarItemIds.ResidualsVsTimeSimulationAnalysis].Visible = true; //not sure we need this here
+         _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedSimulationAnalysis].Visible = true;
+         _menuBarItemRepository[MenuBarItemIds.ResidualsVsTimeSimulationAnalysis].Visible = true;
       }
 
       private void disableSimulationItems()

@@ -13,6 +13,7 @@ using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
@@ -32,6 +33,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ITemplateTask _templateTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IPKMLPersistor _pkmlPersistor;
+      private readonly IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
 
       public ObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -43,7 +45,8 @@ namespace PKSim.Infrastructure.Services
          IContainerTask containerTask,
          IParameterChangeUpdater parameterChangeUpdater,
          IPKMLPersistor pkmlPersistor,
-         IObjectTypeResolver objectTypeResolver) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IEntitiesInSimulationRetriever entitiesInSimulationRetriever) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
@@ -51,6 +54,7 @@ namespace PKSim.Infrastructure.Services
          _templateTask = templateTask;
          _parameterChangeUpdater = parameterChangeUpdater;
          _pkmlPersistor = pkmlPersistor;
+         _entitiesInSimulationRetriever = entitiesInSimulationRetriever;
       }
 
       public override void Rename(DataRepository observedData)
@@ -108,14 +112,17 @@ namespace PKSim.Infrastructure.Services
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
 
-         /*
-         var newOutputMapping = new OutputMapping();
-         mapMatchingOutput(observedData, newOutputMapping, simulation); //we could implement the same way
+         
+         //var newOutputMapping = new OutputMapping();
 
-         var newOutputMappingDTO = mapFrom(newOutputMapping);
+         foreach (var dataRepository in observedData)
+         {
+            var newOutputMapping = mapMatchingOutput(dataRepository, simulation);
 
-         if (newOutputMapping.Output != null)
-            simulation.OutputMappings.Add(newOutputMapping);*/
+            if (newOutputMapping.Output != null)
+               simulation.OutputMappings.Add(newOutputMapping);
+         }
+
          _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
@@ -142,20 +149,16 @@ namespace PKSim.Infrastructure.Services
          usedObservedDataList.GroupBy(x => x.Simulation).Each(x => removeUsedObservedDataFromSimulation(x, x.Key.DowncastTo<Simulation>()));
       }
 
-      /*
-      private SimulationOutputMappingDTO mapFrom(OutputMapping outputMapping)
+      private OutputMapping mapMatchingOutput(DataRepository observedData, ISimulation simulation)
       {
-         return _outputMappingDTOMapper.MapFrom(outputMapping, AllAvailableOutputs);
-      }
-      private void mapMatchingOutput(DataRepository observedData, OutputMapping newOutputMapping, ISimulation simulation)
-      {
+         var newOutputMapping = new OutputMapping();
          var pathCache = _entitiesInSimulationRetriever.OutputsFrom(simulation);
          var matchingOutputPath = pathCache.Keys.FirstOrDefault(x => observedDataMatchesOutput(observedData, x));
 
          if (matchingOutputPath == null)
          {
             newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
-            return;
+            return newOutputMapping;
          }
 
          var matchingOutput = pathCache[matchingOutputPath];
@@ -164,12 +167,13 @@ namespace PKSim.Infrastructure.Services
             new SimulationQuantitySelection(simulation, new QuantitySelection(matchingOutputPath, matchingOutput.QuantityType));
          newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
          newOutputMapping.Scaling = defaultScalingFor(matchingOutput);
+         return newOutputMapping;
       }
 
       private Scalings defaultScalingFor(IQuantity output)
       {
          return output.IsFraction() ? Scalings.Linear : Scalings.Log;
-      }*/
+      }
 
       private bool observedDataMatchesOutput(DataRepository observedData, string outputPath)
       {
@@ -182,8 +186,6 @@ namespace PKSim.Infrastructure.Services
 
          return outputPath.Contains(organ) && outputPath.Contains(compartment) && outputPath.Contains(molecule);
       }
-
-
 
       private IEnumerable<ParameterIdentification> findParameterIdentificationsUsing(UsedObservedData usedObservedData)
       {
@@ -207,6 +209,8 @@ namespace PKSim.Infrastructure.Services
 
          var observedDataList = observedDataListFrom(usedObservedDatas);
          observedDataList.Each(simulation.RemoveUsedObservedData);
+         observedDataList.Each(simulation.RemoveOutputMappings);
+
          _executionContext.PublishEvent(new ObservedDataRemovedFromAnalysableEvent(simulation, observedDataList));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
