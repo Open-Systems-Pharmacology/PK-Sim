@@ -286,7 +286,7 @@ namespace PKSim.Core.Services
       /// If the string cannot be split on 'Range', returns the original text in both members of the tuple</returns>
       private (string lowerRange, string upperRange) rangeDescriptions(string text)
       {
-         var splitStrings = text.Split(new[] { "Range" }, StringSplitOptions.RemoveEmptyEntries);
+         var splitStrings = text.Split(new[] { "Range" }, StringSplitOptions.None);
          var match = splitStrings.Length == 2;
 
          if (!match)
