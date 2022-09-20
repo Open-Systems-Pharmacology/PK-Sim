@@ -46,6 +46,7 @@ namespace PKSim.Infrastructure
       protected const string _percentileId = "Percentile";
       protected PercentileStatisticalAggregation _percentileStatisticalAggregation;
       protected PopulationStatisticalAnalysis _populationStatisticalAnalysis;
+      private PredefinedStatisticalAggregation _rangeAggregation;
 
       protected override void Context()
       {
@@ -59,9 +60,12 @@ namespace PKSim.Infrastructure
          _statisticalDataCalculator = new StatisticalDataCalculator();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _percentileStatisticalAggregation = new PercentileStatisticalAggregation { Selected = true, Percentile = 50 };
+         _rangeAggregation = new PredefinedStatisticalAggregation { Selected = true, Method = StatisticalAggregationType.Range90 };
          _populationStatisticalAnalysis = new PopulationStatisticalAnalysis();
          _populationStatisticalAnalysis.AddStatistic(_percentileStatisticalAggregation);
+         _populationStatisticalAnalysis.AddStatistic(_rangeAggregation);
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_percentileStatisticalAggregation)).Returns(_percentileId);
+         A.CallTo(() => _representationInfoRepository.DisplayNameFor(_rangeAggregation)).Returns("Range 5% to 95%");
          sut = new PKAnalysesTask(_lazyLoadTask, _pkValuesCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver,_pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository);
 
          _populationSimulation = A.Fake<PopulationSimulation>();
@@ -233,10 +237,13 @@ namespace PKSim.Infrastructure
             A<PKParameterMode>.Ignored,
             "Esomeprazole"
          )).MustHaveHappened();
-         _pkAnalyses.Count().ShouldBeEqualTo(1);
+         _pkAnalyses.Count().ShouldBeEqualTo(3);
          var curveData = _pkAnalyses.First().CurveData;
-         curveData.Caption.ShouldBeEqualTo("Esomeprazole-Percentile");
          curveData.QuantityPath.ShouldBeEqualTo("Organism|PeripheralVenousBlood|Esomeprazole|Plasma (Peripheral Venous Blood)");
+
+         _pkAnalyses.Count(x => x.CurveData.Caption.Equals("Esomeprazole-5%")).ShouldBeEqualTo(1);
+         _pkAnalyses.Count(x => x.CurveData.Caption.Equals("Esomeprazole-95%")).ShouldBeEqualTo(1);
+         _pkAnalyses.Count(x => x.CurveData.Caption.Equals("Esomeprazole-Percentile")).ShouldBeEqualTo(1);
       }
    }
 }
