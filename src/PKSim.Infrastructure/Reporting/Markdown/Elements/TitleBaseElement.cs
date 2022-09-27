@@ -13,6 +13,7 @@ namespace PKSim.Infrastructure.Reporting.Markdown.Elements
          _level = level;
       }
 
+      //Ensure that we always have a new line before a heading and after
       public override string ToMarkdown() => $"{new string('#', _level)} {_text}\n\n";
    }
 }
