@@ -156,7 +156,7 @@ namespace PKSim.IntegrationTests
          _allPopulations = populationsRepo.All().ToList();
       }
 
-      [Observation, Ignore("To be un-ignored when SimModel is updated")]
+      [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
          var errors = new List<string>();
