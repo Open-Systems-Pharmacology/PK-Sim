@@ -1,6 +1,12 @@
-CREATE TABLE [tab_active_transport_types]([transport_type] TEXT PRIMARY KEY NOT NULL REFERENCES [tab_process_types]([process_type]) ON UPDATE CASCADE) WITHOUT ROWID;
-INSERT INTO tab_active_transport_types(transport_type) VALUES('BiDirectional');
-INSERT INTO tab_active_transport_types(transport_type) VALUES('Efflux');
-INSERT INTO tab_active_transport_types(transport_type) VALUES('Influx');
-INSERT INTO tab_active_transport_types(transport_type) VALUES('PgpLike');
-UPDATE tab_transport_directions SET display_name='Influx Lumen to Mucosa/Intracellular' WHERE transport_direction='InfluxLumenToMucosaIntracellular';
+UPDATE tab_calculation_method_rates SET formula='V>0 ? Liquid/V : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_FillLevel';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_Caecum';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonAscendens';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonDescendens';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonSigmoid';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonTransversum';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_Duodenum';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_LowerIleum';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_LowerJejunum';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_Rectum';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_UpperIleum';
+UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_UpperJejunum';
