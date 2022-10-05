@@ -242,14 +242,14 @@ namespace PKSim.Core.Services
 
       private static QuantityPKParameter quantityPKParameterFor(List<GlobalPKAnalysis> globalIndividualPKParameterList, IParameter pKParameter, string quantityPath)
       {
-         var pKValuesForPKParameter = globalIndividualPKParameterList.SelectMany(globalPKAnalysisForAnIndividual => globalPKAnalysisForAnIndividual.AllPKParameters.Where(x => namesEqual(x, pKParameter))).ToList();
+         var pKValuesForPKParameter = globalIndividualPKParameterList.SelectMany(globalPKAnalysisForAnIndividual => globalPKAnalysisForAnIndividual.AllPKParameters.Where(x => pathsEqual(x, pKParameter))).ToList();
          var quantityPKParameter = new QuantityPKParameter { Dimension = pKValuesForPKParameter.First().Dimension, Name = pKValuesForPKParameter.First().Name, QuantityPath = quantityPath };
 
          pKValuesForPKParameter.Each(pKValue => { quantityPKParameter.SetValue(pKValuesForPKParameter.IndexOf(pKValue), (float)pKValue.Value); });
          return quantityPKParameter;
       }
 
-      private static bool namesEqual(IParameter x, IParameter parameter)
+      private static bool pathsEqual(IParameter x, IParameter parameter)
       {
          return string.Equals(x.EntityPath(), parameter.EntityPath());
       }

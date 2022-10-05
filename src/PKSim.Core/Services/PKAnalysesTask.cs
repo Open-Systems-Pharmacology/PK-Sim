@@ -60,7 +60,7 @@ namespace PKSim.Core.Services
       private readonly IPKValuesCalculator _pkValuesCalculator;
       private readonly IPKValuesToPKAnalysisMapper _pkMapper;
       private readonly IDimensionRepository _dimensionRepository;
-      protected readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
+      private readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private readonly IPKParameterRepository _pkParameterRepository;
       private readonly IStatisticalDataCalculator _statisticalDataCalculator;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
