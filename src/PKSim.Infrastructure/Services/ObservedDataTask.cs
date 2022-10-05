@@ -112,9 +112,6 @@ namespace PKSim.Infrastructure.Services
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
 
-         
-         //var newOutputMapping = new OutputMapping();
-
          foreach (var dataRepository in observedData)
          {
             var newOutputMapping = mapMatchingOutput(dataRepository, simulation);

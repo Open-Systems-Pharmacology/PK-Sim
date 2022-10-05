@@ -40,6 +40,7 @@ namespace PKSim.Infrastructure
       private IParameterChangeUpdater _parameterChangeUpdater;
       protected ISnapshotTask _snapshotTask;
       protected IPKMLPersistor _pkmlPersistor;
+      protected IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
 
       protected override Task Context()
       {
@@ -57,8 +58,9 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         _entitiesInSimulationRetriever = A.Fake<IEntitiesInSimulationRetriever>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver);
+            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver, _entitiesInSimulationRetriever);
 
          return _completed;
       }
