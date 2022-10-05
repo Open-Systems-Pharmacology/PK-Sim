@@ -19,14 +19,16 @@ namespace PKSim.Core
       protected ISimulationResultsCreator _simulationResultsCreator;
       protected IDisplayUnitUpdater _displayUnitUpdater;
       protected IDataRepositoryFromResultsCreator _dataRepositoryFromResultsCreator;
+      private IGlobalPKAnalysisTask _globalPKAnalysisTask;
 
       protected override void Context()
       {
          _populationPKAnalysesTask = A.Fake<IPKAnalysesTask>();
          _simulationResultsCreator = A.Fake<ISimulationResultsCreator>();
+         _globalPKAnalysisTask = A.Fake<IGlobalPKAnalysisTask>();
          _displayUnitUpdater = A.Fake<IDisplayUnitUpdater>();
          _dataRepositoryFromResultsCreator = A.Fake<IDataRepositoryFromResultsCreator>();
-         sut = new SimulationResultsSynchronizer(_populationPKAnalysesTask, _simulationResultsCreator, _displayUnitUpdater, _dataRepositoryFromResultsCreator);
+         sut = new SimulationResultsSynchronizer(_populationPKAnalysesTask, _simulationResultsCreator, _displayUnitUpdater, _dataRepositoryFromResultsCreator, _globalPKAnalysisTask);
       }
    }
 

@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Random;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Extensions;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Model
@@ -280,19 +279,24 @@ namespace PKSim.Core.Model
          return  new DataColumn(column.Id, column.Dimension, column.BaseGrid)
          {
             Values = Enumerable.Range(0, column.Values.Count).Select(i => 
-                  IndexedValuesFromColumns(columns, i).Median()
+                  indexedValuesFromColumns(columns, i).Median()
                ).ToList()
          };
       }
 
-      private static IReadOnlyList<float> IndexedValuesFromColumns(IReadOnlyList<DataColumn> columns, int i)
+      private static IReadOnlyList<float> indexedValuesFromColumns(IReadOnlyList<DataColumn> columns, int i)
       {
          return columns.Select(x => x.Values[i]).ToList();
       }
 
       public override DataColumn PeripheralVenousBloodColumn(string compoundName)
       {
-         return medianAggregateDataColumns(drugColumnFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName));
+         return medianAggregateDataColumns(PeripheralVenousBloodColumns(compoundName));
+      }
+
+      public IReadOnlyList<DataColumn> PeripheralVenousBloodColumns(string compoundName)
+      {
+         return drugColumnFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName);
       }
 
       /// <summary>
@@ -300,7 +304,12 @@ namespace PKSim.Core.Model
       /// </summary>
       public override DataColumn VenousBloodColumn(string compoundName)
       {
-         return medianAggregateDataColumns(drugColumnFor(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName));
+         return medianAggregateDataColumns(VenousBloodColumns(compoundName));
+      }
+
+      public IReadOnlyList<DataColumn> VenousBloodColumns(string compoundName)
+      {
+         return drugColumnFor(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName);
       }
 
       public override DataColumn FabsOral(string compoundName)

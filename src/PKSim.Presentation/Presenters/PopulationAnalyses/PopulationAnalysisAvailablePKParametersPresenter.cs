@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 
 using PKSim.Presentation.Presenters.Populations;
@@ -13,6 +12,7 @@ using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -69,6 +69,16 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       {
          _allPKParameters.Clear();
          _allPKParameters.AddRange(_entitiesInContainerRetriever.OutputsFrom(populationDataCollector).SelectMany(availablePKParametersFor));
+
+         populationDataCollector.Compounds.Select(x => x.Name).Each(compoundName =>
+         {
+            _allPKParameters.AddRange(populationDataCollector.AllPKParametersFor(compoundName).Select(globalPKParameters));
+         });
+      }
+
+      private QuantityPKParameterDTO globalPKParameters(QuantityPKParameter globalPKParameter)
+      {
+         return mapFrom(globalPKParameter, globalPKParameter.QuantityPath);
       }
 
       public IEnumerable<QuantityPKParameter> SelectedPKParameters

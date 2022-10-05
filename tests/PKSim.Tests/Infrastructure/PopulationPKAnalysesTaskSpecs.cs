@@ -27,7 +27,7 @@ namespace PKSim.Infrastructure
       protected IPKValuesCalculator _pkValuesCalculator;
       protected IPKParameterRepository _pkParameterRepository;
       protected IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
-      private IEntityPathResolver _entityPathResolver;
+      // private IEntityPathResolver _entityPathResolver;
       protected PopulationSimulation _populationSimulation;
       protected List<double> _allBodyWeights;
       protected IParameter _bodyWeight;
@@ -47,14 +47,15 @@ namespace PKSim.Infrastructure
       protected PercentileStatisticalAggregation _percentileStatisticalAggregation;
       protected PopulationStatisticalAnalysis _populationStatisticalAnalysis;
       private PredefinedStatisticalAggregation _rangeAggregation;
+      protected IPopulationSimulationBodyWeightUpdater _populationSimulationBodyWeightUpdater;
 
       protected override void Context()
       {
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _pkValuesCalculator = A.Fake<IPKValuesCalculator>();
+         _populationSimulationBodyWeightUpdater = A.Fake<IPopulationSimulationBodyWeightUpdater>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
-         _entityPathResolver = A.Fake<IEntityPathResolver>();
          _pkMapper= A.Fake<IPKValuesToPKAnalysisMapper>();
          _dimensionRepository= A.Fake<IDimensionRepository>();
          _statisticalDataCalculator = new StatisticalDataCalculator();
@@ -66,7 +67,7 @@ namespace PKSim.Infrastructure
          _populationStatisticalAnalysis.AddStatistic(_rangeAggregation);
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_percentileStatisticalAggregation)).Returns(_percentileId);
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_rangeAggregation)).Returns("Range 5% to 95%");
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkValuesCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver,_pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository);
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkValuesCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository, _populationSimulationBodyWeightUpdater);
 
          _populationSimulation = A.Fake<PopulationSimulation>();
          _outputSelections = new OutputSelections();
@@ -75,7 +76,6 @@ namespace PKSim.Infrastructure
          _bodyWeight = A.Fake<IParameter>();
          var bodyWeightPath = "PATH";
          A.CallTo(() => _populationSimulation.BodyWeight).Returns(_bodyWeight);
-         A.CallTo(() => _entityPathResolver.PathFor(_bodyWeight)).Returns(bodyWeightPath);
          A.CallTo(() => _populationSimulation.AllValuesFor(bodyWeightPath)).Returns(_allBodyWeights);
          A.CallTo(() => _populationSimulation.NumberOfItems).Returns(2);
          _individualResult0 = new IndividualResults {IndividualId = 0, Time = new QuantityValues {Values = new[] {1f, 2f}}};
@@ -134,7 +134,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_reset_the_body_weight_parameter_at_the_end_of_the_calculation()
       {
-         A.CallTo(() => _bodyWeight.ResetToDefault()).MustHaveHappened();
+         A.CallTo(() => _populationSimulationBodyWeightUpdater.ResetBodyWeightParameter(_populationSimulation)).MustHaveHappened();
       }
    }
 

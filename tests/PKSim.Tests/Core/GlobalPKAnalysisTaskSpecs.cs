@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -29,7 +30,7 @@ namespace PKSim.Core
       private IVSSCalculator _vssCalculator;
       protected DataColumn _peripheralVenousBloodPlasma;
       protected DataColumn _venousBloodPlasma;
-      protected IndividualSimulation _simulation;
+
       protected CompoundProperties _compoundProperties;
       protected Individual _individual;
       protected const string _compoundName = "DRUG";
@@ -43,6 +44,7 @@ namespace PKSim.Core
       protected EventGroup _eventGroup;
       protected Container _application1;
       protected Container _application2;
+      private IPopulationSimulationBodyWeightUpdater _populationSimulationBodyWeightUpdater;
 
       protected override void Context()
       {
@@ -54,9 +56,10 @@ namespace PKSim.Core
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkAnalysisTask = A.Fake<IPKAnalysesTask>();
          _interactionTask = A.Fake<IInteractionTask>();
+         _populationSimulationBodyWeightUpdater = A.Fake<IPopulationSimulationBodyWeightUpdater>();
          _cloner = A.Fake<ICloner>();
          sut = new GlobalPKAnalysisTask(_parameterFactory, _protocolMapper, _protocolFactory, _globalPKAnalysisRunner,
-            _pkAnalysisTask, _pkCalculationOptionsFactory, _vssCalculator, _interactionTask, _cloner);
+            _pkAnalysisTask, _pkCalculationOptionsFactory, _vssCalculator, _interactionTask, _cloner, _populationSimulationBodyWeightUpdater);
 
          var baseGrid = new BaseGrid("time", A.Fake<IDimension>());
          _peripheralVenousBloodPlasma = CalculationColumnFor(baseGrid, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, _compoundName);
@@ -71,16 +74,7 @@ namespace PKSim.Core
          _protocol = new SimpleProtocol();
          _compoundProperties.ProtocolProperties.Protocol = _protocol;
 
-         _simulation = new IndividualSimulation { Properties = new SimulationProperties() };
 
-         _simulation.Properties.AddCompoundProperties(_compoundProperties);
-         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
-         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndividualId", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
-         _simulation.DataRepository = new DataRepository { _venousBloodPlasma, _peripheralVenousBloodPlasma };
-         _simulation.SimulationSettings = new SimulationSettings();
-         _simulation.OutputSchema = new OutputSchema();
-         _simulation.OutputSchema.AddInterval(new OutputInterval { DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME) });
-         _simulation.Model = new OSPSuite.Core.Domain.Model { Root = new Container() };
          _eventGroup = new EventGroup();
          _application1 = new Container().WithName("App1").WithContainerType(ContainerType.Application);
          _application1.Add(new MoleculeAmount().WithName(_compoundName));
@@ -88,7 +82,7 @@ namespace PKSim.Core
          _application2 = new Container().WithName("App2").WithContainerType(ContainerType.Application);
          _application2.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(Constants.Parameters.START_TIME));
          _application2.Add(new MoleculeAmount().WithName(_compoundName));
-         _simulation.Model.Root.Add(_eventGroup);
+         
          _eventGroup.Add(_application1);
          _venousBloodPK = new PKValues();
          _venousBloodPK.AddValue(Constants.PKParameters.Vss, 10);
@@ -126,7 +120,29 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyses_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_human_species : concern_for_GlobalPKAnalysisTask
+   public abstract class IndividualBased : concern_for_GlobalPKAnalysisTask
+   {
+      protected IndividualSimulation _simulation;
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation { Properties = new SimulationProperties() };
+
+         _simulation.Properties.AddCompoundProperties(_compoundProperties);
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
+         _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndividualId", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
+         _simulation.DataRepository = new DataRepository { _venousBloodPlasma, _peripheralVenousBloodPlasma };
+         _simulation.SimulationSettings = new SimulationSettings();
+         _simulation.OutputSchema = new OutputSchema();
+         _simulation.OutputSchema.AddInterval(new OutputInterval { DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME) });
+         _simulation.Model = new OSPSuite.Core.Domain.Model { Root = new Container() };
+
+         
+         _simulation.Model.Root.Add(_eventGroup);
+      }
+   }
+
+   public class When_calculating_the_global_pk_analyses_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_human_species : IndividualBased
    {
       private GlobalPKAnalysis _results;
 
@@ -154,15 +170,17 @@ namespace PKSim.Core
          var vss = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VssPlasma);
          vss.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vss"].Value);
 
-         var vdplasma = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VdPlasma);
-         vdplasma.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vd"].Value);
+         var vdPlasma = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.VdPlasma);
+         vdPlasma.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["Vd"].Value);
 
          var totalCL = _results.PKParameter(_compoundName, CoreConstants.PKAnalysis.TotalPlasmaCL);
          totalCL.Value.ShouldBeEqualTo(_peripheralVenousBloodPK["CL"].Value);
       }
    }
 
-   public abstract class Population_based : concern_for_GlobalPKAnalysisTask
+
+
+   public abstract class PopulationBased : concern_for_GlobalPKAnalysisTask
    {
       protected PopulationSimulation _populationSimulation;
       protected RandomPopulation _population;
@@ -227,7 +245,23 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyses_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_human_species_for_population : Population_based
+   public class When_calculating_the_global_pk_analyses_for_each_individual : PopulationBased
+   {
+      private IEnumerable<QuantityPKParameter> _result;
+
+      protected override void Because()
+      {
+         _result = sut.CalculateQuantityPKForPopulationSimulation(_populationSimulation);
+      }
+
+      [Observation]
+      public void should_have_parameters_for_each_individual_in_the_population()
+      {
+         _result.All(x => x.ValueCache.Count == _populationSimulation.Results.AllIndividualResults.Count).ShouldBeTrue();
+      }
+   }
+
+   public class When_calculating_the_global_pk_analyses_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_human_species_for_population : PopulationBased
    {
       private GlobalPKAnalysis _results;
 
@@ -263,7 +297,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_without_previous_calculation_of_bioavailability : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_without_previous_calculation_of_bioavailability : IndividualBased
    {
       private GlobalPKAnalysis _results;
 
@@ -298,7 +332,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_without_previous_calculation_of_bioavailability_for_population : Population_based
+   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_without_previous_calculation_of_bioavailability_for_population : PopulationBased
    {
       private GlobalPKAnalysis _results;
 
@@ -333,7 +367,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_with_previous_calculation_of_bioavailability : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_a_single_extra_vascular_with_previous_calculation_of_bioavailability : IndividualBased
    {
       private GlobalPKAnalysis _results;
       private double _bioaValue;
@@ -370,7 +404,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_mouse_species : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_global_pk_analyes_parameter_such_as_VSS_VD_and_Plasma_CL_for_the_mouse_species : IndividualBased
    {
       private GlobalPKAnalysis _results;
 
@@ -400,7 +434,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyses_for_a_compound_that_was_not_applied : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_global_pk_analyses_for_a_compound_that_was_not_applied : IndividualBased
    {
       private GlobalPKAnalysis _result;
 
@@ -429,7 +463,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_global_pk_analyses_for_a_compound_that_was_not_applied_for_population : Population_based
+   public class When_calculating_the_global_pk_analyses_for_a_compound_that_was_not_applied_for_population : PopulationBased
    {
       private GlobalPKAnalysis _result;
 
@@ -458,7 +492,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_auc_iv_for_a_given_individual_simulation : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_auc_iv_for_a_given_individual_simulation : IndividualBased
    {
       private IndividualSimulation _aucIVSimulation;
       private PKAnalysis _pkAnalysis;
@@ -521,7 +555,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_DDI_ratio_for_a_given_single_dosing_simulation : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_DDI_ratio_for_a_given_single_dosing_simulation : IndividualBased
    {
       private IndividualSimulation _ddiRatioSimulation;
       private PKAnalysis _pkAnalysis;
@@ -560,7 +594,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_DDI_ratio_for_a_compound_that_is_not_appled_simulation : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_DDI_ratio_for_a_compound_that_is_not_appled_simulation : IndividualBased
    {
       private IndividualSimulation _ddiRatioSimulation;
       private PKAnalysis _pkAnalysis;
@@ -600,7 +634,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_the_DDI_ratio_for_a_given_multiple_dosing_simulation : concern_for_GlobalPKAnalysisTask
+   public class When_calculating_the_DDI_ratio_for_a_given_multiple_dosing_simulation : IndividualBased
    {
       private IndividualSimulation _ddiRatioSimulation;
       private PKAnalysis _pkAnalysis;

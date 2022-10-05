@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
@@ -58,28 +57,26 @@ namespace PKSim.Core.Services
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
    {
       private readonly ILazyLoadTask _lazyLoadTask;
-      private readonly IEntityPathResolver _entityPathResolver;
       private readonly IPKValuesCalculator _pkValuesCalculator;
       private readonly IPKValuesToPKAnalysisMapper _pkMapper;
       private readonly IDimensionRepository _dimensionRepository;
-      private readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
+      protected readonly IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private readonly IPKParameterRepository _pkParameterRepository;
-      private readonly Regex _rangeRegex = new Regex(@"^(.*)Range (\d*)% to (\d*)%");
       private readonly IStatisticalDataCalculator _statisticalDataCalculator;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
+      private readonly IPopulationSimulationBodyWeightUpdater _populationSimulationBodyWeightUpdater;
 
       public PKAnalysesTask(ILazyLoadTask lazyLoadTask,
          IPKValuesCalculator pkValuesCalculator,
          IPKParameterRepository pkParameterRepository,
          IPKCalculationOptionsFactory pkCalculationOptionsFactory,
-         IEntityPathResolver entityPathResolver,
          IPKValuesToPKAnalysisMapper pkMapper,
          IDimensionRepository dimensionRepository,
          IStatisticalDataCalculator statisticalDataCalculator,
-         IRepresentationInfoRepository representationInfoRepository) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
+         IRepresentationInfoRepository representationInfoRepository,
+         IPopulationSimulationBodyWeightUpdater populationSimulationBodyWeightUpdater) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
       {
          _lazyLoadTask = lazyLoadTask;
-         _entityPathResolver = entityPathResolver;
          _pkMapper = pkMapper;
          _dimensionRepository = dimensionRepository;
          _pkValuesCalculator = pkValuesCalculator;
@@ -87,6 +84,7 @@ namespace PKSim.Core.Services
          _pkParameterRepository = pkParameterRepository;
          _statisticalDataCalculator = statisticalDataCalculator;
          _representationInfoRepository = representationInfoRepository;
+         _populationSimulationBodyWeightUpdater = populationSimulationBodyWeightUpdater;
       }
 
       public PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation)
@@ -95,17 +93,15 @@ namespace PKSim.Core.Services
          if (!populationSimulation.HasResults)
             return new NullPopulationSimulationPKAnalyses();
 
-         var bodyWeightParameter = populationSimulation.BodyWeight;
-         var bodyWeightParameterPath = bodyWeightParameterPathFrom(bodyWeightParameter);
-         var allBodyWeights = populationSimulation.AllValuesFor(bodyWeightParameterPath);
+
 
          try
          {
-            return base.CalculateFor(populationSimulation, populationSimulation.Results, (individualId) => { updateBodyWeightFromCurrentIndividual(bodyWeightParameter, allBodyWeights, individualId); });
+            return base.CalculateFor(populationSimulation, populationSimulation.Results, (individualId) => { _populationSimulationBodyWeightUpdater.UpdateBodyWeightForIndividual(populationSimulation, individualId); });
          }
          finally
          {
-            bodyWeightParameter?.ResetToDefault();
+            _populationSimulationBodyWeightUpdater.ResetBodyWeightParameter(populationSimulation);
          }
       }
 
@@ -117,7 +113,7 @@ namespace PKSim.Core.Services
             return pkAnalyses; // there are no analyses to calculate
 
          var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).SelectMany(x =>
-               columnsFor(x, populationDataCollector).Select(column => new { curveData = x, column = column }))
+               columnsFor(x, populationDataCollector).Select(column => new { curveData = x, column }))
             .Where(c => c.column.IsConcentration());
 
          var columnsByMolecules = allColumns.GroupBy(x => x.column.MoleculeName());
@@ -258,19 +254,6 @@ namespace PKSim.Core.Services
             .Property(item => item.Value)
             .WithRule((param, value) => false)
             .WithError((param, value) => warning);
-
-      private string bodyWeightParameterPathFrom(IParameter bodyWeightParameter)
-      {
-         return bodyWeightParameter != null ? _entityPathResolver.PathFor(bodyWeightParameter) : string.Empty;
-      }
-
-      private void updateBodyWeightFromCurrentIndividual(IParameter bodyWeightParameter, IReadOnlyList<double> allBodyWeights, int individualId)
-      {
-         if (bodyWeightParameter == null)
-            return;
-
-         bodyWeightParameter.Value = allBodyWeights.Count > individualId ? allBodyWeights[individualId] : double.NaN;
-      }
 
       public PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound)
       {

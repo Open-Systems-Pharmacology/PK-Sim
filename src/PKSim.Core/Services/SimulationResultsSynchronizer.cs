@@ -1,7 +1,5 @@
 using System.Linq;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -37,17 +35,20 @@ namespace PKSim.Core.Services
       private readonly ISimulationResultsCreator _simulationResultsCreator;
       private readonly IDisplayUnitUpdater _displayUnitUpdater;
       private readonly IDataRepositoryFromResultsCreator _dataRepositoryFromResultsCreator;
+      private readonly IGlobalPKAnalysisTask _globalPKAnalysisTask;
 
       public SimulationResultsSynchronizer(
          IPKAnalysesTask populationPKAnalysesTask,
          ISimulationResultsCreator simulationResultsCreator,
-         IDisplayUnitUpdater displayUnitUpdater, 
-         IDataRepositoryFromResultsCreator dataRepositoryFromResultsCreator)
+         IDisplayUnitUpdater displayUnitUpdater,
+         IDataRepositoryFromResultsCreator dataRepositoryFromResultsCreator,
+         IGlobalPKAnalysisTask globalPKAnalysisTask)
       {
          _populationPKAnalysesTask = populationPKAnalysesTask;
          _simulationResultsCreator = simulationResultsCreator;
          _displayUnitUpdater = displayUnitUpdater;
          _dataRepositoryFromResultsCreator = dataRepositoryFromResultsCreator;
+         _globalPKAnalysisTask = globalPKAnalysisTask;
       }
 
       public void Synchronize(IndividualSimulation simulation, DataRepository newResults)
@@ -71,6 +72,8 @@ namespace PKSim.Core.Services
       {
          populationSimulation.Results = newResults;
          populationSimulation.PKAnalyses = _populationPKAnalysesTask.CalculateFor(populationSimulation);
+
+         _globalPKAnalysisTask.CalculateQuantityPKForPopulationSimulation(populationSimulation).Each(populationSimulation.PKAnalyses.AddPKAnalysis);
       }
 
       private void updateSequence(DataRepository results)

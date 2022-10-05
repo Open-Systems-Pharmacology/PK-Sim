@@ -59,7 +59,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       {
          var quantity = _allQuantities[pkParameter.QuantityPath];
          if (quantity == null)
-            return null;
+            return _populationAnalysisFieldFactory.CreateFor(pkParameter, QuantityType.Drug | QuantityType.Observer, quantityDisplayPath);
 
          return _populationAnalysisFieldFactory.CreateFor(pkParameter, quantity.QuantityType, quantityDisplayPath);
       }

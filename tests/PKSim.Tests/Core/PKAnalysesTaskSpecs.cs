@@ -13,13 +13,12 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
-using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
 using PKAnalysesTask = PKSim.Core.Services.PKAnalysesTask;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_PKAnalysesTask : ContextSpecification<IPKAnalysesTask>
+   public abstract class concern_for_PKAnalysesTask : ContextSpecification<PKAnalysesTask>
    {
       protected IPKValuesCalculator _pkCalculator;
       protected IPKValuesToPKAnalysisMapper _pkMapper;
@@ -27,9 +26,9 @@ namespace PKSim.Core
       private IPKCalculationOptionsFactory _pkCalculationOptionsFactory;
       private IPKParameterRepository _pkParameterRepository;
       private ILazyLoadTask _lazyLoadTask;
-      private IEntityPathResolver _entityPathResolver;
       protected IStatisticalDataCalculator _statisticalDataCalculator;
       protected IRepresentationInfoRepository _representationInfoRepository;
+      private IPopulationSimulationBodyWeightUpdater _populationSimulationBodyWeightUpdater;
 
       protected override void Context()
       {
@@ -39,10 +38,10 @@ namespace PKSim.Core
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
-         _entityPathResolver = A.Fake<IEntityPathResolver>();
          _statisticalDataCalculator = new StatisticalDataCalculator();
+         _populationSimulationBodyWeightUpdater = A.Fake<IPopulationSimulationBodyWeightUpdater>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _entityPathResolver, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository);
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository, _populationSimulationBodyWeightUpdater);
       }
    }
 
