@@ -421,13 +421,13 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_return_true_when_dropping_a_comparision_node_on_a_comparison_folder_node()
+      public void should_return_true_when_dropping_a_comparison_node_on_a_comparison_folder_node()
       {
          sut.CanDrop(_comparisonNode, _comparisonFolderNode).ShouldBeTrue();
       }
 
       [Observation]
-      public void should_return_false_when_dropping_a_comparision_node_on_a_simulation_folder_node()
+      public void should_return_false_when_dropping_a_comparison_node_on_a_simulation_folder_node()
       {
          sut.CanDrop(_individualSimulationNode, _comparisonFolderNode).ShouldBeFalse();
       }

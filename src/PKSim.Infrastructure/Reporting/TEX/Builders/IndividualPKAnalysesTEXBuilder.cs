@@ -19,17 +19,15 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 {
    public class IndividualPKAnalysesTeXBuilder : PresentableTeXBuilder<IndividualPKAnalyses, DefaultPresentationSettings>
    {
-      private readonly IGlobalPKAnalysisTask _globalPKAnalysisTask;
       private readonly IPKAnalysesTask _pkAnalysisTask;
       private readonly ITeXBuilderRepository _builderRepository;
       private readonly IGlobalPKAnalysisToDataTableMapper _globalPKAnalysisToDataTableMapper;
       private readonly IIndividualPKAnalysisToDataTableMapper _pkAnalysisToDataTableMapper;
 
-      public IndividualPKAnalysesTeXBuilder(IGlobalPKAnalysisTask globalPKAnalysisTask,
+      public IndividualPKAnalysesTeXBuilder(
          IPKAnalysesTask pkAnalysisTask, ITeXBuilderRepository builderRepository, IGlobalPKAnalysisToDataTableMapper globalPKAnalysisToDataTableMapper,
          IIndividualPKAnalysisToDataTableMapper pkAnalysisToDataTableMapper, IPresentationSettingsTask presentationSettingsTask, IDisplayUnitRetriever displayUnitRetriever) : base(presentationSettingsTask, displayUnitRetriever)
       {
-         _globalPKAnalysisTask = globalPKAnalysisTask;
          _pkAnalysisTask = pkAnalysisTask;
          _builderRepository = builderRepository;
          _globalPKAnalysisToDataTableMapper = globalPKAnalysisToDataTableMapper;
@@ -46,7 +44,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       {
          var report = new List<object>();
 
-         var globalPKAnalysis = _globalPKAnalysisTask.CalculateGlobalPKAnalysisFor(new[] {simulation});
+         var globalPKAnalysis = _pkAnalysisTask.CalculateGlobalPKAnalysisFor(new[] {simulation});
          updateDisplayUnits(globalPKAnalysis, PresentationSettingsFor(chart, PresenterConstants.PresenterKeys.GlobalPKAnalysisPresenter));
 
          var globalPKAnalysisTable = _globalPKAnalysisToDataTableMapper.MapFrom(globalPKAnalysis);

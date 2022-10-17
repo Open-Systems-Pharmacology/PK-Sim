@@ -291,12 +291,9 @@ namespace PKSim.Core.Model
 
       public override DataColumn PeripheralVenousBloodColumn(string compoundName)
       {
-         return medianAggregateDataColumns(PeripheralVenousBloodColumns(compoundName));
-      }
-
-      public IReadOnlyList<DataColumn> PeripheralVenousBloodColumns(string compoundName)
-      {
-         return drugColumnFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName);
+         return medianAggregateDataColumns(drugColumnsFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD,
+            CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD,
+            compoundName));
       }
 
       /// <summary>
@@ -304,20 +301,21 @@ namespace PKSim.Core.Model
       /// </summary>
       public override DataColumn VenousBloodColumn(string compoundName)
       {
-         return medianAggregateDataColumns(VenousBloodColumns(compoundName));
-      }
-
-      public IReadOnlyList<DataColumn> VenousBloodColumns(string compoundName)
-      {
-         return drugColumnFor(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName);
+         return medianAggregateDataColumns(drugColumnsFor(CoreConstants.Organ.VENOUS_BLOOD, 
+            CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName));
       }
 
       public override DataColumn FabsOral(string compoundName)
       {
-         return medianAggregateDataColumns(drugColumnFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName));
+         return medianAggregateDataColumns(drugColumnsFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName));
       }
 
-      private IReadOnlyList<DataColumn> drugColumnFor(string organ, string compartment, string columnName, string compoundName)
+      private DataColumn drugColumnForIndividual(string organ, string compartment, string columnName, string compoundName, int individualId)
+      {
+         return columnsFor(Results.IndividualResultsAsArray().FirstOrDefault(result => result.IndividualId == individualId), organ, compartment, columnName, compoundName);
+      }
+
+      private IReadOnlyList<DataColumn> drugColumnsFor(string organ, string compartment, string columnName, string compoundName)
       {
          return Results.Select(x => columnsFor(x, organ, compartment, columnName, compoundName)).ToList();
       }
@@ -338,6 +336,16 @@ namespace PKSim.Core.Model
          {
             Values =  column.Values
          };
+      }
+
+      public DataColumn VenousBloodColumnForIndividual(int individualId, string compoundName)
+      {
+         return drugColumnForIndividual(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName, individualId);
+      }
+
+      public DataColumn PeripheralVenousBloodColumnForIndividual(int individualId, string compoundName)
+      {
+         return drugColumnForIndividual(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName, individualId);
       }
    }
 }

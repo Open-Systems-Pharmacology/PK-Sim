@@ -31,24 +31,21 @@ namespace PKSim.Core.Services
 
    public class SimulationResultsSynchronizer : ISimulationResultsSynchronizer
    {
-      private readonly IPKAnalysesTask _populationPKAnalysesTask;
       private readonly ISimulationResultsCreator _simulationResultsCreator;
       private readonly IDisplayUnitUpdater _displayUnitUpdater;
       private readonly IDataRepositoryFromResultsCreator _dataRepositoryFromResultsCreator;
-      private readonly IGlobalPKAnalysisTask _globalPKAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysesTask;
 
       public SimulationResultsSynchronizer(
-         IPKAnalysesTask populationPKAnalysesTask,
          ISimulationResultsCreator simulationResultsCreator,
          IDisplayUnitUpdater displayUnitUpdater,
          IDataRepositoryFromResultsCreator dataRepositoryFromResultsCreator,
-         IGlobalPKAnalysisTask globalPKAnalysisTask)
+         IPKAnalysesTask pkAnalysesTask)
       {
-         _populationPKAnalysesTask = populationPKAnalysesTask;
          _simulationResultsCreator = simulationResultsCreator;
          _displayUnitUpdater = displayUnitUpdater;
          _dataRepositoryFromResultsCreator = dataRepositoryFromResultsCreator;
-         _globalPKAnalysisTask = globalPKAnalysisTask;
+         _pkAnalysesTask = pkAnalysesTask;
       }
 
       public void Synchronize(IndividualSimulation simulation, DataRepository newResults)
@@ -71,9 +68,7 @@ namespace PKSim.Core.Services
       public void Synchronize(PopulationSimulation populationSimulation, SimulationResults newResults)
       {
          populationSimulation.Results = newResults;
-         populationSimulation.PKAnalyses = _populationPKAnalysesTask.CalculateFor(populationSimulation);
-
-         _globalPKAnalysisTask.CalculateQuantityPKForPopulationSimulation(populationSimulation).Each(populationSimulation.PKAnalyses.AddPKAnalysis);
+         populationSimulation.PKAnalyses = _pkAnalysesTask.CalculateFor(populationSimulation);
       }
 
       private void updateSequence(DataRepository results)
