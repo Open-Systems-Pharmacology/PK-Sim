@@ -21,6 +21,7 @@ using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using IPKAnalysesTask = PKSim.Core.Services.IPKAnalysesTask;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
@@ -30,7 +31,7 @@ namespace PKSim.IntegrationTests
       protected Compound _compound;
       protected Individual _individual;
       protected Protocol _protocol;
-      protected IGlobalPKAnalysisTask _globalPKAnalysisTask;
+      protected IPKAnalysesTask _pkAnalysesTask;
       protected SimulationRunOptions _simulationRunOptions;
 
       public override void GlobalContext()
@@ -39,7 +40,7 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
-         _globalPKAnalysisTask = IoC.Resolve<IGlobalPKAnalysisTask>();
+         _pkAnalysesTask = IoC.Resolve<IPKAnalysesTask>();
          _simulationRunOptions = new SimulationRunOptions();
       }
    }
@@ -796,7 +797,7 @@ namespace PKSim.IntegrationTests
 
       protected void CalculateDDIRatioForDrug()
       {
-         _globalPKAnalysisTask.CalculateDDIRatioFor(_simulation, _compound.Name);
+         _pkAnalysesTask.CalculateDDIRatioFor(_simulation, _compound.Name);
       }
 
       [Observation]

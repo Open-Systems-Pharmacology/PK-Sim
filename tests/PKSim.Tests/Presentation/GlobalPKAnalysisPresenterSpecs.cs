@@ -23,7 +23,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_GlobalPKAnalysisPresenter : ContextSpecification<GlobalPKAnalysisPresenter>
    {
       protected IGlobalPKAnalysisView _view;
-      protected IGlobalPKAnalysisTask _globalPKAnalysisTask;
+      protected IPKAnalysesTask _pKAnalysesTask;
       protected IPresentationSettingsTask _presenterSettingsTask;
       protected string _compoundName;
       protected IReadOnlyList<Simulation> _simulations;
@@ -32,17 +32,17 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _view = A.Fake<IGlobalPKAnalysisView>();
-         _globalPKAnalysisTask = A.Fake<IGlobalPKAnalysisTask>();
+         _pKAnalysesTask = A.Fake<IPKAnalysesTask>();
          var globalPKAnalysisDTOMapper = A.Fake<IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper>();
          var heavyWorkManager = A.Fake<IHeavyWorkManager>();
          var representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
-         sut = new GlobalPKAnalysisPresenter(_view, _globalPKAnalysisTask, globalPKAnalysisDTOMapper, heavyWorkManager, representationInfoRepository, _presenterSettingsTask);
+         sut = new GlobalPKAnalysisPresenter(_view, _pKAnalysesTask, globalPKAnalysisDTOMapper, heavyWorkManager, representationInfoRepository, _presenterSettingsTask);
 
          _simulations = new List<Simulation>();
          _compoundName = "DRUG";
          _globalPKAnalysis = PKAnalysisHelperForSpecs.GenerateGlobalPKAnalysis(_compoundName);
-         A.CallTo(() => _globalPKAnalysisTask.CalculateGlobalPKAnalysisFor(_simulations)).Returns(_globalPKAnalysis);
+         A.CallTo(() => _pKAnalysesTask.CalculateGlobalPKAnalysisFor(_simulations)).Returns(_globalPKAnalysis);
       }
    }
 
@@ -51,7 +51,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _globalPKAnalysisTask.CalculateGlobalPKAnalysisFor(_simulations)).Returns(new GlobalPKAnalysis());
+         A.CallTo(() => _pKAnalysesTask.CalculateGlobalPKAnalysisFor(_simulations)).Returns(new GlobalPKAnalysis());
          sut.CalculatePKAnalysis(_simulations);
       }
 

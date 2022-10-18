@@ -2641,7 +2641,7 @@ namespace PKSim.Assets
       public static class Comparison
       {
          public static readonly string RelativeTolerance = "Relative Tolerance";
-         public static readonly string FormulaComparisonMode = "Formula Comparision";
+         public static readonly string FormulaComparisonMode = "Formula Comparison";
          public static readonly string OnlyComputeModelRelevantProperties = "Do not compare descriptions";
          public static readonly string FormulaComparisonValue = "Compare values";
          public static readonly string FormulaComparisonFormula = "Compare Formulas";

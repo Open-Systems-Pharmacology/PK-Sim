@@ -33,7 +33,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
    public class GlobalPKAnalysisPresenter : AbstractSubPresenter<IGlobalPKAnalysisView, IGlobalPKAnalysisPresenter>, IGlobalPKAnalysisPresenter
    {
-      private readonly IGlobalPKAnalysisTask _globalPKAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysesTask;
       private readonly IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper _globalPKAnalysisDTOMapper;
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
@@ -44,10 +44,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       private DefaultPresentationSettings _settings;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
 
-      public GlobalPKAnalysisPresenter(IGlobalPKAnalysisView view, IGlobalPKAnalysisTask globalPKAnalysisTask,
+      public GlobalPKAnalysisPresenter(IGlobalPKAnalysisView view, IPKAnalysesTask pkAnalysesTask,
          IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper, IHeavyWorkManager heavyWorkManager, IRepresentationInfoRepository representationInfoRepository, IPresentationSettingsTask presentationSettingsTask) : base(view)
       {
-         _globalPKAnalysisTask = globalPKAnalysisTask;
+         _pkAnalysesTask = pkAnalysesTask;
          _globalPKAnalysisDTOMapper = globalPKAnalysisDTOMapper;
          _heavyWorkManager = heavyWorkManager;
          _representationInfoRepository = representationInfoRepository;
@@ -63,7 +63,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void showPKAnalysis()
       {
-         GlobalPKAnalysis = _globalPKAnalysisTask.CalculateGlobalPKAnalysisFor(_simulations);
+         GlobalPKAnalysis = _pkAnalysesTask.CalculateGlobalPKAnalysisFor(_simulations);
          updateView();
       }
 
@@ -96,9 +96,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          calculateGlobalPKAnalysis(x => x.CalculateDDIRatioFor(firstSimulation, compoundName));
       }
 
-      private void calculateGlobalPKAnalysis(Action<IGlobalPKAnalysisTask> calculationAction)
+      private void calculateGlobalPKAnalysis(Action<IPKAnalysesTask> calculationAction)
       {
-         _heavyWorkManager.Start(() => calculationAction(_globalPKAnalysisTask), PKSimConstants.UI.Calculating);
+         _heavyWorkManager.Start(() => calculationAction(_pkAnalysesTask), PKSimConstants.UI.Calculating);
          showPKAnalysis();
       }
 
