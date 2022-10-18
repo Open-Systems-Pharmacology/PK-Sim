@@ -312,7 +312,7 @@ namespace PKSim.Core.Model
 
       private DataColumn drugColumnForIndividual(string organ, string compartment, string columnName, string compoundName, int individualId)
       {
-         return columnsFor(Results.IndividualResultsAsArray().FirstOrDefault(result => result.IndividualId == individualId), organ, compartment, columnName, compoundName);
+         return columnsFor(Results.ResultsFor(individualId), organ, compartment, columnName, compoundName);
       }
 
       private IReadOnlyList<DataColumn> drugColumnsFor(string organ, string compartment, string columnName, string compoundName)

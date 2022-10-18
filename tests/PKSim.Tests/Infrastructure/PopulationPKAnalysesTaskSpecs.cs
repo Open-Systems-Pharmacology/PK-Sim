@@ -47,7 +47,6 @@ namespace PKSim.Infrastructure
       protected PercentileStatisticalAggregation _percentileStatisticalAggregation;
       protected PopulationStatisticalAnalysis _populationStatisticalAnalysis;
       private PredefinedStatisticalAggregation _rangeAggregation;
-      protected IPopulationSimulationBodyWeightUpdater _populationSimulationBodyWeightUpdater;
       private IParameterFactory _parameterFactory;
       private IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
       private IProtocolFactory _protocolFactory;
@@ -55,9 +54,11 @@ namespace PKSim.Infrastructure
       private IVSSCalculator _vssCalculator;
       private IInteractionTask _interactionTask;
       private ICloner _cloner;
+      private IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
          _parameterFactory = A.Fake<IParameterFactory>();
          _protocolToSchemaItemsMapper = A.Fake<IProtocolToSchemaItemsMapper>();
          _protocolFactory = A.Fake<IProtocolFactory>();
@@ -67,7 +68,6 @@ namespace PKSim.Infrastructure
          _cloner = A.Fake<ICloner>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _pkValuesCalculator = A.Fake<IPKValuesCalculator>();
-         _populationSimulationBodyWeightUpdater = A.Fake<IPopulationSimulationBodyWeightUpdater>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkMapper = A.Fake<IPKValuesToPKAnalysisMapper>();
@@ -81,8 +81,9 @@ namespace PKSim.Infrastructure
          _populationStatisticalAnalysis.AddStatistic(_rangeAggregation);
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_percentileStatisticalAggregation)).Returns(_percentileId);
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_rangeAggregation)).Returns("Range 5% to 95%");
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkValuesCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository, _populationSimulationBodyWeightUpdater,
-            _parameterFactory, _protocolToSchemaItemsMapper, _protocolFactory, _globalPKAnalysisRunner, _vssCalculator, _interactionTask, _cloner);
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkValuesCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository, 
+            _statisticalDataCalculator, _representationInfoRepository, _parameterFactory, _protocolToSchemaItemsMapper, _protocolFactory, _globalPKAnalysisRunner, 
+            _vssCalculator, _interactionTask, _cloner, _entityPathResolver);
 
          _populationSimulation = A.Fake<PopulationSimulation>();
          _outputSelections = new OutputSelections();
@@ -153,12 +154,6 @@ namespace PKSim.Infrastructure
       {
          // This scaling happens 1*NumberOfResults*NumberOfOutputs + 1*NumberOfResults*NumberOfMolecules
          A.CallTo(() => _pkCalculationOptionsFactory.UpdateTotalDrugMassPerBodyWeight(_populationSimulation, "Drug", A<PKCalculationOptions>._, A<IReadOnlyList<ApplicationParameters>>._)).MustHaveHappened(6, Times.Exactly);
-      }
-
-      [Observation]
-      public void should_reset_the_body_weight_parameter_at_the_end_of_the_calculation()
-      {
-         A.CallTo(() => _populationSimulationBodyWeightUpdater.ResetBodyWeightParameter(_populationSimulation)).MustHaveHappened();
       }
    }
 

@@ -80,7 +80,6 @@ namespace PKSim.Core.Services
       private readonly IPKParameterRepository _pkParameterRepository;
       private readonly IStatisticalDataCalculator _statisticalDataCalculator;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
-      private readonly IPopulationSimulationBodyWeightUpdater _populationSimulationBodyWeightUpdater;
       private readonly IParameterFactory _parameterFactory;
       private readonly IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
       private readonly IProtocolFactory _protocolFactory;
@@ -88,6 +87,7 @@ namespace PKSim.Core.Services
       private readonly IVSSCalculator _vssCalculator;
       private readonly IInteractionTask _interactionTask;
       private readonly ICloner _cloner;
+      private readonly IEntityPathResolver _entityPathResolver;
 
       public PKAnalysesTask(ILazyLoadTask lazyLoadTask,
          IPKValuesCalculator pkValuesCalculator,
@@ -97,9 +97,8 @@ namespace PKSim.Core.Services
          IDimensionRepository dimensionRepository,
          IStatisticalDataCalculator statisticalDataCalculator,
          IRepresentationInfoRepository representationInfoRepository,
-         IPopulationSimulationBodyWeightUpdater populationSimulationBodyWeightUpdater,
          IParameterFactory parameterFactory, IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper, IProtocolFactory protocolFactory,
-         IGlobalPKAnalysisRunner globalPKAnalysisRunner, IVSSCalculator vssCalculator, IInteractionTask interactionTask, ICloner cloner) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
+         IGlobalPKAnalysisRunner globalPKAnalysisRunner, IVSSCalculator vssCalculator, IInteractionTask interactionTask, ICloner cloner, IEntityPathResolver entityPathResolver) : base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
       {
          _lazyLoadTask = lazyLoadTask;
          _pkMapper = pkMapper;
@@ -109,7 +108,6 @@ namespace PKSim.Core.Services
          _pkParameterRepository = pkParameterRepository;
          _statisticalDataCalculator = statisticalDataCalculator;
          _representationInfoRepository = representationInfoRepository;
-         _populationSimulationBodyWeightUpdater = populationSimulationBodyWeightUpdater;
          _parameterFactory = parameterFactory;
          _protocolToSchemaItemsMapper = protocolToSchemaItemsMapper;
          _protocolFactory = protocolFactory;
@@ -117,6 +115,7 @@ namespace PKSim.Core.Services
          _vssCalculator = vssCalculator;
          _interactionTask = interactionTask;
          _cloner = cloner;
+         _entityPathResolver = entityPathResolver;
       }
 
       public PopulationSimulationPKAnalyses CalculateFor(PopulationSimulation populationSimulation)
@@ -125,13 +124,17 @@ namespace PKSim.Core.Services
          if (!populationSimulation.HasResults)
             return new NullPopulationSimulationPKAnalyses();
 
+         var bodyWeightParameter = populationSimulation.BodyWeight;
+         var bodyWeightParameterPath = bodyWeightParameterPathFrom(bodyWeightParameter);
+         var allBodyWeights = populationSimulation.AllValuesFor(bodyWeightParameterPath);
+
          try
          {
             var globalPKAnalysesForIndividuals = new Cache<int, GlobalPKAnalysis>();
             var analyses = base.CalculateFor(populationSimulation, populationSimulation.Results,
                individualId =>
                {
-                  _populationSimulationBodyWeightUpdater.UpdateBodyWeightForIndividual(populationSimulation, individualId);
+                  updateBodyWeightForIndividual(bodyWeightParameter, allBodyWeights, individualId);
                },
                (individualId, options, compoundName) =>
                {
@@ -139,24 +142,37 @@ namespace PKSim.Core.Services
                   globalPKAnalysis.Add(calculateGlobalPKParameters(populationSimulation, individualId, compoundName, options, globalPKAnalysis));
                });
 
-            mapQuantityPKParametersFromIndividualGlobalPKAnalyses(globalPKAnalysesForIndividuals.ToList()).Each(x => analyses.AddPKAnalysis(x));
+            mapQuantityPKParametersFromIndividualGlobalPKAnalyses(globalPKAnalysesForIndividuals).Each(analyses.AddPKAnalysis);
             return analyses;
          }
          finally
          {
-            _populationSimulationBodyWeightUpdater.ResetBodyWeightParameter(populationSimulation);
+            bodyWeightParameter?.ResetToDefault();
          }
+      }
+
+      private string bodyWeightParameterPathFrom(IParameter bodyWeightParameter)
+      {
+         return bodyWeightParameter != null ? _entityPathResolver.PathFor(bodyWeightParameter) : string.Empty;
+      }
+
+      private void updateBodyWeightForIndividual(IParameter bodyWeightParameter, IReadOnlyList<double> allBodyWeights, int individualId)
+      {
+         if (bodyWeightParameter == null)
+            return;
+
+         bodyWeightParameter.Value = allBodyWeights.Count > individualId ? allBodyWeights[individualId] : double.NaN;
       }
 
       public GlobalPKAnalysis CalculateGlobalPKAnalysisFor(IEnumerable<Simulation> simulations)
       {
+         var globalPKAnalysis = new GlobalPKAnalysis();
+
          var allSimulations = simulations.ToList();
          if (allSimulations.Count != 1)
-            return new GlobalPKAnalysis();
+            return globalPKAnalysis;
 
          var simulation = allSimulations[0];
-
-         var globalPKAnalysis = new GlobalPKAnalysis();
 
          if (simulation == null)
             return globalPKAnalysis;
@@ -178,23 +194,17 @@ namespace PKSim.Core.Services
          var peripheralVenousBloodColumn = simulation.PeripheralVenousBloodColumnForIndividual(individualId, moleculeName);
          var venousBloodColumn = simulation.VenousBloodColumnForIndividual(individualId, moleculeName);
 
-         return calculateGlobalPKAnalysisFor(simulation, simulation.Compounds.FirstOrDefault(x => string.Equals(x.Name, moleculeName)), peripheralVenousBloodColumn, venousBloodColumn, calculationOptions);
+         return calculateGlobalPKAnalysisFor(simulation, simulation.Compounds.FindByName(moleculeName), peripheralVenousBloodColumn, venousBloodColumn, calculationOptions);
       }
 
       private static GlobalPKAnalysis globalPkAnalysisForIndividual(ICache<int, GlobalPKAnalysis> globalPKAnalysesForIndividuals, int individualId)
       {
-         GlobalPKAnalysis globalPKAnalysis;
-         if (globalPKAnalysesForIndividuals.Keys.Contains(individualId))
+         if (!globalPKAnalysesForIndividuals.Keys.Contains(individualId))
          {
-            globalPKAnalysis = globalPKAnalysesForIndividuals[individualId];
-         }
-         else
-         {
-            globalPKAnalysis = new GlobalPKAnalysis();
-            globalPKAnalysesForIndividuals[individualId] = globalPKAnalysis;
+            globalPKAnalysesForIndividuals[individualId] = new GlobalPKAnalysis();
          }
 
-         return globalPKAnalysis;
+         return globalPKAnalysesForIndividuals[individualId];
       }
 
       private IContainer calculateGlobalPKAnalysisFor(Simulation simulation, Compound compound, DataColumn peripheralVenousBloodCurve, DataColumn venousBloodCurve, PKCalculationOptions options)
@@ -287,28 +297,38 @@ namespace PKSim.Core.Services
          return container;
       }
 
-      private static IEnumerable<QuantityPKParameter> mapQuantityPKParametersFromIndividualGlobalPKAnalyses(IReadOnlyList<GlobalPKAnalysis> globalIndividualPKParameterList)
+      private static IEnumerable<QuantityPKParameter> mapQuantityPKParametersFromIndividualGlobalPKAnalyses(ICache<int, GlobalPKAnalysis> globalIndividualPKParameterCache)
       {
          var quantityPKList = new List<QuantityPKParameter>();
 
          // use the first in series as a template to retrieve from all individual results.
          // The list of parameters should be identical for all the individual global analyses.
-         var aPKAnalysis = globalIndividualPKParameterList.FirstOrDefault();
-         aPKAnalysis?.AllPKParameters.GroupBy(pkParameter => pkParameter.EntityPath().ToPathArray().MoleculeName()).Each(group =>
+         var aPKAnalysis = globalIndividualPKParameterCache.FirstOrDefault();
+         aPKAnalysis?.AllPKParameters.GroupBy(moleculeNameFrom).Each(group =>
          {
             group.Each(pKParameter =>
             {
-               quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterList, pKParameter, group.Key));
+               quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterCache, pKParameter, group.Key));
             });
          });
 
          return quantityPKList;
       }
 
-      private static QuantityPKParameter quantityPKParameterFor(IReadOnlyList<GlobalPKAnalysis> globalIndividualPKParameterList, IParameter pKParameter, string quantityPath)
+      private static string moleculeNameFrom(IParameter pkParameter)
       {
-         var pKValuesForPKParameter = globalIndividualPKParameterList.SelectMany(globalPKAnalysisForAnIndividual => globalPKAnalysisForAnIndividual.AllPKParameters.Where(x => pathsEqual(x, pKParameter))).ToList();
-         var quantityPKParameter = new QuantityPKParameter { Dimension = pKValuesForPKParameter.First().Dimension, Name = pKValuesForPKParameter.First().Name, QuantityPath = quantityPath };
+         return pkParameter.EntityPath().ToPathArray().MoleculeName();
+      }
+
+      private static QuantityPKParameter quantityPKParameterFor(ICache<int, GlobalPKAnalysis> globalIndividualPKParameterCache, IParameter pKParameter, string quantityPath)
+      {
+         var pKValuesForPKParameter = globalIndividualPKParameterCache.SelectMany(globalPKAnalysisForAnIndividual => globalPKAnalysisForAnIndividual.AllPKParameters.Where(x => pathsEqual(x, pKParameter))).ToList();
+         var firstParameter = pKValuesForPKParameter.FirstOrDefault();
+
+         if (firstParameter == null)
+            return new QuantityPKParameter();
+
+         var quantityPKParameter = new QuantityPKParameter { Dimension = firstParameter.Dimension, Name = firstParameter.Name, QuantityPath = quantityPath };
 
          pKValuesForPKParameter.Each(pKValue => { quantityPKParameter.SetValue(pKValuesForPKParameter.IndexOf(pKValue), (float)pKValue.Value); });
          return quantityPKParameter;

@@ -33,7 +33,6 @@ namespace PKSim.Core
       private ILazyLoadTask _lazyLoadTask;
       protected IStatisticalDataCalculator _statisticalDataCalculator;
       protected IRepresentationInfoRepository _representationInfoRepository;
-      private IPopulationSimulationBodyWeightUpdater _populationSimulationBodyWeightUpdater;
       protected IVSSCalculator _vssCalculator;
       protected IParameterFactory _parameterFactory;
       protected IProtocolToSchemaItemsMapper _protocolMapper;
@@ -41,6 +40,7 @@ namespace PKSim.Core
       protected IGlobalPKAnalysisRunner _globalPKAnalysisRunner;
       protected IInteractionTask _interactionTask;
       protected ICloner _cloner;
+      private IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
@@ -51,8 +51,8 @@ namespace PKSim.Core
          _pkCalculationOptionsFactory = A.Fake<IPKCalculationOptionsFactory>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
          _statisticalDataCalculator = new StatisticalDataCalculator();
-         _populationSimulationBodyWeightUpdater = A.Fake<IPopulationSimulationBodyWeightUpdater>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
 
          _vssCalculator = A.Fake<IVSSCalculator>();
          _parameterFactory = A.Fake<IParameterFactory>();
@@ -62,7 +62,9 @@ namespace PKSim.Core
          _interactionTask = A.Fake<IInteractionTask>();
          _cloner = A.Fake<ICloner>();
 
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository, _statisticalDataCalculator, _representationInfoRepository, _populationSimulationBodyWeightUpdater, _parameterFactory, _protocolMapper, _protocolFactory, _globalPKAnalysisRunner, _vssCalculator, _interactionTask, _cloner);
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository, 
+            _statisticalDataCalculator, _representationInfoRepository, _parameterFactory, _protocolMapper, _protocolFactory, _globalPKAnalysisRunner, 
+            _vssCalculator, _interactionTask, _cloner, _entityPathResolver);
       }
    }
 

@@ -4,7 +4,6 @@ using System.Linq;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.PopulationAnalyses;
-
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Core.Domain;
@@ -70,7 +69,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _allPKParameters.Clear();
          _allPKParameters.AddRange(_entitiesInContainerRetriever.OutputsFrom(populationDataCollector).SelectMany(availablePKParametersFor));
 
-         populationDataCollector.Compounds.Select(x => x.Name).Each(compoundName =>
+         populationDataCollector.Compounds.AllNames().Each(compoundName =>
          {
             _allPKParameters.AddRange(populationDataCollector.AllPKParametersFor(compoundName).Select(globalPKParameters));
          });
