@@ -41,7 +41,6 @@ namespace PKSim.Presentation.Views.Charts
          return chart;
       }
 
-      //not sure this has the correct code....
       public SimulationResidualVsTimeChart CreateResidualsVsTimeChartFor(IndividualSimulation individualSimulation)
       {
          var chart = Create<SimulationResidualVsTimeChart>();
