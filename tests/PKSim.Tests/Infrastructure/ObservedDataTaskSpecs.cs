@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
@@ -121,13 +122,22 @@ namespace PKSim.Infrastructure
    {
       private Simulation _sim;
       private DataRepository _observedData;
+      private IDimension _dimension;
 
       protected override async Task Context()
       {
          await base.Context();
 
+         _dimension = A.Fake<IDimension>();
          _sim = new IndividualSimulation();
          _observedData = new DataRepository("toto");
+
+         var baseGrid = new BaseGrid("dimension", _dimension)
+         {
+            Values = new List<float>() {0.1f, 0.3f}
+         };
+         var values = new DataColumn("column", _dimension, baseGrid);
+         _observedData.Add(values);
       }
 
       protected override Task Because()

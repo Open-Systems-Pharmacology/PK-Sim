@@ -27,8 +27,6 @@ namespace PKSim.IntegrationTests
          _simulation.CompoundPKFor("COMP1").CmaxDDI = 20;
          _simulation.CompoundPKFor("COMP2").AucIV = 30;
          _simulation.CompoundPKFor("COMP2").AucDDI = 40;
-         _deserializedSimulation = SerializeAndDeserialize(_simulation);
-
          _outputMapping = new OutputMapping
          {
             WeightedObservedData = new WeightedObservedData(_observedData),
@@ -39,6 +37,8 @@ namespace PKSim.IntegrationTests
 
          _outputMapping.WeightedObservedData.Weights[1] = 10;
          _simulation.OutputMappings.Add(_outputMapping);
+
+         _deserializedSimulation = SerializeAndDeserialize(_simulation);
       }
 
       [Observation]
@@ -109,7 +109,6 @@ namespace PKSim.IntegrationTests
          deserializedOutputMapping.Weight.ShouldBeEqualTo(_outputMapping.Weight);
          deserializedOutputMapping.Scaling.ShouldBeEqualTo(_outputMapping.Scaling);
          deserializedOutputMapping.WeightedObservedData.Weights.ShouldBeEqualTo(_outputMapping.WeightedObservedData.Weights);
-         deserializedOutputMapping.WeightedObservedData.ObservedData.ShouldBeEqualTo(_outputMapping.WeightedObservedData.ObservedData);
          deserializedOutputMapping.Simulation.ShouldBeEqualTo(_simulation);
       }
 
