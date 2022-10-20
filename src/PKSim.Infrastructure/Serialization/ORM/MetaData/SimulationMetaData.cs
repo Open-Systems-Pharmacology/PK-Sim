@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using NHibernate;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Infrastructure.Serialization.ORM.MetaData;
 using OSPSuite.Utility.Extensions;
 
@@ -100,11 +99,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
       public virtual void AddObservedData(string observedDataId)
       {
          UsedObservedData.Add(observedDataId);
-      }
-
-      public virtual void AddOutputMappings(OutputMappings outputMappings)
-      {
-         OutputMappings = outputMappings;
       }
    }
 }

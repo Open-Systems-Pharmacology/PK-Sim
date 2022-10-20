@@ -1,20 +1,21 @@
-﻿using OSPSuite.Utility.Events;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Services
 {
    public interface ISimulationAnalysisCreator : OSPSuite.Core.Domain.Services.ISimulationAnalysisCreator
    {
-      ISimulationAnalysis CreateAnalysisFor(Simulation simulation); //probably here we should add the simulationType, when we figure out what to do with the visitor
+      ISimulationAnalysis CreateAnalysisFor(Simulation simulation);
       ISimulationAnalysis CreatePredictedVsObservedAnalysisFor(IndividualSimulation simulation);
       ISimulationAnalysis CreateResidualsVsTimeAnalysisFor(IndividualSimulation simulation);
       ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector);
-      ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector, PopulationAnalysisType populationAnalysisType);
+
+      ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector,
+         PopulationAnalysisType populationAnalysisType);
    }
 
    public class SimulationAnalysisCreator : OSPSuite.Core.Domain.Services.SimulationAnalysisCreator, ISimulationAnalysisCreator,
@@ -95,14 +96,16 @@ namespace PKSim.Core.Services
          return CreatePopulationAnalysisFor(populationDataCollector, _userSettings.DefaultPopulationAnalysis);
       }
 
-      public ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector, PopulationAnalysisType populationAnalysisType)
+      public ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector,
+         PopulationAnalysisType populationAnalysisType)
       {
-         var populationSimulationAnalysis = _populationSimulationAnalysisStarter.CreateAnalysisForPopulationSimulation(populationDataCollector, populationAnalysisType);
+         var populationSimulationAnalysis =
+            _populationSimulationAnalysisStarter.CreateAnalysisForPopulationSimulation(populationDataCollector, populationAnalysisType);
          AddSimulationAnalysisTo(populationDataCollector, populationSimulationAnalysis);
          return populationSimulationAnalysis;
       }
 
-      public void Visit(IndividualSimulation simulation)//OK, so now I am afraid we are going to break the visitor when adding the new analysis
+      public void Visit(IndividualSimulation simulation)
       {
          _simulationAnalysis = _chartFactory.CreateChartFor(simulation);
          AddSimulationAnalysisTo(simulation, _simulationAnalysis);

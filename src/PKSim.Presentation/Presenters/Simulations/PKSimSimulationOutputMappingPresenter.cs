@@ -1,6 +1,5 @@
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
@@ -8,7 +7,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
-   public interface IPKSimSimulationOutputMappingPresenter : IEditIndividualSimulationItemPresenter //, IEditPopulationSimulationItemPresenter
+   public interface IPKSimSimulationOutputMappingPresenter : IEditIndividualSimulationItemPresenter
    {
    }
 
@@ -16,7 +15,8 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       public PKSimSimulationOutputMappingPresenter(ISimulationOutputMappingView view, IEntitiesInSimulationRetriever entitiesInSimulationRetriever,
          IObservedDataRepository observedDataRepository, ISimulationOutputMappingToOutputMappingDTOMapper outputMappingDTOMapper,
-         IQuantityToSimulationQuantitySelectionDTOMapper simulationQuantitySelectionDTOMapper) : base(view, entitiesInSimulationRetriever, observedDataRepository,
+         IQuantityToSimulationQuantitySelectionDTOMapper simulationQuantitySelectionDTOMapper) : base(view, entitiesInSimulationRetriever,
+         observedDataRepository,
          outputMappingDTOMapper, simulationQuantitySelectionDTOMapper)
       {
       }
