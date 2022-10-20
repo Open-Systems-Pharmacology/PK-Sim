@@ -95,26 +95,26 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)
+      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable)
       {
-         AddObservedDataToAnalysable(observedData, analysable, showData: false);
+         AddObservedDataToAnalysable(observedDataList, analysable, showData: false);
       }
 
-      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable, bool showData)
+      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable, bool showData)
       {
          var simulation = analysable as Simulation;
          if (simulation == null)
             return;
 
-         var observedDataToAdd = observedData.Where(x => !simulation.UsesObservedData(x)).ToList();
+         var observedDataToAdd = observedDataList.Where(x => !simulation.UsesObservedData(x)).ToList();
          if (!observedDataToAdd.Any())
             return;
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
 
-         foreach (var dataRepository in observedData)
+         foreach (var observedData in observedDataList)
          {
-            var newOutputMapping = mapMatchingOutput(dataRepository, simulation);
+            var newOutputMapping = mapMatchingOutput(observedData, simulation);
 
             if (newOutputMapping.Output != null)
                simulation.OutputMappings.Add(newOutputMapping);

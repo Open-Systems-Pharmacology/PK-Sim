@@ -57,38 +57,16 @@ namespace PKSim.Core.Services
 
       public ISimulationAnalysis CreatePredictedVsObservedAnalysisFor(IndividualSimulation simulation)
       {
-         try
-         {
-            if (simulation != null)
-            {
-               _simulationAnalysis = _chartFactory.CreatePredictedVsObservedChartFor(simulation);
-               AddSimulationAnalysisTo(simulation, _simulationAnalysis);
-            }
-
-            return _simulationAnalysis;
-         }
-         finally
-         {
-            _simulationAnalysis = null;
-         }
+         _simulationAnalysis = _chartFactory.CreatePredictedVsObservedChartFor(simulation);
+         AddSimulationAnalysisTo(simulation, _simulationAnalysis);
+         return _simulationAnalysis;
       }
 
       public ISimulationAnalysis CreateResidualsVsTimeAnalysisFor(IndividualSimulation simulation)
       {
-         try
-         {
-            if (simulation != null)
-            {
-               _simulationAnalysis = _chartFactory.CreateResidualsVsTimeChartFor(simulation);
-               AddSimulationAnalysisTo(simulation, _simulationAnalysis);
-            }
-
-            return _simulationAnalysis;
-         }
-         finally
-         {
-            _simulationAnalysis = null;
-         }
+         _simulationAnalysis = _chartFactory.CreateResidualsVsTimeChartFor(simulation);
+         AddSimulationAnalysisTo(simulation, _simulationAnalysis);
+         return _simulationAnalysis;
       }
 
       public ISimulationAnalysis CreatePopulationAnalysisFor(IPopulationDataCollector populationDataCollector)

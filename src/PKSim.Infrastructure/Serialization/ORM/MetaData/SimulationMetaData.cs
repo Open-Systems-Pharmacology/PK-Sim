@@ -19,7 +19,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
       public virtual SimulationResults SimulationResults { get; set; }
       public virtual SimulationAnalysesMetaData SimulationAnalyses { get; set; }
       public virtual ICollection<SimulationChartMetaData> Charts { get; set; }
-
       public virtual SimulationMode SimulationMode { get; set; }
 
       //Legacy code
@@ -41,7 +40,6 @@ namespace PKSim.Infrastructure.Serialization.ORM.MetaData
 
          BuildingBlocks.UpdateFrom<string, UsedBuildingBlockMetaData>(sourceSimulation.BuildingBlocks, session);
          updateObservedDataFrom(sourceSimulation.UsedObservedData);
-
 
          //Update results and charts only if simulation is loaded
          if (!sourceChild.IsLoaded) return;

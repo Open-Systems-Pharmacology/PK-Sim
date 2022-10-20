@@ -351,10 +351,7 @@ namespace PKSim.Core.Model
       public void RemoveOutputMappings(DataRepository dataRepository)
       {
          var outputsMatchingDeletedObservedData = OutputMappings.OutputMappingsUsingDataRepository(dataRepository).ToList();
-         foreach (var outputMapping in outputsMatchingDeletedObservedData)
-         {
-            OutputMappings.Remove(outputMapping);
-         }
+         outputsMatchingDeletedObservedData.Each(OutputMappings.Remove);
       }
 
       /// <summary>
