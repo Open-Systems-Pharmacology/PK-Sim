@@ -16,17 +16,17 @@ namespace PKSim.Presentation.DTO.Mappers
    {
       private readonly IExpressionParameterMapper<TransporterExpressionParameterDTO> _expressionParameterMapper;
       private readonly ITransportDirectionRepository _transportDirectionRepository;
-      private readonly ITransporterContainerTemplateRepository _transporterContainerTemplateRepository;
+      private readonly ITransporterTemplateRepository _transporterTemplateRepository;
 
       public IndividualTransporterToTransporterExpressionDTOMapper(
          IExpressionParameterMapper<TransporterExpressionParameterDTO> expressionParameterMapper,
          ITransportDirectionRepository transportDirectionRepository,
-         ITransporterContainerTemplateRepository transporterContainerTemplateRepository
+         ITransporterTemplateRepository transporterTemplateRepository
          )
       {
          _expressionParameterMapper = expressionParameterMapper;
          _transportDirectionRepository = transportDirectionRepository;
-         _transporterContainerTemplateRepository = transporterContainerTemplateRepository;
+         _transporterTemplateRepository = transporterTemplateRepository;
       }
 
       public IndividualTransporterDTO MapFrom(IndividualTransporter transporter, ISimulationSubject simulationSubject)
@@ -71,7 +71,7 @@ namespace PKSim.Presentation.DTO.Mappers
             individualTransporterDTO.AddExpressionParameter(expressionParameter);
          }
 
-         var hasTemplateForSpecies = _transporterContainerTemplateRepository.HasTransporterTemplateFor(simulationSubject.Species.Name, transporter.Name);
+         var hasTemplateForSpecies = _transporterTemplateRepository.HasTransporterTemplateFor(simulationSubject.Species.Name, transporter.Name);
          individualTransporterDTO.DefaultAvailableInDatabase = hasTemplateForSpecies;
       }
 

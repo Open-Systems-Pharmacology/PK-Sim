@@ -27,7 +27,7 @@ namespace PKSim.Presentation.DTO.Simulations
 
    public class IntegratedPKAnalysisDTO
    {
-      public PKAnalysisDTO OnIndividuals { get; set; }
-      public PKAnalysisDTO OnCurves { get; set; }
+      public PKAnalysisDTO IndividualPKValues { get; set; }
+      public PKAnalysisDTO AggregatedPKValues { get; set; }
    }
 }

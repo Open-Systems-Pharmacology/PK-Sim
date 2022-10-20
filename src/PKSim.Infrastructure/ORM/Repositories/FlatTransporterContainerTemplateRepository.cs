@@ -12,7 +12,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
    public class FlatTransporterContainerTemplateRepository : MetaDataRepository<FlatTransporterContainerTemplate>, IFlatTransporterContainerTemplateRepository
    {
       public FlatTransporterContainerTemplateRepository(IDbGateway dbGateway, IDataTableToMetaDataMapper<FlatTransporterContainerTemplate> mapper)
-         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_INDIVIDUAL_ACTIVE_TRANSPORTS)
+         : base(dbGateway, mapper, CoreConstants.ORM.VIEW_KNOWN_TRANSPORTER_CONTAINERS)
       {
       }
    }

@@ -24,22 +24,21 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _view= A.Fake<IExpressionParametersView<ExpressionParameterDTO>>();
-         _editParameterTask= A.Fake<IEditParameterPresenterTask>();  
-         sut = new ExpressionParametersPresenter(_view,_editParameterTask);
+         _view = A.Fake<IExpressionParametersView<ExpressionParameterDTO>>();
+         _editParameterTask = A.Fake<IEditParameterPresenterTask>();
+         sut = new ExpressionParametersPresenter(_view, _editParameterTask);
 
 
          _initialConcentration = createParameter(CoreConstants.Parameters.INITIAL_CONCENTRATION);
          _relativeExpression = createParameter(CoreConstants.Parameters.REL_EXP);
          _relativeExpression2 = createParameter(CoreConstants.Parameters.REL_EXP);
          _fraction_exp_bc = createParameter(CoreConstants.Parameters.FRACTION_EXPRESSED_BLOOD_CELLS);
-     
       }
 
       private ExpressionParameterDTO createParameter(string parameterName)
       {
          return new ExpressionParameterDTO
-            { Parameter = new ParameterDTO(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(parameterName)) };
+            {Parameter = new ParameterDTO(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(parameterName))};
       }
    }
 
@@ -52,7 +51,7 @@ namespace PKSim.Presentation
          _relativeExpression.Parameter.Parameter.Value = 5;
          _relativeExpression2.Parameter.Parameter.Value = 10;
 
-         sut.Edit(new []{_fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2, });
+         sut.Edit(new[] {_fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2,});
 
          //Make sure that we in fact update the value of the parameter as the command will not be executed
          A.CallTo(() => _editParameterTask.SetParameterValue(sut, _relativeExpression.Parameter, 20))
@@ -72,7 +71,6 @@ namespace PKSim.Presentation
       }
    }
 
-
    public class When_switching_the_visibility_of_initial_concentration_parameters_off : concern_for_ExpressionParametersPresenter
    {
       private List<ExpressionParameterDTO> _allExpressionParameterDTO;
@@ -80,11 +78,10 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.Edit(new[] { _fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2, });
+         sut.Edit(new[] {_fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2,});
 
          A.CallTo(() => _view.BindTo(A<IEnumerable<ExpressionParameterDTO>>._))
             .Invokes(x => _allExpressionParameterDTO = x.GetArgument<IEnumerable<ExpressionParameterDTO>>(0).ToList());
-
       }
 
       protected override void Because()
@@ -102,10 +99,11 @@ namespace PKSim.Presentation
    public class When_switching_the_visibility_of_initial_concentration_parameters_on : concern_for_ExpressionParametersPresenter
    {
       private List<ExpressionParameterDTO> _allExpressionParameterDTO;
+
       protected override void Context()
       {
          base.Context();
-         sut.Edit(new[] { _fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2, });
+         sut.Edit(new[] {_fraction_exp_bc, _initialConcentration, _relativeExpression, _relativeExpression2,});
 
          A.CallTo(() => _view.BindTo(A<IEnumerable<ExpressionParameterDTO>>._))
             .Invokes(x => _allExpressionParameterDTO = x.GetArgument<IEnumerable<ExpressionParameterDTO>>(0).ToList());
@@ -123,4 +121,17 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_disabling_edition_in_the_expression_presenter : concern_for_ExpressionParametersPresenter
+   {
+      protected override void Because()
+      {
+         sut.DisableEdit();
+      }
+
+      [Observation]
+      public void should_set_the_view_as_readonly()
+      {
+         _view.ReadOnly.ShouldBeTrue();
+      }
+   }
 }

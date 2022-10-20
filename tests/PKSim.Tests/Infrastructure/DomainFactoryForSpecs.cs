@@ -1,20 +1,16 @@
 using System.Collections.Generic;
 using System.Threading;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
-using Compound = PKSim.Core.Model.Compound;
-using Formulation = PKSim.Core.Model.Formulation;
-using Individual = PKSim.Core.Model.Individual;
-using Simulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Infrastructure
 {
@@ -31,7 +27,7 @@ namespace PKSim.Infrastructure
       public static Compound CreateStandardCompound()
       {
          var objectCreator = IoC.Resolve<ISnapshotObjectCreator>();
-         var compoundMapper = IoC.Resolve<Core.Snapshots.Mappers.CompoundMapper>();
+         var compoundMapper = IoC.Resolve<CompoundMapper>();
 
          var compoundSnapshot = objectCreator.StandardCompound(lipophilicity: -2, fractionUnbound: 0.8, molWeight: 400, solubilityAtRefPh: 1e-7).Result;
          return compoundMapper.MapToModel(compoundSnapshot, new SnapshotContext()).Result;
@@ -60,14 +56,14 @@ namespace PKSim.Infrastructure
          var formulationRepository = IoC.Resolve<IFormulationRepository>();
          var formulation = formulationRepository.FormulationBy(CoreConstants.Formulation.PARTICLES);
          formulation.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value = numberOfBins;
-         
+
          //set mono/polydisperse property (0=mono, 1=poly).
          formulation.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? CoreConstants.Parameters.POLYDISPERSE : CoreConstants.Parameters.MONODISPERSE;
 
          return formulation;
       }
 
-      public static ExpressionProfile CreateExpressionProfile<TMolecule>(string moleculeName = "CYP3A4") where TMolecule:IndividualMolecule
+      public static ExpressionProfile CreateExpressionProfile<TMolecule>(string moleculeName = "CYP3A4") where TMolecule : IndividualMolecule
       {
          var expressionProfileFactory = IoC.Resolve<IExpressionProfileFactory>();
          var expressionProfile = expressionProfileFactory.Create<TMolecule>(moleculeName);
@@ -98,11 +94,11 @@ namespace PKSim.Infrastructure
          return simulation;
       }
 
-      private static Simulation createModelLessSimulationWith(ISimulationSubject simulationSubject, Compound compound, 
-                                                              Protocol protocol, string modelName, 
-                                                              Formulation formulation = null)
+      private static Simulation createModelLessSimulationWith(ISimulationSubject simulationSubject, Compound compound,
+         Protocol protocol, string modelName,
+         Formulation formulation = null)
       {
-         return CreateModelLessSimulationWith(simulationSubject, compound, protocol, CreateModelPropertiesFor(simulationSubject, modelName),false, formulation);
+         return CreateModelLessSimulationWith(simulationSubject, compound, protocol, CreateModelPropertiesFor(simulationSubject, modelName), false, formulation);
       }
 
       public static ModelProperties CreateModelPropertiesFor(ISimulationSubject simulationSubject, string modelName)
@@ -118,8 +114,8 @@ namespace PKSim.Infrastructure
          return simulation;
       }
 
-      public static Simulation CreateSimulationWith(ISimulationSubject simulationSubject, Compound compound, 
-                                                    Protocol protocol, Formulation formulation, bool allowAging = false)
+      public static Simulation CreateSimulationWith(ISimulationSubject simulationSubject, Compound compound,
+         Protocol protocol, Formulation formulation, bool allowAging = false)
       {
          var simulation = CreateModelLessSimulationWith(simulationSubject, compound, protocol, allowAging, formulation);
          AddModelToSimulation(simulation);
@@ -132,17 +128,17 @@ namespace PKSim.Infrastructure
          simModelConstructor.AddModelToSimulation(simulation);
       }
 
-      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, 
-                                                             Compound compound, Protocol protocol, 
-                                                             bool allowAging = false, Formulation formulation = null)
+      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject,
+         Compound compound, Protocol protocol,
+         bool allowAging = false, Formulation formulation = null)
       {
          return CreateModelLessSimulationWith(simulationSubject, compound, protocol, CreateDefaultModelPropertiesFor(simulationSubject), allowAging, formulation);
       }
 
-      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, 
-                                                             IReadOnlyList<Compound> compounds, 
-                                                             IReadOnlyList<Protocol> protocols, 
-                                                             bool allowAging = false, Formulation formulation = null)
+      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject,
+         IReadOnlyList<Compound> compounds,
+         IReadOnlyList<Protocol> protocols,
+         bool allowAging = false, Formulation formulation = null)
       {
          return CreateModelLessSimulationWith(simulationSubject, compounds, protocols, CreateDefaultModelPropertiesFor(simulationSubject), allowAging, formulation);
       }
@@ -153,18 +149,18 @@ namespace PKSim.Infrastructure
          return modelPropertiesTask.DefaultFor(simulationSubject.OriginData);
       }
 
-      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, Compound compound, 
-                                                             Protocol protocol, ModelProperties modelProperties, 
-                                                             bool allowAging = false, Formulation formulation = null)
+      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, Compound compound,
+         Protocol protocol, ModelProperties modelProperties,
+         bool allowAging = false, Formulation formulation = null)
       {
          return CreateModelLessSimulationWith(simulationSubject, new[] {compound}, new[] {protocol}, modelProperties, allowAging, formulation);
       }
 
-      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject, 
-                                                             IReadOnlyList<Compound> compounds, 
-                                                             IReadOnlyList<Protocol> protocols, 
-                                                             ModelProperties modelProperties, bool allowAging = false, 
-                                                             Formulation formulation = null )
+      public static Simulation CreateModelLessSimulationWith(ISimulationSubject simulationSubject,
+         IReadOnlyList<Compound> compounds,
+         IReadOnlyList<Protocol> protocols,
+         ModelProperties modelProperties, bool allowAging = false,
+         Formulation formulation = null)
       {
          var simModelConstructor = IoC.Resolve<ISimulationConstructor>();
          var simulationConstruction = new SimulationConstruction
@@ -192,6 +188,7 @@ namespace PKSim.Infrastructure
             weightRange.MinValue = weightValue / 10;
             weightRange.MaxValue = weightValue * 10;
          }
+
          populationSettings.NumberOfIndividuals = 3;
          var population = populationFactory.CreateFor(populationSettings, new CancellationToken()).Result;
          return population.WithName("POP");

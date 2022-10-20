@@ -2228,7 +2228,7 @@ namespace PKSim.Assets
          public static readonly string Select = "Select";
          public static readonly string Healthy = "Healthy";
          public static readonly string RerunSimulationToSeeResults = "Please re-run the simulation to calculate PK-parameters.";
-         public static readonly string GlobalPKAnalysisDescription = "Values calculated for the mean population curve";
+         public static readonly string GlobalPKAnalysisDescription = "Values calculated for the median population curve";
 
          public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
 
@@ -2634,16 +2634,16 @@ namespace PKSim.Assets
          public static readonly string Unit = UI.Unit;
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
-         public static readonly string OnCurves = "On Curves";
-         public static readonly string OnCurvesTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
-         public static readonly string OnIndividuals = "On Individuals";
-         public static readonly string OnIndividualsTooltip = "PK parameter values are aggregated from individual values";
+         public static readonly string AggregatedPKValues = "Aggregated PK Values";
+         public static readonly string AggregatedPKValuesTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
+         public static readonly string IndividualPKValues = "Individual PK Values";
+         public static readonly string IndivdualPKValuesTooltip = "PK parameter values are aggregated from individual values";
       }
 
       public static class Comparison
       {
          public static readonly string RelativeTolerance = "Relative Tolerance";
-         public static readonly string FormulaComparisonMode = "Formula Comparision";
+         public static readonly string FormulaComparisonMode = "Formula Comparison";
          public static readonly string OnlyComputeModelRelevantProperties = "Do not compare descriptions";
          public static readonly string FormulaComparisonValue = "Compare values";
          public static readonly string FormulaComparisonFormula = "Compare Formulas";

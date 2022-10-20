@@ -58,8 +58,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private PopulationAnalysisPKParameterField createFieldFrom(QuantityPKParameter pkParameter, string quantityDisplayPath)
       {
          var quantity = _allQuantities[pkParameter.QuantityPath];
+
+         // if the quantity cannot be found then we are assuming this is a global type that should be created anyway.
          if (quantity == null)
-            return null;
+         {
+            return _populationAnalysisFieldFactory.CreateFor(pkParameter, QuantityType.Drug | QuantityType.Observer, quantityDisplayPath);
+         }
 
          return _populationAnalysisFieldFactory.CreateFor(pkParameter, quantity.QuantityType, quantityDisplayPath);
       }

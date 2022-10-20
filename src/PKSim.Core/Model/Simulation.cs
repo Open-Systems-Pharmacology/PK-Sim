@@ -642,7 +642,7 @@ namespace PKSim.Core.Model
       }
 
       //This is not used in PKSim.
-      public IBuildConfiguration BuildConfiguration { get; } = null;
+      public IBuildConfiguration BuildConfiguration { get; set; } = null;
 
       /// <summary>
       ///    Returns the <see cref="OutputSelections" /> for the simulation

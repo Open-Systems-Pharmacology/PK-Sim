@@ -82,6 +82,7 @@ namespace PKSim.IntegrationTests
          if (type == typeof(CalculationMethodCategory)) return true;
          if (type == typeof(Template)) return true;
          if (type == typeof(TransporterContainerTemplate)) return true;
+         if (type == typeof(TransporterTemplate)) return true;
          if (type == typeof(ParameterValueVersionCategory)) return true;
          if (type == typeof(LabelGenerationStrategy)) return true;
          if (type == typeof(GlobalPKAnalysis)) return true;

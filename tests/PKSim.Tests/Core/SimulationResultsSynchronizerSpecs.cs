@@ -26,7 +26,7 @@ namespace PKSim.Core
          _simulationResultsCreator = A.Fake<ISimulationResultsCreator>();
          _displayUnitUpdater = A.Fake<IDisplayUnitUpdater>();
          _dataRepositoryFromResultsCreator = A.Fake<IDataRepositoryFromResultsCreator>();
-         sut = new SimulationResultsSynchronizer(_populationPKAnalysesTask, _simulationResultsCreator, _displayUnitUpdater, _dataRepositoryFromResultsCreator);
+         sut = new SimulationResultsSynchronizer(_simulationResultsCreator, _displayUnitUpdater, _dataRepositoryFromResultsCreator, _populationPKAnalysesTask);
       }
    }
 

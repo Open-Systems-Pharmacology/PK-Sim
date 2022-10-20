@@ -10,6 +10,6 @@ namespace PKSim.Presentation.Views.Individuals
    {
       void BindTo(IEnumerable<TExpressionParameterDTO> expressionParameters);
       bool EmphasisRelativeExpressionParameters { get; set; }
-      bool ReadOnly { set; }
+      bool ReadOnly { get; set; }
    }
 }
