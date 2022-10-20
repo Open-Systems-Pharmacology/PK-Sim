@@ -41,9 +41,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
    {
    }
 
-   public class SimulationPredictedVsObservedChartXmlSerializer : PKSimChartXmlSerializer<SimulationPredictedVsObservedChart>
-   {
-   }
 
    public class SimulationResidualVsTimeChartXmlSerializer : PKSimChartXmlSerializer<SimulationResidualVsTimeChart>
    {
