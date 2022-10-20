@@ -25,25 +25,9 @@ namespace PKSim.Presentation.Views.Charts
          _chartTask = chartTask;
       }
 
-      public SimulationTimeProfileChart CreateChartFor(IndividualSimulation individualSimulation)
+      public TChartType CreateChartFor<TChartType>(IndividualSimulation individualSimulation) where TChartType : ChartWithObservedData
       {
-         var chart = Create<SimulationTimeProfileChart>();
-         _chartTask.UpdateObservedDataInChartFor(individualSimulation, chart);
-         _chartTask.SetOriginTextFor(individualSimulation.Name, chart);
-         return chart;
-      }
-
-      public SimulationPredictedVsObservedChart CreatePredictedVsObservedChartFor(IndividualSimulation individualSimulation)
-      {
-         var chart = Create<SimulationPredictedVsObservedChart>();
-         _chartTask.UpdateObservedDataInChartFor(individualSimulation, chart);
-         _chartTask.SetOriginTextFor(individualSimulation.Name, chart);
-         return chart;
-      }
-
-      public SimulationResidualVsTimeChart CreateResidualsVsTimeChartFor(IndividualSimulation individualSimulation)
-      {
-         var chart = Create<SimulationResidualVsTimeChart>();
+         var chart = Create<TChartType>();
          _chartTask.UpdateObservedDataInChartFor(individualSimulation, chart);
          _chartTask.SetOriginTextFor(individualSimulation.Name, chart);
          return chart;

@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Chart.Simulations;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
@@ -57,14 +58,14 @@ namespace PKSim.Core.Services
 
       public ISimulationAnalysis CreatePredictedVsObservedAnalysisFor(IndividualSimulation simulation)
       {
-         _simulationAnalysis = _chartFactory.CreatePredictedVsObservedChartFor(simulation);
+         _simulationAnalysis = _chartFactory.CreateChartFor<SimulationPredictedVsObservedChart>(simulation);
          AddSimulationAnalysisTo(simulation, _simulationAnalysis);
          return _simulationAnalysis;
       }
 
       public ISimulationAnalysis CreateResidualsVsTimeAnalysisFor(IndividualSimulation simulation)
       {
-         _simulationAnalysis = _chartFactory.CreateResidualsVsTimeChartFor(simulation);
+         _simulationAnalysis = _chartFactory.CreateChartFor<SimulationResidualVsTimeChart>(simulation);
          AddSimulationAnalysisTo(simulation, _simulationAnalysis);
          return _simulationAnalysis;
       }
@@ -85,7 +86,7 @@ namespace PKSim.Core.Services
 
       public void Visit(IndividualSimulation simulation)
       {
-         _simulationAnalysis = _chartFactory.CreateChartFor(simulation);
+         _simulationAnalysis = _chartFactory.CreateChartFor<SimulationTimeProfileChart>(simulation);
          AddSimulationAnalysisTo(simulation, _simulationAnalysis);
       }
 
