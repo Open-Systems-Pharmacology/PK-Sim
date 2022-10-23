@@ -316,7 +316,6 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<StartPredictedVsObservedSimulationAnalysisUICommand>()
             .WithIcon(ApplicationIcons.PredictedVsObservedAnalysis);
 
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.IndividualSimulationComparison)
             .WithId(MenuBarItemIds.IndividualSimulationComparison)
             .WithDescription(PKSimConstants.UI.IndividualSimulationComparisonDescription)
