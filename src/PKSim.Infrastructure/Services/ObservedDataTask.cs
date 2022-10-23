@@ -31,7 +31,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ITemplateTask _templateTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IPKMLPersistor _pkmlPersistor;
-      private readonly IOutputMappingMatchingService _outputMappingMatchingService;
+      private readonly IOutputMappingMatchingTask _OutputMappingMatchingTask;
 
       public ObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -44,7 +44,7 @@ namespace PKSim.Infrastructure.Services
          IParameterChangeUpdater parameterChangeUpdater,
          IPKMLPersistor pkmlPersistor,
          IObjectTypeResolver objectTypeResolver,
-         IOutputMappingMatchingService outputMappingMatchingService)
+         IOutputMappingMatchingTask OutputMappingMatchingTask)
          : base(dialogCreator, executionContext, dataRepositoryTask, containerTask,
          objectTypeResolver)
       {
@@ -54,7 +54,7 @@ namespace PKSim.Infrastructure.Services
          _templateTask = templateTask;
          _parameterChangeUpdater = parameterChangeUpdater;
          _pkmlPersistor = pkmlPersistor;
-         _outputMappingMatchingService = outputMappingMatchingService;
+         _OutputMappingMatchingTask = OutputMappingMatchingTask;
       }
 
       public override void Rename(DataRepository observedData)
@@ -112,7 +112,7 @@ namespace PKSim.Infrastructure.Services
             return;
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
-         observedDataList.Each(observedData => _outputMappingMatchingService.AddMatchingOutputMapping(observedData, simulation));
+         observedDataList.Each(observedData => _OutputMappingMatchingTask.AddMatchingOutputMapping(observedData, simulation));
 
          _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
