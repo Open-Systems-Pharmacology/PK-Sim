@@ -317,7 +317,6 @@ namespace PKSim.Presentation.Repositories
             .WithIcon(ApplicationIcons.PredictedVsObservedAnalysis);
 
 
-
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.IndividualSimulationComparison)
             .WithId(MenuBarItemIds.IndividualSimulationComparison)
             .WithDescription(PKSimConstants.UI.IndividualSimulationComparisonDescription)
@@ -494,11 +493,16 @@ namespace PKSim.Presentation.Repositories
          yield return ParameterIdentificationMenuBarButtons.RunParameterIdentification(MenuBarItemIds.RunParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.StopParameterIdentification(MenuBarItemIds.StopParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.TimeProfileParameterIdentification(MenuBarItemIds.TimeProfileParameterIdentification);
-         yield return ParameterIdentificationMenuBarButtons.PredictedVsObservedParameterIdentification(MenuBarItemIds.PredictedVsObservedParameterIdentification);
-         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentification(MenuBarItemIds.ResidualsVsTimeParameterIdentifcation);
-         yield return ParameterIdentificationMenuBarButtons.ResidualHistogramParameterIdentification(MenuBarItemIds.ResidualHistogramParameterIdentification);
-         yield return ParameterIdentificationMenuBarButtons.CorrelationMatrixParameterIdentification(MenuBarItemIds.CorrelationMatrixParameterIdentification);
-         yield return ParameterIdentificationMenuBarButtons.CovarianceMatrixParameterIdentification(MenuBarItemIds.CovarianceMatrixParameterIdentification);
+         yield return ParameterIdentificationMenuBarButtons.PredictedVsObservedParameterIdentification(MenuBarItemIds
+            .PredictedVsObservedParameterIdentification);
+         yield return ParameterIdentificationMenuBarButtons.ResidualsVsTimeParameterIdentification(MenuBarItemIds
+            .ResidualsVsTimeParameterIdentifcation);
+         yield return ParameterIdentificationMenuBarButtons.ResidualHistogramParameterIdentification(MenuBarItemIds
+            .ResidualHistogramParameterIdentification);
+         yield return ParameterIdentificationMenuBarButtons.CorrelationMatrixParameterIdentification(MenuBarItemIds
+            .CorrelationMatrixParameterIdentification);
+         yield return ParameterIdentificationMenuBarButtons.CovarianceMatrixParameterIdentification(MenuBarItemIds
+            .CovarianceMatrixParameterIdentification);
          yield return ParameterIdentificationMenuBarButtons.ParameterIdentificationFeedbackView(MenuBarItemIds.ParameterIdentificationFeedbackView);
          yield return ParameterIdentificationMenuBarButtons.TimeProfilePredictionInterval(MenuBarItemIds.TimeProfilePredictionInterval);
          yield return ParameterIdentificationMenuBarButtons.TimeProfileVPCInterval(MenuBarItemIds.TimeProfileVPCInterval);
