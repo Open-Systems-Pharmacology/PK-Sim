@@ -12,8 +12,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
@@ -33,7 +31,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ITemplateTask _templateTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IPKMLPersistor _pkmlPersistor;
-      private readonly IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
+      private readonly IOutputMappingMatchingService _outputMappingMatchingService;
 
       public ObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -46,7 +44,9 @@ namespace PKSim.Infrastructure.Services
          IParameterChangeUpdater parameterChangeUpdater,
          IPKMLPersistor pkmlPersistor,
          IObjectTypeResolver objectTypeResolver,
-         IEntitiesInSimulationRetriever entitiesInSimulationRetriever) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
+         IOutputMappingMatchingService outputMappingMatchingService)
+         : base(dialogCreator, executionContext, dataRepositoryTask, containerTask,
+         objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
@@ -54,7 +54,7 @@ namespace PKSim.Infrastructure.Services
          _templateTask = templateTask;
          _parameterChangeUpdater = parameterChangeUpdater;
          _pkmlPersistor = pkmlPersistor;
-         _entitiesInSimulationRetriever = entitiesInSimulationRetriever;
+         _outputMappingMatchingService = outputMappingMatchingService;
       }
 
       public override void Rename(DataRepository observedData)
@@ -80,7 +80,8 @@ namespace PKSim.Infrastructure.Services
 
       public void ExportToPkml(DataRepository observedData)
       {
-         var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportObservedDataToPkml, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, observedData.Name);
+         var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportObservedDataToPkml, Constants.Filter.PKML_FILE_FILTER,
+            Constants.DirectoryKey.MODEL_PART, observedData.Name);
          if (string.IsNullOrEmpty(file)) return;
 
          _pkmlPersistor.SaveToPKML(observedData, file);
@@ -111,14 +112,7 @@ namespace PKSim.Infrastructure.Services
             return;
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
-
-         foreach (var observedData in observedDataList)
-         {
-            var newOutputMapping = mapMatchingOutput(observedData, simulation);
-
-            if (newOutputMapping.Output != null)
-               simulation.OutputMappings.Add(newOutputMapping);
-         }
+         observedDataList.Each(observedData => _outputMappingMatchingService.AddMatchingOutputMapping(observedData, simulation));
 
          _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
@@ -135,7 +129,9 @@ namespace PKSim.Infrastructure.Services
             if (!parameterIdentifications.Any())
                continue;
 
-            _dialogCreator.MessageBoxInfo(Captions.ParameterIdentification.CannotRemoveObservedDataBeingUsedByParameterIdentification(observedDataFrom(usedObservedData).Name, parameterIdentifications.AllNames().ToList()));
+            _dialogCreator.MessageBoxInfo(
+               Captions.ParameterIdentification.CannotRemoveObservedDataBeingUsedByParameterIdentification(observedDataFrom(usedObservedData).Name,
+                  parameterIdentifications.AllNames().ToList()));
             return;
          }
 
@@ -144,44 +140,6 @@ namespace PKSim.Infrastructure.Services
             return;
 
          usedObservedDataList.GroupBy(x => x.Simulation).Each(x => removeUsedObservedDataFromSimulation(x, x.Key.DowncastTo<Simulation>()));
-      }
-
-      private OutputMapping mapMatchingOutput(DataRepository observedData, ISimulation simulation)
-      {
-         var newOutputMapping = new OutputMapping();
-         var pathCache = _entitiesInSimulationRetriever.OutputsFrom(simulation);
-         var matchingOutputPath = pathCache.Keys.FirstOrDefault(x => observedDataMatchesOutput(observedData, x));
-
-         if (matchingOutputPath == null)
-         {
-            newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
-            return newOutputMapping;
-         }
-
-         var matchingOutput = pathCache[matchingOutputPath];
-
-         newOutputMapping.OutputSelection =
-            new SimulationQuantitySelection(simulation, new QuantitySelection(matchingOutputPath, matchingOutput.QuantityType));
-         newOutputMapping.WeightedObservedData = new WeightedObservedData(observedData);
-         newOutputMapping.Scaling = defaultScalingFor(matchingOutput);
-         return newOutputMapping;
-      }
-
-      private Scalings defaultScalingFor(IQuantity output)
-      {
-         return output.IsFraction() ? Scalings.Linear : Scalings.Log;
-      }
-
-      private bool observedDataMatchesOutput(DataRepository observedData, string outputPath)
-      {
-         var organ = observedData.ExtendedPropertyValueFor(Constants.ObservedData.ORGAN);
-         var compartment = observedData.ExtendedPropertyValueFor(Constants.ObservedData.COMPARTMENT);
-         var molecule = observedData.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
-
-         if (organ == null || compartment == null || molecule == null)
-            return false;
-
-         return outputPath.Contains(organ) && outputPath.Contains(compartment) && outputPath.Contains(molecule);
       }
 
       private IEnumerable<ParameterIdentification> findParameterIdentificationsUsing(UsedObservedData usedObservedData)

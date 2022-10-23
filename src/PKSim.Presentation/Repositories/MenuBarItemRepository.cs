@@ -310,7 +310,7 @@ namespace PKSim.Presentation.Repositories
             .WithDescription(PKSimConstants.UI.TimeProfileAnalysisDescription)
             .WithIcon(ApplicationIcons.TimeProfileAnalysis);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.PredictedVsObservedSimulation)
+         yield return CreateMenuButton.WithCaption(Captions.SimulationUI.PredictedVsObservedSimulation)
             .WithId(MenuBarItemIds.PredictedVsObservedSimulationAnalysis)
             .WithDescription(MenuDescriptions.PredictedVsObservedAnalysisDescription)
             .WithCommand<StartPredictedVsObservedSimulationAnalysisUICommand>()
@@ -324,7 +324,7 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<CreateIndividualSimulationComparisonUICommand>()
             .WithIcon(ApplicationIcons.IndividualSimulationComparison);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ResidualsVsTimeSimulation)
+         yield return CreateMenuButton.WithCaption(Captions.SimulationUI.ResidualsVsTimeSimulation)
             .WithId(MenuBarItemIds.ResidualsVsTimeSimulationAnalysis)
             .WithDescription(MenuDescriptions.ResidualsVsTimeAnalysisDescription)
             .WithCommand<StartResidualVsTimeSimulationAnalysisUICommand>()

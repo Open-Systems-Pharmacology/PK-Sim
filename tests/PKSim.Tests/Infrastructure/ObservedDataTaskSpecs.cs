@@ -41,7 +41,7 @@ namespace PKSim.Infrastructure
       private IParameterChangeUpdater _parameterChangeUpdater;
       protected ISnapshotTask _snapshotTask;
       protected IPKMLPersistor _pkmlPersistor;
-      protected IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
+      protected IOutputMappingMatchingService _outputMappingMatchingService;
 
       protected override Task Context()
       {
@@ -53,15 +53,15 @@ namespace PKSim.Infrastructure
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
          _parameterChangeUpdater = A.Fake<IParameterChangeUpdater>();
-         _pkmlPersistor= A.Fake<IPKMLPersistor>(); 
+         _pkmlPersistor= A.Fake<IPKMLPersistor>();
+         _outputMappingMatchingService = A.Fake<IOutputMappingMatchingService>();
          _project = new PKSimProject();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
-         _entitiesInSimulationRetriever = A.Fake<IEntitiesInSimulationRetriever>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver, _entitiesInSimulationRetriever);
+            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver, _outputMappingMatchingService);
 
          return _completed;
       }
