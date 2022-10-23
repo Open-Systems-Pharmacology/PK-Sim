@@ -1,14 +1,14 @@
 using System.Linq;
 using System.Xml.Linq;
-using OSPSuite.Utility.Container;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Chart.Simulations;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Repositories;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.Xml.Extensions;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Repositories;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -37,6 +37,10 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
    }
 
    public class SimulationChartXmlSerializer : PKSimChartXmlSerializer<SimulationTimeProfileChart>
+   {
+   }
+
+   public class SimulationResidualVsTimeChartXmlSerializer : PKSimChartXmlSerializer<SimulationResidualVsTimeChart>
    {
    }
 

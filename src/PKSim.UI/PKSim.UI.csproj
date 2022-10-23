@@ -60,14 +60,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
-    <PackageReference Include="OSPSuite.Assets" Version="11.1.25" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.1.30" />
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.0.4" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.0.2" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.1.25" />
-    <PackageReference Include="OSPSuite.UI" Version="11.1.25" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.25" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.1.30" />
+    <PackageReference Include="OSPSuite.UI" Version="11.1.30" />
+    <PackageReference Include="OSPSuite.Core" Version="11.1.30" />
   </ItemGroup>
 
   <ItemGroup>

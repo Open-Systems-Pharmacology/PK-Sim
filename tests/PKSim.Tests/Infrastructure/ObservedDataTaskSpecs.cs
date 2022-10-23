@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
@@ -40,6 +41,7 @@ namespace PKSim.Infrastructure
       private IParameterChangeUpdater _parameterChangeUpdater;
       protected ISnapshotTask _snapshotTask;
       protected IPKMLPersistor _pkmlPersistor;
+      protected IOutputMappingMatchingTask _OutputMappingMatchingTask;
 
       protected override Task Context()
       {
@@ -51,14 +53,15 @@ namespace PKSim.Infrastructure
          _applicationController = A.Fake<IApplicationController>();
          _templateTask = A.Fake<ITemplateTask>();
          _parameterChangeUpdater = A.Fake<IParameterChangeUpdater>();
-         _pkmlPersistor= A.Fake<IPKMLPersistor>(); 
+         _pkmlPersistor= A.Fake<IPKMLPersistor>();
+         _OutputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
          _project = new PKSimProject();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _executionContext.Project).Returns(_project);
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver);
+            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver, _OutputMappingMatchingTask);
 
          return _completed;
       }
@@ -119,13 +122,22 @@ namespace PKSim.Infrastructure
    {
       private Simulation _sim;
       private DataRepository _observedData;
+      private IDimension _dimension;
 
       protected override async Task Context()
       {
          await base.Context();
 
+         _dimension = A.Fake<IDimension>();
          _sim = new IndividualSimulation();
          _observedData = new DataRepository("toto");
+
+         var baseGrid = new BaseGrid("dimension", _dimension)
+         {
+            Values = new List<float>() {0.1f, 0.3f}
+         };
+         var values = new DataColumn("column", _dimension, baseGrid);
+         _observedData.Add(values);
       }
 
       protected override Task Because()

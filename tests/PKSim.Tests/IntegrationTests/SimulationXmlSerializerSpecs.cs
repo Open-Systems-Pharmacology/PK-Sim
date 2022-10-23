@@ -2,6 +2,10 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using NUnit.Framework;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.ParameterIdentifications;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
 
@@ -11,15 +15,29 @@ namespace PKSim.IntegrationTests
    {
       private IndividualSimulation _simulation;
       private IndividualSimulation _deserializedSimulation;
+      protected OutputMapping _outputMapping;
+      protected DataRepository _observedData;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
+         _observedData = DomainHelperForSpecs.ObservedData();
          _simulation = DomainFactoryForSpecs.CreateDefaultSimulation();
          _simulation.CompoundPKFor("COMP1").AucIV = 10;
          _simulation.CompoundPKFor("COMP1").CmaxDDI = 20;
          _simulation.CompoundPKFor("COMP2").AucIV = 30;
          _simulation.CompoundPKFor("COMP2").AucDDI = 40;
+         _outputMapping = new OutputMapping
+         {
+            WeightedObservedData = new WeightedObservedData(_observedData),
+            OutputSelection = new SimulationQuantitySelection(_simulation, new QuantitySelection("A|B", QuantityType.Metabolite)),
+            Weight = 5,
+            Scaling = Scalings.Log
+         };
+
+         _outputMapping.WeightedObservedData.Weights[1] = 10;
+         _simulation.OutputMappings.Add(_outputMapping);
+
          _deserializedSimulation = SerializeAndDeserialize(_simulation);
       }
 
@@ -79,6 +97,19 @@ namespace PKSim.IntegrationTests
          {
             Assert.AreSame(compoundProperty.ProtocolProperties.Protocol, protocol);
          }
+      }
+
+      [Observation]
+      public void should_be_able_to_deserialize_the_output_mapping_and_update_the_references_used()
+      {
+         _deserializedSimulation.OutputMappings.All.Count.ShouldBeEqualTo(1);
+         var deserializedOutputMapping = _deserializedSimulation.OutputMappings.All[0];
+
+         deserializedOutputMapping.OutputSelection.ShouldBeEqualTo(_outputMapping.OutputSelection);
+         deserializedOutputMapping.Weight.ShouldBeEqualTo(_outputMapping.Weight);
+         deserializedOutputMapping.Scaling.ShouldBeEqualTo(_outputMapping.Scaling);
+         deserializedOutputMapping.WeightedObservedData.Weights.ShouldBeEqualTo(_outputMapping.WeightedObservedData.Weights);
+         deserializedOutputMapping.Simulation.ShouldBeEqualTo(_simulation);
       }
 
       [Observation]

@@ -50,7 +50,7 @@ namespace PKSim.Presentation
          base.Context();
          _simulation = new IndividualSimulation();
          _chart = new SimulationTimeProfileChart();
-         A.CallTo(() => _chartFactory.CreateChartFor(_simulation)).Returns(_chart);
+         A.CallTo(() => _chartFactory.CreateChartFor<SimulationTimeProfileChart>(_simulation)).Returns(_chart);
          _chart1 = new SimulationTimeProfileChart {Name = "Results 1"};
          _chart2 = new SimulationTimeProfileChart {Name = "My Results"};
          _simulation.AddAnalysis(_chart1);
