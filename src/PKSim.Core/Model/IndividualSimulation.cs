@@ -3,7 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.Extensions;
@@ -42,7 +42,6 @@ namespace PKSim.Core.Model
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceIndividualSimulation = sourceObject as IndividualSimulation;
          if (sourceIndividualSimulation == null) return;
-         updateAucIVCacheFrom(sourceIndividualSimulation);
       }
 
       public override void UpdateFromOriginalSimulation(Simulation originalSimulation)
@@ -50,14 +49,8 @@ namespace PKSim.Core.Model
          base.UpdateFromOriginalSimulation(originalSimulation);
          var sourceIndividualSimulation = originalSimulation as IndividualSimulation;
          if (sourceIndividualSimulation == null) return;
-         updateAucIVCacheFrom(sourceIndividualSimulation);
       }
 
-      private void updateAucIVCacheFrom(IndividualSimulation sourceSimulation)
-      {
-         ClearPKCache();
-         sourceSimulation.AllCompoundPK.Each(AddCompoundPK);
-      }
 
       public override void AcceptVisitor(IVisitor visitor)
       {
@@ -77,5 +70,23 @@ namespace PKSim.Core.Model
       public override DataColumn VenousBloodColumn(string compoundName) => DataRepository.VenousBloodColumn(compoundName);
 
       public override DataColumn FabsOral(string compoundName) => DataRepository.FabsOral(compoundName);
+
+      public void ClearRatioPKCache()
+      {
+         AucDDI.Clear();
+         CMaxDDI.Clear();
+         AucIV.Clear();
+      }
+
+      public IndividualSimulation()
+      {
+         AucDDI = new Cache<string, double?>(onMissingKey: x => null);
+         AucIV = new Cache<string, double?>(onMissingKey: x => null);
+         CMaxDDI = new Cache<string, double?>(onMissingKey: x => null);
+      }
+
+      public Cache<string, double?> AucDDI { get; }
+      public Cache<string, double?> AucIV { get; }
+      public Cache<string, double?> CMaxDDI { get; }
    }
 }

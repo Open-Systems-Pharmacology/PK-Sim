@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Mappers;

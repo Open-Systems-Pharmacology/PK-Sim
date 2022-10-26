@@ -468,69 +468,6 @@ namespace PKSim.Core
       }
    }
 
-   public class When_retrieving_the_AUC_DDI_for_a_compound : concern_for_IndividualSimulation
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.CompoundPKFor("COMP").AucDDI = 10;
-      }
-
-      [Observation]
-      public void should_return_null_if_the_value_was_not_calculated()
-      {
-         sut.AucDDIFor("toto").HasValue.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_return_the_expected_value_otherwise()
-      {
-         sut.AucDDIFor("COMP").ShouldBeEqualTo(10);
-      }
-   }
-
-   public class When_retrieving_the_Cmax_DDI_for_a_compound : concern_for_IndividualSimulation
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.CompoundPKFor("COMP").CmaxDDI = 10;
-      }
-
-      [Observation]
-      public void should_return_nuill_if_the_value_was_not_calculated()
-      {
-         sut.CmaxDDIFor("toto").HasValue.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_return_the_expected_value_otherwise()
-      {
-         sut.CmaxDDIFor("COMP").ShouldBeEqualTo(10);
-      }
-   }
-
-   public class When_retrieving_the_AUC_iv_for_a_compound : concern_for_IndividualSimulation
-   {
-      protected override void Context()
-      {
-         base.Context();
-         sut.CompoundPKFor("COMP").AucIV = 10;
-      }
-
-      [Observation]
-      public void should_return_null_if_the_value_was_not_calculated()
-      {
-         sut.AucIVFor("toto").HasValue.ShouldBeFalse();
-      }
-
-      [Observation]
-      public void should_return_the_expected_value_otherwise()
-      {
-         sut.AucIVFor("COMP").ShouldBeEqualTo(10);
-      }
-   }
-
    public class When_adding_used_observed_data_in_the_simulation : concern_for_IndividualSimulation
    {
       private DataRepository _observedData;
@@ -667,19 +604,19 @@ namespace PKSim.Core
 
    public class When_removing_some_observed_data_from_a_simulation : concern_for_IndividualSimulation
    {
-      private DataRepository _DataRepository;
+      private DataRepository _dataRepository;
 
       protected override void Context()
       {
          base.Context();
-         _DataRepository = new DataRepository {Id = "toto"};
-         sut.AddUsedObservedData(_DataRepository);
+         _dataRepository = new DataRepository {Id = "toto"};
+         sut.AddUsedObservedData(_dataRepository);
          sut.HasChanged = false;
       }
 
       protected override void Because()
       {
-         sut.RemoveUsedObservedData(_DataRepository);
+         sut.RemoveUsedObservedData(_dataRepository);
       }
 
       [Observation]

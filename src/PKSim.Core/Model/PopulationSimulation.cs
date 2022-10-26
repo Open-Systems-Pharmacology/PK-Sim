@@ -323,10 +323,7 @@ namespace PKSim.Core.Model
       private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, string compoundName)
       {
          var column = results.FirstOrDefault(x =>
-               x.QuantityPath.Contains(organ) &&
-               x.QuantityPath.Contains(compartment) &&
-               x.QuantityPath.Contains(columnName) &&
-               x.QuantityPath.Contains(compoundName)
+               isQuantityPathFor(organ, compartment, columnName, compoundName, x)
             );
          if (column == null) 
             return null;
@@ -336,6 +333,12 @@ namespace PKSim.Core.Model
          {
             Values =  column.Values
          };
+      }
+
+      private static bool isQuantityPathFor(string organ, string compartment, string columnName, string compoundName, QuantityValues quantityValues)
+      {
+         var quantityPathArray = quantityValues.QuantityPath.ToPathArray();
+         return quantityPathArray.ContainsAll(new[] { organ, compartment, columnName, compoundName });
       }
 
       public DataColumn VenousBloodColumnForIndividual(int individualId, string compoundName)

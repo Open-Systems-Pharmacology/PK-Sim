@@ -48,10 +48,11 @@ namespace PKSim.Core.Services
       private Simulation createAndRun(Func<ISimulationFactory, Simulation> simulationCreator)
       {
          var simulation = simulationCreator(_simulationFactory);
+
          try
          {
             _registrationTask.Register(simulation);
-            _simulationRunner.RunSimulation(simulation).Wait();
+            _simulationRunner.RunSimulation(simulation, new SimulationRunOptions { RaiseEvents = false }).Wait();
          }
          finally
          {

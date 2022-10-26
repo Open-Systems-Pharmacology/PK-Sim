@@ -28,11 +28,13 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       {
          var simMetaData = createFor(populationSimulation, SimulationMode.Population);
 
+         simMetaData.SimulationAnalyses = mapFrom(populationSimulation.PKAnalyses);
+
          if (!resultsHaveChanged(populationSimulation))
             return simMetaData;
 
          simMetaData.SimulationResults = populationSimulation.Results;
-         simMetaData.SimulationAnalyses = mapFrom(populationSimulation.PKAnalyses);
+         
          return simMetaData;
       }
 

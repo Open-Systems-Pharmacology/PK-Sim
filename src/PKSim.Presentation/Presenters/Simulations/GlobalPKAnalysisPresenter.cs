@@ -93,7 +93,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void CalculateDDIRatioFor(string compoundName)
       {
-         calculateGlobalPKAnalysis(x => x.CalculateDDIRatioFor(firstSimulation, compoundName));
+         calculateGlobalPKAnalysis(x => x.CalculateDDIRatioFor(firstSimulation));
       }
 
       private void calculateGlobalPKAnalysis(Action<IPKAnalysesTask> calculationAction)

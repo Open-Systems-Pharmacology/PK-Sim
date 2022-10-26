@@ -20,6 +20,9 @@ using PKAnalysesTask = PKSim.Core.Services.PKAnalysesTask;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using OSPSuite.Core.Domain.Builder;
 using System;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core
 {
@@ -62,8 +65,8 @@ namespace PKSim.Core
          _interactionTask = A.Fake<IInteractionTask>();
          _cloner = A.Fake<ICloner>();
 
-         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository, 
-            _statisticalDataCalculator, _representationInfoRepository, _parameterFactory, _protocolMapper, _protocolFactory, _globalPKAnalysisRunner, 
+         sut = new PKAnalysesTask(_lazyLoadTask, _pkCalculator, _pkParameterRepository, _pkCalculationOptionsFactory, _pkMapper, _dimensionRepository,
+            _statisticalDataCalculator, _representationInfoRepository, _parameterFactory, _protocolMapper, _protocolFactory, _globalPKAnalysisRunner,
             _vssCalculator, _interactionTask, _cloner, _entityPathResolver);
       }
    }
@@ -166,6 +169,7 @@ namespace PKSim.Core
          _simulation.OutputSchema = new OutputSchema();
          _simulation.OutputSchema.AddInterval(new OutputInterval { DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME) });
          _simulation.Model = new OSPSuite.Core.Domain.Model { Root = new Container() };
+         _simulation.Results = new SimulationResults { new IndividualResults { new QuantityValues() } };
 
 
          _simulation.Model.Root.Add(_eventGroup);
@@ -214,6 +218,8 @@ namespace PKSim.Core
    {
       protected PopulationSimulation _populationSimulation;
       protected RandomPopulation _population;
+      private OutputSelections _outputSelections;
+      protected string _quantityPath1 = "QuantityPath1|DRUG|Concentration";
 
       protected override void Context()
       {
@@ -258,6 +264,9 @@ namespace PKSim.Core
                }
             }
          });
+
+         _populationSimulation.Results.Each(x => x.IndividualId = _populationSimulation.Results.AllIndividualResults.IndexOf(x));
+
          _populationSimulation.SimulationSettings = new SimulationSettings();
          _populationSimulation.OutputSchema = new OutputSchema();
          _populationSimulation.OutputSchema.AddInterval(new OutputInterval { DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME) });
@@ -269,6 +278,11 @@ namespace PKSim.Core
          _application2.Add(DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(Constants.Parameters.START_TIME));
          _application2.Add(new MoleculeAmount().WithName(_compoundName));
          _populationSimulation.Model.Root.Add(_eventGroup);
+
+         _outputSelections = new OutputSelections();
+         _outputSelections.AddOutput(new QuantitySelection(_quantityPath1, QuantityType.Drug));
+
+         _populationSimulation.OutputSelections = _outputSelections;
 
          A.CallTo(() => _pkCalculator.CalculatePK(A<DataColumn>.That.Matches(x => x.BaseGrid.Values.Contains(1.0f)), A<PKCalculationOptions>._, null)).Returns(_venousBloodPK);
          A.CallTo(() => _pkCalculator.CalculatePK(A<DataColumn>.That.Matches(x => x.BaseGrid.Values.Contains(0.0f)), A<PKCalculationOptions>._, null)).Returns(_peripheralVenousBloodPK);
@@ -290,6 +304,7 @@ namespace PKSim.Core
          var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Intravenous };
          schemaItem.Add(new PKSimParameter { Name = Constants.Parameters.INFUSION_TIME });
          A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
+         _populationSimulation.PKAnalyses = sut.CalculateFor(_populationSimulation);
       }
 
       protected override void Because()
@@ -360,6 +375,7 @@ namespace PKSim.Core
 
          var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Oral };
          A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
+         _populationSimulation.PKAnalyses = sut.CalculateFor(_populationSimulation);
       }
 
       protected override void Because()
@@ -392,8 +408,8 @@ namespace PKSim.Core
          var protocol = A.Fake<Protocol>();
          _compoundProperties.ProtocolProperties.Protocol = protocol;
          _species.Name = CoreConstants.Species.HUMAN;
-         _simulation.CompoundPKFor(_compoundName).AucIV = 5;
-         _bioaValue = _venousBloodPK[Constants.PKParameters.AUC_inf].Value / _simulation.AucIVFor(_compoundName).Value;
+         _simulation.CompoundPKFor(_compoundName).BioAvailabilityFor(0).AucIV = 5;
+         _bioaValue = _venousBloodPK[Constants.PKParameters.AUC_inf].Value / _simulation.CompoundPKFor(_compoundName).BioAvailabilityFor(0).AucIV.Value;
 
          var schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.Oral };
          A.CallTo(() => _protocolMapper.MapFrom(protocol)).Returns(new[] { schemaItem });
@@ -537,6 +553,7 @@ namespace PKSim.Core
          A.CallTo(() => schemaItem.StartTime).Returns(startTime);
 
          A.CallTo(() => _protocolMapper.MapFrom(_protocol)).Returns(new[] { schemaItem, });
+         sut.CalculateGlobalPKAnalysisFor(new[] { _simulation });
       }
 
       protected override void Because()
@@ -547,7 +564,12 @@ namespace PKSim.Core
       [Observation]
       public void should_use_venous_blood_plasma_to_calculate_the_AUC_inf()
       {
-         _simulation.AucIVFor(_compoundName).ShouldBeEqualTo(2);
+         var compoundPKFor = _simulation.CompoundPKFor(_compoundName);
+         compoundPKFor.AllBioAvailabilities.Count().ShouldBeEqualTo(1);
+         compoundPKFor.AllBioAvailabilities.Each(bioAvailability =>
+         {
+            bioAvailability.AucIV.ShouldBeEqualTo(2);
+         });
       }
 
       [Observation]
@@ -588,23 +610,24 @@ namespace PKSim.Core
 
          A.CallTo(() => _globalPKAnalysisRunner.RunForDDIRatio(_simulation)).Returns(_ddiRatioSimulation);
          A.CallTo(() => _pkMapper.MapFrom(_peripheralVenousBloodPlasma, A<PKValues>._, A<PKParameterMode>._, A<string>._)).Returns(_pkAnalysis);
+         sut.CalculateGlobalPKAnalysisFor(new[] { _simulation });
       }
 
       protected override void Because()
       {
-         sut.CalculateDDIRatioFor(_simulation, _compoundName);
+         sut.CalculateDDIRatioFor(_simulation);
       }
 
       [Observation]
       public void should_set_the_values_for_cmax_ddi_using_cmax_in_simulation()
       {
-         _simulation.CmaxDDIFor(_compoundName).ShouldBeEqualTo(1);
-      }
-
-      [Observation]
-      public void should_set_the_values_for_auc_ddi_using_auc_inf_in_simulation()
-      {
-         _simulation.AucDDIFor(_compoundName).ShouldBeEqualTo(2);
+         var compoundPKFor = _simulation.CompoundPKFor(_compoundName);
+         compoundPKFor.AllDDIRatios.Count().ShouldBeEqualTo(1);
+         compoundPKFor.AllDDIRatios.Each(ddiRatio =>
+         {
+            ddiRatio.CMaxDDI.ShouldBeEqualTo(1);
+            ddiRatio.AucDDI.ShouldBeEqualTo(2);
+         });
       }
    }
 
@@ -632,19 +655,23 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.CalculateDDIRatioFor(_simulation, _compoundName);
+         sut.CalculateDDIRatioFor(_simulation);
       }
 
       [Observation]
       public void should_set_the_values_for_cmax_ddi_using_cmax_in_simulation()
       {
-         _simulation.CmaxDDIFor(_compoundName).ShouldBeEqualTo(1);
+         var compoundPKFor = _simulation.CompoundPKFor(_compoundName);
+         compoundPKFor.AllDDIRatios.Count().ShouldBeEqualTo(1);
+         compoundPKFor.AllDDIRatios.All(x => x.CMaxDDI == 1).ShouldBeTrue();
       }
 
       [Observation]
       public void should_set_the_values_for_auc_ddi_using_auc_inf_in_simulation()
       {
-         _simulation.AucDDIFor(_compoundName).ShouldBeEqualTo(2);
+         var compoundPKFor = _simulation.CompoundPKFor(_compoundName);
+         compoundPKFor.AllDDIRatios.Count().ShouldBeEqualTo(1);
+         compoundPKFor.AllDDIRatios.All(x => x.AucDDI == 2).ShouldBeTrue();
       }
    }
 
@@ -675,19 +702,22 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         sut.CalculateDDIRatioFor(_simulation, _compoundName);
+         sut.CalculateDDIRatioFor(_simulation);
       }
 
       [Observation]
       public void should_set_the_values_for_cmax_ddi_using_cmax_t_last_t_end_in_simulation()
       {
-         _simulation.CmaxDDIFor(_compoundName).ShouldBeEqualTo(1);
+         var compoundPKFor = _simulation.CompoundPKFor(_compoundName);
+         compoundPKFor.AllDDIRatios.Count().ShouldBeEqualTo(1);
+         compoundPKFor.AllDDIRatios.All(x => x.CMaxDDI == 1).ShouldBeTrue();
       }
-
       [Observation]
       public void should_set_the_values_for_auc_ddi_using_auc_inf_t_last_in_simulation()
       {
-         _simulation.AucDDIFor(_compoundName).ShouldBeEqualTo(2);
+         var compoundPKFor = _simulation.CompoundPKFor(_compoundName);
+         compoundPKFor.AllDDIRatios.Count().ShouldBeEqualTo(1);
+         compoundPKFor.AllDDIRatios.All(x => x.AucDDI == 2).ShouldBeTrue();
       }
    }
 
@@ -711,8 +741,8 @@ namespace PKSim.Core
             Pane = pane,
             QuantityPath = "PATH",
          };
-         curve.Add(new TimeProfileXValue(1), new TimeProfileYValue {Y = 10});
-         curve.Add(new TimeProfileXValue(2), new TimeProfileYValue {Y = 20});
+         curve.Add(new TimeProfileXValue(1), new TimeProfileYValue { Y = 10 });
+         curve.Add(new TimeProfileXValue(2), new TimeProfileYValue { Y = 20 });
          pane.AddCurve(curve);
 
          var rangeCurve = new CurveData<TimeProfileXValue, TimeProfileYValue>()
@@ -722,7 +752,7 @@ namespace PKSim.Core
             QuantityPath = "RANGE_PATH",
          };
 
-         rangeCurve.Add(new TimeProfileXValue(1), new TimeProfileYValue {Y = 10, LowerValue = 1, UpperValue = 2});
+         rangeCurve.Add(new TimeProfileXValue(1), new TimeProfileYValue { Y = 10, LowerValue = 1, UpperValue = 2 });
          pane.AddCurve(rangeCurve);
 
          A.CallTo(() => _populationDataCollector.MolWeightFor("PATH")).Returns(100);
@@ -816,20 +846,20 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation = new IndividualSimulation {DataRepository = new DataRepository()};
-         _baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimensionForSpecs()) {Values = new[] {10f, 20f, 30f}};
+         _simulation = new IndividualSimulation { DataRepository = new DataRepository() };
+         _baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimensionForSpecs()) { Values = new[] { 10f, 20f, 30f } };
          _dataColumn1 = new DataColumn("C1", DomainHelperForSpecs.ConcentrationDimensionForSpecs(), _baseGrid)
          {
-            DataInfo = {Origin = ColumnOrigins.Calculation},
-            QuantityInfo = {Path = new[] {"C1", "Concentration"}},
-            Values = new[] {11f, 21f, 31f}
+            DataInfo = { Origin = ColumnOrigins.Calculation },
+            QuantityInfo = { Path = new[] { "C1", "Concentration" } },
+            Values = new[] { 11f, 21f, 31f }
          };
 
          _dataColumn2 = new DataColumn("C2", DomainHelperForSpecs.ConcentrationDimensionForSpecs(), _baseGrid)
          {
-            DataInfo = {Origin = ColumnOrigins.Calculation},
-            QuantityInfo = {Path = new[] {"C2", "Concentration"}},
-            Values = new[] {12f, 22f, 32f}
+            DataInfo = { Origin = ColumnOrigins.Calculation },
+            QuantityInfo = { Path = new[] { "C2", "Concentration" } },
+            Values = new[] { 12f, 22f, 32f }
          };
 
          _simulation.DataRepository.Add(_dataColumn1);
@@ -864,7 +894,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _results = sut.CalculateFor(new[] {_simulation}, new[] {_dataColumn1, _dataColumn2}, _globalPKAnalysis);
+         _results = sut.CalculateFor(new[] { _simulation }, new[] { _dataColumn1, _dataColumn2 }, _globalPKAnalysis);
       }
 
       [Observation]
