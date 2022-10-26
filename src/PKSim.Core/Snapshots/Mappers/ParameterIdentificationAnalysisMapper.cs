@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -25,12 +26,12 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ParameterIdentificationAnalysis> MapToSnapshot(ISimulationAnalysis simulationAnalysis)
       {
          var snapshot = await SnapshotFrom(simulationAnalysis, x => { x.Type = simulationAnalysis.GetType().Name; });
-         snapshot.Chart = await parameterIdentificationAnalysisChartFrom(simulationAnalysis as ParameterIdentificationAnalysisChart);
-         snapshot.DataRepositories = await localDataRepositoriesFrom(simulationAnalysis as ParameterIdentificationAnalysisChartWithLocalRepositories);
+         snapshot.Chart = await parameterIdentificationAnalysisChartFrom(simulationAnalysis as AnalysisChart);
+         snapshot.DataRepositories = await localDataRepositoriesFrom(simulationAnalysis as AnalysisChartWithLocalRepositories);
          return snapshot;
       }
 
-      private Task<DataRepository[]> localDataRepositoriesFrom(ParameterIdentificationAnalysisChartWithLocalRepositories analysisWithLocalRepositories)
+      private Task<DataRepository[]> localDataRepositoriesFrom(AnalysisChartWithLocalRepositories analysisWithLocalRepositories)
       {
          if (analysisWithLocalRepositories == null)
             return Task.FromResult<DataRepository[]>(null);
@@ -38,7 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return _dataRepositoryMapper.MapToSnapshots(analysisWithLocalRepositories.DataRepositories);
       }
 
-      private Task<CurveChart> parameterIdentificationAnalysisChartFrom(ParameterIdentificationAnalysisChart parameterIdentificationAnalysisChart)
+      private Task<CurveChart> parameterIdentificationAnalysisChartFrom(AnalysisChart parameterIdentificationAnalysisChart)
       {
          if (parameterIdentificationAnalysisChart == null)
             return Task.FromResult<CurveChart>(null);
@@ -73,7 +74,7 @@ namespace PKSim.Core.Snapshots.Mappers
             createSimulationAnalysisIf<ParameterIdentificationResidualHistogram>(type);
       }
 
-      private ParameterIdentificationAnalysisChart createChartFrom(string type)
+      private AnalysisChart createChartFrom(string type)
       {
          return
             createIf<ParameterIdentificationTimeProfileChart>(type) ??
@@ -84,7 +85,7 @@ namespace PKSim.Core.Snapshots.Mappers
             createIf<ParameterIdentificationResidualVsTimeChart>(type);
       }
 
-      private ParameterIdentificationAnalysisChart createIf<T>(string parameterIdentificationAnalysisType) where T : ParameterIdentificationAnalysisChart, new()
+      private AnalysisChart createIf<T>(string parameterIdentificationAnalysisType) where T : AnalysisChart, new()
       {
          return string.Equals(typeof(T).Name, parameterIdentificationAnalysisType) ? new T() : null;
       }
@@ -95,7 +96,7 @@ namespace PKSim.Core.Snapshots.Mappers
       }
    }
 
-   public class ParameterIdentificationAnalysisChartMapper : CurveChartMapper<ParameterIdentificationAnalysisChart>
+   public class ParameterIdentificationAnalysisChartMapper : CurveChartMapper<AnalysisChart>
    {
       public ParameterIdentificationAnalysisChartMapper(ChartMapper chartMapper, AxisMapper axisMapper, CurveMapper curveMapper, IIdGenerator idGenerator) : base(chartMapper, axisMapper, curveMapper, idGenerator)
       {

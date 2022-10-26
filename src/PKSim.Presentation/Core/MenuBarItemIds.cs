@@ -38,6 +38,8 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId RunWithSettings = createMenuBarItemId("RunWithSettings");
       public static MenuBarItemId Stop = createMenuBarItemId("Stop");
       public static MenuBarItemId ShowIndividualResults = createMenuBarItemId("ShowIndividualResults");
+      public static MenuBarItemId PredictedVsObservedSimulationAnalysis = createMenuBarItemId("PredictedVsObserved");
+      public static MenuBarItemId ResidualsVsTimeSimulationAnalysis = createMenuBarItemId("ResidualsVsTime");
       public static MenuBarItemId BoxWhiskerAnalysis = createMenuBarItemId("BoxWhiskerAnalysis");
       public static MenuBarItemId ScatterAnalysis = createMenuBarItemId("ScatterAnalysis");
       public static MenuBarItemId RangeAnalysis = createMenuBarItemId("RangeAnalysis");
@@ -98,6 +100,7 @@ namespace PKSim.Presentation.Core
       public static MenuBarItemId TimeProfileParameterIdentification = createMenuBarItemId("TimeProfileParameterIdentification");
       public static MenuBarItemId PredictedVsObservedParameterIdentification = createMenuBarItemId("PredictedVsObservedParameterIdentification");
       public static MenuBarItemId ResidualsVsTimeParameterIdentifcation = createMenuBarItemId("ResidualsVsTimeParameterIdentifcation");
+      public static MenuBarItemId ResidualsVsTimeSimulation = createMenuBarItemId("ResidualsVsTimeSimulation");
       public static MenuBarItemId ResidualHistogramParameterIdentification = createMenuBarItemId("ResidualHistogramParameterIdentification");
       public static MenuBarItemId ParameterIdentificationFeedbackView = createMenuBarItemId("ParameterIdentificationFeedbackView");
       public static MenuBarItemId CorrelationMatrixParameterIdentification = createMenuBarItemId("CorrelationMatrixParameterIdentification");

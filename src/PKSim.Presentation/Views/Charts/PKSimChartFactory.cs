@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Core.Chart.Simulations;
 
 namespace PKSim.Presentation.Views.Charts
 {
@@ -24,9 +25,9 @@ namespace PKSim.Presentation.Views.Charts
          _chartTask = chartTask;
       }
 
-      public SimulationTimeProfileChart CreateChartFor(IndividualSimulation individualSimulation)
+      public TChartType CreateChartFor<TChartType>(IndividualSimulation individualSimulation) where TChartType : ChartWithObservedData
       {
-         var chart = Create<SimulationTimeProfileChart>();
+         var chart = Create<TChartType>();
          _chartTask.UpdateObservedDataInChartFor(individualSimulation, chart);
          _chartTask.SetOriginTextFor(individualSimulation.Name, chart);
          return chart;

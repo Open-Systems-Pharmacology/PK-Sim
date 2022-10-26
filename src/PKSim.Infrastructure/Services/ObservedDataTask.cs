@@ -31,6 +31,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ITemplateTask _templateTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IPKMLPersistor _pkmlPersistor;
+      private readonly IOutputMappingMatchingTask _OutputMappingMatchingTask;
 
       public ObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -42,7 +43,10 @@ namespace PKSim.Infrastructure.Services
          IContainerTask containerTask,
          IParameterChangeUpdater parameterChangeUpdater,
          IPKMLPersistor pkmlPersistor,
-         IObjectTypeResolver objectTypeResolver) : base(dialogCreator, executionContext, dataRepositoryTask, containerTask, objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IOutputMappingMatchingTask OutputMappingMatchingTask)
+         : base(dialogCreator, executionContext, dataRepositoryTask, containerTask,
+         objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
@@ -50,6 +54,7 @@ namespace PKSim.Infrastructure.Services
          _templateTask = templateTask;
          _parameterChangeUpdater = parameterChangeUpdater;
          _pkmlPersistor = pkmlPersistor;
+         _OutputMappingMatchingTask = OutputMappingMatchingTask;
       }
 
       public override void Rename(DataRepository observedData)
@@ -75,7 +80,8 @@ namespace PKSim.Infrastructure.Services
 
       public void ExportToPkml(DataRepository observedData)
       {
-         var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportObservedDataToPkml, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, observedData.Name);
+         var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportObservedDataToPkml, Constants.Filter.PKML_FILE_FILTER,
+            Constants.DirectoryKey.MODEL_PART, observedData.Name);
          if (string.IsNullOrEmpty(file)) return;
 
          _pkmlPersistor.SaveToPKML(observedData, file);
@@ -90,22 +96,24 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable)
+      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable)
       {
-         AddObservedDataToAnalysable(observedData, analysable, showData: false);
+         AddObservedDataToAnalysable(observedDataList, analysable, showData: false);
       }
 
-      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable, bool showData)
+      public void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable, bool showData)
       {
          var simulation = analysable as Simulation;
          if (simulation == null)
             return;
 
-         var observedDataToAdd = observedData.Where(x => !simulation.UsesObservedData(x)).ToList();
+         var observedDataToAdd = observedDataList.Where(x => !simulation.UsesObservedData(x)).ToList();
          if (!observedDataToAdd.Any())
             return;
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
+         observedDataList.Each(observedData => _OutputMappingMatchingTask.AddMatchingOutputMapping(observedData, simulation));
+
          _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
@@ -121,7 +129,9 @@ namespace PKSim.Infrastructure.Services
             if (!parameterIdentifications.Any())
                continue;
 
-            _dialogCreator.MessageBoxInfo(Captions.ParameterIdentification.CannotRemoveObservedDataBeingUsedByParameterIdentification(observedDataFrom(usedObservedData).Name, parameterIdentifications.AllNames().ToList()));
+            _dialogCreator.MessageBoxInfo(
+               Captions.ParameterIdentification.CannotRemoveObservedDataBeingUsedByParameterIdentification(observedDataFrom(usedObservedData).Name,
+                  parameterIdentifications.AllNames().ToList()));
             return;
          }
 
@@ -154,6 +164,8 @@ namespace PKSim.Infrastructure.Services
 
          var observedDataList = observedDataListFrom(usedObservedDatas);
          observedDataList.Each(simulation.RemoveUsedObservedData);
+         observedDataList.Each(simulation.RemoveOutputMappings);
+
          _executionContext.PublishEvent(new ObservedDataRemovedFromAnalysableEvent(simulation, observedDataList));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }

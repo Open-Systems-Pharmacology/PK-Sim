@@ -1,9 +1,9 @@
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 {
@@ -18,7 +18,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       private readonly ICompressedSerializationManager _serializationManager;
       private readonly ISimulationResultsCreator _simulationResultsCreator;
 
-      public SimulationToSimulationMetaDataMapper(ICompressedSerializationManager serializationManager, ISimulationResultsCreator simulationResultsCreator)
+      public SimulationToSimulationMetaDataMapper(ICompressedSerializationManager serializationManager,
+         ISimulationResultsCreator simulationResultsCreator)
       {
          _serializationManager = serializationManager;
          _simulationResultsCreator = simulationResultsCreator;
@@ -53,7 +54,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
 
       private SimulationMetaData createFor(Simulation simulation, SimulationMode simulationMode)
       {
-         var simDeta = new SimulationMetaData {SimulationMode = simulationMode};
+         var simDeta = new SimulationMetaData { SimulationMode = simulationMode };
          updateSimulationProperties(simulation, simDeta);
          return simDeta;
       }
@@ -75,7 +76,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
       {
          return new SimulationAnalysesMetaData
          {
-            Content = {Data = _serializationManager.Serialize(populationPKAnalyses)}
+            Content = { Data = _serializationManager.Serialize(populationPKAnalyses) }
          };
       }
 
@@ -86,7 +87,7 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
             Id = chart.Id,
             Name = chart.Name,
             Description = chart.Description,
-            Content = {Data = _serializationManager.Serialize(chart)}
+            Content = { Data = _serializationManager.Serialize(chart) }
          };
       }
 

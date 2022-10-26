@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace PKSim.Core.Model
 {
@@ -55,8 +56,6 @@ namespace PKSim.Core.Model
          _results = new NullSimulationResults();
          ResultsHaveChanged = false;
       }
-
-      // public void ClearPKCache() => _compoundPKCache.Clear();
 
       /// <summary>
       ///    Returns all building blocks used by the simulation.
@@ -253,7 +252,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IEnumerable<ISimulationAnalysis> Analyses => _allSimulationAnalyses;
 
-
       /// <summary>
       ///    All analyses defined for the simulation
       /// </summary>
@@ -263,6 +261,8 @@ namespace PKSim.Core.Model
       ///    All charts defined for the simulation
       /// </summary>
       public virtual IEnumerable<CurveChart> Charts => _allSimulationAnalyses.OfType<CurveChart>();
+
+      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
       /// <summary>
       ///    remove the chart from the simulation
@@ -280,7 +280,7 @@ namespace PKSim.Core.Model
       }
 
       private IEnumerable<IWithObservedData> analysesWithObservedData => _allSimulationAnalyses.OfType<IWithObservedData>();
-      public virtual  IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
+      public virtual IEnumerable<ChartWithObservedData> ChartWithObservedData => analysesWithObservedData.OfType<ChartWithObservedData>();
 
       public virtual void AddUsedObservedData(UsedObservedData usedObservedData)
       {
@@ -303,6 +303,15 @@ namespace PKSim.Core.Model
          _usedObservedData.Remove(dataRepository.Id);
          analysesWithObservedData.Each(c => c.RemoveObservedData(dataRepository));
          HasChanged = true;
+      }
+
+      /// <summary>
+      ///    Remove the output mappings mapped to the dataRepository
+      /// </summary>
+      public void RemoveOutputMappings(DataRepository dataRepository)
+      {
+         var outputsMatchingDeletedObservedData = OutputMappings.OutputMappingsUsingDataRepository(dataRepository).ToList();
+         outputsMatchingDeletedObservedData.Each(OutputMappings.Remove);
       }
 
       /// <summary>
@@ -332,6 +341,8 @@ namespace PKSim.Core.Model
             ResultsHaveChanged = true;
          }
       }
+
+      public virtual DataRepository ResultsDataRepository { get; set; }
 
       /// <summary>
       ///    Returns true if the simulation originated from PK-Sim. Otherwise false
@@ -410,11 +421,13 @@ namespace PKSim.Core.Model
                return;
 
             thisCompoundProperties.Compound = correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.Compound);
-            thisCompoundProperties.ProtocolProperties.Protocol = correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.ProtocolProperties.Protocol);
+            thisCompoundProperties.ProtocolProperties.Protocol =
+               correspondingBuildingBlock(sourceSimulation, sourceCompoundProperties.ProtocolProperties.Protocol);
          });
       }
 
-      private TBuildingBlock correspondingBuildingBlock<TBuildingBlock>(Simulation sourceSimulation, TBuildingBlock sourceBuildingBlock) where TBuildingBlock : class, IPKSimBuildingBlock
+      private TBuildingBlock correspondingBuildingBlock<TBuildingBlock>(Simulation sourceSimulation, TBuildingBlock sourceBuildingBlock)
+         where TBuildingBlock : class, IPKSimBuildingBlock
       {
          if (sourceBuildingBlock == null)
             return null;
@@ -588,9 +601,8 @@ namespace PKSim.Core.Model
       //This is not used in PKSim.
       public IBuildConfiguration BuildConfiguration { get; set; } = null;
 
-
       /// <summary>
-      ///    Returns the <see cref="OutputSelections"/> for the simulation
+      ///    Returns the <see cref="OutputSelections" /> for the simulation
       /// </summary>
       public virtual OutputSelections OutputSelections
       {
@@ -663,7 +675,6 @@ namespace PKSim.Core.Model
          get => Properties.EventProperties;
          set => Properties.EventProperties = value;
       }
-
 
       /// <summary>
       ///    Returns the observer set mappings used in the simulation configuration
