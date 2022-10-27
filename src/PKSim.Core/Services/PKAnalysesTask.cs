@@ -275,7 +275,7 @@ namespace PKSim.Core.Services
          var venousBloodPlasmaPK = calculatePK(venousBloodCurve, options);
 
          var compoundPKFromContext = (compoundPKContext ?? new CompoundPKContext()).CompoundPKFor(compoundName);
-         var bioAvailability = bioAvailabilityCalculator(individualId, compoundPKFromContext, venousBloodPlasmaPK);
+         var bioAvailability = bioAvailabilityCalculator(individualId, compoundPKFromContext, venousBloodPlasmaPK.ValueFor(Constants.PKParameters.AUC_inf));
          
          var bioAvailabilityValue = bioAvailability.Value;
 
@@ -352,42 +352,40 @@ namespace PKSim.Core.Services
 
       private IParameter cmaxRatioCalculator(int individualId, CompoundPK compoundPKFromContext, float? cMax)
       {
-         var contextValue = compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.C_maxRatio);
-         if (contextValue.HasValue)
-         {
-            return createParameter(CoreConstants.PKAnalysis.C_maxRatio, contextValue, Constants.Dimension.DIMENSIONLESS);
-         }
+         var parameter = contextParameterFrom(CoreConstants.PKAnalysis.C_maxRatio, compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.C_maxRatio),
+            cMax, compoundPKFromContext.CMaxDDIFor(individualId));
 
-         var cMaxDDI = compoundPKFromContext.CMaxDDIFor(individualId);
          compoundPKFromContext.AddDDICMax(individualId, cMax);
-         return createRatioParameter(CoreConstants.PKAnalysis.C_maxRatio, cMax, cMaxDDI, Constants.Dimension.DIMENSIONLESS);
+         return parameter;
       }
 
       private IParameter aucRatioCalculator(int individualId, CompoundPK compoundPKFromContext, float? aucInf)
       {
-         var contextValue = compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.AUCRatio);
-         if (contextValue.HasValue)
-         {
-            return createParameter(CoreConstants.PKAnalysis.AUCRatio, contextValue, Constants.Dimension.DIMENSIONLESS);
-         }
+         var parameter = contextParameterFrom(CoreConstants.PKAnalysis.AUCRatio, compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.AUCRatio),
+            aucInf, compoundPKFromContext.DDIAucInfFor(individualId));
 
-         var aucDDI = compoundPKFromContext.DDIAucInfFor(individualId);
          compoundPKFromContext.AddDDIAucInf(individualId, aucInf);
-         return createRatioParameter(CoreConstants.PKAnalysis.AUCRatio, aucInf, aucDDI, Constants.Dimension.DIMENSIONLESS);
+
+         return parameter;
       }
 
-      private IParameter bioAvailabilityCalculator(int individualId, CompoundPK compoundPKFromContext, PKValues venousBloodPlasmaPK)
+      private IParameter bioAvailabilityCalculator(int individualId, CompoundPK compoundPKFromContext, double? aucInf)
       {
-         var contextValue = compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.Bioavailability);
+         var parameter = contextParameterFrom(CoreConstants.PKAnalysis.Bioavailability,
+            compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.Bioavailability), aucInf, 
+            compoundPKFromContext.BioAvailabilityAucInfFor(individualId));
+
+         compoundPKFromContext.AddBioavailability(individualId, aucInf);
+
+         return parameter;
+      }
+
+      IParameter contextParameterFrom(string parameterName, double? contextValue, double? numerator, double? denominator)
+      {
          if (contextValue.HasValue)
-         {
-            return createParameter(CoreConstants.PKAnalysis.Bioavailability, contextValue, Constants.Dimension.DIMENSIONLESS);
-         }
+            return createParameter(parameterName, contextValue, Constants.Dimension.DIMENSIONLESS);
 
-         var aucIVForIndividual = compoundPKFromContext.BioAvailabilityAucInfFor(individualId);
-         compoundPKFromContext.AddBioavailability(individualId, venousBloodPlasmaPK.ValueFor(Constants.PKParameters.AUC_inf));
-
-         return createRatioParameter(CoreConstants.PKAnalysis.Bioavailability, venousBloodPlasmaPK.ValueFor(Constants.PKParameters.AUC_inf), aucIVForIndividual, Constants.Dimension.DIMENSIONLESS);
+         return createRatioParameter(parameterName, numerator, denominator, Constants.Dimension.DIMENSIONLESS);
       }
 
       private static IEnumerable<QuantityPKParameter> mapQuantityPKParametersFromIndividualGlobalPKAnalyses(ICache<int, GlobalPKAnalysis> globalIndividualPKParameterCache)
@@ -589,7 +587,6 @@ namespace PKSim.Core.Services
             }
          });
          simulation.HasChanged = true;
-
       }
 
       private CompoundPKContext createContextForPopulationSimulation(CompoundPKContext contextCompoundPK, Func<CompoundPK, CompoundPK> compoundPKMapper, string compoundName, PopulationSimulation populationSimulation, string[] parameterNames)
@@ -604,7 +601,7 @@ namespace PKSim.Core.Services
       private CompoundPK mapFromBioavailabilityCompoundPK(CompoundPK bioAvailabilitySimulationCompoundPK)
       {
          var compoundPK = new CompoundPK { CompoundName = bioAvailabilitySimulationCompoundPK.CompoundName };
-         bioAvailabilitySimulationCompoundPK.AllBioAvailabilities.KeyValues.Each(bioAvailability => { compoundPK.AddBioavailability(bioAvailability.Key, bioAvailability.Value); });
+         bioAvailabilitySimulationCompoundPK.AllBioAvailabilityAucInf.KeyValues.Each(bioAvailability => { compoundPK.AddBioavailability(bioAvailability.Key, bioAvailability.Value); });
          return compoundPK;
       }
 
@@ -928,55 +925,6 @@ namespace PKSim.Core.Services
 
          var compound = simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name);
          return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound));
-      }
-   }
-
-   public class CompoundPKContext
-   {
-      private readonly ICache<string, CompoundPK> _compoundPKCache;
-
-      public CompoundPKContext()
-      {
-         _compoundPKCache = new Cache<string, CompoundPK>(x => x.CompoundName, x => new CompoundPK());
-      }
-
-      public CompoundPK CompoundPKFor(string compoundName)
-      {
-         if (!_compoundPKCache.Contains(compoundName))
-            _compoundPKCache.Add(new CompoundPK { CompoundName = compoundName });
-
-         return _compoundPKCache[compoundName];
-      }
-
-      public void AddCompoundPK(CompoundPK compoundPK)
-      {
-         _compoundPKCache[compoundPK.CompoundName] = compoundPK;
-      }
-
-      /// <summary>
-      /// Initializes the context compound PK ratio parameters from the calculated simulation PK Parameters
-      /// Adds BioAvailability, AUCRatio, and CMaxRatio to the context
-      /// </summary>
-      /// <param name="populationSimulation">The simulation that contains the PK Parameters</param>
-      public void InitializeQuantityPKParametersFrom(PopulationSimulation populationSimulation)
-      {
-         populationSimulation.CompoundNames.Each(compoundName =>
-         {
-            var bioAvailability = populationSimulation.PKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.Bioavailability);
-            var aucRatio = populationSimulation.PKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.AUCRatio);
-            var cMaxRatio = populationSimulation.PKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.C_maxRatio);
-            var compoundPK = CompoundPKFor(compoundName);
-
-            if (bioAvailability != null)
-               compoundPK.AddQuantityPKParameter(bioAvailability);
-
-            if (aucRatio != null)
-               compoundPK.AddQuantityPKParameter(aucRatio);
-
-            if (cMaxRatio != null)
-               compoundPK.AddQuantityPKParameter(cMaxRatio);
-         });
-
       }
    }
 }

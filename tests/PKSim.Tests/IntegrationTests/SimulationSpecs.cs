@@ -797,7 +797,7 @@ namespace PKSim.IntegrationTests
 
       protected void CalculateDDIRatioForDrug()
       {
-         _pkAnalysesTask.CalculateDDIRatioFor(_simulation, _compound.Name);
+         _pkAnalysesTask.CalculateDDIRatioFor(_simulation);
       }
 
       [Observation]

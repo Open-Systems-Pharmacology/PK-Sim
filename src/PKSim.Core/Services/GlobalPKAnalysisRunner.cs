@@ -52,6 +52,8 @@ namespace PKSim.Core.Services
          try
          {
             _registrationTask.Register(simulation);
+            // For the transient simulations that are running to calculate ratio parameters, we don't want to raise events
+            // This prevents the UI from becoming locked when unnecessary
             _simulationRunner.RunSimulation(simulation, new SimulationRunOptions { RaiseEvents = false }).Wait();
          }
          finally

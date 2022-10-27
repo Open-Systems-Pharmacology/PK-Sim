@@ -13,8 +13,10 @@ namespace PKSim.Core.Model
    public class IndividualSimulation : Simulation
    {
       private DataRepository _dataRepository;
-
       public virtual IEnumerable<SimulationTimeProfileChart> TimeProfileAnalyses => Analyses.OfType<SimulationTimeProfileChart>();
+      public Cache<string, double?> AucDDI { get; } = new Cache<string, double?>(onMissingKey: x => null);
+      public Cache<string, double?> AucIV { get; } = new Cache<string, double?>(onMissingKey: x => null);
+      public Cache<string, double?> CMaxDDI { get; } = new Cache<string, double?>(onMissingKey: x => null);
 
       /// <summary>
       ///    Representation in memory of the actual simulation results
@@ -78,16 +80,5 @@ namespace PKSim.Core.Model
          CMaxDDI.Clear();
          AucIV.Clear();
       }
-
-      public IndividualSimulation()
-      {
-         AucDDI = new Cache<string, double?>(onMissingKey: x => null);
-         AucIV = new Cache<string, double?>(onMissingKey: x => null);
-         CMaxDDI = new Cache<string, double?>(onMissingKey: x => null);
-      }
-
-      public Cache<string, double?> AucDDI { get; }
-      public Cache<string, double?> AucIV { get; }
-      public Cache<string, double?> CMaxDDI { get; }
    }
 }

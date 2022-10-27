@@ -1,4 +1,3 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 
@@ -10,25 +9,8 @@ namespace PKSim.Core.Model
    public class CompoundPK
    {
       private readonly Cache<string, QuantityPKParameter> _quantityPKParameters = new Cache<string, QuantityPKParameter>(getKey:x => x.Name);
-
-      public CompoundPK()
-      {
-         bioAvailabilities = new Cache<int, double?>();
-         ddiAucInf = new Cache<int, double?>();
-         ddiCMax = new Cache<int, double?>();
-      }
+      
       public string CompoundName { get; set; }
-
-      /// <summary>
-      /// AUC_inf of plasma curve following a IV infusion of 15 min
-      /// </summary>
-      private Cache<int, double?> bioAvailabilities { get; set; }
-
-      /// <summary>
-      /// AUC_inf of plasma curve following an application where only <see cref="CompoundName"/> is applied
-      /// </summary>
-      private Cache<int, double?> ddiAucInf { get; set; }
-      private Cache<int, double?> ddiCMax { get; set; }
 
       private double? valueStoreFor(ICache<int, double?> allValues, int individualId)
       {
@@ -38,38 +20,29 @@ namespace PKSim.Core.Model
          return allValues[individualId];
       }
 
-      public ICache<int, double?> AllBioAvailabilities => bioAvailabilities;
-      public ICache<int, double?> AllDDIAucInf => ddiAucInf;
-      public ICache<int, double?> AllDDICMax => ddiCMax;
+      public ICache<int, double?> AllBioAvailabilityAucInf = new Cache<int, double?>();
+      public ICache<int, double?> AllDDIAucInf = new Cache<int, double?>();
+      public ICache<int, double?> AllDDICMax = new Cache<int, double?>();
 
-      public double? BioAvailabilityAucInfFor(int individualId)
-      {
-         return valueStoreFor(bioAvailabilities, individualId);
-      }
+      public double? BioAvailabilityAucInfFor(int individualId) => valueStoreFor(AllBioAvailabilityAucInf, individualId);
 
-      public double? DDIAucInfFor(int individualId)
-      {
-         return valueStoreFor(ddiAucInf, individualId);
-      }
+      public double? DDIAucInfFor(int individualId) => valueStoreFor(AllDDIAucInf, individualId);
 
       public void AddDDICMax(int individualId, double? cMax)
       {
-         ddiCMax[individualId] = cMax;
+         AllDDICMax[individualId] = cMax;
       }
 
       public void AddDDIAucInf(int individualId, double? aucInf)
       {
-         ddiAucInf[individualId] = aucInf;
+         AllDDIAucInf[individualId] = aucInf;
       }
       
-      public double? CMaxDDIFor(int individualId)
-      {
-         return valueStoreFor(ddiCMax, individualId);
-      }
+      public double? CMaxDDIFor(int individualId) => valueStoreFor(AllDDICMax, individualId);
 
       public void AddBioavailability(int individualId, double? aucInf)
       {
-         bioAvailabilities[individualId] = aucInf;
+         AllBioAvailabilityAucInf[individualId] = aucInf;
       }
 
       public void AddQuantityPKParameter(QuantityPKParameter quantityPKParameter)
@@ -81,9 +54,10 @@ namespace PKSim.Core.Model
 
       public double? QuantityFor(int individualId, string parameterName)
       {
-         var quantityParameter = _quantityPKParameters.FirstOrDefault(x => string.Equals(x.Name, parameterName));
+         if(_quantityPKParameters.Contains(parameterName))
+            return _quantityPKParameters[parameterName].ValueFor(individualId);
 
-         return quantityParameter?.ValueFor(individualId);
+         return null;
       }
    }
 }

@@ -118,6 +118,7 @@ namespace PKSim.IntegrationTests
          if (type == typeof(PKSimReaction)) return true;
          if (type == typeof(PKSimObserverBuilder)) return true;
          if (type == typeof(PKSimTransport)) return true;
+         if (type == typeof(CompoundPK)) return true;
 
 
          //help classes that are not stored in our domain objects

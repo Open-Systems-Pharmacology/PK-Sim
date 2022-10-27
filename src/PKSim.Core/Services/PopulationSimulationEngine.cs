@@ -12,12 +12,12 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public class BaseSimulationEngine
+   public abstract class SimulationEngine
    {
       protected bool _shouldRaiseEvents;
       private readonly IEventPublisher _eventPublisher;
 
-      protected BaseSimulationEngine(IEventPublisher eventPublisher)
+      protected SimulationEngine(IEventPublisher eventPublisher)
       {
          _eventPublisher = eventPublisher;
       }
@@ -29,7 +29,7 @@ namespace PKSim.Core.Services
       }
    }
 
-   public class PopulationSimulationEngine : BaseSimulationEngine, IPopulationSimulationEngine
+   public class PopulationSimulationEngine : SimulationEngine, IPopulationSimulationEngine
    {
       private readonly IPopulationRunner _populationRunner;
       private readonly IProgressManager _progressManager;

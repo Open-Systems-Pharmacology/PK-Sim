@@ -228,7 +228,6 @@ namespace PKSim.Infrastructure
          A.CallTo(() => esomeprazole.MolWeight).Returns(200);
          A.CallTo(() => _populationSimulation.Compounds).Returns(new[] { esomeprazole, A.Fake<Compound>().WithName("Esomeprazole-2") });
 
-         _populationSimulation.AddCompoundPK(new CompoundPK() { CompoundName = "Esomeprazol-2" });
          var analysis = new TimeProfileAnalysisChart();
          analysis.PopulationAnalysis = _populationStatisticalAnalysis;
       }

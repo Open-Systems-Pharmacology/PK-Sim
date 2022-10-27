@@ -12,7 +12,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public class IndividualSimulationEngine : BaseSimulationEngine, IIndividualSimulationEngine
+   public class IndividualSimulationEngine : SimulationEngine, IIndividualSimulationEngine
    {
       private readonly ISimModelManager _simModelManager;
       private readonly IProgressManager _progressManager;
