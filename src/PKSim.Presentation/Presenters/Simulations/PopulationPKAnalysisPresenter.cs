@@ -67,7 +67,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          var simulation = populationDataCollector.DowncastTo<PopulationSimulation>();
 
          //Calculate first global PK that should always be updated
-         _globalPKAnalysisPresenter.CalculatePKAnalysis(new[] { simulation });
+         _globalPKAnalysisPresenter.CalculatePKAnalysis(new[] {simulation});
 
          var pkParametersCache = extractPKParameters(populationAnalysis, simulation);
          if (!pkParametersCache.Any())
@@ -85,9 +85,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       private Cache<string, IReadOnlyList<QuantityPKParameter>> extractPKParameters(PopulationStatisticalAnalysis populationAnalysis, PopulationSimulation populationSimulation)
       {
          var cache = new Cache<string, IReadOnlyList<QuantityPKParameter>>();
-         var fields = populationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>().ToList();
-
-         fields.Each(field => { cache.Add(field.Name, populationSimulation.PKAnalyses.AllPKParametersFor(field.QuantityPath).ToList()); });
+         var fields = populationAnalysis.AllFields.OfType<PopulationAnalysisOutputField>();
+         fields.Each(field => cache.Add(field.Name, populationSimulation.PKAnalyses.AllPKParametersFor(field.QuantityPath)));
          return cache;
       }
 
