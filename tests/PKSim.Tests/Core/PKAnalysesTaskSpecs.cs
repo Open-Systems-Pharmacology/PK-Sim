@@ -469,7 +469,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _simulation.ClearRatioPKCache();
+         _simulation.ClearPKCache();
       }
 
       protected override void Because()

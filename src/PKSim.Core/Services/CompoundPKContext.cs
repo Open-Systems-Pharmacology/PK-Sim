@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility.Collections;
+﻿using System.Linq;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 
@@ -23,7 +24,7 @@ namespace PKSim.Core.Services
 
       public void AddCompoundPK(CompoundPK compoundPK)
       {
-         _compoundPKCache[compoundPK.CompoundName] = compoundPK;
+         _compoundPKCache.Add(compoundPK);
       }
 
       /// <summary>
@@ -33,23 +34,20 @@ namespace PKSim.Core.Services
       /// <param name="populationSimulation">The simulation that contains the PK Parameters</param>
       public void InitializeQuantityPKParametersFrom(PopulationSimulation populationSimulation)
       {
+         var populationSimulationPKAnalyses = populationSimulation.PKAnalyses;
          populationSimulation.CompoundNames.Each(compoundName =>
          {
-            var bioAvailability = populationSimulation.PKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.Bioavailability);
-            var aucRatio = populationSimulation.PKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.AUCRatio);
-            var cMaxRatio = populationSimulation.PKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.C_maxRatio);
             var compoundPK = CompoundPKFor(compoundName);
+            var parameters = new[]
+            {
+               populationSimulationPKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.Bioavailability),
+               populationSimulationPKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.AUCRatio),
+               populationSimulationPKAnalyses.PKParameterFor(compoundName, CoreConstants.PKAnalysis.C_maxRatio)
+            }.Where(x => x != null);
 
-            if (bioAvailability != null)
-               compoundPK.AddQuantityPKParameter(bioAvailability);
+            parameters.Each(compoundPK.AddQuantityPKParameter);
 
-            if (aucRatio != null)
-               compoundPK.AddQuantityPKParameter(aucRatio);
-
-            if (cMaxRatio != null)
-               compoundPK.AddQuantityPKParameter(cMaxRatio);
          });
-
       }
    }
 }

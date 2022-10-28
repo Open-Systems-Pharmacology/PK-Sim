@@ -35,6 +35,8 @@ namespace PKSim.Core.Model
       public override DataRepository ResultsDataRepository => _dataRepository; 
       public override bool HasResults => !DataRepository.IsNull() && DataRepository.Any();
 
+      public int IndividualId => Results.AllIndividualIds().FirstOrDefault();
+
       public override TBuildingBlock BuildingBlock<TBuildingBlock>()
       {
          return AllBuildingBlocks<TBuildingBlock>().SingleOrDefault();
@@ -74,7 +76,7 @@ namespace PKSim.Core.Model
 
       public override DataColumn FabsOral(string compoundName) => DataRepository.FabsOral(compoundName);
 
-      public void ClearRatioPKCache()
+      public void ClearPKCache()
       {
          AucDDI.Clear();
          CMaxDDI.Clear();

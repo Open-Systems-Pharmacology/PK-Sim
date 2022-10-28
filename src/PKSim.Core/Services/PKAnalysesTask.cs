@@ -9,7 +9,6 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
-using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Extensions;
 using PKSim.Core.Mappers;
@@ -17,7 +16,19 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
+using static OSPSuite.Core.Domain.Constants;
+using static OSPSuite.Core.Domain.Constants.Dimension;
+using static OSPSuite.Core.Domain.Constants.ObservedData;
+using static OSPSuite.Core.Domain.Constants.Parameters;
+using static OSPSuite.Core.Domain.Constants.PKParameters;
+using static PKSim.Assets.PKSimConstants.Warning;
+using static PKSim.Core.CoreConstants.Dimension;
+using static PKSim.Core.CoreConstants.PKAnalysis;
+using static PKSim.Core.CoreConstants.Species;
+using static PKSim.Core.CoreConstants.Units;
+using Compound = PKSim.Core.Model.Compound;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
+using PKAnalysis = PKSim.Core.Model.PKAnalysis;
 
 namespace PKSim.Core.Services
 {
@@ -185,7 +196,8 @@ namespace PKSim.Core.Services
             // Global PK Parameters are stored in containers with the compound name as the first child of the root container.
             // There will be one container per compound with PK parameters stored within
             var compoundContainers = createCompoundPKParameterContainers(populationSimulation);
-            compoundContainers.Each(globalPKAnalysis.Add);
+
+            globalPKAnalysis.AddChildren(compoundContainers);
 
             return globalPKAnalysis;
          }
@@ -198,7 +210,7 @@ namespace PKSim.Core.Services
                var pkCalculationOptions = _pkCalculationOptionsFactory.CreateFor(individualSimulation, compound.Name);
                var peripheralVenousBloodColumn = individualSimulation.PeripheralVenousBloodColumn(compound.Name);
                var venousBloodColumn = individualSimulation.VenousBloodColumn(compound.Name);
-               var individualId = individualSimulation.Results.AllIndividualIds().FirstOrDefault();
+               var individualId = individualSimulation.IndividualId;
                var compoundPKContext = createCompoundPKContext(compound, individualSimulation, individualId);
                var compoundContainer = calculateGlobalPKAnalysisFor(individualSimulation, compound, peripheralVenousBloodColumn, venousBloodColumn, pkCalculationOptions, individualId, compoundPKContext);
                globalPKAnalysis.Add(compoundContainer);
@@ -275,8 +287,12 @@ namespace PKSim.Core.Services
          var venousBloodPlasmaPK = calculatePK(venousBloodCurve, options);
 
          var compoundPKFromContext = (compoundPKContext ?? new CompoundPKContext()).CompoundPKFor(compoundName);
-         var bioAvailability = bioAvailabilityCalculator(individualId, compoundPKFromContext, venousBloodPlasmaPK.ValueFor(Constants.PKParameters.AUC_inf));
-         
+
+         var bioAvailability = contextParameterFrom(Bioavailability, compoundPKFromContext.QuantityFor(individualId, Bioavailability), venousBloodPlasmaPK.ValueFor(AUC_inf),
+            compoundPKFromContext.BioAvailabilityAucInfFor(individualId));
+
+         compoundPKFromContext.AddBioavailability(individualId, venousBloodPlasmaPK.ValueFor(AUC_inf));
+
          var bioAvailabilityValue = bioAvailability.Value;
 
          var bloodCurveForPKAnalysis = bloodCurveForSpecies(peripheralVenousBloodCurve, venousBloodCurve, simulation.Individual);
@@ -284,16 +300,24 @@ namespace PKSim.Core.Services
 
          var applicationType = applicationTypeFor(simulation, compound);
 
-         var aucRatio = aucRatioCalculator(individualId, compoundPKFromContext, bloodPlasmaPK[pkParameterNameForAUCRatio(applicationType)]);
-         var cmaxRatio = cmaxRatioCalculator(individualId, compoundPKFromContext, bloodPlasmaPK[pkParameterNameForCmaxRatio(applicationType)]);
+         var aucRatio = contextParameterFrom(AUCRatio, compoundPKFromContext.QuantityFor(individualId, AUCRatio),
+            bloodPlasmaPK[pkParameterNameForAUCRatio(applicationType)], compoundPKFromContext.DDIAucInfFor(individualId));
 
-         var vssPlasma = createParameter(CoreConstants.PKAnalysis.VssPlasma, bloodPlasmaPK[Constants.PKParameters.Vss], CoreConstants.Dimension.VolumePerBodyWeight);
-         var vssPlasmaOverF = createParameter(CoreConstants.PKAnalysis.VssPlasmaOverF, bloodPlasmaPK[Constants.PKParameters.Vss], CoreConstants.Dimension.VolumePerBodyWeight);
-         var vdPlasma = createParameter(CoreConstants.PKAnalysis.VdPlasma, bloodPlasmaPK[Constants.PKParameters.Vd], CoreConstants.Dimension.VolumePerBodyWeight);
-         var vdPlasmaOverF = createParameter(CoreConstants.PKAnalysis.VdPlasmaOverF, bloodPlasmaPK[Constants.PKParameters.Vd], CoreConstants.Dimension.VolumePerBodyWeight);
-         var vssPhysChem = createParameter(CoreConstants.PKAnalysis.VssPhysChem, calculateVSSPhysChemFor(simulation, compoundName), CoreConstants.Dimension.VolumePerBodyWeight);
-         var totalPlasmaCL = createParameter(CoreConstants.PKAnalysis.TotalPlasmaCL, bloodPlasmaPK[Constants.PKParameters.CL], CoreConstants.Dimension.FlowPerWeight);
-         var totalPlasmaCLOverF = createParameter(CoreConstants.PKAnalysis.TotalPlasmaCLOverF, bloodPlasmaPK[Constants.PKParameters.CL], CoreConstants.Dimension.FlowPerWeight);
+         compoundPKFromContext.AddDDIAucInf(individualId, bloodPlasmaPK[pkParameterNameForAUCRatio(applicationType)]);
+
+         var cmaxRatio = contextParameterFrom(C_maxRatio, compoundPKFromContext.QuantityFor(individualId, C_maxRatio),
+            bloodPlasmaPK[pkParameterNameForCmaxRatio(applicationType)], compoundPKFromContext.CMaxDDIFor(individualId));
+
+         compoundPKFromContext.AddDDICMax(individualId, bloodPlasmaPK[pkParameterNameForCmaxRatio(applicationType)]);
+
+
+         var vssPlasma = createParameter(VssPlasma, bloodPlasmaPK[Vss], VolumePerBodyWeight);
+         var vssPlasmaOverF = createParameter(VssPlasmaOverF, bloodPlasmaPK[Vss], VolumePerBodyWeight);
+         var vdPlasma = createParameter(VdPlasma, bloodPlasmaPK[Vd], VolumePerBodyWeight);
+         var vdPlasmaOverF = createParameter(VdPlasmaOverF, bloodPlasmaPK[Vd], VolumePerBodyWeight);
+         var vssPhysChem = createParameter(VssPhysChem, calculateVSSPhysChemFor(simulation, compoundName), VolumePerBodyWeight);
+         var totalPlasmaCL = createParameter(TotalPlasmaCL, bloodPlasmaPK[PKParameters.CL], FlowPerWeight);
+         var totalPlasmaCLOverF = createParameter(TotalPlasmaCLOverF, bloodPlasmaPK[PKParameters.CL], FlowPerWeight);
 
          if (_interactionTask.HasInteractionInvolving(compound, simulation))
             container.AddChildren(aucRatio, cmaxRatio);
@@ -350,42 +374,12 @@ namespace PKSim.Core.Services
          return container;
       }
 
-      private IParameter cmaxRatioCalculator(int individualId, CompoundPK compoundPKFromContext, float? cMax)
-      {
-         var parameter = contextParameterFrom(CoreConstants.PKAnalysis.C_maxRatio, compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.C_maxRatio),
-            cMax, compoundPKFromContext.CMaxDDIFor(individualId));
-
-         compoundPKFromContext.AddDDICMax(individualId, cMax);
-         return parameter;
-      }
-
-      private IParameter aucRatioCalculator(int individualId, CompoundPK compoundPKFromContext, float? aucInf)
-      {
-         var parameter = contextParameterFrom(CoreConstants.PKAnalysis.AUCRatio, compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.AUCRatio),
-            aucInf, compoundPKFromContext.DDIAucInfFor(individualId));
-
-         compoundPKFromContext.AddDDIAucInf(individualId, aucInf);
-
-         return parameter;
-      }
-
-      private IParameter bioAvailabilityCalculator(int individualId, CompoundPK compoundPKFromContext, double? aucInf)
-      {
-         var parameter = contextParameterFrom(CoreConstants.PKAnalysis.Bioavailability,
-            compoundPKFromContext.QuantityFor(individualId, CoreConstants.PKAnalysis.Bioavailability), aucInf, 
-            compoundPKFromContext.BioAvailabilityAucInfFor(individualId));
-
-         compoundPKFromContext.AddBioavailability(individualId, aucInf);
-
-         return parameter;
-      }
-
       IParameter contextParameterFrom(string parameterName, double? contextValue, double? numerator, double? denominator)
       {
          if (contextValue.HasValue)
-            return createParameter(parameterName, contextValue, Constants.Dimension.DIMENSIONLESS);
+            return createParameter(parameterName, contextValue, DIMENSIONLESS);
 
-         return createRatioParameter(parameterName, numerator, denominator, Constants.Dimension.DIMENSIONLESS);
+         return createRatioParameter(parameterName, numerator, denominator, DIMENSIONLESS);
       }
 
       private static IEnumerable<QuantityPKParameter> mapQuantityPKParametersFromIndividualGlobalPKAnalyses(ICache<int, GlobalPKAnalysis> globalIndividualPKParameterCache)
@@ -435,7 +429,7 @@ namespace PKSim.Core.Services
          if (ValueComparer.AreValuesEqual(fractionAbsorbed.Value, 1, CoreConstants.DOUBLE_RELATIVE_EPSILON))
             return;
 
-         pkParameters.Each(p => p.Rules.Add(warningRule(PKSimConstants.Warning.FractionAbsorbedSmallerThanOne)));
+         pkParameters.Each(p => p.Rules.Add(warningRule(FractionAbsorbedSmallerThanOne)));
       }
 
       private IParameter fractionAbsorbedFor(Simulation simulation, string compoundName)
@@ -445,22 +439,22 @@ namespace PKSim.Core.Services
          if (fabsOralObserver != null)
             fractionAbsorbedValue = fabsOralObserver.Values.Last();
 
-         return createParameter(CoreConstants.PKAnalysis.FractionAbsorbed, fractionAbsorbedValue, CoreConstants.Dimension.Fraction);
+         return createParameter(FractionAbsorbed, fractionAbsorbedValue, Fraction);
       }
 
       private static string pkParameterNameForAUCRatio(ApplicationType applicationType)
       {
-         return applicationType == ApplicationType.Multiple ? Constants.PKParameters.AUC_inf_tDLast : Constants.PKParameters.AUC_inf;
+         return applicationType == ApplicationType.Multiple ? AUC_inf_tDLast : AUC_inf;
       }
 
       private static string pkParameterNameForCmaxRatio(ApplicationType applicationType)
       {
-         return applicationType == ApplicationType.Multiple ? Constants.PKParameters.C_max_tDLast_tDEnd : Constants.PKParameters.C_max;
+         return applicationType == ApplicationType.Multiple ? C_max_tDLast_tDEnd : C_max;
       }
 
       private DataColumn bloodCurveForSpecies(DataColumn peripheralVenousBloodCurve, DataColumn venousBloodCurve, Individual individual)
       {
-         if (individual != null && individual.Species.NameIsOneOf(CoreConstants.Species.SpeciesUsingVenousBlood))
+         if (individual != null && individual.Species.NameIsOneOf(SpeciesUsingVenousBlood))
             return venousBloodCurve;
 
          return peripheralVenousBloodCurve;
@@ -498,12 +492,12 @@ namespace PKSim.Core.Services
       private IBusinessRule bioAvailabilityRule { get; } = CreateRule.For<IParameter>()
          .Property(item => item.Value)
          .WithRule((param, value) => false)
-         .WithError((param, value) => PKSimConstants.Warning.BioAvailabilityAndFractionAbsorbed);
+         .WithError((param, value) => BioAvailabilityAndFractionAbsorbed);
 
       private IBusinessRule fractionAbsorbedRule { get; } = CreateRule.For<IParameter>()
          .Property(item => item.Value)
          .WithRule((param, value) => value <= 1)
-         .WithError((param, value) => PKSimConstants.Warning.FractionAbsorbedAndEHC);
+         .WithError((param, value) => FractionAbsorbedAndEHC);
 
       public void CalculateBioavailabilityFor(Simulation simulation, string compoundName)
       {
@@ -513,7 +507,7 @@ namespace PKSim.Core.Services
          var simpleIvProtocol = _protocolFactory.Create(ProtocolMode.Simple, ApplicationTypes.Intravenous)
             .WithName("Simple IV for Bioavailability")
             .DowncastTo<SimpleProtocol>();
-         simpleIvProtocol.Parameter(Constants.Parameters.INFUSION_TIME).Value = 15;
+         simpleIvProtocol.Parameter(INFUSION_TIME).Value = 15;
 
          var simulationSingleDosingItem = singleDosingItem(simulation, compound);
          simpleIvProtocol.Dose.DisplayUnit = simulationSingleDosingItem.Dose.DisplayUnit;
@@ -528,7 +522,7 @@ namespace PKSim.Core.Services
             // We know this is a valid cast because it is cloned from simulation
             var populationSimulation = simulation.DowncastTo<PopulationSimulation>();
             CalculateFor(ivPopulationSimulation, ivCompoundPKContext);
-            var contextForPopulationSimulation = createContextForPopulationSimulation(ivCompoundPKContext, mapFromBioavailabilityCompoundPK, compoundName, populationSimulation, new []{CoreConstants.PKAnalysis.Bioavailability});
+            var contextForPopulationSimulation = createContextForPopulationSimulation(ivCompoundPKContext, mapFromBioavailabilityCompoundPK, compoundName, populationSimulation, new []{Bioavailability});
             populationSimulation.PKAnalyses = CalculateFor(populationSimulation, contextForPopulationSimulation);
 
          }
@@ -536,7 +530,7 @@ namespace PKSim.Core.Services
          {
             var venousBloodCurve = ivSimulation.VenousBloodColumn(compoundName);
             var pkVenousBlood = CalculateFor(ivSimulation, venousBloodCurve).PKAnalysis;
-            var aucInf = pkParameterValue(pkVenousBlood, Constants.PKParameters.AUC_inf);
+            var aucInf = pkParameterValue(pkVenousBlood, AUC_inf);
             individualSimulation.AucIV[compound.Name] = aucInf;
          }
 
@@ -572,7 +566,7 @@ namespace PKSim.Core.Services
 
                // First calculate the compound context. We will know the AucInf and CMax when DDI is turned off
                CalculateFor(ddiPopulationSimulation, ddiCompoundPKContext);
-               var parameterNames = new[] { CoreConstants.PKAnalysis.AUCRatio, CoreConstants.PKAnalysis.C_maxRatio };
+               var parameterNames = new[] { AUCRatio, C_maxRatio };
 
                // From the ddi context, create the context from the original simulation and the ddi simulation for calculating ddi ratio parameters
                var contextForPopulationSimulation = createContextForPopulationSimulation(ddiCompoundPKContext, mapFromDDISimulationCompoundPK, compoundName, populationSimulation, parameterNames);
@@ -735,7 +729,7 @@ namespace PKSim.Core.Services
          allPKAnalysis.AddRange(allColumns.Where(x => x.IsObservation())
             .Select(observedDataColumn =>
             {
-               var moleculeName = observedDataColumn.Repository.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE);
+               var moleculeName = observedDataColumn.Repository.ExtendedPropertyValueFor(MOLECULE);
                var observedDataPKOptions = _pkCalculationOptionsFactory.CreateForObservedData(simulations, moleculeName);
                return calculatePKFor(observedDataColumn, moleculeName, observedDataPKOptions);
             }));
@@ -804,7 +798,7 @@ namespace PKSim.Core.Services
       {
          var timeValue = dataColumn.BaseGrid.Values;
          var dimension = _dimensionRepository.MergedDimensionFor(dataColumn);
-         var umolPerLiterUnit = dimension.UnitOrDefault(CoreConstants.Units.MicroMolPerLiter);
+         var umolPerLiterUnit = dimension.UnitOrDefault(MicroMolPerLiter);
          var concentrationValueInMolL = dataColumn.Values.Select(v => dimension.BaseUnitValueToUnitValue(umolPerLiterUnit, v)).ToArray();
          var pkAnalysis = _pkMapper.MapFrom(dataColumn, _pkValuesCalculator.CalculatePK(timeValue, concentrationValueInMolL, options), options.PKParameterMode, moleculeName);
          addWarningsTo(pkAnalysis, globalPKAnalysis, moleculeName);
@@ -821,14 +815,14 @@ namespace PKSim.Core.Services
 
       private void addFractionAbsorbedWarningTo(PKAnalysis pkAnalysis, GlobalPKAnalysis globalPKAnalysis, string moleculeName)
       {
-         var fractionAbsorbed = globalPKAnalysis.PKParameter(moleculeName, CoreConstants.PKAnalysis.FractionAbsorbed);
+         var fractionAbsorbed = globalPKAnalysis.PKParameter(moleculeName, FractionAbsorbed);
          if (fractionAbsorbed == null)
             return;
 
          if (ValueComparer.AreValuesEqual(fractionAbsorbed.Value, 1, CoreConstants.DOUBLE_RELATIVE_EPSILON))
             return;
 
-         addWarningsTo(pkAnalysis, PKSimConstants.Warning.FractionAbsorbedSmallerThanOne, CoreConstants.PKAnalysis.AllParametersInfluencedByFractionAbsorbed);
+         addWarningsTo(pkAnalysis, FractionAbsorbedSmallerThanOne, AllParametersInfluencedByFractionAbsorbed);
       }
 
       private void addWarningsTo(PKAnalysis pkAnalysis, string warning, IEnumerable<string> parameterNames)

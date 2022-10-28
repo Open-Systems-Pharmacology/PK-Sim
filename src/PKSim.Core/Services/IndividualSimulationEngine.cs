@@ -98,7 +98,7 @@ namespace PKSim.Core.Services
             _simulationResultsSynchronizer.Synchronize(simulation, simResults.Results);
             updateResultsName(simulation);
 
-            simulation.ClearRatioPKCache();
+            simulation.ClearPKCache();
 
             RaiseEvent(new SimulationResultsUpdatedEvent(simulation));
             return Task.FromResult(simResults);
