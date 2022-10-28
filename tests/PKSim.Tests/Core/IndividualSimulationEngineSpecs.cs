@@ -56,7 +56,7 @@ namespace PKSim.Core
          _simulation = A.Fake<IndividualSimulation>();
          _simulation.Name = "Hello";
          _simulation.DataRepository = new DataRepository();
-         _simulation.CompoundPKFor("TOTO").AucIV = 55;
+         _simulation.AucIV["TOTO"] = 55;
          A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<SolverWarning>(), new DataRepository()));
       }
 
@@ -87,7 +87,7 @@ namespace PKSim.Core
       [Observation]
       public void should_reset_the_value_of_the_auc_for_iv()
       {
-         _simulation.CompoundPKFor("TOTO").AucIV.ShouldBeNull();
+         _simulation.AucIV["TOTO"].ShouldBeNull();
       }
 
       [Observation]

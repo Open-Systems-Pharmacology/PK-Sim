@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void createColumnsWithPKAnalysesFrom(IEnumerable<Curve> curves)
       {
-         //should be done before cache clear as the curves might well be the cache itselfs
+         //should be done before cache clear as the curves might well be the cache itself
          var curvesToDisplay = curves.ForPKAnalysis();
          _curveCache.Clear();
          curvesToDisplay.Each(curve => _curveCache[curve.yData] = curve);

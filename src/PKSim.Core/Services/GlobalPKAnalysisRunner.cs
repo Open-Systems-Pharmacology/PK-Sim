@@ -48,10 +48,13 @@ namespace PKSim.Core.Services
       private Simulation createAndRun(Func<ISimulationFactory, Simulation> simulationCreator)
       {
          var simulation = simulationCreator(_simulationFactory);
+
          try
          {
             _registrationTask.Register(simulation);
-            _simulationRunner.RunSimulation(simulation).Wait();
+            // For the transient simulations that are running to calculate ratio parameters, we don't want to raise events
+            // This prevents the UI from becoming locked when unnecessary
+            _simulationRunner.RunSimulation(simulation, new SimulationRunOptions { RaiseEvents = false }).Wait();
          }
          finally
          {

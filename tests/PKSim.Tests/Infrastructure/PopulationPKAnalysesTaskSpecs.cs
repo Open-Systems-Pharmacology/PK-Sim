@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Mappers;
@@ -227,7 +228,6 @@ namespace PKSim.Infrastructure
          A.CallTo(() => esomeprazole.MolWeight).Returns(200);
          A.CallTo(() => _populationSimulation.Compounds).Returns(new[] { esomeprazole, A.Fake<Compound>().WithName("Esomeprazole-2") });
 
-         _populationSimulation.AddCompoundPK(new CompoundPK() { CompoundName = "Esomeprazol-2" });
          var analysis = new TimeProfileAnalysisChart();
          analysis.PopulationAnalysis = _populationStatisticalAnalysis;
       }

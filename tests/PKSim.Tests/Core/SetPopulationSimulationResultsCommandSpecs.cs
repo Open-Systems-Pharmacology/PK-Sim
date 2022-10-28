@@ -53,7 +53,7 @@ namespace PKSim.Core
          A.CallTo(() => _context.Resolve<IEntitiesInContainerRetriever>()).Returns(_quantityRetriever);
          A.CallTo(() => _context.Resolve<IPKAnalysesTask>()).Returns(_populationAnalysisTask);
          A.CallTo(() => _quantityRetriever.QuantitiesFrom(_populationSimulation)).Returns(_quantityCache);
-         A.CallTo(() => _populationAnalysisTask.CalculateFor(_populationSimulation)).Returns(_pkAnalyses);
+         A.CallTo(() => _populationAnalysisTask.CalculateFor(_populationSimulation, null)).Returns(_pkAnalyses);
          _allQuantityPaths = new List<string> {"PATH1", "PATH2"};
          _simulationSettings = new OutputSelections();
          A.CallTo(() => _populationSimulation.OutputSelections).Returns(_simulationSettings);

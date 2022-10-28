@@ -70,7 +70,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          _globalPKAnalysisPresenter.CalculatePKAnalysis(new[] {simulation});
 
          var pkParametersCache = extractPKParameters(populationAnalysis, simulation);
-         if (!pkParametersCache.Any())
+         if (!pkParametersCache.Any() || pkParametersCache.All(x => !x.Any()))
             return;
 
          pkParametersCache.KeyValues.Each(pkParameters =>

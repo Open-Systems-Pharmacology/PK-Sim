@@ -57,7 +57,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
       public override void PerformMapping()
       {
          base.PerformMapping();
-         MapEnumerable(x => x.AllCompoundPK, x => x.AddCompoundPK);
+         Map(x => x.AucIV);
+         Map(x => x.AucDDI);
+         Map(x => x.CMaxDDI);
       }
    }
 }
