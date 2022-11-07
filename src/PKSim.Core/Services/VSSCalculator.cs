@@ -82,7 +82,7 @@ namespace PKSim.Core.Services
       {
          var individual = simulation.Individual;
          var organism = individual.Organism;
-         var bodyWeight = simulation.BodyWeight.Value;
+         var bodyWeight = individual.WeightParameter.Value;
          var hct = organism.Parameter(CoreConstants.Parameters.HCT).Value;
 
          var allPartitionCoefficients = simulation.Model.Neighborhoods
