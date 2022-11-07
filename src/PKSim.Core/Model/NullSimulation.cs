@@ -19,20 +19,5 @@ namespace PKSim.Core.Model
       {
          return default(TBuildingBlock);
       }
-
-      public override DataColumn FabsOral(string compoundName)
-      {
-         throw new System.NotImplementedException();
-      }
-
-      public override DataColumn PeripheralVenousBloodColumn(string compoundName)
-      {
-         throw new System.NotImplementedException();
-      }
-
-      public override DataColumn VenousBloodColumn(string compoundName)
-      {
-         throw new System.NotImplementedException();
-      }
    }
 }

@@ -21,15 +21,6 @@ namespace PKSim.Core.Model
       private SimulationProperties _properties;
       private SimulationResults _results;
 
-      public abstract DataColumn PeripheralVenousBloodColumn(string compoundName);
-
-      /// <summary>
-      ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
-      /// </summary>
-      public abstract DataColumn VenousBloodColumn(string compoundName);
-
-      public abstract DataColumn FabsOral(string compoundName);
-
       /// <summary>
       ///    Returns the version that the simulation had when it was run and the simulation was saved
       /// </summary>

@@ -129,7 +129,6 @@ namespace PKSim.Infrastructure
          baseGrid.Values = new[] { 0f, 1f };
          var dataColumn = new DataColumn("fabs", "fabs", DomainHelperForSpecs.NoDimension(), baseGrid );
          dataColumn.Values = new[] { 1f, 4f };
-         A.CallTo(() => _populationSimulation.FabsOral("Drug")).Returns(dataColumn);
       }
 
       protected override void Because()

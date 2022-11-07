@@ -82,7 +82,7 @@ namespace PKSim.Core.Services
       {
          var individual = simulation.Individual;
          var organism = individual.Organism;
-         var bodyweight = individual.WeightParameter.Value;
+         var bodyWeight = simulation.BodyWeight.Value;
          var hct = organism.Parameter(CoreConstants.Parameters.HCT).Value;
 
          var allPartitionCoefficients = simulation.Model.Neighborhoods
@@ -107,7 +107,7 @@ namespace PKSim.Core.Services
             vss += volume * (1 - hct);
          }
 
-         vss /= bodyweight;
+         vss /= bodyWeight;
          return VSSParameterWithValue(vss);
       }
 
