@@ -377,9 +377,9 @@ namespace PKSim.Core.Services
       IParameter contextParameterFrom(string parameterName, double? contextValue, double? numerator, double? denominator)
       {
          if (contextValue.HasValue)
-            return createParameter(parameterName, contextValue, DIMENSIONLESS);
+            return createParameter(parameterName, contextValue, FRACTION);
 
-         return createRatioParameter(parameterName, numerator, denominator, DIMENSIONLESS);
+         return createRatioParameter(parameterName, numerator, denominator, FRACTION);
       }
 
       private static IEnumerable<QuantityPKParameter> mapQuantityPKParametersFromIndividualGlobalPKAnalyses(ICache<int, GlobalPKAnalysis> globalIndividualPKParameterCache)
