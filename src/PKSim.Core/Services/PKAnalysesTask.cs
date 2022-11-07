@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
@@ -246,7 +247,7 @@ namespace PKSim.Core.Services
          var compoundContainer = new Container().WithName(compoundName);
          populationSimulation.PKAnalyses.AllPKParametersFor(compoundName).Each(quantityPKParameter =>
          {
-            double? defaultValue = quantityPKParameter.ValuesAsArray.OrderBy(x => x).ToArray().Median();
+            double? defaultValue = new SortedFloatArray(quantityPKParameter.ValuesAsArray, false).Median();
             if (double.IsNaN(defaultValue.Value))
                defaultValue = null;
 

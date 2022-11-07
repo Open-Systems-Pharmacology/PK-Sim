@@ -6,6 +6,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths;
 
 namespace PKSim.Core
 {
@@ -46,7 +47,8 @@ namespace PKSim.Core
       [Observation]
       public void should_filter_out_the_NaN_and_calculate_the_limits_based_on_the_remaining_values()
       {
-         sut.Limits.ShouldOnlyContainInOrder(_validValues.Quantile(1 / 3.0), _validValues.Quantile(2 / 3.0));
+         var sortedFloatArray = new SortedFloatArray(_validValues, true);
+         sut.Limits.ShouldOnlyContainInOrder(sortedFloatArray.Quantile(1 / 3.0), sortedFloatArray.Quantile(2 / 3.0));
       }
    }
 }	
