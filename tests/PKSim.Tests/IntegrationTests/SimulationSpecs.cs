@@ -8,6 +8,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
@@ -711,6 +712,36 @@ namespace PKSim.IntegrationTests
       }
    }
 
+
+   public class When_cloning_a_simulation : concern_for_IndividualSimulation
+   {
+      private ICloner _cloner;
+      private IndividualSimulation _clone;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _cloner = IoC.Resolve<ICloner>();
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol).DowncastTo<IndividualSimulation>();
+         _simulation.OutputMappings.Add(new OutputMapping
+         {
+            OutputSelection = new SimulationQuantitySelection(_simulation, new QuantitySelection("PATH", QuantityType.Parameter)),
+            WeightedObservedData = new WeightedObservedData(DomainHelperForSpecs.ObservedData())
+         });
+      }
+
+      protected override void Because()
+      {
+         _clone = _cloner.Clone(_simulation);
+      }
+
+      [Observation]
+      public void should_also_clone_the_output_mapping()
+      {
+         _clone.OutputMappings.All.Count.ShouldBeEqualTo(_simulation.OutputMappings.All.Count);
+      }
+   }
+
    [NightlyOnly]
    public abstract class When_creating_an_individual_simulation_with_drug_and_inhibitor : concern_for_IndividualSimulation
    {
@@ -843,49 +874,49 @@ namespace PKSim.IntegrationTests
       protected override IEnumerable<PartialProcess> PartialProcesses => _compoundProcessRepo.All<TransportPartialProcess>();
    }
 
-   public class When_creating_an_individual_simulation_with_drug_and_competitiv_inhibitor_for_all_metabolic_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_metabolic_processes
+   public class When_creating_an_individual_simulation_with_drug_and_competitive_inhibitor_for_all_metabolic_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_metabolic_processes
    {
-      public When_creating_an_individual_simulation_with_drug_and_competitiv_inhibitor_for_all_metabolic_processes()
+      public When_creating_an_individual_simulation_with_drug_and_competitive_inhibitor_for_all_metabolic_processes()
          : base(CoreConstantsForSpecs.Process.COMPETITIVE_INHIBITION)
       {
       }
    }
 
-   public class When_creating_an_individual_simulation_with_drug_and_competitiv_inhibitor_for_all_active_transport_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_active_transport_processes
+   public class When_creating_an_individual_simulation_with_drug_and_competitive_inhibitor_for_all_active_transport_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_active_transport_processes
    {
-      public When_creating_an_individual_simulation_with_drug_and_competitiv_inhibitor_for_all_active_transport_processes()
+      public When_creating_an_individual_simulation_with_drug_and_competitive_inhibitor_for_all_active_transport_processes()
          : base(CoreConstantsForSpecs.Process.COMPETITIVE_INHIBITION)
       {
       }
    }
 
-   public class When_creating_an_individual_simulation_with_drug_and_uncompetitiv_inhibitor_for_all_metabolic_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_metabolic_processes
+   public class When_creating_an_individual_simulation_with_drug_and_uncompetitive_inhibitor_for_all_metabolic_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_metabolic_processes
    {
-      public When_creating_an_individual_simulation_with_drug_and_uncompetitiv_inhibitor_for_all_metabolic_processes()
+      public When_creating_an_individual_simulation_with_drug_and_uncompetitive_inhibitor_for_all_metabolic_processes()
          : base(CoreConstantsForSpecs.Process.UNCOMPETITIVE_INHIBITION)
       {
       }
    }
 
-   public class When_creating_an_individual_simulation_with_drug_and_uncompetitiv_inhibitor_for_all_active_transport_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_active_transport_processes
+   public class When_creating_an_individual_simulation_with_drug_and_uncompetitive_inhibitor_for_all_active_transport_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_active_transport_processes
    {
-      public When_creating_an_individual_simulation_with_drug_and_uncompetitiv_inhibitor_for_all_active_transport_processes()
+      public When_creating_an_individual_simulation_with_drug_and_uncompetitive_inhibitor_for_all_active_transport_processes()
          : base(CoreConstantsForSpecs.Process.UNCOMPETITIVE_INHIBITION)
       {
       }
    }
 
-   public class When_creating_an_individual_simulation_with_drug_and_noncompetitiv_inhibitor_for_all_metabolic_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_metabolic_processes
+   public class When_creating_an_individual_simulation_with_drug_and_noncompetitive_inhibitor_for_all_metabolic_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_metabolic_processes
    {
-      public When_creating_an_individual_simulation_with_drug_and_noncompetitiv_inhibitor_for_all_metabolic_processes()
+      public When_creating_an_individual_simulation_with_drug_and_noncompetitive_inhibitor_for_all_metabolic_processes()
          : base(CoreConstantsForSpecs.Process.NONCOMPETITIVE_INHIBITION)
       {
       }
    }
 
-   public class When_creating_an_individual_simulation_with_drug_and_noncompetitiv_inhibitor_for_all_active_transport_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_active_transport_processes
+   public class When_creating_an_individual_simulation_with_drug_and_noncompetitive_inhibitor_for_all_active_transport_processes : When_creating_an_individual_simulation_with_drug_and_inhibitor_for_all_active_transport_processes
    {
-      public When_creating_an_individual_simulation_with_drug_and_noncompetitiv_inhibitor_for_all_active_transport_processes()
+      public When_creating_an_individual_simulation_with_drug_and_noncompetitive_inhibitor_for_all_active_transport_processes()
          : base(CoreConstantsForSpecs.Process.NONCOMPETITIVE_INHIBITION)
       {
       }

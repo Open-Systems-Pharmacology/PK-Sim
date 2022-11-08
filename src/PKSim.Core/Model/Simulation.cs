@@ -361,7 +361,7 @@ namespace PKSim.Core.Model
       ///    (true: simulation was performed with current parameters, false: simulation parameters have changed ...)
       /// </summary>
       public virtual bool HasUpToDateResults => Version == ResultsVersion;
-
+      
       public abstract bool HasResults { get; }
 
       /// <summary>
@@ -409,6 +409,7 @@ namespace PKSim.Core.Model
          Reactions = cloneManager.Clone(sourceSimulation.Reactions);
          SimulationSettings = cloneManager.Clone(sourceSimulation.SimulationSettings);
          ReactionDiagramModel = sourceSimulation.ReactionDiagramModel.CreateCopy();
+         OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
          updateBuildingBlockReferences(sourceSimulation);
       }
 
