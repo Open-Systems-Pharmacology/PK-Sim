@@ -64,17 +64,14 @@ namespace PKSim.Core.Model
             DataRepository.AcceptVisitor(visitor);
       }
 
-      public override DataColumn PeripheralVenousBloodColumn(string compoundName)
-      {
-         return DataRepository.PeripheralVenousBloodColumn(compoundName);
-      }
+      public DataColumn PeripheralVenousBloodColumn(string compoundName) => DataRepository.PeripheralVenousBloodColumn(compoundName);
 
       /// <summary>
       ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
       /// </summary>
-      public override DataColumn VenousBloodColumn(string compoundName) => DataRepository.VenousBloodColumn(compoundName);
+      public DataColumn VenousBloodColumn(string compoundName) => DataRepository.VenousBloodColumn(compoundName);
 
-      public override DataColumn FabsOral(string compoundName) => DataRepository.FabsOral(compoundName);
+      public DataColumn FabsOral(string compoundName) => DataRepository.FabsOral(compoundName);
 
       public void ClearPKCache()
       {

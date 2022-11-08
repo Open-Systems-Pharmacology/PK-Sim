@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths;
 using OSPSuite.Utility.Data;
 using PKSim.Core.Chart;
 
@@ -63,7 +64,7 @@ namespace PKSim.Core.Model
 
       private static ValueWithIndividualId valueWithIndex(float[] orderedValues,  double percentile)
       {
-         var value = orderedValues.Percentile(percentile);
+         var value = new SortedFloatArray(orderedValues, alreadySorted:true).Percentile(percentile);
          return new ValueWithIndividualId(value);
       }
    }

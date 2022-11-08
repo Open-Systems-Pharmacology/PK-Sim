@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
@@ -270,54 +271,24 @@ namespace PKSim.Core.Model
          sourcePopSimulation?.AdvancedParameters.Each(x => AddAdvancedParameter(x, generateRandomValues: true));
       }
 
-      private DataColumn medianAggregateDataColumns(IReadOnlyList<DataColumn> columns)
+      public DataColumn VenousBloodColumnForIndividual(int individualId, string compoundName)
       {
-         var column = columns?.FirstOrDefault();
-         if (column == null)
-            return null;
-
-         return  new DataColumn(column.Id, column.Dimension, column.BaseGrid)
-         {
-            Values = Enumerable.Range(0, column.Values.Count).Select(i => 
-                  indexedValuesFromColumns(columns, i).Median()
-               ).ToList()
-         };
+         return drugColumnForIndividual(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName, individualId);
       }
 
-      private static IReadOnlyList<float> indexedValuesFromColumns(IReadOnlyList<DataColumn> columns, int i)
+      public DataColumn PeripheralVenousBloodColumnForIndividual(int individualId, string compoundName)
       {
-         return columns.Select(x => x.Values[i]).ToList();
+         return drugColumnForIndividual(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName, individualId);
       }
 
-      public override DataColumn PeripheralVenousBloodColumn(string compoundName)
+      public DataColumn FractionAbsorbedColumnForIndividual(int individualId, string compoundName)
       {
-         return medianAggregateDataColumns(drugColumnsFor(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD,
-            CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD,
-            compoundName));
-      }
-
-      /// <summary>
-      ///    tries to find venous blood plasma if defined in the repository. returns null otherwise
-      /// </summary>
-      public override DataColumn VenousBloodColumn(string compoundName)
-      {
-         return medianAggregateDataColumns(drugColumnsFor(CoreConstants.Organ.VENOUS_BLOOD, 
-            CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName));
-      }
-
-      public override DataColumn FabsOral(string compoundName)
-      {
-         return medianAggregateDataColumns(drugColumnsFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName));
+         return drugColumnForIndividual(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName, individualId);
       }
 
       private DataColumn drugColumnForIndividual(string organ, string compartment, string columnName, string compoundName, int individualId)
       {
          return columnsFor(Results.ResultsFor(individualId), organ, compartment, columnName, compoundName);
-      }
-
-      private IReadOnlyList<DataColumn> drugColumnsFor(string organ, string compartment, string columnName, string compoundName)
-      {
-         return Results.Select(x => columnsFor(x, organ, compartment, columnName, compoundName)).ToList();
       }
 
       private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, string compoundName)
@@ -339,16 +310,6 @@ namespace PKSim.Core.Model
       {
          var quantityPathArray = quantityValues.QuantityPath.ToPathArray();
          return quantityPathArray.ContainsAll(new[] { organ, compartment, columnName, compoundName });
-      }
-
-      public DataColumn VenousBloodColumnForIndividual(int individualId, string compoundName)
-      {
-         return drugColumnForIndividual(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName, individualId);
-      }
-
-      public DataColumn PeripheralVenousBloodColumnForIndividual(int individualId, string compoundName)
-      {
-         return drugColumnForIndividual(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName, individualId);
       }
    }
 }
