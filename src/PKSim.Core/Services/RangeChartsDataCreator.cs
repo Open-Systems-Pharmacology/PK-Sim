@@ -129,7 +129,7 @@ namespace PKSim.Core.Services
       private RangeYValue createRangeYValue(IEnumerable<float> valuesInInterval)
       {
          var sortedArray = valuesInInterval.OrderedAndPurified();
-         var sortedFloatArray = new SortedFloatArray(sortedArray, true);
+         var sortedFloatArray = new SortedFloatArray(sortedArray, alreadySorted: true);
          return new RangeYValue
          {
             LowerPercentile = sortedFloatArray.Percentile(BORDER_PERCENTILE),

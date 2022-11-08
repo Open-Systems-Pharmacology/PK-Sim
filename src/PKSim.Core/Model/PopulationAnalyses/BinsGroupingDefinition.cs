@@ -34,7 +34,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
          var limits = new List<double>();
          for (var i = 1; i < numberOfBins; i++)
-            limits.Add(new SortedFloatArray(sortedValues, true).Quantile((double) i / numberOfBins));
+            limits.Add(new SortedFloatArray(sortedValues, alreadySorted: true).Quantile((double) i / numberOfBins));
 
          Limits = limits;
       }

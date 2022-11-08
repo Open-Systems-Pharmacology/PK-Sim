@@ -247,7 +247,7 @@ namespace PKSim.Core.Services
          var compoundContainer = new Container().WithName(compoundName);
          populationSimulation.PKAnalyses.AllPKParametersFor(compoundName).Each(quantityPKParameter =>
          {
-            double? defaultValue = new SortedFloatArray(quantityPKParameter.ValuesAsArray, false).Median();
+            double? defaultValue = new SortedFloatArray(quantityPKParameter.ValuesAsArray, alreadySorted:false).Median();
             if (double.IsNaN(defaultValue.Value))
                defaultValue = null;
 

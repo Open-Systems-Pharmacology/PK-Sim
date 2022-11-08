@@ -120,7 +120,7 @@ namespace PKSim.Core.Services
 
       private float[] calculateMedianFor(FloatMatrix quantityResults)
       {
-         return calculateValueFor(quantityResults, x => new SortedFloatArray(x, true).Median());
+         return calculateValueFor(quantityResults, x => new SortedFloatArray(x, alreadySorted: true).Median());
       }
 
       private float[] calculateArithmeticMeanFor(FloatMatrix quantityResults)
@@ -130,7 +130,7 @@ namespace PKSim.Core.Services
 
       private float[] calculatePercentileFor(double percentile, FloatMatrix quantityResults)
       {
-         return calculateValueFor(quantityResults, x => new SortedFloatArray(x, true).Percentile(percentile));
+         return calculateValueFor(quantityResults, x => new SortedFloatArray(x, alreadySorted: true).Percentile(percentile));
       }
 
       private float[] calculateValueFor(FloatMatrix quantityResults, Func<float[], float> calculationMethodForSortedArray)

@@ -223,16 +223,16 @@ namespace PKSim.Core
 
          //mean of 10, 20, 30, 40 and 1000, 2000, 3000, 4000 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(
-            new SortedFloatArray(new float[] { 10, 1000 }, true).Percentile(2.5),
-            new SortedFloatArray(new float[] { 20, 2000 }, true).Percentile(2.5),
-            new SortedFloatArray(new float[] { 30, 3000 }, true).Percentile(2.5),
-            new SortedFloatArray(new float[] { 40, 4000 }, true).Percentile(2.5));
+            new SortedFloatArray(new float[] { 10, 1000 }, alreadySorted: true).Percentile(2.5),
+            new SortedFloatArray(new float[] { 20, 2000 }, alreadySorted: true).Percentile(2.5),
+            new SortedFloatArray(new float[] { 30, 3000 }, alreadySorted: true).Percentile(2.5),
+            new SortedFloatArray(new float[] { 40, 4000 }, alreadySorted: true).Percentile(2.5));
 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(
-            new SortedFloatArray(new float[] { 10, 1000 }, true).Percentile(97.5),
-            new SortedFloatArray(new float[] { 20, 2000 }, true).Percentile(97.5),
-            new SortedFloatArray(new float[] { 30, 3000 }, true).Percentile(97.5),
-            new SortedFloatArray(new float[] { 40, 4000 }, true).Percentile(97.5));
+            new SortedFloatArray(new float[] { 10, 1000 }, alreadySorted: true).Percentile(97.5),
+            new SortedFloatArray(new float[] { 20, 2000 }, alreadySorted: true).Percentile(97.5),
+            new SortedFloatArray(new float[] { 30, 3000 }, alreadySorted: true).Percentile(97.5),
+            new SortedFloatArray(new float[] { 40, 4000 }, alreadySorted: true).Percentile(97.5));
       }
 
       [Observation]

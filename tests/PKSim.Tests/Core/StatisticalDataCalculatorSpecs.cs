@@ -47,7 +47,7 @@ namespace PKSim.Core
       public void should_return_the_expected_values()
       {
          _results.Count.ShouldBeEqualTo(1);
-         _results[0].ShouldOnlyContainInOrder(new SortedFloatArray(_values1,true).Percentile(25), new SortedFloatArray(_values2, true).Percentile(25), new SortedFloatArray(_values3, true).Percentile(25));
+         _results[0].ShouldOnlyContainInOrder(new SortedFloatArray(_values1,alreadySorted: true).Percentile(25), new SortedFloatArray(_values2, alreadySorted: true).Percentile(25), new SortedFloatArray(_values3, alreadySorted: true).Percentile(25));
       }
    }
 
@@ -110,7 +110,7 @@ namespace PKSim.Core
    public class When_calculating_the_statistics_using_the_median : When_calculating_the_statistics_using_a_predefined_method
    {
       public When_calculating_the_statistics_using_the_median()
-         : base(StatisticalAggregationType.Median, x => new SortedFloatArray(x, true).Median())
+         : base(StatisticalAggregationType.Median, x => new SortedFloatArray(x, alreadySorted: true).Median())
       {
       }
    }
@@ -142,7 +142,7 @@ namespace PKSim.Core
    public class When_calculating_the_statistics_using_the_range_2_5_to_97_5 : When_calculating_the_statistics_using_a_predefined_range_method
    {
       public When_calculating_the_statistics_using_the_range_2_5_to_97_5()
-         : base(StatisticalAggregationType.Range95, x => new SortedFloatArray(x, true).Percentile(2.5), x => new SortedFloatArray(x, true).Percentile(97.5))
+         : base(StatisticalAggregationType.Range95, x => new SortedFloatArray(x, alreadySorted: true).Percentile(2.5), x => new SortedFloatArray(x, alreadySorted: true).Percentile(97.5))
       {
       }
    }
@@ -150,7 +150,7 @@ namespace PKSim.Core
    public class When_calculating_the_statistics_using_the_range_5_to_95 : When_calculating_the_statistics_using_a_predefined_range_method
    {
       public When_calculating_the_statistics_using_the_range_5_to_95()
-         : base(StatisticalAggregationType.Range90, x => new SortedFloatArray(x, true).Percentile(5), x => new SortedFloatArray(x, true).Percentile(95))
+         : base(StatisticalAggregationType.Range90, x => new SortedFloatArray(x, alreadySorted: true).Percentile(5), x => new SortedFloatArray(x, alreadySorted: true).Percentile(95))
       {
       }
    }

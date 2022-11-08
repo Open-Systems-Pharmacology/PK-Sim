@@ -64,7 +64,7 @@ namespace PKSim.Core.Model
 
       private static ValueWithIndividualId valueWithIndex(float[] orderedValues,  double percentile)
       {
-         var value = new SortedFloatArray(orderedValues, true).Percentile(percentile);
+         var value = new SortedFloatArray(orderedValues, alreadySorted:true).Percentile(percentile);
          return new ValueWithIndividualId(value);
       }
    }
