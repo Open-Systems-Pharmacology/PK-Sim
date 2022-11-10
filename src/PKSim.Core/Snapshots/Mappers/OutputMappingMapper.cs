@@ -7,7 +7,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using ModelOutputMapping = OSPSuite.Core.Domain.ParameterIdentifications.OutputMapping;
+using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using SnapshotOutputMapping = PKSim.Core.Snapshots.OutputMapping;
 
 namespace PKSim.Core.Snapshots.Mappers
