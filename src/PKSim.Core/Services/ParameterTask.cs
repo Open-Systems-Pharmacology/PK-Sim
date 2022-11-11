@@ -452,12 +452,12 @@ namespace PKSim.Core.Services
          return executeAndUpdatedDefaultStateAndValue(new UpdateDistributedTableFormulaPercentileCommand(tableParameter, distributedParameter.Percentile), tableParameter);
       }
 
-      public ICommand SetParameterValue(IParameter parameter, double value, ISimulation simulation)
+      public ICommand SetParameterValue(IParameter parameter, double value, IModelCoreSimulation simulation)
       {
          return SetParameterValue(parameter, value);
       }
 
-      public ICommand UpdateParameterValueOrigin(IParameter parameter, ValueOrigin valueOrigin, ISimulation simulation)
+      public ICommand UpdateParameterValueOrigin(IParameter parameter, ValueOrigin valueOrigin, IModelCoreSimulation simulation)
       {
          return SetParameterValueOrigin(parameter, valueOrigin);
       }

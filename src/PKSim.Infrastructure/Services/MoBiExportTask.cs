@@ -114,6 +114,7 @@ namespace PKSim.Infrastructure.Services
          var simulationTransfer = new SimulationTransfer
          {
             Simulation = moBiSimulation,
+            OutputMappings = simulation.OutputMappings,
             JournalPath = _journalRetriever.JournalFullPath
          };
 
