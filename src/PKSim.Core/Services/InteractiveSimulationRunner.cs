@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using PKSim.Core.Model;
 
@@ -18,6 +19,7 @@ namespace PKSim.Core.Services
       private readonly ICloner _cloner;
       private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IExecutionContext _executionContext;
 
       private readonly SimulationRunOptions _simulationRunOptions;
 
@@ -26,13 +28,15 @@ namespace PKSim.Core.Services
          ISimulationRunner simulationRunner, 
          ICloner cloner, 
          ISimulationAnalysisCreator simulationAnalysisCreator, 
-         ILazyLoadTask lazyLoadTask)
+         ILazyLoadTask lazyLoadTask,
+         IExecutionContext executionContext)
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationRunner = simulationRunner;
          _cloner = cloner;
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
+         _executionContext = executionContext;
 
          _simulationRunOptions = new SimulationRunOptions
          {
@@ -54,6 +58,7 @@ namespace PKSim.Core.Services
                return;
 
             simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
+            _executionContext.PublishEvent(new SimulationOutputSelectionsChangedEvent(simulation));
          }
 
          await _simulationRunner.RunSimulation(simulation, _simulationRunOptions);

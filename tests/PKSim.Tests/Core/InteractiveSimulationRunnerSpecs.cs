@@ -19,6 +19,7 @@ namespace PKSim.Core
       protected ISimulationSettingsRetriever _simulationSettingsRetriever;
       protected ISimulationRunner _simulationRunner;
       protected ILazyLoadTask _lazyLoadTask;
+      protected IExecutionContext _executionContext;
 
       protected override Task Context()
       {
@@ -27,7 +28,8 @@ namespace PKSim.Core
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _simulationRunner = A.Fake<ISimulationRunner>();
          _lazyLoadTask= A.Fake<ILazyLoadTask>();
-         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask);
+         _executionContext = A.Fake<IExecutionContext>();
+         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
          return _completed;
       }
    }
@@ -132,6 +134,12 @@ namespace PKSim.Core
       {
          A.CallTo(() => _simulationSettingsRetriever.SettingsFor(_populationSimulation)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_raise_the_output_selection_changed_event()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationOutputSelectionsChangedEvent>._)).MustHaveHappened();
+      }
    }
 
    public class When_the_user_cancels_the_population_simulation_run : concern_for_InteractiveSimulationRunner
@@ -155,6 +163,12 @@ namespace PKSim.Core
       public void should_not_run_the_population_simulation()
       {
          A.CallTo(() => _simulationRunner.RunSimulation(_populationSimulation, A<SimulationRunOptions>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_raise_the_output_selection_changed_event()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationOutputSelectionsChangedEvent>._)).MustNotHaveHappened();
       }
 
       [Observation]
