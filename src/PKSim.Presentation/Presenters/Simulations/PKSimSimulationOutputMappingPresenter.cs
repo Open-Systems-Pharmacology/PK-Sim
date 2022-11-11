@@ -7,7 +7,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
-   public interface IPKSimSimulationOutputMappingPresenter : IEditIndividualSimulationItemPresenter
+   public interface IPKSimSimulationOutputMappingPresenter : IEditIndividualSimulationItemPresenter, IEditPopulationSimulationItemPresenter
    {
    }
 
@@ -22,6 +22,11 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       public void EditSimulation(IndividualSimulation simulation)
+      {
+         SetSimulation(simulation);
+      }
+
+      public void EditSimulation(PopulationSimulation simulation)
       {
          SetSimulation(simulation);
       }

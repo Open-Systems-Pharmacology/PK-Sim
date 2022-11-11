@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
@@ -29,6 +30,8 @@ using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
+using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
+using SnapshotOutputMapping = PKSim.Core.Snapshots.OutputMapping;
 
 namespace PKSim.Core
 {
@@ -87,6 +90,9 @@ namespace PKSim.Core
       protected InteractionSelection _noInteractionSelection;
       protected ObserverSetMappingMapper _observerSetMappingMapper;
       protected ObserverSet _observerSet;
+      protected ModelOutputMapping _outputMapping;
+      protected OutputMappingMapper _outputMappingMapper;
+      protected SnapshotOutputMapping _snapshotOutputMapping;
 
       protected override Task Context()
       {
@@ -100,6 +106,7 @@ namespace PKSim.Core
          _observerSetMappingMapper = A.Fake<ObserverSetMappingMapper>();
          _curveChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
+         _outputMappingMapper = A.Fake<OutputMappingMapper>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          _executionContext = A.Fake<IExecutionContext>();
          _simulationModelCreator = A.Fake<ISimulationModelCreator>();
@@ -115,7 +122,7 @@ namespace PKSim.Core
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
             _advancedParameterMapper, _eventMappingMapper, _observerSetMappingMapper, _curveChartMapper,
-            _populationAnalysisChartMapper, _processMappingMapper,
+            _populationAnalysisChartMapper, _processMappingMapper, _outputMappingMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationRunner, _simulationParameterOriginIdUpdater,
@@ -167,6 +174,11 @@ namespace PKSim.Core
             Model = _model
          };
 
+         _outputMapping = new ModelOutputMapping();
+         _individualSimulation.OutputMappings.Add(_outputMapping);
+         _snapshotOutputMapping = new SnapshotOutputMapping();
+
+         A.CallTo(() => _outputMappingMapper.MapToSnapshot(_outputMapping)).Returns(_snapshotOutputMapping);
          _simulationTimeProfile = new SimulationTimeProfileChart();
          _snapshotSimulationTimeProfile = new CurveChart();
          _individualSimulation.AddAnalysis(_simulationTimeProfile);
@@ -407,6 +419,12 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_have_mapped_the_output_mappings()
+      {
+         _snapshot.OutputMappings.ShouldContain(_snapshotOutputMapping);
+      }
+
+      [Observation]
       public void should_set_population_analysis_to_null()
       {
          _snapshot.PopulationAnalyses.ShouldBeNull();
@@ -519,6 +537,10 @@ namespace PKSim.Core
          _outputSchema = new OutputSchema();
          A.CallTo(() => _outputSchemaMapper.MapToModel(_snapshot.OutputSchema, A<SnapshotContext>._)).Returns(_outputSchema);
 
+
+         A.CallTo(() => _outputMappingMapper.MapToModel(_snapshotOutputMapping, A<SnapshotContext>._)).Returns(_outputMapping);
+
+
          A.CallTo(() => _curveChartMapper.MapToModel(_snapshotSimulationTimeProfile, A<SimulationAnalysisContext>._))
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .Returns(_simulationTimeProfile);
@@ -559,6 +581,12 @@ namespace PKSim.Core
       public void should_have_updated_the_output_selection()
       {
          _simulation.OutputSelections.ShouldBeEqualTo(_outputSelection);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_output_mappings()
+      {
+         _simulation.OutputMappings.All.ShouldContain(_outputMapping);
       }
 
       [Observation]
