@@ -15,29 +15,36 @@ namespace PKSim.Core
    {
       protected OutputMapping _outputMapping;
       protected Snapshots.OutputMapping _snapshot;
-      private ISimulation _simulation;
-      private IObserver _output;
-      private DataRepository _dataRepository;
-      private IOSPSuiteLogger _logger;
+      protected Simulation _simulation;
+      protected IObserver _output;
+      protected DataRepository _dataRepository;
+      protected IOSPSuiteLogger _logger;
+      protected PKSimProject _project;
 
       protected override Task Context()
       {
          sut = new OutputMappingMapper(_logger);
 
+         _project = new PKSimProject();
          _simulation = A.Fake<Simulation>().WithName("S");
          _output = new Observer().WithName("OBS");
          _simulation.Model.Root = new Container {_output};
          _logger= A.Fake<IOSPSuiteLogger>();
          _dataRepository = DomainHelperForSpecs.ObservedData("OBS_DATA");
+         _project.AddObservedData(_dataRepository);   
          _outputMapping = new OutputMapping
          {
             Scaling = Scalings.Log,
             Weight = 5,
             OutputSelection = new SimulationQuantitySelection(_simulation, new QuantitySelection(_output.Name, QuantityType.Observer)),
             WeightedObservedData = new WeightedObservedData(_dataRepository)
+            {
+               Weights =
+               {
+                  [1] = 2f
+               }
+            }
          };
-
-         _outputMapping.WeightedObservedData.Weights[1] = 2f;
 
          return _completed;
       }
@@ -117,10 +124,36 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_have_any_information_regardig_obs_data_weight()
+      public void should_not_have_any_information_regarding_obs_data_weight()
       {
          _snapshot.Weights.ShouldBeNull();
          _snapshot.ObservedData.ShouldBeNull();
+      }
+   }
+
+
+   public class When_mapping_an_output_mapping_snapshot_to_model_in_a_simulation_context : concern_for_OutputMappingMapper
+   {
+      private SnapshotContext _simulationContext;
+      private OutputMapping _newOutputMapping;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot = await sut.MapToSnapshot(_outputMapping);
+         _simulationContext = new SnapshotContextWithSimulation(_simulation, new SnapshotContext(_project, 1));
+      }
+
+      protected override async Task Because()
+      {
+         _newOutputMapping = await sut.MapToModel(_snapshot, _simulationContext);
+      }
+
+      [Observation]
+      public void should_be_able_to_return_the_output_mapping_initialized()
+      {
+         _newOutputMapping.Simulation.ShouldBeEqualTo(_simulation);
+         _newOutputMapping.FullOutputPath.ShouldBeEqualTo(_outputMapping.FullOutputPath);
       }
    }
 }
