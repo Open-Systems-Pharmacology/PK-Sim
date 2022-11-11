@@ -27,7 +27,7 @@ namespace PKSim.Infrastructure.Services
       {
          var project = _projectRetriever.CurrentProject;
 
-         //use new ObjectBaseRepository here as the resulting simulation will be registered later on when added to the project
+         //use new WithIdRepository here as the resulting simulation will be registered later on when added to the project
          var simulationTransfer = _simulationPersister.Load(pkmlFileFullPath, new WithIdRepository());
 
          project?.Favorites.AddFavorites(simulationTransfer.Favorites);
