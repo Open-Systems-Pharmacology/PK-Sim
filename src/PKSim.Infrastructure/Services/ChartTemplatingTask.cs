@@ -90,14 +90,14 @@ namespace PKSim.Infrastructure.Services
          allObservedDataColumnsToAdd.Each(x => AddCurveForColumnWithOptionsFromSourceCurve(chartEditorPresenter, x.column, x.curve));
       }
 
-      public SimulationTimeProfileChart CloneChart(SimulationTimeProfileChart originalChart, IndividualSimulation simulation)
+      public T CloneChart<T>(T originalChart, IndividualSimulation simulation) where T: AnalysisChart
       {
          var clonedChart = _chartFactory.Create(originalChart.GetType()).WithName(originalChart.Name);
          clonedChart.UpdatePropertiesFrom(originalChart, _cloneManager);
 
          initializeFromTemplate(originalChart, clonedChart, simulation);
 
-         return clonedChart.DowncastTo<SimulationTimeProfileChart>();
+         return clonedChart.DowncastTo<T>();
       }
 
       private void initializeFromTemplate(CurveChart originalChart, CurveChart clonedChart, IndividualSimulation simulation)
