@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 
@@ -8,11 +9,14 @@ namespace PKSim.Core.Chart
    public class IndividualSimulationComparison : ChartWithObservedData, ISimulationComparison<IndividualSimulation>
    {
       private readonly ICache<string, IndividualSimulation> _allSimulations;
+
+      public OutputMappings OutputMappingsOfAllSimulations { get; }
       public bool IsLoaded { get; set; }
 
       public IndividualSimulationComparison()
       {
          _allSimulations = new Cache<string, IndividualSimulation>(x => x.Id);
+         OutputMappingsOfAllSimulations = new OutputMappings();
       }
 
       public void AddSimulation(IndividualSimulation simulation)
@@ -22,6 +26,11 @@ namespace PKSim.Core.Chart
             return;
 
          _allSimulations.Add(simulation);
+
+         foreach (var simulationOutputMapping in simulation.OutputMappings)
+         {
+            OutputMappingsOfAllSimulations.Add(simulationOutputMapping);
+         }
       }
 
       public IReadOnlyCollection<IndividualSimulation> AllSimulations => _allSimulations;

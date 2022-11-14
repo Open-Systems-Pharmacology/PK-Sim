@@ -50,6 +50,7 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
+         ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
 
       public void DragDrop(object sender, IDragEvent e)
@@ -103,6 +104,10 @@ namespace PKSim.Presentation.Presenters.Charts
             throw new PKSimException(PKSimConstants.Error.SimulationHasNoResultsAndCannotBeUsedInSummaryChart(simulation.Name));
 
          Chart.AddSimulation(simulation);
+         //we should define a new one here, called AddOutputMappings() and add the mappings to the existing. 
+         //we should also make sure to initialize (if null)
+         //and see what we do with the existing on initialization
+         ChartEditorPresenter.AddOutputMappings();
          UpdateAnalysisBasedOn(simulation, simulation.DataRepository);
 
          _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, simulation.DataRepository.ToList(), new[] {simulation}, addCurveIfNoSourceDefined: false);
@@ -138,7 +143,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
          Column(BrowserColumns.Container).Visible = true;
          Column(BrowserColumns.Container).Caption = PKSimConstants.UI.Organ;
-         Column(BrowserColumns.Container).GroupIndex = 0;
+         Column(BrowserColumns.Container).GroupIndex = -1;
          Column(BrowserColumns.Container).VisibleIndex = 0;
 
          Column(BrowserColumns.Molecule).Visible = true;
