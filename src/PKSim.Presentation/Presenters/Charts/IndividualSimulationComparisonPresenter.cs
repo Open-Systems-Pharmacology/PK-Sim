@@ -107,7 +107,7 @@ namespace PKSim.Presentation.Presenters.Charts
          //we should define a new one here, called AddOutputMappings() and add the mappings to the existing. 
          //we should also make sure to initialize (if null)
          //and see what we do with the existing on initialization
-         ChartEditorPresenter.AddOutputMappings();
+         ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
          UpdateAnalysisBasedOn(simulation, simulation.DataRepository);
 
          _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, simulation.DataRepository.ToList(), new[] {simulation}, addCurveIfNoSourceDefined: false);
