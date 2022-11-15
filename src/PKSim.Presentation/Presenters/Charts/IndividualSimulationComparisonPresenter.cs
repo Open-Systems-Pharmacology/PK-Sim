@@ -51,6 +51,7 @@ namespace PKSim.Presentation.Presenters.Charts
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
          ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
+         //Chart.AddSimulation(simulation);
       }
 
       public void DragDrop(object sender, IDragEvent e)
@@ -104,9 +105,6 @@ namespace PKSim.Presentation.Presenters.Charts
             throw new PKSimException(PKSimConstants.Error.SimulationHasNoResultsAndCannotBeUsedInSummaryChart(simulation.Name));
 
          Chart.AddSimulation(simulation);
-         //we should define a new one here, called AddOutputMappings() and add the mappings to the existing. 
-         //we should also make sure to initialize (if null)
-         //and see what we do with the existing on initialization
          ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
          UpdateAnalysisBasedOn(simulation, simulation.DataRepository);
 

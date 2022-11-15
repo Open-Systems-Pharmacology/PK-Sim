@@ -23,12 +23,12 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void EditSimulation(IndividualSimulation simulation)
       {
-         SetSimulation(simulation);
+         base.EditSimulation(simulation);
       }
 
       public void EditSimulation(PopulationSimulation simulation)
       {
-         SetSimulation(simulation);
+         base.EditSimulation(simulation);
       }
    }
 }

@@ -10,7 +10,7 @@ namespace PKSim.Core.Chart
    {
       private readonly ICache<string, IndividualSimulation> _allSimulations;
 
-      public OutputMappings OutputMappingsOfAllSimulations { get; }
+      public OutputMappings OutputMappingsOfAllSimulations { get; private set; }
       public bool IsLoaded { get; set; }
 
       public IndividualSimulationComparison()
@@ -49,11 +49,19 @@ namespace PKSim.Core.Chart
 
          _allSimulations.Remove(simulation.Id);
          RemoveCurvesForDataRepository(simulation.DataRepository);
+         OutputMappingsOfAllSimulations.RemoveOutputsReferencing(simulation);
+         removeAllOutputMappings();
+      }
+
+      private void removeAllOutputMappings()
+      {
+         OutputMappingsOfAllSimulations = new OutputMappings();
       }
 
       public void RemoveAllSimulations()
       {
          _allSimulations.Clear();
+         removeAllOutputMappings();
       }
    }
 }
