@@ -2189,10 +2189,6 @@ namespace PKSim.Assets
          public static readonly string LoadPopulationAnalysisWorkflowFromTemplateDescription = "Load population analysis from template";
          public static readonly string SavePopulationAnalysisWorkflowToTemplateDescription = "Save population analysis to template";
          public static readonly string IsSmallMolecule = "Is small molecule";
-
-         public static readonly string ReallyRemoveObservedDataFromSimulation =
-            $"Really remove {ObjectTypes.ObservedData} from simulation?\nHint: {ObjectTypes.ObservedData} will not be deleted from project";
-
          public static readonly string ExportSettings = "Export Settings";
          public static readonly string Administration = "Administration";
          public static readonly string CompoundConfiguration = "Compound Configuration";

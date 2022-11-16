@@ -118,30 +118,6 @@ namespace PKSim.Infrastructure.Services
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
-      public void RemoveUsedObservedDataFromSimulation(IReadOnlyList<UsedObservedData> usedObservedDataList)
-      {
-         if (!usedObservedDataList.Any())
-            return;
-
-         foreach (var usedObservedData in usedObservedDataList)
-         {
-            var parameterIdentifications = findParameterIdentificationsUsing(usedObservedData).ToList();
-            if (!parameterIdentifications.Any())
-               continue;
-
-            _dialogCreator.MessageBoxInfo(
-               Captions.ParameterIdentification.CannotRemoveObservedDataBeingUsedByParameterIdentification(observedDataFrom(usedObservedData).Name,
-                  parameterIdentifications.AllNames().ToList()));
-            return;
-         }
-
-         var viewResult = _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyRemoveObservedDataFromSimulation);
-         if (viewResult == ViewResult.No)
-            return;
-
-         usedObservedDataList.GroupBy(x => x.Simulation).Each(x => removeUsedObservedDataFromSimulation(x, x.Key.DowncastTo<Simulation>()));
-      }
-
       private IEnumerable<ParameterIdentification> findParameterIdentificationsUsing(UsedObservedData usedObservedData)
       {
          var observedData = observedDataFrom(usedObservedData);
