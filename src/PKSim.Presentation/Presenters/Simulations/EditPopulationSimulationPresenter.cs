@@ -1,16 +1,15 @@
-using PKSim.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Events;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -27,9 +26,14 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
       private ISimulationAdvancedParameterDistributionPresenter _distributionPresenter;
 
-      public EditPopulationSimulationPresenter(IEditPopulationSimulationView view, ISubPresenterItemManager<IEditPopulationSimulationItemPresenter> subPresenterItemManager, 
-         ISimulationAnalysisPresenterFactory simulationAnalysisPresenterFactory,  ISimulationAnalysisPresenterContextMenuFactory contextMenuFactory, IPresentationSettingsTask presentationSettingsTask, ISimulationAnalysisCreator simulationAnalysisCreator)
-         : base(view, subPresenterItemManager, EditPopulationSimulationItems.All, simulationAnalysisPresenterFactory,  contextMenuFactory, presentationSettingsTask, simulationAnalysisCreator)
+      public EditPopulationSimulationPresenter(
+         IEditPopulationSimulationView view,
+         ISubPresenterItemManager<IEditPopulationSimulationItemPresenter> subPresenterItemManager,
+         ISimulationAnalysisPresenterFactory simulationAnalysisPresenterFactory,
+         ISimulationAnalysisPresenterContextMenuFactory contextMenuFactory,
+         IPresentationSettingsTask presentationSettingsTask,
+         ISimulationAnalysisCreator simulationAnalysisCreator)
+         : base(view, subPresenterItemManager, EditPopulationSimulationItems.All, simulationAnalysisPresenterFactory, contextMenuFactory, presentationSettingsTask, simulationAnalysisCreator)
       {
       }
 
