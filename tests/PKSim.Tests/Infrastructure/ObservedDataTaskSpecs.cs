@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands;
@@ -19,7 +20,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Extensions;
 using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
@@ -375,14 +375,15 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_ask_the_user_to_confirm_the_removal()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(PKSimConstants.UI.ReallyRemoveObservedDataFromSimulation, ViewResult.Yes)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(Captions.ReallyRemoveObservedDataFromSimulation, ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]
       public void should_load_all_simulations()
       {
-         A.CallTo(() => _executionContext.Load(_sim1)).MustHaveHappened();
-         A.CallTo(() => _executionContext.Load(_sim2)).MustHaveHappened();
+         //use the overload defined in core
+         A.CallTo(() => _executionContext.Load((IObjectBase)_sim1)).MustHaveHappened();
+         A.CallTo(() => _executionContext.Load((IObjectBase)_sim2)).MustHaveHappened();
       }
 
       [Observation]
