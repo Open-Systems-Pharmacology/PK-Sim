@@ -400,6 +400,9 @@ namespace PKSim.Core.Model
          SimulationSettings = cloneManager.Clone(sourceSimulation.SimulationSettings);
          ReactionDiagramModel = sourceSimulation.ReactionDiagramModel.CreateCopy();
          OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
+         //Output mappings have an underling reference to the source simulation which is destroyed with the previous call/
+         //we reset the reference to the right simulation with this call
+         OutputMappings.SwapSimulation(sourceSimulation, this);
          updateBuildingBlockReferences(sourceSimulation);
       }
 

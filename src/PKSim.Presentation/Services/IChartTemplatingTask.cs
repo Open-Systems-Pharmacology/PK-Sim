@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using PKSim.Core.Chart;
-using PKSim.Core.Model;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Presenters.Charts;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Services
 {
@@ -15,7 +15,7 @@ namespace PKSim.Presentation.Services
       /// </summary>
       /// <param name="originalChart">original chart to clone</param>
       /// <param name="simulation">Simulation containing the chart to clone</param>
-      SimulationTimeProfileChart CloneChart(SimulationTimeProfileChart originalChart, IndividualSimulation simulation);
+      T CloneChart<T>(T originalChart, IndividualSimulation simulation) where T : AnalysisChart;
 
       void InitFromTemplate(CurveChart chart, IChartEditorAndDisplayPresenter chartEditorPresenter,
          IReadOnlyCollection<DataColumn> allAvailableColumns, IReadOnlyCollection<IndividualSimulation> simulations, Func<DataColumn, string> nameForColumn, CurveChartTemplate defaultChartTemplate = null);
