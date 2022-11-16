@@ -17,8 +17,6 @@ namespace PKSim.Core.Services
       /// </summary>
       void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable, bool showData);
 
-      void RemoveUsedObservedDataFromSimulation(IReadOnlyList<UsedObservedData> observedDataList);
-
       /// <summary>
       ///    Loads observed data from the template database
       /// </summary>
