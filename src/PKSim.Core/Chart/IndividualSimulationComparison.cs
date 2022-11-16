@@ -55,7 +55,7 @@ namespace PKSim.Core.Chart
 
       private void removeAllOutputMappings()
       {
-         OutputMappingsOfAllSimulations = new OutputMappings();
+         OutputMappingsOfAllSimulations.Clear();
       }
 
       public void RemoveAllSimulations()
