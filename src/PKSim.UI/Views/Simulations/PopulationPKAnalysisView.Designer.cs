@@ -98,12 +98,13 @@ namespace PKSim.UI.Views.Simulations
          this.populationPKAnalysisTabControl.Location = new System.Drawing.Point(2, 177);
          this.populationPKAnalysisTabControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.populationPKAnalysisTabControl.Name = "populationPKAnalysisTabControl";
-         this.populationPKAnalysisTabControl.SelectedTabPage = this.pageAggregatedPKValues;
+         this.populationPKAnalysisTabControl.SelectedTabPage = this.pageIndividualPKValues;
          this.populationPKAnalysisTabControl.Size = new System.Drawing.Size(551, 297);
          this.populationPKAnalysisTabControl.TabIndex = 0;
          this.populationPKAnalysisTabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
+            this.pageIndividualPKValues,
             this.pageAggregatedPKValues,
-            this.pageIndividualPKValues});
+         });
          // 
          // pageOnCurves
          // 
