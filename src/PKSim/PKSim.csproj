@@ -76,14 +76,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="11.1.50" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.50" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.1.54" />
+    <PackageReference Include="OSPSuite.Core" Version="11.1.54" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.53" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.1.50" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Presentation" Version="11.1.54" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" GeneratePathProperty="true" />
   </ItemGroup>
 
