@@ -71,7 +71,7 @@ namespace PKSim.Presentation.Presenters.Charts
       public void UpdateAnalysisBasedOn(IndividualSimulation individualSimulation)
       {
          base.UpdateAnalysisBasedOn(individualSimulation, individualSimulation.DataRepository);
-         ChartEditorPresenter.SetOutputMappings(individualSimulation.OutputMappings);
+         ChartEditorPresenter.AddOutputMappings(individualSimulation.OutputMappings);
       }
 
       public void InitializeAnalysis(ISimulationAnalysis simulationAnalysis, IAnalysable analysable)
