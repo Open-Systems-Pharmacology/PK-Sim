@@ -40,9 +40,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
    {
    }
 
-   public class SimulationResidualVsTimeChartXmlSerializer : PKSimChartXmlSerializer<SimulationResidualVsTimeChart>
-   {
-   }
 
    public class IndividualSimulationComparisonXmlSerializer : PKSimChartXmlSerializer<IndividualSimulationComparison>
    {
