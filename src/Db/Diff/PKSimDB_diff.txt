@@ -1,12 +1,1 @@
-UPDATE tab_calculation_method_rates SET formula='V>0 ? Liquid/V : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_FillLevel';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_Caecum';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonAscendens';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonDescendens';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonSigmoid';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_ColonTransversum';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_Duodenum';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_LowerIleum';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_LowerJejunum';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_Rectum';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_UpperIleum';
-UPDATE tab_calculation_method_rates SET formula='alpha*V > 0 ? (k_p*alpha_p*V_p+inflow-k*alpha*V)/(alpha*V) : 0' WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Outflow_UpperJejunum';
+UPDATE tab_disease_states SET display_name='Chronic Kidney Disease - No Dialysis (Malik et al, 2020)' WHERE disease_state='CKD';
