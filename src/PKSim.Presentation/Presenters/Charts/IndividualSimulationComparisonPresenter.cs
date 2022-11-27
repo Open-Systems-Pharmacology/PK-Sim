@@ -236,7 +236,7 @@ namespace PKSim.Presentation.Presenters.Charts
          if (repo == null) return;
          _repositoryCache.Remove(repo);
          ChartEditorPresenter.RemoveDataRepositories(new []{repo});
-         //ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings);
+         ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings);
          Chart.RemoveSimulation(simulation);
       }
 
