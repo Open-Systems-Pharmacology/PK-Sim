@@ -30,7 +30,6 @@ namespace PKSim.Core.Mappers
             MoleculeBuildingBlockId = expressionProfile.Molecule.Id
          };
 
-         
          var allParameters = expressionProfile.Molecule.AllParameters().Union(expressionProfile.Individual.GetAllChildren<IParameter>());
 
          foreach (var parameter in expressionProfile.Individual.GetAllChildren<IParameter>())
