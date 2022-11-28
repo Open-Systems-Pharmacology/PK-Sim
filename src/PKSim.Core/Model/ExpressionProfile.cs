@@ -31,8 +31,7 @@ namespace PKSim.Core.Model
       
       public override IReadOnlyList<T> GetAllChildren<T>()
       {
-         return Individual.AllMoleculeContainersFor(Molecule)
-            .SelectMany(x => x.GetAllChildren<T>()).ToList();
+         return Individual.GetAllChildren<T>();
       }
 
       public virtual string MoleculeName => Molecule?.Name;
