@@ -2,6 +2,7 @@
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Services;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.Core.Mappers
 {
@@ -23,11 +24,12 @@ namespace PKSim.Core.Mappers
          {
             Name = expressionProfile.Name,
             PKSimVersion = ProjectVersions.Current,
+            Type = ExpressionTypes.MetabolizingEnzyme, //here we have to actually serialize the correct one
+            MoleculeBuildingBlockId = expressionProfile.Molecule.Id,
             
-         };
+      };
 
          //expressionProfileBuildingBlock.FormulaCache = expressionProfile.Molecule.
-
          return expressionProfileBuildingBlock;
       }
    }
