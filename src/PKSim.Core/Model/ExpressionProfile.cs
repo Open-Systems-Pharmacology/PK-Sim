@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
@@ -26,6 +27,12 @@ namespace PKSim.Core.Model
 
       public ExpressionProfile() : base(PKSimBuildingBlockType.ExpressionProfile)
       {
+      }
+      
+      public override IReadOnlyList<T> GetAllChildren<T>()
+      {
+         return Individual.AllMoleculeContainersFor(Molecule)
+            .SelectMany(x => x.GetAllChildren<T>()).ToList();
       }
 
       public virtual string MoleculeName => Molecule?.Name;
