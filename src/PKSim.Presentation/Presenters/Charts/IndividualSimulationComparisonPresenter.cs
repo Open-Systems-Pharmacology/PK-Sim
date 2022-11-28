@@ -51,7 +51,6 @@ namespace PKSim.Presentation.Presenters.Charts
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
          ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
-         //Chart.AddSimulation(simulation);
       }
 
       public void DragDrop(object sender, IDragEvent e)
@@ -237,6 +236,7 @@ namespace PKSim.Presentation.Presenters.Charts
          if (repo == null) return;
          _repositoryCache.Remove(repo);
          ChartEditorPresenter.RemoveDataRepositories(new []{repo});
+         ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings);
          Chart.RemoveSimulation(simulation);
       }
 
