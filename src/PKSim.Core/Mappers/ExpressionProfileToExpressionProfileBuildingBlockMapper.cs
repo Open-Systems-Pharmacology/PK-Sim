@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Builder;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Mappers
 {
@@ -15,29 +14,57 @@ namespace PKSim.Core.Mappers
    public class ExpressionProfileToExpressionProfileBuildingBlockMapper : IExpressionProfileToExpressionProfileBuildingBlockMapper
    {
       private readonly IPKSimProjectRetriever _projectRetriever;
+      private readonly IObjectBaseFactory _objectBaseFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
 
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IPKSimProjectRetriever projectRetriever)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IPKSimProjectRetriever projectRetriever, IObjectBaseFactory objectBaseFactory, IObjectPathFactory objectPathFactory)
       {
          _projectRetriever = projectRetriever;
+         _objectBaseFactory = objectBaseFactory;
+         _objectPathFactory = objectPathFactory;
       }
       public ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
       {
-         var expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock()
-         {
-            Name = expressionProfile.Name,
-            PKSimVersion = ProjectVersions.Current,
-            Type = ExpressionTypes.MetabolizingEnzyme, //here we have to actually serialize the correct one
-            MoleculeBuildingBlockId = expressionProfile.Molecule.Id
-         };
+         var expressionProfileBuildingBlock = _objectBaseFactory.Create<ExpressionProfileBuildingBlock>();
 
-         var allParameters = expressionProfile.Molecule.AllParameters().Union(expressionProfile.Individual.GetAllChildren<IParameter>());
+         expressionProfileBuildingBlock.Name = expressionProfile.Name;
+         expressionProfileBuildingBlock.PKSimVersion = ProjectVersions.Current;
 
-         foreach (var parameter in expressionProfile.Individual.GetAllChildren<IParameter>())
+         var moleculeType = expressionProfile.Molecule.MoleculeType;
+         switch (moleculeType)
          {
-            if (parameter.Formula != null)
-               expressionProfileBuildingBlock.FormulaCache.Add(parameter.EntityPath() + parameter.Formula.Name, parameter.Formula);
+            case QuantityType.Enzyme:
+               expressionProfileBuildingBlock.Type = ExpressionTypes.MetabolizingEnzyme;
+               break;
+            case QuantityType.Transporter:
+               expressionProfileBuildingBlock.Type = ExpressionTypes.TransportProtein;
+               break;
+            default:
+               expressionProfileBuildingBlock.Type = ExpressionTypes.ProteinBindingPartner;
+               break;
+         }
+
+         var allParameters = expressionProfile.GetAllChildren<IParameter>();
+
+         foreach (var parameter in allParameters)
+         {
+            var expressionParameter = _objectBaseFactory.Create<ExpressionParameter>();
+            if (parameter.Formula != null && parameter.Formula.IsCachable())
+            {
+               expressionProfileBuildingBlock.AddFormula(parameter.Formula);
+               expressionParameter.Formula = parameter.Formula;
+            }
             else
-               expressionProfileBuildingBlock.Add(new ExpressionParameter(parameter));
+            {
+               (expressionParameter.StartValue, _) = parameter.TryGetValue();
+         }
+
+            expressionParameter.Name = parameter.Name;
+
+            expressionParameter.Path = _objectPathFactory.CreateAbsoluteObjectPath(parameter);
+            expressionParameter.Dimension = parameter.Dimension;
+            expressionParameter.DisplayUnit = parameter.DisplayUnit;
+            expressionProfileBuildingBlock.Add(expressionParameter);
          }
          return expressionProfileBuildingBlock;
       }
