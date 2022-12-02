@@ -1,4 +1,6 @@
-﻿using OSPSuite.Utility;
+﻿using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Services;
@@ -25,11 +27,19 @@ namespace PKSim.Core.Mappers
             Name = expressionProfile.Name,
             PKSimVersion = ProjectVersions.Current,
             Type = ExpressionTypes.MetabolizingEnzyme, //here we have to actually serialize the correct one
-            MoleculeBuildingBlockId = expressionProfile.Molecule.Id,
-            
-      };
+            MoleculeBuildingBlockId = expressionProfile.Molecule.Id
+         };
 
-         //expressionProfileBuildingBlock.FormulaCache = expressionProfile.Molecule.
+         
+         var allParameters = expressionProfile.Molecule.AllParameters().Union(expressionProfile.Individual.GetAllChildren<IParameter>());
+
+         foreach (var parameter in expressionProfile.Individual.GetAllChildren<IParameter>())
+         {
+            if (parameter.Formula != null)
+               expressionProfileBuildingBlock.FormulaCache.Add(parameter.EntityPath() + parameter.Formula.Name, parameter.Formula);
+            else
+               expressionProfileBuildingBlock.Add(new ExpressionParameter(parameter));
+         }
          return expressionProfileBuildingBlock;
       }
    }
