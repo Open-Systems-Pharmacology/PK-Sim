@@ -17,14 +17,23 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="nunit" Version="3.13.2" />
-    <PackageReference Include="OSPSuite.Assets" Version="11.1.65" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.0.0-vwvQP" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.65" />
-    <PackageReference Include="OSPSuite.UI" Version="11.1.65" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.0-vwvQP" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.UI" Version="12.0.0-vwvQP" />
+    <Content Include="$(PkgOSPSuite_FuncParser)\OSPSuite.FuncParserNative\bin\native\x64\Release\OSPSuite.FuncParserNative.dll" Link="OSPSuite.FuncParserNative.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgSystem_Data_SQLite_Core)\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj" />
+    <ProjectReference Include="..\..\src\PKSim.UI.Starter\PKSim.UI.Starter.csproj" />
     <ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj" />
   </ItemGroup>
 
