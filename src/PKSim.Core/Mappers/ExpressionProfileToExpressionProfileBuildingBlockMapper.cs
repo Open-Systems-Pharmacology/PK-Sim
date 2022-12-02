@@ -1,8 +1,8 @@
 ﻿using OSPSuite.Core.Domain;
-using OSPSuite.Utility;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility;
+using PKSim.Core.Model;
 using PKSim.Core.Services;
 
 namespace PKSim.Core.Mappers
@@ -23,6 +23,7 @@ namespace PKSim.Core.Mappers
          _objectBaseFactory = objectBaseFactory;
          _objectPathFactory = objectPathFactory;
       }
+
       public ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
       {
          var expressionProfileBuildingBlock = _objectBaseFactory.Create<ExpressionProfileBuildingBlock>();
@@ -57,7 +58,7 @@ namespace PKSim.Core.Mappers
             else
             {
                (expressionParameter.StartValue, _) = parameter.TryGetValue();
-         }
+            }
 
             expressionParameter.Name = parameter.Name;
 
@@ -66,6 +67,7 @@ namespace PKSim.Core.Mappers
             expressionParameter.DisplayUnit = parameter.DisplayUnit;
             expressionProfileBuildingBlock.Add(expressionParameter);
          }
+
          return expressionProfileBuildingBlock;
       }
    }
