@@ -1,7 +1,7 @@
 ﻿using System.Data;
+using OSPSuite.Presentation.Views;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Simulations
 {
@@ -11,6 +11,7 @@ namespace PKSim.Presentation.Views.Simulations
       DataTable GetSummaryData();
       void AddGlobalPKAnalysisView(IGlobalPKAnalysisView view);
       bool IsAggregatedPKValuesSelected { get; }
+      bool GlobalPKVisible { set; }
       void ShowPKAnalysisIndividualPKValues(bool visible);
    }
 }

@@ -27,9 +27,7 @@ using static PKSim.Core.CoreConstants.Dimension;
 using static PKSim.Core.CoreConstants.PKAnalysis;
 using static PKSim.Core.CoreConstants.Species;
 using static PKSim.Core.CoreConstants.Units;
-using Compound = PKSim.Core.Model.Compound;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
-using PKAnalysis = PKSim.Core.Model.PKAnalysis;
 
 namespace PKSim.Core.Services
 {
@@ -110,7 +108,7 @@ namespace PKSim.Core.Services
          IStatisticalDataCalculator statisticalDataCalculator,
          IRepresentationInfoRepository representationInfoRepository,
          IParameterFactory parameterFactory, IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper, IProtocolFactory protocolFactory,
-         IGlobalPKAnalysisRunner globalPKAnalysisRunner, IVSSCalculator vssCalculator, IInteractionTask interactionTask, ICloner cloner, IEntityPathResolver entityPathResolver) : 
+         IGlobalPKAnalysisRunner globalPKAnalysisRunner, IVSSCalculator vssCalculator, IInteractionTask interactionTask, ICloner cloner, IEntityPathResolver entityPathResolver) :
          base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
       {
          _lazyLoadTask = lazyLoadTask;
@@ -145,10 +143,7 @@ namespace PKSim.Core.Services
          {
             var globalPKAnalysesForIndividuals = new Cache<int, GlobalPKAnalysis>();
             var analyses = base.CalculateFor(populationSimulation, populationSimulation.Results,
-               individualId =>
-               {
-                  updateBodyWeightForIndividual(bodyWeightParameter, allBodyWeights, individualId);
-               },
+               individualId => { updateBodyWeightForIndividual(bodyWeightParameter, allBodyWeights, individualId); },
                (individualId, options, compoundName) =>
                {
                   var globalPKAnalysis = globalPkAnalysisForIndividual(globalPKAnalysesForIndividuals, individualId);
@@ -234,6 +229,7 @@ namespace PKSim.Core.Services
             compoundPK.AddDDIAucInf(individualId, individualSimulation.AucDDI[compound.Name]);
             compoundPK.AddDDICMax(individualId, individualSimulation.CMaxDDI[compound.Name]);
          }
+
          return compoundPKContext;
       }
 
@@ -247,7 +243,7 @@ namespace PKSim.Core.Services
          var compoundContainer = new Container().WithName(compoundName);
          populationSimulation.PKAnalyses.AllPKParametersFor(compoundName).Each(quantityPKParameter =>
          {
-            double? defaultValue = new SortedFloatArray(quantityPKParameter.ValuesAsArray, alreadySorted:false).Median();
+            double? defaultValue = new SortedFloatArray(quantityPKParameter.ValuesAsArray, alreadySorted: false).Median();
             if (double.IsNaN(defaultValue.Value))
                defaultValue = null;
 
@@ -319,7 +315,7 @@ namespace PKSim.Core.Services
          var vssPlasmaOverF = createParameter(VssPlasmaOverF, bloodPlasmaPK[Vss], VolumePerBodyWeight);
          var vdPlasma = createParameter(VdPlasma, bloodPlasmaPK[Vd], VolumePerBodyWeight);
          var vdPlasmaOverF = createParameter(VdPlasmaOverF, bloodPlasmaPK[Vd], VolumePerBodyWeight);
-         if(simulation is IndividualSimulation)
+         if (simulation is IndividualSimulation)
             vssPhysChem = createParameter(VssPhysChem, calculateVSSPhysChemFor(simulation, compoundName), VolumePerBodyWeight);
 
          var totalPlasmaCL = createParameter(TotalPlasmaCL, bloodPlasmaPK[PKParameters.CL], FlowPerWeight);
@@ -346,7 +342,7 @@ namespace PKSim.Core.Services
          if (isIntravenous(schemaItem))
          {
             container.AddChildren(vssPlasma, vdPlasma, totalPlasmaCL);
-            if(vssPhysChem != null)
+            if (vssPhysChem != null)
                container.Add(vssPhysChem);
 
             return container;
@@ -398,13 +394,7 @@ namespace PKSim.Core.Services
          // use the first in series as a template to retrieve from all individual results.
          // The list of parameters should be identical for all the individual global analyses.
          var aPKAnalysis = globalIndividualPKParameterCache.FirstOrDefault();
-         aPKAnalysis?.AllPKParameters.GroupBy(moleculeNameFrom).Each(group =>
-         {
-            group.Each(pKParameter =>
-            {
-               quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterCache, pKParameter, group.Key));
-            });
-         });
+         aPKAnalysis?.AllPKParameters.GroupBy(moleculeNameFrom).Each(group => { group.Each(pKParameter => { quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterCache, pKParameter, group.Key)); }); });
 
          return quantityPKList;
       }
@@ -530,9 +520,8 @@ namespace PKSim.Core.Services
             // We know this is a valid cast because it is cloned from simulation
             var populationSimulation = simulation.DowncastTo<PopulationSimulation>();
             CalculateFor(ivPopulationSimulation, ivCompoundPKContext);
-            var contextForPopulationSimulation = createContextForPopulationSimulation(ivCompoundPKContext, mapFromBioavailabilityCompoundPK, compoundName, populationSimulation, new []{Bioavailability});
+            var contextForPopulationSimulation = createContextForPopulationSimulation(ivCompoundPKContext, mapFromBioavailabilityCompoundPK, compoundName, populationSimulation, new[] { Bioavailability });
             populationSimulation.PKAnalyses = CalculateFor(populationSimulation, contextForPopulationSimulation);
-
          }
          else if (ivSimulation is IndividualSimulation ivIndividualSimulation)
          {
@@ -648,7 +637,7 @@ namespace PKSim.Core.Services
          return allSchemaItems.Any() && allSchemaItems.All(isOral);
       }
 
-      private static bool isOral(ISchemaItem schemaItem)
+      private static bool isOral(SchemaItem schemaItem)
       {
          if (schemaItem == null)
             return false;
@@ -656,12 +645,12 @@ namespace PKSim.Core.Services
          return schemaItem.ApplicationType == ApplicationTypes.Oral;
       }
 
-      private static bool isIntravenous(ISchemaItem schemaItem)
+      private static bool isIntravenous(SchemaItem schemaItem)
       {
          if (schemaItem == null)
             return false;
 
-         return schemaItem.ApplicationType == ApplicationTypes.Intravenous || schemaItem.ApplicationType == ApplicationTypes.IntravenousBolus;
+         return schemaItem.IsIV;
       }
 
       private ApplicationType applicationTypeFor(Simulation simulation, Compound compound)
@@ -673,17 +662,17 @@ namespace PKSim.Core.Services
          return numberOfApplications > 1 ? ApplicationType.Multiple : ApplicationType.Empty;
       }
 
-      private ISchemaItem singleDosingItem(Simulation simulation, Compound compound)
+      private SchemaItem singleDosingItem(Simulation simulation, Compound compound)
       {
          //this may be null for compound created by metabolization process only
          return schemaItemsFrom(simulation, compound).FirstOrDefault();
       }
 
-      private IReadOnlyList<ISchemaItem> schemaItemsFrom(Simulation simulation, Compound compound)
+      private IReadOnlyList<SchemaItem> schemaItemsFrom(Simulation simulation, Compound compound)
       {
          var protocol = simulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol;
          if (protocol == null)
-            return new List<ISchemaItem>();
+            return new List<SchemaItem>();
 
          return _protocolToSchemaItemsMapper.MapFrom(protocol);
       }
@@ -778,8 +767,8 @@ namespace PKSim.Core.Services
             new DataColumn(curveData.Caption, curveData.YAxis.Dimension, baseGrid)
             {
                Values = curveData.YValues.Select(y => y.Y).ToList(),
-               DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
-               QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+               DataInfo = { MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath) },
+               QuantityInfo = { Path = curveData.QuantityPath.ToPathArray() }
             }
          };
       }
@@ -857,11 +846,13 @@ namespace PKSim.Core.Services
       }
 
       /// <summary>
-      /// Returns the range strings when the <paramref name="text"/> contains 'Range 2.5% to 97.5%' language
+      ///    Returns the range strings when the <paramref name="text" /> contains 'Range 2.5% to 97.5%' language
       /// </summary>
       /// <param name="text">The text being split</param>
-      /// <returns>The individual range descriptions as a tuple containing low range and high range.
-      /// If the string cannot be split on 'Range', returns the original text in both members of the tuple</returns>
+      /// <returns>
+      ///    The individual range descriptions as a tuple containing low range and high range.
+      ///    If the string cannot be split on 'Range', returns the original text in both members of the tuple
+      /// </returns>
       private (string lowerRange, string upperRange) rangeDescriptions(string text)
       {
          var splitStrings = text.Split(new[] { "Range" }, StringSplitOptions.None);

@@ -30,18 +30,16 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly List<PopulationPKAnalysis> _allPKAnalysesIndividualPKValues = new List<PopulationPKAnalysis>();
       private IPopulationDataCollector _populationDataCollector;
       private readonly IPopulationPKAnalysisToPKAnalysisDTOMapper _populationPKAnalysisToDTOMapper;
-      private readonly IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
 
       public PopulationPKAnalysisPresenter(IPopulationPKAnalysisView view, IPKAnalysesTask pkAnalysesTask,
          IPKAnalysisExportTask exportTask, IPopulationPKAnalysisToPKAnalysisDTOMapper populationPKAnalysisToDTOMapper,
          IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask,
          IGlobalPKAnalysisPresenter globalPKAnalysisPresenter)
-         : base(view, pkParameterRepository, presentationSettingsTask)
+         : base(view, pkParameterRepository, presentationSettingsTask, globalPKAnalysisPresenter)
       {
          _pkAnalysesTask = pkAnalysesTask;
          _exportTask = exportTask;
          _populationPKAnalysisToDTOMapper = populationPKAnalysisToDTOMapper;
-         _globalPKAnalysisPresenter = globalPKAnalysisPresenter;
          AddSubPresenters(_globalPKAnalysisPresenter);
          _view.AddGlobalPKAnalysisView(_globalPKAnalysisPresenter.View);
       }
@@ -67,7 +65,9 @@ namespace PKSim.Presentation.Presenters.Simulations
          var simulation = populationDataCollector.DowncastTo<PopulationSimulation>();
 
          //Calculate first global PK that should always be updated
-         _globalPKAnalysisPresenter.CalculatePKAnalysis(new[] {simulation});
+         _globalPKAnalysisPresenter.CalculatePKAnalysis(new[] { simulation });
+
+         _view.GlobalPKVisible = _globalPKAnalysisPresenter.CanCalculateGlobalPK();
 
          var pkParametersCache = extractPKParameters(populationAnalysis, simulation);
          if (!pkParametersCache.Any() || pkParametersCache.All(x => !x.Any()))
