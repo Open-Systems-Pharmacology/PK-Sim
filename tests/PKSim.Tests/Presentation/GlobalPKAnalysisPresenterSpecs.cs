@@ -134,7 +134,7 @@ namespace PKSim.Presentation
    }
 
 
-   public class when_calculating_if_a_global_pk_analysis_is_possible_for_single_iv : context_for_can_calculate_global_pk_analysis
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_single_iv : context_for_can_calculate_global_pk_analysis
    {
       protected override List<SchemaItem> GetSecondCompoundSchemaItems()
       {
@@ -160,7 +160,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class when_calculating_if_a_global_pk_analysis_is_possible_for_multiple_oral : context_for_can_calculate_global_pk_analysis
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_oral : context_for_can_calculate_global_pk_analysis
    {
       protected override List<SchemaItem> GetSecondCompoundSchemaItems()
       {
@@ -187,7 +187,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class when_calculating_if_a_global_pk_analysis_is_possible_for_multiple_iv : context_for_can_calculate_global_pk_analysis
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_iv : context_for_can_calculate_global_pk_analysis
    {
       protected override List<SchemaItem> GetSecondCompoundSchemaItems()
       {
@@ -214,7 +214,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class when_calculating_pk_analysis : concern_for_GlobalPKAnalysisPresenter
+   public class When_calculating_pk_analysis : concern_for_GlobalPKAnalysisPresenter
    {
       private IParameter _parameter;
       private Unit _preferredDisplayUnit;

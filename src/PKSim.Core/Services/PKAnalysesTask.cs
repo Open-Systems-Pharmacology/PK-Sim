@@ -394,7 +394,13 @@ namespace PKSim.Core.Services
          // use the first in series as a template to retrieve from all individual results.
          // The list of parameters should be identical for all the individual global analyses.
          var aPKAnalysis = globalIndividualPKParameterCache.FirstOrDefault();
-         aPKAnalysis?.AllPKParameters.GroupBy(moleculeNameFrom).Each(group => { group.Each(pKParameter => { quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterCache, pKParameter, group.Key)); }); });
+         aPKAnalysis?.AllPKParameters.GroupBy(moleculeNameFrom).Each(group =>
+         {
+            group.Each(pKParameter =>
+            {
+               quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterCache, pKParameter, group.Key));
+            });
+         });
 
          return quantityPKList;
       }

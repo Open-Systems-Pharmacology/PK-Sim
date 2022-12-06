@@ -40,8 +40,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          _pkAnalysesTask = pkAnalysesTask;
          _exportTask = exportTask;
          _populationPKAnalysisToDTOMapper = populationPKAnalysisToDTOMapper;
-         AddSubPresenters(_globalPKAnalysisPresenter);
-         _view.AddGlobalPKAnalysisView(_globalPKAnalysisPresenter.View);
       }
 
       public void CalculatePKAnalyses(IPopulationDataCollector populationDataCollector, ChartData<TimeProfileXValue, TimeProfileYValue> timeProfileChartData, PopulationStatisticalAnalysis populationAnalysis)

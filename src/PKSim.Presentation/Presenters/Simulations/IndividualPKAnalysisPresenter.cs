@@ -40,8 +40,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          _exportTask = exportTask;
          _view.ShowControls = false;
          _curveCache = new Cache<DataColumn, Curve>(onMissingKey: x => null);
-         AddSubPresenters(_globalPKAnalysisPresenter);
-         _view.AddGlobalPKAnalysisView(_globalPKAnalysisPresenter.View);
          _pKAnalysisToDTOMapper = pKAnalysisToDTOMapper;
       }
 

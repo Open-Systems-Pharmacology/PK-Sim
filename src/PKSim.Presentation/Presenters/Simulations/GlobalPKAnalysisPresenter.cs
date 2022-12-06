@@ -174,10 +174,8 @@ namespace PKSim.Presentation.Presenters.Simulations
          });
       }
 
-      private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems)
-      {
-         return schemaItems.Count(schemaItem => schemaItem.IsIV) > 1;
-      }
+      private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems) => schemaItems.Count(schemaItem => schemaItem.IsIV) > 1;
+      
 
       public void LoadSettingsForSubject(IWithId subject)
       {

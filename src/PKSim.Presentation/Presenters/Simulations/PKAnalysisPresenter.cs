@@ -9,6 +9,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -20,7 +21,7 @@ namespace PKSim.Presentation.Presenters.Simulations
    }
 
    public abstract class PKAnalysisPresenter<TView, TPresenter> : AbstractSubPresenter<TView, TPresenter>, IPKAnalysisPresenter
-      where TView : IView<TPresenter>
+      where TView : IView<TPresenter>, IPKAnalysisView
       where TPresenter : IPresenter
    {
       private readonly IPKParameterRepository _pkParameterRepository;
@@ -37,6 +38,8 @@ namespace PKSim.Presentation.Presenters.Simulations
          _undefinedPKParameter = new PKSimParameter { Dimension = Constants.Dimension.NO_DIMENSION };
          _settings = new DefaultPresentationSettings();
          _globalPKAnalysisPresenter = globalPKAnalysisPresenter;
+         AddSubPresenters(_globalPKAnalysisPresenter);
+         _view.AddGlobalPKAnalysisView(_globalPKAnalysisPresenter.View);
       }
 
       public void ChangeUnit(string pkParameterName, Unit newUnit)
