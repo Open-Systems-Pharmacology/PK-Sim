@@ -1,9 +1,9 @@
 ﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 
 namespace PKSim.Core.Mappers
 {
@@ -13,15 +13,13 @@ namespace PKSim.Core.Mappers
 
    public class ExpressionProfileToExpressionProfileBuildingBlockMapper : IExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly IEntityPathResolver _entityPathResolver;
 
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IPKSimProjectRetriever projectRetriever, IObjectBaseFactory objectBaseFactory, IObjectPathFactory objectPathFactory)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver)
       {
-         _projectRetriever = projectRetriever;
          _objectBaseFactory = objectBaseFactory;
-         _objectPathFactory = objectPathFactory;
+         _entityPathResolver = entityPathResolver;
       }
 
       public ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
@@ -62,7 +60,7 @@ namespace PKSim.Core.Mappers
 
             expressionParameter.Name = parameter.Name;
 
-            expressionParameter.Path = _objectPathFactory.CreateAbsoluteObjectPath(parameter);
+            expressionParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
             expressionParameter.Dimension = parameter.Dimension;
             expressionParameter.DisplayUnit = parameter.DisplayUnit;
             expressionProfileBuildingBlock.Add(expressionParameter);
