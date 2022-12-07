@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 using PKSim.Core.Model;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core.Mappers
 {
@@ -15,11 +16,13 @@ namespace PKSim.Core.Mappers
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IEntityPathResolver _entityPathResolver;
+      private IFormulaFactory _formulaFactory;
 
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IFormulaFactory formulaFactory)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
+         _formulaFactory = formulaFactory;
       }
 
       public ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
@@ -48,10 +51,11 @@ namespace PKSim.Core.Mappers
          foreach (var parameter in allParameters)
          {
             var expressionParameter = _objectBaseFactory.Create<ExpressionParameter>();
+
             if (parameter.Formula != null && parameter.Formula.IsCachable())
             {
-               expressionProfileBuildingBlock.AddFormula(parameter.Formula);
-               expressionParameter.Formula = parameter.Formula;
+               var formula = _formulaFactory.RateFor(CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS, parameter.Formula.Name, expressionProfileBuildingBlock.FormulaCache);
+               expressionParameter.Formula = formula;
             }
             else
             {
