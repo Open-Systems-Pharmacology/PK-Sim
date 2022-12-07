@@ -51,6 +51,16 @@ namespace PKSim.UI.Views.Simulations
 
       public bool IsAggregatedPKValuesSelected => populationPKAnalysisTabControl.SelectedTabPage == pageAggregatedPKValues;
 
+      public bool GlobalPKVisible
+      {
+         set
+         {
+            layoutControlItemGlobalPKAnalysis.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+            layoutControlItemGlobalPKAnalysisDescription.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+            splitter.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         }
+      }
+
       public void ShowPKAnalysisIndividualPKValues(bool visible)
       {
          var visibility = LayoutVisibilityConvertor.FromBoolean(visible);
@@ -85,7 +95,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          populationPKAnalysisTabControl.Images = _imageListRetriever.AllImages16x16;
-         
+
          pageIndividualPKValues.ImageIndex = _imageListRetriever.ImageIndex(ApplicationIcons.Population);
          pageIndividualPKValues.Text = PKSimConstants.PKAnalysis.IndividualPKValues;
          pageIndividualPKValues.Tooltip = PKSimConstants.PKAnalysis.IndivdualPKValuesTooltip;
