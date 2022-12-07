@@ -4,8 +4,11 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
 {
@@ -13,25 +16,27 @@ namespace PKSim.Core
       concern_for_ExpressionProfileToExpressionProfileBuildingBlockMapper : ContextSpecification<ExpressionProfileToExpressionProfileBuildingBlockMapper>
    {
       protected IObjectBaseFactory _objectBaseFactory;
-      protected IObjectPathFactory _objectPathFactory;
+      protected IEntityPathResolver _objectPathFactory;
       protected ExpressionProfile _expressionProfile;
+      protected IFormulaFactory _formulaFactory;
       protected Individual _individual;
+      protected ExpressionProfileBuildingBlock _result;
 
       protected override void Context()
       {
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _objectPathFactory = new ObjectPathFactoryForSpecs();
+         _objectPathFactory = new EntityPathResolverForSpecs();
+         _formulaFactory = A.Fake<IFormulaFactory>();
+         A.CallTo(() => _formulaFactory.RateFor(A<string>._, A<string>._, A<IFormulaCache>._)).Returns(new ExplicitFormula());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).Returns(new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper( _objectBaseFactory, _objectPathFactory);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper( _objectBaseFactory, _objectPathFactory, _formulaFactory);
       }
    }
 
    public class When_mapping_an_empty_expression_profile : concern_for_ExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      private ExpressionProfileBuildingBlock _result;
-
       protected override void Context()
       {
          base.Context();
@@ -53,15 +58,13 @@ namespace PKSim.Core
       {
          _result.ShouldNotBeNull();
          _result.Name.ShouldBeEmpty();
-         _result.Category.ShouldBeEmpty();
+         _result.Category.ShouldBeNull();
          _result.Description.ShouldBeEmpty();
          _result.FormulaCache.ShouldBeEmpty();
       }
    }
    public class When_mapping_a_non_empty_expression_profile : concern_for_ExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      private ExpressionProfileBuildingBlock _result;
-
       protected override void Context()
       {
          base.Context();
@@ -89,9 +92,7 @@ namespace PKSim.Core
          _result.MoleculeName.ShouldBeEqualTo("TestEnzyme");
          _result.Type.DisplayName.ShouldBeEqualTo("Enzyme");
          _result.Type.IconName.ShouldBeEqualTo("Enzyme");
-
-         var formulas = _expressionProfile.GetAllChildren<IParameter>().Select(x => x.Formula);
-         _result.FormulaCache.ShouldOnlyContain(formulas);
+         A.CallTo(() => _formulaFactory.RateFor(A<string>._, A<string>._, A<IFormulaCache>._)).MustHaveHappened(3, Times.Exactly);
       }
    }
 }
