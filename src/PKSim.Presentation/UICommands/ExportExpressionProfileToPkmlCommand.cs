@@ -12,9 +12,7 @@ namespace PKSim.Presentation.UICommands
    {
       private readonly IDialogCreator _dialogCreator;
       private readonly IPKMLPersistor _pkmlPersistor;
-
       private readonly IExpressionProfileToExpressionProfileBuildingBlockMapper _mapper;
-      //possibly we need to pack all this in a task
       public ExportExpressionProfileToPkmlCommand(IDialogCreator dialogCreator, IPKMLPersistor pkmlPersistor, 
          IExpressionProfileToExpressionProfileBuildingBlockMapper mapper)
       {
