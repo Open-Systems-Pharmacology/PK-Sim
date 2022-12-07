@@ -13,13 +13,11 @@ namespace PKSim.Core.Mappers
 
    public class ExpressionProfileToExpressionProfileBuildingBlockMapper : IExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IObjectPathFactory _objectPathFactory;
 
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IPKSimProjectRetriever projectRetriever, IObjectBaseFactory objectBaseFactory, IObjectPathFactory objectPathFactory)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IObjectPathFactory objectPathFactory)
       {
-         _projectRetriever = projectRetriever;
          _objectBaseFactory = objectBaseFactory;
          _objectPathFactory = objectPathFactory;
       }
@@ -30,6 +28,7 @@ namespace PKSim.Core.Mappers
 
          expressionProfileBuildingBlock.Name = expressionProfile.Name;
          expressionProfileBuildingBlock.PKSimVersion = ProjectVersions.Current;
+         expressionProfileBuildingBlock.Description = expressionProfile.Description;
 
          var moleculeType = expressionProfile.Molecule.MoleculeType;
          switch (moleculeType)
