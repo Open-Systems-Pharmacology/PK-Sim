@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
 {
@@ -98,8 +99,6 @@ namespace PKSim.Core
       //tolerated precision to relatively compare to double values 
       public const double DOUBLE_RELATIVE_EPSILON = 1e-2;
 
-      public const char COMPOSITE_SEPARATOR = '-';
-
       //not as readonly as the text will be updated with the current version
       public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
@@ -108,25 +107,6 @@ namespace PKSim.Core
       public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
 
       public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
-
-      public static string CompositeNameFor(params string[] names) => compositeNameFor(COMPOSITE_SEPARATOR, names);
-
-
-      private static string compositeNameFor(char separator, params string[] names)
-      {
-         if (names == null || names.Length == 0)
-            return string.Empty;
-
-         var nonEmptyNames = names.ToList();
-         nonEmptyNames.RemoveAll(string.IsNullOrEmpty);
-
-         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{separator}");
-      }
-
-      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName, char separator = COMPOSITE_SEPARATOR)
-      {
-         return compositeName.Split(separator);
-      }
 
       public static class DirectoryKey
       {
@@ -447,9 +427,6 @@ namespace PKSim.Core
          public static string MucosaSegmentNameFor(string segmentName) => CompositeNameFor(Compartment.MUCOSA, segmentName);
 
          public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
-
-         public static string ExpressionProfileName(string moleculeName, Core.Model.Species species,  string category) 
-            => compositeNameFor(char.Parse(ObjectPath.PATH_DELIMITER),  moleculeName, species?.DisplayName, category);
 
          public static (string moleculeName, string speciesName, string category) NamesFromExpressionProfileName(string expressionProfileName)
          {
@@ -885,16 +862,16 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> AllParametersInfluencedByFractionAbsorbed = new[]
          {
-            Constants.PKParameters.Vd,
-            Constants.PKParameters.Vss,
-            Constants.PKParameters.MRT,
-            Constants.PKParameters.Thalf,
-            Constants.PKParameters.AUC_inf,
-            Constants.PKParameters.AUC_inf_norm,
-            Constants.PKParameters.AUC_inf_tD1,
-            Constants.PKParameters.AUC_inf_tD1_norm,
-            Constants.PKParameters.AUC_inf_tDLast,
-            Constants.PKParameters.AUC_inf_tLast_norm
+            PKParameters.Vd,
+            PKParameters.Vss,
+            PKParameters.MRT,
+            PKParameters.Thalf,
+            PKParameters.AUC_inf,
+            PKParameters.AUC_inf_norm,
+            PKParameters.AUC_inf_tD1,
+            PKParameters.AUC_inf_tD1_norm,
+            PKParameters.AUC_inf_tDLast,
+            PKParameters.AUC_inf_tLast_norm
          };
       }
 

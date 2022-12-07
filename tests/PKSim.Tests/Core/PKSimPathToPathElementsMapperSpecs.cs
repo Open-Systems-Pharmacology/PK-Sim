@@ -8,6 +8,7 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
 {
@@ -198,7 +199,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _entity = new Observer().WithName(CoreConstants.CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR))
+         _entity = new Observer().WithName(CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR))
             .WithParentContainer(_drugContainerInLiverCell)
             .WithDimension(_fractionDimension);
       }
@@ -206,7 +207,7 @@ namespace PKSim.Core
       [Observation]
       public void should_keep_the_name_of_the_observer_as_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR, _drugName, CoreConstants.CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName));
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR, _drugName, CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName));
       }
    }
 

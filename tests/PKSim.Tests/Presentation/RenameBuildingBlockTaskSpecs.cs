@@ -18,6 +18,8 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
+using static OSPSuite.Core.Domain.Constants;
+using SimulationResults = OSPSuite.Core.Domain.Data.SimulationResults;
 
 namespace PKSim.Presentation
 {
@@ -293,7 +295,7 @@ namespace PKSim.Presentation
          base.Context();
          _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
          _newMoleculeName = "CYP";
-         _newName = CoreConstants.ContainerName.ExpressionProfileName(_newMoleculeName, _expressionProfile.Species, "SICK");
+         _newName = ContainerName.ExpressionProfileName(_newMoleculeName, _expressionProfile.Species.DisplayName, "SICK");
       }
 
       protected override void Because()

@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
 using static PKSim.Core.CoreConstants.ContainerName;
 
+
 namespace PKSim.Core.Model
 {
    public class ExpressionProfile : PKSimBuildingBlock
@@ -44,7 +45,7 @@ namespace PKSim.Core.Model
 
       public override string Name
       {
-         get => ExpressionProfileName(MoleculeName, Species, Category);
+         get => Constants.ContainerName.ExpressionProfileName(MoleculeName, Species?.DisplayName, Category);
          set
          {
             if (string.Equals(Name, value))

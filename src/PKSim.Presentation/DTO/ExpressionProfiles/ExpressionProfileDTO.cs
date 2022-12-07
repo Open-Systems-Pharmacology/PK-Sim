@@ -48,7 +48,7 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
       private bool moleculeSpeciesCategoryValid(string name) => !_allExistingExpressionProfileNames.Contains(name?.TrimmedValue()?.ToLower());
 
-      public string Name => ExpressionProfileName(MoleculeName, Species, Category);
+      public string Name => Constants.ContainerName.ExpressionProfileName(MoleculeName, Species?.DisplayName, Category);
 
       private static class ExpressionProfileRules
       {

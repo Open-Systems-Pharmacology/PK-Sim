@@ -8,6 +8,7 @@ using PKSim.Presentation.Mappers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Presentation
 {
@@ -98,7 +99,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_add_the_parameters_defined_under_the_process_using_the_name_of_the_process_conbined_with_the_name_of_the_compound()
       {
-         A.CallTo(() => _treeNodeFactory.CreateDynamicGroup(A<string>._, CoreConstants.CompositeNameFor("Drug", "Interac"), A<IEnumerable<IParameter>>._)).MustHaveHappened();
+         A.CallTo(() => _treeNodeFactory.CreateDynamicGroup(A<string>._, CompositeNameFor("Drug", "Interac"), A<IEnumerable<IParameter>>._)).MustHaveHappened();
       }
    }
 }

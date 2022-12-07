@@ -1,3 +1,5 @@
+using static OSPSuite.Core.Domain.Constants;
+
 namespace PKSim.Core.Model
 {
    public class CompoundGroupSelection
@@ -7,7 +9,7 @@ namespace PKSim.Core.Model
 
       public override string ToString()
       {
-         return CoreConstants.CompositeNameFor(GroupName, AlternativeName);
+         return CompositeNameFor(GroupName, AlternativeName);
       }
    }
 }

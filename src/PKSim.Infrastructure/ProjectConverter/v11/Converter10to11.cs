@@ -14,6 +14,8 @@ using PKSim.Core.Services;
 using static PKSim.Core.CoreConstants.Organ;
 using static PKSim.Core.CoreConstants.Parameters;
 using static PKSim.Infrastructure.ProjectConverter.ConverterConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.ContainerName;
+using Population = PKSim.Core.Model.Population;
 
 namespace PKSim.Infrastructure.ProjectConverter.v11
 {
@@ -181,7 +183,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          var project = _projectRetriever.Current;
          foreach (var molecule in simulationSubject.AllMolecules())
          {
-            var defaultExpressionProfileName = CoreConstants.ContainerName.ExpressionProfileName(molecule.Name, simulationSubject.Species, simulationSubject.Name);
+            var defaultExpressionProfileName = ExpressionProfileName(molecule.Name, simulationSubject.Species?.DisplayName, simulationSubject.Name);
 
             var expressionProfileName = _containerTask.CreateUniqueName(project.All<ExpressionProfile>(), defaultExpressionProfileName, canUseBaseName: true);
             var expressionProfile = _expressionProfileFactory.Create(molecule.GetType(), simulationSubject.Species, molecule.Name);

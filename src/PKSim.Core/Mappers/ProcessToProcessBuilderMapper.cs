@@ -11,6 +11,7 @@ using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static OSPSuite.Core.Domain.Constants;
 using static PKSim.Core.CoreConstants.Compartment;
 using static PKSim.Core.CoreConstants.Organ;
 
@@ -163,7 +164,7 @@ namespace PKSim.Core.Mappers
       {
          var reaction = createReactionFromProcess(templateReaction, forbiddenNames);
          reaction.Name = reactionNameFor(reaction.Name, protein.Name);
-         reaction.Formula.Name = CoreConstants.CompositeNameFor(reaction.Name, reaction.Formula.Name);
+         reaction.Formula.Name = CompositeNameFor(reaction.Name, reaction.Formula.Name);
 
          replaceKeywordsInProcess(reaction, new[] {CoreConstants.KeyWords.Protein, CoreConstants.KeyWords.Reaction},
             new[] {protein.Name, reaction.Name});
@@ -199,7 +200,7 @@ namespace PKSim.Core.Mappers
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache)
       {
          var compound = interactionProcess.ParentCompound;
-         var reactionName = CoreConstants.CompositeNameFor(compound.Name, interactionProcess.Name);
+         var reactionName = CompositeNameFor(compound.Name, interactionProcess.Name);
          var reaction = createReactionFromProcess(interactionProcess, reactionName, forbiddenNames);
 
          //replace keywords 
@@ -275,7 +276,7 @@ namespace PKSim.Core.Mappers
       private IReactionBuilder createReactionFromProcess(IMoleculeBuilder moleculeBuilder, CompoundProcess process,
          IReadOnlyCollection<string> forbiddenNames)
       {
-         var reactionName = CoreConstants.CompositeNameFor(moleculeBuilder.Name, process.Name);
+         var reactionName = CompositeNameFor(moleculeBuilder.Name, process.Name);
          return createReactionFromProcess(process, reactionName, forbiddenNames);
       }
 
@@ -286,7 +287,7 @@ namespace PKSim.Core.Mappers
             reactionName, forbiddenNames);
 
          //make sure formula name is unique as it can be shared among processes
-         reaction.Formula.Name = CoreConstants.CompositeNameFor(reaction.Name, reaction.Formula.Name);
+         reaction.Formula.Name = CompositeNameFor(reaction.Name, reaction.Formula.Name);
          return reaction;
       }
 

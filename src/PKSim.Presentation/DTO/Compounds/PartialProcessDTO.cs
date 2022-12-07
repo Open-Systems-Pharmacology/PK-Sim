@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using PKSim.Assets;
 using OSPSuite.Utility.Validation;
-using PKSim.Core;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Presentation.DTO.Compounds
 {
@@ -25,7 +25,7 @@ namespace PKSim.Presentation.DTO.Compounds
 
       public override string Name => createName(MoleculeName, DataSource);
 
-      private string createName(string proteinName, string dataSource) => CoreConstants.CompositeNameFor(proteinName, dataSource);
+      private string createName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
 
       private static class PartialProcessRules
       {
