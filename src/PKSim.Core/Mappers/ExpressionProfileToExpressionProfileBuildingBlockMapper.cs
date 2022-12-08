@@ -33,20 +33,20 @@ namespace PKSim.Core.Mappers
          expressionProfileBuildingBlock.PKSimVersion = ProjectVersions.Current.VersionDisplay;
          expressionProfileBuildingBlock.Description = expressionProfile.Description;
 
-         SetExpressionType(expressionProfile, expressionProfileBuildingBlock);
+         setExpressionType(expressionProfile, expressionProfileBuildingBlock);
 
          var allParameters = expressionProfile.GetAllChildren<IParameter>();
 
          foreach (var parameter in allParameters)
          {
-            var expressionParameter = MapExpressionParameterFrommExpressionpProfile(parameter, expressionProfileBuildingBlock);
+            var expressionParameter = mapExpressionParameterFromExpressionProfile(parameter, expressionProfileBuildingBlock);
             expressionProfileBuildingBlock.Add(expressionParameter);
          }
 
          return expressionProfileBuildingBlock;
       }
 
-      private ExpressionParameter MapExpressionParameterFrommExpressionpProfile(IParameter parameter,
+      private ExpressionParameter mapExpressionParameterFromExpressionProfile(IParameter parameter,
          ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
          var expressionParameter = _objectBaseFactory.Create<ExpressionParameter>();
@@ -66,11 +66,11 @@ namespace PKSim.Core.Mappers
 
          expressionParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
          expressionParameter.Dimension = parameter.Dimension;
-         expressionParameter.DisplayUnit = parameter.DisplayUnit
+         expressionParameter.DisplayUnit = parameter.DisplayUnit;
          return expressionParameter;
       }
 
-      private static void SetExpressionType(ExpressionProfile expressionProfile, ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+      private static void setExpressionType(ExpressionProfile expressionProfile, ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
          var moleculeType = expressionProfile.Molecule.MoleculeType;
          switch (moleculeType)
