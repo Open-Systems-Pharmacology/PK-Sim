@@ -934,6 +934,9 @@ namespace PKSim.Assets
 
          public static string ExpressionProfileForMoleculeNotFound(string molecule, string buildingBlockName, string buildingBlockType) =>
             $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}'.";
+
+         public static string CouldNotFindMoleculeType(string moleculeType) =>
+            $"Could not find the molecule type {moleculeType}";
       }
 
       public static class Information

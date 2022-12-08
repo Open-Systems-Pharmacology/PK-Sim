@@ -3,8 +3,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
-using static PKSim.Core.CoreConstants.ContainerName;
-
+using static OSPSuite.Core.Domain.Constants.ContainerName;
 
 namespace PKSim.Core.Model
 {
@@ -45,7 +44,7 @@ namespace PKSim.Core.Model
 
       public override string Name
       {
-         get => Constants.ContainerName.ExpressionProfileName(MoleculeName, Species?.DisplayName, Category);
+         get => ExpressionProfileName(MoleculeName, Species?.DisplayName, Category);
          set
          {
             if (string.Equals(Name, value))

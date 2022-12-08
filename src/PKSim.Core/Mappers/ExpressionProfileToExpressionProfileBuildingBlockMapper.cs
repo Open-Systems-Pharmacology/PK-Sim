@@ -1,8 +1,10 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
@@ -16,13 +18,15 @@ namespace PKSim.Core.Mappers
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IEntityPathResolver _entityPathResolver;
-      private IFormulaFactory _formulaFactory;
+      private readonly IFormulaFactory _formulaFactory;
+      private readonly IApplicationConfiguration _applicationConfiguration;
 
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IFormulaFactory formulaFactory)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IFormulaFactory formulaFactory, IApplicationConfiguration applicationConfiguration)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
          _formulaFactory = formulaFactory;
+         _applicationConfiguration = applicationConfiguration;
       }
 
       public ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
@@ -30,10 +34,10 @@ namespace PKSim.Core.Mappers
          var expressionProfileBuildingBlock = _objectBaseFactory.Create<ExpressionProfileBuildingBlock>();
 
          expressionProfileBuildingBlock.Name = expressionProfile.Name;
-         expressionProfileBuildingBlock.PKSimVersion = ProjectVersions.Current.VersionDisplay;
+         expressionProfileBuildingBlock.PKSimVersion = _applicationConfiguration.Version;
          expressionProfileBuildingBlock.Description = expressionProfile.Description;
 
-         setExpressionType(expressionProfile, expressionProfileBuildingBlock);
+         expressionProfileBuildingBlock.Type = mapExpressionType(expressionProfile.Molecule.MoleculeType);
 
          var allParameters = expressionProfile.GetAllChildren<IParameter>();
 
@@ -44,6 +48,21 @@ namespace PKSim.Core.Mappers
          }
 
          return expressionProfileBuildingBlock;
+      }
+
+      private ExpressionType mapExpressionType(QuantityType moleculeType)
+      {
+         switch (moleculeType)
+         {
+            case QuantityType.Enzyme:
+               return ExpressionTypes.MetabolizingEnzyme;
+            case QuantityType.Transporter:
+               return ExpressionTypes.TransportProtein;
+            case QuantityType.OtherProtein:
+               return ExpressionTypes.ProteinBindingPartner;
+         }
+
+         throw new PKSimException(PKSimConstants.Error.CouldNotFindMoleculeType(moleculeType.ToString()));
       }
 
       private ExpressionParameter mapExpressionParameterFromExpressionProfile(IParameter parameter,
@@ -68,23 +87,6 @@ namespace PKSim.Core.Mappers
          expressionParameter.Dimension = parameter.Dimension;
          expressionParameter.DisplayUnit = parameter.DisplayUnit;
          return expressionParameter;
-      }
-
-      private static void setExpressionType(ExpressionProfile expressionProfile, ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
-      {
-         var moleculeType = expressionProfile.Molecule.MoleculeType;
-         switch (moleculeType)
-         {
-            case QuantityType.Enzyme:
-               expressionProfileBuildingBlock.Type = ExpressionTypes.MetabolizingEnzyme;
-               break;
-            case QuantityType.Transporter:
-               expressionProfileBuildingBlock.Type = ExpressionTypes.TransportProtein;
-               break;
-            default:
-               expressionProfileBuildingBlock.Type = ExpressionTypes.ProteinBindingPartner;
-               break;
-         }
       }
    }
 }

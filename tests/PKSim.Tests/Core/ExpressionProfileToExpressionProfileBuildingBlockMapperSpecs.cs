@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -19,9 +20,11 @@ namespace PKSim.Core
       protected IFormulaFactory _formulaFactory;
       protected Individual _individual;
       protected ExpressionProfileBuildingBlock _result;
+      private IApplicationConfiguration _applicationConfiguration;
 
       protected override void Context()
       {
+         _applicationConfiguration = A.Fake<IApplicationConfiguration>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _objectPathFactory = new EntityPathResolverForSpecs();
          _formulaFactory = A.Fake<IFormulaFactory>();
@@ -29,7 +32,7 @@ namespace PKSim.Core
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).Returns(new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _formulaFactory);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _formulaFactory, _applicationConfiguration);
       }
    }
 
@@ -38,7 +41,17 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _individual = A.Fake<Individual>();
+         _individual = new Individual();
+         _individual.AddMolecule(new IndividualEnzyme());
+         var species = new Species
+         {
+            DisplayName = "Foo"
+         };
+         _individual.OriginData = new OriginData
+         {
+            Species = species
+         };
+
          _expressionProfile = new ExpressionProfile
          {
             Individual = _individual

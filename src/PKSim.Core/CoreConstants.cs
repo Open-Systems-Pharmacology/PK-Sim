@@ -428,15 +428,6 @@ namespace PKSim.Core
 
          public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
 
-         public static (string moleculeName, string speciesName, string category) NamesFromExpressionProfileName(string expressionProfileName)
-         {
-            var names =  NamesFromCompositeName(expressionProfileName, char.Parse(ObjectPath.PATH_DELIMITER));
-            if (names.Count != 3)
-               return (string.Empty, string.Empty, string.Empty);
-
-            return (names[0], names[1], names[2]);
-         }
-
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {
             switch (expressionParameter)
