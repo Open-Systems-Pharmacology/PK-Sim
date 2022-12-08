@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -12,8 +11,7 @@ using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
 {
-   public abstract class
-      concern_for_ExpressionProfileToExpressionProfileBuildingBlockMapper : ContextSpecification<ExpressionProfileToExpressionProfileBuildingBlockMapper>
+   public abstract class concern_for_ExpressionProfileToExpressionProfileBuildingBlockMapper : ContextSpecification<ExpressionProfileToExpressionProfileBuildingBlockMapper>
    {
       protected IObjectBaseFactory _objectBaseFactory;
       protected IEntityPathResolver _objectPathFactory;
@@ -31,7 +29,7 @@ namespace PKSim.Core
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).Returns(new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper( _objectBaseFactory, _objectPathFactory, _formulaFactory);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _formulaFactory);
       }
    }
 
@@ -47,8 +45,7 @@ namespace PKSim.Core
          };
       }
 
-
-   protected override void Because()
+      protected override void Because()
       {
          _result = sut.MapFrom(_expressionProfile);
       }
@@ -63,6 +60,7 @@ namespace PKSim.Core
          _result.FormulaCache.ShouldBeEmpty();
       }
    }
+
    public class When_mapping_a_non_empty_expression_profile : concern_for_ExpressionProfileToExpressionProfileBuildingBlockMapper
    {
       protected override void Context()

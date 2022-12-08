@@ -30,9 +30,48 @@ namespace PKSim.Core.Mappers
          var expressionProfileBuildingBlock = _objectBaseFactory.Create<ExpressionProfileBuildingBlock>();
 
          expressionProfileBuildingBlock.Name = expressionProfile.Name;
-         expressionProfileBuildingBlock.PKSimVersion = ProjectVersions.Current;
+         expressionProfileBuildingBlock.PKSimVersion = ProjectVersions.Current.VersionDisplay;
          expressionProfileBuildingBlock.Description = expressionProfile.Description;
 
+         SetExpressionType(expressionProfile, expressionProfileBuildingBlock);
+
+         var allParameters = expressionProfile.GetAllChildren<IParameter>();
+
+         foreach (var parameter in allParameters)
+         {
+            var expressionParameter = MapExpressionParameterFrommExpressionpProfile(parameter, expressionProfileBuildingBlock);
+            expressionProfileBuildingBlock.Add(expressionParameter);
+         }
+
+         return expressionProfileBuildingBlock;
+      }
+
+      private ExpressionParameter MapExpressionParameterFrommExpressionpProfile(IParameter parameter,
+         ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+      {
+         var expressionParameter = _objectBaseFactory.Create<ExpressionParameter>();
+
+         if (parameter.Formula != null && parameter.Formula.IsCachable())
+         {
+            var formula = _formulaFactory.RateFor(CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS, parameter.Formula.Name,
+               expressionProfileBuildingBlock.FormulaCache);
+            expressionParameter.Formula = formula;
+         }
+         else
+         {
+            (expressionParameter.StartValue, _) = parameter.TryGetValue();
+         }
+
+         expressionParameter.Name = parameter.Name;
+
+         expressionParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
+         expressionParameter.Dimension = parameter.Dimension;
+         expressionParameter.DisplayUnit = parameter.DisplayUnit
+         return expressionParameter;
+      }
+
+      private static void SetExpressionType(ExpressionProfile expressionProfile, ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+      {
          var moleculeType = expressionProfile.Molecule.MoleculeType;
          switch (moleculeType)
          {
@@ -46,32 +85,6 @@ namespace PKSim.Core.Mappers
                expressionProfileBuildingBlock.Type = ExpressionTypes.ProteinBindingPartner;
                break;
          }
-
-         var allParameters = expressionProfile.GetAllChildren<IParameter>();
-
-         foreach (var parameter in allParameters)
-         {
-            var expressionParameter = _objectBaseFactory.Create<ExpressionParameter>();
-
-            if (parameter.Formula != null && parameter.Formula.IsCachable())
-            {
-               var formula = _formulaFactory.RateFor(CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS, parameter.Formula.Name, expressionProfileBuildingBlock.FormulaCache);
-               expressionParameter.Formula = formula;
-            }
-            else
-            {
-               (expressionParameter.StartValue, _) = parameter.TryGetValue();
-            }
-
-            expressionParameter.Name = parameter.Name;
-
-            expressionParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
-            expressionParameter.Dimension = parameter.Dimension;
-            expressionParameter.DisplayUnit = parameter.DisplayUnit;
-            expressionProfileBuildingBlock.Add(expressionParameter);
-         }
-
-         return expressionProfileBuildingBlock;
       }
    }
 }
