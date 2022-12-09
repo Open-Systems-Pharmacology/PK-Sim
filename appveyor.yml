@@ -3,6 +3,8 @@ image: Visual Studio 2019
 
 version: '{build}'
 
+# TODO make sure to revert this temporary 12.0.
+
 init:
 - ps: Update-AppveyorBuild -Version "12.0.$($env:appveyor_build_version)"
 

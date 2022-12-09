@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Assets;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
@@ -29,7 +27,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          return allMenuItems;
       }
 
-      private IEnumerable<IMenuBarItem> extendedExportMenus (ExpressionProfile expressionProfile)
+      private IEnumerable<IMenuBarItem> extendedExportMenus(ExpressionProfile expressionProfile)
       {
          yield return SaveAsUserTemplateMenuFor(expressionProfile)
             .AsGroupStarter();
@@ -38,13 +36,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return AddToJournalMenuFor(expressionProfile);
 
-         yield return ExsportToPkml(expressionProfile);
+         yield return ExportToPkml(expressionProfile);
       }
 
-      private  IMenuBarItem ExsportToPkml (ExpressionProfile expressionProfile)
+      private IMenuBarItem ExportToPkml(ExpressionProfile expressionProfile)
       {
-
-            return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
             .WithCommandFor<ExportExpressionProfileToPkmlCommand, ExpressionProfile>(expressionProfile)
             .WithIcon(ApplicationIcons.PKMLSave);
       }
