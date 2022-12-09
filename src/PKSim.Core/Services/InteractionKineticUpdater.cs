@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core.Services
 {
@@ -156,7 +157,7 @@ namespace PKSim.Core.Services
          if (!allUpdatingKinetics.Any() || interactionFactor == null)
             return;
 
-         var formulaName = CoreConstants.CompositeNameFor(processParameterContainer.Name, compoundName, parameterName);
+         var formulaName = CompositeNameFor(processParameterContainer.Name, compoundName, parameterName);
          if (formulaCache.FindByName(formulaName) is ExplicitFormula formula)
          {
             interactionFactor.Formula = formula;

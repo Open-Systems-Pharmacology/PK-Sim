@@ -12,6 +12,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Infrastructure.ORM.Queries
 {
@@ -210,7 +211,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       private void addLiverZoneCompartmentObserver(IObserverBuilder observerBuilder, string compartment, IObserverBuildingBlock observerBuildingBlock, Compound compound)
       {
-         var observerName = CoreConstants.CompositeNameFor(observerBuilder.Name, CoreConstants.Organ.LIVER, compartment);
+         var observerName = CompositeNameFor(observerBuilder.Name, CoreConstants.Organ.LIVER, compartment);
          if (observerBuildingBlock.ExistsByName(observerName))
             return;
 

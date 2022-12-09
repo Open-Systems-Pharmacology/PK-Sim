@@ -934,6 +934,9 @@ namespace PKSim.Assets
 
          public static string ExpressionProfileForMoleculeNotFound(string molecule, string buildingBlockName, string buildingBlockType) =>
             $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}'.";
+
+         public static string CouldNotFindMoleculeType(string moleculeType) =>
+            $"Could not find the molecule type {moleculeType}";
       }
 
       public static class Information
@@ -1945,6 +1948,7 @@ namespace PKSim.Assets
          public static readonly string No = "No";
          public static readonly string Yes = "Yes";
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
+         public static readonly string ExportExpressionProfileToPkml = "Export expression profile to pkml";
          public static readonly string ExportSimulationResultsToExcel = $"Export simulation results to {Excel}";
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to CSV";

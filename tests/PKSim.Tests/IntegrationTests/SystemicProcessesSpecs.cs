@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -13,6 +12,7 @@ using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.IntegrationTests
 {
@@ -181,7 +181,7 @@ namespace PKSim.IntegrationTests
       public void the_created_simulation_should_have_a_biliary_clearance_process_created_based_on_the_one_defined_in_the_compound()
       {
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>()).ToList();
-         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CoreConstants.CompositeNameFor(_compound.Name,_liverClearance.Name));
+         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CompositeNameFor(_compound.Name,_liverClearance.Name));
 
          allProcessParameters.FindByName(ConverterConstants.Parameters.PlasmaClearance).Value.ShouldBeEqualTo(_liverClearance.Parameter(ConverterConstants.Parameters.PlasmaClearance).Value);
       }
@@ -199,7 +199,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_created_process_should_have_two_parameters_enzyme_concentration_and_cl_spec_per_enzyme_hidden_set_to_one()
       {
-         var processName = CoreConstants.CompositeNameFor(_compound.Name, _liverClearance.Name);
+         var processName = CompositeNameFor(_compound.Name, _liverClearance.Name);
          var processContainer = _simulation.Model.Root.EntityAt<Container>(processName);
          processContainer.Parameter(CoreConstantsForSpecs.Parameters.ENZYME_CONCENTRATION).Value.ShouldBeEqualTo(1);
          processContainer.Parameter(CoreConstantsForSpecs.Parameters.ENZYME_CONCENTRATION).Visible.ShouldBeFalse();
@@ -292,7 +292,7 @@ namespace PKSim.IntegrationTests
       protected void CheckProcess()
       {
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>()).ToList();
-         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CoreConstants.CompositeNameFor(_compound.Name, _process.Name));
+         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CompositeNameFor(_compound.Name, _process.Name));
 
          allProcessParameters.FindByName(ConverterConstants.Parameters.CLspec).Value.ShouldBeEqualTo(_process.Parameter(ConverterConstants.Parameters.CLspec).Value);         
       }

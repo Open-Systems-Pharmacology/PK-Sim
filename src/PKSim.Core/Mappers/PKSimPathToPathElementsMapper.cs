@@ -11,6 +11,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
+using static OSPSuite.Core.Domain.Constants;
 using ContainerExtensions = PKSim.Core.Model.ContainerExtensions;
 using ContainerType = OSPSuite.Core.Domain.ContainerType;
 
@@ -26,7 +27,7 @@ namespace PKSim.Core.Mappers
       {
          _representationInfoRepository = representationInfoRepository;
          //Format is (Fraction of dose-DRUG_NAME)-Liver-COMPARTMENT
-         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{CoreConstants.Observer.FRACTION_OF_DOSE}{CoreConstants.COMPOSITE_SEPARATOR}\w*){CoreConstants.COMPOSITE_SEPARATOR}{CoreConstants.Organ.LIVER}{CoreConstants.COMPOSITE_SEPARATOR}\w*";
+         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{CoreConstants.Observer.FRACTION_OF_DOSE}{COMPOSITE_SEPARATOR}\w*){COMPOSITE_SEPARATOR}{CoreConstants.Organ.LIVER}{COMPOSITE_SEPARATOR}\w*";
          _fractionOfDoseLiverRegex = new Regex(fractionOfDoseLiverObserverPattern);
       }
 
@@ -214,7 +215,7 @@ namespace PKSim.Core.Mappers
          if (quantity.Dimension.Name == CoreConstants.Dimension.Fraction)
             return CoreConstants.Output.FractionDose;
 
-         if (quantity.Dimension.Name.IsOneOf(Constants.Dimension.MASS_AMOUNT, Constants.Dimension.MOLAR_AMOUNT))
+         if (quantity.Dimension.Name.IsOneOf(Dimension.MASS_AMOUNT, Dimension.MOLAR_AMOUNT))
             return CoreConstants.Output.Amount;
 
          if (quantityIsConcentration(quantity))
@@ -226,7 +227,7 @@ namespace PKSim.Core.Mappers
       private bool quantityIsConcentration(IQuantity quantity)
       {
          return quantity.Dimension != null &&
-                quantity.Dimension.Name.IsOneOf(CoreConstants.Dimension.MASS_CONCENTRATION, Constants.Dimension.MOLAR_CONCENTRATION);
+                quantity.Dimension.Name.IsOneOf(CoreConstants.Dimension.MASS_CONCENTRATION, Dimension.MOLAR_CONCENTRATION);
       }
    }
 }

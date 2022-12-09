@@ -7,6 +7,7 @@ using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
 {
@@ -66,12 +67,12 @@ namespace PKSim.Core
          _dataTable.Columns.Count.ShouldBeEqualTo(9);
 
          _dataTable.Columns[_xAxis.Caption].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.Minimum, _xAxis.Caption)].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.Maximum, _xAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.Minimum, _xAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.Maximum, _xAxis.Caption)].ShouldNotBeNull();
          _dataTable.Columns[PKSimConstants.UI.NumberOfIndividuals].ShouldNotBeNull();
          _dataTable.Columns[_yAxis.Caption].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerPercentile, _yAxis.Caption)].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperPercentile, _yAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.LowerPercentile, _yAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.UpperPercentile, _yAxis.Caption)].ShouldNotBeNull();
       }
 
       [Observation]
@@ -79,11 +80,11 @@ namespace PKSim.Core
       {
          _dataTable.Rows.Count.ShouldBeEqualTo(3);
          _dataTable.AllValuesInColumn<float>(_xAxis.Caption).ShouldOnlyContain(1, 2, 3);
-         _dataTable.AllValuesInColumn<float>(CoreConstants.CompositeNameFor(PKSimConstants.UI.Minimum, _xAxis.Caption)).ShouldOnlyContain(0, 1.8f, 2f);
-         _dataTable.AllValuesInColumn<float>(CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerPercentile, _yAxis.Caption)).ShouldOnlyContain(10, 20, 30);
+         _dataTable.AllValuesInColumn<float>(CompositeNameFor(PKSimConstants.UI.Minimum, _xAxis.Caption)).ShouldOnlyContain(0, 1.8f, 2f);
+         _dataTable.AllValuesInColumn<float>(CompositeNameFor(PKSimConstants.UI.LowerPercentile, _yAxis.Caption)).ShouldOnlyContain(10, 20, 30);
          _dataTable.AllValuesInColumn<float>(_yAxis.Caption).ShouldOnlyContain(20, 30, 40);
-         _dataTable.AllValuesInColumn<float>(CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperPercentile, _yAxis.Caption)).ShouldOnlyContain(30, 40, 50);
-         _dataTable.AllValuesInColumn<float>(CoreConstants.CompositeNameFor(PKSimConstants.UI.Maximum, _xAxis.Caption)).ShouldOnlyContain(1.5f, 2.5f, 4f);
+         _dataTable.AllValuesInColumn<float>(CompositeNameFor(PKSimConstants.UI.UpperPercentile, _yAxis.Caption)).ShouldOnlyContain(30, 40, 50);
+         _dataTable.AllValuesInColumn<float>(CompositeNameFor(PKSimConstants.UI.Maximum, _xAxis.Caption)).ShouldOnlyContain(1.5f, 2.5f, 4f);
       }
    }
 

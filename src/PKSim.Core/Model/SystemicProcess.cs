@@ -1,6 +1,7 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core.Model
 {
@@ -12,7 +13,7 @@ namespace PKSim.Core.Model
 
       public override void RefreshName()
       {
-         Name = CoreConstants.CompositeNameFor(SystemicProcessType.DisplayName, DataSource);
+         Name = CompositeNameFor(SystemicProcessType.DisplayName, DataSource);
       }
 
       public bool IsDefault
