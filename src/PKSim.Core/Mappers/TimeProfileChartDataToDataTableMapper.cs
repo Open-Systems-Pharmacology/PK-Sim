@@ -4,6 +4,7 @@ using PKSim.Assets;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using OSPSuite.Core.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core.Mappers
 {
@@ -22,8 +23,8 @@ namespace PKSim.Core.Mappers
       {
          _xValueColumn = curveData.XAxis.Caption;
          _yValueColumn = curveData.YAxis.Caption;
-         _yLowerValueColumn = CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerValue, _yValueColumn);
-         _yUpperValueColumn = CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperValue, _yValueColumn);
+         _yLowerValueColumn = CompositeNameFor(PKSimConstants.UI.LowerValue, _yValueColumn);
+         _yUpperValueColumn = CompositeNameFor(PKSimConstants.UI.UpperValue, _yValueColumn);
 
          //Export xValueColumn as string to enable correct pivot on x values
          if (exportForPivot)

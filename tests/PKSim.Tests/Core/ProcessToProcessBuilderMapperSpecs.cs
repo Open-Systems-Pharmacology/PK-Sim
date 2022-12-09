@@ -10,6 +10,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
 {
@@ -151,13 +152,13 @@ namespace PKSim.Core
       [Observation]
       public void should_have_set_the_name_of_the_reaction_to_the_name_of_the_incoming_process_combine_with_the_name_of_the_drug()
       {
-         _reaction.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_drug.Name, _process.Name));
+         _reaction.Name.ShouldBeEqualTo(CompositeNameFor(_drug.Name, _process.Name));
       }
 
       [Observation]
       public void should_have_set_the_name_of_the_kinetic_to_the_name_of_the_incoming_process_combine_with_the_name_of_the_formula()
       {
-         _reaction.Formula.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_reaction.Name, "KINETIC"));
+         _reaction.Formula.Name.ShouldBeEqualTo(CompositeNameFor(_reaction.Name, "KINETIC"));
       }
    }
 
@@ -342,8 +343,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_a_reaction_having_the_expected_name()
       {
-         _reaction.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_compound.Name, _interactionProcess.Name));
-      }
+         _reaction.Name.ShouldBeEqualTo(CompositeNameFor(_compound.Name, _interactionProcess.Name));      }
 
       [Observation]
       public void should_have_replaced_the_protein_keyword()
@@ -427,7 +427,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_a_reaction_having_the_expected_name()
       {
-         _reaction.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_compound.Name, _interactionProcess.Name));
+         _reaction.Name.ShouldBeEqualTo(CompositeNameFor(_compound.Name, _interactionProcess.Name));
       }
 
       [Observation]

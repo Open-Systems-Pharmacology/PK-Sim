@@ -15,6 +15,7 @@ using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using static OSPSuite.Core.Domain.Constants.ContainerName;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -135,7 +136,7 @@ namespace PKSim.Presentation.Services
          if (expressionProfile == null)
             return;
 
-         var (newMoleculeName, _, _) = CoreConstants.ContainerName.NamesFromExpressionProfileName(newExpressionProfileName);
+         var (newMoleculeName, _, _) = NamesFromExpressionProfileName(newExpressionProfileName);
          _expressionProfileUpdater.UpdateMoleculeName(expressionProfile, newMoleculeName);
       }
 

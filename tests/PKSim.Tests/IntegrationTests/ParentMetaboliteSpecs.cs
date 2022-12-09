@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.IntegrationTests
 {
@@ -118,7 +119,7 @@ namespace PKSim.IntegrationTests
       {
          var reactionInLiver = _simulation.Model.Root.EntityAt<IReaction>(Constants.ORGANISM, CoreConstants.Organ.LIVER,
             CoreConstants.Compartment.PERIPORTAL, CoreConstants.Compartment.INTRACELLULAR,
-            CoreConstants.CompositeNameFor(_compound.Name, _parentMetabolizationCYP3A4.Name));
+            CompositeNameFor(_compound.Name, _parentMetabolizationCYP3A4.Name));
 
          reactionInLiver.ShouldNotBeNull();
          reactionInLiver.Products.Find(x => x.Partner.Name == _metabolite.Name).ShouldNotBeNull();
@@ -129,7 +130,7 @@ namespace PKSim.IntegrationTests
       {
          var reactionInLiver = _simulation.Model.Root.EntityAt<IReaction>(Constants.ORGANISM, CoreConstants.Organ.LIVER,
             CoreConstants.Compartment.PERICENTRAL, CoreConstants.Compartment.INTRACELLULAR,
-            CoreConstants.CompositeNameFor(_compound.Name, _parentMetabolizationCYP3A4.Name));
+            CompositeNameFor(_compound.Name, _parentMetabolizationCYP3A4.Name));
 
          reactionInLiver.ShouldNotBeNull();
          reactionInLiver.Products.Find(x => x.Partner.Name == _metabolite.Name).ShouldNotBeNull();
@@ -201,7 +202,7 @@ namespace PKSim.IntegrationTests
          var enzymaticProcessSelection = ProcessSelectionFor(_parentMetabolizationCYP2D6);
          var observerName = CoreConstants.Observer.ObserverNameFrom(CoreConstants.Observer.FRACTION_OF_DOSE, _compound.Name);
          var liverCellCYP2D6 = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR, enzymaticProcessSelection.ProductName());
-         var observerLiverCell = liverCellCYP2D6.Children.FindByName(CoreConstants.CompositeNameFor(observerName, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR)).DowncastTo<IObserver>();
+         var observerLiverCell = liverCellCYP2D6.Children.FindByName(CompositeNameFor(observerName, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR)).DowncastTo<IObserver>();
          observerLiverCell.ShouldNotBeNull();
 
          observerLiverCell.Formula.DowncastTo<ExplicitFormula>().FormulaString.ShouldBeEqualTo("(M_periportal + M_pericentral)/TotalDrugMass");

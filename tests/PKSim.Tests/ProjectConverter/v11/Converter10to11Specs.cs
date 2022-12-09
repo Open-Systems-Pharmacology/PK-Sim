@@ -9,6 +9,8 @@ using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter;
 using PKSim.Infrastructure.ProjectConverter.v11;
 using PKSim.IntegrationTests;
+using static OSPSuite.Core.Domain.Constants;
+using Population = PKSim.Core.Model.Population;
 
 namespace PKSim.ProjectConverter.v11
 {
@@ -35,7 +37,7 @@ namespace PKSim.ProjectConverter.v11
       {
          var ind = _allIndividuals.FindByName("Human");
          var cyp3A4 = ind.MoleculeByName<IndividualEnzyme>("CYP3A4");
-         var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, ind.Species, ind.Name));
+         var expressionProfile = FindByName<ExpressionProfile>(ContainerName.ExpressionProfileName(cyp3A4.Name, ind.Species.DisplayName, ind.Name));
          expressionProfile.ShouldNotBeNull();
       }
 
@@ -90,7 +92,7 @@ namespace PKSim.ProjectConverter.v11
       {
          var ind = _allIndividuals.FindByName("IND");
          var cyp3A4 = ind.MoleculeByName<IndividualEnzyme>("CYP3A4");
-         var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, ind.Species, ind.Name));
+         var expressionProfile = FindByName<ExpressionProfile>(ContainerName.ExpressionProfileName(cyp3A4.Name, ind.Species.DisplayName, ind.Name));
          expressionProfile.ShouldNotBeNull();
       }
 
@@ -99,7 +101,7 @@ namespace PKSim.ProjectConverter.v11
       {
          var pop = _allPopulations.FindByName("POP");
          var cyp3A4 = pop.MoleculeByName<IndividualEnzyme>("CYP3A4");
-         var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species, pop.Name));
+         var expressionProfile = FindByName<ExpressionProfile>(ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species.DisplayName, pop.Name));
          expressionProfile.ShouldNotBeNull();
       }
 
@@ -163,7 +165,7 @@ namespace PKSim.ProjectConverter.v11
       {
          var pop = _allPopulations.FindByName("Pop");
          var cyp3A4 = pop.MoleculeByName<IndividualEnzyme>("CYP3A4");
-         var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species, pop.Name));
+         var expressionProfile = FindByName<ExpressionProfile>(ContainerName.ExpressionProfileName(cyp3A4.Name, pop.Species.DisplayName, pop.Name));
          expressionProfile.ShouldNotBeNull();
       }
 
@@ -172,7 +174,7 @@ namespace PKSim.ProjectConverter.v11
       {
          var ind = _allIndividuals.FindByName("Ind");
          var trans = ind.MoleculeByName<IndividualTransporter>("TRANS");
-         var expressionProfile = FindByName<ExpressionProfile>(CoreConstants.ContainerName.ExpressionProfileName(trans.Name, ind.Species, ind.Name));
+         var expressionProfile = FindByName<ExpressionProfile>(ContainerName.ExpressionProfileName(trans.Name, ind.Species.DisplayName, ind.Name));
          expressionProfile.ShouldNotBeNull();
          var allHiddenFixedParameters = expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
             .Where(x => !x.Visible)
