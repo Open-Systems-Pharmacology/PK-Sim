@@ -109,14 +109,14 @@ namespace PKSim.Core.Services
          }
       }
 
-      private IParameterStartValue trySetValue(IParameter parameter)
+      private ParameterStartValue trySetValue(IParameter parameter)
       {
          var parameterStartValue = getOrCreateStartValueFor(parameter);
          parameterStartValue.StartValue = parameter.Value;
          return parameterStartValue;
       }
 
-      private IParameterStartValue getOrCreateStartValueFor(IParameter parameter)
+      private ParameterStartValue getOrCreateStartValueFor(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var parameterStartValue = _defaultStartValues[parameterPath];
@@ -129,7 +129,7 @@ namespace PKSim.Core.Services
          return parameterStartValue;
       }
 
-      private IParameterStartValue getStartValueFor(IParameter parameter)
+      private ParameterStartValue getStartValueFor(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          return _defaultStartValues[parameterPath];

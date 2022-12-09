@@ -78,7 +78,7 @@ namespace PKSim.Core.Mappers
          }
          else
          {
-            (expressionParameter.StartValue, _) = parameter.TryGetValue();
+            (expressionParameter.Value, _) = parameter.TryGetValue();
          }
 
          expressionParameter.Name = parameter.Name;
