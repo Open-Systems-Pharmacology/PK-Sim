@@ -35,6 +35,9 @@
 		<PackageReference Include="OSPSuite.UI" Version="12.0.77" />
 		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
+		<None Include="..\..\src\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
