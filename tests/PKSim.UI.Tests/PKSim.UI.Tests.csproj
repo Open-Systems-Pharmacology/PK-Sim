@@ -16,6 +16,9 @@
 		<Content Include="$(PkgSystem_Data_SQLite_Core)\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+		<Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml" Link="OSPSuite.PKParameters.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 		<Content Include="..\..\dimensions\OSPSuite.Dimensions.xml" Link="OSPSuite.Dimensions.xml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
