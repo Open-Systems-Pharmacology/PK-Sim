@@ -36,13 +36,12 @@ namespace PKSim.UI.Starter
          if (_container != null)
             return _container;
 
-         _container = InitializeForStartup();
-         start(shell, _container);
+         _container = InitializeForStartup(shell);
 
          return _container;
       }
 
-      public static IContainer InitializeForStartup()
+      public static IContainer InitializeForStartup(IShell shell)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
@@ -57,6 +56,24 @@ namespace PKSim.UI.Starter
 
          // registerImplementationsFromCore(container);
          registerMinimalImplementations(container);
+
+
+         using (container.OptimizeDependencyResolution())
+         {
+            container.RegisterImplementationOf(shell);
+            container.AddRegister(x => x.FromType<CoreRegister>());
+            container.AddRegister(x => x.FromType<InfrastructureRegister>());
+            container.Register<ICreateExpressionProfilePresenter, CreateExpressionProfilePresenter>();
+            container.Register<ICreateExpressionProfileView, CreateExpressionProfileView>();
+            container.Register<IExpressionProfileToExpressionProfileDTOMapper, ExpressionProfileToExpressionProfileDTOMapper>();
+            container.Register<IMoleculePropertiesMapper, MoleculePropertiesMapper>();
+            container.Register<ICoreUserSettings, IPresentationUserSettings, UIStarterUserSettings>(LifeStyle.Singleton);
+            container.Register<IOntogenyTask, OntogenyTask>();
+            container.Register<IEntityTask, EntityTask>();
+            container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
+            container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
+            InfrastructureRegister.LoadSerializers(container);
+         }
 
          return container;
       }
@@ -84,26 +101,6 @@ namespace PKSim.UI.Starter
          container.Register<IDialogCreator, CLIDialogCreator>();
          container.Register<IDataImporter, CLIDataImporter>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
-      }
-
-      private static void start(IShell shell, IContainer container)
-      {
-         using (container.OptimizeDependencyResolution())
-         {
-            container.RegisterImplementationOf(shell);
-            container.AddRegister(x => x.FromType<CoreRegister>());
-            container.AddRegister(x => x.FromType<InfrastructureRegister>());
-            container.Register<ICreateExpressionProfilePresenter, CreateExpressionProfilePresenter>();
-            container.Register<ICreateExpressionProfileView, CreateExpressionProfileView>();
-            container.Register<IExpressionProfileToExpressionProfileDTOMapper, ExpressionProfileToExpressionProfileDTOMapper>();
-            container.Register<IMoleculePropertiesMapper, MoleculePropertiesMapper>();
-            container.Register<ICoreUserSettings, IPresentationUserSettings, UIStarterUserSettings>(LifeStyle.Singleton);
-            container.Register<IOntogenyTask, OntogenyTask>();
-            container.Register<IEntityTask, EntityTask>();
-            container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
-            container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
-            InfrastructureRegister.LoadSerializers(container);
-         }
       }
    }
 

@@ -47,8 +47,12 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          _view.Caption = PKSimConstants.UI.CreateExpressionProfile;
          _view.BindTo(_dto);
          _view.Display();
+
+         ExpressionProfile = null;
          if (_view.Canceled)
+         {
             return new PKSimEmptyCommand();
+         }
 
          //we create a new one with all new features
          ExpressionProfile = _expressionProfileFactory.Create<TMolecule>(_dto.Species, _dto.MoleculeName);
