@@ -175,9 +175,9 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<LoadObserverSetCommand>()
             .WithIcon(ApplicationIcons.LoadFromTemplate);
 
-         var newExpressionProfile = CreateSubMenu.WithCaption(PKSimConstants.MenuNames.NewExpressionProfile)
+         var newExpressionProfile = CreateSubMenu.WithCaption(MenuNames.NewExpressionProfile)
             .WithIcon(ApplicationIcons.ExpressionProfile)
-            .WithDescription(PKSimConstants.UI.NewExpressionProfileDescription)
+            .WithDescription(MenuDescriptions.NewExpressionProfileDescription)
             .WithId(MenuBarItemIds.NewExpressionProfile);
 
          var newEnzyme = CreateMenuButton.WithCaption(PKSimConstants.UI.AddMetabolizingEnzyme)
