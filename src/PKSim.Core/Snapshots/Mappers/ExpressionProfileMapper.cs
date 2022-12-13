@@ -6,12 +6,11 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using ModelIndividual = PKSim.Core.Model.Individual;
-using ModelExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 using SnapshotExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ExpressionProfileMapper : ObjectBaseSnapshotMapperBase<ModelExpressionProfile, SnapshotExpressionProfile>
+   public class ExpressionProfileMapper : ObjectBaseSnapshotMapperBase<Model.ExpressionProfile, SnapshotExpressionProfile>
    {
       private readonly ParameterMapper _parameterMapper;
       private readonly ExpressionContainerMapper _expressionContainerMapper;
@@ -41,7 +40,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _ontogenyMapper = ontogenyMapper;
       }
 
-      public override async Task<SnapshotExpressionProfile> MapToSnapshot(ModelExpressionProfile expressionProfile)
+      public override async Task<SnapshotExpressionProfile> MapToSnapshot(Model.ExpressionProfile expressionProfile)
       {
          var (molecule, individual) = expressionProfile;
          //We do not use the base method here as we want to save the name differently using the composite part of the name
@@ -86,7 +85,7 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      public override async Task<ModelExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot, SnapshotContext snapshotContext)
+      public override async Task<Model.ExpressionProfile> MapToModel(SnapshotExpressionProfile snapshot, SnapshotContext snapshotContext)
       {
          var expressionProfile = _expressionProfileFactory.Create(snapshot.Type, snapshot.Species, snapshot.Molecule);
          expressionProfile.Description = snapshot.Description;

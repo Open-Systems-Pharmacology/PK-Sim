@@ -14,39 +14,18 @@ namespace PKSim.Core.Mappers
    {
    }
 
-   public class ExpressionProfileToExpressionProfileBuildingBlockMapper : IExpressionProfileToExpressionProfileBuildingBlockMapper
+   public class ExpressionProfileToExpressionProfileBuildingBlockMapper : PathAndValueBuildingBlockMapper<ExpressionProfile, ExpressionProfileBuildingBlock, ExpressionParameter>,  IExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly IEntityPathResolver _entityPathResolver;
-      private readonly IFormulaFactory _formulaFactory;
-      private readonly IApplicationConfiguration _applicationConfiguration;
-
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IFormulaFactory formulaFactory, IApplicationConfiguration applicationConfiguration)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IFormulaFactory formulaFactory, IApplicationConfiguration applicationConfiguration) :
+         base(objectBaseFactory, entityPathResolver, formulaFactory, applicationConfiguration)
       {
-         _objectBaseFactory = objectBaseFactory;
-         _entityPathResolver = entityPathResolver;
-         _formulaFactory = formulaFactory;
-         _applicationConfiguration = applicationConfiguration;
       }
 
-      public ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
+      public override ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
       {
-         var expressionProfileBuildingBlock = _objectBaseFactory.Create<ExpressionProfileBuildingBlock>();
-
-         expressionProfileBuildingBlock.Name = expressionProfile.Name;
-         expressionProfileBuildingBlock.PKSimVersion = _applicationConfiguration.Version;
-         expressionProfileBuildingBlock.Description = expressionProfile.Description;
+         var expressionProfileBuildingBlock = base.MapFrom(expressionProfile);
 
          expressionProfileBuildingBlock.Type = mapExpressionType(expressionProfile.Molecule.MoleculeType);
-
-         var allParameters = expressionProfile.GetAllChildren<IParameter>();
-
-         foreach (var parameter in allParameters)
-         {
-            var expressionParameter = mapExpressionParameterFromExpressionProfile(parameter, expressionProfileBuildingBlock);
-            expressionProfileBuildingBlock.Add(expressionParameter);
-         }
-
          return expressionProfileBuildingBlock;
       }
 
@@ -63,30 +42,6 @@ namespace PKSim.Core.Mappers
          }
 
          throw new PKSimException(PKSimConstants.Error.CouldNotFindMoleculeType(moleculeType.ToString()));
-      }
-
-      private ExpressionParameter mapExpressionParameterFromExpressionProfile(IParameter parameter,
-         ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
-      {
-         var expressionParameter = _objectBaseFactory.Create<ExpressionParameter>();
-
-         if (parameter.Formula != null && parameter.Formula.IsCachable())
-         {
-            var formula = _formulaFactory.RateFor(CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS, parameter.Formula.Name,
-               expressionProfileBuildingBlock.FormulaCache);
-            expressionParameter.Formula = formula;
-         }
-         else
-         {
-            (expressionParameter.Value, _) = parameter.TryGetValue();
-         }
-
-         expressionParameter.Name = parameter.Name;
-
-         expressionParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
-         expressionParameter.Dimension = parameter.Dimension;
-         expressionParameter.DisplayUnit = parameter.DisplayUnit;
-         return expressionParameter;
       }
    }
 }
