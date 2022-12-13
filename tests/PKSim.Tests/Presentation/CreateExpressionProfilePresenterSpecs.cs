@@ -123,12 +123,6 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void the_presenter_should_expose_null_in_expression_profile_property()
-      {
-         sut.ExpressionProfile.ShouldBeNull();
-      }
-
-      [Observation]
       public void should_return_an_empty_command()
       {
          _result.IsEmpty().ShouldBeTrue();

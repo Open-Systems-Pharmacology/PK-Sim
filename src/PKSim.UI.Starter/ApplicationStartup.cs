@@ -36,12 +36,12 @@ namespace PKSim.UI.Starter
          if (_container != null)
             return _container;
 
-         _container = InitializeForStartup(shell);
+         _container = initializeForStartup(shell);
 
          return _container;
       }
 
-      public static IContainer InitializeForStartup(IShell shell)
+      private static IContainer initializeForStartup(IShell shell)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");

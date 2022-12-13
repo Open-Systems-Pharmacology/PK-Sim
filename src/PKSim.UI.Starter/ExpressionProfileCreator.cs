@@ -1,4 +1,5 @@
-﻿using OSPSuite.Presentation.Views;
+﻿using OSPSuite.Core.Commands.Core;
+using OSPSuite.Presentation.Views;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Presentation;
@@ -32,9 +33,9 @@ namespace PKSim.UI.Starter
             var workspace = container.Resolve<IWorkspace>();
             workspace.Project = new PKSimProject();
             var mapper = container.Resolve<IExpressionProfileToExpressionProfileBuildingBlockMapper>();
-            presenter.Create<T>();
 
-            return presenter.ExpressionProfile == null ? null : mapper.MapFrom(presenter.ExpressionProfile);
+
+            return presenter.Create<T>().IsEmpty() ? null : mapper.MapFrom(presenter.ExpressionProfile);
          }
       }
    }
