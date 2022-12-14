@@ -1,24 +1,27 @@
-﻿using OSPSuite.Core;
+﻿using System.Collections.Generic;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core.Mappers
 {
-   public interface IExpressionProfileToExpressionProfileBuildingBlockMapper : IMapper<ExpressionProfile, ExpressionProfileBuildingBlock>
+   public interface IExpressionProfileToExpressionProfileBuildingBlockMapper : IPathAndValueBuildingBlockMapper<ExpressionProfile, ExpressionProfileBuildingBlock>
    {
    }
 
-   public class ExpressionProfileToExpressionProfileBuildingBlockMapper : PathAndValueBuildingBlockMapper<ExpressionProfile, ExpressionProfileBuildingBlock, ExpressionParameter>,  IExpressionProfileToExpressionProfileBuildingBlockMapper
+   public class ExpressionProfileToExpressionProfileBuildingBlockMapper : PathAndValueBuildingBlockMapper<ExpressionProfile, ExpressionProfileBuildingBlock, ExpressionParameter>, IExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IFormulaFactory formulaFactory, IApplicationConfiguration applicationConfiguration) :
-         base(objectBaseFactory, entityPathResolver, formulaFactory, applicationConfiguration)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration) :
+         base(objectBaseFactory, entityPathResolver, applicationConfiguration)
       {
+      }
+
+      protected override IReadOnlyList<IParameter> AllParametersFor(ExpressionProfile sourcePKSimBuildingBlock)
+      {
+         return sourcePKSimBuildingBlock.GetAllChildren<IParameter>();
       }
 
       public override ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)

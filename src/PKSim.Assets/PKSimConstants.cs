@@ -1947,6 +1947,7 @@ namespace PKSim.Assets
          public static readonly string Yes = "Yes";
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
          public static readonly string ExportExpressionProfileToPkml = "Export expression profile to pkml";
+         public static readonly string ExportIndividual = "Export individual to pkml";
          public static readonly string ExportSimulationResultsToExcel = $"Export simulation results to {Excel}";
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to CSV";

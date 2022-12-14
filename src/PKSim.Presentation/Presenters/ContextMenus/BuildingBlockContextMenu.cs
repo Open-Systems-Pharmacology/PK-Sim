@@ -49,7 +49,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return ExportMarkdownMenuFor(buildingBlock);
       }
 
-      protected IEnumerable<IMenuBarItem> ExportContextMenusFor(TBuildingBlock buildingBlock)
+      protected virtual IEnumerable<IMenuBarItem> ExportContextMenusFor(TBuildingBlock buildingBlock)
       {
          yield return SaveAsUserTemplateMenuFor(buildingBlock)
             .AsGroupStarter();

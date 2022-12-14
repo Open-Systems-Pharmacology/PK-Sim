@@ -1,25 +1,31 @@
-﻿using OSPSuite.Core;
+﻿using System.Collections.Generic;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
-using FormulaExtensions = OSPSuite.Core.Domain.Formulas.FormulaExtensions;
 
 namespace PKSim.Core.Mappers
 {
-   public abstract class PathAndValueBuildingBlockMapper<T, TBuildingBlock, TBuilder> : IMapper<T, TBuildingBlock> where T : PKSimBuildingBlock where TBuildingBlock : PathAndValueEntityBuildingBlockSourcedFromPKSimBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+   public interface IPathAndValueBuildingBlockMapper<in T, out TBuildingBlock> : IMapper<T, TBuildingBlock>
+   {
+
+   }
+
+   public abstract class PathAndValueBuildingBlockMapper<T, TBuildingBlock, TBuilder> : IPathAndValueBuildingBlockMapper<T, TBuildingBlock> where T : PKSimBuildingBlock where TBuildingBlock : PathAndValueEntityBuildingBlockFromPKSim<TBuilder> where TBuilder : PathAndValueEntity
    {
       protected IObjectBaseFactory _objectBaseFactory;
       protected IEntityPathResolver _entityPathResolver;
-      protected IFormulaFactory _formulaFactory;
       protected IApplicationConfiguration _applicationConfiguration;
+      private readonly Cache<string, IFormula> _formulaCache = new Cache<string, IFormula>(x => x.Name);
 
-      protected PathAndValueBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IFormulaFactory formulaFactory, IApplicationConfiguration applicationConfiguration)
+      protected PathAndValueBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
-         _formulaFactory = formulaFactory;
          _applicationConfiguration = applicationConfiguration;
       }
 
@@ -33,16 +39,16 @@ namespace PKSim.Core.Mappers
          return buildingBlock;
       }
 
-      protected TBuilder MapBuilderParameter(IParameter parameter,
-         TBuildingBlock buildingBlock)
+      private TBuilder mapBuilderParameter(IParameter parameter)
       {
          var builderParameter = _objectBaseFactory.Create<TBuilder>();
 
-         if (parameter.Formula != null && FormulaExtensions.IsCachable(parameter.Formula))
+         if (parameter.Formula != null && parameter.Formula.IsCachable())
          {
-            var formula = _formulaFactory.RateFor(CoreConstants.CalculationMethod.EXPRESSION_PARAMETERS, parameter.Formula.Name,
-               buildingBlock.FormulaCache);
-            builderParameter.Formula = formula;
+            if (!_formulaCache.Contains(parameter.Formula.Name))
+               _formulaCache.Add(parameter.Formula);
+
+            builderParameter.Formula = _formulaCache[parameter.Formula.Name];
          }
          else
          {
@@ -59,14 +65,20 @@ namespace PKSim.Core.Mappers
 
       protected void MapAllParameters(T sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
       {
-         var allParameters = sourcePKSimBuildingBlock.GetAllChildren<IParameter>();
+         var allParameters = AllParametersFor(sourcePKSimBuildingBlock);
 
          foreach (var parameter in allParameters)
          {
-            var expressionParameter = MapBuilderParameter(parameter, buildingBlock);
+            var expressionParameter = mapBuilderParameter(parameter);
             buildingBlock.Add(expressionParameter);
          }
+         foreach (var formula in _formulaCache)
+         {
+            buildingBlock.FormulaCache.Add(formula);
+         }
       }
+
+      protected abstract IReadOnlyList<IParameter> AllParametersFor(T sourcePKSimBuildingBlock);
 
       public virtual TBuildingBlock MapFrom(T input)
       {
