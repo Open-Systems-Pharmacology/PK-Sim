@@ -80,7 +80,7 @@ namespace PKSim.UI
          DirectoryMapSettings = directoryMapSettings;
 
          DisplayUnits = new DisplayUnitsManager();
-         ComparerSettings = new ComparerSettings {CompareHiddenEntities = false};
+         ComparerSettings = new ComparerSettings {CompareHiddenEntities = true};
          ProjectFiles = new List<string>();
          Rules.AddRange(AllRules.All());
          DiagramOptions = new DiagramOptions();
