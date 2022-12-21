@@ -83,7 +83,6 @@ namespace PKSim.Core.Mappers
       public virtual TBuildingBlock MapFrom(T input)
       {
          var buildingBlock = CreateBaseObject(input);
-
          MapAllParameters(input, buildingBlock);
          return buildingBlock;
       }

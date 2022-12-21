@@ -2,8 +2,8 @@
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
-using PKSim.Core.Mappers;
 using PKSim.Core.Model;
+using PKSim.Presentation.Mappers;
 
 namespace PKSim.Presentation.UICommands
 {
