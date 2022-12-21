@@ -11,8 +11,6 @@ using PKSim.Core.Model;
 using PKSim.Infrastructure;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Mappers;
-using Individual = PKSim.Core.Model.Individual;
-using OriginData = PKSim.Core.Model.OriginData;
 
 namespace PKSim.Presentation
 {
