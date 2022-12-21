@@ -12,7 +12,6 @@ namespace PKSim.Core.Mappers
 {
    public interface IPathAndValueBuildingBlockMapper<in T, out TBuildingBlock> : IMapper<T, TBuildingBlock>
    {
-
    }
 
    public abstract class PathAndValueBuildingBlockMapper<T, TBuildingBlock, TBuilder> : IPathAndValueBuildingBlockMapper<T, TBuildingBlock> where T : PKSimBuildingBlock where TBuildingBlock : PathAndValueEntityBuildingBlockFromPKSim<TBuilder> where TBuilder : PathAndValueEntity
@@ -20,13 +19,15 @@ namespace PKSim.Core.Mappers
       protected IObjectBaseFactory _objectBaseFactory;
       protected IEntityPathResolver _entityPathResolver;
       protected IApplicationConfiguration _applicationConfiguration;
+      private readonly ILazyLoadTask _lazyLoadTask;
       private readonly Cache<string, IFormula> _formulaCache = new Cache<string, IFormula>(x => x.Name);
 
-      protected PathAndValueBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration)
+      protected PathAndValueBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration, ILazyLoadTask lazyLoadTask)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
          _applicationConfiguration = applicationConfiguration;
+         _lazyLoadTask = lazyLoadTask;
       }
 
       protected TBuildingBlock CreateBaseObject(T pkSimBuildingBlock)
@@ -69,9 +70,10 @@ namespace PKSim.Core.Mappers
 
          foreach (var parameter in allParameters)
          {
-            var expressionParameter = mapBuilderParameter(parameter);
-            buildingBlock.Add(expressionParameter);
+            var builderParameter = mapBuilderParameter(parameter);
+            buildingBlock.Add(builderParameter);
          }
+
          foreach (var formula in _formulaCache)
          {
             buildingBlock.FormulaCache.Add(formula);
@@ -82,6 +84,8 @@ namespace PKSim.Core.Mappers
 
       public virtual TBuildingBlock MapFrom(T input)
       {
+         _lazyLoadTask.Load(input);
+
          var buildingBlock = CreateBaseObject(input);
          MapAllParameters(input, buildingBlock);
          return buildingBlock;

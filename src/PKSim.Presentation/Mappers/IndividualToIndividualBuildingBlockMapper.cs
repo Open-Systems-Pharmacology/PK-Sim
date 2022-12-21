@@ -4,7 +4,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core;
 using PKSim.Presentation.DTO.Mappers;
 using System.Collections.Generic;
@@ -19,13 +18,11 @@ namespace PKSim.Presentation.Mappers
 
    public class IndividualToIndividualBuildingBlockMapper : PathAndValueBuildingBlockMapper<Individual, IndividualBuildingBlock, IndividualParameter>, IIndividualToIndividualBuildingBlockMapper
    {
-      private readonly ILazyLoadTask _lazyLoadTask;
       private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
 
       public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration,
-         ILazyLoadTask lazyLoadTask, ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper) : base(objectBaseFactory, entityPathResolver, applicationConfiguration)
+         ILazyLoadTask lazyLoadTask, ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask)
       {
-         _lazyLoadTask = lazyLoadTask;
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
       }
 
@@ -36,11 +33,10 @@ namespace PKSim.Presentation.Mappers
 
       public override IndividualBuildingBlock MapFrom(Individual input)
       {
-         _lazyLoadTask.Load(input);
          var buildingBlock = base.MapFrom(input);
          buildingBlock.Icon = input.Icon;
 
-
+         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.DiseaseState, input.OriginData.DiseaseState?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Species, input.Species?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.DiseaseState, input.OriginData.DiseaseState?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);

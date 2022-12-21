@@ -18,16 +18,18 @@ namespace PKSim.Core
       protected Individual _individual;
       protected ExpressionProfileBuildingBlock _result;
       private IApplicationConfiguration _applicationConfiguration;
+      private ILazyLoadTask _lazyLoadTask;
 
       protected override void Context()
       {
          _applicationConfiguration = A.Fake<IApplicationConfiguration>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _objectPathFactory = new EntityPathResolverForSpecs();
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).Returns(new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask);
       }
    }
 
