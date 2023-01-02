@@ -156,7 +156,7 @@ namespace PKSim.Core
          await base.Context();
          _dataRepository = A.Fake<DataRepository>();
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), _dataRepository));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), "ERROR"));
          await sut.RunAsync(_simulation, _simulationRunOption);
       }
 
