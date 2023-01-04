@@ -1,13 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using ModelIndividual = PKSim.Core.Model.Individual;
-using ModelExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 using SnapshotExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
+using ModelExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

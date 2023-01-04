@@ -4,11 +4,9 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
 {
@@ -17,22 +15,21 @@ namespace PKSim.Core
       protected IObjectBaseFactory _objectBaseFactory;
       protected IEntityPathResolver _objectPathFactory;
       protected ExpressionProfile _expressionProfile;
-      protected IFormulaFactory _formulaFactory;
       protected Individual _individual;
       protected ExpressionProfileBuildingBlock _result;
       private IApplicationConfiguration _applicationConfiguration;
+      private ILazyLoadTask _lazyLoadTask;
 
       protected override void Context()
       {
          _applicationConfiguration = A.Fake<IApplicationConfiguration>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _objectPathFactory = new EntityPathResolverForSpecs();
-         _formulaFactory = A.Fake<IFormulaFactory>();
-         A.CallTo(() => _formulaFactory.RateFor(A<string>._, A<string>._, A<IFormulaCache>._)).Returns(new ExplicitFormula());
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).Returns(new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _formulaFactory, _applicationConfiguration);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask);
       }
    }
 
@@ -80,13 +77,13 @@ namespace PKSim.Core
       {
          base.Context();
          _individual = DomainHelperForSpecs.CreateIndividual("TestSpecies");
-         _individual.AddMolecule(new IndividualEnzyme() { Name = "TestEnzyme" });
+         _individual.AddMolecule(new IndividualEnzyme { Name = "TestEnzyme" });
          _expressionProfile = new ExpressionProfile
          {
-            Individual = _individual
+            Individual = _individual,
+            Category = "TestCategory",
+            Description = "TestDescription"
          };
-         _expressionProfile.Category = "TestCategory";
-         _expressionProfile.Description = "TestDescription";
       }
 
       protected override void Because()
@@ -103,7 +100,7 @@ namespace PKSim.Core
          _result.MoleculeName.ShouldBeEqualTo("TestEnzyme");
          _result.Type.DisplayName.ShouldBeEqualTo("Enzyme");
          _result.Type.IconName.ShouldBeEqualTo("Enzyme");
-         A.CallTo(() => _formulaFactory.RateFor(A<string>._, A<string>._, A<IFormulaCache>._)).MustHaveHappened(3, Times.Exactly);
+         _result.FormulaCache.Count.ShouldBeEqualTo(3);
       }
    }
 }

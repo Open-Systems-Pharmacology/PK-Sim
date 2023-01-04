@@ -1,34 +1,23 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.UICommands;
 using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class ExportExpressionProfileToPkmlCommand : ObjectUICommand<ExpressionProfile>
+   public class ExportExpressionProfileToPkmlCommand : PkmlExportCommandForBuildingBlock<ExpressionProfile, ExpressionProfileBuildingBlock>
    {
-      private readonly IDialogCreator _dialogCreator;
-      private readonly IPKMLPersistor _pkmlPersistor;
-      private readonly IExpressionProfileToExpressionProfileBuildingBlockMapper _mapper;
-
-      public ExportExpressionProfileToPkmlCommand(IDialogCreator dialogCreator, IPKMLPersistor pkmlPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper mapper)
+      public ExportExpressionProfileToPkmlCommand(IDialogCreator dialogCreator, IPKMLPersistor pkmlPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper mapper) :
+         base(dialogCreator, pkmlPersistor, mapper)
       {
-         _dialogCreator = dialogCreator;
-         _pkmlPersistor = pkmlPersistor;
-         _mapper = mapper;
+
       }
 
-      protected override void PerformExecute()
+      protected override string DialogCaption()
       {
-         var file = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportExpressionProfileToPkml, Constants.Filter.PKML_FILE_FILTER, Subject.Name);
-         if (string.IsNullOrEmpty(file)) return;
-
-         //first map to expression profile Core
-         var expressionProfileBuildingBlock = _mapper.MapFrom(Subject);
-         _pkmlPersistor.SaveToPKML(expressionProfileBuildingBlock, file);
+         return PKSimConstants.UI.ExportExpressionProfileToPkml;
       }
    }
 }

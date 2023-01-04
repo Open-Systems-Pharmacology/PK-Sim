@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
@@ -17,6 +18,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
       }
 
+      protected override IEnumerable<IMenuBarItem> ExportContextMenusFor(Individual individual)
+      {
+         return base.ExportContextMenusFor(individual).Concat(new[]
+         {
+            exportToPkml(individual)
+         });
+      }
+
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(Individual individual)
       {
          var allMenuItems = new List<IMenuBarItem>();
@@ -24,7 +33,15 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          allMenuItems.Add(scaleIndividualMenuFor(individual));
          allMenuItems.Add(newPopulationMenuFor(individual));
          allMenuItems.AddRange(ExportAndDeleteContextMenusFor(individual));
+
          return allMenuItems;
+      }
+      
+      private IMenuBarItem exportToPkml(Individual individual)
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
+            .WithCommandFor<ExportIndividualToPkmlCommand, Individual>(individual)
+            .WithIcon(ApplicationIcons.PKMLSave);
       }
 
       private static IMenuBarButton newPopulationMenuFor(Individual individual)
