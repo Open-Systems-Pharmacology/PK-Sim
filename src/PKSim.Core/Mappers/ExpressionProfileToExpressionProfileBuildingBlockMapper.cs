@@ -19,9 +19,9 @@ namespace PKSim.Core.Mappers
       {
       }
 
-      protected override IReadOnlyList<IParameter> AllParametersFor(ExpressionProfile sourcePKSimBuildingBlock)
+      protected override IReadOnlyList<IParameter> AllParametersFor(ExpressionProfile expressionProfile)
       {
-         return sourcePKSimBuildingBlock.GetAllChildren<IParameter>();
+         return expressionProfile.GetAllChildren<IParameter>();
       }
 
       public override ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)

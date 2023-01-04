@@ -26,9 +26,9 @@ namespace PKSim.Presentation.Mappers
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
       }
 
-      protected override IReadOnlyList<IParameter> AllParametersFor(Individual sourcePKSimBuildingBlock)
+      protected override IReadOnlyList<IParameter> AllParametersFor(Individual individual)
       {
-         return sourcePKSimBuildingBlock.GetAllChildren<IParameter>().Where(x => x.GroupName != CoreConstants.Groups.RELATIVE_EXPRESSION).ToList();
+         return individual.GetAllChildren<IParameter>().Where(x => x.GroupName != CoreConstants.Groups.RELATIVE_EXPRESSION).ToList();
       }
 
       public override IndividualBuildingBlock MapFrom(Individual input)
@@ -38,8 +38,6 @@ namespace PKSim.Presentation.Mappers
 
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.DiseaseState, input.OriginData.DiseaseState?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Species, input.Species?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.DiseaseState, input.OriginData.DiseaseState?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Gender, input.OriginData.Gender?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Age, input.OriginData.Age);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.GestationalAge, input.OriginData.GestationalAge);
