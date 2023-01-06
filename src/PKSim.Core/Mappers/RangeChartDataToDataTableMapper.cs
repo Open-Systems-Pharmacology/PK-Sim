@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
-using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Mappers
 {
@@ -42,16 +42,20 @@ namespace PKSim.Core.Mappers
          for (var i = 0; i < curveData.XValues.Count; i++)
          {
             var newRow = row.Table.NewRow();
+            var xValue = curveData.XValues[i];
+            var yValue = curveData.YValues[i];
+
             newRow.ItemArray = row.ItemArray;
-            newRow[_xMinimumColumn] = ValueForDataTableFor(curveData.XAxis, curveData.XValues[i].Minimum);
-            newRow[_xValueColumn] = ValueForDataTableFor(curveData.XAxis, curveData.XValues[i].X);
-            newRow[_xMaximumColumn] = ValueForDataTableFor(curveData.XAxis, curveData.XValues[i].Maximum);
-            newRow[_xNumberOfIndividualsColumn] = curveData.XValues[i].NumberOfItems;
-            newRow[_yLowerPercentileColumn] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].LowerPercentile);
-            newRow[_yValueColumn] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].Median);
-            newRow[_yUpperPercentileColumn] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].UpperPercentile);
+            newRow[_xMinimumColumn] = xValueForDataTableFor(curveData, xValue.Minimum);
+            newRow[_xValueColumn] = xValueForDataTableFor(curveData, xValue.X);
+            newRow[_xMaximumColumn] = xValueForDataTableFor(curveData, xValue.Maximum);
+            newRow[_xNumberOfIndividualsColumn] = xValue.NumberOfItems;
+            newRow[_yLowerPercentileColumn] = yValueForDataTableFor(curveData, yValue.LowerPercentile);
+            newRow[_yValueColumn] = yValueForDataTableFor(curveData, yValue.Median);
+            newRow[_yUpperPercentileColumn] = yValueForDataTableFor(curveData, yValue.UpperPercentile);
             newRows.Add(newRow);
          }
+
          return newRows;
       }
    }
