@@ -6,8 +6,7 @@ namespace PKSim.Core.Services
    {
       /// <summary>
       ///    For used building blocks referencing templates, we ensure that the building block used is a clone of the template
-      ///    building block (so that if an alternative was used in the compound,
-      ///    this alternative is availagble to the user)
+      ///    building block (so that if an alternative was used in the compound, this alternative is available to the user)
       /// </summary>
       void UpdateUsedBuildingBlockBasedOnTemplateIn(Simulation simulation);
    }
