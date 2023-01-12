@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -33,7 +35,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          {
             var sortedCalculationMethods = calculationMethods.OrderBy(cm => _flatCalculationMethodRepository.FindById(cm.Name).Sequence);
             var flatCategory = _flatCategoryRepository.FindBy(calculationMethods.Key);
-            var calculationMethodCategory = new CalculationMethodCategory {Name = flatCategory.Name, CategoryType = flatCategory.CategoryType};
+            var calculationMethodCategory = new CalculationMethodCategory { Name = flatCategory.Name, CategoryType = flatCategory.CategoryType };
             sortedCalculationMethods.Each(calculationMethodCategory.Add);
             _calculationMethodCategories.Add(calculationMethodCategory);
          }
@@ -43,6 +45,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          Start();
          return _calculationMethodCategories[categoryName];
+      }
+
+      public bool HasMoreThanOneOption(CalculationMethod calculationMethod, Species species)
+      {
+         return FindBy(calculationMethod.Category).AllForSpecies(species).HasAtLeastTwo();
       }
    }
 }

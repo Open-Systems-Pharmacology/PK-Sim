@@ -10,7 +10,6 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure;
-using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Mappers;
 
@@ -66,6 +65,9 @@ namespace PKSim.Presentation
          originData.CalculationMethodCache.AddCalculationMethod(calculationMethod);
          _category1.Add(calculationMethod);
 
+         A.CallTo(() => _calculationMethodCategoryRepository.HasMoreThanOneOption(A<CalculationMethod>._, _individual.Species)).WhenArgumentsMatch(x => x.Get<CalculationMethod>(0).Category.Equals("category2")).Returns(false);
+         A.CallTo(() => _calculationMethodCategoryRepository.HasMoreThanOneOption(A<CalculationMethod>._, _individual.Species)).WhenArgumentsMatch(x => x.Get<CalculationMethod>(0).Category.Equals("category1")).Returns(true);
+
          calculationMethod = new CalculationMethod
          {
             DisplayName = "method2",
@@ -86,8 +88,6 @@ namespace PKSim.Presentation
          {
             DisplayName = "A Disease"
          };
-
-         A.CallTo(() => _calculationMethodCategoryRepository.FindBy("category1")).Returns(_category1);
       }
    }
 

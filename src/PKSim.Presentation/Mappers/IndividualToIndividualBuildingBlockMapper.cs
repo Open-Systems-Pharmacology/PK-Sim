@@ -54,16 +54,12 @@ namespace PKSim.Presentation.Mappers
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Weight, input.OriginData.Weight);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);
 
-         input.OriginData.AllCalculationMethods().Where(cm => hasMoreThanOneOption(cm, input.Species)).MapAllUsing(_calculationMethodDTOMapper)
+         input.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, input.Species)).MapAllUsing(_calculationMethodDTOMapper)
             .Each(x => addOriginDataToBuildingBlock(buildingBlock, x.DisplayName, x.CategoryItem.DisplayName));
 
          buildingBlock.OriginData.ValueOrigin = input.OriginData.ValueOrigin.Clone();
 
          return buildingBlock;
-      }
-      private bool hasMoreThanOneOption(CalculationMethod calculationMethod, Species species)
-      {
-         return _calculationMethodCategoryRepository.FindBy(calculationMethod.Category).AllForSpecies(species).HasAtLeastTwo();
       }
 
       private void addOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, string key, OriginDataParameter parameter)
