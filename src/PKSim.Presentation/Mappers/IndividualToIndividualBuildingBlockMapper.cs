@@ -8,7 +8,13 @@ using PKSim.Core;
 using PKSim.Presentation.DTO.Mappers;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Qualification;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
+using PKSim.Core.Repositories;
+using static PKSim.Core.CoreConstants;
+using CalculationMethod = OSPSuite.Core.Domain.CalculationMethod;
+using Species = PKSim.Core.Model.Species;
 
 namespace PKSim.Presentation.Mappers
 {
@@ -19,11 +25,13 @@ namespace PKSim.Presentation.Mappers
    public class IndividualToIndividualBuildingBlockMapper : PathAndValueBuildingBlockMapper<Individual, IndividualBuildingBlock, IndividualParameter>, IIndividualToIndividualBuildingBlockMapper
    {
       private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
+      private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
 
       public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration,
-         ILazyLoadTask lazyLoadTask, ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask)
+         ILazyLoadTask lazyLoadTask, ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper, ICalculationMethodCategoryRepository calculationMethodCategoryRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask)
       {
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
+         _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
       }
 
       protected override IReadOnlyList<IParameter> AllParametersFor(Individual individual)
@@ -46,7 +54,7 @@ namespace PKSim.Presentation.Mappers
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Weight, input.OriginData.Weight);
          addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);
 
-         input.OriginData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper)
+         input.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, input.Species)).MapAllUsing(_calculationMethodDTOMapper)
             .Each(x => addOriginDataToBuildingBlock(buildingBlock, x.DisplayName, x.CategoryItem.DisplayName));
 
          buildingBlock.OriginData.ValueOrigin = input.OriginData.ValueOrigin.Clone();

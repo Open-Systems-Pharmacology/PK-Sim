@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Infrastructure;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Mappers;
@@ -22,6 +23,8 @@ namespace PKSim.Presentation
       private ILazyLoadTask _lazyLoadTask;
       private ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
       private EntityPathResolverForSpecs _objectPathFactory;
+      private ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
+      private static CalculationMethodCategory _category1;
 
       protected override void Context()
       {
@@ -30,21 +33,57 @@ namespace PKSim.Presentation
          _applicationConfiguration = new PKSimConfiguration();
          _objectPathFactory = new EntityPathResolverForSpecs();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _calculationMethodDTOMapper = A.Fake<ICalculationMethodToCategoryCalculationMethodDTOMapper>();
+         var representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         _calculationMethodDTOMapper = new CalculationMethodToCategoryCalculationMethodDTOMapper(representationInfoRepository);
+         A.CallTo(() => representationInfoRepository.InfoFor(A<RepresentationObjectType>._, A<string>._)).Returns(new RepresentationInfo { DisplayName = "displayName" });
 
+         _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
          updateOriginDataForTest(_individual.OriginData);
 
          A.CallTo(() => _objectBaseFactory.Create<IndividualBuildingBlock>()).Returns(new IndividualBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<IndividualParameter>()).Returns(new IndividualParameter());
-         sut = new IndividualToIndividualBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _calculationMethodDTOMapper);
+         sut = new IndividualToIndividualBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _calculationMethodDTOMapper, _calculationMethodCategoryRepository);
       }
 
-      private static void updateOriginDataForTest(OriginData originData)
+      private void updateOriginDataForTest(OriginData originData)
       {
          originData.Gender.DisplayName = originData.Gender.Name;
          originData.Population.DisplayName = originData.Population.Name;
          originData.Age = new OriginDataParameter(1, "year", "Age");
          originData.GestationalAge = new OriginDataParameter(52, "weeks", "Gestational Age");
+
+         _category1 = new CalculationMethodCategory();
+         
+
+         var calculationMethod = new CalculationMethod
+         {
+            DisplayName = "method1",
+            Category = "category1",
+         };
+         calculationMethod.AddSpecies(_individual.Species.Name);
+
+         originData.CalculationMethodCache.AddCalculationMethod(calculationMethod);
+         _category1.Add(calculationMethod);
+
+         A.CallTo(() => _calculationMethodCategoryRepository.HasMoreThanOneOption(A<CalculationMethod>._, _individual.Species)).WhenArgumentsMatch(x => x.Get<CalculationMethod>(0).Category.Equals("category2")).Returns(false);
+         A.CallTo(() => _calculationMethodCategoryRepository.HasMoreThanOneOption(A<CalculationMethod>._, _individual.Species)).WhenArgumentsMatch(x => x.Get<CalculationMethod>(0).Category.Equals("category1")).Returns(true);
+
+         calculationMethod = new CalculationMethod
+         {
+            DisplayName = "method2",
+            Category = "category1",
+         };
+         calculationMethod.AddSpecies(_individual.Species.Name);
+         
+         _category1.Add(calculationMethod);
+
+         calculationMethod = new CalculationMethod
+         {
+            Category = "category2",
+            Name = "calculationMethod1"
+            
+         };
+         originData.CalculationMethodCache.AddCalculationMethod(calculationMethod);
          originData.DiseaseState = new DiseaseState
          {
             DisplayName = "A Disease"
@@ -75,6 +114,9 @@ namespace PKSim.Presentation
          // the count is 0 here because we intentionally left these out to make sure only populated origin data would be mapped
          _buildingBlock.OriginData.AllDataItems.Count(x => x.Name.Equals("Height")).ShouldBeEqualTo(0);
          _buildingBlock.OriginData.AllDataItems.Count(x => x.Name.Equals("BMI")).ShouldBeEqualTo(0);
+
+         _buildingBlock.OriginData.AllDataItems.Count(x => x.Name.Equals("displayName")).ShouldBeEqualTo(1);
+         _buildingBlock.OriginData.AllDataItems.Count.ShouldBeEqualTo(8);
       }
    }
 }
