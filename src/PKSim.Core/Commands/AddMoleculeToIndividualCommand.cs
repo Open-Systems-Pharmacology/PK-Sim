@@ -13,7 +13,7 @@ namespace PKSim.Core.Commands
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-          return new RemoveMoleculeFromIndividualCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
+         return new RemoveMoleculeFromIndividualCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
       }
    }
 }
