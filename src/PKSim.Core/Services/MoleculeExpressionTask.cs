@@ -45,20 +45,17 @@ namespace PKSim.Core.Services
       private readonly IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       private readonly ISimulationSubjectExpressionTask<TSimulationSubject> _simulationSubjectExpressionTask;
       private readonly IExpressionProfileUpdater _expressionProfileUpdater;
-      private readonly IRegistrationTask _registrationTask;
 
       public MoleculeExpressionTask(IExecutionContext executionContext,
          IIndividualMoleculeFactoryResolver individualMoleculeFactoryResolver,
          ISimulationSubjectExpressionTask<TSimulationSubject> simulationSubjectExpressionTask,
-         IExpressionProfileUpdater expressionProfileUpdater,
-         IRegistrationTask registrationTask
-         )
+         IExpressionProfileUpdater expressionProfileUpdater
+      )
       {
          _executionContext = executionContext;
          _individualMoleculeFactoryResolver = individualMoleculeFactoryResolver;
          _simulationSubjectExpressionTask = simulationSubjectExpressionTask;
          _expressionProfileUpdater = expressionProfileUpdater;
-         _registrationTask = registrationTask;
       }
 
       public ICommand RemoveExpressionProfileFor(IndividualMolecule molecule, TSimulationSubject simulationSubject)
@@ -72,10 +69,7 @@ namespace PKSim.Core.Services
       {
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(expressionProfile.Molecule);
          //this calls not only creates a new molecule but modify the subject in place to have the link to the expression profile
-         //by adding sub containers in the individual structure. The factory does not register the container and parameters so we need to do it
          var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, expressionProfile.MoleculeName);
-         //we register the whole individual again.
-         _registrationTask.Register(simulationSubject);
          simulationSubject.AddExpressionProfile(expressionProfile);
          _expressionProfileUpdater.SynchroniseSimulationSubjectWithExpressionProfile(simulationSubject, expressionProfile);
          return _simulationSubjectExpressionTask.AddMoleculeTo(molecule, simulationSubject);

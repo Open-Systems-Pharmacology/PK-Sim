@@ -25,7 +25,6 @@ namespace PKSim.Presentation
       protected Ontogeny _ontogeny;
       protected ISimulationSubjectExpressionTask<Individual> _subjectExpressionTask;
       protected IExpressionProfileUpdater _expressionProfileUpdater;
-      protected IRegistrationTask _registrationTask;
 
       protected override void Context()
       {
@@ -36,7 +35,6 @@ namespace PKSim.Presentation
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          var proteinFactory = A.Fake<IIndividualMoleculeFactory>();
          _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
-         _registrationTask= A.Fake<IRegistrationTask>(); 
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
          _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
@@ -55,10 +53,9 @@ namespace PKSim.Presentation
          sut = new MoleculeExpressionTask<Individual>(
             _executionContext,
             _individualMoleculeFactoryResolver,
-            _subjectExpressionTask, 
-            _expressionProfileUpdater,
-            _registrationTask
-            );
+            _subjectExpressionTask,
+            _expressionProfileUpdater
+         );
       }
    }
 
@@ -66,7 +63,6 @@ namespace PKSim.Presentation
    {
       private ICommand _resultCommand;
       private ExpressionProfile _expressionProfile;
-      private IOSPSuiteCommand _addCommand;
       private IIndividualMoleculeFactory _moleculeFactory;
 
       protected override void Context()
@@ -74,7 +70,6 @@ namespace PKSim.Presentation
          base.Context();
          _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
          _moleculeFactory = A.Fake<IIndividualMoleculeFactory>();
-         _addCommand = new AddMoleculeToIndividualCommand(_molecule, _individual, _executionContext);
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor(_expressionProfile.Molecule)).Returns(_moleculeFactory);
       }
 
@@ -89,11 +84,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _moleculeFactory.AddMoleculeTo(_individual, _expressionProfile.MoleculeName)).MustHaveHappened();
       }
 
-      [Observation]
-      public void should_register_the_whole_individual_again_to_ensure_that_the_newly_added_parameters_and_containers_are_available()
-      {
-         A.CallTo(() => _registrationTask.Register(_individual)).MustHaveHappened();
-      }
+
 
       [Observation]
       public void should_ensure_that_expression_profile_and_simulation_subject_are_synchronized()
