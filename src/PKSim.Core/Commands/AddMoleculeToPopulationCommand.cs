@@ -15,7 +15,7 @@ namespace PKSim.Core.Commands
       protected override void PerformExecuteWith(IExecutionContext context)
       {
          base.PerformExecuteWith(context);
-         //we register the whole individual again as sub container for the molecule were added to the individual
+         //we register the whole population again as sub container for the molecule were added to the population
          context.Register(_parentContainer);
          context.PublishEvent(new AddAdvancedParameterContainerToPopulationEvent(_parentContainer));
       }
