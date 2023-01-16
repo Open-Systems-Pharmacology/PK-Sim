@@ -68,7 +68,7 @@ namespace PKSim.Core.Services
       public ICommand AddExpressionProfile(TSimulationSubject simulationSubject, ExpressionProfile expressionProfile)
       {
          var moleculeFactory = _individualMoleculeFactoryResolver.FactoryFor(expressionProfile.Molecule);
-         //this calls not only creates a new molecule but modify the subject in place to have the link to the expression profile
+         //this call not only creates a new molecule but modifies the subject in place to have the link to the expression profile
          var molecule = moleculeFactory.AddMoleculeTo(simulationSubject, expressionProfile.MoleculeName);
          simulationSubject.AddExpressionProfile(expressionProfile);
          _expressionProfileUpdater.SynchroniseSimulationSubjectWithExpressionProfile(simulationSubject, expressionProfile);
