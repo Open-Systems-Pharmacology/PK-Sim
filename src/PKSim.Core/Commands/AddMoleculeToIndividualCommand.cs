@@ -11,9 +11,16 @@ namespace PKSim.Core.Commands
       {
       }
 
+      protected override void PerformExecuteWith(IExecutionContext context)
+      {
+         base.PerformExecuteWith(context);
+         //we register the whole individual again as sub container for the molecule were added to the individual
+         context.Register(_parentContainer);
+      }
+
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-          return new RemoveMoleculeFromIndividualCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
+         return new RemoveMoleculeFromIndividualCommand(_entityToAdd, _parentContainer, context).AsInverseFor(this);
       }
    }
 }

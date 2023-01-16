@@ -114,14 +114,14 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_true_if_the_underying_population_is_age_dependent()
+      public void should_return_true_if_the_underlying_population_is_age_dependent()
       {
          _originData.Population.IsAgeDependent = true;
          sut.IsAgeDependent.ShouldBeTrue();
       }
 
       [Observation]
-      public void should_return_false_if_the_underying_population_is_not_age_dependent()
+      public void should_return_false_if_the_underlying_population_is_not_age_dependent()
       {
          _originData.Population.IsAgeDependent = false;
          sut.IsAgeDependent.ShouldBeFalse();
