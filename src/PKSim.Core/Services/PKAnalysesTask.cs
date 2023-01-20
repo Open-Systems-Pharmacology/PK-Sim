@@ -59,9 +59,10 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="pkValues">values to use</param>
       /// <param name="simulation">the simulation</param>
-      /// <param name="compound">the compound containing its name and molweight</param>
+      /// <param name="compoundMolWeight">An optional compound molar weight</param>
+      /// <param name="compoundName">The name of the compound to calculate PK Analysis for</param>
       /// <returns></returns>
-      PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound);
+      PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, double? compoundMolWeight, string compoundName);
 
       IReadOnlyList<PopulationPKAnalysis> AggregatePKAnalysis(Simulation populationDataCollector, IEnumerable<QuantityPKParameter> pkParameters, IEnumerable<StatisticalAggregation> selectedStatistics, string captionPrefix);
 
@@ -209,7 +210,7 @@ namespace PKSim.Core.Services
                var fractionAbsorbedColumn = individualSimulation.FabsOral(compound.Name);
                var individualId = individualSimulation.IndividualId;
                var compoundPKContext = createCompoundPKContext(compound, individualSimulation, individualId);
-               var compoundContainer = calculateGlobalPKAnalysisFor(individualSimulation, compound, peripheralVenousBloodColumn, venousBloodColumn, fractionAbsorbedColumn, pkCalculationOptions, individualId, compoundPKContext);
+               var compoundContainer = calculateGlobalPKAnalysisFor(individualSimulation, compound.Name, peripheralVenousBloodColumn, venousBloodColumn, fractionAbsorbedColumn, pkCalculationOptions, individualId, compoundPKContext);
                globalPKAnalysis.Add(compoundContainer);
             });
          }
@@ -260,7 +261,7 @@ namespace PKSim.Core.Services
          var venousBloodColumn = simulation.VenousBloodColumnForIndividual(individualId, moleculeName);
          var fractionAbsorbedColumn = simulation.FractionAbsorbedColumnForIndividual(individualId, moleculeName);
 
-         return calculateGlobalPKAnalysisFor(simulation, simulation.Compounds.FindByName(moleculeName), peripheralVenousBloodColumn, venousBloodColumn, fractionAbsorbedColumn, calculationOptions, individualId, compoundPKContext);
+         return calculateGlobalPKAnalysisFor(simulation, moleculeName, peripheralVenousBloodColumn, venousBloodColumn, fractionAbsorbedColumn, calculationOptions, individualId, compoundPKContext);
       }
 
       private static GlobalPKAnalysis globalPkAnalysisForIndividual(ICache<int, GlobalPKAnalysis> globalPKAnalysesForIndividuals, int individualId)
@@ -273,15 +274,16 @@ namespace PKSim.Core.Services
          return globalPKAnalysesForIndividuals[individualId];
       }
 
-      private IContainer calculateGlobalPKAnalysisFor(Simulation simulation, Compound compound, DataColumn peripheralVenousBloodCurve, DataColumn venousBloodCurve, DataColumn fractionAbsorbedCurve, PKCalculationOptions options, int individualId, CompoundPKContext compoundPKContext = null)
+      private IContainer calculateGlobalPKAnalysisFor(Simulation simulation, string compoundName, DataColumn peripheralVenousBloodCurve, DataColumn venousBloodCurve, DataColumn fractionAbsorbedCurve, PKCalculationOptions options, int individualId, CompoundPKContext compoundPKContext = null)
       {
          //one container per compound
 
-         var compoundName = compound.Name;
          IParameter vssPhysChem = null;
          var container = new Container().WithName(compoundName);
 
-         if (peripheralVenousBloodCurve == null || venousBloodCurve == null)
+         var compound = simulation.Compounds.FindByName(compoundName);
+
+         if (peripheralVenousBloodCurve == null || venousBloodCurve == null || compound == null)
             return container;
 
          var venousBloodPlasmaPK = calculatePK(venousBloodCurve, options);
@@ -845,10 +847,10 @@ namespace PKSim.Core.Services
             .WithRule((param, value) => false)
             .WithError((param, value) => warning);
 
-      public PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, Compound compound)
+      public PKAnalysis CreatePKAnalysisFromValues(PKValues pkValues, Simulation simulation, double? compoundMolWeight, string compoundName)
       {
-         var options = _pkCalculationOptionsFactory.CreateFor(simulation, compound.Name);
-         return _pkMapper.MapFrom(compound.MolWeight, pkValues, options.PKParameterMode, compound.Name);
+         var options = _pkCalculationOptionsFactory.CreateFor(simulation, compoundName);
+         return _pkMapper.MapFrom(compoundMolWeight, pkValues, options.PKParameterMode, compoundName);
       }
 
       /// <summary>
@@ -926,8 +928,9 @@ namespace PKSim.Core.Services
             pkValues.AddValue(names[i], values[i]);
          }
 
-         var compound = simulation.Compounds.First(x => simulation.Model.MoleculeNameFor(curveData.QuantityPath) == x.Name);
-         return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound));
+         var compoundName = simulation.Model.MoleculeNameFor(curveData.QuantityPath);
+         var compound = simulation.Compounds.FirstOrDefault(x => compoundName == x.Name);
+         return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound?.MolWeight, compoundName));
       }
    }
 }
