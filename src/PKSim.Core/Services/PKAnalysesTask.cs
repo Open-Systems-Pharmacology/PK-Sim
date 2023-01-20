@@ -929,7 +929,7 @@ namespace PKSim.Core.Services
          }
 
          var compoundName = simulation.Model.MoleculeNameFor(curveData.QuantityPath);
-         var compound = simulation.Compounds.FirstOrDefault(x => compoundName == x.Name);
+         var compound = simulation.Compounds.FindByName(compoundName);
          return new PopulationPKAnalysis(curveData, CreatePKAnalysisFromValues(pkValues, simulation, compound?.MolWeight, compoundName));
       }
    }
