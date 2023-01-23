@@ -878,8 +878,15 @@ namespace PKSim.Core.Services
       {
          var pkParametersList = pkParameters.ToList();
          var matrix = new FloatMatrix();
-         var names = pkParametersList.Select(x => x.Name).Distinct().ToList();
-         pkParametersList.Each(pkParameter => matrix.AddValuesAndSort(pkParameter.ValuesAsArray));
+         var names = new List<string>();
+
+         pkParametersList.Where(canBeUsedToCalculatePK).Each(pkParameter =>
+         {
+            matrix.AddValuesAndSort(pkParameter.ValuesAsArray);
+            names.Add(pkParameter.Name);
+         });
+
+         var distinctNames = names.Distinct().ToList();
 
          var results = new List<PopulationPKAnalysis>();
          selectedStatistics.Each(statisticalAnalysis =>
@@ -888,11 +895,16 @@ namespace PKSim.Core.Services
             aggregated.Each((agg, index) =>
             {
                var name = correctNameFromMetric(_representationInfoRepository.DisplayNameFor(statisticalAnalysis), aggregated.Count > 1, index == 0, captionPrefix);
-               var pkAnalysis = buildPopulationPKAnalysis(buildCurveData(pkParametersList[index], name), agg, names, simulation);
+               var pkAnalysis = buildPopulationPKAnalysis(buildCurveData(pkParametersList[index], name), agg, distinctNames, simulation);
                results.Add(pkAnalysis);
             });
          });
          return results;
+      }
+
+      private static bool canBeUsedToCalculatePK(QuantityPKParameter pkParameter)
+      {
+         return pkParameter.ValuesAsArray.All(x => x.IsValid());
       }
 
       private string correctNameFromMetric(string originalText, bool multipleValues, bool isLowerValue, string captionPrefix)
