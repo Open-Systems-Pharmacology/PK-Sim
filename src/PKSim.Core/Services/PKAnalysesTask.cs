@@ -880,11 +880,8 @@ namespace PKSim.Core.Services
          var matrix = new FloatMatrix();
          var names = new List<string>();
 
-         pkParametersList.Each(pkParameter =>
+         pkParametersList.Where(canBeUsedToCalculatePK).Each(pkParameter =>
          {
-            if (!pkParameter.ValuesAsArray.All(x => x.IsValid())) 
-               return;
-
             matrix.AddValuesAndSort(pkParameter.ValuesAsArray);
             names.Add(pkParameter.Name);
          });
@@ -903,6 +900,11 @@ namespace PKSim.Core.Services
             });
          });
          return results;
+      }
+
+      private static bool canBeUsedToCalculatePK(QuantityPKParameter pkParameter)
+      {
+         return pkParameter.ValuesAsArray.Any(x => x.IsValid());
       }
 
       private string correctNameFromMetric(string originalText, bool multipleValues, bool isLowerValue, string captionPrefix)
