@@ -904,7 +904,7 @@ namespace PKSim.Core.Services
 
       private static bool canBeUsedToCalculatePK(QuantityPKParameter pkParameter)
       {
-         return pkParameter.ValuesAsArray.Any(x => x.IsValid());
+         return pkParameter.ValuesAsArray.All(x => x.IsValid());
       }
 
       private string correctNameFromMetric(string originalText, bool multipleValues, bool isLowerValue, string captionPrefix)
