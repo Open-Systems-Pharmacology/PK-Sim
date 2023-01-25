@@ -27,9 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="11.1.93" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.1.96" />
     <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Core" Version="11.1.93" />
+    <PackageReference Include="OSPSuite.Core" Version="11.1.96" />
   </ItemGroup>
 
   <ItemGroup>
