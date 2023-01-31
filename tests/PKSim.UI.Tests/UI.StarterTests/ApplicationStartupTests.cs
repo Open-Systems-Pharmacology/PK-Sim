@@ -1,8 +1,7 @@
 ﻿using System.Threading;
-using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Mappers;
 using PKSim.Presentation.Mappers;
@@ -19,7 +18,7 @@ namespace PKSim.UI.UI.StarterTests
       protected override void Context()
       {
          SynchronizationContext.SetSynchronizationContext(new When_resolving_the_individual_presenter.TestSynchronizationContext());
-         _container = ApplicationStartup.Initialize(A.Fake<IShell>());
+         _container = ApplicationStartup.Initialize(new BaseShell());
       }
    }
 
