@@ -5,14 +5,35 @@ using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Diagram.Elements;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
 using PKSim.CLI.Core.MinimalImplementations;
 
 namespace PKSim.UI.Starter
 {
+   public class UIStarterPresentationSettingsTask : IPresentationSettingsTask
+   {
+      public TPresentationSettings PresentationSettingsFor<TPresentationSettings>(IPresenterWithSettings presenter, IWithId subject) where TPresentationSettings : class, IPresentationSettings, new()
+      {
+         return new TPresentationSettings();
+      }
+
+      public TPresentationSettings PresentationSettingsFor<TPresentationSettings>(string presentationKey, IWithId subject) where TPresentationSettings : class, IPresentationSettings, new()
+      {
+         return new TPresentationSettings();
+      }
+
+      public void RemovePresentationSettingsFor(IWithId subject)
+      {
+         ;
+      }
+   }
+
    public class UIStarterUserSettings : CLIUserSettings, IPresentationUserSettings
    {
       public UIStarterUserSettings()

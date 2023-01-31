@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using PKSim.Assets;
 using OSPSuite.Assets;
+using OSPSuite.UI.Views;
 using PKSim.Core;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
@@ -10,7 +11,12 @@ namespace PKSim.UI.Views.Individuals
 {
    public partial class CreateIndividualView : BuildingBlockWizardView, ICreateIndividualView
    {
-      public CreateIndividualView(Shell shell) : base(shell)
+      public CreateIndividualView(Shell shell) : this(shell as BaseShell)
+      {
+         
+      }
+
+      public CreateIndividualView(BaseShell shell) : base(shell)
       {
          InitializeComponent();
          ClientSize = new Size(UIConstants.Size.INDIVIDUAL_VIEW_WIDTH, UIConstants.Size.INDIVIDUAL_VIEW_HEIGHT);

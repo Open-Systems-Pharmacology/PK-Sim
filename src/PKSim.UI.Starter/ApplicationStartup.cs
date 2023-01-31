@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Threading;
+using DevExpress.LookAndFeel;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Journal;
@@ -9,7 +10,7 @@ using OSPSuite.Presentation;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
+// using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
@@ -18,7 +19,6 @@ using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Format;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -40,7 +40,6 @@ using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.ExpressionProfiles;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.Presentation.Views.Parameters;
-using PKSim.UI.Views;
 using PKSim.UI.Views.ExpressionProfiles;
 using PKSim.UI.Views.Individuals;
 using PKSim.UI.Views.Parameters;
@@ -80,9 +79,9 @@ namespace PKSim.UI.Starter
 
          using (container.OptimizeDependencyResolution())
          {
-            var PKSimShell = new Shell(container);
+            container.RegisterImplementationOf(shell as BaseShell);
             container.RegisterImplementationOf(shell);
-            container.RegisterImplementationOf(PKSimShell);
+            container.RegisterImplementationOf(UserLookAndFeel.Default);
             container.AddRegister(x => x.FromType<CoreRegister>());
             container.AddRegister(x => x.FromType<InfrastructureRegister>());
             container.Register<ICreateExpressionProfilePresenter, CreateExpressionProfilePresenter>();
@@ -136,14 +135,7 @@ namespace PKSim.UI.Starter
             container.RegisterFactory<IMultiParameterEditPresenterFactory>();
             container.Register<INoItemInSelectionPresenter, NoItemInSelectionPresenter>();
             container.Register<INoItemInSelectionView, NoItemInSelectionView>();
-            container.Register<IUserSettings, UserSettings>();
-            container.Register<INumericFormatterOptions, NumericFormatterOptions>();
-            container.Register<ISkinManager, SkinManager>();
-            container.Register<DirectoryMapSettings, DirectoryMapSettings>();
-            container.Register<IPresentationSettingsTask, PresentationSettingsTask>();
-            container.Register<IWorkspace, Infrastructure.Workspace>();
-            container.Register<IWithWorkspaceLayout, Infrastructure.Workspace>();
-            container.Register<IWorkspaceLayout, WorkspaceLayout>();
+            container.Register<IPresentationSettingsTask, UIStarterPresentationSettingsTask>();
             container.Register<ITreeNodeContextMenuFactory, TreeNodeContextMenuFactory>();
             container.Register<IIndividualMoleculesPresenter, IndividualMoleculesPresenter>();
             container.Register<IMoleculesView, MoleculesView>();
