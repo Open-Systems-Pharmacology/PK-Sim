@@ -192,6 +192,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.HeightAndBMIVisible = _individualSettingsDTO.Population.IsHeightDependent;
          _view.GestationalAgeVisible = _individualSettingsDTO.Population.IsPreterm;
          updateDiseaseStatesControls();
+         _view.ResizePopulationSettingsView();
       }
 
       private void updateDiseaseStatesControls()

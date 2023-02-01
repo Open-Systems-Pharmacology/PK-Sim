@@ -1,13 +1,13 @@
 using System;
-using PKSim.Core.Model;
 using OSPSuite.Core.Chart;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Chart
 {
    public interface IPKSimChartFactory : IChartFactory
    {
       ChartWithObservedData Create(Type chartType);
-      SimulationTimeProfileChart CreateChartFor(IndividualSimulation individualSimulation);
+      TChartType CreateChartFor<TChartType>(IndividualSimulation individualSimulation) where TChartType : ChartWithObservedData;
       ISimulationComparison CreateSummaryChart();
    }
 }

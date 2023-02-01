@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using PKSim.Core.Chart;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Chart;
 
 namespace PKSim.Core.Mappers
 {
@@ -33,16 +33,18 @@ namespace PKSim.Core.Mappers
          for (var i = 0; i < curveData.XValues.Count; i++)
          {
             var newRow = row.Table.NewRow();
+            var yValue = curveData.YValues[i];
             newRow.ItemArray = row.ItemArray;
             newRow[_xValue] = curveData.XValues[i].ToString(curveData.XAxis);
-            newRow[_lowerWhisker] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].LowerWhisker);
-            newRow[_lowerBox] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].LowerBox);
-            newRow[_median] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].Median);
-            newRow[_upperBox] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].UpperBox);
-            newRow[_upperWhisker] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].UpperWhisker);
+            newRow[_lowerWhisker] = yValueForDataTableFor(curveData, yValue.LowerWhisker);
+            newRow[_lowerBox] = yValueForDataTableFor(curveData, yValue.LowerBox);
+            newRow[_median] = yValueForDataTableFor(curveData, yValue.Median);
+            newRow[_upperBox] = yValueForDataTableFor(curveData, yValue.UpperBox);
+            newRow[_upperWhisker] = yValueForDataTableFor(curveData, yValue.UpperWhisker);
             newRow[_variable] = curveData.YAxis.Caption;
             newRows.Add(newRow);
          }
+
          return newRows;
       }
    }

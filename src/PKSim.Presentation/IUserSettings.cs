@@ -6,6 +6,7 @@ using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation
 {
@@ -19,7 +20,7 @@ namespace PKSim.Presentation
       /// <summary>
       ///    Scientific notation allows (1e-2 for instance)
       /// </summary>
-      bool AllowsScientifcNotation { get; set; }
+      bool AllowsScientificNotation { get; set; }
 
       /// <summary>
       ///    String representing the serialization of the main view
@@ -100,6 +101,11 @@ namespace PKSim.Presentation
       ///    Which layout should be used when creating complex views (not supported in all use cases so far)
       /// </summary>
       ViewLayout PreferredViewLayout { get; set; }
+
+      /// <summary>
+      /// 3 states flag: Load, do not load, ask
+      /// </summary>
+      LoadTemplateWithReference LoadTemplateWithReference { get; set; }
 
       void ResetToDefault();
    }

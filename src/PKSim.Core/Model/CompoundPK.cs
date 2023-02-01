@@ -1,37 +1,63 @@
-﻿using OSPSuite.Utility.Collections;
+using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 
 namespace PKSim.Core.Model
 {
    /// <summary>
-   /// Reperesents a cache containing specific PK-Values calculated for a given compound
+   /// Represents a cache containing specific PK-Values calculated for a given compound
    /// </summary>
    public class CompoundPK
    {
-      public string CompoundName { get; set; }
+      private readonly Cache<string, QuantityPKParameter> _quantityPKParameters = new Cache<string, QuantityPKParameter>(getKey:x => x.Name);
       
-      /// <summary>
-      /// AUC_inf of plasma curve following a IV infustion of 15 min
-      /// </summary>
-      public double? AucIV { get; set; }
+      public string CompoundName { get; set; }
 
-      /// <summary>
-      /// AUC_inf of plasma curve following an application where only <see cref="CompoundName"/> is applied
-      /// </summary>
-      public double? AucDDI { get; set; }
-
-      /// <summary>
-      /// Cmax of plasma curve following an application where only <see cref="CompoundName"/> is applied
-      /// </summary>
-      public double? CmaxDDI { get; set; }
-
-      public CompoundPK Clone()
+      private double? valueStoreFor(ICache<int, double?> allValues, int individualId)
       {
-         return new CompoundPK
-         {
-            AucDDI = AucDDI,
-            AucIV = AucIV,
-            CompoundName = CompoundName
-         };
+         if (!allValues.Contains(individualId))
+            allValues[individualId] = null;
+
+         return allValues[individualId];
+      }
+
+      public ICache<int, double?> AllBioAvailabilityAucInf = new Cache<int, double?>();
+      public ICache<int, double?> AllDDIAucInf = new Cache<int, double?>();
+      public ICache<int, double?> AllDDICMax = new Cache<int, double?>();
+
+      public double? BioAvailabilityAucInfFor(int individualId) => valueStoreFor(AllBioAvailabilityAucInf, individualId);
+
+      public double? DDIAucInfFor(int individualId) => valueStoreFor(AllDDIAucInf, individualId);
+
+      public void AddDDICMax(int individualId, double? cMax)
+      {
+         AllDDICMax[individualId] = cMax;
+      }
+
+      public void AddDDIAucInf(int individualId, double? aucInf)
+      {
+         AllDDIAucInf[individualId] = aucInf;
+      }
+      
+      public double? CMaxDDIFor(int individualId) => valueStoreFor(AllDDICMax, individualId);
+
+      public void AddBioavailability(int individualId, double? aucInf)
+      {
+         AllBioAvailabilityAucInf[individualId] = aucInf;
+      }
+
+      public void AddQuantityPKParameter(QuantityPKParameter quantityPKParameter)
+      {
+         _quantityPKParameters.Add(quantityPKParameter);
+      }
+
+      public ICache<string, QuantityPKParameter> QuantityPKParameters() => _quantityPKParameters;
+
+      public double? QuantityFor(int individualId, string parameterName)
+      {
+         if(_quantityPKParameters.Contains(parameterName))
+            return _quantityPKParameters[parameterName].ValueFor(individualId);
+
+         return null;
       }
    }
 }

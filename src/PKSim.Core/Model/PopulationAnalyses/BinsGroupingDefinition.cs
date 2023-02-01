@@ -7,6 +7,7 @@ using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths;
 
 namespace PKSim.Core.Model.PopulationAnalyses
 {
@@ -33,7 +34,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
 
          var limits = new List<double>();
          for (var i = 1; i < numberOfBins; i++)
-            limits.Add(sortedValues.Quantile((double) i / numberOfBins));
+            limits.Add(new SortedFloatArray(sortedValues, alreadySorted: true).Quantile((double) i / numberOfBins));
 
          Limits = limits;
       }

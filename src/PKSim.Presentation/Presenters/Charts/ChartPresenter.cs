@@ -7,7 +7,6 @@ using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -27,7 +26,9 @@ namespace PKSim.Presentation.Presenters.Charts
       PKAnalysis
    }
 
-   public abstract class ChartPresenter<TChart, TView, TPresenter> : OSPSuite.Presentation.Presenters.Charts.ChartPresenter<TChart, TView, TPresenter>, IPKAnalysisWithChartPresenter
+   public abstract class
+      ChartPresenter<TChart, TView, TPresenter> : OSPSuite.Presentation.Presenters.Charts.ChartPresenter<TChart, TView, TPresenter>,
+         IPKAnalysisWithChartPresenter
       where TChart : ChartWithObservedData
       where TView : class, IChartView<TPresenter>
       where TPresenter : IPresenter
@@ -47,12 +48,12 @@ namespace PKSim.Presentation.Presenters.Charts
       protected readonly IChartTemplatingTask _chartTemplatingTask;
 
       protected ChartPresenter(
-         TView view, 
-         ChartPresenterContext chartPresenterContext, 
-         IChartTemplatingTask chartTemplatingTask, 
+         TView view,
+         ChartPresenterContext chartPresenterContext,
+         IChartTemplatingTask chartTemplatingTask,
          IIndividualPKAnalysisPresenter pkAnalysisPresenter,
-         IChartTask chartTask, 
-         IObservedDataTask observedDataTask, 
+         IChartTask chartTask,
+         IObservedDataTask observedDataTask,
          IChartUpdater chartUpdater, bool useSimulationNameToCreateCurveName,
          IUserSettings userSettings)
          : base(view, chartPresenterContext)
@@ -66,7 +67,7 @@ namespace PKSim.Presentation.Presenters.Charts
          _view.SetPKAnalysisView(_pkAnalysisPresenter.View);
          AddSubPresenters(_pkAnalysisPresenter);
          _chartTemplatingTask = chartTemplatingTask;
-         _repositoryCache = new Cache<DataRepository, IndividualSimulation> {OnMissingKey = noDataForSimulation};
+         _repositoryCache = new Cache<DataRepository, IndividualSimulation> { OnMissingKey = noDataForSimulation };
 
          ChartEditorPresenter.SetShowDataColumnInDataBrowserDefinition(IsColumnVisibleInDataBrowser);
          ChartDisplayPresenter.DragDrop += OnDragDrop;
@@ -106,7 +107,8 @@ namespace PKSim.Presentation.Presenters.Charts
             using (_chartUpdater.UpdateTransaction(Chart))
             {
                ChartEditorPresenter.RemoveUnusedColumns();
-               AddDataRepositoriesToEditor(new[] {dataRepository});
+               AddDataRepositoriesToEditor(new[] { dataRepository });
+               ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
             }
 
             //after refresh, some data might not be available anymore=>in that case init chart from template
@@ -117,7 +119,8 @@ namespace PKSim.Presentation.Presenters.Charts
          else
          {
             _repositoryCache[dataRepository] = simulation;
-            AddDataRepositoriesToEditor(new[] {dataRepository});
+            AddDataRepositoriesToEditor(new[] { dataRepository });
+            ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
          }
       }
 
@@ -133,7 +136,8 @@ namespace PKSim.Presentation.Presenters.Charts
 
       protected virtual void InitializeFromTemplate(IReadOnlyCollection<DataColumn> allColumns, IReadOnlyCollection<IndividualSimulation> simulations)
       {
-         _chartTemplatingTask.InitFromTemplate(Chart, _chartPresenterContext.EditorAndDisplayPresenter, allColumns, simulations, NameForColumn, DefaultChartTemplate);
+         _chartTemplatingTask.InitFromTemplate(Chart, _chartPresenterContext.EditorAndDisplayPresenter, allColumns, simulations, NameForColumn,
+            DefaultChartTemplate);
       }
 
       public override void Clear()

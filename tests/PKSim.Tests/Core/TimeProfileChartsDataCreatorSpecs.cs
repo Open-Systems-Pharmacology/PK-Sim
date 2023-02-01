@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths;
 
 namespace PKSim.Core
 {
@@ -24,8 +25,8 @@ namespace PKSim.Core
       private IDimensionRepository _dimensionRepository;
       private IRepresentationInfoRepository _representationInfoRepository;
       protected PopulationAnalysisCovariateField _genderField;
-      protected readonly PopulationAnalysisOutputField _outputFieldVenousBloodPlasma = new PopulationAnalysisOutputField {Name = "VenousBloodPlasma", QuantityPath = "VenousBloodPlasma", Color = Color.Blue};
-      protected readonly PopulationAnalysisOutputField _outputFieldLiverCell = new PopulationAnalysisOutputField {Name = "LiverCell", QuantityPath = "LiverCell", Color = Color.Brown};
+      protected readonly PopulationAnalysisOutputField _outputFieldVenousBloodPlasma = new PopulationAnalysisOutputField { Name = "VenousBloodPlasma", QuantityPath = "VenousBloodPlasma", Color = Color.Blue };
+      protected readonly PopulationAnalysisOutputField _outputFieldLiverCell = new PopulationAnalysisOutputField { Name = "LiverCell", QuantityPath = "LiverCell", Color = Color.Brown };
       protected PopulationStatisticalAnalysis _statisticalAnalysis;
       protected PredefinedStatisticalAggregation _predefinedStatisticalAggregation;
       protected PercentileStatisticalAggregation _percentileStatisticalAggregation;
@@ -38,6 +39,7 @@ namespace PKSim.Core
       protected const string _singleCurveId = "SingleCurve";
       protected const string _percentileId = "Percentile";
 
+
       protected override void Context()
       {
          _dimensionRepository = A.Fake<IDimensionRepository>();
@@ -49,8 +51,8 @@ namespace PKSim.Core
          _statisticalAnalysis.Add(_genderField);
          _statisticalAnalysis.Add(_outputFieldVenousBloodPlasma);
          _statisticalAnalysis.Add(_outputFieldLiverCell);
-         _predefinedStatisticalAggregation = new PredefinedStatisticalAggregation {Selected = true};
-         _percentileStatisticalAggregation = new PercentileStatisticalAggregation {Selected = false, Percentile = 50};
+         _predefinedStatisticalAggregation = new PredefinedStatisticalAggregation { Selected = true };
+         _percentileStatisticalAggregation = new PercentileStatisticalAggregation { Selected = false, Percentile = 50 };
          _statisticalAnalysis.AddStatistic(_predefinedStatisticalAggregation);
          _statisticalAnalysis.AddStatistic(_percentileStatisticalAggregation);
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_predefinedStatisticalAggregation)).Returns(_singleCurveId);
@@ -140,10 +142,10 @@ namespace PKSim.Core
 
          //mean of 10, 20, 30, 40 and 1000, 2000, 3000, 4000 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
-            new float[] {10, 1000}.ArithmeticMean(),
-            new float[] {20, 2000}.ArithmeticMean(),
-            new float[] {30, 3000}.ArithmeticMean(),
-            new float[] {40, 4000}.ArithmeticMean());
+            new float[] { 10, 1000 }.ArithmeticMean(),
+            new float[] { 20, 2000 }.ArithmeticMean(),
+            new float[] { 30, 3000 }.ArithmeticMean(),
+            new float[] { 40, 4000 }.ArithmeticMean());
          venousBloodPlasmaMaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
          venousBloodPlasmaMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
 
@@ -152,10 +154,10 @@ namespace PKSim.Core
 
          //mean of  50, 60, 70, 80 and 5000, 6000, 7000, 8000
          liverCellMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
-            new float[] {50, 5000}.ArithmeticMean(),
-            new float[] {60, 6000}.ArithmeticMean(),
-            new float[] {70, 7000}.ArithmeticMean(),
-            new float[] {80, 8000}.ArithmeticMean());
+            new float[] { 50, 5000 }.ArithmeticMean(),
+            new float[] { 60, 6000 }.ArithmeticMean(),
+            new float[] { 70, 7000 }.ArithmeticMean(),
+            new float[] { 80, 8000 }.ArithmeticMean());
          liverCellMaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
          liverCellMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
       }
@@ -221,16 +223,16 @@ namespace PKSim.Core
 
          //mean of 10, 20, 30, 40 and 1000, 2000, 3000, 4000 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(
-            new float[] {10, 1000}.Percentile(2.5),
-            new float[] {20, 2000}.Percentile(2.5),
-            new float[] {30, 3000}.Percentile(2.5),
-            new float[] {40, 4000}.Percentile(2.5));
+            new SortedFloatArray(new float[] { 10, 1000 }, alreadySorted: true).Percentile(2.5),
+            new SortedFloatArray(new float[] { 20, 2000 }, alreadySorted: true).Percentile(2.5),
+            new SortedFloatArray(new float[] { 30, 3000 }, alreadySorted: true).Percentile(2.5),
+            new SortedFloatArray(new float[] { 40, 4000 }, alreadySorted: true).Percentile(2.5));
 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(
-            new float[] {10, 1000}.Percentile(97.5),
-            new float[] {20, 2000}.Percentile(97.5),
-            new float[] {30, 3000}.Percentile(97.5),
-            new float[] {40, 4000}.Percentile(97.5));
+            new SortedFloatArray(new float[] { 10, 1000 }, alreadySorted: true).Percentile(97.5),
+            new SortedFloatArray(new float[] { 20, 2000 }, alreadySorted: true).Percentile(97.5),
+            new SortedFloatArray(new float[] { 30, 3000 }, alreadySorted: true).Percentile(97.5),
+            new SortedFloatArray(new float[] { 40, 4000 }, alreadySorted: true).Percentile(97.5));
       }
 
       [Observation]
@@ -316,10 +318,10 @@ namespace PKSim.Core
 
          //mean of 10, 20, 30, 40 and 1000, 2000, 3000, 4000 
          venousBloodPlasmaMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
-            new float[] {10, 1000}.ArithmeticMean(),
-            new float[] {20, 2000}.ArithmeticMean(),
-            new float[] {30, 3000}.ArithmeticMean(),
-            new float[] {40, 4000}.ArithmeticMean());
+            new float[] { 10, 1000 }.ArithmeticMean(),
+            new float[] { 20, 2000 }.ArithmeticMean(),
+            new float[] { 30, 3000 }.ArithmeticMean(),
+            new float[] { 40, 4000 }.ArithmeticMean());
          venousBloodPlasmaMaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
          venousBloodPlasmaMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
 
@@ -328,10 +330,10 @@ namespace PKSim.Core
 
          //mean of  50, 60, 70, 80 and 5000, 6000, 7000, 8000
          liverCellMaleMean.YValues.Select(y => y.Y).ShouldOnlyContainInOrder(
-            new float[] {50, 5000}.ArithmeticMean(),
-            new float[] {60, 6000}.ArithmeticMean(),
-            new float[] {70, 7000}.ArithmeticMean(),
-            new float[] {80, 8000}.ArithmeticMean());
+            new float[] { 50, 5000 }.ArithmeticMean(),
+            new float[] { 60, 6000 }.ArithmeticMean(),
+            new float[] { 70, 7000 }.ArithmeticMean(),
+            new float[] { 80, 8000 }.ArithmeticMean());
          liverCellMaleMean.YValues.Select(y => y.LowerValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
          liverCellMaleMean.YValues.Select(y => y.UpperValue).ShouldOnlyContainInOrder(float.NaN, float.NaN, float.NaN, float.NaN);
       }
@@ -374,7 +376,7 @@ namespace PKSim.Core
       {
          base.Context();
          _observedCurveDataList = new List<ObservedCurveData>();
-         _observedCurveData = new ObservedCurveData(AuxiliaryType.Undefined) {Caption = "Male"};
+         _observedCurveData = new ObservedCurveData(AuxiliaryType.Undefined) { Caption = "Male" };
 
          _observedCurveDataList.Add(_observedCurveData);
          _observedCurveData.Color = Color.Aqua;
@@ -388,9 +390,9 @@ namespace PKSim.Core
          _predefinedStatisticalAggregation.Method = StatisticalAggregationType.ArithmeticMean;
          _percentileStatisticalAggregation.Selected = true;
 
-         _observedDataCollection = new ObservedDataCollection {ApplyGroupingToObservedData = true};
+         _observedDataCollection = new ObservedDataCollection { ApplyGroupingToObservedData = true };
          var observedData = DomainHelperForSpecs.ObservedData();
-         observedData.ExtendedProperties.Add(new ExtendedProperty<string> {Name = _genderField.Name, Value = "Male"});
+         observedData.ExtendedProperties.Add(new ExtendedProperty<string> { Name = _genderField.Name, Value = "Male" });
          _observedDataCollection.AddObservedData(observedData);
 
          _pivotResult = ChartDataHelperForSpecs.CreateOutputResults(_statisticalAnalysis, _genderField, _outputFieldVenousBloodPlasma, _outputFieldLiverCell, _observedDataCollection);
@@ -448,7 +450,7 @@ namespace PKSim.Core
          base.Context();
 
          _observedCurveDataList = new List<ObservedCurveData>();
-         _observedCurveData = new ObservedCurveData(AuxiliaryType.Undefined) {Caption = "Male"};
+         _observedCurveData = new ObservedCurveData(AuxiliaryType.Undefined) { Caption = "Male" };
 
          _observedCurveDataList.Add(_observedCurveData);
          _observedCurveData.Color = Color.Aqua;
@@ -461,9 +463,9 @@ namespace PKSim.Core
          _predefinedStatisticalAggregation.Method = StatisticalAggregationType.ArithmeticMean;
          _percentileStatisticalAggregation.Selected = true;
 
-         _observedDataCollection = new ObservedDataCollection {ApplyGroupingToObservedData = true};
+         _observedDataCollection = new ObservedDataCollection { ApplyGroupingToObservedData = true };
          var observedData = DomainHelperForSpecs.ObservedData();
-         observedData.ExtendedProperties.Add(new ExtendedProperty<string> {Name = _genderField.Name, Value = "Male"});
+         observedData.ExtendedProperties.Add(new ExtendedProperty<string> { Name = _genderField.Name, Value = "Male" });
          _observedDataCollection.AddObservedData(observedData);
 
          _pivotResult = ChartDataHelperForSpecs.CreateOutputResults(_statisticalAnalysis, _genderField, _outputFieldVenousBloodPlasma, _outputFieldLiverCell, _observedDataCollection);

@@ -24,6 +24,7 @@ namespace PKSim.Presentation
       protected IDialogCreator _dialogCreator;
       protected IStartOptions _startOptions;
       protected IApplicationConfiguration _configuration;
+      protected IUserSettings _userSettings;
 
       protected override Task Context()
       {
@@ -33,7 +34,8 @@ namespace PKSim.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _startOptions = A.Fake<IStartOptions>();
          _configuration = A.Fake<IApplicationConfiguration>();
-         sut = new TemplatePresenter(_view, _templateTaskQuery, _applicationController, _dialogCreator, _startOptions, _configuration);
+         _userSettings = A.Fake<IUserSettings>();
+         sut = new TemplatePresenter(_view, _templateTaskQuery, _applicationController, _dialogCreator, _startOptions, _configuration, _userSettings);
          return _completed;
       }
    }
@@ -133,6 +135,202 @@ namespace PKSim.Presentation
       public void should_not_load_the_same_reference_twice()
       {
          _allTemplates.ShouldOnlyContain(_compound1, _compound2);
+      }
+   }
+
+   public class When_loading_an_expression_profile_template : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<ExpressionProfile> _allTemplates;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var template = new LocalTemplate {Name = "Template1", Id = "Id1"};
+
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.ExpressionProfile)).Returns(new[] {template});
+      }
+
+      protected override async Task Because()
+      {
+         _allTemplates = await sut.LoadFromTemplateAsync<ExpressionProfile>(TemplateType.ExpressionProfile);
+      }
+
+      [Observation]
+      public void should_have_set_the_expected_caption()
+      {
+         _view.Caption.ShouldBeEqualTo(PKSimConstants.UI.LoadItemFromTemplate("Expression Profile"));
+      }
+   }
+
+   public class When_loading_a_template_with_references_containing_recursive_references_and_user_settings_specify_do_not_ask_the_user : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<Compound> _allTemplates;
+      private List<Template> _templates;
+      private LocalTemplate _template1;
+      private LocalTemplate _template2;
+      private Compound _compound1;
+      private Compound _compound2;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _compound1 = new Compound();
+         _compound2 = new Compound();
+
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
+         _template1.References.Add(_template2);
+         _template2.References.Add(_template1);
+         _templates = new List<Template> {_template1, _template2};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
+
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
+         _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.Load;
+      }
+
+      protected override async Task Because()
+      {
+         _allTemplates = await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_have_loaded_the_template_with_reference()
+      {
+         _allTemplates.ShouldOnlyContain(_compound1, _compound2);
+      }
+   }
+
+   public class When_loading_a_template_with_references_containing_recursive_references_and_user_settings_specify_specifies_to_not_load : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<Compound> _allTemplates;
+      private List<Template> _templates;
+      private LocalTemplate _template1;
+      private LocalTemplate _template2;
+      private Compound _compound1;
+      private Compound _compound2;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _compound1 = new Compound();
+         _compound2 = new Compound();
+
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
+         _template1.References.Add(_template2);
+         _template2.References.Add(_template1);
+         _templates = new List<Template> {_template1, _template2};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
+
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+         _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.DoNotLoad;
+      }
+
+      protected override async Task Because()
+      {
+         _allTemplates = await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_have_loaded_the_selected_template_only()
+      {
+         _allTemplates.ShouldOnlyContain(_compound1);
+      }
+   }
+
+   public class When_loading_a_template_with_references_containing_recursive_references_and_user_settings_specify_specifies_to_ask_and_the_user_accepts : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<Compound> _allTemplates;
+      private List<Template> _templates;
+      private LocalTemplate _template1;
+      private LocalTemplate _template2;
+      private Compound _compound1;
+      private Compound _compound2;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _compound1 = new Compound();
+         _compound2 = new Compound();
+
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
+         _template1.References.Add(_template2);
+         _template2.References.Add(_template1);
+         _templates = new List<Template> {_template1, _template2};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
+
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+         _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.Ask;
+      }
+
+      protected override async Task Because()
+      {
+         _allTemplates = await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_have_loaded_the_selected_template_and_the_references()
+      {
+         _allTemplates.ShouldOnlyContain(_compound1, _compound2);
+      }
+   }
+
+   public class When_loading_a_template_with_references_containing_recursive_references_and_user_settings_specify_specifies_to_ask_and_the_user_does_not_accept : concern_for_TemplatePresenter
+   {
+      private IReadOnlyList<Compound> _allTemplates;
+      private List<Template> _templates;
+      private LocalTemplate _template1;
+      private LocalTemplate _template2;
+      private Compound _compound1;
+      private Compound _compound2;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _compound1 = new Compound();
+         _compound2 = new Compound();
+
+         _template1 = new LocalTemplate {Name = "Template1", Id = "Id1"};
+         _template2 = new LocalTemplate {Name = "Template2", Id = "Id2"};
+         _template1.References.Add(_template2);
+         _template2.References.Add(_template1);
+         _templates = new List<Template> {_template1, _template2};
+         A.CallTo(() => _templateTaskQuery.AllTemplatesFor(TemplateType.Compound)).Returns(_templates);
+         sut.SelectedTemplatesChanged(new[] {new TemplateDTO(_template1)});
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template1)).Returns(_compound1);
+         A.CallTo(() => _templateTaskQuery.LoadTemplateAsync<Compound>(_template2)).Returns(_compound2);
+
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template1, _compound1)).Returns(new[] {_template2});
+         A.CallTo(() => _templateTaskQuery.AllReferenceTemplatesFor(_template2, _compound2)).Returns(new[] {_template1});
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
+         _userSettings.LoadTemplateWithReference = LoadTemplateWithReference.Ask;
+      }
+
+      protected override async Task Because()
+      {
+         _allTemplates = await sut.LoadFromTemplateAsync<Compound>(TemplateType.Compound);
+      }
+
+      [Observation]
+      public void should_have_loaded_the_selected_template_only()
+      {
+         _allTemplates.ShouldOnlyContain(_compound1);
       }
    }
 

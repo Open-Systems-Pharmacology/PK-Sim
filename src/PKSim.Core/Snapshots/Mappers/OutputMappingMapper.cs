@@ -6,13 +6,12 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
-using PKSim.Core.Model;
-using ModelOutputMapping = OSPSuite.Core.Domain.ParameterIdentifications.OutputMapping;
+using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using SnapshotOutputMapping = PKSim.Core.Snapshots.OutputMapping;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OutputMappingMapper : SnapshotMapperBase<ModelOutputMapping, SnapshotOutputMapping, ParameterIdentificationContext>
+   public class OutputMappingMapper : SnapshotMapperBase<ModelOutputMapping, SnapshotOutputMapping, SnapshotContext>
    {
       private readonly IOSPSuiteLogger _logger;
 
@@ -45,9 +44,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return weights;
       }
 
-      public override Task<ModelOutputMapping> MapToModel(SnapshotOutputMapping snapshot,  ParameterIdentificationContext context)
+      public override Task<ModelOutputMapping> MapToModel(SnapshotOutputMapping snapshot, SnapshotContext context)
       {
-         var outputSelection = outputSelectionFrom(snapshot.Path, context.Project);
+         var outputSelection = outputSelectionFrom(snapshot.Path, context);
          if (outputSelection == null)
             return Task.FromResult<ModelOutputMapping>(null);
 
@@ -73,14 +72,14 @@ namespace PKSim.Core.Snapshots.Mappers
             weights[index] = snapshotWeights[index];
       }
 
-      private SimulationQuantitySelection outputSelectionFrom(string outputFullPath, PKSimProject project)
+      private SimulationQuantitySelection outputSelectionFrom(string outputFullPath, SnapshotContext snapshotContext)
       {
          var outputPath = new ObjectPath(outputFullPath.ToPathArray());
          if (outputPath.Count == 0)
             return null;
 
          var simulationName = outputPath[0];
-         var simulation = project.All<Model.Simulation>().FindByName(simulationName);
+         var simulation = simulationFromContext(simulationName, snapshotContext);
          if (simulation == null)
          {
             _logger.AddWarning(PKSimConstants.Error.CouldNotFindSimulation(simulationName));
@@ -89,14 +88,25 @@ namespace PKSim.Core.Snapshots.Mappers
 
          outputPath.RemoveAt(0);
          var output = simulation.Model.Root.EntityAt<IQuantity>(outputPath.ToArray());
-         if(output==null)
+         if (output == null)
          {
-            _logger.AddWarning(PKSimConstants.Error.CouldNotFindOutputInSimulation(outputPath,simulationName));
+            _logger.AddWarning(PKSimConstants.Error.CouldNotFindOutputInSimulation(outputPath, simulationName));
             return null;
          }
 
 
          return new SimulationQuantitySelection(simulation, new QuantitySelection(outputPath, output.QuantityType));
+      }
+
+      private Model.Simulation simulationFromContext(string simulationName, SnapshotContext snapshotContext)
+      {
+         var simulation = snapshotContext.Project.All<Model.Simulation>().FindByName(simulationName);
+         if (simulation != null)
+            return simulation;
+
+         //This might be a local simulation context;
+         var simulationContext = snapshotContext as SnapshotContextWithSimulation;
+         return simulationContext?.Simulation;
       }
    }
 }

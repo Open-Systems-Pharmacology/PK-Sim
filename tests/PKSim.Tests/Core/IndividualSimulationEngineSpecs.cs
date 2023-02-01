@@ -56,8 +56,8 @@ namespace PKSim.Core
          _simulation = A.Fake<IndividualSimulation>();
          _simulation.Name = "Hello";
          _simulation.DataRepository = new DataRepository();
-         _simulation.CompoundPKFor("TOTO").AucIV = 55;
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<SolverWarning>(), new DataRepository()));
+         _simulation.AucIV["TOTO"] = 55;
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), new DataRepository()));
       }
 
       protected override Task Because()
@@ -87,7 +87,7 @@ namespace PKSim.Core
       [Observation]
       public void should_reset_the_value_of_the_auc_for_iv()
       {
-         _simulation.CompoundPKFor("TOTO").AucIV.ShouldBeNull();
+         _simulation.AucIV["TOTO"].ShouldBeNull();
       }
 
       [Observation]
@@ -105,7 +105,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<SolverWarning>(), new DataRepository()));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults( Enumerable.Empty<SolverWarning>(), new DataRepository()));
          await sut.RunAsync(_simulation, _simulationRunOption);
       }
 
@@ -131,7 +131,7 @@ namespace PKSim.Core
          await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
          _simulationRunOption.RaiseEvents = false;
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(true, Enumerable.Empty<SolverWarning>(), new DataRepository()));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults( Enumerable.Empty<SolverWarning>(), new DataRepository()));
       }
 
       protected override Task Because()
@@ -156,7 +156,7 @@ namespace PKSim.Core
          await base.Context();
          _dataRepository = A.Fake<DataRepository>();
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(false, Enumerable.Empty<SolverWarning>(), _dataRepository));
+         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), "ERROR"));
          await sut.RunAsync(_simulation, _simulationRunOption);
       }
 

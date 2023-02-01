@@ -1,13 +1,13 @@
 ﻿using System.Data;
-using OSPSuite.DataBinding;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Assets;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -48,7 +48,7 @@ namespace PKSim.UI.Views.Simulations
 
       public bool GlobalPKVisible
       {
-         set { setGlobalAnalysisViewVisibility(value); }
+         set => setGlobalAnalysisViewVisibility(value);
       }
 
       private void setGlobalAnalysisViewVisibility(bool showing)
@@ -79,7 +79,7 @@ namespace PKSim.UI.Views.Simulations
       {
          base.InitializeResources();
          btnExportToExcel.InitWithImage(ApplicationIcons.Excel, text: PKSimConstants.UI.ExportPKAnalysesToExcel);
-         layoutItemExportToExcel.AdjustLargeButtonSize();
+         layoutItemExportToExcel.AdjustLargeButtonSize(layoutControl);
 
          layoutItemGlobalPKAnalysis.TextVisible = false;
          layoutItemIndividualPKAnalysis.TextVisible = false;

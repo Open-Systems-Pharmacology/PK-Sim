@@ -52,8 +52,8 @@ namespace PKSim.UI.Views.Parameters
          base.InitializeResources();
          buttonMoveUp.InitWithImage(ApplicationIcons.Up, imageLocation: ImageLocation.MiddleCenter, toolTip: PKSimConstants.UI.MoveUp);
          buttonMoveDown.InitWithImage(ApplicationIcons.Down, imageLocation: ImageLocation.MiddleCenter, toolTip: PKSimConstants.UI.MoveDown);
-         layoutItemButtonMoveUp.AdjustButtonSizeWithImageOnly();
-         layoutItemButtonMoveDown.AdjustButtonSizeWithImageOnly();
+         layoutItemButtonMoveUp.AdjustButtonSizeWithImageOnly(layoutControl);
+         layoutItemButtonMoveDown.AdjustButtonSizeWithImageOnly(layoutControl);
       }
    }
 }

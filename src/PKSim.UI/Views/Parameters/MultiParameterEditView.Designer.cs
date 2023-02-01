@@ -55,12 +55,12 @@ namespace PKSim.UI.Views.Parameters
          this.gridParameters.Location = new System.Drawing.Point(0, 27);
          this.gridParameters.MainView = this.gridView;
          this.gridParameters.Name = "gridParameters";
-         this.gridParameters.Size = new System.Drawing.Size(526, 347);
+         this.gridParameters.Size = new System.Drawing.Size(766, 482);
          this.gridParameters.TabIndex = 4;
          this.gridParameters.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView});
          // 
-         // gridViewParameters
+         // gridView
          // 
          this.gridView.AllowsFiltering = true;
          this.gridView.EnableColumnContextMenu = true;
@@ -70,6 +70,7 @@ namespace PKSim.UI.Views.Parameters
          this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
          this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
          this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.gridView.OptionsSelection.MultiSelect = true;
          // 
          // layoutControlParameters
          // 
@@ -79,17 +80,17 @@ namespace PKSim.UI.Views.Parameters
          this.layoutControlParameters.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControlParameters.Location = new System.Drawing.Point(0, 0);
          this.layoutControlParameters.Name = "layoutControlParameters";
-         this.layoutControlParameters.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(607, 202, 250, 350);
+         this.layoutControlParameters.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(607, 202, 525, 479);
          this.layoutControlParameters.Root = this.layoutControlGroup1;
-         this.layoutControlParameters.Size = new System.Drawing.Size(526, 374);
+         this.layoutControlParameters.Size = new System.Drawing.Size(766, 509);
          this.layoutControlParameters.TabIndex = 5;
          this.layoutControlParameters.Text = "layoutControl1";
          // 
          // panelScaling
          // 
-         this.panelScaling.Location = new System.Drawing.Point(275, 2);
+         this.panelScaling.Location = new System.Drawing.Point(474, 2);
          this.panelScaling.Name = "panelScaling";
-         this.panelScaling.Size = new System.Drawing.Size(249, 23);
+         this.panelScaling.Size = new System.Drawing.Size(290, 23);
          this.panelScaling.TabIndex = 5;
          // 
          // layoutControlGroup1
@@ -101,11 +102,9 @@ namespace PKSim.UI.Views.Parameters
             this.layoutItemParameters,
             this.layoutItemScaling,
             this.emptySpaceItemForScaling});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup1.Name = "layoutControlGroup1";
+         this.layoutControlGroup1.Name = "Root";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup1.Size = new System.Drawing.Size(526, 374);
-         this.layoutControlGroup1.Text = "layoutControlGroup1";
+         this.layoutControlGroup1.Size = new System.Drawing.Size(766, 509);
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutItemParameters
@@ -113,27 +112,25 @@ namespace PKSim.UI.Views.Parameters
          this.layoutItemParameters.Control = this.gridParameters;
          this.layoutItemParameters.CustomizationFormText = "layoutItemParameters";
          this.layoutItemParameters.Location = new System.Drawing.Point(0, 27);
+         this.layoutItemParameters.MinSize = new System.Drawing.Size(100, 20);
          this.layoutItemParameters.Name = "layoutItemParameters";
          this.layoutItemParameters.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutItemParameters.Size = new System.Drawing.Size(526, 347);
-         this.layoutItemParameters.Text = "layoutItemParameters";
+         this.layoutItemParameters.Size = new System.Drawing.Size(766, 482);
+         this.layoutItemParameters.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemParameters.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemParameters.TextToControlDistance = 0;
          this.layoutItemParameters.TextVisible = false;
          // 
          // layoutItemScaling
          // 
          this.layoutItemScaling.Control = this.panelScaling;
          this.layoutItemScaling.CustomizationFormText = "layoutItemScaling";
-         this.layoutItemScaling.Location = new System.Drawing.Point(273, 0);
-         this.layoutItemScaling.MaxSize = new System.Drawing.Size(253, 27);
-         this.layoutItemScaling.MinSize = new System.Drawing.Size(253, 27);
+         this.layoutItemScaling.Location = new System.Drawing.Point(472, 0);
+         this.layoutItemScaling.MaxSize = new System.Drawing.Size(294, 27);
+         this.layoutItemScaling.MinSize = new System.Drawing.Size(294, 27);
          this.layoutItemScaling.Name = "layoutItemScaling";
-         this.layoutItemScaling.Size = new System.Drawing.Size(253, 27);
+         this.layoutItemScaling.Size = new System.Drawing.Size(294, 27);
          this.layoutItemScaling.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemScaling.Text = "layoutItemScaling";
          this.layoutItemScaling.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemScaling.TextToControlDistance = 0;
          this.layoutItemScaling.TextVisible = false;
          // 
          // emptySpaceItemForScaling
@@ -141,8 +138,11 @@ namespace PKSim.UI.Views.Parameters
          this.emptySpaceItemForScaling.AllowHotTrack = false;
          this.emptySpaceItemForScaling.CustomizationFormText = "emptySpaceItemForScaling";
          this.emptySpaceItemForScaling.Location = new System.Drawing.Point(0, 0);
+         this.emptySpaceItemForScaling.MaxSize = new System.Drawing.Size(0, 27);
+         this.emptySpaceItemForScaling.MinSize = new System.Drawing.Size(10, 27);
          this.emptySpaceItemForScaling.Name = "emptySpaceItem1";
-         this.emptySpaceItemForScaling.Size = new System.Drawing.Size(273, 27);
+         this.emptySpaceItemForScaling.Size = new System.Drawing.Size(472, 27);
+         this.emptySpaceItemForScaling.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.emptySpaceItemForScaling.Text = "emptySpaceItemForScaling";
          this.emptySpaceItemForScaling.TextSize = new System.Drawing.Size(0, 0);
          // 
@@ -153,7 +153,7 @@ namespace PKSim.UI.Views.Parameters
          this.Controls.Add(this.layoutControlParameters);
          this.Margin = new System.Windows.Forms.Padding(0);
          this.Name = "MultiParameterEditView";
-         this.Size = new System.Drawing.Size(526, 374);
+         this.Size = new System.Drawing.Size(766, 509);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();

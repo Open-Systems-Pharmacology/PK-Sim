@@ -19,10 +19,10 @@ namespace PKSim.UI.Views.Core
       public void AddView(IView view)
       {
          var group = layoutControl.Root.AddGroup();
-         var layoutItem = AddViewToGroup(group, view);
+         var layoutItem = AddViewToGroup(group, layoutControl, view);
          var resizeView = view as IResizableWithDefaultHeightView;
          if (resizeView != null)
-            this.AdjustLayoutItemSize(layoutItem, resizeView, resizeView.DefaultHeight);
+            this.AdjustLayoutItemSize(layoutItem,layoutControl,  resizeView, resizeView.DefaultHeight);
 
          group.ExpandButtonVisible = true;
       }

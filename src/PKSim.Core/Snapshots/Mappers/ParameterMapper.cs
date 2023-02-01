@@ -104,10 +104,11 @@ namespace PKSim.Core.Snapshots.Mappers
          parameter.DisplayUnit = parameter.Dimension.UnitOrDefault(displayUnit);
 
          //This needs to come AFTER formula update so that the base value is accurate
-         var baseValue = parameter.Value;
          var snapshotValueInBaseUnit = parameter.ConvertToBaseUnit(snapshot.Value);
-
-         if (!ValueComparer.AreValuesEqual(baseValue, snapshotValueInBaseUnit))
+         var (value, success) = parameter.TryGetValue();
+         
+         //Value could not be parsed (e.g. Initial concentration was overwritten) or the value are indeed different
+         if (!success || !ValueComparer.AreValuesEqual(value, snapshotValueInBaseUnit))
          {
             parameter.Value = snapshotValueInBaseUnit;
             parameter.IsDefault = false;

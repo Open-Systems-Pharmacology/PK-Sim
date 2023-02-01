@@ -1,9 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -11,18 +11,15 @@ namespace PKSim.Presentation.Presenters.Simulations
    {
    }
 
-   public class PopulationSimulationParametersPresenter : SimulationParametersPresenter, IPopulationSimulationParametersPresenter
+   public class PopulationSimulationParametersPresenter : SimulationParametersPresenter<PopulationSimulation>, IPopulationSimulationParametersPresenter
    {
       public PopulationSimulationParametersPresenter(ISimulationParametersView view, IParameterGroupsPresenter parameterGroupsPresenter)
          : base(view, parameterGroupsPresenter)
       {
       }
 
-      public void EditSimulation(PopulationSimulation simulation)
-      {
-         var allParameters = simulation.All<IParameter>().Where(parameterIsShownForPopulationSimulation).ToList();
-         _parameterGroupsPresenter.InitializeWith(simulation.Model.Root, allParameters);
-      }
+      protected override IEnumerable<IParameter> AllSimulationParametersToShow(PopulationSimulation simulation) =>
+         simulation.All<IParameter>().Where(parameterIsShownForPopulationSimulation);
 
       private bool parameterIsShownForPopulationSimulation(IParameter p)
       {
@@ -32,7 +29,7 @@ namespace PKSim.Presentation.Presenters.Simulations
                         PKSimBuildingBlockType.Event |
                         PKSimBuildingBlockType.Protocol))
             return true;
-         
+
          //now only displays simulation parameters (i.e. Individual and Population parameters are excluded) 
          if (!p.IsOfType(PKSimBuildingBlockType.Simulation))
             return false;

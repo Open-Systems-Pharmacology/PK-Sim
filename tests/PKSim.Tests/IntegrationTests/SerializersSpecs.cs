@@ -82,6 +82,7 @@ namespace PKSim.IntegrationTests
          if (type == typeof(CalculationMethodCategory)) return true;
          if (type == typeof(Template)) return true;
          if (type == typeof(TransporterContainerTemplate)) return true;
+         if (type == typeof(TransporterTemplate)) return true;
          if (type == typeof(ParameterValueVersionCategory)) return true;
          if (type == typeof(LabelGenerationStrategy)) return true;
          if (type == typeof(GlobalPKAnalysis)) return true;
@@ -117,6 +118,7 @@ namespace PKSim.IntegrationTests
          if (type == typeof(PKSimReaction)) return true;
          if (type == typeof(PKSimObserverBuilder)) return true;
          if (type == typeof(PKSimTransport)) return true;
+         if (type == typeof(CompoundPK)) return true;
 
 
          //help classes that are not stored in our domain objects
@@ -165,6 +167,7 @@ namespace PKSim.IntegrationTests
          if (type == typeof(SystemicProcessTypeId)) return true;
          if (type == typeof(CategoryType)) return true;
          if (type == typeof(ProcessActionType)) return true;
+         if (type == typeof(LoadTemplateWithReference)) return true;
 
          //TODO not serialized yet
          if (type == typeof(QualificationPlan)) return true;

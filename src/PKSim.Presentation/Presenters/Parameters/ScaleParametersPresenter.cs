@@ -23,7 +23,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       void Reset();
 
       /// <summary>
-      /// set wether the scale and reset functions are enabled or not
+      /// set whether the scale and reset functions are enabled or not
       /// </summary>
       bool Enabled {  set; }
    }
@@ -56,7 +56,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool Enabled
       {
-         set { _view.ReadOnly = !value; }
+         set => _view.ReadOnly = !value;
       }
    }
 }

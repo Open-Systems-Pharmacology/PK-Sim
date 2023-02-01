@@ -41,6 +41,7 @@ namespace PKSim.UI
       public int MaximumNumberOfCoresToUse { get; set; }
       public PopulationAnalysisType DefaultPopulationAnalysis { get; set; }
       public ViewLayout PreferredViewLayout { get; set; }
+      public LoadTemplateWithReference LoadTemplateWithReference { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
       public string DefaultSpecies { get; set; }
       public string DefaultPopulation { get; set; }
@@ -79,7 +80,7 @@ namespace PKSim.UI
          DirectoryMapSettings = directoryMapSettings;
 
          DisplayUnits = new DisplayUnitsManager();
-         ComparerSettings = new ComparerSettings {CompareHiddenEntities = false};
+         ComparerSettings = new ComparerSettings {CompareHiddenEntities = true};
          ProjectFiles = new List<string>();
          Rules.AddRange(AllRules.All());
          DiagramOptions = new DiagramOptions();
@@ -87,6 +88,7 @@ namespace PKSim.UI
          JournalPageEditorSettings = new JournalPageEditorSettings();
          ParameterIdentificationFeedbackEditorSettings = new ParameterIdentificationFeedbackEditorSettings();
          SensitivityAnalysisFeedbackEditorSettings = new SensitivityAnalysisFeedbackEditorSettings();
+         LoadTemplateWithReference = LoadTemplateWithReference.Load;
          ResetToDefault();
          _layoutWasExplicitlyReset = false;
       }
@@ -94,7 +96,7 @@ namespace PKSim.UI
       public void ResetToDefault()
       {
          DecimalPlace = CoreConstants.DEFAULT_DECIMAL_PLACE;
-         AllowsScientifcNotation = true;
+         AllowsScientificNotation = true;
          ShouldRestoreWorkspaceLayout = false;
          MRUListItemCount = CoreConstants.DEFAULT_MRU_LIST_ITEM_COUNT;
          ActiveSkin = CoreConstants.DEFAULT_SKIN;
@@ -177,7 +179,7 @@ namespace PKSim.UI
          set => _numericFormatterOptions.DecimalPlace = value;
       }
 
-      public bool AllowsScientifcNotation
+      public bool AllowsScientificNotation
       {
          get => _numericFormatterOptions.AllowsScientificNotation;
          set => _numericFormatterOptions.AllowsScientificNotation = value;

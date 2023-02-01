@@ -933,7 +933,7 @@ namespace PKSim.Assets
             $"Multiple operator values found for container id '{containerId}' and parameter '{parameterName}'";
 
          public static string ExpressionProfileForMoleculeNotFound(string molecule, string buildingBlockName, string buildingBlockType) =>
-            $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}.'";
+            $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}'.";
       }
 
       public static class Information
@@ -1686,6 +1686,7 @@ namespace PKSim.Assets
          public static readonly string DefaultSolubilityName = "Solubility";
          public static readonly string DefaultPopulationAnalysisType = "Population analysis";
          public static readonly string PreferredViewLayout = "Preferred View Layout";
+         public static readonly string TemplateReferenceBehavior = "Load metabolites when loading compound";
          public static readonly string Defaults = "Defaults";
          public static readonly string Default = "Default";
          public static readonly string Add = "Add";
@@ -2188,10 +2189,6 @@ namespace PKSim.Assets
          public static readonly string LoadPopulationAnalysisWorkflowFromTemplateDescription = "Load population analysis from template";
          public static readonly string SavePopulationAnalysisWorkflowToTemplateDescription = "Save population analysis to template";
          public static readonly string IsSmallMolecule = "Is small molecule";
-
-         public static readonly string ReallyRemoveObservedDataFromSimulation =
-            $"Really remove {ObjectTypes.ObservedData} from simulation?\nHint: {ObjectTypes.ObservedData} will not be deleted from project";
-
          public static readonly string ExportSettings = "Export Settings";
          public static readonly string Administration = "Administration";
          public static readonly string CompoundConfiguration = "Compound Configuration";
@@ -2224,6 +2221,8 @@ namespace PKSim.Assets
          public static readonly string DiseaseState = "Disease State";
          public static readonly string Select = "Select";
          public static readonly string Healthy = "Healthy";
+         public static readonly string RerunSimulationToSeeResults = "Please re-run the simulation to calculate PK-parameters.";
+         public static readonly string GlobalPKAnalysisDescription = "The median value calculated from all individual values";
 
          public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
 
@@ -2280,7 +2279,7 @@ namespace PKSim.Assets
          public static string NamingPatternDescription(string iterationPattern, string startPattern, string endPattern)
          {
             var sb = new StringBuilder();
-            sb.AppendLine("Automatically generates labels replacing the occurence in the naming pattern of:");
+            sb.AppendLine("Automatically generates labels replacing the occurrence in the naming pattern of:");
             sb.AppendFormat(" -   <b>{0}</b> with an identifier generated using the selected template\n", iterationPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the start of the interval and n the number of digits\n", startPattern);
             sb.AppendFormat(" -   <b>{0}</b> with a value representing the end of the interval and n the number of digits\n", endPattern);
@@ -2294,7 +2293,7 @@ namespace PKSim.Assets
             sb.AppendFormat(" -   Use <b>{0}</b> for a unique identifier using the selected template.\n", iterationPattern);
             sb.AppendFormat(" -   Use <b>{0}</b> for the start of the interval.\n", startPattern);
             sb.AppendFormat(" -   Use <b>{0}</b> for the end of the interval.\n", endPattern);
-            sb.AppendFormat(" -   Change <b>n</b> to specificy the number of digits to use, (i.e. n= 1, 2, 3 etc... ");
+            sb.AppendFormat(" -   Change <b>n</b> to specify the number of digits to use, (i.e. n= 1, 2, 3 etc... ");
             sb.AppendLine("if n is not specified, the value defined in the user settings will be used.");
             sb.AppendLine();
             sb.AppendLine("<i>Examples:</i>");
@@ -2629,12 +2628,16 @@ namespace PKSim.Assets
          public static readonly string Unit = UI.Unit;
          public static readonly string Description = "Description";
          public static readonly string Warning = "Warning";
+         public static readonly string AggregatedPKValues = "Aggregated PK Values";
+         public static readonly string AggregatedPKValuesTooltip = "PK parameter values are calculated for the aggregated curves as shown in the chart";
+         public static readonly string IndividualPKValues = "Individual PK Values";
+         public static readonly string IndivdualPKValuesTooltip = "PK parameter values are aggregated from individual values";
       }
 
       public static class Comparison
       {
          public static readonly string RelativeTolerance = "Relative Tolerance";
-         public static readonly string FormulaComparisonMode = "Formula Comparision";
+         public static readonly string FormulaComparisonMode = "Formula Comparison";
          public static readonly string OnlyComputeModelRelevantProperties = "Do not compare descriptions";
          public static readonly string FormulaComparisonValue = "Compare values";
          public static readonly string FormulaComparisonFormula = "Compare Formulas";

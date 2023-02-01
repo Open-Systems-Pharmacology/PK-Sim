@@ -1,1 +1,1 @@
-UPDATE tab_populations SET display_name='East Asian (Tanaka, 1996)', description='East Asian (Tanaka, 1996)' WHERE population='Asian_Tanaka_1996';
+UPDATE tab_disease_states SET display_name='Chronic Kidney Disease - No Dialysis (Malik et al, 2020)' WHERE disease_state='CKD';

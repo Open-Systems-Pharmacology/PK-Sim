@@ -2,6 +2,10 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using NUnit.Framework;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.ParameterIdentifications;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
 
@@ -11,15 +15,32 @@ namespace PKSim.IntegrationTests
    {
       private IndividualSimulation _simulation;
       private IndividualSimulation _deserializedSimulation;
+      private OutputMapping _outputMapping;
+      private DataRepository _observedData;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
+         _observedData = DomainHelperForSpecs.ObservedData();
          _simulation = DomainFactoryForSpecs.CreateDefaultSimulation();
-         _simulation.CompoundPKFor("COMP1").AucIV = 10;
-         _simulation.CompoundPKFor("COMP1").CmaxDDI = 20;
-         _simulation.CompoundPKFor("COMP2").AucIV = 30;
-         _simulation.CompoundPKFor("COMP2").AucDDI = 40;
+         _simulation.AucIV["COMP1"] = 10;
+         _simulation.CMaxDDI["COMP1"] = 20;
+         _simulation.AucIV["COMP2"] = 30;
+         _simulation.AucDDI["COMP2"] = 40;
+         _outputMapping = new OutputMapping
+         {
+            WeightedObservedData = new WeightedObservedData(_observedData),
+            OutputSelection = new SimulationQuantitySelection(_simulation, new QuantitySelection("A|B", QuantityType.Metabolite)),
+            Weight = 5,
+            Scaling = Scalings.Log
+         };
+
+         _outputMapping.WeightedObservedData.Weights[1] = 10;
+         _simulation.OutputMappings.Add(_outputMapping);
+      }
+
+      protected override void Because()
+      {
          _deserializedSimulation = SerializeAndDeserialize(_simulation);
       }
 
@@ -82,12 +103,25 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
+      public void should_be_able_to_deserialize_the_output_mapping_and_update_the_references_used()
+      {
+         _deserializedSimulation.OutputMappings.All.Count.ShouldBeEqualTo(1);
+         var deserializedOutputMapping = _deserializedSimulation.OutputMappings.All[0];
+
+         deserializedOutputMapping.OutputSelection.ShouldBeEqualTo(_outputMapping.OutputSelection);
+         deserializedOutputMapping.Weight.ShouldBeEqualTo(_outputMapping.Weight);
+         deserializedOutputMapping.Scaling.ShouldBeEqualTo(_outputMapping.Scaling);
+         deserializedOutputMapping.WeightedObservedData.Weights.ShouldBeEqualTo(_outputMapping.WeightedObservedData.Weights);
+         deserializedOutputMapping.Simulation.ShouldBeEqualTo(_simulation);
+      }
+
+      [Observation]
       public void should_have_deserialized_the_auc_iv_values()
       {
-         _deserializedSimulation.AucIVFor("COMP1").ShouldBeEqualTo(10);
-         _deserializedSimulation.CmaxDDIFor("COMP1").ShouldBeEqualTo(20);
-         _deserializedSimulation.AucIVFor("COMP2").ShouldBeEqualTo(30);
-         _deserializedSimulation.AucDDIFor("COMP2").ShouldBeEqualTo(40);
+         _deserializedSimulation.AucIV["COMP1"].ShouldBeEqualTo(10);
+         _deserializedSimulation.CMaxDDI["COMP1"].ShouldBeEqualTo(20);
+         _deserializedSimulation.AucIV["COMP2"].ShouldBeEqualTo(30);
+         _deserializedSimulation.AucDDI["COMP2"].ShouldBeEqualTo(40);
       }
 
       public override void GlobalCleanup()

@@ -50,6 +50,7 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          _lazyLoadTask = lazyLoadTask;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
+         ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
 
       public void DragDrop(object sender, IDragEvent e)
@@ -103,6 +104,7 @@ namespace PKSim.Presentation.Presenters.Charts
             throw new PKSimException(PKSimConstants.Error.SimulationHasNoResultsAndCannotBeUsedInSummaryChart(simulation.Name));
 
          Chart.AddSimulation(simulation);
+         ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
          UpdateAnalysisBasedOn(simulation, simulation.DataRepository);
 
          _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, simulation.DataRepository.ToList(), new[] {simulation}, addCurveIfNoSourceDefined: false);
@@ -138,7 +140,7 @@ namespace PKSim.Presentation.Presenters.Charts
 
          Column(BrowserColumns.Container).Visible = true;
          Column(BrowserColumns.Container).Caption = PKSimConstants.UI.Organ;
-         Column(BrowserColumns.Container).GroupIndex = 0;
+         Column(BrowserColumns.Container).GroupIndex = -1;
          Column(BrowserColumns.Container).VisibleIndex = 0;
 
          Column(BrowserColumns.Molecule).Visible = true;
@@ -234,6 +236,7 @@ namespace PKSim.Presentation.Presenters.Charts
          if (repo == null) return;
          _repositoryCache.Remove(repo);
          ChartEditorPresenter.RemoveDataRepositories(new []{repo});
+         ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings);
          Chart.RemoveSimulation(simulation);
       }
 

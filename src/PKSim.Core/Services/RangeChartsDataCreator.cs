@@ -13,6 +13,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Maths;
 
 namespace PKSim.Core.Services
 {
@@ -128,11 +129,12 @@ namespace PKSim.Core.Services
       private RangeYValue createRangeYValue(IEnumerable<float> valuesInInterval)
       {
          var sortedArray = valuesInInterval.OrderedAndPurified();
+         var sortedFloatArray = new SortedFloatArray(sortedArray, alreadySorted: true);
          return new RangeYValue
          {
-            LowerPercentile = sortedArray.Percentile(BORDER_PERCENTILE),
-            Median = sortedArray.Median(),
-            UpperPercentile = sortedArray.Percentile(100 - BORDER_PERCENTILE),
+            LowerPercentile = sortedFloatArray.Percentile(BORDER_PERCENTILE),
+            Median = sortedFloatArray.Median(),
+            UpperPercentile = sortedFloatArray.Percentile(100 - BORDER_PERCENTILE),
          };
       }
    }

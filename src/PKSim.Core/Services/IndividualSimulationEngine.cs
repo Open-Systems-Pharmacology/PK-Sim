@@ -12,24 +12,21 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public class IndividualSimulationEngine : IIndividualSimulationEngine
+   public class IndividualSimulationEngine : SimulationEngine, IIndividualSimulationEngine
    {
       private readonly ISimModelManager _simModelManager;
       private readonly IProgressManager _progressManager;
       private IProgressUpdater _progressUpdater;
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
-      private readonly IEventPublisher _eventPublisher;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      private bool _shouldRaiseEvents;
 
       public IndividualSimulationEngine(ISimModelManager simModelManager, IProgressManager progressManager,
          ISimulationResultsSynchronizer simulationResultsSynchronizer,
-         IEventPublisher eventPublisher, ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper)
+         IEventPublisher eventPublisher, ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper) : base(eventPublisher)
       {
          _simModelManager = simModelManager;
          _progressManager = progressManager;
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
-         _eventPublisher = eventPublisher;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
          _simModelManager.Terminated += terminated;
       }
@@ -58,7 +55,7 @@ namespace PKSim.Core.Services
          var begin = SystemTime.UtcNow();
          try
          {
-            raiseEvent(new SimulationRunStartedEvent());
+            RaiseEvent(new SimulationRunStartedEvent());
             return await runSimulation(individualSimulation, simulationRunOptions);
          }
          catch (Exception)
@@ -70,14 +67,8 @@ namespace PKSim.Core.Services
          {
             var end = SystemTime.UtcNow();
             var timeSpent = end - begin;
-            raiseEvent(new SimulationRunFinishedEvent(individualSimulation, timeSpent));
+            RaiseEvent(new SimulationRunFinishedEvent(individualSimulation, timeSpent));
          }
-      }
-
-      private void raiseEvent<T>(T eventToRaise)
-      {
-         if (_shouldRaiseEvents)
-            _eventPublisher.PublishEvent(eventToRaise);
       }
 
       private void initializeProgress()
@@ -109,7 +100,7 @@ namespace PKSim.Core.Services
 
             simulation.ClearPKCache();
 
-            raiseEvent(new SimulationResultsUpdatedEvent(simulation));
+            RaiseEvent(new SimulationResultsUpdatedEvent(simulation));
             return Task.FromResult(simResults);
          });
       }

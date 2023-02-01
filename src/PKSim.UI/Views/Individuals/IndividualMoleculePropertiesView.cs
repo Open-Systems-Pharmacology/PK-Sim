@@ -26,13 +26,13 @@ namespace PKSim.UI.Views.Individuals
       {
          OntogenyVisible = true;
          _ontogenyView = view;
-         AddViewTo(layoutItemOntogeny, view);
+         AddViewTo(layoutItemOntogeny, layoutControl, view);
       }
 
       public void AddMoleculeParametersView(IResizableView view)
       {
          _moleculeParametersView = view;
-         AddViewTo(layoutItemMoleculeParameters, view);
+         AddViewTo(layoutItemMoleculeParameters, layoutControl, view);
       }
 
       public bool OntogenyVisible
@@ -51,6 +51,7 @@ namespace PKSim.UI.Views.Individuals
       {
          base.InitializeResources();
          layoutItemOntogeny.TextVisible = false;
+         layoutControl.AutoScroll = false;
          layoutItemMoleculeParameters.TextVisible = false;
          OntogenyVisible = false;
       }

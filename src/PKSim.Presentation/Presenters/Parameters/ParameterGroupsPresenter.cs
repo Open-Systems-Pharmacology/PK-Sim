@@ -60,6 +60,9 @@ namespace PKSim.Presentation.Presenters.Parameters
       IEnumerable<ParameterGroupingMode> AllGroupingModes { get; }
 
       IEnumerable<IParameter> AllParametersInSelectedGroup { get; }
+
+      //Ensure that the presenter currently activated is being refreshed 
+      void RefreshActivePresenter();
    }
 
    public class ParameterGroupsPresenter : AbstractCommandCollectorPresenter<IParameterGroupsView, IParameterGroupsPresenter>, IParameterGroupsPresenter
@@ -127,6 +130,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       }
 
       public IEnumerable<IParameter> AllParametersInSelectedGroup => _activePresenter?.EditedParameters ?? Enumerable.Empty<IParameter>();
+
+      public void RefreshActivePresenter() => _activePresenter?.Edit(_activePresenter.EditedParameters);
 
       private ICustomParametersPresenter presenterFor(ITreeNode node)
       {

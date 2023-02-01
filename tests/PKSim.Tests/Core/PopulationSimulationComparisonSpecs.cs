@@ -184,7 +184,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_checking_if_a_population_simulation_comparision_has_up_to_date_results : concern_for_PopulationSimulationComparison
+   public class When_checking_if_a_population_simulation_comparison_has_up_to_date_results : concern_for_PopulationSimulationComparison
    {
       protected override void Context()
       {

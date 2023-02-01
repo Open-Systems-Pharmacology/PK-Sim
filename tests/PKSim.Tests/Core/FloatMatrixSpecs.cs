@@ -84,4 +84,27 @@ namespace PKSim.Core
          sut.SortedValueAt(0).ShouldOnlyContainInOrder(1f,4f,5f);
       }
    }
+
+   public class When_asking_for_a_slice : concern_for_FloatMatrix
+   {
+      private float[] _row1;
+      private float[] _row2;
+
+      protected override void Context()
+      {
+         base.Context();
+         _row1 = new[] { 0.0f, 1.0f, 2.0f };
+         _row2 = new[] { 0.1f, 0.2f, 0.3f };
+         sut.AddSortedValues(_row1);
+         sut.AddSortedValues(_row2);
+      }
+
+      [Observation]
+      public void should_retrive_correctly()
+      {
+         sut.SliceAt(0).ShouldBeEqualTo(new[] { 0.0f, 0.1f });
+         sut.SliceAt(1).ShouldBeEqualTo(new[] { 1.0f, 0.2f });
+         sut.SliceAt(2).ShouldBeEqualTo(new[] { 2.0f, 0.3f });
+      }
+   }
 }

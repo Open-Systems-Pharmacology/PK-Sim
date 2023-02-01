@@ -131,7 +131,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       void SelectedParametersChanged();
 
       /// <summary>
-      ///    if set to true, parameter will be compared for sort only if sharing the same hiearchy of visible groups
+      ///    if set to true, parameter will be compared for sort only if sharing the same hierarchy of visible groups
       ///    It is useful for events, default is <c>false</c>
       /// </summary>
       bool UseAdvancedSortingMode { set; }

@@ -20,11 +20,11 @@ namespace PKSim.UI.Views.Individuals
          _presenter = presenter;
       }
 
-      public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, view);
+      public void AddMoleculePropertiesView(IView view) => AddViewTo(layoutItemMoleculeProperties, layoutControl, view);
 
-      public void AddLocalizationView(IView view) => AddViewTo(layoutItemPanelLocalization, view);
+      public void AddLocalizationView(IView view) => AddViewTo(layoutItemPanelLocalization, layoutControl, view);
 
-      public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemPanelExpressionParameters, view);
+      public void AddExpressionParametersView(IView view) => AddViewTo(layoutItemPanelExpressionParameters, layoutControl, view);
 
       public bool ReadOnly
       {

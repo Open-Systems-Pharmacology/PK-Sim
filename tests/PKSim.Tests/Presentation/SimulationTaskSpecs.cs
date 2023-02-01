@@ -1,18 +1,18 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Comparison;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Commands;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
-using OSPSuite.Core.Comparison;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation
 {
@@ -92,6 +92,12 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _buildingBlockTask.AddCommandToHistory(_updateCommand)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_publish_a_simulation_updated_event()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationUpdatedEvent>.That.Matches(x => Equals(x.Simulation, _simulation)))).MustHaveHappened();
+      }
    }
 
    public class When_the_simulation_task_is_asked_to_perform_an_update_from_a_template_building_block_that_requires_a_full_update : concern_for_SimulationTask
@@ -121,6 +127,12 @@ namespace PKSim.Presentation
       public void should_start_the_configure_workflow_with_the_given_template_building_block()
       {
          A.CallTo(() => _configureSimulationTask.Configure(_simulation, _templateBuildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_publish_a_simulation_updated_event()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationUpdatedEvent>.That.Matches(x => Equals(x.Simulation, _simulation)))).MustHaveHappened();
       }
    }
 

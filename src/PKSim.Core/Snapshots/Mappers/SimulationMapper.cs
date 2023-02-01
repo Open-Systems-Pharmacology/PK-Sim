@@ -43,6 +43,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
       private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       private readonly ProcessMappingMapper _processMappingMapper;
+      private readonly OutputMappingMapper _outputMappingMapper;
       private readonly ISimulationFactory _simulationFactory;
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationModelCreator _simulationModelCreator;
@@ -66,6 +67,7 @@ namespace PKSim.Core.Snapshots.Mappers
          SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
          PopulationAnalysisChartMapper populationAnalysisChartMapper,
          ProcessMappingMapper processMappingMapper,
+         OutputMappingMapper outputMappingMapper,
          ISimulationFactory simulationFactory,
          IExecutionContext executionContext,
          ISimulationModelCreator simulationModelCreator,
@@ -88,6 +90,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
          _populationAnalysisChartMapper = populationAnalysisChartMapper;
          _processMappingMapper = processMappingMapper;
+         _outputMappingMapper = outputMappingMapper;
          _simulationFactory = simulationFactory;
          _executionContext = executionContext;
          _simulationModelCreator = simulationModelCreator;
@@ -115,6 +118,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Solver = await _solverSettingsMapper.MapToSnapshot(simulation.Solver);
          snapshot.OutputSchema = await _outputSchemaMapper.MapToSnapshot(simulation.OutputSchema);
          snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
+         snapshot.OutputMappings = await _outputMappingMapper.MapToSnapshots(simulation.OutputMappings.All);
          snapshot.Events = await _eventMappingMapper.MapToSnapshots(simulation.EventProperties.EventMappings, project);
          snapshot.ObservedData = usedObservedDataFrom(simulation, project);
          snapshot.Parameters = await allParametersChangedByUserFrom(simulation, project);
@@ -280,6 +284,9 @@ namespace PKSim.Core.Snapshots.Mappers
          simulation.Solver = await _solverSettingsMapper.MapToModel(snapshot.Solver, snapshotContext);
          simulation.OutputSchema = await _outputSchemaMapper.MapToModel(snapshot.OutputSchema, snapshotContext);
          simulation.OutputSelections = await _outputSelectionsMapper.MapToModel(snapshot.OutputSelections, contextWithSimulation);
+
+         var outputMappings = await _outputMappingMapper.MapToModels(snapshot.OutputMappings, contextWithSimulation);
+         outputMappings?.Each(simulation.OutputMappings.Add);
 
          registrationVisitor.Register(simulation);
 

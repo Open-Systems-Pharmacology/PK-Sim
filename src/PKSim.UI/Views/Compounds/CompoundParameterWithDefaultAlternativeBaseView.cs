@@ -25,6 +25,7 @@ using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
 using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
+using static PKSim.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Compounds
 {

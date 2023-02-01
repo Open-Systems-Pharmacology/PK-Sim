@@ -5,7 +5,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Chart
 {
-   public class ChartData<TX, TY> :  IComparer<PaneData<TX, TY>> where TX : IXValue where TY : IYValue
+   public class ChartData<TX, TY> : IComparer<PaneData<TX, TY>> where TX : IXValue where TY : IYValue
    {
       private readonly IReadOnlyList<IComparer<object>> _fieldValueComparers;
       public AxisData Axis { get; private set; }
@@ -14,14 +14,10 @@ namespace PKSim.Core.Chart
       private readonly Cache<string, PaneData<TX, TY>> _allPanes;
       public IReadOnlyList<string> XFieldNames { get; private set; }
 
-      public IEnumerable<KeyValuePair<TX, int>> AllXValues
-      {
-         get { return _allXValues.All(); }
-      }
+      public IEnumerable<KeyValuePair<TX, int>> AllXValues => _allXValues.All();
 
-      public ChartData(AxisData axis, IReadOnlyList<IComparer<object>> fieldValueComparers):this(axis, fieldValueComparers,new List<string>(),null)
+      public ChartData(AxisData axis, IReadOnlyList<IComparer<object>> fieldValueComparers) : this(axis, fieldValueComparers, new List<string>(), null)
       {
- 
       }
 
       public ChartData(AxisData axis, IReadOnlyList<IComparer<object>> fieldValueComparers, IReadOnlyList<string> xFieldNames, IComparer<TX> xValueComparer)
@@ -33,10 +29,7 @@ namespace PKSim.Core.Chart
          _allPanes = new Cache<string, PaneData<TX, TY>>(x => x.Id, x => null);
       }
 
-      public ICache<string,PaneData<TX, TY>> Panes
-      {
-         get { return _allPanes; }
-      }
+      public ICache<string, PaneData<TX, TY>> Panes => _allPanes;
 
       public int Compare(PaneData<TX, TY> x, PaneData<TX, TY> y)
       {
@@ -48,7 +41,7 @@ namespace PKSim.Core.Chart
       public void CreatePaneOrder()
       {
          //without ToList sortedPanes is empty after Clear
-         var sortedPanes = _allPanes.OrderBy(x => x, this).ToList(); 
+         var sortedPanes = _allPanes.OrderBy(x => x, this).ToList();
          _allPanes.Clear();
          _allPanes.AddRange(sortedPanes);
       }
@@ -82,7 +75,7 @@ namespace PKSim.Core.Chart
          from xValue in curve.XValues
          select xValue;
 
-      public void AddPane(PaneData<TX, TY>  pane)
+      public void AddPane(PaneData<TX, TY> pane)
       {
          _allPanes.Add(pane);
          pane.Chart = this;

@@ -312,7 +312,7 @@ namespace PKSim.UI.Views.Parameters
          gridParameters.RefreshDataSource();
       }
 
-      public int OptimalHeight => gridView.OptimalHeight + Padding.All + 2;
+      public int OptimalHeight => gridView.OptimalHeight;
 
       public bool AllowMultiSelect
       {

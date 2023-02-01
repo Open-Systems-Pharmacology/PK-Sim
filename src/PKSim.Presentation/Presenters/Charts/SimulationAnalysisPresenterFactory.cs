@@ -1,3 +1,4 @@
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -17,6 +18,12 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          if (simulationAnalysis.IsAnImplementationOf<SimulationTimeProfileChart>())
             return container.Resolve<ISimulationTimeProfileChartPresenter>();
+
+         if (simulationAnalysis.IsAnImplementationOf<SimulationPredictedVsObservedChart>())
+            return container.Resolve<ISimulationPredictedVsObservedChartPresenter>();
+
+         if (simulationAnalysis.IsAnImplementationOf<SimulationResidualVsTimeChart>())
+            return container.Resolve<ISimulationResidualVsTimeChartPresenter>();
 
          if (simulationAnalysis.IsAnImplementationOf<BoxWhiskerAnalysisChart>())
             return container.Resolve<IEditBoxWhiskerAnalysisChartPresenter>();

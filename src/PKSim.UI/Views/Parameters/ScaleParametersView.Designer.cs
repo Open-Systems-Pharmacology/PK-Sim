@@ -29,150 +29,83 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.btnScale = new DevExpress.XtraEditors.SimpleButton();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.tbValue = new DevExpress.XtraEditors.TextEdit();
-         this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
          this.btnReset = new DevExpress.XtraEditors.SimpleButton();
-         this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.tbValue = new DevExpress.XtraEditors.TextEdit();
+         this.btnScale = new DevExpress.XtraEditors.SimpleButton();
+         this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
-         this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbValue.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
+         this.tablePanel.SuspendLayout();
          this.SuspendLayout();
-         // 
-         // layoutControl1
-         // 
-         this.layoutControl.AutoScroll = false;
-         this.layoutControl.Controls.Add(this.btnReset);
-         this.layoutControl.Controls.Add(this.tbValue);
-         this.layoutControl.Controls.Add(this.btnScale);
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.Root = this.layoutControlGroup1;
-         this.layoutControl.Size = new System.Drawing.Size(412, 22);
-         this.layoutControl.TabIndex = 5;
-         this.layoutControl.Text = "layoutControl1";
-         // 
-         // layoutControlGroup1
-         // 
-         this.layoutControlGroup1.CustomizationFormText = "layoutControlGroup1";
-         this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.layoutControlGroup1.GroupBordersVisible = false;
-         this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
-            this.layoutControlItem2,
-            this.layoutControlItem3});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup1.Name = "layoutControlGroup1";
-         this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup1.Size = new System.Drawing.Size(412, 22);
-         this.layoutControlGroup1.Spacing = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup1.Text = "layoutControlGroup1";
-         this.layoutControlGroup1.TextVisible = false;
-         // 
-         // btnScale
-         // 
-         this.btnScale.Location = new System.Drawing.Point(0, 0);
-         this.btnScale.Name = "btnScale";
-         this.btnScale.Size = new System.Drawing.Size(88, 22);
-         this.btnScale.StyleController = this.layoutControl;
-         this.btnScale.TabIndex = 4;
-         this.btnScale.Text = "btnScale";
-         // 
-         // layoutControlItem1
-         // 
-         this.layoutControlItem1.Control = this.btnScale;
-         this.layoutControlItem1.CustomizationFormText = "layoutControlItem1";
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlItem1.Size = new System.Drawing.Size(88, 22);
-         this.layoutControlItem1.Text = "layoutControlItem1";
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextToControlDistance = 0;
-         this.layoutControlItem1.TextVisible = false;
-         // 
-         // tbValue
-         // 
-         this.tbValue.Location = new System.Drawing.Point(88, 0);
-         this.tbValue.Name = "tbValue";
-         this.tbValue.Properties.AutoHeight = false;
-         this.tbValue.Size = new System.Drawing.Size(232, 22);
-         this.tbValue.StyleController = this.layoutControl;
-         this.tbValue.TabIndex = 5;
-         // 
-         // layoutControlItem2
-         // 
-         this.layoutControlItem2.Control = this.tbValue;
-         this.layoutControlItem2.CustomizationFormText = "layoutControlItem2";
-         this.layoutControlItem2.Location = new System.Drawing.Point(88, 0);
-         this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlItem2.Size = new System.Drawing.Size(232, 22);
-         this.layoutControlItem2.Text = "layoutControlItem2";
-         this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem2.TextToControlDistance = 0;
-         this.layoutControlItem2.TextVisible = false;
          // 
          // btnReset
          // 
-         this.btnReset.Location = new System.Drawing.Point(320, 0);
+         this.tablePanel.SetColumn(this.btnReset, 2);
+         this.btnReset.Location = new System.Drawing.Point(334, 3);
          this.btnReset.Name = "btnReset";
-         this.btnReset.Size = new System.Drawing.Size(92, 22);
-         this.btnReset.StyleController = this.layoutControl;
+         this.tablePanel.SetRow(this.btnReset, 0);
+         this.btnReset.Size = new System.Drawing.Size(120, 20);
          this.btnReset.TabIndex = 6;
          this.btnReset.Text = "btnReset";
          // 
-         // layoutControlItem3
+         // tbValue
          // 
-         this.layoutControlItem3.Control = this.btnReset;
-         this.layoutControlItem3.CustomizationFormText = "layoutControlItem3";
-         this.layoutControlItem3.Location = new System.Drawing.Point(320, 0);
-         this.layoutControlItem3.Name = "layoutControlItem3";
-         this.layoutControlItem3.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlItem3.Size = new System.Drawing.Size(92, 22);
-         this.layoutControlItem3.Text = "layoutControlItem3";
-         this.layoutControlItem3.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem3.TextToControlDistance = 0;
-         this.layoutControlItem3.TextVisible = false;
+         this.tablePanel.SetColumn(this.tbValue, 1);
+         this.tbValue.Location = new System.Drawing.Point(107, 3);
+         this.tbValue.Name = "tbValue";
+         this.tbValue.Properties.AutoHeight = false;
+         this.tablePanel.SetRow(this.tbValue, 0);
+         this.tbValue.Size = new System.Drawing.Size(221, 20);
+         this.tbValue.TabIndex = 5;
+         // 
+         // btnScale
+         // 
+         this.tablePanel.SetColumn(this.btnScale, 0);
+         this.btnScale.Location = new System.Drawing.Point(3, 3);
+         this.btnScale.Name = "btnScale";
+         this.tablePanel.SetRow(this.btnScale, 0);
+         this.btnScale.Size = new System.Drawing.Size(98, 20);
+         this.btnScale.TabIndex = 4;
+         this.btnScale.Text = "btnScale";
+         // 
+         // tablePanel
+         // 
+         this.tablePanel.Columns.AddRange(new DevExpress.Utils.Layout.TablePanelColumn[] {
+            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 24.95F),
+            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 54.62F),
+            new DevExpress.Utils.Layout.TablePanelColumn(DevExpress.Utils.Layout.TablePanelEntityStyle.Relative, 30.43F)});
+         this.tablePanel.Controls.Add(this.btnScale);
+         this.tablePanel.Controls.Add(this.tbValue);
+         this.tablePanel.Controls.Add(this.btnReset);
+         this.tablePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.tablePanel.Location = new System.Drawing.Point(0, 0);
+         this.tablePanel.Name = "tablePanel";
+         this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
+            new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F)});
+         this.tablePanel.Size = new System.Drawing.Size(457, 28);
+         this.tablePanel.TabIndex = 6;
          // 
          // ScaleParametersView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl);
+         this.Controls.Add(this.tablePanel);
          this.Name = "ScaleParametersView";
-         this.Size = new System.Drawing.Size(412, 22);
+         this.Size = new System.Drawing.Size(457, 28);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
-         this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbValue.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
+         this.tablePanel.ResumeLayout(false);
          this.ResumeLayout(false);
 
       }
 
       #endregion
-
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraEditors.SimpleButton btnReset;
       private DevExpress.XtraEditors.TextEdit tbValue;
       private DevExpress.XtraEditors.SimpleButton btnScale;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
-
+      private DevExpress.Utils.Layout.TablePanel tablePanel;
    }
 }

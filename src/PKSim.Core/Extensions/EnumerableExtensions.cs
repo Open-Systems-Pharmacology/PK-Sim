@@ -1,6 +1,8 @@
-﻿using System;
+﻿using OSPSuite.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Extensions
 {
@@ -38,6 +40,16 @@ namespace PKSim.Core.Extensions
          }
 
          return -1;
+      }
+
+      /// <summary>
+      /// Creates a caption out of a list of strings using the path separator
+      /// </summary>
+      /// <param name="fieldValues"></param>
+      /// <returns></returns>
+      public static string ToCaption(this IEnumerable<string> fieldValues)
+      {
+         return fieldValues.DefaultIfEmpty(string.Empty).ToString(Constants.DISPLAY_PATH_SEPARATOR);
       }
 
       /// <summary>

@@ -6,15 +6,15 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_TransporterContainerTemplate : ContextSpecification<TransporterContainerTemplate>
+   public abstract class concern_for_TransporterTemplate : ContextSpecification<TransporterTemplate>
    {
       protected override void Context()
       {
-         sut = new TransporterContainerTemplate();
+         sut = new TransporterTemplate();
       }
    }
 
-   public class When_testing_if_a_template_container_is_template_for_a_given_transporter_name : concern_for_TransporterContainerTemplate
+   public class When_testing_if_a_template_container_is_template_for_a_given_transporter_name : concern_for_TransporterTemplate
    {
       protected override void Context()
       {

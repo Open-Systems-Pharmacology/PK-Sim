@@ -1,11 +1,11 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using NUnit.Framework;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -30,10 +30,119 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         var organsim = new Container().WithName(Constants.ORGANISM);
-         var venousBlood = new Container().WithName(CoreConstants.Organ.VENOUS_BLOOD).WithParentContainer(organsim);
-         var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD).WithParentContainer(organsim);
-         var lumen = new Container().WithName(CoreConstants.Organ.LUMEN).WithParentContainer(organsim);
+         var organism = new Container().WithName(Constants.ORGANISM);
+         var applications = new Container().WithName(Constants.APPLICATIONS);
+         var venousBlood = new Container().WithName(CoreConstants.Organ.VENOUS_BLOOD).WithParentContainer(organism);
+         var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD).WithParentContainer(organism);
+         var lumen = new Container().WithName(CoreConstants.Organ.LUMEN).WithParentContainer(organism);
+         var plasma = new Container().WithName(CoreConstants.Compartment.PLASMA);
+         var moleculeVenousBlood = new Container().WithName("DRUG")
+            .WithParentContainer(plasma.WithParentContainer(venousBlood));
+
+         var moleculePeripheral = new Container().WithName("DRUG")
+            .WithParentContainer(peripheralVenousBlood);
+
+         _peripheralVenousBloodObserver = new Observer().WithName(CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD);
+         moleculePeripheral.Add(_peripheralVenousBloodObserver);
+
+         _venousBloodPlasma = new Observer().WithName(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
+         moleculeVenousBlood.Add(_venousBloodPlasma);
+
+         var moleculeLumen = new Container().WithName("DRUG")
+            .WithParentContainer(lumen);
+
+         _fabsObserver = new Observer().WithName(CoreConstants.Observer.FABS_ORAL);
+         moleculeLumen.Add(_fabsObserver);
+
+
+         var compound = new Compound().WithName("DRUG");
+
+         _individualSimulation = new IndividualSimulation();
+         _individualSimulation.SimulationSettings = new SimulationSettings();
+         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Id", PKSimBuildingBlockType.Compound) {BuildingBlock = compound});
+         _individualSimulation.Model = new OSPSuite.Core.Domain.Model();
+         _individualSimulation.Model.Root = new Container {organism, applications};
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePersistableFromSettings(_individualSimulation);
+      }
+
+      [Observation]
+      public void should_always_select_the_venous_blood_plasma_observer()
+      {
+         _venousBloodPlasma.Persistable.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_always_select_the_lumen_fabs_observer()
+      {
+         _fabsObserver.Persistable.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_always_select_the_peripheral_venous_blood_plasma()
+      {
+         _peripheralVenousBloodObserver.Persistable.ShouldBeTrue();
+      }
+   }
+
+   public class When_resetting_the_persitable_flags_for_a_simulation : concern_for_SimulationPersistableUpdater
+   {
+      private IndividualSimulation _individualSimulation;
+      private Observer _appConcentrationObserver;
+      private Observer _appUserDefinedObserver;
+
+      protected override void Context()
+      {
+         base.Context();
+         var organism = new Container().WithName(Constants.ORGANISM);
+         var applications = new Container().WithName(Constants.APPLICATIONS);
+
+         _appConcentrationObserver = new Observer().WithName(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
+         _appUserDefinedObserver = new Observer().WithName("Super awesome observer");
+
+         applications.Add(_appConcentrationObserver);
+         applications.Add(_appUserDefinedObserver);
+
+
+         _individualSimulation = new IndividualSimulation
+         {
+            Model = new OSPSuite.Core.Domain.Model
+            {
+               Root = new Container {organism, applications}
+            }
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.ResetPersistable(_individualSimulation);
+      }
+
+      [Observation]
+      public void should_show_all_observer_under_application_except_concentration()
+      {
+         _appUserDefinedObserver.Persistable.ShouldBeTrue();
+         _appConcentrationObserver.Persistable.ShouldBeFalse();
+      }
+   }
+
+   public class When_updating_the_simulation_settings_for_a_population_simulation : concern_for_SimulationPersistableUpdater
+   {
+      private PopulationSimulation _populationSimulation;
+      private Observer _venousBloodPlasma;
+      private Observer _fabsObserver;
+      private Observer _peripheralVenousBloodObserver;
+
+      protected override void Context()
+      {
+         base.Context();
+         var organism = new Container().WithName(Constants.ORGANISM);
+         var venousBlood = new Container().WithName(CoreConstants.Organ.VENOUS_BLOOD).WithParentContainer(organism);
+         var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD).WithParentContainer(organism);
+         var lumen = new Container().WithName(CoreConstants.Organ.LUMEN).WithParentContainer(organism);
          var plasma = new Container().WithName(CoreConstants.Compartment.PLASMA);
          var moleculeVenousBlood = new Container().WithName("DRUG")
             .WithParentContainer(plasma.WithParentContainer(venousBlood));
@@ -55,17 +164,17 @@ namespace PKSim.Core
 
          var compound = new Compound().WithName("DRUG");
 
-         _individualSimulation = new IndividualSimulation();
-         _individualSimulation.SimulationSettings = new SimulationSettings();
-         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Id", PKSimBuildingBlockType.Compound) {BuildingBlock = compound});
-         _individualSimulation.Model = new OSPSuite.Core.Domain.Model();
-         _individualSimulation.Model.Root = new Container();
-         _individualSimulation.Model.Root.Add(organsim);
+         _populationSimulation = new PopulationSimulation();
+         _populationSimulation.SimulationSettings = new SimulationSettings();
+         _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Id", PKSimBuildingBlockType.Compound) {BuildingBlock = compound});
+         _populationSimulation.Model = new OSPSuite.Core.Domain.Model();
+         _populationSimulation.Model.Root = new Container();
+         _populationSimulation.Model.Root.Add(organism);
       }
 
       protected override void Because()
       {
-         sut.UpdatePersistableFromSettings(_individualSimulation);
+         sut.UpdatePersistableFromSettings(_populationSimulation);
       }
 
       [Observation]
@@ -114,7 +223,7 @@ namespace PKSim.Core
             .WithParentContainer(feces);
          _moleculeFeces.Persistable = false;
 
-         _moleculeGallBladder  = new MoleculeAmount().WithName("DRUG")
+         _moleculeGallBladder = new MoleculeAmount().WithName("DRUG")
             .WithParentContainer(gallBladder);
          _moleculeGallBladder.Persistable = false;
 

@@ -49,10 +49,9 @@ namespace PKSim.UI.Views
          // 
          // btnLoadBuildingBlock
          // 
-         this.btnLoadBuildingBlock.Location = new System.Drawing.Point(475, 2);
-         this.btnLoadBuildingBlock.Margin = new System.Windows.Forms.Padding(4);
+         this.btnLoadBuildingBlock.Location = new System.Drawing.Point(407, 2);
          this.btnLoadBuildingBlock.Name = "btnLoadBuildingBlock";
-         this.btnLoadBuildingBlock.Size = new System.Drawing.Size(203, 27);
+         this.btnLoadBuildingBlock.Size = new System.Drawing.Size(174, 22);
          this.btnLoadBuildingBlock.StyleController = this.layoutControl;
          this.btnLoadBuildingBlock.TabIndex = 7;
          this.btnLoadBuildingBlock.Text = "btnLoadBuildingBlock";
@@ -65,18 +64,18 @@ namespace PKSim.UI.Views
          this.layoutControl.Controls.Add(this.btnLoadBuildingBlock);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.Root;
-         this.layoutControl.Size = new System.Drawing.Size(680, 36);
+         this.layoutControl.Size = new System.Drawing.Size(583, 29);
          this.layoutControl.TabIndex = 2;
          this.layoutControl.Text = "uxLayoutControl1";
          // 
          // btnCreateBuildingBlock
          // 
-         this.btnCreateBuildingBlock.Location = new System.Drawing.Point(218, 2);
-         this.btnCreateBuildingBlock.Margin = new System.Windows.Forms.Padding(4);
+         this.btnCreateBuildingBlock.Location = new System.Drawing.Point(187, 2);
          this.btnCreateBuildingBlock.Name = "btnCreateBuildingBlock";
-         this.btnCreateBuildingBlock.Size = new System.Drawing.Size(253, 27);
+         this.btnCreateBuildingBlock.Size = new System.Drawing.Size(216, 22);
          this.btnCreateBuildingBlock.StyleController = this.layoutControl;
          this.btnCreateBuildingBlock.TabIndex = 5;
          this.btnCreateBuildingBlock.Text = "btnCreateBuildingBlock";
@@ -91,36 +90,35 @@ namespace PKSim.UI.Views
             this.layoutItemBuildingBlock});
          this.Root.Name = "Root";
          this.Root.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.Root.Size = new System.Drawing.Size(680, 36);
+         this.Root.Size = new System.Drawing.Size(583, 29);
          this.Root.TextVisible = false;
          // 
          // layoutItemLoad
          // 
          this.layoutItemLoad.Control = this.btnLoadBuildingBlock;
-         this.layoutItemLoad.Location = new System.Drawing.Point(473, 0);
+         this.layoutItemLoad.Location = new System.Drawing.Point(405, 0);
          this.layoutItemLoad.Name = "layoutItemLoad";
-         this.layoutItemLoad.Size = new System.Drawing.Size(207, 36);
+         this.layoutItemLoad.Size = new System.Drawing.Size(178, 29);
          this.layoutItemLoad.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemLoad.TextVisible = false;
          // 
          // layoutItemCreate
          // 
          this.layoutItemCreate.Control = this.btnCreateBuildingBlock;
-         this.layoutItemCreate.Location = new System.Drawing.Point(216, 0);
+         this.layoutItemCreate.Location = new System.Drawing.Point(185, 0);
          this.layoutItemCreate.Name = "layoutItemCreate";
-         this.layoutItemCreate.Size = new System.Drawing.Size(257, 36);
+         this.layoutItemCreate.Size = new System.Drawing.Size(220, 29);
          this.layoutItemCreate.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemCreate.TextVisible = false;
          // 
          // cbBuildingBlocks
          // 
          this.cbBuildingBlocks.Location = new System.Drawing.Point(2, 2);
-         this.cbBuildingBlocks.Margin = new System.Windows.Forms.Padding(4);
          this.cbBuildingBlocks.Name = "cbBuildingBlocks";
          this.cbBuildingBlocks.Properties.AutoHeight = false;
          this.cbBuildingBlocks.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbBuildingBlocks.Size = new System.Drawing.Size(212, 32);
+         this.cbBuildingBlocks.Size = new System.Drawing.Size(181, 25);
          this.cbBuildingBlocks.StyleController = this.layoutControl;
          this.cbBuildingBlocks.TabIndex = 6;
          // 
@@ -129,18 +127,18 @@ namespace PKSim.UI.Views
          this.layoutItemBuildingBlock.Control = this.cbBuildingBlocks;
          this.layoutItemBuildingBlock.Location = new System.Drawing.Point(0, 0);
          this.layoutItemBuildingBlock.Name = "layoutItemBuildingBlock";
-         this.layoutItemBuildingBlock.Size = new System.Drawing.Size(216, 36);
+         this.layoutItemBuildingBlock.Size = new System.Drawing.Size(185, 29);
          this.layoutItemBuildingBlock.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemBuildingBlock.TextVisible = false;
          // 
          // BuildingBlockSelectionView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
-         this.Margin = new System.Windows.Forms.Padding(5);
+         this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.Name = "BuildingBlockSelectionView";
-         this.Size = new System.Drawing.Size(680, 36);
+         this.Size = new System.Drawing.Size(583, 29);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);

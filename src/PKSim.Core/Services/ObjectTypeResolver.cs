@@ -4,6 +4,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Chart.SensitivityAnalyses;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
@@ -80,6 +81,8 @@ namespace PKSim.Core.Services
          addToCache<CurveChart>(PKSimConstants.UI.TimeProfileAnalysis);
          addToCache<DataRepository>(PKSimConstants.ObjectTypes.ObservedData);
          addToCache<TimeProfileAnalysisChart>(PKSimConstants.UI.TimeProfileAnalysis);
+         addToCache<SimulationResidualVsTimeChart>(Captions.ParameterIdentification.ResidualsVsTimeAnalysis);
+         addToCache<SimulationPredictedVsObservedChart>(Captions.ParameterIdentification.PredictedVsObservedAnalysis);
          addToCache<ScatterAnalysisChart>(PKSimConstants.UI.ScatterAnalysis);
          addToCache<RangeAnalysisChart>(PKSimConstants.UI.RangeAnalysis);
          addToCache<BoxWhiskerAnalysisChart>(PKSimConstants.UI.BoxWhiskerAnalysis);

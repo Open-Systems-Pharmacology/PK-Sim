@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
@@ -106,10 +107,7 @@ namespace PKSim.Core.Model
          return allParameters;
       }
 
-      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters)
-      {
-         Add(advancedParameters);
-      }
+      public virtual void SetAdvancedParameters(AdvancedParameterCollection advancedParameters) => Add(advancedParameters);
 
       private AdvancedParameterCollection advancedParameterCollection
       {
@@ -187,22 +185,15 @@ namespace PKSim.Core.Model
          return new T[NumberOfItems].InitializeWith(defaultValue);
       }
 
-      public virtual QuantityPKParameter PKParameterFor(string quantityPath, string pkParameter)
-      {
-         return PKAnalyses.PKParameterFor(quantityPath, pkParameter);
-      }
+      public virtual QuantityPKParameter PKParameterFor(string quantityPath, string pkParameter) => PKAnalyses.PKParameterFor(quantityPath, pkParameter);
 
-      public virtual IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath)
-      {
-         return PKAnalyses.AllPKParametersFor(quantityPath);
-      }
+      public virtual IReadOnlyList<QuantityPKParameter> AllPKParametersFor(string quantityPath) => PKAnalyses.AllPKParametersFor(quantityPath);
 
-      public virtual bool HasPKParameterFor(string quantityPath, string pkParameter)
-      {
-         return PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
-      }
+      public virtual bool HasPKParameterFor(string quantityPath, string pkParameter) => PKAnalyses.HasPKParameterFor(quantityPath, pkParameter);
 
       public virtual IReadOnlyList<string> AllSimulationNames => new string[NumberOfItems].InitializeWith(Name);
+
+      public bool SupportsMultipleAggregations { get; }=true;
 
       public virtual int NumberOfItems => Population.NumberOfItems;
 
@@ -278,6 +269,47 @@ namespace PKSim.Core.Model
          base.UpdateFromOriginalSimulation(originalSimulation);
          var sourcePopSimulation = originalSimulation as PopulationSimulation;
          sourcePopSimulation?.AdvancedParameters.Each(x => AddAdvancedParameter(x, generateRandomValues: true));
+      }
+
+      public DataColumn VenousBloodColumnForIndividual(int individualId, string compoundName)
+      {
+         return drugColumnForIndividual(CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER, compoundName, individualId);
+      }
+
+      public DataColumn PeripheralVenousBloodColumnForIndividual(int individualId, string compoundName)
+      {
+         return drugColumnForIndividual(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, compoundName, individualId);
+      }
+
+      public DataColumn FractionAbsorbedColumnForIndividual(int individualId, string compoundName)
+      {
+         return drugColumnForIndividual(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName, individualId);
+      }
+
+      private DataColumn drugColumnForIndividual(string organ, string compartment, string columnName, string compoundName, int individualId)
+      {
+         return columnsFor(Results.ResultsFor(individualId), organ, compartment, columnName, compoundName);
+      }
+
+      private DataColumn columnsFor(IndividualResults results, string organ, string compartment, string columnName, string compoundName)
+      {
+         var column = results.FirstOrDefault(x =>
+               isQuantityPathFor(organ, compartment, columnName, compoundName, x)
+            );
+         if (column == null) 
+            return null;
+         
+         //We use no dimension here because we are only interested in getting the values 
+         return new DataColumn(column.ColumnId, Constants.Dimension.NO_DIMENSION, new BaseGrid(Constants.TIME, Constants.Dimension.NO_DIMENSION)  { Values = column.Time.Values  })
+         {
+            Values =  column.Values
+         };
+      }
+
+      private static bool isQuantityPathFor(string organ, string compartment, string columnName, string compoundName, QuantityValues quantityValues)
+      {
+         var quantityPathArray = quantityValues.QuantityPath.ToPathArray();
+         return quantityPathArray.ContainsAll(new[] { organ, compartment, columnName, compoundName });
       }
    }
 }

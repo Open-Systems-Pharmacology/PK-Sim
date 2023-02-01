@@ -27,7 +27,7 @@ namespace PKSim.UI.Views.Core
          xtraTabPage.FillWith(layoutControl);
          xtraTabControl.TabPages.Add(xtraTabPage);
          xtraTabPage.Text = view.Caption;
-         AddViewToGroup(layoutControl.Root, view);
+         AddViewToGroup(layoutControl.Root, layoutControl, view);
          
          AddEmptyPlaceHolder(layoutControl);
       }

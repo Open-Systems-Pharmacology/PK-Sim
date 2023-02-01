@@ -101,7 +101,7 @@ namespace PKSim.UI.Views.Compounds
             Control = _rgPlasmaBindingPartner,
             Text = PKSimConstants.UI.FractionUnboundBindingType.FormatForLabel()
          };
-         _layoutItemBindingMode.AdjustControlHeight(RADIO_GROUP_HEIGHT);
+         _layoutItemBindingMode.AdjustControlHeight(RADIO_GROUP_HEIGHT, layoutControl);
          _layoutItemBindingMode.Move(layoutItemGrid, InsertType.Top);
          _rgPlasmaBindingPartner.SelectedIndexChanged += (o, e) => OnEvent(bindingPartnerChanged);
       }

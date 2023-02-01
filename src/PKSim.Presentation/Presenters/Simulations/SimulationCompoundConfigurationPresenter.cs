@@ -1,6 +1,6 @@
+using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Model;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -14,8 +14,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly ISimulationCompoundParameterAlternativesSelectionPresenter _alternativesSelectionPresenter;
       private readonly ISimulationCompoundCalculationMethodSelectionPresenter _calculationMethodSelectionPresenter;
 
-      public SimulationCompoundConfigurationPresenter(ISimulationCompoundConfigurationView view,
-         ISimulationCompoundParameterAlternativesSelectionPresenter alternativesSelectionPresenter, ISimulationCompoundCalculationMethodSelectionPresenter calculationMethodSelectionPresenter)
+      public SimulationCompoundConfigurationPresenter(
+         ISimulationCompoundConfigurationView view,
+         ISimulationCompoundParameterAlternativesSelectionPresenter alternativesSelectionPresenter,
+         ISimulationCompoundCalculationMethodSelectionPresenter calculationMethodSelectionPresenter)
          : base(view)
       {
          _alternativesSelectionPresenter = alternativesSelectionPresenter;

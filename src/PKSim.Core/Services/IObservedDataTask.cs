@@ -10,14 +10,12 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Add the given observed data repository to the analysable. Curves will not be shown
       /// </summary>
-      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable);
+      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable);
 
       /// <summary>
       ///    Add the given observed data repository to the simulation. Curves be shown if the showData flat is set to true
       /// </summary>
-      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedData, IAnalysable analysable, bool showData);
-
-      void RemoveUsedObservedDataFromSimulation(IReadOnlyList<UsedObservedData> observedDataList);
+      void AddObservedDataToAnalysable(IReadOnlyList<DataRepository> observedDataList, IAnalysable analysable, bool showData);
 
       /// <summary>
       ///    Loads observed data from the template database

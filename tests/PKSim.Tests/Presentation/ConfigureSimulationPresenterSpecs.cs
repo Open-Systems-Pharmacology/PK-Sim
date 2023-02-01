@@ -1,15 +1,16 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation
 {
@@ -45,7 +46,7 @@ namespace PKSim.Presentation
          _simulationParametersUpdater = A.Fake<ISimulationParametersUpdater>();
          _fullPathDisplayResolver = A.Fake<IFullPathDisplayResolver>();
          _buildingBlockInSimulationSynchronizer = A.Fake<IBuildingBlockInSimulationSynchronizer>();
-         _validationResult=new ValidationResult();
+         _validationResult = new ValidationResult();
 
          _simulationModelConfigurationPresenter = _subPresenterManager.CreateFake(SimulationItems.Model);
          _simulationCompoundsPresenter = _subPresenterManager.CreateFake(SimulationItems.Compounds);
@@ -53,10 +54,10 @@ namespace PKSim.Presentation
          _simulationCompoundProcessesPresenter = _subPresenterManager.CreateFake(SimulationItems.CompoundsProcesses);
          _simulationEventsPresenter = _subPresenterManager.CreateFake(SimulationItems.Events);
 
-         sut = new ConfigureSimulationPresenter(_view,_subPresenterManager,_simulationModelCreator,_heavyWorkManager,_cloner,_dialogCreator,_simulationParametersUpdater,_fullPathDisplayResolver,_buildingBlockInSimulationSynchronizer);
+         sut = new ConfigureSimulationPresenter(_view, _subPresenterManager, _simulationModelCreator, _heavyWorkManager, _cloner, _dialogCreator, _simulationParametersUpdater, _fullPathDisplayResolver, _buildingBlockInSimulationSynchronizer);
 
-         _originalSimulation= A.Fake<Simulation>();
-         _clonedSimulation= A.Fake<Simulation>();
+         _originalSimulation = A.Fake<Simulation>();
+         _clonedSimulation = A.Fake<Simulation>();
          A.CallTo(() => _cloner.CloneForModel(_originalSimulation)).Returns(_clonedSimulation);
          A.CallTo(() => _simulationModelConfigurationPresenter.Simulation).Returns(_clonedSimulation);
 
@@ -66,9 +67,23 @@ namespace PKSim.Presentation
 
    public class When_configuring_a_simulation : concern_for_ConfigureSimulationPresenter
    {
+      private OutputMappings _originalOutputMappings;
+
       protected override void Context()
       {
          base.Context();
+         _clonedSimulation.OutputMappings = new OutputMappings();
+         _originalOutputMappings = new OutputMappings();
+         _originalSimulation.Model = new Model();
+         _originalSimulation.Model.Root = new Organism();
+         var outputMapping = new OutputMapping
+         {
+            OutputSelection = new SimulationQuantitySelection(_originalSimulation, new QuantitySelection("A", QuantityType.Parameter)),
+            WeightedObservedData = new WeightedObservedData(DomainHelperForSpecs.ObservedData())
+         };
+
+         _originalOutputMappings.Add(outputMapping);
+         A.CallTo(() => _originalSimulation.OutputMappings).Returns(_originalOutputMappings);
          sut.ConfigureSimulation(_originalSimulation);
       }
 
@@ -113,6 +128,13 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _clonedSimulation, PKSimBuildingBlockType.Simulation)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_have_updated_the_output_mapping_based_on_the_original_simulation()
+      {
+         _clonedSimulation.OutputMappings.Count().ShouldBeEqualTo(1);
+         _clonedSimulation.OutputMappings.ElementAt(0).Simulation.ShouldBeEqualTo(_clonedSimulation);
+      }
    }
 
    public class When_configuring_a_simulation_and_the_new_configuration_results_in_some_overwritten_parameters_not_available_anymore : concern_for_ConfigureSimulationPresenter
@@ -125,7 +147,7 @@ namespace PKSim.Presentation
          base.Context();
          _fullPathForParameter = "BLA BLA BLA";
          var parameter = new PKSimParameter();
-         _validationResult.AddMessage(NotificationType.Warning,  parameter,"warning");
+         _validationResult.AddMessage(NotificationType.Warning, parameter, "warning");
          A.CallTo(_fullPathDisplayResolver).WithReturnType<string>().Returns(_fullPathForParameter);
 
          A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
@@ -145,6 +167,5 @@ namespace PKSim.Presentation
          _message.Contains(_fullPathForParameter).ShouldBeTrue();
          _message.Contains("These parameters were changed by the user. Because of a simulation reconfiguration, they will not be used for this simulation").ShouldBeTrue();
       }
-      
    }
-}	
+}

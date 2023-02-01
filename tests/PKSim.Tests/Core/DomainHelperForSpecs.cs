@@ -291,7 +291,7 @@ namespace PKSim.Core
 
       public static DataRepository IndividualSimulationDataRepositoryFor(string simulationName)
       {
-         var simulationResults = new DataRepository("Results");
+         var simulationResults = new DataRepository();
          var baseGrid = new BaseGrid("Time", TimeDimensionForSpecs())
          {
             Values = new[] {1.0f, 2.0f, 3.0f}

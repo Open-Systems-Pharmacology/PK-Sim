@@ -21,5 +21,6 @@ namespace PKSim.Presentation.Views.Individuals
       bool SpeciesVisible { get; set; }
       bool GestationalAgeVisible { get; set; }
       void AddValueOriginView(IView view);
+      void ResizePopulationSettingsView();
    }
 }

@@ -1,4 +1,5 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Domain.Data;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {

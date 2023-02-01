@@ -4,13 +4,17 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
+using static PKSim.Core.CoreConstants.Compartment;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
@@ -81,6 +85,63 @@ namespace PKSim.IntegrationTests
             var parameterPath = _entityPathResolver.ObjectPathFor(x);
             _psv[parameterPath].ShouldBeNull();
          });
+      }
+   }
+
+   public class When_creating_a_parameter_start_value_for_an_individual_and_simulation_where_the_initial_concentration_was_changed_in_the_expression_profile : ContextForSimulationIntegration<IPKSimParameterStartValuesCreator>
+   {
+      private IBuildConfigurationTask _buildConfigurationTask;
+      private IEntityPathResolver _entityPathResolver;
+      private IObjectPath _parameterPath;
+      private IParameterStartValuesBuildingBlock _psv;
+      private Individual _individual;
+      private Compound _compound;
+      private Protocol _protocol;
+      private ExpressionProfile _expressionProfileForEnzyme;
+      private IParameter _initialConcentrationBrainIntracellular;
+      private string[] _parameterPathArray;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
+         _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
+         var moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+         var expressionProfileUpdater = IoC.Resolve<IExpressionProfileUpdater>();
+         _compound = DomainFactoryForSpecs.CreateStandardCompound();
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         _expressionProfileForEnzyme = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _parameterPathArray = new[] { BONE, INTRACELLULAR, _expressionProfileForEnzyme.MoleculeName, CoreConstants.Parameters.INITIAL_CONCENTRATION };
+     
+         moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfileForEnzyme);
+
+         _initialConcentrationBrainIntracellular = _expressionProfileForEnzyme.Individual.Organism.EntityAt<IParameter>(_parameterPathArray);
+         _parameterPath = new ObjectPath(_initialConcentrationBrainIntracellular.ConsolidatedPath().ToPathArray());
+         _initialConcentrationBrainIntracellular.Value = 10;
+
+
+         expressionProfileUpdater.SynchroniseSimulationSubjectWithExpressionProfile(_individual, _expressionProfileForEnzyme);
+
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol).DowncastTo<IndividualSimulation>();
+      }
+
+      protected override void Because()
+      {
+         _psv = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false).ParameterStartValues;
+      }
+
+      [Observation]
+      public void should_have_created_the_initial_concentration_parameter_entry_with_the_overwritten_value()
+      {
+         _psv[_parameterPath].ShouldNotBeNull();
+         _psv[_parameterPath].StartValue.ShouldBeEqualTo(10);
+      }
+
+      [Observation]
+      public void should_have_updated_the_value_in_the_simulation_based_on_the_value_in_expression_profile()
+      {
+         _simulation.Model.Root.Container(Constants.ORGANISM).EntityAt<IParameter>(_parameterPathArray).Value.ShouldBeEqualTo(10);
       }
    }
 }

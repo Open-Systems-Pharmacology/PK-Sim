@@ -14,5 +14,9 @@ namespace PKSim.Core.Model
       double? MolWeightFor(string quantityPath);
       IReadOnlyList<string> AllSimulationNames { get; }
       IReadOnlyList<Compound> Compounds { get; }
+      /// <summary>
+      /// Returns true if supports different aggregation methods, e.g. based on aggregated curve or aggregated from all individuals
+      /// </summary>
+      bool SupportsMultipleAggregations { get; }
    }
 }

@@ -6,20 +6,20 @@ namespace PKSim.Core.Services
    public interface IGlobalPKAnalysisRunner
    {
       /// <summary>
-      /// Creates a <see cref="Simulation"/> based on the given <paramref name="individualSimulation"/> for bioavailability calculations and run the simulation
+      /// Creates a <see cref="Simulation"/> based on the given <paramref name="simulation"/> for bioavailability calculations and run the simulation
       /// </summary>
       /// <param name="simpleIvProtocol">Iv protocol that will be used in the created simulation for the <paramref name="compound"/></param>
-      /// <param name="individualSimulation">Base individual simulation</param>
+      /// <param name="simulation">Base simulation</param>
       /// <param name="compound">Compound for which the bioavailability should be calculated</param>
       /// <returns>The simulation that was created and run</returns>
-      IndividualSimulation RunForBioavailability(SimpleProtocol simpleIvProtocol, IndividualSimulation individualSimulation, Compound compound);
+      Simulation RunForBioavailability(SimpleProtocol simpleIvProtocol, Simulation simulation, Compound compound);
 
       /// <summary>
-      /// Creates a <see cref="Simulation"/> based on the given <paramref name="individualSimulation"/> for DDI Ratio calculations and run the simulation
+      /// Creates a <see cref="Simulation"/> based on the given <paramref name="simulation"/> for DDI Ratio calculations and run the simulation
       /// </summary>
-      /// <param name="individualSimulation">Base individual simulation</param>
+      /// <param name="simulation">Base simulation</param>
       /// <returns>The simulation that was created and run</returns>
-      IndividualSimulation RunForDDIRatio(IndividualSimulation individualSimulation);
+      Simulation RunForDDIRatio(Simulation simulation);
    }
 
    public class GlobalPKAnalysisRunner : IGlobalPKAnalysisRunner
@@ -35,30 +35,33 @@ namespace PKSim.Core.Services
          _registrationTask = registrationTask;
       }
 
-      public IndividualSimulation RunForBioavailability(SimpleProtocol simpleIvProtocol, IndividualSimulation individualSimulation, Compound compound)
+      public Simulation RunForBioavailability(SimpleProtocol simpleIvProtocol, Simulation simulation, Compound compound)
       {
-         return createAndRun(x => x.CreateForBioAvailability(simpleIvProtocol, compound, individualSimulation));
+         return createAndRun(x => x.CreateForBioAvailability(simpleIvProtocol, compound, simulation));
       }
 
-      public IndividualSimulation RunForDDIRatio(IndividualSimulation individualSimulation)
+      public Simulation RunForDDIRatio(Simulation simulation)
       {
-         return createAndRun(x => x.CreateForDDIRatio(individualSimulation));
+         return createAndRun(x => x.CreateForDDIRatio(simulation));
       }
 
-      private IndividualSimulation createAndRun(Func<ISimulationFactory,IndividualSimulation> individualSimulationCreator)
+      private Simulation createAndRun(Func<ISimulationFactory, Simulation> simulationCreator)
       {
-         var individualSimulation = individualSimulationCreator(_simulationFactory);
+         var simulation = simulationCreator(_simulationFactory);
+
          try
          {
-            _registrationTask.Register(individualSimulation);
-            _simulationRunner.RunSimulation(individualSimulation).Wait();
+            _registrationTask.Register(simulation);
+            // For the transient simulations that are running to calculate ratio parameters, we don't want to raise events
+            // This prevents the UI from becoming locked when unnecessary
+            _simulationRunner.RunSimulation(simulation, new SimulationRunOptions { RaiseEvents = false }).Wait();
          }
          finally
          {
-            _registrationTask.Unregister(individualSimulation);
+            _registrationTask.Unregister(simulation);
          }
 
-         return individualSimulation;
+         return simulation;
       }
    }
 }

@@ -1,14 +1,12 @@
-﻿using OSPSuite.DataBinding;
+﻿using OSPSuite.Assets;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Assets;
-using DevExpress.XtraEditors;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
-using PKSim.UI.Extensions;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -52,7 +50,7 @@ namespace PKSim.UI.Views.Parameters
 
       public bool ReadOnly
       {
-         set => layoutControl.Enabled = !value;
+         set => tablePanel.Enabled = !value;
       }
 
       public override void InitializeResources()
@@ -61,7 +59,8 @@ namespace PKSim.UI.Views.Parameters
          btnReset.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ResetAllVisibleButtonToolTip, PKSimConstants.UI.ResetAll, ApplicationIcons.Reset);
          btnScale.Text = PKSimConstants.UI.ScaleButton;
          btnScale.SuperTip = _toolTipCreator.CreateToolTip(PKSimConstants.UI.ScaleButtonToolTip, PKSimConstants.UI.ScaleButton);
-         layoutControl.InitializeDisabledColors();
+         tablePanel.AdjustControlSize(btnScale, height:tbValue.Height);
+         tablePanel.AdjustControlSize(btnReset, height:tbValue.Height);
       }
    }
 }

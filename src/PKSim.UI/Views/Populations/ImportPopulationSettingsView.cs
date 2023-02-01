@@ -133,7 +133,7 @@ namespace PKSim.UI.Views.Populations
       public override void InitializeResources()
       {
          base.InitializeResources();
-         layoutItemButtonAdd.AdjustLargeButtonSize();
+         layoutItemButtonAdd.AdjustLargeButtonSize(layoutControl);
          btnAddFile.InitWithImage(ApplicationIcons.Create, PKSimConstants.UI.AddFile);
          layoutItemIndividual.Text = PKSimConstants.UI.BasedOnIndividual.FormatForLabel();
          Caption = PKSimConstants.UI.ImportPopulationSettings;

@@ -1,16 +1,13 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Infrastructure.Services;
-using PKSim.Presentation.Core;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Utility.Container;
+using PKSim.Core;
+using PKSim.Core.Model;
 
 namespace PKSim.IntegrationTests
 {
@@ -38,17 +35,17 @@ namespace PKSim.IntegrationTests
             Id = "Sim1",
             Name = "Sim1",
             IsLoaded = true,
-            Model = new Model {Root = new Container()}
+            Model = new Model { Root = new Container() }
          };
-         _sim1.Model.Root.Add(new Container {new Parameter().WithName("P")}.WithName("Liver"));
+         _sim1.Model.Root.Add(new Container { new Parameter().WithName("P") }.WithName("Liver"));
          _sim2 = new IndividualSimulation
          {
             Id = "Sim2",
             Name = "Sim2",
             IsLoaded = true,
-            Model = new Model {Root = new Container()}
+            Model = new Model { Root = new Container() }
          };
-         _sim2.Model.Root.Add(new Container {new Parameter().WithName("P")}.WithName("Liver"));
+         _sim2.Model.Root.Add(new Container { new Parameter().WithName("P") }.WithName("Liver"));
 
          _objectBaseRepository = IoC.Resolve<IWithIdRepository>();
          var workspace = IoC.Resolve<ICoreWorkspace>();
@@ -85,7 +82,7 @@ namespace PKSim.IntegrationTests
          _identificationParameter.Scaling = Scalings.Linear;
 
          _parameterIdentification.Configuration.AlgorithmProperties = new OptimizationAlgorithmProperties("AA");
-         _parameterIdentification.AlgorithmProperties.Add(new ExtendedProperty<double> {Name = "Toto", Value = 5});
+         _parameterIdentification.AlgorithmProperties.Add(new ExtendedProperty<double> { Name = "Toto", Value = 5 });
 
          _runResult = new ParameterIdentificationRunResult();
 
@@ -145,7 +142,8 @@ namespace PKSim.IntegrationTests
       public void should_be_able_to_deserialize_the_parameter_identification_configuration()
       {
          var deserializedParameterIdentificationConfiguration = _duplicatedParameterIdentification.Configuration;
-         deserializedParameterIdentificationConfiguration.RemoveLLOQMode.ShouldBeEqualTo(deserializedParameterIdentificationConfiguration.RemoveLLOQMode);
+         deserializedParameterIdentificationConfiguration.RemoveLLOQMode.ShouldBeEqualTo(deserializedParameterIdentificationConfiguration
+            .RemoveLLOQMode);
          deserializedParameterIdentificationConfiguration.LLOQMode.ShouldBeEqualTo(deserializedParameterIdentificationConfiguration.LLOQMode);
 
          var deserializedAlgorithm = _duplicatedParameterIdentification.AlgorithmProperties;

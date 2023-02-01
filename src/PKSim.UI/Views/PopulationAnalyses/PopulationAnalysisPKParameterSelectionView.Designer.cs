@@ -29,8 +29,6 @@
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.btnRemove = new DevExpress.XtraEditors.SimpleButton();
          this.btnAdd = new DevExpress.XtraEditors.SimpleButton();
          this.panelSelectedPKParameters = new DevExpress.XtraEditors.PanelControl();
@@ -42,15 +40,12 @@
          this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
          this.layoutItemButtonAdd = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemButtonRemove = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.panelDistributionView = new DevExpress.XtraEditors.PanelControl();
+         this.layoutItemDistributionView = new DevExpress.XtraLayout.LayoutControlItem();
+         this.splitter = new DevExpress.XtraLayout.SplitterItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
-         this.splitContainerControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.panelSelectedPKParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelAvailablePKParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
@@ -60,74 +55,50 @@
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonAdd)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonRemove)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelDistributionView)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDistributionView)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitter)).BeginInit();
          this.SuspendLayout();
-         // 
-         // layoutControl
-         // 
-         this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.splitContainerControl);
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(494, 100, 250, 350);
-         this.layoutControl.Root = this.layoutControlGroup1;
-         this.layoutControl.Size = new System.Drawing.Size(777, 493);
-         this.layoutControl.TabIndex = 0;
-         this.layoutControl.Text = "layoutControl1";
-         // 
-         // splitContainerControl
-         // 
-         this.splitContainerControl.Horizontal = false;
-         this.splitContainerControl.Location = new System.Drawing.Point(2, 2);
-         this.splitContainerControl.Name = "splitContainerControl";
-         this.splitContainerControl.Panel1.Controls.Add(this.layoutControl1);
-         this.splitContainerControl.Panel1.Text = "Panel1";
-         this.splitContainerControl.Panel2.Text = "Panel2";
-         this.splitContainerControl.Size = new System.Drawing.Size(773, 489);
-         this.splitContainerControl.SplitterPosition = 265;
-         this.splitContainerControl.TabIndex = 4;
-         this.splitContainerControl.Text = "splitContainerControl1";
          // 
          // layoutControl1
          // 
-         this.layoutControl1.AllowCustomization = false;
-         this.layoutControl1.Controls.Add(this.btnRemove);
-         this.layoutControl1.Controls.Add(this.btnAdd);
-         this.layoutControl1.Controls.Add(this.panelSelectedPKParameters);
-         this.layoutControl1.Controls.Add(this.panelAvailablePKParameters);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup2;
-         this.layoutControl1.Size = new System.Drawing.Size(773, 265);
-         this.layoutControl1.TabIndex = 0;
-         this.layoutControl1.Text = "layoutControl1";
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.panelDistributionView);
+         this.layoutControl.Controls.Add(this.btnRemove);
+         this.layoutControl.Controls.Add(this.btnAdd);
+         this.layoutControl.Controls.Add(this.panelSelectedPKParameters);
+         this.layoutControl.Controls.Add(this.panelAvailablePKParameters);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.Root = this.layoutControlGroup2;
+         this.layoutControl.Size = new System.Drawing.Size(1253, 702);
+         this.layoutControl.TabIndex = 1;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // btnRemove
          // 
-         this.btnRemove.Location = new System.Drawing.Point(341, 138);
+         this.btnRemove.Location = new System.Drawing.Point(551, 200);
          this.btnRemove.Name = "btnRemove";
-         this.btnRemove.Size = new System.Drawing.Size(94, 22);
-         this.btnRemove.StyleController = this.layoutControl1;
+         this.btnRemove.Size = new System.Drawing.Size(155, 22);
+         this.btnRemove.StyleController = this.layoutControl;
          this.btnRemove.TabIndex = 7;
          this.btnRemove.Text = "btnRemove";
          // 
          // btnAdd
          // 
-         this.btnAdd.Location = new System.Drawing.Point(341, 112);
+         this.btnAdd.Location = new System.Drawing.Point(551, 174);
          this.btnAdd.Name = "btnAdd";
-         this.btnAdd.Size = new System.Drawing.Size(94, 22);
-         this.btnAdd.StyleController = this.layoutControl1;
+         this.btnAdd.Size = new System.Drawing.Size(155, 22);
+         this.btnAdd.StyleController = this.layoutControl;
          this.btnAdd.TabIndex = 6;
          this.btnAdd.Text = "btnAdd";
          // 
          // panelSelectedPKParameters
          // 
-         this.panelSelectedPKParameters.Location = new System.Drawing.Point(439, 2);
+         this.panelSelectedPKParameters.Location = new System.Drawing.Point(710, 2);
          this.panelSelectedPKParameters.Name = "panelSelectedPKParameters";
-         this.panelSelectedPKParameters.Size = new System.Drawing.Size(332, 261);
+         this.panelSelectedPKParameters.Size = new System.Drawing.Size(541, 406);
          this.panelSelectedPKParameters.TabIndex = 5;
          // 
          // panelAvailablePKParameters
@@ -135,7 +106,7 @@
          this.panelAvailablePKParameters.Location = new System.Drawing.Point(2, 2);
          this.panelAvailablePKParameters.Name = "panelAvailablePKParameters";
          this.panelAvailablePKParameters.Padding = new System.Windows.Forms.Padding(10);
-         this.panelAvailablePKParameters.Size = new System.Drawing.Size(335, 261);
+         this.panelAvailablePKParameters.Size = new System.Drawing.Size(545, 406);
          this.panelAvailablePKParameters.TabIndex = 4;
          // 
          // layoutControlGroup2
@@ -149,12 +120,12 @@
             this.emptySpaceItem1,
             this.emptySpaceItem2,
             this.layoutItemButtonAdd,
-            this.layoutItemButtonRemove});
-         this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup2.Name = "layoutControlGroup2";
+            this.layoutItemButtonRemove,
+            this.layoutItemDistributionView,
+            this.splitter});
+         this.layoutControlGroup2.Name = "Root";
          this.layoutControlGroup2.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup2.Size = new System.Drawing.Size(773, 265);
-         this.layoutControlGroup2.Text = "layoutControlGroup2";
+         this.layoutControlGroup2.Size = new System.Drawing.Size(1253, 702);
          this.layoutControlGroup2.TextVisible = false;
          // 
          // layoutControlItem2
@@ -163,94 +134,81 @@
          this.layoutControlItem2.CustomizationFormText = "layoutControlItem2";
          this.layoutControlItem2.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Size = new System.Drawing.Size(339, 265);
-         this.layoutControlItem2.Text = "layoutControlItem2";
+         this.layoutControlItem2.Size = new System.Drawing.Size(549, 410);
          this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem2.TextToControlDistance = 0;
          this.layoutControlItem2.TextVisible = false;
          // 
          // layoutControlItem3
          // 
          this.layoutControlItem3.Control = this.panelSelectedPKParameters;
          this.layoutControlItem3.CustomizationFormText = "layoutControlItem3";
-         this.layoutControlItem3.Location = new System.Drawing.Point(437, 0);
+         this.layoutControlItem3.Location = new System.Drawing.Point(708, 0);
          this.layoutControlItem3.Name = "layoutControlItem3";
-         this.layoutControlItem3.Size = new System.Drawing.Size(336, 265);
-         this.layoutControlItem3.Text = "layoutControlItem3";
+         this.layoutControlItem3.Size = new System.Drawing.Size(545, 410);
          this.layoutControlItem3.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem3.TextToControlDistance = 0;
          this.layoutControlItem3.TextVisible = false;
          // 
          // emptySpaceItem1
          // 
          this.emptySpaceItem1.AllowHotTrack = false;
          this.emptySpaceItem1.CustomizationFormText = "emptySpaceItem1";
-         this.emptySpaceItem1.Location = new System.Drawing.Point(339, 0);
+         this.emptySpaceItem1.Location = new System.Drawing.Point(549, 0);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(98, 110);
-         this.emptySpaceItem1.Text = "emptySpaceItem1";
+         this.emptySpaceItem1.Size = new System.Drawing.Size(159, 172);
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
          // 
          // emptySpaceItem2
          // 
          this.emptySpaceItem2.AllowHotTrack = false;
          this.emptySpaceItem2.CustomizationFormText = "emptySpaceItem2";
-         this.emptySpaceItem2.Location = new System.Drawing.Point(339, 162);
+         this.emptySpaceItem2.Location = new System.Drawing.Point(549, 224);
          this.emptySpaceItem2.Name = "emptySpaceItem2";
          this.emptySpaceItem2.Padding = new DevExpress.XtraLayout.Utils.Padding(10, 10, 10, 10);
-         this.emptySpaceItem2.Size = new System.Drawing.Size(98, 103);
-         this.emptySpaceItem2.Text = "emptySpaceItem2";
+         this.emptySpaceItem2.Size = new System.Drawing.Size(159, 186);
          this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
          // 
          // layoutItemButtonAdd
          // 
          this.layoutItemButtonAdd.Control = this.btnAdd;
          this.layoutItemButtonAdd.CustomizationFormText = "layoutItemButtonAdd";
-         this.layoutItemButtonAdd.Location = new System.Drawing.Point(339, 110);
+         this.layoutItemButtonAdd.Location = new System.Drawing.Point(549, 172);
          this.layoutItemButtonAdd.Name = "layoutItemButtonAdd";
-         this.layoutItemButtonAdd.Size = new System.Drawing.Size(98, 26);
-         this.layoutItemButtonAdd.Text = "layoutItemButtonAdd";
+         this.layoutItemButtonAdd.Size = new System.Drawing.Size(159, 26);
          this.layoutItemButtonAdd.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemButtonAdd.TextToControlDistance = 0;
          this.layoutItemButtonAdd.TextVisible = false;
          // 
          // layoutItemButtonRemove
          // 
          this.layoutItemButtonRemove.Control = this.btnRemove;
          this.layoutItemButtonRemove.CustomizationFormText = "layoutItemButtonRemove";
-         this.layoutItemButtonRemove.Location = new System.Drawing.Point(339, 136);
+         this.layoutItemButtonRemove.Location = new System.Drawing.Point(549, 198);
          this.layoutItemButtonRemove.Name = "layoutItemButtonRemove";
-         this.layoutItemButtonRemove.Size = new System.Drawing.Size(98, 26);
-         this.layoutItemButtonRemove.Text = "layoutItemButtonRemove";
+         this.layoutItemButtonRemove.Size = new System.Drawing.Size(159, 26);
          this.layoutItemButtonRemove.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemButtonRemove.TextToControlDistance = 0;
          this.layoutItemButtonRemove.TextVisible = false;
          // 
-         // layoutControlGroup1
+         // panelControl1
          // 
-         this.layoutControlGroup1.CustomizationFormText = "Root";
-         this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.layoutControlGroup1.GroupBordersVisible = false;
-         this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup1.Name = "Root";
-         this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup1.Size = new System.Drawing.Size(777, 493);
-         this.layoutControlGroup1.Text = "Root";
-         this.layoutControlGroup1.TextVisible = false;
+         this.panelDistributionView.Location = new System.Drawing.Point(2, 422);
+         this.panelDistributionView.Name = "panelDistributionView";
+         this.panelDistributionView.Size = new System.Drawing.Size(1249, 278);
+         this.panelDistributionView.TabIndex = 8;
          // 
-         // layoutControlItem1
+         // layoutItemChart
          // 
-         this.layoutControlItem1.Control = this.splitContainerControl;
-         this.layoutControlItem1.CustomizationFormText = "layoutControlItem1";
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(777, 493);
-         this.layoutControlItem1.Text = "layoutControlItem1";
-         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem1.TextToControlDistance = 0;
-         this.layoutControlItem1.TextVisible = false;
+         this.layoutItemDistributionView.Control = this.panelDistributionView;
+         this.layoutItemDistributionView.Location = new System.Drawing.Point(0, 420);
+         this.layoutItemDistributionView.Name = "layoutItemDistributionView";
+         this.layoutItemDistributionView.Size = new System.Drawing.Size(1253, 282);
+         this.layoutItemDistributionView.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemDistributionView.TextVisible = false;
+         // 
+         // splitter
+         // 
+         this.splitter.AllowHotTrack = true;
+         this.splitter.Location = new System.Drawing.Point(0, 410);
+         this.splitter.Name = "splitter";
+         this.splitter.Size = new System.Drawing.Size(1253, 10);
          // 
          // PopulationAnalysisPKParameterSelectionView
          // 
@@ -258,14 +216,10 @@
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
          this.Name = "PopulationAnalysisPKParameterSelectionView";
-         this.Size = new System.Drawing.Size(777, 493);
+         this.Size = new System.Drawing.Size(1253, 702);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
-         this.splitContainerControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.panelSelectedPKParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelAvailablePKParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
@@ -275,8 +229,9 @@
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonAdd)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemButtonRemove)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelDistributionView)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDistributionView)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitter)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -284,21 +239,19 @@
       #endregion
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
-      private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
+      private DevExpress.XtraEditors.PanelControl panelDistributionView;
+      private DevExpress.XtraEditors.SimpleButton btnRemove;
+      private DevExpress.XtraEditors.SimpleButton btnAdd;
       private DevExpress.XtraEditors.PanelControl panelSelectedPKParameters;
       private DevExpress.XtraEditors.PanelControl panelAvailablePKParameters;
+      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
-      private DevExpress.XtraEditors.SimpleButton btnRemove;
-      private DevExpress.XtraEditors.SimpleButton btnAdd;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem2;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemButtonAdd;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemButtonRemove;
-
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemDistributionView;
+      private DevExpress.XtraLayout.SplitterItem splitter;
    }
 }

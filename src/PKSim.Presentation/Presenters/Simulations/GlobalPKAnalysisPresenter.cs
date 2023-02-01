@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Simulations;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Mappers;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.DTO.Simulations;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -29,11 +30,12 @@ namespace PKSim.Presentation.Presenters.Simulations
       void CalculateDDIRatioFor(string compoundName);
       string DisplayNameFor(string parameterName);
       bool HasParameters();
+      bool CanCalculateGlobalPK();
    }
 
    public class GlobalPKAnalysisPresenter : AbstractSubPresenter<IGlobalPKAnalysisView, IGlobalPKAnalysisPresenter>, IGlobalPKAnalysisPresenter
    {
-      private readonly IGlobalPKAnalysisTask _globalPKAnalysisTask;
+      private readonly IPKAnalysesTask _pkAnalysesTask;
       private readonly IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper _globalPKAnalysisDTOMapper;
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
@@ -43,15 +45,17 @@ namespace PKSim.Presentation.Presenters.Simulations
       private GlobalPKAnalysisDTO _globalPKAnalysisDTO;
       private DefaultPresentationSettings _settings;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
+      private readonly IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
 
-      public GlobalPKAnalysisPresenter(IGlobalPKAnalysisView view, IGlobalPKAnalysisTask globalPKAnalysisTask,
-         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper, IHeavyWorkManager heavyWorkManager, IRepresentationInfoRepository representationInfoRepository, IPresentationSettingsTask presentationSettingsTask) : base(view)
+      public GlobalPKAnalysisPresenter(IGlobalPKAnalysisView view, IPKAnalysesTask pkAnalysesTask,
+         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper, IHeavyWorkManager heavyWorkManager, IRepresentationInfoRepository representationInfoRepository, IPresentationSettingsTask presentationSettingsTask, IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper) : base(view)
       {
-         _globalPKAnalysisTask = globalPKAnalysisTask;
+         _pkAnalysesTask = pkAnalysesTask;
          _globalPKAnalysisDTOMapper = globalPKAnalysisDTOMapper;
          _heavyWorkManager = heavyWorkManager;
          _representationInfoRepository = representationInfoRepository;
          _presentationSettingsTask = presentationSettingsTask;
+         _protocolToSchemaItemsMapper = protocolToSchemaItemsMapper;
          _settings = new DefaultPresentationSettings();
       }
 
@@ -63,7 +67,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void showPKAnalysis()
       {
-         GlobalPKAnalysis = _globalPKAnalysisTask.CalculateGlobalPKAnalysisFor(_simulations);
+         GlobalPKAnalysis = _pkAnalysesTask.CalculateGlobalPKAnalysisFor(_simulations);
          updateView();
       }
 
@@ -78,7 +82,7 @@ namespace PKSim.Presentation.Presenters.Simulations
                 shouldCalculateGlobalPKParameter(compoundName, parameterName, CoreConstants.PKAnalysis.C_maxRatio);
       }
 
-      private bool shouldCalculateGlobalPKParameter(string compoundName, string parameterName,string globalPKParameterName)
+      private bool shouldCalculateGlobalPKParameter(string compoundName, string parameterName, string globalPKParameterName)
       {
          if (!string.Equals(parameterName, globalPKParameterName))
             return false;
@@ -93,12 +97,12 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void CalculateDDIRatioFor(string compoundName)
       {
-         calculateGlobalPKAnalysis(x => x.CalculateDDIRatioFor(firstSimulation, compoundName));
+         calculateGlobalPKAnalysis(x => x.CalculateDDIRatioFor(firstSimulation));
       }
 
-      private void calculateGlobalPKAnalysis(Action<IGlobalPKAnalysisTask> calculationAction)
+      private void calculateGlobalPKAnalysis(Action<IPKAnalysesTask> calculationAction)
       {
-         _heavyWorkManager.Start(() => calculationAction(_globalPKAnalysisTask), PKSimConstants.UI.Calculating);
+         _heavyWorkManager.Start(() => calculationAction(_pkAnalysesTask), PKSimConstants.UI.Calculating);
          showPKAnalysis();
       }
 
@@ -119,10 +123,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void updateParameterDisplayUnits(string parameterName)
       {
-         GlobalPKAnalysis.PKParameters(parameterName).Each(parameter =>
-         {
-            parameter.DisplayUnit = parameter.Dimension.Unit(_settings.GetSetting(parameterName, DisplayUnitFor(parameterName).Name));
-         });
+         GlobalPKAnalysis.PKParameters(parameterName).Each(parameter => { parameter.DisplayUnit = parameter.Dimension.Unit(_settings.GetSetting(parameterName, DisplayUnitFor(parameterName).Name)); });
       }
 
       private Simulation firstSimulation => _simulations.FirstOrDefault();
@@ -163,6 +164,18 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          return false;
       }
+
+      public bool CanCalculateGlobalPK()
+      {
+         return firstSimulation.Compounds.Any(compound =>
+         {
+            var schemaItems = _protocolToSchemaItemsMapper.MapFrom(firstSimulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol);
+            return !isMultipleIV(schemaItems);
+         });
+      }
+
+      private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems) => schemaItems.Count(schemaItem => schemaItem.IsIV) > 1;
+      
 
       public void LoadSettingsForSubject(IWithId subject)
       {

@@ -86,7 +86,7 @@ namespace PKSim.BatchTool.Views
             return;
 
          //add some extra padding 
-         layoutItemPage.AdjustControlHeight(height + layoutItemPage.Padding.All + page.BackgroundPadding.All + 10);
+         layoutItemPage.AdjustControlHeight( height + layoutItemPage.Padding.All + page.BackgroundPadding.All + 10, layoutControl);
       }
 
       private void initView(IResizableView view)
@@ -99,10 +99,10 @@ namespace PKSim.BatchTool.Views
 
          tileItem.AppearanceItem.Normal.Font = new Font("Arial", 10, FontStyle.Bold);
 
-         layoutItemButtonStart.AdjustSize(UIConstants.Size.LARGE_BUTTON_WIDTH, Constants.BUTTON_HEIGHT);
+         layoutItemButtonStart.AdjustSize(UIConstants.Size.LARGE_BUTTON_WIDTH, Constants.BUTTON_HEIGHT, layoutControl);
          startButton.InitWithImage(ApplicationIcons.Run, IconSizes.Size32x32, Captions.SnapshotStart);
 
-         layoutItemButtonStop.AdjustSize(UIConstants.Size.LARGE_BUTTON_WIDTH, Constants.BUTTON_HEIGHT);
+         layoutItemButtonStop.AdjustSize(UIConstants.Size.LARGE_BUTTON_WIDTH, Constants.BUTTON_HEIGHT, layoutControl);
          stopButton.InitWithImage(ApplicationIcons.Stop, IconSizes.Size32x32, Captions.SnapshotStop);
       }
 

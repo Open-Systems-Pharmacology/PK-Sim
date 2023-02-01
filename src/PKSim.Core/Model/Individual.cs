@@ -98,11 +98,15 @@ namespace PKSim.Core.Model
 
       public virtual void AddMolecule(IndividualMolecule molecule) => Add(molecule);
 
-      public virtual void RemoveMolecule(IndividualMolecule molecule)
+      public virtual IReadOnlyList<IContainer> RemoveMolecule(IndividualMolecule molecule)
       {
+         //we need to keep track of all containers removed so that they can be returned to the caller 
+         var removedContainers = new List<IContainer> {molecule};
          RemoveChild(molecule);
-         var allMoleculeBuildingBlocks = GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name));
-         allMoleculeBuildingBlocks.Each(x => x.ParentContainer.RemoveChild(x));
+         var allMoleculeContainers = GetAllChildren<IContainer>(x => x.IsNamed(molecule.Name));
+         allMoleculeContainers.Each(x => x.ParentContainer.RemoveChild(x));
+         removedContainers.AddRange(allMoleculeContainers);
+         return removedContainers;
       }
 
       /// <summary>

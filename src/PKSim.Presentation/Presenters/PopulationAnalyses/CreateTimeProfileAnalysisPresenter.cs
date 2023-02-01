@@ -18,8 +18,15 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
    {
       private readonly ILazyLoadTask _lazyLoadTask;
 
-      public CreateTimeProfileAnalysisPresenter(ICreatePopulationAnalysisView view, ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager,
-         IDialogCreator dialogCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IPopulationAnalysisChartFactory populationAnalysisChartFactory, ILazyLoadTask lazyLoadTask, IPopulationAnalysisTask populationAnalysisTask, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory)
+      public CreateTimeProfileAnalysisPresenter(
+         ICreatePopulationAnalysisView view, 
+         ISubPresenterItemManager<IPopulationAnalysisItemPresenter> subPresenterItemManager,
+         IDialogCreator dialogCreator, 
+         IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, 
+         IPopulationAnalysisChartFactory populationAnalysisChartFactory, 
+         ILazyLoadTask lazyLoadTask, 
+         IPopulationAnalysisTask populationAnalysisTask, 
+         IPopulationAnalysisFieldFactory populationAnalysisFieldFactory)
          : base(view, subPresenterItemManager, TimeProfileItems.All, dialogCreator, populationAnalysisTemplateTask, populationAnalysisChartFactory, populationAnalysisTask, populationAnalysisFieldFactory)
       {
          _lazyLoadTask = lazyLoadTask;

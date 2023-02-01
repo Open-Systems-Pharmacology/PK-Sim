@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths;
 
 namespace PKSim.Core.Services
 {
@@ -119,7 +120,7 @@ namespace PKSim.Core.Services
 
       private float[] calculateMedianFor(FloatMatrix quantityResults)
       {
-         return calculateValueFor(quantityResults, x => x.Median());
+         return calculateValueFor(quantityResults, x => new SortedFloatArray(x, alreadySorted: true).Median());
       }
 
       private float[] calculateArithmeticMeanFor(FloatMatrix quantityResults)
@@ -129,7 +130,7 @@ namespace PKSim.Core.Services
 
       private float[] calculatePercentileFor(double percentile, FloatMatrix quantityResults)
       {
-         return calculateValueFor(quantityResults, x => x.Percentile(percentile));
+         return calculateValueFor(quantityResults, x => new SortedFloatArray(x, alreadySorted: true).Percentile(percentile));
       }
 
       private float[] calculateValueFor(FloatMatrix quantityResults, Func<float[], float> calculationMethodForSortedArray)

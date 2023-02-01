@@ -21,8 +21,8 @@ namespace PKSim.Core.Mappers
          {
             var newRow = row.Table.NewRow();
             newRow.ItemArray = row.ItemArray;
-            newRow[curveData.XAxis.Caption] = ValueForDataTableFor(curveData.XAxis, curveData.XValues[i].X);
-            newRow[curveData.YAxis.Caption] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].Y);
+            newRow[curveData.XAxis.Caption] = xValueForDataTableFor(curveData, curveData.XValues[i].X);
+            newRow[curveData.YAxis.Caption] = yValueForDataTableFor(curveData, curveData.YValues[i].Y);
             newRows.Add(newRow);
          }
          return newRows;
