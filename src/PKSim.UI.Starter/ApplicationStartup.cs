@@ -137,7 +137,7 @@ namespace PKSim.UI.Starter
             container.Register<INoItemInSelectionView, NoItemInSelectionView>();
             container.Register<IPresentationSettingsTask, UIStarterPresentationSettingsTask>();
             container.Register<ITreeNodeContextMenuFactory, TreeNodeContextMenuFactory>();
-            container.Register<IIndividualMoleculesPresenter, IndividualMoleculesPresenter>();
+            container.Register<IIndividualMoleculesPresenter, NullIndividualMoleculesPresenter>();
             container.Register<IMoleculesView, MoleculesView>();
             container.Register<IEditMoleculeTask<Individual>, EditMoleculeTask<Individual>>();
             container
