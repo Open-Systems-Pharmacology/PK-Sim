@@ -10,6 +10,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       public static readonly IndividualItem<IIndividualMoleculesPresenter> Expression = new IndividualItem<IIndividualMoleculesPresenter>();
 
       public static readonly IReadOnlyList<ISubPresenterItem> All = new List<ISubPresenterItem> {Settings, Parameters, Expression};
+      public static readonly IReadOnlyList<ISubPresenterItem> AllExceptExpression = new List<ISubPresenterItem> { Settings, Parameters };
    }
 
    public static class ScaleIndividualItems

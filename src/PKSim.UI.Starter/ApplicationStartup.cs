@@ -86,7 +86,7 @@ namespace PKSim.UI.Starter
             container.AddRegister(x => x.FromType<InfrastructureRegister>());
             container.Register<ICreateExpressionProfilePresenter, CreateExpressionProfilePresenter>();
             container.Register<ICreateExpressionProfileView, CreateExpressionProfileView>();
-            container.Register<ICreateIndividualPresenter, CreateIndividualPresenter>();
+            container.Register<ICreateIndividualPresenter, CreateIndividualPresenterForMoBi>();
             container.Register<ICreateIndividualView, CreateIndividualView>();
             container.Register<IExpressionProfileToExpressionProfileDTOMapper, ExpressionProfileToExpressionProfileDTOMapper>();
             container.Register<IMoleculePropertiesMapper, MoleculePropertiesMapper>();
@@ -137,11 +137,6 @@ namespace PKSim.UI.Starter
             container.Register<INoItemInSelectionView, NoItemInSelectionView>();
             container.Register<IPresentationSettingsTask, UIStarterPresentationSettingsTask>();
             container.Register<ITreeNodeContextMenuFactory, TreeNodeContextMenuFactory>();
-            container.Register<IIndividualMoleculesPresenter, NullIndividualMoleculesPresenter>();
-            container.Register<IMoleculesView, MoleculesView>();
-            container.Register<IEditMoleculeTask<Individual>, EditMoleculeTask<Individual>>();
-            container
-               .Register<IRootNodeToIndividualExpressionsPresenterMapper<Individual>, RootNodeToIndividualExpressionsPresenterMapper<Individual>>();
             container.Register<IFavoriteParametersPresenter, FavoriteParametersPresenter>();
             container.Register<IFavoriteParametersView, FavoriteParametersView>();
             container.Register<IMultiParameterEditPresenter, MultiParameterEditPresenter>();
@@ -152,6 +147,7 @@ namespace PKSim.UI.Starter
             container.Register<IScaleParametersView, ScaleParametersView>();
             container.Register<IEditParameterPresenterTask, EditParameterPresenterTask>();
             container.Register<IParameterContextMenuFactory, ParameterContextMenuFactory>();
+
             container.Register<IIndividualToIndividualBuildingBlockMapper, IndividualToIndividualBuildingBlockMapper>();
 
             InfrastructureRegister.LoadSerializers(container);
