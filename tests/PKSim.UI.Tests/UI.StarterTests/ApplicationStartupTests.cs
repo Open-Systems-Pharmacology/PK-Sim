@@ -50,7 +50,7 @@ namespace PKSim.UI.UI.StarterTests
       [Observation]
       public void the_presenter_should_be_resolved()
       {
-         _presenter.ShouldBeAnInstanceOf<CreateIndividualPresenter>();
+         _presenter.ShouldBeAnInstanceOf<CreateIndividualPresenterForMoBi>();
       }
 
       public class When_resolving_the_individual_mapper : concern_for_ApplicationStartup
