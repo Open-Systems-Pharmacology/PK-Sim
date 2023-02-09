@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Threading;
 using DevExpress.LookAndFeel;
+using DevExpress.XtraBars.Docking;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Journal;
@@ -24,6 +25,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.DTO.Core;
 using PKSim.Presentation.DTO.Individuals;
@@ -90,7 +92,18 @@ namespace PKSim.UI.Starter
             container.Register<ICreateIndividualView, CreateIndividualView>();
             container.Register<IExpressionProfileToExpressionProfileDTOMapper, ExpressionProfileToExpressionProfileDTOMapper>();
             container.Register<IMoleculePropertiesMapper, MoleculePropertiesMapper>();
-            container.Register<ICoreUserSettings, IPresentationUserSettings, UIStarterUserSettings>(LifeStyle.Singleton);
+            //container.Register<ICoreUserSettings, IPresentationUserSettings, UIStarterUserSettings>(LifeStyle.Singleton);
+
+
+            container.Register<ICoreUserSettings, IPresentationUserSettings, UserSettings>(LifeStyle.Singleton);
+            //container.Register<ICoreUserSettings, UserSettings>();
+            //container.Register<IPresentationUserSettings, UIStarterUserSettings>(); //a test - maybe we do not need this
+            
+            //this seems to have been registered again
+            //container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
+
+
+
             container.Register<IOntogenyTask, OntogenyTask>();
             container.Register<IEntityTask, EntityTask>();
             container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
@@ -150,7 +163,15 @@ namespace PKSim.UI.Starter
 
             container.Register<IIndividualToIndividualBuildingBlockMapper, IndividualToIndividualBuildingBlockMapper>();
 
+            //the new ones we need for the Db query
+            container.Register<IExpressionProfileProteinDatabaseTask, ExpressionProfileProteinDatabaseTask>();
+            //container.Register<IGeneExpressionsDatabasePathManager, GeneExpressionsDatabasePathManager>();
+
+
+
             InfrastructureRegister.LoadSerializers(container);
+
+            var test = container.Resolve<IApplicationSettings>();
          }
 
          return container;

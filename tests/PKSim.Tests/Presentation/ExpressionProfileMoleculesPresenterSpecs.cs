@@ -158,7 +158,7 @@ namespace PKSim.Presentation
       {
          base.Context();
          sut.Edit(_expressionProfile);
-         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile)).Returns(false);
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile.Name)).Returns(false);
       }
 
       [Observation]
@@ -181,7 +181,7 @@ namespace PKSim.Presentation
          _result = new QueryExpressionResults(new ExpressionResult[] { }) {ProteinName = "NEW_NAME"};
          sut.Edit(_expressionProfile);
          _expressionProfileDTO.MoleculeName = "MOLECULE";
-         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile)).Returns(true);
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile.Name)).Returns(true);
          A.CallTo(() => _expressionProfileProteinDatabaseTask.QueryDatabase(_expressionProfile, _expressionProfileDTO.MoleculeName))
             .Returns(_result);
          A.CallTo(() => _expressionProfileUpdater.UpdateExpressionFromQuery(_expressionProfile, _result)).Returns(_command);
@@ -222,7 +222,7 @@ namespace PKSim.Presentation
          _expressionProfileDTO.MoleculeName = "MOLECULE";
          _result = new QueryExpressionResults(new ExpressionResult[] { }) { ProteinName = "NEW_NAME" };
 
-         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile)).Returns(true);
+         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile.Name)).Returns(true);
          A.CallTo(() => _expressionProfileProteinDatabaseTask.QueryDatabase(_expressionProfile, _expressionProfileDTO.MoleculeName))
             .Returns(_result);
 

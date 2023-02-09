@@ -20,12 +20,12 @@ namespace PKSim.Infrastructure.Services
          _geneExpressionQueries = geneExpressionQueries;
       }
 
-      public bool HasDatabaseFor(Species species)
+      public bool HasDatabaseFor(string speciesName)
       {
-         if (!_applicationSettings.HasExpressionsDatabaseFor(species)) 
+         if (!_applicationSettings.HasExpressionsDatabaseFor(speciesName)) 
             return false;
 
-         return FileHelper.FileExists(databaseFor(species.Name));
+         return FileHelper.FileExists(databaseFor(speciesName));
       }
 
    

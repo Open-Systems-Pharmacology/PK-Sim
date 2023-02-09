@@ -10,7 +10,7 @@ namespace PKSim.Core
       IEnumerable<SpeciesDatabaseMap> SpeciesDataBaseMaps { get; }
       void AddSpeciesDatabaseMap(SpeciesDatabaseMap speciesDatabaseMap);
       void RemoveSpeciesDatabaseMap(string speciesName);
-      bool HasExpressionsDatabaseFor(Species species);
+      bool HasExpressionsDatabaseFor(string speciesName);
       SpeciesDatabaseMap SpeciesDatabaseMapsFor(string speciesName);
 
       /// <summary>
@@ -37,9 +37,9 @@ namespace PKSim.Core
          _allMaps.Remove(species);
       }
 
-      public bool HasExpressionsDatabaseFor(Species species)
+      public bool HasExpressionsDatabaseFor(string speciesName)
       {
-         return _allMaps.Contains(species.Name);
+         return _allMaps.Contains(speciesName);
       }
 
       public SpeciesDatabaseMap SpeciesDatabaseMapsFor(string speciesName)

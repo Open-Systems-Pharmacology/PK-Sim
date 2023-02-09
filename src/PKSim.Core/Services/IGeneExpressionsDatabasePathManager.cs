@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    return true if a database has been defined for the species, otherwise false
       /// </summary>
-      bool HasDatabaseFor(Species species);
+      bool HasDatabaseFor(string speciesName);
 
       /// <summary>
       ///    Update the current database connection to point on path defined for the species

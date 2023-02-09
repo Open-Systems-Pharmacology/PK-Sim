@@ -91,7 +91,7 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       
       public void LoadExpressionFromDatabaseQuery()
       {
-         if (!_expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile))
+         if (!_expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile.Species.Name))
             throw new OSPSuiteException(PKSimConstants.Error.NoProteinExpressionDatabaseAssociatedTo(_expressionProfile.Species.Name));
 
          var queryResults = _expressionProfileProteinDatabaseTask.QueryDatabase(_expressionProfile, _expressionProfileDTO.MoleculeName);

@@ -22,7 +22,7 @@ namespace PKSim.Presentation.Services
       ///    return true if a protein expression database was defined for the species referenced in <paramref name="expressionProfile" />, otherwise
       ///    false
       /// </summary>
-      bool CanQueryProteinExpressionsFor(ExpressionProfile expressionProfile);
+      bool CanQueryProteinExpressionsFor(string SpeciesName);
    }
 
    public class ExpressionProfileProteinDatabaseTask : IExpressionProfileProteinDatabaseTask
@@ -44,9 +44,9 @@ namespace PKSim.Presentation.Services
          _moleculeExpressionTask = moleculeExpressionTask;
       }
 
-      public bool CanQueryProteinExpressionsFor(ExpressionProfile expressionProfile)
+      public bool CanQueryProteinExpressionsFor(string speciesName)
       {
-         return _geneExpressionsDatabasePathManager.HasDatabaseFor(expressionProfile.Species);
+         return _geneExpressionsDatabasePathManager.HasDatabaseFor(speciesName);
       }
 
       public QueryExpressionResults QueryDatabase(ExpressionProfile expressionProfile, string moleculeName)

@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Presenters
 
       private void addMissingSpeciesTo(IList<SpeciesDatabaseMap> definedMapping)
       {
-         foreach (var species in _speciesRepository.All().Where(species => !_applicationSettings.HasExpressionsDatabaseFor(species)))
+         foreach (var species in _speciesRepository.All().Where(species => !_applicationSettings.HasExpressionsDatabaseFor(species.Name)))
          {
             definedMapping.Add(new SpeciesDatabaseMap {Species = species.Name});
          }
