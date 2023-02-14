@@ -11,10 +11,14 @@ namespace PKSim.UI.Views.Individuals
 {
    public partial class CreateIndividualView : BuildingBlockWizardView, ICreateIndividualView
    {
+
+      //TODO: This should not be used. Commenting out for now, just in case we need it again because LookAndFell
+      //keeps getting reset when the PKSimStarter starts
+      /*
       public CreateIndividualView(Shell shell) : this(shell as BaseShell)
       {
          
-      }
+      }*/
 
       public CreateIndividualView(BaseShell shell) : base(shell)
       {

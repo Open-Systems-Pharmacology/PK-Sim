@@ -107,6 +107,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       protected override void UpdateControls(int indexThatWillHaveFocus)
       {
+         //mit index und count logic
          UpdateViewStatus();
          _view.NextEnabled = PresenterAt(IndividualItems.Settings).CanClose && indexThatWillHaveFocus != IndividualItems.Expression.Index;
          _view.OkEnabled = CanClose;
