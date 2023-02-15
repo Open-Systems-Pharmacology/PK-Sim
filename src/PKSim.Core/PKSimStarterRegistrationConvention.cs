@@ -19,37 +19,30 @@ namespace PKSim.Core
          if (!shouldRegisterType(concreteType))
             return;
 
-         if (concreteType.Name.EndsWith("CreateIndividualPresenterForMoBi"))
-         {
-            //Register using the first PK-Sim interface if available
-            var pkSimInterface = concreteType
-               .GetInterfaces()
-               .Where(t => t.IsInterface)
-               .FirstOrDefault(t => t.Namespace != null && t.Namespace.StartsWith("PKSim"));
-
-            if (pkSimInterface != null)
-               container.Register(pkSimInterface, concreteType, lifeStyle);
-
-         }
-
          base.Process(concreteType, container, lifeStyle);
       }
 
       private bool shouldRegisterType(Type concreteType)
       {
-         if (concreteType.Name.Contains("ExpressionProfile"))
+         if (concreteType.FullName == null)
+            return false;
+
+         if (concreteType.FullName.Contains("ExpressionProfile"))
             return true;
 
-         if (concreteType.Name.Contains("Individual"))
+         if (concreteType.FullName.Contains("Individual"))
             return true;
 
-         if (concreteType.Name.Contains("Parameter"))
+         if (concreteType.FullName.Contains("Parameter"))
             return true;
 
-         if (concreteType.Name.Contains("Mapper"))
+         if (concreteType.FullName.Contains("Mapper"))
             return true;
 
-         if (concreteType.Name.Contains("Factory"))
+         if (concreteType.FullName.Contains("Factory"))
+            return true;
+
+         if (concreteType.FullName.Contains("Tooltip"))
             return true;
 
          return false;

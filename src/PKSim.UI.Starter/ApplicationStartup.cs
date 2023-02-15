@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Threading;
+using DevExpress.LookAndFeel;
 using OSPSuite.Assets;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
@@ -8,6 +9,7 @@ using OSPSuite.Presentation;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI;
 using OSPSuite.UI.Mappers;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
@@ -18,6 +20,11 @@ using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
+using PKSim.Presentation.Mappers;
+using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Presenters.Parameters;
+using PKSim.Presentation.Services;
+using PKSim.Presentation.UICommands;
 using PresenterRegister = PKSim.Presentation.PresenterRegister;
 
 namespace PKSim.UI.Starter
@@ -50,20 +57,31 @@ namespace PKSim.UI.Starter
             container.RegisterImplementationOf(SynchronizationContext.Current);
             container.RegisterImplementationOf(shell as BaseShell);
             container.RegisterImplementationOf(shell);
+            container.RegisterImplementationOf(UserLookAndFeel.Default);
 
             container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, IWorkspace, Workspace>(LifeStyle.Singleton);
             container.Register<ICoreUserSettings, IPresentationUserSettings, UIStarterUserSettings>(LifeStyle.Singleton);
-            registerMinimalImplementations(container);
 
-
+            container.AddRegister(x => x.FromType<UIRegister>());
+            container.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
             container.AddRegister(x => x.FromType<CoreRegister>());
             container.AddRegister(x => x.FromType<InfrastructureRegister>());
-            container.AddRegister(x => x.FromType<PKSimStarterPresenterRegister>());
+
+            container.AddRegister(x => x.FromType<PresenterRegister>());
             container.AddRegister(x => x.FromType<PKSimStarterUserInterfaceRegister>());
 
 
+            //TODO: refactor these here to not register explicitly
+
+            //necessary for Individual
+            container.Register<IToolTipCreator, ToolTipCreator>();
+            container.Register<OSPSuite.UI.Services.IToolTipCreator, ToolTipCreator>();
+
+
             InfrastructureRegister.LoadSerializers(container);
+            container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
+            InfrastructureRegister.RegisterWorkspace(container);
          }
 
          return container;
