@@ -6,12 +6,12 @@ namespace PKSim.Infrastructure.ORM.Mappers
 {
    public interface ICriteriaConditionToDescriptorConditionMapper
    {
-      IDescriptorCondition MapFrom(CriteriaCondition criteriaCondition, string tag);
+      ITagCondition MapFrom(CriteriaCondition criteriaCondition, string tag);
    }
 
    public class CriteriaConditionToDescriptorConditionMapper : ICriteriaConditionToDescriptorConditionMapper
    {
-      public IDescriptorCondition MapFrom(CriteriaCondition criteriaCondition, string tag)
+      public ITagCondition MapFrom(CriteriaCondition criteriaCondition, string tag)
       {
          switch (criteriaCondition)
          {

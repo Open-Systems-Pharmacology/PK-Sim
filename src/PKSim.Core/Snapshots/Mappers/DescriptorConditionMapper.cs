@@ -8,7 +8,7 @@ using SnapshotDescriptorCondition = PKSim.Core.Snapshots.DescriptorCondition;
 namespace PKSim.Core.Snapshots.Mappers
 {
    
-   public class DescriptorConditionMapper : SnapshotMapperBase<IDescriptorCondition, SnapshotDescriptorCondition>
+   public class DescriptorConditionMapper : SnapshotMapperBase<ITagCondition, SnapshotDescriptorCondition>
    {
       private readonly IOSPSuiteLogger _logger;
       const string MATCH_TAG = "MatchTag";
@@ -18,7 +18,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _logger = logger;
       }
 
-      public override async Task<SnapshotDescriptorCondition> MapToSnapshot(IDescriptorCondition descriptorCondition)
+      public override async Task<SnapshotDescriptorCondition> MapToSnapshot(ITagCondition descriptorCondition)
       {
          var tagCondition = descriptorCondition as TagCondition;
          var snapshot = await SnapshotFrom(descriptorCondition);
@@ -27,12 +27,12 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override Task<IDescriptorCondition> MapToModel(SnapshotDescriptorCondition snapshot, SnapshotContext snapshotContext)
+      public override Task<ITagCondition> MapToModel(SnapshotDescriptorCondition snapshot, SnapshotContext snapshotContext)
       {
          return Task.FromResult(descriptorConditionFrom(snapshot));
       }
 
-      private IDescriptorCondition descriptorConditionFrom(SnapshotDescriptorCondition snapshot)
+      private ITagCondition descriptorConditionFrom(SnapshotDescriptorCondition snapshot)
       {
          var tag = snapshot.Tag;
          switch (snapshot.Type)
@@ -41,6 +41,8 @@ namespace PKSim.Core.Snapshots.Mappers
                return new InContainerCondition(tag);
             case Constants.ALL_TAG:
                return new MatchAllCondition();
+            case Constants.IN_PARENT:
+               return new InParentCondition();
             case MATCH_TAG:
                return new MatchTagCondition(tag);
             case Constants.NOT_IN_CONTAINER:
@@ -54,9 +56,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return null;
       }
 
-      private string typeFrom(IDescriptorCondition descriptorCondition)
+      private string typeFrom(ITagCondition tagCondition)
       {
-         switch (descriptorCondition)
+         switch (tagCondition)
          {
             case InContainerCondition _:
                return Constants.IN_CONTAINER;
@@ -64,13 +66,15 @@ namespace PKSim.Core.Snapshots.Mappers
                return Constants.ALL_TAG;
             case MatchTagCondition _:
                return MATCH_TAG;
+            case InParentCondition _:
+               return Constants.IN_PARENT;
             case NotInContainerCondition _:
                return Constants.NOT_IN_CONTAINER;
             case NotMatchTagCondition _:
                return Constants.NOT;
          }
 
-         _logger.AddError(PKSimConstants.Error.CannotCreateDescriptorSnapshotFor(descriptorCondition.GetType().FullName));
+         _logger.AddError(PKSimConstants.Error.CannotCreateDescriptorSnapshotFor(tagCondition.GetType().FullName));
          return null;
       }
    }
