@@ -9,13 +9,14 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class EnzymaticStabilityProcessFolderContextMenu : ContextMenu<ITreeNode, ICompoundProcessesPresenter>
    {
-      public EnzymaticStabilityProcessFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter presenter)
-         : base(nodeRequestingContextMenu, presenter)
+      public EnzymaticStabilityProcessFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter presenter, IContainer container)
+         : base(nodeRequestingContextMenu, presenter, container)
       {
       }
 
@@ -30,13 +31,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class EnzymaticStabilityProcessFolderTreeNodeContextMenuFactory : CompoundProcessFolderTreeNodeContextMenuFactory
    {
-      public EnzymaticStabilityProcessFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository) : base(PKSimRootNodeTypes.CompoundMetabolizingEnzymes, repository)
+      private readonly IContainer _container;
+
+      public EnzymaticStabilityProcessFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IContainer container) : base(PKSimRootNodeTypes.CompoundMetabolizingEnzymes, repository)
       {
+         _container = container;
       }
 
       protected override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, ICompoundProcessesPresenter presenter)
       {
-         return new EnzymaticStabilityProcessFolderContextMenu(treeNode, presenter);
+         return new EnzymaticStabilityProcessFolderContextMenu(treeNode, presenter, _container);
       }
    }
 }

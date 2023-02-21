@@ -1,8 +1,6 @@
 using OSPSuite.Assets;
 using OSPSuite.Core;
-using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
 using OSPSuite.Presentation.Presenters.Journal;
@@ -12,12 +10,9 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters;
 using PKSim.Presentation.Presenters.ContextMenus;
 using PKSim.Presentation.Presenters.Individuals;
@@ -35,7 +30,7 @@ using MainComparisonPresenter = PKSim.Presentation.Presenters.Main.MainCompariso
 
 namespace PKSim.Presentation
 {
-   public class PresenterRegister : Register
+   public abstract class BasePresenterRegister : Register
    {
       public override void RegisterInContainer(IContainer container)
       {
@@ -43,7 +38,7 @@ namespace PKSim.Presentation
          {
             scan.AssemblyContainingType<PresenterRegister>();
 
-            //Main Presenters that should be registered as singletong
+            //Main Presenters that should be registered as singleton
             scan.ExcludeNamespaceContainingType<PKSimMainViewPresenter>();
 
             //Context menu will be registered with another convention
@@ -52,19 +47,11 @@ namespace PKSim.Presentation
             //UI Commands will be registered with another convention
             scan.ExcludeNamespaceContainingType<IExitCommand>();
 
-            //This specific objects needs to be register as Singleton
-            scan.ExcludeType<CloseSubjectPresenterInvoker>();
-            scan.ExcludeType<ButtonGroupRepository>();
-            scan.ExcludeType<MenuBarItemRepository>();
-
-            //This objects were already registered in Bootstrap
-            scan.ExcludeType<ApplicationController>();
-            scan.ExcludeType<StartOptions>();
+            ExcludeTypes(scan);
 
             scan.RegisterAs(LifeStyle.Transient);
             scan.WithConvention<PKSimRegistrationConvention>();
          });
-
 
          container.AddScanner(scan =>
          {
@@ -79,15 +66,7 @@ namespace PKSim.Presentation
          });
 
 
-         container.Register<IMainViewPresenter, PKSimMainViewPresenter>(LifeStyle.Singleton);
-         container.Register<IBuildingBlockExplorerPresenter, IMainViewItemPresenter, BuildingBlockExplorerPresenter>(LifeStyle.Singleton);
-         container.Register<IHistoryPresenter, IMainViewItemPresenter, HistoryPresenter>(LifeStyle.Singleton);
-         container.Register<IJournalDiagramMainPresenter, IMainViewItemPresenter, JournalDiagramMainPresenter>(LifeStyle.Singleton);
-         container.Register<IJournalPresenter, IMainViewItemPresenter, JournalPresenter>(LifeStyle.Singleton);
-         container.Register<IMenuAndToolBarPresenter, IMainViewItemPresenter, MenuAndToolBarPresenter>(LifeStyle.Singleton);
-         container.Register<ISimulationExplorerPresenter, IMainViewItemPresenter, SimulationExplorerPresenter>(LifeStyle.Singleton);
-         container.Register<IStatusBarPresenter, IMainViewItemPresenter, StatusBarPresenter>(LifeStyle.Singleton);
-         container.Register<IMainComparisonPresenter, IMainViewItemPresenter, MainComparisonPresenter>(LifeStyle.Singleton);
+         RegisterMainViewPresenters(container);
 
          registerContextMenus(container);
 
@@ -133,6 +112,20 @@ namespace PKSim.Presentation
          Captions.MoleculePath = PKSimConstants.UI.Molecule;
       }
 
+      protected virtual void ExcludeTypes(IAssemblyScanner scan)
+      {
+         //This specific objects needs to be register as Singleton
+         scan.ExcludeType<CloseSubjectPresenterInvoker>();
+         scan.ExcludeType<ButtonGroupRepository>();
+         scan.ExcludeType<MenuBarItemRepository>();
+
+         //This objects were already registered in Bootstrap
+         scan.ExcludeType<ApplicationController>();
+         scan.ExcludeType<StartOptions>();
+      }
+      
+      protected abstract void RegisterMainViewPresenters(IContainer container);
+
       private static void registerSingleStartPresenters(IContainer container)
       {
          container.AddScanner(scan =>
@@ -161,6 +154,23 @@ namespace PKSim.Presentation
             scan.IncludeNamespaceContainingType<IndividualSimulationContextMenu>();
             scan.WithConvention<AllInterfacesAndConcreteTypeRegistrationConvention>();
          });
+      }
+   }
+
+   public class PresenterRegister : BasePresenterRegister
+   {
+
+      protected override void RegisterMainViewPresenters(IContainer container)
+      {
+         container.Register<IMainViewPresenter, PKSimMainViewPresenter>(LifeStyle.Singleton);
+         container.Register<IBuildingBlockExplorerPresenter, IMainViewItemPresenter, BuildingBlockExplorerPresenter>(LifeStyle.Singleton);
+         container.Register<IHistoryPresenter, IMainViewItemPresenter, HistoryPresenter>(LifeStyle.Singleton);
+         container.Register<IJournalDiagramMainPresenter, IMainViewItemPresenter, JournalDiagramMainPresenter>(LifeStyle.Singleton);
+         container.Register<IJournalPresenter, IMainViewItemPresenter, JournalPresenter>(LifeStyle.Singleton);
+         container.Register<IMenuAndToolBarPresenter, IMainViewItemPresenter, MenuAndToolBarPresenter>(LifeStyle.Singleton);
+         container.Register<ISimulationExplorerPresenter, IMainViewItemPresenter, SimulationExplorerPresenter>(LifeStyle.Singleton);
+         container.Register<IStatusBarPresenter, IMainViewItemPresenter, StatusBarPresenter>(LifeStyle.Singleton);
+         container.Register<IMainComparisonPresenter, IMainViewItemPresenter, MainComparisonPresenter>(LifeStyle.Singleton);
       }
    }
 }

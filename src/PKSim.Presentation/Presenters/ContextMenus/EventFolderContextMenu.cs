@@ -7,13 +7,14 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class EventFolderContextMenu : BuildingBlockFolderContextMenu<PKSimEvent>
    {
-      public EventFolderContextMenu(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
-         : base(repository, buildingBlockRepository, MenuBarItemIds.NewEvent, MenuBarItemIds.LoadEvent)
+      public EventFolderContextMenu(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository, IContainer container)
+         : base(repository, buildingBlockRepository, container, MenuBarItemIds.NewEvent, MenuBarItemIds.LoadEvent)
       {
       }
    }
@@ -21,16 +22,18 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    public class EventFolderTreeNodeContextMenuFactory : RootNodeContextMenuFactory
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IContainer _container;
 
-      public EventFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
+      public EventFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository, IContainer container)
          : base(PKSimRootNodeTypes.EventFolder, repository)
       {
          _buildingBlockRepository = buildingBlockRepository;
+         _container = container;
       }
 
       public override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new EventFolderContextMenu(_repository, _buildingBlockRepository);
+         return new EventFolderContextMenu(_repository, _buildingBlockRepository, _container);
       }
    }
 }

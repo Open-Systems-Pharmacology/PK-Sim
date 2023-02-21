@@ -20,8 +20,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class ObservedDataContextMenu : ContextMenu<DataRepository, Simulation>
    {
-      public ObservedDataContextMenu(DataRepository dataRepository, Simulation activeSimulation)
-         : base(dataRepository, activeSimulation)
+      public ObservedDataContextMenu(DataRepository dataRepository, Simulation activeSimulation, IContainer container)
+         : base(dataRepository, activeSimulation, container)
       {
       }
 
@@ -29,34 +29,34 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(DataRepository dataRepository, Simulation activeSimulation)
       {
          yield return CreateMenuButton.WithCaption(MenuNames.Edit)
-            .WithCommandFor<EditSubjectUICommand<DataRepository>, DataRepository>(dataRepository)
+            .WithCommandFor<EditSubjectUICommand<DataRepository>, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.Edit);
 
          yield return CreateMenuButton.WithCaption(MenuNames.Rename)
-            .WithCommandFor<RenameObservedDataUICommand, DataRepository>(dataRepository)
+            .WithCommandFor<RenameObservedDataUICommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.Rename);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsTemplate)
-            .WithCommandFor<SaveObservedDataToTemplateDatabaseCommand, DataRepository>(dataRepository)
+            .WithCommandFor<SaveObservedDataToTemplateDatabaseCommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .AsGroupStarter();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ReloadAllRelated.WithEllipsis())
-            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository)
+            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository, _container)
             .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
             .WithIcon(ApplicationIcons.RefreshAll);
 
          yield return CreateMenuButton.WithCaption(Captions.ExportToExcel.WithEllipsis())
-            .WithCommandFor<ExportObservedDataToExcelCommand, DataRepository>(dataRepository)
+            .WithCommandFor<ExportObservedDataToExcelCommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.Excel);
             
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
-            .WithCommandFor<ExportObservedDataToPkmlCommand, DataRepository>(dataRepository)
+            .WithCommandFor<ExportObservedDataToPkmlCommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.PKMLSave);
 
-         yield return GenericMenu.AddToJournal(dataRepository);
+         yield return GenericMenu.AddToJournal(dataRepository, _container);
 
-         yield return GenericMenu.ExportSnapshotMenuFor(dataRepository);
+         yield return GenericMenu.ExportSnapshotMenuFor(dataRepository, _container);
 
          if (activeSimulation != null && !activeSimulation.UsesObservedData(dataRepository))
             yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddObservedDataToSimulation(activeSimulation.Name))
@@ -64,7 +64,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
                .WithIcon(ApplicationIcons.Simulation);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
-            .WithCommandFor<DeleteObservedDataUICommand, DataRepository>(dataRepository)
+            .WithCommandFor<DeleteObservedDataUICommand, DataRepository>(dataRepository, _container)
             .WithIcon(ApplicationIcons.Delete)
             .AsGroupStarter();
       }
@@ -73,10 +73,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    public class ObservedDataTreeNodeContextMenuFactory : IContextMenuSpecificationFactory<ITreeNode>
    {
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
+      private readonly IContainer _container;
 
-      public ObservedDataTreeNodeContextMenuFactory(IActiveSubjectRetriever activeSubjectRetriever)
+      public ObservedDataTreeNodeContextMenuFactory(IActiveSubjectRetriever activeSubjectRetriever, IContainer container)
       {
          _activeSubjectRetriever = activeSubjectRetriever;
+         _container = container;
       }
 
       public bool IsSatisfiedBy(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
@@ -86,7 +88,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       public IContextMenu CreateFor(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new ObservedDataContextMenu(treeNode.DowncastTo<ObservedDataNode>().Tag.Repository,_activeSubjectRetriever.Active< Simulation>());
+         return new ObservedDataContextMenu(treeNode.DowncastTo<ObservedDataNode>().Tag.Repository,_activeSubjectRetriever.Active< Simulation>(), _container);
       }
    }
 }

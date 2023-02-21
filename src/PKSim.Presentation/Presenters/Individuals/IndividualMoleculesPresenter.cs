@@ -1,18 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Nodes;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Individuals.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Views;
-using OSPSuite.Utility.Events;
 using PKSim.Presentation.Services;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 

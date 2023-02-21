@@ -99,7 +99,6 @@ namespace PKSim.UI
          AllowsScientificNotation = true;
          ShouldRestoreWorkspaceLayout = false;
          MRUListItemCount = CoreConstants.DEFAULT_MRU_LIST_ITEM_COUNT;
-         ActiveSkin = CoreConstants.DEFAULT_SKIN;
          NumberOfBins = CoreConstants.DEFAULT_NUMBER_OF_BINS;
          NumberOfIndividualsPerBin = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN;
          DefaultSpecies = CoreConstants.Species.HUMAN;

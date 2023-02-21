@@ -1,12 +1,17 @@
 ﻿using System.Threading;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Presentation.Presenters.Main;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Mappers;
 using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Presenters.Main;
 using PKSim.UI.Starter;
 
 namespace PKSim.UI.UI.StarterTests
@@ -18,7 +23,11 @@ namespace PKSim.UI.UI.StarterTests
       protected override void Context()
       {
          SynchronizationContext.SetSynchronizationContext(new When_resolving_the_individual_presenter.TestSynchronizationContext());
-         _container = ApplicationStartup.Initialize(new BaseShell());
+         IoC.InitializeWith(new CastleWindsorContainer());
+         IoC.Container.RegisterImplementationOf(A.Fake<IMainViewPresenter>());
+         IoC.Container.RegisterImplementationOf(new BaseShell() as IShell);
+
+         _container = ApplicationStartup.Initialize();
       }
    }
 

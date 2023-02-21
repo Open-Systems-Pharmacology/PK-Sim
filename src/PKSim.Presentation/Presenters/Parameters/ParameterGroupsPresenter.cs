@@ -74,7 +74,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private readonly INodeToCustomizableParametersPresenterMapper _parametersPresenterMapper;
       private readonly INoItemInSelectionPresenter _noItemInSelectionPresenter;
       private readonly IGroupRepository _groupRepository;
-      private readonly ICoreUserSettings _userSettings;
+      private readonly IUserSettings _userSettings;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
       private readonly ITreeNodeContextMenuFactory _treeNodeContextMenuFactory;
       private readonly ICache<ITreeNode, ICustomParametersPresenter> _parameterPresenterCache;
@@ -94,7 +94,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          IParameterContainerToTreeNodeMapper containerNodeMapper,
          INodeToCustomizableParametersPresenterMapper parametersPresenterMapper,
          INoItemInSelectionPresenter noItemInSelectionPresenter,
-         ITreeNodeFactory treeNodeFactory, IGroupRepository groupRepository, ICoreUserSettings userSettings,
+         ITreeNodeFactory treeNodeFactory, IGroupRepository groupRepository, IUserSettings userSettings,
          IPresentationSettingsTask presentationSettingsTask, ITreeNodeContextMenuFactory treeNodeContextMenuFactory)
          : base(view)
       {

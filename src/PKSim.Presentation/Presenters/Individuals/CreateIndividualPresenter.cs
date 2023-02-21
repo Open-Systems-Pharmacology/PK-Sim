@@ -1,15 +1,16 @@
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Core;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views;
 using PKSim.Presentation.Views.Individuals;
-using System.Collections.Generic;
-using PKSim.Presentation.Presenters.Individuals;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -17,7 +18,6 @@ namespace PKSim.Presentation.Presenters.Individuals
    {
       void CreateIndividual();
    }
-
 
    public abstract class AbstractCreateIndividualPresenter :
       PKSimWizardPresenter<ICreateIndividualView, ICreateIndividualPresenter, IIndividualItemPresenter>,
@@ -70,13 +70,15 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public virtual void CreateIndividual()
       {
-         if (PresenterAt(IndividualItems.Settings).IndividualCreated) return;
+         if (PresenterAt(IndividualItems.Settings).IndividualCreated) 
+            return;
          //reset commands before generating a new individual
          _macroCommand.Clear();
          PresenterAt(IndividualItems.Settings).CreateIndividual();
-         if (Individual == null) return;
-         PresenterAt(IndividualItems.Parameters).EditIndividual(Individual);
-         PresenterAt(IndividualItems.Expression).EditIndividual(Individual);
+         if (Individual == null) 
+            return;
+
+         AllButSettingsPresenter.Each(x => x.EditIndividual(Individual));
       }
 
       public override void WizardNext(int previousIndex)
@@ -90,11 +92,17 @@ namespace PKSim.Presentation.Presenters.Individuals
          base.WizardNext(previousIndex);
       }
 
-      public Individual Individual
+      protected abstract IReadOnlyList<IIndividualItemPresenter> AllButSettingsPresenter { get; }
+
+      protected override void UpdateControls(int indexThatWillHaveFocus)
       {
-         get { return PresenterAt(IndividualItems.Settings).Individual; }
+         UpdateViewStatus();
+         _view.NextEnabled = PresenterAt(IndividualItems.Settings).CanClose && indexThatWillHaveFocus != _subPresenterItems.Last().Index;
+         _view.OkEnabled = CanClose;
+         _subPresenterItems.Except(new[] { _subPresenterItems.First() }).Each(x => _view.SetControlEnabled(x, PresenterAt(IndividualItems.Settings).IndividualCreated));
       }
 
+      public Individual Individual => PresenterAt(IndividualItems.Settings).Individual;
    }
 
    public class CreateIndividualPresenter : AbstractCreateIndividualPresenter
@@ -103,46 +111,21 @@ namespace PKSim.Presentation.Presenters.Individuals
          IDialogCreator dialogCreator,
          IBuildingBlockPropertiesMapper propertiesMapper, IObjectBaseDTOFactory buildingBlockDTOFactory)
          : base(view, subPresenterItemManager, dialogCreator, propertiesMapper, buildingBlockDTOFactory, IndividualItems.All)
-      { }
-
-      protected override void UpdateControls(int indexThatWillHaveFocus)
       {
-         //mit index und count logic
-         UpdateViewStatus();
-         _view.NextEnabled = PresenterAt(IndividualItems.Settings).CanClose && indexThatWillHaveFocus != IndividualItems.Expression.Index;
-         _view.OkEnabled = CanClose;
-         _view.SetControlEnabled(IndividualItems.Expression, PresenterAt(IndividualItems.Settings).IndividualCreated);
-         _view.SetControlEnabled(IndividualItems.Parameters, PresenterAt(IndividualItems.Settings).IndividualCreated);
       }
-   }
+
+      protected override IReadOnlyList<IIndividualItemPresenter> AllButSettingsPresenter => new List<IIndividualItemPresenter> { PresenterAt(IndividualItems.Expression), PresenterAt(IndividualItems.Parameters) };
    }
 
-//try moving to the Starter namespace
    public class CreateIndividualPresenterForMoBi : AbstractCreateIndividualPresenter
    {
       public CreateIndividualPresenterForMoBi(ICreateIndividualView view, ISubPresenterItemManager<IIndividualItemPresenter> subPresenterItemManager,
          IDialogCreator dialogCreator,
          IBuildingBlockPropertiesMapper propertiesMapper, IObjectBaseDTOFactory buildingBlockDTOFactory)
          : base(view, subPresenterItemManager, dialogCreator, propertiesMapper, buildingBlockDTOFactory, IndividualItems.AllExceptExpression)
-      {}
-      
-      protected override void UpdateControls(int indexThatWillHaveFocus)
       {
-         UpdateViewStatus();
-         _view.NextEnabled = PresenterAt(IndividualItems.Settings).CanClose;
-         _view.OkEnabled = CanClose;
-         _view.SetControlEnabled(IndividualItems.Parameters, PresenterAt(IndividualItems.Settings).IndividualCreated);
-   }
-
-      public override void CreateIndividual()
-      {
-         if (PresenterAt(IndividualItems.Settings).IndividualCreated) return;
-         //reset commands before generating a new individual
-         _macroCommand.Clear();
-         PresenterAt(IndividualItems.Settings).CreateIndividual();
-         if (Individual == null) return;
-         PresenterAt(IndividualItems.Parameters).EditIndividual(Individual);
       }
-}
 
-   
+      protected override IReadOnlyList<IIndividualItemPresenter> AllButSettingsPresenter => new List<IIndividualItemPresenter> { PresenterAt(IndividualItems.Parameters) };
+   }
+}

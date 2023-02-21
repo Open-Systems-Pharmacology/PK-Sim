@@ -9,24 +9,24 @@ namespace PKSim.UI.Starter
 {
    public static class ExpressionProfileCreator
    {
-      public static object CreateIndividualEnzymeExpressionProfile(IShell shell)
+      public static object CreateIndividualEnzymeExpressionProfile()
       {
-         return createExpressionProfile<IndividualEnzyme>(shell);
+         return createExpressionProfile<IndividualEnzyme>();
       }
 
-      public static object CreateTransporterExpressionProfile(IShell shell)
+      public static object CreateTransporterExpressionProfile()
       {
-         return createExpressionProfile<IndividualTransporter>(shell);
+         return createExpressionProfile<IndividualTransporter>();
       }
 
-      public static object CreateBindingPartnerExpressionProfile(IShell shell)
+      public static object CreateBindingPartnerExpressionProfile()
       {
-         return createExpressionProfile<IndividualOtherProtein>(shell);
+         return createExpressionProfile<IndividualOtherProtein>();
       }
 
-      private static object createExpressionProfile<T>(IShell shell) where T : IndividualMolecule
+      private static object createExpressionProfile<T>() where T : IndividualMolecule
       {
-         var container = ApplicationStartup.Initialize(shell);
+         var container = ApplicationStartup.Initialize();
 
          using (var presenter = container.Resolve<ICreateExpressionProfilePresenter>())
          {

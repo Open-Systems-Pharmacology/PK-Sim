@@ -57,10 +57,5 @@ namespace PKSim.Core
       ///    Path of the template database containing the template building block
       /// </summary>
       string TemplateDatabasePath { get; set; }
-
-      /// <summary>
-      ///    Default grouping mode for grouping presenter
-      /// </summary>
-      ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }
    }
 }

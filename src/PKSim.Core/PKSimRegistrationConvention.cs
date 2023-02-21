@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands.Core;
@@ -31,7 +30,6 @@ namespace PKSim.Core
          if (!shouldRegisterType(concreteType))
             return;
 
-         Debug.Print(concreteType.FullName);
          var services = new HashSet<Type>();
 
          //Register using the first PK-Sim interface if available

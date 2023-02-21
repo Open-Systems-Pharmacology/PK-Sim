@@ -4,6 +4,7 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -12,11 +13,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class MultipleUsedBuildingBlockNodeContextMenu : MultipleBuildingBlockNodeContextMenu<IPKSimBuildingBlock>
    {
-      public MultipleUsedBuildingBlockNodeContextMenu(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, IExecutionContext executionContext) : base(buildingBlocks, executionContext)
+      public MultipleUsedBuildingBlockNodeContextMenu(IReadOnlyList<IPKSimBuildingBlock> buildingBlocks, IExecutionContext executionContext, IContainer container) : base(buildingBlocks, executionContext, container)
       {
       }
 
-      public MultipleUsedBuildingBlockNodeContextMenu(IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> buildingBlocks, IExecutionContext executionContext) : base(buildingBlocks, executionContext)
+      public MultipleUsedBuildingBlockNodeContextMenu(IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> buildingBlocks, IExecutionContext executionContext, IContainer container) : base(buildingBlocks, executionContext, container)
       {
       }
 
@@ -34,17 +35,19 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    {
       private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly IExecutionContext _executionContext;
+      private readonly IContainer _container;
 
-      public MultipleUsedBuildingBlockNodeContextMenuFactory(IBuildingBlockInProjectManager buildingBlockInProjectManager, IExecutionContext executionContext)
+      public MultipleUsedBuildingBlockNodeContextMenuFactory(IBuildingBlockInProjectManager buildingBlockInProjectManager, IExecutionContext executionContext, IContainer container)
       {
          _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _executionContext = executionContext;
+         _container = container;
       }
 
       protected override IContextMenu CreateFor(IReadOnlyList<UsedBuildingBlock> usedBuildingBlock, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
       {
          var buildingBlocks = loadedBuildingBlocksBasedOn(usedBuildingBlock);
-         return new MultipleUsedBuildingBlockNodeContextMenu(buildingBlocks, _executionContext);
+         return new MultipleUsedBuildingBlockNodeContextMenu(buildingBlocks, _executionContext, _container);
       }
 
       private IReadOnlyList<NamedBuildingBlock<IPKSimBuildingBlock>> loadedBuildingBlocksBasedOn(IEnumerable<UsedBuildingBlock> usedBuildingBlocks)
