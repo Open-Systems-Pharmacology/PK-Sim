@@ -19,7 +19,7 @@ namespace PKSim.Infrastructure
       {
          sut = new ObjectPathXmlAttributeMapper();
          _container = A.Fake<IContainer>();
-         A.CallTo(() => _container.Resolve<ObjectPathFactory>()).Returns(new ObjectPathFactoryForSpecs());
+         A.CallTo(() => _container.Resolve<IObjectPathFactory>()).Returns(new ObjectPathFactoryForSpecs());
          _serializationContext = SerializationTransaction.Create(_container);
       }
    }

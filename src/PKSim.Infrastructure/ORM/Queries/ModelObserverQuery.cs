@@ -22,13 +22,13 @@ namespace PKSim.Infrastructure.ORM.Queries
       private readonly IObserverBuilderRepository _observerBuilderRepository;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IDimensionRepository _dimensionRepository;
-      private readonly ObjectPathFactory _objectPathFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IInteractionTask _interactionTask;
 
       private const string TOTAL_DRUG_MASS_ALIAS = "TotalDrugMass";
 
       public ModelObserverQuery(IObjectBaseFactory objectBaseFactory, IObserverBuilderRepository observerBuilderRepository,
-         ICloneManagerForBuildingBlock cloneManager, IDimensionRepository dimensionRepository, ObjectPathFactory objectPathFactory,
+         ICloneManagerForBuildingBlock cloneManager, IDimensionRepository dimensionRepository, IObjectPathFactory objectPathFactory,
          IInteractionTask interactionTask)
       {
          _objectBaseFactory = objectBaseFactory;

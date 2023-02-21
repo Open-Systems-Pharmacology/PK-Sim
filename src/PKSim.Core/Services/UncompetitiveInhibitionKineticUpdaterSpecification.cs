@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
    /// </summary>
    public class UncompetitiveInhibitionKineticUpdaterSpecification : InteractionKineticUpdaterSpecificationBase
    {
-      public UncompetitiveInhibitionKineticUpdaterSpecification(ObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
+      public UncompetitiveInhibitionKineticUpdaterSpecification(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
          base(objectPathFactory, dimensionRepository, interactionTask, InteractionType.UncompetitiveInhibition,
             kiNumeratorAlias: CoreConstants.Alias.UNCOMPETITIVE_INHIBITION_KI,
             kiNumeratorParameter: CoreConstants.Parameters.KI,

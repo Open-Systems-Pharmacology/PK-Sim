@@ -48,7 +48,7 @@ namespace PKSim.Core.Services
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly IInterpolation _interpolation;
       private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
-      private readonly ObjectPathFactory _objectPathFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IGenderRepository _genderRepository;
       private readonly IDimension _timeDimension;
       private readonly Unit _yearUnit;
@@ -70,7 +70,7 @@ namespace PKSim.Core.Services
          IFullPathDisplayResolver fullPathDisplayResolver,
          IInterpolation interpolation,
          IParameterStartValuesCreator parameterStartValuesCreator,
-         ObjectPathFactory objectPathFactory,
+         IObjectPathFactory objectPathFactory,
          IGenderRepository genderRepository)
       {
          _formulaFactory = formulaFactory;

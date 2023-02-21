@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
    /// </summary>
    public class IrreversibleInhibitionKineticUpdaterSpecification : InteractionKineticUpdaterSpecificationBase
    {
-      public IrreversibleInhibitionKineticUpdaterSpecification(ObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
+      public IrreversibleInhibitionKineticUpdaterSpecification(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
          base(objectPathFactory, dimensionRepository, interactionTask, InteractionType.IrreversibleInhibition,
             kiNumeratorAlias: CoreConstants.Alias.IRREVERSIBLE_INHIBITION_KI,
             kiNumeratorParameter: CoreConstants.Parameters.KI,

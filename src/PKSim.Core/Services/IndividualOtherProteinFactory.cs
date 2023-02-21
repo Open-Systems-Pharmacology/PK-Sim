@@ -15,7 +15,7 @@ namespace PKSim.Core.Services
    {
       public IndividualOtherProteinFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
-         ObjectPathFactory objectPathFactory,
+         IObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
          IIndividualPathWithRootExpander individualPathWithRootExpander,
          IIdGenerator idGenerator, 

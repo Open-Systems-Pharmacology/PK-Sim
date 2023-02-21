@@ -14,9 +14,9 @@ namespace PKSim.Infrastructure.ORM.Mappers
    public class FlatRelativeObjectPathToObjectPathMapper : IFlatRelativeObjectPathToObjectPathMapper
    {
       private readonly IFlatRelativeObjectPathRepository _flatObjectPathRepo;
-      private readonly ObjectPathFactory _objectPathFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
 
-      public FlatRelativeObjectPathToObjectPathMapper(IFlatRelativeObjectPathRepository flatRelativeObjectPathRepo,ObjectPathFactory objectPathFactory)
+      public FlatRelativeObjectPathToObjectPathMapper(IFlatRelativeObjectPathRepository flatRelativeObjectPathRepo, IObjectPathFactory objectPathFactory)
       {
          _flatObjectPathRepo = flatRelativeObjectPathRepo;
          _objectPathFactory = objectPathFactory;

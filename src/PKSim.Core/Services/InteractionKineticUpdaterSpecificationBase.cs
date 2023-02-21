@@ -14,7 +14,7 @@ namespace PKSim.Core.Services
 {
    public abstract class InteractionKineticUpdaterSpecificationBase : IInteractionKineticUpdaterSpecification
    {
-      protected readonly ObjectPathFactory _objectPathFactory;
+      protected readonly IObjectPathFactory _objectPathFactory;
       protected readonly IDimensionRepository _dimensionRepository;
       private readonly IInteractionTask _interactionTask;
       private readonly InteractionType _interactionType;
@@ -26,7 +26,7 @@ namespace PKSim.Core.Services
       private readonly string _kWaterAlias;
       private readonly string _inhibitorAlias;
 
-      protected InteractionKineticUpdaterSpecificationBase(ObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask, InteractionType interactionType,
+      protected InteractionKineticUpdaterSpecificationBase(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask, InteractionType interactionType,
          string kiNumeratorParameter, string kiDenominatorParameter, string kiNumeratorAlias, string kiDenominatorAlias, string inhibitorAlias, string kWaterAlias)
       {
          _objectPathFactory = objectPathFactory;

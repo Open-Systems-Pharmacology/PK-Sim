@@ -9,7 +9,7 @@ namespace PKSim.Core.Services
    /// </summary>
    public class MixedInhibitionKineticUpdaterSpecification : InteractionKineticUpdaterSpecificationBase
    {
-      public MixedInhibitionKineticUpdaterSpecification(ObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
+      public MixedInhibitionKineticUpdaterSpecification(IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository, IInteractionTask interactionTask) :
          base(objectPathFactory, dimensionRepository, interactionTask, InteractionType.MixedInhibition,
             kiNumeratorAlias: CoreConstants.Alias.MIXED_COMPETITIVE_INHIBITION_KI,
             kiNumeratorParameter: CoreConstants.Parameters.KI_C,

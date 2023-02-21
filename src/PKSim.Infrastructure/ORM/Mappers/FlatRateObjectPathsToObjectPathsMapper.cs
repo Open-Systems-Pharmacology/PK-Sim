@@ -13,11 +13,11 @@ namespace PKSim.Infrastructure.ORM.Mappers
    public class FlatRateObjectToFormulaUsablePathMapper : IFlatRateObjectToFormulaUsablePathMapper
    {
       private readonly IFlatObjectPathToObjectPathMapper _objectPathMapper;
-      private readonly ObjectPathFactory _objectPathFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDimensionRepository _dimensionRepository;
 
       public FlatRateObjectToFormulaUsablePathMapper(IFlatObjectPathToObjectPathMapper objectPathMapper,
-         ObjectPathFactory objectPathFactory,
+         IObjectPathFactory objectPathFactory,
          IDimensionRepository dimensionRepository)
       {
          _objectPathMapper = objectPathMapper;

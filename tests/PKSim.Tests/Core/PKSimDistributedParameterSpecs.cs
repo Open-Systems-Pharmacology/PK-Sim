@@ -13,7 +13,7 @@ namespace PKSim.Core
       protected IParameter _meanParameter;
       protected IParameter _stdParameter;
       protected IParameter _defaultPercentileParameter;
-      protected ObjectPathFactory _pathFactory;
+      protected IObjectPathFactory _pathFactory;
       private PKSimParameter _percentileParameter;
 
       protected override void Context()

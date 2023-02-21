@@ -17,7 +17,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          if (string.IsNullOrEmpty(attributeValue))
             return new ObjectPath();
 
-         var objectPathFactory = context.Resolve<ObjectPathFactory>();
+         var objectPathFactory = context.Resolve<IObjectPathFactory>();
          return objectPathFactory.CreateObjectPathFrom(attributeValue.ToPathArray());
       }
    }

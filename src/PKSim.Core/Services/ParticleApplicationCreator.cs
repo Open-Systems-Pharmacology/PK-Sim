@@ -17,11 +17,11 @@ namespace PKSim.Core.Services
    public class ParticleApplicationCreator : IParticleApplicationCreator
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly ObjectPathFactory _objectPathFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDimensionRepository _dimensionRepository;
       private IEnumerable<IParameter> _formulationParameters;
 
-      public ParticleApplicationCreator(IObjectBaseFactory objectBaseFactory, ObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository)
+      public ParticleApplicationCreator(IObjectBaseFactory objectBaseFactory, IObjectPathFactory objectPathFactory, IDimensionRepository dimensionRepository)
       {
          _objectBaseFactory = objectBaseFactory;
          _objectPathFactory = objectPathFactory;

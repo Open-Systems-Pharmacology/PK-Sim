@@ -31,12 +31,12 @@ namespace PKSim.Core.Services
    public class DataRepositoryFromResultsCreator : IDataRepositoryFromResultsCreator
    {
       private readonly IDimensionRepository _dimensionRepository;
-      private readonly ObjectPathFactory _objectPathFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDataRepositoryTask _dataRepositoryTask;
 
       public DataRepositoryFromResultsCreator(
          IDimensionRepository dimensionRepository,
-         ObjectPathFactory objectPathFactory,
+         IObjectPathFactory objectPathFactory,
          IDataRepositoryTask dataRepositoryTask)
       {
          _dimensionRepository = dimensionRepository;

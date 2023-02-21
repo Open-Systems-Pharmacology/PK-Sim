@@ -121,13 +121,13 @@ namespace PKSim.Core.Model
       private readonly IRateObjectPathsRepository _rateObjectPathsRepository;
       private readonly IRateFormulaRepository _rateFormulaRepository;
       private readonly IDistributionFormulaFactory _distributionFactory;
-      private readonly ObjectPathFactory _objectPathFactory;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IIdGenerator _idGenerator;
       private readonly IDynamicFormulaCriteriaRepository _dynamicFormulaCriteriaRepository;
 
       public FormulaFactory(IObjectBaseFactory objectBaseFactory, IRateObjectPathsRepository rateObjectPathsRepository,
-         IRateFormulaRepository rateFormulaRepository, IDistributionFormulaFactory distributionFactory, ObjectPathFactory objectPathFactory,
+         IRateFormulaRepository rateFormulaRepository, IDistributionFormulaFactory distributionFactory, IObjectPathFactory objectPathFactory,
          IDimensionRepository dimensionRepository, IIdGenerator idGenerator,
          IDynamicFormulaCriteriaRepository dynamicFormulaCriteriaRepository)
       {

@@ -6,7 +6,7 @@ namespace PKSim.Core.Mappers
 {
    public class PKSimQuantityPathToQuantityDisplayPathMapper : QuantityPathToQuantityDisplayPathMapper
    {
-      public PKSimQuantityPathToQuantityDisplayPathMapper(ObjectPathFactory objectPathFactory, IPathToPathElementsMapper pathToPathElementsMapper, IDataColumnToPathElementsMapper dataColumnToPathElementsMapper) : base(objectPathFactory, pathToPathElementsMapper, dataColumnToPathElementsMapper)
+      public PKSimQuantityPathToQuantityDisplayPathMapper(IObjectPathFactory objectPathFactory, IPathToPathElementsMapper pathToPathElementsMapper, IDataColumnToPathElementsMapper dataColumnToPathElementsMapper) : base(objectPathFactory, pathToPathElementsMapper, dataColumnToPathElementsMapper)
       {
       }
 
