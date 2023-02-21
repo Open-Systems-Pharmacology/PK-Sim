@@ -30,7 +30,7 @@ namespace PKSim.Presentation
       private IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private ILazyLoadTask _lazyloadTask;
       private IHeavyWorkManager _heavyWorkManager;
-      protected IObjectPathFactory _objectPathFactory;
+      protected ObjectPathFactory _objectPathFactory;
       protected IndividualSimulation _individualSimulation;
       protected Simulation _simulation;
       protected IContainer _root;
@@ -173,24 +173,24 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_have_renamed_the_absolute_object_path_in_the_simultion()
+      public void should_have_renamed_the_absolute_object_path_in_the_simulation()
       {
-         _f1.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell"));
-         _f3.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell"));
-         _f3.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "LogP"));
-         _f4.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "SolubilityTable"));
+         _f1.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell").ToArray());
+         _f3.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell").ToArray());
+         _f3.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "LogP").ToArray());
+         _f4.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "SolubilityTable").ToArray());
       }
 
       [Observation]
       public void should_not_have_change_the_relative_paths()
       {
-         _f1.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP"));
-         _f2.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("SU", "Liver", "Cell"));
-         _f2.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP"));
+         _f1.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP").ToArray());
+         _f2.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("SU", "Liver", "Cell").ToArray());
+         _f2.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP").ToArray());
       }
 
       [Observation]
-      public void should_have_change_the_abolute_path_of_quantity_info_that_were_calculated_in_the_simulation()
+      public void should_have_change_the_absolute_path_of_quantity_info_that_were_calculated_in_the_simulation()
       {
          _individualResults.HasValuesFor("Liver|Cell|Drug").ShouldBeTrue();
          _individualResults.HasValuesFor("Liver|Cell|Meta").ShouldBeTrue();

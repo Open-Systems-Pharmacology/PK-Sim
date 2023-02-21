@@ -61,7 +61,7 @@ namespace PKSim.Core
       {
          base.Context();
          _formula = A.Fake<IFormula>();
-         A.CallTo(() => _formula.ObjectPaths).Returns(new List<IFormulaUsablePath> {A.Fake<IFormulaUsablePath>()});
+         A.CallTo(() => _formula.ObjectPaths).Returns(new List<FormulaUsablePath> {A.Fake<FormulaUsablePath>()});
       }
 
       protected override void Because()

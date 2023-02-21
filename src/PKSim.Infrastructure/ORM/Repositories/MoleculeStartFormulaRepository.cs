@@ -39,7 +39,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          }
       }
 
-      public RateKey RateKeyFor(IObjectPath moleculePath, ModelProperties modelProperties)
+      public RateKey RateKeyFor(ObjectPath moleculePath, ModelProperties modelProperties)
       {
          Start();
 

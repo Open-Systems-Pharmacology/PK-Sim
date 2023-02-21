@@ -7,22 +7,22 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatRelativeObjectPathToObjectPathMapper : IMapper<long, IObjectPath>
+   public interface IFlatRelativeObjectPathToObjectPathMapper : IMapper<long, ObjectPath>
    {
    }
 
    public class FlatRelativeObjectPathToObjectPathMapper : IFlatRelativeObjectPathToObjectPathMapper
    {
       private readonly IFlatRelativeObjectPathRepository _flatObjectPathRepo;
-      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly ObjectPathFactory _objectPathFactory;
 
-      public FlatRelativeObjectPathToObjectPathMapper(IFlatRelativeObjectPathRepository flatRelativeObjectPathRepo,IObjectPathFactory objectPathFactory)
+      public FlatRelativeObjectPathToObjectPathMapper(IFlatRelativeObjectPathRepository flatRelativeObjectPathRepo,ObjectPathFactory objectPathFactory)
       {
          _flatObjectPathRepo = flatRelativeObjectPathRepo;
          _objectPathFactory = objectPathFactory;
       }
 
-      public IObjectPath MapFrom(long flatObjectPathId)
+      public ObjectPath MapFrom(long flatObjectPathId)
       {
          FlatRelativeObjectPath flatObjectPath = _flatObjectPathRepo.FlatRelativeObjectPathFor(flatObjectPathId);
          

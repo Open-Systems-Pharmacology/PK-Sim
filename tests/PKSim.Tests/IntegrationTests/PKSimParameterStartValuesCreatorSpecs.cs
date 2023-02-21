@@ -22,7 +22,7 @@ namespace PKSim.IntegrationTests
    {
       private IBuildConfigurationTask _buildConfigurationTask;
       private IEntityPathResolver _entityPathResolver;
-      private IObjectPath _parameterPath;
+      private ObjectPath _parameterPath;
       private IParameterStartValuesBuildingBlock _psv;
       private Individual _individual;
       private Compound _compound;
@@ -92,7 +92,7 @@ namespace PKSim.IntegrationTests
    {
       private IBuildConfigurationTask _buildConfigurationTask;
       private IEntityPathResolver _entityPathResolver;
-      private IObjectPath _parameterPath;
+      private ObjectPath _parameterPath;
       private IParameterStartValuesBuildingBlock _psv;
       private Individual _individual;
       private Compound _compound;

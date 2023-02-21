@@ -24,7 +24,7 @@ namespace PKSim.Core.Model
    {
       private readonly IApplicationRepository _applicationRepository;
       private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly ObjectPathFactory _objectPathFactory;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IParameterContainerTask _parameterContainerTask;
@@ -33,7 +33,7 @@ namespace PKSim.Core.Model
       private readonly IFormulaFactory _formulaFactory;
 
       public ApplicationFactory(IApplicationRepository applicationRepository, IObjectBaseFactory objectBaseFactory,
-         IObjectPathFactory objectPathFactory, IParameterSetUpdater parameterSetUpdater,
+         ObjectPathFactory objectPathFactory, IParameterSetUpdater parameterSetUpdater,
          IDimensionRepository dimensionRepository, IParameterContainerTask parameterContainerTask,
          IParticleApplicationCreator particleApplicationCreator, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock, IFormulaFactory formulaFactory)
       {

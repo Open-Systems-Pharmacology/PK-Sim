@@ -22,13 +22,13 @@ namespace PKSim.Infrastructure.ORM.Queries
       private readonly IObserverBuilderRepository _observerBuilderRepository;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IDimensionRepository _dimensionRepository;
-      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly ObjectPathFactory _objectPathFactory;
       private readonly IInteractionTask _interactionTask;
 
       private const string TOTAL_DRUG_MASS_ALIAS = "TotalDrugMass";
 
       public ModelObserverQuery(IObjectBaseFactory objectBaseFactory, IObserverBuilderRepository observerBuilderRepository,
-         ICloneManagerForBuildingBlock cloneManager, IDimensionRepository dimensionRepository, IObjectPathFactory objectPathFactory,
+         ICloneManagerForBuildingBlock cloneManager, IDimensionRepository dimensionRepository, ObjectPathFactory objectPathFactory,
          IInteractionTask interactionTask)
       {
          _objectBaseFactory = objectBaseFactory;
@@ -241,7 +241,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          observerBuildingBlock.AddFormula(formula);
       }
 
-      private IFormulaUsablePath createZoneAmountPath(string compartment, string zone, string alias)
+      private FormulaUsablePath createZoneAmountPath(string compartment, string zone, string alias)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(Constants.ORGANISM, CoreConstants.Organ.LIVER, zone, compartment, ObjectPathKeywords.MOLECULE)
             .WithAlias(alias)
@@ -324,7 +324,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          return fractionFormula;
       }
 
-      private IFormulaUsablePath createTotalDrugMassObjectPath(string pathToDrugMass)
+      private FormulaUsablePath createTotalDrugMassObjectPath(string pathToDrugMass)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(pathToDrugMass, CoreConstants.Parameters.TOTAL_DRUG_MASS)
             .WithAlias(TOTAL_DRUG_MASS_ALIAS)

@@ -48,7 +48,7 @@ namespace PKSim.Core.Services
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly IInterpolation _interpolation;
       private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
-      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly ObjectPathFactory _objectPathFactory;
       private readonly IGenderRepository _genderRepository;
       private readonly IDimension _timeDimension;
       private readonly Unit _yearUnit;
@@ -70,7 +70,7 @@ namespace PKSim.Core.Services
          IFullPathDisplayResolver fullPathDisplayResolver,
          IInterpolation interpolation,
          IParameterStartValuesCreator parameterStartValuesCreator,
-         IObjectPathFactory objectPathFactory,
+         ObjectPathFactory objectPathFactory,
          IGenderRepository genderRepository)
       {
          _formulaFactory = formulaFactory;
@@ -226,7 +226,7 @@ namespace PKSim.Core.Services
       private void createParameterValueVersionOntogenyTableParameter(
          IParameter ontogenyFactorParameter,
          IBuildConfiguration buildConfiguration,
-         IObjectPath ontogenyFactorPath,
+         ObjectPath ontogenyFactorPath,
          IndividualMolecule molecule)
       {
          var psv = buildConfiguration.ParameterStartValues;
@@ -345,7 +345,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void createPopulationOntogenyTableParameter(IParameter ontogenyFactorParameter, IObjectPath ontogenyFactorPath, IndividualMolecule molecule, PopulationSimulation populationSimulation)
+      private void createPopulationOntogenyTableParameter(IParameter ontogenyFactorParameter, ObjectPath ontogenyFactorPath, IndividualMolecule molecule, PopulationSimulation populationSimulation)
       {
          addAgingDataToPopulationSimulation(populationSimulation, ontogenyFactorPath.ToString(), ontogenyFactorParameter,
             p => createOntogenyTableFormulaFrom(p.Parameter, molecule.Ontogeny, p.OriginData, populationSimulation.RandomGenerator));

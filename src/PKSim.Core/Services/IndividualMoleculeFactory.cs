@@ -39,13 +39,13 @@ namespace PKSim.Core.Services
       protected readonly IParameterRateRepository _parameterRateRepository;
       private readonly string _containerPath;
       protected readonly IObjectBaseFactory _objectBaseFactory;
-      protected readonly IObjectPathFactory _objectPathFactory;
+      protected readonly ObjectPathFactory _objectPathFactory;
       protected readonly IParameterFactory _parameterFactory;
 
       protected IndividualMoleculeFactory(
          IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
-         IObjectPathFactory objectPathFactory,
+         ObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
          IIdGenerator idGenerator,
          IParameterRateRepository parameterRateRepository,

@@ -22,7 +22,7 @@ namespace PKSim.Core
       protected InteractionProcess _competitiveInhibition2;
       protected InhibitionProcess _uncompetitiveInhibition;
 
-      protected IObjectPathFactory _objectPathFactory;
+      protected ObjectPathFactory _objectPathFactory;
       protected IDimensionRepository _dimensionRepository;
       private IInteractionTask _interactionTask;
 

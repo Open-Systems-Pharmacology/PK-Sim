@@ -13,7 +13,7 @@ namespace PKSim.Core
       protected IParameter _meanParameter;
       protected IParameter _stdParameter;
       protected IParameter _defaultPercentileParameter;
-      protected IObjectPathFactory _pathFactory;
+      protected ObjectPathFactory _pathFactory;
       private PKSimParameter _percentileParameter;
 
       protected override void Context()
@@ -87,7 +87,7 @@ namespace PKSim.Core
       protected IParameter _minimumParameter;
       protected IParameter _maximumParameter;
       protected IParameter _defaultPercentileParameter;
-      protected IObjectPathFactory _pathFactory;
+      protected ObjectPathFactory _pathFactory;
       private PKSimParameter _percentileParameter;
       protected IDistributionFormula _distributedFormula;
       protected RandomGenerator _randomGenerator;

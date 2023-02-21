@@ -23,7 +23,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
       private readonly IFormulaFactory _formulaFactory;
       private readonly IFlatEventChangedObjectRepository _flatEventChangedObjectRepo;
       private readonly IFlatEventChangedObjectToEventAssignmentBuilderMapper _eventAssignmentBuilderMapper;
-      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly ObjectPathFactory _objectPathFactory;
       private readonly IDimensionRepository _dimensionRepository;
       private IFormulaCache _formulaCache;
 
@@ -32,7 +32,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          IFormulaFactory formulaFactory,
          IFlatEventChangedObjectRepository flatEventChangedObjectRepo,
          IFlatEventChangedObjectToEventAssignmentBuilderMapper eventAssignmentBuilderMapper,
-         IObjectPathFactory objectPathFactory,
+         ObjectPathFactory objectPathFactory,
          IDimensionRepository dimensionRepository)
       {
          _objectBaseFactory = objectBaseFactory;

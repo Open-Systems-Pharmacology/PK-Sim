@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       FlatContainer ContainerFrom(string containerPath);
 
-      IObjectPath ContainerPathFrom(int? containerId);
+      ObjectPath ContainerPathFrom(int? containerId);
    }
 
    public class FlatContainerRepository : MetaDataRepository<FlatContainer>, IFlatContainerRepository
@@ -65,7 +65,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _flatContainersCachedByPath[containerPath];
       }
 
-      public IObjectPath ContainerPathFrom(int? containerId)
+      public ObjectPath ContainerPathFrom(int? containerId)
       {
          Start();
          var path = new ObjectPath();

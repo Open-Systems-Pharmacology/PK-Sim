@@ -25,7 +25,7 @@ namespace PKSim.Core.Services
 
       public IndividualTransporterFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
-         IObjectPathFactory objectPathFactory,
+         ObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
          IIndividualPathWithRootExpander individualPathWithRootExpander,
          IIdGenerator idGenerator,

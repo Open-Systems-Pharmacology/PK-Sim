@@ -14,6 +14,6 @@ namespace PKSim.Core.Repositories
       ///    <paramref name="moleculePath" /> must be a database path to the molecule (e.g. "ORGANISM\Liver\Plasma\DRUG")
       /// </summary>
       /// <returns>Rate key if found, null if not found</returns>
-      RateKey RateKeyFor(IObjectPath moleculePath, ModelProperties modelProperties);
+      RateKey RateKeyFor(ObjectPath moleculePath, ModelProperties modelProperties);
    }
 }

@@ -58,7 +58,7 @@ namespace PKSim.Core.Services
          return defaultStartValues.WithName(simulation.Name);
       }
 
-      private IEnumerable<IObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,
+      private IEnumerable<ObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,
          IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
          foreach (var container in individual.AllPhysicalContainersWithMoleculeFor(molecule))
@@ -69,7 +69,7 @@ namespace PKSim.Core.Services
             {
                foreach (var moleculeName in compoundProperties.Processes.AllInducedMoleculeNames(molecule))
                {
-                  yield return containerPath.Clone<IObjectPath>().AndAdd(moleculeName);
+                  yield return containerPath.Clone<ObjectPath>().AndAdd(moleculeName);
                }
             }
          }
@@ -98,7 +98,7 @@ namespace PKSim.Core.Services
                moleculeStartValue.NegativeValuesAllowed = false;
             }
 
-            var moleculeDbPath = moleculeStartValue.ContainerPath.Clone<IObjectPath>();
+            var moleculeDbPath = moleculeStartValue.ContainerPath.Clone<ObjectPath>();
 
             moleculeDbPath.Add(dbMoleculeName);
 

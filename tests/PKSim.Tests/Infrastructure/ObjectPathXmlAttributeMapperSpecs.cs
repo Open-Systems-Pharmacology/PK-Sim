@@ -19,14 +19,14 @@ namespace PKSim.Infrastructure
       {
          sut = new ObjectPathXmlAttributeMapper();
          _container = A.Fake<IContainer>();
-         A.CallTo(() => _container.Resolve<IObjectPathFactory>()).Returns(new ObjectPathFactoryForSpecs());
+         A.CallTo(() => _container.Resolve<ObjectPathFactory>()).Returns(new ObjectPathFactoryForSpecs());
          _serializationContext = SerializationTransaction.Create(_container);
       }
    }
 
    public class When_mapping_an_entity_path_to_a_string : concern_for_ObjectPathXmlAttributeMapper
    {
-      private IObjectPath _containerPath;
+      private ObjectPath _containerPath;
       private object _result;
 
       protected override void Context()
@@ -49,7 +49,7 @@ namespace PKSim.Infrastructure
 
    public class When_mapping_an_empty_entity_path_ : concern_for_ObjectPathXmlAttributeMapper
    {
-      private IObjectPath _entityPath;
+      private ObjectPath _entityPath;
       private object _result;
 
       protected override void Context()
@@ -75,7 +75,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_return_true_for_any_implementation_of_container_path()
       {
-         sut.IsMatch(typeof(IObjectPath)).ShouldBeTrue();
+         sut.IsMatch(typeof(ObjectPath)).ShouldBeTrue();
       }
 
       [Observation]

@@ -31,13 +31,13 @@ namespace PKSim.Core.Repositories
       ///   - for moleculeName = DRUG return true
       ///   - for moleculeName != DRUG return false
       /// </summary>
-      bool IsPresent(string modelName, IObjectPath containerPath, string moleculeName);
+      bool IsPresent(string modelName, ObjectPath containerPath, string moleculeName);
 
       /// <summary>
       /// Checks if molecule is available in container (for given model).<para/>
       /// Default behaviour for the case no entry for {model, container, molecule} is found: return false
       /// </summary>
-      bool NegativeValuesAllowed(string modelName, IObjectPath containerPath, string moleculeName);
+      bool NegativeValuesAllowed(string modelName, ObjectPath containerPath, string moleculeName);
    }
 
 }

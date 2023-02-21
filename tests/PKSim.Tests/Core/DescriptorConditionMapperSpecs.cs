@@ -18,6 +18,7 @@ namespace PKSim.Core
       protected MatchTagCondition _notMatchCondition;
       protected NotInContainerCondition _notInContainer;
       protected NotMatchTagCondition _notMatchAllCondition;
+      protected InParentCondition _inParentCondition;
 
       protected override Task Context()
       {
@@ -29,6 +30,7 @@ namespace PKSim.Core
          _matchAllCondition = new MatchAllCondition();
          _notMatchAllCondition = new NotMatchTagCondition("NOT_MATCH");
          _notMatchCondition = new MatchTagCondition("MATCH");
+         _inParentCondition = new InParentCondition();
 
          return _completed;
       }
@@ -41,6 +43,7 @@ namespace PKSim.Core
       private DescriptorCondition _matchAllConditionSnapshot;
       private DescriptorCondition _notMatchAllConditionSnapshot;
       private DescriptorCondition _notMatchConditionSnapshot;
+      private DescriptorCondition _inParentConditionSnapshot;
 
       protected override async Task Because()
       {
@@ -49,6 +52,7 @@ namespace PKSim.Core
          _matchAllConditionSnapshot = await sut.MapToSnapshot(_matchAllCondition);
          _notMatchAllConditionSnapshot = await sut.MapToSnapshot(_notMatchAllCondition);
          _notMatchConditionSnapshot = await sut.MapToSnapshot(_notMatchCondition);
+         _inParentConditionSnapshot = await sut.MapToSnapshot(_inParentCondition);
       }
 
       [Observation]
@@ -59,6 +63,7 @@ namespace PKSim.Core
          _matchAllConditionSnapshot.Tag.ShouldBeEqualTo(_matchAllCondition.Tag);
          _notMatchAllConditionSnapshot.Tag.ShouldBeEqualTo(_notMatchAllCondition.Tag);
          _notMatchConditionSnapshot.Tag.ShouldBeEqualTo(_notMatchCondition.Tag);
+         _inParentConditionSnapshot.Tag.ShouldBeEqualTo(_inParentCondition.Tag);
       }
    }
 
@@ -69,11 +74,14 @@ namespace PKSim.Core
       private DescriptorCondition _matchAllConditionSnapshot;
       private DescriptorCondition _notMatchAllConditionSnapshot;
       private DescriptorCondition _notMatchConditionSnapshot;
-      private IDescriptorCondition _newInContainer;
-      private IDescriptorCondition _newNotInContainer;
-      private IDescriptorCondition _newMatchAllCondition;
-      private IDescriptorCondition _newNotMatchAllCondition;
-      private IDescriptorCondition _newNotMatchCondition;
+      private DescriptorCondition _inParentConditionSnapshot;
+
+      private ITagCondition _newInContainer;
+      private ITagCondition _newNotInContainer;
+      private ITagCondition _newMatchAllCondition;
+      private ITagCondition _newNotMatchAllCondition;
+      private ITagCondition _newNotMatchCondition;
+      private ITagCondition _newInParentCondition;
 
       protected override async Task Context()
       {
@@ -83,6 +91,7 @@ namespace PKSim.Core
          _matchAllConditionSnapshot = await sut.MapToSnapshot(_matchAllCondition);
          _notMatchAllConditionSnapshot = await sut.MapToSnapshot(_notMatchAllCondition);
          _notMatchConditionSnapshot = await sut.MapToSnapshot(_notMatchCondition);
+         _inParentConditionSnapshot = await sut.MapToSnapshot(_inParentCondition);
       }
 
       protected override async Task Because()
@@ -92,6 +101,7 @@ namespace PKSim.Core
          _newMatchAllCondition = await sut.MapToModel(_matchAllConditionSnapshot, new SnapshotContext());
          _newNotMatchAllCondition = await sut.MapToModel(_notMatchAllConditionSnapshot, new SnapshotContext());
          _newNotMatchCondition = await sut.MapToModel(_notMatchConditionSnapshot, new SnapshotContext());
+         _newInParentCondition = await sut.MapToModel(_inParentConditionSnapshot, new SnapshotContext());
       }
 
       [Observation]
@@ -102,19 +112,20 @@ namespace PKSim.Core
          _newMatchAllCondition.ShouldBeEqualTo(_matchAllCondition);
          _newNotMatchAllCondition.ShouldBeEqualTo(_notMatchAllCondition);
          _newNotMatchCondition.ShouldBeEqualTo(_notMatchCondition);
+         _newInParentCondition.ShouldBeEqualTo(_inParentCondition);
       }
    }
 
 
    public class When_mapping_some_invalid_unknown_descriptor_to_snapshot : concern_for_DescriptorConditionMapper
    {
-      private IDescriptorCondition _invalid;
+      private ITagCondition _invalid;
       private DescriptorCondition _result;
 
       protected override async Task Context()
       {
          await base.Context();
-         _invalid = A.Fake<IDescriptorCondition>();
+         _invalid = A.Fake<ITagCondition>();
       }
 
       protected override async Task Because()
@@ -132,7 +143,7 @@ namespace PKSim.Core
    public class When_mapping_some_invalid_condition_descriptor_snapshot_to_condition : concern_for_DescriptorConditionMapper
    {
       private DescriptorCondition _invalid;
-      private IDescriptorCondition _result;
+      private ITagCondition _result;
 
       protected override async Task Context()
       {

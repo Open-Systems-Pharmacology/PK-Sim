@@ -18,7 +18,7 @@ namespace PKSim.Core.Services
    {
       public IndividualEnzymeFactory(IObjectBaseFactory objectBaseFactory,
          IParameterFactory parameterFactory,
-         IObjectPathFactory objectPathFactory,
+         ObjectPathFactory objectPathFactory,
          IEntityPathResolver entityPathResolver,
          IIndividualPathWithRootExpander individualPathWithRootExpander,
          IIdGenerator idGenerator,

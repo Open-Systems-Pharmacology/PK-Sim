@@ -6,18 +6,18 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatRateObjectToFormulaUsablePathMapper : IMapper<FlatRateObjectPath, IFormulaUsablePath>
+   public interface IFlatRateObjectToFormulaUsablePathMapper : IMapper<FlatRateObjectPath, FormulaUsablePath>
    {
    }
 
    public class FlatRateObjectToFormulaUsablePathMapper : IFlatRateObjectToFormulaUsablePathMapper
    {
       private readonly IFlatObjectPathToObjectPathMapper _objectPathMapper;
-      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly ObjectPathFactory _objectPathFactory;
       private readonly IDimensionRepository _dimensionRepository;
 
       public FlatRateObjectToFormulaUsablePathMapper(IFlatObjectPathToObjectPathMapper objectPathMapper,
-         IObjectPathFactory objectPathFactory,
+         ObjectPathFactory objectPathFactory,
          IDimensionRepository dimensionRepository)
       {
          _objectPathMapper = objectPathMapper;
@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _dimensionRepository = dimensionRepository;
       }
 
-      public IFormulaUsablePath MapFrom(FlatRateObjectPath flatRateObjectPath)
+      public FormulaUsablePath MapFrom(FlatRateObjectPath flatRateObjectPath)
       {
          var rateObjectContainerPath = _objectPathMapper.MapFrom(flatRateObjectPath);
 
