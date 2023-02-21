@@ -3,6 +3,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Presentation.Presenters.Journal;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Views;
@@ -11,7 +12,6 @@ using PKSim.Core.Mappers;
 using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Presenters.Individuals;
-using PKSim.Presentation.Presenters.Main;
 using PKSim.UI.Starter;
 
 namespace PKSim.UI.UI.StarterTests
@@ -24,7 +24,12 @@ namespace PKSim.UI.UI.StarterTests
       {
          SynchronizationContext.SetSynchronizationContext(new When_resolving_the_individual_presenter.TestSynchronizationContext());
          IoC.InitializeWith(new CastleWindsorContainer());
+
+         // To initialize the local container, the application starter will take some components from the
+         // static container
          IoC.Container.RegisterImplementationOf(A.Fake<IMainViewPresenter>());
+         IoC.Container.RegisterImplementationOf(A.Fake<IMainView>());
+         IoC.Container.RegisterImplementationOf(A.Fake<IJournalPresenter>());
          IoC.Container.RegisterImplementationOf(new BaseShell() as IShell);
 
          _container = ApplicationStartup.Initialize();
