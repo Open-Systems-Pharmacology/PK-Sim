@@ -1,8 +1,7 @@
 ﻿using System.Drawing;
-using PKSim.Assets;
 using OSPSuite.Assets;
 using OSPSuite.UI.Views;
-using PKSim.Core;
+using PKSim.Assets;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Views.Core;
@@ -11,15 +10,6 @@ namespace PKSim.UI.Views.Individuals
 {
    public partial class CreateIndividualView : BuildingBlockWizardView, ICreateIndividualView
    {
-
-      //TODO: This should not be used. Commenting out for now, just in case we need it again because LookAndFell
-      //keeps getting reset when the PKSimStarter starts
-      
-      // public CreateIndividualView(Shell shell) : this(shell as BaseShell)
-      // {
-      //    
-      // }
-
       public CreateIndividualView(BaseShell shell) : base(shell)
       {
          InitializeComponent();

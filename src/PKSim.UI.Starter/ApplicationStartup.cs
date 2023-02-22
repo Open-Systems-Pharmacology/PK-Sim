@@ -48,9 +48,13 @@ namespace PKSim.UI.Starter
 
          using (pkSimContainer.OptimizeDependencyResolution())
          {
+            // Register base DevExpress components
             pkSimContainer.RegisterImplementationOf(new DockManager());
             pkSimContainer.RegisterImplementationOf(new RibbonBarManager(new RibbonControl()));
+            pkSimContainer.RegisterImplementationOf(UserLookAndFeel.Default);
 
+            // Cross register the main view and presentation components from MoBi into the PKSim
+            // container so that modal dialogs can be viewed within the MoBi shell
             IShell shell = moBiContainer.Resolve<IShell>();
             pkSimContainer.RegisterImplementationOf(shell as BaseShell);
             pkSimContainer.RegisterImplementationOf(shell);
@@ -60,18 +64,19 @@ namespace PKSim.UI.Starter
             
             pkSimContainer.RegisterImplementationOf(NumericFormatterOptions.Instance);
             pkSimContainer.RegisterImplementationOf(SynchronizationContext.Current);
-
-            pkSimContainer.RegisterImplementationOf(UserLookAndFeel.Default);
-
             pkSimContainer.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, IWorkspace, Workspace>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, IUserSettings, UserSettings>(LifeStyle.Singleton);
 
+            // Full registration of OSPSuite Core UI and Presentation
             pkSimContainer.AddRegister(x => x.FromType<UIRegister>());
             pkSimContainer.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
+
+            // Full registration of PKSim Core and Infrastructure
             pkSimContainer.AddRegister(x => x.FromType<CoreRegister>());
             pkSimContainer.AddRegister(x => x.FromType<InfrastructureRegister>());
 
+            // Registration of PKSim presentation and UI for starter
             pkSimContainer.AddRegister(x => x.FromType<PKSimStarterPresenterRegister>());
             pkSimContainer.AddRegister(x => x.FromType<PKSimStarterUserInterfaceRegister>());
             
@@ -80,8 +85,6 @@ namespace PKSim.UI.Starter
             pkSimContainer.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
             InfrastructureRegister.RegisterWorkspace(pkSimContainer);
          }
-
-         pkSimContainer.Resolve<NewProjectCommand>();
 
          return pkSimContainer;
       }
