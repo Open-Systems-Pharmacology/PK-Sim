@@ -13,7 +13,7 @@ namespace PKSim.Core
    public abstract class concern_for_UncompetitiveInhibitionKineticUpdaterSpecification : ContextSpecification<UncompetitiveInhibitionKineticUpdaterSpecification>
    {
       private IDimensionRepository _dimensionRepository;
-      private IObjectPathFactory _objectPathFactory;
+      private ObjectPathFactory _objectPathFactory;
       private InhibitionProcess _competitiveInhibition;
       protected InhibitionProcess _uncompetitiveInhibition2;
       protected InhibitionProcess _uncompetitiveInhibition1;

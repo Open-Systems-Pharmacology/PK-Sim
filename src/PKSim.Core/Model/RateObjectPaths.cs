@@ -7,13 +7,13 @@ namespace PKSim.Core.Model
    {
       string Rate { get; }
       string CalculationMethod { get; }
-      IEnumerable<IFormulaUsablePath> ObjectPaths { get; }
-      void AddObjectPath(IFormulaUsablePath objectPath);
+      IEnumerable<FormulaUsablePath> ObjectPaths { get; }
+      void AddObjectPath(FormulaUsablePath objectPath);
    }
 
    public class RateObjectPaths : IRateObjectPaths
    {
-      private readonly IList<IFormulaUsablePath> _objectPaths;
+      private readonly IList<FormulaUsablePath> _objectPaths;
       public string Rate { get; private set; }
       public string CalculationMethod { get; private set; }
 
@@ -21,15 +21,15 @@ namespace PKSim.Core.Model
       {
          CalculationMethod = calculationMethod;
          Rate = rate;
-         _objectPaths = new List<IFormulaUsablePath>();
+         _objectPaths = new List<FormulaUsablePath>();
       }
 
-      public IEnumerable<IFormulaUsablePath> ObjectPaths
+      public IEnumerable<FormulaUsablePath> ObjectPaths
       {
          get { return _objectPaths; }
       }
 
-      public void AddObjectPath(IFormulaUsablePath objectPath)
+      public void AddObjectPath(FormulaUsablePath objectPath)
       {
          _objectPaths.Add(objectPath);
       }
@@ -40,12 +40,12 @@ namespace PKSim.Core.Model
       public string Rate { get; private set; }
       public string CalculationMethod { get; private set; }
 
-      public IEnumerable<IFormulaUsablePath> ObjectPaths
+      public IEnumerable<FormulaUsablePath> ObjectPaths
       {
-         get { return new List<IFormulaUsablePath>(); }
+         get { return new List<FormulaUsablePath>(); }
       }
 
-      public void AddObjectPath(IFormulaUsablePath objectPath)
+      public void AddObjectPath(FormulaUsablePath objectPath)
       {
       }
    }

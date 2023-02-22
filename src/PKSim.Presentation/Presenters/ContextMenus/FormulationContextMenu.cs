@@ -5,12 +5,13 @@ using PKSim.Core.Model;
 using PKSim.Presentation.UICommands;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class FormulationContextMenu : BuildingBlockContextMenu<Formulation>
    {
-      public FormulationContextMenu(Formulation formulation) : base(formulation)
+      public FormulationContextMenu(Formulation formulation, IContainer container) : base(formulation, container)
       {
       }
 
@@ -22,9 +23,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class FormulationTreeNodeContextMenuFactory : NodeContextMenuFactory<Formulation>
    {
+      private readonly IContainer _container;
+
+      public FormulationTreeNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public override IContextMenu CreateFor(Formulation formulation, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new FormulationContextMenu(formulation);
+         return new FormulationContextMenu(formulation, _container);
       }
    }
 }

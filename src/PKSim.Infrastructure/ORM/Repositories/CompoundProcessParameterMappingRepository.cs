@@ -43,7 +43,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          }
       }
 
-      public IObjectPath MappedParameterPathFor(string compoundProcessName, string processParameterName)
+      public ObjectPath MappedParameterPathFor(string compoundProcessName, string processParameterName)
       {
          Start();
 

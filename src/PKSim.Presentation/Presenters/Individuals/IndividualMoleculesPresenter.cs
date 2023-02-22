@@ -1,12 +1,12 @@
 using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Individuals.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Individuals;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using PKSim.Presentation.Services;
+using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -16,10 +16,12 @@ namespace PKSim.Presentation.Presenters.Individuals
 
    public class IndividualMoleculesPresenter : MoleculesPresenter<Individual>, IIndividualMoleculesPresenter
    {
-      public IndividualMoleculesPresenter(IMoleculesView view, IEditMoleculeTask<Individual> editMoleculeTask, ITreeNodeFactory treeNodeFactory, 
+      public IndividualMoleculesPresenter(IMoleculesView view, IEditMoleculeTask<Individual> editMoleculeTask, ITreeNodeFactory treeNodeFactory,
          ITreeNodeContextMenuFactory contextMenuFactory, IDialogCreator dialogCreator, IEntityTask entityTask,
-         IRootNodeToIndividualExpressionsPresenterMapper<Individual> expressionsPresenterMapper, INoItemInSelectionPresenter noItemInSelectionPresenter)
-         : base(view, editMoleculeTask, treeNodeFactory, contextMenuFactory, dialogCreator, entityTask, expressionsPresenterMapper, noItemInSelectionPresenter)
+         IRootNodeToIndividualExpressionsPresenterMapper<Individual> expressionsPresenterMapper,
+         INoItemInSelectionPresenter noItemInSelectionPresenter)
+         : base(view, editMoleculeTask, treeNodeFactory, contextMenuFactory, dialogCreator, entityTask, expressionsPresenterMapper,
+            noItemInSelectionPresenter)
       {
       }
 

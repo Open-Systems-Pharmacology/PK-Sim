@@ -6,13 +6,14 @@ using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class SimulationAnalysisPresenterContextMenu : ContextMenu<ISimulationAnalysisPresenter, IEditAnalyzablePresenter>
    {
-      public SimulationAnalysisPresenterContextMenu(ISimulationAnalysisPresenter simulationAnalysisPresenter, IEditAnalyzablePresenter editAnalyzablePresenter)
-         : base(simulationAnalysisPresenter, editAnalyzablePresenter)
+      public SimulationAnalysisPresenterContextMenu(ISimulationAnalysisPresenter simulationAnalysisPresenter, IEditAnalyzablePresenter editAnalyzablePresenter, IContainer container)
+         : base(simulationAnalysisPresenter, editAnalyzablePresenter, container)
       {
       }
 
@@ -29,16 +30,23 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return CreateMenuButton.WithCaption(PKSimConstants.UI.RemoveAll)
             .WithActionCommand(editAnalyzablePresenter.RemoveAllAnalyses);
 
-         yield return GenericMenu.RenameMenuFor(simulationAnalysisPresenter.Analysis)
+         yield return GenericMenu.RenameMenuFor(simulationAnalysisPresenter.Analysis, _container)
             .AsGroupStarter();
       }
    }
 
    public class SimulationAnalysisPresenterInEditAnalyzablePresenterContextMenuFactory : IContextMenuSpecificationFactory<ISimulationAnalysisPresenter>
    {
+      private readonly IContainer _container;
+
+      public SimulationAnalysisPresenterInEditAnalyzablePresenterContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public IContextMenu CreateFor(ISimulationAnalysisPresenter simulationAnalysisPresenter, IPresenterWithContextMenu<ISimulationAnalysisPresenter> presenter)
       {
-         return new SimulationAnalysisPresenterContextMenu(simulationAnalysisPresenter, presenter.DowncastTo<IEditAnalyzablePresenter>());
+         return new SimulationAnalysisPresenterContextMenu(simulationAnalysisPresenter, presenter.DowncastTo<IEditAnalyzablePresenter>(), _container);
       }
 
       public bool IsSatisfiedBy(ISimulationAnalysisPresenter simulationAnalysisPresenter, IPresenterWithContextMenu<ISimulationAnalysisPresenter> presenter)

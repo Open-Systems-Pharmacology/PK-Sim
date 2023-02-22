@@ -24,7 +24,7 @@ namespace PKSim.Core
       protected IRateFormulaRepository _rateFormulaRepository;
       protected IDistributionFormulaFactory _distributionFactory;
       protected IObjectBaseFactory _objectBaseFactory;
-      protected IObjectPathFactory _objectPathFactory;
+      protected ObjectPathFactory _objectPathFactory;
       private IDimensionRepository _dimensionRepository;
       protected IDimension _timeDimension;
       protected IIdGenerator _idGenerator;
@@ -68,7 +68,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(_dynamicSumFormulaRateKey)).Returns(new List<IFormulaUsablePath>());
+         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(_dynamicSumFormulaRateKey)).Returns(new List<FormulaUsablePath>());
       }
 
       protected override void Because()
@@ -104,7 +104,7 @@ namespace PKSim.Core
          _rateDefinition2 = new ParameterRateMetaData {Rate = "toto", CalculationMethod = "tutu"};
 
          _formulaCache = new FormulaCache();
-         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(new RateKey(_rateDefinition1.CalculationMethod, _rateDefinition1.Rate))).Returns(new List<IFormulaUsablePath>());
+         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(new RateKey(_rateDefinition1.CalculationMethod, _rateDefinition1.Rate))).Returns(new List<FormulaUsablePath>());
 
          A.CallTo(() => _rateFormulaRepository.FormulaFor(new RateKey(_rateDefinition1.CalculationMethod, _rateDefinition1.Rate))).Returns("0");
       }
@@ -131,7 +131,7 @@ namespace PKSim.Core
       {
          base.Context();
          _rateDefinition = new ParameterRateMetaData {Rate = "toto", CalculationMethod = "tutu"};
-         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(new RateKey(_rateDefinition.CalculationMethod, _rateDefinition.Rate))).Returns(new List<IFormulaUsablePath>());
+         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(new RateKey(_rateDefinition.CalculationMethod, _rateDefinition.Rate))).Returns(new List<FormulaUsablePath>());
          A.CallTo(() => _rateFormulaRepository.FormulaFor(new RateKey(_rateDefinition.CalculationMethod, _rateDefinition.Rate))).Returns("0");
          A.CallTo(() => _idGenerator.NewId()).Returns("newId");
       }
@@ -178,15 +178,15 @@ namespace PKSim.Core
    {
       private ParameterRateMetaData _rateDefinition;
       private IFormula _formula;
-      private IFormulaUsablePath _objectPath1;
-      private IFormulaUsablePath _objectPath2;
+      private FormulaUsablePath _objectPath1;
+      private FormulaUsablePath _objectPath2;
       private string _formulaString;
 
       protected override void Context()
       {
          base.Context();
-         _objectPath1 = A.Fake<IFormulaUsablePath>();
-         _objectPath2 = A.Fake<IFormulaUsablePath>();
+         _objectPath1 = A.Fake<FormulaUsablePath>();
+         _objectPath2 = A.Fake<FormulaUsablePath>();
          _rateDefinition = new ParameterRateMetaData {Rate = "toto", CalculationMethod = "tutu"};
          var rateKey = new RateKey(_rateDefinition.CalculationMethod, _rateDefinition.Rate);
          A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(rateKey)).Returns(new[] {_objectPath1, _objectPath2});
@@ -223,7 +223,7 @@ namespace PKSim.Core
          base.Context();
          _rateDefinition = new ParameterRateMetaData {Rate = "toto", CalculationMethod = "tutu"};
          var rateKey = new RateKey(_rateDefinition.CalculationMethod, _rateDefinition.Rate);
-         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(rateKey)).Returns(Enumerable.Empty<IFormulaUsablePath>());
+         A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(rateKey)).Returns(Enumerable.Empty<FormulaUsablePath>());
          _formulaString = "10";
          A.CallTo(() => _rateFormulaRepository.FormulaFor(rateKey)).Returns(_formulaString);
       }
@@ -304,7 +304,7 @@ namespace PKSim.Core
          A.CallTo(() => _rateFormulaRepository.FormulaFor(_rateKey)).Returns("x+y");
          A.CallTo(() => _objectBaseFactory.Create<ExplicitFormula>()).Returns(new ExplicitFormula());
          A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(_rateKey)).Returns(
-            new List<IFormulaUsablePath> {new FormulaUsablePath(new[] {"x"})});
+            new List<FormulaUsablePath> {new FormulaUsablePath(new[] {"x"})});
       }
 
       protected override void Because()
@@ -335,7 +335,7 @@ namespace PKSim.Core
          A.CallTo(() => _rateFormulaRepository.FormulaFor(_rateKey)).Returns("Time * 2");
          A.CallTo(() => _objectBaseFactory.Create<ExplicitFormula>()).Returns(new ExplicitFormula());
          A.CallTo(() => _rateObjectPathsRepository.ObjectPathsFor(_rateKey)).Returns(
-            new List<IFormulaUsablePath>());
+            new List<FormulaUsablePath>());
       }
    }
 

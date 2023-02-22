@@ -66,18 +66,18 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return rateObjectPaths;
       }
 
-      public IEnumerable<IFormulaUsablePath> ObjectPathsFor(string rate, string calculationMethod)
+      public IEnumerable<FormulaUsablePath> ObjectPathsFor(string rate, string calculationMethod)
       {
          return ObjectPathsFor(new RateKey(calculationMethod, rate));
       }
 
-      public IEnumerable<IFormulaUsablePath> ObjectPathsFor(RateKey rateKey)
+      public IEnumerable<FormulaUsablePath> ObjectPathsFor(RateKey rateKey)
       {
          Start();
          return _rateObjectPaths[rateKey].ObjectPaths;
       }
 
-      public IFormulaUsablePath PathWithAlias(RateKey rateKey, string alias)
+      public FormulaUsablePath PathWithAlias(RateKey rateKey, string alias)
       {
          return ObjectPathsFor(rateKey).FirstOrDefault(path => string.Equals(path.Alias, alias));
       }

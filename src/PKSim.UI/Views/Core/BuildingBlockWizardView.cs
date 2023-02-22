@@ -18,7 +18,7 @@ namespace PKSim.UI.Views.Core
       {
       }
 
-      public BuildingBlockWizardView(Shell shell) : base(shell)
+      public BuildingBlockWizardView(BaseShell shell) : base(shell)
       {
          InitializeComponent();
       }

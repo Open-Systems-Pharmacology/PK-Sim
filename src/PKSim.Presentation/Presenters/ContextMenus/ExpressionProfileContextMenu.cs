@@ -5,6 +5,7 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.UICommands;
@@ -13,7 +14,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class ExpressionProfileContextMenu : BuildingBlockContextMenu<ExpressionProfile>
    {
-      public ExpressionProfileContextMenu(ExpressionProfile expressionProfile) : base(expressionProfile)
+      public ExpressionProfileContextMenu(ExpressionProfile expressionProfile, IContainer container) : base(expressionProfile, container)
       {
       }
 
@@ -42,16 +43,23 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private IMenuBarItem ExportToPkml(ExpressionProfile expressionProfile)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
-            .WithCommandFor<ExportExpressionProfileToPkmlCommand, ExpressionProfile>(expressionProfile)
+            .WithCommandFor<ExportExpressionProfileToPkmlCommand, ExpressionProfile>(expressionProfile, _container)
             .WithIcon(ApplicationIcons.PKMLSave);
       }
    }
 
    public class ExpressionProfileTreeNodeContextMenuFactory : NodeContextMenuFactory<ExpressionProfile>
    {
+      private readonly IContainer _container;
+
+      public ExpressionProfileTreeNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public override IContextMenu CreateFor(ExpressionProfile expressionProfile, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new ExpressionProfileContextMenu(expressionProfile);
+         return new ExpressionProfileContextMenu(expressionProfile, _container);
       }
    }
 }

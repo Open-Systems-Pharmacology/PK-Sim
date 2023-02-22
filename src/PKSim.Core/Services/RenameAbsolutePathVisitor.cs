@@ -48,10 +48,10 @@ namespace PKSim.Core.Services
          if (formula == null || formula.IsConstant())
             return;
 
-         formula.ObjectPaths.Where(isAbsolutePath).Each(renameObjectPath);
+         formula.ObjectPaths.Where(x => isAbsolutePath(x.PathAsString)).Each(renameObjectPath);
       }
 
-      private void renameObjectPath(IObjectPath objectPath)
+      private void renameObjectPath(ObjectPath objectPath)
       {
          objectPath.Replace(_oldName, _newName);
       }

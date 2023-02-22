@@ -87,7 +87,7 @@ namespace PKSim.Core
       protected IParameter _minimumParameter;
       protected IParameter _maximumParameter;
       protected IParameter _defaultPercentileParameter;
-      protected IObjectPathFactory _pathFactory;
+      protected ObjectPathFactory _pathFactory;
       private PKSimParameter _percentileParameter;
       protected IDistributionFormula _distributedFormula;
       protected RandomGenerator _randomGenerator;

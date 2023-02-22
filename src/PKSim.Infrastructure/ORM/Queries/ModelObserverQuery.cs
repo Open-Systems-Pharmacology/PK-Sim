@@ -241,7 +241,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          observerBuildingBlock.AddFormula(formula);
       }
 
-      private IFormulaUsablePath createZoneAmountPath(string compartment, string zone, string alias)
+      private FormulaUsablePath createZoneAmountPath(string compartment, string zone, string alias)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(Constants.ORGANISM, CoreConstants.Organ.LIVER, zone, compartment, ObjectPathKeywords.MOLECULE)
             .WithAlias(alias)
@@ -324,7 +324,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          return fractionFormula;
       }
 
-      private IFormulaUsablePath createTotalDrugMassObjectPath(string pathToDrugMass)
+      private FormulaUsablePath createTotalDrugMassObjectPath(string pathToDrugMass)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(pathToDrugMass, CoreConstants.Parameters.TOTAL_DRUG_MASS)
             .WithAlias(TOTAL_DRUG_MASS_ALIAS)

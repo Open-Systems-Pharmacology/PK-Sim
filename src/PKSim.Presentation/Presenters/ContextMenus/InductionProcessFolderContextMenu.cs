@@ -11,13 +11,14 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class InductionProcessFolderContextMenu : ContextMenu<ITreeNode, ICompoundProcessesPresenter>
    {
-      public InductionProcessFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter context)
-         : base(nodeRequestingContextMenu, context)
+      public InductionProcessFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter context, IContainer container)
+         : base(nodeRequestingContextMenu, context, container)
       {
       }
 
@@ -32,13 +33,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class InductionProcessFolderTreeNodeContextMenuFactory : CompoundProcessFolderTreeNodeContextMenuFactory
    {
-      public InductionProcessFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository) : base(PKSimRootNodeTypes.InductionProcess, repository)
+      private readonly IContainer _container;
+
+      public InductionProcessFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IContainer container) : base(PKSimRootNodeTypes.InductionProcess, repository)
       {
+         _container = container;
       }
 
       protected override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, ICompoundProcessesPresenter presenter)
       {
-         return new InductionProcessFolderContextMenu(treeNode, presenter);
+         return new InductionProcessFolderContextMenu(treeNode, presenter, _container);
       }
    }
 }

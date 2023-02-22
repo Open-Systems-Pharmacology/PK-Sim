@@ -7,16 +7,17 @@ using PKSim.Core.Model;
 using PKSim.Presentation.Core;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
-   public class UsedBuidlingBlockInSimulationContextMenu<TBuildingBlock> : ContextMenu where TBuildingBlock : class, IPKSimBuildingBlock
+   public class UsedBuildingBlockInSimulationContextMenu<TBuildingBlock> : ContextMenu where TBuildingBlock : class, IPKSimBuildingBlock
    {
       protected readonly Simulation _simulation;
       protected readonly UsedBuildingBlock _usedBuildingBlock;
       private readonly TBuildingBlock _templateBuildingBlock;
 
-      public UsedBuidlingBlockInSimulationContextMenu(Simulation simulation, UsedBuildingBlock usedBuildingBlock, TBuildingBlock templateBuildingBlock)
+      public UsedBuildingBlockInSimulationContextMenu(Simulation simulation, UsedBuildingBlock usedBuildingBlock, TBuildingBlock templateBuildingBlock, IContainer container) : base(container)
       {
          _simulation = simulation;
          _usedBuildingBlock = usedBuildingBlock;

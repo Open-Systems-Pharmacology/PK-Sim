@@ -10,13 +10,14 @@ using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class PartialProcessMoleculeContextMenu : ContextMenu<PartialProcessMoleculeNode, ICompoundProcessesPresenter>
    {
-      public PartialProcessMoleculeContextMenu(PartialProcessMoleculeNode partialProcessMoleculeNode, ICompoundProcessesPresenter presenter)
-         : base(partialProcessMoleculeNode, presenter)
+      public PartialProcessMoleculeContextMenu(PartialProcessMoleculeNode partialProcessMoleculeNode, ICompoundProcessesPresenter presenter, IContainer container)
+         : base(partialProcessMoleculeNode, presenter, container)
       {
       }
 
@@ -36,9 +37,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class PartialProcessMoleculeTreeNodeContextMenuFactory : IContextMenuSpecificationFactory<ITreeNode>
    {
+      private readonly IContainer _container;
+
+      public PartialProcessMoleculeTreeNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public IContextMenu CreateFor(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new PartialProcessMoleculeContextMenu(treeNode.DowncastTo<PartialProcessMoleculeNode>(), presenter.DowncastTo<ICompoundProcessesPresenter>());
+         return new PartialProcessMoleculeContextMenu(treeNode.DowncastTo<PartialProcessMoleculeNode>(), presenter.DowncastTo<ICompoundProcessesPresenter>(), _container);
       }
 
       public bool IsSatisfiedBy(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)

@@ -225,7 +225,7 @@ namespace PKSim.UI
          toolTip.WithText(sb.ToString());
       }
 
-      private string displayObjectPathFrom(IFormulaUsablePath objectPath)
+      private string displayObjectPathFrom(FormulaUsablePath objectPath)
       {
          var display = objectPath.PathAsString;
          display = display.Replace($"{Constants.ROOT}|", string.Empty);

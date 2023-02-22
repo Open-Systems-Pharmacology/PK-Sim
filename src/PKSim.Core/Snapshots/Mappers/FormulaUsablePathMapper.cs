@@ -6,7 +6,7 @@ using SnapshotFormulaUsablePath = PKSim.Core.Snapshots.FormulaUsablePath;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class FormulaUsablePathMapper : SnapshotMapperBase<IFormulaUsablePath, SnapshotFormulaUsablePath>
+   public class FormulaUsablePathMapper : SnapshotMapperBase<OSPSuite.Core.Domain.FormulaUsablePath, SnapshotFormulaUsablePath>
    {
       private readonly IDimensionRepository _dimensionRepository;
 
@@ -15,7 +15,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _dimensionRepository = dimensionRepository;
       }
 
-      public override Task<SnapshotFormulaUsablePath> MapToSnapshot(IFormulaUsablePath formulaUsablePath)
+      public override Task<SnapshotFormulaUsablePath> MapToSnapshot(OSPSuite.Core.Domain.FormulaUsablePath formulaUsablePath)
       {
          return SnapshotFrom(formulaUsablePath, x =>
          {
@@ -25,9 +25,9 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      public override Task<IFormulaUsablePath> MapToModel(SnapshotFormulaUsablePath snapshot, SnapshotContext snapshotContext)
+      public override Task<OSPSuite.Core.Domain.FormulaUsablePath> MapToModel(SnapshotFormulaUsablePath snapshot, SnapshotContext snapshotContext)
       {
-         IFormulaUsablePath formulaUsablePath;
+         OSPSuite.Core.Domain.FormulaUsablePath formulaUsablePath;
          if (snapshot.Alias == Constants.TIME)
             formulaUsablePath = new TimePath();
          else

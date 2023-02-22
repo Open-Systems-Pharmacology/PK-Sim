@@ -226,7 +226,7 @@ namespace PKSim.Core.Services
       private void createParameterValueVersionOntogenyTableParameter(
          IParameter ontogenyFactorParameter,
          IBuildConfiguration buildConfiguration,
-         IObjectPath ontogenyFactorPath,
+         ObjectPath ontogenyFactorPath,
          IndividualMolecule molecule)
       {
          var psv = buildConfiguration.ParameterStartValues;
@@ -345,7 +345,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void createPopulationOntogenyTableParameter(IParameter ontogenyFactorParameter, IObjectPath ontogenyFactorPath, IndividualMolecule molecule, PopulationSimulation populationSimulation)
+      private void createPopulationOntogenyTableParameter(IParameter ontogenyFactorParameter, ObjectPath ontogenyFactorPath, IndividualMolecule molecule, PopulationSimulation populationSimulation)
       {
          addAgingDataToPopulationSimulation(populationSimulation, ontogenyFactorPath.ToString(), ontogenyFactorParameter,
             p => createOntogenyTableFormulaFrom(p.Parameter, molecule.Ontogeny, p.OriginData, populationSimulation.RandomGenerator));

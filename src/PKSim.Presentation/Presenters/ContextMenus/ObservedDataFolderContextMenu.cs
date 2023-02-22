@@ -15,6 +15,7 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Assets;
 using System;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -25,7 +26,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          IMenuBarItemRepository repository,
          IBuildingBlockRepository buildingBlockRepository,
          IBuildingBlockExplorerPresenter presenter,
-         IUserSettings userSettings)
+         IUserSettings userSettings, IContainer container) : base(container)
       {
          var allCompounds = buildingBlockRepository.All<Compound>().ToList();
 
@@ -37,7 +38,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          foreach (var compound in allCompounds)
          {
             addObservedDataFor.AddItem(CreateMenuButton.WithCaption(compound.Name)
-               .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound));  
+               .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound, container));  
          }
 
          _view.AddMenuItem(repository[MenuBarItemIds.AddObservedData]);
@@ -49,18 +50,18 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
 
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromTemplate)
-            .WithCommand<LoadObservedDataFromTemplateUICommand>()
+            .WithCommand<LoadObservedDataFromTemplateUICommand>(container)
             .WithIcon(ApplicationIcons.LoadFromTemplate)
             .AsGroupStarter());
 
          _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Load from Snapshot"))
-            .WithCommand<LoadObservedDataFromSnapshotUICommand>()
+            .WithCommand<LoadObservedDataFromSnapshotUICommand>(container)
             .WithIcon(ApplicationIcons.SnapshotImport)
             .ForDeveloper());
            
 
          if (treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
-            _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(treeNode).AsGroupStarter());
+            _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(treeNode, container).AsGroupStarter());
 
 
          _view.AddMenuItem(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(treeNode, presenter));
@@ -94,17 +95,19 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IUserSettings _userSettings;
+      private readonly IContainer _container;
 
-      public ObservedDataFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository, IUserSettings userSettings)
+      public ObservedDataFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository, IUserSettings userSettings, IContainer container)
          : base(RootNodeTypes.ObservedDataFolder, repository)
       {
          _buildingBlockRepository = buildingBlockRepository;
          _userSettings = userSettings;
+         _container = container;
       }
 
       public override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new ObservedDataFolderContextMenu(treeNode, _repository, _buildingBlockRepository, presenter.DowncastTo<IBuildingBlockExplorerPresenter>(), _userSettings);
+         return new ObservedDataFolderContextMenu(treeNode, _repository, _buildingBlockRepository, presenter.DowncastTo<IBuildingBlockExplorerPresenter>(), _userSettings, _container);
       }
    }
 }

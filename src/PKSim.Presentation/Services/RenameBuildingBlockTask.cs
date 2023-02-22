@@ -223,14 +223,14 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      private IFormulaUsablePath formulaUsablePathReferencing(IUsingFormula usingFormula, IFormulaUsable reference)
+      private FormulaUsablePath formulaUsablePathReferencing(IUsingFormula usingFormula, IFormulaUsable reference)
       {
          var parameter = usingFormula as IParameter;
          return formulaUsablePathReferencing(usingFormula.Formula, reference) ??
                 formulaUsablePathReferencing(parameter?.RHSFormula, reference);
       }
 
-      private IFormulaUsablePath formulaUsablePathReferencing(IFormula formula, IFormulaUsable reference)
+      private FormulaUsablePath formulaUsablePathReferencing(IFormula formula, IFormulaUsable reference)
       {
          if (formula == null)
             return null;

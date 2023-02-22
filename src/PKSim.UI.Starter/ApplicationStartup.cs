@@ -1,29 +1,26 @@
 ﻿using System.Globalization;
 using System.Threading;
+using DevExpress.LookAndFeel;
+using DevExpress.XtraBars.Docking;
+using DevExpress.XtraBars.Ribbon;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Journal;
-using OSPSuite.Core.Services;
-using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters.Journal;
+using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Mappers;
-using OSPSuite.UI.Services;
+using OSPSuite.UI;
+using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Format;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
-using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Presenters.ExpressionProfiles;
-using PKSim.Presentation.Services;
-using PKSim.Presentation.Views.ExpressionProfiles;
-using PKSim.UI.Views.ExpressionProfiles;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.UI.Starter
 {
@@ -31,76 +28,66 @@ namespace PKSim.UI.Starter
    {
       static IContainer _container;
 
-      public static IContainer Initialize(IShell shell)
+      public static IContainer Initialize()
       {
          if (_container != null)
             return _container;
 
-         _container = initializeForStartup(shell);
+         _container = initializeForStartup(IoC.Container);
 
          return _container;
       }
 
-      private static IContainer initializeForStartup(IShell shell)
+      private static IContainer initializeForStartup(IContainer moBiContainer)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
          ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
 
+         var pkSimContainer = InfrastructureRegister.Initialize(registerContainerAsStatic: false);
 
-         var container = InfrastructureRegister.Initialize(registerContainerAsStatic: false);
-         container.RegisterImplementationOf(SynchronizationContext.Current);
-
-         container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
-         container.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, IWorkspace, Workspace>(LifeStyle.Singleton);
-
-         // registerImplementationsFromCore(container);
-         registerMinimalImplementations(container);
-
-
-         using (container.OptimizeDependencyResolution())
+         using (pkSimContainer.OptimizeDependencyResolution())
          {
-            container.RegisterImplementationOf(shell);
-            container.AddRegister(x => x.FromType<CoreRegister>());
-            container.AddRegister(x => x.FromType<InfrastructureRegister>());
-            container.Register<ICreateExpressionProfilePresenter, CreateExpressionProfilePresenter>();
-            container.Register<ICreateExpressionProfileView, CreateExpressionProfileView>();
-            container.Register<IExpressionProfileToExpressionProfileDTOMapper, ExpressionProfileToExpressionProfileDTOMapper>();
-            container.Register<IMoleculePropertiesMapper, MoleculePropertiesMapper>();
-            container.Register<ICoreUserSettings, IPresentationUserSettings, UIStarterUserSettings>(LifeStyle.Singleton);
-            container.Register<IOntogenyTask, OntogenyTask>();
-            container.Register<IEntityTask, EntityTask>();
-            container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
-            container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
-            InfrastructureRegister.LoadSerializers(container);
+            // Register base DevExpress components
+            pkSimContainer.RegisterImplementationOf(new DockManager());
+            pkSimContainer.RegisterImplementationOf(new RibbonBarManager(new RibbonControl()));
+            pkSimContainer.RegisterImplementationOf(UserLookAndFeel.Default);
+            pkSimContainer.RegisterImplementationOf(new DevExpress.XtraBars.BarManager());
+
+            // Cross register the main view and presentation components from MoBi into the PKSim
+            // container so that modal dialogs can be viewed within the MoBi shell
+            IShell shell = moBiContainer.Resolve<IShell>();
+            pkSimContainer.RegisterImplementationOf(shell as BaseShell);
+            pkSimContainer.RegisterImplementationOf(shell);
+            pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IMainViewPresenter>());
+            pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IMainView>());
+            pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IJournalPresenter>());
+            
+            pkSimContainer.RegisterImplementationOf(NumericFormatterOptions.Instance);
+            pkSimContainer.RegisterImplementationOf(SynchronizationContext.Current);
+            pkSimContainer.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
+            pkSimContainer.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, IWorkspace, Workspace>(LifeStyle.Singleton);
+            pkSimContainer.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, IUserSettings, UserSettings>(LifeStyle.Singleton);
+
+            // Full registration of OSPSuite Core UI and Presentation
+            pkSimContainer.AddRegister(x => x.FromType<UIRegister>());
+            pkSimContainer.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
+
+            // Full registration of PKSim Core and Infrastructure
+            pkSimContainer.AddRegister(x => x.FromType<CoreRegister>());
+            pkSimContainer.AddRegister(x => x.FromType<InfrastructureRegister>());
+
+            // Registration of PKSim presentation and UI for starter
+            pkSimContainer.AddRegister(x => x.FromType<PKSimStarterPresenterRegister>());
+            pkSimContainer.AddRegister(x => x.FromType<PKSimStarterUserInterfaceRegister>());
+            
+            pkSimContainer.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
+            InfrastructureRegister.LoadSerializers(pkSimContainer);
+            pkSimContainer.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
+            InfrastructureRegister.RegisterWorkspace(pkSimContainer);
          }
 
-         return container;
-      }
-
-      // /// <summary>
-      // /// Use this method to register all dependencies in Core.UI and Core.Presentation
-      // /// </summary>
-      // private static void registerImplementationsFromCore(IContainer container)
-      // {
-      //    container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
-      //    container.AddRegister(x => x.FromType<UIRegister>());
-      //    container.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
-      // }
-
-      /// <summary>
-      ///    Use this method to register and refine the minimal implementations for dependencies
-      /// </summary>
-      private static void registerMinimalImplementations(IContainer container)
-      {
-         container.Register<IMRUProvider, MRUProvider>();
-         container.Register<IImageListRetriever, ImageListRetriever>();
-         container.Register<IApplicationIconsToImageCollectionMapper, ApplicationIconsToImageCollectionMapper>();
-         container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
-         container.Register<IExceptionManager, CLIExceptionManager>();
-         container.Register<IDialogCreator, CLIDialogCreator>();
-         container.Register<IDataImporter, CLIDataImporter>();
-         container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
+         return pkSimContainer;
       }
    }
 

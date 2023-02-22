@@ -16,8 +16,8 @@ namespace PKSim.IntegrationTests
     
     public class When_getting_rate_paths : concern_for_RateObjectPathsRepository
     {
-        private IEnumerable<IFormulaUsablePath> _rateObjectPaths1;
-        private IEnumerable<IFormulaUsablePath> _rateObjectPaths2;
+        private IEnumerable<FormulaUsablePath> _rateObjectPaths1;
+        private IEnumerable<FormulaUsablePath> _rateObjectPaths2;
         private IEnumerable<IRateObjectPaths> _allRateObjectPaths;
 
         protected override void Because()

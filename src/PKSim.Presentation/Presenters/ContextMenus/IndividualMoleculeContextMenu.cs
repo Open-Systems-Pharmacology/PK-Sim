@@ -9,13 +9,14 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class IndividualMoleculeContextMenu : ContextMenu<IndividualMolecule, IMoleculesPresenter>
    {
-      public IndividualMoleculeContextMenu(IndividualMolecule molecule, IMoleculesPresenter moleculesPresenter)
-         : base(molecule, moleculesPresenter)
+      public IndividualMoleculeContextMenu(IndividualMolecule molecule, IMoleculesPresenter moleculesPresenter, IContainer container)
+         : base(molecule, moleculesPresenter, container)
       {
       }
 
@@ -31,6 +32,13 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class IndividualMoleculeTreeNodeContextMenuFactory : NodeContextMenuFactory<IndividualMolecule>
    {
+      private readonly IContainer _container;
+
+      public IndividualMoleculeTreeNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public override bool IsSatisfiedBy(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
          return base.IsSatisfiedBy(treeNode, presenter) && presenter.IsAnImplementationOf<IMoleculesPresenter>();
@@ -38,7 +46,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       public override IContextMenu CreateFor(IndividualMolecule individualMolecule, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new IndividualMoleculeContextMenu(individualMolecule, presenter.DowncastTo<IMoleculesPresenter>());
+         return new IndividualMoleculeContextMenu(individualMolecule, presenter.DowncastTo<IMoleculesPresenter>(), _container);
       }
    }
 }

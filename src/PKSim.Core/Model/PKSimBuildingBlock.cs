@@ -125,6 +125,8 @@ namespace PKSim.Core.Model
       }
 
       public virtual IReadOnlyList<IEntity> Children => Root.Children;
+      
+      public ObjectPath ParentPath { get; set; }
 
       public IEnumerator<IEntity> GetEnumerator()
       {

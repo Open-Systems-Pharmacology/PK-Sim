@@ -11,6 +11,7 @@ using PKSim.Presentation.Presenters.ContextMenus;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.UICommands;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation
 {
@@ -34,7 +35,8 @@ namespace PKSim.Presentation
          _executionContext = A.Fake<IExecutionContext>();
          _simulationBuildingBlockUpdater= A.Fake<ISimulationBuildingBlockUpdater>();
          _buildingBlockInProjectManager = A.Fake<IBuildingBlockInProjectManager>();
-         sut = new MultipleUsedBuildingBlockNodeContextMenuFactory(_buildingBlockInProjectManager, _executionContext);
+         _container = A.Fake<IContainer>();
+         sut = new MultipleUsedBuildingBlockNodeContextMenuFactory(_buildingBlockInProjectManager, _executionContext, _container);
 
          _usedBuildingBlocksTreeNode = new List<ITreeNode>();
          _presenter = A.Fake<IPresenterWithContextMenu<IReadOnlyList<ITreeNode>>>();

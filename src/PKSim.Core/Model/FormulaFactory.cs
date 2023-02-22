@@ -210,7 +210,7 @@ namespace PKSim.Core.Model
          return RateFor(CoreConstants.CalculationMethod.APPLICATION_PARAMETER_HUMAN, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA, formulaCache);
       }
 
-      private IFormulaUsablePath pathInParentContainerFor(IParameter parameter, string alias)
+      private FormulaUsablePath pathInParentContainerFor(IParameter parameter, string alias)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, parameter.Name)
             .WithAlias(alias)
@@ -338,7 +338,7 @@ namespace PKSim.Core.Model
 
          foreach (var rateObjectPath in _rateObjectPathsRepository.ObjectPathsFor(rateKey))
          {
-            formula.AddObjectPath(rateObjectPath.Clone<IFormulaUsablePath>());
+            formula.AddObjectPath(rateObjectPath.Clone<FormulaUsablePath>());
          }
 
          addTimeReferenceIfNeeded(formula);
@@ -395,8 +395,8 @@ namespace PKSim.Core.Model
          if (tableObjectPath == null || offsetObjectPath == null)
             throw new ArgumentException(PKSimConstants.Error.TableFormulaWithOffsetMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.OFFSET));
 
-         formula.AddTableObjectPath(tableObjectPath.Clone<IFormulaUsablePath>());
-         formula.AddOffsetObjectPath(offsetObjectPath.Clone<IFormulaUsablePath>());
+         formula.AddTableObjectPath(tableObjectPath.Clone<FormulaUsablePath>());
+         formula.AddOffsetObjectPath(offsetObjectPath.Clone<FormulaUsablePath>());
 
          //Table formula with offest has the same dimension as its referenced table object
          formula.Dimension = tableObjectPath.Dimension;

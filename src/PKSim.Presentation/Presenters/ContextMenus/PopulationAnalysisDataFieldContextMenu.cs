@@ -8,13 +8,14 @@ using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class PopulationAnalysisDataFieldContextMenu : ContextMenu<PopulationAnalysisDataField, IPopulationAnalysisFieldsPresenter>
    {
-      public PopulationAnalysisDataFieldContextMenu(PopulationAnalysisDataField populationAnalysisDataField, IPopulationAnalysisFieldsPresenter presenter)
-         : base(populationAnalysisDataField, presenter)
+      public PopulationAnalysisDataFieldContextMenu(PopulationAnalysisDataField populationAnalysisDataField, IPopulationAnalysisFieldsPresenter presenter, IContainer container)
+         : base(populationAnalysisDataField, presenter, container)
       {
       }
 
@@ -41,10 +42,17 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class PopulationAnalysisDataFieldContextMenuFactory : IContextMenuSpecificationFactory<IPopulationAnalysisField>
    {
+      private readonly IContainer _container;
+
+      public PopulationAnalysisDataFieldContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public IContextMenu CreateFor(IPopulationAnalysisField populationAnalysisField, IPresenterWithContextMenu<IPopulationAnalysisField> presenter)
       {
          return new PopulationAnalysisDataFieldContextMenu(populationAnalysisField.DowncastTo<PopulationAnalysisDataField>(), 
-            presenter.DowncastTo<IPopulationAnalysisFieldsPresenter>());
+            presenter.DowncastTo<IPopulationAnalysisFieldsPresenter>(), _container);
       }
 
       public bool IsSatisfiedBy(IPopulationAnalysisField populationAnalysisField, IPresenterWithContextMenu<IPopulationAnalysisField> presenter)

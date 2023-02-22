@@ -7,13 +7,14 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class PopulationFolderContextMenu : BuildingBlockFolderContextMenu<Population>
    {
-      public PopulationFolderContextMenu(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
-         : base(repository, buildingBlockRepository, MenuBarItemIds.NewPopulation, MenuBarItemIds.LoadPopulation, MenuBarItemIds.ImportPopulation)
+      public PopulationFolderContextMenu(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository, IContainer container)
+         : base(repository, buildingBlockRepository, container, MenuBarItemIds.NewPopulation, MenuBarItemIds.LoadPopulation, MenuBarItemIds.ImportPopulation)
       {
       }
    }
@@ -21,16 +22,18 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    public class PopulationFolderTreeNodeContextMenuFactory : RootNodeContextMenuFactory
    {
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IContainer _container;
 
-      public PopulationFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository)
+      public PopulationFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IBuildingBlockRepository buildingBlockRepository, IContainer container)
          : base(PKSimRootNodeTypes.PopulationFolder, repository)
       {
          _buildingBlockRepository = buildingBlockRepository;
+         _container = container;
       }
 
       public override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new PopulationFolderContextMenu(_repository, _buildingBlockRepository);
+         return new PopulationFolderContextMenu(_repository, _buildingBlockRepository, _container);
       }
    }
 }
