@@ -52,6 +52,7 @@ namespace PKSim.UI.Starter
             pkSimContainer.RegisterImplementationOf(new DockManager());
             pkSimContainer.RegisterImplementationOf(new RibbonBarManager(new RibbonControl()));
             pkSimContainer.RegisterImplementationOf(UserLookAndFeel.Default);
+            pkSimContainer.RegisterImplementationOf(new DevExpress.XtraBars.BarManager());
 
             // Cross register the main view and presentation components from MoBi into the PKSim
             // container so that modal dialogs can be viewed within the MoBi shell
