@@ -17,7 +17,6 @@ namespace PKSim.Presentation
       protected IGeneExpressionsDatabasePathManager _geneExpressionDatabasePathManager;
       protected IApplicationController _applicationController;
       protected IMoleculeToQueryExpressionSettingsMapper _querySettingsMapper;
-      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
       protected IProteinExpressionsPresenter _proteinExpressionPresenter;
 
       protected override void Context()
@@ -25,9 +24,8 @@ namespace PKSim.Presentation
          _geneExpressionDatabasePathManager = A.Fake<IGeneExpressionsDatabasePathManager>();
          _applicationController = A.Fake<IApplicationController>();
          _querySettingsMapper = A.Fake<IMoleculeToQueryExpressionSettingsMapper>();
-         _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
 
-         sut = new ExpressionProfileProteinDatabaseTask(_geneExpressionDatabasePathManager, _applicationController, _querySettingsMapper, _moleculeExpressionTask);
+         sut = new ExpressionProfileProteinDatabaseTask(_geneExpressionDatabasePathManager, _applicationController, _querySettingsMapper);
 
 
          _proteinExpressionPresenter = A.Fake<IProteinExpressionsPresenter>();

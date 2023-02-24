@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
@@ -26,23 +27,43 @@ namespace PKSim.Core.Model
          distributedParameter.Percentile = percentile;
       }
 
+      public static bool IsGlobalExpression(this ExpressionParameterUpdate parameter)
+      {
+         return parameter != null && isGlobalExpression(parameter);
+      }
+      
       public static bool IsGlobalExpression(this IParameter parameter)
       {
-         if (parameter == null)
-            return false;
+         return parameter != null && isGlobalExpression(parameter);
+      }
 
-         return AllGlobalRelExpParameters.Contains(parameter.Name);
+      private static bool isGlobalExpression(IWithName withName)
+      {
+         return AllGlobalRelExpParameters.Contains(withName.Name);
       }
 
       public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
          CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
+
+      private static bool isExpression(IWithName parameter)
+      {
+         return isGlobalExpression(parameter) || parameter.IsNamed(REL_EXP);
+      }
+
+      public static bool IsExpression(this ExpressionParameterUpdate parameter)
+      {
+         if (parameter == null)
+            return false;
+
+         return parameter.IsGlobalExpression() || isExpression(parameter);
+      }
 
       public static bool IsExpression(this IParameter parameter)
       {
          if (parameter == null)
             return false;
 
-         return parameter.IsGlobalExpression() || parameter.IsNamed(REL_EXP);
+         return parameter.IsGlobalExpression() || isExpression(parameter);
       }
 
       public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
@@ -214,6 +235,28 @@ namespace PKSim.Core.Model
             parameter.DeviationParameter.Value *= factorValue;
 
          parameter.IsFixedValue = false;
+      }
+   }
+
+   public static class ExpressionParameterExtensions
+   {
+      public static string ContainerNameForRelativeExpressionParameter(this ExpressionParameterUpdate expressionParameter)
+      {
+         if (expressionParameter.IsGlobalExpression())
+            return CoreConstants.ContainerName.GlobalExpressionContainerNameFor(expressionParameter.Name);
+         
+         var objectPath = expressionParameter.Path;
+         var containerName = parentOfParent(objectPath);
+         var key = Equals(containerName, CoreConstants.Compartment.INTRACELLULAR) ? objectPath[objectPath.Count - 4] : containerName;
+         if (expressionParameter.ContainerPath.Contains(CoreConstants.Organ.LUMEN))
+            key = CoreConstants.ContainerName.LumenSegmentNameFor(key);
+
+         return key;
+      }
+
+      private static string parentOfParent(ObjectPath objectPath)
+      {
+         return objectPath[objectPath.Count - 3];
       }
    }
 }

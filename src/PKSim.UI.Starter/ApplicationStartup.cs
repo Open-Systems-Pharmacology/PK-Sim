@@ -20,7 +20,6 @@ using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
-using PKSim.Presentation.UICommands;
 
 namespace PKSim.UI.Starter
 {

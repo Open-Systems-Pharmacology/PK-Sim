@@ -63,7 +63,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
             x.UsingAttributeRepository(AttributeMapperRepository);
          });
 
-         //SBSuite.Presentation serializer
+         //OSPSuite.Presentation serializer
          this.AddPresentationSerializers();
       }
 

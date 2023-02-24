@@ -1,9 +1,16 @@
-﻿using OSPSuite.Core.Commands.Core;
-using OSPSuite.Presentation.Views;
+﻿using System.Linq;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
+using PKSim.Presentation.Services;
 
 namespace PKSim.UI.Starter
 {
@@ -37,6 +44,38 @@ namespace PKSim.UI.Starter
 
             return presenter.Create<T>().IsEmpty() ? null : mapper.MapFrom(presenter.ExpressionProfile);
          }
+      }
+
+      public static object GetExpressionDatabaseQuery(ExpressionProfileBuildingBlockUpdate buildingBlockUpdate)
+      {
+         var container = ApplicationStartup.Initialize();
+
+         var expressionProfileProteinDatabaseTask = container.Resolve<IExpressionProfileProteinDatabaseTask>();
+         loadApplicationSettings(container);
+
+         if (!expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(buildingBlockUpdate))
+            throw new OSPSuiteException(PKSimConstants.Error.NoProteinExpressionDatabaseAssociatedTo(buildingBlockUpdate.Species));
+
+         var queryResults = expressionProfileProteinDatabaseTask.QueryDatabase(buildingBlockUpdate);
+         
+         return queryResults == null ? null : queryResultsToExpressionParameter(buildingBlockUpdate, queryResults);
+      }
+
+      private static void loadApplicationSettings(IContainer container)
+      {
+         container.Resolve<IApplicationSettingsPersistor>().Load();
+      }
+
+      private static ExpressionProfileBuildingBlockUpdate queryResultsToExpressionParameter(ExpressionProfileBuildingBlockUpdate buildingBlock, QueryExpressionResults queryResults)
+      {
+         buildingBlock.ExpressionParameters.Where(x => x.IsExpression()).Each(expressionParameter =>
+         {
+            var result = queryResults.ExpressionResultFor(expressionParameter.ContainerNameForRelativeExpressionParameter());
+            if (result != null)
+               expressionParameter.UpdatedValue = result.RelativeExpression;
+         });
+
+         return buildingBlock;
       }
    }
 }

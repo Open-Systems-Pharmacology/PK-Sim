@@ -2,7 +2,6 @@
 using PKSim.Core;
 using PKSim.Presentation.UICommands;
 using PKSim.UI.UICommands;
-using System;
 
 namespace PKSim.UI.Starter
 {
@@ -17,6 +16,7 @@ namespace PKSim.UI.Starter
             scan.IncludeNamespaceContainingType<Views.ExpressionProfiles.CreateExpressionProfileView>();
             scan.IncludeNamespaceContainingType<Views.Individuals.CreateIndividualView>();
             scan.IncludeNamespaceContainingType<Views.Parameters.ParameterGroupsView>();
+            scan.IncludeNamespaceContainingType<Views.ProteinExpression.ProteinExpressionsView>();
          });
          container.Register<OSPSuite.UI.Services.IToolTipCreator, IToolTipCreator, ToolTipCreator>(LifeStyle.Transient);
          container.Register<IExitCommand, ExitCommand>();
