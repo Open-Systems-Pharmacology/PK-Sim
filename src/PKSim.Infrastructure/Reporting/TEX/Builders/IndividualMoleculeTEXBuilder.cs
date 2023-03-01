@@ -47,12 +47,12 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       protected DataTable ExpressionLevelParameters(TMolecule molecule)
       {
          var dataTable = new DataTable {TableName = PKSimConstants.UI.ExpressionLevels };
-         var parameterColumn = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, CoreConstants.Parameters.REL_EXP);
+         var parameterColumn = _representationInfoRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, Constants.Parameters.REL_EXP);
          dataTable.Columns.Add(parameterColumn, typeof (string));
          dataTable.Columns.Add(PKSimConstants.UI.Name, typeof (string));
          dataTable.Columns.Add(PKSimConstants.UI.Value, typeof (string));
 
-         foreach (var parameter in molecule.GetAllChildren<IParameter>(p => p.IsExpression() && p.Value > 0))
+         foreach (var parameter in molecule.GetAllChildren<IParameter>(p => p.HasExpressionName() && p.Value > 0))
          {
             var row = dataTable.NewRow();
             row[parameterColumn] = ExpressionContainerDisplayNameFor(parameter);

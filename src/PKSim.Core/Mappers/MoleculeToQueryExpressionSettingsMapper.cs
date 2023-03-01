@@ -10,7 +10,7 @@ namespace PKSim.Core.Mappers
    public interface IMoleculeToQueryExpressionSettingsMapper
    {
       QueryExpressionSettings MapFrom(IndividualMolecule molecule, ISimulationSubject simulationSubject, string moleculeName);
-      QueryExpressionSettings MapFrom(ExpressionProfileBuildingBlockUpdate expressionProfile);
+      QueryExpressionSettings MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
    }
 
    public class MoleculeToQueryExpressionSettingsMapper : IMoleculeToQueryExpressionSettingsMapper
@@ -30,15 +30,15 @@ namespace PKSim.Core.Mappers
          return new QueryExpressionSettings(expressionContainer, molecule.QueryConfiguration, moleculeName);
       }
 
-      public QueryExpressionSettings MapFrom(ExpressionProfileBuildingBlockUpdate expressionProfile)
+      public QueryExpressionSettings MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         var containerGroups = expressionProfile.ExpressionParameters.
-            Where(x => x.OriginalValue.HasValue && x.IsExpression()).
-            Select(x => (categoryName:x.ContainerNameForRelativeExpressionParameter(), expressionValue:x.OriginalValue.Value)).ToList();
+         var containerGroups = expressionProfileBuildingBlock.
+            Where(x => x.Value.HasValue && x.HasExpressionName()).
+            Select(x => (categoryName:x.ContainerNameForRelativeExpressionParameter(), expressionValue:x.Value.Value)).ToList();
 
          var expressionContainer = new List<ExpressionContainerInfo>(containerGroups.Select(x => new ExpressionContainerInfo(x.categoryName, _representationInfoRepository.ContainerInfoFor(x.categoryName).DisplayName, x.expressionValue)));
 
-         return new QueryExpressionSettings(expressionContainer, string.Empty, expressionProfile.MoleculeName);
+         return new QueryExpressionSettings(expressionContainer, string.Empty, expressionProfileBuildingBlock.MoleculeName);
       }
 
       private ExpressionContainerInfo mapFrom(string containerName, IParameter relExpParameter)

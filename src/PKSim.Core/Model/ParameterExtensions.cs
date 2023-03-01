@@ -27,48 +27,15 @@ namespace PKSim.Core.Model
          distributedParameter.Percentile = percentile;
       }
 
-      public static bool IsGlobalExpression(this ExpressionParameterUpdate parameter)
-      {
-         return parameter != null && isGlobalExpression(parameter);
-      }
-      
-      public static bool IsGlobalExpression(this IParameter parameter)
-      {
-         return parameter != null && isGlobalExpression(parameter);
-      }
 
-      private static bool isGlobalExpression(IWithName withName)
-      {
-         return AllGlobalRelExpParameters.Contains(withName.Name);
-      }
+
 
       public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
          CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
-      private static bool isExpression(IWithName parameter)
-      {
-         return isGlobalExpression(parameter) || parameter.IsNamed(REL_EXP);
-      }
-
-      public static bool IsExpression(this ExpressionParameterUpdate parameter)
-      {
-         if (parameter == null)
-            return false;
-
-         return parameter.IsGlobalExpression() || isExpression(parameter);
-      }
-
-      public static bool IsExpression(this IParameter parameter)
-      {
-         if (parameter == null)
-            return false;
-
-         return parameter.IsGlobalExpression() || isExpression(parameter);
-      }
-
       public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
       {
-         if (parameter.IsExpression())
+         if (parameter.HasExpressionName())
             return true;
 
          if (OntogenyFactors.Contains(parameter.Name))
@@ -79,7 +46,7 @@ namespace PKSim.Core.Model
 
       public static bool IsExpressionProfile(this IParameter parameter)
       {
-         return IsExpression(parameter) ||
+         return parameter.HasExpressionName() ||
                 IsIndividualMoleculeGlobal(parameter) ||
                 parameter.IsNamed(INITIAL_CONCENTRATION) ||
                 parameter.Name.StartsWith(FRACTION_EXPRESSED_PREFIX);
@@ -240,9 +207,9 @@ namespace PKSim.Core.Model
 
    public static class ExpressionParameterExtensions
    {
-      public static string ContainerNameForRelativeExpressionParameter(this ExpressionParameterUpdate expressionParameter)
+      public static string ContainerNameForRelativeExpressionParameter(this ExpressionParameter expressionParameter)
       {
-         if (expressionParameter.IsGlobalExpression())
+         if (expressionParameter.HasGlobalExpressionName())
             return CoreConstants.ContainerName.GlobalExpressionContainerNameFor(expressionParameter.Name);
          
          var objectPath = expressionParameter.Path;

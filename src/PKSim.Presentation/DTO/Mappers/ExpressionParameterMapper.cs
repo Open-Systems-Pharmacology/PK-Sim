@@ -47,7 +47,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var organ = compartment.ParentContainer;
 
          //Relative expression parameters not in lumen should be displayed directly under the organism
-         var compartmentName = parameter.IsExpression() && !parameter.IsInLumen() ? string.Empty : compartment.Name;
+         var compartmentName = parameter.HasExpressionName() && !parameter.IsInLumen() ? string.Empty : compartment.Name;
          return createExpressionContainerParameterDTOFrom(organ?.Name, compartmentName, groupName, parameter);
       }
 

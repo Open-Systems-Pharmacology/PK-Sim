@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Repositories;
-using NPOI.SS.Formula.Functions;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Core
 {
@@ -28,17 +28,18 @@ namespace PKSim.Core
    public class When_mapping_a_expression_building_block_update_to_a_query_expression_setting : concern_for_MoleculeToQueryExpressionSettingsMapper
    {
       private ExpressionProfileBuildingBlock _buildingBlock;
-      private ExpressionProfileBuildingBlockUpdate _expressionProfileUpdate;
 
       protected override void Context()
       {
          base.Context();
-         _buildingBlock = new ExpressionProfileBuildingBlock();
-         _buildingBlock.Name = "MoleculeName|Species|Category";
+         _buildingBlock = new ExpressionProfileBuildingBlock
+         {
+            Name = "MoleculeName|Species|Category"
+         };
 
          var expressionParameter = new ExpressionParameter
          {
-            Path = new ObjectPath("disp1", "exp1", CoreConstants.Parameters.REL_EXP),
+            Path = new ObjectPath("disp1", "exp1", REL_EXP),
             Value = 1.0
          };
 
@@ -46,7 +47,7 @@ namespace PKSim.Core
 
          expressionParameter = new ExpressionParameter
          {
-            Path = new ObjectPath("disp2", "exp2", CoreConstants.Parameters.REL_EXP_BLOOD_CELLS),
+            Path = new ObjectPath("disp2", "exp2", REL_EXP_BLOOD_CELLS),
             Value = 1.0
          };
 
@@ -62,19 +63,17 @@ namespace PKSim.Core
 
          expressionParameter = new ExpressionParameter
          {
-            Path = new ObjectPath("disp3", "exp3", CoreConstants.Parameters.REL_EXP),
+            Path = new ObjectPath("disp3", "exp3", REL_EXP),
          };
 
          _buildingBlock.Add(expressionParameter);
-
-         _expressionProfileUpdate = new ExpressionProfileBuildingBlockUpdate(_buildingBlock);
 
          A.CallTo(() => _representationInfoRepository.ContainerInfoFor(A<string>._)).ReturnsLazily(s => new RepresentationInfo { DisplayName = (string)s.Arguments[0] });
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_expressionProfileUpdate);
+         _result = sut.MapFrom(_buildingBlock);
       }
 
       [Observation]

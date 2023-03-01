@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -11,6 +12,7 @@ using PKSim.Core.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.UI.Starter
 {
@@ -46,19 +48,19 @@ namespace PKSim.UI.Starter
          }
       }
 
-      public static object GetExpressionDatabaseQuery(ExpressionProfileBuildingBlockUpdate buildingBlockUpdate)
+      public static object GetExpressionDatabaseQuery(ExpressionProfileBuildingBlock buildingBlock)
       {
          var container = ApplicationStartup.Initialize();
 
          var expressionProfileProteinDatabaseTask = container.Resolve<IExpressionProfileProteinDatabaseTask>();
          loadApplicationSettings(container);
 
-         if (!expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(buildingBlockUpdate))
-            throw new OSPSuiteException(PKSimConstants.Error.NoProteinExpressionDatabaseAssociatedTo(buildingBlockUpdate.Species));
+         if (!expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(buildingBlock))
+            throw new OSPSuiteException(PKSimConstants.Error.NoProteinExpressionDatabaseAssociatedTo(buildingBlock.Species));
 
-         var queryResults = expressionProfileProteinDatabaseTask.QueryDatabase(buildingBlockUpdate);
-         
-         return queryResults == null ? null : queryResultsToExpressionParameter(buildingBlockUpdate, queryResults);
+         var queryResults = expressionProfileProteinDatabaseTask.QueryDatabase(buildingBlock);
+
+         return queryResults == null ? null : queryResultsToExpressionParameter(buildingBlock, queryResults);
       }
 
       private static void loadApplicationSettings(IContainer container)
@@ -66,16 +68,18 @@ namespace PKSim.UI.Starter
          container.Resolve<IApplicationSettingsPersistor>().Load();
       }
 
-      private static ExpressionProfileBuildingBlockUpdate queryResultsToExpressionParameter(ExpressionProfileBuildingBlockUpdate buildingBlock, QueryExpressionResults queryResults)
+      private static List<ExpressionParameterValueUpdate> queryResultsToExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, QueryExpressionResults queryResults)
       {
-         buildingBlock.ExpressionParameters.Where(x => x.IsExpression()).Each(expressionParameter =>
+         var returnList = new List<ExpressionParameterValueUpdate>();
+
+         buildingBlock.Where(x => x.HasExpressionName()).Each(expressionParameter =>
          {
             var result = queryResults.ExpressionResultFor(expressionParameter.ContainerNameForRelativeExpressionParameter());
-            if (result != null)
-               expressionParameter.UpdatedValue = result.RelativeExpression;
+            if (result != null && !Equals(result.RelativeExpression, expressionParameter.Value))
+               returnList.Add(new ExpressionParameterValueUpdate(expressionParameter.Path) { UpdatedValue = result.RelativeExpression });
          });
 
-         return buildingBlock;
+         return returnList;
       }
    }
 }

@@ -30,8 +30,8 @@ namespace PKSim.Presentation
 
 
          _initialConcentration = createParameter(CoreConstants.Parameters.INITIAL_CONCENTRATION);
-         _relativeExpression = createParameter(CoreConstants.Parameters.REL_EXP);
-         _relativeExpression2 = createParameter(CoreConstants.Parameters.REL_EXP);
+         _relativeExpression = createParameter(Constants.Parameters.REL_EXP);
+         _relativeExpression2 = createParameter(Constants.Parameters.REL_EXP);
          _fraction_exp_bc = createParameter(CoreConstants.Parameters.FRACTION_EXPRESSED_BLOOD_CELLS);
       }
 

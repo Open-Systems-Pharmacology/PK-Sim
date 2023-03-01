@@ -29,13 +29,13 @@ namespace PKSim.Presentation.Services
       ///    <paramref name="expressionProfile" />, otherwise
       ///    false
       /// </summary>
-      bool CanQueryProteinExpressionsFor(ExpressionProfileBuildingBlockUpdate expressionProfile);
+      bool CanQueryProteinExpressionsFor(ExpressionProfileBuildingBlock expressionProfile);
 
       /// <summary>
-      ///    Edit the given molecule defined in the <paramref name="expressionProfile" />
+      ///    Edit the given molecule defined in the <paramref name="expressionProfileBuildingBlock" />
       /// </summary>
-      /// <param name="expressionProfile">Edited expression profile</param>
-      QueryExpressionResults QueryDatabase(ExpressionProfileBuildingBlockUpdate expressionProfile);
+      /// <param name="expressionProfileBuildingBlock">Edited expression profile</param>
+      QueryExpressionResults QueryDatabase(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
    }
 
    public class ExpressionProfileProteinDatabaseTask : IExpressionProfileProteinDatabaseTask
@@ -59,17 +59,17 @@ namespace PKSim.Presentation.Services
          return _geneExpressionsDatabasePathManager.HasDatabaseFor(expressionProfile.Species);
       }
 
-      public bool CanQueryProteinExpressionsFor(ExpressionProfileBuildingBlockUpdate expressionProfile)
+      public bool CanQueryProteinExpressionsFor(ExpressionProfileBuildingBlock expressionProfile)
       {
          return _geneExpressionsDatabasePathManager.HasDatabaseFor(expressionProfile.Species);
       }
 
-      public QueryExpressionResults QueryDatabase(ExpressionProfileBuildingBlockUpdate expressionProfile)
+      public QueryExpressionResults QueryDatabase(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(expressionProfile.Species))
+         using (_geneExpressionsDatabasePathManager.ConnectToDatabaseFor(expressionProfileBuildingBlock.Species))
          using (var presenter = _applicationController.Start<IProteinExpressionsPresenter>())
          {
-            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(expressionProfile));
+            presenter.InitializeSettings(_queryExpressionSettingsMapper.MapFrom(expressionProfileBuildingBlock));
             return getQueryResults(presenter);
          }
       }

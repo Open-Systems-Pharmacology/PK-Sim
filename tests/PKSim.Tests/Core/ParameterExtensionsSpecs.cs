@@ -56,20 +56,20 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _expressionParameter = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP);
+         _expressionParameter = A.Fake<IParameter>().WithName(Constants.Parameters.REL_EXP);
          _otherParamter = A.Fake<IParameter>().WithName("toto");
       }
 
       [Observation]
       public void should_return_true_if_the_parameter_is_indeed_an_expression_parameter()
       {
-         _expressionParameter.IsExpression().ShouldBeTrue();
+         _expressionParameter.HasExpressionName().ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_for_any_parameter_that_is_not_defined_for_an_expression()
       {
-         _otherParamter.IsExpression().ShouldBeFalse();
+         _otherParamter.HasExpressionName().ShouldBeFalse();
       }
    }
 

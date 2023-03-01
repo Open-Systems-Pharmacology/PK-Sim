@@ -57,7 +57,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_kept_the_global_relative_expression_parameters()
       {
-         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parameterName => _result.Parameter(parameterName).ShouldNotBeNull());
+         Constants.Parameters.AllGlobalRelExpParameters.Each(parameterName => _result.Parameter(parameterName).ShouldNotBeNull());
       }
    }
 
