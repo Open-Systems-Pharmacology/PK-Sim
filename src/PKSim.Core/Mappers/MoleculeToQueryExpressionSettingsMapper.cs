@@ -32,13 +32,17 @@ namespace PKSim.Core.Mappers
 
       public QueryExpressionSettings MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
-         var containerGroups = expressionProfileBuildingBlock.
+         var expressionContainers = expressionProfileBuildingBlock.
             Where(x => x.Value.HasValue && x.HasExpressionName()).
-            Select(x => (categoryName:x.ContainerNameForRelativeExpressionParameter(), expressionValue:x.Value.Value)).ToList();
+            Select(expressionContainerInfoForExpressionParameter).ToList();
 
-         var expressionContainer = new List<ExpressionContainerInfo>(containerGroups.Select(x => new ExpressionContainerInfo(x.categoryName, _representationInfoRepository.ContainerInfoFor(x.categoryName).DisplayName, x.expressionValue)));
+         return new QueryExpressionSettings(expressionContainers, string.Empty, expressionProfileBuildingBlock.MoleculeName);
+      }
 
-         return new QueryExpressionSettings(expressionContainer, string.Empty, expressionProfileBuildingBlock.MoleculeName);
+      private ExpressionContainerInfo expressionContainerInfoForExpressionParameter(ExpressionParameter expressionParameter)
+      {
+         var containerName = expressionParameter.ContainerNameForRelativeExpressionParameter();
+         return new ExpressionContainerInfo(containerName, _representationInfoRepository.ContainerInfoFor(containerName).DisplayName, expressionParameter.Value.Value);
       }
 
       private ExpressionContainerInfo mapFrom(string containerName, IParameter relExpParameter)

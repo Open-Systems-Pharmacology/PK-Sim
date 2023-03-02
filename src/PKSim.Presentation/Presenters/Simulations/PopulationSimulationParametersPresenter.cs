@@ -35,7 +35,7 @@ namespace PKSim.Presentation.Presenters.Simulations
             return false;
 
          //Hide expressions parameters
-         if (p.HasExpressionName())
+         if (p.IsExpression())
             return false;
 
          //Hide volume parameters defined as formula (of type Simulation)

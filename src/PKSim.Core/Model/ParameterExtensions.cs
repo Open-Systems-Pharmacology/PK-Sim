@@ -27,15 +27,12 @@ namespace PKSim.Core.Model
          distributedParameter.Percentile = percentile;
       }
 
-
-
-
       public static bool IsIndividualMoleculeGlobal(this IParameter parameter) =>
          CoreConstants.Parameters.AllGlobalMoleculeParameters.Contains(parameter.Name);
 
       public static bool IsExpressionOrOntogenyFactor(this IParameter parameter)
       {
-         if (parameter.HasExpressionName())
+         if (parameter.IsExpression())
             return true;
 
          if (OntogenyFactors.Contains(parameter.Name))
@@ -46,7 +43,7 @@ namespace PKSim.Core.Model
 
       public static bool IsExpressionProfile(this IParameter parameter)
       {
-         return parameter.HasExpressionName() ||
+         return parameter.IsExpression() ||
                 IsIndividualMoleculeGlobal(parameter) ||
                 parameter.IsNamed(INITIAL_CONCENTRATION) ||
                 parameter.Name.StartsWith(FRACTION_EXPRESSED_PREFIX);
@@ -211,19 +208,32 @@ namespace PKSim.Core.Model
       {
          if (expressionParameter.HasGlobalExpressionName())
             return CoreConstants.ContainerName.GlobalExpressionContainerNameFor(expressionParameter.Name);
-         
+
          var objectPath = expressionParameter.Path;
-         var containerName = parentOfParent(objectPath);
-         var key = Equals(containerName, CoreConstants.Compartment.INTRACELLULAR) ? objectPath[objectPath.Count - 4] : containerName;
+         var containerName = grandParent(objectPath);
+         var key = Equals(containerName, CoreConstants.Compartment.INTRACELLULAR) ? greatGrandParent(objectPath) : containerName;
          if (expressionParameter.ContainerPath.Contains(CoreConstants.Organ.LUMEN))
             key = CoreConstants.ContainerName.LumenSegmentNameFor(key);
 
          return key;
       }
 
-      private static string parentOfParent(ObjectPath objectPath)
+      private static string greatGrandParent(ObjectPath objectPath)
       {
-         return objectPath[objectPath.Count - 3];
+         return ancestorFrom(objectPath, generations: 4);
+      }
+
+      private static string grandParent(ObjectPath objectPath)
+      {
+         return ancestorFrom(objectPath, generations: 3);
+      }
+
+      private static string ancestorFrom(ObjectPath objectPath, int generations)
+      {
+         if (objectPath.Count >= generations)
+            return objectPath[objectPath.Count - generations];
+
+         return objectPath.FirstOrDefault();
       }
    }
 }

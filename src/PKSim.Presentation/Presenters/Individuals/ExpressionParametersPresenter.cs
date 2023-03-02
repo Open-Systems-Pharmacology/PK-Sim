@@ -72,7 +72,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private void normalizeExpressionValues()
       {
-         var allExpressionParameters = _expressionParameters.Where(x => x.Parameter.Parameter.HasExpressionName()).ToList();
+         var allExpressionParameters = _expressionParameters.Where(x => x.Parameter.Parameter.IsExpression()).ToList();
          var max = allExpressionParameters.Select(x => x.Value).Max();
 
          allExpressionParameters.Each(x => x.NormalizedExpression = max == 0 ? 0 : x.Value / max);
@@ -82,7 +82,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          SetParameterValue(expressionParameterDTO, value);
          var parameter = expressionParameterDTO.Parameter;
-         if (!parameter.HasExpressionName())
+         if (!parameter.IsExpression())
             return;
 
          normalizeExpressionValues();

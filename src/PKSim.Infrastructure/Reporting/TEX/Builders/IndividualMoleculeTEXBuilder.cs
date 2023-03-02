@@ -52,7 +52,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          dataTable.Columns.Add(PKSimConstants.UI.Name, typeof (string));
          dataTable.Columns.Add(PKSimConstants.UI.Value, typeof (string));
 
-         foreach (var parameter in molecule.GetAllChildren<IParameter>(p => p.HasExpressionName() && p.Value > 0))
+         foreach (var parameter in molecule.GetAllChildren<IParameter>(p => p.IsExpression() && p.Value > 0))
          {
             var row = dataTable.NewRow();
             row[parameterColumn] = ExpressionContainerDisplayNameFor(parameter);
