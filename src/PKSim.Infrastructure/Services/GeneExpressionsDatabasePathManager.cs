@@ -22,23 +22,32 @@ namespace PKSim.Infrastructure.Services
 
       public bool HasDatabaseFor(Species species)
       {
-         if (!_applicationSettings.HasExpressionsDatabaseFor(species)) 
+         return HasDatabaseFor(species.Name);
+      }
+      
+      public bool HasDatabaseFor(string speciesName)
+      {
+         if (!_applicationSettings.HasExpressionsDatabaseFor(speciesName))
             return false;
 
-         return FileHelper.FileExists(databaseFor(species.Name));
+         return FileHelper.FileExists(databaseFor(speciesName));
       }
 
-   
-      public IDisposable ConnectToDatabaseFor(Species species)
+      public IDisposable ConnectToDatabaseFor(string speciesName)
       {
          _geneExpressionQueries.ClearCache();
-         return new DatabaseDisposer(_database, databaseFor(species.Name));
+         return new DatabaseDisposer(_database, databaseFor(speciesName));
+
+      }
+
+      public IDisposable ConnectToDatabaseFor(Species species)
+      {
+         return ConnectToDatabaseFor(species.Name);
       }
 
       private string databaseFor(string speciesName)
       {
          return _applicationSettings.SpeciesDatabaseMapsFor(speciesName).DatabaseFullPath;
       }
-   
    }
 }

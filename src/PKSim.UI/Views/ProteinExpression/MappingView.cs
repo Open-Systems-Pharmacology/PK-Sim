@@ -24,7 +24,7 @@ namespace PKSim.UI.Views.ProteinExpression
    {
       private IMappingPresenter _presenter;
 
-      public MappingView(Shell shell) : base(shell)
+      public MappingView(BaseShell shell) : base(shell)
       {
          InitializeComponent();
          InitializeResources();
@@ -72,9 +72,8 @@ namespace PKSim.UI.Views.ProteinExpression
          grdMappping.DataSource = mapping;
          var view = grdMappping.MainView as GridView;
          if (view == null) return;
-         GridColumn col;
 
-         col = view.Columns[DatabaseConfiguration.MappingColumns.COL_CONTAINER];
+         var col = view.Columns[DatabaseConfiguration.MappingColumns.COL_CONTAINER];
          col.Caption = PKSimConstants.ProteinExpressions.ColumnCaptions.Mapping.COL_CONTAINER;
          col.OptionsFilter.FilterPopupMode = FilterPopupMode.CheckedList;
          var containerComboBoxEditor = new RepositoryItemImageComboBox();
@@ -86,8 +85,8 @@ namespace PKSim.UI.Views.ProteinExpression
          containerComboBoxEditor.Items.BeginUpdate();
          foreach (DataRow row in containerTable.Rows)
          {
-            var container = (string) row[ColumnNamesOfTransferTable.Container.ToString()];
-            var displayName = (string) row[ColumnNamesOfTransferTable.DisplayName.ToString()];
+            var container = (string) row[ColumnNamesOfTransferTable.Container];
+            var displayName = (string) row[ColumnNamesOfTransferTable.DisplayName];
             ApplicationIcon icon = ApplicationIcons.IconByName(container);
             if (icon != null && icon != ApplicationIcons.EmptyIcon)
             {
@@ -137,7 +136,7 @@ namespace PKSim.UI.Views.ProteinExpression
       }
 
       /// <summary>
-      ///    This event handler mask all changed cells in the mapping view with a different backround color.
+      ///    This event handler mask all changed cells in the mapping view with a different background color.
       /// </summary>
       private static void onRowCellStyle(object sender, RowCellStyleEventArgs e)
       {

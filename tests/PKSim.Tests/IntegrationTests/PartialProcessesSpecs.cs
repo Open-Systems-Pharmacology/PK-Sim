@@ -96,7 +96,7 @@ namespace PKSim.IntegrationTests
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
+            .Select(x => x.Parameter(Constants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExp)
          {
@@ -117,7 +117,7 @@ namespace PKSim.IntegrationTests
       {
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP))
+            .Select(x => x.Parameter(Constants.Parameters.REL_EXP))
             .Where(x => x != null);
 
          //Default value should not be NaN, which is the value coming from ModelConstructor. so that the parameter does not appear to have been set by the user
@@ -164,7 +164,7 @@ namespace PKSim.IntegrationTests
          var allRelExpNorm = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
+            .Select(x => x.Parameter(Constants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExpNorm)
          {
@@ -208,7 +208,7 @@ namespace PKSim.IntegrationTests
          var allRelExp = _simulation.All<IMoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
-            .Select(x => x.Parameter(CoreConstants.Parameters.REL_EXP));
+            .Select(x => x.Parameter(Constants.Parameters.REL_EXP));
 
          foreach (var parameter in allRelExp)
          {

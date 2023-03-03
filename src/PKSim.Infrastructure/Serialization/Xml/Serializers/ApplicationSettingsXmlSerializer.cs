@@ -1,5 +1,4 @@
 using System.Xml.Linq;
-using OSPSuite.Utility.Container;
 using PKSim.Core;
 using OSPSuite.Core.Serialization.Xml;
 
@@ -22,7 +21,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 
       public override IApplicationSettings CreateObject(XElement element, SerializationContext serializationContext)
       {
-         return IoC.Resolve<IApplicationSettings>();
+         return serializationContext.Container.Resolve<IApplicationSettings>();
       }
    }
 }
