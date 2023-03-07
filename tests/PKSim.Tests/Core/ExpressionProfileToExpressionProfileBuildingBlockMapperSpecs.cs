@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
@@ -27,7 +28,7 @@ namespace PKSim.Core
          _objectPathFactory = new EntityPathResolverForSpecs();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
-         A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).Returns(new ExpressionParameter());
+         A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).ReturnsLazily(() => new ExpressionParameter());
 
          sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask);
       }
@@ -84,11 +85,23 @@ namespace PKSim.Core
             Category = "TestCategory",
             Description = "TestDescription"
          };
+
+         _expressionProfile.GetAllChildren<IParameter>().First().Value = 99;
+         var parameter = _expressionProfile.GetAllChildren<IParameter>().Last();
+         parameter.Value = 99;
+         parameter.Formula = null;
       }
 
       protected override void Because()
       {
          _result = sut.MapFrom(_expressionProfile);
+      }
+
+      [Observation]
+      public void resulting_expression_parameter_should_have_formula_or_value()
+      {
+         _result.Count(x => x.Formula == null).ShouldBeEqualTo(2);
+         _result.Count(x => x.Formula != null).ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -100,7 +113,7 @@ namespace PKSim.Core
          _result.MoleculeName.ShouldBeEqualTo("TestEnzyme");
          _result.Type.DisplayName.ShouldBeEqualTo("Enzyme");
          _result.Type.IconName.ShouldBeEqualTo("Enzyme");
-         _result.FormulaCache.Count.ShouldBeEqualTo(3);
+         _result.FormulaCache.Count.ShouldBeEqualTo(2);
       }
    }
 }
