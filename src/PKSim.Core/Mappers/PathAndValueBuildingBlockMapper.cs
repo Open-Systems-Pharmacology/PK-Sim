@@ -44,16 +44,23 @@ namespace PKSim.Core.Mappers
       {
          var builderParameter = _objectBaseFactory.Create<TBuilder>();
 
-         if (parameter.Formula != null && parameter.Formula.IsCachable())
+         // Add the formula to the building block formula cache if the formula can be cached
+         if (isFormulaCachable(parameter))
          {
             if (!_formulaCache.Contains(parameter.Formula.Name))
                _formulaCache.Add(parameter.Formula);
 
-            builderParameter.Formula = _formulaCache[parameter.Formula.Name];
+            // If the parameter value is different from the default value, set the value only and not the formula
+            // If the parameter value is not different from the default, set the formula only and not the value
+            // Even if the formula is not be used by the builder parameter, the cache will have the formula available
+            if (parameter.ValueDiffersFromDefault())
+               builderParameter.Value = getParameterValue(parameter);
+            else
+               builderParameter.Formula = _formulaCache[parameter.Formula.Name];
          }
          else
          {
-            (builderParameter.Value, _) = parameter.TryGetValue();
+            builderParameter.Value = getParameterValue(parameter);
          }
 
          builderParameter.Name = parameter.Name;
@@ -62,6 +69,16 @@ namespace PKSim.Core.Mappers
          builderParameter.Dimension = parameter.Dimension;
          builderParameter.DisplayUnit = parameter.DisplayUnit;
          return builderParameter;
+      }
+
+      private static bool isFormulaCachable(IParameter parameter)
+      {
+         return parameter.Formula != null && parameter.Formula.IsCachable();
+      }
+
+      private static double getParameterValue(IParameter parameter)
+      {
+         return parameter.TryGetValue().value;
       }
 
       protected void MapAllParameters(T sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
