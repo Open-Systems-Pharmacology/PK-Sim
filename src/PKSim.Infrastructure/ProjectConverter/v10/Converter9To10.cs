@@ -56,15 +56,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v10
          _converted = false;
          element.DescendantsAndSelf("Individual").Each(convertIndividualProteinNodesIn);
          element.DescendantsAndSelf("BaseIndividual").Each(convertIndividualProteinNodesIn);
-         element.DescendantsAndSelf("UserSettings").Each(convertUserSettings);
-
-         return (ProjectVersions.V10, _converted);
-      }
-
-      private void convertUserSettings(XElement settingsElement)
-      {
-         settingsElement.SetAttributeValue("disabledColor", PKSimColors.Disabled.ToArgb().ToString());
          _converted = true;
+         return (ProjectVersions.V10, _converted);
       }
 
       private void convertIndividualProteinNodesIn(XElement individualElement)

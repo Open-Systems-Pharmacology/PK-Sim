@@ -303,10 +303,10 @@ namespace PKSim.UI.Views.Parameters
             _gridView.AdjustAppearance(e, false);
 
          else if (_presenter.IsFormulaNotFixed(parameterDTO))
-            _gridView.AdjustAppearance(e, PKSimColors.Formula);
+            _gridView.AdjustAppearance(e, PKSimColors.Formula, e.Appearance.ForeColor);
 
          else if (_presenter.IsSetByUser(parameterDTO))
-            _gridView.AdjustAppearance(e, PKSimColors.Changed);
+            _gridView.AdjustAppearance(e, PKSimColors.Changed, e.Appearance.ForeColor);
          else
             e.CombineAppearance(_gridView.Appearance.Row);
       }

@@ -277,16 +277,6 @@ namespace PKSim.UI
          }
       }
 
-      public Color DisabledColor
-      {
-         get => PKSimColors.Disabled;
-         set
-         {
-            PKSimColors.Disabled = value;
-            OnPropertyChanged(() => DisabledColor);
-         }
-      }
-
       private static class AllRules
       {
          private static IBusinessRule nonEmpty(Expression<Func<ICoreUserSettings, string>> expression) => GenericRules.NonEmptyRule(expression);
