@@ -13,6 +13,7 @@ using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;
 using Parameter = PKSim.Core.Snapshots.Parameter;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Core
 {
@@ -84,10 +85,10 @@ namespace PKSim.Core
          _expressionProfileEnzyme.Individual.AddChildren(_expressionContainer1, _expressionContainer2, _enzymeGlobalParameter);
          _expressionProfileEnzyme.Molecule.DowncastTo<IndividualEnzyme>().Localization = Localization.Intracellular | Localization.BloodCellsMembrane;
 
-         _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.REL_EXP);
+         _relativeExpressionParameter1 = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(REL_EXP);
          _expressionContainer1.Add(_relativeExpressionParameter1);
 
-         _relativeExpressionParameterNotSet = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.REL_EXP);
+         _relativeExpressionParameterNotSet = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(REL_EXP);
          _expressionContainer2.Add(_relativeExpressionParameterNotSet);
 
          _relativeExpressionContainerSnapshot1 = new ExpressionContainer();

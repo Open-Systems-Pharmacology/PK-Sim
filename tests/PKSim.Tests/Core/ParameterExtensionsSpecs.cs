@@ -52,12 +52,12 @@ namespace PKSim.Core
    public class When_checking_if_a_parameter_is_an_expression_parameter : StaticContextSpecification
    {
       private IParameter _expressionParameter;
-      private IParameter _otherParamter;
+      private IParameter _otherParameter;
 
       protected override void Context()
       {
-         _expressionParameter = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP);
-         _otherParamter = A.Fake<IParameter>().WithName("toto");
+         _expressionParameter = A.Fake<IParameter>().WithName(Constants.Parameters.REL_EXP);
+         _otherParameter = A.Fake<IParameter>().WithName("toto");
       }
 
       [Observation]
@@ -69,7 +69,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_false_for_any_parameter_that_is_not_defined_for_an_expression()
       {
-         _otherParamter.IsExpression().ShouldBeFalse();
+         _otherParameter.IsExpression().ShouldBeFalse();
       }
    }
 

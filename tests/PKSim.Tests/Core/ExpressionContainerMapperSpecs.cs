@@ -11,6 +11,7 @@ using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using Individual = PKSim.Core.Model.Individual;
 using OriginData = PKSim.Core.Model.OriginData;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Core
 {
@@ -37,12 +38,12 @@ namespace PKSim.Core
          sut = new ExpressionContainerMapper(_parameterMapper, _logger);
 
          _relativeExpressionParameter =
-            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
+            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(REL_EXP);
          _moleculeExpressionContainer = new MoleculeExpressionContainer().WithName("EXP");
          _moleculeExpressionContainer.Add(_relativeExpressionParameter);
 
          _transporterRelativeExpressionParameter =
-            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(CoreConstants.Parameters.REL_EXP);
+            DomainHelperForSpecs.ConstantParameterWithValue(0, isDefault: true).WithName(REL_EXP);
          _transporterExpressionContainer = new TransporterExpressionContainer().WithName("TRANS");
          _transporterExpressionContainer.TransportDirection = TransportDirectionId.InfluxInterstitialToIntracellular;
 

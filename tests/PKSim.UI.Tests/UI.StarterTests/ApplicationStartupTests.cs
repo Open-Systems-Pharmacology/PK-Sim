@@ -12,6 +12,7 @@ using PKSim.Core.Mappers;
 using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Presenters.Individuals;
+using PKSim.Presentation.Services;
 using PKSim.UI.Starter;
 
 namespace PKSim.UI.UI.StarterTests
@@ -33,6 +34,22 @@ namespace PKSim.UI.UI.StarterTests
          IoC.Container.RegisterImplementationOf(new BaseShell() as IShell);
 
          _container = ApplicationStartup.Initialize();
+      }
+   }
+
+   public class When_resolving_the_database_query_task : concern_for_ApplicationStartup
+   {
+      private IExpressionProfileProteinDatabaseTask _task;
+
+      protected override void Because()
+      {
+         _task = _container.Resolve<IExpressionProfileProteinDatabaseTask>();
+      }
+
+      [Observation]
+      public void the_task_should_be_resolved()
+      {
+         _task.ShouldBeAnInstanceOf<ExpressionProfileProteinDatabaseTask>();
       }
    }
 

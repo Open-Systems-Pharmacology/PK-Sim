@@ -13,6 +13,7 @@ using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Presentation
 {

@@ -3,6 +3,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Individuals;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Presentation.DTO.Mappers
 {

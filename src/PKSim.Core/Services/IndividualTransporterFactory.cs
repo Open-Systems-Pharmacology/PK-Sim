@@ -8,6 +8,7 @@ using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Compartment;
 using static PKSim.Core.CoreConstants.Parameters;
 using static PKSim.Core.Model.TransportDirections;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services

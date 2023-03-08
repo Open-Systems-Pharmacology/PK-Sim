@@ -432,13 +432,13 @@ namespace PKSim.Core
          {
             switch (expressionParameter)
             {
-               case Parameters.REL_EXP_PLASMA:
+               case Constants.Parameters.REL_EXP_PLASMA:
                   return Compartment.PLASMA;
-               case Parameters.REL_EXP_BLOOD_CELLS:
+               case Constants.Parameters.REL_EXP_BLOOD_CELLS:
                case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS:
                case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
                   return Compartment.BLOOD_CELLS;
-               case Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
+               case Constants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
                case Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
                case Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE:
                case Parameters.FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE:
@@ -881,23 +881,12 @@ namespace PKSim.Core
          public static readonly string CONCENTRATION = Constants.Parameters.CONCENTRATION;
          public static readonly string MOLECULAR_WEIGHT = Constants.Parameters.MOL_WEIGHT;
          public static readonly string REFERENCE_CONCENTRATION = "Reference concentration";
-         public const string REL_EXP = "Relative expression";
-         public const string REL_EXP_BLOOD_CELLS = "Relative expression in blood cells";
-         public const string REL_EXP_PLASMA = "Relative expression in plasma";
-         public const string REL_EXP_VASCULAR_ENDOTHELIUM = "Relative expression in vascular endothelium";
 
          public static readonly IReadOnlyList<string> AllGlobalMoleculeParameters = new[]
          {
             REFERENCE_CONCENTRATION,
             HALF_LIFE_LIVER,
             HALF_LIFE_INTESTINE
-         };
-
-         public static readonly IReadOnlyList<string> AllGlobalRelExpParameters = new[]
-         {
-            REL_EXP_BLOOD_CELLS,
-            REL_EXP_PLASMA,
-            REL_EXP_VASCULAR_ENDOTHELIUM,
          };
 
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;

@@ -11,6 +11,7 @@ namespace PKSim.Core
       void AddSpeciesDatabaseMap(SpeciesDatabaseMap speciesDatabaseMap);
       void RemoveSpeciesDatabaseMap(string speciesName);
       bool HasExpressionsDatabaseFor(Species species);
+      bool HasExpressionsDatabaseFor(string speciesName);
       SpeciesDatabaseMap SpeciesDatabaseMapsFor(string speciesName);
 
       /// <summary>
@@ -37,9 +38,14 @@ namespace PKSim.Core
          _allMaps.Remove(species);
       }
 
+      public bool HasExpressionsDatabaseFor(string speciesName)
+      {
+         return _allMaps.Contains(speciesName);
+      }
+
       public bool HasExpressionsDatabaseFor(Species species)
       {
-         return _allMaps.Contains(species.Name);
+         return HasExpressionsDatabaseFor(species.Name);
       }
 
       public SpeciesDatabaseMap SpeciesDatabaseMapsFor(string speciesName)

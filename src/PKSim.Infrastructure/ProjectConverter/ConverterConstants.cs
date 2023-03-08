@@ -47,10 +47,10 @@ namespace PKSim.Infrastructure.ProjectConverter
             return $"{parameter}{NORM_SUFFIX}";
          }
 
-         public static readonly string REL_EXP_NORM = NormParameterFor(REL_EXP);
-         public static readonly string REL_EXP_BLOOD_CELLS_NORM = NormParameterFor(REL_EXP_BLOOD_CELLS);
-         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(REL_EXP_PLASMA);
-         public static readonly string REL_EXP_VASCULAR_ENDOTHELIUM_NORM = NormParameterFor(REL_EXP_VASCULAR_ENDOTHELIUM);
+         public static readonly string REL_EXP_NORM = NormParameterFor(OSPSuite.Core.Domain.Constants.Parameters.REL_EXP);
+         public static readonly string REL_EXP_BLOOD_CELLS_NORM = NormParameterFor(OSPSuite.Core.Domain.Constants.Parameters.REL_EXP_BLOOD_CELLS);
+         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(OSPSuite.Core.Domain.Constants.Parameters.REL_EXP_PLASMA);
+         public static readonly string REL_EXP_VASCULAR_ENDOTHELIUM_NORM = NormParameterFor(OSPSuite.Core.Domain.Constants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
 
          public static IList<string> DistributedParametersWithOnlyOneSupportingPoint => new List<string>
          {

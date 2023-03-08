@@ -229,7 +229,7 @@ namespace PKSim.Core.Model
          var allExpressionParameters = GetAllChildren<IParameter>(x => x.IsExpression() && x.ParentContainer.IsNamed(molecule.Name));
          allExpressionParameters.Each(p =>
          {
-            if (p.IsGlobalExpression())
+            if (p.HasGlobalExpressionName())
                cache[CoreConstants.ContainerName.GlobalExpressionContainerNameFor(p.Name)] = p;
             else
             {

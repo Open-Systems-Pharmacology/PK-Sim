@@ -31,7 +31,7 @@ namespace PKSim.Core
          base.Context();
          _displayName = "tutu";
          _expressionContainer = new MoleculeExpressionContainer().WithName("tralal");
-         _expressionContainer.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
+         _expressionContainer.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.REL_EXP));
          A.CallTo(() => _representationInfoRepository.DisplayNameFor(_expressionContainer)).Returns(_displayName);
       }
 
