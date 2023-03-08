@@ -58,11 +58,6 @@ namespace PKSim.Presentation
       Color FormulaColor { get; set; }
 
       /// <summary>
-      ///    Color used for cell that are locked/disabled
-      /// </summary>
-      Color DisabledColor { get; set; }
-
-      /// <summary>
       ///    Should the opened view saved in project be restored when opening the project (default true)
       /// </summary>
       bool ShouldRestoreWorkspaceLayout { get; set; }

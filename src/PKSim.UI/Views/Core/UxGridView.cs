@@ -17,7 +17,6 @@ namespace PKSim.UI.Views.Core
       protected override void DoInit()
       {
          base.DoInit();
-         _colorDisabled = PKSimColors.Disabled;
          EditorShowMode = EditorShowMode.Default;
          ShowColumnChooser = true;
          OptionsNavigation.AutoFocusNewRow = true;

@@ -32,14 +32,6 @@ namespace PKSim.Core
       }
 
       /// <summary>
-      /// Color used for cell that are locked/disabled 
-      /// </summary>
-      public static Color Disabled
-      {
-         get => Colors.Disabled;
-         set => Colors.Disabled = value;
-      }
-      /// <summary>
       /// Color used for the female gender (Start of gradient)
       /// </summary> 
       public static Color Female = Color.FromArgb(220, 99, 78);
