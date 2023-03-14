@@ -5,7 +5,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
@@ -17,11 +16,13 @@ using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Infrastructure.Services;
 using AdvancedParameter = PKSim.Core.Snapshots.AdvancedParameter;
 using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Model.CompoundProperties;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Individual = PKSim.Core.Model.Individual;
+using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
@@ -29,9 +30,8 @@ using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAn
 using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
-using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
-using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using SnapshotOutputMapping = PKSim.Core.Snapshots.OutputMapping;
+using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 
 namespace PKSim.Core
 {
@@ -93,6 +93,7 @@ namespace PKSim.Core
       protected ModelOutputMapping _outputMapping;
       protected OutputMappingMapper _outputMappingMapper;
       protected SnapshotOutputMapping _snapshotOutputMapping;
+      protected IChartTask _chartTask;
 
       protected override Task Context()
       {
@@ -118,6 +119,7 @@ namespace PKSim.Core
          _logger = A.Fake<IOSPSuiteLogger>();
          _containerTask = A.Fake<IContainerTask>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _chartTask = A.Fake<IChartTask>();
 
          sut = new SimulationMapper(_solverSettingsMapper, _outputSchemaMapper,
             _outputSelectionMapper, _compoundPropertiesMapper, _parameterMapper,
@@ -126,7 +128,7 @@ namespace PKSim.Core
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
             _simulationRunner, _simulationParameterOriginIdUpdater,
-            _logger, _containerTask, _entityPathResolver
+            _logger, _containerTask, _entityPathResolver, _chartTask
          );
 
          _project = new PKSimProject();
@@ -653,6 +655,12 @@ namespace PKSim.Core
       public void should_update_the_altered_flag_for_each_altered_building_block()
       {
          _simulation.UsedBuildingBlockInSimulation<Individual>().Altered.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_have_updated_the_reference_to_observed_data_in_all_charts()
+      {
+         A.CallTo(() => _chartTask.UpdateObservedDataInChartsFor(_simulation, _project)).MustHaveHappened();
       }
    }
 

@@ -1,9 +1,10 @@
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 
 namespace PKSim.Infrastructure.Services
@@ -22,22 +23,20 @@ namespace PKSim.Infrastructure.Services
          chart.SetOriginTextFor(_projectRetriever.CurrentProject.Name, simulationName);
       }
 
-      public void UpdateObservedDataInChartsFor(Simulation simulation)
+      public void UpdateObservedDataInChartsFor(Simulation simulation, IProject project = null)
       {
-         simulation.ChartWithObservedData.Each(c => UpdateObservedDataInChartFor(simulation, c));
+         simulation.ChartWithObservedData.Each(c => UpdateObservedDataInChartFor(simulation, c, project));
       }
 
-      public void UpdateObservedDataInChartFor(Simulation simulation, ChartWithObservedData chartWithObservedData)
+      public void UpdateObservedDataInChartFor(Simulation simulation, ChartWithObservedData chartWithObservedData, IProject project = null)
       {
+         var projectToUse = project ?? _projectRetriever.CurrentProject;
          foreach (var usedObservedData in simulation.UsedObservedData)
          {
-            chartWithObservedData.AddObservedData(_projectRetriever.CurrentProject.ObservedDataBy(usedObservedData.Id));
+            chartWithObservedData.AddObservedData(projectToUse.ObservedDataBy(usedObservedData.Id));
          }
       }
 
-      public bool IsColumnVisibleInDataBrowser(DataColumn dataColumn)
-      {
-         return !dataColumn.IsBaseGrid();
-      }
+      public bool IsColumnVisibleInDataBrowser(DataColumn dataColumn) => !dataColumn.IsBaseGrid();
    }
 }

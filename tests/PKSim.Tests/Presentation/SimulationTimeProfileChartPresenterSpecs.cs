@@ -25,6 +25,7 @@ using OSPSuite.Presentation.Settings;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Charts;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
