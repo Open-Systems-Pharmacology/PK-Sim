@@ -19,6 +19,7 @@ using OSPSuite.Utility.Compression;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Services;
@@ -88,7 +89,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void the_chart_task_should_update_observed_data()
       {
-         A.CallTo(() => _chartTask.UpdateObservedDataInChartFor(A<Simulation>._, _chartWithObservedData)).MustHaveHappened();
+         A.CallTo(() => _chartTask.UpdateObservedDataInChartFor(A<Simulation>._, _chartWithObservedData, null)).MustHaveHappened();
       }
    }
 
