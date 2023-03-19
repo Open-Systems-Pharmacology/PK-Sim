@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluentNHibernate.Utils;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Model;
@@ -20,29 +21,33 @@ namespace PKSim.Infrastructure.Services
 
       public void SetNeighborsIn(Individual individual)
       {
-         foreach (var neighborhood in individual.Neighborhoods.GetAllChildren<PKSimNeighborhood>())
-         {
-            setNeighborsIn(neighborhood, neighborhood.Name, individual.Organism);
-         }
+         individual.Neighborhoods.GetAllChildren<PKSimNeighborhood>().Each(x => setNeighborsIn(x, individual.Organism));
       }
 
-      public void SetNeighborsIn(Organism organism, IEnumerable<NeighborhoodBuilder> neighborhoods)
+      public void SetNeighborsIn(Organism organism, IReadOnlyList<NeighborhoodBuilder> neighborhoods)
       {
-         foreach (var neighborhood in neighborhoods)
-         {
-            setNeighborsIn(neighborhood, neighborhood.Name, organism);
-         }
+         neighborhoods.Each(x => setNeighborsIn(x, organism));
       }
 
-      private void setNeighborsIn(NeighborhoodBuilder neighborhood, string neighborhoodName, Organism organism)
+      private void setNeighborsIn(Neighborhood neighborhood, Organism organism)
       {
-         var flatNeighborhood = _flatNeighborhoodRepository.NeighborhoodFrom(neighborhoodName);
+         var flatNeighborhood = _flatNeighborhoodRepository.NeighborhoodFrom(neighborhood.Name);
+
+         neighborhood.FirstNeighbor = neighborFrom(flatNeighborhood.FirstNeighborId, organism);
+         neighborhood.SecondNeighbor = neighborFrom(flatNeighborhood.SecondNeighborId, organism);
+      }
+
+      private void setNeighborsIn(NeighborhoodBuilder neighborhood, Organism organism)
+      {
+         var flatNeighborhood = _flatNeighborhoodRepository.NeighborhoodFrom(neighborhood.Name);
 
          neighborhood.FirstNeighborPath = neighborPathFrom(flatNeighborhood.FirstNeighborId, organism);
          neighborhood.SecondNeighborPath = neighborPathFrom(flatNeighborhood.SecondNeighborId, organism);
 
-         neighborhood.ResolveReference(new[] {organism,});
+         neighborhood.ResolveReference(new[] {organism});
       }
+
+      private IContainer neighborFrom(int neighborId, Organism organism) => neighborPathFrom(neighborId, organism).Resolve<IContainer>(organism);
 
       private ObjectPath neighborPathFrom(int neighborId, Organism organism)
       {

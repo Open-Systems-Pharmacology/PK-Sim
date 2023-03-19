@@ -7,6 +7,6 @@ namespace PKSim.Core.Services
    public interface INeighborhoodFinalizer
    {
       void SetNeighborsIn(Individual individual);
-      void SetNeighborsIn(Organism organism, IEnumerable<NeighborhoodBuilder> neighborhoods);
+      void SetNeighborsIn(Organism organism, IReadOnlyList<NeighborhoodBuilder> neighborhoods);
    }
 }
