@@ -28,7 +28,7 @@ namespace PKSim.Core
          _targetIndividual = new Individual();
          _scalingMethodTask = A.Fake<IScalingMethodTask>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), _entityPathResolver);
+         _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), _entityPathResolver, new ObjectPathFactoryForSpecs());
          sut = new IndividualScalingTask(_scalingMethodTask, _containerTask);
       }
    }

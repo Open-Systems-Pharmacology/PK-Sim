@@ -398,7 +398,7 @@ namespace PKSim.Core
 
    public class ContainerTaskForSpecs : ContainerTask
    {
-      public ContainerTaskForSpecs() : base(A.Fake<IObjectBaseFactory>(), new EntityPathResolverForSpecs())
+      public ContainerTaskForSpecs() : base(A.Fake<IObjectBaseFactory>(), new EntityPathResolverForSpecs(), new ObjectPathFactoryForSpecs())
       {
       }
    }

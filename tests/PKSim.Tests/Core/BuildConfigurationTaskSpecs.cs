@@ -25,9 +25,9 @@ namespace PKSim.Core
       protected Compound _compound;
       protected Protocol _protocol;
       protected IEventGroupBuildingBlock _eventBuildingBlock;
-      protected IParameterStartValuesBuildingBlock _parameterValuesBuildingBlock;
+      protected ParameterStartValuesBuildingBlock _parameterValuesBuildingBlock;
       protected IPKSimMoleculeStartValuesCreator _moleculeStartValueCreator;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
+      private MoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
       protected IMoleculeCalculationRetriever _moleculeCalculationRetriever;
       protected ICoreCalculationMethod _cm1;
       protected ICoreCalculationMethod _cm2;
@@ -58,8 +58,8 @@ namespace PKSim.Core
          _passiveTransportBuilingBlock = A.Fake<IPassiveTransportBuildingBlock>();
          _observerBuildingBlock = A.Fake<IObserverBuildingBlock>();
          _eventBuildingBlock = A.Fake<IEventGroupBuildingBlock>();
-         _parameterValuesBuildingBlock = A.Fake<IParameterStartValuesBuildingBlock>();
-         _moleculeStartValueBuildingBlock = A.Fake<IMoleculeStartValuesBuildingBlock>();
+         _parameterValuesBuildingBlock = A.Fake<ParameterStartValuesBuildingBlock>();
+         _moleculeStartValueBuildingBlock = A.Fake<MoleculeStartValuesBuildingBlock>();
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Individual", PKSimBuildingBlockType.Individual) {BuildingBlock = _individual});
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Compound", PKSimBuildingBlockType.Compound) {BuildingBlock = _compound});
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Protocol", PKSimBuildingBlockType.Protocol) {BuildingBlock = _protocol});

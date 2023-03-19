@@ -18,7 +18,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), _entityPathResolver);
+         _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), _entityPathResolver, new ObjectPathFactoryForSpecs());
          sut = new IndividualToIndividualValuesMapper(_containerTask);
       }
    }
