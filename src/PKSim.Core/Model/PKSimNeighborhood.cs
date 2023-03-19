@@ -1,13 +1,8 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.Core.Model
 {
-   public interface IPKSimNeighborhood : INeighborhood
-   {
-      bool Visible { get; set; }
-   }
-
-   public class PKSimNeighborhood : Neighborhood, IPKSimNeighborhood
+   public class PKSimNeighborhood : NeighborhoodBuilder
    {
       public bool Visible { get; set; }
    }

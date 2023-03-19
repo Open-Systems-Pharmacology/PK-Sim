@@ -144,7 +144,7 @@ namespace PKSim.Core.Services
          addParameterToParameterStartValues(psv, minToYearFactorParameter);
       }
 
-      private void addParameterToParameterStartValues(IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, IParameter parameter)
+      private void addParameterToParameterStartValues(ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, IParameter parameter)
       {
          var path = _objectPathFactory.CreateAbsoluteObjectPath(parameter);
          var psv = _parameterStartValuesCreator.CreateParameterStartValue(path, parameter);
@@ -617,7 +617,7 @@ namespace PKSim.Core.Services
          removeParameterStartValueFor(parameter, buildConfiguration.ParameterStartValues);
       }
 
-      private void removeParameterStartValueFor(IParameter parameter, IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
+      private void removeParameterStartValueFor(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
       {
          parameterStartValuesBuildingBlock.Remove(_entityPathResolver.ObjectPathFor(parameter));
       }

@@ -1,20 +1,16 @@
-﻿using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using PKSim.Core;
-using PKSim.Presentation.DTO.Mappers;
-using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.Core.Qualification;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Extensions;
 using PKSim.Core.Repositories;
-using static PKSim.Core.CoreConstants;
-using CalculationMethod = OSPSuite.Core.Domain.CalculationMethod;
-using Species = PKSim.Core.Model.Species;
+using PKSim.Presentation.DTO.Mappers;
 
 namespace PKSim.Presentation.Mappers
 {
@@ -44,15 +40,15 @@ namespace PKSim.Presentation.Mappers
          var buildingBlock = base.MapFrom(input);
          buildingBlock.Icon = input.Icon;
 
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.DiseaseState, input.OriginData.DiseaseState?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Species, input.Species?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Gender, input.OriginData.Gender?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Age, input.OriginData.Age);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.GestationalAge, input.OriginData.GestationalAge);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Height, input.OriginData.Height);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.BMI, input.OriginData.BMI);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Weight, input.OriginData.Weight);
-         addOriginDataToBuildingBlock(buildingBlock, Assets.PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.DiseaseState, input.OriginData.DiseaseState?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Species, input.Species?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Gender, input.OriginData.Gender?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Age, input.OriginData.Age);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.GestationalAge, input.OriginData.GestationalAge);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Height, input.OriginData.Height);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.BMI, input.OriginData.BMI);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Weight, input.OriginData.Weight);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);
 
          input.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, input.Species)).MapAllUsing(_calculationMethodDTOMapper)
             .Each(x => addOriginDataToBuildingBlock(buildingBlock, x.DisplayName, x.CategoryItem.DisplayName));
@@ -80,7 +76,7 @@ namespace PKSim.Presentation.Mappers
          if (string.IsNullOrEmpty(value))
             return;
 
-         buildingBlock.OriginData.AddOriginDataItem(new OriginDataItem { Name = key, Value = value });
+         buildingBlock.OriginData.AddOriginDataItem(new OriginDataItem {Name = key, Value = value});
       }
    }
 }

@@ -110,7 +110,7 @@ namespace PKSim.Core.Model
          _neighborhoodFinalizer.SetNeighborsIn(organism, neighborhoodList);
       }
 
-      private void addNeighborhood(INeighborhoodBuilder neighborhood, ISpatialStructure spatialStructure, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache)
+      private void addNeighborhood(NeighborhoodBuilder neighborhood, ISpatialStructure spatialStructure, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache)
       {
          spatialStructure.AddNeighborhood(neighborhood);
          _parameterContainerTask.AddModelParametersTo(neighborhood, originData, modelProperties, formulaCache);

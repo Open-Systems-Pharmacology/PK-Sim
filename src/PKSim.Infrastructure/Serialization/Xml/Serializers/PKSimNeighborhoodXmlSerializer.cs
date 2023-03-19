@@ -3,7 +3,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
-   public class PKSimNeighborhoodXmlSerializer : NeighborhoodXmlSerializerBase<PKSimNeighborhood>, IPKSimXmlSerializer
+   public class PKSimNeighborhoodXmlSerializer : NeighborhoodBuilderXmlSerializerBase<PKSimNeighborhood>, IPKSimXmlSerializer
    {
       
    }

@@ -11,33 +11,36 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimParameterStartValuesCreator
    {
-      IParameterStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
+      ParameterStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
    }
 
    public class PKSimParameterStartValuesCreator : IPKSimParameterStartValuesCreator
    {
       private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
+      private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IEntityPathResolver _entityPathResolver;
-      private IParameterStartValuesBuildingBlock _defaultStartValues;
+      private ParameterStartValuesBuildingBlock _defaultStartValues;
 
       public PKSimParameterStartValuesCreator(IParameterStartValuesCreator parameterStartValuesCreator,
+         IObjectBaseFactory objectBaseFactory,
          IFormulaFactory formulaFactory,
          IEntityPathResolver entityPathResolver)
       {
          _parameterStartValuesCreator = parameterStartValuesCreator;
+         _objectBaseFactory = objectBaseFactory;
          _formulaFactory = formulaFactory;
          _entityPathResolver = entityPathResolver;
       }
 
-      public IParameterStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
+      public ParameterStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
       {
          try
          {
             //default default parameter start values matrix
             var spatialStructure = buildConfiguration.SpatialStructure;
             var molecules = buildConfiguration.Molecules;
-            _defaultStartValues = _parameterStartValuesCreator.CreateFrom(spatialStructure, molecules);
+            _defaultStartValues = _objectBaseFactory.Create<ParameterStartValuesBuildingBlock>();
             var individual = simulation.Individual;
 
             //set the relative expression values for each molecule defined in individual
