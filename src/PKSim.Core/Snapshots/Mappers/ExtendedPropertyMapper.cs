@@ -21,10 +21,11 @@ namespace PKSim.Core.Snapshots.Mappers
             snapshot.Name = extendedProperty.Name;
             snapshot.FullName = SnapshotValueFor(extendedProperty.FullName);
             snapshot.ReadOnly = SnapshotValueFor(extendedProperty.ReadOnly);
+            snapshot.Type = mapExtendedPropertyType(extendedProperty.Type);
          });
       }
 
-      private Task<ModelExtendedProperty> mapExtendedProperty<T>(SnapshotExtendedProperty snapshot, Func<object, T> convertToTypeFunc, T propertyValue)
+      private Task<ModelExtendedProperty> mapExtendedProperty<T>(SnapshotExtendedProperty snapshot, Func<string, T> convertToTypeFunc, T propertyValue)
       {
          var extendedProperty = new ExtendedProperty<T>
          {
@@ -34,20 +35,60 @@ namespace PKSim.Core.Snapshots.Mappers
             Name = snapshot.Name,
             Value = propertyValue
          };
-         addOptionsToList(snapshot.ListOfValues, option => extendedProperty.AddToListOfValues(convertToTypeFunc(option)));
+         addOptionsToList(snapshot.ListOfValues, option => extendedProperty.AddToListOfValues(convertToTypeFunc(option.ToString())));
          return Task.FromResult<ModelExtendedProperty>(extendedProperty);
+      }
+
+      private ExtendedPropertyType mapExtendedPropertyType(Type type)
+      {
+         if (type == typeof(int))
+            return ExtendedPropertyType.Integer;
+
+         if (type == typeof(double))
+            return ExtendedPropertyType.Double;
+
+         if (type == typeof(bool))
+            return ExtendedPropertyType.Boolean;
+
+         return ExtendedPropertyType.String;
       }
 
       public override Task<ModelExtendedProperty> MapToModel(SnapshotExtendedProperty snapshot, SnapshotContext snapshotContext)
       {
-         if (double.TryParse(snapshot.Value.ToString(), out var doubleResult))
-            return mapExtendedProperty(snapshot, option => double.Parse(option.ToString()), doubleResult);
+         var snapshotType = snapshot.Type;
+         var valueAsString = snapshot.Value.ToString();
 
-         if (bool.TryParse(snapshot.Value.ToString(), out var boolResult))
-            return mapExtendedProperty(snapshot, option => bool.Parse(option.ToString()), boolResult);
+         if (snapshotType.HasValue)
+            return mapExtendedPropertyBasedOnType(snapshot, snapshotType.Value, valueAsString);
 
+         return mapExtendedPropertyBasedOnValue(snapshot, valueAsString);
+      }
 
-         return mapExtendedProperty(snapshot, option => option.ToString(), snapshot.Value.ToString());
+      private Task<ModelExtendedProperty> mapExtendedPropertyBasedOnType(ExtendedProperty snapshot, ExtendedPropertyType snapshotType, string valueAsString)
+      {
+         switch (snapshotType)
+         {
+            case ExtendedPropertyType.Integer:
+               return mapExtendedProperty(snapshot, int.Parse, int.Parse(valueAsString));
+            case ExtendedPropertyType.Double:
+               return mapExtendedProperty(snapshot, double.Parse, double.Parse(valueAsString));
+            case ExtendedPropertyType.Boolean:
+               return mapExtendedProperty(snapshot, bool.Parse, bool.Parse(valueAsString));
+            //string
+            default:
+               return mapExtendedProperty(snapshot, option => option, valueAsString);
+         }
+      }
+
+      private Task<ModelExtendedProperty> mapExtendedPropertyBasedOnValue(ExtendedProperty snapshot, string valueAsString)
+      {
+         if (double.TryParse(valueAsString, out var doubleResult))
+            return mapExtendedProperty(snapshot, double.Parse, doubleResult);
+
+         if (bool.TryParse(valueAsString, out var boolResult))
+            return mapExtendedProperty(snapshot, bool.Parse, boolResult);
+
+         return mapExtendedProperty(snapshot, option => option, valueAsString);
       }
 
       private void addOptionsToList(List<object> snapshotListOfValues, Action<object> action) => snapshotListOfValues?.Each(action);
@@ -59,7 +100,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          extendedProperty.Description = null;
          extendedProperty.FullName = null;
-
       }
    }
 }

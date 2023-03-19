@@ -37,9 +37,7 @@ namespace PKSim.Core.Mappers
          dataTable.AddColumn<float>(_yUpperValueColumn);
       }
 
-      private IEnumerable<DataRow> addSpecificChartValues<TX, TY>(DataRow row, CurveData<TX, TY> curveData, bool exportForPivot)
-         where TX : TimeProfileXValue
-         where TY : ITimeProfileYValue
+      private IEnumerable<DataRow> addSpecificChartValues<TY>(DataRow row, CurveData<TimeProfileXValue, TY> curveData, bool exportForPivot) where TY: ITimeProfileYValue
       {
          var newRows = new List<DataRow>();
 
@@ -47,17 +45,17 @@ namespace PKSim.Core.Mappers
          {
             var newRow = row.Table.NewRow();
             newRow.ItemArray = row.ItemArray;
-            var xValue = ValueForDataTableFor(curveData.XAxis, curveData.XValues[i].X);
-
+            var xValue = xValueForDataTableFor(curveData,  curveData.XValues[i].X);
+            var yValue = curveData.YValues[i];
             if (exportForPivot)
                newRow[_xValueColumn] = xValue.ConvertedTo<string>();
             else
                newRow[_xValueColumn] = xValue;
 
-            newRow[_yLowerValueColumn] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].LowerValue);
-            newRow[_yValueColumn] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].Y);
-            newRow[_yUpperValueColumn] = ValueForDataTableFor(curveData.YAxis, curveData.YValues[i].UpperValue);
-            newRows.Add(newRow);
+            newRow[_yLowerValueColumn] = yValueForDataTableFor(curveData, yValue.LowerValue);
+            newRow[_yValueColumn] = yValueForDataTableFor(curveData, yValue.Y);
+            newRow[_yUpperValueColumn] = yValueForDataTableFor(curveData,  yValue.UpperValue);
+            newRows.Add(newRow); 
          }
          return newRows;
       }
@@ -69,7 +67,7 @@ namespace PKSim.Core.Mappers
             return;
 
          var column = pivotTable.Columns[_xValueColumn];
-         var xValueColumnAsString = string.Format("{0}AsString", _xValueColumn);
+         var xValueColumnAsString = $"{_xValueColumn}AsString";
          column.ColumnName = xValueColumnAsString;
 
          //make the column the first column of the pivot table

@@ -48,6 +48,23 @@ namespace PKSim.Core
       }
    }
 
+   public class When_mapping_extended_property_integer_to_snapshot : When_mapping_extended_property_to_snapshot<int>
+   {
+      protected override void CreateExtendedProperty()
+      {
+         _extendedProperty = new ExtendedProperty<int> {Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = false, Value = 150};
+         _extendedProperty.AddToListOfValues(10);
+         _extendedProperty.AddToListOfValues(20);
+         _extendedProperty.AddToListOfValues(150);
+      }
+
+      [Observation]
+      public void should_map_the_type_to_the_expected_type()
+      {
+         _snapshot.Type.ShouldBeEqualTo(ExtendedPropertyType.Integer);
+      }
+   }
+
    public class When_mapping_extended_property_boolean_to_snapshot : When_mapping_extended_property_to_snapshot<bool>
    {
       protected override void CreateExtendedProperty()
@@ -61,6 +78,12 @@ namespace PKSim.Core
       public void the_readonly_property_should_be_null()
       {
          _snapshot.ReadOnly.HasValue.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_map_the_type_to_the_expected_type()
+      {
+         _snapshot.Type.ShouldBeEqualTo(ExtendedPropertyType.Boolean);
       }
    }
 
@@ -78,6 +101,12 @@ namespace PKSim.Core
       {
          _snapshot.ReadOnly.HasValue.ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_map_the_type_to_the_expected_type()
+      {
+         _snapshot.Type.ShouldBeEqualTo(ExtendedPropertyType.Double);
+      }
    }
 
    public class When_mapping_extended_property_string_to_snapshot : When_mapping_extended_property_to_snapshot<string>
@@ -87,6 +116,12 @@ namespace PKSim.Core
          _extendedProperty = new ExtendedProperty<string> {Description = "Description", FullName = "FullName", Name = "FirstName", ReadOnly = true, Value = "Value"};
          _extendedProperty.AddToListOfValues("Option 1");
          _extendedProperty.AddToListOfValues("Option 2");
+      }
+
+      [Observation]
+      public void should_map_the_type_to_the_expected_type()
+      {
+         _snapshot.Type.ShouldBeEqualTo(ExtendedPropertyType.String);
       }
    }
 
@@ -117,7 +152,7 @@ namespace PKSim.Core
          _extendedProperty.ValueAsObject.ShouldBeEqualTo(_snapshot.Value);
          _extendedProperty.ShouldBeAnInstanceOf<ExtendedProperty<T>>();
 
-         _snapshot.ListOfValues.Each(snapshotOption => _extendedProperty.ListOfValuesAsObjects.ShouldContain(snapshotOption));
+         _snapshot.ListOfValues?.Each(snapshotOption => _extendedProperty.ListOfValuesAsObjects.ShouldContain(snapshotOption));
       }
    }
 
@@ -142,6 +177,14 @@ namespace PKSim.Core
       protected override void CreateSnapshot()
       {
          _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", ListOfValues = new List<object> {4.5, 6.5}, Name = "Name", Value = 5.5};
+      }
+   }
+
+   public class When_mapping_snapshot_to_extended_property_string_that_can_be_parsed_as_double : When_mapping_snapshot_to_extended_property<string>
+   {
+      protected override void CreateSnapshot()
+      {
+         _snapshot = new ExtendedProperty {Description = "Description", ReadOnly = true, FullName = "Full Name", Name = "Name", Value = "7E3", Type = ExtendedPropertyType.String};
       }
    }
 }

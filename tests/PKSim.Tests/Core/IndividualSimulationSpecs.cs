@@ -1,3 +1,4 @@
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -75,7 +76,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_settting_the_results_in_the_simulation : concern_for_IndividualSimulation
+   public class When_setting_the_results_in_the_simulation : concern_for_IndividualSimulation
    {
       protected override void Because()
       {
@@ -114,7 +115,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_results_should_be_uptodate()
+      public void the_results_should_be_up_to_date()
       {
          sut.HasUpToDateResults.ShouldBeTrue();
       }
@@ -434,7 +435,7 @@ namespace PKSim.Core
       {
          sut.SimulationSettings.ShouldBeEqualTo(_originalSimulation.SimulationSettings);
       }
-
+      
       [Observation]
       public void should_have_added_the_used_observed_data_from_the_original_simulation_in_the_updated_simulation()
       {

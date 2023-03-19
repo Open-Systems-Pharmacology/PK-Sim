@@ -69,6 +69,9 @@ namespace PKSim.Core.Snapshots.Mappers
             x.Description = SnapshotValueFor(project.Description);
          });
 
+         //first pass. We load all building blocks to ensure that there are no issues with the building blocks loading order
+         project.All<IPKSimBuildingBlock>().Each(_lazyLoadTask.Load);
+
          snapshot.ExpressionProfiles = await mapBuildingBlocksToSnapshots<ExpressionProfile>(project.All<Model.ExpressionProfile>());
          snapshot.Individuals = await mapBuildingBlocksToSnapshots<Individual>(project.All<Model.Individual>());
          snapshot.Compounds = await mapBuildingBlocksToSnapshots<Compound>(project.All<Model.Compound>());

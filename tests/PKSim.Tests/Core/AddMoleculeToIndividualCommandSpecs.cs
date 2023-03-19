@@ -35,6 +35,13 @@ namespace PKSim.Core
       {
          _individual.AllMolecules().ShouldContain(_protein);
       }
+
+      [Observation]
+      public void should_have_registered_the_molecule_and_the_individual()
+      {
+         A.CallTo(() => _context.Register(_individual)).MustHaveHappened();
+         A.CallTo(() => _context.Register(_protein)).MustHaveHappened();
+      }
    }
 
    public class The_inverse_of_the_add_protein_expression_to_individual_command : concern_for_AddMoleculeToIndividualCommand

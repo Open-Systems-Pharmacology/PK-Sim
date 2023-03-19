@@ -184,7 +184,7 @@ namespace PKSim.Core.Model
 
       public void AddMolecule(IndividualMolecule molecule) => FirstIndividual?.AddMolecule(molecule);
 
-      public void RemoveMolecule(IndividualMolecule molecule) => FirstIndividual?.RemoveMolecule(molecule);
+      public IReadOnlyList<IContainer> RemoveMolecule(IndividualMolecule molecule) => FirstIndividual?.RemoveMolecule(molecule);
 
       Individual ISimulationSubject.Individual => FirstIndividual;
 

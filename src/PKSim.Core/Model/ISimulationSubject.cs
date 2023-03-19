@@ -94,7 +94,8 @@ namespace PKSim.Core.Model
       ///    Remove a <paramref name="molecule" /> from the subject
       /// </summary>
       /// <param name="molecule"> Molecule to remove </param>
-      void RemoveMolecule(IndividualMolecule molecule);
+      /// <returns>all containers for the simulation subject that were removed from the individual structure</returns>
+      IReadOnlyList<IContainer> RemoveMolecule(IndividualMolecule molecule);
 
       /// <summary>
       ///    The underlying individual associated with the simulation subject

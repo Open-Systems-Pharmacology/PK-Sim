@@ -1,12 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Visitor;
-using PKSim.Core.Chart;
 using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Model
@@ -40,25 +37,7 @@ namespace PKSim.Core.Model
 
       public int IndividualId => Results.AllIndividualIds().FirstOrDefault();
 
-      public override TBuildingBlock BuildingBlock<TBuildingBlock>()
-      {
-         return AllBuildingBlocks<TBuildingBlock>().SingleOrDefault();
-      }
-
-      public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
-      {
-         base.UpdatePropertiesFrom(sourceObject, cloneManager);
-         var sourceIndividualSimulation = sourceObject as IndividualSimulation;
-         if (sourceIndividualSimulation == null) return;
-      }
-
-      public override void UpdateFromOriginalSimulation(Simulation originalSimulation)
-      {
-         base.UpdateFromOriginalSimulation(originalSimulation);
-         var sourceIndividualSimulation = originalSimulation as IndividualSimulation;
-         if (sourceIndividualSimulation == null) return;
-      }
-
+      public override TBuildingBlock BuildingBlock<TBuildingBlock>() => AllBuildingBlocks<TBuildingBlock>().SingleOrDefault();
 
       public override void AcceptVisitor(IVisitor visitor)
       {

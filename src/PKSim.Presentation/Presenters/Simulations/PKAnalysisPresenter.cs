@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -9,6 +7,9 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -20,21 +21,25 @@ namespace PKSim.Presentation.Presenters.Simulations
    }
 
    public abstract class PKAnalysisPresenter<TView, TPresenter> : AbstractSubPresenter<TView, TPresenter>, IPKAnalysisPresenter
-      where TView : IView<TPresenter>
+      where TView : IView<TPresenter>, IPKAnalysisView
       where TPresenter : IPresenter
    {
       private readonly IPKParameterRepository _pkParameterRepository;
       private readonly IParameter _undefinedPKParameter;
       private DefaultPresentationSettings _settings;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
+      protected IGlobalPKAnalysisPresenter _globalPKAnalysisPresenter;
 
-      protected PKAnalysisPresenter(TView view, IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask)
+      protected PKAnalysisPresenter(TView view, IPKParameterRepository pkParameterRepository, IPresentationSettingsTask presentationSettingsTask, IGlobalPKAnalysisPresenter globalPKAnalysisPresenter)
          : base(view)
       {
          _pkParameterRepository = pkParameterRepository;
          _presentationSettingsTask = presentationSettingsTask;
-         _undefinedPKParameter = new PKSimParameter {Dimension = Constants.Dimension.NO_DIMENSION};
+         _undefinedPKParameter = new PKSimParameter { Dimension = Constants.Dimension.NO_DIMENSION };
          _settings = new DefaultPresentationSettings();
+         _globalPKAnalysisPresenter = globalPKAnalysisPresenter;
+         AddSubPresenters(_globalPKAnalysisPresenter);
+         _view.AddGlobalPKAnalysisView(_globalPKAnalysisPresenter.View);
       }
 
       public void ChangeUnit(string pkParameterName, Unit newUnit)

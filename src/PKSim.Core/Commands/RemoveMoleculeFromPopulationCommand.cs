@@ -1,4 +1,5 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 
@@ -29,8 +30,8 @@ namespace PKSim.Core.Commands
 
       protected override void PerformExecuteWith(IExecutionContext context)
       {
-         _population.RemoveMolecule(_molecule);
-         context.Unregister(_molecule);
+         var removedContainer= _population.RemoveMolecule(_molecule);
+         removedContainer.Each(context.Unregister);
          context.PublishEvent(new RemoveAdvancedParameterContainerFromPopulationEvent(_population));
          context.PublishEvent(new RemoveMoleculeFromSimulationSubjectEvent<Population> {Entity = _molecule, Container = _population});
       }

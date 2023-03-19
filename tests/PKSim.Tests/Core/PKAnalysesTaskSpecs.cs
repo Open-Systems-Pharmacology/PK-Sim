@@ -20,8 +20,6 @@ using PKAnalysesTask = PKSim.Core.Services.PKAnalysesTask;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using OSPSuite.Core.Domain.Builder;
 using System;
-using DevExpress.XtraPivotGrid.ViewInfo;
-using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 
@@ -238,9 +236,7 @@ namespace PKSim.Core
       {
          var populationSimulation = new PopulationSimulation { Properties = new SimulationProperties() };
          populationSimulation.Properties.AddCompoundProperties(_compoundProperties);
-         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
-         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndividualId", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
-         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("PopulationId", PKSimBuildingBlockType.Population) { BuildingBlock = _population });
+         AddUsedBuildingBlocks(populationSimulation);
          populationSimulation.Results = new SimulationResults();
          populationSimulation.Results.AddRange(new[]
          {
@@ -292,9 +288,16 @@ namespace PKSim.Core
 
          return populationSimulation;
       }
+
+      protected virtual void AddUsedBuildingBlocks(PopulationSimulation populationSimulation)
+      {
+         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
+         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndividualId", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
+         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("PopulationId", PKSimBuildingBlockType.Population) { BuildingBlock = _population });
+      }
    }
 
-   public class When_calculating_global_pk_analyses_with_denomintor_context_for_population : PopulationBased
+   public class When_calculating_global_pk_analyses_with_denominator_context_for_population : PopulationBased
    {
       private CompoundPKContext _compoundPKContext;
       private PopulationSimulationPKAnalyses _results;
@@ -723,6 +726,36 @@ namespace PKSim.Core
       public void should_not_contain_value_for_fraction_absorbed()
       {
          _result.PKParameter(_compoundName, CoreConstants.PKAnalysis.FractionAbsorbed).ShouldBeNull();
+      }
+   }
+
+   public class When_calculating_the_global_pk_analyses_for_a_simulation_without_compound_building_blocks : PopulationBased
+   {
+      private PopulationSimulationPKAnalyses _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compoundProperties.ProtocolProperties.Protocol = null;
+         A.CallTo(() => _protocolMapper.MapFrom(null)).Throws<NullReferenceException>();
+      }
+
+      protected override void AddUsedBuildingBlocks(PopulationSimulation populationSimulation)
+      {
+         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndividualId", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
+         populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("PopulationId", PKSimBuildingBlockType.Population) { BuildingBlock = _population });
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CalculateFor( _populationSimulation );
+      }
+
+      [Observation]
+      public void should_not_produce_any_pk_parameters()
+      {
+         _result.AllQuantityPaths.ShouldBeEmpty();
+         _result.AllPKParameterNames.ShouldBeEmpty();
       }
    }
 

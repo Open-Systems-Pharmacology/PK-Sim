@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Data;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
+using PKSim.Core.Extensions;
 
 namespace PKSim.Core.Mappers
 {
@@ -73,6 +74,7 @@ namespace PKSim.Core.Mappers
             AddPanesToTable(dataTable, pane, exportForPivot);
             AddObservedDataToTable(dataTable, pane, exportForPivot);
          }
+
          dataTable.EndLoadData();
 
          return dataTable;
@@ -149,21 +151,22 @@ namespace PKSim.Core.Mappers
       }
 
       protected abstract void AddSpecificChartColumns(DataTable dataTable, CurveData<TXValue, TYValue> curveData, bool exportForPivot);
+
       protected abstract IEnumerable<DataRow> AddSpecificChartValues(DataRow row, CurveData<TXValue, TYValue> curveData, bool exportForPivot);
 
-      protected virtual IReadOnlyList<string> GetDataFields(CurveData<TXValue, TYValue> curveData)
-      {
-         return new List<string>();
-      }
+      protected virtual IReadOnlyList<string> GetDataFields(CurveData<TXValue, TYValue> curveData) => new List<string>();
 
-      protected virtual IReadOnlyList<string> GetRowFields(CurveData<TXValue, TYValue> curveData)
-      {
-         return new List<string>();
-      }
+      protected virtual IReadOnlyList<string> GetRowFields(CurveData<TXValue, TYValue> curveData) => new List<string>();
 
-      protected object ValueForDataTableFor(IWithDisplayUnit withDisplayUnit, double value)
+      //For x values, we can use the dimension of the x axis right away as it is always the same for all curves
+      protected object xValueForDataTableFor<TX, TY>(CurveData<TX, TY> curveData, double value) where TX : IXValue where TY : IYValue => ValueForDataTableFor(curveData.XAxis, curveData.XAxis.Dimension, value);
+
+      //For y values, we need to use the dimension specified for each curve as it may be a merged dimension
+      protected object yValueForDataTableFor<TX, TY>(CurveData<TX, TY> curveData, double value) where TX : IXValue where TY : IYValue => ValueForDataTableFor(curveData.YAxis, curveData.YDimension, value);
+
+      protected object ValueForDataTableFor(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension, double value)
       {
-         return double.IsNaN(value) ? DBNull.Value : (object) withDisplayUnit.ConvertToDisplayUnit(value);
+         return double.IsNaN(value) ? DBNull.Value : (object) objectWithTargetUnit.DisplayValue(value, valueDimension);
       }
    }
 }
