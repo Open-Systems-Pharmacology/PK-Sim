@@ -33,7 +33,7 @@ namespace PKSim.Core.Services
       ///    aging data will be added to the population simulation directly
       ///    and therefor modifying the instance of the simulation
       /// </param>
-      void UpdateBuildConfigurationForAging(SimulationConfiguration simulationConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation);
+      void UpdateSimulationConfigurationForAging(SimulationConfiguration simulationConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation);
    }
 
    public class DistributedParameterToTableParameterConverter : IDistributedParameterToTableParameterConverter
@@ -89,7 +89,7 @@ namespace PKSim.Core.Services
          _yearUnit = _timeDimension.Unit(dimensionRepository.AgeInYears.BaseUnit.Name);
       }
 
-      public void UpdateBuildConfigurationForAging(SimulationConfiguration simulationConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation)
+      public void UpdateSimulationConfigurationForAging(SimulationConfiguration simulationConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation)
       {
          if (!simulation.AllowAging)
             return;

@@ -156,7 +156,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_updated_the_distributed_parameter()
       {
-         A.CallTo(() => _distributedTableConverter.UpdateBuildConfigurationForAging(_simulationConfiguration, _simulation, true)).MustHaveHappened();
+         A.CallTo(() => _distributedTableConverter.UpdateSimulationConfigurationForAging(_simulationConfiguration, _simulation, true)).MustHaveHappened();
       }
    }
 }

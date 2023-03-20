@@ -48,17 +48,17 @@ namespace PKSim.Core.Services
          _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
 
          simulation.Settings = _simulationSettingsFactory.CreateFor(simulation);
-         var buildConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
-         buildConfiguration.ShowProgress = shouldShowProgress;
-         buildConfiguration.ShouldValidate = shouldValidate;
+         var simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
+         simulationConfiguration.ShowProgress = shouldShowProgress;
+         simulationConfiguration.ShouldValidate = shouldValidate;
 
-         var creationResult = _modelConstructor.CreateModelFrom(buildConfiguration, simulation.Name);
+         var creationResult = _modelConstructor.CreateModelFrom(simulationConfiguration, simulation.Name);
 
          if (creationResult.IsInvalid)
             throw new CannotCreateSimulationException(creationResult.ValidationResult);
 
          simulation.Model = creationResult.Model;
-         simulation.Reactions = buildConfiguration.Reactions;
+         simulation.Reactions = simulationConfiguration.Reactions;
 
          updateSimulationAfterModelCreation(simulation);
       }
