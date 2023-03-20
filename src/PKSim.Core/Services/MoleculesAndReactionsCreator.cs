@@ -22,7 +22,7 @@ namespace PKSim.Core.Services
       ///    Once the molecules have been created the reaction taking place in the system will be added
       ///    Last, the molecule start values will be set
       /// </summary>
-      void CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
+      void CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation);
    }
 
    public class MoleculesAndReactionsCreator : IMoleculesAndReactionsCreator
@@ -38,9 +38,9 @@ namespace PKSim.Core.Services
       private readonly IProcessToProcessBuilderMapper _processBuilderMapper;
 
       private Individual _individual;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IReactionBuildingBlock _reactionBuildingBlock;
-      private IBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
       private readonly List<string> _allMoleculeNames;
       private readonly List<IMoleculeBuilder> _moleculeWithTurnoverReactions;
       private IPassiveTransportBuildingBlock _passiveTransports;
@@ -80,16 +80,16 @@ namespace PKSim.Core.Services
          _moleculeWithTurnoverReactions = new List<IMoleculeBuilder>();
       }
 
-      public void CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
+      public void CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation)
       {
          try
          {
             _simulation = simulation;
             _individual = simulation.Individual;
-            _buildConfiguration = buildConfiguration;
-            _passiveTransports = _buildConfiguration.PassiveTransports;
+            _simulationConfiguration = simulationConfiguration;
+            _passiveTransports = _simulationConfiguration.PassiveTransports;
 
-            _moleculeBuildingBlock = _objectBaseFactory.Create<IMoleculeBuildingBlock>()
+            _moleculeBuildingBlock = _objectBaseFactory.Create<MoleculeBuildingBlock>()
                .WithName(simulation.Name);
 
             _reactionBuildingBlock = _objectBaseFactory.Create<IReactionBuildingBlock>()
@@ -105,15 +105,15 @@ namespace PKSim.Core.Services
 
             addInteractions(simulation);
 
-            _buildConfiguration.Molecules = _moleculeBuildingBlock;
-            _buildConfiguration.Reactions = _reactionBuildingBlock;
+            _simulationConfiguration.Module.Molecule = _moleculeBuildingBlock;
+            _simulationConfiguration.Module.Reaction = _reactionBuildingBlock;
          }
          finally
          {
             _moleculeBuildingBlock = null;
             _reactionBuildingBlock = null;
             _individual = null;
-            _buildConfiguration = null;
+            _simulationConfiguration = null;
             _passiveTransports = null;
             _simulation = null;
             _allMoleculeNames.Clear();

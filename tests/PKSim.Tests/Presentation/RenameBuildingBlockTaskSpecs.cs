@@ -137,7 +137,7 @@ namespace PKSim.Presentation
          _individualSimulation.Results = results;
          _individualSimulation.DataRepository = new DataRepository();
          _individualSimulation.Reactions = new ReactionBuildingBlock();
-         _individualSimulation.SimulationSettings = new SimulationSettings();
+         _individualSimulation.Settings = new SimulationSettings();
          A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(quantityCache);
 
          A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).Invokes(x => x.Arguments[1].DowncastTo<Action>()());

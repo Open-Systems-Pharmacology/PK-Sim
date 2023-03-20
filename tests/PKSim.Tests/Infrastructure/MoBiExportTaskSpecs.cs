@@ -22,7 +22,7 @@ namespace PKSim.Infrastructure
 {
    public abstract class concern_for_MoBiExportTask : ContextSpecification<IMoBiExportTask>
    {
-      protected IBuildConfigurationTask _buildConfigurationTask;
+      protected ISimulationConfigurationTask _simulationConfigurationTask;
       protected ISimulationToModelCoreSimulationMapper _simulationMapper;
       protected IRepresentationInfoRepository _representationInfoRepository;
       protected IPKSimConfiguration _configuration;
@@ -38,7 +38,7 @@ namespace PKSim.Infrastructure
 
       protected override void Context()
       {
-         _buildConfigurationTask = A.Fake<IBuildConfigurationTask>();
+         _simulationConfigurationTask = A.Fake<ISimulationConfigurationTask>();
          _simulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _configuration = A.Fake<IPKSimConfiguration>();
@@ -51,7 +51,7 @@ namespace PKSim.Infrastructure
          _applicationSettings = A.Fake<IApplicationSettings>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
 
-         sut = new MoBiExportTask(_buildConfigurationTask, _simulationMapper, _representationInfoRepository,
+         sut = new MoBiExportTask(_simulationConfigurationTask, _simulationMapper, _representationInfoRepository,
             _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory);
       }
    }

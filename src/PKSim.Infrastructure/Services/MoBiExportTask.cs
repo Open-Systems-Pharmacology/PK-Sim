@@ -22,7 +22,7 @@ namespace PKSim.Infrastructure.Services
 {
    public class MoBiExportTask : IMoBiExportTask, IVisitor<IObjectBase>
    {
-      private readonly IBuildConfigurationTask _buildConfigurationTask;
+      private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly ISimulationToModelCoreSimulationMapper _simulationMapper;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IPKSimConfiguration _configuration;
@@ -35,12 +35,12 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
 
-      public MoBiExportTask(IBuildConfigurationTask buildConfigurationTask, ISimulationToModelCoreSimulationMapper simulationMapper,
+      public MoBiExportTask(ISimulationConfigurationTask simulationConfigurationTask, ISimulationToModelCoreSimulationMapper simulationMapper,
          IRepresentationInfoRepository representationInfoRepository, IPKSimConfiguration configuration,
          ILazyLoadTask lazyLoadTask, IDialogCreator dialogCreator, ISimulationPersistor simulationPersistor, IProjectRetriever projectRetriever,
          IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
       {
-         _buildConfigurationTask = buildConfigurationTask;
+         _simulationConfigurationTask = simulationConfigurationTask;
          _simulationMapper = simulationMapper;
          _representationInfoRepository = representationInfoRepository;
          _configuration = configuration;
@@ -105,7 +105,7 @@ namespace PKSim.Infrastructure.Services
          if (simulation.IsImported)
             throw new PKSimException(PKSimConstants.Error.CannotExportAnImportedSimulation);
 
-         var configuration = _buildConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         var configuration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
          var moBiSimulation = _simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: false);
          updateObserverForAllFlag(moBiSimulation);
          updateRepresentationInfo(moBiSimulation);
@@ -146,7 +146,7 @@ namespace PKSim.Infrastructure.Services
 
       private void updateObserverForAllFlag(IModelCoreSimulation moBiSimulation)
       {
-         UpdateObserverForAllFlag(moBiSimulation.BuildConfiguration.Observers);
+         UpdateObserverForAllFlag(moBiSimulation.Configuration.Observers);
       }
 
       public void ExportSimulationToPkmlFile(Simulation simulation)
@@ -163,12 +163,14 @@ namespace PKSim.Infrastructure.Services
 
       private void updateRepresentationInfo(IModelCoreSimulation moBiSimulation)
       {
-         moBiSimulation.BuildConfiguration.SpatialStructure.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.Reactions.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.Molecules.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.PassiveTransports.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.Observers.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.EventGroups.AcceptVisitor(this);
+         //TODO. That should be done better I think. Can we accept a global visitor?
+         //moBiSimulation.Configuration.AcceptVisitor(this)?;
+         moBiSimulation.Configuration.SpatialStructure.AcceptVisitor(this);
+         moBiSimulation.Configuration.Reactions.AcceptVisitor(this);
+         moBiSimulation.Configuration.Molecules.AcceptVisitor(this);
+         moBiSimulation.Configuration.PassiveTransports.AcceptVisitor(this);
+         moBiSimulation.Configuration.Observers.AcceptVisitor(this);
+         moBiSimulation.Configuration.EventGroups.AcceptVisitor(this);
          moBiSimulation.Model.AcceptVisitor(this);
       }
 

@@ -58,7 +58,7 @@ namespace PKSim.Core
          var compound = new Compound().WithName("DRUG");
 
          _individualSimulation = new IndividualSimulation();
-         _individualSimulation.SimulationSettings = new SimulationSettings();
+         _individualSimulation.Settings = new SimulationSettings();
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Id", PKSimBuildingBlockType.Compound) {BuildingBlock = compound});
          _individualSimulation.Model = new OSPSuite.Core.Domain.Model();
          _individualSimulation.Model.Root = new Container {organism, applications};
@@ -165,7 +165,7 @@ namespace PKSim.Core
          var compound = new Compound().WithName("DRUG");
 
          _populationSimulation = new PopulationSimulation();
-         _populationSimulation.SimulationSettings = new SimulationSettings();
+         _populationSimulation.Settings = new SimulationSettings();
          _populationSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Id", PKSimBuildingBlockType.Compound) {BuildingBlock = compound});
          _populationSimulation.Model = new OSPSuite.Core.Domain.Model();
          _populationSimulation.Model.Root = new Container();

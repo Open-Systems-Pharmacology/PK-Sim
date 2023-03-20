@@ -5,7 +5,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public interface IBuildConfigurationTask
+   public interface ISimulationConfigurationTask
    {
       /// <summary>
       ///    Create a build configuration based on the selected building blocks and model properties from the simulation
@@ -16,32 +16,36 @@ namespace PKSim.Core.Services
       ///    True if aging data should be created in the simulation. False if they should
       ///    stay as is (typically for MoBi Export)
       /// </param>
-      IBuildConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation);
+      SimulationConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation);
    }
 
-   public class BuildConfigurationTask : IBuildConfigurationTask
+   public class SimulationConfigurationTask : ISimulationConfigurationTask
    {
       private readonly IEventBuildingBlockCreator _eventBuildingBlockCreator;
       private readonly IPKSimMoleculeStartValuesCreator _moleculeStartValuesCreator;
       private readonly IMoleculeCalculationRetriever _moleculeCalculationRetriever;
       private readonly IDistributedParameterToTableParameterConverter _distributedParameterToTableParameterConverter;
       private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
+      private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IModelObserverQuery _modelObserverQuery;
       private readonly IModelPassiveTransportQuery _modelPassiveTransportQuery;
       private readonly IMoleculesAndReactionsCreator _moleculesAndReactionsCreator;
       private readonly IPKSimParameterStartValuesCreator _parameterStartValuesCreator;
       private readonly IPKSimSpatialStructureFactory _spatialStructureFactory;
 
-      public BuildConfigurationTask(IPKSimSpatialStructureFactory spatialStructureFactory, IModelObserverQuery modelObserverQuery,
+      public SimulationConfigurationTask(
+         IPKSimSpatialStructureFactory spatialStructureFactory, IModelObserverQuery modelObserverQuery,
          IModelPassiveTransportQuery modelPassiveTransportQuery, IPKSimParameterStartValuesCreator parameterStartValuesCreator,
          IMoleculesAndReactionsCreator moleculesAndReactionsCreator, IEventBuildingBlockCreator eventBuildingBlockCreator,
          IPKSimMoleculeStartValuesCreator moleculeStartValuesCreator, IMoleculeCalculationRetriever moleculeCalculationRetriever,
          IDistributedParameterToTableParameterConverter distributedParameterToTableParameterConverter,
-         IParameterDefaultStateUpdater parameterDefaultStateUpdater)
+         IParameterDefaultStateUpdater parameterDefaultStateUpdater,
+         IObjectBaseFactory objectBaseFactory)
       {
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
          _distributedParameterToTableParameterConverter = distributedParameterToTableParameterConverter;
          _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
+         _objectBaseFactory = objectBaseFactory;
          _spatialStructureFactory = spatialStructureFactory;
          _modelObserverQuery = modelObserverQuery;
          _modelPassiveTransportQuery = modelPassiveTransportQuery;
@@ -52,43 +56,48 @@ namespace PKSim.Core.Services
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
       }
 
-      public IBuildConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation)
+      public SimulationConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation)
       {
-         var buildConfiguration = new BuildConfiguration {ShouldValidate = shouldValidate};
+         var module = _objectBaseFactory.Create<Module>().WithName(simulation.Name);
+         var simulationConfiguration = new SimulationConfiguration
+         {
+            ShouldValidate = shouldValidate, 
+            Module = module
+         };
          var individual = simulation.Individual;
 
          //STEP1: Create spatial structure
-         buildConfiguration.SpatialStructure = _spatialStructureFactory.CreateFor(individual, simulation);
-         _parameterDefaultStateUpdater.UpdateDefaultFor(buildConfiguration.SpatialStructure);
+         module.SpatialStructure = _spatialStructureFactory.CreateFor(individual, simulation);
+         _parameterDefaultStateUpdater.UpdateDefaultFor(simulationConfiguration.SpatialStructure);
 
          //STEP2: add used calculation method to the build configuration
-         _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(simulation).Each(buildConfiguration.AddCalculationMethod);
+         _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(simulation).Each(simulationConfiguration.AddCalculationMethod);
 
          //STEP3: Add Passive Transports 
-         buildConfiguration.PassiveTransports = _modelPassiveTransportQuery.AllPassiveTransportsFor(simulation)
+         module.PassiveTransport = _modelPassiveTransportQuery.AllPassiveTransportsFor(simulation)
             .WithName(simulation.Name);
 
          //STEP4 : Molecules, and Molecule Start and reactions are generated in one go from the molecule and reaction creator
-         _moleculesAndReactionsCreator.CreateFor(buildConfiguration, simulation);
+         _moleculesAndReactionsCreator.CreateFor(simulationConfiguration, simulation);
 
          //STEP5 Add Application, Formulation and events
-         buildConfiguration.EventGroups = _eventBuildingBlockCreator.CreateFor(simulation);
-         _parameterDefaultStateUpdater.UpdateDefaultFor(buildConfiguration.EventGroups);
+         module.EventGroup = _eventBuildingBlockCreator.CreateFor(simulation);
+         _parameterDefaultStateUpdater.UpdateDefaultFor(simulationConfiguration.EventGroups);
 
          //STEP6: Add Observers
-         buildConfiguration.Observers = _modelObserverQuery.AllObserversFor(buildConfiguration.Molecules, simulation);
+         module.Observer = _modelObserverQuery.AllObserversFor(module.Molecule, simulation);
 
          //STEP7 once all building blocks have been created, we need to create the default parameter and molecule values values 
-         buildConfiguration.MoleculeStartValues = _moleculeStartValuesCreator.CreateFor(buildConfiguration, simulation);
-         buildConfiguration.ParameterStartValues = _parameterStartValuesCreator.CreateFor(buildConfiguration, simulation);
+         module.AddMoleculeStartValueBlock(_moleculeStartValuesCreator.CreateFor(simulationConfiguration, simulation));
+         module.AddParameterStartValueBlock(_parameterStartValuesCreator.CreateFor(simulationConfiguration, simulation));
 
          //STEP8 update simulation settings
-         buildConfiguration.SimulationSettings = simulation.SimulationSettings.WithName(simulation.Name);
+         simulationConfiguration.SimulationSettings = simulation.Settings.WithName(simulation.Name);
 
          //STEP9 Convert all parameters to table if required
-         _distributedParameterToTableParameterConverter.UpdateBuildConfigurationForAging(buildConfiguration, simulation, createAgingDataInSimulation);
+         _distributedParameterToTableParameterConverter.UpdateBuildConfigurationForAging(simulationConfiguration, simulation, createAgingDataInSimulation);
 
-         return buildConfiguration;
+         return simulationConfiguration;
       }
    }
 }

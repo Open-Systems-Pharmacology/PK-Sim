@@ -8,7 +8,7 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimParameterStartValuesCreator
    {
-      ParameterStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
+      ParameterStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation);
    }
 
    public class PKSimParameterStartValuesCreator : IPKSimParameterStartValuesCreator
@@ -28,7 +28,7 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public ParameterStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
+      public ParameterStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation)
       {
          //default default parameter start values matrix
          _defaultStartValues = _objectBaseFactory.Create<ParameterStartValuesBuildingBlock>();
@@ -48,7 +48,8 @@ namespace PKSim.Core.Services
          {
             var psv = trySetValue(p);
             //Ensure that the formula will not become a constant after clone
-            psv.OverrideFormulaWithValue = false;
+            //TODO
+//            psv.OverrideFormulaWithValue = false;
          });
       }
 

@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimMoleculeStartValuesCreator
    {
-      MoleculeStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
+      MoleculeStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation);
    }
 
    public class PKSimMoleculeStartValuesCreator : IPKSimMoleculeStartValuesCreator
@@ -36,12 +36,12 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public MoleculeStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
+      public MoleculeStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation)
       {
          //default molecule start values matrix
          var compounds = simulation.Compounds;
          var individual = simulation.Individual;
-         var defaultStartValues = _moleculeStartValuesCreator.CreateFrom(buildConfiguration.SpatialStructure, buildConfiguration.Molecules);
+         var defaultStartValues = _moleculeStartValuesCreator.CreateFrom(simulationConfiguration.SpatialStructure, simulationConfiguration.Molecules);
 
          //set available start formulas for molecules
          setStartFormulasForStaticMolecules(defaultStartValues, simulation, compounds);

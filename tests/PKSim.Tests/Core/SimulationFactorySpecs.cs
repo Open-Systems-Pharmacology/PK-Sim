@@ -323,11 +323,11 @@ namespace PKSim.Core
       [Observation]
       public void should_have_loaded_the_reaction_building_block()
       {
-         _sim.Reactions.ShouldBeEqualTo(_modelCoreSimulation.BuildConfiguration.Reactions);
+         _sim.Reactions.ShouldBeEqualTo(_modelCoreSimulation.Configuration.Reactions);
       }
 
       [Observation]
-      public void should_have_resetted_the_model_id()
+      public void should_have_reset_the_model_id()
       {
          A.CallTo(() => _objectIdResetter.ResetIdFor(_sim)).MustHaveHappened();
       }

@@ -164,7 +164,7 @@ namespace PKSim.Core
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("CompId", PKSimBuildingBlockType.Compound) { BuildingBlock = _compound });
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("IndividualId", PKSimBuildingBlockType.Individual) { BuildingBlock = _individual });
          _simulation.DataRepository = new DataRepository { _venousBloodPlasma, _peripheralVenousBloodPlasma };
-         _simulation.SimulationSettings = new SimulationSettings();
+         _simulation.Settings = new SimulationSettings();
          _simulation.OutputSchema = new OutputSchema();
          _simulation.OutputSchema.AddInterval(new OutputInterval { DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME) });
          _simulation.Model = new OSPSuite.Core.Domain.Model { Root = new Container() };
@@ -274,7 +274,7 @@ namespace PKSim.Core
 
          populationSimulation.Results.Each(x => x.IndividualId = populationSimulation.Results.AllIndividualResults.IndexOf(x));
 
-         populationSimulation.SimulationSettings = new SimulationSettings();
+         populationSimulation.Settings = new SimulationSettings();
          populationSimulation.OutputSchema = new OutputSchema();
          populationSimulation.OutputSchema.AddInterval(new OutputInterval { DomainHelperForSpecs.ConstantParameterWithValue(100).WithName(Constants.Parameters.END_TIME) });
          populationSimulation.Model = new OSPSuite.Core.Domain.Model { Root = new Container() };

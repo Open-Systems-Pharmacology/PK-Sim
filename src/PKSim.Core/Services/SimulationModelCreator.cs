@@ -15,7 +15,7 @@ namespace PKSim.Core.Services
 
    public class SimulationModelCreator : ISimulationModelCreator
    {
-      private readonly IBuildConfigurationTask _buildConfigurationTask;
+      private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly IModelConstructor _modelConstructor;
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly ISimulationSettingsFactory _simulationSettingsFactory;
@@ -24,7 +24,7 @@ namespace PKSim.Core.Services
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IContainerTask _containerTask;
 
-      public SimulationModelCreator(IBuildConfigurationTask buildConfigurationTask, 
+      public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask, 
          IModelConstructor modelConstructor, 
          IParameterIdUpdater parameterIdUpdater,
          ISimulationSettingsFactory simulationSettingsFactory, 
@@ -33,7 +33,7 @@ namespace PKSim.Core.Services
          IEntityPathResolver entityPathResolver,
          IContainerTask containerTask)
       {
-         _buildConfigurationTask = buildConfigurationTask;
+         _simulationConfigurationTask = simulationConfigurationTask;
          _modelConstructor = modelConstructor;
          _parameterIdUpdater = parameterIdUpdater;
          _simulationSettingsFactory = simulationSettingsFactory;
@@ -47,8 +47,8 @@ namespace PKSim.Core.Services
       {
          _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
 
-         simulation.SimulationSettings = _simulationSettingsFactory.CreateFor(simulation);
-         var buildConfiguration = _buildConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
+         simulation.Settings = _simulationSettingsFactory.CreateFor(simulation);
+         var buildConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
          buildConfiguration.ShowProgress = shouldShowProgress;
          buildConfiguration.ShouldValidate = shouldValidate;
 

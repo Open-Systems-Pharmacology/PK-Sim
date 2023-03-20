@@ -46,7 +46,7 @@ namespace PKSim.Core
          base.Context();
          var dimension = A.Fake<IDimension>();
          _outputSelection = new OutputSelections();
-         _simulation = new IndividualSimulation {SimulationSettings = new SimulationSettings {OutputSelections = _outputSelection}};
+         _simulation = new IndividualSimulation {Settings = new SimulationSettings {OutputSelections = _outputSelection}};
          _compound = A.Fake<Compound>();
          A.CallTo(() => _compound.Name).Returns("Drug");
          A.CallTo(() => _compound.MolWeight).Returns(20);

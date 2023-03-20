@@ -8,7 +8,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
@@ -276,21 +275,21 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_an_individual_simulation_2pores_with_the_standard_building_block : concern_for_IndividualSimulation
    {
-      private IBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
-         var buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
-         _buildConfiguration = buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         var simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
+         _simulationConfiguration = simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
       }
 
       [Observation]
       public void should_set_negative_values_allowed_true_to_predefined_compartments_and_molecules()
       {
-         var msv = _buildConfiguration.MoleculeStartValues;
+         var msv = _simulationConfiguration.MoleculeStartValuesCollection[0];
          var moleculesWithAllowedNegativeValues = (from molecule in msv
             where molecule.NegativeValuesAllowed
             select molecule).ToList();
@@ -711,7 +710,6 @@ namespace PKSim.IntegrationTests
          _simulation.HasResults.ShouldBeTrue();
       }
    }
-
 
    public class When_cloning_a_simulation : concern_for_IndividualSimulation
    {

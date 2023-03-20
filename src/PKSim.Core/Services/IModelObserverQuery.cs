@@ -8,6 +8,6 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Return all the observers defined for the given molecule name and the model properties
       /// </summary>
-      IObserverBuildingBlock AllObserversFor(IMoleculeBuildingBlock moleculeBuildingBlock, Simulation simulation);
+      IObserverBuildingBlock AllObserversFor(MoleculeBuildingBlock moleculeBuildingBlock, Simulation simulation);
    }
 }

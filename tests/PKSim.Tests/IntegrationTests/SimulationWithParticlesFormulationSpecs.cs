@@ -207,7 +207,7 @@ namespace PKSim.IntegrationTests
 
       protected void AddOutputTo(IndividualSimulation simulation, string path, QuantityType quantityType = QuantityType.Drug)
       {
-         simulation.SimulationSettings.OutputSelections.AddOutput(new QuantitySelection(path, quantityType));
+         simulation.Settings.OutputSelections.AddOutput(new QuantitySelection(path, quantityType));
       }
 
       /// <summary>
@@ -893,7 +893,7 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = true;
 
-         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
+         _simulation.Settings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
@@ -953,7 +953,7 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = false;
 
-         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
+         _simulation.Settings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form

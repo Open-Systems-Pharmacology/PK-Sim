@@ -28,10 +28,13 @@ namespace PKSim.Core.Services
          if (simulation.IsImported)
             return _objectBaseFactory.Create<IReactionBuildingBlock>();
 
-         var buildConfiguration = new BuildConfiguration();
-         buildConfiguration.PassiveTransports = new PassiveTransportBuildingBlock();
-         _moleculesAndReactionsCreator.CreateFor(buildConfiguration, simulation);
-         return buildConfiguration.Reactions;
+         var simulationConfiguration = new SimulationConfiguration();
+         simulationConfiguration.Module = new Module
+         {
+            PassiveTransport = new PassiveTransportBuildingBlock()
+         };
+         _moleculesAndReactionsCreator.CreateFor(simulationConfiguration, simulation);
+         return simulationConfiguration.Reactions;
       }
    }
 }

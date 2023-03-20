@@ -39,7 +39,7 @@ namespace PKSim.Core
    {
       protected IndividualSimulation _individualSimulation;
       protected SimulationProperties _simulationProperties;
-      protected ISimulationSettings _settings;
+      protected SimulationSettings _settings;
       protected Simulation _snapshot;
       protected SolverSettingsMapper _solverSettingsMapper;
       protected OutputSchemaMapper _outputSchemaMapper;
@@ -171,7 +171,7 @@ namespace PKSim.Core
          {
             Name = "S1",
             Properties = _simulationProperties,
-            SimulationSettings = _settings,
+            Settings = _settings,
             Description = "Simulation Description",
             Model = _model
          };
@@ -191,7 +191,7 @@ namespace PKSim.Core
          _populationSimulation = new PopulationSimulation
          {
             Properties = _simulationProperties,
-            SimulationSettings = _settings,
+            Settings = _settings,
             Model = _model
          };
 
@@ -515,7 +515,7 @@ namespace PKSim.Core
          var individualSimulation = new IndividualSimulation
          {
             Properties = _simulationProperties,
-            SimulationSettings = _settings,
+            Settings = _settings,
             Model = _model
          };
 
@@ -678,7 +678,7 @@ namespace PKSim.Core
          var populationSimulation = new PopulationSimulation
          {
             Properties = _simulationProperties,
-            SimulationSettings = _settings,
+            Settings = _settings,
             Model = _model
          };
 

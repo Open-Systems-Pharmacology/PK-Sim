@@ -9,7 +9,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_BuildConfigurationTask : ContextSpecification<IBuildConfigurationTask>
+   public abstract class concern_for_BuildConfigurationTask : ContextSpecification<ISimulationConfigurationTask>
    {
       protected IPKSimSpatialStructureFactory _spatialStructureFactory;
       protected Simulation _simulation;
@@ -33,6 +33,7 @@ namespace PKSim.Core
       protected ICoreCalculationMethod _cm2;
       protected IDistributedParameterToTableParameterConverter _distributedTableConverter;
       protected IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
+      private IObjectBaseFactory _objectBaseFactory;
 
       protected override void Context()
       {
@@ -46,10 +47,11 @@ namespace PKSim.Core
          _moleculeCalculationRetriever = A.Fake<IMoleculeCalculationRetriever>();
          _distributedTableConverter = A.Fake<IDistributedParameterToTableParameterConverter>();
          _parameterDefaultStateUpdater = A.Fake<IParameterDefaultStateUpdater>();
+         _objectBaseFactory= A.Fake<IObjectBaseFactory>();
          _cm1 = new CoreCalculationMethod();
          _cm2 = new CoreCalculationMethod();
          _simulation = new IndividualSimulation {Properties = new SimulationProperties()};
-         _simulation.SimulationSettings = new SimulationSettings();
+         _simulation.Settings = new SimulationSettings();
          _simulation.ModelConfiguration = new ModelConfiguration();
          _individual = new Individual().WithName("MyIndividuyal");
          _compound = A.Fake<Compound>().WithName("MyCompound");
@@ -66,95 +68,95 @@ namespace PKSim.Core
          A.CallTo(() => _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(_simulation)).Returns(new[] {_cm1, _cm2});
          A.CallTo(() => _spatialStructureFactory.CreateFor(_individual, _simulation)).Returns(_spatialStructure);
          A.CallTo(() => _modelPassiveTransportQuery.AllPassiveTransportsFor(_simulation)).Returns(_passiveTransportBuilingBlock);
-         A.CallTo(() => _modelObserverQuery.AllObserversFor(A<IMoleculeBuildingBlock>.Ignored, _simulation)).Returns(_observerBuildingBlock);
+         A.CallTo(() => _modelObserverQuery.AllObserversFor(A<MoleculeBuildingBlock>.Ignored, _simulation)).Returns(_observerBuildingBlock);
          A.CallTo(() => _eventBuildingBlockCreator.CreateFor(_simulation)).Returns(_eventBuildingBlock);
-         A.CallTo(() => _parameterStartValueCreator.CreateFor(A<IBuildConfiguration>.Ignored, A<Simulation>.Ignored)).Returns(_parameterValuesBuildingBlock);
-         A.CallTo(() => _moleculeStartValueCreator.CreateFor(A<IBuildConfiguration>.Ignored, A<Simulation>.Ignored)).Returns(_moleculeStartValueBuildingBlock);
-         sut = new BuildConfigurationTask(_spatialStructureFactory, _modelObserverQuery, _modelPassiveTransportQuery, _parameterStartValueCreator,
+         A.CallTo(() => _parameterStartValueCreator.CreateFor(A<SimulationConfiguration>.Ignored, A<Simulation>.Ignored)).Returns(_parameterValuesBuildingBlock);
+         A.CallTo(() => _moleculeStartValueCreator.CreateFor(A<SimulationConfiguration>.Ignored, A<Simulation>.Ignored)).Returns(_moleculeStartValueBuildingBlock);
+         sut = new SimulationConfigurationTask(_spatialStructureFactory, _modelObserverQuery, _modelPassiveTransportQuery, _parameterStartValueCreator,
             _moleculesAndReactionsCreator, _eventBuildingBlockCreator, _moleculeStartValueCreator, _moleculeCalculationRetriever,
-            _distributedTableConverter, _parameterDefaultStateUpdater);
+            _distributedTableConverter, _parameterDefaultStateUpdater, _objectBaseFactory);
       }
    }
 
-   public class When_the_build_configuration_task_is_creating_a_build_configuation_for_a_simulation : concern_for_BuildConfigurationTask
+   public class When_the_simulation_configuration_task_is_creating_a_simulation_configuration_for_a_simulation : concern_for_BuildConfigurationTask
    {
-      private IBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
 
       protected override void Because()
       {
-         _buildConfiguration = sut.CreateFor(_simulation, true, true);
+         _simulationConfiguration = sut.CreateFor(_simulation, true, true);
       }
 
       [Observation]
       public void should_create_a_spatial_structure_based_on_the_simulation_individual_and_model_properties()
       {
-         _buildConfiguration.SpatialStructure.ShouldBeEqualTo(_spatialStructure);
+         _simulationConfiguration.SpatialStructure.ShouldBeEqualTo(_spatialStructure);
       }
 
       [Observation]
       public void should_update_the_default_parameter_state_for_the_spatial_structure()
       {
-         A.CallTo(() => _parameterDefaultStateUpdater.UpdateDefaultFor(_buildConfiguration.SpatialStructure)).MustHaveHappened();
+         A.CallTo(() => _parameterDefaultStateUpdater.UpdateDefaultFor(_simulationConfiguration.SpatialStructure)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_add_the_passsive_transports_for_the_model_defined_for_the_simulation()
+      public void should_add_the_passive_transports_for_the_model_defined_for_the_simulation()
       {
-         _buildConfiguration.PassiveTransports.ShouldBeEqualTo(_passiveTransportBuilingBlock);
+         _simulationConfiguration.PassiveTransports.ShouldBeEqualTo(_passiveTransportBuilingBlock);
       }
 
       [Observation]
       public void should_add_the_observers_defined_for_the_given_model()
       {
-         _buildConfiguration.Observers.ShouldBeEqualTo(_observerBuildingBlock);
+         _simulationConfiguration.Observers.ShouldBeEqualTo(_observerBuildingBlock);
       }
 
       [Observation]
       public void should_add_the_event_defined_for_the_given_simulation()
       {
-         _buildConfiguration.EventGroups.ShouldBeEqualTo(_eventBuildingBlock);
+         _simulationConfiguration.EventGroups.ShouldBeEqualTo(_eventBuildingBlock);
       }
 
       [Observation]
       public void should_update_the_default_parameter_state_for_the_event_building_block_creator()
       {
-         A.CallTo(() => _parameterDefaultStateUpdater.UpdateDefaultFor(_buildConfiguration.EventGroups)).MustHaveHappened();
+         A.CallTo(() => _parameterDefaultStateUpdater.UpdateDefaultFor(_simulationConfiguration.EventGroups)).MustHaveHappened();
       }
 
       [Observation]
       public void should_create_the_default_parameter_values_for_the_available_parameters()
       {
-         A.CallTo(() => _parameterStartValueCreator.CreateFor(_buildConfiguration, _simulation)).MustHaveHappened();
+         A.CallTo(() => _parameterStartValueCreator.CreateFor(_simulationConfiguration, _simulation)).MustHaveHappened();
       }
 
       [Observation]
       public void should_create_the_default_molecule_start_values()
       {
-         A.CallTo(() => _moleculesAndReactionsCreator.CreateFor(_buildConfiguration, _simulation)).MustHaveHappened();
+         A.CallTo(() => _moleculesAndReactionsCreator.CreateFor(_simulationConfiguration, _simulation)).MustHaveHappened();
       }
 
       [Observation]
       public void should_create_the_default_molecule_start_value_creator()
       {
-         A.CallTo(() => _moleculeStartValueCreator.CreateFor(_buildConfiguration, _simulation)).MustHaveHappened();
+         A.CallTo(() => _moleculeStartValueCreator.CreateFor(_simulationConfiguration, _simulation)).MustHaveHappened();
       }
 
       [Observation]
       public void should_have_set_the_used_calculation_method_in_the_build_configuration()
       {
-         _buildConfiguration.AllCalculationMethods().ShouldOnlyContain(_cm1, _cm2);
+         _simulationConfiguration.AllCalculationMethods.ShouldOnlyContain(_cm1, _cm2);
       }
 
       [Observation]
       public void should_have_set_the_simulation_settings_in_the_build_configuration()
       {
-         _buildConfiguration.SimulationSettings.ShouldBeEqualTo(_simulation.SimulationSettings);
+         _simulationConfiguration.SimulationSettings.ShouldBeEqualTo(_simulation.Settings);
       }
 
       [Observation]
       public void should_have_updated_the_distributed_parameter()
       {
-         A.CallTo(() => _distributedTableConverter.UpdateBuildConfigurationForAging(_buildConfiguration, _simulation, true)).MustHaveHappened();
+         A.CallTo(() => _distributedTableConverter.UpdateBuildConfigurationForAging(_simulationConfiguration, _simulation, true)).MustHaveHappened();
       }
    }
 }

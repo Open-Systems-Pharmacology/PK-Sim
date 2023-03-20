@@ -86,7 +86,7 @@ namespace PKSim.Core.Services
          addToCache<ScatterAnalysisChart>(PKSimConstants.UI.ScatterAnalysis);
          addToCache<RangeAnalysisChart>(PKSimConstants.UI.RangeAnalysis);
          addToCache<BoxWhiskerAnalysisChart>(PKSimConstants.UI.BoxWhiskerAnalysis);
-         addToCache<ISimulationSettings>(PKSimConstants.UI.SimulationSettings);
+         addToCache<SimulationSettings>(PKSimConstants.UI.SimulationSettings);
          addToCache<SimulationAnalysisWorkflow>(PKSimConstants.ObjectTypes.SimulationAnalysisWorkflow);
          addToCache<GenderRatio>(PKSimConstants.UI.GenderRatio);
          addToCache<ParameterRange>(PKSimConstants.ObjectTypes.Parameter);
