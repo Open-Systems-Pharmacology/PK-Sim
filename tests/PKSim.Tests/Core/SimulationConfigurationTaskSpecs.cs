@@ -3,20 +3,20 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
-
 namespace PKSim.Core
 {
-   public abstract class concern_for_BuildConfigurationTask : ContextSpecification<ISimulationConfigurationTask>
+   public abstract class concern_for_SimulationConfigurationTask : ContextSpecification<ISimulationConfigurationTask>
    {
       protected IPKSimSpatialStructureFactory _spatialStructureFactory;
       protected Simulation _simulation;
       private IModelObserverQuery _modelObserverQuery;
       private IModelPassiveTransportQuery _modelPassiveTransportQuery;
       protected ISpatialStructure _spatialStructure;
-      protected IPassiveTransportBuildingBlock _passiveTransportBuilingBlock;
+      protected IPassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       protected IObserverBuildingBlock _observerBuildingBlock;
       protected IPKSimParameterStartValuesCreator _parameterStartValueCreator;
       protected IMoleculesAndReactionsCreator _moleculesAndReactionsCreator;
@@ -32,8 +32,9 @@ namespace PKSim.Core
       protected ICoreCalculationMethod _cm1;
       protected ICoreCalculationMethod _cm2;
       protected IDistributedParameterToTableParameterConverter _distributedTableConverter;
-      protected IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
       private IObjectBaseFactory _objectBaseFactory;
+      protected IIndividualToIndividualBuildingBlockMapper _individualBuildingBlockMapper;
+      protected IExpressionProfileToExpressionProfileBuildingBlockMapper _expressionProfileBuildingBlockMapper;
 
       protected override void Context()
       {
@@ -46,8 +47,10 @@ namespace PKSim.Core
          _moleculeStartValueCreator = A.Fake<IPKSimMoleculeStartValuesCreator>();
          _moleculeCalculationRetriever = A.Fake<IMoleculeCalculationRetriever>();
          _distributedTableConverter = A.Fake<IDistributedParameterToTableParameterConverter>();
-         _parameterDefaultStateUpdater = A.Fake<IParameterDefaultStateUpdater>();
-         _objectBaseFactory= A.Fake<IObjectBaseFactory>();
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         _individualBuildingBlockMapper= A.Fake<IIndividualToIndividualBuildingBlockMapper>();
+         _expressionProfileBuildingBlockMapper= A.Fake<IExpressionProfileToExpressionProfileBuildingBlockMapper>();
+
          _cm1 = new CoreCalculationMethod();
          _cm2 = new CoreCalculationMethod();
          _simulation = new IndividualSimulation {Properties = new SimulationProperties()};
@@ -57,7 +60,7 @@ namespace PKSim.Core
          _compound = A.Fake<Compound>().WithName("MyCompound");
          _protocol = new SimpleProtocol().WithName("MyProtocol");
          _spatialStructure = A.Fake<ISpatialStructure>();
-         _passiveTransportBuilingBlock = A.Fake<IPassiveTransportBuildingBlock>();
+         _passiveTransportBuildingBlock = A.Fake<IPassiveTransportBuildingBlock>();
          _observerBuildingBlock = A.Fake<IObserverBuildingBlock>();
          _eventBuildingBlock = A.Fake<IEventGroupBuildingBlock>();
          _parameterValuesBuildingBlock = A.Fake<ParameterStartValuesBuildingBlock>();
@@ -67,24 +70,24 @@ namespace PKSim.Core
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Protocol", PKSimBuildingBlockType.Protocol) {BuildingBlock = _protocol});
          A.CallTo(() => _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(_simulation)).Returns(new[] {_cm1, _cm2});
          A.CallTo(() => _spatialStructureFactory.CreateFor(_individual, _simulation)).Returns(_spatialStructure);
-         A.CallTo(() => _modelPassiveTransportQuery.AllPassiveTransportsFor(_simulation)).Returns(_passiveTransportBuilingBlock);
+         A.CallTo(() => _modelPassiveTransportQuery.AllPassiveTransportsFor(_simulation)).Returns(_passiveTransportBuildingBlock);
          A.CallTo(() => _modelObserverQuery.AllObserversFor(A<MoleculeBuildingBlock>.Ignored, _simulation)).Returns(_observerBuildingBlock);
          A.CallTo(() => _eventBuildingBlockCreator.CreateFor(_simulation)).Returns(_eventBuildingBlock);
          A.CallTo(() => _parameterStartValueCreator.CreateFor(A<SimulationConfiguration>.Ignored, A<Simulation>.Ignored)).Returns(_parameterValuesBuildingBlock);
          A.CallTo(() => _moleculeStartValueCreator.CreateFor(A<SimulationConfiguration>.Ignored, A<Simulation>.Ignored)).Returns(_moleculeStartValueBuildingBlock);
          sut = new SimulationConfigurationTask(_spatialStructureFactory, _modelObserverQuery, _modelPassiveTransportQuery, _parameterStartValueCreator,
             _moleculesAndReactionsCreator, _eventBuildingBlockCreator, _moleculeStartValueCreator, _moleculeCalculationRetriever,
-            _distributedTableConverter, _parameterDefaultStateUpdater, _objectBaseFactory);
+            _distributedTableConverter, _objectBaseFactory, _individualBuildingBlockMapper, _expressionProfileBuildingBlockMapper);
       }
    }
 
-   public class When_the_simulation_configuration_task_is_creating_a_simulation_configuration_for_a_simulation : concern_for_BuildConfigurationTask
+   public class When_the_simulation_configuration_task_is_creating_a_simulation_configuration_for_a_simulation : concern_for_SimulationConfigurationTask
    {
       private SimulationConfiguration _simulationConfiguration;
 
       protected override void Because()
       {
-         _simulationConfiguration = sut.CreateFor(_simulation, true, true);
+         _simulationConfiguration = sut.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: true);
       }
 
       [Observation]
@@ -94,15 +97,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_update_the_default_parameter_state_for_the_spatial_structure()
-      {
-         A.CallTo(() => _parameterDefaultStateUpdater.UpdateDefaultFor(_simulationConfiguration.SpatialStructure)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_add_the_passive_transports_for_the_model_defined_for_the_simulation()
       {
-         _simulationConfiguration.PassiveTransports.ShouldBeEqualTo(_passiveTransportBuilingBlock);
+         _simulationConfiguration.PassiveTransports.ShouldBeEqualTo(_passiveTransportBuildingBlock);
       }
 
       [Observation]
@@ -115,12 +112,6 @@ namespace PKSim.Core
       public void should_add_the_event_defined_for_the_given_simulation()
       {
          _simulationConfiguration.EventGroups.ShouldBeEqualTo(_eventBuildingBlock);
-      }
-
-      [Observation]
-      public void should_update_the_default_parameter_state_for_the_event_building_block_creator()
-      {
-         A.CallTo(() => _parameterDefaultStateUpdater.UpdateDefaultFor(_simulationConfiguration.EventGroups)).MustHaveHappened();
       }
 
       [Observation]
