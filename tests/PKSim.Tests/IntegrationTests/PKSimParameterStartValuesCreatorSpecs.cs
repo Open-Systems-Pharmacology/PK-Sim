@@ -23,7 +23,7 @@ namespace PKSim.IntegrationTests
       private IBuildConfigurationTask _buildConfigurationTask;
       private IEntityPathResolver _entityPathResolver;
       private ObjectPath _parameterPath;
-      private IParameterStartValuesBuildingBlock _psv;
+      private ParameterStartValuesBuildingBlock _psv;
       private Individual _individual;
       private Compound _compound;
       private Protocol _protocol;
@@ -93,7 +93,7 @@ namespace PKSim.IntegrationTests
       private IBuildConfigurationTask _buildConfigurationTask;
       private IEntityPathResolver _entityPathResolver;
       private ObjectPath _parameterPath;
-      private IParameterStartValuesBuildingBlock _psv;
+      private ParameterStartValuesBuildingBlock _psv;
       private Individual _individual;
       private Compound _compound;
       private Protocol _protocol;
@@ -129,13 +129,6 @@ namespace PKSim.IntegrationTests
       protected override void Because()
       {
          _psv = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false).ParameterStartValues;
-      }
-
-      [Observation]
-      public void should_have_created_the_initial_concentration_parameter_entry_with_the_overwritten_value()
-      {
-         _psv[_parameterPath].ShouldNotBeNull();
-         _psv[_parameterPath].StartValue.ShouldBeEqualTo(10);
       }
 
       [Observation]

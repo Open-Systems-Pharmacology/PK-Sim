@@ -144,11 +144,18 @@ namespace PKSim.Core.Services
          addParameterToParameterStartValues(psv, minToYearFactorParameter);
       }
 
-      private void addParameterToParameterStartValues(IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, IParameter parameter)
+      private ParameterStartValue createParameterStartValue(IParameter parameter)
       {
          var path = _objectPathFactory.CreateAbsoluteObjectPath(parameter);
          var psv = _parameterStartValuesCreator.CreateParameterStartValue(path, parameter);
+         return psv;
+      }
+
+      private ParameterStartValue addParameterToParameterStartValues(ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, IParameter parameter)
+      {
+         var psv = createParameterStartValue(parameter);
          parameterStartValuesBuildingBlock[psv.Path] = psv;
+         return psv;
       }
 
       private void createSpatialStructureTableParameters(IBuildConfiguration buildConfiguration)
@@ -197,8 +204,8 @@ namespace PKSim.Core.Services
          {
             var ontogenyFactorPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorParameter);
             var ontogenyFactorGIPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorGIParameter);
-            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorParameter, buildConfiguration, ontogenyFactorPath, molecule);
-            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorGIParameter, buildConfiguration, ontogenyFactorGIPath, molecule);
+            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorParameter, buildConfiguration, molecule);
+            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorGIParameter, buildConfiguration, molecule);
 
             createPopulationOntogenyTableParameter(molecule.OntogenyFactorParameter, ontogenyFactorPath, molecule, simulationPopulation);
             createPopulationOntogenyTableParameter(molecule.OntogenyFactorGIParameter, ontogenyFactorGIPath, molecule, simulationPopulation);
@@ -226,17 +233,17 @@ namespace PKSim.Core.Services
       private void createParameterValueVersionOntogenyTableParameter(
          IParameter ontogenyFactorParameter,
          IBuildConfiguration buildConfiguration,
-         ObjectPath ontogenyFactorPath,
          IndividualMolecule molecule)
       {
          var psv = buildConfiguration.ParameterStartValues;
-         var parameterStartValue = psv[ontogenyFactorPath];
+         var parameterStartValue = createParameterStartValue(ontogenyFactorParameter);
 
          parameterStartValue.Formula = createOntogenyTableFormulaFrom(ontogenyFactorParameter, molecule.Ontogeny, _baseOriginData);
          if (parameterStartValue.Formula == null)
             return;
 
          parameterStartValue.StartValue = null;
+         psv[parameterStartValue.Path] = parameterStartValue;
          psv.FormulaCache.Add(parameterStartValue.Formula);
       }
 
@@ -617,7 +624,7 @@ namespace PKSim.Core.Services
          removeParameterStartValueFor(parameter, buildConfiguration.ParameterStartValues);
       }
 
-      private void removeParameterStartValueFor(IParameter parameter, IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
+      private void removeParameterStartValueFor(IParameter parameter, ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
       {
          parameterStartValuesBuildingBlock.Remove(_entityPathResolver.ObjectPathFor(parameter));
       }

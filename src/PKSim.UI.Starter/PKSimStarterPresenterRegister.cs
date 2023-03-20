@@ -17,10 +17,9 @@ namespace PKSim.UI.Starter
          base.ExcludeTypes(scan);
          scan.ExcludeType<CreateIndividualPresenter>();
       }
-      
+
       protected override void RegisterMainViewPresenters(IContainer container)
       {
-         
       }
    }
 }

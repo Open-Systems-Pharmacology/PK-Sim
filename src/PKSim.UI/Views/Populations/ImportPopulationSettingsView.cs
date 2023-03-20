@@ -19,6 +19,7 @@ using PKSim.UI.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Populations
 {
@@ -61,7 +62,7 @@ namespace PKSim.UI.Views.Populations
          _gridViewBinder.Bind(x => x.Image)
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH);
 
          _gridViewBinder.Bind(x => x.FilePath)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
@@ -77,7 +78,7 @@ namespace PKSim.UI.Views.Populations
             .WithCaption(PKSimConstants.UI.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);
 
          gridView.FocusedRowChanged += (o, e) => OnEvent(selectedRowChanged, e);
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(_presenter.RemoveFile, _gridViewBinder.FocusedElement);

@@ -216,4 +216,37 @@ namespace PKSim.IntegrationTests
          _allPhysicalContainers.Find(x=>x.IsPlasma() && x.ParentContainer.IsNamed(CoreConstants.Organ.ARTERIAL_BLOOD)).Any().ShouldBeTrue();
       }
    }
+
+
+   public class When_removing_a_molecule_from_an_individual : concern_for_Individual
+   {
+      private IndividualMolecule _enzyme;
+      private IReadOnlyList<IContainer> _allRemovedContainers;
+      private IReadOnlyList<IContainer> _allMoleculeContainers;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         var moleculeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
+         sut = DomainFactoryForSpecs.CreateStandardIndividual();
+         _enzyme = moleculeFactory.AddMoleculeTo(sut, "CYP");
+         _allMoleculeContainers = sut.AllMoleculeContainersFor(_enzyme);
+
+      }
+
+      protected override void Because()
+      {
+         _allRemovedContainers = sut.RemoveMolecule(_enzyme);
+      }
+
+      [Observation]
+      public void should_return_the_list_of_all_containers_associated_with_the_molecule_that_were_removed_from_the_individual_structure()
+      {
+         _allRemovedContainers.Count.ShouldBeGreaterThan(1);
+         //we add the molecule as it is not a molecule container returned by the individual
+         _allRemovedContainers.ShouldOnlyContain(new List<IContainer>(_allMoleculeContainers){_enzyme}); 
+         _allMoleculeContainers = sut.AllMoleculeContainersFor(_enzyme);
+         _allMoleculeContainers.Count.ShouldBeEqualTo(0);
+      }
+   }
 }

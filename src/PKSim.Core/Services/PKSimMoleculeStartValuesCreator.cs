@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimMoleculeStartValuesCreator
    {
-      IMoleculeStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
+      MoleculeStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation);
    }
 
    public class PKSimMoleculeStartValuesCreator : IPKSimMoleculeStartValuesCreator
@@ -36,7 +36,7 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public IMoleculeStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
+      public MoleculeStartValuesBuildingBlock CreateFor(IBuildConfiguration buildConfiguration, Simulation simulation)
       {
          //default molecule start values matrix
          var compounds = simulation.Compounds;
@@ -75,7 +75,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void setStartFormulasForStaticMolecules(IMoleculeStartValuesBuildingBlock defaultStartValues, Simulation simulation, IEnumerable<Compound> compounds)
+      private void setStartFormulasForStaticMolecules(MoleculeStartValuesBuildingBlock defaultStartValues, Simulation simulation, IEnumerable<Compound> compounds)
       {
          var modelName = simulation.ModelConfiguration.ModelName;
          //get the names of molecules that are static (e.g. not enzymes, metabolites, etc.)

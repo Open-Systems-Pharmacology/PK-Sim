@@ -59,12 +59,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public void Plot(IPopulationDataCollector populationDataCollector, QuantityPKParameter pkParameter, PopulationAnalysisPKParameterField pkParameterField)
       {
-         plotContinousData(populationDataCollector, pkParameter, pkParameterField, x => x.Plot);
+         plotContinuousData(populationDataCollector, pkParameter, pkParameterField, x => x.Plot);
       }
 
       public void Plot(IPopulationDataCollector populationDataCollector, IParameter parameter, PopulationAnalysisParameterField parameterField)
       {
-         plotContinousData(populationDataCollector, parameter, parameterField, x => x.Plot);
+         plotContinuousData(populationDataCollector, parameter, parameterField, x => x.Plot);
       }
 
       public void Plot(IPopulationDataCollector populationDataCollector, string covariateName)
@@ -84,7 +84,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _populationDistributionPresenter.ResetPlot();
       }
 
-      private void plotContinousData<TObject>(IPopulationDataCollector populationDataCollector, TObject objectToPlot, INumericValueField numericValueField,
+      private void plotContinuousData<TObject>(IPopulationDataCollector populationDataCollector, TObject objectToPlot, INumericValueField numericValueField,
          Func<IPopulationDistributionPresenter, Action<IPopulationDataCollector, TObject, DistributionSettings, IDimension, Unit>> plotFunc)
          where TObject : class, IWithDimension
 

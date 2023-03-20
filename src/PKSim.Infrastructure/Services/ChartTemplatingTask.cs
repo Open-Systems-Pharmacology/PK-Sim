@@ -17,6 +17,7 @@ using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Services;
 
 namespace PKSim.Infrastructure.Services

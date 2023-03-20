@@ -100,9 +100,9 @@ namespace PKSim.Core.Model
 
       public virtual IEnumerable<T> GetChildren<T>() where T : class, IEntity => Root.GetChildren<T>();
 
-      public virtual IReadOnlyList<IContainer> GetNeighborsFrom(IReadOnlyList<INeighborhood> neighborhoods) => Root.GetNeighborsFrom(neighborhoods);
+      public virtual IReadOnlyList<IContainer> GetNeighborsFrom(IReadOnlyList<Neighborhood> neighborhoods) => Root.GetNeighborsFrom(neighborhoods);
 
-      public virtual IReadOnlyList<INeighborhood> GetNeighborhoods(IReadOnlyList<INeighborhood> neighborhoods) => Root.GetNeighborhoods(neighborhoods);
+      public virtual IReadOnlyList<Neighborhood> GetNeighborhoods(IReadOnlyList<Neighborhood> neighborhoods) => Root.GetNeighborhoods(neighborhoods);
 
       public virtual IReadOnlyList<TContainer> GetAllContainersAndSelf<TContainer>() where TContainer : class, IContainer =>
          Root.GetAllContainersAndSelf<TContainer>();

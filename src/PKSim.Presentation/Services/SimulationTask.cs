@@ -9,7 +9,6 @@ using PKSim.Presentation.Presenters.Simulations;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
 using PKSim.Core.Events;
 

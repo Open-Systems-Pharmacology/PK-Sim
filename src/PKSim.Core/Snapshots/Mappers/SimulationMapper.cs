@@ -54,6 +54,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOSPSuiteLogger _logger;
       private readonly IContainerTask _containerTask;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IChartTask _chartTask;
 
       public SimulationMapper(
          SolverSettingsMapper solverSettingsMapper,
@@ -77,7 +78,8 @@ namespace PKSim.Core.Snapshots.Mappers
          ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
          IOSPSuiteLogger logger,
          IContainerTask containerTask,
-         IEntityPathResolver entityPathResolver)
+         IEntityPathResolver entityPathResolver,
+         IChartTask chartTask)
       {
          _solverSettingsMapper = solverSettingsMapper;
          _outputSchemaMapper = outputSchemaMapper;
@@ -101,6 +103,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _logger = logger;
          _containerTask = containerTask;
          _entityPathResolver = entityPathResolver;
+         _chartTask = chartTask;
       }
 
       public override async Task<SnapshotSimulation> MapToSnapshot(ModelSimulation simulation, PKSimProject project)
@@ -305,6 +308,7 @@ namespace PKSim.Core.Snapshots.Mappers
          simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, snapshotContext));
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
+         _chartTask.UpdateObservedDataInChartsFor(simulation, snapshotContext.Project);
          return simulation;
       }
 

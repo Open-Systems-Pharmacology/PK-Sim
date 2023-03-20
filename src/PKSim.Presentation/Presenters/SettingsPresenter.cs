@@ -1,11 +1,10 @@
 using System;
-using OSPSuite.Utility.Extensions;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Views;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
+using PKSim.Presentation.Views;
 
 namespace PKSim.Presentation.Presenters
 {

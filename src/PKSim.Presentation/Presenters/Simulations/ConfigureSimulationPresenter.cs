@@ -1,16 +1,15 @@
 using System;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.Simulations;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -61,9 +60,17 @@ namespace PKSim.Presentation.Presenters.Simulations
       private Simulation _originalSimulation;
       private Simulation _simulationToConfigure;
 
-      protected ConfigureSimulationPresenterBase(TSimulationView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterItemManager,
-         ISimulationModelCreator simulationModelCreator, IHeavyWorkManager heavyWorkManager,
-         ICloner cloner, IDialogCreator dialogCreator, ISimulationParametersUpdater simulationParametersUpdater, IFullPathDisplayResolver fullPathDisplayResolver, IBuildingBlockInSimulationSynchronizer buildingBlockInSimulationSynchronizer, CreationMode creationMode)
+      protected ConfigureSimulationPresenterBase(
+         TSimulationView view,
+         ISubPresenterItemManager<ISimulationItemPresenter> subPresenterItemManager,
+         ISimulationModelCreator simulationModelCreator, 
+         IHeavyWorkManager heavyWorkManager,
+         ICloner cloner, 
+         IDialogCreator dialogCreator, 
+         ISimulationParametersUpdater simulationParametersUpdater, 
+         IFullPathDisplayResolver fullPathDisplayResolver, 
+         IBuildingBlockInSimulationSynchronizer buildingBlockInSimulationSynchronizer, 
+         CreationMode creationMode)
          : base(view, subPresenterItemManager, simulationModelCreator, heavyWorkManager, dialogCreator)
       {
          _cloner = cloner;
@@ -112,6 +119,7 @@ namespace PKSim.Presentation.Presenters.Simulations
             default:
                throw new ArgumentOutOfRangeException(templateBuildingBlock.BuildingBlockType.ToString());
          }
+
          return configureSimulation(simulation, itemToActivate, updateAction);
       }
 
@@ -133,7 +141,7 @@ namespace PKSim.Presentation.Presenters.Simulations
          //simulationToClone only returns an empty macro command as create simulationToClone is an atomic process
          return new PKSimMacroCommand();
       }
-      
+
       private Simulation createSimulationToConfigureBasedOn()
       {
          var simulationToConfigure = _cloner.CloneForModel(_originalSimulation);
@@ -152,7 +160,12 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          _simulationModelCreator.CreateModelFor(Simulation);
 
-         //now update all parameters from the orginal simulationToClone
+         //After the simulation was created, we can update the output mapping (we need the model to be available in the simulation)
+         //to make sure we swap out the simulation references
+         _originalSimulation.OutputMappings.Each(x => Simulation.OutputMappings.Add(x.Clone()));
+         Simulation.OutputMappings.SwapSimulation(_originalSimulation, Simulation);
+
+         //now update all parameters from the original simulationToClone
          var validationResult = _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, Simulation);
          displayMissingParametersMessage(validationResult);
 

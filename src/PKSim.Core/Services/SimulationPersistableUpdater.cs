@@ -87,36 +87,16 @@ namespace PKSim.Core.Services
       private void setApplicationObserversNonPersistable(Simulation simulation)
       {
          //Set all observers defined in application to persistable false
-         var applicationSet = simulation.Model.Root.GetSingleChildByName<IContainer>(Constants.APPLICATIONS);
-         if (applicationSet == null) return;
+         var applications = simulation.Model.Root.Container(Constants.APPLICATIONS);
 
-         foreach (var appObserver in applicationSet.GetAllChildren<IObserver>())
-         {
-            if (applicationObserverShouldBeShown(appObserver))
-               continue;
-
-            appObserver.Persistable = false;
-         }
+         applications?.GetAllChildren<IObserver>(applicationObserverShouldBeHidden)
+            .Each(x => x.Persistable = false);
       }
 
       /// <summary>
-      ///    Return true if an application observer should not be hidden from user
+      ///    Return true if an application observer should be hidden from user
       /// </summary>
       /// <param name="observer"></param>
-      private bool applicationObserverShouldBeShown(IObserver observer)
-      {
-         string name = observer.Name;
-
-         if (name.StartsWith(CoreConstants.Observer.FRACTION_SOLID_PREFIX))
-            return true;
-
-         if (name.StartsWith(CoreConstants.Observer.FRACTION_DISSOLVED_PREFIX))
-            return true;
-
-         if (name.StartsWith(CoreConstants.Observer.FRACTION_INSOLUBLE_PREFIX))
-            return true;
-
-         return false;
-      }
+      private bool applicationObserverShouldBeHidden(IObserver observer) => observer.Name == CoreConstants.Observer.CONCENTRATION_IN_CONTAINER;
    }
 }

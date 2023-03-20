@@ -252,7 +252,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IEnumerable<CurveChart> Charts => _allSimulationAnalyses.OfType<CurveChart>();
 
-      public OutputMappings OutputMappings { get; set; } = new OutputMappings();
+      public virtual OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
       /// <summary>
       ///    remove the chart from the simulation

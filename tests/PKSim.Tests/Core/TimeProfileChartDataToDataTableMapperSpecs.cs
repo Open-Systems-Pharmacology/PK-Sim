@@ -133,18 +133,20 @@ namespace PKSim.Core
          var pane2 = new PaneData<TimeProfileXValue, TimeProfileYValue>(_yAxis) {Caption = "Female"};
          _chartData.AddPane(pane1);
          _chartData.AddPane(pane2);
-         var curve1 = new CurveData<TimeProfileXValue, TimeProfileYValue> {Caption = "Liver"};
+         var curve1 = new CurveData<TimeProfileXValue, TimeProfileYValue> {Caption = "Liver", YDimension = concDimension };
          curve1.Add(new TimeProfileXValue(1), new TimeProfileYValue {Y = 10});
          curve1.Add(new TimeProfileXValue(2), new TimeProfileYValue {LowerValue = 20, UpperValue = 30});
          pane1.AddCurve(curve1);
 
-         var curve2 = new CurveData<TimeProfileXValue, TimeProfileYValue> {Caption = "Kidney"};
+         var curve2 = new CurveData<TimeProfileXValue, TimeProfileYValue> {Caption = "Kidney", YDimension = concDimension };
          curve2.Add(new TimeProfileXValue(3), new TimeProfileYValue {Y = 40});
          pane2.AddCurve(curve2);
 
          _observedData = DomainHelperForSpecs.ObservedData();
          var displayPathMapper = A.Fake<IQuantityPathToQuantityDisplayPathMapper>();
          var dimensionRepository = A.Fake<IDimensionRepository>();
+         //we need to make sure we return a real dimension as this will be use to convert the values
+         A.CallTo(() => dimensionRepository.MergedDimensionFor(_observedData.FirstDataColumn())).Returns(concDimension);
          var observedDataMapper = new DataRepositoryToObservedCurveDataMapper(displayPathMapper, dimensionRepository);
          var observedDataCurves = observedDataMapper.MapFrom(_observedData, new ObservedDataCollection());
          observedDataCurves.Each(pane1.AddObservedCurve);

@@ -112,7 +112,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_0
 
       private void finalizeIndividual(Individual individual)
       {
-         var firstNeighborhood = individual?.Neighborhoods.GetChildren<INeighborhood>().FirstOrDefault();
+         var firstNeighborhood = individual?.Neighborhoods.GetChildren<Neighborhood>().FirstOrDefault();
          if (firstNeighborhood == null || firstNeighborhood.FirstNeighbor != null) return;
 
          _neighborhoodFinalizer.SetNeighborsIn(individual);

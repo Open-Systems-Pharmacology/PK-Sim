@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <Version>12.0.0</Version>
     <PackageVersion>12.0.0</PackageVersion>
@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="12.0.127" />
-    <PackageReference Include="OSPSuite.UI" Version="12.0.127" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.127" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.0.127" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.0.135" />
+    <PackageReference Include="OSPSuite.UI" Version="12.0.135" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.135" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.0.135" />
   </ItemGroup>
 
 </Project>

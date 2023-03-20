@@ -2,6 +2,7 @@ using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using PKSim.Core;
@@ -16,7 +17,7 @@ namespace PKSim.Presentation
    {
       protected Individual _individual;
       protected IExecutionContext _executionContext;
-      private IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
+      protected IIndividualMoleculeFactoryResolver _individualMoleculeFactoryResolver;
       protected IndividualMolecule _molecule;
       protected MoleculeExpressionContainer _moleculeContainer1;
       protected MoleculeExpressionContainer _moleculeContainer2;
@@ -52,9 +53,55 @@ namespace PKSim.Presentation
          sut = new MoleculeExpressionTask<Individual>(
             _executionContext,
             _individualMoleculeFactoryResolver,
-            _subjectExpressionTask, 
+            _subjectExpressionTask,
             _expressionProfileUpdater
-            );
+         );
+      }
+   }
+
+   public class When_adding_an_expression_profile_to_an_individual : concern_for_MoleculeExpressionTask
+   {
+      private ICommand _resultCommand;
+      private ExpressionProfile _expressionProfile;
+      private IIndividualMoleculeFactory _moleculeFactory;
+
+      protected override void Context()
+      {
+         base.Context();
+         _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _moleculeFactory = A.Fake<IIndividualMoleculeFactory>();
+         A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor(_expressionProfile.Molecule)).Returns(_moleculeFactory);
+      }
+
+      protected override void Because()
+      {
+         _resultCommand = sut.AddExpressionProfile(_individual, _expressionProfile);
+      }
+
+      [Observation]
+      public void should_create_a_new_molecule_base_on_the_expression_profile_type_and_add_it_to_the_individual()
+      {
+         A.CallTo(() => _moleculeFactory.AddMoleculeTo(_individual, _expressionProfile.MoleculeName)).MustHaveHappened();
+      }
+
+
+
+      [Observation]
+      public void should_ensure_that_expression_profile_and_simulation_subject_are_synchronized()
+      {
+         A.CallTo(() => _expressionProfileUpdater.SynchroniseSimulationSubjectWithExpressionProfile(_individual, _expressionProfile)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_the_expression_profile_to_the_individual()
+      {
+         _individual.AllExpressionProfiles().ShouldContain(_expressionProfile);
+      }
+
+      [Observation]
+      public void should_return_the_add_expression_profile_command()
+      {
+         _resultCommand.ShouldBeAnInstanceOf<AddMoleculeToIndividualCommand>();
       }
    }
 

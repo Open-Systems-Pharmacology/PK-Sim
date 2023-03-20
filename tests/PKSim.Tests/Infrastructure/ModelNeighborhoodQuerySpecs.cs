@@ -80,7 +80,7 @@ namespace PKSim.Infrastructure
    
    public class When_retrieving_some_neighborhoods_for_a_given_model_properties_that_wwere_not_defined_in_the_individual_but_were_marked_as_optional : concern_for_ModelNeighborhoodQuery
    {
-      private IEnumerable<INeighborhoodBuilder> _result;
+      private IEnumerable<NeighborhoodBuilder> _result;
 
       protected override void Context()
       {
@@ -102,11 +102,11 @@ namespace PKSim.Infrastructure
 
   
    
-   public class When_retrieving_some_neighborhoods_for_a_given_model_propertie_that_were_already_defined_in_the_individual : concern_for_ModelNeighborhoodQuery
+   public class When_retrieving_some_neighborhoods_for_a_given_model_properties_that_were_already_defined_in_the_individual : concern_for_ModelNeighborhoodQuery
    {
-      private IEnumerable<INeighborhoodBuilder> _result;
+      private IEnumerable<NeighborhoodBuilder> _result;
       private FlatNeighborhood _flatNeighborhood;
-      private INeighborhoodBuilder _neighborhoodBuilder;
+      private NeighborhoodBuilder _neighborhoodBuilder;
       private IContainer _individualNeighborhoods;
 
       protected override void Context()
@@ -114,7 +114,7 @@ namespace PKSim.Infrastructure
          base.Context();
          _individualNeighborhoods = new Container();
          _individualNeighborhoods.Add(new Container().WithName(_flatNeighborhoodFor3Comp.Name));
-         _neighborhoodBuilder = A.Fake<INeighborhoodBuilder>();
+         _neighborhoodBuilder = A.Fake<NeighborhoodBuilder>();
          _flatNeighborhood = new FlatNeighborhood { Name = "tralala" };
          _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED;
          A.CallTo(() => _neighborhoodRepository.NeighborhoodFrom(_flatNeighborhoodFor3Comp.Id)).Returns(_flatNeighborhood);
