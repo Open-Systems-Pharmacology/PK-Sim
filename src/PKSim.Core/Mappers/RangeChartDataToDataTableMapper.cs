@@ -3,7 +3,6 @@ using System.Data;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
-using OSPSuite.Utility.Extensions;
 using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core.Mappers

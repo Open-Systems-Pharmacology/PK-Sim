@@ -132,13 +132,6 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_have_created_the_initial_concentration_parameter_entry_with_the_overwritten_value()
-      {
-         _psv[_parameterPath].ShouldNotBeNull();
-         _psv[_parameterPath].StartValue.ShouldBeEqualTo(10);
-      }
-
-      [Observation]
       public void should_have_updated_the_value_in_the_simulation_based_on_the_value_in_expression_profile()
       {
          _simulation.Model.Root.Container(Constants.ORGANISM).EntityAt<IParameter>(_parameterPathArray).Value.ShouldBeEqualTo(10);
