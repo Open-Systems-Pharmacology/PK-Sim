@@ -138,9 +138,6 @@ namespace PKSim.Core.Model
          }
       }
 
-      protected override ISpatialStructure CreateSpatialStructure()
-      {
-         return _objectBaseFactory.Create<IPKSimSpatialStructure>();
-      }
+      protected override ISpatialStructure CreateSpatialStructure() => _objectBaseFactory.Create<IPKSimSpatialStructure>();
    }
 }

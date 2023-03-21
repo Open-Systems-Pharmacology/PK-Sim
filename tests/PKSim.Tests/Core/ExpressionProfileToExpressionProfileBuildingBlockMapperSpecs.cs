@@ -5,9 +5,12 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
+using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Core
 {
@@ -20,6 +23,7 @@ namespace PKSim.Core
       protected ExpressionProfileBuildingBlock _result;
       private IApplicationConfiguration _applicationConfiguration;
       private ILazyLoadTask _lazyLoadTask;
+      private ICloner _cloner;
 
       protected override void Context()
       {
@@ -27,10 +31,14 @@ namespace PKSim.Core
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _objectPathFactory = new EntityPathResolverForSpecs();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
+         _cloner= A.Fake<ICloner>();
+         //cloning formula always returns the same formula for testing
+         A.CallTo(() => _cloner.Clone(A<IFormula>._)).ReturnsLazily(x => x.GetArgument<IFormula>(0));
+
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).ReturnsLazily(() => new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _cloner);
       }
    }
 

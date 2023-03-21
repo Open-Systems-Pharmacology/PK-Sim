@@ -35,9 +35,15 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
 
-      public MoBiExportTask(ISimulationConfigurationTask simulationConfigurationTask, ISimulationToModelCoreSimulationMapper simulationMapper,
-         IRepresentationInfoRepository representationInfoRepository, IPKSimConfiguration configuration,
-         ILazyLoadTask lazyLoadTask, IDialogCreator dialogCreator, ISimulationPersistor simulationPersistor, IProjectRetriever projectRetriever,
+      public MoBiExportTask(
+         ISimulationConfigurationTask simulationConfigurationTask, 
+         ISimulationToModelCoreSimulationMapper simulationMapper,
+         IRepresentationInfoRepository representationInfoRepository, 
+         IPKSimConfiguration configuration,
+         ILazyLoadTask lazyLoadTask, 
+         IDialogCreator dialogCreator, 
+         ISimulationPersistor simulationPersistor, 
+         IProjectRetriever projectRetriever,
          IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
@@ -163,14 +169,7 @@ namespace PKSim.Infrastructure.Services
 
       private void updateRepresentationInfo(IModelCoreSimulation moBiSimulation)
       {
-         //TODO. That should be done better I think. Can we accept a global visitor?
-         //moBiSimulation.Configuration.AcceptVisitor(this)?;
-         moBiSimulation.Configuration.SpatialStructure.AcceptVisitor(this);
-         moBiSimulation.Configuration.Reactions.AcceptVisitor(this);
-         moBiSimulation.Configuration.Molecules.AcceptVisitor(this);
-         moBiSimulation.Configuration.PassiveTransports.AcceptVisitor(this);
-         moBiSimulation.Configuration.Observers.AcceptVisitor(this);
-         moBiSimulation.Configuration.EventGroups.AcceptVisitor(this);
+         moBiSimulation.Configuration.AcceptVisitor(this);
          moBiSimulation.Model.AcceptVisitor(this);
       }
 

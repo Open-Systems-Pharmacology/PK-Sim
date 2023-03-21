@@ -5,12 +5,15 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Extensions;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
 {
@@ -23,6 +26,7 @@ namespace PKSim.Presentation
       private EntityPathResolverForSpecs _objectPathFactory;
       private ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
       private static CalculationMethodCategory _category1;
+      private ICloner _cloner;
 
       protected override void Context()
       {
@@ -31,26 +35,42 @@ namespace PKSim.Presentation
          _applicationConfiguration = new PKSimConfiguration();
          _objectPathFactory = new EntityPathResolverForSpecs();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         _cloner = A.Fake<ICloner>();
+
+         //cloning formula always returns the same formula for testing
+         A.CallTo(() => _cloner.Clone(A<IFormula>._)).ReturnsLazily(x => x.GetArgument<IFormula>(0));
+
          var representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
-         A.CallTo(() => representationInfoRepository.InfoFor(A<RepresentationObjectType>._, A<string>._)).Returns(new RepresentationInfo { DisplayName = "displayName" });
+         A.CallTo(representationInfoRepository).WithReturnType<RepresentationInfo>().Returns(new RepresentationInfo {DisplayName = "displayName"});
 
          _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
-         updateOriginDataForTest(_individual.OriginData);
+         updateIndividualForTest(_individual);
 
          A.CallTo(() => _objectBaseFactory.Create<IndividualBuildingBlock>()).Returns(new IndividualBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<IndividualParameter>()).Returns(new IndividualParameter());
-         sut = new IndividualToIndividualBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, representationInfoRepository, _calculationMethodCategoryRepository);
+         sut = new IndividualToIndividualBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, representationInfoRepository, _calculationMethodCategoryRepository, _cloner);
       }
 
-      private void updateOriginDataForTest(OriginData originData)
-      {
+      private void updateIndividualForTest(Individual individual)
+      { //add a parameter with a formula starting with ROOT so that we can test that this is being dealt with properly
+         var parameterWithFormula = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName("FormulaParameter");
+         parameterWithFormula.Formula = new ExplicitFormula("P2").WithName("FormulaParameterFormula");
+         parameterWithFormula.Formula.AddObjectPath(new FormulaUsablePath("ROOT", "ORGANISM", "P2").WithAlias("P2"));
+
+         //for this formula, we return a real one to make sure we have actually changed the ROOT
+         var cloneFormula  = new ExplicitFormula("P2").WithName("FormulaParameterFormula");
+         cloneFormula.AddObjectPath(new FormulaUsablePath("ROOT", "ORGANISM", "P2").WithAlias("P2"));
+
+         A.CallTo(() => _cloner.Clone(parameterWithFormula.Formula)).Returns(cloneFormula);
+         individual.Organism.Add(parameterWithFormula);
+
+         var originData = individual.OriginData;
          originData.Gender.DisplayName = originData.Gender.Name;
          originData.Population.DisplayName = originData.Population.Name;
          originData.Age = new OriginDataParameter(1, "year", "Age");
          originData.GestationalAge = new OriginDataParameter(52, "weeks", "Gestational Age");
 
          _category1 = new CalculationMethodCategory();
-
 
          var calculationMethod = new CalculationMethod
          {
@@ -113,6 +133,14 @@ namespace PKSim.Presentation
 
          _buildingBlock.OriginData.AllDataItems.Count(x => x.Name.Equals("displayName")).ShouldBeEqualTo(1);
          _buildingBlock.OriginData.AllDataItems.Count.ShouldBeEqualTo(8);
+      }
+
+      [Observation]
+      public void should_have_replaced_the_ROOT_key_element_path_in_all_formula()
+      {
+         var formula = _buildingBlock.FormulaCache.FindByName("FormulaParameterFormula");
+         formula.ObjectPaths.Count.ShouldBeEqualTo(1);
+         formula.ObjectPaths[0].ToPathString().ShouldBeEqualTo("ORGANISM|P2");
       }
    }
 }

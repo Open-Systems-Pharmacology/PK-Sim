@@ -8,6 +8,8 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Core.Mappers
 {
@@ -21,7 +23,7 @@ namespace PKSim.Core.Mappers
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
 
       public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration,
-         ILazyLoadTask lazyLoadTask, IRepresentationInfoRepository representationInfoRepository, ICalculationMethodCategoryRepository calculationMethodCategoryRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask)
+         ILazyLoadTask lazyLoadTask, IRepresentationInfoRepository representationInfoRepository, ICalculationMethodCategoryRepository calculationMethodCategoryRepository, ICloner cloner) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, cloner)
       {
          _representationInfoRepository = representationInfoRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
@@ -32,25 +34,25 @@ namespace PKSim.Core.Mappers
          return individual.GetAllChildren<IParameter>().Where(x => x.GroupName != CoreConstants.Groups.RELATIVE_EXPRESSION).ToList();
       }
 
-      public override IndividualBuildingBlock MapFrom(Individual input)
+      public override IndividualBuildingBlock MapFrom(Individual individual)
       {
-         var buildingBlock = base.MapFrom(input);
-         buildingBlock.Icon = input.Icon;
+         var buildingBlock = base.MapFrom(individual);
+         buildingBlock.Icon = individual.Icon;
 
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.DiseaseState, input.OriginData.DiseaseState?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Species, input.Species?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Gender, input.OriginData.Gender?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Age, input.OriginData.Age);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.GestationalAge, input.OriginData.GestationalAge);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Height, input.OriginData.Height);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.BMI, input.OriginData.BMI);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Weight, input.OriginData.Weight);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.DiseaseState, individual.OriginData.DiseaseState?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Species, individual.Species?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Gender, individual.OriginData.Gender?.DisplayName);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Age, individual.OriginData.Age);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.GestationalAge, individual.OriginData.GestationalAge);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Height, individual.OriginData.Height);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.BMI, individual.OriginData.BMI);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Weight, individual.OriginData.Weight);
+         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Population, individual.OriginData.Population?.DisplayName);
 
-         input.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, input.Species))
+         individual.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, individual.Species))
             .Each(x => addCalculationMethodOriginDataToBuildingBlock(buildingBlock, x));
 
-         buildingBlock.OriginData.ValueOrigin = input.OriginData.ValueOrigin.Clone();
+         buildingBlock.OriginData.ValueOrigin = individual.OriginData.ValueOrigin.Clone();
 
          return buildingBlock;
       }
@@ -79,7 +81,7 @@ namespace PKSim.Core.Mappers
          if (string.IsNullOrEmpty(value))
             return;
 
-         buildingBlock.OriginData.AddOriginDataItem(new OriginDataItem { Name = key, Value = value });
+         buildingBlock.OriginData.AddOriginDataItem(new OriginDataItem {Name = key, Value = value});
       }
    }
 }

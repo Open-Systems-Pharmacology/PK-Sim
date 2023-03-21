@@ -289,7 +289,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_set_negative_values_allowed_true_to_predefined_compartments_and_molecules()
       {
-         var msv = _simulationConfiguration.MoleculeStartValuesCollection[0];
+         var msv = _simulationConfiguration.MoleculeStartValues;
          var moleculesWithAllowedNegativeValues = (from molecule in msv
             where molecule.NegativeValuesAllowed
             select molecule).ToList();

@@ -5,6 +5,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
+using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Core.Mappers
 {
@@ -14,8 +16,8 @@ namespace PKSim.Core.Mappers
 
    public class ExpressionProfileToExpressionProfileBuildingBlockMapper : PathAndValueBuildingBlockMapper<ExpressionProfile, ExpressionProfileBuildingBlock, ExpressionParameter>, IExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration, ILazyLoadTask lazyLoadTask) :
-         base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask)
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration, ILazyLoadTask lazyLoadTask, ICloner cloner) :
+         base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, cloner)
       {
       }
 

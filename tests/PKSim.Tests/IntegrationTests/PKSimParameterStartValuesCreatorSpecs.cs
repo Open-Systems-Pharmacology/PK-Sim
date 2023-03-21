@@ -66,7 +66,7 @@ namespace PKSim.IntegrationTests
          parameter.Value = 10;
          _parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         _psv = simulationConfiguration.ParameterStartValuesCollection[0];
+         _psv = simulationConfiguration.ParameterStartValues;
       }
 
       [Observation]

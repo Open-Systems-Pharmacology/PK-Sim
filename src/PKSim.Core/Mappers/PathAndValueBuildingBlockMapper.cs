@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -6,31 +7,45 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
+using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Core.Mappers
 {
-   public interface IPathAndValueBuildingBlockMapper<in T, out TBuildingBlock> : IMapper<T, TBuildingBlock>
+   public interface IPathAndValueBuildingBlockMapper<in TPKSimBuildingBlock, out TBuildingBlock> : IMapper<TPKSimBuildingBlock, TBuildingBlock>
    {
    }
 
-   public abstract class PathAndValueBuildingBlockMapper<T, TBuildingBlock, TBuilder> : IPathAndValueBuildingBlockMapper<T, TBuildingBlock> where T : PKSimBuildingBlock where TBuildingBlock : PathAndValueEntityBuildingBlockFromPKSim<TBuilder> where TBuilder : PathAndValueEntity
+   public abstract class PathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock, TBuilder> : IPathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock> where TPKSimBuildingBlock : PKSimBuildingBlock where TBuildingBlock : PathAndValueEntityBuildingBlockFromPKSim<TBuilder>
+      where TBuilder : PathAndValueEntity
    {
       protected IObjectBaseFactory _objectBaseFactory;
       protected IEntityPathResolver _entityPathResolver;
       protected IApplicationConfiguration _applicationConfiguration;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly ICloner _cloner;
+
+      //Cache used to store all formula that can be cached. This is required to avoid having the same formula defined multiple times in the building block
+      //note that a clone of the original formula is added to the cache so that it can be modified if required
       private readonly Cache<string, IFormula> _formulaCache = new Cache<string, IFormula>(x => x.Name);
 
-      protected PathAndValueBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration, ILazyLoadTask lazyLoadTask)
+      protected PathAndValueBuildingBlockMapper(
+         IObjectBaseFactory objectBaseFactory,
+         IEntityPathResolver entityPathResolver,
+         IApplicationConfiguration applicationConfiguration,
+         ILazyLoadTask lazyLoadTask,
+         ICloner cloner)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
          _applicationConfiguration = applicationConfiguration;
          _lazyLoadTask = lazyLoadTask;
+         _cloner = cloner;
       }
 
-      protected TBuildingBlock CreateBaseObject(T pkSimBuildingBlock)
+      protected TBuildingBlock CreateBaseObject(TPKSimBuildingBlock pkSimBuildingBlock)
       {
          var buildingBlock = _objectBaseFactory.Create<TBuildingBlock>();
 
@@ -43,12 +58,16 @@ namespace PKSim.Core.Mappers
       private TBuilder mapBuilderParameter(IParameter parameter)
       {
          var builderParameter = _objectBaseFactory.Create<TBuilder>();
+         builderParameter.Name = parameter.Name;
+         builderParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
+         builderParameter.Dimension = parameter.Dimension;
+         builderParameter.DisplayUnit = parameter.DisplayUnit;
 
          // Add the formula to the building block formula cache if the formula can be cached
          if (isFormulaCachable(parameter))
          {
             if (!_formulaCache.Contains(parameter.Formula.Name))
-               _formulaCache.Add(parameter.Formula);
+               _formulaCache.Add(cloneFormulaForExport(parameter));
 
             // If the parameter value is different from the default value, set the value only and not the formula
             // If the parameter value is not different from the default, set the formula only and not the value
@@ -63,12 +82,14 @@ namespace PKSim.Core.Mappers
             builderParameter.Value = getParameterValue(parameter);
          }
 
-         builderParameter.Name = parameter.Name;
-
-         builderParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
-         builderParameter.Dimension = parameter.Dimension;
-         builderParameter.DisplayUnit = parameter.DisplayUnit;
          return builderParameter;
+      }
+
+      private IFormula cloneFormulaForExport(IParameter parameter)
+      {
+         var cloneFormula = _cloner.Clone(parameter.Formula);
+         cloneFormula.ObjectPaths.Each(x => x.Remove(Constants.ROOT));
+         return cloneFormula;
       }
 
       private static bool isFormulaCachable(IParameter parameter)
@@ -81,30 +102,23 @@ namespace PKSim.Core.Mappers
          return parameter.TryGetValue().value;
       }
 
-      protected void MapAllParameters(T sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
+      protected void MapAllParameters(TPKSimBuildingBlock sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
       {
-         var allParameters = AllParametersFor(sourcePKSimBuildingBlock);
+         var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(mapBuilderParameter);
+         allBuilderParameters.Each(buildingBlock.Add);
 
-         foreach (var parameter in allParameters)
-         {
-            var builderParameter = mapBuilderParameter(parameter);
-            buildingBlock.Add(builderParameter);
-         }
-
-         foreach (var formula in _formulaCache)
-         {
-            buildingBlock.FormulaCache.Add(formula);
-         }
+         //Formula cache already contains a clone of all formula. We can add as is
+         _formulaCache.Each(buildingBlock.FormulaCache.Add);
       }
 
-      protected abstract IReadOnlyList<IParameter> AllParametersFor(T sourcePKSimBuildingBlock);
+      protected abstract IReadOnlyList<IParameter> AllParametersFor(TPKSimBuildingBlock sourcePKSimBuildingBlock);
 
-      public virtual TBuildingBlock MapFrom(T input)
+      public virtual TBuildingBlock MapFrom(TPKSimBuildingBlock pkSimBuildingBlock)
       {
-         _lazyLoadTask.Load(input);
+         _lazyLoadTask.Load(pkSimBuildingBlock);
 
-         var buildingBlock = CreateBaseObject(input);
-         MapAllParameters(input, buildingBlock);
+         var buildingBlock = CreateBaseObject(pkSimBuildingBlock);
+         MapAllParameters(pkSimBuildingBlock, buildingBlock);
          return buildingBlock;
       }
    }

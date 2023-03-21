@@ -119,7 +119,7 @@ namespace PKSim.Core.Services
       {
          var spatialStructure = simulationConfiguration.SpatialStructure;
          //We have only one in PK-Sim
-         var parameterStartValueBuildingBlock = simulationConfiguration.ParameterStartValuesCollection.First();
+         var parameterStartValueBuildingBlock = simulationConfiguration.ParameterStartValues;
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
          var ageParameter = organism.Parameter(CoreConstants.Parameters.AGE);
          var minToYearFactor = _timeDimension.BaseUnitValueToUnitValue(_yearUnit, 1);
@@ -199,7 +199,7 @@ namespace PKSim.Core.Services
       private void createOntogenyTableParameters(SimulationConfiguration simulationConfiguration)
       {
          var simulationPopulation = _simulation as PopulationSimulation;
-         var parameterStartValueBuildingBlock = simulationConfiguration.ParameterStartValuesCollection.First();
+         var parameterStartValueBuildingBlock = simulationConfiguration.ParameterStartValues;
          foreach (var molecule in _baseIndividual.AllMolecules().Where(m => m.Ontogeny.IsDefined()))
          {
             var ontogenyFactorPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorParameter);

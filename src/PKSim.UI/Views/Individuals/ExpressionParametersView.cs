@@ -350,7 +350,7 @@ namespace PKSim.UI.Views.Individuals
             _gridView.AdjustAppearance(e, isEnabled: false);
 
          else if (_presenter.IsSetByUser(parameterDTO))
-            _gridView.AdjustAppearance(e, PKSimColors.Changed, e.Appearance.ForeColor);
+            _gridView.AdjustAppearance(e, PKSimColors.Changed);
 
          else
             e.CombineAppearance(_gridView.Appearance.Row);
