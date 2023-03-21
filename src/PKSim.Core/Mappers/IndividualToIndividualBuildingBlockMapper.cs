@@ -6,13 +6,10 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.DTO.Mappers;
 
-namespace PKSim.Presentation.Mappers
+namespace PKSim.Core.Mappers
 {
    public interface IIndividualToIndividualBuildingBlockMapper : IPathAndValueBuildingBlockMapper<Individual, IndividualBuildingBlock>
    {
@@ -20,13 +17,13 @@ namespace PKSim.Presentation.Mappers
 
    public class IndividualToIndividualBuildingBlockMapper : PathAndValueBuildingBlockMapper<Individual, IndividualBuildingBlock, IndividualParameter>, IIndividualToIndividualBuildingBlockMapper
    {
-      private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
+      private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
 
       public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration,
-         ILazyLoadTask lazyLoadTask, ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper, ICalculationMethodCategoryRepository calculationMethodCategoryRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask)
+         ILazyLoadTask lazyLoadTask, IRepresentationInfoRepository representationInfoRepository, ICalculationMethodCategoryRepository calculationMethodCategoryRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask)
       {
-         _calculationMethodDTOMapper = calculationMethodDTOMapper;
+         _representationInfoRepository = representationInfoRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
       }
 
@@ -50,12 +47,18 @@ namespace PKSim.Presentation.Mappers
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Weight, input.OriginData.Weight);
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Population, input.OriginData.Population?.DisplayName);
 
-         input.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, input.Species)).MapAllUsing(_calculationMethodDTOMapper)
-            .Each(x => addOriginDataToBuildingBlock(buildingBlock, x.DisplayName, x.CategoryItem.DisplayName));
+         input.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, input.Species))
+            .Each(x => addCalculationMethodOriginDataToBuildingBlock(buildingBlock, x));
 
          buildingBlock.OriginData.ValueOrigin = input.OriginData.ValueOrigin.Clone();
 
          return buildingBlock;
+      }
+
+      private void addCalculationMethodOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, CalculationMethod calculationMethod)
+      {
+         var repInfo = _representationInfoRepository.InfoFor(RepresentationObjectType.CATEGORY, calculationMethod.Category);
+         addOriginDataToBuildingBlock(buildingBlock, repInfo.DisplayName, calculationMethod.Category);
       }
 
       private void addOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, string key, OriginDataParameter parameter)
@@ -76,7 +79,7 @@ namespace PKSim.Presentation.Mappers
          if (string.IsNullOrEmpty(value))
             return;
 
-         buildingBlock.OriginData.AddOriginDataItem(new OriginDataItem {Name = key, Value = value});
+         buildingBlock.OriginData.AddOriginDataItem(new OriginDataItem { Name = key, Value = value });
       }
    }
 }

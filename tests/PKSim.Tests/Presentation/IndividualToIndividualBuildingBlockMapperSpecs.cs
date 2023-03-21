@@ -7,11 +7,10 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure;
-using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Mappers;
 
 namespace PKSim.Presentation
 {
@@ -21,7 +20,6 @@ namespace PKSim.Presentation
       private IObjectBaseFactory _objectBaseFactory;
       private IApplicationConfiguration _applicationConfiguration;
       private ILazyLoadTask _lazyLoadTask;
-      private ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
       private EntityPathResolverForSpecs _objectPathFactory;
       private ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
       private static CalculationMethodCategory _category1;
@@ -34,7 +32,6 @@ namespace PKSim.Presentation
          _objectPathFactory = new EntityPathResolverForSpecs();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          var representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
-         _calculationMethodDTOMapper = new CalculationMethodToCategoryCalculationMethodDTOMapper(representationInfoRepository);
          A.CallTo(() => representationInfoRepository.InfoFor(A<RepresentationObjectType>._, A<string>._)).Returns(new RepresentationInfo { DisplayName = "displayName" });
 
          _calculationMethodCategoryRepository = A.Fake<ICalculationMethodCategoryRepository>();
@@ -42,7 +39,7 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _objectBaseFactory.Create<IndividualBuildingBlock>()).Returns(new IndividualBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<IndividualParameter>()).Returns(new IndividualParameter());
-         sut = new IndividualToIndividualBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _calculationMethodDTOMapper, _calculationMethodCategoryRepository);
+         sut = new IndividualToIndividualBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, representationInfoRepository, _calculationMethodCategoryRepository);
       }
 
       private void updateOriginDataForTest(OriginData originData)
@@ -53,7 +50,7 @@ namespace PKSim.Presentation
          originData.GestationalAge = new OriginDataParameter(52, "weeks", "Gestational Age");
 
          _category1 = new CalculationMethodCategory();
-         
+
 
          var calculationMethod = new CalculationMethod
          {
@@ -74,14 +71,13 @@ namespace PKSim.Presentation
             Category = "category1",
          };
          calculationMethod.AddSpecies(_individual.Species.Name);
-         
+
          _category1.Add(calculationMethod);
 
          calculationMethod = new CalculationMethod
          {
             Category = "category2",
             Name = "calculationMethod1"
-            
          };
          originData.CalculationMethodCache.AddCalculationMethod(calculationMethod);
          originData.DiseaseState = new DiseaseState
