@@ -17,7 +17,7 @@ using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation
 {
-   public class concern_for_IndividualToIndividualBuildingBlockMapper : ContextSpecification<IndividualToIndividualBuildingBlockMapper>
+   public abstract class concern_for_IndividualToIndividualBuildingBlockMapper : ContextSpecification<IndividualToIndividualBuildingBlockMapper>
    {
       protected Individual _individual;
       private IObjectBaseFactory _objectBaseFactory;
@@ -52,13 +52,14 @@ namespace PKSim.Presentation
       }
 
       private void updateIndividualForTest(Individual individual)
-      { //add a parameter with a formula starting with ROOT so that we can test that this is being dealt with properly
+      {
+         //add a parameter with a formula starting with ROOT so that we can test that this is being dealt with properly
          var parameterWithFormula = DomainHelperForSpecs.ConstantParameterWithValue(0).WithName("FormulaParameter");
          parameterWithFormula.Formula = new ExplicitFormula("P2").WithName("FormulaParameterFormula");
          parameterWithFormula.Formula.AddObjectPath(new FormulaUsablePath("ROOT", "ORGANISM", "P2").WithAlias("P2"));
 
          //for this formula, we return a real one to make sure we have actually changed the ROOT
-         var cloneFormula  = new ExplicitFormula("P2").WithName("FormulaParameterFormula");
+         var cloneFormula = new ExplicitFormula("P2").WithName("FormulaParameterFormula");
          cloneFormula.AddObjectPath(new FormulaUsablePath("ROOT", "ORGANISM", "P2").WithAlias("P2"));
 
          A.CallTo(() => _cloner.Clone(parameterWithFormula.Formula)).Returns(cloneFormula);

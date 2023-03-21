@@ -87,18 +87,6 @@ namespace PKSim.IntegrationTests
          organism.Parameter(CoreConstants.Parameters.AGE_0).ShouldNotBeNull();
          organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR).ShouldNotBeNull();
       }
-
-      [Observation]
-      public void should_have_added_the_age_0_parameter_and_the_min_to_year_conversion_factor_to_the_parameter_start_values()
-      {
-         var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.AGE_0));
-         var minToYearFactorPath = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR));
-         var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: false, createAgingDataInSimulation: true);
-         var psv = simulationConfiguration.Module.ParameterStartValuesCollection.First();
-         psv[age0Path].ShouldNotBeNull();
-         psv[minToYearFactorPath].ShouldNotBeNull();
-      }
    }
 
    public class When_constructing_an_adult_population_simulation_aging : concern_for_DistributedParameterToTableParameterConverter<IndividualSimulation>

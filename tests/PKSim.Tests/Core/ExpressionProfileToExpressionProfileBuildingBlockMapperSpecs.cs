@@ -108,8 +108,8 @@ namespace PKSim.Core
       [Observation]
       public void resulting_expression_parameter_should_have_formula_or_value()
       {
-         _result.Count(x => x.Formula == null).ShouldBeEqualTo(2);
-         _result.Count(x => x.Formula != null).ShouldBeEqualTo(1);
+         _result.Count(x => x.Formula == null).ShouldBeEqualTo(1);
+         _result.Count(x => x.Formula != null).ShouldBeEqualTo(2);
       }
 
       [Observation]

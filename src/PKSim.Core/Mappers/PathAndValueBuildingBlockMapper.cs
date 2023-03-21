@@ -18,7 +18,17 @@ namespace PKSim.Core.Mappers
    {
    }
 
-   public abstract class PathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock, TBuilder> : IPathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock> where TPKSimBuildingBlock : PKSimBuildingBlock where TBuildingBlock : PathAndValueEntityBuildingBlockFromPKSim<TBuilder>
+   public interface IPathAndValueBuildingBlockMapper<in TPKSimBuildingBlock, out TBuildingBlock, out TBuilder> : IPathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock>
+   {
+      /// <summary>
+      /// Map the parameter to the underlying builder parameter.
+      /// Note that formula or value will not be set. Only common parameter properties
+      /// </summary>
+      TBuilder MapParameter(IParameter parameter);
+   }
+
+   public abstract class PathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock, TBuilder> : IPathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock, TBuilder> where TPKSimBuildingBlock : PKSimBuildingBlock
+      where TBuildingBlock : PathAndValueEntityBuildingBlockFromPKSim<TBuilder>
       where TBuilder : PathAndValueEntity
    {
       protected IObjectBaseFactory _objectBaseFactory;
@@ -48,41 +58,61 @@ namespace PKSim.Core.Mappers
       protected TBuildingBlock CreateBaseObject(TPKSimBuildingBlock pkSimBuildingBlock)
       {
          var buildingBlock = _objectBaseFactory.Create<TBuildingBlock>();
-
          buildingBlock.Name = pkSimBuildingBlock.Name;
          buildingBlock.PKSimVersion = _applicationConfiguration.Version;
          buildingBlock.Description = pkSimBuildingBlock.Description;
          return buildingBlock;
       }
 
-      private TBuilder mapBuilderParameter(IParameter parameter)
+      public virtual TBuilder MapParameter(IParameter parameter)
       {
          var builderParameter = _objectBaseFactory.Create<TBuilder>();
          builderParameter.Name = parameter.Name;
          builderParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
          builderParameter.Dimension = parameter.Dimension;
          builderParameter.DisplayUnit = parameter.DisplayUnit;
+         return builderParameter;
+      }
+
+      private TBuilder mapBuilderParameter(IParameter parameter)
+      {
+         var builderParameter = MapParameter(parameter);
 
          // Add the formula to the building block formula cache if the formula can be cached
-         if (isFormulaCachable(parameter))
-         {
-            if (!_formulaCache.Contains(parameter.Formula.Name))
-               _formulaCache.Add(cloneFormulaForExport(parameter));
+         var parameterValue = getParameterValue(parameter);
+         var valueChanged = parameter.ValueDiffersFromDefault();
 
-            // If the parameter value is different from the default value, set the value only and not the formula
-            // If the parameter value is not different from the default, set the formula only and not the value
-            // Even if the formula is not be used by the builder parameter, the cache will have the formula available
-            if (parameter.ValueDiffersFromDefault())
-               builderParameter.Value = getParameterValue(parameter);
-            else
-               builderParameter.Formula = _formulaCache[parameter.Formula.Name];
-         }
-         else
+         switch (parameter.Formula)
          {
-            builderParameter.Value = getParameterValue(parameter);
-         }
+            case ConstantFormula _:
+               builderParameter.Value = parameterValue;
+               return builderParameter;
 
-         return builderParameter;
+            case DistributionFormula _:
+
+               //formula and did not change. Do not return
+               if (!valueChanged)
+                  return null;
+
+               builderParameter.Value = parameterValue;
+               return builderParameter;
+
+            default:
+               if (isFormulaCachable(parameter))
+               {
+                  if (!_formulaCache.Contains(parameter.Formula.Name))
+                     _formulaCache.Add(cloneFormulaForExport(parameter));
+
+                  //Set the formula no matter what
+                  builderParameter.Formula = _formulaCache[parameter.Formula.Name];
+               }
+
+               // Only set the value of the parameter using a formula if it was indeed set
+               if (valueChanged)
+                  builderParameter.Value = parameterValue;
+
+               return builderParameter;
+         }
       }
 
       private IFormula cloneFormulaForExport(IParameter parameter)
@@ -105,7 +135,7 @@ namespace PKSim.Core.Mappers
       protected void MapAllParameters(TPKSimBuildingBlock sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
       {
          var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(mapBuilderParameter);
-         allBuilderParameters.Each(buildingBlock.Add);
+         allBuilderParameters.Where(x => x != null).Each(buildingBlock.Add);
 
          //Formula cache already contains a clone of all formula. We can add as is
          _formulaCache.Each(buildingBlock.FormulaCache.Add);

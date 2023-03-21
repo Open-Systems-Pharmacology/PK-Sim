@@ -13,6 +13,7 @@ using OSPSuite.Core.Maths.Statistics;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Extensions;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
@@ -47,9 +48,8 @@ namespace PKSim.Core.Services
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly IInterpolation _interpolation;
-      private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
-      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IGenderRepository _genderRepository;
+      private readonly IIndividualToIndividualBuildingBlockMapper _individualBuildingBlockMapper;
       private readonly IDimension _timeDimension;
       private readonly Unit _yearUnit;
       private Simulation _simulation;
@@ -69,9 +69,9 @@ namespace PKSim.Core.Services
          IOntogenyRepository ontogenyRepository,
          IFullPathDisplayResolver fullPathDisplayResolver,
          IInterpolation interpolation,
-         IParameterStartValuesCreator parameterStartValuesCreator,
-         IObjectPathFactory objectPathFactory,
-         IGenderRepository genderRepository)
+         IGenderRepository genderRepository,
+         IIndividualToIndividualBuildingBlockMapper individualBuildingBlockMapper
+      )
       {
          _formulaFactory = formulaFactory;
          _entityPathResolver = entityPathResolver;
@@ -82,9 +82,8 @@ namespace PKSim.Core.Services
          _ontogenyRepository = ontogenyRepository;
          _fullPathDisplayResolver = fullPathDisplayResolver;
          _interpolation = interpolation;
-         _parameterStartValuesCreator = parameterStartValuesCreator;
-         _objectPathFactory = objectPathFactory;
          _genderRepository = genderRepository;
+         _individualBuildingBlockMapper = individualBuildingBlockMapper;
          _timeDimension = dimensionRepository.Time;
          _yearUnit = _timeDimension.Unit(dimensionRepository.AgeInYears.BaseUnit.Name);
       }
@@ -118,8 +117,6 @@ namespace PKSim.Core.Services
       private void updateAgeParameter(SimulationConfiguration simulationConfiguration)
       {
          var spatialStructure = simulationConfiguration.SpatialStructure;
-         //We have only one in PK-Sim
-         var parameterStartValueBuildingBlock = simulationConfiguration.ParameterStartValues;
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
          var ageParameter = organism.Parameter(CoreConstants.Parameters.AGE);
          var minToYearFactor = _timeDimension.BaseUnitValueToUnitValue(_yearUnit, 1);
@@ -135,27 +132,6 @@ namespace PKSim.Core.Services
 
          var formula = _formulaFactory.AgeFormulaFor(age0Parameter, minToYearFactorParameter);
          updateConstantParameterToFormula(ageParameter, formula, simulationConfiguration);
-         addNewParametersToParameterStartValues(parameterStartValueBuildingBlock, age0Parameter, minToYearFactorParameter);
-      }
-
-      private void addNewParametersToParameterStartValues(ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, IParameter age0Parameter, IParameter minToYearFactorParameter)
-      {
-         addParameterToParameterStartValues(parameterStartValuesBuildingBlock, age0Parameter);
-         addParameterToParameterStartValues(parameterStartValuesBuildingBlock, minToYearFactorParameter);
-      }
-
-      private ParameterStartValue createParameterStartValue(IParameter parameter)
-      {
-         var path = _objectPathFactory.CreateAbsoluteObjectPath(parameter);
-         var psv = _parameterStartValuesCreator.CreateParameterStartValue(path, parameter);
-         return psv;
-      }
-
-      private ParameterStartValue addParameterToParameterStartValues(ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, IParameter parameter)
-      {
-         var psv = createParameterStartValue(parameter);
-         parameterStartValuesBuildingBlock[psv.Path] = psv;
-         return psv;
       }
 
       private void createSpatialStructureTableParameters(SimulationConfiguration simulationConfiguration)
@@ -199,13 +175,12 @@ namespace PKSim.Core.Services
       private void createOntogenyTableParameters(SimulationConfiguration simulationConfiguration)
       {
          var simulationPopulation = _simulation as PopulationSimulation;
-         var parameterStartValueBuildingBlock = simulationConfiguration.ParameterStartValues;
          foreach (var molecule in _baseIndividual.AllMolecules().Where(m => m.Ontogeny.IsDefined()))
          {
             var ontogenyFactorPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorParameter);
             var ontogenyFactorGIPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorGIParameter);
-            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorParameter, parameterStartValueBuildingBlock, molecule);
-            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorGIParameter, parameterStartValueBuildingBlock, molecule);
+            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorParameter, simulationConfiguration, molecule);
+            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorGIParameter, simulationConfiguration, molecule);
 
             createPopulationOntogenyTableParameter(molecule.OntogenyFactorParameter, ontogenyFactorPath, molecule, simulationPopulation);
             createPopulationOntogenyTableParameter(molecule.OntogenyFactorGIParameter, ontogenyFactorGIPath, molecule, simulationPopulation);
@@ -232,18 +207,18 @@ namespace PKSim.Core.Services
 
       private void createParameterValueVersionOntogenyTableParameter(
          IParameter ontogenyFactorParameter,
-         ParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock,
+         SimulationConfiguration simulationConfiguration,
          IndividualMolecule molecule)
       {
-         var parameterStartValue = createParameterStartValue(ontogenyFactorParameter);
-
-         parameterStartValue.Formula = createOntogenyTableFormulaFrom(ontogenyFactorParameter, molecule.Ontogeny, _baseOriginData);
-         if (parameterStartValue.Formula == null)
+         var individual = simulationConfiguration.Individual;
+         var individualParameter = createIndividualParameter(ontogenyFactorParameter);
+         individualParameter.Formula = createOntogenyTableFormulaFrom(ontogenyFactorParameter, molecule.Ontogeny, _baseOriginData);
+         if (individualParameter.Formula == null)
             return;
 
-         parameterStartValue.StartValue = null;
-         parameterStartValuesBuildingBlock[parameterStartValue.Path] = parameterStartValue;
-         parameterStartValuesBuildingBlock.FormulaCache.Add(parameterStartValue.Formula);
+         individualParameter.Value = null;
+         individual[individualParameter.Path] = individualParameter;
+         individual.AddFormula(individualParameter.Formula);
       }
 
       private TableFormula createMoleculeOntogenyTableFormula(IParameter ontogenyFactor, OriginData originData, IReadOnlyList<Sample> allOntogenies)
@@ -616,18 +591,29 @@ namespace PKSim.Core.Services
          return _timeDimension.UnitValueToBaseUnitValue(_yearUnit, futureAge);
       }
 
-      private void updateConstantParameterToFormula(IParameter parameter, IFormula formula, SimulationConfiguration simulationConfiguration)
-      {
-         parameter.Formula = formula;
-         simulationConfiguration.SpatialStructure.AddFormula(formula);
-         removeParameterStartValueFor(parameter, simulationConfiguration.Module.ParameterStartValuesCollection);
-      }
+      private IndividualParameter createIndividualParameter(IParameter parameter) => _individualBuildingBlockMapper.MapParameter(parameter);
 
-      //TODO is this still required?
-      private void removeParameterStartValueFor(IParameter parameter, IReadOnlyList<ParameterStartValuesBuildingBlock> parameterStartValuesBuildingBlockCollection)
+      private IndividualParameter getOrCreateIndividualParameter(IParameter parameter, IndividualBuildingBlock individual)
       {
          var path = _entityPathResolver.ObjectPathFor(parameter);
-         parameterStartValuesBuildingBlockCollection.Each(x => x.Remove(path));
+         var individualParameter = individual[path];
+         if (individualParameter == null)
+         {
+            individualParameter = createIndividualParameter(parameter);
+            individual.Add(individualParameter);
+         }
+
+         return individualParameter;
+      }
+
+      private void updateConstantParameterToFormula(IParameter parameter, IFormula formula, SimulationConfiguration simulationConfiguration)
+      {
+         var individual = simulationConfiguration.Individual;
+         var individualParameter = getOrCreateIndividualParameter(parameter, individual);
+         individualParameter.Formula = formula;
+         //Ensures that value is null so that we do not override the formula
+         individualParameter.Value = null; 
+         individual.AddFormula(formula);
       }
 
       /// <summary>
