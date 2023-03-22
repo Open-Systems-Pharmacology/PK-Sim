@@ -30,10 +30,28 @@ namespace PKSim.Core.Services
 
       public ParameterStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation)
       {
-         //default default parameter start values matrix
-         _defaultStartValues = _objectBaseFactory.Create<ParameterStartValuesBuildingBlock>();
-         updateSimulationParameters(simulation);
-         return _defaultStartValues.WithName(simulation.Name);
+         try
+         {
+            //default default parameter start values matrix
+            _defaultStartValues = _objectBaseFactory.Create<ParameterStartValuesBuildingBlock>();
+            var individual = simulation.Individual;
+
+            //set the relative expression values for each molecule undefined molecule of the individual (other will be done in expression profile)
+            individual.AllUndefinedMolecules().Each(molecule => updateMoleculeParametersValues(molecule, individual));
+
+            updateSimulationParameters(simulation);
+            return _defaultStartValues.WithName(simulation.Name);
+         }
+         finally
+         {
+            _defaultStartValues = null;
+         }
+      }
+
+      private void updateMoleculeParametersValues(IndividualMolecule molecule, Individual individual)
+      {
+         var allMoleculeParameters = individual.AllMoleculeParametersFor(molecule);
+         allMoleculeParameters.Each(p => trySetValue(p));
       }
 
       private void updateSimulationParameters(Simulation simulation)
@@ -43,14 +61,10 @@ namespace PKSim.Core.Services
          if (simulation.Model == null)
             return;
 
+         //TODO: Ensure that the formula will not become a constant after clone
+         //THis was done with  psv.OverrideFormulaWithValue = false;
          var allSimulationParameters = simulation.Model.Root.GetAllChildren<IParameter>(isChangedSimulationParameter);
-         allSimulationParameters.Each(p =>
-         {
-            var psv = trySetValue(p);
-            //Ensure that the formula will not become a constant after clone
-            //TODO
-//            psv.OverrideFormulaWithValue = false;
-         });
+         allSimulationParameters.Each(p => trySetValue(p));
       }
 
       private bool isChangedSimulationParameter(IParameter parameter)

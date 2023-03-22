@@ -6,11 +6,9 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
-using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core.Mappers
 {
@@ -21,8 +19,8 @@ namespace PKSim.Core.Mappers
    public interface IPathAndValueBuildingBlockMapper<in TPKSimBuildingBlock, out TBuildingBlock, out TBuilder> : IPathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock>
    {
       /// <summary>
-      /// Map the parameter to the underlying builder parameter.
-      /// Note that formula or value will not be set. Only common parameter properties
+      ///    Map the parameter to the underlying builder parameter.
+      ///    Note that formula or value will not be set. Only common parameter properties
       /// </summary>
       TBuilder MapParameter(IParameter parameter);
    }
@@ -35,24 +33,24 @@ namespace PKSim.Core.Mappers
       protected IEntityPathResolver _entityPathResolver;
       protected IApplicationConfiguration _applicationConfiguration;
       private readonly ILazyLoadTask _lazyLoadTask;
-      private readonly ICloner _cloner;
 
       //Cache used to store all formula that can be cached. This is required to avoid having the same formula defined multiple times in the building block
       //note that a clone of the original formula is added to the cache so that it can be modified if required
-      private readonly Cache<string, IFormula> _formulaCache = new Cache<string, IFormula>(x => x.Name);
+      private readonly IFormulaCache _formulaCache = new BuildingBlockFormulaCache();
+      protected readonly IFormulaFactory _formulaFactory;
 
       protected PathAndValueBuildingBlockMapper(
          IObjectBaseFactory objectBaseFactory,
          IEntityPathResolver entityPathResolver,
          IApplicationConfiguration applicationConfiguration,
          ILazyLoadTask lazyLoadTask,
-         ICloner cloner)
+         IFormulaFactory formulaFactory)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
          _applicationConfiguration = applicationConfiguration;
          _lazyLoadTask = lazyLoadTask;
-         _cloner = cloner;
+         _formulaFactory = formulaFactory;
       }
 
       protected TBuildingBlock CreateBaseObject(TPKSimBuildingBlock pkSimBuildingBlock)
@@ -74,15 +72,16 @@ namespace PKSim.Core.Mappers
          return builderParameter;
       }
 
-      private TBuilder mapBuilderParameter(IParameter parameter)
+      private TBuilder mapBuilderParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock)
       {
          var builderParameter = MapParameter(parameter);
 
          // Add the formula to the building block formula cache if the formula can be cached
          var parameterValue = getParameterValue(parameter);
          var valueChanged = parameter.ValueDiffersFromDefault();
+         var formula = parameter.Formula;
 
-         switch (parameter.Formula)
+         switch (formula)
          {
             case ConstantFormula _:
                builderParameter.Value = parameterValue;
@@ -98,13 +97,10 @@ namespace PKSim.Core.Mappers
                return builderParameter;
 
             default:
-               if (isFormulaCachable(parameter))
+               if (formula.IsCachable())
                {
-                  if (!_formulaCache.Contains(parameter.Formula.Name))
-                     _formulaCache.Add(cloneFormulaForExport(parameter));
-
-                  //Set the formula no matter what
-                  builderParameter.Formula = _formulaCache[parameter.Formula.Name];
+                  var templateFormula = retrieveTemplateFormulaFromCache(parameter, pkSimBuildingBlock);
+                  builderParameter.Formula = templateFormula;
                }
 
                // Only set the value of the parameter using a formula if it was indeed set
@@ -115,17 +111,20 @@ namespace PKSim.Core.Mappers
          }
       }
 
-      private IFormula cloneFormulaForExport(IParameter parameter)
+      private IFormula retrieveTemplateFormulaFromCache(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock)
       {
-         var cloneFormula = _cloner.Clone(parameter.Formula);
-         cloneFormula.ObjectPaths.Each(x => x.Remove(Constants.ROOT));
-         return cloneFormula;
+         var formulaName = parameter.Formula.Name;
+         if (_formulaCache.Contains(formulaName))
+            return _formulaCache[formulaName];
+
+         //This will add the formula top the cache 
+         var templateFormula = TemplateFormulaFor(parameter, _formulaCache, pkSimBuildingBlock);
+         //We need to remove the ROOT keyword when exporting to PKML structure 
+         templateFormula?.ObjectPaths.Each(x => x.Remove(Constants.ROOT));
+         return templateFormula;
       }
 
-      private static bool isFormulaCachable(IParameter parameter)
-      {
-         return parameter.Formula != null && parameter.Formula.IsCachable();
-      }
+      protected abstract IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, TPKSimBuildingBlock pkSimBuildingBlock);
 
       private static double getParameterValue(IParameter parameter)
       {
@@ -134,7 +133,7 @@ namespace PKSim.Core.Mappers
 
       protected void MapAllParameters(TPKSimBuildingBlock sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
       {
-         var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(mapBuilderParameter);
+         var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(x=>mapBuilderParameter(x, sourcePKSimBuildingBlock));
          allBuilderParameters.Where(x => x != null).Each(buildingBlock.Add);
 
          //Formula cache already contains a clone of all formula. We can add as is

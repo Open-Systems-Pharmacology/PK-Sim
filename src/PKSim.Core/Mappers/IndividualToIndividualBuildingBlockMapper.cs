@@ -3,12 +3,14 @@ using System.Linq;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Core.Mappers
@@ -21,12 +23,39 @@ namespace PKSim.Core.Mappers
    {
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
+      private readonly IParameterQuery _parameterQuery;
 
-      public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration,
-         ILazyLoadTask lazyLoadTask, IRepresentationInfoRepository representationInfoRepository, ICalculationMethodCategoryRepository calculationMethodCategoryRepository, ICloner cloner) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, cloner)
+      public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory,
+         IEntityPathResolver entityPathResolver,
+         IApplicationConfiguration applicationConfiguration,
+         ILazyLoadTask lazyLoadTask,
+         IRepresentationInfoRepository representationInfoRepository,
+         ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
+         IFormulaFactory formulaFactory,
+         IParameterQuery parameterQuery) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory)
       {
          _representationInfoRepository = representationInfoRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
+         _parameterQuery = parameterQuery;
+      }
+
+      protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, Individual individual)
+      {
+         bool isMetaDataForParameter(ParameterMetaData p) => p.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(p.ParameterName, parameter.Name);
+
+
+         //for individual, the CM to use depends on the CM available in the origin data as well as the container where the parameter resides.
+         var calculationMethods = individual.OriginData.AllCalculationMethods().AllNames();
+
+         var parameterRate = _parameterQuery.ParameterRatesFor(parameter.ParentContainer, calculationMethods, isMetaDataForParameter).ToList();
+
+         //this is not possible?
+         if (parameterRate.Count != 1)
+            return null;
+
+         var cloneFormula = _formulaFactory.RateFor(parameterRate[0], formulaCache);
+         cloneFormula.ObjectPaths.Each(x => x.Remove(Constants.ROOT));
+         return cloneFormula;
       }
 
       protected override IReadOnlyList<IParameter> AllParametersFor(Individual individual)
