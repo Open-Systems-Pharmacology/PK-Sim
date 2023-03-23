@@ -43,7 +43,7 @@ namespace PKSim.Core.Services
 
       public T Clone<T>(T objectToClone) where T : class, IUpdatable
       {
-         //formula cache are never used in pksim explicitely. And if need, we access CloneManagerForBuildingBlock
+         //formula cache are never used in pksim explicitly. And if need, we access CloneManagerForBuildingBlock
          _cloneManagerForBuildingBlock.FormulaCache = new FormulaCache();
          return createClone(objectToClone, _cloneManagerForBuildingBlock);
       }

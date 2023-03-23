@@ -31,8 +31,8 @@ namespace PKSim.Core
          base.Context();
          _simulation = A.Fake<Simulation>();
          _reactionBuildingBlock = A.Fake<IReactionBuildingBlock>();
-         A.CallTo(() => _moleculeAndReactionCreator.CreateFor(A<IBuildConfiguration>._, _simulation))
-            .Invokes(x => x.GetArgument<IBuildConfiguration>(0).Reactions = _reactionBuildingBlock);
+         A.CallTo(() => _moleculeAndReactionCreator.CreateFor(A<SimulationConfiguration>._, _simulation))
+            .Invokes(x => x.GetArgument<SimulationConfiguration>(0).Module.Reaction = _reactionBuildingBlock);
       }
 
       [Observation]

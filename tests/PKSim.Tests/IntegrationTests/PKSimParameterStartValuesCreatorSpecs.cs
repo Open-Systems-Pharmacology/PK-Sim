@@ -20,7 +20,7 @@ namespace PKSim.IntegrationTests
 {
    public class When_creating_a_parameter_start_value_building_block_for_a_simulation_whose_parameter_where_changed_from_default : ContextForSimulationIntegration<IPKSimParameterStartValuesCreator>
    {
-      private IBuildConfigurationTask _buildConfigurationTask;
+      private ISimulationConfigurationTask _simulationConfigurationTask;
       private IEntityPathResolver _entityPathResolver;
       private ObjectPath _parameterPath;
       private ParameterStartValuesBuildingBlock _psv;
@@ -33,7 +33,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
+         _simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
          _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
          var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
          var compoundProcessRepository = IoC.Resolve<ICompoundProcessRepository>();
@@ -65,7 +65,8 @@ namespace PKSim.IntegrationTests
          var parameter = _simulation.Model.Root.EntityAt<IParameter>(compoundName, CoreConstantsForSpecs.Parameters.BLOOD_PLASMA_CONCENTRATION_RATIO);
          parameter.Value = 10;
          _parameterPath = _entityPathResolver.ObjectPathFor(parameter);
-         _psv = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false).ParameterStartValues;
+         var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         _psv = simulationConfiguration.ParameterStartValues;
       }
 
       [Observation]
@@ -90,7 +91,7 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_a_parameter_start_value_for_an_individual_and_simulation_where_the_initial_concentration_was_changed_in_the_expression_profile : ContextForSimulationIntegration<IPKSimParameterStartValuesCreator>
    {
-      private IBuildConfigurationTask _buildConfigurationTask;
+      private ISimulationConfigurationTask _simulationConfigurationTask;
       private IEntityPathResolver _entityPathResolver;
       private ObjectPath _parameterPath;
       private ParameterStartValuesBuildingBlock _psv;
@@ -104,7 +105,7 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
+         _simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
          _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
          var moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
          var expressionProfileUpdater = IoC.Resolve<IExpressionProfileUpdater>();
@@ -128,7 +129,8 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _psv = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false).ParameterStartValues;
+         var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         _psv = simulationConfiguration.Module.ParameterStartValuesCollection[0];
       }
 
       [Observation]

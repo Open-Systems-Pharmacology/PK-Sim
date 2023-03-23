@@ -59,7 +59,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_deserialized_the_simulation_settings()
       {
-         _deserializedSimulation.SimulationSettings.ShouldNotBeNull();
+         _deserializedSimulation.Settings.ShouldNotBeNull();
       }
 
 

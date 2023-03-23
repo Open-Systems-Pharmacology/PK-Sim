@@ -39,7 +39,7 @@ namespace PKSim.Infrastructure.ORM.Queries
          _interactionTask = interactionTask;
       }
 
-      public IObserverBuildingBlock AllObserversFor(IMoleculeBuildingBlock moleculeBuildingBlock, Simulation simulation)
+      public IObserverBuildingBlock AllObserversFor(MoleculeBuildingBlock moleculeBuildingBlock, Simulation simulation)
       {
          var observerBuildingBlock = _objectBaseFactory.Create<IObserverBuildingBlock>().WithName(simulation.Name);
          addStandardObserversTo(simulation, observerBuildingBlock, moleculeBuildingBlock);
@@ -76,7 +76,7 @@ namespace PKSim.Infrastructure.ORM.Queries
             .Each(observerBuildingBlock.Add);
       }
 
-      private void addStandardObserversTo(Simulation simulation, IObserverBuildingBlock observerBuildingBlock, IMoleculeBuildingBlock moleculeBuildingBlock)
+      private void addStandardObserversTo(Simulation simulation, IObserverBuildingBlock observerBuildingBlock, MoleculeBuildingBlock moleculeBuildingBlock)
       {
          var allMoleculesNeedingConcentrationObservers = moleculeBuildingBlock.Where(concentrationIsNeeded).Select(x => x.Name).ToList();
          var compoundNames = simulation.CompoundNames;

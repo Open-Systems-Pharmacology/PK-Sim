@@ -32,6 +32,7 @@ namespace PKSim.Core.Services
       private readonly IEventGroupRepository _eventGroupRepository;
       private Simulation _simulation;
       private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
 
       public EventBuildingBlockCreator(IObjectBaseFactory objectBaseFactory,
          IProtocolToSchemaItemsMapper schemaItemsMapper,
@@ -40,7 +41,8 @@ namespace PKSim.Core.Services
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IParameterIdUpdater parameterIdUpdater,
          IParameterSetUpdater parameterSetUpdater,
-         IEventGroupRepository eventGroupRepository)
+         IEventGroupRepository eventGroupRepository, 
+         IParameterDefaultStateUpdater parameterDefaultStateUpdater)
       {
          _objectBaseFactory = objectBaseFactory;
          _schemaItemsMapper = schemaItemsMapper;
@@ -50,6 +52,7 @@ namespace PKSim.Core.Services
          _parameterIdUpdater = parameterIdUpdater;
          _parameterSetUpdater = parameterSetUpdater;
          _eventGroupRepository = eventGroupRepository;
+         _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
       }
 
       public IEventGroupBuildingBlock CreateFor(Simulation simulation)
@@ -63,6 +66,8 @@ namespace PKSim.Core.Services
             createApplications(_simulation.CompoundPropertiesList);
 
             createNonApplicationEvents();
+
+            _parameterDefaultStateUpdater.UpdateDefaultFor(_eventGroupBuildingBlock);
 
             return _eventGroupBuildingBlock;
          }

@@ -26,7 +26,7 @@ namespace PKSim.Presentation
       protected IList<OutputInterval> _allIntervals;
       protected ICommandCollector _commandRegister;
       private IEditParameterPresenterTask _editParameterPresenterTask;
-      private ISimulationSettings _simulationSetting;
+      private SimulationSettings _simulationSetting;
       private IExecutionContext _context;
 
       protected override void Context()
@@ -38,8 +38,8 @@ namespace PKSim.Presentation
          _commandRegister = A.Fake<ICommandCollector>();
          _simulationToEdit.Properties = A.Fake<SimulationProperties>();
          _outputSchema = A.Fake<OutputSchema>();
-         _simulationSetting  = A.Fake<ISimulationSettings>();
-         _simulationToEdit.SimulationSettings = _simulationSetting;
+         _simulationSetting  = A.Fake<SimulationSettings>();
+         _simulationToEdit.Settings = _simulationSetting;
          A.CallTo(() => _simulationSetting.OutputSchema).Returns(_outputSchema);
          _allIntervals = new List<OutputInterval>();
          _editParameterPresenterTask = A.Fake<IEditParameterPresenterTask>();

@@ -33,7 +33,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _populationSimulation = new PopulationSimulation {SimulationSettings = new SimulationSettings {OutputSelections = new OutputSelections()}};
+         _populationSimulation = new PopulationSimulation { Settings = new SimulationSettings {OutputSelections = new OutputSelections()}};
 
          var liverCellsDrugConc = "Liver|Cells|Drug|Conc";
          _populationSimulation.OutputSelections.AddOutput(new QuantitySelection(liverCellsDrugConc, QuantityType.Drug));

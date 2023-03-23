@@ -56,7 +56,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R", "src\PKSim.R\PKSi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R.Tests", "tests\PKSim.R.Tests\PKSim.R.Tests.csproj", "{4E310F99-4604-4502-8F0B-A4E4F27B062B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSim.UI.Starter", "src\PKSim.UI.Starter\PKSim.UI.Starter.csproj", "{35E511E9-0130-4E28-9DB3-EDCCB098D383}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.UI.Starter", "src\PKSim.UI.Starter\PKSim.UI.Starter.csproj", "{35E511E9-0130-4E28-9DB3-EDCCB098D383}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,8 +137,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 		VisualSVNWorkingCopyRoot = 
+		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"

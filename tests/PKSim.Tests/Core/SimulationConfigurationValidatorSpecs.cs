@@ -31,7 +31,7 @@ namespace PKSim.Core
          _simulation = new IndividualSimulation
          {
             Properties = new SimulationProperties(),
-            SimulationSettings = new SimulationSettings(),
+            Settings = new SimulationSettings(),
             ModelConfiguration = new ModelConfiguration()
          };
          _individual = new Individual().WithName("MyIndividual");

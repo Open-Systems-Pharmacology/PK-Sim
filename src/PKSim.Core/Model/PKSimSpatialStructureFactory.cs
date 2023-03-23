@@ -28,11 +28,18 @@ namespace PKSim.Core.Model
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
 
-      public PKSimSpatialStructureFactory(IObjectBaseFactory objectBaseFactory, IParameterContainerTask parameterContainerTask,
-         IModelContainerQuery modelContainerQuery, IModelNeighborhoodQuery modelNeighborhoodQuery,
-         IParameterSetUpdater parameterSetUpdater, IParameterIdUpdater parameterIdUpdater,
-         INeighborhoodFinalizer neighborhoodFinalizer, IEntityPathResolver entityPathResolver) : base(objectBaseFactory)
+      public PKSimSpatialStructureFactory(
+         IObjectBaseFactory objectBaseFactory, 
+         IParameterContainerTask parameterContainerTask,
+         IModelContainerQuery modelContainerQuery, 
+         IModelNeighborhoodQuery modelNeighborhoodQuery,
+         IParameterSetUpdater parameterSetUpdater, 
+         IParameterIdUpdater parameterIdUpdater,
+         INeighborhoodFinalizer neighborhoodFinalizer, 
+         IEntityPathResolver entityPathResolver, 
+         IParameterDefaultStateUpdater parameterDefaultStateUpdater) : base(objectBaseFactory)
 
       {
          _objectBaseFactory = objectBaseFactory;
@@ -43,6 +50,7 @@ namespace PKSim.Core.Model
          _parameterIdUpdater = parameterIdUpdater;
          _neighborhoodFinalizer = neighborhoodFinalizer;
          _entityPathResolver = entityPathResolver;
+         _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
       }
 
       public ISpatialStructure CreateFor(Individual individual, Simulation simulation)
@@ -67,6 +75,8 @@ namespace PKSim.Core.Model
          //THIRD: update parameter values and ids
          updateParameterFromIndividual(spatialStructure, individual);
 
+         _parameterDefaultStateUpdater.UpdateDefaultFor(spatialStructure);
+         
          return spatialStructure;
       }
 
@@ -128,9 +138,6 @@ namespace PKSim.Core.Model
          }
       }
 
-      protected override ISpatialStructure CreateSpatialStructure()
-      {
-         return _objectBaseFactory.Create<IPKSimSpatialStructure>();
-      }
+      protected override ISpatialStructure CreateSpatialStructure() => _objectBaseFactory.Create<IPKSimSpatialStructure>();
    }
 }

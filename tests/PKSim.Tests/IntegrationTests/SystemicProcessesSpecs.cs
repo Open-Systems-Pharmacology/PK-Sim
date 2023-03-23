@@ -13,6 +13,8 @@ using PKSim.Infrastructure.ProjectConverter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using static OSPSuite.Core.Domain.Constants;
+using static PKSim.Core.CoreConstants.Compartment;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
@@ -147,7 +149,7 @@ namespace PKSim.IntegrationTests
       {
          var transport = biliaryClearancePeriportalCellToGallBladderTransport();
          var undefinedTransportRef = transport.Formula.ObjectPaths.First(x => x.Alias == "CP");
-         undefinedTransportRef.ShouldContain(CoreConstants.Organ.LIVER, CoreConstants.Compartment.PERIPORTAL);
+         undefinedTransportRef.ShouldContain(LIVER, PERIPORTAL);
       }
 
       private ITransport biliaryClearancePeriportalCellToGallBladderTransport()
@@ -185,12 +187,12 @@ namespace PKSim.IntegrationTests
 
          allProcessParameters.FindByName(ConverterConstants.Parameters.PlasmaClearance).Value.ShouldBeEqualTo(_liverClearance.Parameter(ConverterConstants.Parameters.PlasmaClearance).Value);
       }
-
+      
       [Observation]
       public void the_created_process_kinetic_should_reference_an_undefined_enzyme_in_liver_whose_start_concentration_is_set_to_1_by_f_cell()
       {
-         var liver_periportal = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.PERIPORTAL);
-         var startConcentration = liver_periportal.EntityAt<IParameter>(CoreConstants.Compartment.INTRACELLULAR, CoreConstants.Molecule.UndefinedLiver, CoreConstants.Parameters.CONCENTRATION);
+         var liver_periportal = _simulation.Model.Root.EntityAt<Container>(ORGANISM, LIVER, PERIPORTAL);
+         var startConcentration = liver_periportal.EntityAt<IParameter>(INTRACELLULAR, CoreConstants.Molecule.UndefinedLiver, CoreConstants.Parameters.CONCENTRATION);
 
          var f_cell = liver_periportal.EntityAt<IParameter>(CoreConstants.Parameters.FRACTION_INTRACELLULAR);
          startConcentration.Value.ShouldBeEqualTo(1 / f_cell.Value);

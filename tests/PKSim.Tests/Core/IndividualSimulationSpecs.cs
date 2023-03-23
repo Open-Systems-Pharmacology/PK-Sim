@@ -33,7 +33,7 @@ namespace PKSim.Core
          base.Context();
          sut.Reactions = new ReactionBuildingBlock();
          sut.Model = new OSPSuite.Core.Domain.Model {Root = new Container()};
-         sut.SimulationSettings = new SimulationSettings();
+         sut.Settings = new SimulationSettings();
          sut.Name = "oldName";
       }
 
@@ -47,7 +47,7 @@ namespace PKSim.Core
       public void the_building_blocks_and_model_should_be_renamed()
       {
          sut.Reactions.Name.ShouldBeEqualTo(_newName);
-         sut.SimulationSettings.Name.ShouldBeEqualTo(_newName);
+         sut.Settings.Name.ShouldBeEqualTo(_newName);
          sut.Model.Name.ShouldBeEqualTo(_newName);
          sut.Model.Root.Name.ShouldBeEqualTo(_newName);
       }
@@ -433,7 +433,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_outputs_of_the_simulation_to_the_output_of_the_original_simulation()
       {
-         sut.SimulationSettings.ShouldBeEqualTo(_originalSimulation.SimulationSettings);
+         sut.Settings.ShouldBeEqualTo(_originalSimulation.Settings);
       }
       
       [Observation]

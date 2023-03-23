@@ -95,7 +95,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation = new IndividualSimulation {Name = "SimulationName", DataRepository = new DataRepository(), SimulationSettings = new SimulationSettings()};
+         _simulation = new IndividualSimulation {Name = "SimulationName", DataRepository = new DataRepository(), Settings = new SimulationSettings()};
          sut.UpdateAnalysisBasedOn(_simulation);
       }
 
@@ -119,11 +119,11 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _simulation = new IndividualSimulation {DataRepository = new DataRepository(), SimulationSettings = new SimulationSettings()};
+         _simulation = new IndividualSimulation {DataRepository = new DataRepository(), Settings = new SimulationSettings()};
          _defaultChartTemplate = new CurveChartTemplate {IsDefault = true, Name = "one"};
-         _simulation.SimulationSettings.AddChartTemplate(_defaultChartTemplate);
-         _simulation.SimulationSettings.AddChartTemplate(new CurveChartTemplate {Name = "two"});
-         _simulation.SimulationSettings.AddChartTemplate(new CurveChartTemplate {Name = "three"});
+         _simulation.Settings.AddChartTemplate(_defaultChartTemplate);
+         _simulation.Settings.AddChartTemplate(new CurveChartTemplate {Name = "two"});
+         _simulation.Settings.AddChartTemplate(new CurveChartTemplate {Name = "three"});
          sut.InitializeAnalysis(new SimulationTimeProfileChart());
       }
 
@@ -150,9 +150,9 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _simulation = new IndividualSimulation {DataRepository = new DataRepository(), SimulationSettings = new SimulationSettings()};
+         _simulation = new IndividualSimulation {DataRepository = new DataRepository(), Settings = new SimulationSettings()};
          _defaultChartTemplate = new CurveChartTemplate {IsDefault = false};
-         _simulation.SimulationSettings.AddChartTemplate(_defaultChartTemplate);
+         _simulation.Settings.AddChartTemplate(_defaultChartTemplate);
          base.Context();
          sut.InitializeAnalysis(new SimulationTimeProfileChart());
       }

@@ -19,7 +19,7 @@ namespace PKSim.IntegrationTests
    {
       private string _compoundName;
       private IObserverBuildingBlock _observers;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private string _complexProductName;
       private string _metaboliteProductName;
       private IObserverBuilder _observer;
@@ -148,7 +148,7 @@ namespace PKSim.IntegrationTests
       private string _compoundName;
       private string _observerName;
       private IObserverBuildingBlock _observers;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       public override void GlobalContext()
       {

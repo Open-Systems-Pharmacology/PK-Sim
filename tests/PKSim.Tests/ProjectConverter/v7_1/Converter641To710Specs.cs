@@ -41,7 +41,7 @@ namespace PKSim.ProjectConverter.v7_1
       [Observation]
       public void should_have_converted_the_chart_templates_in_the_project()
       {
-         var template = FindByName<Simulation>("S1").SimulationSettings.ChartTemplates.FindByName("Test");
+         var template = FindByName<Simulation>("S1").Settings.ChartTemplates.FindByName("Test");
          foreach (var curveTemplate in template.Curves)
          {
             curveTemplate.xData.Path.ShouldNotBeNull();

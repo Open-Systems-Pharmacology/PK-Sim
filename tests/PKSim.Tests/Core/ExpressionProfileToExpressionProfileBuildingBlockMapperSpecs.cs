@@ -20,6 +20,7 @@ namespace PKSim.Core
       protected ExpressionProfileBuildingBlock _result;
       private IApplicationConfiguration _applicationConfiguration;
       private ILazyLoadTask _lazyLoadTask;
+      private IFormulaFactory _formulaFactory;
 
       protected override void Context()
       {
@@ -27,10 +28,12 @@ namespace PKSim.Core
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _objectPathFactory = new EntityPathResolverForSpecs();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
+         _formulaFactory = A.Fake<IFormulaFactory>();
+
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).ReturnsLazily(() => new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _formulaFactory);
       }
    }
 
@@ -78,7 +81,7 @@ namespace PKSim.Core
       {
          base.Context();
          _individual = DomainHelperForSpecs.CreateIndividual("TestSpecies");
-         _individual.AddMolecule(new IndividualEnzyme { Name = "TestEnzyme" });
+         _individual.AddMolecule(new IndividualEnzyme {Name = "TestEnzyme"});
          _expressionProfile = new ExpressionProfile
          {
             Individual = _individual,
@@ -100,8 +103,8 @@ namespace PKSim.Core
       [Observation]
       public void resulting_expression_parameter_should_have_formula_or_value()
       {
-         _result.Count(x => x.Formula == null).ShouldBeEqualTo(2);
-         _result.Count(x => x.Formula != null).ShouldBeEqualTo(1);
+         _result.Count(x => x.Formula == null).ShouldBeEqualTo(1);
+         _result.Count(x => x.Formula != null).ShouldBeEqualTo(2);
       }
 
       [Observation]
@@ -113,7 +116,6 @@ namespace PKSim.Core
          _result.MoleculeName.ShouldBeEqualTo("TestEnzyme");
          _result.Type.DisplayName.ShouldBeEqualTo("Enzyme");
          _result.Type.IconName.ShouldBeEqualTo("Enzyme");
-         _result.FormulaCache.Count.ShouldBeEqualTo(2);
       }
    }
 }
