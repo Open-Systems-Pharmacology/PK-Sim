@@ -34,9 +34,6 @@ namespace PKSim.Core.Mappers
       protected IApplicationConfiguration _applicationConfiguration;
       private readonly ILazyLoadTask _lazyLoadTask;
 
-      //Cache used to store all formula that can be cached. This is required to avoid having the same formula defined multiple times in the building block
-      //note that a clone of the original formula is added to the cache so that it can be modified if required
-      private readonly IFormulaCache _formulaCache = new BuildingBlockFormulaCache();
       protected readonly IFormulaFactory _formulaFactory;
 
       protected PathAndValueBuildingBlockMapper(
@@ -72,7 +69,7 @@ namespace PKSim.Core.Mappers
          return builderParameter;
       }
 
-      private TBuilder mapBuilderParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock)
+      private TBuilder mapBuilderParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
       {
          var builderParameter = MapParameter(parameter);
 
@@ -99,7 +96,7 @@ namespace PKSim.Core.Mappers
             default:
                if (formula.IsCachable())
                {
-                  var templateFormula = retrieveTemplateFormulaFromCache(parameter, pkSimBuildingBlock);
+                  var templateFormula = retrieveTemplateFormulaFromCache(parameter, pkSimBuildingBlock, formulaCache);
                   builderParameter.Formula = templateFormula;
                }
 
@@ -111,14 +108,14 @@ namespace PKSim.Core.Mappers
          }
       }
 
-      private IFormula retrieveTemplateFormulaFromCache(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock)
+      private IFormula retrieveTemplateFormulaFromCache(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
       {
          var formulaName = parameter.Formula.Name;
-         if (_formulaCache.Contains(formulaName))
-            return _formulaCache[formulaName];
+         if (formulaCache.Contains(formulaName))
+            return formulaCache[formulaName];
 
          //This will add the formula top the cache 
-         var templateFormula = TemplateFormulaFor(parameter, _formulaCache, pkSimBuildingBlock);
+         var templateFormula = TemplateFormulaFor(parameter, formulaCache, pkSimBuildingBlock);
          //We need to remove the ROOT keyword when exporting to PKML structure 
          templateFormula?.ObjectPaths.Each(x => x.Remove(Constants.ROOT));
          return templateFormula;
@@ -133,11 +130,14 @@ namespace PKSim.Core.Mappers
 
       protected void MapAllParameters(TPKSimBuildingBlock sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
       {
-         var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(x=>mapBuilderParameter(x, sourcePKSimBuildingBlock));
+         //Cache used to store all formula that can be cached. This is required to avoid having the same formula defined multiple times in the building block
+         //note that a clone of the original formula is added to the cache so that it can be modified if required
+         var formulaCache = new BuildingBlockFormulaCache();
+         var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(x=>mapBuilderParameter(x, sourcePKSimBuildingBlock, formulaCache));
          allBuilderParameters.Where(x => x != null).Each(buildingBlock.Add);
 
          //Formula cache already contains a clone of all formula. We can add as is
-         _formulaCache.Each(buildingBlock.FormulaCache.Add);
+         formulaCache.Each(buildingBlock.FormulaCache.Add);
       }
 
       protected abstract IReadOnlyList<IParameter> AllParametersFor(TPKSimBuildingBlock sourcePKSimBuildingBlock);
