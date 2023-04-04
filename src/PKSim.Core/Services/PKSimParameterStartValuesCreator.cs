@@ -8,7 +8,7 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimParameterStartValuesCreator
    {
-      ParameterStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation);
+      ParameterStartValuesBuildingBlock CreateFor(Simulation simulation);
    }
 
    public class PKSimParameterStartValuesCreator : IPKSimParameterStartValuesCreator
@@ -28,7 +28,7 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public ParameterStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation)
+      public ParameterStartValuesBuildingBlock CreateFor(Simulation simulation)
       {
          try
          {

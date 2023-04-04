@@ -116,7 +116,7 @@ namespace PKSim.Core.Services
 
       private void updateAgeParameter(SimulationConfiguration simulationConfiguration)
       {
-         var spatialStructure = simulationConfiguration.SpatialStructure;
+         var spatialStructure = simulationConfiguration.SpatialStructure();
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
          var ageParameter = organism.Parameter(CoreConstants.Parameters.AGE);
          var minToYearFactor = _timeDimension.BaseUnitValueToUnitValue(_yearUnit, 1);
@@ -136,7 +136,7 @@ namespace PKSim.Core.Services
 
       private void createSpatialStructureTableParameters(SimulationConfiguration simulationConfiguration)
       {
-         var spatialStructure = simulationConfiguration.SpatialStructure;
+         var spatialStructure = simulationConfiguration.SpatialStructure();
          var allBaseIndividualDistributedParameters = new PathCache<IDistributedParameter>(_entityPathResolver).For(_baseIndividual.GetAllChildren<IDistributedParameter>(parameterShouldBeDefinedAsTable));
          if (!allBaseIndividualDistributedParameters.Any())
             return;
@@ -191,7 +191,7 @@ namespace PKSim.Core.Services
 
       private void createPlasmaProteinOntogenyTable(SimulationConfiguration simulationConfiguration)
       {
-         var spatialStructure = simulationConfiguration.SpatialStructure;
+         var spatialStructure = simulationConfiguration.SpatialStructure();
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
          foreach (var ontogenyParameterName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {

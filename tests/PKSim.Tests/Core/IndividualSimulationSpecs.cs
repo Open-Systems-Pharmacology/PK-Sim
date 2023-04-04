@@ -1,4 +1,3 @@
-using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -10,6 +9,7 @@ using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
+using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core
 {
@@ -27,11 +27,13 @@ namespace PKSim.Core
    public class When_renaming_a_simulation : concern_for_IndividualSimulation
    {
       private string _newName;
+      private ReactionBuildingBlock _reactionBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         sut.Reactions = new ReactionBuildingBlock();
+         _reactionBuildingBlock = new ReactionBuildingBlock();
+         sut.AddReactions(_reactionBuildingBlock);
          sut.Model = new OSPSuite.Core.Domain.Model {Root = new Container()};
          sut.Settings = new SimulationSettings();
          sut.Name = "oldName";
@@ -46,7 +48,7 @@ namespace PKSim.Core
       [Observation]
       public void the_building_blocks_and_model_should_be_renamed()
       {
-         sut.Reactions.Name.ShouldBeEqualTo(_newName);
+         _reactionBuildingBlock.Name.ShouldBeEqualTo(_newName);
          sut.Settings.Name.ShouldBeEqualTo(_newName);
          sut.Model.Name.ShouldBeEqualTo(_newName);
          sut.Model.Root.Name.ShouldBeEqualTo(_newName);
@@ -435,7 +437,7 @@ namespace PKSim.Core
       {
          sut.Settings.ShouldBeEqualTo(_originalSimulation.Settings);
       }
-      
+
       [Observation]
       public void should_have_added_the_used_observed_data_from_the_original_simulation_in_the_updated_simulation()
       {

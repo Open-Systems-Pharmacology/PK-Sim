@@ -68,13 +68,14 @@ namespace PKSim.Core.Services
       public SimulationConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation)
       {
          var module = _objectBaseFactory.Create<Module>().WithName(simulation.Name);
+         module.AddExtendedProperty(CoreConstants.PK_SIM_VERSION, ProjectVersions.CurrentAsString);
+         var individual = simulation.Individual;
          var simulationConfiguration = new SimulationConfiguration
          {
             ShouldValidate = shouldValidate,
-            Module = module
          };
-         var individual = simulation.Individual;
-
+         var moduleConfiguration = new ModuleConfiguration(module);
+         simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          //STEP1: Create spatial structure
          module.SpatialStructure = _spatialStructureFactory.CreateFor(individual, simulation);
 
@@ -88,26 +89,35 @@ namespace PKSim.Core.Services
          individual.AllExpressionProfiles().MapAllUsing(_expressionProfileBuildingBlockMapper).Each(simulationConfiguration.AddExpressionProfile);
 
          //STEP5: Add Passive Transports 
-         module.PassiveTransport = _modelPassiveTransportQuery.AllPassiveTransportsFor(simulation);
+         module.PassiveTransports = _modelPassiveTransportQuery.AllPassiveTransportsFor(simulation);
 
          //STEP6 : Molecules, and Molecule Start and reactions are generated in one go from the molecule and reaction creator
-         _moleculesAndReactionsCreator.CreateFor(simulationConfiguration, simulation);
+         var (molecules, reactions) = _moleculesAndReactionsCreator.CreateFor(module, simulation);
+         module.Molecules = molecules;
+         module.Reactions = reactions;
 
          //STEP7 Add Application, Formulation and events
-         module.EventGroup = _eventBuildingBlockCreator.CreateFor(simulation);
+         module.EventGroups = _eventBuildingBlockCreator.CreateFor(simulation);
 
          //STEP8: Add Observers
-         module.Observer = _modelObserverQuery.AllObserversFor(module.Molecule, simulation);
+         module.Observers = _modelObserverQuery.AllObserversFor(module.Molecules, simulation);
 
          //STEP9 once all building blocks have been created, we need to create the default parameter and molecule values values 
-         module.AddMoleculeStartValueBlock(_moleculeStartValuesCreator.CreateFor(simulationConfiguration, simulation));
-         module.AddParameterStartValueBlock(_parameterStartValuesCreator.CreateFor(simulationConfiguration, simulation));
+         var moleculeStartValues = _moleculeStartValuesCreator.CreateFor(module, simulation);
+         module.AddMoleculeStartValueBlock(moleculeStartValues);
+
+         var parameterStartValues = _parameterStartValuesCreator.CreateFor(simulation);
+         module.AddParameterStartValueBlock(parameterStartValues);
+
+         moduleConfiguration.SelectedParameterStartValues = parameterStartValues;
+         moduleConfiguration.SelectedMoleculeStartValues = moleculeStartValues;
 
          //STEP10 update simulation settings
          simulationConfiguration.SimulationSettings = simulation.Settings.WithName(simulation.Name);
 
          //STEP11 Convert all parameters to table if required
          _distributedParameterToTableParameterConverter.UpdateSimulationConfigurationForAging(simulationConfiguration, simulation, createAgingDataInSimulation);
+
 
          return simulationConfiguration;
       }

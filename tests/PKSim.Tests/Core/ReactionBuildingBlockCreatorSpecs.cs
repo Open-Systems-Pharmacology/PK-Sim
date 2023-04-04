@@ -31,8 +31,7 @@ namespace PKSim.Core
          base.Context();
          _simulation = A.Fake<Simulation>();
          _reactionBuildingBlock = A.Fake<IReactionBuildingBlock>();
-         A.CallTo(() => _moleculeAndReactionCreator.CreateFor(A<SimulationConfiguration>._, _simulation))
-            .Invokes(x => x.GetArgument<SimulationConfiguration>(0).Module.Reaction = _reactionBuildingBlock);
+         A.CallTo(() => _moleculeAndReactionCreator.CreateFor(A<Module>._, _simulation)).Returns((new MoleculeBuildingBlock(), _reactionBuildingBlock));
       }
 
       [Observation]
@@ -42,7 +41,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_a_rection_building_block_for_an_imported_simulation : concern_for_ReactionBuildingBlockCreator
+   public class When_creating_a_reaction_building_block_for_an_imported_simulation : concern_for_ReactionBuildingBlockCreator
    {
       private Simulation _simulation;
       private IReactionBuildingBlock _reactionBuildingBlock;

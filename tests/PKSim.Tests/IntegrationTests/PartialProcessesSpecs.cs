@@ -466,7 +466,6 @@ namespace PKSim.IntegrationTests
       public void should_be_able_to_create_and_run_the_simulation()
       {
          var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
-         var mobiExportTask = IoC.Resolve<IMoBiExportTask>();
          simulationEngine.RunAsync(_simulation, _simulationRunOptions).Wait();
          _simulation.HasResults.ShouldBeTrue();
       }
@@ -512,7 +511,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_only_create_one_turnover_reaction()
       {
-         _simulation.Reactions.Count().ShouldBeEqualTo(4); //Induction, turnover, irreversible and metabolization
+         _simulation.Reactions.Count.ShouldBeEqualTo(1);
+         _simulation.Reactions[0].Count().ShouldBeEqualTo(4); //Induction, turnover, irreversible and metabolization
       }
    }
 }

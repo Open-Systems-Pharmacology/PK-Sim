@@ -58,7 +58,7 @@ namespace PKSim.Core.Services
             throw new CannotCreateSimulationException(creationResult.ValidationResult);
 
          simulation.Model = creationResult.Model;
-         simulation.Reactions = simulationConfiguration.Reactions;
+         simulationConfiguration.Reactions.Each(simulation.AddReactions);
 
          updateSimulationAfterModelCreation(simulation);
       }

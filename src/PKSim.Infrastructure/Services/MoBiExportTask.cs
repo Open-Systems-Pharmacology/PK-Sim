@@ -36,13 +36,13 @@ namespace PKSim.Infrastructure.Services
       private readonly IStartableProcessFactory _startableProcessFactory;
 
       public MoBiExportTask(
-         ISimulationConfigurationTask simulationConfigurationTask, 
+         ISimulationConfigurationTask simulationConfigurationTask,
          ISimulationToModelCoreSimulationMapper simulationMapper,
-         IRepresentationInfoRepository representationInfoRepository, 
+         IRepresentationInfoRepository representationInfoRepository,
          IPKSimConfiguration configuration,
-         ILazyLoadTask lazyLoadTask, 
-         IDialogCreator dialogCreator, 
-         ISimulationPersistor simulationPersistor, 
+         ILazyLoadTask lazyLoadTask,
+         IDialogCreator dialogCreator,
+         ISimulationPersistor simulationPersistor,
          IProjectRetriever projectRetriever,
          IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
       {
@@ -87,10 +87,7 @@ namespace PKSim.Infrastructure.Services
             $"\"{contentFile}\""
          };
 
-         this.DoWithinExceptionHandler(() =>
-         {
-            _startableProcessFactory.CreateStartableProcess(moBiPath, args).Start();
-         });
+         this.DoWithinExceptionHandler(() => { _startableProcessFactory.CreateStartableProcess(moBiPath, args).Start(); });
       }
 
       private string retrieveMoBiExecutablePath()
@@ -116,7 +113,7 @@ namespace PKSim.Infrastructure.Services
          updateObserverForAllFlag(moBiSimulation);
          updateRepresentationInfo(moBiSimulation);
          updateFormulaIdIn(moBiSimulation);
-         
+
          var simulationTransfer = new SimulationTransfer
          {
             Simulation = moBiSimulation,
@@ -152,7 +149,7 @@ namespace PKSim.Infrastructure.Services
 
       private void updateObserverForAllFlag(IModelCoreSimulation moBiSimulation)
       {
-         UpdateObserverForAllFlag(moBiSimulation.Configuration.Observers);
+         moBiSimulation.Configuration.Observers.Each(UpdateObserverForAllFlag);
       }
 
       public void ExportSimulationToPkmlFile(Simulation simulation)

@@ -66,7 +66,7 @@ namespace PKSim.IntegrationTests
          parameter.Value = 10;
          _parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         _psv = simulationConfiguration.ParameterStartValues;
+         _psv = simulationConfiguration.ModuleConfigurations[0].SelectedParameterStartValues;
       }
 
       [Observation]
@@ -130,7 +130,7 @@ namespace PKSim.IntegrationTests
       protected override void Because()
       {
          var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         _psv = simulationConfiguration.Module.ParameterStartValuesCollection[0];
+         _psv = simulationConfiguration.ModuleConfigurations[0].SelectedParameterStartValues;
       }
 
       [Observation]

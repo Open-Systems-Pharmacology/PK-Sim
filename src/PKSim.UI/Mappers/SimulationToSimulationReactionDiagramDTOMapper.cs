@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using OSPSuite.Core.Diagram;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.UI.Diagram.Managers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
-using OSPSuite.Core.Diagram;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.UI.Diagram.Managers;
 
 namespace PKSim.UI.Mappers
 {
@@ -21,10 +22,11 @@ namespace PKSim.UI.Mappers
 
       public SimulationReactionDiagramDTO MapFrom(Simulation simulation)
       {
+         var reactionBuildingBlockDTO = simulation.Reactions.FirstOrDefault() ?? _reactionBuildingBlockCreator.CreateFor(simulation);
          var dto = new SimulationReactionDiagramDTO
          {
             DiagramModel = simulation.ReactionDiagramModel,
-            ReactionBuildingBlock = simulation.Reactions ?? _reactionBuildingBlockCreator.CreateFor(simulation),
+            ReactionBuildingBlock = reactionBuildingBlockDTO,
             DiagramManager = new ReactionDiagramManager<SimulationReactionDiagramDTO>()
          };
 
