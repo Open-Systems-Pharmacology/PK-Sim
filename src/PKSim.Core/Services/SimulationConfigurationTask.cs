@@ -1,3 +1,4 @@
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
@@ -29,6 +30,7 @@ namespace PKSim.Core.Services
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IIndividualToIndividualBuildingBlockMapper _individualBuildingBlockMapper;
       private readonly IExpressionProfileToExpressionProfileBuildingBlockMapper _expressionProfileBuildingBlockMapper;
+      private readonly IApplicationConfiguration _applicationConfiguration;
       private readonly IModelObserverQuery _modelObserverQuery;
       private readonly IModelPassiveTransportQuery _modelPassiveTransportQuery;
       private readonly IMoleculesAndReactionsCreator _moleculesAndReactionsCreator;
@@ -47,7 +49,8 @@ namespace PKSim.Core.Services
          IDistributedParameterToTableParameterConverter distributedParameterToTableParameterConverter,
          IObjectBaseFactory objectBaseFactory,
          IIndividualToIndividualBuildingBlockMapper individualBuildingBlockMapper,
-         IExpressionProfileToExpressionProfileBuildingBlockMapper expressionProfileBuildingBlockMapper
+         IExpressionProfileToExpressionProfileBuildingBlockMapper expressionProfileBuildingBlockMapper,
+         IApplicationConfiguration applicationConfiguration
       )
       {
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
@@ -63,12 +66,13 @@ namespace PKSim.Core.Services
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
          _individualBuildingBlockMapper = individualBuildingBlockMapper;
          _expressionProfileBuildingBlockMapper = expressionProfileBuildingBlockMapper;
+         _applicationConfiguration = applicationConfiguration;
       }
 
       public SimulationConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation)
       {
          var module = _objectBaseFactory.Create<Module>().WithName(simulation.Name);
-         module.AddExtendedProperty(CoreConstants.PK_SIM_VERSION, ProjectVersions.CurrentAsString);
+         module.AddExtendedProperty(CoreConstants.PK_SIM_VERSION, _applicationConfiguration.FullVersion);
          var individual = simulation.Individual;
          var simulationConfiguration = new SimulationConfiguration
          {

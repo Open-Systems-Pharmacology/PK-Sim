@@ -1,6 +1,7 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Extensions;
@@ -37,6 +38,7 @@ namespace PKSim.Core
       private IObjectBaseFactory _objectBaseFactory;
       protected IIndividualToIndividualBuildingBlockMapper _individualBuildingBlockMapper;
       protected IExpressionProfileToExpressionProfileBuildingBlockMapper _expressionProfileBuildingBlockMapper;
+      private IApplicationConfiguration _applicationConfiguration;
 
       protected override void Context()
       {
@@ -52,6 +54,7 @@ namespace PKSim.Core
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _individualBuildingBlockMapper= A.Fake<IIndividualToIndividualBuildingBlockMapper>();
          _expressionProfileBuildingBlockMapper= A.Fake<IExpressionProfileToExpressionProfileBuildingBlockMapper>();
+         _applicationConfiguration= A.Fake<IApplicationConfiguration>();
 
          _cm1 = new CoreCalculationMethod();
          _cm2 = new CoreCalculationMethod();
@@ -70,6 +73,7 @@ namespace PKSim.Core
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Individual", PKSimBuildingBlockType.Individual) {BuildingBlock = _individual});
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Compound", PKSimBuildingBlockType.Compound) {BuildingBlock = _compound});
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Protocol", PKSimBuildingBlockType.Protocol) {BuildingBlock = _protocol});
+         A.CallTo(() => _objectBaseFactory.Create<Module>()).Returns(new Module());
          A.CallTo(() => _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(_simulation)).Returns(new[] {_cm1, _cm2});
          A.CallTo(() => _spatialStructureFactory.CreateFor(_individual, _simulation)).Returns(_spatialStructure);
          A.CallTo(() => _modelPassiveTransportQuery.AllPassiveTransportsFor(_simulation)).Returns(_passiveTransportBuildingBlock);
@@ -79,7 +83,10 @@ namespace PKSim.Core
          A.CallTo(() => _moleculeStartValueCreator.CreateFor(A<Module>.Ignored, A<Simulation>.Ignored)).Returns(_moleculeStartValueBuildingBlock);
          sut = new SimulationConfigurationTask(_spatialStructureFactory, _modelObserverQuery, _modelPassiveTransportQuery, _parameterStartValueCreator,
             _moleculesAndReactionsCreator, _eventBuildingBlockCreator, _moleculeStartValueCreator, _moleculeCalculationRetriever,
-            _distributedTableConverter, _objectBaseFactory, _individualBuildingBlockMapper, _expressionProfileBuildingBlockMapper);
+            _distributedTableConverter, _objectBaseFactory, _individualBuildingBlockMapper, _expressionProfileBuildingBlockMapper, _applicationConfiguration);
+
+
+         A.CallTo(() => _applicationConfiguration.FullVersion).Returns("X.Y.Z");
       }
    }
 
@@ -146,6 +153,12 @@ namespace PKSim.Core
       public void should_have_set_the_simulation_settings_in_the_build_configuration()
       {
          _simulationConfiguration.SimulationSettings.ShouldBeEqualTo(_simulation.Settings);
+      }
+
+      [Observation]
+      public void should_have_created_a_module_holding_the_current_PKSim_version()
+      {
+         _module.ExtendedPropertyValueFor(CoreConstants.PK_SIM_VERSION).ShouldBeEqualTo("X.Y.Z");
       }
 
       [Observation]
