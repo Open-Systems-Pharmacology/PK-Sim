@@ -18,13 +18,15 @@ namespace PKSim.UI
       protected IReactionBuildingBlockCreator _reactionBuildingBlockCreator;
       protected Simulation _simulation;
       protected SimulationReactionDiagramDTO _dto;
+      protected IReactionBuildingBlock _reactionBuildingBlock;
 
       protected override void Context()
       {
          _reactionBuildingBlockCreator = A.Fake<IReactionBuildingBlockCreator>();
          sut = new SimulationToSimulationReactionDiagramDTOMapper(_reactionBuildingBlockCreator);
+         _reactionBuildingBlock = new ReactionBuildingBlock();
 
-         _simulation = A.Fake<Simulation>();
+         _simulation = new IndividualSimulation();
       }
 
       protected override void Because()
@@ -36,14 +38,12 @@ namespace PKSim.UI
    public class When_mapping_a_simulation_with_new_reaction_building_block_that_contains_the_same_reactions_as_the_existing_model : concern_for_SimulationToSimulationReactionDiagramDTOMapper
    {
       private IDiagramModel _diagramModel;
-      private IReactionBuildingBlock _reactionBuildingBlock;
       private ReactionBuilder _secondBuilder;
       private IBaseNode _firstNode;
 
       protected override void Context()
       {
          base.Context();
-         _reactionBuildingBlock = new ReactionBuildingBlock();
          _firstNode = A.Fake<IBaseNode>();
          A.CallTo(() => _firstNode.Id).Returns("Id1");
          A.CallTo(() => _firstNode.Name).Returns("Name");
@@ -52,7 +52,7 @@ namespace PKSim.UI
          _reactionBuildingBlock.Add(_secondBuilder);
 
          _diagramModel = A.Fake<IDiagramModel>();
-         A.CallTo(() => _simulation.ReactionDiagramModel).Returns(_diagramModel);
+         _simulation.ReactionDiagramModel = _diagramModel;
 
          A.CallTo(() => _diagramModel.FindByName(_secondBuilder.Name)).Returns(_firstNode);
       }
@@ -64,10 +64,7 @@ namespace PKSim.UI
             dictionary.Keys.First().Equals("Id1") && dictionary.Values.First().Equals("Id2")
          ))).MustHaveHappened();
       }
-   }
 
-   public class When_mapping_a_simulation_whose_reaction_building_block_is_defined_to_a_simulation_reaction_diagram_dto : concern_for_SimulationToSimulationReactionDiagramDTOMapper
-   {
       [Observation]
       public void should_use_the_reaction_building_block_from_the_simulation()
       {
@@ -83,12 +80,9 @@ namespace PKSim.UI
 
    public class When_mapping_a_simulation_whose_reaction_building_block_is_not_defined_to_a_simulation_reaction_diagram_dto : concern_for_SimulationToSimulationReactionDiagramDTOMapper
    {
-      private IReactionBuildingBlock _reactionBuildingBlock;
-
       protected override void Context()
       {
          base.Context();
-         _reactionBuildingBlock = A.Fake<IReactionBuildingBlock>();
          A.CallTo(() => _reactionBuildingBlockCreator.CreateFor(_simulation)).Returns(_reactionBuildingBlock);
       }
 
