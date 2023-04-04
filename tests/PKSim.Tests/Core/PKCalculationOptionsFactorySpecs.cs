@@ -1,13 +1,14 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
+﻿using System;
 using FakeItEasy;
-using PKSim.Core.Model;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
 using PKCalculationOptionsFactory = PKSim.Core.Services.PKCalculationOptionsFactory;
@@ -124,7 +125,7 @@ namespace PKSim.Core
          _secondMetabolite = "secondMetabolite";
          _appliedCompound = "compound";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
 
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_metabolite1}, _appliedCompound));
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_secondMetabolite}, _metabolite1, _metabolite2));
@@ -196,7 +197,7 @@ namespace PKSim.Core
    {
       protected override void Because()
       {
-         A.CallTo(() => _simulation1.Reactions).Returns(null);
+         A.CallTo(() => _simulation1.Reactions).Returns(Array.Empty<IReactionBuildingBlock>());
       }
 
       [Observation]
@@ -222,7 +223,7 @@ namespace PKSim.Core
          _metabolite2 = "metabolite2";
          _appliedCompound = "compound";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
 
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_metabolite1, _metabolite2}, _appliedCompound));
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_secondMetabolite}, _metabolite1));
@@ -264,7 +265,7 @@ namespace PKSim.Core
             CreateReactionForCompoundAndMetabolite(new[] {_product}, _educt2)
          };
 
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
          CreateMultipleAdministrationForMolecule(_educt1);
          CreateMultipleAdministrationForMolecule(_educt2);
          A.CallTo(() => _simulation1.EndTime).Returns(1000);
@@ -293,7 +294,7 @@ namespace PKSim.Core
          _secondMetabolite2 = "secondMetabolite2";
          _appliedCompound = "compound";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
 
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_metabolite1}, _appliedCompound));
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_secondMetabolite, _secondMetabolite2}, _metabolite1));
@@ -331,13 +332,14 @@ namespace PKSim.Core
          _compoundName = "compound";
          _secondMetaboliteName = "secondMetabolite";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
+
 
          var reaction = CreateReactionForCompoundAndMetabolite(new[] {_metaboliteName}, _compoundName);
-         _simulation1.Reactions.Add(reaction);
+         _reactionBuildingBlock.Add(reaction);
 
          reaction = CreateReactionForCompoundAndMetabolite(new[] {_secondMetaboliteName}, _metaboliteName);
-         _simulation1.Reactions.Add(reaction);
+        _reactionBuildingBlock.Add(reaction);
 
          CreateMultipleAdministrationForMolecule(_compoundName);
          A.CallTo(() => _simulation1.EndTime).Returns(1000);
@@ -417,11 +419,10 @@ namespace PKSim.Core
          _options.LastMinusOneInterval.StartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
       }
 
-
       [Observation]
       public void should_return_the_expected_dose_for_all_intervals()
       {
-         _options.FirstInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value/_simulation1.BodyWeight.Value);
+         _options.FirstInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value / _simulation1.BodyWeight.Value);
          _options.LastMinusOneInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value / _simulation1.BodyWeight.Value);
          _options.LastInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass2.Value / _simulation1.BodyWeight.Value);
       }

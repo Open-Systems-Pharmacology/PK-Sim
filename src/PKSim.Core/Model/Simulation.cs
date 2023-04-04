@@ -17,6 +17,8 @@ namespace PKSim.Core.Model
       private readonly ICache<string, UsedBuildingBlock> _usedBuildingBlocks = new Cache<string, UsedBuildingBlock>(bb => bb.TemplateId);
       private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(bb => bb.Id);
       private readonly List<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
+      private readonly List<IReactionBuildingBlock> _allReactions = new List<IReactionBuildingBlock>();
+
       private SimulationProperties _properties;
       private SimulationResults _results;
 
@@ -38,7 +40,7 @@ namespace PKSim.Core.Model
       ///    The reaction building block used to create the simulation. This is only use as meta information
       ///    on model creation for now. Adding <see cref="Reaction" /> to the building block will not change the model structure
       /// </summary>
-      public virtual IReactionBuildingBlock Reactions { get; set; }
+      public virtual IReadOnlyList<IReactionBuildingBlock> Reactions => _allReactions;
 
       protected Simulation() : base(PKSimBuildingBlockType.Simulation)
       {
@@ -164,6 +166,8 @@ namespace PKSim.Core.Model
 
          _usedBuildingBlocks.Add(usedBuildingBlock);
       }
+
+      public virtual void AddReactions(IReactionBuildingBlock reactionBuildingBlock) => _allReactions.Add(reactionBuildingBlock);
 
       /// <summary>
       ///    Remove the building block as used in the simulation
@@ -351,7 +355,7 @@ namespace PKSim.Core.Model
       ///    (true: simulation was performed with current parameters, false: simulation parameters have changed ...)
       /// </summary>
       public virtual bool HasUpToDateResults => Version == ResultsVersion;
-      
+
       public abstract bool HasResults { get; }
 
       /// <summary>
@@ -376,7 +380,7 @@ namespace PKSim.Core.Model
             base.Name = value;
             setName(Model, value);
             setName(Model?.Root, value);
-            setName(Reactions, value);
+            Reactions?.Each(x => setName(x, value));
             setName(Settings, value);
          }
       }
@@ -391,12 +395,14 @@ namespace PKSim.Core.Model
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceSimulation = sourceObject as Simulation;
-         if (sourceSimulation == null) return;
+         if (sourceSimulation == null) 
+            return;
+
          Properties = sourceSimulation.Properties.Clone(cloneManager);
          sourceSimulation.UsedBuildingBlocks.Each(bb => AddUsedBuildingBlock(bb.Clone(cloneManager)));
          Model = cloneManager.Clone(sourceSimulation.Model);
          sourceSimulation.UsedObservedData.Each(data => AddUsedObservedData(data.Clone()));
-         Reactions = cloneManager.Clone(sourceSimulation.Reactions);
+         sourceSimulation.Reactions.Each(x => AddReactions(cloneManager.Clone(x)));
          Settings = cloneManager.Clone(sourceSimulation.Settings);
          ReactionDiagramModel = sourceSimulation.ReactionDiagramModel.CreateCopy();
          OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);

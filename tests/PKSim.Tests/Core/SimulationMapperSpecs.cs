@@ -22,6 +22,7 @@ using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Model.CompoundProperties;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Individual = PKSim.Core.Model.Individual;
+using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;

@@ -25,7 +25,8 @@ namespace PKSim.Core.Mappers
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
       private readonly IParameterQuery _parameterQuery;
 
-      public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory,
+      public IndividualToIndividualBuildingBlockMapper(
+         IObjectBaseFactory objectBaseFactory,
          IEntityPathResolver entityPathResolver,
          IApplicationConfiguration applicationConfiguration,
          ILazyLoadTask lazyLoadTask,
@@ -81,8 +82,6 @@ namespace PKSim.Core.Mappers
          individual.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, individual.Species))
             .Each(x => addCalculationMethodOriginDataToBuildingBlock(buildingBlock, x));
 
-         buildingBlock.OriginData.ValueOrigin = individual.OriginData.ValueOrigin.Clone();
-
          return buildingBlock;
       }
 
@@ -110,7 +109,7 @@ namespace PKSim.Core.Mappers
          if (string.IsNullOrEmpty(value))
             return;
 
-         buildingBlock.OriginData.AddOriginDataItem(new OriginDataItem {Name = key, Value = value});
+         buildingBlock.OriginData.Add(new ExtendedProperty<string> {Name = key, Value = value});
       }
    }
 }

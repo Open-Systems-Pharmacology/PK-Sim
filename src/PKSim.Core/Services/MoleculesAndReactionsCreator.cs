@@ -9,6 +9,7 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
+using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core.Services
 {
@@ -22,7 +23,7 @@ namespace PKSim.Core.Services
       ///    Once the molecules have been created the reaction taking place in the system will be added
       ///    Last, the molecule start values will be set
       /// </summary>
-      void CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation);
+      (MoleculeBuildingBlock moleculeBuildingBlock, IReactionBuildingBlock reactionBuildingBlock) CreateFor(Module module, Simulation simulation);
    }
 
    public class MoleculesAndReactionsCreator : IMoleculesAndReactionsCreator
@@ -40,7 +41,7 @@ namespace PKSim.Core.Services
       private Individual _individual;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
       private IReactionBuildingBlock _reactionBuildingBlock;
-      private SimulationConfiguration _simulationConfiguration;
+      private Module _module;
       private readonly List<string> _allMoleculeNames;
       private readonly List<IMoleculeBuilder> _moleculeWithTurnoverReactions;
       private IPassiveTransportBuildingBlock _passiveTransports;
@@ -80,14 +81,14 @@ namespace PKSim.Core.Services
          _moleculeWithTurnoverReactions = new List<IMoleculeBuilder>();
       }
 
-      public void CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation)
+      public (MoleculeBuildingBlock moleculeBuildingBlock, IReactionBuildingBlock reactionBuildingBlock) CreateFor(Module module, Simulation simulation)
       {
          try
          {
             _simulation = simulation;
             _individual = simulation.Individual;
-            _simulationConfiguration = simulationConfiguration;
-            _passiveTransports = _simulationConfiguration.PassiveTransports;
+            _module = module;
+            _passiveTransports = _module.PassiveTransports;
 
             _moleculeBuildingBlock = _objectBaseFactory.Create<MoleculeBuildingBlock>()
                .WithName(simulation.Name);
@@ -105,15 +106,14 @@ namespace PKSim.Core.Services
 
             addInteractions(simulation);
 
-            _simulationConfiguration.Module.Molecule = _moleculeBuildingBlock;
-            _simulationConfiguration.Module.Reaction = _reactionBuildingBlock;
+            return (_moleculeBuildingBlock, _reactionBuildingBlock);
          }
          finally
          {
             _moleculeBuildingBlock = null;
             _reactionBuildingBlock = null;
             _individual = null;
-            _simulationConfiguration = null;
+            _module = null;
             _passiveTransports = null;
             _simulation = null;
             _allMoleculeNames.Clear();
@@ -132,8 +132,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void addTwoPoreModelsReactionAndMolecules(IReadOnlyList<CompoundProperties> compoundPropertiesList,
-         ModelConfiguration modelConfiguration)
+      private void addTwoPoreModelsReactionAndMolecules(IReadOnlyList<CompoundProperties> compoundPropertiesList, ModelConfiguration modelConfiguration)
       {
          if (modelConfiguration == null)
             return;

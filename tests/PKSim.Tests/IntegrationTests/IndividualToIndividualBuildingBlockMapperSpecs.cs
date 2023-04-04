@@ -32,7 +32,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_properties_of_the_building_block_should_match()
       {
-         var allDataItems = _buildingBlock.OriginData.AllDataItems;
+         var allDataItems = _buildingBlock.OriginData.All;
          allDataItems.ExistsByName("Species").ShouldBeTrue();
          allDataItems.ExistsByName("Population").ShouldBeTrue();
          allDataItems.ExistsByName("Gender").ShouldBeTrue();

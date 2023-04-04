@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -11,7 +12,7 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimMoleculeStartValuesCreator
    {
-      MoleculeStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation);
+      MoleculeStartValuesBuildingBlock CreateFor(Module module, Simulation simulation);
    }
 
    public class PKSimMoleculeStartValuesCreator : IPKSimMoleculeStartValuesCreator
@@ -36,12 +37,12 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public MoleculeStartValuesBuildingBlock CreateFor(SimulationConfiguration simulationConfiguration, Simulation simulation)
+      public MoleculeStartValuesBuildingBlock CreateFor(Module module, Simulation simulation)
       {
          //default molecule start values matrix
          var compounds = simulation.Compounds;
          var individual = simulation.Individual;
-         var defaultStartValues = _moleculeStartValuesCreator.CreateFrom(simulationConfiguration.SpatialStructure, simulationConfiguration.Molecules);
+         var defaultStartValues = _moleculeStartValuesCreator.CreateFrom(module.SpatialStructure, module.Molecules);
 
          //set available start formulas for molecules
          setStartFormulasForStaticMolecules(defaultStartValues, simulation, compounds);

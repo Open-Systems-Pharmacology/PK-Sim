@@ -102,7 +102,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
 
       public void Visit(Simulation simulation)
       {
-         clearFormulaCacheInReactionBuildingBlock(simulation.Reactions);
+         simulation.Reactions?.Each(clearFormulaCacheInReactionBuildingBlock);
          updateMoleculeAmountNegativeValuesAllowed(simulation.Model.Root);
          simulation.AllBuildingBlocks<Formulation>().Each(Visit);
          _converted = true;

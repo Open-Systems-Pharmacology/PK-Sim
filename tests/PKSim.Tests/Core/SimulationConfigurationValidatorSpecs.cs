@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core
 {

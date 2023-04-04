@@ -20,16 +20,34 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
          _converted = false;
          if (element.Name.IsOneOf("PopulationSimulation", "IndividualSimulation"))
          {
-            renameSimulationSettings(element);
-            _converted = true;
+            convertSimulationElement(element);
          }
 
          return (ProjectVersions.V12, _converted);
       }
 
-      private void renameSimulationSettings(XElement element)
+      private void convertSimulationElement(XElement simulationElement)
       {
-         foreach (var settingsElement in element.Descendants("SimulationSettings").ToList())
+         renameSimulationSettings(simulationElement);
+         restructureReactions(simulationElement);
+         _converted = true;
+      }
+
+      private void restructureReactions(XElement simulationElement)
+      {
+         var reactionNode = simulationElement.Element("Reactions");
+         if (reactionNode == null)
+            return;
+
+         reactionNode.Name = "ReactionBuildingBlock";
+         var reactions = new XElement("Reactions");
+         reactions.Add(reactionNode);
+         simulationElement.Add(reactions);
+      }
+
+      private void renameSimulationSettings(XElement simulationElement)
+      {
+         foreach (var settingsElement in simulationElement.Descendants("SimulationSettings").ToList())
          {
             settingsElement.Name = "Settings";
          }

@@ -15,10 +15,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.Properties);
          Map(x => x.Model);
          Map(x => x.ReactionDiagramModel);
-         Map(x => x.Reactions);
-         //TODO add project conversion here
          Map(x => x.Settings);
          Map(x => x.OutputMappings);
+         MapEnumerable(x => x.Reactions, x => x.AddReactions);
          MapEnumerable(x => x.UsedBuildingBlocks, x => x.AddUsedBuildingBlock);
          MapEnumerable(x => x.UsedObservedData, x => x.AddUsedObservedData);
 
