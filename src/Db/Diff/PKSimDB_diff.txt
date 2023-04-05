@@ -1,1 +1,1 @@
-UPDATE tab_container_parameter_values SET default_value=124000.0 WHERE parameter_value_version='InVitroClearance_PKSim' AND species='Cattle' AND container_id=159 AND container_type='ORGAN' AND container_name='Liver' AND parameter_name='Number of cells/g tissue';
+
