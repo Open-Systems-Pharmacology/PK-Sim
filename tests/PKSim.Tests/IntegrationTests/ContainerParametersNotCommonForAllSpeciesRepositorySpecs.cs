@@ -3,6 +3,7 @@ using System.Linq;
 using FluentNHibernate.Utils;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.IntegrationTests
@@ -13,7 +14,7 @@ namespace PKSim.IntegrationTests
 
    public class When_retrieving_parameters_not_common_for_all_species_from_the_repository : concern_for_ContainerParametersNotCommonForAllSpeciesRepository
    {
-      private IEnumerable<(string ContainerPath, string ParameterName, int SpeciesCount)> _result;
+      private IEnumerable<ContainerParameterBySpecies> _result;
 
       protected override void Because()
       {
@@ -50,6 +51,18 @@ namespace PKSim.IntegrationTests
       public void weight_parameter_should_be_defined_for_all_species()
       {
          sut.UsedForAllSpecies("Organism", "Weight").ShouldBeTrue();
+      }
+
+      [Observation]
+      public void age_parameter_should_be_defined_not_for_all_species_when_queried_by_full_path()
+      {
+         sut.UsedForAllSpecies("Organism|Age").ShouldBeFalse();
+      }
+
+      [Observation]
+      public void weight_parameter_should_be_defined_for_all_species_when_queried_by_full_path()
+      {
+         sut.UsedForAllSpecies("Organism|Weight").ShouldBeTrue();
       }
    }
 }
