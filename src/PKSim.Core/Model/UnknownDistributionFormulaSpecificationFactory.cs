@@ -14,12 +14,12 @@ namespace PKSim.Core.Model
          _objectBaseFactory = objectBaseFactory;
       }
 
-      public IDistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
+      public DistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
       {
          throw new PKSimException("Should not be called");
       }
 
-      public IDistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
+      public DistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
       {
          return _objectBaseFactory.Create<UnknownDistributionFormula>();
       }

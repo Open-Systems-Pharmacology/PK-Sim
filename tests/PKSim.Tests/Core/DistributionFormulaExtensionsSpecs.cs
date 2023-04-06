@@ -1,16 +1,16 @@
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
+using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain.Formulas;
+using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core
 {
    public class When_retrieving_the_distribution_type_for_a_formula : StaticContextSpecification
    {
-      private IDistributionFormula _normalDistributionFormula;
-      private IDistributionFormula _logNormalDistributionFormula;
+      private DistributionFormula _normalDistributionFormula;
+      private DistributionFormula _logNormalDistributionFormula;
       private UniformDistributionFormula _uniformDistributionFormula;
 
       protected override void Context()

@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Model;
 using FakeItEasy;
+using DistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 using IDistributionFormulaFactory = OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory;
 
 namespace PKSim.Core
@@ -37,12 +38,18 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _normalDistribution1 = new ParameterDistributionMetaData();
-         _normalDistribution1.DistributionType = CoreConstants.Distribution.Normal;
-         _normalDistribution2 = new ParameterDistributionMetaData();
-         _normalDistribution2.DistributionType = CoreConstants.Distribution.Normal;
-         _logNormalDistribution = new ParameterDistributionMetaData();
-         _logNormalDistribution.DistributionType = CoreConstants.Distribution.LogNormal;
+         _normalDistribution1 = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.Normal
+         };
+         _normalDistribution2 = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.Normal
+         };
+         _logNormalDistribution = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.LogNormal
+         };
          _onlyNormalDistributions = new List<ParameterDistributionMetaData> {_normalDistribution1, _normalDistribution2};
          _mixedDistributions = new List<ParameterDistributionMetaData> {_normalDistribution1, _logNormalDistribution};
       }
@@ -66,7 +73,7 @@ namespace PKSim.Core
       protected IEnumerable<ParameterDistributionMetaData> _normalDistributions;
       protected ParameterDistributionMetaData _normalDistribution1;
       protected ParameterDistributionMetaData _normalDistribution2;
-      protected IDistributionFormula _resultingDistribution;
+      protected DistributionFormula _resultingDistribution;
       protected IDistributedParameter _parameter;
       protected OriginData _originData;
 

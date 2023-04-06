@@ -36,12 +36,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Create and returns a distribution formula based on the given <paramref name="distributions" /> .
       /// </summary>
-      IDistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData);
+      DistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData);
 
       /// <summary>
       ///    Create and returns a distribution formula based on the given <paramref name="distributionMetaData" /> .
       /// </summary>
-      IDistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution);
+      DistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution);
 
       /// <summary>
       ///    Creates and returns a constant formula based on the <paramref name="valueDefinition" />
@@ -426,7 +426,7 @@ namespace PKSim.Core.Model
          formula.AddObjectPath(_objectPathFactory.CreateTimePath(_dimensionRepository.Time));
       }
 
-      public IDistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution)
+      public DistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution)
       {
          return _distributionFactory.CreateFor(distributionMetaData, parameterWithDistribution);
       }
@@ -436,7 +436,7 @@ namespace PKSim.Core.Model
          return constantFormula(valueDefinition);
       }
 
-      public IDistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData)
+      public DistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData)
       {
          return _distributionFactory.CreateFor(distributions, parameterWithDistribution, originData);
       }

@@ -24,11 +24,11 @@ namespace PKSim.Core.Services
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IContainerTask _containerTask;
 
-      public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask, 
-         IModelConstructor modelConstructor, 
+      public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask,
+         IModelConstructor modelConstructor,
          IParameterIdUpdater parameterIdUpdater,
-         ISimulationSettingsFactory simulationSettingsFactory, 
-         ISimulationPersistableUpdater simulationPersistableUpdater, 
+         ISimulationSettingsFactory simulationSettingsFactory,
+         ISimulationPersistableUpdater simulationPersistableUpdater,
          ISimulationConfigurationValidator simulationConfigurationValidator,
          IEntityPathResolver entityPathResolver,
          IContainerTask containerTask)
@@ -97,7 +97,6 @@ namespace PKSim.Core.Services
 
          _simulationPersistableUpdater.ResetPersistable(simulation);
       }
-
 
       private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual)
       {

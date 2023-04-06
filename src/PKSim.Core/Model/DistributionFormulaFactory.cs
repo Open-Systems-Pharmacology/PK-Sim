@@ -10,8 +10,8 @@ namespace PKSim.Core.Model
 {
    public interface IDistributionFormulaFactory
    {
-      IDistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData);
-      IDistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter);
+      DistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData);
+      DistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter);
       void UpdateDistributionBasedOn(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, IDistributedParameter baseParameter, OriginData originData);
    }
 
@@ -30,7 +30,7 @@ namespace PKSim.Core.Model
          _allDistributionFactory = repository.All();
       }
 
-      public IDistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
+      public DistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
       {
          var allDistributions = distributions.ToList();
          foreach (var factory in _allDistributionFactory)
@@ -42,7 +42,7 @@ namespace PKSim.Core.Model
          throw new DistributionNotFoundException(parameter, _reportGenerator.StringReportFor(originData));
       }
 
-      public IDistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
+      public DistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
       {
          foreach (var factory in _allDistributionFactory)
          {

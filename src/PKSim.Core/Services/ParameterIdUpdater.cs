@@ -132,7 +132,7 @@ namespace PKSim.Core.Services
       {
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
 
-         //also need to update in all buildign blocks of the simulation
+         //also need to update in all building blocks of the simulation
          simulation.UsedBuildingBlocks.Each(bb => { bb.BuildingBlock.GetAllChildren<IParameter>().Each(p => p.Origin.SimulationId = simulation.Id); });
       }
    }

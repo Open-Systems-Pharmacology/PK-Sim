@@ -7,7 +7,7 @@ namespace PKSim.Core.Model.Extensions
 {
    public static class DistributionFormulaExtensions
    {
-      public static DistributionType DistributionType(this IDistributionFormula formula)
+      public static DistributionType DistributionType(this DistributionFormula formula)
       {
          if (formula.IsAnImplementationOf<NormalDistributionFormula>())
             return DistributionTypes.Normal;

@@ -18,13 +18,13 @@ namespace PKSim.Core.Model
          _distributionFormulaFactory = distributionFormulaFactory;
       }
 
-      public IDistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
+      public DistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
       {
          UpdateDistributionBasedOn(distributions, parameter, null, originData);
          return _distributionFormulaFactory.CreateLogNormalDistributionFormulaFor(parameter, parameter.MeanParameter, parameter.DeviationParameter);
       }
 
-      public IDistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
+      public DistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
       {
          parameter.MeanParameter.Value = distribution.Mean;
          parameter.DeviationParameter.Value = distribution.Deviation;

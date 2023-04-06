@@ -24,21 +24,19 @@ namespace PKSim.Core.Model
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IModelContainerQuery _modelContainerQuery;
       private readonly IModelNeighborhoodQuery _modelNeighborhoodQuery;
-      private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
 
       public PKSimSpatialStructureFactory(
-         IObjectBaseFactory objectBaseFactory, 
+         IObjectBaseFactory objectBaseFactory,
          IParameterContainerTask parameterContainerTask,
-         IModelContainerQuery modelContainerQuery, 
+         IModelContainerQuery modelContainerQuery,
          IModelNeighborhoodQuery modelNeighborhoodQuery,
-         IParameterSetUpdater parameterSetUpdater, 
          IParameterIdUpdater parameterIdUpdater,
-         INeighborhoodFinalizer neighborhoodFinalizer, 
-         IEntityPathResolver entityPathResolver, 
+         INeighborhoodFinalizer neighborhoodFinalizer,
+         IEntityPathResolver entityPathResolver,
          IParameterDefaultStateUpdater parameterDefaultStateUpdater) : base(objectBaseFactory)
 
       {
@@ -46,7 +44,6 @@ namespace PKSim.Core.Model
          _parameterContainerTask = parameterContainerTask;
          _modelContainerQuery = modelContainerQuery;
          _modelNeighborhoodQuery = modelNeighborhoodQuery;
-         _parameterSetUpdater = parameterSetUpdater;
          _parameterIdUpdater = parameterIdUpdater;
          _neighborhoodFinalizer = neighborhoodFinalizer;
          _entityPathResolver = entityPathResolver;
@@ -76,7 +73,7 @@ namespace PKSim.Core.Model
          updateParameterFromIndividual(spatialStructure, individual);
 
          _parameterDefaultStateUpdater.UpdateDefaultFor(spatialStructure);
-         
+
          return spatialStructure;
       }
 
@@ -87,9 +84,7 @@ namespace PKSim.Core.Model
          var allContainerParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.TopContainers.SelectMany(x => x.GetAllChildren<IParameter>()));
          var allNeighborhoodParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.Neighborhoods.SelectMany(x => x.GetAllChildren<IParameter>()));
 
-         _parameterSetUpdater.UpdateValues(allIndividualParameters, allContainerParameters);
-         _parameterSetUpdater.UpdateValues(allIndividualParameters, allNeighborhoodParameters);
-
+         //TODO also probably not required
          _parameterIdUpdater.UpdateBuildingBlockId(allContainerParameters, individual);
          _parameterIdUpdater.UpdateBuildingBlockId(allNeighborhoodParameters, individual);
 

@@ -15,7 +15,7 @@ namespace PKSim.Core.Mappers
          if (formula == null)
             return FormulaType.Constant;
 
-         if (formula.IsAnImplementationOf<IDistributionFormula>())
+         if (formula.IsAnImplementationOf<DistributionFormula>())
             return FormulaType.Distribution;
 
          if (formula.IsAnImplementationOf<TableFormula>())
