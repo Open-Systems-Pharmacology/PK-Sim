@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
 namespace PKSim.Core.Model
@@ -39,7 +40,7 @@ namespace PKSim.Core.Model
          IParameterIdUpdater parameterIdUpdater,
          INeighborhoodFinalizer neighborhoodFinalizer, 
          IEntityPathResolver entityPathResolver, 
-         IParameterDefaultStateUpdater parameterDefaultStateUpdater) : base(objectBaseFactory)
+         IParameterDefaultStateUpdater parameterDefaultStateUpdater ) : base(objectBaseFactory)
 
       {
          _objectBaseFactory = objectBaseFactory;
@@ -87,8 +88,8 @@ namespace PKSim.Core.Model
          var allContainerParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.TopContainers.SelectMany(x => x.GetAllChildren<IParameter>()));
          var allNeighborhoodParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.Neighborhoods.SelectMany(x => x.GetAllChildren<IParameter>()));
 
-         _parameterSetUpdater.UpdateValues(allIndividualParameters, allContainerParameters);
-         _parameterSetUpdater.UpdateValues(allIndividualParameters, allNeighborhoodParameters);
+         // _parameterSetUpdater.UpdateValues(allIndividualParameters, allContainerParameters);
+         // _parameterSetUpdater.UpdateValues(allIndividualParameters, allNeighborhoodParameters);
 
          _parameterIdUpdater.UpdateBuildingBlockId(allContainerParameters, individual);
          _parameterIdUpdater.UpdateBuildingBlockId(allNeighborhoodParameters, individual);

@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
@@ -62,6 +63,30 @@ namespace PKSim.Core.Mappers
       protected override IReadOnlyList<IParameter> AllParametersFor(Individual individual)
       {
          return individual.GetAllChildren<IParameter>().Where(x => x.GroupName != CoreConstants.Groups.RELATIVE_EXPRESSION).ToList();
+      }
+
+      public override IndividualParameter MapParameter(IParameter parameter, Individual individual)
+      {
+         var individualParameter = base.MapParameter(parameter, individual);
+         individualParameter.Info = parameter.Info.Clone();
+         individualParameter.Origin = new ParameterOrigin
+         {
+            ParameterId = parameter.Id,
+            BuilingBlockId = individual.Id,
+         };
+
+         return individualParameter;
+      }
+
+      protected override void MapFormulaOrValue(IParameter parameter, IndividualParameter builderParameter, Individual pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
+      {
+         base.MapFormulaOrValue(parameter, builderParameter, pkSimBuildingBlock, formulaCache);
+         switch (parameter.Formula)
+         {
+            case DistributionFormula distributionFormula:
+               builderParameter.DistributionType = distributionFormula.DistributionType().Id;
+               break;
+         }
       }
 
       public override IndividualBuildingBlock MapFrom(Individual individual)

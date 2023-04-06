@@ -12,7 +12,7 @@ namespace PKSim.Core.Model
       }
 
       public DistributionNotFoundException(IDistributionMetaData distributionMetaData) :
-         base(PKSimConstants.Error.DistributionUnknown(distributionMetaData.Distribution.Id))
+         base(PKSimConstants.Error.DistributionUnknown(distributionMetaData.Distribution.DisplayName))
       {
       }
    }

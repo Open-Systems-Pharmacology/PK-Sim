@@ -154,7 +154,7 @@ namespace PKSim.Core.Model
          return create(distributionMetaData, p => _formulaFactory.DistributionFor(distributionMetaData, p));
       }
 
-      private IDistributedParameter create(ParameterDistributionMetaData distributionMetaData, Func<IDistributedParameter, IDistributionFormula> createFormula)
+      private IDistributedParameter create(ParameterDistributionMetaData distributionMetaData, Func<IDistributedParameter, DistributionFormula> createFormula)
       {
          var parameter = _objectBaseFactory.CreateDistributedParameter();
          setParameterProperties(parameter, distributionMetaData);
@@ -250,7 +250,7 @@ namespace PKSim.Core.Model
       {
          parameter.Name = parameterMetaData.ParameterName;
          parameter.BuildMode = parameterMetaData.BuildMode;
-         parameter.Info = parameterMetaData.Clone();
+         parameter.Info.UpdatePropertiesFrom(parameterMetaData);
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
          parameter.IsDefault = parameterMetaData.IsDefault;
          parameter.ValueOrigin.UpdateAllFrom(parameterMetaData.ValueOrigin);

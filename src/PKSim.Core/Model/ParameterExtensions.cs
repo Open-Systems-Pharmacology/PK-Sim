@@ -62,7 +62,7 @@ namespace PKSim.Core.Model
 
       public static TParameter WithInfo<TParameter>(this TParameter parameter, ParameterInfo info) where TParameter : IParameter
       {
-         parameter.Info = info;
+         parameter.Info.UpdatePropertiesFrom(info);
          return parameter;
       }
 

@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Utility.Collections;
 using PKSim.Assets;
+using CoreDistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 
 namespace PKSim.Core.Model
 {
    public static class DistributionTypes
    {
-      private static readonly ICache<string, DistributionType> _allDistributionTypes = new Cache<string, DistributionType>(dist => dist.Id);
+      private static readonly ICache<CoreDistributionType, DistributionType> _allDistributionTypes = new Cache<CoreDistributionType, DistributionType>(dist => dist.Id);
 
-      public static DistributionType Normal = create(CoreConstants.Distribution.Normal, PKSimConstants.UI.Normal);
-      public static DistributionType LogNormal = create(CoreConstants.Distribution.LogNormal, PKSimConstants.UI.LogNormal);
-      public static DistributionType Uniform = create(CoreConstants.Distribution.Uniform, PKSimConstants.UI.Uniform);
-      public static DistributionType Discrete = create(CoreConstants.Distribution.Discrete, PKSimConstants.UI.Discrete);
-      public static DistributionType Unknown = create(CoreConstants.Distribution.Unknown, PKSimConstants.UI.Unknown);
+      public static DistributionType Normal = create(CoreDistributionType.Normal, PKSimConstants.UI.Normal);
+      public static DistributionType LogNormal = create(CoreDistributionType.LogNormal, PKSimConstants.UI.LogNormal);
+      public static DistributionType Uniform = create(CoreDistributionType.Uniform, PKSimConstants.UI.Uniform);
+      public static DistributionType Discrete = create(CoreDistributionType.Discrete, PKSimConstants.UI.Discrete);
+      public static DistributionType Unknown = create(CoreDistributionType.Unknown, PKSimConstants.UI.Unknown);
 
-      private static DistributionType create(string id, string displayName)
+      private static DistributionType create(CoreDistributionType id, string displayName)
       {
          var distributionType = new DistributionType(id, displayName);
          _allDistributionTypes.Add(distributionType);
@@ -26,9 +27,9 @@ namespace PKSim.Core.Model
          return _allDistributionTypes;
       }
 
-      public static DistributionType ById(string distributionId)
+      public static DistributionType ById(CoreDistributionType distributionType)
       {
-         return _allDistributionTypes[distributionId];
+         return _allDistributionTypes[distributionType];
       }
    }
 
@@ -37,11 +38,11 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    distribution id as defined in the PKSim Database
       /// </summary>
-      public string Id { get; }
+      public CoreDistributionType Id { get; }
 
       public string DisplayName { get; }
 
-      public DistributionType(string id, string displayName)
+      public DistributionType(CoreDistributionType id, string displayName)
       {
          Id = id;
          DisplayName = displayName;

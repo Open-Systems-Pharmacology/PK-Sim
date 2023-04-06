@@ -19,13 +19,13 @@ namespace PKSim.Core.Model
          _distributionFormulaFactory = distributionFormulaFactory;
       }
 
-      public IDistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
+      public DistributionFormula CreateFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameter, OriginData originData)
       {
          UpdateDistributionBasedOn(distributions, parameter, null, originData);
          return _distributionFormulaFactory.CreateUniformDistributionFormulaFor(parameter, parameter.Parameter(Constants.Distribution.MINIMUM), parameter.Parameter(Constants.Distribution.MAXIMUM));
       }
 
-      public IDistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
+      public DistributionFormula CreateFor(IDistributionMetaData distribution, IDistributedParameter parameter)
       {
          var minParameter = parameter.Parameter(Constants.Distribution.MINIMUM);
          var maxParameter = parameter.Parameter(Constants.Distribution.MAXIMUM);

@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -114,12 +113,17 @@ namespace PKSim.Core
          var caecum = new Compartment().WithName("Caecum").WithId("Caecum");
          var dimension = Constants.Dimension.NO_DIMENSION;
 
-         var parameterLiver = new PKSimParameter().WithName("PLiver").WithId("PLiverId").WithFormula(new ExplicitFormula("1").WithId("1").WithName("1")).WithDimension(dimension);
-         parameterLiver.Info = new ParameterValueMetaData {DefaultValue = 1};
-         var parameterKidney = new PKSimParameter().WithName("PKidney").WithId("PKidneyId").WithFormula(new ExplicitFormula("2").WithId("2").WithName("2")).WithDimension(dimension);
-         parameterKidney.Info = new ParameterValueMetaData {DefaultValue = 2};
-         var parameterOrganism = new PKSimParameter().WithName(ParameterInOrganism).WithId("POrganismId").WithFormula(new ExplicitFormula("3").WithId("3").WithName("3")).WithDimension(dimension);
-         parameterOrganism.Info = new ParameterValueMetaData {DefaultValue = 3};
+         var parameterLiver = new PKSimParameter().WithName("PLiver").WithId("PLiverId").WithFormula(new ExplicitFormula("1").WithId("1").WithName("1")).WithDimension(dimension)
+            .WithInfo(new ParameterValueMetaData {DefaultValue = 1});
+         var parameterKidney = new PKSimParameter().WithName("PKidney")
+            .WithId("PKidneyId")
+            .WithFormula(new ExplicitFormula("2").WithId("2").WithName("2"))
+            .WithDimension(dimension)
+            .WithInfo(new ParameterValueMetaData {DefaultValue = 2});
+
+         var parameterOrganism = new PKSimParameter().WithName(ParameterInOrganism).WithId("POrganismId").WithFormula(new ExplicitFormula("3").WithId("3").WithName("3")).WithDimension(dimension)
+            .WithInfo(new ParameterValueMetaData {DefaultValue = 3});
+
          organLiver.Add(parameterLiver);
          organKidney.Add(parameterKidney);
          organism.Add(organLiver);

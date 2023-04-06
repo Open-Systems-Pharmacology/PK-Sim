@@ -1,4 +1,5 @@
 using OSPSuite.Utility.Extensions;
+using CoreDistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 
 namespace PKSim.Core.Model
 {
@@ -9,7 +10,7 @@ namespace PKSim.Core.Model
       public string Gender { get; set; }
       public double Age { get; set; }
       public double GestationalAge { get; set; }
-      public string DistributionType { get; set; }
+      public CoreDistributionType DistributionType { get; set; }
       public double Mean { get; set; }
       public double Deviation { get; set; }
 

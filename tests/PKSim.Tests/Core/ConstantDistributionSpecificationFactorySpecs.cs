@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Maths.Interpolations;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
+using DistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 using IDistributionFormulaFactory = OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory;
 
 namespace PKSim.Core
@@ -36,12 +37,18 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _discreteDistribution1 = new ParameterDistributionMetaData();
-         _discreteDistribution1.DistributionType = CoreConstants.Distribution.Discrete;
-         _discreteDistribution2 = new ParameterDistributionMetaData();
-         _discreteDistribution2.DistributionType = CoreConstants.Distribution.Discrete;
-         _logNormalDistribution = new ParameterDistributionMetaData();
-         _logNormalDistribution.DistributionType = CoreConstants.Distribution.LogNormal;
+         _discreteDistribution1 = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.Discrete
+         };
+         _discreteDistribution2 = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.Discrete
+         };
+         _logNormalDistribution = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.LogNormal
+         };
          _onlyDiscreteDistributions = new List<ParameterDistributionMetaData> {_discreteDistribution1, _discreteDistribution2};
          _mixedDistributions = new List<ParameterDistributionMetaData> {_discreteDistribution1, _logNormalDistribution};
       }
@@ -64,7 +71,7 @@ namespace PKSim.Core
       protected IEnumerable<ParameterDistributionMetaData> _discreteDistributions;
       protected ParameterDistributionMetaData _discreteDistribution1;
       protected ParameterDistributionMetaData _discreteDistribution2;
-      protected IDistributionFormula _resultingDistribution;
+      protected DistributionFormula _resultingDistribution;
       protected IDistributedParameter _parameter;
       protected OriginData _originData;
 

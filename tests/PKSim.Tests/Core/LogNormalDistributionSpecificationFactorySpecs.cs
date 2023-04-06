@@ -5,6 +5,7 @@ using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Model;
 using FakeItEasy;
+using DistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 using IDistributionFormulaFactory = OSPSuite.Core.Domain.Formulas.IDistributionFormulaFactory;
 
 namespace PKSim.Core
@@ -34,12 +35,18 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _logNormalDistribution1 = new ParameterDistributionMetaData();
-         _logNormalDistribution1.DistributionType = CoreConstants.Distribution.LogNormal; 
-         _logNormalDistribution2 = new ParameterDistributionMetaData();
-         _logNormalDistribution2.DistributionType = CoreConstants.Distribution.LogNormal;
-         _normalDistribution = new ParameterDistributionMetaData();
-         _normalDistribution.DistributionType = CoreConstants.Distribution.Normal;
+         _logNormalDistribution1 = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.LogNormal
+         };
+         _logNormalDistribution2 = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.LogNormal
+         };
+         _normalDistribution = new ParameterDistributionMetaData
+         {
+            DistributionType = DistributionType.Normal
+         };
          _onlyLogNormalDistributions = new List<ParameterDistributionMetaData> {_logNormalDistribution1, _logNormalDistribution2};
          _mixedDistributions = new List<ParameterDistributionMetaData> {_logNormalDistribution1, _normalDistribution};
       }

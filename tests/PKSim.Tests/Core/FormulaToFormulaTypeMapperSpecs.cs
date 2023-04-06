@@ -24,11 +24,11 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.MapFrom(A.Fake<IDistributionFormula>());
+         _result = sut.MapFrom(A.Fake<DistributionFormula>());
       }
 
       [Observation]
-      public void the_returned_formula_type_shouyld_be_distribution()
+      public void the_returned_formula_type_should_be_distribution()
       {
          _result.ShouldBeEqualTo(FormulaType.Distribution);
       }

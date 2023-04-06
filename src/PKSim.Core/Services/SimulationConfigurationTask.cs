@@ -122,7 +122,6 @@ namespace PKSim.Core.Services
          //STEP11 Convert all parameters to table if required
          _distributedParameterToTableParameterConverter.UpdateSimulationConfigurationForAging(simulationConfiguration, simulation, createAgingDataInSimulation);
 
-
          return simulationConfiguration;
       }
    }
