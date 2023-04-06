@@ -123,7 +123,7 @@ namespace PKSim.Core.Services
          var ageParameter = organism.Parameter(CoreConstants.Parameters.AGE);
          var minToYearFactor = _timeDimension.BaseUnitValueToUnitValue(_yearUnit, 1);
       
-         //dummy parameters that will; be added to the individualBuildingBlock. We use a dummy organism to ensure the path of dynamic parameters are correct
+         //dummy parameters that will be added to the individualBuildingBlock. We use a dummy organism to ensure the path of dynamic parameters are correct
          var dummyOrganism = new Organism();
          var age0Parameter =  _parameterFactory.CreateFor(CoreConstants.Parameters.AGE_0, ageParameter.Value, ageParameter.Dimension.Name, PKSimBuildingBlockType.Simulation);
          age0Parameter.DisplayUnit = ageParameter.DisplayUnit;
