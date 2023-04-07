@@ -24,7 +24,6 @@ namespace PKSim.Core.Model
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IModelContainerQuery _modelContainerQuery;
       private readonly IModelNeighborhoodQuery _modelNeighborhoodQuery;
-      private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
@@ -34,7 +33,6 @@ namespace PKSim.Core.Model
          IParameterContainerTask parameterContainerTask,
          IModelContainerQuery modelContainerQuery,
          IModelNeighborhoodQuery modelNeighborhoodQuery,
-         IParameterIdUpdater parameterIdUpdater,
          INeighborhoodFinalizer neighborhoodFinalizer,
          IEntityPathResolver entityPathResolver,
          IParameterDefaultStateUpdater parameterDefaultStateUpdater) : base(objectBaseFactory)
@@ -44,7 +42,6 @@ namespace PKSim.Core.Model
          _parameterContainerTask = parameterContainerTask;
          _modelContainerQuery = modelContainerQuery;
          _modelNeighborhoodQuery = modelNeighborhoodQuery;
-         _parameterIdUpdater = parameterIdUpdater;
          _neighborhoodFinalizer = neighborhoodFinalizer;
          _entityPathResolver = entityPathResolver;
          _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
@@ -83,10 +80,6 @@ namespace PKSim.Core.Model
          var allIndividualParameters = new PathCache<IParameter>(_entityPathResolver).For(individual.GetAllChildren<IParameter>());
          var allContainerParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.TopContainers.SelectMany(x => x.GetAllChildren<IParameter>()));
          var allNeighborhoodParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.Neighborhoods.SelectMany(x => x.GetAllChildren<IParameter>()));
-
-         //TODO also probably not required
-         _parameterIdUpdater.UpdateBuildingBlockId(allContainerParameters, individual);
-         _parameterIdUpdater.UpdateBuildingBlockId(allNeighborhoodParameters, individual);
 
          copyParameterTags(allIndividualParameters, allContainerParameters);
          copyParameterTags(allIndividualParameters, allNeighborhoodParameters);
