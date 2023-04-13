@@ -20,7 +20,7 @@ namespace PKSim.Core.Services
       void AddActiveProcessParametersTo(CompoundProcess process);
       void AddProcessBuilderParametersTo(IContainer process);
       void AddFormulationParametersTo(Formulation formulation);
-      void AddMoleculeParametersTo(IMoleculeBuilder molecule, IFormulaCache formulaCache);
+      void AddMoleculeParametersTo(MoleculeBuilder molecule, IFormulaCache formulaCache);
       void AddApplicationParametersTo(IContainer container);
       void AddSchemaItemParametersTo(ISchemaItem schemaItem);
       void AddEventParametersTo(IContainer container);
@@ -28,7 +28,7 @@ namespace PKSim.Core.Services
       void AddDiseaseStateParametersTo(DiseaseState diseaseState);
 
       void AddModelParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer;
-      void AddApplicationTransportParametersTo(ITransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache);
+      void AddApplicationTransportParametersTo(TransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache);
    }
 
    public class ParameterContainerTask : IParameterContainerTask
@@ -75,7 +75,7 @@ namespace PKSim.Core.Services
          addParametersTo(process, null, CoreConstants.CalculationMethod.ForProcesses);
       }
 
-      public void AddApplicationTransportParametersTo(ITransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache)
+      public void AddApplicationTransportParametersTo(TransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache)
       {
          //assuming that all application transports are located directly under
          //the application container
@@ -119,7 +119,7 @@ namespace PKSim.Core.Services
          formulation.Root.Name = oldName;
       }
 
-      public void AddMoleculeParametersTo(IMoleculeBuilder molecule, IFormulaCache formulaCache)
+      public void AddMoleculeParametersTo(MoleculeBuilder molecule, IFormulaCache formulaCache)
       {
          addParametersTo(molecule, null, CoreConstants.CalculationMethod.ForCompounds, x => true, formulaCache);
       }

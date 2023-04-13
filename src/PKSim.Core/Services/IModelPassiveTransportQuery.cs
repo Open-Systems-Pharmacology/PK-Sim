@@ -8,6 +8,6 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Return the passive transports building block defined for the given simulation
       /// </summary>
-      IPassiveTransportBuildingBlock AllPassiveTransportsFor(Simulation simulation);
+      PassiveTransportBuildingBlock AllPassiveTransportsFor(Simulation simulation);
    }
 }

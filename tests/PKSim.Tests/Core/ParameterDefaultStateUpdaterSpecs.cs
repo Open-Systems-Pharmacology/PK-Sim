@@ -17,7 +17,7 @@ namespace PKSim.Core
 
    public class When_updating_the_parameter_default_state_of_a_spatial_structure : concern_for_ParameterDefaultStateUpdater
    {
-      private ISpatialStructure _spatialStructure;
+      private SpatialStructure _spatialStructure;
       private IContainer _organism;
       private IContainer _anotherTopContainer;
       private IParameter _ga;
@@ -86,17 +86,17 @@ namespace PKSim.Core
 
    public class When_updating_the_parameter_default_state_of_an_event_building_block : concern_for_ParameterDefaultStateUpdater
    {
-      private IEventGroupBuildingBlock _eventBuildingBlockCreator;
-      private IEventGroupBuilder _eventGroupBuilder1;
-      private IEventGroupBuilder _eventGroupBuilder2;
+      private EventGroupBuildingBlock _eventBuildingBlockCreator;
+      private EventGroupBuilder _eventGroupBuilder1;
+      private EventGroupBuilder _eventGroupBuilder2;
       private IParameter _startTime1;
       private IParameter _startTime2;
       private IParameter _dose;
       private IParameter _dosePerBodyWeight;
       private IParameter _p1;
       private IParameter _p2;
-      private IEventBuilder _eventBuilder1;
-      private IEventBuilder _eventBuilder2;
+      private EventBuilder _eventBuilder1;
+      private EventBuilder _eventBuilder2;
 
       protected override void Context()
       {

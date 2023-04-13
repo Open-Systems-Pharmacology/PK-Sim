@@ -13,7 +13,6 @@ using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using static OSPSuite.Core.Domain.Constants;
 using ContainerExtensions = PKSim.Core.Model.ContainerExtensions;
-using ContainerType = OSPSuite.Core.Domain.ContainerType;
 
 namespace PKSim.Core.Mappers
 {
@@ -142,8 +141,8 @@ namespace PKSim.Core.Mappers
          else if (!pathElements.Contains(PathElementId.BottomCompartment))
             adjustDisplayPathForContainerObserver(pathElements, quantity);
 
-         else if (quantity.IsAnImplementationOf<IObserver>())
-            adjustDisplayNameForMoleculeObserver(pathElements, quantity.DowncastTo<IObserver>());
+         else if (quantity.IsAnImplementationOf<Observer>())
+            adjustDisplayNameForMoleculeObserver(pathElements, quantity.DowncastTo<Observer>());
       }
 
       private void adjustDisplayPathForTotalFractionOfDose(PathElements pathElements, IQuantity quantity)
@@ -152,7 +151,7 @@ namespace PKSim.Core.Mappers
          pathElements[PathElementId.TopContainer] = new PathElement();
       }
 
-      private void adjustDisplayNameForMoleculeObserver(PathElements pathElements, IObserver observer)
+      private void adjustDisplayNameForMoleculeObserver(PathElements pathElements, Observer observer)
       {
          //For all fraction observers, the name should remain as is except for liver zone observers that need to be rename explicitly
          if (observerIsFractionOfDoseLiver(observer))
@@ -163,13 +162,13 @@ namespace PKSim.Core.Mappers
             updateNameElementToQuantityDimensionName(pathElements, observer);
       }
 
-      private void updateNameElementForFractionOfDose(PathElements pathElements, IObserver observer)
+      private void updateNameElementForFractionOfDose(PathElements pathElements, Observer observer)
       {
          var observerName = _fractionOfDoseLiverRegex.Matches(observer.Name)[0].Groups[OBSERVER_NAME].Value;
          pathElements[PathElementId.Name] = CreatePathElement(observerName);
       }
 
-      private bool observerIsFractionOfDoseLiver(IObserver observer) => _fractionOfDoseLiverRegex.IsMatch(observer.Name);
+      private bool observerIsFractionOfDoseLiver(Observer observer) => _fractionOfDoseLiverRegex.IsMatch(observer.Name);
 
       private void adjustDisplayPathForNeighborhood(PathElements pathElements, IQuantity quantity)
       {

@@ -50,8 +50,8 @@ namespace PKSim.Core.Services
 
       public void ResetPersistable(Simulation simulation)
       {
-         SetPersistable(simulation.All<IMoleculeAmount>(), false);
-         SetPersistable(simulation.All<IObserver>(), true);
+         SetPersistable(simulation.All<MoleculeAmount>(), false);
+         SetPersistable(simulation.All<Observer>(), true);
 
          setApplicationObserversNonPersistable(simulation);
          setUrineFecesAndBileAmountToPersitable(simulation);
@@ -81,7 +81,7 @@ namespace PKSim.Core.Services
       private void setMoleculeAmountToPersistableIn(IContainer container)
       {
          if (container == null) return;
-         SetPersistable(container.GetAllChildren<IMoleculeAmount>(), true);
+         SetPersistable(container.GetAllChildren<MoleculeAmount>(), true);
       }
 
       private void setApplicationObserversNonPersistable(Simulation simulation)
@@ -89,7 +89,7 @@ namespace PKSim.Core.Services
          //Set all observers defined in application to persistable false
          var applications = simulation.Model.Root.Container(Constants.APPLICATIONS);
 
-         applications?.GetAllChildren<IObserver>(applicationObserverShouldBeHidden)
+         applications?.GetAllChildren<Observer>(applicationObserverShouldBeHidden)
             .Each(x => x.Persistable = false);
       }
 
@@ -97,6 +97,6 @@ namespace PKSim.Core.Services
       ///    Return true if an application observer should be hidden from user
       /// </summary>
       /// <param name="observer"></param>
-      private bool applicationObserverShouldBeHidden(IObserver observer) => observer.Name == CoreConstants.Observer.CONCENTRATION_IN_CONTAINER;
+      private bool applicationObserverShouldBeHidden(Observer observer) => observer.Name == CoreConstants.Observer.CONCENTRATION_IN_CONTAINER;
    }
 }

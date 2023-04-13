@@ -1,19 +1,11 @@
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model
 {
-   public interface IPKSimSpatialStructure : ISpatialStructure
+   public class PKSimSpatialStructure : SpatialStructure
    {
-      Organism Organism { get; }
-   }
-
-   public class PKSimSpatialStructure : SpatialStructure, IPKSimSpatialStructure
-   {
-      public Organism Organism
-      {
-         get { return TopContainers.First().DowncastTo<Organism>(); }
-      }
+      public Organism Organism => TopContainers.First().DowncastTo<Organism>();
    }
 }

@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 
@@ -18,12 +17,12 @@ namespace PKSim.IntegrationTests
    public class When_retrieving_the_observer_building_block_defined_for_some_model_properties_and_molecule_name : ContextForSimulationIntegration<IModelObserverQuery>
    {
       private string _compoundName;
-      private IObserverBuildingBlock _observers;
+      private ObserverBuildingBlock _observers;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
       private string _complexProductName;
       private string _metaboliteProductName;
-      private IObserverBuilder _observer;
-      
+      private ObserverBuilder _observer;
+
       public override void GlobalContext()
       {
          base.GlobalContext();
@@ -147,7 +146,7 @@ namespace PKSim.IntegrationTests
    {
       private string _compoundName;
       private string _observerName;
-      private IObserverBuildingBlock _observers;
+      private ObserverBuildingBlock _observers;
       private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       public override void GlobalContext()

@@ -12,12 +12,12 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatContainerToEventGroupBuilderMapper : IMapper<FlatContainer, IEventGroupBuilder>
+   public interface IFlatContainerToEventGroupBuilderMapper : IMapper<FlatContainer, EventGroupBuilder>
    {
    }
 
    public class FlatContainerToEventGroupBuilderMapper :
-      FlatContainerIdToContainerMapperBase<IEventGroupBuilder>, IFlatContainerToEventGroupBuilderMapper
+      FlatContainerIdToContainerMapperBase<EventGroupBuilder>, IFlatContainerToEventGroupBuilderMapper
    {
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IFlatContainerToEventBuilderMapper _eventMapper;
@@ -33,7 +33,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _eventMapper = eventMapper;
       }
 
-      public IEventGroupBuilder MapFrom(FlatContainer eventGroupFlatContainer)
+      public EventGroupBuilder MapFrom(FlatContainer eventGroupFlatContainer)
       {
          var eventGroup = MapCommonPropertiesFrom(eventGroupFlatContainer);
 

@@ -17,7 +17,7 @@ namespace PKSim.Core.Services
 {
    public interface IObserverLoader
    {
-      IObserverBuilder Load(string pkmlFileFullPath);
+      ObserverBuilder Load(string pkmlFileFullPath);
    }
 
    public class ObserverLoader : IObserverLoader
@@ -72,9 +72,9 @@ namespace PKSim.Core.Services
          }
       }
 
-      public IObserverBuilder Load(string pkmlFileFullPath)
+      public ObserverBuilder Load(string pkmlFileFullPath)
       {
-         IObserverBuilder observerBuilder;
+         ObserverBuilder observerBuilder;
          int version;
          using (var serializationContext = SerializationTransaction.Create(_container, _dimensionFactory, _objectBaseFactory, new WithIdRepository(), _cloneManagerForModel))
          {
@@ -88,7 +88,7 @@ namespace PKSim.Core.Services
                throw new OSPSuiteException(PKSimConstants.Error.CouldNotLoadObserverFromFile(pkmlFileFullPath, elementName));
 
             _modelingXmlSerializerRepository.DeserializeFormulaCacheIn(element, serializationContext);
-            observerBuilder = serializer.Deserialize<IObserverBuilder>(element, serializationContext);
+            observerBuilder = serializer.Deserialize<ObserverBuilder>(element, serializationContext);
          }
 
          convert(observerBuilder, version, x => x.Convert);

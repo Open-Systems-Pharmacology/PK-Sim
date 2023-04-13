@@ -8,6 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core
@@ -323,7 +324,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_loaded_the_reaction_building_block()
       {
-         _sim.Reactions.ShouldBeEqualTo(_modelCoreSimulation.Configuration.Reactions);
+         _sim.Reactions.ShouldOnlyContain(_modelCoreSimulation.Configuration.All<ReactionBuildingBlock>());
       }
 
       [Observation]

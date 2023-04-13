@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Services

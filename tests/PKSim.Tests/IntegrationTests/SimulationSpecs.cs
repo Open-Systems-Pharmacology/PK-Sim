@@ -289,7 +289,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_set_negative_values_allowed_true_to_predefined_compartments_and_molecules()
       {
-         var msv = _simulationConfiguration.MoleculeStartValues.SelectMany(x => x);
+         var msv = _simulationConfiguration.All<MoleculeStartValuesBuildingBlock>().SelectMany(x => x);
          var moleculesWithAllowedNegativeValues = (from molecule in msv
             where molecule.NegativeValuesAllowed
             select molecule).ToList();
@@ -606,13 +606,13 @@ namespace PKSim.IntegrationTests
 
       private IEnumerable<string> moleculeNamesIn(IContainer container)
       {
-         return (from molecule in container.GetAllChildren<IMoleculeAmount>()
+         return (from molecule in container.GetAllChildren<MoleculeAmount>()
             select molecule.Name).ToList();
       }
 
       private IEnumerable<string> reactionNamesIn(IContainer container)
       {
-         return (from molecule in container.GetAllChildren<IReaction>()
+         return (from molecule in container.GetAllChildren<Reaction>()
             select molecule.Name).ToList();
       }
 

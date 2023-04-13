@@ -1,23 +1,23 @@
 using System;
 using System.Collections.Generic;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Events;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Events;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Events
 {
    public class TemplateChangedEventArgs : EventArgs
    {
-      public IEventGroupBuilder Template { get; private set; }
+      public EventGroupBuilder Template { get; private set; }
 
-      public TemplateChangedEventArgs(IEventGroupBuilder template)
+      public TemplateChangedEventArgs(EventGroupBuilder template)
       {
          Template = template;
       }
@@ -25,8 +25,8 @@ namespace PKSim.Presentation.Presenters.Events
 
    public interface IEventSettingsPresenter : IEventItemPresenter
    {
-      IEnumerable<IEventGroupBuilder> AllTemplates();
-      string DisplayNameFor(IEventGroupBuilder eventTemplate);
+      IEnumerable<EventGroupBuilder> AllTemplates();
+      string DisplayNameFor(EventGroupBuilder eventTemplate);
       void OnTemplateChanged();
       event EventHandler<TemplateChangedEventArgs> TemplateChanged;
       bool CanEditEventTemplate { set; }
@@ -46,9 +46,9 @@ namespace PKSim.Presentation.Presenters.Events
       }
 
       public EventSettingsPresenter(
-         IEventSettingsView view, 
+         IEventSettingsView view,
          IEventGroupRepository eventGroupRepository,
-         IRepresentationInfoRepository representationInfoRepository, 
+         IRepresentationInfoRepository representationInfoRepository,
          IParametersByGroupPresenter eventParametersPresenter)
          : base(view)
       {
@@ -80,12 +80,12 @@ namespace PKSim.Presentation.Presenters.Events
          _eventParametersPresenter.ReleaseFrom(eventPublisher);
       }
 
-      public IEnumerable<IEventGroupBuilder> AllTemplates()
+      public IEnumerable<EventGroupBuilder> AllTemplates()
       {
          return _eventGroupRepository.All();
       }
 
-      public string DisplayNameFor(IEventGroupBuilder eventTemplate)
+      public string DisplayNameFor(EventGroupBuilder eventTemplate)
       {
          return _representationInfoRepository.DisplayNameFor(eventTemplate);
       }

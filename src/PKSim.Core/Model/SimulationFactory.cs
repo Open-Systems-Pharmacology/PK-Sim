@@ -155,7 +155,7 @@ namespace PKSim.Core.Model
          var simulation = createSimulation<TSimulation>();
          simulation.Name = modelCoreSimulation.Name;
          simulation.Model = modelCoreSimulation.Model;
-         modelCoreSimulation.Reactions?.Each(simulation.AddReactions);
+         modelCoreSimulation.Reactions.Each(simulation.AddReactions);
          simulation.Settings = modelCoreSimulation.Configuration.SimulationSettings;
          simulation.Origin = assessOriginFrom(simulation.Model);
          _objectIdResetter.ResetIdFor(simulation);

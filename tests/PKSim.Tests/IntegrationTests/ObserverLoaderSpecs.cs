@@ -15,7 +15,7 @@ namespace PKSim.IntegrationTests
 
    public class When_loading_an_observer_from_a_valid_observer_file : concern_for_ObserverLoader
    {
-      private IObserverBuilder _observer;
+      private ObserverBuilder _observer;
       private readonly string _observerFile = DomainHelperForSpecs.DataFilePathFor("Observer.pkml");
 
       protected override void Context()

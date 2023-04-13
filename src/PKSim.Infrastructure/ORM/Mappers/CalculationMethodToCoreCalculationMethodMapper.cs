@@ -12,7 +12,7 @@ using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface ICalculationMethodToCoreCalculationMethodMapper : IMapper<string, ICoreCalculationMethod>
+   public interface ICalculationMethodToCoreCalculationMethodMapper : IMapper<string, CoreCalculationMethod>
    {
    }
 
@@ -37,7 +37,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _parameterFactory = parameterFactory;
       }
 
-      public ICoreCalculationMethod MapFrom(string calculationMethod)
+      public CoreCalculationMethod MapFrom(string calculationMethod)
       {
          var modelCalcMethod = new CoreCalculationMethod {Name = calculationMethod};
 

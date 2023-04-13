@@ -39,11 +39,11 @@ namespace PKSim.Presentation.Mappers
          var representationInfo = _representationInfoRepository.InfoFor(container);
          var node = _treeNodeFactory.CreateFor(container, representationInfo);
 
-         var moleculeAmount = container as IMoleculeAmount;
+         var moleculeAmount = container as MoleculeAmount;
          if (moleculeAmount != null)
             node.Icon = ApplicationIcons.IconByName(moleculeAmount.QuantityType.ToString());
 
-         var reaction = container as IReaction;
+         var reaction = container as Reaction;
          if (reaction != null)
             node.Icon = ApplicationIcons.Reaction;
 

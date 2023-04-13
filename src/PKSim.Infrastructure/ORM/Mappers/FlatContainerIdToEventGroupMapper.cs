@@ -6,7 +6,7 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public class FlatContainerIdToEventGroupMapper : FlatContainerIdToContainerMapperBase<IEventGroupBuilder>, IFlatContainerIdToContainerMapperSpecification
+   public class FlatContainerIdToEventGroupMapper : FlatContainerIdToContainerMapperBase<EventGroupBuilder>, IFlatContainerIdToContainerMapperSpecification
    {
       public FlatContainerIdToEventGroupMapper(IObjectBaseFactory objectBaseFactory, IFlatContainerRepository flatContainerRepository, IFlatContainerTagRepository flatContainerTagRepository) : base(objectBaseFactory, flatContainerRepository, flatContainerTagRepository)
       {

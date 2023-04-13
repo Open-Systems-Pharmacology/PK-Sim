@@ -9,23 +9,23 @@ using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public class ApplicationRepository : StartableRepository<IApplicationBuilder>, IApplicationRepository
+   public class ApplicationRepository : StartableRepository<ApplicationBuilder>, IApplicationRepository
    {
       private readonly IFlatContainerRepository _flatContainerRepository;
       private readonly IFlatContainerToApplicationMapper _applicationMapper;
       private readonly IFlatApplicationRepository _flatApplicationRepository;
 
-      private readonly ICache<CompositeKey, IApplicationBuilder> _applicationBuilders;
+      private readonly ICache<CompositeKey, ApplicationBuilder> _applicationBuilders;
 
       public ApplicationRepository(IFlatContainerRepository flatContainerRepository, IFlatContainerToApplicationMapper applicationMapper, IFlatApplicationRepository flatApplicationRepository)
       {
          _flatContainerRepository = flatContainerRepository;
          _applicationMapper = applicationMapper;
          _flatApplicationRepository = flatApplicationRepository;
-         _applicationBuilders = new Cache<CompositeKey, IApplicationBuilder>();
+         _applicationBuilders = new Cache<CompositeKey, ApplicationBuilder>();
       }
 
-      public override IEnumerable<IApplicationBuilder> All()
+      public override IEnumerable<ApplicationBuilder> All()
       {
          Start();
          return _applicationBuilders;
@@ -55,7 +55,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
                  select flatApplication.ApplicationType).FirstOrDefault();
       }
 
-      public IApplicationBuilder ApplicationFrom(string applicationType, string formulationType)
+      public ApplicationBuilder ApplicationFrom(string applicationType, string formulationType)
       {
          Start();
          return _applicationBuilders[new CompositeKey(applicationType, formulationType)];

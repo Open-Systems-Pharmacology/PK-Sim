@@ -36,7 +36,7 @@ namespace PKSim.Presentation
       private PKSimEvent _event;
       private IParameter _para1;
       private IParameter _para2;
-      private IEventGroupBuilder _template;
+      private EventGroupBuilder _template;
       private EventDTO _eventDTO;
       private IEnumerable<IParameter> _parameters;
 
@@ -77,16 +77,16 @@ namespace PKSim.Presentation
 
    public class When_retrieving_the_list_of_all_available_event_templates : concern_for_EventSettingsPresenter
    {
-      private IList<IEventGroupBuilder> _allTemplates;
-      private IEventGroupBuilder _temp1;
-      private IEventGroupBuilder _temp2;
+      private IList<EventGroupBuilder> _allTemplates;
+      private EventGroupBuilder _temp1;
+      private EventGroupBuilder _temp2;
 
       protected override void Context()
       {
          base.Context();
          _temp1 = new EventGroupBuilder();
          _temp2 = new EventGroupBuilder();
-         _allTemplates = new List<IEventGroupBuilder> {_temp1, _temp2};
+         _allTemplates = new List<EventGroupBuilder> {_temp1, _temp2};
          A.CallTo(() => _eventGroupRepository.All()).Returns(_allTemplates);
       }
 
@@ -99,7 +99,7 @@ namespace PKSim.Presentation
 
    public class When_retrieving_the_display_name_for_a_template : concern_for_EventSettingsPresenter
    {
-      private IEventGroupBuilder _template;
+      private EventGroupBuilder _template;
 
       protected override void Context()
       {
@@ -147,8 +147,8 @@ namespace PKSim.Presentation
    {
       private bool _eventRaised;
       private PKSimEvent _event;
-      private IEventGroupBuilder _template;
-      private IEventGroupBuilder _newTemplate;
+      private EventGroupBuilder _template;
+      private EventGroupBuilder _newTemplate;
 
       protected override void Context()
       {

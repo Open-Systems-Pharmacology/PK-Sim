@@ -15,7 +15,7 @@ namespace PKSim.Core.Extensions
          return simulationConfiguration.ModuleConfigurations.Select(x => x.Module).First();
       }
 
-      public static ISpatialStructure SpatialStructure(this SimulationConfiguration simulationConfiguration)
+      public static SpatialStructure SpatialStructure(this SimulationConfiguration simulationConfiguration)
       {
          return simulationConfiguration.Module().SpatialStructure;
       }

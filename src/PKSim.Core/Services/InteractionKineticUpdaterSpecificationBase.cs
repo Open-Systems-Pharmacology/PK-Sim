@@ -63,7 +63,7 @@ namespace PKSim.Core.Services
          updateReferences(clspecFactor, moleculeName, compoundName, simulation, processParameterContainer, InteractionKineticModifications.CLSpecDenominator);
       }
 
-      public void UpdateModifiers(IReactionBuilder reaction, string moleculeName, string compoundName, Simulation simulation)
+      public void UpdateModifiers(ReactionBuilder reaction, string moleculeName, string compoundName, Simulation simulation)
       {
          AllInteractionProcessesFor(moleculeName, compoundName, simulation).Each((process, i) =>
          {
@@ -173,7 +173,7 @@ namespace PKSim.Core.Services
             .WithAlias(parameterAlias)
             .WithDimension(dimension);
 
-         return processParameterContainer.IsAnImplementationOf<IReactionBuilder>()
+         return processParameterContainer.IsAnImplementationOf<ReactionBuilder>()
             ? objectPath.AndAddAtFront(ObjectPath.PARENT_CONTAINER).AndAddAtFront(ObjectPath.PARENT_CONTAINER)
             : objectPath.AndAddAtFront(ObjectPathKeywords.SOURCE);
       }

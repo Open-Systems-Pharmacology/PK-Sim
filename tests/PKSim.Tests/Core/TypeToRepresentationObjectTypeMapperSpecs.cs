@@ -31,7 +31,7 @@ namespace PKSim.Core
          sut.MapFrom(typeof (Gender)).ShouldBeEqualTo(RepresentationObjectType.GENDER);
          sut.MapFrom(typeof (IGroup)).ShouldBeEqualTo(RepresentationObjectType.GROUP);
          sut.MapFrom(typeof (ModelConfiguration)).ShouldBeEqualTo(RepresentationObjectType.MODEL);
-         sut.MapFrom(typeof (IObserver)).ShouldBeEqualTo(RepresentationObjectType.OBSERVER);
+         sut.MapFrom(typeof (Observer)).ShouldBeEqualTo(RepresentationObjectType.OBSERVER);
          sut.MapFrom(typeof (ParameterValueVersion)).ShouldBeEqualTo(RepresentationObjectType.PARAMETER_VALUE_VERSION);
          sut.MapFrom(typeof (SpeciesPopulation)).ShouldBeEqualTo(RepresentationObjectType.POPULATION);
          sut.MapFrom(typeof (ParameterAlternativeGroup)).ShouldBeEqualTo(RepresentationObjectType.GROUP);

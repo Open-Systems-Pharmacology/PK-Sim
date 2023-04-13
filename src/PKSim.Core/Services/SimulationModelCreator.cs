@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -58,7 +59,7 @@ namespace PKSim.Core.Services
             throw new CannotCreateSimulationException(creationResult.ValidationResult);
 
          simulation.Model = creationResult.Model;
-         simulationConfiguration.Reactions.Each(simulation.AddReactions);
+         simulationConfiguration.All<ReactionBuildingBlock>().Each(simulation.AddReactions);
 
          updateSimulationAfterModelCreation(simulation);
       }
@@ -85,7 +86,7 @@ namespace PKSim.Core.Services
          });
 
          //we need to update the observer types according to their location (container observer are always of type drug, amount observer are depending on parent)
-         var allObservers = simulation.All<IObserver>();
+         var allObservers = simulation.All<Observer>();
          foreach (var observer in allObservers)
          {
             var quantity = observer.ParentContainer as IQuantity;

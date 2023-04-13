@@ -7,7 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Repositories;
 using SnapshotObserver = PKSim.Core.Snapshots.Observer;
-using ModelObserver = OSPSuite.Core.Domain.Builder.IObserverBuilder;
+using ModelObserver = OSPSuite.Core.Domain.Builder.ObserverBuilder;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -85,7 +85,7 @@ namespace PKSim.Core.Snapshots.Mappers
       }
 
 
-      private IObserverBuilder createObserverFrom(SnapshotObserver snapshot)
+      private ObserverBuilder createObserverFrom(SnapshotObserver snapshot)
       {
          if (string.IsNullOrEmpty(snapshot.Type))
             return null;

@@ -5,15 +5,15 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.Presentation.DTO
 {
-   public class SimulationReactionDiagramDTO : IWithDiagramFor<SimulationReactionDiagramDTO>, IEnumerable<IReactionBuilder>
+   public class SimulationReactionDiagramDTO : IWithDiagramFor<SimulationReactionDiagramDTO>, IEnumerable<ReactionBuilder>
    {
       public virtual IDiagramModel DiagramModel { get; set; }
 
       public virtual IDiagramManager<SimulationReactionDiagramDTO> DiagramManager { get; set; }
 
-      public virtual IReactionBuildingBlock ReactionBuildingBlock { get; set; }
+      public virtual ReactionBuildingBlock ReactionBuildingBlock { get; set; }
 
-      public virtual IEnumerator<IReactionBuilder> GetEnumerator()
+      public virtual IEnumerator<ReactionBuilder> GetEnumerator()
       {
          return ReactionBuildingBlock.GetEnumerator();
       }

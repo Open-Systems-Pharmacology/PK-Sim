@@ -16,7 +16,7 @@ namespace PKSim.Core.Model
    /// </summary>
    public interface IApplicationFactory
    {
-      IApplicationBuilder CreateFor(ISchemaItem schemaItem, string formulationType, string applicationName,
+      ApplicationBuilder CreateFor(ISchemaItem schemaItem, string formulationType, string applicationName,
          string compoundName, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache);
    }
 
@@ -48,7 +48,7 @@ namespace PKSim.Core.Model
          _formulaFactory = formulaFactory;
       }
 
-      public IApplicationBuilder CreateFor(ISchemaItem schemaItem, string formulationType, string applicationName,
+      public ApplicationBuilder CreateFor(ISchemaItem schemaItem, string formulationType, string applicationName,
          string compoundName, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache)
       {
          // clone new application from template
@@ -95,7 +95,7 @@ namespace PKSim.Core.Model
          return application;
       }
 
-      private void addApplicationTransportParameters(IEnumerable<ITransportBuilder> transports, string applicationTypeName, string formulationType, IFormulaCache formulaCache)
+      private void addApplicationTransportParameters(IEnumerable<TransportBuilder> transports, string applicationTypeName, string formulationType, IFormulaCache formulaCache)
       {
          foreach (var transportBuilder in transports)
          {
@@ -107,7 +107,7 @@ namespace PKSim.Core.Model
       ///    Add "condition" as descriptor criteria to every source/target descriptor conditions of given transports, which also
       ///    contain "Application" condition
       /// </summary>
-      private void addApplicationProcessDescriptorCondition(ISchemaItem schemaItem, IEnumerable<ITransportBuilder> transports, string condition)
+      private void addApplicationProcessDescriptorCondition(ISchemaItem schemaItem, IEnumerable<TransportBuilder> transports, string condition)
       {
          foreach (var applicationTransport in transports)
          {
@@ -127,7 +127,7 @@ namespace PKSim.Core.Model
             descriptorCriteria.Add(new MatchTagCondition(condition));
       }
 
-      private void addApplicationTags(IApplicationBuilder applicationBuilder, string tagValue)
+      private void addApplicationTags(ApplicationBuilder applicationBuilder, string tagValue)
       {
          addTagToContainer(applicationBuilder, tagValue);
 
@@ -146,9 +146,9 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Add start formula for the drug molecule. Will be created in the root application container
       /// </summary>
-      private void addDrugStartFormula(IApplicationBuilder applicationBuilder, IFormulaCache formulaCache)
+      private void addDrugStartFormula(ApplicationBuilder applicationBuilder, IFormulaCache formulaCache)
       {
-         var applicationMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(applicationBuilder.Name);
+         var applicationMoleculeBuilder = _objectBaseFactory.Create<ApplicationMoleculeBuilder>().WithName(applicationBuilder.Name);
          applicationMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(ObjectPath.PARENT_CONTAINER, applicationBuilder.Name);
          applicationMoleculeBuilder.Formula = _formulaFactory.DrugMassFormulaFor(formulaCache);
          applicationBuilder.AddMolecule(applicationMoleculeBuilder);

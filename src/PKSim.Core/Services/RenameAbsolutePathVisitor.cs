@@ -16,7 +16,7 @@ namespace PKSim.Core.Services
 
    public class RenameAbsolutePathVisitor : IRenameAbsolutePathVisitor,
       IVisitor<IUsingFormula>,
-      IVisitor<IEventAssignment>,
+      IVisitor<EventAssignment>,
       IVisitor<IParameter>,
       IVisitor<PopulationSimulation>
    {
@@ -61,7 +61,7 @@ namespace PKSim.Core.Services
          renameAbsolutePathIn(entityUsingFormula.Formula);
       }
 
-      public void Visit(IEventAssignment eventAssignment)
+      public void Visit(EventAssignment eventAssignment)
       {
          Visit((IUsingFormula) eventAssignment);
          renameObjectPath(eventAssignment.ObjectPath);

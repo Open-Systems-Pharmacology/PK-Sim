@@ -52,7 +52,7 @@ namespace PKSim.Presentation.Mappers
          var protocolSchemaItemContainer = parameter.ParentContainer;
          var applicationContainer = protocolSchemaItemContainer.ParentContainer;
          //for now, the applied molecule amount is assumed to be under the application container (
-         var firstMoleculeAmount = applicationContainer.GetAllChildren<IMoleculeAmount>().First();
+         var firstMoleculeAmount = applicationContainer.GetAllChildren<MoleculeAmount>().First();
          return firstMoleculeAmount.Name;
       }
 

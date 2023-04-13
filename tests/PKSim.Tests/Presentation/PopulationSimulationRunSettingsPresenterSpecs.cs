@@ -22,7 +22,7 @@ namespace PKSim.Presentation
    public abstract class concern_for_PopulationSimulationRunSettingsPresenter : ContextSpecification<IPopulationSimulationSettingsPresenter>
    {
       protected IPopulationSimulationSettingsView _view;
-      protected List<IObserver> _observers;
+      protected List<Observer> _observers;
       protected PopulationSimulation _populationSimulation;
       protected OutputSelections _originalSettings;
       protected OutputSelections _editedSettings;

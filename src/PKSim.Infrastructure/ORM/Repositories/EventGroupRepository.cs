@@ -8,11 +8,11 @@ using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public class EventGroupRepository : StartableRepository<IEventGroupBuilder>, IEventGroupRepository
+   public class EventGroupRepository : StartableRepository<EventGroupBuilder>, IEventGroupRepository
    {
       private readonly IFlatContainerRepository _flatContainerRepo;
       private readonly IFlatContainerToEventGroupBuilderMapper _eventGroupMapper;
-      private readonly ICache<string, IEventGroupBuilder> _eventGroupBuilders;
+      private readonly ICache<string, EventGroupBuilder> _eventGroupBuilders;
 
       public EventGroupRepository(
          IFlatContainerRepository flatContainerRepo, 
@@ -20,10 +20,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          _flatContainerRepo = flatContainerRepo;
          _eventGroupMapper = eventGroupMapper;
-         _eventGroupBuilders = new Cache<string, IEventGroupBuilder>(eb => eb.Name);
+         _eventGroupBuilders = new Cache<string, EventGroupBuilder>(eb => eb.Name);
       }
 
-      public override IEnumerable<IEventGroupBuilder> All()
+      public override IEnumerable<EventGroupBuilder> All()
       {
          Start();
          return _eventGroupBuilders;

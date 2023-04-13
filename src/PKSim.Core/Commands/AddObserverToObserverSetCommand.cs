@@ -5,9 +5,9 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class AddObserverToObserverSetCommand : AddEntityToContainerCommand<IObserverBuilder, ObserverSet, AddObserverToObserverSetEvent>
+   public class AddObserverToObserverSetCommand : AddEntityToContainerCommand<ObserverBuilder, ObserverSet, AddObserverToObserverSetEvent>
    {
-      public AddObserverToObserverSetCommand(IObserverBuilder observer, ObserverSet observerSet, IExecutionContext context)
+      public AddObserverToObserverSetCommand(ObserverBuilder observer, ObserverSet observerSet, IExecutionContext context)
          : base(observer, observerSet, context)
       {
       }

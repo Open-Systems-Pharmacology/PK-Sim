@@ -51,7 +51,7 @@ namespace PKSim.Infrastructure.Services
          _cloner = cloner;
       }
 
-      public IMoleculeBuilder Create(QuantityType moleculeType, IFormulaCache formulaCache)
+      public MoleculeBuilder Create(QuantityType moleculeType, IFormulaCache formulaCache)
       {
          var moleculeBuilder = createFor(moleculeType, formulaCache);
          moleculeBuilder.Dimension = _dimensionRepository.Amount;
@@ -61,7 +61,7 @@ namespace PKSim.Infrastructure.Services
          return moleculeBuilder;
       }
 
-      private IMoleculeBuilder createFor(QuantityType moleculeType, IFormulaCache formulaCache)
+      private MoleculeBuilder createFor(QuantityType moleculeType, IFormulaCache formulaCache)
       {
          switch (moleculeType)
          {
@@ -84,7 +84,7 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      private IMoleculeBuilder defaultProteinMoleculeFrom(QuantityType moleculeType, IFormulaCache formulaCache, QuantityType templateType)
+      private MoleculeBuilder defaultProteinMoleculeFrom(QuantityType moleculeType, IFormulaCache formulaCache, QuantityType templateType)
       {
          var molecule = _moleculeMapper.MapFrom(_flatMoleculeRepository.FindBy(templateType), formulaCache);
          molecule.QuantityType = moleculeType;
@@ -93,7 +93,7 @@ namespace PKSim.Infrastructure.Services
          return molecule;
       }
 
-      public IMoleculeBuilder Create(Compound compound, CompoundProperties compoundProperties, InteractionProperties interactionProperties,
+      public MoleculeBuilder Create(Compound compound, CompoundProperties compoundProperties, InteractionProperties interactionProperties,
          IFormulaCache formulaCache)
       {
          var drug = Create(QuantityType.Drug, formulaCache).WithName(compound.Name);
@@ -111,7 +111,7 @@ namespace PKSim.Infrastructure.Services
          return drug;
       }
 
-      private void addInteractionParameters(Compound compound, IMoleculeBuilder drug, InteractionProperties interactionProperties)
+      private void addInteractionParameters(Compound compound, MoleculeBuilder drug, InteractionProperties interactionProperties)
       {
          foreach (var interactionProcess in compound.AllProcesses<InteractionProcess>())
          {
@@ -135,13 +135,13 @@ namespace PKSim.Infrastructure.Services
          return interactionProperties.Uses(interactionProcess);
       }
 
-      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, IMoleculeBuilder drug,
+      private void updateAlternativeParameters(Compound compound, CompoundProperties compoundProperties, MoleculeBuilder drug,
          IFormulaCache formulaCache)
       {
          selectedAlternativesFor(compound, compoundProperties).Each(alternative => updateAlternativeParameters(alternative, drug, formulaCache));
       }
 
-      private void updateAlternativeParameters(ParameterAlternative alternative, IMoleculeBuilder drug, IFormulaCache formulaCache)
+      private void updateAlternativeParameters(ParameterAlternative alternative, MoleculeBuilder drug, IFormulaCache formulaCache)
       {
          var allParameters = alternative.AllParameters().ToList();
          foreach (var alternativeParameter in allParameters)
@@ -201,15 +201,15 @@ namespace PKSim.Infrastructure.Services
          formulaCache.Add(formula);
       }
 
-      private void addConcentrationParameterTo(IMoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
+      private void addConcentrationParameterTo(MoleculeBuilder moleculeBuilder, IFormulaCache formulaCache)
       {
          var parameter = _parameterFactory.CreateConcentrationParameterIn(formulaCache);
          moleculeBuilder.AddParameter(parameter);
       }
 
-      private IMoleculeBuilder defaultReactionProduct(QuantityType moleculeType, IFormulaCache formulaCache)
+      private MoleculeBuilder defaultReactionProduct(QuantityType moleculeType, IFormulaCache formulaCache)
       {
-         var metabolite = _objectBaseFactory.Create<IMoleculeBuilder>();
+         var metabolite = _objectBaseFactory.Create<MoleculeBuilder>();
          addDrugParametersTo(metabolite, formulaCache);
          metabolite.QuantityType = moleculeType;
          metabolite.Name = moleculeType.ToString();
@@ -219,9 +219,9 @@ namespace PKSim.Infrastructure.Services
          return metabolite;
       }
 
-      private IMoleculeBuilder defaultFloatingNonXenobioticMolecule(QuantityType moleculeType, IFormulaCache formulaCache)
+      private MoleculeBuilder defaultFloatingNonXenobioticMolecule(QuantityType moleculeType, IFormulaCache formulaCache)
       {
-         var molecule = _objectBaseFactory.Create<IMoleculeBuilder>();
+         var molecule = _objectBaseFactory.Create<MoleculeBuilder>();
          molecule.QuantityType = moleculeType;
          molecule.Name = moleculeType.ToString();
          molecule.DefaultStartFormula = _objectBaseFactory.Create<ConstantFormula>().WithValue(0);
@@ -230,7 +230,7 @@ namespace PKSim.Infrastructure.Services
          return molecule;
       }
 
-      private void addDrugParametersTo(IMoleculeBuilder molecule, IFormulaCache formulaCache)
+      private void addDrugParametersTo(MoleculeBuilder molecule, IFormulaCache formulaCache)
       {
          var allExistingParameters = molecule.AllParameters().ToList();
          molecule.Name = CoreConstants.Molecule.Drug;
@@ -250,7 +250,7 @@ namespace PKSim.Infrastructure.Services
          molecule.Parameter(CoreConstants.Parameters.IS_FLOATING_IN_LUMEN).Value = 0;
       }
 
-      private void setDefaultParameterValues(IMoleculeBuilder molecule)
+      private void setDefaultParameterValues(MoleculeBuilder molecule)
       {
          var parameters = molecule.AllParameters().Where(parameter => CoreConstants.Parameters.CompoundMustInputParameters.Contains(parameter.Name));
          parameters.Each(p =>
