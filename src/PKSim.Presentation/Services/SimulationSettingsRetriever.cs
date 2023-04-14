@@ -163,10 +163,10 @@ namespace PKSim.Presentation.Services
          outputSelections.AddOutput(new QuantitySelection(observedPath, observer.QuantityType));
       }
 
-      private IObserver venousBloodObservedFor(Simulation simulation, Compound compound)
+      private Observer venousBloodObservedFor(Simulation simulation, Compound compound)
       {
          return simulation.Model.Root
-            .EntityAt<IObserver>(Constants.ORGANISM, CoreConstants.Organ.VENOUS_BLOOD,
+            .EntityAt<Observer>(Constants.ORGANISM, CoreConstants.Organ.VENOUS_BLOOD,
                CoreConstants.Compartment.PLASMA, compound.Name, CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
       }
 
@@ -175,10 +175,10 @@ namespace PKSim.Presentation.Services
          return species.NameIsOneOf(CoreConstants.Species.SpeciesUsingVenousBlood);
       }
 
-      private static IObserver peripheralVenousBloodObserverFor(Simulation simulation, Compound compound)
+      private static Observer peripheralVenousBloodObserverFor(Simulation simulation, Compound compound)
       {
          return simulation.Model.Root
-            .EntityAt<IObserver>(Constants.ORGANISM, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD,
+            .EntityAt<Observer>(Constants.ORGANISM, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD,
                compound.Name, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD);
       }
    }

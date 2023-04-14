@@ -56,7 +56,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_set_the_molecule_amount_as_not_persistable_except_the_amount_in_urine_feces_and_gall_bladder()
       {
-         var allMoleculeAmounts = _simulation.All<IMoleculeAmount>();
+         var allMoleculeAmounts = _simulation.All<MoleculeAmount>();
          foreach (var moleculeAmount in allMoleculeAmounts)
          {
             if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.URINE))

@@ -18,7 +18,7 @@ namespace PKSim.UI
       protected IReactionBuildingBlockCreator _reactionBuildingBlockCreator;
       protected Simulation _simulation;
       protected SimulationReactionDiagramDTO _dto;
-      protected IReactionBuildingBlock _reactionBuildingBlock;
+      protected ReactionBuildingBlock _reactionBuildingBlock;
 
       protected override void Context()
       {
@@ -68,7 +68,7 @@ namespace PKSim.UI
       [Observation]
       public void should_use_the_reaction_building_block_from_the_simulation()
       {
-         _dto.ReactionBuildingBlock.ShouldBeEqualTo(_simulation.Reactions[0]);
+         _dto.ReactionBuildingBlock.ShouldBeEqualTo(_simulation.Reactions.First());
       }
 
       [Observation]

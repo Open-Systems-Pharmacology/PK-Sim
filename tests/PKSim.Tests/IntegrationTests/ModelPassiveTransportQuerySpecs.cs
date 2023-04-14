@@ -15,7 +15,7 @@ namespace PKSim.IntegrationTests
 
    public class When_retrieving_the_passive_transport_processes_defined_for_a_given_model_configuration : concern_for_ModelPassiveTransportQuery
    {
-      private IPassiveTransportBuildingBlock _passiveTransports;
+      private PassiveTransportBuildingBlock _passiveTransports;
 
       public override void GlobalContext()
       {
@@ -37,7 +37,7 @@ namespace PKSim.IntegrationTests
 
    public class When_retrieving_the_passive_transport_processes_for_4Comp_model : concern_for_ModelPassiveTransportQuery
    {
-      private IPassiveTransportBuildingBlock _passiveTransports;
+      private PassiveTransportBuildingBlock _passiveTransports;
 
       public override void GlobalContext()
       {
@@ -64,7 +64,7 @@ namespace PKSim.IntegrationTests
 
    public class When_retrieving_the_passive_transport_processes_for_protein_model : concern_for_ModelPassiveTransportQuery
    {
-      private IPassiveTransportBuildingBlock _passiveTransports;
+      private PassiveTransportBuildingBlock _passiveTransports;
 
       public override void GlobalContext()
       {

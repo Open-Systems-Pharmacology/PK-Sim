@@ -55,7 +55,7 @@ namespace PKSim.Core.Mappers
          if (objectType.IsAnImplementationOf<IDimension>())
             return RepresentationObjectType.DIMENSION;
 
-         if (objectType.IsAnImplementationOf<IObserver>())
+         if (objectType.IsAnImplementationOf<Observer>())
             return RepresentationObjectType.OBSERVER;
 
          if (objectType.IsAnImplementationOf<IContainer>())
@@ -64,7 +64,7 @@ namespace PKSim.Core.Mappers
          if (objectType.IsAnImplementationOf<Ontogeny>())
             return RepresentationObjectType.ONTOGENY;
 
-         if (objectType.IsAnImplementationOf<IEventAssignment>())
+         if (objectType.IsAnImplementationOf<EventAssignment>())
             return RepresentationObjectType.EVENT;
 
          if(objectType.IsAnImplementationOf<TransportDirection>())

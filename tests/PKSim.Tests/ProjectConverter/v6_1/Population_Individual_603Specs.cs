@@ -54,7 +54,7 @@ namespace PKSim.ProjectConverter.v6_1
 
       private void validateNegativeValueAllowedFlags(Simulation simulation)
       {
-         simulation.Model.Root.GetAllChildren<IMoleculeAmount>().Each(x => x.NegativeValuesAllowed.ShouldBeTrue());
+         simulation.Model.Root.GetAllChildren<MoleculeAmount>().Each(x => x.NegativeValuesAllowed.ShouldBeTrue());
       }
    }
 

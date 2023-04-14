@@ -17,7 +17,7 @@ namespace PKSim.Core.Services
       ///    return the event building block built based on the given protocol and the associated formulation.
       ///    Special simulation event such as eat,sport etc.. should be managed in this class as well
       /// </summary>
-      IEventGroupBuildingBlock CreateFor(Simulation simulation);
+      EventGroupBuildingBlock CreateFor(Simulation simulation);
    }
 
    public class EventBuildingBlockCreator : IEventBuildingBlockCreator
@@ -31,7 +31,7 @@ namespace PKSim.Core.Services
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IEventGroupRepository _eventGroupRepository;
       private Simulation _simulation;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
 
       public EventBuildingBlockCreator(IObjectBaseFactory objectBaseFactory,
@@ -55,12 +55,12 @@ namespace PKSim.Core.Services
          _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
       }
 
-      public IEventGroupBuildingBlock CreateFor(Simulation simulation)
+      public EventGroupBuildingBlock CreateFor(Simulation simulation)
       {
          try
          {
             _simulation = simulation;
-            _eventGroupBuildingBlock = _objectBaseFactory.Create<IEventGroupBuildingBlock>().WithName(simulation.Name);
+            _eventGroupBuildingBlock = _objectBaseFactory.Create<EventGroupBuildingBlock>().WithName(simulation.Name);
             _cloneManagerForBuildingBlock.FormulaCache = _eventGroupBuildingBlock.FormulaCache;
 
             createApplications(_simulation.CompoundPropertiesList);
@@ -134,7 +134,7 @@ namespace PKSim.Core.Services
       private void createApplications(IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
          // create ApplicationSet-EventGroup
-         var applicationSet = _objectBaseFactory.Create<IEventGroupBuilder>()
+         var applicationSet = _objectBaseFactory.Create<EventGroupBuilder>()
             .WithName(Constants.APPLICATIONS)
             .WithIcon(Constants.APPLICATIONS);
 
@@ -145,13 +145,13 @@ namespace PKSim.Core.Services
          _eventGroupBuildingBlock.Add(applicationSet);
       }
 
-      private void addProtocol(IEventGroupBuilder applicationSet, CompoundProperties compoundProperties)
+      private void addProtocol(EventGroupBuilder applicationSet, CompoundProperties compoundProperties)
       {
          var protocol = compoundProperties.ProtocolProperties.Protocol;
          if (protocol == null)
             return;
 
-         var protocolEventGroup = _objectBaseFactory.Create<IEventGroupBuilder>()
+         var protocolEventGroup = _objectBaseFactory.Create<EventGroupBuilder>()
             .WithName(protocol.Name)
             .WithParentContainer(applicationSet);
 
@@ -165,7 +165,7 @@ namespace PKSim.Core.Services
          _parameterIdUpdater.UpdateBuildingBlockId(protocolEventGroup, protocol);
       }
 
-      private void addApplication(IEventGroupBuilder protocolGroupBuilder, ISchemaItem schemaItem, string applicationName, CompoundProperties compoundProperties, Protocol protocol)
+      private void addApplication(EventGroupBuilder protocolGroupBuilder, ISchemaItem schemaItem, string applicationName, CompoundProperties compoundProperties, Protocol protocol)
       {
          IContainer applicationParentContainer;
          string formulationType;
@@ -180,7 +180,7 @@ namespace PKSim.Core.Services
 
             //check if used formulation container is already created and create if needed
             if (protocolGroupBuilder.ContainsName(formulation.Name))
-               applicationParentContainer = protocolGroupBuilder.GetSingleChildByName<IEventGroupBuilder>(formulation.Name);
+               applicationParentContainer = protocolGroupBuilder.GetSingleChildByName<EventGroupBuilder>(formulation.Name);
             else
                applicationParentContainer = createFormulationAsEventGroupBuilderFrom(formulation);
 
@@ -200,9 +200,9 @@ namespace PKSim.Core.Services
             _applicationFactory.CreateFor(schemaItem, formulationType, applicationName, compoundProperties.Compound.Name, formulationParameters, _eventGroupBuildingBlock.FormulaCache));
       }
 
-      private IEventGroupBuilder createFormulationAsEventGroupBuilderFrom(Formulation formulation)
+      private EventGroupBuilder createFormulationAsEventGroupBuilderFrom(Formulation formulation)
       {
-         var formulationBuilder = _objectBaseFactory.Create<IEventGroupBuilder>();
+         var formulationBuilder = _objectBaseFactory.Create<EventGroupBuilder>();
 
          formulationBuilder.UpdatePropertiesFrom(formulation, _cloneManagerForBuildingBlock);
          foreach (var parameter in formulation.AllParameters())

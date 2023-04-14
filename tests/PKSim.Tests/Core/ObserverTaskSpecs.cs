@@ -14,8 +14,8 @@ namespace PKSim.Core
    {
       protected IExecutionContext _executionContext;
       protected IObserverLoader _observerLoader;
-      protected IObserverBuilder _observer1;
-      protected IObserverBuilder _observer2;
+      protected ObserverBuilder _observer1;
+      protected ObserverBuilder _observer2;
       protected ObserverSet _observerSet;
       protected IObjectIdResetter _objectIdResetter;
 
@@ -86,7 +86,7 @@ namespace PKSim.Core
    public class When_loading_an_observer_from_file : concern_for_ObserverTask
    {
       private readonly string _fileName = "OBS_FILE";
-      private IObserverBuilder _result;
+      private ObserverBuilder _result;
 
       protected override void Context()
       {

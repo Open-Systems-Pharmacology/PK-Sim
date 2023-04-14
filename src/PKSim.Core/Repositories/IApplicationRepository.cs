@@ -3,8 +3,8 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace PKSim.Core.Repositories
 {
-   public interface IApplicationRepository : IStartableRepository<IApplicationBuilder>
+   public interface IApplicationRepository : IStartableRepository<ApplicationBuilder>
    {
-      IApplicationBuilder ApplicationFrom(string applicationType, string formulationType);
+      ApplicationBuilder ApplicationFrom(string applicationType, string formulationType);
    }
 }

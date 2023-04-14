@@ -110,10 +110,10 @@ namespace PKSim.Infrastructure.ProjectConverter.v6_1
 
       private void updateMoleculeAmountNegativeValuesAllowed(IContainer container)
       {
-         container.GetAllChildren<IMoleculeAmount>(x => x.NegativeValuesAllowed = true);
+         container.GetAllChildren<MoleculeAmount>(x => x.NegativeValuesAllowed = true);
       }
 
-      private void clearFormulaCacheInReactionBuildingBlock(IReactionBuildingBlock reactions)
+      private void clearFormulaCacheInReactionBuildingBlock(ReactionBuildingBlock reactions)
       {
          if (reactions == null)
             return;

@@ -7,10 +7,10 @@ namespace PKSim.Core.Services
    public interface IReactionBuildingBlockCreator
    {
       /// <summary>
-      ///    Creates a <see cref="IReactionBuildingBlock" /> based on the process settings defined in the
+      ///    Creates a <see cref="ReactionBuildingBlock" /> based on the process settings defined in the
       ///    <paramref name="simulation" />
       /// </summary>
-      IReactionBuildingBlock CreateFor(Simulation simulation);
+      ReactionBuildingBlock CreateFor(Simulation simulation);
    }
 
    public class ReactionBuildingBlockCreator : IReactionBuildingBlockCreator
@@ -24,10 +24,10 @@ namespace PKSim.Core.Services
          _objectBaseFactory = objectBaseFactory;
       }
 
-      public IReactionBuildingBlock CreateFor(Simulation simulation)
+      public ReactionBuildingBlock CreateFor(Simulation simulation)
       {
          if (simulation.IsImported)
-            return _objectBaseFactory.Create<IReactionBuildingBlock>();
+            return _objectBaseFactory.Create<ReactionBuildingBlock>();
 
          var simulationConfiguration = new SimulationConfiguration();
          var module = new Module

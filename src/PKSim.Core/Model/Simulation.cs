@@ -17,7 +17,7 @@ namespace PKSim.Core.Model
       private readonly ICache<string, UsedBuildingBlock> _usedBuildingBlocks = new Cache<string, UsedBuildingBlock>(bb => bb.TemplateId);
       private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(bb => bb.Id);
       private readonly List<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
-      private readonly List<IReactionBuildingBlock> _allReactions = new List<IReactionBuildingBlock>();
+      private readonly List<ReactionBuildingBlock> _allReactions = new List<ReactionBuildingBlock>();
 
       private SimulationProperties _properties;
       private SimulationResults _results;
@@ -40,7 +40,7 @@ namespace PKSim.Core.Model
       ///    The reaction building block used to create the simulation. This is only use as meta information
       ///    on model creation for now. Adding <see cref="Reaction" /> to the building block will not change the model structure
       /// </summary>
-      public virtual IReadOnlyList<IReactionBuildingBlock> Reactions => _allReactions;
+      public virtual IReadOnlyList<ReactionBuildingBlock> Reactions => _allReactions;
 
       protected Simulation() : base(PKSimBuildingBlockType.Simulation)
       {
@@ -167,7 +167,7 @@ namespace PKSim.Core.Model
          _usedBuildingBlocks.Add(usedBuildingBlock);
       }
 
-      public virtual void AddReactions(IReactionBuildingBlock reactionBuildingBlock) => _allReactions.Add(reactionBuildingBlock);
+      public virtual void AddReactions(ReactionBuildingBlock reactionBuildingBlock) => _allReactions.Add(reactionBuildingBlock);
 
       /// <summary>
       ///    Remove the building block as used in the simulation

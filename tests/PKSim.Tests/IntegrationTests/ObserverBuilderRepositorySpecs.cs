@@ -33,7 +33,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void every_container_observer_should_have_nonempty_criteria_list()
       {
-         foreach (var containerObserverBuilder in _result.Select(observer => observer.ObserverBuilder).OfType<IContainerObserverBuilder>())
+         foreach (var containerObserverBuilder in _result.Select(observer => observer.ObserverBuilder).OfType<ContainerObserverBuilder>())
          {
             containerObserverBuilder.ContainerCriteria.Count().ShouldBeGreaterThan(0);
          }

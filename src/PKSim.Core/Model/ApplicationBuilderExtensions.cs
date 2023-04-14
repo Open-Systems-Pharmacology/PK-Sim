@@ -5,7 +5,7 @@ namespace PKSim.Core.Model
 {
    public static class ApplicationBuilderExtensions
    {
-      public static IContainer ProtocolSchemaItemContainer(this IApplicationBuilder applicationBuilder)
+      public static IContainer ProtocolSchemaItemContainer(this ApplicationBuilder applicationBuilder)
       {
          return applicationBuilder.Container(CoreConstants.ContainerName.ProtocolSchemaItem);
       }

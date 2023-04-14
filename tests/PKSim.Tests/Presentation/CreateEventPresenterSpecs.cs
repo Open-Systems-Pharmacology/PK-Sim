@@ -71,14 +71,14 @@ namespace PKSim.Presentation
 
    public class When_the_create_event_presenter_is_being_notified_that_the_user_changed_the_template : concern_for_CreateEventPresenter
    {
-      private IEventGroupBuilder _eventTemplate;
+      private EventGroupBuilder _eventTemplate;
       private PKSimEvent _event;
 
       protected override void Context()
       {
          base.Context();
          _event = A.Fake<PKSimEvent>();
-         _eventTemplate = A.Fake<IEventGroupBuilder>();
+         _eventTemplate = A.Fake<EventGroupBuilder>();
          A.CallTo(() => _eventFactory.Create(_eventTemplate)).Returns(_event);
       }
 

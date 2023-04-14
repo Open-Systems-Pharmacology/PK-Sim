@@ -12,7 +12,7 @@ namespace PKSim.Core.Model
    {
       PKSimEvent Create();
       PKSimEvent Create(string eventTemplateName);
-      PKSimEvent Create(IEventGroupBuilder eventGroupBuilder);
+      PKSimEvent Create(EventGroupBuilder eventGroupBuilder);
    }
 
    public class EventFactory : IEventFactory
@@ -38,7 +38,7 @@ namespace PKSim.Core.Model
          return Create(_eventGroupRepository.FindByName(eventTemplateName));
       }
 
-      public PKSimEvent Create(IEventGroupBuilder eventGroupBuilder)
+      public PKSimEvent Create(EventGroupBuilder eventGroupBuilder)
       {
          if (eventGroupBuilder == null)
             throw new ArgumentException(PKSimConstants.Error.EventTemplateNotDefined, nameof(eventGroupBuilder));

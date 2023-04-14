@@ -99,11 +99,11 @@ namespace PKSim.IntegrationTests
       public void the_value_of_the_relative_expression_in_organ_should_have_been_set_to_the_value_defined_in_the_enzyme()
       {
 
-         var allRelExp1 = _simulation.All<IMoleculeAmount>()
+         var allRelExp1 = _simulation.All<MoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Select(x => x.Parameter(Constants.Parameters.REL_EXP));
 
-         var allRelExp = _simulation.All<IMoleculeAmount>()
+         var allRelExp = _simulation.All<MoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
             .Select(x => x.Parameter(Constants.Parameters.REL_EXP));
@@ -125,7 +125,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_default_value_of_relative_expression_parameters_should_be_null()
       {
-         var allRelExp = _simulation.All<IMoleculeAmount>()
+         var allRelExp = _simulation.All<MoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Select(x => x.Parameter(Constants.Parameters.REL_EXP))
             .Where(x => x != null);
@@ -171,7 +171,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_value_of_the_relative_expression_in_organ_should_have_been_set_to_the_value_defined_in_the_enzyme()
       {
-         var allRelExpNorm = _simulation.All<IMoleculeAmount>()
+         var allRelExpNorm = _simulation.All<MoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
             .Select(x => x.Parameter(Constants.Parameters.REL_EXP));
@@ -215,7 +215,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_value_of_the_relative_expression_in_organ_should_have_been_set_to_the_value_defined_in_the_enzyme()
       {
-         var allRelExp = _simulation.All<IMoleculeAmount>()
+         var allRelExp = _simulation.All<MoleculeAmount>()
             .Where(x => x.Name.Equals(_enzyme.Name))
             .Where(x => x.ParentContainer.Name.Equals(CoreConstants.Compartment.INTRACELLULAR))
             .Select(x => x.Parameter(Constants.Parameters.REL_EXP));
@@ -260,7 +260,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_created_the_enzyme_in_all_endosome_compartment()
       {
-         var allContainerWithEnzyme = _simulation.All<IMoleculeAmount>().Where(x => x.Name.Equals(_enzyme.Name)).Select(x => x.ParentContainer);
+         var allContainerWithEnzyme = _simulation.All<MoleculeAmount>().Where(x => x.Name.Equals(_enzyme.Name)).Select(x => x.ParentContainer);
          allContainerWithEnzyme.Select(x => x.Name).Distinct().Contains(CoreConstants.Compartment.ENDOSOME).ShouldBeTrue();
       }
    }
@@ -301,7 +301,7 @@ namespace PKSim.IntegrationTests
       public void should_have_created_a_simulation_and_a_transporter_in_brain_plasma()
       {
          var allContainerWithTransporter =
-            _simulation.All<IMoleculeAmount>().Where(x => x.Name.Equals(_transporter.Name)).Select(x => x.ParentContainer);
+            _simulation.All<MoleculeAmount>().Where(x => x.Name.Equals(_transporter.Name)).Select(x => x.ParentContainer);
          allContainerWithTransporter.Select(x => x.Name).Distinct().ShouldContain(CoreConstants.Compartment.PLASMA);
       }
    }
@@ -512,7 +512,7 @@ namespace PKSim.IntegrationTests
       public void should_only_create_one_turnover_reaction()
       {
          _simulation.Reactions.Count.ShouldBeEqualTo(1);
-         _simulation.Reactions[0].Count().ShouldBeEqualTo(4); //Induction, turnover, irreversible and metabolization
+         _simulation.Reactions.First().Count().ShouldBeEqualTo(4); //Induction, turnover, irreversible and metabolization
       }
    }
 }

@@ -141,7 +141,7 @@ namespace PKSim.Infrastructure.Services
          return Task.Run(() => ExportSimulationToPkmlFile(simulation, fileName));
       }
 
-      public void UpdateObserverForAllFlag(IObserverBuildingBlock observerBuildingBlock)
+      public void UpdateObserverForAllFlag(ObserverBuildingBlock observerBuildingBlock)
       {
          var allObserversForAll = observerBuildingBlock.Where(x => x.NameIsOneOf(CoreConstants.Observer.MoBiForAll));
          allObserversForAll.Each(x => x.ForAll = true);
@@ -149,7 +149,7 @@ namespace PKSim.Infrastructure.Services
 
       private void updateObserverForAllFlag(IModelCoreSimulation moBiSimulation)
       {
-         moBiSimulation.Configuration.Observers.Each(UpdateObserverForAllFlag);
+         moBiSimulation.Configuration.All<ObserverBuildingBlock>().Each(UpdateObserverForAllFlag);
       }
 
       public void ExportSimulationToPkmlFile(Simulation simulation)

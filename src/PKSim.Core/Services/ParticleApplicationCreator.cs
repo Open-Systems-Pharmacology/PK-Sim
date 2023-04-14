@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
 {
    public interface IParticleApplicationCreator
    {
-      void CreateParticleIn(IApplicationBuilder applicationBuilder, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache);
+      void CreateParticleIn(ApplicationBuilder applicationBuilder, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache);
    }
 
    public class ParticleApplicationCreator : IParticleApplicationCreator
@@ -28,7 +28,7 @@ namespace PKSim.Core.Services
          _dimensionRepository = dimensionRepository;
       }
 
-      public void CreateParticleIn(IApplicationBuilder applicationBuilder, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache)
+      public void CreateParticleIn(ApplicationBuilder applicationBuilder, IEnumerable<IParameter> formulationParameters, IFormulaCache formulaCache)
       {
          try
          {
@@ -41,7 +41,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void addDrugStartFormulaForParticles(IApplicationBuilder applicationBuilder, IFormulaCache formulaCache)
+      private void addDrugStartFormulaForParticles(ApplicationBuilder applicationBuilder, IFormulaCache formulaCache)
       {
          // get number of bins
          int numberOfBins;
@@ -173,7 +173,7 @@ namespace PKSim.Core.Services
          return _formulationParameters.FindByName(parameterName).Value;
       }
 
-      private void setupParticleBin(IApplicationBuilder applicBuilder, int binIndex, double binRadius, double binNumberOfParticlesFactor, IFormulaCache formulaCache)
+      private void setupParticleBin(ApplicationBuilder applicBuilder, int binIndex, double binRadius, double binNumberOfParticlesFactor, IFormulaCache formulaCache)
       {
          var binName = binContainerName(binIndex);
          var binContainer = applicBuilder.GetSingleChildByName<IContainer>(binName);
@@ -185,13 +185,13 @@ namespace PKSim.Core.Services
          particleRadius.Value = binRadius;
 
          // add application molecule in particle bin and set its formula
-         var appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(solubleMoleculeName(binIndex));
+         var appMoleculeBuilder = _objectBaseFactory.Create<ApplicationMoleculeBuilder>().WithName(solubleMoleculeName(binIndex));
          appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(binName);
          appMoleculeBuilder.Formula = particleDrugMassFormula(formulaCache);
          applicBuilder.AddMolecule(appMoleculeBuilder);
 
          // add insoluble molecule for particle bin
-         appMoleculeBuilder = _objectBaseFactory.Create<IApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(binIndex));
+         appMoleculeBuilder = _objectBaseFactory.Create<ApplicationMoleculeBuilder>().WithName(insolubleMoleculeName(binIndex));
          appMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(binName, CoreConstants.ContainerName.InsolubleDrug);
          appMoleculeBuilder.Formula = insolubleDrugStartFormula(formulaCache);
          applicBuilder.AddMolecule(appMoleculeBuilder);

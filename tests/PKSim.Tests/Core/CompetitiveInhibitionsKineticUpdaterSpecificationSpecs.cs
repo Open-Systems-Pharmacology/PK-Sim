@@ -92,7 +92,7 @@ namespace PKSim.Core
 
    public class When_updating_the_modifiers_defined_in_a_reaction_process : concern_for_CompetitiveInhibitionsKineticUpdaterSpecification
    {
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {
@@ -139,7 +139,7 @@ namespace PKSim.Core
    public class When_updating_the_references_to_used_parameters_for_the_km_factor_formula_for_a_competitive_inhibition_interactions : concern_for_CompetitiveInhibitionsKineticUpdaterSpecification
    {
       private IParameter _kmFactor;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {
@@ -181,7 +181,7 @@ namespace PKSim.Core
    public class When_updating_the_references_to_used_parameters_for_the_cl_spec_factor_formula_for_a_competitive_inhibition_interactions : concern_for_CompetitiveInhibitionsKineticUpdaterSpecification
    {
       private IParameter _clSpecFactor;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {

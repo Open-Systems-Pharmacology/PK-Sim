@@ -4,16 +4,16 @@ namespace PKSim.Core.Model
 {
    public interface IPKSimObserverBuilder : IWithFormula
    {
-      IObserverBuilder ObserverBuilder { get; }
+      ObserverBuilder ObserverBuilder { get; }
    }
 
    public class PKSimObserverBuilder : IPKSimObserverBuilder
    {
       public string CalculationMethod { get; set; }
       public string Rate { get; set; }
-      public IObserverBuilder ObserverBuilder { get; }
+      public ObserverBuilder ObserverBuilder { get; }
 
-      public PKSimObserverBuilder(IObserverBuilder observerBuilder)
+      public PKSimObserverBuilder(ObserverBuilder observerBuilder)
       {
          ObserverBuilder = observerBuilder;
       }

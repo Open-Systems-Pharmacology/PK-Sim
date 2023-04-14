@@ -22,8 +22,8 @@ namespace PKSim.Presentation
       protected IDialogCreator _dialogCreator;
       protected IObserverTask _observerTask;
       protected ObserverSet _observerSet;
-      protected IObserverBuilder _observer1;
-      protected IObserverBuilder _observer2;
+      protected ObserverBuilder _observer1;
+      protected ObserverBuilder _observer2;
       protected IReadOnlyList<ImportObserverDTO> _allImportObserverDTO;
       protected ICommandCollector _commandCollector;
       protected IEntityTask _entityTask;
@@ -105,7 +105,7 @@ namespace PKSim.Presentation
    public class When_the_import_observers_presenter_is_adding_an_observer_that_does_not_exist_by_name_already : concern_for_ImportObserverSetPresenter
    {
       private readonly string _fileFullPath = "OBS_FILE";
-      private readonly IObserverBuilder _newObserver = new ContainerObserverBuilder().WithName("OBS3");
+      private readonly ObserverBuilder _newObserver = new ContainerObserverBuilder().WithName("OBS3");
 
       protected override void Context()
       {
@@ -149,7 +149,7 @@ namespace PKSim.Presentation
    public class When_the_import_observers_presenter_is_adding_an_observer_that_does_exist_by_name_already_and_the_user_does_rename_the_observer : concern_for_ImportObserverSetPresenter
    {
       private readonly string _fileFullPath = "OBS_FILE";
-      private readonly IObserverBuilder _newObserver = new ContainerObserverBuilder().WithName("OBS1");
+      private readonly ObserverBuilder _newObserver = new ContainerObserverBuilder().WithName("OBS1");
 
       protected override void Context()
       {
@@ -182,7 +182,7 @@ namespace PKSim.Presentation
    public class When_the_import_observers_presenter_is_adding_an_observer_that_does_exist_by_name_already_and_the_user_cancels_the_rename : concern_for_ImportObserverSetPresenter
    {
       private readonly string _fileFullPath = "OBS_FILE";
-      private readonly IObserverBuilder _newObserver = new ContainerObserverBuilder().WithName("OBS1");
+      private readonly ObserverBuilder _newObserver = new ContainerObserverBuilder().WithName("OBS1");
 
       protected override void Context()
       {

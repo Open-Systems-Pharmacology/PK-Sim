@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
@@ -71,9 +72,9 @@ namespace PKSim.Core
          container2.Add(_drugMass2);
       }
 
-      protected IReactionBuilder CreateReactionForCompoundAndMetabolite(string[] products, params string[] educts)
+      protected ReactionBuilder CreateReactionForCompoundAndMetabolite(string[] products, params string[] educts)
       {
-         var reaction = new ReactionBuilder();
+         var reaction = new ReactionBuilder().WithName(ShortGuid.NewGuid());
          educts.Each(educt => reaction.AddEduct(new ReactionPartnerBuilder(educt, 1)));
 
          products.Each(product => reaction.AddProduct(new ReactionPartnerBuilder(product, 1)));
@@ -197,7 +198,7 @@ namespace PKSim.Core
    {
       protected override void Because()
       {
-         A.CallTo(() => _simulation1.Reactions).Returns(Array.Empty<IReactionBuildingBlock>());
+         A.CallTo(() => _simulation1.Reactions).Returns(Array.Empty<ReactionBuildingBlock>());
       }
 
       [Observation]
@@ -321,7 +322,7 @@ namespace PKSim.Core
    {
       private string _metaboliteName;
       private string _compoundName;
-      private IReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionBuildingBlock _reactionBuildingBlock;
       private string _secondMetaboliteName;
       private PKCalculationOptions _result;
 

@@ -152,9 +152,9 @@ namespace PKSim.IntegrationTests
          undefinedTransportRef.ShouldContain(LIVER, PERIPORTAL);
       }
 
-      private ITransport biliaryClearancePeriportalCellToGallBladderTransport()
+      private Transport biliaryClearancePeriportalCellToGallBladderTransport()
       {
-         return _simulation.Model.Neighborhoods.EntityAt<ITransport>(CoreConstantsForSpecs.Neigborhood.PERIPORTAL_CELL_GALLBLADDER,
+         return _simulation.Model.Neighborhoods.EntityAt<Transport>(CoreConstantsForSpecs.Neigborhood.PERIPORTAL_CELL_GALLBLADDER,
             _compound.Name,_biliaryClearance.Name,  CoreConstants.Process.BILIARY_CLEARANCE_TO_GALL_BLADDER);
       }
    }

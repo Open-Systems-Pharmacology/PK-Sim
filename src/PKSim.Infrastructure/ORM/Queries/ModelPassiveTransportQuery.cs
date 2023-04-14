@@ -27,9 +27,9 @@ namespace PKSim.Infrastructure.ORM.Queries
          _modelPassiveTransportMoleculeNameRepo = modelPassiveTransportMoleculeNameRepo;
       }
 
-      public IPassiveTransportBuildingBlock AllPassiveTransportsFor(Simulation simulation)
+      public PassiveTransportBuildingBlock AllPassiveTransportsFor(Simulation simulation)
       {
-         var passiveTransportBuilderCollection = _objectBaseFactory.Create<IPassiveTransportBuildingBlock>()
+         var passiveTransportBuilderCollection = _objectBaseFactory.Create<PassiveTransportBuildingBlock>()
             .WithName(simulation.Name);
 
          var modelProperties = simulation.ModelProperties;

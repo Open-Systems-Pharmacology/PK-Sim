@@ -18,7 +18,7 @@ namespace PKSim.Core
       protected IContainer _intracellular;
       private ObjectPathFactory _objectPathFactory;
       protected IList<string> _displayPath;
-      protected IObserver _observer;
+      protected Observer _observer;
       protected string _intracellularDisplay;
       protected string _boneDisplay;
       protected IContainer _root;

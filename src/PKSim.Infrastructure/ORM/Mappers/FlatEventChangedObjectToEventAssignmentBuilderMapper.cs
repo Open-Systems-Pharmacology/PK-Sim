@@ -7,7 +7,7 @@ using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatEventChangedObjectToEventAssignmentBuilderMapper : IMapper<FlatEventChangedObject, IEventAssignmentBuilder>
+   public interface IFlatEventChangedObjectToEventAssignmentBuilderMapper : IMapper<FlatEventChangedObject, EventAssignmentBuilder>
    {
    }
 
@@ -27,9 +27,9 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _formulaCache = new FormulaCache();
       }
 
-      public IEventAssignmentBuilder MapFrom(FlatEventChangedObject flatEventChangedObject)
+      public EventAssignmentBuilder MapFrom(FlatEventChangedObject flatEventChangedObject)
       {
-         var eventAssignmentBuilder = _objectBaseFactory.Create<IEventAssignmentBuilder>();
+         var eventAssignmentBuilder = _objectBaseFactory.Create<EventAssignmentBuilder>();
          eventAssignmentBuilder.ObjectPath = _objectPathMapper.MapFrom(flatEventChangedObject);
          eventAssignmentBuilder.UseAsValue = flatEventChangedObject.UseAsValue;
          eventAssignmentBuilder.Formula = _formulaFactory.RateFor(flatEventChangedObject, _formulaCache);

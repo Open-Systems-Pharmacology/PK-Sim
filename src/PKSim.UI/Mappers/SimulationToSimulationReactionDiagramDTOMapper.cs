@@ -35,7 +35,7 @@ namespace PKSim.UI.Mappers
          return dto;
       }
 
-      private void reIdNodesFromNewBuildingBlock(IDiagramModel diagramModel, IEnumerable<IReactionBuilder> reactionBuildingBlock)
+      private void reIdNodesFromNewBuildingBlock(IDiagramModel diagramModel, IEnumerable<ReactionBuilder> reactionBuildingBlock)
       {
          if (diagramModel == null || reactionBuildingBlock == null)
             return;
