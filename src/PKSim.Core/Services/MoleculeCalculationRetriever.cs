@@ -10,7 +10,7 @@ namespace PKSim.Core.Services
    public interface IMoleculeCalculationRetriever
    {
       /// <summary>
-      /// Returns the distinct <see cref="ICoreCalculationMethod"/> used in the <paramref name="simulation"/>
+      /// Returns the distinct <see cref="CoreCalculationMethod"/> used in the <paramref name="simulation"/>
       /// </summary>
       IEnumerable<CoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(Simulation simulation);
 

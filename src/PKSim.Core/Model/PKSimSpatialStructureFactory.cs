@@ -48,7 +48,7 @@ namespace PKSim.Core.Model
       }
 
       public SpatialStructure CreateFor(Individual individual, Simulation simulation)
-      {https://mail.google.com/mail/u/0/#inbox
+      {
          var spatialStructure = Create().WithName(simulation.Name);
          var organism = _objectBaseFactory.Create<Organism>();
          spatialStructure.AddTopContainer(organism);
