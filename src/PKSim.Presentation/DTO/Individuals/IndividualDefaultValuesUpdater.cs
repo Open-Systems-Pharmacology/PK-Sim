@@ -105,9 +105,10 @@ namespace PKSim.Presentation.DTO.Individuals
 
       public void UpdateDiseaseStateFor(IndividualSettingsDTO individualSettingsDTO)
       {
+         //can be null if switching from a species/pop that supports disease state to one that does not support it
          var diseaseState = individualSettingsDTO.DiseaseState;
          //We clone parameters to ensure that we are not updating the default from DB;
-         individualSettingsDTO.DiseaseStateParameter = diseaseState.Parameters
+         individualSettingsDTO.DiseaseStateParameter = diseaseState?.Parameters
             .Select(_cloner.Clone)
             .Select(_parameterMapper.MapAsReadWriteFrom)
             .FirstOrDefault() ?? new NullParameterDTO();

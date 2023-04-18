@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using DevExpress.XtraLayout.Utils;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -9,7 +8,6 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using PKSim.Presentation.Presenters.Parameters;
-using PKSim.UI.Extensions;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -31,6 +29,11 @@ namespace PKSim.UI.Views.Parameters
 
       public event Action<IParameterDTO, double> ValueChanged = delegate { };
       public event Action<IParameterDTO, Unit> UnitChanged = delegate { };
+
+      /// <summary>
+      /// Indicates whether this control might be bound to different parameters at run time of if it is bound to a single parameter
+      /// </summary>
+      public bool CanChangeParameterTypeAtRuntime { get; set; } = false;
 
       public UxParameterDTOEdit()
       {
@@ -75,14 +78,18 @@ namespace PKSim.UI.Views.Parameters
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(parameterDTO.IsDiscrete);
          layoutControlItemValue.Visibility = LayoutVisibilityConvertor.FromBoolean(!parameterDTO.IsDiscrete);
 
+         //We remove the two elements that may be bound at run time and add them based on the parameter type
+         _screenBinder.Remove(_discreteValueElementBinder);
+         _screenBinder.Remove(_valueElementBinder);
+
          if (!parameterDTO.IsDiscrete)
          {
-            _screenBinder.Remove(_discreteValueElementBinder);
+            _screenBinder.AddElement(_valueElementBinder);
             cbUnit.Enabled = parameterDTO.AllUnits.Count() > 1;
          }
          else
          {
-            _screenBinder.Remove(_valueElementBinder);
+            _screenBinder.AddElement(_discreteValueElementBinder);
             cbUnit.Enabled = false;
          }
 

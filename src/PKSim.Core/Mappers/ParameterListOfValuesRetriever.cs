@@ -6,6 +6,7 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Mappers
 {
@@ -19,13 +20,15 @@ namespace PKSim.Core.Mappers
    {
       private readonly HashSet<string> _parameterWithListOfValues;
 
-      public ParameterListOfValuesRetriever() : this( new HashSet<string>(Constants.Parameters.AllWithListOfValues))
+      public ParameterListOfValuesRetriever() : this(new HashSet<string>(Constants.Parameters.AllWithListOfValues))
       {
       }
 
       public ParameterListOfValuesRetriever(HashSet<string> parameterWithListOfValues)
       {
          _parameterWithListOfValues = parameterWithListOfValues;
+         //TODO MOVE TO CORE
+         _parameterWithListOfValues.Add(HIDiseaseStateImplementation.CHILD_PUGH_SCORE);
       }
 
       public ICache<double, string> ListOfValuesFor(IParameter parameter)
@@ -88,6 +91,12 @@ namespace PKSim.Core.Mappers
          {
             listOfValues.Add(CoreConstants.Parameters.SINK_CONDITION, PKSimConstants.UI.SinkCondition);
             listOfValues.Add(CoreConstants.Parameters.NO_SINK_CONDITION, PKSimConstants.UI.NoSinkCondition);
+         }
+         else if (parameter.IsNamed(HIDiseaseStateImplementation.CHILD_PUGH_SCORE))
+         {
+            listOfValues.Add(HIDiseaseStateImplementation.ChildPughScore.A, "A");
+            listOfValues.Add(HIDiseaseStateImplementation.ChildPughScore.B, "B");
+            listOfValues.Add(HIDiseaseStateImplementation.ChildPughScore.C, "C");
          }
          else
             throw new ArgumentException("Cannot create list of values", parameter.Name);

@@ -1315,6 +1315,7 @@ namespace PKSim.Core
       public static class DiseaseStates
       {
          public const string CKD = "CKD";
+         public const string HI = "HI";
          public const string HEALTHY = "Healthy";
 
       }

@@ -24,7 +24,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private DiseaseState _healthyState;
 
-      public DiseaseStateRepository(
+      public DiseaseStateRepository( 
          IFlatDiseaseStateRepository flatDiseaseStateRepository,
          IFlatPopulationDiseaseStateRepository flatPopulationDiseaseStateRepository,
          IPopulationRepository populationRepository,
