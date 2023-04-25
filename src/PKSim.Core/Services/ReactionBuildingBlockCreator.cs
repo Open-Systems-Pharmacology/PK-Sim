@@ -32,12 +32,12 @@ namespace PKSim.Core.Services
          var simulationConfiguration = new SimulationConfiguration();
          var module = new Module
          {
-            PassiveTransports = new PassiveTransportBuildingBlock()
+            new PassiveTransportBuildingBlock()
          };
 
          var (molecules, reactions) = _moleculesAndReactionsCreator.CreateFor(module, simulation);
-         module.Molecules = molecules;
-         module.Reactions = reactions;
+         module.Add(molecules);
+         module.Add(reactions);
 
          simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
          return module.Reactions;
