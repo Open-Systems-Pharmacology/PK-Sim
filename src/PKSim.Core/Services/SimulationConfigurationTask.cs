@@ -81,7 +81,7 @@ namespace PKSim.Core.Services
          var moduleConfiguration = new ModuleConfiguration(module);
          simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
          //STEP1: Create spatial structure
-         module.SpatialStructure = _spatialStructureFactory.CreateFor(individual, simulation);
+         module.Add(_spatialStructureFactory.CreateFor(individual, simulation));
 
          //STEP2: add used calculation method to the build configuration
          _moleculeCalculationRetriever.AllMoleculeCalculationMethodsUsedBy(simulation).Each(simulationConfiguration.AddCalculationMethod);
@@ -93,25 +93,25 @@ namespace PKSim.Core.Services
          individual.AllExpressionProfiles().MapAllUsing(_expressionProfileBuildingBlockMapper).Each(simulationConfiguration.AddExpressionProfile);
 
          //STEP5: Add Passive Transports 
-         module.PassiveTransports = _modelPassiveTransportQuery.AllPassiveTransportsFor(simulation);
+         module.Add(_modelPassiveTransportQuery.AllPassiveTransportsFor(simulation));
 
          //STEP6 : Molecules, and Molecule Start and reactions are generated in one go from the molecule and reaction creator
          var (molecules, reactions) = _moleculesAndReactionsCreator.CreateFor(module, simulation);
-         module.Molecules = molecules;
-         module.Reactions = reactions;
+         module.Add(molecules);
+         module.Add(reactions);
 
          //STEP7 Add Application, Formulation and events
-         module.EventGroups = _eventBuildingBlockCreator.CreateFor(simulation);
+         module.Add(_eventBuildingBlockCreator.CreateFor(simulation));
 
          //STEP8: Add Observers
-         module.Observers = _modelObserverQuery.AllObserversFor(module.Molecules, simulation);
+         module.Add(_modelObserverQuery.AllObserversFor(module.Molecules, simulation));
 
          //STEP9 once all building blocks have been created, we need to create the default parameter and molecule values values 
          var moleculeStartValues = _moleculeStartValuesCreator.CreateFor(module, simulation);
-         module.AddMoleculeStartValueBlock(moleculeStartValues);
+         module.Add(moleculeStartValues);
 
          var parameterStartValues = _parameterStartValuesCreator.CreateFor(simulation);
-         module.AddParameterStartValueBlock(parameterStartValues);
+         module.Add(parameterStartValues);
 
          moduleConfiguration.SelectedParameterStartValues = parameterStartValues;
          moduleConfiguration.SelectedMoleculeStartValues = moleculeStartValues;
