@@ -71,7 +71,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_add_all_observed_data_defined_in_the_simulation()
       {
-         A.CallTo(() => _chartTask.UpdateObservedDataInChartsFor(_simulation)).MustHaveHappened();
+         A.CallTo(() => _chartTask.UpdateObservedDataInChartsFor(_simulation, null)).MustHaveHappened();
       }
    }
 }

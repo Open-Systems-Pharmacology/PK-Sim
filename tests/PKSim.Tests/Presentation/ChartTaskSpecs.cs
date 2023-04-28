@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
+using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation.Services;
 

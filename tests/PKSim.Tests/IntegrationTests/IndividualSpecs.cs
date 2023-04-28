@@ -186,7 +186,7 @@ namespace PKSim.IntegrationTests
             if (catParameter.ValueOrigin.Description != "Copied from Minipig")
                continue;
 
-            catParameter.Value.ShouldBeEqualTo(allConstMinipigParameter[i].Value, 1e-5);
+            catParameter.Value.ShouldBeEqualTo(allConstMinipigParameter[i].Value, 1e-5, catParameter.Name);
          }
       }
    }
