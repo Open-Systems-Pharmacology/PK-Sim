@@ -11,6 +11,7 @@ using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Units;
 using static PKSim.Core.CoreConstants.Organ;
 using static PKSim.Core.CoreConstants.Parameters;
+using HIFactors = OSPSuite.Utility.Collections.Cache<double, double>;
 using IFormulaFactory = OSPSuite.Core.Domain.Formulas.IFormulaFactory;
 
 namespace PKSim.Core.Services
@@ -24,52 +25,44 @@ namespace PKSim.Core.Services
          public static double C = 2;
       }
 
-      private static readonly Cache<double, double> _portalFlowScalingFactor = new()
+      private static HIFactors createFactors(double forA, double forB, double forC) =>
+         new()
+         {
+            {ChildPughScore.A, forA},
+            {ChildPughScore.B, forB},
+            {ChildPughScore.C, forC},
+         };
+
+      private static readonly HIFactors _portalFlowScalingFactor = createFactors(0.4, 0.36, 0.04);
+      private static readonly HIFactors _hepaticFlowScalingFactor = createFactors(1.3, 2.3, 3.4);
+      private static readonly HIFactors _hepaticVolumeScalingFactor = createFactors(0.69, 0.55, 0.28);
+      private static readonly HIFactors _renalFlowScalingFactor = createFactors(0.88, 0.65, 0.65);
+      private static readonly HIFactors _otherOrgansFlowScalingFactor = createFactors(1.31, 1.84, 2.27);
+      private static readonly HIFactors _gfrScalingFactor = createFactors(1, 0.7, 0.36);
+      private static readonly HIFactors _hematocritScalingFactor = createFactors(0.92, 0.88, 0.83);
+
+      private static readonly Cache<string, HIFactors> _moleculeScalingFactorEdginton = new()
       {
-         {ChildPughScore.A, 0.4},
-         {ChildPughScore.B, 0.36},
-         {ChildPughScore.C, 0.04},
+         {"CYP3A4", createFactors(1, 0.4, 0.4)},
+         {"CYP1A2", createFactors(1, 0.1, 0.1)},
+         {"CYP2E1", createFactors(1, 0.83, 0.83)},
       };
 
-      private static readonly Cache<double, double> _hepaticFlowScalingFactor = new()
+      private static readonly Cache<string, HIFactors> _moleculeScalingFactorJohnson = new()
       {
-         {ChildPughScore.A, 1.3},
-         {ChildPughScore.B, 2.3},
-         {ChildPughScore.C, 3.4},
-      };
-
-      private static readonly Cache<double, double> _hepaticVolumeScalingFactor = new()
-      {
-         {ChildPughScore.A, 0.69},
-         {ChildPughScore.B, 0.55},
-         {ChildPughScore.C, 0.28},
-      };
-
-      private static readonly Cache<double, double> _renalFlowScalingFactor = new()
-      {
-         {ChildPughScore.A, 0.88},
-         {ChildPughScore.B, 0.65},
-         {ChildPughScore.C, 0.65},
-      };
-
-      private static readonly Cache<double, double> _otherOrgansFlowScalingFactor = new()
-      {
-         {ChildPughScore.A, 1.31},
-         {ChildPughScore.B, 1.84},
-         {ChildPughScore.C, 2.27},
-      };
-
-      private static readonly Cache<double, double> _gfrScalingFactor = new()
-      {
-         {ChildPughScore.A, 1},
-         {ChildPughScore.B, 0.7},
-         {ChildPughScore.C, 0.36},
+         {"CYP2A6", createFactors(0.89, 0.62, 0.32)},
+         {"CYP2B6", createFactors(1, 0.9, 0.8)},
+         {"CYP2C8", createFactors(0.69, 0.52, 0.33)},
+         {"CYP2C9", createFactors(0.69, 0.51, 0.33)},
+         {"CYP2C18", createFactors(0.32, 0.26, 0.12)},
+         {"CYP2C19", createFactors(0.32, 0.26, 0.12)},
+         {"CYP2D6", createFactors(0.76, 0.33, 0.11)},
       };
 
       public const string CHILD_PUGH_SCORE = "Child-Pugh score";
 
-      //TODO
-      private const int HI_VALUE_ORIGIN_ID = 92;
+      private const int HI_EDGINTON_VALUE_ORIGIN_ID = 93;
+      private const int HI_JOHNSON_VALUE_ORIGIN_ID = 94;
 
       private readonly IDimension _ageDimension;
       private readonly IValueOriginRepository _valueOriginRepository;
@@ -86,9 +79,11 @@ namespace PKSim.Core.Services
 
       public bool ApplyTo(Individual individual)
       {
-         updateBloodFlows(individual, updateParameter);
-         updateVolumes(individual, updateParameter);
-         updateGFR(individual, updateParameter);
+         var updateParameterEdginton = updateParameter(HI_EDGINTON_VALUE_ORIGIN_ID);
+         updateBloodFlows(individual, updateParameterEdginton);
+         updateVolumes(individual, updateParameterEdginton);
+         updateGFR(individual, updateParameterEdginton);
+         updateHematocrit(individual, updateParameterEdginton);
 
          return true;
       }
@@ -101,6 +96,13 @@ namespace PKSim.Core.Services
          updateParameterFunc(GFR_spec, _gfrScalingFactor[score], true);
       }
 
+      private void updateHematocrit(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      {
+         var score = childPughScoreFor(individual);
+         var hct = individual.Organism.Parameter(HCT);
+         updateParameterFunc(hct, _hematocritScalingFactor[score], true);
+      }
+
       private void updateBloodFlows(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
@@ -108,7 +110,7 @@ namespace PKSim.Core.Services
          var updateBloodFlow = updateBloodFlowDef(updateParameterFunc, organism);
 
          //PortalGF
-         var portalOrgans = new[] { STOMACH, SMALL_INTESTINE, LARGE_INTESTINE, SPLEEN, PANCREAS };
+         var portalOrgans = new[] {STOMACH, SMALL_INTESTINE, LARGE_INTESTINE, SPLEEN, PANCREAS};
          portalOrgans.Each(x => updateBloodFlow(x, _portalFlowScalingFactor[score]));
 
          //Hepatic
@@ -118,8 +120,14 @@ namespace PKSim.Core.Services
          updateBloodFlow(KIDNEY, _renalFlowScalingFactor[score]);
 
          //other organs
-         var otherOrgans = new[] { BONE, FAT, GONADS, HEART, MUSCLE, SKIN };
+         var otherOrgans = new[] {BONE, FAT, GONADS, HEART, MUSCLE, SKIN};
          otherOrgans.Each(x => updateBloodFlow(x, _otherOrgansFlowScalingFactor[score]));
+      }
+
+      private void updateReferenceConcentration(Individual individual, IndividualMolecule individualMolecule, HIFactors factors, int valueOriginId)
+      {
+         var score = childPughScoreFor(individual);
+         updateParameter(valueOriginId)(individualMolecule.ReferenceConcentration, factors[score], true);
       }
 
       private void updateVolumes(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
@@ -162,10 +170,10 @@ namespace PKSim.Core.Services
          parameter.Value = valueToUse;
       }
 
-      private void updateParameter(IParameter parameter, double value, bool useAsFactor)
+      private Action<IParameter, double, bool> updateParameter(int valueOriginId) => (parameter, value, useAsFactor) =>
       {
          var valueToUse = useAsFactor ? parameter.Value * value : parameter.Value;
-         updateValueOriginsFor(parameter);
+         updateValueOriginsFor(parameter, valueOriginId);
          if (parameter is IDistributedParameter distributedParameter)
          {
             distributedParameter.ScaleDistributionBasedOn(valueToUse / distributedParameter.Value);
@@ -185,11 +193,11 @@ namespace PKSim.Core.Services
          updateParameterValue(parameter, value, useAsFactor);
          parameter.DefaultValue = valueToUse;
          parameter.IsFixedValue = false;
-      }
+      };
 
-      private void updateValueOriginsFor(IParameter parameter)
+      private void updateValueOriginsFor(IParameter parameter, int valueOriginId)
       {
-         parameter.ValueOrigin.UpdateAllFrom(_valueOriginRepository.FindBy(HI_VALUE_ORIGIN_ID));
+         parameter.ValueOrigin.UpdateAllFrom(_valueOriginRepository.FindBy(valueOriginId));
          //Make sure we mark this parameter as changed by create individual. It might already be the case but in that case, it does not change anything
          parameter.IsChangedByCreateIndividual = true;
       }
@@ -212,9 +220,14 @@ namespace PKSim.Core.Services
          return (false, PKSimConstants.Error.HIOnlyAvailableForAdult);
       }
 
-      public void ApplyTo(IndividualMolecule individualMolecule)
+      public void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
       {
-         //nothing to do hereHi
+         var moleculeName = individualMolecule.Name.ToUpper();
+         if (_moleculeScalingFactorEdginton.Contains(moleculeName))
+            updateReferenceConcentration(individual, individualMolecule, _moleculeScalingFactorEdginton[moleculeName], HI_EDGINTON_VALUE_ORIGIN_ID);
+
+         if (_moleculeScalingFactorJohnson.Contains(moleculeName))
+            updateReferenceConcentration(individual, individualMolecule, _moleculeScalingFactorJohnson[moleculeName], HI_JOHNSON_VALUE_ORIGIN_ID);
       }
    }
 }

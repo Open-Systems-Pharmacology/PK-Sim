@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -51,8 +52,10 @@ namespace PKSim.IntegrationTests
          _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit = 3.42;
          _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit = 8.65;
          _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit = 20;
+         //HCT parameter is a discrete distribution parameter. In order to update the value properly, we need to set the mean value
+         _individual.Organism.Parameter(HCT).DowncastTo<IDistributedParameter>().MeanParameter.Value = 0.43;
       }
-   }
+   }  
 
    public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_A_individual : concern_for_HIDiseaseStateImplementation
    {
@@ -90,6 +93,13 @@ namespace PKSim.IntegrationTests
       {
          _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 1, 1e-2);
       }
+
+      [Observation]
+      public void should_return_the_expected_values_for_hct()
+      {
+         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.395, 1e-2);
+      }
+
 
       [Observation]
       public void should_return_the_expected_values_for_volumes()
@@ -135,6 +145,13 @@ namespace PKSim.IntegrationTests
          _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.7, 1e-2);
       }
 
+
+      [Observation]
+      public void should_return_the_expected_values_for_hct()
+      {
+         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.378, 1e-2);
+      }
+
       [Observation]
       public void should_return_the_expected_values_for_volumes()
       {
@@ -176,6 +193,12 @@ namespace PKSim.IntegrationTests
          public void should_return_the_expected_values_for_gfr_spec()
          {
             _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.36, 1e-2);
+         }
+
+         [Observation]
+         public void should_return_the_expected_values_for_hct()
+         {
+            _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.357, 1e-2);
          }
 
          [Observation]

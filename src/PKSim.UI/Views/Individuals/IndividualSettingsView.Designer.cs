@@ -105,10 +105,12 @@ namespace PKSim.UI.Views.Individuals
          // 
          // gridCalculationMethods
          // 
-         this.gridCalculationMethods.Location = new System.Drawing.Point(181, 181);
+         this.gridCalculationMethods.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+         this.gridCalculationMethods.Location = new System.Drawing.Point(211, 217);
          this.gridCalculationMethods.MainView = this.gridViewCalculationMethods;
+         this.gridCalculationMethods.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.gridCalculationMethods.Name = "gridCalculationMethods";
-         this.gridCalculationMethods.Size = new System.Drawing.Size(433, 60);
+         this.gridCalculationMethods.Size = new System.Drawing.Size(506, 81);
          this.gridCalculationMethods.TabIndex = 13;
          this.gridCalculationMethods.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridViewCalculationMethods});
@@ -116,6 +118,7 @@ namespace PKSim.UI.Views.Individuals
          // gridViewCalculationMethods
          // 
          this.gridViewCalculationMethods.AllowsFiltering = true;
+         this.gridViewCalculationMethods.DetailHeight = 431;
          this.gridViewCalculationMethods.EnableColumnContextMenu = true;
          this.gridViewCalculationMethods.GridControl = this.gridCalculationMethods;
          this.gridViewCalculationMethods.MultiSelect = false;
@@ -129,22 +132,24 @@ namespace PKSim.UI.Views.Individuals
          // 
          this.uxHeight.Caption = "";
          this.tablePanel.SetColumn(this.uxHeight, 1);
-         this.uxHeight.Location = new System.Drawing.Point(107, 80);
-         this.uxHeight.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-         this.uxHeight.MaximumSize = new System.Drawing.Size(10000, 22);
-         this.uxHeight.MinimumSize = new System.Drawing.Size(0, 22);
+         this.uxHeight.Location = new System.Drawing.Point(127, 98);
+         this.uxHeight.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+         this.uxHeight.MaximumSize = new System.Drawing.Size(11667, 27);
+         this.uxHeight.MinimumSize = new System.Drawing.Size(0, 27);
          this.uxHeight.Name = "uxHeight";
          this.tablePanel.SetRow(this.uxHeight, 3);
-         this.uxHeight.Size = new System.Drawing.Size(406, 22);
+         this.uxHeight.Size = new System.Drawing.Size(474, 27);
          this.uxHeight.TabIndex = 10;
          this.uxHeight.ToolTip = "";
          // 
          // gridParameterValueVersions
          // 
-         this.gridParameterValueVersions.Location = new System.Drawing.Point(181, 117);
+         this.gridParameterValueVersions.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+         this.gridParameterValueVersions.Location = new System.Drawing.Point(211, 132);
          this.gridParameterValueVersions.MainView = this.gridViewParameterValueVersions;
+         this.gridParameterValueVersions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.gridParameterValueVersions.Name = "gridParameterValueVersions";
-         this.gridParameterValueVersions.Size = new System.Drawing.Size(433, 60);
+         this.gridParameterValueVersions.Size = new System.Drawing.Size(506, 81);
          this.gridParameterValueVersions.TabIndex = 5;
          this.gridParameterValueVersions.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridViewParameterValueVersions});
@@ -152,6 +157,7 @@ namespace PKSim.UI.Views.Individuals
          // gridViewParameterValueVersions
          // 
          this.gridViewParameterValueVersions.AllowsFiltering = true;
+         this.gridViewParameterValueVersions.DetailHeight = 431;
          this.gridViewParameterValueVersions.EnableColumnContextMenu = true;
          this.gridViewParameterValueVersions.GridControl = this.gridParameterValueVersions;
          this.gridViewParameterValueVersions.MultiSelect = false;
@@ -165,22 +171,23 @@ namespace PKSim.UI.Views.Individuals
          // 
          this.uxAge.Caption = "";
          this.tablePanel.SetColumn(this.uxAge, 1);
-         this.uxAge.Location = new System.Drawing.Point(107, 2);
-         this.uxAge.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-         this.uxAge.MinimumSize = new System.Drawing.Size(0, 22);
+         this.uxAge.Location = new System.Drawing.Point(127, 2);
+         this.uxAge.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+         this.uxAge.MinimumSize = new System.Drawing.Size(0, 27);
          this.uxAge.Name = "uxAge";
          this.tablePanel.SetRow(this.uxAge, 0);
-         this.uxAge.Size = new System.Drawing.Size(406, 22);
+         this.uxAge.Size = new System.Drawing.Size(474, 27);
          this.uxAge.TabIndex = 7;
          this.uxAge.ToolTip = "";
          // 
          // cbSpecies
          // 
-         this.cbSpecies.Location = new System.Drawing.Point(181, 45);
+         this.cbSpecies.Location = new System.Drawing.Point(211, 54);
+         this.cbSpecies.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.cbSpecies.Name = "cbSpecies";
          this.cbSpecies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbSpecies.Size = new System.Drawing.Size(433, 20);
+         this.cbSpecies.Size = new System.Drawing.Size(506, 22);
          this.cbSpecies.StyleController = this.layoutControl;
          this.cbSpecies.TabIndex = 3;
          // 
@@ -198,10 +205,11 @@ namespace PKSim.UI.Views.Individuals
          this.layoutControl.Controls.Add(this.gridCalculationMethods);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1247, 353, 1095, 878);
          this.layoutControl.Root = this.layoutMainGroup;
-         this.layoutControl.Size = new System.Drawing.Size(638, 730);
+         this.layoutControl.Size = new System.Drawing.Size(744, 898);
          this.layoutControl.TabIndex = 1;
          this.layoutControl.Text = "layoutControl1";
          // 
@@ -223,7 +231,8 @@ namespace PKSim.UI.Views.Individuals
          this.tablePanel.Controls.Add(this.uxHeight);
          this.tablePanel.Controls.Add(this.uxBMI);
          this.tablePanel.Controls.Add(this.btnMeanValues);
-         this.tablePanel.Location = new System.Drawing.Point(24, 290);
+         this.tablePanel.Location = new System.Drawing.Point(27, 356);
+         this.tablePanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.tablePanel.Name = "tablePanel";
          this.tablePanel.Rows.AddRange(new DevExpress.Utils.Layout.TablePanelRow[] {
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
@@ -232,66 +241,72 @@ namespace PKSim.UI.Views.Individuals
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 26F),
             new DevExpress.Utils.Layout.TablePanelRow(DevExpress.Utils.Layout.TablePanelEntityStyle.Absolute, 24F)});
-         this.tablePanel.Size = new System.Drawing.Size(590, 154);
+         this.tablePanel.Size = new System.Drawing.Size(690, 192);
          this.tablePanel.TabIndex = 19;
          // 
          // labelValueOrigin
          // 
          this.tablePanel.SetColumn(this.labelValueOrigin, 0);
-         this.labelValueOrigin.Location = new System.Drawing.Point(3, 135);
+         this.labelValueOrigin.Location = new System.Drawing.Point(4, 168);
+         this.labelValueOrigin.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.labelValueOrigin.Name = "labelValueOrigin";
          this.tablePanel.SetRow(this.labelValueOrigin, 5);
-         this.labelValueOrigin.Size = new System.Drawing.Size(76, 13);
+         this.labelValueOrigin.Size = new System.Drawing.Size(93, 16);
          this.labelValueOrigin.TabIndex = 21;
          this.labelValueOrigin.Text = "labelValueOrigin";
          // 
          // labelBMI
          // 
          this.tablePanel.SetColumn(this.labelBMI, 0);
-         this.labelBMI.Location = new System.Drawing.Point(3, 110);
+         this.labelBMI.Location = new System.Drawing.Point(4, 136);
+         this.labelBMI.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.labelBMI.Name = "labelBMI";
          this.tablePanel.SetRow(this.labelBMI, 4);
-         this.labelBMI.Size = new System.Drawing.Size(40, 13);
+         this.labelBMI.Size = new System.Drawing.Size(49, 16);
          this.labelBMI.TabIndex = 20;
          this.labelBMI.Text = "labelBMI";
          // 
          // labelHeight
          // 
          this.tablePanel.SetColumn(this.labelHeight, 0);
-         this.labelHeight.Location = new System.Drawing.Point(3, 84);
+         this.labelHeight.Location = new System.Drawing.Point(4, 104);
+         this.labelHeight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.labelHeight.Name = "labelHeight";
          this.tablePanel.SetRow(this.labelHeight, 3);
-         this.labelHeight.Size = new System.Drawing.Size(53, 13);
+         this.labelHeight.Size = new System.Drawing.Size(63, 16);
          this.labelHeight.TabIndex = 19;
          this.labelHeight.Text = "labelHeight";
          // 
          // labelWeight
          // 
          this.tablePanel.SetColumn(this.labelWeight, 0);
-         this.labelWeight.Location = new System.Drawing.Point(3, 58);
+         this.labelWeight.Location = new System.Drawing.Point(4, 72);
+         this.labelWeight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.labelWeight.Name = "labelWeight";
          this.tablePanel.SetRow(this.labelWeight, 2);
-         this.labelWeight.Size = new System.Drawing.Size(56, 13);
+         this.labelWeight.Size = new System.Drawing.Size(67, 16);
          this.labelWeight.TabIndex = 18;
          this.labelWeight.Text = "labelWeight";
          // 
          // labelGestationalAge
          // 
          this.tablePanel.SetColumn(this.labelGestationalAge, 0);
-         this.labelGestationalAge.Location = new System.Drawing.Point(3, 32);
+         this.labelGestationalAge.Location = new System.Drawing.Point(4, 40);
+         this.labelGestationalAge.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.labelGestationalAge.Name = "labelGestationalAge";
          this.tablePanel.SetRow(this.labelGestationalAge, 1);
-         this.labelGestationalAge.Size = new System.Drawing.Size(95, 13);
+         this.labelGestationalAge.Size = new System.Drawing.Size(112, 16);
          this.labelGestationalAge.TabIndex = 17;
          this.labelGestationalAge.Text = "labelGestationalAge";
          // 
          // labelAge
          // 
          this.tablePanel.SetColumn(this.labelAge, 0);
-         this.labelAge.Location = new System.Drawing.Point(3, 6);
+         this.labelAge.Location = new System.Drawing.Point(4, 8);
+         this.labelAge.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.labelAge.Name = "labelAge";
          this.tablePanel.SetRow(this.labelAge, 0);
-         this.labelAge.Size = new System.Drawing.Size(41, 13);
+         this.labelAge.Size = new System.Drawing.Size(49, 16);
          this.labelAge.TabIndex = 16;
          this.labelAge.Text = "labelAge";
          // 
@@ -299,12 +314,12 @@ namespace PKSim.UI.Views.Individuals
          // 
          this.uxGestationalAge.Caption = "";
          this.tablePanel.SetColumn(this.uxGestationalAge, 1);
-         this.uxGestationalAge.Location = new System.Drawing.Point(107, 28);
-         this.uxGestationalAge.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-         this.uxGestationalAge.MinimumSize = new System.Drawing.Size(0, 22);
+         this.uxGestationalAge.Location = new System.Drawing.Point(127, 34);
+         this.uxGestationalAge.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+         this.uxGestationalAge.MinimumSize = new System.Drawing.Size(0, 27);
          this.uxGestationalAge.Name = "uxGestationalAge";
          this.tablePanel.SetRow(this.uxGestationalAge, 1);
-         this.uxGestationalAge.Size = new System.Drawing.Size(406, 22);
+         this.uxGestationalAge.Size = new System.Drawing.Size(474, 27);
          this.uxGestationalAge.TabIndex = 8;
          this.uxGestationalAge.ToolTip = "";
          // 
@@ -312,13 +327,13 @@ namespace PKSim.UI.Views.Individuals
          // 
          this.uxWeight.Caption = "";
          this.tablePanel.SetColumn(this.uxWeight, 1);
-         this.uxWeight.Location = new System.Drawing.Point(107, 54);
-         this.uxWeight.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-         this.uxWeight.MaximumSize = new System.Drawing.Size(10000, 22);
-         this.uxWeight.MinimumSize = new System.Drawing.Size(0, 22);
+         this.uxWeight.Location = new System.Drawing.Point(127, 66);
+         this.uxWeight.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+         this.uxWeight.MaximumSize = new System.Drawing.Size(11667, 27);
+         this.uxWeight.MinimumSize = new System.Drawing.Size(0, 27);
          this.uxWeight.Name = "uxWeight";
          this.tablePanel.SetRow(this.uxWeight, 2);
-         this.uxWeight.Size = new System.Drawing.Size(406, 22);
+         this.uxWeight.Size = new System.Drawing.Size(474, 27);
          this.uxWeight.TabIndex = 9;
          this.uxWeight.ToolTip = "";
          // 
@@ -326,77 +341,82 @@ namespace PKSim.UI.Views.Individuals
          // 
          this.uxBMI.Caption = "";
          this.tablePanel.SetColumn(this.uxBMI, 1);
-         this.uxBMI.Location = new System.Drawing.Point(107, 106);
-         this.uxBMI.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-         this.uxBMI.MaximumSize = new System.Drawing.Size(10000, 22);
-         this.uxBMI.MinimumSize = new System.Drawing.Size(0, 22);
+         this.uxBMI.Location = new System.Drawing.Point(127, 130);
+         this.uxBMI.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+         this.uxBMI.MaximumSize = new System.Drawing.Size(11667, 27);
+         this.uxBMI.MinimumSize = new System.Drawing.Size(0, 27);
          this.uxBMI.Name = "uxBMI";
          this.tablePanel.SetRow(this.uxBMI, 4);
-         this.uxBMI.Size = new System.Drawing.Size(406, 22);
+         this.uxBMI.Size = new System.Drawing.Size(474, 27);
          this.uxBMI.TabIndex = 11;
          this.uxBMI.ToolTip = "";
          // 
          // btnMeanValues
          // 
          this.tablePanel.SetColumn(this.btnMeanValues, 2);
-         this.btnMeanValues.Location = new System.Drawing.Point(522, 55);
+         this.btnMeanValues.Location = new System.Drawing.Point(612, 68);
+         this.btnMeanValues.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.btnMeanValues.Name = "btnMeanValues";
          this.tablePanel.SetRow(this.btnMeanValues, 2);
          this.tablePanel.SetRowSpan(this.btnMeanValues, 2);
-         this.btnMeanValues.Size = new System.Drawing.Size(65, 46);
+         this.btnMeanValues.Size = new System.Drawing.Size(74, 56);
          this.btnMeanValues.TabIndex = 10;
          this.btnMeanValues.Text = "Mean";
          // 
          // uxDiseaseParameter
          // 
          this.uxDiseaseParameter.Caption = "";
-         this.uxDiseaseParameter.Location = new System.Drawing.Point(181, 517);
-         this.uxDiseaseParameter.Margin = new System.Windows.Forms.Padding(5);
-         this.uxDiseaseParameter.MinimumSize = new System.Drawing.Size(0, 21);
+         this.uxDiseaseParameter.Location = new System.Drawing.Point(211, 632);
+         this.uxDiseaseParameter.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+         this.uxDiseaseParameter.MinimumSize = new System.Drawing.Size(0, 26);
          this.uxDiseaseParameter.Name = "uxDiseaseParameter";
-         this.uxDiseaseParameter.Size = new System.Drawing.Size(433, 22);
+         this.uxDiseaseParameter.Size = new System.Drawing.Size(506, 28);
          this.uxDiseaseParameter.TabIndex = 13;
          this.uxDiseaseParameter.TabStop = false;
          this.uxDiseaseParameter.ToolTip = "";
          // 
          // lblDescription
          // 
-         this.lblDescription.Location = new System.Drawing.Point(24, 543);
+         this.lblDescription.Location = new System.Drawing.Point(27, 664);
+         this.lblDescription.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.lblDescription.Name = "lblDescription";
-         this.lblDescription.Size = new System.Drawing.Size(63, 13);
+         this.lblDescription.Size = new System.Drawing.Size(76, 16);
          this.lblDescription.StyleController = this.layoutControl;
          this.lblDescription.TabIndex = 17;
          this.lblDescription.Text = "lblDescription";
          // 
          // cbDiseaseState
          // 
-         this.cbDiseaseState.Location = new System.Drawing.Point(181, 493);
+         this.cbDiseaseState.Location = new System.Drawing.Point(211, 606);
+         this.cbDiseaseState.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.cbDiseaseState.Name = "cbDiseaseState";
          this.cbDiseaseState.Properties.AllowMouseWheel = false;
          this.cbDiseaseState.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbDiseaseState.Size = new System.Drawing.Size(433, 20);
+         this.cbDiseaseState.Size = new System.Drawing.Size(506, 22);
          this.cbDiseaseState.StyleController = this.layoutControl;
          this.cbDiseaseState.TabIndex = 12;
          this.cbDiseaseState.TabStop = false;
          // 
          // cbPopulation
          // 
-         this.cbPopulation.Location = new System.Drawing.Point(181, 69);
+         this.cbPopulation.Location = new System.Drawing.Point(211, 80);
+         this.cbPopulation.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.cbPopulation.Name = "cbPopulation";
          this.cbPopulation.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbPopulation.Size = new System.Drawing.Size(433, 20);
+         this.cbPopulation.Size = new System.Drawing.Size(506, 22);
          this.cbPopulation.StyleController = this.layoutControl;
          this.cbPopulation.TabIndex = 4;
          // 
          // cbGender
          // 
-         this.cbGender.Location = new System.Drawing.Point(181, 93);
+         this.cbGender.Location = new System.Drawing.Point(211, 106);
+         this.cbGender.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
          this.cbGender.Name = "cbGender";
          this.cbGender.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbGender.Size = new System.Drawing.Size(433, 20);
+         this.cbGender.Size = new System.Drawing.Size(506, 22);
          this.cbGender.StyleController = this.layoutControl;
          this.cbGender.TabIndex = 6;
          // 
@@ -411,7 +431,7 @@ namespace PKSim.UI.Views.Individuals
             this.layoutGroupDiseaseState,
             this.emptySpaceItem});
          this.layoutMainGroup.Name = "Root";
-         this.layoutMainGroup.Size = new System.Drawing.Size(638, 730);
+         this.layoutMainGroup.Size = new System.Drawing.Size(744, 898);
          this.layoutMainGroup.TextVisible = false;
          // 
          // layoutControlGroupPopulationProperties
@@ -425,27 +445,27 @@ namespace PKSim.UI.Views.Individuals
             this.layoutItemPopulation});
          this.layoutControlGroupPopulationProperties.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroupPopulationProperties.Name = "layoutControlGroupPopulationProperties";
-         this.layoutControlGroupPopulationProperties.Size = new System.Drawing.Size(618, 245);
+         this.layoutControlGroupPopulationProperties.Size = new System.Drawing.Size(720, 302);
          // 
          // layoutItemSubPopulation
          // 
          this.layoutItemSubPopulation.AllowHide = false;
          this.layoutItemSubPopulation.Control = this.gridParameterValueVersions;
          this.layoutItemSubPopulation.CustomizationFormText = "layoutItemSubPopulation";
-         this.layoutItemSubPopulation.Location = new System.Drawing.Point(0, 72);
+         this.layoutItemSubPopulation.Location = new System.Drawing.Point(0, 78);
          this.layoutItemSubPopulation.Name = "layoutItemSubPopulation";
-         this.layoutItemSubPopulation.Size = new System.Drawing.Size(594, 64);
-         this.layoutItemSubPopulation.TextSize = new System.Drawing.Size(145, 13);
+         this.layoutItemSubPopulation.Size = new System.Drawing.Size(694, 85);
+         this.layoutItemSubPopulation.TextSize = new System.Drawing.Size(170, 16);
          // 
          // layoutItemCalculationMethods
          // 
          this.layoutItemCalculationMethods.AllowHide = false;
          this.layoutItemCalculationMethods.Control = this.gridCalculationMethods;
          this.layoutItemCalculationMethods.CustomizationFormText = "layoutItemCalculationMethods";
-         this.layoutItemCalculationMethods.Location = new System.Drawing.Point(0, 136);
+         this.layoutItemCalculationMethods.Location = new System.Drawing.Point(0, 163);
          this.layoutItemCalculationMethods.Name = "layoutItemCalculationMethods";
-         this.layoutItemCalculationMethods.Size = new System.Drawing.Size(594, 64);
-         this.layoutItemCalculationMethods.TextSize = new System.Drawing.Size(145, 13);
+         this.layoutItemCalculationMethods.Size = new System.Drawing.Size(694, 85);
+         this.layoutItemCalculationMethods.TextSize = new System.Drawing.Size(170, 16);
          // 
          // layoutItemSpecies
          // 
@@ -453,44 +473,44 @@ namespace PKSim.UI.Views.Individuals
          this.layoutItemSpecies.CustomizationFormText = "layoutItemSpecies";
          this.layoutItemSpecies.Location = new System.Drawing.Point(0, 0);
          this.layoutItemSpecies.Name = "layoutItemCreature";
-         this.layoutItemSpecies.Size = new System.Drawing.Size(594, 24);
-         this.layoutItemSpecies.TextSize = new System.Drawing.Size(145, 13);
+         this.layoutItemSpecies.Size = new System.Drawing.Size(694, 26);
+         this.layoutItemSpecies.TextSize = new System.Drawing.Size(170, 16);
          // 
          // layoutItemGender
          // 
          this.layoutItemGender.AllowHide = false;
          this.layoutItemGender.Control = this.cbGender;
          this.layoutItemGender.CustomizationFormText = "layoutItemGender";
-         this.layoutItemGender.Location = new System.Drawing.Point(0, 48);
+         this.layoutItemGender.Location = new System.Drawing.Point(0, 52);
          this.layoutItemGender.Name = "layoutItemGender";
-         this.layoutItemGender.Size = new System.Drawing.Size(594, 24);
-         this.layoutItemGender.TextSize = new System.Drawing.Size(145, 13);
+         this.layoutItemGender.Size = new System.Drawing.Size(694, 26);
+         this.layoutItemGender.TextSize = new System.Drawing.Size(170, 16);
          // 
          // layoutItemPopulation
          // 
          this.layoutItemPopulation.Control = this.cbPopulation;
          this.layoutItemPopulation.CustomizationFormText = "layoutItemPopulation";
-         this.layoutItemPopulation.Location = new System.Drawing.Point(0, 24);
+         this.layoutItemPopulation.Location = new System.Drawing.Point(0, 26);
          this.layoutItemPopulation.Name = "layoutItemPopulation";
-         this.layoutItemPopulation.Size = new System.Drawing.Size(594, 24);
-         this.layoutItemPopulation.TextSize = new System.Drawing.Size(145, 13);
+         this.layoutItemPopulation.Size = new System.Drawing.Size(694, 26);
+         this.layoutItemPopulation.TextSize = new System.Drawing.Size(170, 16);
          // 
          // layoutControlGroupPopulationParameters
          // 
          this.layoutControlGroupPopulationParameters.CustomizationFormText = "layoutControlGroupPopulationParameters";
          this.layoutControlGroupPopulationParameters.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemPopulationProperties});
-         this.layoutControlGroupPopulationParameters.Location = new System.Drawing.Point(0, 245);
+         this.layoutControlGroupPopulationParameters.Location = new System.Drawing.Point(0, 302);
          this.layoutControlGroupPopulationParameters.Name = "layoutControlGroupPopulationParameters";
-         this.layoutControlGroupPopulationParameters.Size = new System.Drawing.Size(618, 203);
+         this.layoutControlGroupPopulationParameters.Size = new System.Drawing.Size(720, 250);
          // 
          // layoutItemPopulationProperties
          // 
          this.layoutItemPopulationProperties.Control = this.tablePanel;
          this.layoutItemPopulationProperties.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemPopulationProperties.MinSize = new System.Drawing.Size(5, 5);
+         this.layoutItemPopulationProperties.MinSize = new System.Drawing.Size(6, 6);
          this.layoutItemPopulationProperties.Name = "layoutItemPopulationProperties";
-         this.layoutItemPopulationProperties.Size = new System.Drawing.Size(594, 158);
+         this.layoutItemPopulationProperties.Size = new System.Drawing.Size(694, 196);
          this.layoutItemPopulationProperties.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemPopulationProperties.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemPopulationProperties.TextVisible = false;
@@ -501,54 +521,54 @@ namespace PKSim.UI.Views.Individuals
             this.layoutItemDiseaseState,
             this.layoutItemDescription,
             this.layoutItemDiseaseParameter});
-         this.layoutGroupDiseaseState.Location = new System.Drawing.Point(0, 448);
+         this.layoutGroupDiseaseState.Location = new System.Drawing.Point(0, 552);
          this.layoutGroupDiseaseState.Name = "layoutGroupDiseaseState";
-         this.layoutGroupDiseaseState.Size = new System.Drawing.Size(618, 112);
+         this.layoutGroupDiseaseState.Size = new System.Drawing.Size(720, 132);
          // 
          // layoutItemDiseaseState
          // 
          this.layoutItemDiseaseState.Control = this.cbDiseaseState;
          this.layoutItemDiseaseState.Location = new System.Drawing.Point(0, 0);
          this.layoutItemDiseaseState.Name = "layoutItemDiseaseState";
-         this.layoutItemDiseaseState.Size = new System.Drawing.Size(594, 24);
-         this.layoutItemDiseaseState.TextSize = new System.Drawing.Size(145, 13);
+         this.layoutItemDiseaseState.Size = new System.Drawing.Size(694, 26);
+         this.layoutItemDiseaseState.TextSize = new System.Drawing.Size(170, 16);
          // 
          // layoutItemDescription
          // 
          this.layoutItemDescription.Control = this.lblDescription;
-         this.layoutItemDescription.Location = new System.Drawing.Point(0, 50);
+         this.layoutItemDescription.Location = new System.Drawing.Point(0, 58);
          this.layoutItemDescription.Name = "layoutItemDescription";
-         this.layoutItemDescription.Size = new System.Drawing.Size(594, 17);
+         this.layoutItemDescription.Size = new System.Drawing.Size(694, 20);
          this.layoutItemDescription.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemDescription.TextVisible = false;
          // 
          // layoutItemDiseaseParameter
          // 
          this.layoutItemDiseaseParameter.Control = this.uxDiseaseParameter;
-         this.layoutItemDiseaseParameter.Location = new System.Drawing.Point(0, 24);
-         this.layoutItemDiseaseParameter.MaxSize = new System.Drawing.Size(10153, 26);
-         this.layoutItemDiseaseParameter.MinSize = new System.Drawing.Size(265, 25);
+         this.layoutItemDiseaseParameter.Location = new System.Drawing.Point(0, 26);
+         this.layoutItemDiseaseParameter.MaxSize = new System.Drawing.Size(11845, 32);
+         this.layoutItemDiseaseParameter.MinSize = new System.Drawing.Size(309, 31);
          this.layoutItemDiseaseParameter.Name = "layoutItemDiseaseParameter";
-         this.layoutItemDiseaseParameter.Size = new System.Drawing.Size(594, 26);
+         this.layoutItemDiseaseParameter.Size = new System.Drawing.Size(694, 32);
          this.layoutItemDiseaseParameter.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemDiseaseParameter.TextSize = new System.Drawing.Size(145, 13);
+         this.layoutItemDiseaseParameter.TextSize = new System.Drawing.Size(170, 16);
          // 
          // emptySpaceItem
          // 
          this.emptySpaceItem.AllowHotTrack = false;
-         this.emptySpaceItem.Location = new System.Drawing.Point(0, 560);
+         this.emptySpaceItem.Location = new System.Drawing.Point(0, 684);
          this.emptySpaceItem.Name = "emptySpaceItem";
-         this.emptySpaceItem.Size = new System.Drawing.Size(618, 150);
+         this.emptySpaceItem.Size = new System.Drawing.Size(720, 190);
          this.emptySpaceItem.TextSize = new System.Drawing.Size(0, 0);
          // 
          // IndividualSettingsView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+         this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
-         this.Margin = new System.Windows.Forms.Padding(4);
+         this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
          this.Name = "IndividualSettingsView";
-         this.Size = new System.Drawing.Size(638, 730);
+         this.Size = new System.Drawing.Size(744, 898);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridCalculationMethods)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewCalculationMethods)).EndInit();

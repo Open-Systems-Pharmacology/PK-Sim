@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -8,6 +9,7 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using PKSim.Presentation.Presenters.Parameters;
+using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Parameters
 {
@@ -30,12 +32,7 @@ namespace PKSim.UI.Views.Parameters
       public event Action<IParameterDTO, double> ValueChanged = delegate { };
       public event Action<IParameterDTO, Unit> UnitChanged = delegate { };
 
-      /// <summary>
-      /// Indicates whether this control might be bound to different parameters at run time of if it is bound to a single parameter
-      /// </summary>
-      public bool CanChangeParameterTypeAtRuntime { get; set; } = false;
-
-      public UxParameterDTOEdit()
+       public UxParameterDTOEdit()
       {
          InitializeComponent();
          InitializeBinding();
@@ -77,25 +74,30 @@ namespace PKSim.UI.Views.Parameters
       {
          layoutItemDiscreteValue.Visibility = LayoutVisibilityConvertor.FromBoolean(parameterDTO.IsDiscrete);
          layoutControlItemValue.Visibility = LayoutVisibilityConvertor.FromBoolean(!parameterDTO.IsDiscrete);
+         layoutControlItemUnit.AdjustControlWidth(BUTTON_WIDTH, layoutControl);
 
          //We remove the two elements that may be bound at run time and add them based on the parameter type
          _screenBinder.Remove(_discreteValueElementBinder);
          _screenBinder.Remove(_valueElementBinder);
 
+         var unitCount = parameterDTO.AllUnits.Count();
          if (!parameterDTO.IsDiscrete)
          {
             _screenBinder.AddElement(_valueElementBinder);
-            cbUnit.Enabled = parameterDTO.AllUnits.Count() > 1;
+            cbUnit.Enabled = unitCount > 1;
+            layoutControlItemUnit.Visibility = LayoutVisibilityConvertor.FromBoolean(true);
          }
          else
          {
             _screenBinder.AddElement(_discreteValueElementBinder);
             cbUnit.Enabled = false;
+            //we hide the unit for a parameter without dimension
+            var unitVisible = !parameterDTO.Dimension.IsEquivalentTo(Constants.Dimension.NO_DIMENSION);
+            layoutControlItemUnit.Visibility = LayoutVisibilityConvertor.FromBoolean(unitVisible);
+            layoutItemDiscreteValue.Padding = new Padding(0, unitVisible ? 2 : 0, 0, 0);
          }
 
-
          _screenBinder.BindToSource(parameterDTO);
-         layoutControlItemUnit.AdjustControlWidth(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH, layoutControl);
       }
 
       public override bool HasError => _screenBinder.HasError;

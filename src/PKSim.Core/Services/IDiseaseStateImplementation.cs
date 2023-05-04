@@ -49,7 +49,7 @@ namespace PKSim.Core.Services
       /// <summary>
       /// Apply any change required to the disease factor parameter associated with the molecule
       /// </summary>
-      void ApplyTo(IndividualMolecule individualMolecule);
+      void ApplyTo(Individual individual, IndividualMolecule individualMolecule);
 
    }
 
@@ -84,7 +84,7 @@ namespace PKSim.Core.Services
          return (true, string.Empty);
       }
 
-      public void ApplyTo(IndividualMolecule individualMolecule)
+      public void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
       {
          //nothing to do here
       }

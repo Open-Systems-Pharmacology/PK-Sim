@@ -151,8 +151,9 @@ namespace PKSim.Core.Services
 
       private void updateMoleculeParametersForDiseaseState(ISimulationSubject simulationSubject, IndividualMolecule moleculeInIndividual)
       {
-         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(simulationSubject.Individual);
-         diseaseStateImplementation.ApplyTo(moleculeInIndividual);
+         var individual = simulationSubject.Individual;
+         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+         diseaseStateImplementation.ApplyTo(individual, moleculeInIndividual);
       }
 
       public void SynchronizeExpressionProfileWithSimulationSubject(ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)

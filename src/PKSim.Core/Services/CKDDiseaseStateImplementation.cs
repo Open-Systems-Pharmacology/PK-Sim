@@ -224,7 +224,7 @@ namespace PKSim.Core.Services
          return (false, PKSimConstants.Error.CKDOnlyAvailableForAdult);
       }
 
-      public void ApplyTo(IndividualMolecule individualMolecule)
+      public void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
       {
          //nothing to do here
       }

@@ -2597,6 +2597,8 @@ namespace PKSim.Assets
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
+
+         public static string ChildPughScoreFor (string score)=> $"Hepatic Impairment – Child-Pugh {score}";
       }
 
       public static class Reporting
