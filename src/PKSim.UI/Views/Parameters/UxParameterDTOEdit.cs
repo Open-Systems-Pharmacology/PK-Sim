@@ -95,6 +95,7 @@ namespace PKSim.UI.Views.Parameters
             var unitVisible = !parameterDTO.Dimension.IsEquivalentTo(Constants.Dimension.NO_DIMENSION);
             layoutControlItemUnit.Visibility = LayoutVisibilityConvertor.FromBoolean(unitVisible);
             layoutItemDiscreteValue.Padding = new Padding(0, unitVisible ? 2 : 0, 0, 0);
+            layoutControlItemUnit.Padding = new Padding(unitVisible ? 2 : 0, 0, 0, 0);
          }
 
          _screenBinder.BindToSource(parameterDTO);

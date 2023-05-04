@@ -1,23 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Units;
 using static PKSim.Core.CoreConstants.Organ;
 using static PKSim.Core.CoreConstants.Parameters;
 using HIFactors = OSPSuite.Utility.Collections.Cache<double, double>;
 using IFormulaFactory = OSPSuite.Core.Domain.Formulas.IFormulaFactory;
+using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
 {
-   public class HIDiseaseStateImplementation : IDiseaseStateImplementation
+   public class HIDiseaseStateImplementation : AbstractDiseaseStateImplementation
    {
+      private readonly IParameterFactory _parameterFactory;
+
       public static class ChildPughScore
       {
          public static double A = 0;
@@ -39,6 +44,8 @@ namespace PKSim.Core.Services
       private static readonly HIFactors _renalFlowScalingFactor = createFactors(0.88, 0.65, 0.65);
       private static readonly HIFactors _otherOrgansFlowScalingFactor = createFactors(1.31, 1.84, 2.27);
       private static readonly HIFactors _gfrScalingFactor = createFactors(1, 0.7, 0.36);
+      private static readonly HIFactors _albuminFactor = createFactors(0.81, 0.68, 0.5);
+      private static readonly HIFactors _agpFactor = createFactors(0.6, 0.56, 0.3);
       private static readonly HIFactors _hematocritScalingFactor = createFactors(0.92, 0.88, 0.83);
 
       private static readonly Cache<string, HIFactors> _moleculeScalingFactorEdginton = new()
@@ -65,27 +72,84 @@ namespace PKSim.Core.Services
       private const int HI_JOHNSON_VALUE_ORIGIN_ID = 94;
 
       private readonly IDimension _ageDimension;
-      private readonly IValueOriginRepository _valueOriginRepository;
-      private readonly IFormulaFactory _formulaFactory;
 
-      public HIDiseaseStateImplementation(IDimensionRepository dimensionRepository, IValueOriginRepository valueOriginRepository, IFormulaFactory formulaFactory)
+      public HIDiseaseStateImplementation(IDimensionRepository dimensionRepository,
+         IParameterFactory parameterFactory,
+         IValueOriginRepository valueOriginRepository,
+         IFormulaFactory formulaFactory,
+         IIndividualFactory individualFactory,
+         IContainerTask containerTask,
+         IParameterSetUpdater parameterSetUpdater) : base(valueOriginRepository, formulaFactory, individualFactory, containerTask, parameterSetUpdater, CoreConstants.DiseaseStates.HI)
       {
-         _valueOriginRepository = valueOriginRepository;
-         _formulaFactory = formulaFactory;
+         _parameterFactory = parameterFactory;
          _ageDimension = dimensionRepository.AgeInYears;
       }
 
-      public bool IsSatisfiedBy(DiseaseState diseaseState) => diseaseState.IsNamed(CoreConstants.DiseaseStates.HI);
+      public override bool ApplyTo(Individual individual) => applyTo(individual, UpdateParameter(HI_EDGINTON_VALUE_ORIGIN_ID));
 
-      public bool ApplyTo(Individual individual)
+      public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, UpdateParameterValue);
+
+      private bool applyTo(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
       {
-         var updateParameterEdginton = updateParameter(HI_EDGINTON_VALUE_ORIGIN_ID);
-         updateBloodFlows(individual, updateParameterEdginton);
-         updateVolumes(individual, updateParameterEdginton);
-         updateGFR(individual, updateParameterEdginton);
-         updateHematocrit(individual, updateParameterEdginton);
+         updateBloodFlows(individual, updateParameterFunc);
+         updateVolumes(individual, updateParameterFunc);
+         updateGFR(individual, updateParameterFunc);
+         updateOntogenyFactory(individual, updateParameterFunc);
+         updateHematocrit(individual, updateParameterFunc);
 
+         addChildPughScoreToLiver(individual);
          return true;
+      }
+
+      private void addChildPughScoreToLiver(Individual individual)
+      {
+         var organism = individual.Organism;
+         var childPughScore = organism.Parameter(CHILD_PUGH_SCORE);
+         if (childPughScore == null)
+         {
+            childPughScore = createChildPughScore();
+            organism.Add(childPughScore);
+         }
+
+         childPughScore.Value = childPughScoreFor(individual);
+      }
+
+      private IParameter createChildPughScore()
+      {
+         var childPughScore = _parameterFactory.CreateFor(CHILD_PUGH_SCORE, PKSimBuildingBlockType.Individual)
+            .WithGroup(CoreConstants.Groups.INDIVIDUAL_CHARACTERISTICS);
+         childPughScore.DefaultValue = null;
+         childPughScore.Editable = false;
+         return childPughScore;
+      }
+
+      protected override IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual)
+      {
+         var organism = individual.Organism;
+         var kidney = organism.Organ(KIDNEY);
+         var liver = organism.Organ(LIVER);
+
+         var organsBloodFlow = new[] {STOMACH, SMALL_INTESTINE, LARGE_INTESTINE, SPLEEN, PANCREAS, LIVER, KIDNEY, BONE, FAT, GONADS, HEART, MUSCLE, SKIN};
+         var bloodFlows = organsBloodFlow.Select(x => organism.Organ(x).Parameter(SPECIFIC_BLOOD_FLOW_RATE)).ToList();
+
+         return new[]
+         {
+            organism.Parameter(HCT),
+            organism.Parameter(CHILD_PUGH_SCORE),
+            organism.Parameter(CHILD_PUGH_SCORE),
+            organism.Parameter(ONTOGENY_FACTOR_ALBUMIN),
+            organism.Parameter(ONTOGENY_FACTOR_AGP),
+            kidney.Parameter(GFR_SPEC),
+            liver.Parameter(VOLUME),
+         }.Union(bloodFlows).ToList();
+      }
+
+      private void updateOntogenyFactory(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      {
+         var score = childPughScoreFor(individual);
+         var organism = individual.Organism;
+         updateParameterFunc(organism.Parameter(ONTOGENY_FACTOR_ALBUMIN), _albuminFactor[score], true);
+         updateParameterFunc(organism.Parameter(ONTOGENY_FACTOR_AGP), _agpFactor[score], true);
       }
 
       private void updateGFR(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
@@ -124,17 +188,11 @@ namespace PKSim.Core.Services
          otherOrgans.Each(x => updateBloodFlow(x, _otherOrgansFlowScalingFactor[score]));
       }
 
-      private void updateReferenceConcentration(Individual individual, IndividualMolecule individualMolecule, HIFactors factors, int valueOriginId)
-      {
-         var score = childPughScoreFor(individual);
-         updateParameter(valueOriginId)(individualMolecule.ReferenceConcentration, factors[score], true);
-      }
-
       private void updateVolumes(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
          var organism = individual.Organism;
-         var parameter = organism.Container(LIVER).Parameter(Constants.Parameters.VOLUME);
+         var parameter = organism.Container(LIVER).Parameter(VOLUME);
          updateParameterFunc(parameter, _hepaticVolumeScalingFactor[score], true);
       }
 
@@ -144,74 +202,15 @@ namespace PKSim.Core.Services
          updateParameterFunc(parameter, factor, true);
       };
 
-      private double childPughScoreFor(Individual individual)
+      private void updateReferenceConcentration(Individual individual, IndividualMolecule individualMolecule, HIFactors factors, int valueOriginId)
       {
-         return individual.OriginData.DiseaseStateParameters.FindByName(CHILD_PUGH_SCORE).Value;
+         var score = childPughScoreFor(individual);
+         UpdateParameter(valueOriginId)(individualMolecule.ReferenceConcentration, factors[score], true);
       }
 
-      public bool ApplyForPopulationTo(Individual individual)
-      {
-         throw new NotImplementedException();
-      }
+      private double childPughScoreFor(Individual individual) => individual.OriginData.DiseaseStateParameters.FindByName(CHILD_PUGH_SCORE).Value;
 
-      public Individual CreateBaseIndividualForPopulation(Individual originalIndividual)
-      {
-         throw new NotImplementedException();
-      }
-
-      public void ResetParametersAfterPopulationIteration(Individual individual)
-      {
-         throw new NotImplementedException();
-      }
-
-      private void updateParameterValue(IParameter parameter, double value, bool useAsFactor)
-      {
-         var valueToUse = useAsFactor ? parameter.Value * value : parameter.Value;
-         parameter.Value = valueToUse;
-      }
-
-      private Action<IParameter, double, bool> updateParameter(int valueOriginId) => (parameter, value, useAsFactor) =>
-      {
-         var valueToUse = useAsFactor ? parameter.Value * value : parameter.Value;
-         updateValueOriginsFor(parameter, valueOriginId);
-         if (parameter is IDistributedParameter distributedParameter)
-         {
-            distributedParameter.ScaleDistributionBasedOn(valueToUse / distributedParameter.Value);
-            return;
-         }
-
-         //We are using a formula, we override with a constant
-         if (parameter.Formula.IsExplicit())
-         {
-            parameter.Formula = _formulaFactory.ConstantFormula(valueToUse, parameter.Dimension);
-            //Make sure the formula is indeed used in case the value was overwritten before as fixed value
-            parameter.IsFixedValue = false;
-            return;
-         }
-
-         //constant formula
-         updateParameterValue(parameter, value, useAsFactor);
-         parameter.DefaultValue = valueToUse;
-         parameter.IsFixedValue = false;
-      };
-
-      private void updateValueOriginsFor(IParameter parameter, int valueOriginId)
-      {
-         parameter.ValueOrigin.UpdateAllFrom(_valueOriginRepository.FindBy(valueOriginId));
-         //Make sure we mark this parameter as changed by create individual. It might already be the case but in that case, it does not change anything
-         parameter.IsChangedByCreateIndividual = true;
-      }
-
-      public void Validate(OriginData originData)
-      {
-         var (valid, error) = IsValid(originData);
-         if (valid)
-            return;
-
-         throw new OSPSuiteException(error);
-      }
-
-      public (bool isValid, string error) IsValid(OriginData originData)
+      public override (bool isValid, string error) IsValid(OriginData originData)
       {
          var ageInYears = _ageDimension.BaseUnitValueToUnitValue(_ageDimension.Unit(Years), originData.Age.Value);
          if (ageInYears >= 18)
@@ -220,7 +219,7 @@ namespace PKSim.Core.Services
          return (false, PKSimConstants.Error.HIOnlyAvailableForAdult);
       }
 
-      public void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
+      public override void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
       {
          var moleculeName = individualMolecule.Name.ToUpper();
          if (_moleculeScalingFactorEdginton.Contains(moleculeName))

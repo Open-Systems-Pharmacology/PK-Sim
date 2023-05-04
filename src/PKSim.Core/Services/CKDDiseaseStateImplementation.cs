@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -17,7 +13,7 @@ using IFormulaFactory = OSPSuite.Core.Domain.Formulas.IFormulaFactory;
 
 namespace PKSim.Core.Services
 {
-   public class CKDDiseaseStateImplementation : IDiseaseStateImplementation
+   public class CKDDiseaseStateImplementation : AbstractDiseaseStateImplementation
    {
       private enum CKDStage
       {
@@ -27,10 +23,6 @@ namespace PKSim.Core.Services
       }
 
       private readonly IValueOriginRepository _valueOriginRepository;
-      private readonly IFormulaFactory _formulaFactory;
-      private readonly IIndividualFactory _individualFactory;
-      private readonly IContainerTask _containerTask;
-      private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IDimension _dimensionForGFR;
       public const string TARGET_GFR = "eGFR";
       private readonly IDimension _ageDimension;
@@ -38,23 +30,17 @@ namespace PKSim.Core.Services
       public const string GFR_UNIT = "ml/min/1.73m²";
 
       public CKDDiseaseStateImplementation(
-         IValueOriginRepository valueOriginRepository,
          IDimensionRepository dimensionRepository,
+         IValueOriginRepository valueOriginRepository,
          IFormulaFactory formulaFactory,
          IIndividualFactory individualFactory,
          IContainerTask containerTask,
-         IParameterSetUpdater parameterSetUpdater)
+         IParameterSetUpdater parameterSetUpdater) : base(valueOriginRepository, formulaFactory, individualFactory, containerTask, parameterSetUpdater, CoreConstants.DiseaseStates.CKD)
       {
          _valueOriginRepository = valueOriginRepository;
-         _formulaFactory = formulaFactory;
-         _individualFactory = individualFactory;
-         _containerTask = containerTask;
-         _parameterSetUpdater = parameterSetUpdater;
          _dimensionForGFR = dimensionRepository.DimensionForUnit(GFR_UNIT);
          _ageDimension = dimensionRepository.AgeInYears;
       }
-
-      public bool IsSatisfiedBy(DiseaseState diseaseState) => diseaseState.IsNamed(CoreConstants.DiseaseStates.CKD);
 
       private (
          IParameter hct,
@@ -84,18 +70,11 @@ namespace PKSim.Core.Services
          return (hct, GFR_spec, kidneyVolume, kidneySpecificBloodFlowRate, fatVolume, plasmaProteinScaleFactorParameter, smallIntestinalTransitTime, gastricEmptyingTime);
       }
 
-      private IReadOnlyList<IParameter> parametersChangedByCKDAlgorithmAsList(Individual individual)
-      {
-         var p = parametersChangedByCKDAlgorithm(individual);
+      public override bool ApplyTo(Individual individual) => applyTo(individual, UpdateParameter(CKD_VALUE_ORIGIN_ID));
 
-         return new[] {p.hct, p.GFR_spec, p.kidneyVolume, p.kidneySpecificBloodFlowRate, p.fatVolume, p.plasmaProteinScaleFactorParameter, p.smallIntestinalTransitTime, p.gastricEmptyingTime};
-      }
+      public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, UpdateParameterValue);
 
-      public bool ApplyTo(Individual individual) => applyTo(individual, updateParameter);
-
-      public bool ApplyForPopulationTo(Individual individual) => applyTo(individual, updateParameterValues);
-
-      private bool applyTo(Individual individual, Action<IParameter, double> updateParameterFunc)
+      private bool applyTo(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
       {
          var targetGFR = individual.OriginData.DiseaseStateParameters.FindByName(TARGET_GFR);
 
@@ -114,108 +93,31 @@ namespace PKSim.Core.Services
 
          //Adjust kidney volume and update fat accordingly
          var healthyKidneyVolume = kidneyVolume.Value;
-         updateParameterFunc(kidneyVolume, getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0) * healthyKidneyVolume);
-         updateParameterFunc(fatVolume, fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value);
+         updateParameterFunc(kidneyVolume, getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0), true);
+         updateParameterFunc(fatVolume, fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value, false);
 
          //Adjust renal blood flow spec
-         updateParameterFunc(kidneySpecificBloodFlowRate, getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0) * kidneySpecificBloodFlowRate.Value);
+         updateParameterFunc(kidneySpecificBloodFlowRate, getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0), true);
 
          //Correct specific GFR
-         updateParameterFunc(GFR_Spec, GFR_Spec.Value * targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value);
+         updateParameterFunc(GFR_Spec, targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value, true);
 
          var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
          //Categorial Parameters as constant: We set the value as is as the value will not be reset when creating a population
-         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor);
+         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor, false);
 
          //Categorial Parameters distributed: We apply the variation to the default value
-         updateParameterFunc(gastricEmptyingTime, gastricEmptyingTime.Value * gastricEmptyingTimeFactor);
-         updateParameterFunc(smallIntestinalTransitTime, smallIntestinalTransitTime.Value * smallIntestinalTransitTimeFactor);
+         updateParameterFunc(gastricEmptyingTime, gastricEmptyingTimeFactor, true);
+         updateParameterFunc(smallIntestinalTransitTime, smallIntestinalTransitTimeFactor, true);
 
          //Special case for Hematocrit
-         updateParameterFunc(hct, hct.Value * getHematocritFactor(targetGFRValue, individual.OriginData.Gender));
+         updateParameterFunc(hct, getHematocritFactor(targetGFRValue, individual.OriginData.Gender), true);
 
-         //no parameters to lock for now
-         lockParametersAfterCKDImplementation();
          return true;
       }
 
-      private void lockParametersAfterCKDImplementation(params IParameter[] parameters)
-      {
-         parameters.Each(x => x.Editable = false);
-      }
-
-      private void updateParameterValues(IParameter parameter, double value)
-      {
-         parameter.Value = value;
-      }
-
-      private void updateParameter(IParameter parameter, double value)
-      {
-         updateValueOriginsFor(parameter);
-         if (parameter is IDistributedParameter distributedParameter)
-         {
-            distributedParameter.ScaleDistributionBasedOn(value / distributedParameter.Value);
-            return;
-         }
-
-         //We are using a formula, we override with a constant
-         if (parameter.Formula.IsExplicit())
-         {
-            parameter.Formula = _formulaFactory.ConstantFormula(value, parameter.Dimension);
-            return;
-         }
-
-         //constant formula
-         updateParameterValues(parameter, value);
-         parameter.DefaultValue = value;
-         parameter.IsFixedValue = false;
-      }
-
-      public Individual CreateBaseIndividualForPopulation(Individual originalIndividual)
-      {
-         //we need to create a new individual WITHOUT CKD and set all percentiles as in the original individuals. Other parameters, value wil be taken as is
-         var originData = originalIndividual.OriginData.Clone();
-
-         //remove the disease state to create a healthy Individual
-         originData.DiseaseState = null;
-         var healthyIndividual = _individualFactory.CreateAndOptimizeFor(originData, originalIndividual.Seed);
-
-         var allCKDParameters = parametersChangedByCKDAlgorithmAsList(healthyIndividual);
-
-         //Make sure we update the flags that might not be set coming from the database
-         allCKDParameters.Each(x => x.IsChangedByCreateIndividual = true);
-
-         //do not update parameters changed by CKD algorithm or that are not visible
-         var allHealthyParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(healthyIndividual, x => !allCKDParameters.Contains(x) && x.Visible);
-         var allOriginalParameters = _containerTask.CacheAllChildren<IParameter>(originalIndividual);
-         _parameterSetUpdater.UpdateValues(allOriginalParameters, allHealthyParameters);
-
-         //we have a healthy individuals based on the CKD individual where all changes were all manual changes were accounted for
-         //we now need to add the disease state contributions from the original individual
-         originData.DiseaseState = originalIndividual.OriginData.DiseaseState;
-         originalIndividual.OriginData.DiseaseStateParameters.Each(x => originData.AddDiseaseStateParameter(x.Clone()));
-
-         return healthyIndividual;
-      }
-
-      public void ResetParametersAfterPopulationIteration(Individual individual)
-      {
-         //ensures that formula parameters are reset so that they can be reused in next iteration
-         var allCKDParameters = parametersChangedByCKDAlgorithmAsList(individual).Where(x => x.IsFixedValue);
-         allCKDParameters.Each(x => x.ResetToDefault());
-      }
-
-      public void Validate(OriginData originData)
-      {
-         var (valid, error) = IsValid(originData);
-         if (valid)
-            return;
-
-         throw new OSPSuiteException(error);
-      }
-
-      public (bool isValid, string error) IsValid(OriginData originData)
+      public override (bool isValid, string error) IsValid(OriginData originData)
       {
          var ageInYears = _ageDimension.BaseUnitValueToUnitValue(_ageDimension.Unit(CoreConstants.Units.Years), originData.Age.Value);
          if (ageInYears >= 18)
@@ -224,9 +126,15 @@ namespace PKSim.Core.Services
          return (false, PKSimConstants.Error.CKDOnlyAvailableForAdult);
       }
 
-      public void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
+      public override void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
       {
          //nothing to do here
+      }
+
+      protected override IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual)
+      {
+         var (hct, gfrSpec, kidneyVolume, kidneySpecificBloodFlowRate, fatVolume, plasmaProteinScaleFactorParameter, smallIntestinalTransitTime, gastricEmptyingTime) = parametersChangedByCKDAlgorithm(individual);
+         return new[] {hct, gfrSpec, kidneyVolume, kidneySpecificBloodFlowRate, fatVolume, plasmaProteinScaleFactorParameter, smallIntestinalTransitTime, gastricEmptyingTime};
       }
 
       private double getHematocritFactor(double targetGFR, Gender gender)

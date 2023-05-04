@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using static OSPSuite.Core.Domain.Constants.Parameters;
@@ -38,7 +36,6 @@ namespace PKSim.Core.Mappers
          //TODO MOVE TO CORE
          _parameterWithListOfValues.Add(HIDiseaseStateImplementation.CHILD_PUGH_SCORE);
          _formatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
-
       }
 
       public ICache<double, string> ListOfValuesFor(IParameter parameter)
