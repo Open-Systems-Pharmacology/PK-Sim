@@ -24,7 +24,7 @@ namespace PKSim.Core.Services
    public class SimulationConfigurationTask : ISimulationConfigurationTask
    {
       private readonly IEventBuildingBlockCreator _eventBuildingBlockCreator;
-      private readonly IPKSimMoleculeStartValuesCreator _moleculeStartValuesCreator;
+      private readonly IPKSimInitialConditionsCreator _initialConditionsCreator;
       private readonly IMoleculeCalculationRetriever _moleculeCalculationRetriever;
       private readonly IDistributedParameterToTableParameterConverter _distributedParameterToTableParameterConverter;
       private readonly IObjectBaseFactory _objectBaseFactory;
@@ -34,17 +34,17 @@ namespace PKSim.Core.Services
       private readonly IModelObserverQuery _modelObserverQuery;
       private readonly IModelPassiveTransportQuery _modelPassiveTransportQuery;
       private readonly IMoleculesAndReactionsCreator _moleculesAndReactionsCreator;
-      private readonly IPKSimParameterStartValuesCreator _parameterStartValuesCreator;
+      private readonly IPKSimParameterValuesCreator _parameterValuesCreator;
       private readonly IPKSimSpatialStructureFactory _spatialStructureFactory;
 
       public SimulationConfigurationTask(
          IPKSimSpatialStructureFactory spatialStructureFactory,
          IModelObserverQuery modelObserverQuery,
          IModelPassiveTransportQuery modelPassiveTransportQuery,
-         IPKSimParameterStartValuesCreator parameterStartValuesCreator,
+         IPKSimParameterValuesCreator parameterValuesCreator,
          IMoleculesAndReactionsCreator moleculesAndReactionsCreator,
          IEventBuildingBlockCreator eventBuildingBlockCreator,
-         IPKSimMoleculeStartValuesCreator moleculeStartValuesCreator,
+         IPKSimInitialConditionsCreator initialConditionsCreator,
          IMoleculeCalculationRetriever moleculeCalculationRetriever,
          IDistributedParameterToTableParameterConverter distributedParameterToTableParameterConverter,
          IObjectBaseFactory objectBaseFactory,
@@ -59,10 +59,10 @@ namespace PKSim.Core.Services
          _spatialStructureFactory = spatialStructureFactory;
          _modelObserverQuery = modelObserverQuery;
          _modelPassiveTransportQuery = modelPassiveTransportQuery;
-         _parameterStartValuesCreator = parameterStartValuesCreator;
+         _parameterValuesCreator = parameterValuesCreator;
          _moleculesAndReactionsCreator = moleculesAndReactionsCreator;
          _eventBuildingBlockCreator = eventBuildingBlockCreator;
-         _moleculeStartValuesCreator = moleculeStartValuesCreator;
+         _initialConditionsCreator = initialConditionsCreator;
          _moleculeCalculationRetriever = moleculeCalculationRetriever;
          _individualBuildingBlockMapper = individualBuildingBlockMapper;
          _expressionProfileBuildingBlockMapper = expressionProfileBuildingBlockMapper;
@@ -107,14 +107,14 @@ namespace PKSim.Core.Services
          module.Add(_modelObserverQuery.AllObserversFor(module.Molecules, simulation));
 
          //STEP9 once all building blocks have been created, we need to create the default parameter and molecule values values 
-         var moleculeStartValues = _moleculeStartValuesCreator.CreateFor(module, simulation);
-         module.Add(moleculeStartValues);
+         var initialConditions = _initialConditionsCreator.CreateFor(module, simulation);
+         module.Add(initialConditions);
 
-         var parameterStartValues = _parameterStartValuesCreator.CreateFor(simulation);
-         module.Add(parameterStartValues);
+         var parameterValues = _parameterValuesCreator.CreateFor(simulation);
+         module.Add(parameterValues);
 
-         moduleConfiguration.SelectedParameterStartValues = parameterStartValues;
-         moduleConfiguration.SelectedMoleculeStartValues = moleculeStartValues;
+         moduleConfiguration.SelectedParameterValues = parameterValues;
+         moduleConfiguration.SelectedInitialConditions = initialConditions;
 
          //STEP10 update simulation settings
          simulationConfiguration.SimulationSettings = simulation.Settings.WithName(simulation.Name);

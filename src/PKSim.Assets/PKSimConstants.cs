@@ -512,6 +512,8 @@ namespace PKSim.Assets
 
          public const string CKDOnlyAvailableForAdult = "Chronic kidney disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
 
+         public const string HIOnlyAvailableForAdult = "Hepatic impairment disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
+
          public const string EventTemplateNotDefined = "Event template not defined.";
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
@@ -2595,6 +2597,8 @@ namespace PKSim.Assets
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
+
+         public static string ChildPughScoreFor (string score)=> $"Child-Pugh {score}";
       }
 
       public static class Reporting

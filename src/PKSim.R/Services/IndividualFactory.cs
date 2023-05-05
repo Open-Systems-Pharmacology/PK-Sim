@@ -10,6 +10,8 @@ using PKSim.Core.Model;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.R.Domain;
+using static OSPSuite.Core.Domain.Constants.Parameters;
+using static PKSim.Core.CoreConstants.Parameters;
 using ICoreIndividualFactory = PKSim.Core.Model.IIndividualFactory;
 
 namespace PKSim.R.Services
@@ -66,15 +68,15 @@ namespace PKSim.R.Services
          //Add Age and Height parameter that is not distributed at the moment
          if (originData.Population.IsAgeDependent)
          {
-            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.AGE)));
-            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(Constants.Parameters.GESTATIONAL_AGE)));
+            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(AGE)));
+            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(GESTATIONAL_AGE)));
          }
 
          if (originData.Population.IsHeightDependent)
-            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.HEIGHT)));
+            distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(HEIGHT)));
 
-         distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP)));
-         distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN)));
+         distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(ONTOGENY_FACTOR_AGP)));
+         distributedParameters.Add(parameterValueFrom(individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN)));
 
          foreach (var individualParameter in allIndividualParameters)
          {

@@ -21,16 +21,16 @@ namespace PKSim.Core
       protected SpatialStructure _spatialStructure;
       protected PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
       protected ObserverBuildingBlock _observerBuildingBlock;
-      protected IPKSimParameterStartValuesCreator _parameterStartValueCreator;
+      protected IPKSimParameterValuesCreator _parameterValueCreator;
       protected IMoleculesAndReactionsCreator _moleculesAndReactionsCreator;
       protected IEventBuildingBlockCreator _eventBuildingBlockCreator;
       protected Individual _individual;
       protected Compound _compound;
       protected Protocol _protocol;
       protected EventGroupBuildingBlock _eventBuildingBlock;
-      protected ParameterStartValuesBuildingBlock _parameterValuesBuildingBlock;
-      protected IPKSimMoleculeStartValuesCreator _moleculeStartValueCreator;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValueBuildingBlock;
+      protected ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      protected IPKSimInitialConditionsCreator _initialConditionCreator;
+      private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
       protected IMoleculeCalculationRetriever _moleculeCalculationRetriever;
       protected CoreCalculationMethod _cm1;
       protected CoreCalculationMethod _cm2;
@@ -45,10 +45,10 @@ namespace PKSim.Core
          _spatialStructureFactory = A.Fake<IPKSimSpatialStructureFactory>();
          _modelObserverQuery = A.Fake<IModelObserverQuery>();
          _modelPassiveTransportQuery = A.Fake<IModelPassiveTransportQuery>();
-         _parameterStartValueCreator = A.Fake<IPKSimParameterStartValuesCreator>();
+         _parameterValueCreator = A.Fake<IPKSimParameterValuesCreator>();
          _moleculesAndReactionsCreator = A.Fake<IMoleculesAndReactionsCreator>();
          _eventBuildingBlockCreator = A.Fake<IEventBuildingBlockCreator>();
-         _moleculeStartValueCreator = A.Fake<IPKSimMoleculeStartValuesCreator>();
+         _initialConditionCreator = A.Fake<IPKSimInitialConditionsCreator>();
          _moleculeCalculationRetriever = A.Fake<IMoleculeCalculationRetriever>();
          _distributedTableConverter = A.Fake<IDistributedParameterToTableParameterConverter>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
@@ -68,8 +68,8 @@ namespace PKSim.Core
          _passiveTransportBuildingBlock = new PassiveTransportBuildingBlock();
          _observerBuildingBlock = new ObserverBuildingBlock();
          _eventBuildingBlock = new EventGroupBuildingBlock();
-         _parameterValuesBuildingBlock = A.Fake<ParameterStartValuesBuildingBlock>();
-         _moleculeStartValueBuildingBlock = A.Fake<MoleculeStartValuesBuildingBlock>();
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Individual", PKSimBuildingBlockType.Individual) {BuildingBlock = _individual});
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Compound", PKSimBuildingBlockType.Compound) {BuildingBlock = _compound});
          _simulation.AddUsedBuildingBlock(new UsedBuildingBlock("Protocol", PKSimBuildingBlockType.Protocol) {BuildingBlock = _protocol});
@@ -79,10 +79,10 @@ namespace PKSim.Core
          A.CallTo(() => _modelPassiveTransportQuery.AllPassiveTransportsFor(_simulation)).Returns(_passiveTransportBuildingBlock);
          A.CallTo(() => _modelObserverQuery.AllObserversFor(A<MoleculeBuildingBlock>.Ignored, _simulation)).Returns(_observerBuildingBlock);
          A.CallTo(() => _eventBuildingBlockCreator.CreateFor(_simulation)).Returns(_eventBuildingBlock);
-         A.CallTo(() => _parameterStartValueCreator.CreateFor(A<Simulation>.Ignored)).Returns(_parameterValuesBuildingBlock);
-         A.CallTo(() => _moleculeStartValueCreator.CreateFor(A<Module>.Ignored, A<Simulation>.Ignored)).Returns(_moleculeStartValueBuildingBlock);
-         sut = new SimulationConfigurationTask(_spatialStructureFactory, _modelObserverQuery, _modelPassiveTransportQuery, _parameterStartValueCreator,
-            _moleculesAndReactionsCreator, _eventBuildingBlockCreator, _moleculeStartValueCreator, _moleculeCalculationRetriever,
+         A.CallTo(() => _parameterValueCreator.CreateFor(A<Simulation>.Ignored)).Returns(_parameterValuesBuildingBlock);
+         A.CallTo(() => _initialConditionCreator.CreateFor(A<Module>.Ignored, A<Simulation>.Ignored)).Returns(_initialConditionsBuildingBlock);
+         sut = new SimulationConfigurationTask(_spatialStructureFactory, _modelObserverQuery, _modelPassiveTransportQuery, _parameterValueCreator,
+            _moleculesAndReactionsCreator, _eventBuildingBlockCreator, _initialConditionCreator, _moleculeCalculationRetriever,
             _distributedTableConverter, _objectBaseFactory, _individualBuildingBlockMapper, _expressionProfileBuildingBlockMapper, _applicationConfiguration);
 
 
@@ -128,7 +128,7 @@ namespace PKSim.Core
       [Observation]
       public void should_create_the_default_parameter_values_for_the_available_parameters()
       {
-         A.CallTo(() => _parameterStartValueCreator.CreateFor(_simulation)).MustHaveHappened();
+         A.CallTo(() => _parameterValueCreator.CreateFor(_simulation)).MustHaveHappened();
       }
 
       [Observation]
@@ -140,7 +140,7 @@ namespace PKSim.Core
       [Observation]
       public void should_create_the_default_molecule_start_value_creator()
       {
-         A.CallTo(() => _moleculeStartValueCreator.CreateFor(_module, _simulation)).MustHaveHappened();
+         A.CallTo(() => _initialConditionCreator.CreateFor(_module, _simulation)).MustHaveHappened();
       }
 
       [Observation]

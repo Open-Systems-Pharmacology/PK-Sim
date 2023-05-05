@@ -624,4 +624,3 @@ namespace PKSim.UI.Views.Individuals
    }
 }
 
-

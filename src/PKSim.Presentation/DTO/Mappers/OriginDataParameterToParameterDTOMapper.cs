@@ -40,7 +40,7 @@ namespace PKSim.Presentation.DTO.Mappers
 
          var (value, unit, name) = originDataParameter;
 
-         var dimension = _dimensionRepository.DimensionForUnit(unit);
+         var dimension = _dimensionRepository.DimensionForUnit(unit) ?? Constants.Dimension.NO_DIMENSION;
          return _parameterFactory.CreateFor(name, value, dimension.Name, PKSimBuildingBlockType.Individual);
       }
    }
