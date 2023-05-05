@@ -107,11 +107,19 @@ namespace PKSim.Core.Services
          module.Add(_modelObserverQuery.AllObserversFor(module.Molecules, simulation));
 
          //STEP9 once all building blocks have been created, we need to create the default parameter and molecule values values 
+<<<<<<< HEAD
          var initialConditions = _initialConditionsCreator.CreateFor(module, simulation);
          module.Add(initialConditions);
 
          var parameterValues = _parameterValuesCreator.CreateFor(simulation);
          module.Add(parameterValues);
+=======
+         var moleculeStartValues = _moleculeStartValuesCreator.CreateFor(module, simulation);
+         module.Add(moleculeStartValues);
+
+         var parameterStartValues = _parameterStartValuesCreator.CreateFor(simulation);
+         module.Add(parameterStartValues);
+>>>>>>> upstream/OSMOSES
 
          moduleConfiguration.SelectedParameterValues = parameterValues;
          moduleConfiguration.SelectedInitialConditions = initialConditions;
