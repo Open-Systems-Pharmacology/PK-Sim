@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -18,12 +17,12 @@ using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
-   public class When_creating_a_parameter_start_value_building_block_for_a_simulation_whose_parameter_where_changed_from_default : ContextForSimulationIntegration<IPKSimParameterStartValuesCreator>
+   public class When_creating_a_parameter_start_value_building_block_for_a_simulation_whose_parameter_where_changed_from_default : ContextForSimulationIntegration<IPKSimParameterValuesCreator>
    {
       private ISimulationConfigurationTask _simulationConfigurationTask;
       private IEntityPathResolver _entityPathResolver;
       private ObjectPath _parameterPath;
-      private ParameterStartValuesBuildingBlock _psv;
+      private ParameterValuesBuildingBlock _parameterValues;
       private Individual _individual;
       private Compound _compound;
       private Protocol _protocol;
@@ -66,14 +65,14 @@ namespace PKSim.IntegrationTests
          parameter.Value = 10;
          _parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         _psv = simulationConfiguration.ModuleConfigurations[0].SelectedParameterStartValues;
+         _parameterValues = simulationConfiguration.ModuleConfigurations[0].SelectedParameterValues;
       }
 
       [Observation]
       public void should_have_created_one_entry_for_the_changed_parameter_in_the_parameter_start_value_building_block()
       {
-         _psv[_parameterPath].ShouldNotBeNull();
-         _psv[_parameterPath].StartValue.ShouldBeEqualTo(10);
+         _parameterValues[_parameterPath].ShouldNotBeNull();
+         _parameterValues[_parameterPath].StartValue.ShouldBeEqualTo(10);
       }
 
       [Observation]
@@ -84,17 +83,14 @@ namespace PKSim.IntegrationTests
          propertyParameters.Each(x =>
          {
             var parameterPath = _entityPathResolver.ObjectPathFor(x);
-            _psv[parameterPath].ShouldBeNull();
+            _parameterValues[parameterPath].ShouldBeNull();
          });
       }
    }
 
-   public class When_creating_a_parameter_start_value_for_an_individual_and_simulation_where_the_initial_concentration_was_changed_in_the_expression_profile : ContextForSimulationIntegration<IPKSimParameterStartValuesCreator>
+   public class When_creating_a_parameter_start_value_for_an_individual_and_simulation_where_the_initial_concentration_was_changed_in_the_expression_profile : ContextForSimulationIntegration<IPKSimParameterValuesCreator>
    {
       private ISimulationConfigurationTask _simulationConfigurationTask;
-      private IEntityPathResolver _entityPathResolver;
-      private ObjectPath _parameterPath;
-      private ParameterStartValuesBuildingBlock _psv;
       private Individual _individual;
       private Compound _compound;
       private Protocol _protocol;
@@ -106,19 +102,17 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
-         _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
          var moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
          var expressionProfileUpdater = IoC.Resolve<IExpressionProfileUpdater>();
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _expressionProfileForEnzyme = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>();
-         _parameterPathArray = new[] { BONE, INTRACELLULAR, _expressionProfileForEnzyme.MoleculeName, CoreConstants.Parameters.INITIAL_CONCENTRATION };
-     
+         _parameterPathArray = new[] {BONE, INTRACELLULAR, _expressionProfileForEnzyme.MoleculeName, CoreConstants.Parameters.INITIAL_CONCENTRATION};
+
          moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfileForEnzyme);
 
          _initialConcentrationBrainIntracellular = _expressionProfileForEnzyme.Individual.Organism.EntityAt<IParameter>(_parameterPathArray);
-         _parameterPath = new ObjectPath(_initialConcentrationBrainIntracellular.ConsolidatedPath().ToPathArray());
          _initialConcentrationBrainIntracellular.Value = 10;
 
 
@@ -129,8 +123,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         var simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         _psv = simulationConfiguration.ModuleConfigurations[0].SelectedParameterStartValues;
+         _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
       }
 
       [Observation]

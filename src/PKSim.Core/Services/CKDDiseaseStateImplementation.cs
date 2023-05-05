@@ -22,7 +22,6 @@ namespace PKSim.Core.Services
          Stage5,
       }
 
-      private readonly IValueOriginRepository _valueOriginRepository;
       private readonly IDimension _dimensionForGFR;
       public const string TARGET_GFR = "eGFR";
       private readonly IDimension _ageDimension;
@@ -37,7 +36,6 @@ namespace PKSim.Core.Services
          IContainerTask containerTask,
          IParameterSetUpdater parameterSetUpdater) : base(valueOriginRepository, formulaFactory, individualFactory, containerTask, parameterSetUpdater, CoreConstants.DiseaseStates.CKD)
       {
-         _valueOriginRepository = valueOriginRepository;
          _dimensionForGFR = dimensionRepository.DimensionForUnit(GFR_UNIT);
          _ageDimension = dimensionRepository.AgeInYears;
       }
@@ -74,7 +72,7 @@ namespace PKSim.Core.Services
 
       public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, UpdateParameterValue);
 
-      private bool applyTo(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      private bool applyTo(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          var targetGFR = individual.OriginData.DiseaseStateParameters.FindByName(TARGET_GFR);
 
@@ -93,26 +91,26 @@ namespace PKSim.Core.Services
 
          //Adjust kidney volume and update fat accordingly
          var healthyKidneyVolume = kidneyVolume.Value;
-         updateParameterFunc(kidneyVolume, getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0), true);
-         updateParameterFunc(fatVolume, fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value, false);
+         updateParameterFunc(new(kidneyVolume, getKidneyVolumeFactor(targetGFRValue) / getKidneyVolumeFactor(GFR_0)));
+         updateParameterFunc(new(fatVolume, fatVolume.Value + healthyKidneyVolume - kidneyVolume.Value, ParameterUpdateMode.Value));
 
          //Adjust renal blood flow spec
-         updateParameterFunc(kidneySpecificBloodFlowRate, getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0), true);
+         updateParameterFunc(new(kidneySpecificBloodFlowRate, getRenalBloodFlowFactor(targetGFRValue) / getRenalBloodFlowFactor(GFR_0)));
 
          //Correct specific GFR
-         updateParameterFunc(GFR_Spec, targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value, true);
+         updateParameterFunc(new(GFR_Spec, targetGFRValue / GFR_0 * healthyKidneyVolume / kidneyVolume.Value));
 
          var (plasmaProteinScaleFactor, gastricEmptyingTimeFactor, smallIntestinalTransitTimeFactor) = getCategorialFactors(targetGFRValue);
 
          //Categorial Parameters as constant: We set the value as is as the value will not be reset when creating a population
-         updateParameterFunc(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor, false);
+         updateParameterFunc(new(plasmaProteinScaleFactorParameter, plasmaProteinScaleFactor, ParameterUpdateMode.Value));
 
          //Categorial Parameters distributed: We apply the variation to the default value
-         updateParameterFunc(gastricEmptyingTime, gastricEmptyingTimeFactor, true);
-         updateParameterFunc(smallIntestinalTransitTime, smallIntestinalTransitTimeFactor, true);
+         updateParameterFunc(new(gastricEmptyingTime, gastricEmptyingTimeFactor));
+         updateParameterFunc(new(smallIntestinalTransitTime, smallIntestinalTransitTimeFactor));
 
          //Special case for Hematocrit
-         updateParameterFunc(hct, getHematocritFactor(targetGFRValue, individual.OriginData.Gender), true);
+         updateParameterFunc(new(hct, getHematocritFactor(targetGFRValue, individual.OriginData.Gender)));
 
          return true;
       }
@@ -154,13 +152,6 @@ namespace PKSim.Core.Services
             diseaseValue = isFemale ? 39.6 : 44.8;
 
          return diseaseValue / healthyValue;
-      }
-
-      private void updateValueOriginsFor(IParameter parameter)
-      {
-         parameter.ValueOrigin.UpdateAllFrom(_valueOriginRepository.FindBy(CKD_VALUE_ORIGIN_ID));
-         //Make sure we mark this parameter as changed by create individual. It might already be the case but in that case, it does not change anything
-         parameter.IsChangedByCreateIndividual = true;
       }
 
       private double getKidneyVolumeFactor(double gfrValue) => getFactor(gfrValue, -6.3E-5, 0.0149, 4.13);

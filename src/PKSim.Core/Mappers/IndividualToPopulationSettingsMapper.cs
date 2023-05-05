@@ -70,7 +70,7 @@ namespace PKSim.Core.Mappers
       private bool shouldVaryInPopulation(OriginDataParameter originDataParameter)
       {
          //here list all discrete parameters that cannot be varied
-         return !originDataParameter.NameIsOneOf(HIDiseaseStateImplementation.CHILD_PUGH_SCORE);
+         return !originDataParameter.NameIsOneOf(CHILD_PUGH_SCORE);
       }
 
       private ParameterRange constrainedParameterRangeFrom(IParameter parameter)

@@ -70,6 +70,39 @@ namespace PKSim.Core.Services
       private readonly IValueOriginRepository _valueOriginRepository;
       private readonly string _name;
 
+      protected enum ParameterUpdateMode
+      {
+         //value will be use as is
+         Value,
+
+         //Value will be used to scale the current value of the parameters
+         Factor
+      }
+
+      protected class ParameterUpdate
+      {
+         public IParameter Parameter { get; }
+         public double Value { get; }
+         public ParameterUpdateMode Mode { get; }
+
+         /// <summary>
+         ///    Create a parameter update: Default mode is factor
+         /// </summary>
+         public ParameterUpdate(IParameter parameter, double value, ParameterUpdateMode mode = ParameterUpdateMode.Factor)
+         {
+            Parameter = parameter;
+            Value = value;
+            Mode = mode;
+         }
+
+         public double ValueToUse => Mode == ParameterUpdateMode.Value ? Value : Parameter.Value * Value;
+
+         public void UpdateValue()
+         {
+            Parameter.Value = ValueToUse;
+         }
+      }
+
       protected AbstractDiseaseStateImplementation(
          IValueOriginRepository valueOriginRepository,
          IFormulaFactory formulaFactory,
@@ -93,24 +126,24 @@ namespace PKSim.Core.Services
 
       public Individual CreateBaseIndividualForPopulation(Individual originalIndividual)
       {
-         //we need to create a new individual WITHOUT CKD and set all percentiles as in the original individuals. Other parameters, value wil be taken as is
+         //we need to create a new individual WITHOUT disease state (e.g. HEALTHY) and set all percentiles as in the original individuals. Other parameters, value wil be taken as is
          var originData = originalIndividual.OriginData.Clone();
 
          //remove the disease state to create a healthy Individual
          originData.DiseaseState = null;
          var healthyIndividual = _individualFactory.CreateAndOptimizeFor(originData, originalIndividual.Seed);
 
-         var allCKDParameters = ParameterChangedByDiseaseStateAsList(healthyIndividual);
+         var allParametersChangedByDiseaseStateImplementation = ParameterChangedByDiseaseStateAsList(healthyIndividual);
 
          //Make sure we update the flags that might not be set coming from the database
-         allCKDParameters.Each(x => x.IsChangedByCreateIndividual = true);
+         allParametersChangedByDiseaseStateImplementation.Each(x => x.IsChangedByCreateIndividual = true);
 
-         //do not update parameters changed by CKD algorithm or that are not visible
-         var allHealthyParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(healthyIndividual, x => !allCKDParameters.Contains(x) && x.Visible);
+         //do not update parameters changed by the disease state algorithm or that are not visible
+         var allHealthyParameters = _containerTask.CacheAllChildrenSatisfying<IParameter>(healthyIndividual, x => !allParametersChangedByDiseaseStateImplementation.Contains(x) && x.Visible);
          var allOriginalParameters = _containerTask.CacheAllChildren<IParameter>(originalIndividual);
          _parameterSetUpdater.UpdateValues(allOriginalParameters, allHealthyParameters);
 
-         //we have a healthy individuals based on the CKD individual where all changes were all manual changes were accounted for
+         //we have a healthy individuals based on the disease state individual where all changes were all manual changes were accounted for
          //we now need to add the disease state contributions from the original individual
          originData.DiseaseState = originalIndividual.OriginData.DiseaseState;
          originalIndividual.OriginData.DiseaseStateParameters.Each(x => originData.AddDiseaseStateParameter(x.Clone()));
@@ -140,15 +173,12 @@ namespace PKSim.Core.Services
 
       protected abstract IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual);
 
-      protected void UpdateParameterValue(IParameter parameter, double value, bool useAsFactor)
-      {
-         var valueToUse = useAsFactor ? parameter.Value * value : value;
-         parameter.Value = valueToUse;
-      }
+      protected void UpdateParameterValue(ParameterUpdate parameterUpdate) => parameterUpdate.UpdateValue();
 
-      protected Action<IParameter, double, bool> UpdateParameter(int valueOriginId) => (parameter, value, useAsFactor) =>
+      protected Action<ParameterUpdate> UpdateParameter(int valueOriginId) => (parameterUpdate) =>
       {
-         var valueToUse = useAsFactor ? parameter.Value * value : value;
+         var parameter = parameterUpdate.Parameter;
+         var valueToUse = parameterUpdate.ValueToUse;
          UpdateValueOriginsFor(parameter, valueOriginId);
          if (parameter is IDistributedParameter distributedParameter)
          {
@@ -166,7 +196,7 @@ namespace PKSim.Core.Services
          }
 
          //constant formula
-         UpdateParameterValue(parameter, value, useAsFactor);
+         UpdateParameterValue(parameterUpdate);
          parameter.DefaultValue = valueToUse;
          parameter.IsFixedValue = false;
       };

@@ -6,45 +6,45 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public interface IPKSimParameterStartValuesCreator
+   public interface IPKSimParameterValuesCreator
    {
-      ParameterStartValuesBuildingBlock CreateFor(Simulation simulation);
+      ParameterValuesBuildingBlock CreateFor(Simulation simulation);
    }
 
-   public class PKSimParameterStartValuesCreator : IPKSimParameterStartValuesCreator
+   public class PKSimParameterValuesCreator : IPKSimParameterValuesCreator
    {
-      private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
+      private readonly IParameterValuesCreator _parameterValuesCreator;
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IEntityPathResolver _entityPathResolver;
-      private ParameterStartValuesBuildingBlock _defaultStartValues;
+      private ParameterValuesBuildingBlock _defaultValues;
 
-      public PKSimParameterStartValuesCreator(
-         IParameterStartValuesCreator parameterStartValuesCreator,
+      public PKSimParameterValuesCreator(
+         IParameterValuesCreator parameterValuesCreator,
          IObjectBaseFactory objectBaseFactory,
          IEntityPathResolver entityPathResolver)
       {
-         _parameterStartValuesCreator = parameterStartValuesCreator;
+         _parameterValuesCreator = parameterValuesCreator;
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
       }
 
-      public ParameterStartValuesBuildingBlock CreateFor(Simulation simulation)
+      public ParameterValuesBuildingBlock CreateFor(Simulation simulation)
       {
          try
          {
             //default default parameter start values matrix
-            _defaultStartValues = _objectBaseFactory.Create<ParameterStartValuesBuildingBlock>();
+            _defaultValues = _objectBaseFactory.Create<ParameterValuesBuildingBlock>();
             var individual = simulation.Individual;
 
             //set the relative expression values for each molecule undefined molecule of the individual (other will be done in expression profile)
             individual.AllUndefinedMolecules().Each(molecule => updateMoleculeParametersValues(molecule, individual));
 
             updateSimulationParameters(simulation);
-            return _defaultStartValues.WithName(simulation.Name);
+            return _defaultValues.WithName(simulation.Name);
          }
          finally
          {
-            _defaultStartValues = null;
+            _defaultValues = null;
          }
       }
 
@@ -73,22 +73,22 @@ namespace PKSim.Core.Services
                 && parameter.ValueDiffersFromDefault();
       }
 
-      private ParameterStartValue trySetValue(IParameter parameter)
+      private ParameterValue trySetValue(IParameter parameter)
       {
          var parameterStartValue = getOrCreateStartValueFor(parameter);
          parameterStartValue.StartValue = parameter.Value;
          return parameterStartValue;
       }
 
-      private ParameterStartValue getOrCreateStartValueFor(IParameter parameter)
+      private ParameterValue getOrCreateStartValueFor(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
-         var parameterStartValue = _defaultStartValues[parameterPath];
+         var parameterStartValue = _defaultValues[parameterPath];
          if (parameterStartValue != null)
             return parameterStartValue;
 
-         parameterStartValue = _parameterStartValuesCreator.CreateParameterStartValue(parameterPath, parameter);
-         _defaultStartValues.Add(parameterStartValue);
+         parameterStartValue = _parameterValuesCreator.CreateParameterValue(parameterPath, parameter);
+         _defaultValues.Add(parameterStartValue);
 
          return parameterStartValue;
       }

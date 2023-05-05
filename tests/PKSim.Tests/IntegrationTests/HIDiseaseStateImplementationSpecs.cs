@@ -27,7 +27,7 @@ namespace PKSim.IntegrationTests
          base.Context();
          _diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
          _diseaseStateHI = _diseaseStateRepository.FindById(CoreConstants.DiseaseStates.HI);
-         _childPughScore = _diseaseStateHI.Parameter(HIDiseaseStateImplementation.CHILD_PUGH_SCORE);
+         _childPughScore = _diseaseStateHI.Parameter(CHILD_PUGH_SCORE);
          _originChildPughSCore = new OriginDataParameter
          {
             Name = _childPughScore.Name,

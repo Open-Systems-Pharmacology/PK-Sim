@@ -4,59 +4,58 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
 {
-   public interface IPKSimMoleculeStartValuesCreator
+   public interface IPKSimInitialConditionsCreator
    {
-      MoleculeStartValuesBuildingBlock CreateFor(Module module, Simulation simulation);
+      InitialConditionsBuildingBlock CreateFor(Module module, Simulation simulation);
    }
 
-   public class PKSimMoleculeStartValuesCreator : IPKSimMoleculeStartValuesCreator
+   public class PKSimInitialConditionsCreator : IPKSimInitialConditionsCreator
    {
-      private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
+      private readonly IInitialConditionsCreator _initialConditionsCreator;
       private readonly IMoleculeStartFormulaRepository _moleculeStartFormulaRepository;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IModelContainerMoleculeRepository _modelContainerMoleculeRepository;
       private readonly IEntityPathResolver _entityPathResolver;
 
-      public PKSimMoleculeStartValuesCreator(
-         IMoleculeStartValuesCreator moleculeStartValuesCreator,
+      public PKSimInitialConditionsCreator(
+         IInitialConditionsCreator initialConditionsCreator,
          IMoleculeStartFormulaRepository moleculeStartFormulaRepository,
          IFormulaFactory formulaFactory,
          IModelContainerMoleculeRepository modelContainerMoleculeRepository,
          IEntityPathResolver entityPathResolver)
       {
-         _moleculeStartValuesCreator = moleculeStartValuesCreator;
+         _initialConditionsCreator = initialConditionsCreator;
          _moleculeStartFormulaRepository = moleculeStartFormulaRepository;
          _formulaFactory = formulaFactory;
          _modelContainerMoleculeRepository = modelContainerMoleculeRepository;
          _entityPathResolver = entityPathResolver;
       }
 
-      public MoleculeStartValuesBuildingBlock CreateFor(Module module, Simulation simulation)
+      public InitialConditionsBuildingBlock CreateFor(Module module, Simulation simulation)
       {
          //default molecule start values matrix
          var compounds = simulation.Compounds;
          var individual = simulation.Individual;
-         var defaultStartValues = _moleculeStartValuesCreator.CreateFrom(module.SpatialStructure, module.Molecules);
+         var defaultInitialConditions = _initialConditionsCreator.CreateFrom(module.SpatialStructure, module.Molecules);
 
          //set available start formulas for molecules
-         setStartFormulasForStaticMolecules(defaultStartValues, simulation, compounds);
+         setStartFormulasForStaticMolecules(defaultInitialConditions, simulation, compounds);
 
          foreach (var molecule in individual.AllMolecules())
          {
             var allMoleculesObjectPath = moleculesInvolvedInExpression(individual, molecule, simulation.CompoundPropertiesList);
             //path involved expression might not exist in the start values structure=>hence check that they are not null
-            var allAvailableStartValues = allMoleculesObjectPath.Select(objectPath => defaultStartValues[objectPath]).Where(msv => msv != null);
+            var allAvailableInitialConditions = allMoleculesObjectPath.Select(objectPath => defaultInitialConditions[objectPath]).Where(msv => msv != null);
             //the one found should be set to present
-            allAvailableStartValues.Each(msv => msv.IsPresent = true);
+            allAvailableInitialConditions.Each(msv => msv.IsPresent = true);
          }
 
-         return defaultStartValues.WithName(simulation.Name);
+         return defaultInitialConditions.WithName(simulation.Name);
       }
 
       private IEnumerable<ObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,
@@ -76,30 +75,30 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void setStartFormulasForStaticMolecules(MoleculeStartValuesBuildingBlock defaultStartValues, Simulation simulation, IEnumerable<Compound> compounds)
+      private void setStartFormulasForStaticMolecules(InitialConditionsBuildingBlock defaultInitialConditions, Simulation simulation, IEnumerable<Compound> compounds)
       {
          var modelName = simulation.ModelConfiguration.ModelName;
          //get the names of molecules that are static (e.g. not enzymes, metabolites, etc.)
          // (e.g. FcRn in 2pores-model)
          var staticMoleculeNames = _modelContainerMoleculeRepository.MoleculeNamesIncludingDrug(modelName);
-         var compoundNames = compounds.AllNames().ToList();
+         var compoundNames = compounds.AllNames();
 
-         foreach (var moleculeStartValue in defaultStartValues)
+         foreach (var initialCondition in defaultInitialConditions)
          {
-            var dbMoleculeName = getDbMoleculeName(moleculeStartValue.MoleculeName, compoundNames);
+            var dbMoleculeName = getDbMoleculeName(initialCondition.MoleculeName, compoundNames);
 
             if (staticMoleculeNames.Contains(dbMoleculeName))
             {
-               moleculeStartValue.IsPresent = _modelContainerMoleculeRepository.IsPresent(modelName, moleculeStartValue.ContainerPath, dbMoleculeName);
-               moleculeStartValue.NegativeValuesAllowed = _modelContainerMoleculeRepository.NegativeValuesAllowed(modelName, moleculeStartValue.ContainerPath, dbMoleculeName);
+               initialCondition.IsPresent = _modelContainerMoleculeRepository.IsPresent(modelName, initialCondition.ContainerPath, dbMoleculeName);
+               initialCondition.NegativeValuesAllowed = _modelContainerMoleculeRepository.NegativeValuesAllowed(modelName, initialCondition.ContainerPath, dbMoleculeName);
             }
             else
             {
-               moleculeStartValue.IsPresent = false;
-               moleculeStartValue.NegativeValuesAllowed = false;
+               initialCondition.IsPresent = false;
+               initialCondition.NegativeValuesAllowed = false;
             }
 
-            var moleculeDbPath = moleculeStartValue.ContainerPath.Clone<ObjectPath>();
+            var moleculeDbPath = initialCondition.ContainerPath.Clone<ObjectPath>();
 
             moleculeDbPath.Add(dbMoleculeName);
 
@@ -109,11 +108,11 @@ namespace PKSim.Core.Services
                continue; //no start formula available
 
             //set molecule start formula
-            moleculeStartValue.Formula = _formulaFactory.RateFor(rateKey, defaultStartValues.FormulaCache);
+            initialCondition.Formula = _formulaFactory.RateFor(rateKey, defaultInitialConditions.FormulaCache);
          }
       }
 
-      private static string getDbMoleculeName(string moleculeName, List<string> compoundNames)
+      private static string getDbMoleculeName(string moleculeName, IReadOnlyList<string> compoundNames)
       {
          if (compoundNames.Contains(moleculeName))
             return CoreConstants.Molecule.Drug;

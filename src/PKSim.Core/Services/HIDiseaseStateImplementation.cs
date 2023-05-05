@@ -66,8 +66,6 @@ namespace PKSim.Core.Services
          {"CYP2D6", createFactors(0.76, 0.33, 0.11)},
       };
 
-      public const string CHILD_PUGH_SCORE = "Child-Pugh score";
-
       private const int HI_EDGINTON_VALUE_ORIGIN_ID = 93;
       private const int HI_JOHNSON_VALUE_ORIGIN_ID = 94;
 
@@ -89,7 +87,7 @@ namespace PKSim.Core.Services
 
       public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, UpdateParameterValue);
 
-      private bool applyTo(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      private bool applyTo(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          updateBloodFlows(individual, updateParameterFunc);
          updateVolumes(individual, updateParameterFunc);
@@ -129,13 +127,13 @@ namespace PKSim.Core.Services
          var kidney = organism.Organ(KIDNEY);
          var liver = organism.Organ(LIVER);
 
-         var organsBloodFlow = new[] {STOMACH, SMALL_INTESTINE, LARGE_INTESTINE, SPLEEN, PANCREAS, LIVER, KIDNEY, BONE, FAT, GONADS, HEART, MUSCLE, SKIN};
+         //Oddly enough the brain blood flow is unaffected within hepatic disease, largely due to compensatory mechanisms from some of the decreased blood flow to other organs.
+         var organsBloodFlow = new[] { BONE, FAT, GONADS, HEART, KIDNEY, LIVER, MUSCLE, PANCREAS, LARGE_INTESTINE, SKIN, SMALL_INTESTINE, SPLEEN, STOMACH};
          var bloodFlows = organsBloodFlow.Select(x => organism.Organ(x).Parameter(SPECIFIC_BLOOD_FLOW_RATE)).ToList();
 
          return new[]
          {
             organism.Parameter(HCT),
-            organism.Parameter(CHILD_PUGH_SCORE),
             organism.Parameter(CHILD_PUGH_SCORE),
             organism.Parameter(ONTOGENY_FACTOR_ALBUMIN),
             organism.Parameter(ONTOGENY_FACTOR_AGP),
@@ -144,30 +142,30 @@ namespace PKSim.Core.Services
          }.Union(bloodFlows).ToList();
       }
 
-      private void updateOntogenyFactory(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      private void updateOntogenyFactory(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
          var organism = individual.Organism;
-         updateParameterFunc(organism.Parameter(ONTOGENY_FACTOR_ALBUMIN), _albuminFactor[score], true);
-         updateParameterFunc(organism.Parameter(ONTOGENY_FACTOR_AGP), _agpFactor[score], true);
+         updateParameterFunc(new(organism.Parameter(ONTOGENY_FACTOR_ALBUMIN), _albuminFactor[score]));
+         updateParameterFunc(new(organism.Parameter(ONTOGENY_FACTOR_AGP), _agpFactor[score]));
       }
 
-      private void updateGFR(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      private void updateGFR(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
          var kidney = individual.Organism.Organ(KIDNEY);
          var GFR_spec = kidney.Parameter(GFR_SPEC);
-         updateParameterFunc(GFR_spec, _gfrScalingFactor[score], true);
+         updateParameterFunc(new(GFR_spec, _gfrScalingFactor[score]));
       }
 
-      private void updateHematocrit(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      private void updateHematocrit(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
          var hct = individual.Organism.Parameter(HCT);
-         updateParameterFunc(hct, _hematocritScalingFactor[score], true);
+         updateParameterFunc(new(hct, _hematocritScalingFactor[score]));
       }
 
-      private void updateBloodFlows(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      private void updateBloodFlows(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
          var organism = individual.Organism;
@@ -188,24 +186,24 @@ namespace PKSim.Core.Services
          otherOrgans.Each(x => updateBloodFlow(x, _otherOrgansFlowScalingFactor[score]));
       }
 
-      private void updateVolumes(Individual individual, Action<IParameter, double, bool> updateParameterFunc)
+      private void updateVolumes(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
          var organism = individual.Organism;
          var parameter = organism.Container(LIVER).Parameter(VOLUME);
-         updateParameterFunc(parameter, _hepaticVolumeScalingFactor[score], true);
+         updateParameterFunc(new(parameter, _hepaticVolumeScalingFactor[score]));
       }
 
-      private Action<string, double> updateBloodFlowDef(Action<IParameter, double, bool> updateParameterFunc, IContainer organism) => (organName, factor) =>
+      private Action<string, double> updateBloodFlowDef(Action<ParameterUpdate> updateParameterFunc, IContainer organism) => (organName, factor) =>
       {
          var parameter = organism.Container(organName).Parameter(SPECIFIC_BLOOD_FLOW_RATE);
-         updateParameterFunc(parameter, factor, true);
+         updateParameterFunc(new(parameter, factor));
       };
 
       private void updateReferenceConcentration(Individual individual, IndividualMolecule individualMolecule, HIFactors factors, int valueOriginId)
       {
          var score = childPughScoreFor(individual);
-         UpdateParameter(valueOriginId)(individualMolecule.ReferenceConcentration, factors[score], true);
+         UpdateParameter(valueOriginId)(new(individualMolecule.ReferenceConcentration, factors[score]));
       }
 
       private double childPughScoreFor(Individual individual) => individual.OriginData.DiseaseStateParameters.FindByName(CHILD_PUGH_SCORE).Value;

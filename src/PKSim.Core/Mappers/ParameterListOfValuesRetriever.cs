@@ -33,8 +33,6 @@ namespace PKSim.Core.Mappers
       public ParameterListOfValuesRetriever(HashSet<string> parameterWithListOfValues)
       {
          _parameterWithListOfValues = parameterWithListOfValues;
-         //TODO MOVE TO CORE
-         _parameterWithListOfValues.Add(HIDiseaseStateImplementation.CHILD_PUGH_SCORE);
          _formatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
       }
 
@@ -110,7 +108,7 @@ namespace PKSim.Core.Mappers
             listOfValues.Add(SINK_CONDITION, SinkCondition);
             listOfValues.Add(NO_SINK_CONDITION, NoSinkCondition);
          }
-         else if (parameter.IsNamed(HIDiseaseStateImplementation.CHILD_PUGH_SCORE))
+         else if (parameter.IsNamed(CHILD_PUGH_SCORE))
          {
             listOfValues.Add(HIDiseaseStateImplementation.ChildPughScore.A, ChildPughScoreFor("A"));
             listOfValues.Add(HIDiseaseStateImplementation.ChildPughScore.B, ChildPughScoreFor("B"));
