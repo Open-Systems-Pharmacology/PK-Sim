@@ -95,11 +95,11 @@ namespace PKSim.Core.Services
          updateOntogenyFactory(individual, updateParameterFunc);
          updateHematocrit(individual, updateParameterFunc);
 
-         addChildPughScoreToLiver(individual);
+         addChildPughScoreToOrganism(individual);
          return true;
       }
 
-      private void addChildPughScoreToLiver(Individual individual)
+      private void addChildPughScoreToOrganism(Individual individual)
       {
          var organism = individual.Organism;
          var childPughScore = organism.Parameter(CHILD_PUGH_SCORE);
