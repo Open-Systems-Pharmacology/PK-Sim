@@ -21,6 +21,9 @@ namespace PKSim.IntegrationTests
       protected IParameter _childPughScore;
       protected Individual _individual;
       protected OriginDataParameter _originChildPughSCore;
+      private ExpressionProfile _expressionProfile;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
+      protected IndividualMolecule _molecule;
 
       protected override void Context()
       {
@@ -34,6 +37,14 @@ namespace PKSim.IntegrationTests
          };
 
          _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.ICRP);
+         _moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+
+         //use an enzyme that is known to the HI algorithm
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "CYP2A6");
+         _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfile);
+         _molecule = _individual.MoleculeByName<IndividualEnzyme>(_expressionProfile.MoleculeName);
+         _molecule.ReferenceConcentration.Value = 5;
+
          _individual.OriginData.DiseaseState = _diseaseStateHI;
          _individual.OriginData.AddDiseaseStateParameter(_originChildPughSCore);
          //Create an individual with values coming from the table
@@ -55,6 +66,15 @@ namespace PKSim.IntegrationTests
          //HCT parameter is a discrete distribution parameter. In order to update the value properly, we need to set the mean value
          _individual.Organism.Parameter(HCT).DowncastTo<IDistributedParameter>().MeanParameter.Value = 0.43;
       }
+
+      protected override void Because()
+      {
+         //applied at creation
+         sut.ApplyTo(_individual);
+
+         //Applied when the expression profile is added
+         sut.ApplyTo(_individual, _molecule);
+      }
    }
 
    public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_A_individual : concern_for_HIDiseaseStateImplementation
@@ -63,11 +83,6 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          _originChildPughSCore.Value = HIDiseaseStateImplementation.ChildPughScore.A;
-      }
-
-      protected override void Because()
-      {
-         sut.ApplyTo(_individual);
       }
 
       [Observation]
@@ -112,6 +127,12 @@ namespace PKSim.IntegrationTests
       {
          _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.64, 1e-2);
       }
+
+      [Observation]
+      public void should_return_the_expected_values_for_reference_concentration()
+      {
+         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.89, 1e-2);
+      }
    }
 
    public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_B_individual : concern_for_HIDiseaseStateImplementation
@@ -120,11 +141,6 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          _originChildPughSCore.Value = HIDiseaseStateImplementation.ChildPughScore.B;
-      }
-
-      protected override void Because()
-      {
-         sut.ApplyTo(_individual);
       }
 
       [Observation]
@@ -170,61 +186,69 @@ namespace PKSim.IntegrationTests
          _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.31, 1e-2);
       }
 
-      public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_C_individual : concern_for_HIDiseaseStateImplementation
+      [Observation]
+      public void should_return_the_expected_values_for_reference_concentration()
       {
-         protected override void Context()
-         {
-            base.Context();
-            _originChildPughSCore.Value = HIDiseaseStateImplementation.ChildPughScore.C;
-         }
+         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.62, 1e-2);
+      }
+   }
 
-         protected override void Because()
-         {
-            sut.ApplyTo(_individual);
-         }
+   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_C_individual : concern_for_HIDiseaseStateImplementation
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _originChildPughSCore.Value = HIDiseaseStateImplementation.ChildPughScore.C;
+      }
 
-         [Observation]
-         public void should_return_the_expected_values_for_specific_blood_flows()
-         {
-            _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.54, 1e-2);
-            _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.60, 1e-2);
-            _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(2.52, 1e-2);
-            _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.20, 1e-2);
-            _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.37, 1e-2);
-            _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(61.00, 1e-2);
-            _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(196.76, 1e-2);
-            _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(6.23, 1e-2);
-            _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(4.94, 1e-2);
-            _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(18.26, 1e-2);
-            _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(141.20, 1e-2);
-            _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(7.75, 1e-2);
-            _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(19.59, 1e-2);
-         }
+      [Observation]
+      public void should_return_the_expected_values_for_specific_blood_flows()
+      {
+         _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.54, 1e-2);
+         _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.60, 1e-2);
+         _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(2.52, 1e-2);
+         _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.20, 1e-2);
+         _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.37, 1e-2);
+         _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(61.00, 1e-2);
+         _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(196.76, 1e-2);
+         _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(6.23, 1e-2);
+         _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(4.94, 1e-2);
+         _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(18.26, 1e-2);
+         _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(141.20, 1e-2);
+         _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(7.75, 1e-2);
+         _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(19.59, 1e-2);
+      }
 
-         [Observation]
-         public void should_return_the_expected_values_for_ontogeny_factor_albumin_and_glycoprotein()
-         {
-            _individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN).ValueInDisplayUnit.ShouldBeEqualTo(0.5, 1e-2);
-            _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.3, 1e-2);
-         }
+      [Observation]
+      public void should_return_the_expected_values_for_ontogeny_factor_albumin_and_glycoprotein()
+      {
+         _individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN).ValueInDisplayUnit.ShouldBeEqualTo(0.5, 1e-2);
+         _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.3, 1e-2);
+      }
 
-         [Observation]
-         public void should_return_the_expected_values_for_gfr_spec()
-         {
-            _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.36, 1e-2);
-         }
+      [Observation]
+      public void should_return_the_expected_values_for_gfr_spec()
+      {
+         _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.36, 1e-2);
+      }
 
-         [Observation]
-         public void should_return_the_expected_values_for_hct()
-         {
-            _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.357, 1e-2);
-         }
+      [Observation]
+      public void should_return_the_expected_values_for_hct()
+      {
+         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.357, 1e-2);
+      }
 
-         [Observation]
-         public void should_return_the_expected_values_for_volumes()
-         {
-            _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(0.67, 1e-2);
-         }
+      [Observation]
+      public void should_return_the_expected_values_for_volumes()
+      {
+         _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(0.67, 1e-2);
+      }
+
+
+      [Observation]
+      public void should_return_the_expected_values_for_reference_concentration()
+      {
+         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.32, 1e-2);
       }
    }
 

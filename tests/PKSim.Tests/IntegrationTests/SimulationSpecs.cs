@@ -33,6 +33,8 @@ namespace PKSim.IntegrationTests
       protected Protocol _protocol;
       protected IPKAnalysesTask _pkAnalysesTask;
       protected SimulationRunOptions _simulationRunOptions;
+      protected ExpressionProfile _expressionProfile;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       public override void GlobalContext()
       {
@@ -40,6 +42,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         _moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "CYP2A6");
          _pkAnalysesTask = IoC.Resolve<IPKAnalysesTask>();
          _simulationRunOptions = new SimulationRunOptions();
       }
@@ -106,6 +110,28 @@ namespace PKSim.IntegrationTests
       public void should_have_a_bsa_parameter_set()
       {
          _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.BSA).ShouldNotBeNull();
+      }
+   }
+
+   public class When_creating_an_individual_simulation_with_an_expression_profile_and_a_disease_state : concern_for_IndividualSimulation
+   {
+      private IndividualEnzyme _molecule;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfile);
+         _molecule = _individual.MoleculeByName<IndividualEnzyme>(_expressionProfile.MoleculeName);
+         _molecule.ReferenceConcentration.Value = 5;
+
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_have_updated_the_reference_concentration_in_the_simulation()
+      {
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(_expressionProfile.MoleculeName, CoreConstants.Parameters.REFERENCE_CONCENTRATION);
+         parameter.Value.ShouldBeEqualTo(_molecule.ReferenceConcentration.Value);
       }
    }
 
