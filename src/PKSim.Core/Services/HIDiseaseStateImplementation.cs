@@ -41,8 +41,8 @@ namespace PKSim.Core.Services
       private static readonly HIFactors _portalFlowScalingFactor = createFactors(0.4, 0.36, 0.04);
       private static readonly HIFactors _hepaticFlowScalingFactor = createFactors(1.3, 2.3, 3.4);
       private static readonly HIFactors _hepaticVolumeScalingFactor = createFactors(0.69, 0.55, 0.28);
-      private static readonly HIFactors _renalFlowScalingFactor = createFactors(0.88, 0.65, 0.65);
-      private static readonly HIFactors _otherOrgansFlowScalingFactor = createFactors(1.31, 1.84, 2.27);
+      private static readonly HIFactors _renalFlowScalingFactor = createFactors(0.88, 0.65, 0.48);
+      private static readonly HIFactors _cardiacIndexDiseaseFactor = createFactors(1.11, 1.27, 1.36);
       private static readonly HIFactors _gfrScalingFactor = createFactors(1, 0.7, 0.36);
       private static readonly HIFactors _albuminFactor = createFactors(0.81, 0.68, 0.5);
       private static readonly HIFactors _agpFactor = createFactors(0.6, 0.56, 0.3);
@@ -89,8 +89,9 @@ namespace PKSim.Core.Services
 
       private bool applyTo(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
-         updateBloodFlows(individual, updateParameterFunc);
+         //this needs to happen first
          updateVolumes(individual, updateParameterFunc);
+         updateBloodFlows(individual, updateParameterFunc);
          updateGFR(individual, updateParameterFunc);
          updateOntogenyFactory(individual, updateParameterFunc);
          updateHematocrit(individual, updateParameterFunc);
@@ -128,7 +129,7 @@ namespace PKSim.Core.Services
          var liver = organism.Organ(LIVER);
 
          //Oddly enough the brain blood flow is unaffected within hepatic disease, largely due to compensatory mechanisms from some of the decreased blood flow to other organs.
-         var organsBloodFlow = new[] { BONE, FAT, GONADS, HEART, KIDNEY, LIVER, MUSCLE, PANCREAS, LARGE_INTESTINE, SKIN, SMALL_INTESTINE, SPLEEN, STOMACH};
+         var organsBloodFlow = new[] {BONE, FAT, GONADS, HEART, KIDNEY, LIVER, MUSCLE, PANCREAS, LARGE_INTESTINE, SKIN, SMALL_INTESTINE, SPLEEN, STOMACH};
          var bloodFlows = organsBloodFlow.Select(x => organism.Organ(x).Parameter(SPECIFIC_BLOOD_FLOW_RATE)).ToList();
 
          return new[]
@@ -170,28 +171,41 @@ namespace PKSim.Core.Services
          var score = childPughScoreFor(individual);
          var organism = individual.Organism;
          var updateBloodFlow = updateBloodFlowDef(updateParameterFunc, organism);
-
-         //PortalGF
+         var bloodFlow = bloodFlowDef(organism);
          var portalOrgans = new[] {STOMACH, SMALL_INTESTINE, LARGE_INTESTINE, SPLEEN, PANCREAS};
-         portalOrgans.Each(x => updateBloodFlow(x, _portalFlowScalingFactor[score]));
-
-         //Hepatic
-         updateBloodFlow(LIVER, _hepaticFlowScalingFactor[score]);
-
-         //Renal
-         updateBloodFlow(KIDNEY, _renalFlowScalingFactor[score]);
-
-         //other organs
          var otherOrgans = new[] {BONE, FAT, GONADS, HEART, MUSCLE, SKIN};
-         otherOrgans.Each(x => updateBloodFlow(x, _otherOrgansFlowScalingFactor[score]));
+         var volumeLiver = organism.Container(LIVER).Parameter(VOLUME);
+
+         //Sum of all healthy portal blood flow + Liver and kidney
+         var Q_portal = portalOrgans.Sum(bloodFlow);
+         var Q_other = otherOrgans.Sum(bloodFlow);
+         var Q_brain = bloodFlow(BRAIN);
+         var Q_liver = bloodFlow(LIVER);
+         var Q_kidney = bloodFlow(KIDNEY);
+
+         var portal_factor = _portalFlowScalingFactor[score];
+         var liver_factor = _hepaticFlowScalingFactor[score];
+         var kidney_factor = _renalFlowScalingFactor[score];
+
+         //update liver volume so that we get the correct diseases blood flow
+         updateParameterFunc(new(volumeLiver, _hepaticVolumeScalingFactor[score]));
+         var Q_liver_HI = bloodFlow(LIVER);
+
+         portalOrgans.Each(x => updateBloodFlow(x, portal_factor));
+         updateBloodFlow(LIVER, liver_factor);
+         updateBloodFlow(KIDNEY, kidney_factor);
+
+         //retrieve the scaling factor based on publication 
+         var otherOrganFactor = (_cardiacIndexDiseaseFactor[score] * (Q_other + Q_portal + Q_kidney + Q_liver + Q_brain) - (Q_brain + Q_portal * portal_factor + Q_liver_HI * liver_factor + Q_kidney * kidney_factor)) / Q_other;
+         otherOrgans.Each(x => updateBloodFlow(x, otherOrganFactor));
       }
 
       private void updateVolumes(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
-         var score = childPughScoreFor(individual);
-         var organism = individual.Organism;
-         var parameter = organism.Container(LIVER).Parameter(VOLUME);
-         updateParameterFunc(new(parameter, _hepaticVolumeScalingFactor[score]));
+         // var score = childPughScoreFor(individual);
+         // var organism = individual.Organism;
+         // var parameter = organism.Container(LIVER).Parameter(VOLUME);
+         // updateParameterFunc(new(parameter, _hepaticVolumeScalingFactor[score]));
       }
 
       private Action<string, double> updateBloodFlowDef(Action<ParameterUpdate> updateParameterFunc, IContainer organism) => (organName, factor) =>
@@ -199,6 +213,8 @@ namespace PKSim.Core.Services
          var parameter = organism.Container(organName).Parameter(SPECIFIC_BLOOD_FLOW_RATE);
          updateParameterFunc(new(parameter, factor));
       };
+
+      private Func<string, double> bloodFlowDef(IContainer organism) => (organName) => organism.Container(organName).Parameter(BLOOD_FLOW).Value;
 
       private void updateReferenceConcentration(Individual individual, IndividualMolecule individualMolecule, HIFactors factors, int valueOriginId)
       {

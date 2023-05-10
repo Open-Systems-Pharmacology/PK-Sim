@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core.Mappers
