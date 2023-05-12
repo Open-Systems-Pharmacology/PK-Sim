@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
@@ -9,6 +8,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Presenters.DiseaseStates;
 using PKSim.Presentation.Views.Individuals;
 
 namespace PKSim.Presentation.Presenters.Individuals
@@ -20,12 +20,10 @@ namespace PKSim.Presentation.Presenters.Individuals
       IReadOnlyList<Gender> GenderFor(SpeciesPopulation population);
       IEnumerable<ParameterValueVersion> AllParameterValueVersionsFor(string category);
       IEnumerable<CalculationMethod> AllCalculationMethodsFor(string category);
-      IReadOnlyList<DiseaseState> AllDiseaseStatesFor(SpeciesPopulation population);
 
       void PrepareForCreating();
       void PrepareForScaling(Individual individualToScale);
       void PopulationChanged();
-      void DiseaseStateChanged();
       void RetrieveMeanValues();
       void SpeciesChanged();
       void GenderChanged();
@@ -48,6 +46,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IIndividualToIIndividualSettingsDTOMapper _individualSettingsDTOMapper;
       private readonly IIndividualSettingsDTOToIndividualMapper _individualMapper;
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
+      private readonly IDiseaseStateSelectionPresenter _diseaseStateSelectionPresenter;
       private readonly IDiseaseStateRepository _diseaseStateRepository;
 
       public bool IndividualCreated { get; private set; }
@@ -64,6 +63,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          IIndividualToIIndividualSettingsDTOMapper individualSettingsDTOMapper,
          IIndividualSettingsDTOToIndividualMapper individualMapper,
          IEditValueOriginPresenter editValueOriginPresenter,
+         IDiseaseStateSelectionPresenter diseaseStateSelectionPresenter,
          IDiseaseStateRepository diseaseStateRepository) : base(view)
       {
          _speciesRepository = speciesRepository;
@@ -73,10 +73,12 @@ namespace PKSim.Presentation.Presenters.Individuals
          _individualSettingsDTOMapper = individualSettingsDTOMapper;
          _individualMapper = individualMapper;
          _editValueOriginPresenter = editValueOriginPresenter;
+         _diseaseStateSelectionPresenter = diseaseStateSelectionPresenter;
          _diseaseStateRepository = diseaseStateRepository;
          _editValueOriginPresenter.ShowCaption = false;
-         AddSubPresenters(_editValueOriginPresenter);
+         AddSubPresenters(_editValueOriginPresenter, _diseaseStateSelectionPresenter);
          _view.AddValueOriginView(_editValueOriginPresenter.View);
+         _view.AddDiseaseStateView(_diseaseStateSelectionPresenter.View);
          _editValueOriginPresenter.ValueOriginUpdated = valueOriginUpdated;
       }
 
@@ -87,6 +89,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.BindToParameters(_individualSettingsDTO);
          _view.BindToSubPopulation(_individualSettingsDTO.SubPopulation);
          _editValueOriginPresenter.Edit(_individualSettingsDTO);
+         _diseaseStateSelectionPresenter.Edit(_individualSettingsDTO.DiseaseState);
          updatePopulationControls();
       }
 
@@ -104,7 +107,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          ViewChanged();
       }
 
-      public IReadOnlyList<DiseaseState> AllDiseaseStatesFor(SpeciesPopulation population)
+      private IReadOnlyList<DiseaseState> allDiseaseStatesFor(SpeciesPopulation population)
       {
          var list = new List<DiseaseState> {_diseaseStateRepository.HealthyState};
          list.AddRange(_diseaseStateRepository.AllFor(population));
@@ -138,12 +141,6 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _individualSettingsDTO.Gender = _individualSettingsDTO.Population.DefaultGender;
          updateView();
-      }
-
-      public void DiseaseStateChanged()
-      {
-         _defaultValueUpdater.UpdateDiseaseStateFor(_individualSettingsDTO);
-         updateDiseaseStatesControls();
       }
 
       public void GenderChanged()
@@ -184,6 +181,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _defaultValueUpdater.UpdateDefaultValueFor(_individualSettingsDTO);
          _view.BindToParameters(_individualSettingsDTO);
          _view.BindToSubPopulation(_individualSettingsDTO.SubPopulation);
+         _diseaseStateSelectionPresenter.ResetDiseaseState();
       }
 
       private void updatePopulationControls()
@@ -191,13 +189,11 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.AgeVisible = _individualSettingsDTO.Population.IsAgeDependent;
          _view.HeightAndBMIVisible = _individualSettingsDTO.Population.IsHeightDependent;
          _view.GestationalAgeVisible = _individualSettingsDTO.Population.IsPreterm;
-         updateDiseaseStatesControls();
-         _view.ResizePopulationSettingsView();
-      }
-
-      private void updateDiseaseStatesControls()
-      {
-         _view.BindToDiseaseState(_individualSettingsDTO);
+         var allDiseaseStates = allDiseaseStatesFor(_individualSettingsDTO.Population);
+         _diseaseStateSelectionPresenter.AllDiseaseStates = allDiseaseStates;
+         _diseaseStateSelectionPresenter.Refresh();
+         //One is healthy. We show the selection if we have more than one
+         _view.UpdateControlSizeAndVisibility(allDiseaseStates.HasAtLeastTwo());
       }
 
       public IEnumerable<Species> AllSpecies() => _speciesRepository.All();

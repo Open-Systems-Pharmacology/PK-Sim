@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation.DTO.Individuals
 {
@@ -15,15 +13,12 @@ namespace PKSim.Presentation.DTO.Individuals
       void UpdateDefaultValueFor(IndividualSettingsDTO individualSettingsDTO);
       void UpdateMeanValueFor(IndividualSettingsDTO individualSettingsDTO);
       void UpdateSettingsAfterSpeciesChange(IndividualSettingsDTO individualSettingsDTO);
-      void UpdateDiseaseStateFor(IndividualSettingsDTO individualSettingsDTO);
    }
 
    public class IndividualDefaultValuesUpdater : IIndividualDefaultValueUpdater
    {
       private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
       private readonly IPopulationRepository _populationRepository;
-      private readonly ICloner _cloner;
-      private readonly IDiseaseStateRepository _diseaseStateRepository;
       private readonly IIndividualModelTask _individualModelTask;
       private readonly IIndividualSettingsDTOToOriginDataMapper _originDataMapper;
       private readonly IParameterToParameterDTOMapper _parameterMapper;
@@ -36,10 +31,8 @@ namespace PKSim.Presentation.DTO.Individuals
          IParameterToParameterDTOMapper parameterMapper,
          IOriginDataTask originDataTask,
          ISubPopulationToSubPopulationDTOMapper subPopulationDTOMapper,
-         ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper, 
-         IPopulationRepository populationRepository,
-         ICloner cloner,
-         IDiseaseStateRepository diseaseStateRepository)
+         ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper,
+         IPopulationRepository populationRepository)
       {
          _individualModelTask = individualModelTask;
          _originDataMapper = originDataMapper;
@@ -48,10 +41,7 @@ namespace PKSim.Presentation.DTO.Individuals
          _subPopulationDTOMapper = subPopulationDTOMapper;
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
          _populationRepository = populationRepository;
-         _cloner = cloner;
-         _diseaseStateRepository = diseaseStateRepository;
       }
-
 
       public void UpdateDefaultValueFor(IndividualSettingsDTO individualSettingsDTO)
       {
@@ -59,7 +49,7 @@ namespace PKSim.Presentation.DTO.Individuals
          //Default parameter such as age etc.. were not defined yet
          var originData = _originDataMapper.MapFrom(individualSettingsDTO);
          var parameterAge = _individualModelTask.MeanAgeFor(originData);
-         if(parameterAge!=null)
+         if (parameterAge != null)
             originData.Age = new OriginDataParameter(parameterAge.Value);
 
          var parameterGestationalAge = _individualModelTask.MeanGestationalAgeFor(originData);
@@ -69,7 +59,6 @@ namespace PKSim.Presentation.DTO.Individuals
          setDefaultValues(individualSettingsDTO, originData, _parameterMapper.MapAsReadWriteFrom(parameterAge), _parameterMapper.MapAsReadWriteFrom(parameterGestationalAge));
       }
 
-      
       public void UpdateMeanValueFor(IndividualSettingsDTO individualSettingsDTO)
       {
          var originData = _originDataMapper.MapFrom(individualSettingsDTO);
@@ -97,21 +86,6 @@ namespace PKSim.Presentation.DTO.Individuals
          individualSettingsDTO.Population = population;
          individualSettingsDTO.Gender = population.DefaultGender;
          individualSettingsDTO.CalculationMethods = individualCalculationMethods(species);
-
-         //after species change, we are always in healthy state
-         individualSettingsDTO.DiseaseState = _diseaseStateRepository.HealthyState;
-         UpdateDiseaseStateFor(individualSettingsDTO);
-      }
-
-      public void UpdateDiseaseStateFor(IndividualSettingsDTO individualSettingsDTO)
-      {
-         //can be null if switching from a species/pop that supports disease state to one that does not support it
-         var diseaseState = individualSettingsDTO.DiseaseState;
-         //We clone parameters to ensure that we are not updating the default from DB;
-         individualSettingsDTO.DiseaseStateParameter = diseaseState?.Parameters
-            .Select(_cloner.Clone)
-            .Select(_parameterMapper.MapAsReadWriteFrom)
-            .FirstOrDefault() ?? new NullParameterDTO();
       }
 
       private IEnumerable<CategoryCalculationMethodDTO> individualCalculationMethods(Species species)

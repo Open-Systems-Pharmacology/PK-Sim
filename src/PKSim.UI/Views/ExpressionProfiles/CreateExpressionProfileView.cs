@@ -61,9 +61,13 @@ namespace PKSim.UI.Views.ExpressionProfiles
 
          _screenBinder.Bind(x => x.MoleculeName)
             .To(cbMoleculeName);
-
+            
          _screenBinder.Bind(x => x.Category)
             .To(cbCategory);
+
+         // _screenBinder.Bind(x => x.DiseaseState)
+         //    .To(cbDiseaseState)
+         //    .WithValues(dto => dto.AllDiseaseStates);
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }

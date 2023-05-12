@@ -58,7 +58,7 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Apply any change required to the disease factor parameter associated with the molecule
       /// </summary>
-      void ApplyTo(Individual individual, IndividualMolecule individualMolecule);
+      void ApplyTo(ExpressionProfile expressionProfile);
    }
 
    public abstract class AbstractDiseaseStateImplementation : IDiseaseStateImplementation
@@ -169,7 +169,10 @@ namespace PKSim.Core.Services
 
       public abstract (bool isValid, string error) IsValid(OriginData originData);
 
-      public abstract void ApplyTo(Individual individual, IndividualMolecule individualMolecule);
+      public virtual void ApplyTo(ExpressionProfile expressionProfile)
+      {
+         //Override in specific implementation if needed
+      }
 
       protected abstract IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual);
 
@@ -240,7 +243,7 @@ namespace PKSim.Core.Services
          return (true, string.Empty);
       }
 
-      public void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
+      public void ApplyTo(ExpressionProfile expressionProfile)
       {
          //nothing to do here
       }

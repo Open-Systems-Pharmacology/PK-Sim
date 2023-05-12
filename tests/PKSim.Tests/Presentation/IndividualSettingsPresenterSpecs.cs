@@ -12,9 +12,9 @@ using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Presenters.DiseaseStates;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using A = FakeItEasy.A;
 
 namespace PKSim.Presentation
 {
@@ -40,6 +40,7 @@ namespace PKSim.Presentation
       protected IDefaultIndividualRetriever _defaultIndividualRetriever;
       protected Individual _defaultIndividual;
       protected IDiseaseStateRepository _diseaseStateRepository;
+      protected IDiseaseStateSelectionPresenter _diseaseStateSelectionPresenter;
 
       protected override void Context()
       {
@@ -53,6 +54,7 @@ namespace PKSim.Presentation
          _editValueOriginPresenter = A.Fake<IEditValueOriginPresenter>();
          _defaultIndividualRetriever = A.Fake<IDefaultIndividualRetriever>();
          _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
+         _diseaseStateSelectionPresenter = A.Fake<IDiseaseStateSelectionPresenter>();
 
          _individualSettingsDTO = new IndividualSettingsDTO();
          _individualPropertiesDTO = new ObjectBaseDTO();
@@ -82,6 +84,7 @@ namespace PKSim.Presentation
             _individualSettingsDTOMapper,
             _individualMapper,
             _editValueOriginPresenter,
+            _diseaseStateSelectionPresenter,
             _diseaseStateRepository);
          sut.InitializeWith(_parentPresenter);
       }
@@ -100,7 +103,6 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.BindToSettings(_individualSettingsDTO)).MustHaveHappened();
          A.CallTo(() => _view.BindToParameters(_individualSettingsDTO)).MustHaveHappened();
          A.CallTo(() => _view.BindToSubPopulation(_individualSettingsDTO.SubPopulation)).MustHaveHappened();
-         A.CallTo(() => _view.BindToDiseaseState(_individualSettingsDTO)).MustHaveHappened();
       }
    }
 
@@ -551,8 +553,7 @@ namespace PKSim.Presentation
       }
    }
 
-
-   public class When_notified_that_the_selected_disease_state_has_changed : concern_for_IndividualSettingsPresenter
+   public class When_notified_that_the_selected_population_has_changed : concern_for_IndividualSettingsPresenter
    {
       protected override void Context()
       {
@@ -562,19 +563,13 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.DiseaseStateChanged();
+         sut.PopulationChanged();
       }
 
       [Observation]
       public void should_update_the_disease_state_settings_in_the_dto()
       {
-         A.CallTo(() => _defaultValueUpdater.UpdateDiseaseStateFor(_individualSettingsDTO)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_refresh_the_view()
-      {
-         A.CallTo(() => _view.BindToDiseaseState(_individualSettingsDTO)).MustHaveHappened();
+         A.CallTo(() => _diseaseStateSelectionPresenter.ResetDiseaseState()).MustHaveHappened();
       }
    }
 }

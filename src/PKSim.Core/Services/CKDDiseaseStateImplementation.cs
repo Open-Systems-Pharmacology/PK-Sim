@@ -124,11 +124,6 @@ namespace PKSim.Core.Services
          return (false, PKSimConstants.Error.CKDOnlyAvailableForAdult);
       }
 
-      public override void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
-      {
-         //nothing to do here
-      }
-
       protected override IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual)
       {
          var (hct, gfrSpec, kidneyVolume, kidneySpecificBloodFlowRate, fatVolume, plasmaProteinScaleFactorParameter, smallIntestinalTransitTime, gastricEmptyingTime) = parametersChangedByCKDAlgorithm(individual);

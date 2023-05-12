@@ -125,10 +125,7 @@ namespace PKSim.Core.Mappers
 
       protected abstract IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, TPKSimBuildingBlock pkSimBuildingBlock);
 
-      private static double getParameterValue(IParameter parameter)
-      {
-         return parameter.TryGetValue().value;
-      }
+      private static double getParameterValue(IParameter parameter) => parameter.TryGetValue().value;
 
       protected void MapAllParameters(TPKSimBuildingBlock sourcePKSimBuildingBlock, TBuildingBlock buildingBlock)
       {

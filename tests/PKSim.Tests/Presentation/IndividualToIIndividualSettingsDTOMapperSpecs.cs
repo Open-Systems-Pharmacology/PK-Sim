@@ -8,6 +8,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO;
+using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
@@ -22,16 +23,14 @@ namespace PKSim.Presentation
       protected SpeciesPopulation _speciesPopulation;
       protected ISubPopulationToSubPopulationDTOMapper _subPopulationDTOMapper;
       protected ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
-      protected IDiseaseStateRepository _diseaseStateRepository;
-      protected IOriginDataParameterToParameterDTOMapper _originDataParameterMapper;
+      protected IDiseaseStateUpdater _diseaseStateUpdater;
 
       protected override void Context()
       {
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
          _subPopulationDTOMapper = A.Fake<ISubPopulationToSubPopulationDTOMapper>();
          _calculationMethodDTOMapper = A.Fake<ICalculationMethodToCategoryCalculationMethodDTOMapper>();
-         _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
-         _originDataParameterMapper = A.Fake<IOriginDataParameterToParameterDTOMapper>();
+         _diseaseStateUpdater= A.Fake<IDiseaseStateUpdater>();
 
          _species = new Species {Name = "species"};
          _speciesPopulation = new SpeciesPopulation {Name = "population"};
@@ -41,8 +40,8 @@ namespace PKSim.Presentation
             _parameterMapper,
             _subPopulationDTOMapper,
             _calculationMethodDTOMapper,
-            _diseaseStateRepository,
-            _originDataParameterMapper
+            _diseaseStateUpdater
+            
          );
       }
    }
@@ -112,59 +111,11 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_set_a_disease_state_to_healthy_for_an_individual_without_disease_state()
+      public void should_update_the_disease_state_based_on_the_origin_data()
       {
-         _result.DiseaseState.ShouldBeEqualTo(_diseaseStateRepository.HealthyState);
+         A.CallTo(() => _diseaseStateUpdater.UpdateDiseaseState(_result.DiseaseState, _origin)).MustHaveHappened();
       }
 
-      [Observation]
-      public void should_set_the_disease_state_parameter_to_a_null_parameter()
-      {
-         _result.DiseaseStateParameter.IsNull().ShouldBeTrue();
-      }
    }
 
-   public class When_mapping_an_individual_with_disease_state_parameter_to_an_individual_dto : concern_for_IndividualToIIndividualSettingsDTOMapper
-   {
-      private Individual _individual;
-      private IndividualSettingsDTO _result;
-      private OriginData _origin;
-      private Organism _organism;
-      private OriginDataParameter _diseaseStateParameter;
-      private IParameterDTO _diseaseStateParameterDTO;
-
-      protected override void Context()
-      {
-         base.Context();
-         _organism = new Organism();
-         _individual = A.Fake<Individual>();
-         _diseaseStateParameterDTO = A.Fake<IParameterDTO>();
-         A.CallTo(() => _individual.Organism).Returns(_organism);
-         _origin = new OriginData
-         {
-            DiseaseState = new DiseaseState {Name = "MyDiseaseState"}
-         };
-         _diseaseStateParameter = new OriginDataParameter();
-         _origin.AddDiseaseStateParameter(_diseaseStateParameter);
-         A.CallTo(() => _originDataParameterMapper.MapFrom(_diseaseStateParameter)).Returns(_diseaseStateParameterDTO);
-         _individual.OriginData = _origin;
-      }
-
-      protected override void Because()
-      {
-         _result = sut.MapFrom(_individual);
-      }
-
-      [Observation]
-      public void should_set_take_the_disease_state_from_the_individual()
-      {
-         _result.DiseaseState.ShouldBeEqualTo(_origin.DiseaseState);
-      }
-
-      [Observation]
-      public void should_update_the_disease_state_parameter()
-      {
-         _result.DiseaseStateParameter.ShouldBeEqualTo(_diseaseStateParameterDTO);
-      }
-   }
 }

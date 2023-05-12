@@ -14,16 +14,19 @@ using FakeItEasy;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using PKSim.Core;
+using PKSim.Presentation.DTO.DiseaseStates;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_IndividualSettingsDTOToOriginDataMapper : ContextSpecification<IIndividualSettingsDTOToOriginDataMapper>
    {
       protected IndividualSettingsDTO _individualSettingsDTO;
+      protected DiseaseStateDTO _diseaseStateDTO;
 
       protected override void Context()
       {
          _individualSettingsDTO = new IndividualSettingsDTO();
+         _diseaseStateDTO = _individualSettingsDTO.DiseaseState;
          sut = new IndividualSettingsDTOToOriginDataMapper();
       }
    }
@@ -63,7 +66,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _parameterGestationalAge.KernelValue).Returns(25);
          _individualSettingsDTO.SetDefaultParameters(_parameterAge, _parameterHeight, _parameterWeight, _parameterBMI,_parameterGestationalAge);
          _individualSettingsDTO.CalculationMethods = new List<CategoryCalculationMethodDTO>();
-         _individualSettingsDTO.DiseaseState = _healthyDiseaseState;
+         _diseaseStateDTO.Value = _healthyDiseaseState;
          _species = A.Fake<Species>();
          _speciesPopulation = A.Fake<SpeciesPopulation>();
          _gender = A.Fake<Gender>();
@@ -108,8 +111,8 @@ namespace PKSim.Presentation
          _diseaseStateParameterDTO = A.Fake<IParameterDTO>().WithName("TOTO");
          A.CallTo(() => _diseaseStateParameterDTO.KernelValue).Returns(10);
          _diseaseStateParameterDTO.DisplayUnit = new Unit("mg", 1, 0);
-         _individualSettingsDTO.DiseaseState = _ckdDiseaseState;
-         _individualSettingsDTO.DiseaseStateParameter = _diseaseStateParameterDTO;
+         _diseaseStateDTO.Value = _ckdDiseaseState;
+         _diseaseStateDTO.Parameter = _diseaseStateParameterDTO;
          _individualSettingsDTO.CalculationMethods = Enumerable.Empty<CategoryCalculationMethodDTO>();
          _individualSettingsDTO.SubPopulation = Enumerable.Empty<CategoryParameterValueVersionDTO>();
       }

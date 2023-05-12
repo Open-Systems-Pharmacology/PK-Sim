@@ -23,7 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTO\DiseaseStates\" />
+    <Folder Include="Presenters\DiseaseStates\" />
     <Folder Include="Properties\" />
+    <Folder Include="Views\DiseaseStates\" />
   </ItemGroup>
 
   <ItemGroup>

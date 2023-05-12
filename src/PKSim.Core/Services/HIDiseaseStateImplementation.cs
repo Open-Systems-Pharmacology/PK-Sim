@@ -89,37 +89,11 @@ namespace PKSim.Core.Services
 
       private bool applyTo(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
-         //this needs to happen first
-         updateVolumes(individual, updateParameterFunc);
-         updateBloodFlows(individual, updateParameterFunc);
+         updateBloodFlowsAndVolumes(individual, updateParameterFunc);
          updateGFR(individual, updateParameterFunc);
          updateOntogenyFactory(individual, updateParameterFunc);
          updateHematocrit(individual, updateParameterFunc);
-
-         addChildPughScoreToOrganism(individual);
          return true;
-      }
-
-      private void addChildPughScoreToOrganism(Individual individual)
-      {
-         var organism = individual.Organism;
-         var childPughScore = organism.Parameter(CHILD_PUGH_SCORE);
-         if (childPughScore == null)
-         {
-            childPughScore = createChildPughScore();
-            organism.Add(childPughScore);
-         }
-
-         childPughScore.Value = childPughScoreFor(individual);
-      }
-
-      private IParameter createChildPughScore()
-      {
-         var childPughScore = _parameterFactory.CreateFor(CHILD_PUGH_SCORE, PKSimBuildingBlockType.Individual)
-            .WithGroup(CoreConstants.Groups.INDIVIDUAL_CHARACTERISTICS);
-         childPughScore.DefaultValue = null;
-         childPughScore.Editable = false;
-         return childPughScore;
       }
 
       protected override IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual)
@@ -135,7 +109,6 @@ namespace PKSim.Core.Services
          return new[]
          {
             organism.Parameter(HCT),
-            organism.Parameter(CHILD_PUGH_SCORE),
             organism.Parameter(ONTOGENY_FACTOR_ALBUMIN),
             organism.Parameter(ONTOGENY_FACTOR_AGP),
             kidney.Parameter(GFR_SPEC),
@@ -166,11 +139,11 @@ namespace PKSim.Core.Services
          updateParameterFunc(new(hct, _hematocritScalingFactor[score]));
       }
 
-      private void updateBloodFlows(Individual individual, Action<ParameterUpdate> updateParameterFunc)
+      private void updateBloodFlowsAndVolumes(Individual individual, Action<ParameterUpdate> updateParameterFunc)
       {
          var score = childPughScoreFor(individual);
          var organism = individual.Organism;
-         var updateBloodFlow = updateBloodFlowDef(updateParameterFunc, organism);
+         var updateBloodFlowSpec = updateBloodFlowSpecDef(updateParameterFunc, organism);
          var bloodFlow = bloodFlowDef(organism);
          var portalOrgans = new[] {STOMACH, SMALL_INTESTINE, LARGE_INTESTINE, SPLEEN, PANCREAS};
          var otherOrgans = new[] {BONE, FAT, GONADS, HEART, MUSCLE, SKIN};
@@ -186,29 +159,25 @@ namespace PKSim.Core.Services
          var portal_factor = _portalFlowScalingFactor[score];
          var liver_factor = _hepaticFlowScalingFactor[score];
          var kidney_factor = _renalFlowScalingFactor[score];
+         var ci_factor = _cardiacIndexDiseaseFactor[score];
 
-         //update liver volume so that we get the correct diseases blood flow
+         //update liver volume so that we get the correct diseases blood flow as Q_liver_HI = f(V_liver)
          updateParameterFunc(new(volumeLiver, _hepaticVolumeScalingFactor[score]));
+
          var Q_liver_HI = bloodFlow(LIVER);
 
-         portalOrgans.Each(x => updateBloodFlow(x, portal_factor));
-         updateBloodFlow(LIVER, liver_factor);
-         updateBloodFlow(KIDNEY, kidney_factor);
+         //update all blood flows specs
+         portalOrgans.Each(x => updateBloodFlowSpec(x, portal_factor));
+         updateBloodFlowSpec(LIVER, liver_factor);
+         updateBloodFlowSpec(KIDNEY, kidney_factor);
 
-         //retrieve the scaling factor based on publication 
-         var otherOrganFactor = (_cardiacIndexDiseaseFactor[score] * (Q_other + Q_portal + Q_kidney + Q_liver + Q_brain) - (Q_brain + Q_portal * portal_factor + Q_liver_HI * liver_factor + Q_kidney * kidney_factor)) / Q_other;
-         otherOrgans.Each(x => updateBloodFlow(x, otherOrganFactor));
+         //retrieve the scaling factor based on publication and github entry
+         //see https://github.com/Open-Systems-Pharmacology/Forum/discussions/1341
+         var otherOrganFactor = (ci_factor * (Q_other + Q_portal + Q_kidney + Q_liver + Q_brain) - (Q_brain + Q_portal * portal_factor + Q_liver_HI * liver_factor + Q_kidney * kidney_factor)) / Q_other;
+         otherOrgans.Each(x => updateBloodFlowSpec(x, otherOrganFactor));
       }
 
-      private void updateVolumes(Individual individual, Action<ParameterUpdate> updateParameterFunc)
-      {
-         // var score = childPughScoreFor(individual);
-         // var organism = individual.Organism;
-         // var parameter = organism.Container(LIVER).Parameter(VOLUME);
-         // updateParameterFunc(new(parameter, _hepaticVolumeScalingFactor[score]));
-      }
-
-      private Action<string, double> updateBloodFlowDef(Action<ParameterUpdate> updateParameterFunc, IContainer organism) => (organName, factor) =>
+   private Action<string, double> updateBloodFlowSpecDef(Action<ParameterUpdate> updateParameterFunc, IContainer organism) => (organName, factor) =>
       {
          var parameter = organism.Container(organName).Parameter(SPECIFIC_BLOOD_FLOW_RATE);
          updateParameterFunc(new(parameter, factor));
@@ -229,18 +198,19 @@ namespace PKSim.Core.Services
          var ageInYears = _ageDimension.BaseUnitValueToUnitValue(_ageDimension.Unit(Years), originData.Age.Value);
          if (ageInYears >= 18)
             return (true, string.Empty);
-
+         
          return (false, PKSimConstants.Error.HIOnlyAvailableForAdult);
       }
 
-      public override void ApplyTo(Individual individual, IndividualMolecule individualMolecule)
+      public override void ApplyTo(ExpressionProfile expressionProfile)
       {
-         var moleculeName = individualMolecule.Name.ToUpper();
+         var (molecule, individual) = expressionProfile;
+         var moleculeName = molecule.Name.ToUpper();
          if (_moleculeScalingFactorEdginton.Contains(moleculeName))
-            updateReferenceConcentration(individual, individualMolecule, _moleculeScalingFactorEdginton[moleculeName], HI_EDGINTON_VALUE_ORIGIN_ID);
+            updateReferenceConcentration(individual, molecule, _moleculeScalingFactorEdginton[moleculeName], HI_EDGINTON_VALUE_ORIGIN_ID);
 
          if (_moleculeScalingFactorJohnson.Contains(moleculeName))
-            updateReferenceConcentration(individual, individualMolecule, _moleculeScalingFactorJohnson[moleculeName], HI_JOHNSON_VALUE_ORIGIN_ID);
+            updateReferenceConcentration(individual, molecule, _moleculeScalingFactorJohnson[moleculeName], HI_JOHNSON_VALUE_ORIGIN_ID);
       }
    }
 }

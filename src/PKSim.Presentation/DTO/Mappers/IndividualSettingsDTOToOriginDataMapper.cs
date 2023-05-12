@@ -4,6 +4,7 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Parameters;
 
@@ -30,7 +31,7 @@ namespace PKSim.Presentation.DTO.Mappers
             BMI = originDataParameterFrom(individualSettingsDTO.ParameterBMI)
          };
 
-         updateDiseaseState(originData, individualSettingsDTO);
+         updateDiseaseState(originData, individualSettingsDTO.DiseaseState);
 
          originData.UpdateValueOriginFrom(individualSettingsDTO.ValueOrigin);
          individualSettingsDTO.CalculationMethods.Select(cm => cm.CalculationMethod).Each(originData.AddCalculationMethod);
@@ -38,9 +39,9 @@ namespace PKSim.Presentation.DTO.Mappers
          return originData;
       }
 
-      private void updateDiseaseState(OriginData originData, IndividualSettingsDTO individualSettingsDTO)
+      private void updateDiseaseState(OriginData originData, DiseaseStateDTO diseaseStateDTO)
       {
-         var diseaseState = individualSettingsDTO.DiseaseState;
+         var diseaseState = diseaseStateDTO.Value;
          var isHealthy = diseaseState.IsHealthy;
          if (isHealthy)
          {
@@ -49,7 +50,7 @@ namespace PKSim.Presentation.DTO.Mappers
          }
 
          originData.DiseaseState = diseaseState;
-         var diseaseStateParameter = individualSettingsDTO.DiseaseStateParameter;
+         var diseaseStateParameter = diseaseStateDTO.Parameter;
          //This is a disease state without parameters
          if (diseaseStateParameter.IsNull())
             return;

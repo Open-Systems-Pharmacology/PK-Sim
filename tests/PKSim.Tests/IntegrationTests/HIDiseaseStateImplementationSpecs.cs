@@ -71,9 +71,6 @@ namespace PKSim.IntegrationTests
       {
          //applied at creation
          sut.ApplyTo(_individual);
-
-         //Applied when the expression profile is added
-         sut.ApplyTo(_individual, _molecule);
       }
    }
 
