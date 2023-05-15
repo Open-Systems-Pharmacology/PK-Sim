@@ -65,7 +65,7 @@ namespace PKSim.Core.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly IExecutionContext _executionContext;
-      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
+      private readonly IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
 
       public ExpressionProfileUpdater(
          IParameterSetUpdater parameterSetUpdater,
@@ -76,7 +76,7 @@ namespace PKSim.Core.Services
          ILazyLoadTask lazyLoadTask,
          IParameterIdUpdater parameterIdUpdater,
          IExecutionContext executionContext,
-         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
+         IDiseaseStateImplementationRepository diseaseStateImplementationRepository)
       {
          _parameterSetUpdater = parameterSetUpdater;
          _containerTask = containerTask;
@@ -86,7 +86,7 @@ namespace PKSim.Core.Services
          _lazyLoadTask = lazyLoadTask;
          _parameterIdUpdater = parameterIdUpdater;
          _executionContext = executionContext;
-         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
+         _diseaseStateImplementationRepository = diseaseStateImplementationRepository;
       }
 
       public ICommand UpdateExpressionFromQuery(ExpressionProfile expressionProfile, QueryExpressionResults queryResults)

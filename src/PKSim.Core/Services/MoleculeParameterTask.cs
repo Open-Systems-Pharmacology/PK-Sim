@@ -33,17 +33,20 @@ namespace PKSim.Core.Services
       private readonly ITransportContainerUpdater _transportContainerUpdater;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IOntogenyTask _ontogenyTask;
+      private readonly IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
 
       public MoleculeParameterTask(
          IMoleculeParameterRepository moleculeParameterRepository,
          ITransportContainerUpdater transportContainerUpdater,
          IOntogenyRepository ontogenyRepository,
-         IOntogenyTask ontogenyTask)
+         IOntogenyTask ontogenyTask, 
+         IDiseaseStateImplementationRepository diseaseStateImplementationRepository)
       {
          _moleculeParameterRepository = moleculeParameterRepository;
          _transportContainerUpdater = transportContainerUpdater;
          _ontogenyRepository = ontogenyRepository;
          _ontogenyTask = ontogenyTask;
+         _diseaseStateImplementationRepository = diseaseStateImplementationRepository;
       }
 
       public void SetDefaultMoleculeParameters(IndividualMolecule molecule, string moleculeName = null)
@@ -68,6 +71,9 @@ namespace PKSim.Core.Services
          setDefaultSettingsForTransporter(molecule, individual, moleculeNameToUse);
          setDefaultOntogeny(molecule, individual, moleculeNameToUse);
          SetDefaultMoleculeParameters(molecule, moleculeNameToUse);
+         //Apply disease states if required
+         var diseaseStateImplementation = _diseaseStateImplementationRepository.FindFor(individual);
+         diseaseStateImplementation.ApplyTo(expressionProfile, moleculeNameToUse);
       }
 
       private void setDefaultSettingsForTransporter(IndividualMolecule molecule, Individual individual, string moleculeName)

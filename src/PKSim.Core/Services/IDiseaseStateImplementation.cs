@@ -58,7 +58,12 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Apply any change required to the disease factor parameter associated with the molecule
       /// </summary>
-      void ApplyTo(ExpressionProfile expressionProfile);
+      void ApplyTo(ExpressionProfile expressionProfile, string moleculeName);
+
+      /// <summary>
+      ///    Returns <c>true</c> if the implementation modifies the expression profile otherwise <c>false</c>
+      /// </summary>
+      bool CanBeAppliedToExpressionProfile(QuantityType moleculeType);
    }
 
    public abstract class AbstractDiseaseStateImplementation : IDiseaseStateImplementation
@@ -108,7 +113,8 @@ namespace PKSim.Core.Services
          IFormulaFactory formulaFactory,
          IIndividualFactory individualFactory,
          IContainerTask containerTask,
-         IParameterSetUpdater parameterSetUpdater, string name)
+         IParameterSetUpdater parameterSetUpdater,
+         string name)
       {
          _individualFactory = individualFactory;
          _containerTask = containerTask;
@@ -169,10 +175,12 @@ namespace PKSim.Core.Services
 
       public abstract (bool isValid, string error) IsValid(OriginData originData);
 
-      public virtual void ApplyTo(ExpressionProfile expressionProfile)
+      public virtual void ApplyTo(ExpressionProfile expressionProfile, string moleculeName)
       {
          //Override in specific implementation if needed
       }
+
+      public virtual bool CanBeAppliedToExpressionProfile(QuantityType moleculeType) => false;
 
       protected abstract IReadOnlyList<IParameter> ParameterChangedByDiseaseStateAsList(Individual individual);
 
@@ -243,9 +251,14 @@ namespace PKSim.Core.Services
          return (true, string.Empty);
       }
 
-      public void ApplyTo(ExpressionProfile expressionProfile)
+      public void ApplyTo(ExpressionProfile expressionProfile, string moleculeName)
       {
          //nothing to do here
+      }
+
+      public bool CanBeAppliedToExpressionProfile(QuantityType moleculeType)
+      {
+         return false;
       }
 
       public bool IsSatisfiedBy(DiseaseState item) => false;

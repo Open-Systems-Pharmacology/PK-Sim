@@ -191,7 +191,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.GestationalAgeVisible = _individualSettingsDTO.Population.IsPreterm;
          var allDiseaseStates = allDiseaseStatesFor(_individualSettingsDTO.Population);
          _diseaseStateSelectionPresenter.AllDiseaseStates = allDiseaseStates;
-         _diseaseStateSelectionPresenter.Refresh();
          //One is healthy. We show the selection if we have more than one
          _view.UpdateControlSizeAndVisibility(allDiseaseStates.HasAtLeastTwo());
       }

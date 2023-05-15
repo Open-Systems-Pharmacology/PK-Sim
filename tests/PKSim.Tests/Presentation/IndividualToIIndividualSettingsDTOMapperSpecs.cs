@@ -113,7 +113,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_disease_state_based_on_the_origin_data()
       {
-         A.CallTo(() => _diseaseStateUpdater.UpdateDiseaseState(_result.DiseaseState, _origin)).MustHaveHappened();
+         A.CallTo(() => _diseaseStateUpdater.UpdateDiseaseStateDTO(_result.DiseaseState, _origin)).MustHaveHappened();
       }
 
    }

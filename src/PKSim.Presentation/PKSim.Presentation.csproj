@@ -45,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PKSim.Assets.Images\PKSim.Assets.Images.csproj" />
     <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj" />
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj" />
   </ItemGroup>

@@ -4,22 +4,22 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
-   public class DiseaseStateImplementationFactory : IDiseaseStateImplementationFactory
+   public class DiseaseStateImplementationRepository : IDiseaseStateImplementationRepository
    {
       private readonly IRepository<IDiseaseStateImplementation> _diseaseStateImplementations;
 
-      public DiseaseStateImplementationFactory(IRepository<IDiseaseStateImplementation> diseaseStateImplementations)
+      public DiseaseStateImplementationRepository(IRepository<IDiseaseStateImplementation> diseaseStateImplementations)
       {
          _diseaseStateImplementations = diseaseStateImplementations;
       }
 
-      public IDiseaseStateImplementation CreateFor(DiseaseState diseaseState)
+      public IDiseaseStateImplementation FindFor(DiseaseState diseaseState)
       {
          //We use all here to ensure that we get new implementations every single time
          var implementation = _diseaseStateImplementations.All().SingleOrDefault(x => x.IsSatisfiedBy(diseaseState));
          return implementation ?? new HealthyDiseaseStateImplementation();
       }
 
-      public IDiseaseStateImplementation CreateFor(Individual individual) => CreateFor(individual.OriginData.DiseaseState);
+      public IDiseaseStateImplementation FindFor(Individual individual) => FindFor(individual.OriginData.DiseaseState);
    }
 }

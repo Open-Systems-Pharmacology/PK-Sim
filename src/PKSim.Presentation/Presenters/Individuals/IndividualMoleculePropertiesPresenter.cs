@@ -34,7 +34,8 @@ namespace PKSim.Presentation.Presenters.Individuals
          _ontogenySelectionPresenter = ontogenySelectionPresenter;
          _moleculeParametersPresenter = moleculeParametersPresenter;
          _moleculeParametersPresenter.IsSimpleEditor = true;
-
+         //do not allow scrolling as we will adjust height dynamically
+         _moleculeParametersPresenter.View.AllowVerticalScrolling = false;
          AddSubPresenters(_ontogenySelectionPresenter, _moleculeParametersPresenter);
 
          view.AddOntogenyView(_ontogenySelectionPresenter.View);

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using DevExpress.XtraLayout.Utils;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -16,6 +17,9 @@ namespace PKSim.UI.Views.ExpressionProfiles
 {
    public partial class CreateExpressionProfileView : BaseModalView, ICreateExpressionProfileView
    {
+      private const int OPTIMAL_HEIGHT_NO_DISEASE_STATE = 220;
+      private const int OPTIMAL_HEIGHT_WITH_DISEASE_STATE = 270;
+
       private readonly IImageListRetriever _imageListRetriever;
       private readonly ScreenBinder<ExpressionProfileDTO> _screenBinder = new ScreenBinder<ExpressionProfileDTO>();
       private IExpressionProfilePresenter _presenter;
@@ -50,6 +54,17 @@ namespace PKSim.UI.Views.ExpressionProfiles
          _screenBinder.BindToSource(expressionProfileDTO);
       }
 
+      public void AddDiseaseStateView(IView view)
+      {
+         panelDiseaseState.FillWith(view);
+      }
+
+      public void UpdateDiseaseStateVisibility(bool visible)
+      {
+         layoutItemDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(visible);
+         Height = visible ? OPTIMAL_HEIGHT_WITH_DISEASE_STATE : OPTIMAL_HEIGHT_NO_DISEASE_STATE;
+      }
+
       public override void InitializeBinding()
       {
          base.InitializeBinding();
@@ -57,19 +72,22 @@ namespace PKSim.UI.Views.ExpressionProfiles
             .To(cbSpecies)
             .WithImages(species => _imageListRetriever.ImageIndex(species.Icon))
             .WithValues(dto => dto.AllSpecies)
-            .AndDisplays(species => species.DisplayName);
+            .AndDisplays(species => species.DisplayName)
+            .OnValueUpdated += (o, e) => OnEvent(onSpeciesChanged);
 
          _screenBinder.Bind(x => x.MoleculeName)
             .To(cbMoleculeName);
-            
+
          _screenBinder.Bind(x => x.Category)
             .To(cbCategory);
 
-         // _screenBinder.Bind(x => x.DiseaseState)
-         //    .To(cbDiseaseState)
-         //    .WithValues(dto => dto.AllDiseaseStates);
-
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
+      }
+
+      private void onSpeciesChanged()
+      {
+         var createPresenter = _presenter as ICreateExpressionProfilePresenter;
+         createPresenter?.SpeciesChanged();
       }
 
       public override bool HasError => _screenBinder.HasError;

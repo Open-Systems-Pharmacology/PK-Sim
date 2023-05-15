@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using DevExpress.XtraLayout.Utils;
+﻿using DevExpress.XtraLayout.Utils;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -41,6 +40,16 @@ namespace PKSim.UI.Views.DiseaseStates
 
          layoutItemDiseaseParameter.TextVisible = hasParameter;
          layoutItemDiseaseParameter.Visibility = LayoutVisibilityConvertor.FromBoolean(hasParameter);
+      }
+
+      public string SelectionLabel
+      {
+         set => layoutItemDiseaseState.Text = value.FormatForLabel();
+      }
+
+      public bool ShowDescription
+      {
+         set => layoutItemDescription.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       public override void InitializeBinding()

@@ -17,6 +17,7 @@ namespace PKSim.Presentation.Presenters.DiseaseStates
       void ResetDiseaseState();
       IReadOnlyList<DiseaseState> AllDiseaseStates { get; set; }
       void Edit(DiseaseStateDTO diseaseStateDTO);
+      void Initialize(string selectionLabel, bool showDescription = true);
       void Refresh();
    }
 
@@ -25,6 +26,7 @@ namespace PKSim.Presentation.Presenters.DiseaseStates
       private readonly IDiseaseStateRepository _diseaseStateRepository;
       private readonly IDiseaseStateUpdater _diseaseStateUpdater;
       private DiseaseStateDTO _diseaseStateDTO;
+      private IReadOnlyList<DiseaseState> _allDiseaseStates;
 
       public DiseaseStateSelectionPresenter(
          IDiseaseStateSelectionView view,
@@ -41,11 +43,25 @@ namespace PKSim.Presentation.Presenters.DiseaseStates
          Refresh();
       }
 
-      public IReadOnlyList<DiseaseState> AllDiseaseStates { get; set; }
+      public IReadOnlyList<DiseaseState> AllDiseaseStates
+      {
+         get => _allDiseaseStates;
+         set
+         {
+            _allDiseaseStates = value;
+            Refresh();
+         }
+      }
 
       public void Edit(DiseaseStateDTO diseaseStateDTO)
       {
          _diseaseStateDTO = diseaseStateDTO;
+      }
+
+      public void Initialize(string selectionLabel, bool showDescription = true)
+      {
+         _view.SelectionLabel = selectionLabel;
+         _view.ShowDescription = showDescription;
       }
 
       private void refreshDiseaseState() => _diseaseStateUpdater.UpdateDiseaseStateParameters(_diseaseStateDTO);

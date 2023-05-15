@@ -9,7 +9,16 @@ namespace PKSim.Presentation.DTO.DiseaseStates
 {
    public interface IDiseaseStateUpdater
    {
-      void UpdateDiseaseState(DiseaseStateDTO diseaseStateDTO, OriginData originData);
+      /// <summary>
+      ///    Updates the value in the DTO based on the origin data value (typically used in edit scenario)
+      /// </summary>
+      void UpdateDiseaseStateDTO(DiseaseStateDTO diseaseStateDTO, OriginData originData);
+
+      /// <summary>
+      ///    Updates the origin data with value from the DTO. This is typically used in save scenario
+      /// </summary>
+      void UpdateOriginDataFromDiseaseState(OriginData originData, DiseaseStateDTO diseaseStateDTO);
+
       void UpdateDiseaseStateParameters(DiseaseStateDTO diseaseStateDTO);
    }
 
@@ -19,26 +28,49 @@ namespace PKSim.Presentation.DTO.DiseaseStates
       private readonly IParameterToParameterDTOMapper _parameterMapper;
       private readonly IDiseaseStateRepository _diseaseStateRepository;
       private readonly IOriginDataParameterToParameterDTOMapper _originDataParameterMapper;
+      private readonly IParameterDTOToOriginDataParameterMapper _parameterDTOToOriginDataMapper;
 
       public DiseaseStateUpdater(
          ICloner cloner,
          IParameterToParameterDTOMapper parameterMapper,
          IDiseaseStateRepository diseaseStateRepository,
-         IOriginDataParameterToParameterDTOMapper originDataParameterMapper)
+         IOriginDataParameterToParameterDTOMapper originDataParameterMapper,
+         IParameterDTOToOriginDataParameterMapper parameterDTOToOriginDataMapper)
       {
          _cloner = cloner;
          _parameterMapper = parameterMapper;
          _diseaseStateRepository = diseaseStateRepository;
          _originDataParameterMapper = originDataParameterMapper;
+         _parameterDTOToOriginDataMapper = parameterDTOToOriginDataMapper;
       }
 
-      public void UpdateDiseaseState(DiseaseStateDTO diseaseStateDTO, OriginData originData)
+      public void UpdateDiseaseStateDTO(DiseaseStateDTO diseaseStateDTO, OriginData originData)
       {
          var diseaseState = originData.DiseaseState ?? _diseaseStateRepository.HealthyState;
          diseaseStateDTO.Value = diseaseState;
          diseaseStateDTO.Parameter = originData.DiseaseStateParameters
             .Select(_originDataParameterMapper.MapFrom)
             .FirstOrDefault() ?? new NullParameterDTO();
+      }
+
+      public void UpdateOriginDataFromDiseaseState(OriginData originData, DiseaseStateDTO diseaseStateDTO)
+      {
+         var diseaseState = diseaseStateDTO.Value;
+         var isHealthy = diseaseState.IsHealthy;
+         if (isHealthy)
+         {
+            originData.DiseaseState = null;
+            return;
+         }
+
+         originData.DiseaseState = diseaseState;
+         var diseaseStateParameter = diseaseStateDTO.Parameter;
+         //This is a disease state without parameters
+         if (diseaseStateParameter.IsNull())
+            return;
+
+         //disease parameters are saved in a collection and we need to save the name to differentiate them
+         originData.AddDiseaseStateParameter(_parameterDTOToOriginDataMapper.MapFrom(diseaseStateParameter, addName: true));
       }
 
       public void UpdateDiseaseStateParameters(DiseaseStateDTO diseaseStateDTO)

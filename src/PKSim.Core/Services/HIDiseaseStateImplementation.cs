@@ -202,15 +202,20 @@ namespace PKSim.Core.Services
          return (false, PKSimConstants.Error.HIOnlyAvailableForAdult);
       }
 
-      public override void ApplyTo(ExpressionProfile expressionProfile)
+      public override void ApplyTo(ExpressionProfile expressionProfile, string moleculeName)
       {
          var (molecule, individual) = expressionProfile;
-         var moleculeName = molecule.Name.ToUpper();
-         if (_moleculeScalingFactorEdginton.Contains(moleculeName))
-            updateReferenceConcentration(individual, molecule, _moleculeScalingFactorEdginton[moleculeName], HI_EDGINTON_VALUE_ORIGIN_ID);
+         var moleculeNameToUse = moleculeName.ToUpper();
+         if (_moleculeScalingFactorEdginton.Contains(moleculeNameToUse))
+            updateReferenceConcentration(individual, molecule, _moleculeScalingFactorEdginton[moleculeNameToUse], HI_EDGINTON_VALUE_ORIGIN_ID);
 
-         if (_moleculeScalingFactorJohnson.Contains(moleculeName))
-            updateReferenceConcentration(individual, molecule, _moleculeScalingFactorJohnson[moleculeName], HI_JOHNSON_VALUE_ORIGIN_ID);
+         if (_moleculeScalingFactorJohnson.Contains(moleculeNameToUse))
+            updateReferenceConcentration(individual, molecule, _moleculeScalingFactorJohnson[moleculeNameToUse], HI_JOHNSON_VALUE_ORIGIN_ID);
+      }
+
+      public override bool CanBeAppliedToExpressionProfile(QuantityType moleculeType)
+      {
+         return moleculeType.Is(QuantityType.Enzyme);
       }
    }
 }

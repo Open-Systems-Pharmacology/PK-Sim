@@ -9,12 +9,14 @@ using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.DiseaseStates;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
+using Individual = PKSim.Core.Model.Individual;
 
 namespace PKSim.Presentation
 {
@@ -513,6 +515,7 @@ namespace PKSim.Presentation
       private DiseaseState _diseaseState1;
       private DiseaseState _diseaseState2;
       private DiseaseState _healthyDiseaseState;
+      private Individual _individual;
 
       protected override void Context()
       {
@@ -523,12 +526,18 @@ namespace PKSim.Presentation
          _healthyDiseaseState = new DiseaseState();
          A.CallTo(() => _diseaseStateRepository.AllFor(_population)).Returns(new[] {_diseaseState1, _diseaseState2});
          A.CallTo(() => _diseaseStateRepository.HealthyState).Returns(_healthyDiseaseState);
+
+         _individual = A.Fake<Individual>();
+         _individualSettingsDTO.Population = _population;
+         A.CallTo(() => _individualSettingsDTOMapper.MapFrom(_individual)).Returns(_individualSettingsDTO);
+
+         sut.EditIndividual(_individual);
       }
 
       [Observation]
       public void should_return_all_disease_states_defined_for_the_population_with_the_healthy_state_first()
       {
-         sut.AllDiseaseStatesFor(_population).ShouldOnlyContainInOrder(_healthyDiseaseState, _diseaseState1, _diseaseState2);
+         _diseaseStateSelectionPresenter.AllDiseaseStates.ShouldOnlyContainInOrder(_healthyDiseaseState, _diseaseState1, _diseaseState2);
       }
    }
 
@@ -536,6 +545,7 @@ namespace PKSim.Presentation
    {
       private SpeciesPopulation _population;
       private DiseaseState _healthyDiseaseState;
+      private Individual _individual;
 
       protected override void Context()
       {
@@ -544,12 +554,17 @@ namespace PKSim.Presentation
          _healthyDiseaseState = new DiseaseState();
          A.CallTo(() => _diseaseStateRepository.AllFor(_population)).Returns(Array.Empty<DiseaseState>());
          A.CallTo(() => _diseaseStateRepository.HealthyState).Returns(_healthyDiseaseState);
+         _individual = A.Fake<Individual>();
+         _individualSettingsDTO.Population = _population;
+         A.CallTo(() => _individualSettingsDTOMapper.MapFrom(_individual)).Returns(_individualSettingsDTO);
+
+         sut.EditIndividual(_individual);
       }
 
       [Observation]
       public void should_return_the_healthy_state()
       {
-         sut.AllDiseaseStatesFor(_population).ShouldOnlyContain(_healthyDiseaseState);
+         _diseaseStateSelectionPresenter.AllDiseaseStates.ShouldOnlyContain(new []{_healthyDiseaseState});
       }
    }
 

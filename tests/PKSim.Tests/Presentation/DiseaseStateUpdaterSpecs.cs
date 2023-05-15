@@ -1,6 +1,8 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -16,6 +18,7 @@ namespace PKSim.Presentation
       protected IParameterToParameterDTOMapper _parameterMapper;
       protected IDiseaseStateRepository _diseaseStateRepository;
       protected IOriginDataParameterToParameterDTOMapper _originDataParameterMapper;
+      protected IParameterDTOToOriginDataParameterMapper _parameterMapperDTOToOriginDataMapper;
 
       protected override void Context()
       {
@@ -23,8 +26,9 @@ namespace PKSim.Presentation
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
          _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
          _originDataParameterMapper = A.Fake<IOriginDataParameterToParameterDTOMapper>();
+         _parameterMapperDTOToOriginDataMapper = new ParameterDTOToOriginDataParameterMapper();
 
-         sut = new DiseaseStateUpdater(_cloner, _parameterMapper, _diseaseStateRepository, _originDataParameterMapper);
+         sut = new DiseaseStateUpdater(_cloner, _parameterMapper, _diseaseStateRepository, _originDataParameterMapper, _parameterMapperDTOToOriginDataMapper);
       }
    }
 
@@ -51,7 +55,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.UpdateDiseaseState(_diseaseStateDTO, _origin);
+         sut.UpdateDiseaseStateDTO(_diseaseStateDTO, _origin);
       }
 
       [Observation]
@@ -64,6 +68,44 @@ namespace PKSim.Presentation
       public void should_update_the_disease_state_parameter()
       {
          _diseaseStateDTO.Parameter.ShouldBeEqualTo(_diseaseStateParameterDTO);
+      }
+   }
+
+   //write test testing the update from origin data
+   public class When_updating_an_origian_data_from_a_disease_state_DTO : concern_for_DiseaseStateUpdater
+   {
+      private OriginData _origin;
+      private IParameterDTO _diseaseStateParameterDTO;
+      private DiseaseStateDTO _diseaseStateDTO;
+      private DiseaseState _ckdDiseaseState;
+
+      protected override void Context()
+      {
+         base.Context();
+         _origin = new OriginData();
+         _ckdDiseaseState = new DiseaseState {Name = "CKD"};
+         _diseaseStateParameterDTO = A.Fake<IParameterDTO>().WithName("TOTO");
+         _diseaseStateDTO = new DiseaseStateDTO();
+
+         A.CallTo(() => _diseaseStateParameterDTO.KernelValue).Returns(10);
+         _diseaseStateParameterDTO.DisplayUnit = new Unit("mg", 1, 0);
+         _diseaseStateDTO.Value = _ckdDiseaseState;
+         _diseaseStateDTO.Parameter = _diseaseStateParameterDTO;
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateOriginDataFromDiseaseState(_origin, _diseaseStateDTO);
+      }
+
+      [Observation]
+      public void the_returned_origin_data_should_be_filled_with_the_expected_disease_State()
+      {
+         _origin.DiseaseState.ShouldBeEqualTo(_ckdDiseaseState);
+         _origin.DiseaseStateParameters.Count.ShouldBeEqualTo(1);
+         var diseaseStateParameter = _origin.DiseaseStateParameters.FindByName(_diseaseStateParameterDTO.Name);
+         diseaseStateParameter.Value.ShouldBeEqualTo(_diseaseStateParameterDTO.KernelValue);
+         diseaseStateParameter.Unit.ShouldBeEqualTo("mg");
       }
    }
 }

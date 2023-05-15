@@ -33,7 +33,6 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       {
          _expressionProfile = expressionProfile;
          _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(_expressionProfile));
-         _subPresenterItemManager.PresenterAt(ExpressionProfileItems.Molecules).IsEditMode = true;
          UpdateCaption();
          _view.Display();
       }

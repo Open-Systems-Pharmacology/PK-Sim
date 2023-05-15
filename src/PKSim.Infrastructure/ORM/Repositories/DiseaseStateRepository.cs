@@ -7,6 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Mappers;
 
 namespace PKSim.Infrastructure.ORM.Repositories
@@ -17,6 +18,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatPopulationDiseaseStateRepository _flatPopulationDiseaseStateRepository;
       private readonly IPopulationRepository _populationRepository;
       private readonly IFlatDiseaseStateToDiseaseStateMapper _diseaseStateMapper;
+      private readonly IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
       private readonly Cache<string, DiseaseState> _allDiseaseSates = new Cache<string, DiseaseState>(x => x.Id, x => null);
 
       private readonly Cache<SpeciesPopulation, IReadOnlyList<DiseaseState>> _allDiseaseStatePerPopulation
@@ -24,16 +26,18 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private DiseaseState _healthyState;
 
-      public DiseaseStateRepository( 
+      public DiseaseStateRepository(
          IFlatDiseaseStateRepository flatDiseaseStateRepository,
          IFlatPopulationDiseaseStateRepository flatPopulationDiseaseStateRepository,
          IPopulationRepository populationRepository,
-         IFlatDiseaseStateToDiseaseStateMapper diseaseStateMapper)
+         IFlatDiseaseStateToDiseaseStateMapper diseaseStateMapper,
+         IDiseaseStateImplementationRepository diseaseStateImplementationRepository)
       {
          _flatDiseaseStateRepository = flatDiseaseStateRepository;
          _flatPopulationDiseaseStateRepository = flatPopulationDiseaseStateRepository;
          _populationRepository = populationRepository;
          _diseaseStateMapper = diseaseStateMapper;
+         _diseaseStateImplementationRepository = diseaseStateImplementationRepository;
       }
 
       protected override void DoStart()
@@ -61,6 +65,16 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          Start();
          return _allDiseaseStatePerPopulation[population];
+      }
+
+      public IReadOnlyList<DiseaseState> AllForExpressionProfile(Species species, QuantityType quantityType)
+      {
+         if (!species.IsHuman)
+            return Array.Empty<DiseaseState>();
+
+         //returns all disease state where an implementation can be applied to expression profile
+         return All().Select(x => new {diseaseState = x, impl = _diseaseStateImplementationRepository.FindFor(x)})
+            .Where(x => x.impl.CanBeAppliedToExpressionProfile(quantityType)).Select(x => x.diseaseState).ToList();
       }
 
       public DiseaseState HealthyState

@@ -47,7 +47,7 @@ namespace PKSim.Presentation.DTO.Mappers
             CalculationMethods = originData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper),
          };
 
-         _diseaseStateUpdater.UpdateDiseaseState(individualDTO.DiseaseState, originData);
+         _diseaseStateUpdater.UpdateDiseaseStateDTO(individualDTO.DiseaseState, originData);
 
          individualDTO.UpdateValueOriginFrom(originData.ValueOrigin);
 

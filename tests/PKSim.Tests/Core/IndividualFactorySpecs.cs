@@ -26,7 +26,7 @@ namespace PKSim.Core
       protected IParameter _weight;
       protected IParameter _bmi;
       protected IGenderRepository _genderRepository;
-      protected IDiseaseStateImplementationFactory _diseaseStateImplementationRepository;
+      protected IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
 
       protected override void Context()
       {
@@ -38,7 +38,7 @@ namespace PKSim.Core
          _reportGenerator = A.Fake<IReportGenerator>();
          _genderRepository = A.Fake<IGenderRepository>();
          _moleculeOntogenyVariabilityUpdater = A.Fake<IMoleculeOntogenyVariabilityUpdater>();
-         _diseaseStateImplementationRepository = A.Fake<IDiseaseStateImplementationFactory>();
+         _diseaseStateImplementationRepository = A.Fake<IDiseaseStateImplementationRepository>();
 
          sut = new IndividualFactory(
             _individualModelTask,
@@ -189,7 +189,7 @@ namespace PKSim.Core
          _individual = new Individual();
          _diseaseStateImplementation = A.Fake<IDiseaseStateImplementation>();
          A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
-         A.CallTo(() => _diseaseStateImplementationRepository.CreateFor(_individual)).Returns(_diseaseStateImplementation);
+         A.CallTo(() => _diseaseStateImplementationRepository.FindFor(_individual)).Returns(_diseaseStateImplementation);
       }
 
       protected override void Because()
@@ -346,7 +346,7 @@ namespace PKSim.Core
          A.CallTo(() => _diseaseStateImplementation.Validate(_originData)).Throws<OSPSuiteException>();
          A.CallTo(() => _entityBaseFactory.Create<Individual>()).Returns(_individual);
          A.CallTo(() => _entityValidator.Validate(_individual)).Returns(_validationResult);
-         A.CallTo(() => _diseaseStateImplementationRepository.CreateFor(_individual)).Returns(_diseaseStateImplementation);
+         A.CallTo(() => _diseaseStateImplementationRepository.FindFor(_individual)).Returns(_diseaseStateImplementation);
       }
 
       [Observation]

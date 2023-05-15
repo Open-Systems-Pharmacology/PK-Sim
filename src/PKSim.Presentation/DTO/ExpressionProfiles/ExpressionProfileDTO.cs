@@ -7,6 +7,7 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Presentation.DTO.DiseaseStates;
 using static OSPSuite.Core.Domain.Constants.ContainerName;
 
 namespace PKSim.Presentation.DTO.ExpressionProfiles
@@ -23,6 +24,8 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
       }
 
       public Species Species { get; set; }
+
+      public DiseaseStateDTO DiseaseState { get; } = new DiseaseStateDTO();
 
       public virtual string Category
       {

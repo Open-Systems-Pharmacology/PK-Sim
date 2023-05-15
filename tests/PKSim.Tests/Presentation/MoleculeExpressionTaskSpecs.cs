@@ -2,7 +2,6 @@ using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using PKSim.Core;
@@ -84,8 +83,6 @@ namespace PKSim.Presentation
          A.CallTo(() => _moleculeFactory.AddMoleculeTo(_individual, _expressionProfile.MoleculeName)).MustHaveHappened();
       }
 
-
-
       [Observation]
       public void should_ensure_that_expression_profile_and_simulation_subject_are_synchronized()
       {
@@ -134,4 +131,5 @@ namespace PKSim.Presentation
          _resultCommand.ShouldBeAnInstanceOf<RemoveMoleculeFromIndividualCommand>();
       }
    }
+
 }

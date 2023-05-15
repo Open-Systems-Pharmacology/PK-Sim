@@ -19,11 +19,24 @@ namespace PKSim.IntegrationTests
       protected IDiseaseStateRepository _diseaseStateRepository;
       protected DiseaseState _diseaseStateHI;
       protected IParameter _childPughScore;
-      protected Individual _individual;
       protected OriginDataParameter _originChildPughSCore;
-      private ExpressionProfile _expressionProfile;
-      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
-      protected IndividualMolecule _molecule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
+         _diseaseStateHI = _diseaseStateRepository.FindById(CoreConstants.DiseaseStates.HI);
+         _childPughScore = _diseaseStateHI.Parameter(CHILD_PUGH_SCORE);
+         _originChildPughSCore = new OriginDataParameter
+         {
+            Name = _childPughScore.Name,
+         };
+      }
+   }
+
+   public abstract class concern_for_HIDiseaseStateImplementationForIndividual : concern_for_HIDiseaseStateImplementation
+   {
+      protected Individual _individual;
 
       protected override void Context()
       {
@@ -37,13 +50,7 @@ namespace PKSim.IntegrationTests
          };
 
          _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.ICRP);
-         _moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
 
-         //use an enzyme that is known to the HI algorithm
-         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "CYP2A6");
-         _moleculeExpressionTask.AddExpressionProfile(_individual, _expressionProfile);
-         _molecule = _individual.MoleculeByName<IndividualEnzyme>(_expressionProfile.MoleculeName);
-         _molecule.ReferenceConcentration.Value = 5;
 
          _individual.OriginData.DiseaseState = _diseaseStateHI;
          _individual.OriginData.AddDiseaseStateParameter(_originChildPughSCore);
@@ -74,7 +81,41 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_A_individual : concern_for_HIDiseaseStateImplementation
+   public abstract class concern_for_HIDiseaseStateImplementationForExpressionProfile : concern_for_HIDiseaseStateImplementation
+   {
+      private ExpressionProfile _expressionProfile;
+      protected IndividualMolecule _molecule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _diseaseStateRepository = IoC.Resolve<IDiseaseStateRepository>();
+         _diseaseStateHI = _diseaseStateRepository.FindById(CoreConstants.DiseaseStates.HI);
+         _childPughScore = _diseaseStateHI.Parameter(CHILD_PUGH_SCORE);
+         _originChildPughSCore = new OriginDataParameter
+         {
+            Name = _childPughScore.Name,
+         };
+
+
+         //use an enzyme that is known to the HI algorithm
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "TOTO");
+         _molecule = _expressionProfile.Molecule;
+         _molecule.ReferenceConcentration.Value = 5;
+
+         var individual = _expressionProfile.Individual;
+         individual.OriginData.DiseaseState = _diseaseStateHI;
+         individual.OriginData.AddDiseaseStateParameter(_originChildPughSCore);
+      }
+
+      protected override void Because()
+      {
+         //applied at creation
+         sut.ApplyTo(_expressionProfile, "CYP2A6");
+      }
+   }
+
+   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_A_individual : concern_for_HIDiseaseStateImplementationForIndividual
    {
       protected override void Context()
       {
@@ -124,6 +165,15 @@ namespace PKSim.IntegrationTests
       {
          _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.64, 1e-2);
       }
+   }
+
+   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_A_expression_profile : concern_for_HIDiseaseStateImplementationForExpressionProfile
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _originChildPughSCore.Value = HIDiseaseStateImplementation.ChildPughScore.A;
+      }
 
       [Observation]
       public void should_return_the_expected_values_for_reference_concentration()
@@ -132,7 +182,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_B_individual : concern_for_HIDiseaseStateImplementation
+   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_B_individual : concern_for_HIDiseaseStateImplementationForIndividual
    {
       protected override void Context()
       {
@@ -182,6 +232,15 @@ namespace PKSim.IntegrationTests
       {
          _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.31, 1e-2);
       }
+   }
+
+   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_B_expression_profile : concern_for_HIDiseaseStateImplementationForExpressionProfile
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _originChildPughSCore.Value = HIDiseaseStateImplementation.ChildPughScore.B;
+      }
 
       [Observation]
       public void should_return_the_expected_values_for_reference_concentration()
@@ -190,7 +249,7 @@ namespace PKSim.IntegrationTests
       }
    }
 
-   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_C_individual : concern_for_HIDiseaseStateImplementation
+   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_C_individual : concern_for_HIDiseaseStateImplementationForIndividual
    {
       protected override void Context()
       {
@@ -240,7 +299,15 @@ namespace PKSim.IntegrationTests
       {
          _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(0.67, 1e-2);
       }
+   }
 
+   public class When_applying_the_HI_disease_state_algorithm_to_a_child_pugh_C_expression_profile : concern_for_HIDiseaseStateImplementationForExpressionProfile
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _originChildPughSCore.Value = HIDiseaseStateImplementation.ChildPughScore.C;
+      }
 
       [Observation]
       public void should_return_the_expected_values_for_reference_concentration()
