@@ -25,10 +25,12 @@ namespace PKSim.Core.Model
 
       public virtual Species Species => Individual?.Species;
 
+      public virtual DiseaseState DiseaseState => Individual?.OriginData?.DiseaseState;
+
       public ExpressionProfile() : base(PKSimBuildingBlockType.ExpressionProfile)
       {
       }
-      
+
       public override IReadOnlyList<T> GetAllChildren<T>()
       {
          return Individual.GetAllChildren<T>();

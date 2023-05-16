@@ -94,7 +94,7 @@ namespace PKSim.UI.Views.Parameters
             //we hide the unit for a parameter without dimension
             var unitVisible = !parameterDTO.Dimension.IsEquivalentTo(Constants.Dimension.NO_DIMENSION);
             layoutControlItemUnit.Visibility = LayoutVisibilityConvertor.FromBoolean(unitVisible);
-            layoutItemDiscreteValue.Padding = new Padding(0, unitVisible ? 2 : 0, 0, 0);
+            layoutItemDiscreteValue.Padding = new Padding(unitVisible? 0: -1, unitVisible ? 2 : -1, 0, 0);
             layoutControlItemUnit.Padding = new Padding(unitVisible ? 2 : 0, 0, 0, 0);
          }
 

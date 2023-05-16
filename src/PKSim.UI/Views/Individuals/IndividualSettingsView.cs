@@ -21,10 +21,8 @@ using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core.Extensions;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Individuals;
-using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using PKSim.UI.Extensions;
@@ -40,7 +38,6 @@ namespace PKSim.UI.Views.Individuals
       private IIndividualSettingsPresenter _presenter;
 
       private readonly ScreenBinder<IndividualSettingsDTO> _settingsBinder = new ScreenBinder<IndividualSettingsDTO>();
-      private readonly ScreenBinder<IndividualSettingsDTO> _diseaseStateBinder = new ScreenBinder<IndividualSettingsDTO>();
       private readonly ScreenBinder<IndividualSettingsDTO> _parameterBinder = new ScreenBinder<IndividualSettingsDTO>();
       private readonly GridViewBinder<CategoryParameterValueVersionDTO> _gridParameterValueVersionsBinder;
       private readonly GridViewBinder<CategoryCalculationMethodDTO> _gridCalculationMethodsBinder;
@@ -129,24 +126,11 @@ namespace PKSim.UI.Views.Individuals
          _parameterBinder.Bind(dto => dto.ParameterWeight).To(uxWeight);
          _parameterBinder.Bind(dto => dto.ParameterBMI).To(uxBMI);
 
-         _diseaseStateBinder.Bind(dto => dto.DiseaseState)
-            .To(cbDiseaseState)
-            .WithValues(dto => _presenter.AllDiseaseStatesFor(dto.Population))
-            .AndDisplays(diseaseState => diseaseState.DisplayName)
-            .Changed += () => _presenter.DiseaseStateChanged();
-
-         _diseaseStateBinder.Bind(dto => dto.DiseaseState)
-            .To(lblDescription)
-            .WithFormat(x => x.Description);
-
-         _diseaseStateBinder.Bind(dto => dto.DiseaseStateParameter)
-            .To(uxDiseaseParameter);
 
          btnMeanValues.Click += (o, e) => this.DoWithinWaitCursor(() => OnEvent(_presenter.RetrieveMeanValues));
 
          RegisterValidationFor(_settingsBinder, settingsChanged, settingsChanged);
          RegisterValidationFor(_parameterBinder, settingsChanged, settingsChanged);
-         RegisterValidationFor(_diseaseStateBinder, settingsChanged, settingsChanged);
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
@@ -215,23 +199,6 @@ namespace PKSim.UI.Views.Individuals
          settingsChanged();
       }
 
-      public void BindToDiseaseState(IndividualSettingsDTO individualSettingsDTO)
-      {
-         this.DoWithinLatch(() =>
-         {
-            //One is healthy. We show the selection if we have more than one
-            var hasDiseaseState = _presenter.AllDiseaseStatesFor(individualSettingsDTO.Population).HasAtLeastTwo();
-            layoutGroupDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(hasDiseaseState);
-            _diseaseStateBinder.BindToSource(individualSettingsDTO);
-            var diseaseStateParameter = individualSettingsDTO.DiseaseStateParameter;
-            var hasParameter = !diseaseStateParameter.IsNull();
-            if (hasParameter)
-               layoutItemDiseaseParameter.Text = diseaseStateParameter.DisplayName.FormatForLabel(checkCase: false);
-
-            layoutItemDiseaseParameter.Visibility = LayoutVisibilityConvertor.FromBoolean(hasParameter);
-         });
-      }
-
       public void BindToSubPopulation(IEnumerable<CategoryParameterValueVersionDTO> subPopulation)
       {
          _gridParameterValueVersionsBinder.BindToSource(subPopulation);
@@ -280,9 +247,15 @@ namespace PKSim.UI.Views.Individuals
          control.Height = cbSpecies.Height;
       }
 
-      public void ResizePopulationSettingsView()
+      public void AddDiseaseStateView(IView view)
+      {
+         panelDiseaseState.FillWith(view);
+      }
+
+      public void UpdateControlSizeAndVisibility(bool hasDiseaseState)
       {
          layoutItemPopulationProperties.AdjustTablePanelHeight(tablePanel, layoutControl);
+         layoutGroupDiseaseState.Visibility = LayoutVisibilityConvertor.FromBoolean(hasDiseaseState);
       }
 
       public bool HeightAndBMIVisible
@@ -324,7 +297,7 @@ namespace PKSim.UI.Views.Individuals
          layoutControl.EndUpdate();
       }
 
-      public override bool HasError => _settingsBinder.HasError || _parameterBinder.HasError || _diseaseStateBinder.HasError;
+      public override bool HasError => _settingsBinder.HasError || _parameterBinder.HasError;
 
       public override void InitializeResources()
       {
@@ -348,8 +321,6 @@ namespace PKSim.UI.Views.Individuals
          layoutControl.InitializeDisabledColors(_lookAndFeel);
          uxBMI.Enabled = false;
          cbSpecies.SetImages(_imageListRetriever);
-         layoutItemDiseaseState.Text = PKSimConstants.UI.Select.FormatForLabel();
-         lblDescription.AsDescription();
          btnMeanValues.Margin = new Padding(btnMeanValues.Margin.Left, uxHeight.Margin.Top, btnMeanValues.Margin.Right, btnMeanValues.Margin.Bottom);
          tablePanel.LabelVertAlignment = LabelVertAlignment.Center;
       }

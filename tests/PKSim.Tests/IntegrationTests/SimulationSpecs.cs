@@ -33,6 +33,8 @@ namespace PKSim.IntegrationTests
       protected Protocol _protocol;
       protected IPKAnalysesTask _pkAnalysesTask;
       protected SimulationRunOptions _simulationRunOptions;
+      protected ExpressionProfile _expressionProfile;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       public override void GlobalContext()
       {
@@ -40,6 +42,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         _moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "CYP2A6");
          _pkAnalysesTask = IoC.Resolve<IPKAnalysesTask>();
          _simulationRunOptions = new SimulationRunOptions();
       }
@@ -108,7 +112,7 @@ namespace PKSim.IntegrationTests
          _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.BSA).ShouldNotBeNull();
       }
    }
-
+   
    public class When_creating_an_individual_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_IndividualSimulation
    {
       public override void GlobalContext()

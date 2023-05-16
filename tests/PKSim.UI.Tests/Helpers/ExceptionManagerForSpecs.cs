@@ -1,7 +1,7 @@
 using System;
 using OSPSuite.Utility.Exceptions;
 
-namespace PKSim.UI.Tests.Helpers
+namespace PKSim.UI.Helpers
 {
    public class ExceptionManagerForSpecs : IExceptionManager
    {

@@ -15,6 +15,7 @@ namespace PKSim.UI.Starter
             scan.WithConvention<PKSimRegistrationConvention>();
             scan.IncludeNamespaceContainingType<Views.ExpressionProfiles.CreateExpressionProfileView>();
             scan.IncludeNamespaceContainingType<Views.Individuals.CreateIndividualView>();
+            scan.IncludeNamespaceContainingType<Views.DiseaseStates.DiseaseStateSelectionView>();
             scan.IncludeNamespaceContainingType<Views.Parameters.ParameterGroupsView>();
             scan.IncludeNamespaceContainingType<Views.ProteinExpression.ProteinExpressionsView>();
          });

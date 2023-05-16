@@ -47,7 +47,7 @@ namespace PKSim.Core.Model
       private readonly IReportGenerator _reportGenerator;
       private readonly IMoleculeParameterVariabilityCreator _moleculeParameterVariabilityCreator;
       private readonly IMoleculeOntogenyVariabilityUpdater _moleculeOntogenyVariabilityUpdater;
-      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
+      private readonly IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
       private Queue<Gender> _genderQueue;
       private const int _maxIterations = 100;
 
@@ -63,7 +63,7 @@ namespace PKSim.Core.Model
          IReportGenerator reportGenerator,
          IMoleculeParameterVariabilityCreator moleculeParameterVariabilityCreator,
          IMoleculeOntogenyVariabilityUpdater moleculeOntogenyVariabilityUpdater,
-         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
+         IDiseaseStateImplementationRepository diseaseStateImplementationRepository)
       {
          _objectBaseFactory = objectBaseFactory;
          _progressManager = progressManager;
@@ -76,7 +76,7 @@ namespace PKSim.Core.Model
          _reportGenerator = reportGenerator;
          _moleculeParameterVariabilityCreator = moleculeParameterVariabilityCreator;
          _moleculeOntogenyVariabilityUpdater = moleculeOntogenyVariabilityUpdater;
-         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
+         _diseaseStateImplementationRepository = diseaseStateImplementationRepository;
       }
 
       public Task<RandomPopulation> CreateFor(RandomPopulationSettings populationSettings, CancellationToken cancellationToken, int? seed = null, bool addMoleculeParametersVariability = true)
@@ -90,7 +90,7 @@ namespace PKSim.Core.Model
                fllUpGenderQueueBasedOn(populationSettings);
                progressUpdater.Initialize(populationSettings.NumberOfIndividuals, PKSimConstants.UI.CreatingPopulation);
 
-               var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(populationSettings.BaseIndividual);
+               var diseaseStateImplementation = _diseaseStateImplementationRepository.FindFor(populationSettings.BaseIndividual);
                //the base individual is used to retrieve the default values. 
                var baseIndividual = diseaseStateImplementation.CreateBaseIndividualForPopulation(populationSettings.BaseIndividual);
 
@@ -242,7 +242,7 @@ namespace PKSim.Core.Model
       {
          bool success = true;
          var originData = currentIndividual.OriginData;
-         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(originData.DiseaseState);
+         var diseaseStateImplementation = _diseaseStateImplementationRepository.FindFor(originData.DiseaseState);
          uint numberOfTry = 0;
          do
          {

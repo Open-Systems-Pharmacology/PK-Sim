@@ -70,6 +70,5 @@ namespace PKSim.UI.Views.ExpressionProfiles
       }
 
       protected override void OkClicked() => _presenter.Save();
-
    }
 }

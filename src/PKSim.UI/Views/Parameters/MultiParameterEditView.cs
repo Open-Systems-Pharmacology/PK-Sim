@@ -259,6 +259,11 @@ namespace PKSim.UI.Views.Parameters
          }
       }
 
+      public bool AllowVerticalScrolling
+      {
+         set => gridView.VertScrollVisibility = value ? ScrollVisibility.Auto : ScrollVisibility.Never;
+      }
+
       public void SaveEditor()
       {
          gridView.PostEditor();
@@ -312,7 +317,7 @@ namespace PKSim.UI.Views.Parameters
          gridParameters.RefreshDataSource();
       }
 
-      public int OptimalHeight => gridView.OptimalHeight;
+      public int OptimalHeight => gridView.OptimalHeight ;
 
       public bool AllowMultiSelect
       {

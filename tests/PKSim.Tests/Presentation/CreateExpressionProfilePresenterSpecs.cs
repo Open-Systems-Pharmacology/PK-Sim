@@ -9,9 +9,12 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Presenters.DiseaseStates;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Views.ExpressionProfiles;
 
@@ -27,6 +30,9 @@ namespace PKSim.Presentation
       protected ExpressionProfileDTO _expressionProfileDTO;
       protected ExpressionProfile _updatedExpressionProfile;
       protected IDialogCreator _dialogCreator;
+      private IDiseaseStateSelectionPresenter _diseaseStateSelectionPresenter;
+      private IDiseaseStateRepository _diseaseStateRepository;
+      private IDiseaseStateUpdater _diseaseStateUpdater;
 
       protected override void Context()
       {
@@ -35,7 +41,13 @@ namespace PKSim.Presentation
          _expressionProfileDTOMapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
          _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         sut = new CreateExpressionProfilePresenter(_view, _expressionProfileFactory, _expressionProfileDTOMapper, _moleculeParameterTask, _dialogCreator);
+         _diseaseStateSelectionPresenter = A.Fake<IDiseaseStateSelectionPresenter>();
+         _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
+         _diseaseStateUpdater = A.Fake<IDiseaseStateUpdater>();
+
+         sut = new CreateExpressionProfilePresenter(
+            _view, _expressionProfileFactory, _expressionProfileDTOMapper, _moleculeParameterTask, 
+            _dialogCreator, _diseaseStateSelectionPresenter,_diseaseStateRepository, _diseaseStateUpdater);
 
          _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
          _updatedExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
@@ -134,9 +146,12 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _expressionProfileDTO.Category = "A";
+         _expressionProfileDTO.MoleculeName = "A";
          _expressionProfileDTO.Species = new Species().WithName("B");
          _expressionProfileDTO.Category = "C";
+
+         A.CallTo(() => _expressionProfileFactory.Create<IndividualEnzyme>(_expressionProfileDTO.Species, _expressionProfileDTO.MoleculeName))
+            .Returns(_updatedExpressionProfile);
          sut.Create<IndividualEnzyme>();
       }
 

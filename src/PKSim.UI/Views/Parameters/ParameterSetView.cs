@@ -18,7 +18,6 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.UI;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;

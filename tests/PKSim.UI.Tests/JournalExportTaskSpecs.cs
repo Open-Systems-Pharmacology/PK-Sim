@@ -1,16 +1,15 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility;
-using DevExpress.XtraRichEdit;
+﻿using DevExpress.XtraRichEdit;
 using DevExpress.XtraRichEdit.API.Native;
 using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.UI.Services;
+using OSPSuite.Utility;
 
-
-namespace PKSim.UI.Tests
+namespace PKSim.UI
 {
    public abstract class concern_for_JournalExportTask : ContextSpecification<JournalExportTask>
    {

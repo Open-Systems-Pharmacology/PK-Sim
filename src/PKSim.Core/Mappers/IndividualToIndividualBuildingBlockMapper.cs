@@ -95,6 +95,7 @@ namespace PKSim.Core.Mappers
          buildingBlock.Icon = individual.Icon;
 
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.DiseaseState, individual.OriginData.DiseaseState?.DisplayName);
+         individual.OriginData.DiseaseStateParameters.Each(x => addOriginDataToBuildingBlock(buildingBlock, x.Name, x));
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Species, individual.Species?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Gender, individual.OriginData.Gender?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Age, individual.OriginData.Age);
@@ -124,11 +125,6 @@ namespace PKSim.Core.Mappers
          addOriginDataToBuildingBlock(buildingBlock, keyForOriginDataParameter(key, parameter), $"{parameter.Value} {parameter.Unit}");
       }
 
-      private string keyForOriginDataParameter(string key, OriginDataParameter parameter)
-      {
-         return string.IsNullOrEmpty(parameter.Name) ? key : parameter.Name;
-      }
-
       private void addOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, string key, string value)
       {
          if (string.IsNullOrEmpty(value))
@@ -136,5 +132,7 @@ namespace PKSim.Core.Mappers
 
          buildingBlock.OriginData.Add(new ExtendedProperty<string> {Name = key, Value = value});
       }
+
+      private string keyForOriginDataParameter(string key, OriginDataParameter parameter) => string.IsNullOrEmpty(parameter.Name) ? key : parameter.Name;
    }
 }

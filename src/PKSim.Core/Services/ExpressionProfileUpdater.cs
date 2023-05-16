@@ -65,7 +65,7 @@ namespace PKSim.Core.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly IExecutionContext _executionContext;
-      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
+      private readonly IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
 
       public ExpressionProfileUpdater(
          IParameterSetUpdater parameterSetUpdater,
@@ -76,7 +76,7 @@ namespace PKSim.Core.Services
          ILazyLoadTask lazyLoadTask,
          IParameterIdUpdater parameterIdUpdater,
          IExecutionContext executionContext,
-         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
+         IDiseaseStateImplementationRepository diseaseStateImplementationRepository)
       {
          _parameterSetUpdater = parameterSetUpdater;
          _containerTask = containerTask;
@@ -86,7 +86,7 @@ namespace PKSim.Core.Services
          _lazyLoadTask = lazyLoadTask;
          _parameterIdUpdater = parameterIdUpdater;
          _executionContext = executionContext;
-         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
+         _diseaseStateImplementationRepository = diseaseStateImplementationRepository;
       }
 
       public ICommand UpdateExpressionFromQuery(ExpressionProfile expressionProfile, QueryExpressionResults queryResults)
@@ -144,16 +144,6 @@ namespace PKSim.Core.Services
          var (sourceMolecule, sourceIndividual) = expressionProfile;
          // ExpressionProfile => SimulationSubject, we want to make sure that the parameters in simulation subject are linked to their expression profile origin parameters
          synchronizeExpressionProfiles(sourceMolecule, sourceIndividual, moleculeInIndividual, simulationSubject, updateParameterOriginId: true);
-
-         //Once the synchronization was performed, apply changes to simulation subject molecules based on disease state
-         updateMoleculeParametersForDiseaseState(simulationSubject, moleculeInIndividual);
-      }
-
-      private void updateMoleculeParametersForDiseaseState(ISimulationSubject simulationSubject, IndividualMolecule moleculeInIndividual)
-      {
-         var individual = simulationSubject.Individual;
-         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
-         diseaseStateImplementation.ApplyTo(individual, moleculeInIndividual);
       }
 
       public void SynchronizeExpressionProfileWithSimulationSubject(ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)

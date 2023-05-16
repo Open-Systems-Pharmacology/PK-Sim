@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Parameters;
 
@@ -19,22 +20,19 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly IParameterToParameterDTOMapper _parameterMapper;
       private readonly ISubPopulationToSubPopulationDTOMapper _subPopulationDTOMapper;
       private readonly ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodDTOMapper;
-      private readonly IDiseaseStateRepository _diseaseStateRepository;
-      private readonly IOriginDataParameterToParameterDTOMapper _originDataParameterMapper;
+      private readonly IDiseaseStateUpdater _diseaseStateUpdater;
 
       public IndividualToIIndividualSettingsDTOMapper(
          IParameterToParameterDTOMapper parameterMapper,
          ISubPopulationToSubPopulationDTOMapper subPopulationDTOMapper,
          ICalculationMethodToCategoryCalculationMethodDTOMapper calculationMethodDTOMapper,
-         IDiseaseStateRepository diseaseStateRepository,
-         IOriginDataParameterToParameterDTOMapper originDataParameterMapper
+         IDiseaseStateUpdater diseaseStateUpdater
       )
       {
          _parameterMapper = parameterMapper;
          _subPopulationDTOMapper = subPopulationDTOMapper;
          _calculationMethodDTOMapper = calculationMethodDTOMapper;
-         _diseaseStateRepository = diseaseStateRepository;
-         _originDataParameterMapper = originDataParameterMapper;
+         _diseaseStateUpdater = diseaseStateUpdater;
       }
 
       public IndividualSettingsDTO MapFrom(Individual individual)
@@ -47,11 +45,9 @@ namespace PKSim.Presentation.DTO.Mappers
             SubPopulation = _subPopulationDTOMapper.MapFrom(originData.SubPopulation),
             Gender = originData.Gender,
             CalculationMethods = originData.AllCalculationMethods().MapAllUsing(_calculationMethodDTOMapper),
-            DiseaseState = originData.DiseaseState ?? _diseaseStateRepository.HealthyState,
-            DiseaseStateParameter = originData.DiseaseStateParameters
-               .Select(_originDataParameterMapper.MapFrom)
-               .FirstOrDefault() ?? new NullParameterDTO()
          };
+
+         _diseaseStateUpdater.UpdateDiseaseStateDTO(individualDTO.DiseaseState, originData);
 
          individualDTO.UpdateValueOriginFrom(originData.ValueOrigin);
 
