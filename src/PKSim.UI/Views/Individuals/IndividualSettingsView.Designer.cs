@@ -43,6 +43,7 @@ namespace PKSim.UI.Views.Individuals
          this.uxAge = new PKSim.UI.Views.Parameters.UxParameterDTOEdit();
          this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.panelDiseaseState = new OSPSuite.UI.Controls.UxPanelControl();
          this.tablePanel = new DevExpress.Utils.Layout.TablePanel();
          this.labelValueOrigin = new DevExpress.XtraEditors.LabelControl();
          this.labelBMI = new DevExpress.XtraEditors.LabelControl();
@@ -66,9 +67,8 @@ namespace PKSim.UI.Views.Individuals
          this.layoutControlGroupPopulationParameters = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemPopulationProperties = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupDiseaseState = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.emptySpaceItem = new DevExpress.XtraLayout.EmptySpaceItem();
-         this.panelDiseaseState = new OSPSuite.UI.Controls.UxPanelControl();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.emptySpaceItem = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridCalculationMethods)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridViewCalculationMethods)).BeginInit();
@@ -77,6 +77,7 @@ namespace PKSim.UI.Views.Individuals
          ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.panelDiseaseState)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          this.tablePanel.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.cbPopulation.Properties)).BeginInit();
@@ -91,9 +92,8 @@ namespace PKSim.UI.Views.Individuals
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupPopulationParameters)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPopulationProperties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupDiseaseState)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelDiseaseState)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).BeginInit();
          this.SuspendLayout();
          // 
          // gridCalculationMethods
@@ -195,6 +195,13 @@ namespace PKSim.UI.Views.Individuals
          this.layoutControl.Size = new System.Drawing.Size(638, 730);
          this.layoutControl.TabIndex = 1;
          this.layoutControl.Text = "layoutControl1";
+         // 
+         // panelDiseaseState
+         // 
+         this.panelDiseaseState.Location = new System.Drawing.Point(24, 493);
+         this.panelDiseaseState.Name = "panelDiseaseState";
+         this.panelDiseaseState.Size = new System.Drawing.Size(590, 63);
+         this.panelDiseaseState.TabIndex = 20;
          // 
          // tablePanel
          // 
@@ -461,21 +468,6 @@ namespace PKSim.UI.Views.Individuals
          this.layoutGroupDiseaseState.Name = "layoutGroupDiseaseState";
          this.layoutGroupDiseaseState.Size = new System.Drawing.Size(618, 112);
          // 
-         // emptySpaceItem
-         // 
-         this.emptySpaceItem.AllowHotTrack = false;
-         this.emptySpaceItem.Location = new System.Drawing.Point(0, 560);
-         this.emptySpaceItem.Name = "emptySpaceItem";
-         this.emptySpaceItem.Size = new System.Drawing.Size(618, 150);
-         this.emptySpaceItem.TextSize = new System.Drawing.Size(0, 0);
-         // 
-         // panelDiseaseState
-         // 
-         this.panelDiseaseState.Location = new System.Drawing.Point(24, 493);
-         this.panelDiseaseState.Name = "panelDiseaseState";
-         this.panelDiseaseState.Size = new System.Drawing.Size(590, 63);
-         this.panelDiseaseState.TabIndex = 20;
-         // 
          // layoutControlItem1
          // 
          this.layoutControlItem1.Control = this.panelDiseaseState;
@@ -484,6 +476,14 @@ namespace PKSim.UI.Views.Individuals
          this.layoutControlItem1.Size = new System.Drawing.Size(594, 67);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
+         // 
+         // emptySpaceItem
+         // 
+         this.emptySpaceItem.AllowHotTrack = false;
+         this.emptySpaceItem.Location = new System.Drawing.Point(0, 560);
+         this.emptySpaceItem.Name = "emptySpaceItem";
+         this.emptySpaceItem.Size = new System.Drawing.Size(618, 150);
+         this.emptySpaceItem.TextSize = new System.Drawing.Size(0, 0);
          // 
          // IndividualSettingsView
          // 
@@ -501,6 +501,7 @@ namespace PKSim.UI.Views.Individuals
          ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.panelDiseaseState)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
          this.tablePanel.ResumeLayout(false);
          this.tablePanel.PerformLayout();
@@ -516,9 +517,8 @@ namespace PKSim.UI.Views.Individuals
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroupPopulationParameters)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemPopulationProperties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupDiseaseState)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelDiseaseState)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).EndInit();
          this.ResumeLayout(false);
 
       }

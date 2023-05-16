@@ -15,14 +15,11 @@ using static PKSim.Core.CoreConstants.Organ;
 using static PKSim.Core.CoreConstants.Parameters;
 using HIFactors = OSPSuite.Utility.Collections.Cache<double, double>;
 using IFormulaFactory = OSPSuite.Core.Domain.Formulas.IFormulaFactory;
-using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
 {
    public class HIDiseaseStateImplementation : AbstractDiseaseStateImplementation
    {
-      private readonly IParameterFactory _parameterFactory;
-
       public static class ChildPughScore
       {
          public static double A = 0;
@@ -42,10 +39,10 @@ namespace PKSim.Core.Services
       private static readonly HIFactors _hepaticFlowScalingFactor = createFactors(1.3, 2.3, 3.4);
       private static readonly HIFactors _hepaticVolumeScalingFactor = createFactors(0.69, 0.55, 0.28);
       private static readonly HIFactors _renalFlowScalingFactor = createFactors(0.88, 0.65, 0.48);
-      private static readonly HIFactors _cardiacIndexDiseaseFactor = createFactors(1.11, 1.27, 1.36);
+      private static readonly HIFactors _cardiacIndexScalingFactor = createFactors(1.11, 1.27, 1.36);
       private static readonly HIFactors _gfrScalingFactor = createFactors(1, 0.7, 0.36);
-      private static readonly HIFactors _albuminFactor = createFactors(0.81, 0.68, 0.5);
-      private static readonly HIFactors _agpFactor = createFactors(0.6, 0.56, 0.3);
+      private static readonly HIFactors _albuminScalingFactor = createFactors(0.81, 0.68, 0.5);
+      private static readonly HIFactors _agpScalingFactor = createFactors(0.6, 0.56, 0.3);
       private static readonly HIFactors _hematocritScalingFactor = createFactors(0.92, 0.88, 0.83);
 
       private static readonly Cache<string, HIFactors> _moleculeScalingFactorEdginton = new()
@@ -72,14 +69,12 @@ namespace PKSim.Core.Services
       private readonly IDimension _ageDimension;
 
       public HIDiseaseStateImplementation(IDimensionRepository dimensionRepository,
-         IParameterFactory parameterFactory,
          IValueOriginRepository valueOriginRepository,
          IFormulaFactory formulaFactory,
          IIndividualFactory individualFactory,
          IContainerTask containerTask,
          IParameterSetUpdater parameterSetUpdater) : base(valueOriginRepository, formulaFactory, individualFactory, containerTask, parameterSetUpdater, CoreConstants.DiseaseStates.HI)
       {
-         _parameterFactory = parameterFactory;
          _ageDimension = dimensionRepository.AgeInYears;
       }
 
@@ -120,8 +115,8 @@ namespace PKSim.Core.Services
       {
          var score = childPughScoreFor(individual);
          var organism = individual.Organism;
-         updateParameterFunc(new(organism.Parameter(ONTOGENY_FACTOR_ALBUMIN), _albuminFactor[score]));
-         updateParameterFunc(new(organism.Parameter(ONTOGENY_FACTOR_AGP), _agpFactor[score]));
+         updateParameterFunc(new(organism.Parameter(ONTOGENY_FACTOR_ALBUMIN), _albuminScalingFactor[score]));
+         updateParameterFunc(new(organism.Parameter(ONTOGENY_FACTOR_AGP), _agpScalingFactor[score]));
       }
 
       private void updateGFR(Individual individual, Action<ParameterUpdate> updateParameterFunc)
@@ -159,7 +154,7 @@ namespace PKSim.Core.Services
          var portal_factor = _portalFlowScalingFactor[score];
          var liver_factor = _hepaticFlowScalingFactor[score];
          var kidney_factor = _renalFlowScalingFactor[score];
-         var ci_factor = _cardiacIndexDiseaseFactor[score];
+         var ci_factor = _cardiacIndexScalingFactor[score];
 
          //update liver volume so that we get the correct diseases blood flow as Q_liver_HI = f(V_liver)
          updateParameterFunc(new(volumeLiver, _hepaticVolumeScalingFactor[score]));
@@ -177,7 +172,7 @@ namespace PKSim.Core.Services
          otherOrgans.Each(x => updateBloodFlowSpec(x, otherOrganFactor));
       }
 
-   private Action<string, double> updateBloodFlowSpecDef(Action<ParameterUpdate> updateParameterFunc, IContainer organism) => (organName, factor) =>
+      private Action<string, double> updateBloodFlowSpecDef(Action<ParameterUpdate> updateParameterFunc, IContainer organism) => (organName, factor) =>
       {
          var parameter = organism.Container(organName).Parameter(SPECIFIC_BLOOD_FLOW_RATE);
          updateParameterFunc(new(parameter, factor));
@@ -198,7 +193,7 @@ namespace PKSim.Core.Services
          var ageInYears = _ageDimension.BaseUnitValueToUnitValue(_ageDimension.Unit(Years), originData.Age.Value);
          if (ageInYears >= 18)
             return (true, string.Empty);
-         
+
          return (false, PKSimConstants.Error.HIOnlyAvailableForAdult);
       }
 
