@@ -6,7 +6,7 @@ using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 using PKSim.UI.UICommands;
 
-namespace PKSim.UI.Tests
+namespace PKSim.UI
 {
    public abstract class concern_for_ExitCommand : ContextSpecification<IExitCommand>
    {

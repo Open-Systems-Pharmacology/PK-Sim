@@ -9,13 +9,12 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Mappers;
-using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
 using PKSim.UI.Starter;
 
-namespace PKSim.UI.UI.StarterTests
+namespace PKSim.UI.StarterTests
 {
    public class concern_for_ApplicationStartup : StaticContextSpecification
    {
@@ -23,7 +22,7 @@ namespace PKSim.UI.UI.StarterTests
 
       protected override void Context()
       {
-         SynchronizationContext.SetSynchronizationContext(new When_resolving_the_individual_presenter.TestSynchronizationContext());
+         SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
          IoC.InitializeWith(new CastleWindsorContainer());
 
          // To initialize the local container, the application starter will take some components from the
@@ -114,10 +113,6 @@ namespace PKSim.UI.UI.StarterTests
          {
             _mapper.ShouldBeAnInstanceOf<ExpressionProfileToExpressionProfileBuildingBlockMapper>();
          }
-      }
-
-      public class TestSynchronizationContext : SynchronizationContext
-      {
       }
    }
 }

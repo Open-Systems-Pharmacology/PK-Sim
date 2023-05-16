@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using PKSim.Presentation.DTO.DiseaseStates;
-using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Views.DiseaseStates;
 
 namespace PKSim.Presentation.Presenters.DiseaseStates

@@ -1,11 +1,10 @@
 ﻿using System.Drawing;
+using DevExpress.XtraEditors.ColorPickEditControl;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using DevExpress.XtraEditors.ColorPickEditControl;
 using OSPSuite.UI.Controls;
 
-
-namespace PKSim.UI.Tests
+namespace PKSim.UI
 {
    // this test is located here to take advantage of the dedicated UI Test project which does not exist in SBSuite.Core
    public abstract class concern_for_CustomColorArrayManager : ContextSpecification<CustomColorArrayManager>
