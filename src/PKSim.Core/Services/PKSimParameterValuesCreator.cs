@@ -83,14 +83,14 @@ namespace PKSim.Core.Services
       private ParameterValue getOrCreateParameterValueFor(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
-         var parameterStartValue = _defaultValues[parameterPath];
-         if (parameterStartValue != null)
-            return parameterStartValue;
+         var parameterValue = _defaultValues[parameterPath];
+         if (parameterValue != null)
+            return parameterValue;
 
-         parameterStartValue = _parameterValuesCreator.CreateParameterValue(parameterPath, parameter);
-         _defaultValues.Add(parameterStartValue);
+         parameterValue = _parameterValuesCreator.CreateParameterValue(parameterPath, parameter);
+         _defaultValues.Add(parameterValue);
 
-         return parameterStartValue;
+         return parameterValue;
       }
    }
 }
