@@ -8,7 +8,7 @@ namespace PKSim.Presentation.DTO.DiseaseStates
       public DiseaseState Value { get; set; }
 
       /// <summary>
-      /// For now, we assume only one disease state parameters. We can make the view more generic if this is ever required
+      /// For now, we assume only one disease state parameter. We can make the view more generic if this is ever required
       /// </summary>
       public IParameterDTO Parameter { get; set; }
 
