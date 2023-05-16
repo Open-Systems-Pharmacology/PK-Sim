@@ -75,12 +75,12 @@ namespace PKSim.Core.Services
 
       private ParameterValue trySetValue(IParameter parameter)
       {
-         var parameterStartValue = getOrCreateStartValueFor(parameter);
-         parameterStartValue.StartValue = parameter.Value;
-         return parameterStartValue;
+         var parameterValue = getOrCreateParameterValueFor(parameter);
+         parameterValue.Value = parameter.Value;
+         return parameterValue;
       }
 
-      private ParameterValue getOrCreateStartValueFor(IParameter parameter)
+      private ParameterValue getOrCreateParameterValueFor(IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var parameterStartValue = _defaultValues[parameterPath];
