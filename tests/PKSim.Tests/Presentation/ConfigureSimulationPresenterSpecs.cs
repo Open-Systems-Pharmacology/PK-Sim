@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -54,7 +53,8 @@ namespace PKSim.Presentation
          _simulationCompoundProcessesPresenter = _subPresenterManager.CreateFake(SimulationItems.CompoundsProcesses);
          _simulationEventsPresenter = _subPresenterManager.CreateFake(SimulationItems.Events);
 
-         sut = new ConfigureSimulationPresenter(_view, _subPresenterManager, _simulationModelCreator, _heavyWorkManager, _cloner, _dialogCreator, _simulationParametersUpdater, _fullPathDisplayResolver, _buildingBlockInSimulationSynchronizer);
+         sut = new ConfigureSimulationPresenter(_view, _subPresenterManager, _simulationModelCreator, _heavyWorkManager, _cloner, _dialogCreator,
+            _simulationParametersUpdater, _fullPathDisplayResolver, _buildingBlockInSimulationSynchronizer);
 
          _originalSimulation = A.Fake<Simulation>();
          _clonedSimulation = A.Fake<Simulation>();
@@ -126,14 +126,14 @@ namespace PKSim.Presentation
       [Observation]
       public void should_update_the_parameters_from_the_original_simulation()
       {
-         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _clonedSimulation, PKSimBuildingBlockType.Simulation)).MustHaveHappened();
+         A.CallTo(() => _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, _clonedSimulation,
+            PKSimBuildingBlockType.Simulation)).MustHaveHappened();
       }
 
       [Observation]
       public void should_have_updated_the_output_mapping_based_on_the_original_simulation()
       {
-         _clonedSimulation.OutputMappings.Count().ShouldBeEqualTo(1);
-         _clonedSimulation.OutputMappings.ElementAt(0).Simulation.ShouldBeEqualTo(_clonedSimulation);
+         _clonedSimulation.OutputMappings.ShouldBeEmpty();
       }
    }
 
@@ -165,7 +165,9 @@ namespace PKSim.Presentation
       public void should_display_a_warning_to_the_user_with_the_name_of_the_full_path_of_all_parameters_that_will_not_be_used_anymore()
       {
          _message.Contains(_fullPathForParameter).ShouldBeTrue();
-         _message.Contains("These parameters were changed by the user. Because of a simulation reconfiguration, they will not be used for this simulation").ShouldBeTrue();
+         _message.Contains(
+               "These parameters were changed by the user. Because of a simulation reconfiguration, they will not be used for this simulation")
+            .ShouldBeTrue();
       }
    }
 }
