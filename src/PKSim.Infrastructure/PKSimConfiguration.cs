@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using Microsoft.Win32;
 using OSPSuite.Assets;
 using OSPSuite.Core;
@@ -29,7 +30,7 @@ namespace PKSim.Infrastructure
       public override string WatermarkOptionLocation { get; } = "Options -> Settings -> Application";
       public override string ApplicationFolderPathName { get; } = CoreConstants.APPLICATION_FOLDER_PATH;
 
-      public PKSimConfiguration()
+      public PKSimConfiguration() : base(Assembly.GetExecutingAssembly())
       {
          createDefaultSettingsFolder();
          PKSimDbPath = LocalOrAllUsersPathForFile(CoreConstants.PK_SIM_DB_FILE);
