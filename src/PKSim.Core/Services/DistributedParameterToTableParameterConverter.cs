@@ -232,7 +232,7 @@ namespace PKSim.Core.Services
 
       private TableFormula createMoleculeOntogenyTableFormula(IParameter ontogenyFactor, OriginData originData, IReadOnlyList<Sample> allOntogenies)
       {
-         //null is ok here. It's the default value for formula in ParameterStartValue
+         //null is ok here. It's the default value for formula in ParameterValue
          if (allOntogenies.Count == 0)
             return null;
 

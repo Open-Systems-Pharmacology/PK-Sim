@@ -72,7 +72,7 @@ namespace PKSim.IntegrationTests
       public void should_have_created_one_entry_for_the_changed_parameter_in_the_parameter_start_value_building_block()
       {
          _parameterValues[_parameterPath].ShouldNotBeNull();
-         _parameterValues[_parameterPath].StartValue.ShouldBeEqualTo(10);
+         _parameterValues[_parameterPath].Value.ShouldBeEqualTo(10);
       }
 
       [Observation]
