@@ -144,32 +144,28 @@ namespace PKSim.Core.Services
          var otherOrgans = new[] {BONE, FAT, GONADS, HEART, MUSCLE, SKIN};
          var volumeLiver = organism.Container(LIVER).Parameter(VOLUME);
 
-         var Q_liver = bloodFlow(LIVER);
-
-         //update liver volume so that we get the correct diseases blood flow as Q_liver_HI = f(V_liver)
-         updateParameterFunc(new(volumeLiver, _hepaticVolumeScalingFactor[score]));
-
-         var Q_liver_HI = bloodFlow(LIVER);
-
          //Sum of all healthy portal blood flow + Liver and kidney
          var Q_portal = portalOrgans.Sum(bloodFlow);
          var Q_other = otherOrgans.Sum(bloodFlow);
          var Q_brain = bloodFlow(BRAIN);
          var Q_kidney = bloodFlow(KIDNEY);
+         var Q_liver = bloodFlow(LIVER);
 
          var portal_factor = _portalFlowScalingFactor[score];
          var liver_factor = _hepaticFlowScalingFactor[score];
          var kidney_factor = _renalFlowScalingFactor[score];
          var ci_factor = _cardiacIndexScalingFactor[score];
 
+         //update liver volume so that we get the correct diseases blood flow as Q_liver_HI = f(V_liver)
+         updateParameterFunc(new(volumeLiver, _hepaticVolumeScalingFactor[score]));
 
-     
+         var Q_liver_HI = bloodFlow(LIVER);
+
          //update all blood flows specs
          portalOrgans.Each(x => updateBloodFlowSpec(x, portal_factor));
          updateBloodFlowSpec(LIVER, liver_factor);
          updateBloodFlowSpec(KIDNEY, kidney_factor);
 
-       
          //retrieve the scaling factor based on publication and github entry
          //see https://github.com/Open-Systems-Pharmacology/Forum/discussions/1341
          var otherOrganDiseaseFactor = (ci_factor * (Q_other + Q_portal + Q_kidney + Q_liver + Q_brain) - (Q_brain + Q_portal * portal_factor + Q_liver_HI * liver_factor + Q_kidney * kidney_factor)) / Q_other;
