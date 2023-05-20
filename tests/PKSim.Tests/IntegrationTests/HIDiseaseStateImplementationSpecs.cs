@@ -71,7 +71,7 @@ namespace PKSim.IntegrationTests
          _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit = 8.65;
          _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit = 20;
          //HCT parameter is a discrete distribution parameter. In order to update the value properly, we need to set the mean value
-         _individual.Organism.Parameter(HCT).DowncastTo<IDistributedParameter>().MeanParameter.Value = 0.43;
+         _individual.Organism.Parameter(HCT).DowncastTo<IDistributedParameter>().MeanParameter.Value = 0.45;
       }
 
       protected override void Because()
@@ -126,44 +126,45 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_values_for_specific_blood_flows()
       {
-         _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(15.44, 1e-2);
-         _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(35.91, 1e-2);
-         _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(25.22, 1e-2);
-         _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(32.04, 1e-2);
-         _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(13.67, 1e-2);
-         _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(23.32, 1e-2);
-         _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(266.38, 1e-2);
-         _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(4.63, 1e-2);
-         _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.67, 1e-2);
-         _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(13.58, 1e-2);
-         _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(105.10, 1e-2);
-         _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(5.77, 1e-2);
-         _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(14.58, 1e-2);
+         _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(15.44, 1e-3);
+         _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(35.91, 1e-3);
+         _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(25.22, 1e-3);
+         _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(32.04, 1e-3);
+         _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(13.67, 1e-3);
+         _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(28.88, 1e-3);
+         _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(266.38, 1e-3);
+         //for other blood flow, we have some rounding error due to that we are calculating with 2 digits in the excel file
+         _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(4.539, 1e-2);
+         _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.598, 1e-2);
+         _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(13.28, 1e-2);
+         _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(102.71, 1e-2);
+         _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(5.63, 1e-2);
+         _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(14.25, 1e-2);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_ontogeny_factor_albumin_and_glycoprotein()
       {
-         _individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN).ValueInDisplayUnit.ShouldBeEqualTo(0.81, 1e-2);
-         _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.6, 1e-2);
+         _individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN).ValueInDisplayUnit.ShouldBeEqualTo(0.81, 1e-3);
+         _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.6, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_gfr_spec()
       {
-         _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 1, 1e-2);
+         _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 1, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_hct()
       {
-         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.395, 1e-2);
+         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.3897, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_volumes()
       {
-         _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.64, 1e-2);
+         _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.642, 1e-3);
       }
    }
 
@@ -178,7 +179,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_values_for_reference_concentration()
       {
-         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.89, 1e-2);
+         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.89, 1e-3);
       }
    }
 
@@ -193,44 +194,45 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_values_for_specific_blood_flows()
       {
-         _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(13.90, 1e-2);
-         _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(32.32, 1e-2);
-         _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(22.70, 1e-2);
-         _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(28.84, 1e-2);
-         _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(12.30, 1e-2);
-         _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(41.26, 1e-2);
-         _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(196.76, 1e-2);
-         _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(6.04, 1e-2);
-         _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(4.79, 1e-2);
-         _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(17.69, 1e-2);
-         _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(136.86, 1e-2);
-         _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(7.51, 1e-2);
-         _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(18.99, 1e-2);
+         _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(13.90, 1e-3);
+         _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(32.32, 1e-3);
+         _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(22.70, 1e-3);
+         _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(28.84, 1e-3);
+         _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(12.30, 1e-3);
+         _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(41.964, 1e-3);
+         _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(196.76, 1e-3);
+         //for other blood flow, we have some rounding error due to that we are calculating with 2 digits in the excel file
+         _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(6.03, 1e-2);
+         _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(4.78, 1e-2);
+         _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(17.66, 1e-2);
+         _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(136.60, 1e-2);
+         _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(7.49, 1e-2);
+         _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(18.95, 1e-2);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_ontogeny_factor_albumin_and_glycoprotein()
       {
-         _individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN).ValueInDisplayUnit.ShouldBeEqualTo(0.68, 1e-2);
-         _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.56, 1e-2);
+         _individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN).ValueInDisplayUnit.ShouldBeEqualTo(0.68, 1e-3);
+         _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.56, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_gfr_spec()
       {
-         _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.7, 1e-2);
+         _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.7, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_hct()
       {
-         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.378, 1e-2);
+         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.37, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_volumes()
       {
-         _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.31, 1e-2);
+         _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(1.31, 1e-3);
       }
    }
 
@@ -245,7 +247,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_values_for_reference_concentration()
       {
-         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.62, 1e-2);
+         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.62, 1e-3);
       }
    }
 
@@ -260,44 +262,45 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_values_for_specific_blood_flows()
       {
-         _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.54, 1e-2);
-         _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.60, 1e-2);
-         _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(2.52, 1e-2);
-         _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.20, 1e-2);
-         _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.37, 1e-2);
-         _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(61.00, 1e-2);
-         _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(145.30, 1e-2);
-         _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(7.52, 1e-2);
-         _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(5.96, 1e-2);
-         _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(22.04, 1e-2);
-         _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(170.50, 1e-2);
-         _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(9.35, 1e-2);
-         _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(23.66, 1e-2);
+         _individual.Organism.Organ(STOMACH).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.544, 1e-3);
+         _individual.Organism.Organ(SMALL_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.590, 1e-3);
+         _individual.Organism.Organ(LARGE_INTESTINE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(2.522, 1e-3);
+         _individual.Organism.Organ(SPLEEN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(3.204, 1e-3);
+         _individual.Organism.Organ(PANCREAS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(1.367, 1e-3);
+         _individual.Organism.Organ(LIVER).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(94.933, 1e-3);
+         _individual.Organism.Organ(KIDNEY).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(145.30, 1e-3);
+         //for other blood flow, we have some rounding error due to that we are calculating with 2 digits in the excel file
+         _individual.Organism.Organ(BONE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(7.26, 1e-2);
+         _individual.Organism.Organ(FAT).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(5.76, 1e-2);
+         _individual.Organism.Organ(GONADS).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(21.29, 1e-2);
+         _individual.Organism.Organ(HEART).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(164.66, 1e-2);
+         _individual.Organism.Organ(MUSCLE).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(9.02, 1e-2);
+         _individual.Organism.Organ(SKIN).Parameter(SPECIFIC_BLOOD_FLOW_RATE).ValueInDisplayUnit.ShouldBeEqualTo(22.85, 1e-2);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_ontogeny_factor_albumin_and_glycoprotein()
       {
          _individual.Organism.Parameter(ONTOGENY_FACTOR_ALBUMIN).ValueInDisplayUnit.ShouldBeEqualTo(0.5, 1e-2);
-         _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.3, 1e-2);
+         _individual.Organism.Parameter(ONTOGENY_FACTOR_AGP).ValueInDisplayUnit.ShouldBeEqualTo(0.3, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_gfr_spec()
       {
-         _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.36, 1e-2);
+         _individual.Organism.Organ(KIDNEY).Parameter(GFR_SPEC).ValueInDisplayUnit.ShouldBeEqualTo(20 * 0.36, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_hct()
       {
-         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.357, 1e-2);
+         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.35, 1e-3);
       }
 
       [Observation]
       public void should_return_the_expected_values_for_volumes()
       {
-         _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(0.67, 1e-2);
+         _individual.Organism.Organ(LIVER).Parameter(VOLUME).ValueInDisplayUnit.ShouldBeEqualTo(0.666, 1e-3);
       }
    }
 
@@ -312,7 +315,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_values_for_reference_concentration()
       {
-         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.32, 1e-2);
+         _molecule.ReferenceConcentration.Value.ShouldBeEqualTo(5 * 0.32, 1e-3);
       }
    }
 

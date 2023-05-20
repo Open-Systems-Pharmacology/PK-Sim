@@ -24,7 +24,7 @@ namespace PKSim.UI
       {
          base.Context();
          _customColors = new Matrix(10, 1);
-         sut.PushRecentColor(_customColors as Matrix, Color.Yellow);
+         sut.PushRecentColor(_customColors, Color.Yellow);
          sut.PushRecentColor(_customColors, Color.Brown);
          sut.PushRecentColor(_customColors, Color.Orange);
          sut.PushRecentColor(_customColors, Color.Black);
