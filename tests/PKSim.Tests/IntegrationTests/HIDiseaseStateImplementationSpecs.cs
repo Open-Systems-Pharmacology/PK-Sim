@@ -158,7 +158,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_values_for_hct()
       {
-         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.387, 1e-3);
+         _individual.Organism.Parameter(HCT).ValueInDisplayUnit.ShouldBeEqualTo(0.3897, 1e-3);
       }
 
       [Observation]

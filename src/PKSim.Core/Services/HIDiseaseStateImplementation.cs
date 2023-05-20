@@ -43,7 +43,7 @@ namespace PKSim.Core.Services
       private static readonly HIFactors _gfrScalingFactor = createFactors(1, 0.7, 0.36);
       private static readonly HIFactors _albuminScalingFactor = createFactors(0.81, 0.68, 0.5);
       private static readonly HIFactors _agpScalingFactor = createFactors(0.6, 0.56, 0.3);
-      private static readonly HIFactors _hematocritScalingFactor = createFactors(0.86, 0.822, 0.778);
+      private static readonly HIFactors _hematocritScalingFactor = createFactors(0.866, 0.822, 0.778);
 
       private static readonly Cache<string, HIFactors> _moleculeScalingFactorEdginton = new()
       {
@@ -78,16 +78,16 @@ namespace PKSim.Core.Services
          _ageDimension = dimensionRepository.AgeInYears;
       }
 
-      public override bool ApplyTo(Individual individual) => applyTo(individual, UpdateParameter(HI_EDGINTON_VALUE_ORIGIN_ID));
+      public override bool ApplyTo(Individual individual) => applyTo(individual, UpdateParameter);
 
-      public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, UpdateParameterValue);
+      public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, x=>UpdateParameterValue);
 
-      private bool applyTo(Individual individual, Action<ParameterUpdate> updateParameterFunc)
+      private bool applyTo(Individual individual, Func<int, Action<ParameterUpdate>> updateParameterFunc)
       {
-         updateBloodFlowsAndVolumes(individual, updateParameterFunc);
-         updateGFR(individual, updateParameterFunc);
-         updateOntogenyFactory(individual, updateParameterFunc);
-         updateHematocrit(individual, updateParameterFunc);
+         updateBloodFlowsAndVolumes(individual, updateParameterFunc(HI_JOHNSON_VALUE_ORIGIN_ID));
+         updateGFR(individual, updateParameterFunc(HI_EDGINTON_VALUE_ORIGIN_ID));
+         updateOntogenyFactory(individual, updateParameterFunc(HI_EDGINTON_VALUE_ORIGIN_ID));
+         updateHematocrit(individual, updateParameterFunc(HI_EDGINTON_VALUE_ORIGIN_ID));
          return true;
       }
 
