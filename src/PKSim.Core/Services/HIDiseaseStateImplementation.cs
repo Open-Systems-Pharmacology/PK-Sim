@@ -36,14 +36,14 @@ namespace PKSim.Core.Services
          };
 
       private static readonly HIFactors _portalFlowScalingFactor = createFactors(0.4, 0.36, 0.04);
-      private static readonly HIFactors _hepaticFlowScalingFactor = createFactors(1.3, 2.3, 3.4);
+      private static readonly HIFactors _hepaticFlowScalingFactor = createFactors(1.61, 2.34, 5.29);
       private static readonly HIFactors _hepaticVolumeScalingFactor = createFactors(0.69, 0.55, 0.28);
       private static readonly HIFactors _renalFlowScalingFactor = createFactors(0.88, 0.65, 0.48);
       private static readonly HIFactors _cardiacIndexScalingFactor = createFactors(1.11, 1.27, 1.36);
       private static readonly HIFactors _gfrScalingFactor = createFactors(1, 0.7, 0.36);
       private static readonly HIFactors _albuminScalingFactor = createFactors(0.81, 0.68, 0.5);
       private static readonly HIFactors _agpScalingFactor = createFactors(0.6, 0.56, 0.3);
-      private static readonly HIFactors _hematocritScalingFactor = createFactors(0.92, 0.88, 0.83);
+      private static readonly HIFactors _hematocritScalingFactor = createFactors(0.866, 0.822, 0.778);
 
       private static readonly Cache<string, HIFactors> _moleculeScalingFactorEdginton = new()
       {
@@ -78,16 +78,16 @@ namespace PKSim.Core.Services
          _ageDimension = dimensionRepository.AgeInYears;
       }
 
-      public override bool ApplyTo(Individual individual) => applyTo(individual, UpdateParameter(HI_EDGINTON_VALUE_ORIGIN_ID));
+      public override bool ApplyTo(Individual individual) => applyTo(individual, UpdateParameter);
 
-      public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, UpdateParameterValue);
+      public override bool ApplyForPopulationTo(Individual individual) => applyTo(individual, x=>UpdateParameterValue);
 
-      private bool applyTo(Individual individual, Action<ParameterUpdate> updateParameterFunc)
+      private bool applyTo(Individual individual, Func<int, Action<ParameterUpdate>> updateParameterFunc)
       {
-         updateBloodFlowsAndVolumes(individual, updateParameterFunc);
-         updateGFR(individual, updateParameterFunc);
-         updateOntogenyFactory(individual, updateParameterFunc);
-         updateHematocrit(individual, updateParameterFunc);
+         updateBloodFlowsAndVolumes(individual, updateParameterFunc(HI_JOHNSON_VALUE_ORIGIN_ID));
+         updateGFR(individual, updateParameterFunc(HI_EDGINTON_VALUE_ORIGIN_ID));
+         updateOntogenyFactory(individual, updateParameterFunc(HI_EDGINTON_VALUE_ORIGIN_ID));
+         updateHematocrit(individual, updateParameterFunc(HI_EDGINTON_VALUE_ORIGIN_ID));
          return true;
       }
 
@@ -148,8 +148,8 @@ namespace PKSim.Core.Services
          var Q_portal = portalOrgans.Sum(bloodFlow);
          var Q_other = otherOrgans.Sum(bloodFlow);
          var Q_brain = bloodFlow(BRAIN);
-         var Q_liver = bloodFlow(LIVER);
          var Q_kidney = bloodFlow(KIDNEY);
+         var Q_liver = bloodFlow(LIVER);
 
          var portal_factor = _portalFlowScalingFactor[score];
          var liver_factor = _hepaticFlowScalingFactor[score];
@@ -168,8 +168,8 @@ namespace PKSim.Core.Services
 
          //retrieve the scaling factor based on publication and github entry
          //see https://github.com/Open-Systems-Pharmacology/Forum/discussions/1341
-         var otherOrganFactor = (ci_factor * (Q_other + Q_portal + Q_kidney + Q_liver + Q_brain) - (Q_brain + Q_portal * portal_factor + Q_liver_HI * liver_factor + Q_kidney * kidney_factor)) / Q_other;
-         otherOrgans.Each(x => updateBloodFlowSpec(x, otherOrganFactor));
+         var otherOrganDiseaseFactor = (ci_factor * (Q_other + Q_portal + Q_kidney + Q_liver + Q_brain) - (Q_brain + Q_portal * portal_factor + Q_liver_HI * liver_factor + Q_kidney * kidney_factor)) / Q_other;
+         otherOrgans.Each(x => updateBloodFlowSpec(x, otherOrganDiseaseFactor));
       }
 
       private Action<string, double> updateBloodFlowSpecDef(Action<ParameterUpdate> updateParameterFunc, IContainer organism) => (organName, factor) =>
