@@ -55,7 +55,7 @@ namespace PKSim.Core.Services
             allAvailableInitialConditions.Each(msv => msv.IsPresent = true);
          }
 
-         return defaultInitialConditions.WithName(simulation.Name);
+         return defaultInitialConditions;
       }
 
       private IEnumerable<ObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,

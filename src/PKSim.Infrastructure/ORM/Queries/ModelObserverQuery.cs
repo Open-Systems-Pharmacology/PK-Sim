@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -44,7 +45,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
       public ObserverBuildingBlock AllObserversFor(MoleculeBuildingBlock moleculeBuildingBlock, Simulation simulation)
       {
-         var observerBuildingBlock = _objectBaseFactory.Create<ObserverBuildingBlock>().WithName(simulation.Name);
+         var observerBuildingBlock = _objectBaseFactory.Create<ObserverBuildingBlock>().WithName(DefaultNames.ObserverBuildingBlock);
          addStandardObserversTo(simulation, observerBuildingBlock, moleculeBuildingBlock);
 
          addSimulationObservers(simulation, observerBuildingBlock);

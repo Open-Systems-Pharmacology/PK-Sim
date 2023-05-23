@@ -1,4 +1,5 @@
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -49,7 +50,7 @@ namespace PKSim.Core.Model
 
       public SpatialStructure CreateFor(Individual individual, Simulation simulation)
       {
-         var spatialStructure = Create().WithName(simulation.Name);
+         var spatialStructure = Create();
          var organism = _objectBaseFactory.Create<Organism>();
          spatialStructure.AddTopContainer(organism);
 
@@ -126,6 +127,6 @@ namespace PKSim.Core.Model
          }
       }
 
-      protected override SpatialStructure CreateSpatialStructure() => _objectBaseFactory.Create<PKSimSpatialStructure>();
+      protected override SpatialStructure CreateSpatialStructure() => _objectBaseFactory.Create<PKSimSpatialStructure>().WithName(DefaultNames.SpatialStructure);
    }
 }

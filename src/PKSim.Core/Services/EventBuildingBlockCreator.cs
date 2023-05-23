@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -60,7 +61,7 @@ namespace PKSim.Core.Services
          try
          {
             _simulation = simulation;
-            _eventGroupBuildingBlock = _objectBaseFactory.Create<EventGroupBuildingBlock>().WithName(simulation.Name);
+            _eventGroupBuildingBlock = _objectBaseFactory.Create<EventGroupBuildingBlock>().WithName(DefaultNames.EventBuildingBlock);
             _cloneManagerForBuildingBlock.FormulaCache = _eventGroupBuildingBlock.FormulaCache;
 
             createApplications(_simulation.CompoundPropertiesList);

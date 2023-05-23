@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -30,7 +31,7 @@ namespace PKSim.Infrastructure.ORM.Queries
       public PassiveTransportBuildingBlock AllPassiveTransportsFor(Simulation simulation)
       {
          var passiveTransportBuilderCollection = _objectBaseFactory.Create<PassiveTransportBuildingBlock>()
-            .WithName(simulation.Name);
+            .WithName(DefaultNames.PassiveTransportBuildingBlock);
 
          var modelProperties = simulation.ModelProperties;
          var compoundNames = simulation.AllBuildingBlocks<Compound>().AllNames().ToList();

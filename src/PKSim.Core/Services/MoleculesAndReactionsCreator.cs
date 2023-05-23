@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
@@ -91,10 +92,10 @@ namespace PKSim.Core.Services
             _passiveTransports = _module.PassiveTransports;
 
             _moleculeBuildingBlock = _objectBaseFactory.Create<MoleculeBuildingBlock>()
-               .WithName(simulation.Name);
+               .WithName(DefaultNames.MoleculeBuildingBlock);
 
             _reactionBuildingBlock = _objectBaseFactory.Create<ReactionBuildingBlock>()
-               .WithName(simulation.Name);
+               .WithName(DefaultNames.ReactionBuildingBlock);
 
             addIndividualMolecules(simulation.CompoundPropertiesList);
 
