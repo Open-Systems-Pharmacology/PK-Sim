@@ -27,7 +27,7 @@ namespace PKSim.Core.Services
       ///    Add all predefined ontogeny parameters to the global molecule. This is only required for actual SimulationSubject
       /// </summary>
       /// <param name="individualMolecule"></param>
-      void AddOntogenyParameterTo(IndividualMolecule individualMolecule);
+      void AddAgeDependentOntogenyParametersTo(IndividualMolecule individualMolecule);
    }
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
@@ -67,7 +67,7 @@ namespace PKSim.Core.Services
       public virtual IndividualMolecule CreateEmpty()
       {
          var molecule = CreateMolecule(string.Empty);
-         AddOntogenyParameterTo(molecule);
+         AddAgeDependentOntogenyParametersTo(molecule);
          return molecule;
       }
 
@@ -109,13 +109,16 @@ namespace PKSim.Core.Services
          CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, DISEASE_FACTOR, CoreConstants.DEFAULT_DISEASE_FACTOR);
 
+         //TODO HERE WE NEED TO CREATE THE TABLE PARAMETERS. See
+         //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2532#issuecomment-1561330454
+
+
          return molecule;
       }
 
-      public void AddOntogenyParameterTo(IndividualMolecule molecule)
+      public void AddAgeDependentOntogenyParametersTo(IndividualMolecule molecule)
       {
-         OntogenyFactors.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR)
-         );
+         OntogenyFactors.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
       }
 
       protected IParameter CreateFormulaParameterIn(

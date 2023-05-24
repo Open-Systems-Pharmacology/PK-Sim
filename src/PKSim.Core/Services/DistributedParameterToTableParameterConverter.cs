@@ -44,7 +44,6 @@ namespace PKSim.Core.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IParameterFactory _parameterFactory;
-      private readonly ICloneManager _cloneManager;
       private readonly IParameterQuery _parameterQuery;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IOntogenyRepository _ontogenyRepository;
@@ -65,7 +64,6 @@ namespace PKSim.Core.Services
          IFormulaFactory formulaFactory,
          IEntityPathResolver entityPathResolver,
          IParameterFactory parameterFactory,
-         ICloneManager cloneManager,
          IParameterQuery parameterQuery,
          IDimensionRepository dimensionRepository,
          IOntogenyRepository ontogenyRepository,
@@ -78,7 +76,6 @@ namespace PKSim.Core.Services
          _formulaFactory = formulaFactory;
          _entityPathResolver = entityPathResolver;
          _parameterFactory = parameterFactory;
-         _cloneManager = cloneManager;
          _parameterQuery = parameterQuery;
          _dimensionRepository = dimensionRepository;
          _ontogenyRepository = ontogenyRepository;
@@ -207,7 +204,6 @@ namespace PKSim.Core.Services
             if (formula == null)
                continue;
 
-            var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
             var individualParameter = getOrCreateIndividualParameter(parameter, individual);
             updateConstantParameterToFormula(individualParameter, formula, simulationConfiguration);
             createPopulationPlasmaProteinOntogenyTableParameter(parameter, _simulation as PopulationSimulation);
