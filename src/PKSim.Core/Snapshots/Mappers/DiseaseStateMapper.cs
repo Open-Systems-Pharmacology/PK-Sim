@@ -34,9 +34,9 @@ public class DiseaseStateMapper : SnapshotMapperBase<ModelOriginData, SnapshotDi
       IDimensionRepository dimensionRepository
    )
    {
+      _diseaseStateRepository = diseaseStateRepository;
       _parameterMapper = parameterMapper;
       _dimensionRepository = dimensionRepository;
-      _diseaseStateRepository = diseaseStateRepository;
    }
 
    public override Task<SnapshotDiseaseState> MapToSnapshot(ModelOriginData originData)
