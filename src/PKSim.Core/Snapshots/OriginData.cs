@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DevExpress.Data.Mask;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Snapshots
@@ -43,17 +44,15 @@ namespace PKSim.Core.Snapshots
       /// </summary>
       public Parameter Height { get; set; }
 
-
       public ValueOrigin ValueOrigin { get; set; }
 
-      /// <summary>
-      /// Name of disease state associated with OriginData. Null if no disease state defined
-      /// </summary>
+      //Null if no disease state defined
+      public DiseaseState Disease { get; set; }
+
+      //Kept for compatibility reasons with old snapshots
       public string DiseaseState { get; set; }
 
-      /// <summary>
-      /// List of disease state parameters associated with the selected disease state
-      /// </summary>
+      //Kept for compatibility reasons with old snapshots
       public Parameter[] DiseaseStateParameters { get; set; }
 
 

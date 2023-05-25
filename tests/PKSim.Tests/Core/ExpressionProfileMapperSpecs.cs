@@ -9,11 +9,12 @@ using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
+using static OSPSuite.Core.Domain.Constants.Parameters;
+using DiseaseState = PKSim.Core.Snapshots.DiseaseState;
 using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;
 using Parameter = PKSim.Core.Snapshots.Parameter;
-using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Core
 {
@@ -41,20 +42,23 @@ namespace PKSim.Core
       protected Model.ExpressionProfile _expressionProfileTransporter;
       protected Model.ExpressionProfile _expressionProfileOtherProtein;
       protected IMoleculeParameterTask _moleculeParameterTask;
+      protected DiseaseStateMapper _diseaseStateMapper;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _expressionContainerMapper = A.Fake<ExpressionContainerMapper>();
+         _diseaseStateMapper = A.Fake<DiseaseStateMapper>();
          _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
          _ontogenyMapper = A.Fake<OntogenyMapper>();
          _ontogenyTask = A.Fake<IOntogenyTask>();
          _moleculeExpressionTask = A.Fake<IMoleculeExpressionTask<Individual>>();
-         _moleculeParameterTask= A.Fake<IMoleculeParameterTask>();
+         _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
          sut = new ExpressionProfileMapper(
             _parameterMapper,
             _expressionContainerMapper,
             _ontogenyMapper,
+            _diseaseStateMapper,
             _ontogenyTask,
             _moleculeExpressionTask,
             _expressionProfileFactory,
@@ -149,6 +153,30 @@ namespace PKSim.Core
       public void should_save_parameters_that_are_now_saved_in_the_individual()
       {
          _snapshot.Parameters.ShouldNotBeNull();
+      }
+   }
+
+   public class When_mapping_an_expression_profile_to_snapshot_with_disease_state : concern_for_ExpressionProfileMapper
+   {
+      private DiseaseState _snapshotDiseaseState;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var originData = _expressionProfileEnzyme.Individual.OriginData;
+         _snapshotDiseaseState = new DiseaseState();
+         A.CallTo(() => _diseaseStateMapper.MapToSnapshot(originData)).Returns(_snapshotDiseaseState);
+      }
+
+      protected override async Task Because()
+      {
+         _snapshot = await sut.MapToSnapshot(_expressionProfileEnzyme);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_disease_state()
+      {
+         _snapshot.Disease.ShouldBeEqualTo(_snapshotDiseaseState);
       }
    }
 
@@ -280,6 +308,7 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_expressionProfileOtherProtein);
+         _snapshot.Disease = new DiseaseState();
          _newOtherProteinExpressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualOtherProtein>();
          A.CallTo(() => _expressionProfileFactory.Create(_snapshot.Type, _snapshot.Species, _snapshot.Molecule))
             .Returns(_newOtherProteinExpressionProfile);
@@ -294,6 +323,12 @@ namespace PKSim.Core
       public void should_return_a_molecule_having_the_expected_type()
       {
          _newOtherProteinExpressionProfile.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_update_the_disease_state()
+      {
+         A.CallTo(() => _diseaseStateMapper.MapToModel(_snapshot.Disease, A<DiseaseStateContext>._)).MustHaveHappened();
       }
    }
 }
