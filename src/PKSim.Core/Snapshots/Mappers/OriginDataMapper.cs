@@ -18,27 +18,25 @@ namespace PKSim.Core.Snapshots.Mappers
    {
       private readonly IDimensionRepository _dimensionRepository;
       private readonly ISpeciesRepository _speciesRepository;
-      private readonly IDiseaseStateRepository _diseaseStateRepository;
+      private readonly DiseaseStateMapper _diseaseStateMapper;
       private readonly ParameterMapper _parameterMapper;
       private readonly IOriginDataTask _originDataTask;
       private readonly IIndividualModelTask _individualModelTask;
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
       private readonly ValueOriginMapper _valueOriginMapper;
 
-      public OriginDataMapper(
-         ParameterMapper parameterMapper,
+      public OriginDataMapper(ParameterMapper parameterMapper,
          CalculationMethodCacheMapper calculationMethodCacheMapper,
          ValueOriginMapper valueOriginMapper,
+         DiseaseStateMapper diseaseStateMapper,
          IOriginDataTask originDataTask,
          IDimensionRepository dimensionRepository,
          IIndividualModelTask individualModelTask,
-         ISpeciesRepository speciesRepository,
-         IDiseaseStateRepository diseaseStateRepository
-      )
+         ISpeciesRepository speciesRepository)
       {
          _dimensionRepository = dimensionRepository;
          _speciesRepository = speciesRepository;
-         _diseaseStateRepository = diseaseStateRepository;
+         _diseaseStateMapper = diseaseStateMapper;
          _parameterMapper = parameterMapper;
          _originDataTask = originDataTask;
          _individualModelTask = individualModelTask;
@@ -70,9 +68,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.ValueOrigin = await _valueOriginMapper.MapToSnapshot(originData.ValueOrigin);
          snapshot.CalculationMethods = await _calculationMethodCacheMapper.MapToSnapshot(originData.CalculationMethodCache, originData.Species.Name);
 
-         snapshot.DiseaseState = originData.DiseaseState?.Name;
-         if (originData.DiseaseStateParameters.Any())
-            snapshot.DiseaseStateParameters = originData.DiseaseStateParameters.Select(namedParameterFrom).ToArray();
+         snapshot.Disease = await _diseaseStateMapper.MapToSnapshot(originData);
 
          return snapshot;
       }
@@ -91,7 +87,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return parameterFrom(parameter, dimension);
       }
 
-      public override Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot, SnapshotContext snapshotContext)
+      public override async Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot, SnapshotContext snapshotContext)
       {
          var originData = new ModelOriginData {Species = speciesFrom(snapshot)};
 
@@ -107,32 +103,24 @@ namespace PKSim.Core.Snapshots.Mappers
          updateWeightFromSnapshot(snapshot, originData);
          updateHeightFromSnapshot(snapshot, originData);
 
-         updateDiseaseStateFromSnapshot(snapshot, originData);
-         return Task.FromResult(originData);
+         await updateDiseaseStateFromSnapshot(snapshot, originData, snapshotContext);
+         return originData;
       }
 
-      private void updateDiseaseStateFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
+      private async Task updateDiseaseStateFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData, SnapshotContext snapshotContext)
       {
-         if (snapshot.DiseaseState == null)
-            return;
-
-         var diseaseState = _diseaseStateRepository.AllFor(originData.Population).FindByName(snapshot.DiseaseState);
-         if (diseaseState == null)
-            throw new PKSimException(PKSimConstants.Error.CannotFindDiseaseState(snapshot.DiseaseState, originData.Population.DisplayName));
-
-         originData.DiseaseState = diseaseState;
-         diseaseState.Parameters.Each(x =>
+         //we might have an old disease state implementation
+         if (snapshot.DiseaseState != null)
          {
-            var diseaseStateParameter = new OriginDataParameter {Name = x.Name, Value = x.Value, Unit = x.DisplayUnitName()};
-            var snapshotParameter = snapshot.DiseaseStateParameters.FindByName(x.Name);
-            if (snapshotParameter != null)
+            //conversion for older version
+            snapshot.Disease = new DiseaseState
             {
-               diseaseStateParameter.Value = baseParameterValueFrom(snapshotParameter, x.Value);
-               diseaseStateParameter.Unit = snapshotParameter.Unit;
-            }
+               Name = snapshot.DiseaseState,
+               Parameters = snapshot.DiseaseStateParameters
+            };
+         }
 
-            originData.AddDiseaseStateParameter(diseaseStateParameter);
-         });
+         await _diseaseStateMapper.MapToModel(snapshot.Disease, new DiseaseStateContext(originData, snapshotContext));
       }
 
       private void updateWeightFromSnapshot(SnapshotOriginData snapshot, ModelOriginData originData)
@@ -205,9 +193,6 @@ namespace PKSim.Core.Snapshots.Mappers
          return species ?? throw new PKSimException(PKSimConstants.Error.CouldNotFindSpecies(snapshot.Species, _speciesRepository.AllNames()));
       }
 
-      private double baseParameterValueFrom(Parameter snapshot, double defaultValueInBaseUnit) =>
-         baseParameterValueFrom(snapshot, _dimensionRepository.DimensionForUnit(snapshot.Unit), defaultValueInBaseUnit);
-
       private double baseParameterValueFrom(Parameter snapshot, IDimension dimension, double defaultValueInBaseUnit)
       {
          if (snapshot?.Value == null)
@@ -215,11 +200,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          var unit = dimension.Unit(ModelValueFor(snapshot.Unit));
          return dimension.UnitValueToBaseUnitValue(unit, snapshot.Value.Value);
-      }
-
-      private Parameter namedParameterFrom(OriginDataParameter parameter)
-      {
-         return parameterFrom(parameter, _dimensionRepository.DimensionForUnit(parameter.Unit)).WithName(parameter.Name);
       }
 
       private Parameter parameterFrom(OriginDataParameter parameter, IDimension dimension)

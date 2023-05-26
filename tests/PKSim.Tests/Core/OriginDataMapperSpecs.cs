@@ -8,6 +8,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
+using DiseaseState = PKSim.Core.Snapshots.DiseaseState;
 using OriginData = PKSim.Core.Snapshots.OriginData;
 using Parameter = PKSim.Core.Snapshots.Parameter;
 using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
@@ -36,11 +37,13 @@ namespace PKSim.Core
       protected ValueOriginMapper _valueOriginMapper;
       protected ValueOrigin _valueOriginSnapshot;
       protected IDiseaseStateRepository _diseaseStateRepository;
+      protected DiseaseStateMapper _diseaseStateMapper;
 
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
          _calculationMethodCacheMapper = A.Fake<CalculationMethodCacheMapper>();
+         _diseaseStateMapper = A.Fake<DiseaseStateMapper>();
          _originDataTask = A.Fake<IOriginDataTask>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _individualModelTask = A.Fake<IIndividualModelTask>();
@@ -52,11 +55,7 @@ namespace PKSim.Core
             _parameterMapper,
             _calculationMethodCacheMapper,
             _valueOriginMapper,
-            _originDataTask,
-            _dimensionRepository,
-            _individualModelTask,
-            _speciesRepository,
-            _diseaseStateRepository);
+            _diseaseStateMapper, _originDataTask, _dimensionRepository, _individualModelTask, _speciesRepository);
 
          _ageSnapshotParameter = new Parameter {Value = 1};
          _heightSnapshotParameter = new Parameter {Value = 2};
@@ -100,19 +99,14 @@ namespace PKSim.Core
 
    public class When_mapping_an_origin_data_to_snapshot_with_disease_state : concern_for_OriginDataMapper
    {
-      private OriginDataParameter _diseaseStateParameter;
-      private IDimension _timeDimension;
+      private DiseaseState _diseaseState;
 
       protected override async Task Context()
       {
          await base.Context();
-         _originData.DiseaseState = new DiseaseState {Name = "CKD"};
-         _diseaseStateParameter = new OriginDataParameter {Name = "Param", Value = 60, Unit = "h"};
-         _originData.AddDiseaseStateParameter(_diseaseStateParameter);
-         _timeDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
-         A.CallTo(() => _dimensionRepository.DimensionForUnit(_diseaseStateParameter.Unit)).Returns(_timeDimension);
-         A.CallTo(() => _parameterMapper.ParameterFrom(_diseaseStateParameter.Value, _diseaseStateParameter.Unit, _timeDimension))
-            .Returns(new Parameter {Value = 1, Unit = "h"});
+
+         _diseaseState = new DiseaseState();
+         A.CallTo(() => _diseaseStateMapper.MapToSnapshot(_originData)).Returns(_diseaseState);
       }
 
       protected override async Task Because()
@@ -123,12 +117,7 @@ namespace PKSim.Core
       [Observation]
       public void should_save_the_origin_data_disease_state_properties()
       {
-         _snapshot.DiseaseState.ShouldBeEqualTo(_originData.DiseaseState.Name);
-         _snapshot.DiseaseStateParameters.Length.ShouldBeEqualTo(1);
-         var param = _snapshot.DiseaseStateParameters[0];
-         param.Name.ShouldBeEqualTo("Param");
-         param.Unit.ShouldBeEqualTo(_diseaseStateParameter.Unit);
-         param.Value.ShouldBeEqualTo(1); //60 in base unit converted to display unit
+         _snapshot.Disease.ShouldBeEqualTo(_diseaseState);
       }
    }
 
@@ -380,91 +369,6 @@ namespace PKSim.Core
       public void should_use_the_default_gender()
       {
          _newOriginData.Gender.ShouldBeEqualTo(_gender);
-      }
-   }
-
-   public class When_mapping_an_origin_data_from_snapshot_with_disease_state : concern_for_OriginDataMapper
-   {
-      private Model.OriginData _newOriginData;
-      private IDimension _timeDimension;
-      private Parameter _diseaseStateParameter;
-
-      protected override async Task Context()
-      {
-         await base.Context();
-         _timeDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
-         _snapshot = await sut.MapToSnapshot(_originData);
-         _snapshot.DiseaseState = "Disease";
-         _diseaseStateParameter = new Parameter {Name = "P1", Value = 1, Unit = "h"};
-         _snapshot.DiseaseStateParameters = new[] {_diseaseStateParameter};
-
-         A.CallTo(() => _dimensionRepository.DimensionForUnit(_diseaseStateParameter.Unit)).Returns(_timeDimension);
-
-         var diseaseState = new DiseaseState {Name = "Disease"};
-         diseaseState.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName("P1"));
-         A.CallTo(() => _diseaseStateRepository.AllFor(_speciesPopulation)).Returns(new[] {diseaseState});
-      }
-
-      protected override async Task Because()
-      {
-         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
-      }
-
-      [Observation]
-      public void should_set_the_disease_state_and_parameters()
-      {
-         _newOriginData.DiseaseState.Name.ShouldBeEqualTo("Disease");
-         _newOriginData.DiseaseStateParameters.Count.ShouldBeEqualTo(1);
-         var param = _newOriginData.DiseaseStateParameters[0];
-         param.Value.ShouldBeEqualTo(60);
-         param.Unit.ShouldBeEqualTo("h");
-      }
-   }
-
-   public class When_mapping_an_origin_data_from_snapshot_with_disease_state_parameter_unknown : concern_for_OriginDataMapper
-   {
-      private Model.OriginData _newOriginData;
-
-      protected override async Task Context()
-      {
-         await base.Context();
-         _snapshot = await sut.MapToSnapshot(_originData);
-         _snapshot.DiseaseState = "Disease";
-         _snapshot.DiseaseStateParameters = new[] {new Parameter {Name = "Unknown", Value = 10, Unit = "h"}};
-
-         var diseaseState = new DiseaseState {Name = "Disease"};
-         diseaseState.Add(DomainHelperForSpecs.ConstantParameterWithValue(20).WithName("P1"));
-         A.CallTo(() => _diseaseStateRepository.AllFor(_speciesPopulation)).Returns(new[] {diseaseState});
-      }
-
-      protected override async Task Because()
-      {
-         _newOriginData = await sut.MapToModel(_snapshot, new SnapshotContext());
-      }
-
-      [Observation]
-      public void should_set_the_disease_state_and_parameters_as_default_from_the_disease_state()
-      {
-         _newOriginData.DiseaseState.Name.ShouldBeEqualTo("Disease");
-         _newOriginData.DiseaseStateParameters.Count.ShouldBeEqualTo(1);
-         var param = _newOriginData.DiseaseStateParameters[0];
-         param.Value.ShouldBeEqualTo(20);
-      }
-   }
-
-   public class When_mapping_an_origin_data_from_snapshot_with_disease_state_that_is_unknown : concern_for_OriginDataMapper
-   {
-      protected override async Task Context()
-      {
-         await base.Context();
-         _snapshot = await sut.MapToSnapshot(_originData);
-         _snapshot.DiseaseState = "UnknownDiseaseState";
-      }
-
-      [Observation]
-      public void should_throw_an_exception()
-      {
-         The.Action(() => sut.MapToModel(_snapshot, new SnapshotContext())).ShouldThrowAn<PKSimException>();
       }
    }
 

@@ -53,6 +53,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          var diseaseStateParameterRanges = individual.OriginData?.DiseaseStateParameters
             .Select(x => randomPopulationSettings.ParameterRange(x.Name))
+            //this can be null if no parameter range is associated with the parameter (e.g. discrete parameters)
+            .Where(x => x != null)
             .ToList();
 
          if (diseaseStateParameterRanges == null)
