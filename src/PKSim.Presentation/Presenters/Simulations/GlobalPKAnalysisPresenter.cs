@@ -47,8 +47,14 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly IPresentationSettingsTask _presentationSettingsTask;
       private readonly IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
 
-      public GlobalPKAnalysisPresenter(IGlobalPKAnalysisView view, IPKAnalysesTask pkAnalysesTask,
-         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper, IHeavyWorkManager heavyWorkManager, IRepresentationInfoRepository representationInfoRepository, IPresentationSettingsTask presentationSettingsTask, IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper) : base(view)
+      public GlobalPKAnalysisPresenter(
+         IGlobalPKAnalysisView view,
+         IPKAnalysesTask pkAnalysesTask,
+         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper,
+         IHeavyWorkManager heavyWorkManager,
+         IRepresentationInfoRepository representationInfoRepository,
+         IPresentationSettingsTask presentationSettingsTask,
+         IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper) : base(view)
       {
          _pkAnalysesTask = pkAnalysesTask;
          _globalPKAnalysisDTOMapper = globalPKAnalysisDTOMapper;
@@ -167,15 +173,13 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public bool CanCalculateGlobalPK()
       {
-         return firstSimulation.Compounds.Any(compound =>
-         {
-            var schemaItems = _protocolToSchemaItemsMapper.MapFrom(firstSimulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol);
-            return !isMultipleIV(schemaItems);
-         });
+         return firstSimulation.Compounds.Select(compound => firstSimulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol)
+            .Where(p => p != null)
+            .Select(_protocolToSchemaItemsMapper.MapFrom)
+            .Any(x => !isMultipleIV(x));
       }
 
-      private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems) => schemaItems.Count(schemaItem => schemaItem.IsIV) > 1;
-      
+      private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems) => schemaItems.Count(x => x.IsIV) > 1;
 
       public void LoadSettingsForSubject(IWithId subject)
       {
