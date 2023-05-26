@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
@@ -69,6 +70,7 @@ namespace PKSim.Presentation
    public abstract class context_for_can_calculate_global_pk_analysis : concern_for_GlobalPKAnalysisPresenter
    {
       protected bool _result;
+      protected CompoundProperties _secondCompoundProperties;
 
       protected override void Context()
       {
@@ -84,7 +86,7 @@ namespace PKSim.Presentation
          };
 
          var secondCompound = new Compound().WithName("Compound2");
-         var secondCompoundProperties = new CompoundProperties
+         _secondCompoundProperties = new CompoundProperties
          {
             Compound = secondCompound,
             ProtocolProperties = new ProtocolProperties
@@ -95,7 +97,7 @@ namespace PKSim.Presentation
 
          var simulationProperties = new SimulationProperties();
          simulationProperties.AddCompoundProperties(firstCompoundProperties);
-         simulationProperties.AddCompoundProperties(secondCompoundProperties);
+         simulationProperties.AddCompoundProperties(_secondCompoundProperties);
 
          var firstUsedBuildingBlock = new UsedBuildingBlock("t1", PKSimBuildingBlockType.Compound)
          {
@@ -117,8 +119,8 @@ namespace PKSim.Presentation
          var firstSchemaItems = GetFirstCompoundSchemaItems();
          var secondSchemaItems = GetSecondCompoundSchemaItems();
 
-         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(individualSimulation.CompoundPropertiesFor(firstCompound).ProtocolProperties.Protocol)).Returns(firstSchemaItems);
-         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(individualSimulation.CompoundPropertiesFor(secondCompound).ProtocolProperties.Protocol)).Returns(secondSchemaItems);
+         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(firstCompoundProperties.ProtocolProperties.Protocol)).Returns(firstSchemaItems);
+         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(_secondCompoundProperties.ProtocolProperties.Protocol)).Returns(secondSchemaItems);
 
          sut.CalculatePKAnalysis(_simulations);
       }
@@ -133,15 +135,14 @@ namespace PKSim.Presentation
       protected abstract List<SchemaItem> GetFirstCompoundSchemaItems();
    }
 
-
    public class When_calculating_if_a_global_pk_analysis_is_possible_for_single_iv : context_for_can_calculate_global_pk_analysis
    {
       protected override List<SchemaItem> GetSecondCompoundSchemaItems()
       {
          return new List<SchemaItem>
          {
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous },
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous }
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous}
          };
       }
 
@@ -149,7 +150,7 @@ namespace PKSim.Presentation
       {
          return new List<SchemaItem>
          {
-            new SchemaItem { ApplicationType = ApplicationTypes.IntravenousBolus }
+            new SchemaItem {ApplicationType = ApplicationTypes.IntravenousBolus}
          };
       }
 
@@ -166,8 +167,8 @@ namespace PKSim.Presentation
       {
          return new List<SchemaItem>
          {
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous },
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous }
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous}
          };
       }
 
@@ -175,8 +176,36 @@ namespace PKSim.Presentation
       {
          return new List<SchemaItem>
          {
-            new SchemaItem { ApplicationType = ApplicationTypes.Oral },
-            new SchemaItem { ApplicationType = ApplicationTypes.Oral }
+            new SchemaItem {ApplicationType = ApplicationTypes.Oral},
+            new SchemaItem {ApplicationType = ApplicationTypes.Oral}
+         };
+      }
+
+      [Observation]
+      public void the_calculation_is_possible()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_an_simulation_using_a_metabolite : context_for_can_calculate_global_pk_analysis
+   {
+      protected override void Context()
+      {
+         base.Context();
+         //no protocol for the metabolite
+         _secondCompoundProperties.ProtocolProperties.Protocol = null;
+         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(null)).Throws<Exception>();
+      }
+
+      protected override List<SchemaItem> GetSecondCompoundSchemaItems() => new List<SchemaItem>();
+
+      protected override List<SchemaItem> GetFirstCompoundSchemaItems()
+      {
+         return new List<SchemaItem>
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.Oral},
+            new SchemaItem {ApplicationType = ApplicationTypes.Oral}
          };
       }
 
@@ -193,8 +222,8 @@ namespace PKSim.Presentation
       {
          return new List<SchemaItem>
          {
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous },
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous }
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous}
          };
       }
 
@@ -202,8 +231,8 @@ namespace PKSim.Presentation
       {
          return new List<SchemaItem>
          {
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous },
-            new SchemaItem { ApplicationType = ApplicationTypes.Intravenous }
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous}
          };
       }
 
