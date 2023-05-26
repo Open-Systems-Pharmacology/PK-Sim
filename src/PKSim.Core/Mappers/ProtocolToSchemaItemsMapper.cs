@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility;
@@ -13,8 +14,8 @@ namespace PKSim.Core.Mappers
    }
 
    public class ProtocolToSchemaItemsMapper : IProtocolToSchemaItemsMapper,
-                                              IVisitor<AdvancedProtocol>,
-                                              IVisitor<SimpleProtocol>
+      IVisitor<AdvancedProtocol>,
+      IVisitor<SimpleProtocol>
    {
       private readonly ISimpleProtocolToSchemaMapper _simpleProtocolToSchemaMapper;
       private readonly ICloner _cloneManager;
@@ -28,6 +29,9 @@ namespace PKSim.Core.Mappers
 
       public IReadOnlyList<SchemaItem> MapFrom(Protocol protocol)
       {
+         if (protocol == null)
+            return Array.Empty<SchemaItem>();
+
          this.Visit(protocol);
          var resultingList = _allSchemaItems.OrderBy(si => si.StartTime.Value).ToList();
          resultingList.Each(schemaItem => { schemaItem.StartTime.DisplayUnit = protocol.TimeUnit; });
@@ -43,8 +47,8 @@ namespace PKSim.Core.Mappers
       private void fillSchemaItemListFrom(IEnumerable<Schema> allSchemas)
       {
          _allSchemaItems = from schema in allSchemas
-                           from schemaItem in schema.ExpandedSchemaItems(_cloneManager)
-                           select schemaItem;
+            from schemaItem in schema.ExpandedSchemaItems(_cloneManager)
+            select schemaItem;
       }
 
       public void Visit(SimpleProtocol simpleProtocol)
