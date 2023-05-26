@@ -11,7 +11,7 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimInitialConditionsCreator
    {
-      InitialConditionsBuildingBlock CreateFor(Module module, Simulation simulation);
+      InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, Simulation simulation);
    }
 
    public class PKSimInitialConditionsCreator : IPKSimInitialConditionsCreator
@@ -36,12 +36,12 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public InitialConditionsBuildingBlock CreateFor(Module module, Simulation simulation)
+      public InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, Simulation simulation)
       {
          //default molecule start values matrix
          var compounds = simulation.Compounds;
          var individual = simulation.Individual;
-         var defaultInitialConditions = _initialConditionsCreator.CreateFrom(module.SpatialStructure, module.Molecules);
+         var defaultInitialConditions = _initialConditionsCreator.CreateFrom(spatialStructure, molecules);
 
          //set available start formulas for molecules
          setStartFormulasForStaticMolecules(defaultInitialConditions, simulation, compounds);
