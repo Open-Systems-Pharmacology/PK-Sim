@@ -174,9 +174,9 @@ namespace PKSim.Presentation.Presenters.Simulations
       public bool CanCalculateGlobalPK()
       {
          return firstSimulation.Compounds.Select(compound => firstSimulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol)
-
-            .Select(x=>_protocolToSchemaItemsMapper.MapFrom(x))
-            .Any(schemaItems => !isMultipleIV(schemaItems));
+            .Where(p => p != null)
+            .Select(_protocolToSchemaItemsMapper.MapFrom)
+            .Any(x => !isMultipleIV(x));
       }
 
       private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems) => schemaItems.Count(x => x.IsIV) > 1;

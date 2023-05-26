@@ -71,12 +71,13 @@ namespace PKSim.Presentation
    {
       protected bool _result;
       protected CompoundProperties _secondCompoundProperties;
+      protected CompoundProperties _firstCompoundProperties;
 
       protected override void Context()
       {
          base.Context();
          var firstCompound = new Compound().WithName("Compound1");
-         var firstCompoundProperties = new CompoundProperties
+         _firstCompoundProperties = new CompoundProperties
          {
             Compound = firstCompound,
             ProtocolProperties = new ProtocolProperties
@@ -96,7 +97,7 @@ namespace PKSim.Presentation
          };
 
          var simulationProperties = new SimulationProperties();
-         simulationProperties.AddCompoundProperties(firstCompoundProperties);
+         simulationProperties.AddCompoundProperties(_firstCompoundProperties);
          simulationProperties.AddCompoundProperties(_secondCompoundProperties);
 
          var firstUsedBuildingBlock = new UsedBuildingBlock("t1", PKSimBuildingBlockType.Compound)
@@ -119,7 +120,7 @@ namespace PKSim.Presentation
          var firstSchemaItems = GetFirstCompoundSchemaItems();
          var secondSchemaItems = GetSecondCompoundSchemaItems();
 
-         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(firstCompoundProperties.ProtocolProperties.Protocol)).Returns(firstSchemaItems);
+         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(_firstCompoundProperties.ProtocolProperties.Protocol)).Returns(firstSchemaItems);
          A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(_secondCompoundProperties.ProtocolProperties.Protocol)).Returns(secondSchemaItems);
 
          sut.CalculatePKAnalysis(_simulations);
@@ -193,21 +194,20 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         //no protocol for the metabolite
-         _secondCompoundProperties.ProtocolProperties.Protocol = null;
+         //no protocol for the first compound
+         _firstCompoundProperties.ProtocolProperties.Protocol = null;
          A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(null)).Throws<Exception>();
       }
 
-      protected override List<SchemaItem> GetSecondCompoundSchemaItems() => new List<SchemaItem>();
-
-      protected override List<SchemaItem> GetFirstCompoundSchemaItems()
+      protected override List<SchemaItem> GetSecondCompoundSchemaItems()
       {
          return new List<SchemaItem>
          {
-            new SchemaItem {ApplicationType = ApplicationTypes.Oral},
-            new SchemaItem {ApplicationType = ApplicationTypes.Oral}
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
          };
       }
+
+      protected override List<SchemaItem> GetFirstCompoundSchemaItems() => new List<SchemaItem>();
 
       [Observation]
       public void the_calculation_is_possible()
