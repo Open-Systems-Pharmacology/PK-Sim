@@ -45,7 +45,6 @@ namespace PKSim.Presentation.Presenters.Simulations
       private GlobalPKAnalysisDTO _globalPKAnalysisDTO;
       private DefaultPresentationSettings _settings;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
-      private readonly IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
 
       public GlobalPKAnalysisPresenter(
          IGlobalPKAnalysisView view,
@@ -53,15 +52,13 @@ namespace PKSim.Presentation.Presenters.Simulations
          IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper,
          IHeavyWorkManager heavyWorkManager,
          IRepresentationInfoRepository representationInfoRepository,
-         IPresentationSettingsTask presentationSettingsTask,
-         IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper) : base(view)
+         IPresentationSettingsTask presentationSettingsTask) : base(view)
       {
          _pkAnalysesTask = pkAnalysesTask;
          _globalPKAnalysisDTOMapper = globalPKAnalysisDTOMapper;
          _heavyWorkManager = heavyWorkManager;
          _representationInfoRepository = representationInfoRepository;
          _presentationSettingsTask = presentationSettingsTask;
-         _protocolToSchemaItemsMapper = protocolToSchemaItemsMapper;
          _settings = new DefaultPresentationSettings();
       }
 

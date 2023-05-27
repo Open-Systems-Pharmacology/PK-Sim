@@ -31,7 +31,6 @@ namespace PKSim.Presentation
       protected string _compoundName;
       protected List<Simulation> _simulations;
       protected GlobalPKAnalysis _globalPKAnalysis;
-      protected IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
 
       protected override void Context()
       {
@@ -41,9 +40,8 @@ namespace PKSim.Presentation
          var heavyWorkManager = A.Fake<IHeavyWorkManager>();
          var representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
-         _protocolToSchemaItemsMapper = A.Fake<IProtocolToSchemaItemsMapper>();
 
-         sut = new GlobalPKAnalysisPresenter(_view, _pKAnalysesTask, globalPKAnalysisDTOMapper, heavyWorkManager, representationInfoRepository, _presenterSettingsTask, _protocolToSchemaItemsMapper);
+         sut = new GlobalPKAnalysisPresenter(_view, _pKAnalysesTask, globalPKAnalysisDTOMapper, heavyWorkManager, representationInfoRepository, _presenterSettingsTask);
 
          _simulations = new List<Simulation>();
          _compoundName = "DRUG";
@@ -157,7 +155,6 @@ namespace PKSim.Presentation
          base.Context();
          //no protocol for the first compound
          _firstCompoundProperties.ProtocolProperties.Protocol = null;
-         A.CallTo(() => _protocolToSchemaItemsMapper.MapFrom(null)).Throws<Exception>();
       }
 
       protected override bool ResultForFirstProtocol() => false;
