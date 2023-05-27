@@ -707,7 +707,7 @@ namespace PKSim.Core
       {
          base.Context();
          _compoundProperties.ProtocolProperties.Protocol = null;
-         A.CallTo(() => _protocolMapper.MapFrom(null)).Throws<NullReferenceException>();
+         A.CallTo(() => _protocolMapper.MapFrom(null)).Returns(Array.Empty<SchemaItem>());
       }
 
       protected override void Because()
@@ -1168,7 +1168,7 @@ namespace PKSim.Core
       }
    }
 
-   public abstract class concern_for_CanCalculateGlobalPK : concern_for_PKAnalysesTask
+   public abstract class concern_for_CanCalculateGlobalPKInProtocol : concern_for_PKAnalysesTask
    {
       protected bool _result;
       private AdvancedProtocol _protocol;
@@ -1189,7 +1189,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_single_iv : concern_for_CanCalculateGlobalPK
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_single_iv : concern_for_CanCalculateGlobalPKInProtocol
    {
       protected override IReadOnlyList<SchemaItem> GetSchemaItems()
       {
@@ -1206,7 +1206,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_oral : concern_for_CanCalculateGlobalPK
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_oral : concern_for_CanCalculateGlobalPKInProtocol
    {
       protected override IReadOnlyList<SchemaItem> GetSchemaItems()
       {
@@ -1224,7 +1224,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_mixed_protocol_oral : concern_for_CanCalculateGlobalPK
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_mixed_protocol_oral : concern_for_CanCalculateGlobalPKInProtocol
    {
       protected override IReadOnlyList<SchemaItem> GetSchemaItems()
       {
@@ -1242,7 +1242,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_user_defined : concern_for_CanCalculateGlobalPK
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_user_defined : concern_for_CanCalculateGlobalPKInProtocol
    {
       protected override IReadOnlyList<SchemaItem> GetSchemaItems()
       {
@@ -1259,7 +1259,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_an_empty_protocol : concern_for_CanCalculateGlobalPK
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_an_empty_protocol : concern_for_CanCalculateGlobalPKInProtocol
    {
       protected override IReadOnlyList<SchemaItem> GetSchemaItems()
       {
@@ -1273,7 +1273,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_an_undefined_protocol : concern_for_CanCalculateGlobalPK
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_an_undefined_protocol : concern_for_CanCalculateGlobalPKInProtocol
    {
       protected override IReadOnlyList<SchemaItem> GetSchemaItems()
       {
@@ -1282,6 +1282,176 @@ namespace PKSim.Core
 
       [Observation]
       public void should_return_false()
+      {
+         _result.ShouldBeFalse();
+      }
+   }
+
+   public abstract class concern_for_CanCalculateGlobalPKAnalysisInSimulation : concern_for_PKAnalysesTask
+   {
+      protected bool _result;
+      protected CompoundProperties _secondCompoundProperties;
+      protected CompoundProperties _firstCompoundProperties;
+      protected IndividualSimulation _individualSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         var firstCompound = new Compound().WithName("Compound1");
+         var firstProtocol = new AdvancedProtocol();
+         _firstCompoundProperties = new CompoundProperties
+         {
+            Compound = firstCompound,
+            ProtocolProperties = new ProtocolProperties
+            {
+               Protocol = firstProtocol
+            }
+         };
+
+         var secondCompound = new Compound().WithName("Compound2");
+         var secondProtocol = new AdvancedProtocol();
+         _secondCompoundProperties = new CompoundProperties
+         {
+            Compound = secondCompound,
+            ProtocolProperties = new ProtocolProperties
+            {
+               Protocol = secondProtocol
+            }
+         };
+
+         var simulationProperties = new SimulationProperties();
+         simulationProperties.AddCompoundProperties(_firstCompoundProperties);
+         simulationProperties.AddCompoundProperties(_secondCompoundProperties);
+
+         var firstUsedBuildingBlock = new UsedBuildingBlock("t1", PKSimBuildingBlockType.Compound)
+         {
+            BuildingBlock = firstCompound
+         };
+         var secondUsedBuildingBlock = new UsedBuildingBlock("t2", PKSimBuildingBlockType.Compound)
+         {
+            BuildingBlock = secondCompound
+         };
+
+         _individualSimulation = new IndividualSimulation
+         {
+            Properties = simulationProperties
+         };
+         _individualSimulation.AddUsedBuildingBlock(firstUsedBuildingBlock);
+         _individualSimulation.AddUsedBuildingBlock(secondUsedBuildingBlock);
+
+         A.CallTo(() => _protocolMapper.MapFrom(firstProtocol)).Returns(GetSchemaItemsFirstProtocol());
+         A.CallTo(() => _protocolMapper.MapFrom(secondProtocol)).Returns(GetSchemaItemsSecondProtocol());
+      }
+
+      protected abstract IReadOnlyList<SchemaItem> GetSchemaItemsFirstProtocol();
+      protected abstract IReadOnlyList<SchemaItem> GetSchemaItemsSecondProtocol();
+
+      protected override void Because()
+      {
+         _result = sut.CanCalculateGlobalPKFor(_individualSimulation);
+      }
+   }
+
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple : concern_for_CanCalculateGlobalPKAnalysisInSimulation
+   {
+      [Observation]
+      public void the_calculation_is_possible()
+      {
+         _result.ShouldBeTrue();
+      }
+
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsFirstProtocol()
+      {
+         return new[]
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous}
+         };
+      }
+
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsSecondProtocol()
+      {
+         return new[]
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous}
+         };
+      }
+   }
+
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_an_simulation_using_a_metabolite : concern_for_CanCalculateGlobalPKAnalysisInSimulation
+   {
+      protected override void Context()
+      {
+         base.Context();
+         //no protocol for the first compound
+         _firstCompoundProperties.ProtocolProperties.Protocol = null;
+      }
+
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsFirstProtocol()
+      {
+         return Array.Empty<SchemaItem>();
+      }
+
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsSecondProtocol()
+      {
+         return new[]
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+         };
+      }
+
+      [Observation]
+      public void the_calculation_is_possible()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_with_at_least_one_possible : concern_for_CanCalculateGlobalPKAnalysisInSimulation
+   {
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsFirstProtocol()
+      {
+         return new[]
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.Oral}
+         };
+      }
+
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsSecondProtocol()
+      {
+         return new[]
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+         };
+      }
+
+      [Observation]
+      public void the_calculation_is_possible()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_with_all_not_possible : concern_for_CanCalculateGlobalPKAnalysisInSimulation
+   {
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsFirstProtocol()
+      {
+         return new[]
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.UserDefined}
+         };
+      }
+
+      protected override IReadOnlyList<SchemaItem> GetSchemaItemsSecondProtocol()
+      {
+         return new[]
+         {
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+            new SchemaItem {ApplicationType = ApplicationTypes.Intravenous},
+         };
+      }
+      [Observation]
+      public void the_calculation_is_not_possible()
       {
          _result.ShouldBeFalse();
       }

@@ -10,7 +10,6 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -127,10 +126,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void updateParameterDisplayUnits(string parameterName)
       {
-         GlobalPKAnalysis.PKParameters(parameterName).Each(parameter =>
-         {
-            parameter.DisplayUnit = parameter.Dimension.Unit(_settings.GetSetting(parameterName, DisplayUnitFor(parameterName).Name));
-         });
+         GlobalPKAnalysis.PKParameters(parameterName).Each(parameter => { parameter.DisplayUnit = parameter.Dimension.Unit(_settings.GetSetting(parameterName, DisplayUnitFor(parameterName).Name)); });
       }
 
       private Simulation firstSimulation => _simulations.FirstOrDefault();
@@ -165,9 +161,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public bool CanCalculateGlobalPK()
       {
-         return firstSimulation.Compounds.Select(compound => firstSimulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol)
-            .Where(p => p != null)
-            .Any(_pkAnalysesTask.CanCalculateGlobalPKFor);
+         return _simulations.Count == 1 && _pkAnalysesTask.CanCalculateGlobalPKFor(firstSimulation);
       }
 
       public void LoadSettingsForSubject(IWithId subject)

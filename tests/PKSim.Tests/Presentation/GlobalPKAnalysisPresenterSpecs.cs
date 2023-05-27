@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -12,7 +10,6 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
 using PKSim.Core;
-using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -66,131 +63,39 @@ namespace PKSim.Presentation
       }
    }
 
-   public abstract class context_for_can_calculate_global_pk_analysis : concern_for_GlobalPKAnalysisPresenter
+   public class When_checking_if_global_pk_parameters_can_be_calculated_for_a_set_of_simulations : concern_for_GlobalPKAnalysisPresenter
    {
-      protected bool _result;
-      protected CompoundProperties _secondCompoundProperties;
-      protected CompoundProperties _firstCompoundProperties;
+      private IndividualSimulation _simulation1;
+      private IndividualSimulation _simulation2;
 
       protected override void Context()
       {
          base.Context();
-         var firstCompound = new Compound().WithName("Compound1");
-         var firstProtocol = new AdvancedProtocol();
-         _firstCompoundProperties = new CompoundProperties
-         {
-            Compound = firstCompound,
-            ProtocolProperties = new ProtocolProperties
-            {
-               Protocol = firstProtocol
-            }
-         };
-
-         var secondCompound = new Compound().WithName("Compound2");
-         var secondProtocol = new AdvancedProtocol();
-         _secondCompoundProperties = new CompoundProperties
-         {
-            Compound = secondCompound,
-            ProtocolProperties = new ProtocolProperties
-            {
-               Protocol = secondProtocol
-            }
-         };
-
-         var simulationProperties = new SimulationProperties();
-         simulationProperties.AddCompoundProperties(_firstCompoundProperties);
-         simulationProperties.AddCompoundProperties(_secondCompoundProperties);
-
-         var firstUsedBuildingBlock = new UsedBuildingBlock("t1", PKSimBuildingBlockType.Compound)
-         {
-            BuildingBlock = firstCompound
-         };
-         var secondUsedBuildingBlock = new UsedBuildingBlock("t2", PKSimBuildingBlockType.Compound)
-         {
-            BuildingBlock = secondCompound
-         };
-
-         var individualSimulation = new IndividualSimulation
-         {
-            Properties = simulationProperties
-         };
-         individualSimulation.AddUsedBuildingBlock(firstUsedBuildingBlock);
-         individualSimulation.AddUsedBuildingBlock(secondUsedBuildingBlock);
-
-         _simulations.Add(individualSimulation);
-
-
-         A.CallTo(() => _pKAnalysesTask.CanCalculateGlobalPKFor(firstProtocol)).Returns(ResultForFirstProtocol());
-         A.CallTo(() => _pKAnalysesTask.CanCalculateGlobalPKFor(secondProtocol)).Returns(ResultForSecondProtocol());
-
-         sut.CalculatePKAnalysis(_simulations);
+         _simulation1 = new IndividualSimulation();
+         _simulation2 = new IndividualSimulation();
       }
-
-      protected abstract bool ResultForFirstProtocol();
-      protected abstract bool ResultForSecondProtocol();
-
-      protected override void Because()
-      {
-         _result = sut.CanCalculateGlobalPK();
-      }
-   }
-
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple : context_for_can_calculate_global_pk_analysis
-   {
-      [Observation]
-      public void the_calculation_is_possible()
-      {
-         _result.ShouldBeTrue();
-      }
-
-      protected override bool ResultForFirstProtocol() => true;
-
-      protected override bool ResultForSecondProtocol() => true;
-   }
-
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_an_simulation_using_a_metabolite : context_for_can_calculate_global_pk_analysis
-   {
-      protected override void Context()
-      {
-         base.Context();
-         //no protocol for the first compound
-         _firstCompoundProperties.ProtocolProperties.Protocol = null;
-      }
-
-      protected override bool ResultForFirstProtocol() => false;
-
-      protected override bool ResultForSecondProtocol() => true;
 
       [Observation]
-      public void the_calculation_is_possible()
+      public void should_return_false_if_there_is_more_than_one_simulation()
       {
-         _result.ShouldBeTrue();
+         sut.CalculatePKAnalysis(new[] {_simulation1, _simulation2,});
+         sut.CanCalculateGlobalPK().ShouldBeFalse();
       }
-   }
-
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_with_at_least_one_possible : context_for_can_calculate_global_pk_analysis
-   {
-      protected override bool ResultForFirstProtocol() => false;
-
-      protected override bool ResultForSecondProtocol() => true;
 
       [Observation]
-      public void the_calculation_is_possible()
+      public void should_return_false_if_global_pk_cannot_be_calculated_for_the_only_simulation()
       {
-         _result.ShouldBeTrue();
+         A.CallTo(() => _pKAnalysesTask.CanCalculateGlobalPKFor(_simulation1)).Returns(false);
+         sut.CalculatePKAnalysis(new[] {_simulation1});
+         sut.CanCalculateGlobalPK().ShouldBeFalse();
       }
-   }
-
-   public class When_calculating_if_a_global_pk_analysis_is_possible_for_multiple_with_all_not_possible : context_for_can_calculate_global_pk_analysis
-   {
-      protected override bool ResultForFirstProtocol() => false;
-
-      protected override bool ResultForSecondProtocol() => false;
 
       [Observation]
-      public void the_calculation_is_not_possible()
+      public void should_return_true_if_global_pk_can_be_calculated_for_the_only_simulation()
       {
-         _result.ShouldBeFalse();
+         A.CallTo(() => _pKAnalysesTask.CanCalculateGlobalPKFor(_simulation1)).Returns(true);
+         sut.CalculatePKAnalysis(new[] {_simulation1});
+         sut.CanCalculateGlobalPK().ShouldBeTrue();
       }
    }
 
