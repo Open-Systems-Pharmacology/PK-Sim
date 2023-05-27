@@ -124,12 +124,16 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          if (_settings == null)
             return;
+
          GlobalPKAnalysis.AllPKParameterNames.Each(updateParameterDisplayUnits);
       }
 
       private void updateParameterDisplayUnits(string parameterName)
       {
-         GlobalPKAnalysis.PKParameters(parameterName).Each(parameter => { parameter.DisplayUnit = parameter.Dimension.Unit(_settings.GetSetting(parameterName, DisplayUnitFor(parameterName).Name)); });
+         GlobalPKAnalysis.PKParameters(parameterName).Each(parameter =>
+         {
+            parameter.DisplayUnit = parameter.Dimension.Unit(_settings.GetSetting(parameterName, DisplayUnitFor(parameterName).Name));
+         });
       }
 
       private Simulation firstSimulation => _simulations.FirstOrDefault();
@@ -141,20 +145,11 @@ namespace PKSim.Presentation.Presenters.Simulations
          updateView();
       }
 
-      public Unit DisplayUnitFor(string parameterName)
-      {
-         return pkParameterNamed(parameterName).DisplayUnit;
-      }
+      public Unit DisplayUnitFor(string parameterName) => pkParameterNamed(parameterName).DisplayUnit;
 
-      public IEnumerable<Unit> AvailableUnitsFor(string parameterName)
-      {
-         return pkParameterNamed(parameterName).Dimension.Units;
-      }
+      public IEnumerable<Unit> AvailableUnitsFor(string parameterName) => pkParameterNamed(parameterName).Dimension.Units;
 
-      private IParameter pkParameterNamed(string parameterName)
-      {
-         return GlobalPKAnalysis.PKParameters(parameterName).First();
-      }
+      private IParameter pkParameterNamed(string parameterName) => GlobalPKAnalysis.PKParameters(parameterName).First();
 
       public string DisplayNameFor(string parameterName)
       {
@@ -175,11 +170,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          return firstSimulation.Compounds.Select(compound => firstSimulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol)
             .Where(p => p != null)
-            .Select(_protocolToSchemaItemsMapper.MapFrom)
-            .Any(x => !isMultipleIV(x));
+            .Any(_pkAnalysesTask.CanCalculateGlobalPKFor);
       }
-
-      private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems) => schemaItems.Count(x => x.IsIV) > 1;
 
       public void LoadSettingsForSubject(IWithId subject)
       {
