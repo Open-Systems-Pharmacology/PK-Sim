@@ -155,4 +155,57 @@ namespace PKSim.IntegrationTests
          _individualTransporter.BloodCellsContainer.TransportDirection.ShouldBeEqualTo(TransportDirectionId.EffluxBloodCellsToPlasma);
       }
    }
+
+   public class When_synchronizing_all_expression_profile_used_in_a_simulation_subject_with_a_simulation : concern_for_ExpressionProfileUpdater
+   {
+      private Simulation _simulation;
+      private Individual _individualInSimulation;
+      private ExpressionProfile _expressionProfileForEnzymeInSimulation;
+      private IndividualEnzyme _expressionProfileEnzymeInSimulation;
+      private UsedBuildingBlock _usedIndividualBuildingBLock;
+      private UsedBuildingBlock _usedExpressionProfileBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation();
+
+         _individualInSimulation = DomainFactoryForSpecs.CreateStandardIndividual();
+         _expressionProfileForEnzymeInSimulation = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _moleculeExpressionTask.AddExpressionProfile(_individualInSimulation, _expressionProfileForEnzymeInSimulation);
+         _expressionProfileEnzymeInSimulation = _expressionProfileForEnzymeInSimulation.Molecule.DowncastTo<IndividualEnzyme>();
+         _usedIndividualBuildingBLock = new UsedBuildingBlock(_individual.Id, PKSimBuildingBlockType.Individual)
+         {
+            BuildingBlock = _individualInSimulation
+         };
+         _usedExpressionProfileBuildingBlock = new UsedBuildingBlock(_expressionProfileForEnzyme.Id, PKSimBuildingBlockType.ExpressionProfile)
+         {
+            BuildingBlock = _expressionProfileForEnzymeInSimulation
+         };
+
+         _simulation.AddUsedBuildingBlock(_usedIndividualBuildingBLock);
+         _simulation.AddUsedBuildingBlock(_usedExpressionProfileBuildingBlock);
+
+         _expressionProfileForEnzyme.Version = 10;
+         _expressionProfileEnzyme.HalfLifeLiver.Value = 50;
+
+      }
+      protected override void Because()
+      {
+         sut.SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(_individual, _simulation );
+      }
+
+      [Observation]
+      public void should_have_updated_all_values_of_the_expression_profiles_in_the_simulation_with_those_of_the_corresponding_template_expression_profile()
+      {
+         _expressionProfileEnzymeInSimulation.HalfLifeLiver.Value.ShouldBeEqualTo(50);
+      }
+
+      [Observation]
+      public void should_have_updated_the_version_of_the_building_block_in_the_simulation_to_the_one_used_in_the_template()
+      {
+         _expressionProfileForEnzymeInSimulation.Version.ShouldBeEqualTo(_expressionProfileForEnzyme.Version);
+         _usedExpressionProfileBuildingBlock.Version.ShouldBeEqualTo(_expressionProfileForEnzyme.Version);
+      }
+   }
 }
