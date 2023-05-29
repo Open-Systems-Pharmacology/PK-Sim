@@ -125,7 +125,7 @@ namespace PKSim.Core.Services
          //Now that our expression profile are updated, we need to trigger the synchronization in all building blocks
          expressionProfilesToUpdate.Each(x => _expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(x));
 
-         //last, synchronize the expression profile in the simulation as ell
+         //last, synchronize the expression profile in the simulation as well
          _expressionProfileUpdater.SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(simulationSubject, simulation);
          return macroCommand;
       }
