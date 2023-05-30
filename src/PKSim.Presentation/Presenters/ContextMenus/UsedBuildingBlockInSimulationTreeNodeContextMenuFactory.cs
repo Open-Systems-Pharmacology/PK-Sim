@@ -45,6 +45,19 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       }
    }
 
+
+   public class UsedExpressionProfileInSimulationTreeNodeContextMenuFactory : UsedBuildingBlockInSimulationTreeNodeContextMenuFactory<ExpressionProfile>
+   {
+      public UsedExpressionProfileInSimulationTreeNodeContextMenuFactory(IContainer container) : base(container)
+      {
+      }
+
+      protected override IContextMenu CreateFor(Simulation simulation, UsedBuildingBlock usedBuildingBlock, ExpressionProfile expressionProfile)
+      {
+         return new UsedBuildingBlockInSimulationContextMenu<ExpressionProfile>(simulation, usedBuildingBlock, expressionProfile, _container);
+      }
+   }
+
    public class UsedCompoundInSimulationTreeNodeContextMenuFactory : UsedBuildingBlockInSimulationTreeNodeContextMenuFactory<Compound>
    {
       public UsedCompoundInSimulationTreeNodeContextMenuFactory(IContainer container) : base(container)

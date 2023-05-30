@@ -109,6 +109,7 @@ namespace PKSim.Core.Model
 
          _simulationBuildingBlockUpdater.UpdateUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject, PKSimBuildingBlockType.SimulationSubject);
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, compounds, PKSimBuildingBlockType.Compound);
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject.AllExpressionProfiles(), PKSimBuildingBlockType.ExpressionProfile);
 
          //set basic properties
          if (originalSimulation != null)

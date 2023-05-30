@@ -1,11 +1,11 @@
-using PKSim.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -22,12 +22,12 @@ namespace PKSim.Infrastructure.Services
       private readonly ISensitivityAnalysisContentLoader _sensitivityAnalysisContentLoader;
 
       public LazyLoadTask(
-         IContentLoader contentLoader, 
-         ISimulationResultsLoader simulationResultsLoader, 
+         IContentLoader contentLoader,
+         ISimulationResultsLoader simulationResultsLoader,
          ISimulationChartsLoader simulationChartsLoader,
-         ISimulationComparisonContentLoader simulationComparisonContentLoader, 
+         ISimulationComparisonContentLoader simulationComparisonContentLoader,
          ISimulationAnalysesLoader simulationAnalysesLoader,
-         IParameterIdentificationContentLoader parameterIdentificationContentLoader, 
+         IParameterIdentificationContentLoader parameterIdentificationContentLoader,
          ISensitivityAnalysisContentLoader sensitivityAnalysisContentLoader,
          IRegistrationTask registrationTask,
          IProgressManager progressManager)
@@ -69,7 +69,7 @@ namespace PKSim.Infrastructure.Services
       {
          if (simulation == null)
             return;
-         
+
          Load(simulation);
 
          if (simulation.HasResults)
@@ -113,13 +113,20 @@ namespace PKSim.Infrastructure.Services
 
          //updating results may triggered update of has changed flag that is not accurate. We save the original state and update it at the end
          var hasChanged = simulation.HasChanged;
-         
+
          //Only load results for individual simulations
          if (simulation.IsAnImplementationOf<IndividualSimulation>())
             _simulationResultsLoader.LoadResultsFor(simulation.DowncastTo<IndividualSimulation>());
 
          else if (simulation.IsAnImplementationOf<PopulationSimulation>())
             _simulationAnalysesLoader.LoadAnalysesFor(simulation.DowncastTo<PopulationSimulation>());
+
+         //make sure each individual gets the expression profile defined in the simulation)  
+         var simulationSubject = simulation.BuildingBlock<ISimulationSubject>();
+       
+         //this can happen for an imported simulation
+         if (simulationSubject != null)
+            simulation.AllBuildingBlocks<ExpressionProfile>().Each(simulationSubject.AddExpressionProfile);
 
          //in all cases, load the charts
          _simulationChartsLoader.LoadChartsFor(simulation);
