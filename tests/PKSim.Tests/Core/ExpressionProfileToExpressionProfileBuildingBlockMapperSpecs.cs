@@ -114,8 +114,7 @@ namespace PKSim.Core
          _result.Category.ShouldBeEqualTo("TestCategory");
          _result.Description.ShouldBeEqualTo("TestDescription");
          _result.MoleculeName.ShouldBeEqualTo("TestEnzyme");
-         _result.Type.DisplayName.ShouldBeEqualTo("Metabolizing Enzyme");
-         _result.Type.IconName.ShouldBeEqualTo("Enzyme");
+         _result.Type.ShouldBeEqualTo(ExpressionTypes.MetabolizingEnzyme);
       }
    }
 }
