@@ -41,7 +41,7 @@ namespace PKSim.Core.Services
          //default molecule start values matrix
          var compounds = simulation.Compounds;
          var individual = simulation.Individual;
-         var defaultInitialConditions = _initialConditionsCreator.CreateFrom(module.SpatialStructure, module.Molecules);
+         var defaultInitialConditions = _initialConditionsCreator.CreateFrom(module.SpatialStructure, module.Molecules.ToList());
 
          //set available start formulas for molecules
          setStartFormulasForStaticMolecules(defaultInitialConditions, simulation, compounds);
