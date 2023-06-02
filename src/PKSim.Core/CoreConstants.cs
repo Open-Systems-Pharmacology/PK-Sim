@@ -891,9 +891,9 @@ namespace PKSim.Core
          };
 
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
-         public static readonly string ONTOGENY_FACTOR_TABLE = $"{ONTOGENY_FACTOR} Table";
+         public static readonly string ONTOGENY_FACTOR_TABLE = $"{ONTOGENY_FACTOR} table";
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
-         public static readonly string ONTOGENY_FACTOR_GI_TABLE = $"{ONTOGENY_FACTOR_GI} Table";
+         public static readonly string ONTOGENY_FACTOR_GI_TABLE = $"{ONTOGENY_FACTOR_GI} table";
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
          public static readonly string NUMBER_OF_REPETITIONS = "NumberOfRepetitions";
          public static readonly string TIME_BETWEEN_REPETITIONS = "TimeBetweenRepetitions";
