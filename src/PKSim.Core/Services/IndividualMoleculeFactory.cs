@@ -108,10 +108,9 @@ namespace PKSim.Core.Services
          CreateMoleculeParameterIn(molecule, HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, DISEASE_FACTOR, CoreConstants.DEFAULT_DISEASE_FACTOR);
-
-         //TODO HERE WE NEED TO CREATE THE TABLE PARAMETERS. See
-         //https://github.com/Open-Systems-Pharmacology/PK-Sim/issues/2532#issuecomment-1561330454
-
+         
+         //Default ontogeny parameter tables created for ALL molecules with a default value of 1
+         OntogenyFactorTables.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
 
          return molecule;
       }
