@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using OSPSuite.Core.Domain;
@@ -61,6 +62,16 @@ namespace PKSim.Infrastructure
          formulation.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM).Value = (numberOfBins > 1) ? CoreConstants.Parameters.POLYDISPERSE : CoreConstants.Parameters.MONODISPERSE;
 
          return formulation;
+      }
+
+      public static ExpressionProfile CreateExpressionProfileAndAddToIndividual<TMolecule>(Individual individual, string moleculeName = "CYP3A4", Action<ExpressionProfile> updateAction = null) where TMolecule : IndividualMolecule
+      {
+         var moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+         var expressionProfile = CreateExpressionProfile<TMolecule>(moleculeName);
+         if (updateAction != null)
+            updateAction(expressionProfile);
+         moleculeExpressionTask.AddExpressionProfile(individual, expressionProfile);
+         return expressionProfile;
       }
 
       public static ExpressionProfile CreateExpressionProfile<TMolecule>(string moleculeName = "CYP3A4") where TMolecule : IndividualMolecule

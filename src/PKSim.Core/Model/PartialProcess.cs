@@ -23,7 +23,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Name of the molecule responsible for triggering the processs
+      ///    Name of the molecule responsible for triggering the process
       /// </summary>
       public string MoleculeName
       {

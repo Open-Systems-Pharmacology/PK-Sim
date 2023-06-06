@@ -72,7 +72,7 @@ namespace PKSim.UI.Starter
       {
          var returnList = new List<ExpressionParameterValueUpdate>();
 
-         buildingBlock.Where(x => x.HasExpressionName()).Each(expressionParameter =>
+         buildingBlock.ExpressionParameters.Where(x => x.HasExpressionName()).Each(expressionParameter =>
          {
             var result = queryResults.ExpressionResultFor(expressionParameter.ContainerNameForRelativeExpressionParameter());
             if (result != null && !Equals(result.RelativeExpression, expressionParameter.Value))

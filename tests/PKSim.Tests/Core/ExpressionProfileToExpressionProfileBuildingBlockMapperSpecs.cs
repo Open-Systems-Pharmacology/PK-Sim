@@ -103,8 +103,8 @@ namespace PKSim.Core
       [Observation]
       public void resulting_expression_parameter_should_have_formula_or_value()
       {
-         _result.Count(x => x.Formula == null).ShouldBeEqualTo(1);
-         _result.Count(x => x.Formula != null).ShouldBeEqualTo(2);
+         _result.ExpressionParameters.Count(x => x.Formula == null).ShouldBeEqualTo(1);
+         _result.ExpressionParameters.Count(x => x.Formula != null).ShouldBeEqualTo(2);
       }
 
       [Observation]
@@ -114,7 +114,7 @@ namespace PKSim.Core
          _result.Category.ShouldBeEqualTo("TestCategory");
          _result.Description.ShouldBeEqualTo("TestDescription");
          _result.MoleculeName.ShouldBeEqualTo("TestEnzyme");
-         _result.Type.DisplayName.ShouldBeEqualTo("Enzyme");
+         _result.Type.DisplayName.ShouldBeEqualTo("Metabolizing Enzyme");
          _result.Type.IconName.ShouldBeEqualTo("Enzyme");
       }
    }

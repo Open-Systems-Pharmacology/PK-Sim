@@ -33,7 +33,7 @@ namespace PKSim.Core.Mappers
       public QueryExpressionSettings MapFrom(ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
       {
          var expressionContainers = expressionProfileBuildingBlock.
-            Where(x => x.Value.HasValue && x.HasExpressionName()).
+            ExpressionParameters.Where(x => x.Value.HasValue && x.HasExpressionName()).
             Select(expressionContainerInfoForExpressionParameter).ToList();
 
          return new QueryExpressionSettings(expressionContainers, string.Empty, expressionProfileBuildingBlock.MoleculeName);

@@ -14,20 +14,21 @@ namespace PKSim.IntegrationTests
 {
    public class When_a_model_is_being_created_for_a_simulation : ContextForSimulationIntegration<ISimulationModelCreator>
    {
-      private IndividualEnzyme _enzyme;
-      private IndividualEnzyme _protein;
+      private IndividualMolecule _enzyme;
+      private IndividualMolecule _protein;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
          var templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         
+         var cypExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "CYP");
+         _enzyme = cypExpression.Molecule;
 
-         _enzyme = enzymeFactory.AddMoleculeTo(templateIndividual, "CYP").DowncastTo<IndividualEnzyme>();
-
-         _protein = enzymeFactory.AddMoleculeTo(templateIndividual, "PROT").DowncastTo<IndividualEnzyme>();
+         var protExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "PROT");
+         _protein = protExpression.Molecule;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, compound, protocol).DowncastTo<IndividualSimulation>();
 

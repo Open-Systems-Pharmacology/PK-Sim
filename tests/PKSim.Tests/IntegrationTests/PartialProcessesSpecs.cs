@@ -267,19 +267,19 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_a_transporter_for_brain_BBB_influx : concern_for_PartialProcesses
    {
-      private IndividualTransporter _transporter;
+      private IndividualMolecule _transporter;
       private PartialProcess _transportProcess;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _transporter = _transporterFactory.CreateFor(_individual, "TRANS", TransportType.Efflux).DowncastTo<IndividualTransporter>();
+
+         _transporter = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualTransporter>(_individual, "TRANS").Molecule;
          var transportContainer = _individual.AllMoleculeContainersFor<TransporterExpressionContainer>(_transporter)
             .First(x => x.LogicalContainer.IsNamed(CoreConstants.Organ.BRAIN));
 
          transportContainer.TransportDirection = TransportDirectionId.InfluxBrainPlasmaToInterstitial;
 
-         _individual.AddMolecule(_transporter);
          _transportProcess = _cloneManager.Clone(_compoundProcessRepository.ProcessByName(CoreConstantsForSpecs.Process.ACTIVE_TRANSPORT_SPECIFIC_MM)
             .DowncastTo<PartialProcess>());
          _transportProcess.Name = "My Transport Process";

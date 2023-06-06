@@ -336,10 +336,8 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
-         var individualProtein = enzymeFactory.AddMoleculeTo(_individual, _enzymeName);
-         individualProtein.Ontogeny = new UserDefinedOntogeny() {Table = createOntogenyTable()};
-         _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
+         DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual, _enzymeName, 
+            x => x.Molecule.Ontogeny = new UserDefinedOntogeny { Table = createOntogenyTable() });
 
          var containerTask = IoC.Resolve<IContainerTask>();
          _individual.OriginData.Age = new OriginDataParameter(2);
