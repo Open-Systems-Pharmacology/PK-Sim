@@ -115,7 +115,7 @@ namespace PKSim.Core.Services
 
          module.Add(initialConditionsForCompounds);
 
-         createInitialConditionsForProteins(simulation, simulationConfiguration, module, allDefinedProteins);
+         createInitialConditionsForDefinedProteins(simulation, simulationConfiguration, module, allDefinedProteins);
 
          var parameterValues = _parameterValuesCreator.CreateFor(simulation);
          module.Add(parameterValues);
@@ -132,7 +132,7 @@ namespace PKSim.Core.Services
          return simulationConfiguration;
       }
 
-      private void createInitialConditionsForProteins(Simulation simulation, SimulationConfiguration simulationConfiguration, Module module, IReadOnlyList<MoleculeBuilder> allDefinedProteins)
+      private void createInitialConditionsForDefinedProteins(Simulation simulation, SimulationConfiguration simulationConfiguration, Module module, IReadOnlyList<MoleculeBuilder> allDefinedProteins)
       {
          simulationConfiguration.ExpressionProfiles.Each(expressionProfile => addInitialConditions(expressionProfile, module.SpatialStructure, allDefinedProteins, simulation));
       }
