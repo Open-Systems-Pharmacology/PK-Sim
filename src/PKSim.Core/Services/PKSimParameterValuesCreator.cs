@@ -1,3 +1,4 @@
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -40,7 +41,7 @@ namespace PKSim.Core.Services
             individual.AllUndefinedMolecules().Each(molecule => updateMoleculeParametersValues(molecule, individual));
 
             updateSimulationParameters(simulation);
-            return _defaultValues.WithName(simulation.Name);
+            return _defaultValues.WithName(DefaultNames.ParameterValues);
          }
          finally
          {

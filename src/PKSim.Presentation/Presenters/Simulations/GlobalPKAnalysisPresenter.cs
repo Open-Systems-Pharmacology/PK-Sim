@@ -10,7 +10,6 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -45,17 +44,20 @@ namespace PKSim.Presentation.Presenters.Simulations
       private GlobalPKAnalysisDTO _globalPKAnalysisDTO;
       private DefaultPresentationSettings _settings;
       private readonly IPresentationSettingsTask _presentationSettingsTask;
-      private readonly IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
 
-      public GlobalPKAnalysisPresenter(IGlobalPKAnalysisView view, IPKAnalysesTask pkAnalysesTask,
-         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper, IHeavyWorkManager heavyWorkManager, IRepresentationInfoRepository representationInfoRepository, IPresentationSettingsTask presentationSettingsTask, IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper) : base(view)
+      public GlobalPKAnalysisPresenter(
+         IGlobalPKAnalysisView view,
+         IPKAnalysesTask pkAnalysesTask,
+         IGlobalPKAnalysisToGlobalPKAnalysisDTOMapper globalPKAnalysisDTOMapper,
+         IHeavyWorkManager heavyWorkManager,
+         IRepresentationInfoRepository representationInfoRepository,
+         IPresentationSettingsTask presentationSettingsTask) : base(view)
       {
          _pkAnalysesTask = pkAnalysesTask;
          _globalPKAnalysisDTOMapper = globalPKAnalysisDTOMapper;
          _heavyWorkManager = heavyWorkManager;
          _representationInfoRepository = representationInfoRepository;
          _presentationSettingsTask = presentationSettingsTask;
-         _protocolToSchemaItemsMapper = protocolToSchemaItemsMapper;
          _settings = new DefaultPresentationSettings();
       }
 
@@ -118,6 +120,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          if (_settings == null)
             return;
+
          GlobalPKAnalysis.AllPKParameterNames.Each(updateParameterDisplayUnits);
       }
 
@@ -135,20 +138,11 @@ namespace PKSim.Presentation.Presenters.Simulations
          updateView();
       }
 
-      public Unit DisplayUnitFor(string parameterName)
-      {
-         return pkParameterNamed(parameterName).DisplayUnit;
-      }
+      public Unit DisplayUnitFor(string parameterName) => pkParameterNamed(parameterName).DisplayUnit;
 
-      public IEnumerable<Unit> AvailableUnitsFor(string parameterName)
-      {
-         return pkParameterNamed(parameterName).Dimension.Units;
-      }
+      public IEnumerable<Unit> AvailableUnitsFor(string parameterName) => pkParameterNamed(parameterName).Dimension.Units;
 
-      private IParameter pkParameterNamed(string parameterName)
-      {
-         return GlobalPKAnalysis.PKParameters(parameterName).First();
-      }
+      private IParameter pkParameterNamed(string parameterName) => GlobalPKAnalysis.PKParameters(parameterName).First();
 
       public string DisplayNameFor(string parameterName)
       {
@@ -167,15 +161,8 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public bool CanCalculateGlobalPK()
       {
-         return firstSimulation.Compounds.Any(compound =>
-         {
-            var schemaItems = _protocolToSchemaItemsMapper.MapFrom(firstSimulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol);
-            return !isMultipleIV(schemaItems);
-         });
+         return _simulations.Count == 1 && _pkAnalysesTask.CanCalculateGlobalPKFor(firstSimulation);
       }
-
-      private bool isMultipleIV(IReadOnlyList<SchemaItem> schemaItems) => schemaItems.Count(schemaItem => schemaItem.IsIV) > 1;
-      
 
       public void LoadSettingsForSubject(IWithId subject)
       {

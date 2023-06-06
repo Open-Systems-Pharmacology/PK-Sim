@@ -35,6 +35,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
 
       public abstract void ModelConfigurationDone();
+
       protected abstract string HeavyWorkCaption { get; }
 
       public override void WizardCurrent(int previousIndex, int newIndex)

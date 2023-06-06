@@ -69,7 +69,7 @@ namespace PKSim.Core.Services
          updateCommands.Add(updateTemplateParametersCommand);
 
          //Last, see if we have some special cases to handle 
-         var synchronizeCommand = synchronizeBuildingBlocks(templateBuildingBlock, updateTemplateParametersCommand);
+         var synchronizeCommand = synchronizeBuildingBlocks(templateBuildingBlock, updateTemplateParametersCommand, simulation);
          updateCommands.Add(synchronizeCommand);
 
          //now make sure that the used building block is updated with the template building block info
@@ -79,11 +79,10 @@ namespace PKSim.Core.Services
          return updateCommands;
       }
 
-      private ICommand synchronizeBuildingBlocks(IPKSimBuildingBlock templateBuildingBlock, IPKSimMacroCommand updateTemplateParametersCommand)
+      private ICommand synchronizeBuildingBlocks(IPKSimBuildingBlock templateBuildingBlock, IPKSimMacroCommand updateTemplateParametersCommand, Simulation simulation)
       {
-         var simulationSubject = templateBuildingBlock as ISimulationSubject;
          //For now, deal with update from Individual or Population into Expression Profile
-         if (simulationSubject == null)
+         if (templateBuildingBlock is not ISimulationSubject simulationSubject)
             return new PKSimEmptyCommand();
 
          var allExpressionProfileParameterValueCommand = updateTemplateParametersCommand.All()
@@ -126,6 +125,8 @@ namespace PKSim.Core.Services
          //Now that our expression profile are updated, we need to trigger the synchronization in all building blocks
          expressionProfilesToUpdate.Each(x => _expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(x));
 
+         //last, synchronize the expression profile in the simulation as well
+         _expressionProfileUpdater.SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(simulationSubject, simulation);
          return macroCommand;
       }
 

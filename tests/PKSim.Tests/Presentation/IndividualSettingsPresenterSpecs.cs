@@ -16,6 +16,7 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.DiseaseStates;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
+using DiseaseState = PKSim.Core.Model.DiseaseState;
 using Individual = PKSim.Core.Model.Individual;
 
 namespace PKSim.Presentation

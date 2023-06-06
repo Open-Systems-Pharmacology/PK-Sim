@@ -109,6 +109,7 @@ namespace PKSim.Core.Model
 
          _simulationBuildingBlockUpdater.UpdateUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject, PKSimBuildingBlockType.SimulationSubject);
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, compounds, PKSimBuildingBlockType.Compound);
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject.AllExpressionProfiles(), PKSimBuildingBlockType.ExpressionProfile);
 
          //set basic properties
          if (originalSimulation != null)
@@ -199,8 +200,8 @@ namespace PKSim.Core.Model
       {
          //we create a clone here to ensure that a name is set in the compound
          var vssCompound = _cloner.Clone(compound).WithName("VSS COMPOUND");
-         var simulation = CreateFrom(individual, new[] {vssCompound}, _modelPropertiesTask.DefaultFor(individual.OriginData));
-         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, new[] {protocol}, PKSimBuildingBlockType.Protocol);
+         var simulation = CreateFrom(individual, new[] { vssCompound }, _modelPropertiesTask.DefaultFor(individual.OriginData));
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, new[] { protocol }, PKSimBuildingBlockType.Protocol);
          _simulationModelCreator.CreateModelFor(simulation);
          return simulation;
       }

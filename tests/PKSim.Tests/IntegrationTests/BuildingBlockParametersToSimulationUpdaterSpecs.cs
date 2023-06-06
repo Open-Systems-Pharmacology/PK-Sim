@@ -15,11 +15,19 @@ namespace PKSim.IntegrationTests
    {
       protected Individual _templateIndividual;
       private ICoreWorkspace _workspace;
+      protected ExpressionProfile _templateExpressionProfile;
+      private IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
+         _moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+
          _templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _templateExpressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>();
+         _moleculeExpressionTask.AddExpressionProfile(_templateIndividual, _templateExpressionProfile);
+
+
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_templateIndividual, compound, protocol) as IndividualSimulation;
@@ -29,6 +37,7 @@ namespace PKSim.IntegrationTests
          project.AddBuildingBlock(protocol);
          project.AddBuildingBlock(_simulation);
          project.AddBuildingBlock(_templateIndividual);
+         project.AddBuildingBlock(_templateExpressionProfile);
          _workspace.Project = project;
       }
    }
@@ -42,6 +51,9 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          var templateParameter = _templateIndividual.Organism.Organ(CoreConstants.Organ.LIVER).Parameter(CoreConstants.Parameters.ALLOMETRIC_SCALE_FACTOR);
          templateParameter.Value = 3;
+
+         var templateExpressionProfileParameter = _templateExpressionProfile.Molecule.HalfLifeLiver;
+         templateExpressionProfileParameter.Value = 5;
       }
 
       protected override void Because()
@@ -59,6 +71,15 @@ namespace PKSim.IntegrationTests
          //now parameter in simulation
          var simParameter = _simulation.All<IParameter>().First(x => string.Equals(x.Origin.ParameterId, parameter.Id));
          simParameter.Value.ShouldBeEqualTo(3);
+         
+      }
+
+      [Observation]
+      public void should_have_synchronized_value_in_the_expression_profile()
+      {
+         var simExpressionProfile = _simulation.BuildingBlockByTemplateId<ExpressionProfile>(_templateExpressionProfile.Id);
+         var parameter = simExpressionProfile.Molecule.HalfLifeLiver;
+         parameter.Value.ShouldBeEqualTo(5);
       }
 
       [Observation]

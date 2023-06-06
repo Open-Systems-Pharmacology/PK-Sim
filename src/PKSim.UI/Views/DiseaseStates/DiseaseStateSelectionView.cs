@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraLayout.Utils;
+﻿using DevExpress.LookAndFeel;
+using DevExpress.XtraLayout.Utils;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -18,9 +19,11 @@ namespace PKSim.UI.Views.DiseaseStates
    {
       private readonly ScreenBinder<DiseaseStateDTO> _screenBinder = new ScreenBinder<DiseaseStateDTO>();
       private IDiseaseStateSelectionPresenter _presenter;
+      private readonly UserLookAndFeel _lookAndFeel;
 
-      public DiseaseStateSelectionView()
+      public DiseaseStateSelectionView(UserLookAndFeel lookAndFeel)
       {
+         _lookAndFeel = lookAndFeel;
          InitializeComponent();
       }
 
@@ -44,7 +47,11 @@ namespace PKSim.UI.Views.DiseaseStates
 
       public string SelectionLabel
       {
-         set => layoutItemDiseaseState.Text = value.FormatForLabel();
+         set
+         {
+            layoutItemDiseaseState.TextVisible = true;
+            layoutItemDiseaseState.Text = value.FormatForLabel();
+         }
       }
 
       public bool ShowDescription
@@ -80,9 +87,10 @@ namespace PKSim.UI.Views.DiseaseStates
          base.InitializeResources();
          layoutControl.Margin = new Padding(0);
          layoutControl.Root.Padding = new DevExpress.XtraLayout.Utils.Padding(0);
-         layoutItemDiseaseState.Text = PKSimConstants.UI.Select.FormatForLabel();
+         layoutItemDiseaseState.TextVisible = false;
          layoutItemDiseaseParameter.TextVisible = false;
          lblDescription.AsDescription();
+         layoutControl.InitializeDisabledColors(_lookAndFeel);
       }
    }
 }

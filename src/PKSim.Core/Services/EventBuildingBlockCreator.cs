@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -41,7 +42,7 @@ namespace PKSim.Core.Services
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IParameterIdUpdater parameterIdUpdater,
          IParameterSetUpdater parameterSetUpdater,
-         IEventGroupRepository eventGroupRepository, 
+         IEventGroupRepository eventGroupRepository,
          IParameterDefaultStateUpdater parameterDefaultStateUpdater)
       {
          _objectBaseFactory = objectBaseFactory;
@@ -60,7 +61,7 @@ namespace PKSim.Core.Services
          try
          {
             _simulation = simulation;
-            _eventGroupBuildingBlock = _objectBaseFactory.Create<EventGroupBuildingBlock>().WithName(simulation.Name);
+            _eventGroupBuildingBlock = _objectBaseFactory.Create<EventGroupBuildingBlock>().WithName(DefaultNames.EventBuildingBlock);
             _cloneManagerForBuildingBlock.FormulaCache = _eventGroupBuildingBlock.FormulaCache;
 
             createApplications(_simulation.CompoundPropertiesList);
@@ -84,7 +85,7 @@ namespace PKSim.Core.Services
          var eventBuildingBlockInfos = (from eventMapping in _simulation.EventProperties.EventMappings
                let usedBuildingBlock = _simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId)
                let eventBuildingBlock = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>()
-               select new {eventBuildingBlock.Id, eventBuildingBlock.TemplateName, eventBuildingBlock.Name})
+               select new { eventBuildingBlock.Id, eventBuildingBlock.TemplateName, eventBuildingBlock.Name })
             .Distinct();
 
          // create event groups for each used event-building block
@@ -228,15 +229,15 @@ namespace PKSim.Core.Services
          CoreConstants.Parameters.ParticleDistributionStructuralParameters.Each(paramName => formulationBuilder.Parameter(paramName).Editable = false);
 
          // second, set some parameters to not visible depending on settings
-         var parameterNamesToBeInvisible = new List<string> { Constants.Parameters.PARTICLE_DISPERSE_SYSTEM};
+         var parameterNamesToBeInvisible = new List<string> { Constants.Parameters.PARTICLE_DISPERSE_SYSTEM };
 
-         var numberOfBins = (int) formulationBuilder.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value;
+         var numberOfBins = (int)formulationBuilder.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value;
 
          if (numberOfBins == 1)
             parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForMonodisperse);
          else
          {
-            var particlesDistributionType = (int) formulationBuilder.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
+            var particlesDistributionType = (int)formulationBuilder.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
 
             if (particlesDistributionType == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
                parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseNormal);

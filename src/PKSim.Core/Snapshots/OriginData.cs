@@ -34,28 +34,25 @@ namespace PKSim.Core.Snapshots
       public Parameter GestationalAge { get; set; }
 
       /// <summary>
-      ///    Weight of individual to create. 
+      ///    Weight of individual to create.
       /// </summary>
       public Parameter Weight { get; set; }
 
       /// <summary>
-      ///    Height of individual to create in. 
+      ///    Height of individual to create in.
       /// </summary>
       public Parameter Height { get; set; }
 
-
       public ValueOrigin ValueOrigin { get; set; }
 
-      /// <summary>
-      /// Name of disease state associated with OriginData. Null if no disease state defined
-      /// </summary>
+      //Null if no disease state defined
+      public DiseaseState Disease { get; set; }
+
+      //Kept for compatibility reasons with old snapshots
       public string DiseaseState { get; set; }
 
-      /// <summary>
-      /// List of disease state parameters associated with the selected disease state
-      /// </summary>
+      //Kept for compatibility reasons with old snapshots
       public Parameter[] DiseaseStateParameters { get; set; }
-
 
       public void AddCalculationMethods(params string[] calculationMethods)
       {

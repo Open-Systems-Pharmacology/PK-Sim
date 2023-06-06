@@ -79,6 +79,19 @@ namespace PKSim.Core.Services
       ///    Starts the calculation of the Auc DDI Ratio for all compounds /> by switching off all other applications
       /// </summary>
       void CalculateDDIRatioFor(Simulation simulation);
+
+      /// <summary>
+      ///    Returns true if global pk-analysis can be calculated for the given <paramref name="protocol" /> otherwise false
+      /// </summary>
+      /// <param name="protocol"></param>
+      /// <returns></returns>
+      bool CanCalculateGlobalPKFor(Protocol protocol);
+
+      /// <summary>
+      ///    Returns true if global pk-analysis can be calculated for the given <paramref name="simulation" /> otherwise false
+      /// </summary>
+      /// <param name="simulation"></param>
+      bool CanCalculateGlobalPKFor(Simulation simulation);
    }
 
    public class PKAnalysesTask : OSPSuite.Core.Domain.Services.PKAnalysesTask, IPKAnalysesTask
@@ -92,7 +105,7 @@ namespace PKSim.Core.Services
       private readonly IStatisticalDataCalculator _statisticalDataCalculator;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IParameterFactory _parameterFactory;
-      private readonly IProtocolToSchemaItemsMapper _protocolToSchemaItemsMapper;
+      private readonly IProtocolToSchemaItemsMapper _protocolMapper;
       private readonly IProtocolFactory _protocolFactory;
       private readonly IGlobalPKAnalysisRunner _globalPKAnalysisRunner;
       private readonly IVSSCalculator _vssCalculator;
@@ -108,7 +121,7 @@ namespace PKSim.Core.Services
          IDimensionRepository dimensionRepository,
          IStatisticalDataCalculator statisticalDataCalculator,
          IRepresentationInfoRepository representationInfoRepository,
-         IParameterFactory parameterFactory, IProtocolToSchemaItemsMapper protocolToSchemaItemsMapper, IProtocolFactory protocolFactory,
+         IParameterFactory parameterFactory, IProtocolToSchemaItemsMapper protocolMapper, IProtocolFactory protocolFactory,
          IGlobalPKAnalysisRunner globalPKAnalysisRunner, IVSSCalculator vssCalculator, IInteractionTask interactionTask, ICloner cloner, IEntityPathResolver entityPathResolver) :
          base(lazyLoadTask, pkValuesCalculator, pkParameterRepository, pkCalculationOptionsFactory)
       {
@@ -121,7 +134,7 @@ namespace PKSim.Core.Services
          _statisticalDataCalculator = statisticalDataCalculator;
          _representationInfoRepository = representationInfoRepository;
          _parameterFactory = parameterFactory;
-         _protocolToSchemaItemsMapper = protocolToSchemaItemsMapper;
+         _protocolMapper = protocolMapper;
          _protocolFactory = protocolFactory;
          _globalPKAnalysisRunner = globalPKAnalysisRunner;
          _vssCalculator = vssCalculator;
@@ -396,13 +409,7 @@ namespace PKSim.Core.Services
          // use the first in series as a template to retrieve from all individual results.
          // The list of parameters should be identical for all the individual global analyses.
          var aPKAnalysis = globalIndividualPKParameterCache.FirstOrDefault();
-         aPKAnalysis?.AllPKParameters.GroupBy(moleculeNameFrom).Each(group =>
-         {
-            group.Each(pKParameter =>
-            {
-               quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterCache, pKParameter, group.Key));
-            });
-         });
+         aPKAnalysis?.AllPKParameters.GroupBy(moleculeNameFrom).Each(group => { group.Each(pKParameter => { quantityPKList.Add(quantityPKParameterFor(globalIndividualPKParameterCache, pKParameter, group.Key)); }); });
 
          return quantityPKList;
       }
@@ -592,6 +599,28 @@ namespace PKSim.Core.Services
          simulation.HasChanged = true;
       }
 
+      public bool CanCalculateGlobalPKFor(Protocol protocol)
+      {
+         var schemaItems = _protocolMapper.MapFrom(protocol);
+         if (schemaItems == null || schemaItems.Count == 0)
+            return false;
+
+         //only one item, supported for IV or ORAL
+         var schemaItem = schemaItems[0];
+         if (schemaItems.Count == 1)
+            return isOral(schemaItem) || isIntravenous(schemaItem);
+
+         //two items. Only ok if all are ORAL
+         return schemaItems.All(isOral);
+      }
+
+      public bool CanCalculateGlobalPKFor(Simulation simulation)
+      {
+         return simulation.Compounds.Select(compound => protocolFor(simulation, compound))
+            .Where(p => p != null)
+            .Any(CanCalculateGlobalPKFor);
+      }
+
       private CompoundPKContext createContextForPopulationSimulation(CompoundPKContext contextCompoundPK, Func<CompoundPK, CompoundPK> compoundPKMapper, string compoundName, PopulationSimulation populationSimulation, string[] parameterNames)
       {
          var contextForPopulationSimulation = new CompoundPKContext();
@@ -676,13 +705,11 @@ namespace PKSim.Core.Services
          return schemaItemsFrom(simulation, compound).FirstOrDefault();
       }
 
+      private Protocol protocolFor(Simulation simulation, Compound compound) => simulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol;
+
       private IReadOnlyList<SchemaItem> schemaItemsFrom(Simulation simulation, Compound compound)
       {
-         var protocol = simulation.CompoundPropertiesFor(compound).ProtocolProperties.Protocol;
-         if (protocol == null)
-            return new List<SchemaItem>();
-
-         return _protocolToSchemaItemsMapper.MapFrom(protocol);
+         return _protocolMapper.MapFrom(protocolFor(simulation, compound));
       }
 
       private enum ApplicationType

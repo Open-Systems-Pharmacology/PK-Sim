@@ -53,6 +53,19 @@ namespace PKSim.Core.Services
       /// <param name="sourceExpressionProfile">Expression profile to update used as source</param>
       /// <param name="targetExpressionProfile">Expression profile to update</param>
       void SynchronizeExpressionProfileWithExpressionProfile(ExpressionProfile sourceExpressionProfile, ExpressionProfile targetExpressionProfile);
+
+      /// <summary>
+      ///    Updates the values from all expression profiles used by the <paramref name="templateSimulationSubject" /> into the
+      ///    <paramref name="simulation" />
+      ///    This is required for instance when synchronizing and individual with a simulation=>Underlying building block may
+      ///    need to be updated as well
+      /// </summary>
+      /// <param name="templateSimulationSubject">
+      ///    Template simulation subject (building block) that should be used to update the
+      ///    expression profile in the simulation
+      /// </param>
+      /// <param name="simulation">Simulation to update </param>
+      void SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(ISimulationSubject templateSimulationSubject, Simulation simulation);
    }
 
    public class ExpressionProfileUpdater : IExpressionProfileUpdater
@@ -168,6 +181,21 @@ namespace PKSim.Core.Services
 
          // ExpressionProfile To ExpressionProfile. We do not update the parameter origin id in the target entities as we are updating one building block from another one
          synchronizeExpressionProfiles(sourceMolecule, sourceIndividual, targetMolecule, targetIndividual, updateParameterOriginId: false);
+      }
+
+      public void SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(ISimulationSubject templateSimulationSubject, Simulation simulation)
+      {
+         templateSimulationSubject.AllExpressionProfiles().Each(template =>
+         {
+            var usedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(template.Id);
+            if (usedBuildingBlock?.BuildingBlock is not ExpressionProfile simulationExpressionProfile)
+               return;
+
+            SynchronizeExpressionProfileWithExpressionProfile(template, simulationExpressionProfile);
+            //They are supposed to be the same => same version
+            simulationExpressionProfile.Version = template.Version;
+            usedBuildingBlock.Version = template.Version;
+         });
       }
 
       private void updateMoleculeParameters(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)

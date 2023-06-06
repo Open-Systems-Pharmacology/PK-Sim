@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
@@ -9,7 +10,6 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
-using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core.Services
 {
@@ -91,10 +91,10 @@ namespace PKSim.Core.Services
             _passiveTransports = _module.PassiveTransports;
 
             _moleculeBuildingBlock = _objectBaseFactory.Create<MoleculeBuildingBlock>()
-               .WithName(simulation.Name);
+               .WithName(DefaultNames.MoleculeBuildingBlock);
 
             _reactionBuildingBlock = _objectBaseFactory.Create<ReactionBuildingBlock>()
-               .WithName(simulation.Name);
+               .WithName(DefaultNames.ReactionBuildingBlock);
 
             addIndividualMolecules(simulation.CompoundPropertiesList);
 
@@ -186,8 +186,8 @@ namespace PKSim.Core.Services
 
       private string moleculeNameFor(string moleculeName, string compoundName)
       {
-         return moleculeName.ReplaceKeywords(new[] {CoreConstants.Molecule.Drug, CoreConstants.Molecule.DrugFcRnComplexTemplate},
-            new[] {compoundName, CoreConstants.Molecule.DrugFcRnComplexName(compoundName)});
+         return moleculeName.ReplaceKeywords(new[] { CoreConstants.Molecule.Drug, CoreConstants.Molecule.DrugFcRnComplexTemplate },
+            new[] { compoundName, CoreConstants.Molecule.DrugFcRnComplexName(compoundName) });
       }
 
       private void addIndividualMolecules(IEnumerable<CompoundProperties> compoundPropertiesList)

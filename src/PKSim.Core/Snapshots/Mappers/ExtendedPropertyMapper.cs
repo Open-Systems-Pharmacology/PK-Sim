@@ -55,7 +55,11 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<ModelExtendedProperty> MapToModel(SnapshotExtendedProperty snapshot, SnapshotContext snapshotContext)
       {
+         if (snapshot?.Value == null)
+            return Task.FromResult<ModelExtendedProperty>(null);
+
          var snapshotType = snapshot.Type;
+
          var valueAsString = snapshot.Value.ToString();
 
          if (snapshotType.HasValue)
@@ -64,7 +68,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return mapExtendedPropertyBasedOnValue(snapshot, valueAsString);
       }
 
-      private Task<ModelExtendedProperty> mapExtendedPropertyBasedOnType(ExtendedProperty snapshot, ExtendedPropertyType snapshotType, string valueAsString)
+      private Task<ModelExtendedProperty> mapExtendedPropertyBasedOnType(SnapshotExtendedProperty snapshot, ExtendedPropertyType snapshotType, string valueAsString)
       {
          switch (snapshotType)
          {
@@ -80,7 +84,7 @@ namespace PKSim.Core.Snapshots.Mappers
          }
       }
 
-      private Task<ModelExtendedProperty> mapExtendedPropertyBasedOnValue(ExtendedProperty snapshot, string valueAsString)
+      private Task<ModelExtendedProperty> mapExtendedPropertyBasedOnValue(SnapshotExtendedProperty snapshot, string valueAsString)
       {
          if (double.TryParse(valueAsString, out var doubleResult))
             return mapExtendedProperty(snapshot, double.Parse, doubleResult);
