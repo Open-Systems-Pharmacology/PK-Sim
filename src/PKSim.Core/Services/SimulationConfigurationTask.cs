@@ -109,7 +109,8 @@ namespace PKSim.Core.Services
          module.Add(_modelObserverQuery.AllObserversFor(module.Molecules, simulation));
 
          //STEP9 once all building blocks have been created, we need to create the default parameter and compound molecule values
-         var allDefinedProteins = module.Molecules.Where(x => simulation.Individual.AllDefinedMolecules().AllNames().Contains(x.Name)).ToList();
+         var allDefinedMoleculeNames = simulation.Individual.AllDefinedMolecules().AllNames().ToList();
+         var allDefinedProteins = module.Molecules.Where(x => allDefinedMoleculeNames.Contains(x.Name)).ToList();
          var allOtherMolecules = module.Molecules.Except(allDefinedProteins).ToList();
          var initialConditionsForCompounds = createInitialConditionsForCompounds(module, simulation, allOtherMolecules);
 
