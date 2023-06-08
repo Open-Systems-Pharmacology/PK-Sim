@@ -69,7 +69,7 @@ namespace PKSim.Core.Snapshots.Mappers
          originData.DiseaseState = diseaseState;
          diseaseState.Parameters.Each(x =>
          {
-            var diseaseStateParameter = new OriginDataParameter {Name = x.Name, Value = x.Value, Unit = x.DisplayUnitName()};
+            var diseaseStateParameter = new OriginDataParameter { Name = x.Name, Value = x.Value, Unit = x.DisplayUnitName() };
             var snapshotParameter = diseaseStateSnapshot.Parameters.FindByName(x.Name);
             if (snapshotParameter != null)
             {

@@ -89,7 +89,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelOriginData> MapToModel(SnapshotOriginData snapshot, SnapshotContext snapshotContext)
       {
-         var originData = new ModelOriginData {Species = speciesFrom(snapshot)};
+         var originData = new ModelOriginData { Species = speciesFrom(snapshot) };
 
          originData.Population = speciesPopulationFrom(snapshot, originData.Species);
          originData.Gender = genderFrom(snapshot, originData.Population);
@@ -160,7 +160,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var meanParameter = meanParameterRetrieverFunc(originData);
          var value = baseParameterValueFrom(snapshotParameter, meanParameter.Dimension, meanParameter.Value);
          var unit = meanParameter.Dimension.UnitOrDefault(snapshotParameter?.Unit).Name;
-         return new OriginDataParameter {Value = value, Unit = unit};
+         return new OriginDataParameter { Value = value, Unit = unit };
       }
 
       private Gender genderFrom(SnapshotOriginData snapshot, SpeciesPopulation speciesPopulation)

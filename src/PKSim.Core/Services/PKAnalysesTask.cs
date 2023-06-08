@@ -369,13 +369,13 @@ namespace PKSim.Core.Services
             vssPlasma.Value *= bioAvailabilityValue;
             vdPlasma.Value *= bioAvailabilityValue;
             totalPlasmaCL.Value *= bioAvailabilityValue;
-            fractionAbsorbedWarningParameters.AddRange(new[] {vssPlasma, vdPlasma});
-            pkValues.AddRange(new[] {vssPlasma, vdPlasma, totalPlasmaCL, bioAvailability});
+            fractionAbsorbedWarningParameters.AddRange(new[] { vssPlasma, vdPlasma });
+            pkValues.AddRange(new[] { vssPlasma, vdPlasma, totalPlasmaCL, bioAvailability });
          }
          else
          {
-            fractionAbsorbedWarningParameters.AddRange(new[] {vssPlasmaOverF, vdPlasmaOverF});
-            pkValues.AddRange(new[] {vssPlasmaOverF, vdPlasmaOverF, totalPlasmaCLOverF, bioAvailability});
+            fractionAbsorbedWarningParameters.AddRange(new[] { vssPlasmaOverF, vdPlasmaOverF });
+            pkValues.AddRange(new[] { vssPlasmaOverF, vdPlasmaOverF, totalPlasmaCLOverF, bioAvailability });
          }
 
 
@@ -427,9 +427,9 @@ namespace PKSim.Core.Services
          if (firstParameter == null)
             return new QuantityPKParameter();
 
-         var quantityPKParameter = new QuantityPKParameter {Dimension = firstParameter.Dimension, Name = firstParameter.Name, QuantityPath = quantityPath};
+         var quantityPKParameter = new QuantityPKParameter { Dimension = firstParameter.Dimension, Name = firstParameter.Name, QuantityPath = quantityPath };
 
-         pKValuesForPKParameter.Each(pKValue => { quantityPKParameter.SetValue(pKValuesForPKParameter.IndexOf(pKValue), (float) pKValue.Value); });
+         pKValuesForPKParameter.Each(pKValue => { quantityPKParameter.SetValue(pKValuesForPKParameter.IndexOf(pKValue), (float)pKValue.Value); });
          return quantityPKParameter;
       }
 
@@ -535,7 +535,7 @@ namespace PKSim.Core.Services
             // We know this is a valid cast because it is cloned from simulation
             var populationSimulation = simulation.DowncastTo<PopulationSimulation>();
             CalculateFor(ivPopulationSimulation, ivCompoundPKContext);
-            var contextForPopulationSimulation = createContextForPopulationSimulation(ivCompoundPKContext, mapFromBioavailabilityCompoundPK, compoundName, populationSimulation, new[] {Bioavailability});
+            var contextForPopulationSimulation = createContextForPopulationSimulation(ivCompoundPKContext, mapFromBioavailabilityCompoundPK, compoundName, populationSimulation, new[] { Bioavailability });
             populationSimulation.PKAnalyses = CalculateFor(populationSimulation, contextForPopulationSimulation);
          }
          else if (ivSimulation is IndividualSimulation ivIndividualSimulation)
@@ -581,7 +581,7 @@ namespace PKSim.Core.Services
 
                // First calculate the compound context. We will know the AucInf and CMax when DDI is turned off
                CalculateFor(ddiPopulationSimulation, ddiCompoundPKContext);
-               var parameterNames = new[] {AUCRatio, C_maxRatio};
+               var parameterNames = new[] { AUCRatio, C_maxRatio };
 
                // From the ddi context, create the context from the original simulation and the ddi simulation for calculating ddi ratio parameters
                var contextForPopulationSimulation = createContextForPopulationSimulation(ddiCompoundPKContext, mapFromDDISimulationCompoundPK, compoundName, populationSimulation, parameterNames);
@@ -632,14 +632,14 @@ namespace PKSim.Core.Services
 
       private CompoundPK mapFromBioavailabilityCompoundPK(CompoundPK bioAvailabilitySimulationCompoundPK)
       {
-         var compoundPK = new CompoundPK {CompoundName = bioAvailabilitySimulationCompoundPK.CompoundName};
+         var compoundPK = new CompoundPK { CompoundName = bioAvailabilitySimulationCompoundPK.CompoundName };
          bioAvailabilitySimulationCompoundPK.AllBioAvailabilityAucInf.KeyValues.Each(bioAvailability => { compoundPK.AddBioavailability(bioAvailability.Key, bioAvailability.Value); });
          return compoundPK;
       }
 
       private CompoundPK mapFromDDISimulationCompoundPK(CompoundPK ddiSimulationCompoundPK)
       {
-         var compoundPK = new CompoundPK {CompoundName = ddiSimulationCompoundPK.CompoundName};
+         var compoundPK = new CompoundPK { CompoundName = ddiSimulationCompoundPK.CompoundName };
          ddiSimulationCompoundPK.AllDDIAucInf.KeyValues.Each(aucInf => compoundPK.AddDDIAucInf(aucInf.Key, aucInf.Value));
          ddiSimulationCompoundPK.AllDDICMax.KeyValues.Each(cMax => compoundPK.AddDDICMax(cMax.Key, cMax.Value));
          return compoundPK;
@@ -732,7 +732,7 @@ namespace PKSim.Core.Services
             return pkAnalyses; // there are no analyses to calculate
 
          var allColumns = timeProfileChartData.Panes.SelectMany(x => x.Curves).SelectMany(x =>
-               columnsFor(x, populationDataCollector).Select(column => new {curveData = x, column}))
+               columnsFor(x, populationDataCollector).Select(column => new { curveData = x, column }))
             .Where(c => c.column.IsConcentration());
 
          var columnsByMolecules = allColumns.GroupBy(x => x.column.MoleculeName());
@@ -775,7 +775,7 @@ namespace PKSim.Core.Services
 
       private IEnumerable<DataColumn> columnsFor(CurveData<TimeProfileXValue, TimeProfileYValue> curveData, IPopulationDataCollector populationDataCollector)
       {
-         var baseGrid = new BaseGrid(Constants.TIME, curveData.XAxis.Dimension) {Values = curveData.XValues.Select(x => x.X).ToList()};
+         var baseGrid = new BaseGrid(Constants.TIME, curveData.XAxis.Dimension) { Values = curveData.XValues.Select(x => x.X).ToList() };
 
          if (curveData.IsRange())
          {
@@ -785,14 +785,14 @@ namespace PKSim.Core.Services
                new DataColumn(lowerRange, curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.LowerValue).ToList(),
-                  DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
-                  QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+                  DataInfo = { MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath) },
+                  QuantityInfo = { Path = curveData.QuantityPath.ToPathArray() }
                },
                new DataColumn(upperRange, curveData.YAxis.Dimension, baseGrid)
                {
                   Values = curveData.YValues.Select(y => y.UpperValue).ToList(),
-                  DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
-                  QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+                  DataInfo = { MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath) },
+                  QuantityInfo = { Path = curveData.QuantityPath.ToPathArray() }
                }
             };
          }
@@ -802,8 +802,8 @@ namespace PKSim.Core.Services
             new DataColumn(curveData.Caption, curveData.YAxis.Dimension, baseGrid)
             {
                Values = curveData.YValues.Select(y => y.Y).ToList(),
-               DataInfo = {MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath)},
-               QuantityInfo = {Path = curveData.QuantityPath.ToPathArray()}
+               DataInfo = { MolWeight = populationDataCollector.MolWeightFor(curveData.QuantityPath) },
+               QuantityInfo = { Path = curveData.QuantityPath.ToPathArray() }
             }
          };
       }
@@ -813,7 +813,7 @@ namespace PKSim.Core.Services
          if (dataColumn == null)
             return new NullIndividualPKAnalysis();
 
-         return CalculateFor(new[] {simulation}, new[] {dataColumn}).FirstOrDefault() ?? new NullIndividualPKAnalysis();
+         return CalculateFor(new[] { simulation }, new[] { dataColumn }).FirstOrDefault() ?? new NullIndividualPKAnalysis();
       }
 
       private PKValues calculatePK(DataColumn column, PKCalculationOptions options)
@@ -890,13 +890,13 @@ namespace PKSim.Core.Services
       /// </returns>
       private (string lowerRange, string upperRange) rangeDescriptions(string text)
       {
-         var splitStrings = text.Split(new[] {"Range"}, StringSplitOptions.None);
+         var splitStrings = text.Split(new[] { "Range" }, StringSplitOptions.None);
          var match = splitStrings.Length == 2;
 
          if (!match)
             return (text, text);
 
-         var upperAndLowerRange = splitStrings.Last().Split(new[] {"to"}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+         var upperAndLowerRange = splitStrings.Last().Split(new[] { "to" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
 
          return ($"{splitStrings[0]}{upperAndLowerRange[0]}", $"{splitStrings[0]}{upperAndLowerRange[1]}");
       }
@@ -945,7 +945,7 @@ namespace PKSim.Core.Services
             suffix = isLowerValue ? lowerRange : upperRange;
          }
 
-         return (new[] {captionPrefix, suffix}).ToCaption();
+         return (new[] { captionPrefix, suffix }).ToCaption();
       }
 
       private CurveData<TimeProfileXValue, TimeProfileYValue> buildCurveData(QuantityPKParameter quantityPKParameter, string caption)

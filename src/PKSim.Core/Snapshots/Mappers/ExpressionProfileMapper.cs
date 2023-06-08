@@ -2,7 +2,6 @@
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using ModelIndividual = PKSim.Core.Model.Individual;

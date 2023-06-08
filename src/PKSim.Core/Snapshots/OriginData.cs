@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DevExpress.Data.Mask;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Snapshots
@@ -35,12 +34,12 @@ namespace PKSim.Core.Snapshots
       public Parameter GestationalAge { get; set; }
 
       /// <summary>
-      ///    Weight of individual to create. 
+      ///    Weight of individual to create.
       /// </summary>
       public Parameter Weight { get; set; }
 
       /// <summary>
-      ///    Height of individual to create in. 
+      ///    Height of individual to create in.
       /// </summary>
       public Parameter Height { get; set; }
 
@@ -54,7 +53,6 @@ namespace PKSim.Core.Snapshots
 
       //Kept for compatibility reasons with old snapshots
       public Parameter[] DiseaseStateParameters { get; set; }
-
 
       public void AddCalculationMethods(params string[] calculationMethods)
       {

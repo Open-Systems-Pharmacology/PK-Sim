@@ -93,12 +93,12 @@ namespace PKSim.Core.Model
       public virtual IEnumerable<CompoundProcess> AllProcesses() => AllProcesses<CompoundProcess>();
 
       /// <summary>
-      ///    Returns <c>true</c> if at least one proces is defined in the compound otherwise false
+      ///    Returns <c>true</c> if at least one process is defined in the compound otherwise false
       /// </summary>
       public virtual bool HasProcesses() => HasProcesses<CompoundProcess>();
 
       /// <summary>
-      ///    Returns <c>true</c> if at least one proces of type <typeparamref name="TCompoundProcess"/> is defined in the compound otherwise false
+      ///    Returns <c>true</c> if at least one process of type <typeparamref name="TCompoundProcess"/> is defined in the compound otherwise false
       /// </summary>
       public virtual bool HasProcesses<TCompoundProcess>() where TCompoundProcess : CompoundProcess => AllProcesses<TCompoundProcess>().Any();
 

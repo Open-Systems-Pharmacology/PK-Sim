@@ -26,8 +26,8 @@ namespace PKSim.IntegrationTests
       protected EnzymaticProcess _parentMetabolizationCYP2D6;
       protected Compound _compound;
       protected Compound _metabolite;
-      protected IndividualEnzyme _cyp3A4;
-      private IndividualEnzyme _cyp2D6;
+      protected IndividualMolecule _cyp3A4;
+      private IndividualMolecule _cyp2D6;
       protected SimulationRunOptions _simulationRunOptions;
 
       public override void GlobalContext()
@@ -48,7 +48,7 @@ namespace PKSim.IntegrationTests
 
       }
 
-      protected EnzymaticProcess AddEnzymaticProcess(Compound compound, IndividualEnzyme enzyme)
+      protected EnzymaticProcess AddEnzymaticProcess(Compound compound, IndividualMolecule enzyme)
       {
          var compoundProcessRepository = IoC.Resolve<ICompoundProcessRepository>();
          var cloneManager = IoC.Resolve<ICloneManager>();
@@ -60,16 +60,19 @@ namespace PKSim.IntegrationTests
          return enzymaticProcess;
       }
 
-      protected IndividualEnzyme AddEnzymeTo(Individual individual, string enzymeName)
+      protected IndividualMolecule AddEnzymeTo(Individual individual, string enzymeName)
       {
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
+         var expressionProfileForEnzyme = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(individual, enzymeName, expressionProfile =>
+         {
+            var (enzyme, expressionProfileIndividual) = expressionProfile;
 
-         var enzyme = enzymeFactory.AddMoleculeTo(_individual, enzymeName).DowncastTo<IndividualEnzyme>();
-         var allExpressionParameters = _individual.AllExpressionParametersFor(enzyme);
-         allExpressionParameters[CoreConstants.Compartment.PERICENTRAL].Value = 1;
-         allExpressionParameters[CoreConstants.Compartment.PERIPORTAL].Value = 1;
-         individual.AddMolecule(enzyme);
-         return enzyme;
+            var allExpressionParameters = expressionProfileIndividual.AllExpressionParametersFor(enzyme);
+            allExpressionParameters[CoreConstants.Compartment.PERICENTRAL].Value = 1;
+            allExpressionParameters[CoreConstants.Compartment.PERIPORTAL].Value = 1;
+
+         });
+
+         return expressionProfileForEnzyme.Molecule;
       }
 
       protected EnzymaticProcessSelection ProcessSelectionFor(EnzymaticProcess process)

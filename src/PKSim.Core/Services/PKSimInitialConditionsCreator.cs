@@ -11,7 +11,8 @@ namespace PKSim.Core.Services
 {
    public interface IPKSimInitialConditionsCreator
    {
-      InitialConditionsBuildingBlock CreateFor(Module module, Simulation simulation);
+      InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, Simulation simulation);
+      InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, MoleculeBuilder molecule, Simulation simulation);
    }
 
    public class PKSimInitialConditionsCreator : IPKSimInitialConditionsCreator
@@ -36,12 +37,12 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public InitialConditionsBuildingBlock CreateFor(Module module, Simulation simulation)
+      public InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, Simulation simulation)
       {
          //default molecule start values matrix
          var compounds = simulation.Compounds;
          var individual = simulation.Individual;
-         var defaultInitialConditions = _initialConditionsCreator.CreateFrom(module.SpatialStructure, module.Molecules.ToList());
+         var defaultInitialConditions = _initialConditionsCreator.CreateFrom(spatialStructure, molecules);
 
          //set available start formulas for molecules
          setStartFormulasForStaticMolecules(defaultInitialConditions, simulation, compounds);
@@ -56,6 +57,11 @@ namespace PKSim.Core.Services
          }
 
          return defaultInitialConditions;
+      }
+
+      public InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, MoleculeBuilder molecule, Simulation simulation)
+      {
+         return CreateFor(spatialStructure, new List<MoleculeBuilder> { molecule }, simulation);
       }
 
       private IEnumerable<ObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,

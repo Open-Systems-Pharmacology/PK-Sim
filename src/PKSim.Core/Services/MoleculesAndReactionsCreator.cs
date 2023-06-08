@@ -10,7 +10,6 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
-using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core.Services
 {
@@ -187,8 +186,8 @@ namespace PKSim.Core.Services
 
       private string moleculeNameFor(string moleculeName, string compoundName)
       {
-         return moleculeName.ReplaceKeywords(new[] {CoreConstants.Molecule.Drug, CoreConstants.Molecule.DrugFcRnComplexTemplate},
-            new[] {compoundName, CoreConstants.Molecule.DrugFcRnComplexName(compoundName)});
+         return moleculeName.ReplaceKeywords(new[] { CoreConstants.Molecule.Drug, CoreConstants.Molecule.DrugFcRnComplexTemplate },
+            new[] { compoundName, CoreConstants.Molecule.DrugFcRnComplexName(compoundName) });
       }
 
       private void addIndividualMolecules(IEnumerable<CompoundProperties> compoundPropertiesList)

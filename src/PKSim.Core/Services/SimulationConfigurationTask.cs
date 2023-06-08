@@ -1,4 +1,5 @@
-using OSPSuite.Assets;
+using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -107,15 +108,21 @@ namespace PKSim.Core.Services
          //STEP8: Add Observers
          module.Add(_modelObserverQuery.AllObserversFor(module.Molecules, simulation));
 
-         //STEP9 once all building blocks have been created, we need to create the default parameter and molecule values values 
-         var initialConditions = _initialConditionsCreator.CreateFor(module, simulation);
-         module.Add(initialConditions);
+         //STEP9 once all building blocks have been created, we need to create the default parameter and compound molecule values
+         var allDefinedMoleculeNames = simulation.Individual.AllDefinedMolecules().AllNames().ToList();
+         var allDefinedProteins = module.Molecules.Where(x => allDefinedMoleculeNames.Contains(x.Name)).ToList();
+         var allOtherMolecules = module.Molecules.Except(allDefinedProteins).ToList();
+         var initialConditionsForCompounds = createInitialConditionsForCompounds(module, simulation, allOtherMolecules);
+
+         module.Add(initialConditionsForCompounds);
+
+         createInitialConditionsForDefinedProteins(simulation, simulationConfiguration, module, allDefinedProteins);
 
          var parameterValues = _parameterValuesCreator.CreateFor(simulation);
          module.Add(parameterValues);
 
          moduleConfiguration.SelectedParameterValues = parameterValues;
-         moduleConfiguration.SelectedInitialConditions = initialConditions;
+         moduleConfiguration.SelectedInitialConditions = initialConditionsForCompounds;
 
          //STEP10 update simulation settings
          simulationConfiguration.SimulationSettings = simulation.Settings.WithName(simulation.Name);
@@ -124,6 +131,22 @@ namespace PKSim.Core.Services
          _distributedParameterToTableParameterConverter.UpdateSimulationConfigurationForAging(simulationConfiguration, simulation, createAgingDataInSimulation);
 
          return simulationConfiguration;
+      }
+
+      private void createInitialConditionsForDefinedProteins(Simulation simulation, SimulationConfiguration simulationConfiguration, Module module, IReadOnlyList<MoleculeBuilder> allDefinedProteins)
+      {
+         simulationConfiguration.ExpressionProfiles.Each(expressionProfile => addInitialConditions(expressionProfile, module.SpatialStructure, allDefinedProteins, simulation));
+      }
+
+      private InitialConditionsBuildingBlock createInitialConditionsForCompounds(Module module, Simulation simulation, IReadOnlyList<MoleculeBuilder> compoundMolecules)
+      {
+         return _initialConditionsCreator.CreateFor(module.SpatialStructure, compoundMolecules, simulation);
+      }
+
+      private void addInitialConditions(ExpressionProfileBuildingBlock expressionProfile, SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, Simulation simulation)
+      {
+         var initialConditions = _initialConditionsCreator.CreateFor(spatialStructure, molecules.FindByName(expressionProfile.MoleculeName), simulation);
+         initialConditions.Each(expressionProfile.Add);
       }
    }
 }

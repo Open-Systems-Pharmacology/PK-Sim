@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -12,7 +13,7 @@ using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_SimulationConfigurationTask : ContextSpecification<ISimulationConfigurationTask>
+   public abstract class concern_for_SimulationConfigurationTask : ContextSpecification<SimulationConfigurationTask>
    {
       protected IPKSimSpatialStructureFactory _spatialStructureFactory;
       protected Simulation _simulation;
@@ -80,7 +81,7 @@ namespace PKSim.Core
          A.CallTo(() => _modelObserverQuery.AllObserversFor(A<MoleculeBuildingBlock>.Ignored, _simulation)).Returns(_observerBuildingBlock);
          A.CallTo(() => _eventBuildingBlockCreator.CreateFor(_simulation)).Returns(_eventBuildingBlock);
          A.CallTo(() => _parameterValueCreator.CreateFor(A<Simulation>.Ignored)).Returns(_parameterValuesBuildingBlock);
-         A.CallTo(() => _initialConditionCreator.CreateFor(A<Module>.Ignored, A<Simulation>.Ignored)).Returns(_initialConditionsBuildingBlock);
+         A.CallTo(() => _initialConditionCreator.CreateFor(A<SpatialStructure>.Ignored, A<IReadOnlyList<MoleculeBuilder>>.Ignored, A<Simulation>.Ignored)).Returns(_initialConditionsBuildingBlock);
          sut = new SimulationConfigurationTask(_spatialStructureFactory, _modelObserverQuery, _modelPassiveTransportQuery, _parameterValueCreator,
             _moleculesAndReactionsCreator, _eventBuildingBlockCreator, _initialConditionCreator, _moleculeCalculationRetriever,
             _distributedTableConverter, _objectBaseFactory, _individualBuildingBlockMapper, _expressionProfileBuildingBlockMapper, _applicationConfiguration);
@@ -140,7 +141,7 @@ namespace PKSim.Core
       [Observation]
       public void should_create_the_default_molecule_start_value_creator()
       {
-         A.CallTo(() => _initialConditionCreator.CreateFor(_module, _simulation)).MustHaveHappened();
+         A.CallTo(() => _initialConditionCreator.CreateFor(_module.SpatialStructure, A<IReadOnlyList<MoleculeBuilder>>._, _simulation)).MustHaveHappened();
       }
 
       [Observation]
