@@ -7,13 +7,17 @@ namespace PKSim.Core.Snapshots
 {
    public class ExpressionProfile : SnapshotBase, IBuildingBlockSnapshot
    {
-      [Required] public QuantityType Type { get; set; }
+      [Required] 
+      public QuantityType Type { get; set; }
+      
+      [Required] 
+      public string Species { get; set; }
 
-      [Required] public string Species { get; set; }
+      [Required] 
+      public string Molecule { get; set; }
 
-      [Required] public string Molecule { get; set; }
-
-      [Required] public string Category { get; set; }
+      [Required] 
+      public string Category { get; set; }
 
       public LocalizedParameter[] Parameters { get; set; }
 

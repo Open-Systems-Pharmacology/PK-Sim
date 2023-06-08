@@ -12,6 +12,7 @@ namespace PKSim.Core.Services
    public interface IPKSimInitialConditionsCreator
    {
       InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, Simulation simulation);
+      InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, MoleculeBuilder molecule, Simulation simulation);
    }
 
    public class PKSimInitialConditionsCreator : IPKSimInitialConditionsCreator
@@ -56,6 +57,11 @@ namespace PKSim.Core.Services
          }
 
          return defaultInitialConditions;
+      }
+
+      public InitialConditionsBuildingBlock CreateFor(SpatialStructure spatialStructure, MoleculeBuilder molecule, Simulation simulation)
+      {
+         return CreateFor(spatialStructure, new List<MoleculeBuilder> { molecule }, simulation);
       }
 
       private IEnumerable<ObjectPath> moleculesInvolvedInExpression(Individual individual, IndividualMolecule molecule,

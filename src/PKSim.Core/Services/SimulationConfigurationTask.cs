@@ -145,7 +145,7 @@ namespace PKSim.Core.Services
 
       private void addInitialConditions(ExpressionProfileBuildingBlock expressionProfile, SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, Simulation simulation)
       {
-         var initialConditions = _initialConditionsCreator.CreateFor(spatialStructure, molecules.Where(molecule => Equals(molecule.Name, expressionProfile.MoleculeName)).ToList(), simulation);
+         var initialConditions = _initialConditionsCreator.CreateFor(spatialStructure, molecules.FindByName(expressionProfile.MoleculeName), simulation);
          initialConditions.Each(expressionProfile.Add);
       }
    }
