@@ -23,6 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ProjectConverter\v6_0\" />
+    <Folder Include="ProjectConverter\v6_1\" />
+    <Folder Include="ProjectConverter\v6_2\" />
+    <Folder Include="ProjectConverter\v6_3\" />
+    <Folder Include="ProjectConverter\v6_4\" />
+    <Folder Include="ProjectConverter\v7_1\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

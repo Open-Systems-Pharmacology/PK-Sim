@@ -9,7 +9,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_true_for_a_know_version_that_is_smaller_than_the_current_version()
       {
-         ProjectVersions.CanLoadVersion(ProjectVersions.V6_2_1).ShouldBeTrue();
+         ProjectVersions.CanLoadVersion(ProjectVersions.V7_1_0).ShouldBeTrue();
       }
 
       [Observation]
