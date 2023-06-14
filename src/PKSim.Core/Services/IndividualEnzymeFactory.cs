@@ -31,7 +31,7 @@ namespace PKSim.Core.Services
       public IndividualEnzyme AddUndefinedLiverTo(Individual individual)
       {
          var undefinedLiver = CreateMolecule(CoreConstants.Molecule.UndefinedLiver);
-         AddAgeDependentOntogenyParametersTo(undefinedLiver);
+         AddConstantOntogenyParametersTo(undefinedLiver);
 
          undefinedLiver.Localization = Localization.Intracellular;
          undefinedLiver.ReferenceConcentration.Visible = false;

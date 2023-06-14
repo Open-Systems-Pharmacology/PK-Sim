@@ -67,7 +67,7 @@ namespace PKSim.Core.Services
       public virtual IndividualMolecule CreateEmpty()
       {
          var molecule = CreateMolecule(string.Empty);
-         AddAgeDependentOntogenyParametersTo(molecule);
+         AddConstantOntogenyParametersTo(molecule);
          return molecule;
       }
 
@@ -122,6 +122,12 @@ namespace PKSim.Core.Services
          AddGlobalExpression(molecule,
             OntogenyFactorFromTable(ONTOGENY_FACTOR, CoreConstants.Rate.ONTOGENY_FACTOR_FROM_TABLE),
             OntogenyFactorFromTable(ONTOGENY_FACTOR_GI, CoreConstants.Rate.ONTOGENY_FACTOR_GI_FROM_TABLE));
+      }
+
+      public void AddConstantOntogenyParametersTo(IndividualMolecule undefinedMolecule)
+      {
+         //Constant ontogeny parameters added for undefined enzymes
+         OntogenyFactors.Each(x => CreateMoleculeParameterIn(undefinedMolecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
       }
 
       protected IParameter CreateFormulaParameterIn(

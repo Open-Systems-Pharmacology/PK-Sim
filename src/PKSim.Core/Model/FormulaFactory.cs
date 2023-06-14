@@ -395,10 +395,10 @@ namespace PKSim.Core.Model
          if (tableObjectPath == null || offsetObjectPath == null)
             throw new ArgumentException(PKSimConstants.Error.TableFormulaWithOffsetMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.OFFSET));
 
-         formula.AddTableObjectPath(tableObjectPath.Clone<FormulaUsablePath>());
-         formula.AddOffsetObjectPath(offsetObjectPath.Clone<FormulaUsablePath>());
+         formula.AddTableObjectPath(tableObjectPath);
+         formula.AddOffsetObjectPath(offsetObjectPath);
 
-         //Table formula with offest has the same dimension as its referenced table object
+         //Table formula with offset has the same dimension as its referenced table object
          formula.Dimension = tableObjectPath.Dimension;
 
          return formula;

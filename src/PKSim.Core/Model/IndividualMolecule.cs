@@ -19,20 +19,16 @@ namespace PKSim.Core.Model
          ContainerType = ContainerType.Molecule;
       }
 
-      public virtual double OntogenyFactor
-      {
-         get => OntogenyFactorParameter.Value;
-         set => OntogenyFactorParameter.Value = value;
-      }
+      public virtual double OntogenyFactor => OntogenyFactorParameter.Value;
+
+      public virtual double OntogenyFactorGI => OntogenyFactorGIParameter.Value;
 
       public IParameter OntogenyFactorParameter => this.Parameter(ONTOGENY_FACTOR);
 
-      public virtual double OntogenyFactorGI
-      {
-         get => OntogenyFactorGIParameter.Value;
-         set => OntogenyFactorGIParameter.Value = value;
-      }
+      public IParameter OntogenyFactorTableParameter => this.Parameter(ONTOGENY_FACTOR_TABLE);
 
+      public IParameter OntogenyFactorGITableParameter => this.Parameter(ONTOGENY_FACTOR_GI_TABLE);
+      
       public IParameter OntogenyFactorGIParameter => this.Parameter(ONTOGENY_FACTOR_GI);
 
       public IParameter DiseaseFactorParameter => this.Parameter(DISEASE_FACTOR);
@@ -56,7 +52,7 @@ namespace PKSim.Core.Model
 
       public IReadOnlyList<IParameter> AllGlobalMoleculeParameters => new[] {ReferenceConcentration, HalfLifeLiver, HalfLifeIntestine};
 
-      public IReadOnlyList<IParameter> AllOntogenyParameters => new[] {OntogenyFactorParameter, OntogenyFactorGIParameter};
+      public IReadOnlyList<IParameter> AllOntogenyParameters => new[] {OntogenyFactorParameter, OntogenyFactorGIParameter, OntogenyFactorTableParameter, OntogenyFactorGITableParameter};
 
       public IReadOnlyList<IParameter> AllDiseaseStateParameters => new[] {DiseaseFactorParameter};
 
