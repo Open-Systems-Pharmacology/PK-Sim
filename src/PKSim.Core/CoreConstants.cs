@@ -193,6 +193,8 @@ namespace PKSim.Core
          public static readonly string PARAM_F_EXP_INTERSTITIAL = "PARAM_f_exp_interstitial";
          public static readonly string PARAM_F_EXP_BASOLATERAL = "PARAM_f_exp_basolateral";
          public static readonly string PARAM_F_EXP_BRN_TISSUE = "PARAM_f_exp_brn_tissue";
+         public static readonly string ONTOGENY_FACTOR_FROM_TABLE = "TableFormulaWithXArgument_OntogenyFactor";
+         public static readonly string ONTOGENY_FACTOR_GI_FROM_TABLE = "TableFormulaWithXArgument_OntogenyFactorGI";
       }
 
       public static class Alias

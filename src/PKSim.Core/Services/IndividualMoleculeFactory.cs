@@ -92,6 +92,8 @@ namespace PKSim.Core.Services
 
       protected ParameterRateMetaData InitialConcentrationParam(string rate) => rateParam(INITIAL_CONCENTRATION, rate);
 
+      protected ParameterRateMetaData OntogenyFactorFromTable(string parameterName, string rate)=>rateParam(parameterName, rate);
+
       private ParameterRateMetaData rateParam(string paramName, string rate)
       {
          var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
@@ -117,7 +119,9 @@ namespace PKSim.Core.Services
 
       public void AddAgeDependentOntogenyParametersTo(IndividualMolecule molecule)
       {
-         OntogenyFactors.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
+         AddGlobalExpression(molecule,
+            OntogenyFactorFromTable(ONTOGENY_FACTOR, CoreConstants.Rate.ONTOGENY_FACTOR_FROM_TABLE),
+            OntogenyFactorFromTable(ONTOGENY_FACTOR_GI, CoreConstants.Rate.ONTOGENY_FACTOR_GI_FROM_TABLE));
       }
 
       protected IParameter CreateFormulaParameterIn(
