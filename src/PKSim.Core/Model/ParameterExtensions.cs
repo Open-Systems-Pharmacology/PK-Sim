@@ -6,7 +6,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model.Extensions;
 using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Model
@@ -195,7 +194,7 @@ namespace PKSim.Core.Model
 
          parameter.MeanParameter.Value *= factorValue;
 
-         if (parameter.Formula.DistributionType() == DistributionTypes.Normal)
+         if (parameter.Formula.DistributionType == DistributionType.Normal)
             parameter.DeviationParameter.Value *= factorValue;
 
          parameter.IsFixedValue = false;

@@ -1,9 +1,7 @@
 using OSPSuite.BDDHelper;
 using FakeItEasy;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain.Formulas;
-using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core
 {
@@ -23,9 +21,9 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_accurate_distribution_type()
       {
-         _normalDistributionFormula.DistributionType().ShouldBeEqualTo(DistributionTypes.Normal);
-         _logNormalDistributionFormula.DistributionType().ShouldBeEqualTo(DistributionTypes.LogNormal);
-         _uniformDistributionFormula.DistributionType().ShouldBeEqualTo(DistributionTypes.Uniform);
+         _normalDistributionFormula.DistributionType.ShouldBeEqualTo(DistributionType.Normal);
+         _logNormalDistributionFormula.DistributionType.ShouldBeEqualTo(DistributionType.LogNormal);
+         _uniformDistributionFormula.DistributionType.ShouldBeEqualTo(DistributionType.Uniform);
       }
    }
 }

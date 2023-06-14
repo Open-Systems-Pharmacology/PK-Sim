@@ -25,7 +25,11 @@ namespace PKSim.Core.Mappers
 
       protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, ExpressionProfile expressionProfile)
       {
-         //for expression profile, all formula are in the calculation method EXPRESSION_PARAMETERS
+         var formula = parameter.Formula;
+         //for expression profile, all formula are in the calculation method EXPRESSION_PARAMETERS unless they are distributed table
+         if (formula is TableFormula tableFormula)
+            return tableFormula;
+
          return _formulaFactory.RateFor(new RateKey(EXPRESSION_PARAMETERS, parameter.Formula.Name), formulaCache);
       }
 

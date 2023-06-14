@@ -7,17 +7,11 @@ using PKSim.Core.Model;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class ExportExpressionProfileToPkmlCommand : PkmlExportCommandForBuildingBlock<ExpressionProfile, ExpressionProfileBuildingBlock>
+   public class ExportExpressionProfileToPKMLCommand : ExportBuildingBlockToPKMLCommand<ExpressionProfile, ExpressionProfileBuildingBlock>
    {
-      public ExportExpressionProfileToPkmlCommand(IDialogCreator dialogCreator, IPKMLPersistor pkmlPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper mapper) :
-         base(dialogCreator, pkmlPersistor, mapper)
+      public ExportExpressionProfileToPKMLCommand(IDialogCreator dialogCreator, IPKMLPersistor pkmlPersistor, IExpressionProfileToExpressionProfileBuildingBlockMapper mapper) :
+         base(dialogCreator, pkmlPersistor, mapper, PKSimConstants.UI.ExportExpressionProfile)
       {
-
-      }
-
-      protected override string DialogCaption()
-      {
-         return PKSimConstants.UI.ExportExpressionProfileToPkml;
       }
    }
 }

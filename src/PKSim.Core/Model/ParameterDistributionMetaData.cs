@@ -1,3 +1,4 @@
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using CoreDistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 
@@ -10,16 +11,11 @@ namespace PKSim.Core.Model
       public string Gender { get; set; }
       public double Age { get; set; }
       public double GestationalAge { get; set; }
-      public CoreDistributionType DistributionType { get; set; }
+      public CoreDistributionType Distribution { get; set; }
       public double Mean { get; set; }
       public double Deviation { get; set; }
 
-      public DistributionType Distribution
-      {
-         get => DistributionTypes.ById(DistributionType);
-         set => DistributionType = value.Id;
-      }
-
+   
       public static ParameterDistributionMetaData From(ParameterDistributionMetaData source)
       {
          return source.MemberwiseClone().DowncastTo<ParameterDistributionMetaData>();
@@ -41,7 +37,7 @@ namespace PKSim.Core.Model
          Gender = parameterDistributionMetaData.Gender;
          Age = parameterDistributionMetaData.Age;
          GestationalAge = parameterDistributionMetaData.GestationalAge;
-         DistributionType = parameterDistributionMetaData.DistributionType;
+         Distribution = parameterDistributionMetaData.Distribution;
          Mean = parameterDistributionMetaData.Mean;
          Deviation = parameterDistributionMetaData.Deviation;
       }

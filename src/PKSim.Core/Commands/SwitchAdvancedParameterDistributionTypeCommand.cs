@@ -1,5 +1,6 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
 using PKSim.Core.Events;

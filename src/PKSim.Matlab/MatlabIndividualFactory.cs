@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Snapshots.Mappers;
 using OriginData = PKSim.Core.Snapshots.OriginData;
 
@@ -90,14 +90,14 @@ namespace PKSim.Matlab
       private DistributedParameterValue distributedParameterValueFrom(IDistributedParameter parameter)
       {
          var parameterPath = _entityPathResolver.PathFor(parameter);
-         var distributionType = parameter.Formula.DistributionType();
+         var distributionType = parameter.Formula.DistributionType;
          double p1 = 0, p2 = 0;
-         if (distributionType == DistributionTypes.Normal || distributionType == DistributionTypes.LogNormal)
+         if (distributionType == DistributionType.Normal || distributionType == DistributionType.LogNormal)
          {
             p1 = parameter.MeanParameter.Value;
             p2 = parameter.DeviationParameter.Value;
          }
-         else if (distributionType == DistributionTypes.Uniform)
+         else if (distributionType == DistributionType.Uniform)
          {
             p1 = parameter.Parameter(Constants.Distribution.MINIMUM).Value;
             p2 = parameter.Parameter(Constants.Distribution.MAXIMUM).Value;

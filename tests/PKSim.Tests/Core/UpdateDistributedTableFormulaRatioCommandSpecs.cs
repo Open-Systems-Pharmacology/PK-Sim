@@ -1,9 +1,9 @@
 ﻿using PKSim.Core.Commands;
-using PKSim.Core.Model;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.Core
 {
@@ -32,8 +32,8 @@ namespace PKSim.Core
       {
          base.Context();
          _distributedTableFormula.Percentile = 0.2;
-         _distributedTableFormula.AddPoint(1, 10, new DistributionMetaData { Mean = 1, Distribution = DistributionTypes.Discrete });
-         _distributedTableFormula.AddPoint(2, 20, new DistributionMetaData { Mean = 2, Distribution = DistributionTypes.Discrete });
+         _distributedTableFormula.AddPoint(1, 10, new DistributionMetaData { Mean = 1, Distribution = DistributionType.Discrete });
+         _distributedTableFormula.AddPoint(2, 20, new DistributionMetaData { Mean = 2, Distribution = DistributionType.Discrete });
 
       }
 

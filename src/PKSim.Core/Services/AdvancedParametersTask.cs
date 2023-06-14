@@ -2,6 +2,7 @@ using OSPSuite.Core.Commands.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Services

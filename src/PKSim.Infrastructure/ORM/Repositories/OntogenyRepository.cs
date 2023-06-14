@@ -2,14 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Maths.Random;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -18,16 +25,28 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatOntogenyRepository _flatOntogenyRepository;
       private readonly IInterpolation _interpolation;
       private readonly IObjectBaseFactory _objectBaseFactory;
+      private readonly IDimensionRepository _dimensionRepository;
       private readonly List<Ontogeny> _allOntogenies;
       private readonly ICache<CompositeKey, IReadOnlyList<OntogenyMetaData>> _ontogenyValues;
       private readonly IDimension _ageInWeeksDimension;
       public ICache<string, string> SupportedProteins { get; }
+      private readonly IDisplayUnitRetriever _displayUnitRetriever;
+      private readonly IFormulaFactory _formulaFactory;
 
-      public OntogenyRepository(IFlatOntogenyRepository flatOntogenyRepository, IInterpolation interpolation, IObjectBaseFactory objectBaseFactory, IDimensionRepository dimensionRepository)
+      public OntogenyRepository(
+         IFlatOntogenyRepository flatOntogenyRepository,
+         IInterpolation interpolation,
+         IObjectBaseFactory objectBaseFactory,
+         IDimensionRepository dimensionRepository,
+         IDisplayUnitRetriever displayUnitRetriever,
+         IFormulaFactory formulaFactory)
       {
          _flatOntogenyRepository = flatOntogenyRepository;
          _interpolation = interpolation;
          _objectBaseFactory = objectBaseFactory;
+         _dimensionRepository = dimensionRepository;
+         _displayUnitRetriever = displayUnitRetriever;
+         _formulaFactory = formulaFactory;
          _allOntogenies = new List<Ontogeny>();
          _ontogenyValues = new Cache<CompositeKey, IReadOnlyList<OntogenyMetaData>>(onMissingKey: x => new List<OntogenyMetaData>());
          _ageInWeeksDimension = dimensionRepository.AgeInWeeks;
@@ -99,6 +118,56 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _interpolation.Interpolate(allOntogenies.Select(x => new Sample(x.PostmenstrualAge, factorRetriever(x))), postmenstrualAgeInYearsFor(age, gestationalAge));
       }
 
+      public DistributedTableFormula DataRepositoryToDistributedTableFormula(DataRepository ontogenyDataRepository)
+      {
+         var baseGrid = ontogenyDataRepository.BaseGrid;
+         var valueColumns = ontogenyDataRepository.AllButBaseGrid().ToList();
+         DataColumn meanColumn, deviationColumn;
+
+         if (valueColumns.Count == 1)
+         {
+            meanColumn = valueColumns[0];
+            //dummy deviation filled with 1 since this was not defined in the import action
+            deviationColumn = new DataColumn(Constants.Distribution.DEVIATION, _dimensionRepository.NoDimension, baseGrid)
+            {
+               Values = new float[baseGrid.Count].InitializeWith(1f)
+            };
+         }
+         else
+         {
+            meanColumn = valueColumns.Single(x => x.RelatedColumns.Any());
+            deviationColumn = valueColumns.Single(x => !x.RelatedColumns.Any());
+         }
+
+         var formula = _formulaFactory.CreateDistributedTableFormula().WithName(ontogenyDataRepository.Name);
+         formula.InitializedWith(CoreConstants.Parameters.PMA, ontogenyDataRepository.Name, baseGrid.Dimension, meanColumn.Dimension);
+         formula.XDisplayUnit = baseGrid.Dimension.Unit(baseGrid.DataInfo.DisplayUnitName);
+         formula.YDisplayUnit = meanColumn.Dimension.Unit(meanColumn.DataInfo.DisplayUnitName);
+
+         foreach (var ageValue in baseGrid.Values)
+         {
+            var mean = meanColumn.GetValue(ageValue).ToDouble();
+            var pma = ageValue.ToDouble();
+            var deviation = deviationColumn.GetValue(ageValue).ToDouble();
+            var distribution = new DistributionMetaData {Mean = mean, Deviation = deviation, Distribution = OSPSuite.Core.Domain.Formulas.DistributionType.LogNormal};
+            formula.AddPoint(pma, mean, distribution);
+         }
+
+         return formula;
+      }
+
+      public DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName, Unit xUnit = null, Unit yUnit = null)
+      {
+         if (ontogeny is UserDefinedOntogeny userDefinedOntogeny)
+            return userDefinedOntogeny.Table;
+
+         if(ontogeny is NullOntogeny)
+            return null;
+
+         var dataRepository = OntogenyToRepository(ontogeny, containerName, xUnit, yUnit);
+         return DataRepositoryToDistributedTableFormula(dataRepository);
+      }
+
       public double PlasmaProteinOntogenyFactor(string protein, OriginData originData, RandomGenerator randomGenerator = null)
       {
          return PlasmaProteinOntogenyFactor(protein, originData.Age?.Value, originData.GestationalAge?.Value, originData.Species.Name, randomGenerator);
@@ -114,6 +183,29 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          return allFor(originData.Species.Name).FindByName(molecule) ?? new NullOntogeny();
       }
+
+      public DataRepository OntogenyToRepository(Ontogeny ontogeny, string containerName, Unit xUnit = null, Unit yUnit = null)
+      {
+         var dataRepository = new DataRepository {Name = PKSimConstants.UI.OntogenyFor(ontogeny.DisplayName, containerName)};
+         var xUnitToUse = xUnit ?? _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.AgeInWeeks);
+         var yUnitToUse = yUnit ?? _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Fraction);
+
+         var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, _dimensionRepository.AgeInWeeks) {DisplayUnit = xUnitToUse};
+         var mean = new DataColumn(dataRepository.Name, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnitToUse};
+         var std = new DataColumn(PKSimConstants.UI.StandardDeviation, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnitToUse};
+         mean.DataInfo.AuxiliaryType = AuxiliaryType.GeometricMeanPop;
+         std.AddRelatedColumn(mean);
+         dataRepository.Add(mean);
+         dataRepository.Add(std);
+
+         var allOntogenies = AllValuesFor(ontogeny, containerName).OrderBy(x => x.PostmenstrualAge).ToList();
+         pma.Values = values(allOntogenies, x => x.PostmenstrualAge);
+         mean.Values = values(allOntogenies, x => x.OntogenyFactor);
+         std.Values = values(allOntogenies, x => x.Deviation);
+         return dataRepository;
+      }
+
+      private float[] values(IEnumerable<OntogenyMetaData> allOntogenies, Func<OntogenyMetaData, double> valueFunc) => allOntogenies.Select(valueFunc).ToFloatArray();
 
       public IReadOnlyList<Sample> AllOntogenyFactorForStrictBiggerThanPMA(Ontogeny ontogeny, OriginData originData, string containerName, RandomGenerator randomGenerator = null)
       {
@@ -150,7 +242,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          var mean = _interpolation.Interpolate(knownSamples.Select(item => item.Mean), pma);
          var std = _interpolation.Interpolate(knownSamples.Select(item => item.Std), pma);
 
-         return (mean, std, DistributionTypes.LogNormal);
+         return (mean, std, DistributionType.LogNormal);
       }
 
       public IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null)

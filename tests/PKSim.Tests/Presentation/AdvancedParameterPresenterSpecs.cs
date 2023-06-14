@@ -1,7 +1,7 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
+using OSPSuite.Core.Domain.Formulas;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Populations;
 using PKSim.Presentation.Presenters.AdvancedParameters;
@@ -26,28 +26,28 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_retreving_the_availalbe_distribution_type_for_an_advanced_parameter : concern_for_AdvancedParameterPresenter
+   public class When_retrieving_the_available_distribution_type_for_an_advanced_parameter : concern_for_AdvancedParameterPresenter
    {
       private AdvancedParameterDTO _normalDTO;
-      private AdvancedParameterDTO _unknowParameter;
+      private AdvancedParameterDTO _unknownParameter;
 
       protected override void Context()
       {
          base.Context();
          _normalDTO = new AdvancedParameterDTO();
-         _unknowParameter = new AdvancedParameterDTO {DistributionType = DistributionTypes.Unknown};
+         _unknownParameter = new AdvancedParameterDTO {DistributionType = DistributionType.Unknown};
       }
 
       [Observation]
-      public void should_return_all_distributuon_but_the_unknown_type_for_a_standard_parameter()
+      public void should_return_all_distribution_but_the_unknown_type_for_a_standard_parameter()
       {
-         sut.AllDistributions(_normalDTO).ShouldOnlyContain(DistributionTypes.Normal,DistributionTypes.LogNormal, DistributionTypes.Uniform,DistributionTypes.Discrete);
+         sut.AllDistributions(_normalDTO).ShouldOnlyContain(DistributionType.Normal,DistributionType.LogNormal, DistributionType.Uniform,DistributionType.Discrete);
       }
 
       [Observation]
-      public void should_return_all_distributuon_with_the_unknown_type_for_a_parameter_already_using_the_unkown_distribution()
+      public void should_return_all_distribution_with_the_unknown_type_for_a_parameter_already_using_the_unknown_distribution()
       {
-         sut.AllDistributions(_unknowParameter).ShouldOnlyContain(DistributionTypes.Normal, DistributionTypes.LogNormal, DistributionTypes.Uniform, DistributionTypes.Discrete, DistributionTypes.Unknown);
+         sut.AllDistributions(_unknownParameter).ShouldOnlyContain(DistributionType.Normal, DistributionType.LogNormal, DistributionType.Uniform, DistributionType.Discrete, DistributionType.Unknown);
 
       }
    }

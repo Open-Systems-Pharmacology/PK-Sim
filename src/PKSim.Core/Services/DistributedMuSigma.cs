@@ -1,7 +1,6 @@
 using System;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Random;
 
@@ -97,7 +96,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      public DistributionType DistributionType => _parameter.Formula.DistributionType();
+      public DistributionType DistributionType => _parameter.Formula.DistributionType;
 
       public double DefaultValue => generateValue(0);
 
@@ -113,10 +112,10 @@ namespace PKSim.Core.Services
 
       private double generateValue(double perturbation)
       {
-         if (DistributionType == DistributionTypes.Normal)
+         if (DistributionType == DistributionType.Normal)
             return Mean + Deviation * perturbation;
 
-         if (DistributionType == DistributionTypes.LogNormal)
+         if (DistributionType == DistributionType.LogNormal)
             return Mean * Math.Exp(Math.Log(Deviation) * perturbation);
 
          return Mean;
@@ -126,7 +125,7 @@ namespace PKSim.Core.Services
       {
          var scale = Math.Pow(hrel, alpha);
          Mean *= scale;
-         if (DistributionType == DistributionTypes.Normal)
+         if (DistributionType == DistributionType.Normal)
          {
             Deviation *= scale;
          }

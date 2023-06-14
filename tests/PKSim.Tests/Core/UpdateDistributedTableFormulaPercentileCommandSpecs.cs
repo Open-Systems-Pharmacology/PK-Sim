@@ -3,11 +3,11 @@ using OSPSuite.Core.Maths.Statistics;
 using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Commands;
 using PKSim.Core.Mappers;
-using PKSim.Core.Model;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using static OSPSuite.Core.Domain.Formulas.DistributionType;
 
 namespace PKSim.Core
 {
@@ -39,9 +39,9 @@ namespace PKSim.Core
          base.Context();
          _distributedTableFormula.Percentile = 0.2;
          _normalDistribution0 = new NormalDistribution(1, 2);
-         _distributedTableFormula.AddPoint(1, _normalDistribution0.CalculateValueFromPercentile(0.2), new DistributionMetaData { Mean = 1, Deviation = 2, Distribution = DistributionTypes.Normal });
+         _distributedTableFormula.AddPoint(1, _normalDistribution0.CalculateValueFromPercentile(0.2), new DistributionMetaData { Mean = 1, Deviation = 2, Distribution = Normal });
          _normalDistribution1 = new NormalDistribution(2, 2.5);
-         _distributedTableFormula.AddPoint(2, _normalDistribution1.CalculateValueFromPercentile(0.2), new DistributionMetaData { Mean = 2, Deviation = 2.5, Distribution = DistributionTypes.Normal });
+         _distributedTableFormula.AddPoint(2, _normalDistribution1.CalculateValueFromPercentile(0.2), new DistributionMetaData { Mean = 2, Deviation = 2.5, Distribution = Normal });
       }
 
       protected override void Because()

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotTableFormula = PKSim.Core.Snapshots.DistributedTableFormula;
-using ModelTableFormula = PKSim.Core.Model.DistributedTableFormula;
+using ModelTableFormula = OSPSuite.Core.Domain.Formulas.DistributedTableFormula;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -29,13 +29,13 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      private List<DistributionMetaData> distributionMetaDataFrom(IReadOnlyList<Model.DistributionMetaData> allDistributionMetaData)
+      private List<DistributionMetaData> distributionMetaDataFrom(IReadOnlyList<OSPSuite.Core.Domain.Formulas.DistributionMetaData> allDistributionMetaData)
       {
          return allDistributionMetaData.Select(x => new DistributionMetaData
          {
             Mean = x.Mean,
             Deviation = x.Deviation,
-            Distribution = x.Distribution.Id
+            Distribution = x.Distribution
          }).ToList();
       }
 
@@ -48,13 +48,13 @@ namespace PKSim.Core.Snapshots.Mappers
          return Task.FromResult(tableFormula);
       }
 
-      private Model.DistributionMetaData modelDistributionDataFrom(DistributionMetaData distributionMetaData)
+      private OSPSuite.Core.Domain.Formulas.DistributionMetaData modelDistributionDataFrom(DistributionMetaData distributionMetaData)
       {
-         return new Model.DistributionMetaData
+         return new OSPSuite.Core.Domain.Formulas.DistributionMetaData
          {
             Mean = distributionMetaData.Mean,
             Deviation = distributionMetaData.Deviation,
-            Distribution = DistributionTypes.ById(distributionMetaData.Distribution)
+            Distribution = distributionMetaData.Distribution
          };
       }
    }

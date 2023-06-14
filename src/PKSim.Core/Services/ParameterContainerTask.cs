@@ -51,7 +51,7 @@ namespace PKSim.Core.Services
 
       public void AddIndividualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, string parameterName) where TContainer : IContainer
       {
-         addParametersTo(parameterContainer, originData, originData.AllCalculationMethods().Select(cm => cm.Name),
+         addParametersTo(parameterContainer, originData, originData.AllCalculationMethods().Select(cm => cm.Name), 
             param => param.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(param.ParameterName, parameterName));
       }
 

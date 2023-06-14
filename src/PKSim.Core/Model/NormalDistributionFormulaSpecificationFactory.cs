@@ -49,6 +49,6 @@ namespace PKSim.Core.Model
 
       public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions) => distributions.All(IsSatisfiedBy);
 
-      public bool IsSatisfiedBy(IDistributionMetaData distribution) => distribution.Distribution == DistributionTypes.Normal;
+      public bool IsSatisfiedBy(IDistributionMetaData distribution) => distribution.Distribution == DistributionType.Normal;
    }
 }

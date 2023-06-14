@@ -72,18 +72,8 @@ namespace PKSim.Core.Services
       public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Individual individual)
       {
          molecule.Ontogeny = ontogeny;
-         updateOntogenyParameter(molecule.OntogenyFactorGIParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, individual.OriginData));
-         updateOntogenyParameter(molecule.OntogenyFactorParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, individual.OriginData));
-      }
-
-      private void updateOntogenyParameter(IParameter parameter, double value)
-      {
-         //this can be the case if the parameter is defined in an expression profile
-         if (parameter == null)
-            return;
-
-         parameter.DefaultValue = value;
-         parameter.Value = parameter.DefaultValue.Value;
+         updateOntogenyParameterTable(molecule.OntogenyFactorGITableParameter, ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM);
+         updateOntogenyParameterTable(molecule.OntogenyFactorTableParameter, ontogeny, CoreConstants.Groups.ONTOGENY_LIVER);
       }
 
       public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Population population)
@@ -95,6 +85,21 @@ namespace PKSim.Core.Services
       {
          population.IndividualValuesCache.Remove(ontogenyFactorPath);
          population.IndividualValuesCache.Remove(ontogenyFactorGIPath);
+      }
+
+      private void updateOntogenyParameterTable(IParameter parameter, Ontogeny ontogeny, string containerName)
+      {
+         parameter.Formula = _ontogenyRepository.OntogenyToDistributedTableFormula(ontogeny, containerName);
+      }
+
+      private void updateOntogenyParameter(IParameter parameter, double value)
+      {
+         //this can be the case if the parameter is defined in an expression profile
+         if (parameter == null)
+            return;
+
+         parameter.DefaultValue = value;
+         parameter.Value = parameter.DefaultValue.Value;
       }
 
       public void UpdateAllOntogenies(Population population)

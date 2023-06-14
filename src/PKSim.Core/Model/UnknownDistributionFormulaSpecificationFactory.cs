@@ -31,7 +31,7 @@ namespace PKSim.Core.Model
 
       public bool IsSatisfiedBy(IDistributionMetaData distribution)
       {
-         return distribution.Distribution == DistributionTypes.Unknown;
+         return distribution.Distribution == DistributionType.Unknown;
       }
 
       public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions)

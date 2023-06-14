@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -45,7 +46,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _advancedParameter = sut.Create(_parameter, DistributionTypes.Uniform);
+         _advancedParameter = sut.Create(_parameter, DistributionType.Uniform);
       }
 
       [Observation]

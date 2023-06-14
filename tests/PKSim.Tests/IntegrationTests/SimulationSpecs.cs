@@ -14,7 +14,6 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
@@ -371,7 +370,7 @@ namespace PKSim.IntegrationTests
             if (parameter.Value.NameIsOneOf(CoreConstants.Parameters.MEAN_HEIGHT, CoreConstants.Parameters.MEAN_WEIGHT))
                continue;
 
-            if (parameter.Value.Formula.DistributionType() == DistributionTypes.Discrete)
+            if (parameter.Value.Formula.DistributionType == DistributionType.Discrete)
                continue;
 
             //only one point for this parameters
