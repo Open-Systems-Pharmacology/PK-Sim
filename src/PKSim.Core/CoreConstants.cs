@@ -905,7 +905,7 @@ namespace PKSim.Core
          public static readonly string DOSE_PER_BODY_SURFACE_AREA = "DosePerBodySurfaceArea";
          public static readonly string AGE = "Age";
          public static readonly string AGE_0 = "Age of individual at t=0";
-         public static readonly string PMA = "Postmenstrual age";
+         public static readonly string PMA = "Post menstrual age";
          public static readonly string WEIGHT = "Weight";
          public static readonly string HCT = "Hematocrit";
          public static readonly string WEIGHT_IN_PROCESS = "Body weight";

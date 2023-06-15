@@ -156,7 +156,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return formula;
       }
 
-      public DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName, Unit xUnit = null, Unit yUnit = null)
+      public DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName)
       {
          if (ontogeny is UserDefinedOntogeny userDefinedOntogeny)
             return userDefinedOntogeny.Table;
@@ -164,7 +164,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if(ontogeny is NullOntogeny)
             return null;
 
-         var dataRepository = OntogenyToRepository(ontogeny, containerName, xUnit, yUnit);
+         var dataRepository = OntogenyToRepository(ontogeny, containerName);
          return DataRepositoryToDistributedTableFormula(dataRepository);
       }
 
@@ -184,15 +184,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return allFor(originData.Species.Name).FindByName(molecule) ?? new NullOntogeny();
       }
 
-      public DataRepository OntogenyToRepository(Ontogeny ontogeny, string containerName, Unit xUnit = null, Unit yUnit = null)
+      public DataRepository OntogenyToRepository(Ontogeny ontogeny, string containerName)
       {
          var dataRepository = new DataRepository {Name = PKSimConstants.UI.OntogenyFor(ontogeny.DisplayName, containerName)};
-         var xUnitToUse = xUnit ?? _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.AgeInWeeks);
-         var yUnitToUse = yUnit ?? _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Fraction);
+         var xUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.AgeInWeeks);
+         var yUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Fraction);
 
-         var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, _dimensionRepository.AgeInWeeks) {DisplayUnit = xUnitToUse};
-         var mean = new DataColumn(dataRepository.Name, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnitToUse};
-         var std = new DataColumn(PKSimConstants.UI.StandardDeviation, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnitToUse};
+         var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, _dimensionRepository.AgeInWeeks) {DisplayUnit = xUnit };
+         var mean = new DataColumn(dataRepository.Name, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnit };
+         var std = new DataColumn(PKSimConstants.UI.StandardDeviation, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnit};
          mean.DataInfo.AuxiliaryType = AuxiliaryType.GeometricMeanPop;
          std.AddRelatedColumn(mean);
          dataRepository.Add(mean);

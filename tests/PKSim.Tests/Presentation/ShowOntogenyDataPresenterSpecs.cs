@@ -15,6 +15,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.Charts;
+using DevExpress.Utils.Extensions;
 
 
 namespace PKSim.Presentation
@@ -104,7 +105,6 @@ namespace PKSim.Presentation
          sut.Show(_ontogeny);
          var dto = ShowOntogenyDataDTO;
          dto.SelectedContainer = _groupDuodenum;
-         A.CallTo(() => _ontogenyRepository.AllValuesFor(_ontogeny, _groupDuodenum.Name)).Returns(_allMetaData);
       }
 
       protected override void Because()
@@ -115,7 +115,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_retrieve_the_data_for_duodenum()
       {
-         A.CallTo(() => _ontogenyRepository.AllValuesFor(_ontogeny, _groupDuodenum.Name)).MustHaveHappened();
+         A.CallTo(() => _ontogenyRepository.OntogenyToRepository(_ontogeny, _groupDuodenum.Name)).MustHaveHappened();
       }
 
       [Observation]

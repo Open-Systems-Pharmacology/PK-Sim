@@ -128,6 +128,13 @@ namespace PKSim.IntegrationTests
          sut.Organism.Parameter(CoreConstants.Parameters.BSA).ShouldBeNull();
       }
 
+
+      [Observation]
+      public void individual_should_not_have_PMA_parameter()
+      {
+         sut.Organism.Parameter(CoreConstants.Parameters.PMA).ShouldBeNull();
+      }
+
       [Observation]
       public void all_parameters_with_value_origin_copied_from_beagle_should_have_the_same_value_as_in_beagle()
       {
