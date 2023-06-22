@@ -110,18 +110,18 @@ namespace PKSim.Presentation.Services
          };
 
 
-         ageColumn.SupportedDimensions.Add(_dimensionRepository.AgeInYears);
+         ageColumn.SupportedDimensions.Add(ageColumn.DefaultDimension);
          columns.Add(ageColumn);
 
          var ontogenyFactor = new ColumnInfo
          {
-            DefaultDimension = _dimensionRepository.Fraction,
+            DefaultDimension = _dimensionRepository.NoDimension,
             Name = PKSimConstants.UI.OntogenyFactor,
             DisplayName = PKSimConstants.UI.OntogenyFactor,
             IsMandatory = true,
             BaseGridName = ageColumn.Name,
          };
-         ontogenyFactor.SupportedDimensions.Add(_dimensionRepository.Fraction);
+         ontogenyFactor.SupportedDimensions.Add(ontogenyFactor.DefaultDimension);
          columns.Add(ontogenyFactor);
 
          var geoMean = new ColumnInfo
@@ -134,7 +134,7 @@ namespace PKSim.Presentation.Services
             RelatedColumnOf = ontogenyFactor.Name
          };
 
-         geoMean.SupportedDimensions.Add(_dimensionRepository.NoDimension);
+         geoMean.SupportedDimensions.Add(geoMean.DefaultDimension);
          columns.Add(geoMean);
 
          return columns;
