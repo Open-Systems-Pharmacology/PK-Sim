@@ -10,6 +10,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using static OSPSuite.Core.Domain.Constants;
@@ -96,8 +97,8 @@ namespace PKSim.Infrastructure.ORM.Queries
                   observer.Name = CoreConstants.Observer.ObserverNameFrom(observer.Name, compoundName);
 
                   observer.Formula.ReplaceKeywordsInObjectPaths(
-                     new[] {CoreConstants.Molecule.DrugFcRnComplexTemplate},
-                     new[] {CoreConstants.Molecule.DrugFcRnComplexName(compoundName)}
+                     new[] { CoreConstants.Molecule.DrugFcRnComplexTemplate },
+                     new[] { CoreConstants.Molecule.DrugFcRnComplexName(compoundName) }
                   );
 
                   observer.AddMoleculeName(compoundName);
@@ -111,7 +112,7 @@ namespace PKSim.Infrastructure.ORM.Queries
 
                compoundNames.Each(observer.AddMoleculeName);
 
-               if (observer.IsConcentration())
+               if (observer.IsConcentrationObserver())
                   allMoleculesNeedingConcentrationObservers.Each(observer.AddMoleculeName);
 
                observerBuildingBlock.Add(observer);

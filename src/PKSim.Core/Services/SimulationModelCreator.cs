@@ -85,17 +85,6 @@ namespace PKSim.Core.Services
             });
          });
 
-         //we need to update the observer types according to their location (container observer are always of type drug, amount observer are depending on parent)
-         var allObservers = simulation.All<Observer>();
-         foreach (var observer in allObservers)
-         {
-            var quantity = observer.ParentContainer as IQuantity;
-            if (quantity != null)
-               observer.QuantityType = QuantityType.Observer | quantity.QuantityType;
-            else
-               observer.QuantityType = QuantityType.Observer | QuantityType.Drug;
-         }
-
          _simulationPersistableUpdater.ResetPersistable(simulation);
       }
 

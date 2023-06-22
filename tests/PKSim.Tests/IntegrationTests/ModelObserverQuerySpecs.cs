@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Model.Extensions;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 
@@ -66,7 +67,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_returned_observers_defined_for_concentration_should_be_available_for_the_proteins()
       {
-         foreach (var obs in _observers.Where(obs => obs.IsConcentration()))
+         foreach (var obs in _observers.Where(obs => obs.IsConcentrationObserver()))
          {
             obs.MoleculeNames().ShouldContain(_compoundName, "Enzyme");
          }
