@@ -35,8 +35,10 @@ INSERT INTO tab_disease_states(disease_state,display_name,description) VALUES('H
 
 This parameterization does not differentiate the etiology of hepatic impairment. Physiological changes are strictly based on Child-Pugh Scoring criteria.');
 DELETE FROM tab_model_calculation_methods WHERE model='4Comp' AND calculation_method='BMI';
+INSERT INTO tab_model_calculation_methods(model,calculation_method,is_default,sequence) VALUES('4Comp','Individual_AgeDependent',1,1);
 INSERT INTO tab_model_calculation_methods(model,calculation_method,is_default,sequence) VALUES('4Comp','Individual_HeightDependent',1,1);
 DELETE FROM tab_model_calculation_methods WHERE model='TwoPores' AND calculation_method='BMI';
+INSERT INTO tab_model_calculation_methods(model,calculation_method,is_default,sequence) VALUES('TwoPores','Individual_AgeDependent',1,1);
 INSERT INTO tab_model_calculation_methods(model,calculation_method,is_default,sequence) VALUES('TwoPores','Individual_HeightDependent',1,1);
 INSERT INTO tab_parameters(parameter_name,display_name,description,dimension,default_unit) VALUES('Child-Pugh score','Child-Pugh score','Child-Pugh score: A (5,6 points)
 Child-Pugh score: B (7-9 points)

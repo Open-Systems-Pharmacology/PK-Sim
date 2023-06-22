@@ -112,6 +112,6 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public ModelProperties ModelProperties => _modelPropertiesMapper.MapFrom(_modelConfigurationDTO);
 
-      private ModelConfiguration selectedModelConfiguration => _modelConfigurationDTO != null ? _modelConfigurationDTO.ModelConfiguration : null;
+      private ModelConfiguration selectedModelConfiguration => _modelConfigurationDTO?.ModelConfiguration;
    }
 }
