@@ -7,7 +7,7 @@ namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_MoleculeParameterRepository : ContextForIntegration<IMoleculeParameterRepository>
    {
-      protected const string MOLECULE_WITH_PARAMTERS = "CYP3A4";
+      protected const string MOLECULE_WITH_PARAMETERS = "CYP3A4";
    }
 
    public class When_retrieving_all_parameters_defined_for_a_molecule_containing_default_parameters_in_the_database : concern_for_MoleculeParameterRepository
@@ -15,24 +15,24 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_the_expected_parameters()
       {
-         sut.AllParametersFor(MOLECULE_WITH_PARAMTERS).Count.ShouldBeEqualTo(3);
-         sut.ParameterFor(MOLECULE_WITH_PARAMTERS, CoreConstants.Parameters.REFERENCE_CONCENTRATION).ShouldNotBeNull();
-         sut.ParameterFor(MOLECULE_WITH_PARAMTERS, CoreConstants.Parameters.HALF_LIFE_LIVER).ShouldNotBeNull();
-         sut.ParameterFor(MOLECULE_WITH_PARAMTERS, CoreConstants.Parameters.HALF_LIFE_INTESTINE).ShouldNotBeNull();
+         sut.AllParametersFor(MOLECULE_WITH_PARAMETERS).Count.ShouldBeEqualTo(3);
+         sut.ParameterFor(MOLECULE_WITH_PARAMETERS, CoreConstants.Parameters.REFERENCE_CONCENTRATION).ShouldNotBeNull();
+         sut.ParameterFor(MOLECULE_WITH_PARAMETERS, CoreConstants.Parameters.HALF_LIFE_LIVER).ShouldNotBeNull();
+         sut.ParameterFor(MOLECULE_WITH_PARAMETERS, CoreConstants.Parameters.HALF_LIFE_INTESTINE).ShouldNotBeNull();
       }
 
       [Observation]
       public void should_return_the_expected_values()
       {
-         sut.ParameterValueFor(MOLECULE_WITH_PARAMTERS, CoreConstants.Parameters.REFERENCE_CONCENTRATION).ShouldBeEqualTo(4.32);
-         sut.ParameterValueFor(MOLECULE_WITH_PARAMTERS, CoreConstants.Parameters.HALF_LIFE_LIVER).ShouldBeEqualTo(37 * 60);
-         sut.ParameterValueFor(MOLECULE_WITH_PARAMTERS, CoreConstants.Parameters.HALF_LIFE_INTESTINE).ShouldBeEqualTo(CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
+         sut.ParameterValueFor(MOLECULE_WITH_PARAMETERS, CoreConstants.Parameters.REFERENCE_CONCENTRATION).ShouldBeEqualTo(4.32);
+         sut.ParameterValueFor(MOLECULE_WITH_PARAMETERS, CoreConstants.Parameters.HALF_LIFE_LIVER).ShouldBeEqualTo(37 * 60);
+         sut.ParameterValueFor(MOLECULE_WITH_PARAMETERS, CoreConstants.Parameters.HALF_LIFE_INTESTINE).ShouldBeEqualTo(CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
       }
 
       [Observation]
       public void should_return_the_default_value_given_when_asked_for_a_parameter_value_that_does_not_exist()
       {
-         sut.ParameterValueFor(MOLECULE_WITH_PARAMTERS, "PARAMETER_THAT_DOES_NOT_EXIST", defaultValue: 10).ShouldBeEqualTo(10);
+         sut.ParameterValueFor(MOLECULE_WITH_PARAMETERS, "PARAMETER_THAT_DOES_NOT_EXIST", defaultValue: 10).ShouldBeEqualTo(10);
       }
    }
 
@@ -56,7 +56,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_be_able_to_retrieve_the_parameters()
       {
-         sut.AllParametersFor(MOLECULE_WITH_PARAMTERS.ToLower()).Count.ShouldBeEqualTo(3);
+         sut.AllParametersFor(MOLECULE_WITH_PARAMETERS.ToLower()).Count.ShouldBeEqualTo(3);
       }
    }
 
@@ -71,7 +71,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_return_null_if_the_parameter_does_not_exist_for_an_existing_molecule()
       {
-         sut.ParameterFor(MOLECULE_WITH_PARAMTERS, "PARAM").ShouldBeNull();
+         sut.ParameterFor(MOLECULE_WITH_PARAMETERS, "PARAM").ShouldBeNull();
       }
    }
 }

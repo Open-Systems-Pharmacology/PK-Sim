@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -25,13 +24,12 @@ namespace PKSim.Presentation.DTO.Mappers
       {
          var dto = new IndividualProteinDTO(protein);
          simulationSubject.AllMoleculeContainersFor(protein)
-            .SelectMany(x=>x.AllParameters())
+            .SelectMany(x => x.AllParameters())
             .Union(protein.AllGlobalExpressionParameters)
             .MapAllUsing(_expressionContainerMapper)
             .Each(dto.AddExpressionParameter);
 
          return dto;
       }
-
    }
 }

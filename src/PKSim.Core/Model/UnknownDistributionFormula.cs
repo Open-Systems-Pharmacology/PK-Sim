@@ -7,6 +7,10 @@ namespace PKSim.Core.Model
 {
    public class UnknownDistributionFormula : DistributionFormula
    {
+      public UnknownDistributionFormula() : base(DistributionType.Unknown)
+      {
+      }
+
       protected override double CalculateFor(IReadOnlyList<IObjectReference> usedObjects, IUsingFormula dependentObject)
       {
          return double.NaN;

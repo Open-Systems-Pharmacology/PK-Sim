@@ -43,7 +43,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private IMenuBarItem ExportToPkml(ExpressionProfile expressionProfile)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
-            .WithCommandFor<ExportExpressionProfileToPkmlCommand, ExpressionProfile>(expressionProfile, _container)
+            .WithCommandFor<ExportExpressionProfileToPKMLCommand, ExpressionProfile>(expressionProfile, _container)
             .WithIcon(ApplicationIcons.PKMLSave);
       }
    }

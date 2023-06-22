@@ -41,6 +41,6 @@ namespace PKSim.Core.Model
 
       public bool IsSatisfiedBy(IEnumerable<ParameterDistributionMetaData> distributions) => distributions.All(IsSatisfiedBy);
 
-      public bool IsSatisfiedBy(IDistributionMetaData distribution) => distribution.Distribution == DistributionTypes.Discrete;
+      public bool IsSatisfiedBy(IDistributionMetaData distribution) => distribution.Distribution == OSPSuite.Core.Domain.Formulas.DistributionType.Discrete;
    }
 }

@@ -61,7 +61,7 @@ namespace PKSim.Core.Model
 
       public bool IsSatisfiedBy(IDistributionMetaData distribution)
       {
-         return distribution.Distribution == DistributionTypes.Uniform;
+         return distribution.Distribution == DistributionType.Uniform;
       }
    }
 }

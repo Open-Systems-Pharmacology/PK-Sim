@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
@@ -84,7 +83,7 @@ namespace PKSim.Core.Mappers
          switch (parameter.Formula)
          {
             case DistributionFormula distributionFormula:
-               builderParameter.DistributionType = distributionFormula.DistributionType().Id;
+               builderParameter.DistributionType = distributionFormula.DistributionType;
                break;
          }
       }

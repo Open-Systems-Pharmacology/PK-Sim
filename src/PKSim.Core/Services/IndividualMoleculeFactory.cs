@@ -27,7 +27,7 @@ namespace PKSim.Core.Services
       ///    Add all predefined ontogeny parameters to the global molecule. This is only required for actual SimulationSubject
       /// </summary>
       /// <param name="individualMolecule"></param>
-      void AddOntogenyParameterTo(IndividualMolecule individualMolecule);
+      void AddAgeDependentOntogenyParametersTo(IndividualMolecule individualMolecule);
    }
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
@@ -67,7 +67,7 @@ namespace PKSim.Core.Services
       public virtual IndividualMolecule CreateEmpty()
       {
          var molecule = CreateMolecule(string.Empty);
-         AddOntogenyParameterTo(molecule);
+         AddConstantOntogenyParametersTo(molecule);
          return molecule;
       }
 
@@ -92,6 +92,8 @@ namespace PKSim.Core.Services
 
       protected ParameterRateMetaData InitialConcentrationParam(string rate) => rateParam(INITIAL_CONCENTRATION, rate);
 
+      protected ParameterRateMetaData OntogenyFactorFromTable(string parameterName, string rate)=>rateParam(parameterName, rate);
+
       private ParameterRateMetaData rateParam(string paramName, string rate)
       {
          var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
@@ -108,14 +110,24 @@ namespace PKSim.Core.Services
          CreateMoleculeParameterIn(molecule, HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, DISEASE_FACTOR, CoreConstants.DEFAULT_DISEASE_FACTOR);
+         
+         //Default ontogeny parameter tables created for ALL molecules with a default value of 1
+         OntogenyFactorTables.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
 
          return molecule;
       }
 
-      public void AddOntogenyParameterTo(IndividualMolecule molecule)
+      public void AddAgeDependentOntogenyParametersTo(IndividualMolecule molecule)
       {
-         OntogenyFactors.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR)
-         );
+         AddGlobalExpression(molecule,
+            OntogenyFactorFromTable(ONTOGENY_FACTOR, CoreConstants.Rate.ONTOGENY_FACTOR_FROM_TABLE),
+            OntogenyFactorFromTable(ONTOGENY_FACTOR_GI, CoreConstants.Rate.ONTOGENY_FACTOR_GI_FROM_TABLE));
+      }
+
+      public void AddConstantOntogenyParametersTo(IndividualMolecule undefinedMolecule)
+      {
+         //Constant ontogeny parameters added for undefined enzymes
+         OntogenyFactors.Each(x => CreateMoleculeParameterIn(undefinedMolecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
       }
 
       protected IParameter CreateFormulaParameterIn(

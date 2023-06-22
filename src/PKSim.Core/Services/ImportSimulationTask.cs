@@ -1,5 +1,6 @@
 ﻿using System;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -82,7 +83,7 @@ namespace PKSim.Core.Services
          if (!parameter.CanBeDefinedAsAdvanced())
             return;
 
-         var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.Unknown);
+         var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionType.Unknown);
 
          //do not generate random values as these were loaded from files
          populationSimulation.AddAdvancedParameter(advancedParameter, generateRandomValues: false);

@@ -3,9 +3,9 @@ using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.R.Domain;
 using PKSim.R.Services;
 using static PKSim.Core.Services.CKDDiseaseStateImplementation;
@@ -358,12 +358,12 @@ namespace PKSim.R
          allCYP3A4Parameters[0].Std.ShouldBeSmallerThan(1.92);
          allCYP3A4Parameters[0].Std.ShouldBeGreaterThan(1.45);
 
-         allCYP3A4Parameters[1].DistributionType.ShouldBeEqualTo(DistributionTypes.LogNormal);
+         allCYP3A4Parameters[1].DistributionType.ShouldBeEqualTo(DistributionType.LogNormal);
          allCYP3A4Parameters[1].Mean.ShouldBeGreaterThan(0.41);
          allCYP3A4Parameters[1].Mean.ShouldBeSmallerThan(0.5);
          allCYP3A4Parameters[1].Std.ShouldBeEqualTo(1.45);
 
-         allCYP2E1Parameters[0].DistributionType.ShouldBeEqualTo(DistributionTypes.LogNormal);
+         allCYP2E1Parameters[0].DistributionType.ShouldBeEqualTo(DistributionType.LogNormal);
          allCYP2E1Parameters[0].Mean.ShouldBeGreaterThan(0.85);
          allCYP2E1Parameters[0].Mean.ShouldBeSmallerThan(0.92);
          allCYP2E1Parameters[0].Std.ShouldBeSmallerThan(1.39);

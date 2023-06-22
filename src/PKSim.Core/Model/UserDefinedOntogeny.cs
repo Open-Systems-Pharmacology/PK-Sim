@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 

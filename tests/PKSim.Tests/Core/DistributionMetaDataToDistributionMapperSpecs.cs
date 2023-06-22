@@ -2,9 +2,9 @@
 using OSPSuite.Core.Maths.Statistics;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
-using PKSim.Core.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.Core
 {
@@ -31,7 +31,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _distributionMetaData = new DistributionMetaData {Deviation = 1, Mean = 0, Distribution = DistributionTypes.Normal};
+         _distributionMetaData = new DistributionMetaData {Deviation = 1, Mean = 0, Distribution = DistributionType.Normal};
       }
 
       [Observation]
@@ -49,7 +49,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _distributionMetaData = new DistributionMetaData { Deviation = 1, Mean = 4, Distribution = DistributionTypes.LogNormal };
+         _distributionMetaData = new DistributionMetaData { Deviation = 1, Mean = 4, Distribution = DistributionType.LogNormal };
       }
 
       [Observation]
@@ -69,7 +69,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _distributionMetaData = new DistributionMetaData { Deviation = 1, Mean = 4, Distribution = DistributionTypes.Uniform };
+         _distributionMetaData = new DistributionMetaData { Deviation = 1, Mean = 4, Distribution = DistributionType.Uniform };
       }
 
       protected override void Because()
@@ -89,7 +89,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _distributionMetaData = new DistributionMetaData { Mean = 4, Distribution = DistributionTypes.Discrete };
+         _distributionMetaData = new DistributionMetaData { Mean = 4, Distribution = DistributionType.Discrete };
       }
 
       [Observation]

@@ -5,8 +5,10 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
 {
@@ -16,32 +18,38 @@ namespace PKSim.Core
       protected IndividualMolecule _molecule;
       protected Ontogeny _ontogeny;
       protected IEntityPathResolver _entityPathResolver;
+      protected IFormulaFactory _formulaFactory;
 
       protected override void Context()
       {
          _molecule = new IndividualEnzyme
          {
             DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR),
-            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_GI)
+            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_TABLE),
+            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_GI),
+            DomainHelperForSpecs.ConstantParameterWithValue(0).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_GI_TABLE),
          };
 
          _ontogeny = new DatabaseOntogeny();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
+         _formulaFactory= A.Fake<IFormulaFactory>();
          _entityPathResolver = new EntityPathResolverForSpecs();
-         sut = new MoleculeOntogenyVariabilityUpdater(_ontogenyRepository, _entityPathResolver);
+         sut = new MoleculeOntogenyVariabilityUpdater(_ontogenyRepository, _entityPathResolver, _formulaFactory);
       }
    }
 
    public class When_updating_the_ontogeny_factor_for_a_molecule_defined_in_an_individual : concern_for_MoleculeOntogenyVariabilityUpdater
    {
       private Individual _individual;
+      private readonly DistributedTableFormula _duoTable = new DistributedTableFormula();
+      private readonly DistributedTableFormula _liverTable = new DistributedTableFormula();
 
       protected override void Context()
       {
          base.Context();
          _individual = A.Fake<Individual>();
-         A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, _individual.OriginData, null)).Returns(10);
-         A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, _individual.OriginData, null)).Returns(20);
+         A.CallTo(() => _ontogenyRepository.OntogenyToDistributedTableFormula(_ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM)).Returns(_duoTable);
+         A.CallTo(() => _ontogenyRepository.OntogenyToDistributedTableFormula(_ontogeny, CoreConstants.Groups.ONTOGENY_LIVER)).Returns(_liverTable);
       }
 
       protected override void Because()
@@ -52,10 +60,8 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_factors_defined_in_the_database_for_liver_and_duodenum()
       {
-         _molecule.OntogenyFactor.ShouldBeEqualTo(20);
-         _molecule.OntogenyFactorParameter.DefaultValue.ShouldBeEqualTo(_molecule.OntogenyFactor);
-         _molecule.OntogenyFactorGI.ShouldBeEqualTo(10);
-         _molecule.OntogenyFactorGIParameter.DefaultValue.ShouldBeEqualTo(_molecule.OntogenyFactorGI);
+         _molecule.OntogenyFactorTableParameter.Formula.ShouldBeEqualTo(_liverTable);
+         _molecule.OntogenyFactorGITableParameter.Formula.ShouldBeEqualTo(_duoTable);
       }
    }
 

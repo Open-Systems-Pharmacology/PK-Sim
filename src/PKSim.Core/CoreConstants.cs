@@ -193,6 +193,8 @@ namespace PKSim.Core
          public static readonly string PARAM_F_EXP_INTERSTITIAL = "PARAM_f_exp_interstitial";
          public static readonly string PARAM_F_EXP_BASOLATERAL = "PARAM_f_exp_basolateral";
          public static readonly string PARAM_F_EXP_BRN_TISSUE = "PARAM_f_exp_brn_tissue";
+         public static readonly string ONTOGENY_FACTOR_FROM_TABLE = "TableFormulaWithXArgument_OntogenyFactor";
+         public static readonly string ONTOGENY_FACTOR_GI_FROM_TABLE = "TableFormulaWithXArgument_OntogenyFactorGI";
       }
 
       public static class Alias
@@ -891,7 +893,9 @@ namespace PKSim.Core
          };
 
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
+         public static readonly string ONTOGENY_FACTOR_TABLE = $"{ONTOGENY_FACTOR} table";
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
+         public static readonly string ONTOGENY_FACTOR_GI_TABLE = $"{ONTOGENY_FACTOR_GI} table";
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
          public static readonly string NUMBER_OF_REPETITIONS = "NumberOfRepetitions";
          public static readonly string TIME_BETWEEN_REPETITIONS = "TimeBetweenRepetitions";
@@ -901,7 +905,7 @@ namespace PKSim.Core
          public static readonly string DOSE_PER_BODY_SURFACE_AREA = "DosePerBodySurfaceArea";
          public static readonly string AGE = "Age";
          public static readonly string AGE_0 = "Age of individual at t=0";
-         public static readonly string PMA = "Postmenstrual age";
+         public static readonly string PMA = "Post menstrual age";
          public static readonly string WEIGHT = "Weight";
          public static readonly string HCT = "Hematocrit";
          public static readonly string WEIGHT_IN_PROCESS = "Body weight";
@@ -1024,6 +1028,12 @@ namespace PKSim.Core
          {
             ONTOGENY_FACTOR_GI,
             ONTOGENY_FACTOR
+         };
+
+         public static readonly IReadOnlyList<string> OntogenyFactorTables = new[]
+         {
+            ONTOGENY_FACTOR_GI_TABLE,
+            ONTOGENY_FACTOR_TABLE
          };
 
          public static readonly IReadOnlyList<string> AllPlasmaProteinOntogenyFactors = new[]

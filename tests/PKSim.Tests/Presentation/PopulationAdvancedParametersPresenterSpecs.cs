@@ -18,6 +18,7 @@ using PKSim.Presentation.Views.AdvancedParameters;
 
 using PKSim.Presentation.Views.Populations;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters.Nodes;
 
@@ -485,13 +486,13 @@ namespace PKSim.Presentation
          _command =  A.Fake<IPKSimCommand>();
          _advancedParameter =  new AdvancedParameter();
          _advancedParameter.ParameterPath = _pathAdvancedPara1;
-         A.CallTo(() => _advancedParametersTask.SwitchDistributionTypeFor(_advancedPara1, _population, DistributionTypes.Normal)).Returns(_command);
+         A.CallTo(() => _advancedParametersTask.SwitchDistributionTypeFor(_advancedPara1, _population, DistributionType.Normal)).Returns(_command);
          sut.EditPopulation(_population);
       }
 
       protected override void Because()
       {
-        _advancedParameterPresenter.OnDistributionTypeChanged += Raise.With(new DistributionTypeChangedEventArgs(_advancedParameter, DistributionTypes.Normal));
+        _advancedParameterPresenter.OnDistributionTypeChanged += Raise.With(new DistributionTypeChangedEventArgs(_advancedParameter, DistributionType.Normal));
       }
 
       [Observation]

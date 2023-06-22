@@ -1948,7 +1948,7 @@ namespace PKSim.Assets
          public static readonly string No = "No";
          public static readonly string Yes = "Yes";
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
-         public static readonly string ExportExpressionProfileToPkml = "Export expression profile to pkml";
+         public static readonly string ExportExpressionProfile = "Export expression profile to pkml";
          public static readonly string ExportIndividual = "Export individual to pkml";
          public static readonly string ExportSimulationResultsToExcel = $"Export simulation results to {Excel}";
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
@@ -2361,6 +2361,8 @@ namespace PKSim.Assets
          public static string LoadingObject(string objectToLoad) => $"Loading '{objectToLoad}'...";
 
          public static string OntogenyFor(string moleculeName) => $"{Ontogeny} for {moleculeName}";
+
+         public static string OntogenyFor(string moleculeName, string container) => $"{Ontogeny} for {moleculeName} - {container}";
 
          public static string AddParameterAsFavorites(string parameterName) => $"Add '{parameterName}' as favorite";
 

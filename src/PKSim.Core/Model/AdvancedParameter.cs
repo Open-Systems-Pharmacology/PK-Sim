@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Maths.Random;
-using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Model
 {
@@ -79,7 +79,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Returns the distribution type of the advanced parameter
       /// </summary>
-      public virtual DistributionType DistributionType => DistributedParameter.Formula.DistributionType();
+      public virtual DistributionType DistributionType => DistributedParameter.Formula.DistributionType;
 
       /// <summary>
       ///    Returns the parameter of the underlying distribution

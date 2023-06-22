@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -30,7 +30,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly ICache<RateKey, IRateObjectPaths> _rateObjectPaths;
 
       public RateObjectPathsRepository(IFlatRateObjectPathRepository flatRateObjectPathRepo,
-                                       IFlatRateObjectToFormulaUsablePathMapper flatRateObjectToFormulaUsablePathMapper)
+         IFlatRateObjectToFormulaUsablePathMapper flatRateObjectToFormulaUsablePathMapper)
       {
          _rateObjectPaths = new Cache<RateKey, IRateObjectPaths>(rk => new NullObjectPaths());
          _flatRateObjectPathRepo = flatRateObjectPathRepo;
@@ -79,7 +79,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public FormulaUsablePath PathWithAlias(RateKey rateKey, string alias)
       {
-         return ObjectPathsFor(rateKey).FirstOrDefault(path => string.Equals(path.Alias, alias));
+         var formulaUsablePath = ObjectPathsFor(rateKey).FirstOrDefault(path => string.Equals(path.Alias, alias));
+         return formulaUsablePath?.Clone<FormulaUsablePath>();
       }
    }
 }

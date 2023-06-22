@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.Charts;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.Charts;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -31,22 +26,20 @@ namespace PKSim.Presentation.Presenters.Individuals
    {
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly ISimpleChartPresenter _simpleChartPresenter;
-      private readonly IDimensionRepository _dimensionRepository;
       private readonly IGroupRepository _groupRepository;
-      private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private string _speciesName;
       private ShowOntogenyDataDTO _dto;
       private Ontogeny _ontogeny;
 
-      public ShowOntogenyDataPresenter(IShowOntogenyDataView view, IOntogenyRepository ontogenyRepository,
-         ISimpleChartPresenter simpleChartPresenter, IDimensionRepository dimensionRepository,
-         IGroupRepository groupRepository, IDisplayUnitRetriever displayUnitRetriever) : base(view)
+      public ShowOntogenyDataPresenter(
+         IShowOntogenyDataView view,
+         IOntogenyRepository ontogenyRepository,
+         ISimpleChartPresenter simpleChartPresenter,
+         IGroupRepository groupRepository) : base(view)
       {
          _ontogenyRepository = ontogenyRepository;
          _simpleChartPresenter = simpleChartPresenter;
-         _dimensionRepository = dimensionRepository;
          _groupRepository = groupRepository;
-         _displayUnitRetriever = displayUnitRetriever;
          _view.AddChart(_simpleChartPresenter.View);
       }
 
@@ -92,41 +85,18 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       private void updateChart()
       {
-         var xUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.AgeInYears);
-         var yUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Fraction);
-         var chart = _simpleChartPresenter.Plot(dataForSelectedOntogeny(xUnit, yUnit), Scalings.Linear);
+         var data = _ontogenyRepository.OntogenyToRepository(_dto.SelectedOntogeny, _dto.SelectedContainer.Name);
+         var chart = _simpleChartPresenter.Plot(data, Scalings.Linear);
          chart.AxisBy(AxisTypes.X).Caption = PKSimConstants.UI.PostMenstrualAge;
          chart.AxisBy(AxisTypes.X).GridLines = true;
          chart.AxisBy(AxisTypes.Y).Caption = PKSimConstants.UI.OntogenyFor(_dto.SelectedOntogeny.Name);
-         chart.AxisBy(AxisTypes.Y).GridLines = true;  
-      }
-
-      private DataRepository dataForSelectedOntogeny(Unit xUnit, Unit yUnit)
-      {
-         var dataRepository = new DataRepository {Name = PKSimConstants.UI.OntogenyFor(_dto.SelectedOntogeny.DisplayName)};
-         var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, _dimensionRepository.AgeInYears) {DisplayUnit = xUnit};
-         var mean = new DataColumn(dataRepository.Name, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnit};
-         var std = new DataColumn(PKSimConstants.UI.StandardDeviation, _dimensionRepository.Fraction, pma) { DisplayUnit = yUnit };
-         mean.DataInfo.AuxiliaryType = AuxiliaryType.GeometricMeanPop;
-         std.AddRelatedColumn(mean);
-         dataRepository.Add(mean);
-         dataRepository.Add(std);
-
-         var allOntogenies = _ontogenyRepository.AllValuesFor(_dto.SelectedOntogeny, _dto.SelectedContainer.Name).OrderBy(x => x.PostmenstrualAge).ToList();
-         pma.Values = values( allOntogenies, x => x.PostmenstrualAge);
-         mean.Values = values(allOntogenies, x => x.OntogenyFactor);
-         std.Values = values(allOntogenies, x => x.Deviation);
-         return dataRepository;
+         chart.AxisBy(AxisTypes.Y).GridLines = true;
+         _simpleChartPresenter.Refresh();
       }
 
       private void updateAvailableContainerForOntogeny()
       {
          _dto.SelectedContainer = AllContainers().FirstOrDefault();
-      }
-
-      private float[] values(IEnumerable<OntogenyMetaData> allOntogenies, Func<OntogenyMetaData, double> valueFunc)
-      {
-         return allOntogenies.Select(valueFunc).ToFloatArray();
       }
    }
 }

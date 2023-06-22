@@ -7,6 +7,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.Core
 {
@@ -75,8 +76,8 @@ namespace PKSim.Core
          _advancedParameterMolecule2HalfLifeIntestine = A.Fake<AdvancedParameter>().WithName("Molecule2HalfLifeIntestine");
          _advancedParameterMolecule2HalfLifeIntestine.ParameterPath = "Path2";
 
-         A.CallTo(() => _advancedParmeterFactory.Create(_molecule1.ReferenceConcentration, DistributionTypes.Normal)).Returns(_advancedParameterMolecule1RefConc);
-         A.CallTo(() => _advancedParmeterFactory.Create(_molecule2.HalfLifeIntestine, DistributionTypes.Normal)).Returns(_advancedParameterMolecule2HalfLifeIntestine);
+         A.CallTo(() => _advancedParmeterFactory.Create(_molecule1.ReferenceConcentration, DistributionType.Normal)).Returns(_advancedParameterMolecule1RefConc);
+         A.CallTo(() => _advancedParmeterFactory.Create(_molecule2.HalfLifeIntestine, DistributionType.Normal)).Returns(_advancedParameterMolecule2HalfLifeIntestine);
       }
 
       protected override void Because()
@@ -121,7 +122,7 @@ namespace PKSim.Core
 
          _advancedParameterMolecule1RefConc = A.Fake<AdvancedParameter>().WithName("Molecule1RefConf");
          _advancedParameterMolecule1RefConc.ParameterPath = "Path1";
-         A.CallTo(() => _advancedParmeterFactory.Create(_molecule1.ReferenceConcentration, DistributionTypes.Normal)).Returns(_advancedParameterMolecule1RefConc);
+         A.CallTo(() => _advancedParmeterFactory.Create(_molecule1.ReferenceConcentration, DistributionType.Normal)).Returns(_advancedParameterMolecule1RefConc);
       }
 
       protected override void Because()

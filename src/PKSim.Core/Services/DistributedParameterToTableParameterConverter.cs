@@ -16,8 +16,6 @@ using PKSim.Core.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using static OSPSuite.Core.Domain.Formulas.DistributionType;
-using DistributionType = PKSim.Core.Model.DistributionType;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
@@ -44,7 +42,6 @@ namespace PKSim.Core.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IParameterFactory _parameterFactory;
-      private readonly ICloneManager _cloneManager;
       private readonly IParameterQuery _parameterQuery;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IOntogenyRepository _ontogenyRepository;
@@ -65,7 +62,6 @@ namespace PKSim.Core.Services
          IFormulaFactory formulaFactory,
          IEntityPathResolver entityPathResolver,
          IParameterFactory parameterFactory,
-         ICloneManager cloneManager,
          IParameterQuery parameterQuery,
          IDimensionRepository dimensionRepository,
          IOntogenyRepository ontogenyRepository,
@@ -78,7 +74,6 @@ namespace PKSim.Core.Services
          _formulaFactory = formulaFactory;
          _entityPathResolver = entityPathResolver;
          _parameterFactory = parameterFactory;
-         _cloneManager = cloneManager;
          _parameterQuery = parameterQuery;
          _dimensionRepository = dimensionRepository;
          _ontogenyRepository = ontogenyRepository;
@@ -207,7 +202,6 @@ namespace PKSim.Core.Services
             if (formula == null)
                continue;
 
-            var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
             var individualParameter = getOrCreateIndividualParameter(parameter, individual);
             updateConstantParameterToFormula(individualParameter, formula, simulationConfiguration);
             createPopulationPlasmaProteinOntogenyTableParameter(parameter, _simulation as PopulationSimulation);
@@ -472,7 +466,7 @@ namespace PKSim.Core.Services
 
          var distributionSamples = distributionSamplesFor(heightDistributions);
          var (meanHeight, deviation) = distributionSamples(originData);
-         var heightDistributionFormula = createDistributionFrom(DistributionTypes.Normal, meanHeight, deviation);
+         var heightDistributionFormula = createDistributionFrom(DistributionType.Normal, meanHeight, deviation);
 
          double currentHeight = originData.Height.Value;
          double currentPercentile = heightDistributionFormula.CalculatePercentileForValue(currentHeight).CorrectedPercentileValue();
@@ -507,7 +501,7 @@ namespace PKSim.Core.Services
             currentOriginData.Age.Value = originDistributionMetaData.Age;
 
             var (mean, deviation) = heightDistributionSamples(currentOriginData);
-            double heightAtPercentile = valueFrom(DistributionTypes.Normal, mean, deviation, currentPercentile);
+            double heightAtPercentile = valueFrom(DistributionType.Normal, mean, deviation, currentPercentile);
             double hrelForAge = heightAtPercentile / mean;
 
             scaleDistributionMetaData(distributionMetaData, hrelForAge, alpha);
@@ -554,10 +548,10 @@ namespace PKSim.Core.Services
 
       private IDistribution createDistributionFrom(DistributionType distributionType, double mean, double deviation)
       {
-         if (distributionType == DistributionTypes.LogNormal)
+         if (distributionType == DistributionType.LogNormal)
             return new LogNormalDistribution(Math.Log(mean), Math.Log(deviation));
 
-         if (distributionType == DistributionTypes.Normal)
+         if (distributionType == DistributionType.Normal)
             return new NormalDistribution(mean, deviation);
 
          return new UniformDistribution(mean, mean);
@@ -577,7 +571,7 @@ namespace PKSim.Core.Services
       {
          var scale = Math.Pow(hrel, alpha);
          parameterDistributionMeta.Mean *= scale;
-         if (parameterDistributionMeta.DistributionType == Normal)
+         if (parameterDistributionMeta.Distribution == DistributionType.Normal)
          {
             parameterDistributionMeta.Deviation *= scale;
          }

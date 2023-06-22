@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -51,9 +52,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_not_have_added_the_ontogeny_parameter_into_the_individual_for_the_enzyme()
+      public void should_have_added_the_ontogeny_parameter_as_table_into_the_individual_for_the_enzyme()
       {
-         _expressionProfile.Molecule.AllOntogenyParameters.Where(x => x != null).ShouldBeEmpty();
+         var molecule = _expressionProfile.Molecule;
+         molecule.AllOntogenyParameters.Where(x => x != null).ShouldOnlyContain(molecule.OntogenyFactorTableParameter, molecule.OntogenyFactorGITableParameter);
       }
 
       [Observation]

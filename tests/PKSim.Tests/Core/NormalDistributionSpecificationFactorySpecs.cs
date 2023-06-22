@@ -40,15 +40,15 @@ namespace PKSim.Core
          base.Context();
          _normalDistribution1 = new ParameterDistributionMetaData
          {
-            DistributionType = DistributionType.Normal
+            Distribution = DistributionType.Normal
          };
          _normalDistribution2 = new ParameterDistributionMetaData
          {
-            DistributionType = DistributionType.Normal
+            Distribution = DistributionType.Normal
          };
          _logNormalDistribution = new ParameterDistributionMetaData
          {
-            DistributionType = DistributionType.LogNormal
+            Distribution = DistributionType.LogNormal
          };
          _onlyNormalDistributions = new List<ParameterDistributionMetaData> {_normalDistribution1, _normalDistribution2};
          _mixedDistributions = new List<ParameterDistributionMetaData> {_normalDistribution1, _logNormalDistribution};

@@ -44,7 +44,7 @@ namespace PKSim.Core.Snapshots.Mappers
             //the parameter path is what identified the advanced parameter. The name is not used anywhere.
             snapshot.Name = advancedParameter.ParameterPath;
             snapshot.Seed = advancedParameter.Seed;
-            snapshot.DistributionType = advancedParameter.DistributionType.Id;
+            snapshot.DistributionType = advancedParameter.DistributionType;
          });
       }
 
@@ -63,7 +63,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return null;
          }
 
-         var advancedParameter = _advancedParameterFactory.Create(parameter, DistributionTypes.ById(snapshot.DistributionType));
+         var advancedParameter = _advancedParameterFactory.Create(parameter, snapshot.DistributionType);
          advancedParameter.Seed = snapshot.Seed;
 
          await UpdateParametersFromSnapshot(snapshot, advancedParameter.DistributedParameter, snapshotContext);

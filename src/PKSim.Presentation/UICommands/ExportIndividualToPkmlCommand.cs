@@ -7,15 +7,10 @@ using PKSim.Core.Model;
 
 namespace PKSim.Presentation.UICommands
 {
-   public class ExportIndividualToPkmlCommand : PkmlExportCommandForBuildingBlock<Individual, IndividualBuildingBlock>
+   public class ExportIndividualToPKMLCommand : ExportBuildingBlockToPKMLCommand<Individual, IndividualBuildingBlock>
    {
-      public ExportIndividualToPkmlCommand(IDialogCreator dialogCreator, IPKMLPersistor pkmlPersistor, IIndividualToIndividualBuildingBlockMapper mapper) : base(dialogCreator, pkmlPersistor, mapper)
+      public ExportIndividualToPKMLCommand(IDialogCreator dialogCreator, IPKMLPersistor pkmlPersistor, IIndividualToIndividualBuildingBlockMapper mapper) : base(dialogCreator, pkmlPersistor, mapper, PKSimConstants.UI.ExportIndividual)
       {
-      }
-
-      protected override string DialogCaption()
-      {
-         return PKSimConstants.UI.ExportIndividual;
       }
    }
 }

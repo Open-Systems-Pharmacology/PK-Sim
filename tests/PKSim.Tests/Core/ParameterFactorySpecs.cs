@@ -151,8 +151,8 @@ namespace PKSim.Core
          _parameter = A.Fake<IDistributedParameter>();
          _subParameter = A.Fake<IParameter>();
          _originData = new OriginData {Age = new OriginDataParameter(40)};
-         _distributions.Add(new ParameterDistributionMetaData {DistributionType = DistributionType.Normal, Age = 20, ValueOrigin = _valueOrigin1});
-         _distributions.Add(new ParameterDistributionMetaData {DistributionType = DistributionType.Normal, Age = 50, ValueOrigin = _valueOrigin2 });
+         _distributions.Add(new ParameterDistributionMetaData {Distribution = DistributionType.Normal, Age = 20, ValueOrigin = _valueOrigin1});
+         _distributions.Add(new ParameterDistributionMetaData { Distribution = DistributionType.Normal, Age = 50, ValueOrigin = _valueOrigin2 });
          A.CallTo(() => _formulaFactory.DistributionFor(A<IEnumerable<ParameterDistributionMetaData>>._, _parameter, _originData)).Returns(_distributionFormula);
          A.CallTo(() => _objectBaseFactory.CreateDistributedParameter()).Returns(_parameter);
          A.CallTo(() => _objectBaseFactory.CreateParameter()).Returns(_subParameter);

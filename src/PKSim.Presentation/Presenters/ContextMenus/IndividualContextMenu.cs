@@ -41,7 +41,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private IMenuBarItem exportToPkml(Individual individual)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
-            .WithCommandFor<ExportIndividualToPkmlCommand, Individual>(individual, _container)
+            .WithCommandFor<ExportIndividualToPKMLCommand, Individual>(individual, _container)
             .WithIcon(ApplicationIcons.PKMLSave);
       }
 
