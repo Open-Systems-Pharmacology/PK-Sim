@@ -2,7 +2,7 @@ DELETE FROM tab_calculation_method_rates WHERE calculation_method='BMI' AND form
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DiseaseStates','PARAM_ChildPughScore','0','Dimensionless');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('ExpressionParameters','TableFormulaWithXArgument_OntogenyFactor',NULL,'Dimensionless');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('ExpressionParameters','TableFormulaWithXArgument_OntogenyFactorGI',NULL,'Dimensionless');
-UPDATE tab_calculation_method_rates SET formula='((PMA*7/365.25)^Hill/(TM50^Hill+(PMA*7/365.25)^Hill)*(1-GFR_premat)+GFR_premat) * GFR_mat / V_kid_std * Renal_aging_scaling_factor' WHERE calculation_method='GFR_Calculation' AND formula_rate='PARAM_GFR_Spec';
+UPDATE tab_calculation_method_rates SET formula='((PMA*365.25/7)^Hill/(TM50^Hill+(PMA*365.25/7)^Hill)*(1-GFR_premat)+GFR_premat) * GFR_mat / V_kid_std * Renal_aging_scaling_factor' WHERE calculation_method='GFR_Calculation' AND formula_rate='PARAM_GFR_Spec';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='GFR_Calculation' AND formula_rate='PARAM_PostMenstrualAge';
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('Individual_AgeDependent','PARAM_PostMenstrualAge','Age + GA * 7/365.25','Age in years');
 INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('Individual_HeightDependent','PARAM_BMI','Height>0 ? BW / (Height)^2 : 0','BMI');
