@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Maths.Random;
 using OSPSuite.Utility.Collections;

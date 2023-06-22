@@ -28,7 +28,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IDimensionRepository _dimensionRepository;
       private readonly List<Ontogeny> _allOntogenies;
       private readonly ICache<CompositeKey, IReadOnlyList<OntogenyMetaData>> _ontogenyValues;
-      private readonly IDimension _ageInWeeksDimension;
       public ICache<string, string> SupportedProteins { get; }
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IFormulaFactory _formulaFactory;
@@ -49,7 +48,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _formulaFactory = formulaFactory;
          _allOntogenies = new List<Ontogeny>();
          _ontogenyValues = new Cache<CompositeKey, IReadOnlyList<OntogenyMetaData>>(onMissingKey: x => new List<OntogenyMetaData>());
-         _ageInWeeksDimension = dimensionRepository.AgeInWeeks;
          SupportedProteins = new Cache<string, string>
          {
             {CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Molecule.AGP},
@@ -187,12 +185,14 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public DataRepository OntogenyToRepository(Ontogeny ontogeny, string containerName)
       {
          var dataRepository = new DataRepository {Name = PKSimConstants.UI.OntogenyFor(ontogeny.DisplayName, containerName)};
-         var xUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.AgeInWeeks);
-         var yUnit = _displayUnitRetriever.PreferredUnitFor(_dimensionRepository.Fraction);
+         var xDimension = _dimensionRepository.AgeInYears;
+         var yDimension = _dimensionRepository.NoDimension;
+         var xUnit = _displayUnitRetriever.PreferredUnitFor(xDimension);
+         var yUnit = _displayUnitRetriever.PreferredUnitFor(yDimension);
 
-         var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, _dimensionRepository.AgeInWeeks) {DisplayUnit = xUnit };
-         var mean = new DataColumn(dataRepository.Name, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnit };
-         var std = new DataColumn(PKSimConstants.UI.StandardDeviation, _dimensionRepository.Fraction, pma) {DisplayUnit = yUnit};
+         var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, xDimension) {DisplayUnit = xUnit };
+         var mean = new DataColumn(dataRepository.Name, yDimension, pma) {DisplayUnit = yUnit };
+         var std = new DataColumn(PKSimConstants.UI.StandardDeviation, yDimension, pma) {DisplayUnit = yUnit};
          mean.DataInfo.AuxiliaryType = AuxiliaryType.GeometricMeanPop;
          std.AddRelatedColumn(mean);
          dataRepository.Add(mean);
@@ -278,7 +278,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private double inYears(double valueInWeeks)
       {
-         return _ageInWeeksDimension.BaseUnitValueToUnitValue(_ageInWeeksDimension.Unit(CoreConstants.Units.Years), valueInWeeks);
+         var ageInWeeksDimension = _dimensionRepository.AgeInWeeks;
+         return ageInWeeksDimension.BaseUnitValueToUnitValue(ageInWeeksDimension.Unit(CoreConstants.Units.Years), valueInWeeks);
       }
 
       private CompositeKey ontogenyKey(string moleculeName, string speciesName)
