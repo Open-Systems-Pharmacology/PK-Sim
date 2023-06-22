@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -26,13 +26,15 @@ namespace PKSim.Core.Services
       ModelProperties DefaultFor(ModelConfiguration modelConfiguration, OriginData originData);
 
       /// <summary>
-      ///    Checks if the old and new model properties are compatible (same model and species). In that case, return the old one else
+      ///    Checks if the old and new model properties are compatible (same model and species). In that case, return the old one
+      ///    else
       ///    we try to update as many properties as possible in the old one (such as cm , model etc.)
       /// </summary>
       ModelProperties Update(ModelProperties oldModelProperties, ModelProperties newModelProperties, OriginData originData);
 
       /// <summary>
-      ///    Make sure that the model properties are uptodate with the definiton in the database. This should be called once the simulation is being loaded
+      ///    Make sure that the model properties are up-to-date with the definition in the database. This should be called once
+      ///    the simulation is being loaded
       /// </summary>
       void UpdateCategoriesIn(ModelProperties modelProperties, OriginData originData);
    }
@@ -104,11 +106,11 @@ namespace PKSim.Core.Services
          //in that case. Try to update as much CM as we can
          foreach (var calculationMethod in newModelProperties.AllCalculationMethods().ToList())
          {
-            string category = calculationMethod.Category;
+            var category = calculationMethod.Category;
             var oldCalculationMethod = oldModelProperties.CalculationMethodFor(category);
             var newCategory = newModelConfig.CalculationMethodCategories.FindByName(category);
 
-            if (oldCalculationMethod == null || !newCategory.AllItems().Contains(oldCalculationMethod))
+            if (oldCalculationMethod == null || newCategory == null || !newCategory.AllItems().Contains(oldCalculationMethod))
                continue;
 
             newModelProperties.RemoveCalculationMethod(calculationMethod);
