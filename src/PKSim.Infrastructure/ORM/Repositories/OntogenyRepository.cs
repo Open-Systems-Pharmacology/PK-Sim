@@ -196,16 +196,18 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, xDimension) {DisplayUnit = xUnit };
          var mean = new DataColumn(dataRepository.Name, yDimension, pma) {DisplayUnit = yUnit };
-         var std = new DataColumn(PKSimConstants.UI.GeometricStandardDeviation, yDimension, pma) {DisplayUnit = yUnit};
+         var geoSD = new DataColumn(PKSimConstants.UI.GeometricStandardDeviation, yDimension, pma) {DisplayUnit = yUnit};
+         //note:The main column for a range plot is the range area. The related column is the mean value. Hence the mean
+         //becomes the related column of the geoSD
          mean.DataInfo.AuxiliaryType = AuxiliaryType.GeometricMeanPop;
-         std.AddRelatedColumn(mean);
+         geoSD.AddRelatedColumn(mean);
          dataRepository.Add(mean);
-         dataRepository.Add(std);
+         dataRepository.Add(geoSD);
 
          var allOntogenies = AllValuesFor(ontogeny, containerName).OrderBy(x => x.PostmenstrualAge).ToList();
          pma.Values = values(allOntogenies, x => x.PostmenstrualAge);
          mean.Values = values(allOntogenies, x => x.OntogenyFactor);
-         std.Values = values(allOntogenies, x => x.Deviation);
+         geoSD.Values = values(allOntogenies, x => x.Deviation);
          return dataRepository;
       }
 
