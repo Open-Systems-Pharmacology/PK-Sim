@@ -127,8 +127,8 @@ namespace PKSim.Presentation.Services
          var geoMean = new ColumnInfo
          {
             DefaultDimension = _dimensionRepository.NoDimension,
-            Name = PKSimConstants.UI.StandardDeviation,
-            DisplayName = PKSimConstants.UI.StandardDeviation,
+            Name = PKSimConstants.UI.GeometricStandardDeviation,
+            DisplayName = PKSimConstants.UI.GeometricStandardDeviation,
             IsMandatory = false,
             BaseGridName = ageColumn.Name,
             RelatedColumnOf = ontogenyFactor.Name

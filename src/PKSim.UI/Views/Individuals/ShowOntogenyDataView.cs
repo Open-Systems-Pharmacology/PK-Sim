@@ -56,11 +56,11 @@ namespace PKSim.UI.Views.Individuals
             .AndDisplays(o => o.DisplayName)
             .Changed += () => OnEvent(_presenter.OntogenyChanged);
 
-         _screenBinder.Bind(x => x.SelectedContainer)
+         _screenBinder.Bind(x => x.SelectedGroup)
             .To(listBoxContainer)
-            .WithValues(dto => _presenter.AllContainers())
+            .WithValues(dto => _presenter.AllGroups())
             .AndDisplays(x => x.DisplayName)
-            .Changed += () => OnEvent(_presenter.ContainerChanged);
+            .Changed += () => OnEvent(_presenter.GroupChanged);
       }
 
       public void BindTo(ShowOntogenyDataDTO showOntogenyDataDTO)
