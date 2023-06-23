@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using NPOI.HSSF.Record.Chart;
 using ModelCurveOptions = OSPSuite.Core.Chart.CurveOptions;
 using SnapshotCurveOptions = PKSim.Core.Snapshots.CurveOptions;
 
@@ -23,6 +24,7 @@ namespace PKSim.Core.Snapshots.Mappers
             x.InterpolationMode = SnapshotValueFor(curveOptions.InterpolationMode, _defaultCurveOption.InterpolationMode);
             x.Color = SnapshotValueFor(curveOptions.Color, _defaultCurveOption.Color);
             x.LegendIndex = curveOptions.LegendIndex;
+            x.LineThickness = SnapshotValueFor(curveOptions.LineThickness, _defaultCurveOption.LineThickness);
             x.LineStyle = SnapshotValueFor(curveOptions.LineStyle, _defaultCurveOption.LineStyle);
             x.Symbol = SnapshotValueFor(curveOptions.Symbol, _defaultCurveOption.Symbol);
             x.yAxisType = SnapshotValueFor(curveOptions.yAxisType, _defaultCurveOption.yAxisType);
@@ -39,6 +41,7 @@ namespace PKSim.Core.Snapshots.Mappers
             InterpolationMode = ModelValueFor(snapshot.InterpolationMode, _defaultCurveOption.InterpolationMode),
             Color = ModelValueFor(snapshot.Color, _defaultCurveOption.Color),
             LegendIndex = snapshot.LegendIndex,
+            LineThickness = ModelValueFor(snapshot.LineThickness, _defaultCurveOption.LineThickness),
             LineStyle = ModelValueFor(snapshot.LineStyle, _defaultCurveOption.LineStyle),
             Symbol = ModelValueFor(snapshot.Symbol, _defaultCurveOption.Symbol),
             yAxisType = ModelValueFor(snapshot.yAxisType, _defaultCurveOption.yAxisType),
