@@ -53,6 +53,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
       private void convertCalculationMethods(XElement calculationMethodCacheElement)
       {
          var all = calculationMethodCacheElement.Element("All");
+         if (all == null)
+            return;
+
          foreach (var calculationMethodElement in all.Elements())
          {
             var name = calculationMethodElement.GetAttribute("name");
