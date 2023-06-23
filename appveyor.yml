@@ -3,20 +3,18 @@ image: Visual Studio 2022
 
 version: '{build}'
 
-# TODO make sure to revert this temporary 12.0. to $($env:ospsuite_version).
-
 init:
-- ps: Update-AppveyorBuild -Version "12.0.$($env:appveyor_build_version)"
+- ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
 
 clone_depth: 1
 
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '12.0.$(build_number)'
-  assembly_version: '12.0.$(build_number)'
-  file_version: '12.0.$(build_number)'
-  informational_version: '12.0.$(build_number)'
+  version: '$(ospsuite_version).$(build_number)'
+  assembly_version: '$(ospsuite_version).$(build_number)'
+  file_version: '$(ospsuite_version).$(build_number)'
+  informational_version: '$(ospsuite_version).$(build_number)'
 
 skip_branch_with_pr: true
 
