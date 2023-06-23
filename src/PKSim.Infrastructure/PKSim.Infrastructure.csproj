@@ -19,16 +19,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ProjectConverter\v6_0\**" />
+    <Compile Remove="ProjectConverter\v6_1\**" />
+    <Compile Remove="ProjectConverter\v6_2\**" />
+    <Compile Remove="ProjectConverter\v6_3\**" />
+    <Compile Remove="ProjectConverter\v6_4\**" />
+    <Compile Remove="ProjectConverter\v7_1\**" />
+    <EmbeddedResource Remove="ProjectConverter\v6_0\**" />
+    <EmbeddedResource Remove="ProjectConverter\v6_1\**" />
+    <EmbeddedResource Remove="ProjectConverter\v6_2\**" />
+    <EmbeddedResource Remove="ProjectConverter\v6_3\**" />
+    <EmbeddedResource Remove="ProjectConverter\v6_4\**" />
+    <EmbeddedResource Remove="ProjectConverter\v7_1\**" />
+    <None Remove="ProjectConverter\v6_0\**" />
+    <None Remove="ProjectConverter\v6_1\**" />
+    <None Remove="ProjectConverter\v6_2\**" />
+    <None Remove="ProjectConverter\v6_3\**" />
+    <None Remove="ProjectConverter\v6_4\**" />
+    <None Remove="ProjectConverter\v7_1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ProjectConverter\v6_0\" />
-    <Folder Include="ProjectConverter\v6_1\" />
-    <Folder Include="ProjectConverter\v6_2\" />
-    <Folder Include="ProjectConverter\v6_3\" />
-    <Folder Include="ProjectConverter\v6_4\" />
-    <Folder Include="ProjectConverter\v7_1\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
