@@ -30,7 +30,7 @@ namespace PKSim.Core
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _curveOptionsMapper = A.Fake<CurveOptionsMapper>();
          _dataRepository = DomainHelperForSpecs.ObservedData();
-         _logger= A.Fake<IOSPSuiteLogger>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          sut = new CurveMapper(_curveOptionsMapper, _dimensionFactory, _logger);
 
          _curve = new Curve
@@ -135,8 +135,8 @@ namespace PKSim.Core
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_curve);
-         _context = new SimulationAnalysisContext(null, new SnapshotContext()) { RunSimulation =false};
-         _newModelCurveOptions = new CurveOptions { Color = Color.Aqua };
+         _context = new SimulationAnalysisContext(null, new SnapshotContext()) {RunSimulation = false};
+         _newModelCurveOptions = new CurveOptions {Color = Color.Aqua};
          A.CallTo(() => _curveOptionsMapper.MapToModel(_snapshot.CurveOptions, A<SnapshotContext>._)).Returns(_newModelCurveOptions);
       }
 

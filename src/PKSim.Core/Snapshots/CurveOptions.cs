@@ -12,6 +12,7 @@ namespace PKSim.Core.Snapshots
       public InterpolationModes? InterpolationMode { get; set; }
       public Color? Color { get; set; }
       public int? LegendIndex { get; set; }
+      public int? LineThickness { get; set; }
       public LineStyles? LineStyle { get; set; }
       public Symbols? Symbol { get; set; }
    }
