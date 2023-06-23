@@ -10,6 +10,7 @@ using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using DistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 using IDistributionFormulaFactory = PKSim.Core.Model.IDistributionFormulaFactory;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
@@ -132,7 +133,7 @@ namespace PKSim.Core
    public class When_creating_a_parameter_from_a_set_of_parameter_distribution_definition : concern_for_ParameterFactory
    {
       private IDistributedParameter _result;
-      private IDistributionFormula _distributionFormula;
+      private DistributionFormula _distributionFormula;
       private IDistributedParameter _parameter;
       private OriginData _originData;
       private readonly List<ParameterDistributionMetaData> _distributions = new List<ParameterDistributionMetaData>();
@@ -146,12 +147,12 @@ namespace PKSim.Core
          _valueOrigin1 = new ValueOrigin {Method = ValueOriginDeterminationMethods.Assumption};
          _valueOrigin2 = new ValueOrigin {Method = ValueOriginDeterminationMethods.Other};
 
-         _distributionFormula = A.Fake<IDistributionFormula>();
+         _distributionFormula = A.Fake<DistributionFormula>();
          _parameter = A.Fake<IDistributedParameter>();
          _subParameter = A.Fake<IParameter>();
          _originData = new OriginData {Age = new OriginDataParameter(40)};
-         _distributions.Add(new ParameterDistributionMetaData {DistributionType = CoreConstants.Distribution.Normal, Age = 20, ValueOrigin = _valueOrigin1});
-         _distributions.Add(new ParameterDistributionMetaData {DistributionType = CoreConstants.Distribution.Normal, Age = 50, ValueOrigin = _valueOrigin2 });
+         _distributions.Add(new ParameterDistributionMetaData {Distribution = DistributionType.Normal, Age = 20, ValueOrigin = _valueOrigin1});
+         _distributions.Add(new ParameterDistributionMetaData { Distribution = DistributionType.Normal, Age = 50, ValueOrigin = _valueOrigin2 });
          A.CallTo(() => _formulaFactory.DistributionFor(A<IEnumerable<ParameterDistributionMetaData>>._, _parameter, _originData)).Returns(_distributionFormula);
          A.CallTo(() => _objectBaseFactory.CreateDistributedParameter()).Returns(_parameter);
          A.CallTo(() => _objectBaseFactory.CreateParameter()).Returns(_subParameter);

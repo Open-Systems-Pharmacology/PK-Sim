@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using Microsoft.Win32;
 using OSPSuite.Assets;
 using OSPSuite.Core;
@@ -25,11 +26,11 @@ namespace PKSim.Infrastructure
       public override string UserSettingsFileName { get; } = "UserSettings.xml";
       public override string ApplicationSettingsFileName { get; } = "ApplicationSettings.xml";
       public override string IssueTrackerUrl { get; } = CoreConstants.ISSUE_TRACKER_URL;
-      protected override string[] LatestVersionWithOtherMajor { get; } = {"10.0", "9.1", "9.0", "8.0"};
+      protected override string[] LatestVersionWithOtherMajor { get; } = {"11.1", "11.0", "10.0", "9.1", "9.0", "8.0"};
       public override string WatermarkOptionLocation { get; } = "Options -> Settings -> Application";
       public override string ApplicationFolderPathName { get; } = CoreConstants.APPLICATION_FOLDER_PATH;
 
-      public PKSimConfiguration()
+      public PKSimConfiguration() : base(Assembly.GetExecutingAssembly())
       {
          createDefaultSettingsFolder();
          PKSimDbPath = LocalOrAllUsersPathForFile(CoreConstants.PK_SIM_DB_FILE);

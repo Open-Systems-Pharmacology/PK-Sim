@@ -19,7 +19,6 @@ namespace PKSim.Presentation
    public abstract class concern_for_ExpressionProfileMoleculesPresenter : ContextSpecification<IExpressionProfileMoleculesPresenter>
    {
       protected IExpressionProfileMoleculesView _view;
-      protected IExpressionProfileFactory _expressionProfileFactory;
       protected IApplicationController _applicationController;
       protected IExpressionProfileToExpressionProfileDTOMapper _mapper;
       protected ExpressionProfile _expressionProfile;
@@ -33,19 +32,17 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _view = A.Fake<IExpressionProfileMoleculesView>();
-         _expressionProfileFactory = A.Fake<IExpressionProfileFactory>();
          _applicationController = A.Fake<IApplicationController>();
          _mapper = A.Fake<IExpressionProfileToExpressionProfileDTOMapper>();
          _enzymePresenter = A.Fake<IIndividualEnzymeExpressionsPresenter<Individual>>();
          _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
          _expressionProfileProteinDatabaseTask = A.Fake<IExpressionProfileProteinDatabaseTask>();
-         _moleculeParameterTask= A.Fake<IMoleculeParameterTask>();
+         _moleculeParameterTask = A.Fake<IMoleculeParameterTask>();
          sut = new ExpressionProfileMoleculesPresenter(
-            _view, 
-            _expressionProfileFactory, 
-            _applicationController, 
-            _mapper, 
-            _expressionProfileProteinDatabaseTask, 
+            _view,
+            _applicationController,
+            _mapper,
+            _expressionProfileProteinDatabaseTask,
             _expressionProfileUpdater,
             _moleculeParameterTask);
 
@@ -93,65 +90,6 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_user_changes_the_species_associated_with_an_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
-   {
-      private Species _newSpecies;
-
-      protected override void Context()
-      {
-         base.Context();
-         _newSpecies = new Species();
-         sut.Edit(_expressionProfile);
-         _expressionProfileDTO.Species = _newSpecies;
-      }
-
-      protected override void Because()
-      {
-         sut.SpeciesChanged();
-      }
-
-      [Observation]
-      public void should_update_the_expression_profile_to_match_the_selected_species()
-      {
-         A.CallTo(() => _expressionProfileFactory.UpdateSpecies(_expressionProfile, _newSpecies)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_refresh_the_expression_for_the_underlying_molecule_again()
-      {
-         //Once in edit and once after species changed
-         A.CallTo(() => _enzymePresenter.ActivateMolecule(_enzyme)).MustHaveHappened(timesOption: Times.Exactly, numberOfTimes: 2);
-      }
-   }
-
-   public class When_notified_to_save_the_expression_profile : concern_for_ExpressionProfileMoleculesPresenter
-   {
-      protected override void Context()
-      {
-         base.Context();
-         _expressionProfileDTO.MoleculeName = "MOLECULE";
-         _expressionProfileDTO.Category = "CATEGORY";
-         sut.Edit(_expressionProfile);
-      }
-
-      protected override void Because()
-      {
-         sut.Save();
-      }
-
-      [Observation]
-      public void should_molecule_name_as_defined_by_the_user()
-      {
-         A.CallTo(() => _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfileDTO.MoleculeName)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_save_the_category_and_molecule_name_as_defined_by_the_user()
-      {
-         _expressionProfile.Category.ShouldBeEqualTo(_expressionProfileDTO.Category);
-      }
-   }
-
    public class When_loading_the_expression_profile_from_the_database_for_a_species_for_which_no_database_is_connected : concern_for_ExpressionProfileMoleculesPresenter
    {
       protected override void Context()
@@ -176,7 +114,6 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.IsEditMode = false;
          _command = A.Fake<IPKSimCommand>();
          _result = new QueryExpressionResults(new ExpressionResult[] { }) {ProteinName = "NEW_NAME"};
          sut.Edit(_expressionProfile);
@@ -208,38 +145,6 @@ namespace PKSim.Presentation
       public void should_update_the_default_molecule_parameters()
       {
          A.CallTo(() => _moleculeParameterTask.SetDefaultFor(_expressionProfile, _expressionProfileDTO.MoleculeName)).MustHaveHappened();
-      }
-   }
-
-   public class When_querying_the_expression_database_for_an_expression_profile_in_edit_mode : concern_for_ExpressionProfileMoleculesPresenter
-   {
-      private QueryExpressionResults _result;
-
-      protected override void Context()
-      {
-         base.Context();
-         sut.IsEditMode = true;
-         _expressionProfileDTO.MoleculeName = "MOLECULE";
-         _result = new QueryExpressionResults(new ExpressionResult[] { }) { ProteinName = "NEW_NAME" };
-
-         A.CallTo(() => _expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile)).Returns(true);
-         A.CallTo(() => _expressionProfileProteinDatabaseTask.QueryDatabase(_expressionProfile, _expressionProfileDTO.MoleculeName))
-            .Returns(_result);
-
-
-      }
-
-      [Observation]
-      public void should_not_update_the_molecule_name()
-      {
-         _expressionProfileDTO.MoleculeName.ShouldBeEqualTo("MOLECULE");
-
-      }
-
-      [Observation]
-      public void should_not_update_the_default_molecule_parameters()
-      {
-         A.CallTo(() => _moleculeParameterTask.SetDefaultFor(_expressionProfile, A<string>._)).MustNotHaveHappened();
       }
    }
 }

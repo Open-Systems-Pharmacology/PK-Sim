@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 
@@ -26,20 +27,20 @@ namespace PKSim.Core.Model
 
       public AdvancedParameter CreateDefaultFor(IParameter parameter)
       {
-         return Create(parameter, DistributionTypes.Normal);
+         return Create(parameter, DistributionType.Normal);
       }
 
       public AdvancedParameter Create(IParameter parameter, DistributionType distributionType)
       {
          var advancedParameter = _objectBaseFactory.Create<AdvancedParameter>();
 
-         //we don't care about the name, it should only be unique in the hiearchy
+         //we don't care about the name, it should only be unique in the hierarchy
          advancedParameter.Name = _entityPathResolver.PathFor(parameter);
          advancedParameter.ParameterPath = advancedParameter.Name;
 
          var distributionMetaData = new ParameterDistributionMetaData
          {
-            DistributionType = distributionType.Id,
+            Distribution = distributionType,
             BuildingBlockType = buildingBlockTypeFrom(parameter),
             Mean = defaultMeanValueBasedOn(parameter.Value, distributionType),
             Deviation = defaultStdValueBasedOn(distributionType),
@@ -48,7 +49,7 @@ namespace PKSim.Core.Model
             ParameterName = "distribution"
          };
 
-         if (distributionType == DistributionTypes.Uniform)
+         if (distributionType == DistributionType.Uniform)
          {
             distributionMetaData.MinValue = parameter.MinValue ?? parameter.Value / _defaultUniformFactor;
             //+ _defaultUniformFactor in case the default value is 0
@@ -85,7 +86,7 @@ namespace PKSim.Core.Model
 
       private double defaultStdValueBasedOn(DistributionType distributionType)
       {
-         return distributionType == DistributionTypes.LogNormal ? 1 : 0;
+         return distributionType == DistributionType.LogNormal ? 1 : 0;
       }
 
       private double defaultMeanValueBasedOn(double value, DistributionType distributionType)

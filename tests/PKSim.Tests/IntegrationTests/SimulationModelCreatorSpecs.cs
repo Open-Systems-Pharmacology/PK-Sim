@@ -14,20 +14,21 @@ namespace PKSim.IntegrationTests
 {
    public class When_a_model_is_being_created_for_a_simulation : ContextForSimulationIntegration<ISimulationModelCreator>
    {
-      private IndividualEnzyme _enzyme;
-      private IndividualEnzyme _protein;
+      private IndividualMolecule _enzyme;
+      private IndividualMolecule _protein;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
          var templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         
+         var cypExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "CYP");
+         _enzyme = cypExpression.Molecule;
 
-         _enzyme = enzymeFactory.AddMoleculeTo(templateIndividual, "CYP").DowncastTo<IndividualEnzyme>();
-
-         _protein = enzymeFactory.AddMoleculeTo(templateIndividual, "PROT").DowncastTo<IndividualEnzyme>();
+         var protExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "PROT");
+         _protein = protExpression.Molecule;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, compound, protocol).DowncastTo<IndividualSimulation>();
 
@@ -56,7 +57,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_set_the_molecule_amount_as_not_persistable_except_the_amount_in_urine_feces_and_gall_bladder()
       {
-         var allMoleculeAmounts = _simulation.All<IMoleculeAmount>();
+         var allMoleculeAmounts = _simulation.All<MoleculeAmount>();
          foreach (var moleculeAmount in allMoleculeAmounts)
          {
             if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.URINE))

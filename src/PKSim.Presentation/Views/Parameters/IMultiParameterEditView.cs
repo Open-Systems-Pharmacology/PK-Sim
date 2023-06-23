@@ -59,5 +59,7 @@ namespace PKSim.Presentation.Views.Parameters
       /// Is the view readonly or not
       /// </summary>
       bool ReadOnly { set; }
+
+      bool AllowVerticalScrolling { set; }
    }
 }

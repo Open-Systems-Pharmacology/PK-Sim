@@ -21,7 +21,7 @@ namespace PKSim.IntegrationTests
       protected Individual _individual;
       protected Population _population;
       protected IEntityPathResolver _entityPathResolver;
-      protected IBuildConfigurationTask _buildConfigurationTask;
+      protected ISimulationConfigurationTask _simulationConfigurationTask;
 
       public override void GlobalContext()
       {
@@ -31,7 +31,7 @@ namespace PKSim.IntegrationTests
          _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.PRETERM);
          _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
-         _buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
+         _simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
       }
    }
 
@@ -86,18 +86,6 @@ namespace PKSim.IntegrationTests
          var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
          organism.Parameter(CoreConstants.Parameters.AGE_0).ShouldNotBeNull();
          organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR).ShouldNotBeNull();
-      }
-
-      [Observation]
-      public void should_have_added_the_age_0_parameter_and_the_min_to_year_conversion_factor_to_the_parameter_start_values()
-      {
-         var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.AGE_0));
-         var minToYearFactorPath = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR));
-         var buildConfiguration = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: false, createAgingDataInSimulation: true);
-         var psv = buildConfiguration.ParameterStartValues;
-         psv[age0Path].ShouldNotBeNull();
-         psv[minToYearFactorPath].ShouldNotBeNull();
       }
    }
 

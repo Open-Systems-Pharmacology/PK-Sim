@@ -49,6 +49,6 @@ namespace PKSim.Core.Services
       /// <summary>
       /// Add all inhibitors as modifier of the given <paramref name="reaction"/>
       /// </summary>
-      void UpdateModifiers(IReactionBuilder reaction, string moleculeName, string compoundName, Simulation simulation);
+      void UpdateModifiers(ReactionBuilder reaction, string moleculeName, string compoundName, Simulation simulation);
    }
 }

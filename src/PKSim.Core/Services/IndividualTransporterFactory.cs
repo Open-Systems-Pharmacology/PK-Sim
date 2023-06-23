@@ -8,6 +8,7 @@ using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Compartment;
 using static PKSim.Core.CoreConstants.Parameters;
 using static PKSim.Core.Model.TransportDirections;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -40,7 +41,7 @@ namespace PKSim.Core.Services
          var transporter = CreateMolecule(moleculeName);
 
          if (HasAgeParameter(simulationSubject))
-            AddOntogenyParameterTo(transporter);
+            AddAgeDependentOntogenyParametersTo(transporter);
 
          //default transporter type
          transporter.TransportType = transporterType;
@@ -80,7 +81,7 @@ namespace PKSim.Core.Services
       public IndividualTransporter AddUndefinedLiverTransporterTo(Individual individual)
       {
          var transporter = CreateMolecule(CoreConstants.Molecule.UndefinedLiverTransporter);
-         AddOntogenyParameterTo(transporter);
+         AddConstantOntogenyParametersTo(transporter);
 
          transporter.TransportType = TransportType.Efflux;
          var liver = individual.Organism.Organ(CoreConstants.Organ.LIVER);

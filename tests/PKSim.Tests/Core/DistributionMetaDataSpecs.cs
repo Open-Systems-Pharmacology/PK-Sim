@@ -1,8 +1,7 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.Core
 {
@@ -38,7 +37,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_distribution_type_from_the_distributed_parameter()
       {
-         _result.Distribution.ShouldBeEqualTo(_distributedParameter.Formula.DistributionType());
+         _result.Distribution.ShouldBeEqualTo(_distributedParameter.Formula.DistributionType);
       }
    }
 
@@ -51,7 +50,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _distributionMetaData = new DistributionMetaData {Deviation = 2, Distribution = DistributionTypes.Normal, Mean = 5};
+         _distributionMetaData = new DistributionMetaData {Deviation = 2, Distribution = DistributionType.Normal, Mean = 5};
          _result = DistributionMetaData.From(_distributionMetaData);
       }
 

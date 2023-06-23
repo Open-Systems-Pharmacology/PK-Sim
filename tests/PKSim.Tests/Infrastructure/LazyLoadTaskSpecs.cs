@@ -1,8 +1,9 @@
 using FakeItEasy;
+using NPOI.SS.Formula.Functions;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Events;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
@@ -20,7 +21,7 @@ namespace PKSim.Infrastructure
       protected ISimulationComparisonContentLoader _simulationComparisonContentLoader;
       protected ISimulationChartsLoader _simulationChartsLoader;
       protected ISimulationAnalysesLoader _simulationAnalysesLoader;
-      private IParameterIdentificationContentLoader _parameterIdentificationContentendLoader;
+      private IParameterIdentificationContentLoader _parameterIdentificationContentLoader;
       private ISensitivityAnalysisContentLoader _sensitivityAnalysisContentLoader;
 
       protected override void Context()
@@ -33,12 +34,12 @@ namespace PKSim.Infrastructure
          _simulationResultsLoader = A.Fake<ISimulationResultsLoader>();
          _simulationComparisonContentLoader = A.Fake<ISimulationComparisonContentLoader>();
          _simulationAnalysesLoader = A.Fake<ISimulationAnalysesLoader>();
-         _parameterIdentificationContentendLoader = A.Fake<IParameterIdentificationContentLoader>();
+         _parameterIdentificationContentLoader = A.Fake<IParameterIdentificationContentLoader>();
          _sensitivityAnalysisContentLoader = A.Fake<ISensitivityAnalysisContentLoader>();
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
          sut = new LazyLoadTask(_contentLoader, _simulationResultsLoader, _simulationChartsLoader,
-            _simulationComparisonContentLoader, _simulationAnalysesLoader, _parameterIdentificationContentendLoader, _sensitivityAnalysisContentLoader,
+            _simulationComparisonContentLoader, _simulationAnalysesLoader, _parameterIdentificationContentLoader, _sensitivityAnalysisContentLoader,
             _registrationTask, _progressManager);
          _objectToLoad = A.Fake<IPKSimBuildingBlock>();
          _objectToLoad.Id = "objectId";
@@ -141,11 +142,29 @@ namespace PKSim.Infrastructure
    public class When_loading_an_individual_simulation : concern_for_LazyLoadTask
    {
       private IndividualSimulation _individualSimulation;
+      private Individual _individual;
+      private ExpressionProfile _exp1;
+      private ExpressionProfile _exp2;
 
       protected override void Context()
       {
          base.Context();
-         _individualSimulation = A.Fake<IndividualSimulation>();
+         _individualSimulation = new IndividualSimulation();
+         _individual = new Individual();
+         _exp1 = new ExpressionProfile();
+         _exp2 = new ExpressionProfile();
+         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("ind", PKSimBuildingBlockType.Individual)
+         {
+            BuildingBlock = _individual
+         });
+         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("exp1", PKSimBuildingBlockType.ExpressionProfile)
+         {
+            BuildingBlock = _exp1
+         });
+         _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("exp2", PKSimBuildingBlockType.ExpressionProfile)
+         {
+            BuildingBlock = _exp2
+         });
       }
 
       protected override void Because()
@@ -157,6 +176,12 @@ namespace PKSim.Infrastructure
       public void should_also_load_the_simulation_results()
       {
          A.CallTo(() => _simulationResultsLoader.LoadResultsFor(_individualSimulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_all_expression_profiles_defined_as_used_building_block_as_building_block_of_the_individual()
+      {
+         _individual.AllExpressionProfiles().ShouldOnlyContain(_exp1, _exp2);
       }
    }
 

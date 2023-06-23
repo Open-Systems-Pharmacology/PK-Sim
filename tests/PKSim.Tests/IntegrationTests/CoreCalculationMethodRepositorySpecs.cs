@@ -15,7 +15,7 @@ namespace PKSim.IntegrationTests
    
    public class When_retrieving_all_calculation_methods_for_model_from_the_repository : concern_for_CalculationMethodForModelRepository
    {
-      private IEnumerable<ICoreCalculationMethod> _result;
+      private IEnumerable<CoreCalculationMethod> _result;
 
       protected override void Because()
       {

@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -31,7 +32,7 @@ namespace PKSim.Core.Services
          var molecule = CreateMolecule(moleculeName);
 
          if (HasAgeParameter(simulationSubject))
-            AddOntogenyParameterTo(molecule);
+            AddAgeDependentOntogenyParametersTo(molecule);
 
          //default localization
          molecule.Localization = Localization.Intracellular;

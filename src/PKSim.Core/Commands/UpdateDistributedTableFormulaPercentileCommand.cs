@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;

@@ -21,7 +21,7 @@ namespace PKSim.IntegrationTests
    
    public class When_retrieving_all_applications_from_the_repository : concern_for_ApplicationRepository
    {
-      private IEnumerable<IApplicationBuilder> _result;
+      private IEnumerable<ApplicationBuilder> _result;
 
       protected override void Because()
       {
@@ -38,14 +38,14 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void every_application_should_have_protocol_schema_item_container()
       {
-         foreach (IApplicationBuilder applicBuilder in _result)
+         foreach (ApplicationBuilder applicBuilder in _result)
             applicBuilder.ProtocolSchemaItemContainer().ShouldNotBeNull();
       }
 
       [Observation]
       public void every_application_except_oral_and_bolus_should_have_application_rate_parameter()
       {
-         foreach (IApplicationBuilder applicBuilder in _result)
+         foreach (ApplicationBuilder applicBuilder in _result)
          {
             if (applicBuilder.Name.StartsWith("Oral")||applicBuilder.Name.Equals(CoreConstants.Application.Name.IntravenousBolus))
                continue;

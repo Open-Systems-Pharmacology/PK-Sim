@@ -31,7 +31,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.ChartBackColor);
          Map(x => x.FormulaColor);
          Map(x => x.ChartDiagramBackColor);
-         Map(x => x.DisabledColor);
          Map(x => x.ChangedColor);
          Map(x => x.ShouldRestoreWorkspaceLayout);
          Map(x => x.DefaultParameterGroupingMode);

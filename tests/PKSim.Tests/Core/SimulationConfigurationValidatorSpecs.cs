@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core
 {
@@ -31,7 +32,7 @@ namespace PKSim.Core
          _simulation = new IndividualSimulation
          {
             Properties = new SimulationProperties(),
-            SimulationSettings = new SimulationSettings(),
+            Settings = new SimulationSettings(),
             ModelConfiguration = new ModelConfiguration()
          };
          _individual = new Individual().WithName("MyIndividual");

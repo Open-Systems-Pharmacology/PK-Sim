@@ -8,14 +8,12 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
@@ -34,6 +32,8 @@ namespace PKSim.IntegrationTests
       protected Protocol _protocol;
       protected IPKAnalysesTask _pkAnalysesTask;
       protected SimulationRunOptions _simulationRunOptions;
+      protected ExpressionProfile _expressionProfile;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       public override void GlobalContext()
       {
@@ -41,6 +41,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         _moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "CYP2A6");
          _pkAnalysesTask = IoC.Resolve<IPKAnalysesTask>();
          _simulationRunOptions = new SimulationRunOptions();
       }
@@ -109,7 +111,7 @@ namespace PKSim.IntegrationTests
          _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.BSA).ShouldNotBeNull();
       }
    }
-
+   
    public class When_creating_an_individual_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_IndividualSimulation
    {
       public override void GlobalContext()
@@ -276,21 +278,21 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_an_individual_simulation_2pores_with_the_standard_building_block : concern_for_IndividualSimulation
    {
-      private IBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
-         var buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
-         _buildConfiguration = buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         var simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
+         _simulationConfiguration = simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
       }
 
       [Observation]
       public void should_set_negative_values_allowed_true_to_predefined_compartments_and_molecules()
       {
-         var msv = _buildConfiguration.MoleculeStartValues;
+         var msv = _simulationConfiguration.All<InitialConditionsBuildingBlock>().SelectMany(x => x);
          var moleculesWithAllowedNegativeValues = (from molecule in msv
             where molecule.NegativeValuesAllowed
             select molecule).ToList();
@@ -333,10 +335,8 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
-         var individualProtein = enzymeFactory.AddMoleculeTo(_individual, _enzymeName);
-         individualProtein.Ontogeny = new UserDefinedOntogeny() {Table = createOntogenyTable()};
-         _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
+         DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual, _enzymeName, 
+            x => x.Molecule.Ontogeny = new UserDefinedOntogeny { Table = createOntogenyTable() });
 
          var containerTask = IoC.Resolve<IContainerTask>();
          _individual.OriginData.Age = new OriginDataParameter(2);
@@ -370,7 +370,7 @@ namespace PKSim.IntegrationTests
             if (parameter.Value.NameIsOneOf(CoreConstants.Parameters.MEAN_HEIGHT, CoreConstants.Parameters.MEAN_WEIGHT))
                continue;
 
-            if (parameter.Value.Formula.DistributionType() == DistributionTypes.Discrete)
+            if (parameter.Value.Formula.DistributionType == DistributionType.Discrete)
                continue;
 
             //only one point for this parameters
@@ -607,13 +607,13 @@ namespace PKSim.IntegrationTests
 
       private IEnumerable<string> moleculeNamesIn(IContainer container)
       {
-         return (from molecule in container.GetAllChildren<IMoleculeAmount>()
+         return (from molecule in container.GetAllChildren<MoleculeAmount>()
             select molecule.Name).ToList();
       }
 
       private IEnumerable<string> reactionNamesIn(IContainer container)
       {
-         return (from molecule in container.GetAllChildren<IReaction>()
+         return (from molecule in container.GetAllChildren<Reaction>()
             select molecule.Name).ToList();
       }
 
@@ -711,7 +711,6 @@ namespace PKSim.IntegrationTests
          _simulation.HasResults.ShouldBeTrue();
       }
    }
-
 
    public class When_cloning_a_simulation : concern_for_IndividualSimulation
    {

@@ -1,7 +1,7 @@
 using System.Xml.Linq;
-using PKSim.Core;
 using PKSim.Core.Model;
 using OSPSuite.Core.Serialization.Xml;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -27,7 +27,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
             return;
 
          //we need to adjust the process name
-         systemicProcessSelection.ProcessName = CoreConstants.CompositeNameFor(systemicProcessName, systemicProcessSelection.ProcessName);
+         systemicProcessSelection.ProcessName = CompositeNameFor(systemicProcessName, systemicProcessSelection.ProcessName);
       }
    }
 }

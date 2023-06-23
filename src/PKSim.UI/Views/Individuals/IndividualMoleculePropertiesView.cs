@@ -67,6 +67,6 @@ namespace PKSim.UI.Views.Individuals
       }
 
       public int OptimalHeight => (MoleculeParametersVisible ? _moleculeParametersView.OptimalHeight : 0) +
-                                  (OntogenyVisible ? _ontogenyView.OptimalHeight : 0);
+                                  (OntogenyVisible ? _ontogenyView.OptimalHeight : 0) + layoutControl.Margin.Vertical;
    }
 }

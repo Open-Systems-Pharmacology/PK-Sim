@@ -5,6 +5,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 
 namespace PKSim.Presentation.DTO.Mappers
@@ -20,19 +21,22 @@ namespace PKSim.Presentation.DTO.Mappers
       private readonly IPKSimProjectRetriever _projectRetriever;
       private readonly IMoleculePropertiesMapper _moleculePropertiesMapper;
       private readonly IUsedExpressionProfileCategoryRepository _usedExpressionProfileCategoryRepository;
+      private readonly IDiseaseStateUpdater _diseaseStateUpdater;
 
       public ExpressionProfileToExpressionProfileDTOMapper(
          ISpeciesRepository speciesRepository,
          IUsedMoleculeRepository usedMoleculeRepository,
          IPKSimProjectRetriever projectRetriever,
          IMoleculePropertiesMapper moleculePropertiesMapper,
-         IUsedExpressionProfileCategoryRepository usedExpressionProfileCategoryRepository)
+         IUsedExpressionProfileCategoryRepository usedExpressionProfileCategoryRepository,
+         IDiseaseStateUpdater diseaseStateUpdater)
       {
          _speciesRepository = speciesRepository;
          _usedMoleculeRepository = usedMoleculeRepository;
          _projectRetriever = projectRetriever;
          _moleculePropertiesMapper = moleculePropertiesMapper;
          _usedExpressionProfileCategoryRepository = usedExpressionProfileCategoryRepository;
+         _diseaseStateUpdater = diseaseStateUpdater;
       }
 
       public ExpressionProfileDTO MapFrom(ExpressionProfile expressionProfile)
@@ -48,7 +52,7 @@ namespace PKSim.Presentation.DTO.Mappers
             AllSpecies = _speciesRepository.All(),
             MoleculeType = _moleculePropertiesMapper.MoleculeDisplayFor(expressionProfile.Molecule),
          };
-
+         _diseaseStateUpdater.UpdateDiseaseStateDTO(dto.DiseaseState, expressionProfile.Individual.OriginData);
          dto.AddExistingExpressionProfileNames(_projectRetriever.Current.All<ExpressionProfile>().AllNames().Except(new[] {expressionProfile.Name}));
          return dto;
       }

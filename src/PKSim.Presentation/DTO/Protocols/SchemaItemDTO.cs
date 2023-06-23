@@ -1,6 +1,7 @@
 using PKSim.Core;
 using PKSim.Core.Model;
 using OSPSuite.Presentation.DTO;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Presentation.DTO.Protocols
 {
@@ -27,7 +28,7 @@ namespace PKSim.Presentation.DTO.Protocols
          get
          {
             if (NeedsFormulation)
-               return CoreConstants.CompositeNameFor(ApplicationType.DisplayName, FormulationKey);
+               return CompositeNameFor(ApplicationType.DisplayName, FormulationKey);
 
             return ApplicationType.DisplayName;
          }

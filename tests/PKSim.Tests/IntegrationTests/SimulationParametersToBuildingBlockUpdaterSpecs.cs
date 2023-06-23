@@ -10,6 +10,7 @@ using PKSim.Infrastructure;
 using static PKSim.Core.CoreConstants.Compartment;
 using static PKSim.Core.CoreConstants.Organ;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.IntegrationTests
 {

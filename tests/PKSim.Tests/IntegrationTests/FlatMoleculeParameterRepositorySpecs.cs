@@ -29,7 +29,7 @@ namespace PKSim.IntegrationTests
          firstElement.ParameterName.ShouldNotBeNull();
          firstElement.MoleculeName.ShouldNotBeNull();
          firstElement.MoleculeName.ShouldNotBeNull();
-         firstElement.DistributionType.ShouldNotBeNull();
+         firstElement.Distribution.ShouldNotBeNull();
       }
    }
 }

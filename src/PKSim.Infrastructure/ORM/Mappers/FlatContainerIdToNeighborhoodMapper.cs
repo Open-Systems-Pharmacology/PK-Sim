@@ -5,7 +5,7 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public class FlatContainerIdToNeighborhoodMapper : FlatContainerIdToContainerMapperBase<IPKSimNeighborhood>, IFlatContainerIdToContainerMapperSpecification
+   public class FlatContainerIdToNeighborhoodMapper : FlatContainerIdToContainerMapperBase<PKSimNeighborhood>, IFlatContainerIdToContainerMapperSpecification
    {
       public FlatContainerIdToNeighborhoodMapper(IObjectBaseFactory objectBaseFactory, IFlatContainerRepository flatContainerRepository, IFlatContainerTagRepository flatContainerTagRepository) : base(objectBaseFactory, flatContainerRepository, flatContainerTagRepository)
       {

@@ -67,13 +67,24 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    All defined molecules defined in the individual
       /// </summary>
-      public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules() => AllMolecules().Where(x => !x.IsUndefinedMolecule());
+      public virtual IEnumerable<IndividualMolecule> AllDefinedMolecules() => AllMolecules<IndividualMolecule>(x => !x.IsUndefinedMolecule());
+
+      /// <summary>
+      ///    All defined molecules defined in the individual
+      /// </summary>
+      public virtual IEnumerable<IndividualMolecule> AllUndefinedMolecules() => AllMolecules<IndividualMolecule>(x => x.IsUndefinedMolecule());
 
       /// <summary>
       ///    All protein of type <typeparamref name="TMolecule" /> in the individual
       /// </summary>
       /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
-      public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => GetChildren<TMolecule>();
+      public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>() where TMolecule : IndividualMolecule => AllMolecules<TMolecule>(x => true);
+
+      /// <summary>
+      ///    All protein of type <typeparamref name="TMolecule" /> in the individual
+      /// </summary>
+      /// <typeparam name="TMolecule"> Type of molecule to be retrieved </typeparam>
+      public virtual IEnumerable<TMolecule> AllMolecules<TMolecule>(Func<TMolecule, bool> predicate) where TMolecule : IndividualMolecule => GetChildren(predicate);
 
       public ExpressionProfile ExpressionProfileFor(IndividualMolecule molecule) => AllExpressionProfiles().Find(x => string.Equals(x.MoleculeName, molecule.Name));
 
@@ -233,7 +244,7 @@ namespace PKSim.Core.Model
          var allExpressionParameters = GetAllChildren<IParameter>(x => x.IsExpression() && x.ParentContainer.IsNamed(molecule.Name));
          allExpressionParameters.Each(p =>
          {
-            if (p.IsGlobalExpression())
+            if (p.HasGlobalExpressionName())
                cache[CoreConstants.ContainerName.GlobalExpressionContainerNameFor(p.Name)] = p;
             else
             {

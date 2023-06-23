@@ -2,8 +2,9 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using PKSim.Core.Model;
+using OSPSuite.Core.Domain.Formulas;
 using PKSim.Core.Snapshots.Mappers;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
 {
@@ -28,7 +29,7 @@ namespace PKSim.Core
          {
             Mean = 1,
             Deviation = 2,
-            Distribution = DistributionTypes.LogNormal
+            Distribution = DistributionType.LogNormal
 
          };
 
@@ -36,7 +37,7 @@ namespace PKSim.Core
          {
             Mean = 3,
             Deviation = 4,
-            Distribution = DistributionTypes.Normal
+            Distribution = DistributionType.Normal
          };
 
 
@@ -74,11 +75,11 @@ namespace PKSim.Core
          _snapshot.DistributionMetaData.Count.ShouldBeEqualTo(_distributedTableFormula.AllDistributionMetaData().Count);
          _snapshot.DistributionMetaData[0].Mean.ShouldBeEqualTo(_distributionMetaData1.Mean);
          _snapshot.DistributionMetaData[0].Deviation.ShouldBeEqualTo(_distributionMetaData1.Deviation);
-         _snapshot.DistributionMetaData[0].Distribution.ShouldBeEqualTo(_distributionMetaData1.Distribution.Id);
+         _snapshot.DistributionMetaData[0].Distribution.ShouldBeEqualTo(_distributionMetaData1.Distribution);
 
          _snapshot.DistributionMetaData[1].Mean.ShouldBeEqualTo(_distributionMetaData2.Mean);
          _snapshot.DistributionMetaData[1].Deviation.ShouldBeEqualTo(_distributionMetaData2.Deviation);
-         _snapshot.DistributionMetaData[1].Distribution.ShouldBeEqualTo(_distributionMetaData2.Distribution.Id);
+         _snapshot.DistributionMetaData[1].Distribution.ShouldBeEqualTo(_distributionMetaData2.Distribution);
       }
    }
 
@@ -117,7 +118,7 @@ namespace PKSim.Core
          _distributedTableFormula.AllDistributionMetaData()[0].Mean.ShouldBeEqualTo(_snapshot.DistributionMetaData[0].Mean);
          _distributedTableFormula.AllDistributionMetaData()[0].Deviation.ShouldBeEqualTo(_snapshot.DistributionMetaData[0].Deviation);
          _snapshot.DistributionMetaData[0].Deviation.ShouldBeEqualTo(_distributionMetaData1.Deviation);
-         _snapshot.DistributionMetaData[0].Distribution.ShouldBeEqualTo(_distributionMetaData1.Distribution.Id);
+         _snapshot.DistributionMetaData[0].Distribution.ShouldBeEqualTo(_distributionMetaData1.Distribution);
       }
    }
 }

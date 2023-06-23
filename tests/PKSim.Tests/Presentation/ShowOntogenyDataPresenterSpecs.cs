@@ -15,6 +15,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.Charts;
+using DevExpress.Utils.Extensions;
 
 
 namespace PKSim.Presentation
@@ -24,10 +25,9 @@ namespace PKSim.Presentation
       protected IShowOntogenyDataView _view;
       protected IOntogenyRepository _ontogenyRepository;
       protected ISimpleChartPresenter _simpleChartPresenter;
-      private IDimensionRepository _dimensionRepository;
       protected Ontogeny _ontogeny;
       protected List<OntogenyMetaData> _ontoData;
-      protected List<Ontogeny> _allOntongies;
+      protected List<Ontogeny> _allOntogenies;
       protected Ontogeny _anotherOntogeny;
       protected List<OntogenyMetaData> _allMetaData;
       protected TableFormula _tableFormula;
@@ -35,39 +35,34 @@ namespace PKSim.Presentation
       protected IGroup _groupLiver;
       protected IGroup _groupDuodenum;
       protected ShowOntogenyDataDTO ShowOntogenyDataDTO { get; private set; }
-      protected IDisplayUnitRetriever _displayUnitRetriever;
 
       protected override void Context()
       {
          _view = A.Fake<IShowOntogenyDataView>();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
          _simpleChartPresenter = A.Fake<ISimpleChartPresenter>();
-         _dimensionRepository = A.Fake<IDimensionRepository>();
          _groupRepository = A.Fake<IGroupRepository>();
-         _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
 
          _groupLiver = new Group {Name = "Liver"};
          _groupDuodenum = new Group {Name = "Duodenum"};
          _tableFormula = new TableFormula();
          _ontogeny = new DatabaseOntogeny {SpeciesName = "toto"};
          _anotherOntogeny = new DatabaseOntogeny {SpeciesName = "toto"};
-         _allOntongies = new List<Ontogeny> {_ontogeny, _anotherOntogeny};
+         _allOntogenies = new List<Ontogeny> {_ontogeny, _anotherOntogeny};
          _ontoData = new List<OntogenyMetaData>();
          _ontoData.Add(new OntogenyMetaData {GroupName = "Liver"});
          _ontoData.Add(new OntogenyMetaData {GroupName = "Duodenum"});
          _allMetaData = new List<OntogenyMetaData>();
 
-         A.CallTo(() => _dimensionRepository.AgeInYears).Returns(A.Fake<IDimension>());
-         A.CallTo(() => _dimensionRepository.Fraction).Returns(DomainHelperForSpecs.FractionDimensionForSpecs());
          A.CallTo(() => _simpleChartPresenter.Plot(A<TableFormula>._)).Returns(new CurveChart().WithAxes());
          A.CallTo(() => _simpleChartPresenter.Plot(A<DataRepository>._, Scalings.Linear)).Returns(new CurveChart().WithAxes());
          A.CallTo(() => _groupRepository.GroupByName("Liver")).Returns(_groupLiver);
          A.CallTo(() => _groupRepository.GroupByName("Duodenum")).Returns(_groupDuodenum);
          A.CallTo(() => _ontogenyRepository.AllValuesFor(_ontogeny)).Returns(_ontoData);
-         A.CallTo(() => _ontogenyRepository.AllFor(_ontogeny.SpeciesName)).Returns(_allOntongies);
+         A.CallTo(() => _ontogenyRepository.AllFor(_ontogeny.SpeciesName)).Returns(_allOntogenies);
          A.CallTo(() => _ontogenyRepository.AllValuesFor(_ontogeny, _groupLiver.Name)).Returns(_allMetaData);
 
-         sut = new ShowOntogenyDataPresenter(_view, _ontogenyRepository, _simpleChartPresenter, _dimensionRepository, _groupRepository, _displayUnitRetriever);
+         sut = new ShowOntogenyDataPresenter(_view, _ontogenyRepository, _simpleChartPresenter, _groupRepository);
 
          A.CallTo(() => _view.BindTo(A<ShowOntogenyDataDTO>._))
             .Invokes(x => ShowOntogenyDataDTO = x.GetArgument<ShowOntogenyDataDTO>(0));
@@ -110,7 +105,6 @@ namespace PKSim.Presentation
          sut.Show(_ontogeny);
          var dto = ShowOntogenyDataDTO;
          dto.SelectedContainer = _groupDuodenum;
-         A.CallTo(() => _ontogenyRepository.AllValuesFor(_ontogeny, _groupDuodenum.Name)).Returns(_allMetaData);
       }
 
       protected override void Because()
@@ -121,7 +115,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_retrieve_the_data_for_duodenum()
       {
-         A.CallTo(() => _ontogenyRepository.AllValuesFor(_ontogeny, _groupDuodenum.Name)).MustHaveHappened();
+         A.CallTo(() => _ontogenyRepository.OntogenyToRepository(_ontogeny, _groupDuodenum.Name)).MustHaveHappened();
       }
 
       [Observation]

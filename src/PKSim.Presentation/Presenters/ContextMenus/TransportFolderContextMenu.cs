@@ -11,13 +11,14 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class TransportFolderContextMenu : ContextMenu<ITreeNode, ICompoundProcessesPresenter>
    {
-      public TransportFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter presenter)
-         : base(nodeRequestingContextMenu, presenter)
+      public TransportFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter presenter, IContainer container)
+         : base(nodeRequestingContextMenu, presenter, container)
       {
       }
 
@@ -32,14 +33,17 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class TransportFolderTreeNodeContextMenuFactory : CompoundProcessFolderTreeNodeContextMenuFactory
    {
-      public TransportFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository)
+      private readonly IContainer _container;
+
+      public TransportFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IContainer container)
          : base(PKSimRootNodeTypes.CompoundTransportProteins, repository)
       {
+         _container = container;
       }
 
       protected override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, ICompoundProcessesPresenter presenter)
       {
-         return new TransportFolderContextMenu(treeNode, presenter);
+         return new TransportFolderContextMenu(treeNode, presenter, _container);
       }
    }
 }

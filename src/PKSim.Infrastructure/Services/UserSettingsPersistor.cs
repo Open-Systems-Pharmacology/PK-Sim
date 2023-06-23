@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation;
@@ -11,6 +12,12 @@ namespace PKSim.Infrastructure.Services
       public UserSettingsPersistor(IStringSerializer stringSerializer, IUserSettings defaultUserSettings,
          IPKSimConfiguration configuration) : base(stringSerializer, defaultUserSettings, configuration)
       {
+      }
+
+      protected override IUserSettings CreateLoadFailDefaultsFrom(IUserSettings defaultSettings)
+      {
+         defaultSettings.ActiveSkin = CoreConstants.DEFAULT_SKIN;
+         return defaultSettings;
       }
 
       public override void Save(IUserSettings userSettings)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -11,7 +12,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Queries;
 using PKSim.Infrastructure.ORM.Repositories;
-using FakeItEasy;
+using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Infrastructure
 {
@@ -30,7 +31,7 @@ namespace PKSim.Infrastructure
          base.Context();
          _neighborhoodRepository = A.Fake<IFlatNeighborhoodRepository>();
          _modelContainerRepository = A.Fake<IFlatModelContainerRepository>();
-         _neighborhoodBuilderFactory =A.Fake<INeighborhoodBuilderFactory>();
+         _neighborhoodBuilderFactory = A.Fake<INeighborhoodBuilderFactory>();
          _modelProperties = A.Fake<ModelProperties>();
          _modelProperties.ModelConfiguration = A.Fake<ModelConfiguration>();
          _modelProperties.ModelConfiguration.ModelName = "3Comp";
@@ -40,11 +41,10 @@ namespace PKSim.Infrastructure
          _flatNeighborhoodFor4Comp = new FlatModelContainer {Model = "4Comp", Type = CoreConstants.ContainerType.NEIGHBORHOOD, Id = 2};
          _allFlatNeighborhoods.Add(_flatNeighborhoodFor3Comp);
          _allFlatNeighborhoods.Add(_flatNeighborhoodFor4Comp);
-         sut = new ModelNeighborhoodQuery(_modelContainerRepository,_neighborhoodBuilderFactory);
+         sut = new ModelNeighborhoodQuery(_modelContainerRepository, _neighborhoodBuilderFactory);
       }
    }
 
-   
    public class When_retrieving_some_neighborhoods_for_a_given_model_properties_that_were_not_defined_in_the_individual_but_were_marked_as_required : concern_for_ModelNeighborhoodQuery
    {
       protected override void Context()
@@ -60,7 +60,6 @@ namespace PKSim.Infrastructure
       }
    }
 
-   
    public class When_retrieving_some_neighborhoods_for_a_given_model_properties_that_were_not_defined_in_the_individual_but_were_marked_as_unknown : concern_for_ModelNeighborhoodQuery
    {
       protected override void Context()
@@ -76,11 +75,9 @@ namespace PKSim.Infrastructure
       }
    }
 
-
-   
    public class When_retrieving_some_neighborhoods_for_a_given_model_properties_that_wwere_not_defined_in_the_individual_but_were_marked_as_optional : concern_for_ModelNeighborhoodQuery
    {
-      private IEnumerable<INeighborhoodBuilder> _result;
+      private IEnumerable<NeighborhoodBuilder> _result;
 
       protected override void Context()
       {
@@ -100,13 +97,11 @@ namespace PKSim.Infrastructure
       }
    }
 
-  
-   
-   public class When_retrieving_some_neighborhoods_for_a_given_model_propertie_that_were_already_defined_in_the_individual : concern_for_ModelNeighborhoodQuery
+   public class When_retrieving_some_neighborhoods_for_a_given_model_properties_that_were_already_defined_in_the_individual : concern_for_ModelNeighborhoodQuery
    {
-      private IEnumerable<INeighborhoodBuilder> _result;
+      private IEnumerable<NeighborhoodBuilder> _result;
       private FlatNeighborhood _flatNeighborhood;
-      private INeighborhoodBuilder _neighborhoodBuilder;
+      private NeighborhoodBuilder _neighborhoodBuilder;
       private IContainer _individualNeighborhoods;
 
       protected override void Context()
@@ -114,8 +109,8 @@ namespace PKSim.Infrastructure
          base.Context();
          _individualNeighborhoods = new Container();
          _individualNeighborhoods.Add(new Container().WithName(_flatNeighborhoodFor3Comp.Name));
-         _neighborhoodBuilder = A.Fake<INeighborhoodBuilder>();
-         _flatNeighborhood = new FlatNeighborhood { Name = "tralala" };
+         _neighborhoodBuilder = A.Fake<NeighborhoodBuilder>();
+         _flatNeighborhood = new FlatNeighborhood {Name = "tralala"};
          _flatNeighborhoodFor3Comp.UsageInIndividual = CoreConstants.ORM.USAGE_IN_INDIVIDUAL_REQUIRED;
          A.CallTo(() => _neighborhoodRepository.NeighborhoodFrom(_flatNeighborhoodFor3Comp.Id)).Returns(_flatNeighborhood);
          A.CallTo(() => _neighborhoodBuilderFactory.Create()).Returns(_neighborhoodBuilder);

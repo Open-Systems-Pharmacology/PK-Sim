@@ -15,6 +15,7 @@ using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using static OSPSuite.Core.Domain.Constants.ContainerName;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
@@ -135,7 +136,7 @@ namespace PKSim.Presentation.Services
          if (expressionProfile == null)
             return;
 
-         var (newMoleculeName, _, _) = CoreConstants.ContainerName.NamesFromExpressionProfileName(newExpressionProfileName);
+         var (newMoleculeName, _, _) = NamesFromExpressionProfileName(newExpressionProfileName);
          _expressionProfileUpdater.UpdateMoleculeName(expressionProfile, newMoleculeName);
       }
 
@@ -222,14 +223,14 @@ namespace PKSim.Presentation.Services
          }
       }
 
-      private IFormulaUsablePath formulaUsablePathReferencing(IUsingFormula usingFormula, IFormulaUsable reference)
+      private FormulaUsablePath formulaUsablePathReferencing(IUsingFormula usingFormula, IFormulaUsable reference)
       {
          var parameter = usingFormula as IParameter;
          return formulaUsablePathReferencing(usingFormula.Formula, reference) ??
                 formulaUsablePathReferencing(parameter?.RHSFormula, reference);
       }
 
-      private IFormulaUsablePath formulaUsablePathReferencing(IFormula formula, IFormulaUsable reference)
+      private FormulaUsablePath formulaUsablePathReferencing(IFormula formula, IFormulaUsable reference)
       {
          if (formula == null)
             return null;

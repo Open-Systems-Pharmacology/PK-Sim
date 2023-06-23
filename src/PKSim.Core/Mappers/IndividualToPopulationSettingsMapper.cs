@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Parameters;
 
@@ -57,12 +59,18 @@ namespace PKSim.Core.Mappers
             populationSettings.AddParameterRange(parameterRangeFrom(organism.Parameter(BMI)));
          }
 
-         individual.OriginData.DiseaseStateParameters.Each(x =>
+         individual.OriginData.DiseaseStateParameters.Where(shouldVaryInPopulation).Each(x =>
          {
             var parameter = individual.OriginData.DiseaseState.Parameter(x.Name);
             populationSettings.AddParameterRange(constrainedParameterRangeFrom(parameter));
          });
          return populationSettings;
+      }
+
+      private bool shouldVaryInPopulation(OriginDataParameter originDataParameter)
+      {
+         //here list all discrete parameters that cannot be varied
+         return !originDataParameter.NameIsOneOf(CHILD_PUGH_SCORE);
       }
 
       private ParameterRange constrainedParameterRangeFrom(IParameter parameter)

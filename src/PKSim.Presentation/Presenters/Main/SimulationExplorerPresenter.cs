@@ -184,6 +184,7 @@ namespace PKSim.Presentation.Presenters.Main
             .Under(simulationNode);
 
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.SimulationSubject);
+      //Used for debug purposes for now   addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.ExpressionProfile);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Compound);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Protocol);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Formulation);

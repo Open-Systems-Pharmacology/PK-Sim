@@ -10,13 +10,14 @@ using PKSim.Presentation.Presenters.Compounds;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class SystemicProcessFolderContextMenu : ContextMenu<SystemicProcessNodeType, ICompoundProcessesPresenter>
    {
-      public SystemicProcessFolderContextMenu(SystemicProcessNodeType systemicProcessNodeType, ICompoundProcessesPresenter presenter)
-         : base(systemicProcessNodeType, presenter)
+      public SystemicProcessFolderContextMenu(SystemicProcessNodeType systemicProcessNodeType, ICompoundProcessesPresenter presenter, IContainer container)
+         : base(systemicProcessNodeType, presenter, container)
       {
       }
 
@@ -32,10 +33,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    public abstract class SystemicProcessFolderTreeNodeContextMenuFactory : IContextMenuSpecificationFactory<ITreeNode>
    {
       private readonly SystemicProcessNodeType _systemicProcessNodeType;
+      private readonly IContainer _container;
 
-      protected SystemicProcessFolderTreeNodeContextMenuFactory(SystemicProcessNodeType systemicProcessNodeType)
+      protected SystemicProcessFolderTreeNodeContextMenuFactory(SystemicProcessNodeType systemicProcessNodeType, IContainer container)
       {
          _systemicProcessNodeType = systemicProcessNodeType;
+         _container = container;
       }
 
       public bool IsSatisfiedBy(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
@@ -47,27 +50,27 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       public IContextMenu CreateFor(ITreeNode treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new SystemicProcessFolderContextMenu(_systemicProcessNodeType, presenter.DowncastTo<ICompoundProcessesPresenter>());
+         return new SystemicProcessFolderContextMenu(_systemicProcessNodeType, presenter.DowncastTo<ICompoundProcessesPresenter>(), _container);
       }
    }
 
    public class HepaticSystemicProcessFolderTreeNodeContextMenuFactory : SystemicProcessFolderTreeNodeContextMenuFactory
    {
-      public HepaticSystemicProcessFolderTreeNodeContextMenuFactory() : base(SystemicProcessNodeType.HepaticClearance)
+      public HepaticSystemicProcessFolderTreeNodeContextMenuFactory(IContainer container) : base(SystemicProcessNodeType.HepaticClearance, container)
       {
       }
    }
 
    public class RenalSystemicProcessFolderTreeNodeContextMenuFactory : SystemicProcessFolderTreeNodeContextMenuFactory
    {
-      public RenalSystemicProcessFolderTreeNodeContextMenuFactory() : base(SystemicProcessNodeType.RenalClearance)
+      public RenalSystemicProcessFolderTreeNodeContextMenuFactory(IContainer container) : base(SystemicProcessNodeType.RenalClearance, container)
       {
       }
    }
 
    public class BiliarySystemicProcessFolderTreeNodeContextMenuFactory : SystemicProcessFolderTreeNodeContextMenuFactory
    {
-      public BiliarySystemicProcessFolderTreeNodeContextMenuFactory() : base(SystemicProcessNodeType.BiliaryClearance)
+      public BiliarySystemicProcessFolderTreeNodeContextMenuFactory(IContainer container) : base(SystemicProcessNodeType.BiliaryClearance, container)
       {
       }
    }

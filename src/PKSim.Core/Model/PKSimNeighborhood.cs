@@ -2,12 +2,7 @@
 
 namespace PKSim.Core.Model
 {
-   public interface IPKSimNeighborhood : INeighborhood
-   {
-      bool Visible { get; set; }
-   }
-
-   public class PKSimNeighborhood : Neighborhood, IPKSimNeighborhood
+   public class PKSimNeighborhood : Neighborhood
    {
       public bool Visible { get; set; }
    }

@@ -15,18 +15,15 @@ namespace PKSim.IntegrationTests
 
       protected override void Context()
       {
-         _originData=new OriginData();
-         _originData.Species=new Species();
-         _originData.Species.Name = CoreConstants.Species.HUMAN;
-
+         var defaultIndividualRetriever = IoC.Resolve<IDefaultIndividualRetriever>();
          sut = IoC.Resolve<IModelPropertiesTask>();
+         _originData = defaultIndividualRetriever.DefaultHuman().OriginData;
 
          _modelProperties_4Comp = sut.DefaultFor(_originData, CoreConstants.Model.FOUR_COMP);
          _modelProperties_2Pores = sut.DefaultFor(_originData, CoreConstants.Model.TWO_PORES);
       }
    }
 
-   
    public class When_updating_model_properties : concern_for_ModelPropertiesTask
    {
       private ModelProperties _updatedProperties;
@@ -37,16 +34,14 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_update_calculation_methods_with_2pores_calcmethods()
+      public void should_update_calculation_methods_with_2pores_calculation_methods()
       {
-         ModelProperties modelProperties2Pores = sut.DefaultFor(_originData, CoreConstants.Model.TWO_PORES);
+         var modelProperties2Pores = sut.DefaultFor(_originData, CoreConstants.Model.TWO_PORES);
 
          foreach (var calcMethod in modelProperties2Pores.AllCalculationMethods())
          {
             _updatedProperties.ContainsCalculationMethod(calcMethod.Name).ShouldBeTrue();
          }
       }
-
    }
-
 }

@@ -7,6 +7,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Presentation.DTO.DiseaseStates;
 using PKSim.Presentation.DTO.ExpressionProfiles;
 using PKSim.Presentation.DTO.Mappers;
 
@@ -20,6 +21,7 @@ namespace PKSim.Presentation
       protected IMoleculePropertiesMapper _moleculePropertiesMapper;
       protected ExpressionProfile _expressionProfile1;
       protected IUsedExpressionProfileCategoryRepository _usedExpressionProfileCategoryRepository;
+      private IDiseaseStateUpdater _diseaseStateUpdater;
 
       protected override void Context()
       {
@@ -28,12 +30,14 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IPKSimProjectRetriever>();
          _moleculePropertiesMapper = A.Fake<IMoleculePropertiesMapper>();
          _usedExpressionProfileCategoryRepository = A.Fake<IUsedExpressionProfileCategoryRepository>();
+         _diseaseStateUpdater = A.Fake<IDiseaseStateUpdater>();
          sut = new ExpressionProfileToExpressionProfileDTOMapper(
             _speciesRepository,
             _usedMoleculeRepository,
             _projectRetriever,
             _moleculePropertiesMapper,
-            _usedExpressionProfileCategoryRepository);
+            _usedExpressionProfileCategoryRepository,
+            _diseaseStateUpdater);
 
          A.CallTo(() => _usedMoleculeRepository.All()).Returns(new[] {"A", "B"});
          A.CallTo(() => _usedExpressionProfileCategoryRepository.All()).Returns(new[] {"CatA", "CatB"});

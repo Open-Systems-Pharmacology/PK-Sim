@@ -2,6 +2,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using PKSim.Assets;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
@@ -13,16 +14,20 @@ namespace PKSim.Infrastructure.Reporting.Summary
       private readonly IReportGenerator _reportGenerator;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
+      private readonly IParameterListOfValuesRetriever _parameterListOfValuesRetriever;
       private readonly NumericFormatter<double> _formatter;
 
       public OriginDataReportBuilder(
          IReportGenerator reportGenerator, 
          IDimensionRepository dimensionRepository, 
-         IRepresentationInfoRepository representationInfoRepository)     
+         IRepresentationInfoRepository representationInfoRepository,
+         IParameterListOfValuesRetriever parameterListOfValuesRetriever)     
+
       {
          _reportGenerator = reportGenerator;
          _dimensionRepository = dimensionRepository;
          _representationInfoRepository = representationInfoRepository;
+         _parameterListOfValuesRetriever = parameterListOfValuesRetriever;
          _formatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
       }
 
@@ -84,8 +89,14 @@ namespace PKSim.Infrastructure.Reporting.Summary
       private string displayValueFor(OriginDataParameter originDataParameter)
       {
          var dimension = _dimensionRepository.DimensionForUnit(originDataParameter.Unit);
-         var displayUnit = dimension.UnitOrDefault(originDataParameter.Unit);
-         return _formatter.Format(dimension.BaseUnitValueToUnitValue(displayUnit, originDataParameter.Value));
+         if (dimension != null)
+         {
+            var displayUnit = dimension.UnitOrDefault(originDataParameter.Unit);
+            return _formatter.Format(dimension.BaseUnitValueToUnitValue(displayUnit, originDataParameter.Value));
+         }
+
+         //no dimension? Could be a discrete parameter
+         return _parameterListOfValuesRetriever.ValueFor(originDataParameter);
       }
    }
 }

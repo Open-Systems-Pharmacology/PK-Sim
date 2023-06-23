@@ -1,12 +1,14 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -22,18 +24,21 @@ namespace PKSim.IntegrationTests
       protected abstract string CompoundTransportName { get; }
 
       protected TransportType _transportType = TransportType.Passive;
+      private IExecutionContext _context;
+      private ICoreWorkspace _workspace;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
+         _context = IoC.Resolve<IExecutionContext>();
+         _workspace = IoC.Resolve<ICoreWorkspace>();
+         _workspace.Project = new PKSimProject();
          const string transporterName = "Tr1";
 
          var individual = DomainFactoryForSpecs.CreateStandardIndividual();
-         var transporterFactory = IoC.Resolve<IIndividualTransporterFactory>();
+         _workspace.Project.AddBuildingBlock(individual);
 
-         var transporter = transporterFactory.CreateFor(individual, transporterName, _transportType);
-         individual.AddMolecule(transporter);
-
+         var transportExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualTransporter>(individual, transporterName);
          var compound = DomainFactoryForSpecs.CreateStandardCompound().WithName(_drugName);
 
          var cloneManager = IoC.Resolve<ICloneManager>();
@@ -43,14 +48,18 @@ namespace PKSim.IntegrationTests
          compound.AddProcess(transportProcess);
 
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
-
+         
+         new SetTransportTypeCommand(transportExpression.Molecule.DowncastTo<IndividualTransporter>(), _transportType, _context).Run(_context);
+         
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(individual, compound, protocol).DowncastTo<IndividualSimulation>();
+
          _simulation.CompoundPropertiesList.First()
             .Processes
             .TransportAndExcretionSelection
-            .AddPartialProcessSelection(new ProcessSelection {ProcessName = transportProcess.Name, MoleculeName = transporter.Name});
+            .AddPartialProcessSelection(new ProcessSelection {ProcessName = transportProcess.Name, MoleculeName = transportExpression.MoleculeName });
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+         
       }
 
       protected ExplicitFormula GetSumFormulaFor(string neighborhoodName, string parameterName)

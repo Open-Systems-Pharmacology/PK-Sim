@@ -54,8 +54,8 @@ namespace PKSim.Core
          _outputSelection = new OutputSelections();
          _outputSelection.AddOutput(new QuantitySelection(new[] { "LIVER", "C" }.ToPathString(), QuantityType.Molecule));
 
-         _simulation.SimulationSettings = new SimulationSettings();
-         _simulation.SimulationSettings.OutputSelections = _outputSelection;
+         _simulation.Settings = new SimulationSettings();
+         _simulation.Settings.OutputSelections = _outputSelection;
       }
 
       protected override void Because()

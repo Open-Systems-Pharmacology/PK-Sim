@@ -75,7 +75,7 @@ namespace PKSim.Infrastructure
          base.Context();
          _allAvailableColumns = A.Fake<IReadOnlyCollection<DataColumn>>();
          _chartEditorPresenter = A.Fake<IChartEditorPresenter>();
-         var individualSimulation = new IndividualSimulation {SimulationSettings = new SimulationSettings()};
+         var individualSimulation = new IndividualSimulation {Settings = new SimulationSettings()};
          _simulationCollection = new List<ISimulation> {individualSimulation};
          _chartWithObservedData = A.Fake<ChartWithObservedData>();
          A.CallTo(() => _chartEditorPresenter.Chart).Returns(_chartWithObservedData);
@@ -111,7 +111,7 @@ namespace PKSim.Infrastructure
 
          _chartEditorPresenter = A.Fake<IChartEditorPresenter>();
          _simulations = A.Fake<IReadOnlyCollection<IndividualSimulation>>();
-         var individualSimulation = new IndividualSimulation {SimulationSettings = new SimulationSettings()};
+         var individualSimulation = new IndividualSimulation {Settings = new SimulationSettings()};
          _simulations = new List<IndividualSimulation> {individualSimulation};
          var simulationConcentrationChart = new SimulationTimeProfileChart();
          individualSimulation.AddAnalysis(simulationConcentrationChart);
@@ -151,7 +151,7 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         var outputSelections = _simulations.First().SimulationSettings.OutputSelections;
+         var outputSelections = _simulations.First().Settings.OutputSelections;
          outputSelections.AddOutput(new QuantitySelection("path", QuantityType.Undefined));
       }
 

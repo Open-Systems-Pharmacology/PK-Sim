@@ -33,6 +33,6 @@ namespace PKSim.Core.Services
       /// </summary>
       Task ExportSimulationToPkmlFileAsync(Simulation simulation, string fileName);
 
-      void UpdateObserverForAllFlag(IObserverBuildingBlock observerBuildingBlock);
+      void UpdateObserverForAllFlag(ObserverBuildingBlock observerBuildingBlock);
    }
 }

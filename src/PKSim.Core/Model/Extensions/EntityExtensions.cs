@@ -1,6 +1,5 @@
-using System.Linq;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Model.Extensions
 {
@@ -8,8 +7,12 @@ namespace PKSim.Core.Model.Extensions
    {
       public static bool IsInNeighborhood(this IEntity entity)
       {
-         if (entity == null) return false;
-         if (entity.IsAnImplementationOf<INeighborhood>()) return true;
+         if (entity == null)
+            return false;
+
+         if (entity.IsAnImplementationOf<Neighborhood>())
+            return true;
+
          return IsInNeighborhood(entity.ParentContainer);
       }
 
@@ -26,7 +29,6 @@ namespace PKSim.Core.Model.Extensions
             IsInMucosa(neighborhood.FirstNeighbor) ||
             IsInMucosa(neighborhood.SecondNeighbor);
       }
-
 
       public static bool IsInLumen(this IEntity entity)
       {
@@ -45,7 +47,7 @@ namespace PKSim.Core.Model.Extensions
       public static bool IsInLiverZone(this IEntity entity)
       {
          var parentContainer = entity.ParentContainer;
-         if (parentContainer == null) 
+         if (parentContainer == null)
             return false;
 
          return parentContainer.IsLiverZone() || IsInLiverZone(parentContainer);
@@ -56,11 +58,11 @@ namespace PKSim.Core.Model.Extensions
          return entity.IsInLumen() || entity.IsInMucosa();
       }
 
-      public static INeighborhood NeighborhoodAncestor(this IEntity entity)
+      public static Neighborhood NeighborhoodAncestor(this IEntity entity)
       {
          if (entity == null) return null;
-         if (entity.IsAnImplementationOf<INeighborhood>())
-            return entity.DowncastTo<INeighborhood>();
+         if (entity.IsAnImplementationOf<Neighborhood>())
+            return entity.DowncastTo<Neighborhood>();
 
          return NeighborhoodAncestor(entity.ParentContainer);
       }

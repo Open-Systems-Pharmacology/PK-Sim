@@ -63,7 +63,7 @@ namespace PKSim.Core.Services
          updateReferences(clspecFactor, moleculeName, compoundName, simulation, processParameterContainer, InteractionKineticModifications.CLSpecDenominator);
       }
 
-      public void UpdateModifiers(IReactionBuilder reaction, string moleculeName, string compoundName, Simulation simulation)
+      public void UpdateModifiers(ReactionBuilder reaction, string moleculeName, string compoundName, Simulation simulation)
       {
          AllInteractionProcessesFor(moleculeName, compoundName, simulation).Each((process, i) =>
          {
@@ -150,30 +150,30 @@ namespace PKSim.Core.Services
          return _interactionTask.AllInteractionProcessesFor(moleculeName, _interactionType, simulation, compoundName);
       }
 
-      private IFormulaUsablePath kiPath(string kiParameter, Compound inhibitor, InteractionProcess process, string kiAlias)
+      private FormulaUsablePath kiPath(string kiParameter, Compound inhibitor, InteractionProcess process, string kiAlias)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(inhibitor.Name, process.Name, kiParameter)
             .WithAlias(kiAlias)
             .WithDimension(_dimensionRepository.MolarConcentration);
       }
 
-      private IFormulaUsablePath inhibitorConcentrationPath(Compound inhibitor, string inhibitorAlias, IContainer processParameterContainer)
+      private FormulaUsablePath inhibitorConcentrationPath(Compound inhibitor, string inhibitorAlias, IContainer processParameterContainer)
       {
          return localInhibitorParameterPath(inhibitor, Constants.Parameters.CONCENTRATION, inhibitorAlias, processParameterContainer, _dimensionRepository.MolarConcentration);
       }
 
-      private IFormulaUsablePath kwaterPath(Compound inhibitor, string kwaterAlias, IContainer processParameterContainer)
+      private FormulaUsablePath kwaterPath(Compound inhibitor, string kwaterAlias, IContainer processParameterContainer)
       {
          return localInhibitorParameterPath(inhibitor, CoreConstants.Parameters.K_WATER, kwaterAlias, processParameterContainer, _dimensionRepository.NoDimension);
       }
 
-      private IFormulaUsablePath localInhibitorParameterPath(Compound inhibitor, string parameterName, string parameterAlias, IContainer processParameterContainer, IDimension dimension)
+      private FormulaUsablePath localInhibitorParameterPath(Compound inhibitor, string parameterName, string parameterAlias, IContainer processParameterContainer, IDimension dimension)
       {
          var objectPath = _objectPathFactory.CreateFormulaUsablePathFrom(inhibitor.Name, parameterName)
             .WithAlias(parameterAlias)
             .WithDimension(dimension);
 
-         return processParameterContainer.IsAnImplementationOf<IReactionBuilder>()
+         return processParameterContainer.IsAnImplementationOf<ReactionBuilder>()
             ? objectPath.AndAddAtFront(ObjectPath.PARENT_CONTAINER).AndAddAtFront(ObjectPath.PARENT_CONTAINER)
             : objectPath.AndAddAtFront(ObjectPathKeywords.SOURCE);
       }

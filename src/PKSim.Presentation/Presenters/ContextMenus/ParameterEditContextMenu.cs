@@ -8,13 +8,14 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class ParameterEditContextMenu : ContextMenu<IParameterDTO, IParameterSetPresenter>
    {
-      public ParameterEditContextMenu(IParameterDTO parameterDTO, IParameterSetPresenter presenter)
-         : base(parameterDTO, presenter)
+      public ParameterEditContextMenu(IParameterDTO parameterDTO, IParameterSetPresenter presenter, IContainer container)
+         : base(parameterDTO, presenter, container)
       {
       }
 
@@ -31,9 +32,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class ParameterEditContextMenuFactory : IContextMenuSpecificationFactory<IParameterDTO>
    {
+      private readonly IContainer _container;
+
+      public ParameterEditContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public IContextMenu CreateFor(IParameterDTO parameterDTO, IPresenterWithContextMenu<IParameterDTO> presenter)
       {
-         return new ParameterEditContextMenu(parameterDTO, presenter.DowncastTo<IParameterSetPresenter>());
+         return new ParameterEditContextMenu(parameterDTO, presenter.DowncastTo<IParameterSetPresenter>(), _container);
       }
 
       public bool IsSatisfiedBy(IParameterDTO parameterDTO, IPresenterWithContextMenu<IParameterDTO> presenter)

@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
-using ExplicitFormula = PKSim.Core.Snapshots.ExplicitFormula;
 using MoleculeList = PKSim.Core.Snapshots.MoleculeList;
 using Observer = PKSim.Core.Snapshots.Observer;
 
@@ -20,47 +19,47 @@ namespace PKSim.Core
       private DescriptorConditionMapper _descriptorConditionMapper;
       private ExplicitFormulaMapper _explicitFormulaMapper;
       private MoleculeListMapper _moleculeListMapper;
-      protected IObserverBuilder _amountObserver;
+      protected ObserverBuilder _amountObserver;
       protected ContainerObserverBuilder _containerObserver;
       protected IDimension _dimension;
-      private OSPSuite.Core.Domain.Formulas.ExplicitFormula _formula;
-      protected ExplicitFormula _snapshotFormula;
+      private ExplicitFormula _formula;
+      protected Snapshots.ExplicitFormula _snapshotFormula;
       protected MoleculeList _moleculeListSnapshot;
       protected IObjectBaseFactory _objectBaseFactory;
       protected IDimensionRepository _dimensionRepository;
       protected IOSPSuiteLogger _logger;
-      protected OSPSuite.Core.Domain.Formulas.ExplicitFormula _newFormula;
+      protected ExplicitFormula _newFormula;
       protected OSPSuite.Core.Domain.Builder.MoleculeList _newMoleculeList;
 
       protected override Task Context()
       {
-         _descriptorConditionMapper= A.Fake<DescriptorConditionMapper>();
-         _explicitFormulaMapper= A.Fake<ExplicitFormulaMapper>(); 
-         _moleculeListMapper= A.Fake<MoleculeListMapper>();
-         _objectBaseFactory= A.Fake<IObjectBaseFactory>();
-         _dimensionRepository= A.Fake<IDimensionRepository>();
-         _logger= A.Fake<IOSPSuiteLogger>();   
+         _descriptorConditionMapper = A.Fake<DescriptorConditionMapper>();
+         _explicitFormulaMapper = A.Fake<ExplicitFormulaMapper>();
+         _moleculeListMapper = A.Fake<MoleculeListMapper>();
+         _objectBaseFactory = A.Fake<IObjectBaseFactory>();
+         _dimensionRepository = A.Fake<IDimensionRepository>();
+         _logger = A.Fake<IOSPSuiteLogger>();
 
          _dimension = DomainHelperForSpecs.TimeDimensionForSpecs();
 
          _amountObserver = new AmountObserverBuilder {Dimension = _dimension};
-         _containerObserver = new ContainerObserverBuilder { Dimension = _dimension };
-         _formula = new OSPSuite.Core.Domain.Formulas.ExplicitFormula("1+2");
+         _containerObserver = new ContainerObserverBuilder {Dimension = _dimension};
+         _formula = new ExplicitFormula("1+2");
          _amountObserver.Formula = _formula;
          _containerObserver.Formula = _formula;
 
-         _moleculeListSnapshot=new MoleculeList();
-         _snapshotFormula = new ExplicitFormula();
+         _moleculeListSnapshot = new MoleculeList();
+         _snapshotFormula = new Snapshots.ExplicitFormula();
 
          _newMoleculeList = new OSPSuite.Core.Domain.Builder.MoleculeList();
          _newMoleculeList.AddMoleculeNameToExclude("A");
          _newMoleculeList.AddMoleculeName("B");
          _newMoleculeList.ForAll = false;
-         _newFormula =new OSPSuite.Core.Domain.Formulas.ExplicitFormula("New");
+         _newFormula = new ExplicitFormula("New");
 
          sut = new ObserverMapper(
             _descriptorConditionMapper,
-            _explicitFormulaMapper, 
+            _explicitFormulaMapper,
             _moleculeListMapper,
             _objectBaseFactory,
             _dimensionRepository,
@@ -86,7 +85,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await  sut.MapToSnapshot(_containerObserver);
+         _result = await sut.MapToSnapshot(_containerObserver);
       }
 
       [Observation]
@@ -102,14 +101,13 @@ namespace PKSim.Core
    public class When_mapping_a_container_observer_snapshot_to_observer : concern_for_ObserverMapper
    {
       private Observer _snapshot;
-      private IObserverBuilder _result;
+      private ObserverBuilder _result;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_containerObserver);
       }
-
 
       protected override async Task Because()
       {
@@ -144,21 +142,19 @@ namespace PKSim.Core
          _result.Dimension.ShouldBeEqualTo(_dimension.Name);
          _result.Formula.ShouldBeEqualTo(_snapshotFormula);
          _result.MoleculeList.ShouldBeEqualTo(_moleculeListSnapshot);
-
       }
    }
 
    public class When_mapping_a_amount_observer_snapshot_to_observer : concern_for_ObserverMapper
    {
       private Observer _snapshot;
-      private IObserverBuilder _result;
+      private ObserverBuilder _result;
 
       protected override async Task Context()
       {
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_amountObserver);
       }
-
 
       protected override async Task Because()
       {

@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
-using NUnit.Framework;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -13,6 +12,9 @@ using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using static OSPSuite.Core.Domain.Constants;
+using static PKSim.Core.CoreConstants.Compartment;
+using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.IntegrationTests
 {
@@ -147,12 +149,12 @@ namespace PKSim.IntegrationTests
       {
          var transport = biliaryClearancePeriportalCellToGallBladderTransport();
          var undefinedTransportRef = transport.Formula.ObjectPaths.First(x => x.Alias == "CP");
-         undefinedTransportRef.ShouldContain(CoreConstants.Organ.LIVER, CoreConstants.Compartment.PERIPORTAL);
+         undefinedTransportRef.ShouldContain(LIVER, PERIPORTAL);
       }
 
-      private ITransport biliaryClearancePeriportalCellToGallBladderTransport()
+      private Transport biliaryClearancePeriportalCellToGallBladderTransport()
       {
-         return _simulation.Model.Neighborhoods.EntityAt<ITransport>(CoreConstantsForSpecs.Neigborhood.PERIPORTAL_CELL_GALLBLADDER,
+         return _simulation.Model.Neighborhoods.EntityAt<Transport>(CoreConstantsForSpecs.Neigborhood.PERIPORTAL_CELL_GALLBLADDER,
             _compound.Name,_biliaryClearance.Name,  CoreConstants.Process.BILIARY_CLEARANCE_TO_GALL_BLADDER);
       }
    }
@@ -181,16 +183,16 @@ namespace PKSim.IntegrationTests
       public void the_created_simulation_should_have_a_biliary_clearance_process_created_based_on_the_one_defined_in_the_compound()
       {
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>()).ToList();
-         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CoreConstants.CompositeNameFor(_compound.Name,_liverClearance.Name));
+         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CompositeNameFor(_compound.Name,_liverClearance.Name));
 
          allProcessParameters.FindByName(ConverterConstants.Parameters.PlasmaClearance).Value.ShouldBeEqualTo(_liverClearance.Parameter(ConverterConstants.Parameters.PlasmaClearance).Value);
       }
-
+      
       [Observation]
       public void the_created_process_kinetic_should_reference_an_undefined_enzyme_in_liver_whose_start_concentration_is_set_to_1_by_f_cell()
       {
-         var liver_periportal = _simulation.Model.Root.EntityAt<Container>(Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.PERIPORTAL);
-         var startConcentration = liver_periportal.EntityAt<IParameter>(CoreConstants.Compartment.INTRACELLULAR, CoreConstants.Molecule.UndefinedLiver, CoreConstants.Parameters.CONCENTRATION);
+         var liver_periportal = _simulation.Model.Root.EntityAt<Container>(ORGANISM, LIVER, PERIPORTAL);
+         var startConcentration = liver_periportal.EntityAt<IParameter>(INTRACELLULAR, CoreConstants.Molecule.UndefinedLiver, CoreConstants.Parameters.CONCENTRATION);
 
          var f_cell = liver_periportal.EntityAt<IParameter>(CoreConstants.Parameters.FRACTION_INTRACELLULAR);
          startConcentration.Value.ShouldBeEqualTo(1 / f_cell.Value);
@@ -199,7 +201,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void the_created_process_should_have_two_parameters_enzyme_concentration_and_cl_spec_per_enzyme_hidden_set_to_one()
       {
-         var processName = CoreConstants.CompositeNameFor(_compound.Name, _liverClearance.Name);
+         var processName = CompositeNameFor(_compound.Name, _liverClearance.Name);
          var processContainer = _simulation.Model.Root.EntityAt<Container>(processName);
          processContainer.Parameter(CoreConstantsForSpecs.Parameters.ENZYME_CONCENTRATION).Value.ShouldBeEqualTo(1);
          processContainer.Parameter(CoreConstantsForSpecs.Parameters.ENZYME_CONCENTRATION).Visible.ShouldBeFalse();
@@ -292,7 +294,7 @@ namespace PKSim.IntegrationTests
       protected void CheckProcess()
       {
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>()).ToList();
-         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CoreConstants.CompositeNameFor(_compound.Name, _process.Name));
+         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(CompositeNameFor(_compound.Name, _process.Name));
 
          allProcessParameters.FindByName(ConverterConstants.Parameters.CLspec).Value.ShouldBeEqualTo(_process.Parameter(ConverterConstants.Parameters.CLspec).Value);         
       }

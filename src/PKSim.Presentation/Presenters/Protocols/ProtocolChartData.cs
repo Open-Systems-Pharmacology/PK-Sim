@@ -3,10 +3,10 @@ using System.Data;
 using System.Linq;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Protocols;
 using OSPSuite.Core.Domain;
+using static OSPSuite.Core.Domain.Constants;
 using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Presentation.Presenters.Protocols
@@ -138,7 +138,7 @@ namespace PKSim.Presentation.Presenters.Protocols
       {
          var baseName = schemaItemDTO.DisplayName;
          if (!string.IsNullOrEmpty(compound.Name))
-            baseName = CoreConstants.CompositeNameFor(baseName, compound.Name);
+            baseName = CompositeNameFor(baseName, compound.Name);
 
          return hasOnlyOneDoseUnit ? baseName : Constants.NameWithUnitFor(baseName, schemaItemDTO.DoseParameter.DisplayUnit);
       }

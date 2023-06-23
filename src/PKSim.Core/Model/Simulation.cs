@@ -17,6 +17,8 @@ namespace PKSim.Core.Model
       private readonly ICache<string, UsedBuildingBlock> _usedBuildingBlocks = new Cache<string, UsedBuildingBlock>(bb => bb.TemplateId);
       private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(bb => bb.Id);
       private readonly List<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
+      private readonly List<ReactionBuildingBlock> _allReactions = new List<ReactionBuildingBlock>();
+
       private SimulationProperties _properties;
       private SimulationResults _results;
 
@@ -32,13 +34,13 @@ namespace PKSim.Core.Model
 
       public virtual IDiagramModel ReactionDiagramModel { get; set; }
 
-      public virtual ISimulationSettings SimulationSettings { get; set; }
+      public virtual SimulationSettings Settings { get; set; }
 
       /// <summary>
       ///    The reaction building block used to create the simulation. This is only use as meta information
       ///    on model creation for now. Adding <see cref="Reaction" /> to the building block will not change the model structure
       /// </summary>
-      public virtual IReactionBuildingBlock Reactions { get; set; }
+      public virtual IReadOnlyList<ReactionBuildingBlock> Reactions => _allReactions;
 
       protected Simulation() : base(PKSimBuildingBlockType.Simulation)
       {
@@ -141,7 +143,7 @@ namespace PKSim.Core.Model
 
       private IEnumerable<TEntity> allFromSettings<TEntity>() where TEntity : class, IEntity
       {
-         if (SimulationSettings == null)
+         if (Settings == null)
             return Enumerable.Empty<TEntity>();
 
          return OutputSchema.GetAllChildren<TEntity>()
@@ -164,6 +166,8 @@ namespace PKSim.Core.Model
 
          _usedBuildingBlocks.Add(usedBuildingBlock);
       }
+
+      public virtual void AddReactions(ReactionBuildingBlock reactionBuildingBlock) => _allReactions.Add(reactionBuildingBlock);
 
       /// <summary>
       ///    Remove the building block as used in the simulation
@@ -351,7 +355,7 @@ namespace PKSim.Core.Model
       ///    (true: simulation was performed with current parameters, false: simulation parameters have changed ...)
       /// </summary>
       public virtual bool HasUpToDateResults => Version == ResultsVersion;
-      
+
       public abstract bool HasResults { get; }
 
       /// <summary>
@@ -376,8 +380,8 @@ namespace PKSim.Core.Model
             base.Name = value;
             setName(Model, value);
             setName(Model?.Root, value);
-            setName(Reactions, value);
-            setName(SimulationSettings, value);
+            Reactions?.Each(x => setName(x, value));
+            setName(Settings, value);
          }
       }
 
@@ -391,13 +395,15 @@ namespace PKSim.Core.Model
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceSimulation = sourceObject as Simulation;
-         if (sourceSimulation == null) return;
+         if (sourceSimulation == null) 
+            return;
+
          Properties = sourceSimulation.Properties.Clone(cloneManager);
          sourceSimulation.UsedBuildingBlocks.Each(bb => AddUsedBuildingBlock(bb.Clone(cloneManager)));
          Model = cloneManager.Clone(sourceSimulation.Model);
          sourceSimulation.UsedObservedData.Each(data => AddUsedObservedData(data.Clone()));
-         Reactions = cloneManager.Clone(sourceSimulation.Reactions);
-         SimulationSettings = cloneManager.Clone(sourceSimulation.SimulationSettings);
+         sourceSimulation.Reactions.Each(x => AddReactions(cloneManager.Clone(x)));
+         Settings = cloneManager.Clone(sourceSimulation.Settings);
          ReactionDiagramModel = sourceSimulation.ReactionDiagramModel.CreateCopy();
          OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
          //Output mappings have an underling reference to the source simulation which is destroyed with the previous call/
@@ -438,7 +444,7 @@ namespace PKSim.Core.Model
          //no clone here. Just copy references
          Name = originalSimulation.Name;
          Description = originalSimulation.Description;
-         SimulationSettings = originalSimulation.SimulationSettings;
+         Settings = originalSimulation.Settings;
          Version = originalSimulation.Version;
          StructureVersion = originalSimulation.StructureVersion;
          originalSimulation.UsedObservedData.Each(AddUsedObservedData);
@@ -499,7 +505,7 @@ namespace PKSim.Core.Model
 
          _usedBuildingBlocks.Each(x => x.AcceptVisitor(visitor));
          Model?.AcceptVisitor(visitor);
-         SimulationSettings?.AcceptVisitor(visitor);
+         Settings?.AcceptVisitor(visitor);
          Charts.Each(x => x.AcceptVisitor(visitor));
       }
 
@@ -593,15 +599,15 @@ namespace PKSim.Core.Model
       }
 
       //This is not used in PKSim.
-      public IBuildConfiguration BuildConfiguration { get; set; } = null;
+      public SimulationConfiguration Configuration { get; set; } = null;
 
       /// <summary>
       ///    Returns the <see cref="OutputSelections" /> for the simulation
       /// </summary>
       public virtual OutputSelections OutputSelections
       {
-         get => SimulationSettings.OutputSelections;
-         set => SimulationSettings.OutputSelections = value;
+         get => Settings.OutputSelections;
+         set => Settings.OutputSelections = value;
       }
 
       /// <summary>
@@ -618,8 +624,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual OutputSchema OutputSchema
       {
-         get => SimulationSettings.OutputSchema;
-         set => SimulationSettings.OutputSchema = value;
+         get => Settings.OutputSchema;
+         set => Settings.OutputSchema = value;
       }
 
       /// <summary>
@@ -627,8 +633,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual SolverSettings Solver
       {
-         get => SimulationSettings.Solver;
-         set => SimulationSettings.Solver = value;
+         get => Settings.Solver;
+         set => Settings.Solver = value;
       }
 
       public virtual IReadOnlyList<Compound> Compounds => AllBuildingBlocks<Compound>().ToList();
@@ -690,30 +696,30 @@ namespace PKSim.Core.Model
 
       public virtual Individual Individual => BuildingBlock<Individual>();
 
-      public IEnumerable<CurveChartTemplate> ChartTemplates => SimulationSettings.ChartTemplates;
+      public IEnumerable<CurveChartTemplate> ChartTemplates => Settings.ChartTemplates;
 
-      public CurveChartTemplate DefaultChartTemplate => SimulationSettings.DefaultChartTemplate;
+      public CurveChartTemplate DefaultChartTemplate => Settings.DefaultChartTemplate;
 
       #endregion
 
       public void AddChartTemplate(CurveChartTemplate chartTemplate)
       {
-         SimulationSettings.AddChartTemplate(chartTemplate);
+         Settings.AddChartTemplate(chartTemplate);
       }
 
       public void RemoveChartTemplate(string chartTemplateName)
       {
-         SimulationSettings.RemoveChartTemplate(chartTemplateName);
+         Settings.RemoveChartTemplate(chartTemplateName);
       }
 
       public CurveChartTemplate ChartTemplateByName(string templateName)
       {
-         return SimulationSettings.ChartTemplateByName(templateName);
+         return Settings.ChartTemplateByName(templateName);
       }
 
       public void RemoveAllChartTemplates()
       {
-         SimulationSettings.RemoveAllChartTemplates();
+         Settings.RemoveAllChartTemplates();
       }
 
       public double? MolWeightFor(IQuantity quantity) => Model?.MolWeightFor(quantity);

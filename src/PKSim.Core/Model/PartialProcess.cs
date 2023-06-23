@@ -1,5 +1,6 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core.Model
 {
@@ -9,7 +10,7 @@ namespace PKSim.Core.Model
 
       public override void RefreshName()
       {
-         Name = CoreConstants.CompositeNameFor(MoleculeName, DataSource);
+         Name = CompositeNameFor(MoleculeName, DataSource);
       }
 
       public override void UpdatePropertiesFrom(IUpdatable sourceObject, ICloneManager cloneManager)
@@ -22,7 +23,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Name of the molecule responsible for triggering the processs
+      ///    Name of the molecule responsible for triggering the process
       /// </summary>
       public string MoleculeName
       {

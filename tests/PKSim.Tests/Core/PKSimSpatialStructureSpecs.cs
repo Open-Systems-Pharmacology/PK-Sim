@@ -4,19 +4,18 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_PKSimSpatialStructure : ContextSpecification<IPKSimSpatialStructure>
+   public abstract class concern_for_PKSimSpatialStructure : ContextSpecification<PKSimSpatialStructure>
    {
-      protected PKSim.Core.Model.Organism _organism;
+      protected Organism _organism;
 
       protected override void Context()
       {
          sut = new PKSimSpatialStructure();
-         _organism =new Organism();
+         _organism = new Organism();
          sut.AddTopContainer(_organism);
       }
    }
 
-   
    public class When_resolving_the_organism_in_a_spatial_structure : concern_for_PKSimSpatialStructure
    {
       [Observation]
@@ -25,4 +24,4 @@ namespace PKSim.Core
          sut.Organism.ShouldBeEqualTo(_organism);
       }
    }
-}	
+}

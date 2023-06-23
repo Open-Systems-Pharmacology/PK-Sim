@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core.Services
 {
@@ -21,7 +22,7 @@ namespace PKSim.Core.Services
       ///    and the <paramref name="enzymeName" /> (e.g. CYP3A4) with the required interaction terms
       ///    based on the interaction defined in the <paramref name="simulation" />
       /// </summary>
-      void UpdateReaction(IReactionBuilder reaction, string enzymeName, string compoundName, Simulation simulation, IFormulaCache formulaCache);
+      void UpdateReaction(ReactionBuilder reaction, string enzymeName, string compoundName, Simulation simulation, IFormulaCache formulaCache);
 
       /// <summary>
       ///    Updates the given transport process <paramref name="transporterMoleculeContainer" /> triggered by the
@@ -43,7 +44,7 @@ namespace PKSim.Core.Services
          _allKineticUpdaterSpecifications = repository.All().ToList();
       }
 
-      public void UpdateReaction(IReactionBuilder reaction, string enzymeName, string compoundName, Simulation simulation, IFormulaCache formulaCache)
+      public void UpdateReaction(ReactionBuilder reaction, string enzymeName, string compoundName, Simulation simulation, IFormulaCache formulaCache)
       {
          updateProcess(reaction, enzymeName, compoundName, simulation, formulaCache);
       }
@@ -66,7 +67,7 @@ namespace PKSim.Core.Services
 
       private void updateModifiers(IContainer processParameterContainer, IEnumerable<IInteractionKineticUpdaterSpecification> allUpdatingKinetics, string moleculeName, string compoundName, Simulation simulation)
       {
-         var reaction = processParameterContainer as IReactionBuilder;
+         var reaction = processParameterContainer as ReactionBuilder;
          if (reaction == null)
             return;
 
@@ -156,7 +157,7 @@ namespace PKSim.Core.Services
          if (!allUpdatingKinetics.Any() || interactionFactor == null)
             return;
 
-         var formulaName = CoreConstants.CompositeNameFor(processParameterContainer.Name, compoundName, parameterName);
+         var formulaName = CompositeNameFor(processParameterContainer.Name, compoundName, parameterName);
          if (formulaCache.FindByName(formulaName) is ExplicitFormula formula)
          {
             interactionFactor.Formula = formula;

@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Domain.Populations;
+﻿using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Populations;
 using PKSim.Core.Model;
 
 namespace PKSim.R.Domain

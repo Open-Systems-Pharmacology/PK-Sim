@@ -512,6 +512,8 @@ namespace PKSim.Assets
 
          public const string CKDOnlyAvailableForAdult = "Chronic kidney disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
 
+         public const string HIOnlyAvailableForAdult = "Hepatic impairment disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
+
          public const string EventTemplateNotDefined = "Event template not defined.";
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
@@ -934,6 +936,9 @@ namespace PKSim.Assets
 
          public static string ExpressionProfileForMoleculeNotFound(string molecule, string buildingBlockName, string buildingBlockType) =>
             $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}'.";
+
+         public static string CouldNotFindMoleculeType(string moleculeType) =>
+            $"Could not find the molecule type {moleculeType}";
       }
 
       public static class Information
@@ -1147,7 +1152,6 @@ namespace PKSim.Assets
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string NewObservers = "Add &Observers...";
-         public static readonly string NewExpressionProfile = "Add &Expression Profile";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
@@ -1883,7 +1887,6 @@ namespace PKSim.Assets
          public static readonly string NewFormulationDescription = "Create a new formulation...";
          public static readonly string NewEventDescription = "Create a new event...";
          public static readonly string NewObserversDescription = "Create a new observer list...";
-         public static readonly string NewExpressionProfileDescription = "Create a new expression profile...";
          public static readonly string NewCompoundDescription = "Create a new compound...";
          public static readonly string OptionsDescription = "Manage the options for the application and the current user...";
          public static readonly string ExitDescription = "Exit the application";
@@ -1945,6 +1948,8 @@ namespace PKSim.Assets
          public static readonly string No = "No";
          public static readonly string Yes = "Yes";
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
+         public static readonly string ExportExpressionProfile = "Export expression profile to pkml";
+         public static readonly string ExportIndividual = "Export individual to pkml";
          public static readonly string ExportSimulationResultsToExcel = $"Export simulation results to {Excel}";
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to CSV";
@@ -2357,6 +2362,8 @@ namespace PKSim.Assets
 
          public static string OntogenyFor(string moleculeName) => $"{Ontogeny} for {moleculeName}";
 
+         public static string OntogenyFor(string moleculeName, string container) => $"{Ontogeny} for {moleculeName} - {container}";
+
          public static string AddParameterAsFavorites(string parameterName) => $"Add '{parameterName}' as favorite";
 
          public static string ProductIsUpToDate(string productName) => $"{productName} is up to date!";
@@ -2592,6 +2599,8 @@ namespace PKSim.Assets
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
+
+         public static string ChildPughScoreFor (string score)=> $"Child-Pugh {score}";
       }
 
       public static class Reporting

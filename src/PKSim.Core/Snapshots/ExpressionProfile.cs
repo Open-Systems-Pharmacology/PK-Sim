@@ -7,16 +7,16 @@ namespace PKSim.Core.Snapshots
 {
    public class ExpressionProfile : SnapshotBase, IBuildingBlockSnapshot
    {
-      [Required]
+      [Required] 
       public QuantityType Type { get; set; }
-
-      [Required]
+      
+      [Required] 
       public string Species { get; set; }
 
-      [Required]
+      [Required] 
       public string Molecule { get; set; }
 
-      [Required]
+      [Required] 
       public string Category { get; set; }
 
       public LocalizedParameter[] Parameters { get; set; }
@@ -35,6 +35,9 @@ namespace PKSim.Core.Snapshots
       public ExpressionContainer[] Expression { get; set; }
       public Ontogeny Ontogeny { get; set; }
 
-      public PKSimBuildingBlockType BuildingBlockType { get; } =PKSimBuildingBlockType.ExpressionProfile;
+      public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.ExpressionProfile;
+
+      //Null if no disease state defined
+      public DiseaseState Disease { get; set; }
    }
 }

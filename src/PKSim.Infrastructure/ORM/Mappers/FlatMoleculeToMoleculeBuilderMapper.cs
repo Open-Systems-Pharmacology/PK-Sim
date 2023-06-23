@@ -9,7 +9,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
 {
    public interface IFlatMoleculeToMoleculeBuilderMapper
    {
-      IMoleculeBuilder MapFrom(FlatMolecule flatMolecule, IFormulaCache formulaCache);
+      MoleculeBuilder MapFrom(FlatMolecule flatMolecule, IFormulaCache formulaCache);
    }
 
    public class FlatMoleculeToMoleculeBuilderMapper : IFlatMoleculeToMoleculeBuilderMapper
@@ -28,9 +28,9 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _formulaFactory = formulaFactory;
       }
 
-      public IMoleculeBuilder MapFrom(FlatMolecule flatMolecule, IFormulaCache formulaCache)
+      public MoleculeBuilder MapFrom(FlatMolecule flatMolecule, IFormulaCache formulaCache)
       {
-         var molecule = _objectBaseFactory.Create<IMoleculeBuilder>();
+         var molecule = _objectBaseFactory.Create<MoleculeBuilder>();
 
          molecule.Name = flatMolecule.Id;
          molecule.IsFloating = flatMolecule.IsFloating;

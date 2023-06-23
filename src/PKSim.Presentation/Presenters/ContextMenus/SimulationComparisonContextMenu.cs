@@ -8,34 +8,35 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class SimulationComparisonContextMenu : ContextMenu<ISimulationComparison>
    {
-      public SimulationComparisonContextMenu(ISimulationComparison summaryChart) : base(summaryChart)
+      public SimulationComparisonContextMenu(ISimulationComparison summaryChart, IContainer container) : base(summaryChart, container)
       {
       }
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(ISimulationComparison simulationComparison)
       {
-         yield return GenericMenu.EditMenuFor<EditSubjectUICommand<ISimulationComparison>, ISimulationComparison>(simulationComparison);
+         yield return GenericMenu.EditMenuFor<EditSubjectUICommand<ISimulationComparison>, ISimulationComparison>(simulationComparison, _container);
 
-         yield return GenericMenu.RenameMenuFor(simulationComparison);
+         yield return GenericMenu.RenameMenuFor(simulationComparison, _container);
 
-         yield return GenericMenu.EditDescriptionMenuFor(simulationComparison)
+         yield return GenericMenu.EditDescriptionMenuFor(simulationComparison, _container)
             .AsGroupStarter();
 
          var populationSimulationComparison = simulationComparison as PopulationSimulationComparison;
          if (populationSimulationComparison != null)
          {
             yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Configure)
-               .WithCommandFor<ConfigurePopulationSimulationComparison, PopulationSimulationComparison>(populationSimulationComparison)
+               .WithCommandFor<ConfigurePopulationSimulationComparison, PopulationSimulationComparison>(populationSimulationComparison, _container)
                .AsGroupStarter();
          }
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
-            .WithCommandFor<DeleteSimulationComparisonsUICommand, IReadOnlyList<ISimulationComparison>>(new[] {simulationComparison})
+            .WithCommandFor<DeleteSimulationComparisonsUICommand, IReadOnlyList<ISimulationComparison>>(new[] {simulationComparison}, _container)
             .WithIcon(ApplicationIcons.Delete)
             .AsGroupStarter();
       }
@@ -43,9 +44,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class SimulationComparisonTreeNodeContextMenuFactory : NodeContextMenuFactory<ClassifiableComparison>
    {
+      private readonly IContainer _container;
+
+      public SimulationComparisonTreeNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       public override IContextMenu CreateFor(ClassifiableComparison classifiableComparison, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new SimulationComparisonContextMenu(classifiableComparison.Comparison);
+         return new SimulationComparisonContextMenu(classifiableComparison.Comparison, _container);
       }
    }
 }

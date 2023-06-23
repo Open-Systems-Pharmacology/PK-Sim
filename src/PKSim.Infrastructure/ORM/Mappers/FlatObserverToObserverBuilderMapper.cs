@@ -54,11 +54,11 @@ namespace PKSim.Infrastructure.ORM.Mappers
          return pksimObserverBuilder;
       }
 
-      private IObserverBuilder createObserverBuilderByType(FlatObserver flatObserver)
+      private ObserverBuilder createObserverBuilderByType(FlatObserver flatObserver)
       {
          if (flatObserver.BuilderType == ObserverBuilderType.Amount)
          {
-            var amountObserverBuilder = _entityBaseFactory.Create<IAmountObserverBuilder>();
+            var amountObserverBuilder = _entityBaseFactory.Create<AmountObserverBuilder>();
             
             addDescriptorConditions(amountObserverBuilder.ContainerCriteria, 
                                     ObserverTagType.PARENT, flatObserver.Name);
@@ -68,7 +68,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
          if (flatObserver.BuilderType == ObserverBuilderType.Container)
          {
-            var containerObserverBuilder = _entityBaseFactory.Create<IContainerObserverBuilder>();
+            var containerObserverBuilder = _entityBaseFactory.Create<ContainerObserverBuilder>();
 
             addDescriptorConditions(containerObserverBuilder.ContainerCriteria,
                                     ObserverTagType.PARENT, flatObserver.Name);

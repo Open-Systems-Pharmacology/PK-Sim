@@ -21,8 +21,8 @@ namespace PKSim.Core
       private PKSim.Core.Model.Individual _individual;
       private IContainer _container;
       private IParameter _parameter;
-      private IFormulaUsablePath _oneRelativeObjectPath;
-      private IFormulaUsablePath _oneOrganismAbsoluteObjectPath;
+      private FormulaUsablePath _oneRelativeObjectPath;
+      private FormulaUsablePath _oneOrganismAbsoluteObjectPath;
       private string _oneRelativeObjectPathAsString;
       private string _oneOrganismAbsoluteObjectPathAsString;
 

@@ -43,7 +43,7 @@ namespace PKSim.Presentation
          var liver = new Container().WithName(CoreConstants.Organ.LIVER);
          var liverCell = new Container().WithName(CoreConstants.Compartment.INTRACELLULAR).WithParentContainer(liver);
          _transporterExpressionContainer = new TransporterExpressionContainer().WithParentContainer(liverCell);
-         _expressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(CoreConstants.Parameters.REL_EXP);
+         _expressionParameter = DomainHelperForSpecs.ConstantParameterWithValue(0.5).WithName(Constants.Parameters.REL_EXP);
          _transporterExpressionContainer.Add(_expressionParameter);
          _expressionParameterDTO = new TransporterExpressionParameterDTO();
          A.CallTo(() => _expressionParameterMapper.MapFrom(_expressionParameter)).Returns(_expressionParameterDTO);

@@ -34,7 +34,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IDimension OptimalDimensionFor(IDimension dimension) => _dimensionFactory.OptimalDimension(dimension);
 
-      public IDimension DimensionForUnit(string unit) => _dimensionFactory.DimensionForUnit(unit);
+      public IDimension DimensionForUnit(string unit) => _dimensionFactory.DimensionForUnit(unit) ?? NoDimension;
 
       public IDimension DosePerBodyWeight => DimensionByName(CoreConstants.Dimension.DosePerBodyWeight);
 

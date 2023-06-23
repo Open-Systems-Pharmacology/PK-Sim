@@ -24,7 +24,7 @@ namespace PKSim.Presentation.DTO.Mappers
       public ApplicationDTO MapFrom(IContainer schemaItemContainer)
       {
          //schemaItemContainer are saved within en event group container 
-         var eventGroup = schemaItemContainer.ParentContainer as IEventGroup;
+         var eventGroup = schemaItemContainer.ParentContainer as EventGroup;
          string applicationIcon = string.Empty;
          if (eventGroup != null && !string.IsNullOrEmpty(eventGroup.EventGroupType))
             applicationIcon = ApplicationTypes.ByName(eventGroup.EventGroupType).IconName;

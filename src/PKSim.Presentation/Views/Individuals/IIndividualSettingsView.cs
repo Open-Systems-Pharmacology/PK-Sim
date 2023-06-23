@@ -12,7 +12,6 @@ namespace PKSim.Presentation.Views.Individuals
    {
       void BindToSettings(IndividualSettingsDTO individualSettingsDTO);
       void BindToParameters(IndividualSettingsDTO individualSettingsDTO);
-      void BindToDiseaseState(IndividualSettingsDTO individualSettingsDTO);
       void BindToSubPopulation(IEnumerable<CategoryParameterValueVersionDTO> subPopulation);
       void RefreshAllIndividualList();
       bool AgeVisible { get; set; }
@@ -21,6 +20,7 @@ namespace PKSim.Presentation.Views.Individuals
       bool SpeciesVisible { get; set; }
       bool GestationalAgeVisible { get; set; }
       void AddValueOriginView(IView view);
-      void ResizePopulationSettingsView();
+      void AddDiseaseStateView(IView view);
+      void UpdateControlSizeAndVisibility(bool hasDiseaseState);
    }
 }

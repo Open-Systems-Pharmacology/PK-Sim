@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core.Services
 {
@@ -27,11 +29,16 @@ namespace PKSim.Core.Services
    {
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IFormulaFactory _formulaFactory;
 
-      public MoleculeOntogenyVariabilityUpdater(IOntogenyRepository ontogenyRepository, IEntityPathResolver entityPathResolver)
+      public MoleculeOntogenyVariabilityUpdater(
+         IOntogenyRepository ontogenyRepository, 
+         IEntityPathResolver entityPathResolver,
+         IFormulaFactory formulaFactory)
       {
          _ontogenyRepository = ontogenyRepository;
          _entityPathResolver = entityPathResolver;
+         _formulaFactory = formulaFactory;
       }
 
       public void UpdatePlasmaProteinsOntogenyFor(Individual individual)
@@ -72,18 +79,8 @@ namespace PKSim.Core.Services
       public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Individual individual)
       {
          molecule.Ontogeny = ontogeny;
-         updateOntogenyParameter(molecule.OntogenyFactorGIParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, individual.OriginData));
-         updateOntogenyParameter(molecule.OntogenyFactorParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, individual.OriginData));
-      }
-
-      private void updateOntogenyParameter(IParameter parameter, double value)
-      {
-         //this can be the case if the parameter is defined in an expression profile
-         if (parameter == null)
-            return;
-
-         parameter.DefaultValue = value;
-         parameter.Value = parameter.DefaultValue.Value;
+         updateOntogenyParameterTable(molecule.OntogenyFactorGITableParameter, ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM);
+         updateOntogenyParameterTable(molecule.OntogenyFactorTableParameter, ontogeny, CoreConstants.Groups.ONTOGENY_LIVER);
       }
 
       public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Population population)
@@ -95,6 +92,23 @@ namespace PKSim.Core.Services
       {
          population.IndividualValuesCache.Remove(ontogenyFactorPath);
          population.IndividualValuesCache.Remove(ontogenyFactorGIPath);
+      }
+
+      private void updateOntogenyParameterTable(IParameter parameter, Ontogeny ontogeny, string containerName)
+      {
+         var tableFormula = _ontogenyRepository.OntogenyToDistributedTableFormula(ontogeny, containerName);
+         //the formula may be null if no ontogeny was selected. In this case, we simply set a default formula of 1
+         parameter.Formula = tableFormula ?? _formulaFactory.ValueFor(CoreConstants.DEFAULT_ONTOGENY_FACTOR, parameter.Dimension);
+      }
+
+      private void updateOntogenyParameter(IParameter parameter, double value)
+      {
+         //this can be the case if the parameter is defined in an expression profile
+         if (parameter == null)
+            return;
+
+         parameter.DefaultValue = value;
+         parameter.Value = parameter.DefaultValue.Value;
       }
 
       public void UpdateAllOntogenies(Population population)

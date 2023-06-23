@@ -20,7 +20,7 @@ namespace PKSim.IntegrationTests
    
    public class When_retrieving_all_event_groups_from_the_repository : concern_for_EventGroupRepository
    {
-      private IEnumerable<IEventGroupBuilder> _result;
+      private IEnumerable<EventGroupBuilder> _result;
 
       protected override void Because()
       {

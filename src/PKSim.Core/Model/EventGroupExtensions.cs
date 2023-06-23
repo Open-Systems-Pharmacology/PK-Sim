@@ -1,19 +1,18 @@
 ﻿using System;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
    public static class EventGroupExtensions
    {
-      public static IEventGroupBuilder MainSubContainer(this IEventGroupBuilder eventGroupBuilder)
+      public static EventGroupBuilder MainSubContainer(this EventGroupBuilder eventGroupBuilder)
       {
-         return eventGroupBuilder.GetSingleChildByName<IEventGroupBuilder>(CoreConstants.ContainerName.EventGroupMainSubContainer);
+         return eventGroupBuilder.GetSingleChildByName<EventGroupBuilder>(CoreConstants.ContainerName.EventGroupMainSubContainer);
       }
 
-      public static IParameter StartTime(this IEventGroupBuilder eventGroupBuilder)
+      public static IParameter StartTime(this EventGroupBuilder eventGroupBuilder)
       {
          var startTimeParameter = eventGroupBuilder.Parameter(Constants.Parameters.START_TIME);
 

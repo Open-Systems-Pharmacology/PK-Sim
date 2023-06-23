@@ -2,7 +2,7 @@
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using OSPSuite.Assets;
-using PKSim.UI.Extensions;
+using OSPSuite.UI.Extensions;
 using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Simulations
@@ -20,5 +20,6 @@ namespace PKSim.UI.Views.Simulations
          dropDownButton.AddMenu(PKSimConstants.UI.LoadFromTemplate, presenter.LoadAnalysisTask, ApplicationIcons.LoadFromTemplate);
          return layoutControl.AddButtonItemFor(dropDownButton);
       }
+
    }
 }

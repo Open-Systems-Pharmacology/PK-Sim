@@ -7,12 +7,13 @@ namespace PKSim.Core.Repositories
 {
    public interface IRateObjectPathsRepository : IStartableRepository<IRateObjectPaths>
    {
-      IEnumerable<IFormulaUsablePath> ObjectPathsFor(string rate, string calculationMethod);
-      IEnumerable<IFormulaUsablePath> ObjectPathsFor(RateKey rateKey);
+      IEnumerable<FormulaUsablePath> ObjectPathsFor(string rate, string calculationMethod);
+      IEnumerable<FormulaUsablePath> ObjectPathsFor(RateKey rateKey);
 
       /// <summary>
-      ///    returns the first path defined for the ratekey with the given alias. If not path is found, returns null
+      ///    Returns a clone of the first path defined for the rateKey with the given alias. If not path is found, returns null.
+      ///   A clone is returned to ensure that the original path is not modified
       /// </summary>
-      IFormulaUsablePath PathWithAlias(RateKey rateKey, string alias);
+      FormulaUsablePath PathWithAlias(RateKey rateKey, string alias);
    }
 }

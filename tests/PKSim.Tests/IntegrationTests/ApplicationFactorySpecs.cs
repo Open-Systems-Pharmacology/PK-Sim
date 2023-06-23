@@ -19,7 +19,7 @@ namespace PKSim.IntegrationTests
       protected IFormulaCache _formulaCache;
       protected ISchemaItem _schemaItemIV, _schemaItemOral;
       protected string _applicationName;
-      protected IApplicationBuilder _applicationBuilder;
+      protected ApplicationBuilder _applicationBuilder;
       protected IContainer ApplicationParameterContainer => _applicationBuilder.ProtocolSchemaItemContainer();
 
       public override void GlobalContext()
@@ -55,7 +55,7 @@ namespace PKSim.IntegrationTests
          _applicationBuilder = sut.CreateFor(_schemaItemIV, CoreConstants.Formulation.EMPTY_FORMULATION, _applicationName, COMPOUND_NAME, new List<IParameter>(), _formulaCache);
       }
 
-      protected IApplicationMoleculeBuilder Molecule => _applicationBuilder.Molecules.First();
+      protected ApplicationMoleculeBuilder Molecule => _applicationBuilder.Molecules.First();
 
       protected IEnumerable<IContainer> AllApplicationContainers => _applicationBuilder.GetAllChildren<IContainer>().Union(new IContainer[] {_applicationBuilder});
 

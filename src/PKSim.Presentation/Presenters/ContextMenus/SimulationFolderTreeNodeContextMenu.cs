@@ -10,17 +10,20 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core.Model;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.UICommands;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class SimulationFolderTreeNodeContextMenu : ContextMenu
    {
-      public SimulationFolderTreeNodeContextMenu(ITreeNode<RootNodeType> treeNode, IMenuBarItemRepository repository, ISimulationExplorerPresenter presenter)
+      private readonly IContainer _container;
+
+      public SimulationFolderTreeNodeContextMenu(ITreeNode<RootNodeType> treeNode, IMenuBarItemRepository repository, ISimulationExplorerPresenter presenter, IContainer container) : base(container)
       {
+         _container = container;
          _view.AddMenuItem(repository[MenuBarItemIds.NewSimulation]);
 
          _view.AddMenuItem(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(treeNode, presenter).AsGroupStarter());
@@ -34,10 +37,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          _view.AddMenuItem(loadSimulationFromSnapshot().AsGroupStarter());
       }
 
-      private static IMenuBarItem loadSimulationFromSnapshot()
+      private IMenuBarItem loadSimulationFromSnapshot()
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Load from Snapshot"))
-            .WithCommand<LoadSimulationFromSnapshotUICommand>()
+            .WithCommand<LoadSimulationFromSnapshotUICommand>(_container)
             .WithIcon(ApplicationIcons.SnapshotImport)
             .ForDeveloper();
       }
@@ -58,13 +61,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class SimulationFolderTreeNodeContextMenuFactory : RootNodeContextMenuFactory
    {
-      public SimulationFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository) : base(RootNodeTypes.SimulationFolder, repository)
+      private readonly IContainer _container;
+
+      public SimulationFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IContainer container) : base(RootNodeTypes.SimulationFolder, repository)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new SimulationFolderTreeNodeContextMenu(treeNode, _repository, presenter.DowncastTo<ISimulationExplorerPresenter>());
+         return new SimulationFolderTreeNodeContextMenu(treeNode, _repository, presenter.DowncastTo<ISimulationExplorerPresenter>(), _container);
       }
    }
 }

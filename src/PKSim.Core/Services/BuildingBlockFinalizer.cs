@@ -59,6 +59,7 @@ namespace PKSim.Core.Services
 
          _neighborhoodFinalizer.SetNeighborsIn(individual);
          _individualPathWithRootExpander.AddRootToPathIn(individual);
+         
          _keywordReplacerTask.ReplaceIn(individual);
          _formulaTask.ExpandDynamicFormulaIn(individual);
          _referencesResolver.ResolveReferencesIn(individual);

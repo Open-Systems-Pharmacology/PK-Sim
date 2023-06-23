@@ -63,8 +63,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
             .To(cbSpecies)
             .WithImages(species => _imageListRetriever.ImageIndex(species.Icon))
             .WithValues(dto => dto.AllSpecies)
-            .AndDisplays(species => species.DisplayName)
-            .Changed += () => _presenter.SpeciesChanged();
+            .AndDisplays(species => species.DisplayName);
 
          _screenBinder.Bind(dto => dto.MoleculeName)
             .To(cbMoleculeName);
@@ -87,6 +86,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
          //Make size of buttons the size of the combo box
          btnLoadFromDatabase.Margin = cbMoleculeName.Margin;
          btnLoadFromDatabase.Height = cbMoleculeName.Height;
+         DisableSettings();
       }
 
       public override bool HasError => _screenBinder.HasError || base.HasError;

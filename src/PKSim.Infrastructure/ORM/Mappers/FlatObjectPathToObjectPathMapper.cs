@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatObjectPathToObjectPathMapper : IMapper<FlatObjectPath, IObjectPath>
+   public interface IFlatObjectPathToObjectPathMapper : IMapper<FlatObjectPath, ObjectPath>
    {
    }
 
@@ -21,9 +21,9 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _relativeObjectPathMapper = relativeObjectPathMapper;
       }
 
-      public IObjectPath MapFrom(FlatObjectPath flatObjectPath)
+      public ObjectPath MapFrom(FlatObjectPath flatObjectPath)
       {
-         IObjectPath objectPath;
+         ObjectPath objectPath;
 
          if (flatObjectPath.IsAbsolutePath)
          {

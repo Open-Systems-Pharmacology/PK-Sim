@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatRateObjectToFormulaUsablePathMapper : IMapper<FlatRateObjectPath, IFormulaUsablePath>
+   public interface IFlatRateObjectToFormulaUsablePathMapper : IMapper<FlatRateObjectPath, FormulaUsablePath>
    {
    }
 
@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _dimensionRepository = dimensionRepository;
       }
 
-      public IFormulaUsablePath MapFrom(FlatRateObjectPath flatRateObjectPath)
+      public FormulaUsablePath MapFrom(FlatRateObjectPath flatRateObjectPath)
       {
          var rateObjectContainerPath = _objectPathMapper.MapFrom(flatRateObjectPath);
 

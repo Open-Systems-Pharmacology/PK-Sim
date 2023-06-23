@@ -56,7 +56,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R", "src\PKSim.R\PKSi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R.Tests", "tests\PKSim.R.Tests\PKSim.R.Tests.csproj", "{4E310F99-4604-4502-8F0B-A4E4F27B062B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.UI.Starter", "tests\PKSim.UI.Starter\PKSim.UI.Starter.csproj", "{795B1096-E236-4A0B-AB67-590F264F9F8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.UI.Starter", "src\PKSim.UI.Starter\PKSim.UI.Starter.csproj", "{35E511E9-0130-4E28-9DB3-EDCCB098D383}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -128,10 +128,10 @@ Global
 		{4E310F99-4604-4502-8F0B-A4E4F27B062B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E310F99-4604-4502-8F0B-A4E4F27B062B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E310F99-4604-4502-8F0B-A4E4F27B062B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

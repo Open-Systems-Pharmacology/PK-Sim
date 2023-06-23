@@ -59,7 +59,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
+            Name = Constants.Parameters.REL_EXP
          };
 
 
@@ -92,7 +92,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
+            Name = Constants.Parameters.REL_EXP
          };
 
 

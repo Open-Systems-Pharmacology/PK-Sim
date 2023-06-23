@@ -48,10 +48,10 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void EditSettingsFor(Simulation simulation)
       {
-         Edit(simulation.SimulationSettings);
+         Edit(simulation.Settings);
       }
 
-      public void Edit(ISimulationSettings simulationSettings)
+      public void Edit(SimulationSettings simulationSettings)
       {
          _outputSchema = simulationSettings.OutputSchema;
          _allIntervals = new NotifyList<OutputIntervalDTO>(_outputSchema.Intervals.MapAllUsing(_outputIntervalToOutputIntervalDTOMapper));

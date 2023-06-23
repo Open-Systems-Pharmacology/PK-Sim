@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Mappers;
@@ -9,7 +12,6 @@ using PKSim.Presentation.DTO.Populations;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.AdvancedParameters;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.AdvancedParameters
 {
@@ -107,9 +109,9 @@ namespace PKSim.Presentation.Presenters.AdvancedParameters
 
       public IEnumerable<DistributionType> AllDistributions(AdvancedParameterDTO advancedParameterDTO)
       {
-         var allDistributions = DistributionTypes.All().ToList();
-         if (advancedParameterDTO.DistributionType != DistributionTypes.Unknown)
-            allDistributions.Remove(DistributionTypes.Unknown);
+         var allDistributions = EnumHelper.AllValuesFor<DistributionType>().ToList();
+         if (advancedParameterDTO.DistributionType != DistributionType.Unknown)
+            allDistributions.Remove(DistributionType.Unknown);
 
          return allDistributions;
       }

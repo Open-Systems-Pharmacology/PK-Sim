@@ -20,7 +20,7 @@ namespace PKSim.IntegrationTests
    {
       private QuantityType _moleculeType;
       private IFormulaCache _formulaCache;
-      private IMoleculeBuilder _result;
+      private MoleculeBuilder _result;
 
       protected override void Context()
       {
@@ -57,7 +57,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_kept_the_global_relative_expression_parameters()
       {
-         CoreConstants.Parameters.AllGlobalRelExpParameters.Each(parameterName => _result.Parameter(parameterName).ShouldNotBeNull());
+         Constants.Parameters.AllGlobalRelExpParameters.Each(parameterName => _result.Parameter(parameterName).ShouldNotBeNull());
       }
    }
 
@@ -106,7 +106,7 @@ namespace PKSim.IntegrationTests
 
    public class When_mapping_a_compound_to_a_molecule_builder : concern_for_creating_a_builder_from_a_compound
    {
-      private IMoleculeBuilder _molecule;
+      private MoleculeBuilder _molecule;
       private CompoundProperties _compoundProperties;
       private InteractionProperties _interactionProperties;
 
@@ -144,7 +144,7 @@ namespace PKSim.IntegrationTests
    public class When_mapping_a_compound_to_a_molecule_builder_based_on_a_compound_settings_using_only_the_default_alternatives : concern_for_creating_a_builder_from_a_compound
    {
       private CompoundProperties _compoundProperties;
-      private IMoleculeBuilder _molecule;
+      private MoleculeBuilder _molecule;
       private InteractionProperties _interactionProperties;
 
       protected override void Context()
@@ -182,7 +182,7 @@ namespace PKSim.IntegrationTests
    public class When_mapping_a_compound_to_a_molecule_builder_based_on_a_compound_settings_not_using_the_default_alternatives : concern_for_creating_a_builder_from_a_compound
    {
       private CompoundProperties _compoundProperties;
-      private IMoleculeBuilder _molecule;
+      private MoleculeBuilder _molecule;
       private InteractionProperties _interactionProperties;
 
       protected override void Context()
@@ -220,7 +220,7 @@ namespace PKSim.IntegrationTests
    public class When_mapping_a_compound_to_a_molecule_builder_with_some_inhibition_parameters_used_in_the_simulation : concern_for_creating_a_builder_from_a_compound
    {
       private CompoundProperties _compoundProperties;
-      private IMoleculeBuilder _molecule;
+      private MoleculeBuilder _molecule;
       private InteractionProperties _interactionProperties;
 
       protected override void Context()
@@ -249,7 +249,7 @@ namespace PKSim.IntegrationTests
    public class When_mapping_a_compound_to_a_molecule_builder_with_some_inhibition_parameters_used_in_the_simulation_but_for_irrerversible_inhibition : concern_for_creating_a_builder_from_a_compound
    {
       private CompoundProperties _compoundProperties;
-      private IMoleculeBuilder _molecule;
+      private MoleculeBuilder _molecule;
       private InteractionProperties _interactionProperties;
 
       protected override void Context()

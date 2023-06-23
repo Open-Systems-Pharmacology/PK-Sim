@@ -8,6 +8,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using static PKSim.Core.Model.Localization;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Core.Commands
 {
@@ -119,7 +120,7 @@ namespace PKSim.Core.Commands
             x.IsNamed(CoreConstants.Parameters.FRACTION_EXPRESSED_INTRACELLULAR) && x.ParentContainer.IsNamed(_protein.Name));
 
          var allTissueRelExpParameters = _simulationSubject.Individual.GetAllChildren<IParameter>(x =>
-            x.IsNamed(CoreConstants.Parameters.REL_EXP) && x.ParentContainer.IsNamed(_protein.Name));
+            x.IsNamed(REL_EXP) && x.ParentContainer.IsNamed(_protein.Name));
 
 
          //not in tissue=> set expression to 0
@@ -141,7 +142,7 @@ namespace PKSim.Core.Commands
          var command = new PKSimMacroCommand();
          var f_exp_pls_side = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE);
          var f_exp_endosome = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME);
-         var rel_exp_vasc = _protein.Parameter(CoreConstants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
+         var rel_exp_vasc = _protein.Parameter(REL_EXP_VASCULAR_ENDOTHELIUM);
 
          //not in vasc endo => set expression to 0
          command.AddRange(setParametersForFlags(context, None, InVascularEndothelium, (rel_exp_vasc, 0)));
@@ -173,7 +174,7 @@ namespace PKSim.Core.Commands
       {
          var command = new PKSimMacroCommand();
          var f_exp_bc_cell = _protein.Parameter(CoreConstants.Parameters.FRACTION_EXPRESSED_BLOOD_CELLS);
-         var rel_exp_bc = _protein.Parameter(CoreConstants.Parameters.REL_EXP_BLOOD_CELLS);
+         var rel_exp_bc = _protein.Parameter(REL_EXP_BLOOD_CELLS);
 
          //not in blood cells => set expression to 0
          command.AddRange(setParametersForFlags(context, None, InBloodCells, (rel_exp_bc, 0)));

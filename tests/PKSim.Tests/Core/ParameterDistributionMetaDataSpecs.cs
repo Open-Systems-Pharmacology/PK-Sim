@@ -3,6 +3,7 @@ using PKSim.Core.Model;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.Core
 {
@@ -21,7 +22,7 @@ namespace PKSim.Core
          sut.DefaultUnit = "ng";
          sut.Deviation = 15;
          sut.Dimension = "mass";
-         sut.Distribution = DistributionTypes.LogNormal;
+         sut.Distribution = DistributionType.LogNormal;
          sut.Gender = "male";
          sut.GestationalAge = 25;
          sut.GroupName = "para";
@@ -53,7 +54,6 @@ namespace PKSim.Core
          _copy.Deviation.ShouldBeEqualTo(sut.Deviation);
          _copy.Dimension.ShouldBeEqualTo(sut.Dimension);
          _copy.Distribution.ShouldBeEqualTo(sut.Distribution);
-         _copy.DistributionType.ShouldBeEqualTo(sut.DistributionType);
          _copy.Gender.ShouldBeEqualTo(sut.Gender);
          _copy.GestationalAge.ShouldBeEqualTo(sut.GestationalAge);
          _copy.GroupName.ShouldBeEqualTo(sut.GroupName);

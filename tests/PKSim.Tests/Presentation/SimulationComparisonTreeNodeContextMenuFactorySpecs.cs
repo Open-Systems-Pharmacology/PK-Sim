@@ -6,14 +6,18 @@ using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_SimulationComparisonTreeNodeContextMenuFactory : ContextSpecification<SimulationComparisonTreeNodeContextMenuFactory>
    {
+      private IContainer _container;
+
       protected override void Context()
       {
-         sut = new SimulationComparisonTreeNodeContextMenuFactory();
+         _container = A.Fake<IContainer>();
+         sut = new SimulationComparisonTreeNodeContextMenuFactory(_container);
       }
    }
 

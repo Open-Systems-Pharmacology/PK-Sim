@@ -17,10 +17,7 @@ namespace PKSim.UI.Binders
          _parameterDTOEdit.Changed += NotifyChange;
       }
 
-      public override IParameterDTO GetValueFromControl()
-      {
-         return GetValueFromSource();
-      }
+      public override IParameterDTO GetValueFromControl() => GetValueFromSource();
 
       public override void SetValueToControl(IParameterDTO value)
       {

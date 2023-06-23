@@ -36,12 +36,12 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Create and returns a distribution formula based on the given <paramref name="distributions" /> .
       /// </summary>
-      IDistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData);
+      DistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData);
 
       /// <summary>
       ///    Create and returns a distribution formula based on the given <paramref name="distributionMetaData" /> .
       /// </summary>
-      IDistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution);
+      DistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution);
 
       /// <summary>
       ///    Creates and returns a constant formula based on the <paramref name="valueDefinition" />
@@ -210,7 +210,7 @@ namespace PKSim.Core.Model
          return RateFor(CoreConstants.CalculationMethod.APPLICATION_PARAMETER_HUMAN, CoreConstants.Rate.APPLICATION_DOSE_FROM_DOSE_PER_BODY_SURFACE_AREA, formulaCache);
       }
 
-      private IFormulaUsablePath pathInParentContainerFor(IParameter parameter, string alias)
+      private FormulaUsablePath pathInParentContainerFor(IParameter parameter, string alias)
       {
          return _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, parameter.Name)
             .WithAlias(alias)
@@ -338,7 +338,7 @@ namespace PKSim.Core.Model
 
          foreach (var rateObjectPath in _rateObjectPathsRepository.ObjectPathsFor(rateKey))
          {
-            formula.AddObjectPath(rateObjectPath.Clone<IFormulaUsablePath>());
+            formula.AddObjectPath(rateObjectPath.Clone<FormulaUsablePath>());
          }
 
          addTimeReferenceIfNeeded(formula);
@@ -395,10 +395,10 @@ namespace PKSim.Core.Model
          if (tableObjectPath == null || offsetObjectPath == null)
             throw new ArgumentException(PKSimConstants.Error.TableFormulaWithOffsetMissingRefs(rateKey.ToString(), CoreConstants.Alias.TABLE, CoreConstants.Alias.OFFSET));
 
-         formula.AddTableObjectPath(tableObjectPath.Clone<IFormulaUsablePath>());
-         formula.AddOffsetObjectPath(offsetObjectPath.Clone<IFormulaUsablePath>());
+         formula.AddTableObjectPath(tableObjectPath);
+         formula.AddOffsetObjectPath(offsetObjectPath);
 
-         //Table formula with offest has the same dimension as its referenced table object
+         //Table formula with offset has the same dimension as its referenced table object
          formula.Dimension = tableObjectPath.Dimension;
 
          return formula;
@@ -426,7 +426,7 @@ namespace PKSim.Core.Model
          formula.AddObjectPath(_objectPathFactory.CreateTimePath(_dimensionRepository.Time));
       }
 
-      public IDistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution)
+      public DistributionFormula DistributionFor(ParameterDistributionMetaData distributionMetaData, IDistributedParameter parameterWithDistribution)
       {
          return _distributionFactory.CreateFor(distributionMetaData, parameterWithDistribution);
       }
@@ -436,7 +436,7 @@ namespace PKSim.Core.Model
          return constantFormula(valueDefinition);
       }
 
-      public IDistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData)
+      public DistributionFormula DistributionFor(IEnumerable<ParameterDistributionMetaData> distributions, IDistributedParameter parameterWithDistribution, OriginData originData)
       {
          return _distributionFactory.CreateFor(distributions, parameterWithDistribution, originData);
       }

@@ -14,7 +14,7 @@ namespace PKSim.Core
 {
    public abstract class concern_for_InteractionKineticUpdater : ContextSpecification<IInteractionKineticUpdater>
    {
-      protected IReactionBuilder _reaction;
+      protected ReactionBuilder _reaction;
       protected Simulation _simulation;
       private InteractionProperties _interactionProperties;
       private IRepository<IInteractionKineticUpdaterSpecification> _repository;

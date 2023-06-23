@@ -17,7 +17,9 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
+using static OSPSuite.Core.Domain.Constants;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
+using SimulationResults = OSPSuite.Core.Domain.Data.SimulationResults;
 
 namespace PKSim.Presentation
 {
@@ -28,7 +30,7 @@ namespace PKSim.Presentation
       private IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private ILazyLoadTask _lazyloadTask;
       private IHeavyWorkManager _heavyWorkManager;
-      protected IObjectPathFactory _objectPathFactory;
+      protected ObjectPathFactory _objectPathFactory;
       protected IndividualSimulation _individualSimulation;
       protected Simulation _simulation;
       protected IContainer _root;
@@ -134,8 +136,8 @@ namespace PKSim.Presentation
 
          _individualSimulation.Results = results;
          _individualSimulation.DataRepository = new DataRepository();
-         _individualSimulation.Reactions = new ReactionBuildingBlock();
-         _individualSimulation.SimulationSettings = new SimulationSettings();
+         _individualSimulation.AddReactions(new ReactionBuildingBlock());
+         _individualSimulation.Settings = new SimulationSettings();
          A.CallTo(_containerTask).WithReturnType<PathCache<IQuantity>>().Returns(quantityCache);
 
          A.CallTo(() => _curveNamer.RenameCurvesWithOriginalNames(_individualSimulation, A<Action>._, true)).Invokes(x => x.Arguments[1].DowncastTo<Action>()());
@@ -171,24 +173,24 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_have_renamed_the_absolute_object_path_in_the_simultion()
+      public void should_have_renamed_the_absolute_object_path_in_the_simulation()
       {
-         _f1.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell"));
-         _f3.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell"));
-         _f3.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "LogP"));
-         _f4.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "SolubilityTable"));
+         _f1.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell").ToArray());
+         _f3.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "Liver", "Cell").ToArray());
+         _f3.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "LogP").ToArray());
+         _f4.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom(_newName, "SolubilityTable").ToArray());
       }
 
       [Observation]
       public void should_not_have_change_the_relative_paths()
       {
-         _f1.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP"));
-         _f2.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("SU", "Liver", "Cell"));
-         _f2.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP"));
+         _f1.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP").ToArray());
+         _f2.ObjectPaths.ElementAt(0).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("SU", "Liver", "Cell").ToArray());
+         _f2.ObjectPaths.ElementAt(1).ShouldOnlyContain(_objectPathFactory.CreateFormulaUsablePathFrom("Drug", "LogP").ToArray());
       }
 
       [Observation]
-      public void should_have_change_the_abolute_path_of_quantity_info_that_were_calculated_in_the_simulation()
+      public void should_have_change_the_absolute_path_of_quantity_info_that_were_calculated_in_the_simulation()
       {
          _individualResults.HasValuesFor("Liver|Cell|Drug").ShouldBeTrue();
          _individualResults.HasValuesFor("Liver|Cell|Meta").ShouldBeTrue();
@@ -260,12 +262,12 @@ namespace PKSim.Presentation
          _compound = new Compound().WithName("NEW");
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          _observedData1 = new DataRepository("1");
-         _observedData1.ExtendedProperties.Add(Constants.ObservedData.MOLECULE, new ExtendedProperty<string>());
-         _observedData1.ExtendedProperties[Constants.ObservedData.MOLECULE].ValueAsObject = _oldName;
+         _observedData1.ExtendedProperties.Add(ObservedData.MOLECULE, new ExtendedProperty<string>());
+         _observedData1.ExtendedProperties[ObservedData.MOLECULE].ValueAsObject = _oldName;
 
          _observedData2 = new DataRepository("2");
-         _observedData2.ExtendedProperties.Add(Constants.ObservedData.MOLECULE, new ExtendedProperty<string>());
-         _observedData2.ExtendedProperties[Constants.ObservedData.MOLECULE].ValueAsObject = "NOT USING";
+         _observedData2.ExtendedProperties.Add(ObservedData.MOLECULE, new ExtendedProperty<string>());
+         _observedData2.ExtendedProperties[ObservedData.MOLECULE].ValueAsObject = "NOT USING";
          A.CallTo(() => _project.AllObservedData).Returns(new[] {_observedData1, _observedData2});
       }
 
@@ -277,8 +279,8 @@ namespace PKSim.Presentation
       [Observation]
       public void should_also_rename_the_molecule_meta_data_of_observed_data_imported_for_this_compound()
       {
-         _observedData1.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo(_compound.Name);
-         _observedData2.ExtendedPropertyValueFor(Constants.ObservedData.MOLECULE).ShouldBeEqualTo("NOT USING");
+         _observedData1.ExtendedPropertyValueFor(ObservedData.MOLECULE).ShouldBeEqualTo(_compound.Name);
+         _observedData2.ExtendedPropertyValueFor(ObservedData.MOLECULE).ShouldBeEqualTo("NOT USING");
       }
    }
 
@@ -293,7 +295,7 @@ namespace PKSim.Presentation
          base.Context();
          _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
          _newMoleculeName = "CYP";
-         _newName = CoreConstants.ContainerName.ExpressionProfileName(_newMoleculeName, _expressionProfile.Species, "SICK");
+         _newName = ContainerName.ExpressionProfileName(_newMoleculeName, _expressionProfile.Species.DisplayName, "SICK");
       }
 
       protected override void Because()

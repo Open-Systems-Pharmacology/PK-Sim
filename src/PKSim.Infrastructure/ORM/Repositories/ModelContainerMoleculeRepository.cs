@@ -88,7 +88,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _mcmProperties[key].IsPresent;
       }
 
-      public bool IsPresent(string modelName, IObjectPath containerPath, string moleculeName)
+      public bool IsPresent(string modelName, ObjectPath containerPath, string moleculeName)
       {
          Start();
 
@@ -96,7 +96,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return IsPresent(modelName, container.Id, moleculeName);
       }
 
-      public bool NegativeValuesAllowed(string modelName, IObjectPath containerPath, string moleculeName)
+      public bool NegativeValuesAllowed(string modelName, ObjectPath containerPath, string moleculeName)
       {
          Start();
 

@@ -1,13 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using ModelIndividual = PKSim.Core.Model.Individual;
-using ModelExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 using SnapshotExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
+using ModelExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -20,15 +19,17 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IExpressionProfileFactory _expressionProfileFactory;
       private readonly IMoleculeParameterTask _moleculeParameterTask;
       private readonly OntogenyMapper _ontogenyMapper;
+      private readonly DiseaseStateMapper _diseaseStateMapper;
 
       public ExpressionProfileMapper(
          ParameterMapper parameterMapper,
          ExpressionContainerMapper expressionContainerMapper,
          OntogenyMapper ontogenyMapper,
+         DiseaseStateMapper diseaseStateMapper,
          IOntogenyTask ontogenyTask,
          IMoleculeExpressionTask<ModelIndividual> moleculeExpressionTask,
          IExpressionProfileFactory expressionProfileFactory,
-         IMoleculeParameterTask moleculeParameterTask 
+         IMoleculeParameterTask moleculeParameterTask
       )
       {
          _parameterMapper = parameterMapper;
@@ -37,13 +38,15 @@ namespace PKSim.Core.Snapshots.Mappers
          _moleculeExpressionTask = moleculeExpressionTask;
          _expressionProfileFactory = expressionProfileFactory;
          _moleculeParameterTask = moleculeParameterTask;
-
          _ontogenyMapper = ontogenyMapper;
+         _diseaseStateMapper = diseaseStateMapper;
       }
 
       public override async Task<SnapshotExpressionProfile> MapToSnapshot(ModelExpressionProfile expressionProfile)
       {
          var (molecule, individual) = expressionProfile;
+         var originData = individual.OriginData;
+
          //We do not use the base method here as we want to save the name differently using the composite part of the name
          var snapshot = new SnapshotExpressionProfile
          {
@@ -54,7 +57,8 @@ namespace PKSim.Core.Snapshots.Mappers
             Description = SnapshotValueFor(expressionProfile.Description),
             Ontogeny = await _ontogenyMapper.MapToSnapshot(molecule.Ontogeny),
             Expression = await expressionFor(molecule, individual),
-            Parameters = await allParametersChangedByUserFrom(individual)
+            Parameters = await allParametersChangedByUserFrom(individual),
+            Disease = await _diseaseStateMapper.MapToSnapshot(originData)
          };
 
          updateMoleculeSpecificPropertiesToSnapshot(snapshot, molecule);
@@ -93,6 +97,11 @@ namespace PKSim.Core.Snapshots.Mappers
          expressionProfile.Category = snapshot.Category;
 
          var (molecule, individual) = expressionProfile;
+
+         //update disease sate if any
+         var diseaseStateContext = new DiseaseStateContext(individual.OriginData, snapshotContext);
+         await _diseaseStateMapper.MapToModel(snapshot.Disease, diseaseStateContext);
+
          //Update molecule properties first
          updateMoleculePropertiesToMolecule(molecule, snapshot, individual, snapshotContext);
 
@@ -102,6 +111,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshotWithSubjectContext = new SnapshotContextWithSubject(individual, snapshotContext);
          var ontogeny = await _ontogenyMapper.MapToModel(snapshot.Ontogeny, snapshotWithSubjectContext);
          _ontogenyTask.SetOntogenyForMolecule(molecule, ontogeny, individual);
+
 
          var context = new ExpressionContainerMapperContext(snapshotContext)
          {
@@ -159,6 +169,5 @@ namespace PKSim.Core.Snapshots.Mappers
 
          return LocalizationConverter.ConvertToLocalization(tissueLocation, membraneLocation, intracellularVascularEndoLocation);
       }
-
    }
 }

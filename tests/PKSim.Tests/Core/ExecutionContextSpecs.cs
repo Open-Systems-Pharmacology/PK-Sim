@@ -202,12 +202,12 @@ namespace PKSim.Core
 
    public class When_the_execution_context_is_asked_to_publish_an_event : concern_for_ExecutionContext
    {
-      private IEvent _eventToPublish;
+      private Event _eventToPublish;
 
       protected override void Context()
       {
          base.Context();
-         _eventToPublish = A.Fake<IEvent>();
+         _eventToPublish = A.Fake<Event>();
       }
 
       protected override void Because()

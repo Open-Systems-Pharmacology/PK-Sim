@@ -1,19 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Collections;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Events;
+using OSPSuite.Utility.Collections;
+using PKSim.Assets;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
    public interface IBuildingBlockParametersToSimulationUpdater
    {
       /// <summary>
-      ///    Updates the parameter values into the building block given as parameter in the simulation
+      ///    Updates the parameter values from the building block given as parameter into the simulation
       /// </summary>
       /// <param name="templateBuildingBlock">Template building block containing the original values</param>
       /// <param name="simulation">Simulation whose parameter will be updated</param>
@@ -25,12 +26,18 @@ namespace PKSim.Core.Services
       private readonly IExecutionContext _executionContext;
       private readonly IContainerTask _containerTask;
       private readonly IParameterSetUpdater _parameterSetUpdater;
+      private readonly IExpressionProfileUpdater _expressionProfileUpdater;
 
-      public BuildingBlockParametersToSimulationUpdater(IExecutionContext executionContext, IContainerTask containerTask, IParameterSetUpdater parameterSetUpdater)
+      public BuildingBlockParametersToSimulationUpdater(
+         IExecutionContext executionContext,
+         IContainerTask containerTask,
+         IParameterSetUpdater parameterSetUpdater,
+         IExpressionProfileUpdater expressionProfileUpdater)
       {
          _executionContext = executionContext;
          _containerTask = containerTask;
          _parameterSetUpdater = parameterSetUpdater;
+         _expressionProfileUpdater = expressionProfileUpdater;
       }
 
       public ICommand UpdateParametersFromBuildingBlockInSimulation(IPKSimBuildingBlock templateBuildingBlock, Simulation simulation)
@@ -38,7 +45,7 @@ namespace PKSim.Core.Services
          //Update the building block in the simulation based on the same template
          var usedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(templateBuildingBlock.Id);
          //Template was not used in the simulation...return
-         if (usedBuildingBlock == null) 
+         if (usedBuildingBlock == null)
             return null;
 
          var buildingBlockType = _executionContext.TypeFor(templateBuildingBlock);
@@ -65,7 +72,26 @@ namespace PKSim.Core.Services
          updateCommands.CommandType = PKSimConstants.Command.CommandTypeUpdate;
          updateCommands.Description = PKSimConstants.Command.UpdateBuildingBlockCommandDescription(buildingBlockType, templateBuildingBlock.Name, simulation.Name);
          _executionContext.UpdateBuildingBlockPropertiesInCommand(updateCommands, simulation);
+
+         synchronizeBuildingBlocks(templateBuildingBlock, simulation);
          return updateCommands;
+      }
+
+      /// <summary>
+      ///    We need to make sure that once the simulation has been updated with the building block, depending building blocks
+      ///    are also updated
+      ///    For instance, if we update the individual in the simulation, we will also update all expression profile (since
+      ///    expression profile are linked to the individual)
+      /// </summary>
+      private void synchronizeBuildingBlocks(IPKSimBuildingBlock templateBuildingBlock, Simulation simulation)
+      {
+         if (templateBuildingBlock is not ISimulationSubject simulationSubject)
+            return;
+
+         _expressionProfileUpdater.SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(simulationSubject, simulation);
+
+         //we need to raise an event here to ensure that the UI reflects the fact that we have synchronized our building blocks
+         _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
       /// <summary>
@@ -88,9 +114,9 @@ namespace PKSim.Core.Services
          }
 
          return from parameter in usedBuildingBlockParameters.OrderBy(x => x.IsDistributed())
-                let simParams = simulationParameterCache[parameter.Id]
-                  from simParam in simParams
-                     select _parameterSetUpdater.UpdateValue(parameter, simParam);
+            let simParams = simulationParameterCache[parameter.Id]
+            from simParam in simParams
+            select _parameterSetUpdater.UpdateValue(parameter, simParam);
       }
 
       private ICommand updateParameterValues(PathCache<IParameter> sourceParameters, PathCache<IParameter> targetParameters)
@@ -99,6 +125,5 @@ namespace PKSim.Core.Services
       }
 
       private PathCache<IParameter> parametersToUpdateFrom(IPKSimBuildingBlock buildingBlock) => _containerTask.CacheAllChildren<IParameter>(buildingBlock);
-
    }
 }

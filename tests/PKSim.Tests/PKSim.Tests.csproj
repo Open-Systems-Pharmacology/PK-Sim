@@ -20,15 +20,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="OSPSuite.Assets" Version="11.2.155" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="11.2.155" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.198" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.53" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\PKSim.BatchTool\PKSim.BatchTool.csproj" />
     <ProjectReference Include="..\..\src\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
@@ -64,6 +62,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ProjectConverter\v6_1\" />
+    <Folder Include="ProjectConverter\v6_2\" />
+    <Folder Include="ProjectConverter\v6_3\" />
+    <Folder Include="ProjectConverter\v6_4\" />
+    <Folder Include="ProjectConverter\v7_1\" />
     <Folder Include="Properties\" />
     <Folder Include="Reporting\" />
   </ItemGroup>

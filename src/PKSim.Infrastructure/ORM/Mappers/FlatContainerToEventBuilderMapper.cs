@@ -11,9 +11,9 @@ using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatContainerToEventBuilderMapper : IMapper<FlatContainer, IEventBuilder>
+   public interface IFlatContainerToEventBuilderMapper : IMapper<FlatContainer, EventBuilder>
    {
-      IEventBuilder MapFrom(FlatContainer flatEventContainer, IFormulaCache formulaCache);
+      EventBuilder MapFrom(FlatContainer flatEventContainer, IFormulaCache formulaCache);
    }
 
    public class FlatContainerToEventBuilderMapper : IFlatContainerToEventBuilderMapper
@@ -45,9 +45,9 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _formulaCache = new FormulaCache();
       }
 
-      public IEventBuilder MapFrom(FlatContainer flatEventContainer)
+      public EventBuilder MapFrom(FlatContainer flatEventContainer)
       {
-         var eventBuilder = _objectBaseFactory.Create<IEventBuilder>();
+         var eventBuilder = _objectBaseFactory.Create<EventBuilder>();
          eventBuilder.Name = flatEventContainer.Name;
 
          var flatEventCondition = _flatEventConditionRepo.EventConditionFor(flatEventContainer.Id);
@@ -72,7 +72,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          return eventBuilder;
       }
 
-      public IEventBuilder MapFrom(FlatContainer flatEventContainer, IFormulaCache formulaCache)
+      public EventBuilder MapFrom(FlatContainer flatEventContainer, IFormulaCache formulaCache)
       {
          _formulaCache = formulaCache;
 
