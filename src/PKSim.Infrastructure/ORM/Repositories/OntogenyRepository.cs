@@ -31,6 +31,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public ICache<string, string> SupportedProteins { get; }
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IFormulaFactory _formulaFactory;
+      private readonly IGroupRepository _groupRepository;
 
       public OntogenyRepository(
          IFlatOntogenyRepository flatOntogenyRepository,
@@ -38,7 +39,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          IObjectBaseFactory objectBaseFactory,
          IDimensionRepository dimensionRepository,
          IDisplayUnitRetriever displayUnitRetriever,
-         IFormulaFactory formulaFactory)
+         IFormulaFactory formulaFactory, 
+         IGroupRepository groupRepository)
       {
          _flatOntogenyRepository = flatOntogenyRepository;
          _interpolation = interpolation;
@@ -46,6 +48,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _dimensionRepository = dimensionRepository;
          _displayUnitRetriever = displayUnitRetriever;
          _formulaFactory = formulaFactory;
+         _groupRepository = groupRepository;
          _allOntogenies = new List<Ontogeny>();
          _ontogenyValues = new Cache<CompositeKey, IReadOnlyList<OntogenyMetaData>>(onMissingKey: x => new List<OntogenyMetaData>());
          SupportedProteins = new Cache<string, string>
@@ -184,7 +187,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public DataRepository OntogenyToRepository(Ontogeny ontogeny, string containerName)
       {
-         var dataRepository = new DataRepository {Name = PKSimConstants.UI.OntogenyFor(ontogeny.DisplayName, containerName)};
+         var group = _groupRepository.GroupByName(containerName);
+         var dataRepository = new DataRepository {Name = PKSimConstants.UI.OntogenyFor(ontogeny.DisplayName, group.DisplayName) };
          var xDimension = _dimensionRepository.AgeInYears;
          var yDimension = _dimensionRepository.NoDimension;
          var xUnit = _displayUnitRetriever.PreferredUnitFor(xDimension);
@@ -192,16 +196,18 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          var pma = new BaseGrid(PKSimConstants.UI.PostMenstrualAge, xDimension) {DisplayUnit = xUnit };
          var mean = new DataColumn(dataRepository.Name, yDimension, pma) {DisplayUnit = yUnit };
-         var std = new DataColumn(PKSimConstants.UI.StandardDeviation, yDimension, pma) {DisplayUnit = yUnit};
+         var geoSD = new DataColumn(PKSimConstants.UI.GeometricStandardDeviation, yDimension, pma) {DisplayUnit = yUnit};
+         //note:The main column for a range plot is the range area. The related column is the mean value. Hence the mean
+         //becomes the related column of the geoSD
          mean.DataInfo.AuxiliaryType = AuxiliaryType.GeometricMeanPop;
-         std.AddRelatedColumn(mean);
+         geoSD.AddRelatedColumn(mean);
          dataRepository.Add(mean);
-         dataRepository.Add(std);
+         dataRepository.Add(geoSD);
 
          var allOntogenies = AllValuesFor(ontogeny, containerName).OrderBy(x => x.PostmenstrualAge).ToList();
          pma.Values = values(allOntogenies, x => x.PostmenstrualAge);
          mean.Values = values(allOntogenies, x => x.OntogenyFactor);
-         std.Values = values(allOntogenies, x => x.Deviation);
+         geoSD.Values = values(allOntogenies, x => x.Deviation);
          return dataRepository;
       }
 

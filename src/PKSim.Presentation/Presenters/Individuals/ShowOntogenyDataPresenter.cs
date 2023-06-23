@@ -2,6 +2,7 @@
 using System.Linq;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
 using PKSim.Assets;
@@ -15,10 +16,10 @@ namespace PKSim.Presentation.Presenters.Individuals
    public interface IShowOntogenyDataPresenter : IDisposablePresenter
    {
       void Show(Ontogeny ontogeny);
-      IEnumerable<IGroup> AllContainers();
+      IEnumerable<IGroup> AllGroups();
       IEnumerable<Ontogeny> AllOntogenies();
       void OntogenyChanged();
-      void ContainerChanged();
+      void GroupChanged();
       string GroupDescriptionFor(int index);
    }
 
@@ -39,9 +40,11 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _ontogenyRepository = ontogenyRepository;
          _simpleChartPresenter = simpleChartPresenter;
+         _simpleChartPresenter.PreExportHook = orderOntogenyColumns;
          _groupRepository = groupRepository;
          _view.AddChart(_simpleChartPresenter.View);
       }
+
 
       public void Show(Ontogeny ontogeny)
       {
@@ -54,7 +57,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.Display();
       }
 
-      public IEnumerable<IGroup> AllContainers()
+      public IEnumerable<IGroup> AllGroups()
       {
          return _ontogenyRepository.AllValuesFor(_dto.SelectedOntogeny)
             .Select(x => _groupRepository.GroupByName(x.GroupName)).Distinct();
@@ -72,20 +75,20 @@ namespace PKSim.Presentation.Presenters.Individuals
          updateChart();
       }
 
-      public void ContainerChanged()
+      public void GroupChanged()
       {
          updateChart();
       }
 
       public string GroupDescriptionFor(int index)
       {
-         var allContainers = AllContainers().ToList();
-         return index < allContainers.Count ? allContainers[index].Description : string.Empty;
+         var allGroups = AllGroups().ToList();
+         return index < allGroups.Count ? allGroups[index].Description : string.Empty;
       }
 
       private void updateChart()
       {
-         var data = _ontogenyRepository.OntogenyToRepository(_dto.SelectedOntogeny, _dto.SelectedContainer.Name);
+         var data = _ontogenyRepository.OntogenyToRepository(_dto.SelectedOntogeny, _dto.SelectedGroup.Name);
          var chart = _simpleChartPresenter.Plot(data, Scalings.Linear);
          chart.AxisBy(AxisTypes.X).Caption = PKSimConstants.UI.PostMenstrualAge;
          chart.AxisBy(AxisTypes.X).GridLines = true;
@@ -94,9 +97,17 @@ namespace PKSim.Presentation.Presenters.Individuals
          _simpleChartPresenter.Refresh();
       }
 
+
+      private IEnumerable<DataColumn> orderOntogenyColumns(IEnumerable<DataColumn> dataColumns)
+      {
+         //we need to inverse the order of columns so that standard deviation is last and ontogeny is first 
+         //this is the other way by constructions as the main curve is in fact the deviation and the related column is the mean
+         return dataColumns.Reverse();
+      }
+
       private void updateAvailableContainerForOntogeny()
       {
-         _dto.SelectedContainer = AllContainers().FirstOrDefault();
+         _dto.SelectedGroup = AllGroups().FirstOrDefault();
       }
    }
 }

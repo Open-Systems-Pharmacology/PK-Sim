@@ -6,6 +6,6 @@ namespace PKSim.Presentation.DTO.Individuals
    public class ShowOntogenyDataDTO
    {
       public Ontogeny SelectedOntogeny { get; set; }
-      public IGroup SelectedContainer { get; set; }
+      public IGroup SelectedGroup { get; set; }
    }
 }

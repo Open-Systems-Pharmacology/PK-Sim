@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Presenters.Charts;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters.Charts;
-using DevExpress.Utils.Extensions;
-
 
 namespace PKSim.Presentation
 {
@@ -93,7 +90,7 @@ namespace PKSim.Presentation
       {
          var dto = ShowOntogenyDataDTO;
          dto.SelectedOntogeny.ShouldBeEqualTo(_ontogeny);
-         dto.SelectedContainer.ShouldBeEqualTo(_groupLiver);
+         dto.SelectedGroup.ShouldBeEqualTo(_groupLiver);
       }
    }
 
@@ -104,12 +101,12 @@ namespace PKSim.Presentation
          base.Context();
          sut.Show(_ontogeny);
          var dto = ShowOntogenyDataDTO;
-         dto.SelectedContainer = _groupDuodenum;
+         dto.SelectedGroup = _groupDuodenum;
       }
 
       protected override void Because()
       {
-         sut.ContainerChanged();
+         sut.GroupChanged();
       }
 
       [Observation]
@@ -123,6 +120,34 @@ namespace PKSim.Presentation
       {
          //twice: first time in context and second time with container changed
          A.CallTo(() => _simpleChartPresenter.Plot(A<DataRepository>._, A<Scalings>._)).MustHaveHappenedTwiceExactly();
+      }
+   }
+
+   public class When_exporting_the_ontogeny_graph_to_excel : concern_for_ShowOntogenyDataPresenter
+   {
+      private Func<IEnumerable<DataColumn>, IEnumerable<DataColumn>> _exportHook;
+      private DataColumn _col1;
+      private DataColumn _col2;
+      private IEnumerable<DataColumn> _exportedColumns;
+
+      protected override void Context()
+      {
+         base.Context();
+         _exportHook = _simpleChartPresenter.PreExportHook;
+         var baseGrid = new BaseGrid("BaseGrid", DomainHelperForSpecs.TimeDimensionForSpecs());
+         _col1 = new DataColumn("col1", Constants.Dimension.NO_DIMENSION, baseGrid);
+         _col2 = new DataColumn("col2", Constants.Dimension.NO_DIMENSION, baseGrid);
+      }
+
+      protected override void Because()
+      {
+         _exportedColumns = _exportHook(new[] {_col1, _col2});
+      }
+
+      [Observation]
+      public void should_have_modified_the_order_ot_columns_exported_to_ensure_logical_order()
+      {
+         _exportedColumns.ShouldOnlyContainInOrder(_col2, _col1);
       }
    }
 }

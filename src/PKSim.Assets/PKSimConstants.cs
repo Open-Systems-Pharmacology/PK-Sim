@@ -1785,7 +1785,7 @@ namespace PKSim.Assets
          public static readonly string MaxValue = "Maximum Value";
          public static readonly string ArithmeticMean = "Arithmetic Mean";
          public static readonly string GeometricMean = "Geometric Mean";
-         public static readonly string StandardDeviation = "Standard Deviation";
+         public static readonly string GeometricStandardDeviation = "Geometric Standard Deviation";
          public static readonly string Median = "Median";
          public static readonly string PercentilePercent = "% Percentile";
          public static readonly string AllGender = "All";
