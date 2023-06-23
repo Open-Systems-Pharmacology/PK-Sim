@@ -39,9 +39,11 @@ namespace PKSim.Infrastructure.ORM.Mappers
 
       public CoreCalculationMethod MapFrom(string calculationMethod)
       {
-         var modelCalcMethod = new CoreCalculationMethod {Name = calculationMethod};
-
-         modelCalcMethod.Category = _calculationMethodRepository.FindBy(calculationMethod).Category;
+         var modelCalcMethod = new CoreCalculationMethod
+         {
+            Name = calculationMethod,
+            Category = _calculationMethodRepository.FindBy(calculationMethod).Category
+         };
 
          var allRates = from cmr in _flatCalculationMethodParameterRateRepository.All()
             where cmr.CalculationMethod.Equals(calculationMethod)
@@ -91,9 +93,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
       {
          var descriptorCriteria = new DescriptorCriteria();
 
-         var conditions = from paramDescr in _flatCalculationMethodParameterDescriptorConditionRepository.All()
-            where paramDescr.ParameterId == parameterId
-            select paramDescr;
+         var conditions = _flatCalculationMethodParameterDescriptorConditionRepository.All().Where(x => x.ParameterId == parameterId);
 
          foreach (var condition in conditions)
          {
