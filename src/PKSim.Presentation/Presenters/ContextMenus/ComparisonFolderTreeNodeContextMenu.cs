@@ -1,4 +1,5 @@
-﻿using OSPSuite.Assets;
+﻿using System.Collections.Generic;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
@@ -16,18 +17,20 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class ComparisonFolderTreeNodeContextMenu : ContextMenu
    {
+      public static IEnumerable<IMenuBarItem> AddComparisonMenuItems(IContainer container)
+      {
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddIndividualSimulationComparison)
+            .WithCommand<CreateIndividualSimulationComparisonUICommand>(container)
+            .WithIcon(ApplicationIcons.IndividualSimulationComparison);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddPopulationSimulationComparison)
+            .WithCommand<CreatePopulationSimulationComparisonUICommand>(container)
+            .WithIcon(ApplicationIcons.PopulationSimulationComparison);
+      }
+
       public ComparisonFolderTreeNodeContextMenu(ITreeNode<RootNodeType> treeNode, ISimulationExplorerPresenter presenter, IContainer container) : base(container)
       {
-         _view.AddMenuItem(
-            CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddIndividualSimulationComparison)
-               .WithCommand<CreateIndividualSimulationComparisonUICommand>(container)
-               .WithIcon(ApplicationIcons.IndividualSimulationComparison));
-
-         _view.AddMenuItem(
-            CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AddPopulationSimulationComparison)
-               .WithCommand<CreatePopulationSimulationComparisonUICommand>(container)
-               .WithIcon(ApplicationIcons.PopulationSimulationComparison));
-
+         AddComparisonMenuItems(container).Each(_view.AddMenuItem);
          _view.AddMenuItem(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(treeNode, presenter));
          _view.AddMenuItem(ClassificationCommonContextMenuItems.RemoveClassificationFolderMainMenu(treeNode, presenter).AsGroupStarter());
       }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using FakeItEasy;
 using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
@@ -15,14 +16,17 @@ using OSPSuite.Presentation.Presenters.Classifications;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
+using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Main;
+using PKSim.Presentation.Repositories;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
@@ -50,23 +54,26 @@ namespace PKSim.Presentation
       private IToolTipPartCreator _toolTipNodeCreator;
       protected IProjectRetriever _projectRetriever;
       protected IClassificationPresenter _classificationPresenter;
-      private Simulation _importedSimulaton;
+      private Simulation _importedSimulation;
       protected SimulationNode _importedSimulationNode;
       protected ComparisonNode _comparisonNode;
       protected RootNode _simulationFolderNode;
       protected RootNode _comparisonFolderNode;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
-      protected IPKSimBuildingBlock _templageCompoundBuildingBlock;
+      protected IPKSimBuildingBlock _templateCompoundBuildingBlock;
       protected ITreeNode _usedObservedDataNode;
       private IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       protected IObservedDataInSimulationManager _observedDataInSimulationManager;
       private ISimulationComparisonTask _simulationComparisonTask;
+      private IExecutionContext _executionContext;
+      private IMenuBarItemRepository _menuBarItemRepository;
 
       protected override void Context()
       {
          _buildingBlockIconRetriever = A.Fake<IBuildingBlockIconRetriever>();
+         _menuBarItemRepository= A.Fake<IMenuBarItemRepository>();
+         _executionContext = A.Fake<IExecutionContext>();
          _view = A.Fake<ISimulationExplorerView>();
-         A.CallTo(() => _view.TreeView).Returns(A.Fake<IUxTreeView>());
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
          _contextMenuFactory = A.Fake<ITreeNodeContextMenuFactory>();
          _regionResolver = A.Fake<IRegionResolver>();
@@ -83,8 +90,8 @@ namespace PKSim.Presentation
          _usedObservedData = new UsedObservedData {Id = "UsedData"};
          _simulation = new IndividualSimulation().WithName("individualSimulation").WithId("individualSimulation");
          _populationSimulation = new PopulationSimulation().WithName("populationSimulation").WithId("populationSimulation");
-         _importedSimulaton = A.Fake<Simulation>().WithName("ImportedSimulation").WithId("ImportedSimulation");
-         A.CallTo(() => _importedSimulaton.IsImported).Returns(true);
+         _importedSimulation = A.Fake<Simulation>().WithName("ImportedSimulation").WithId("ImportedSimulation");
+         A.CallTo(() => _importedSimulation.IsImported).Returns(true);
          _simulation.Properties = new SimulationProperties();
          _simulation.ModelProperties = new ModelProperties();
          _simulation.ModelConfiguration = A.Fake<ModelConfiguration>();
@@ -95,19 +102,19 @@ namespace PKSim.Presentation
          _project.AddBuildingBlock(_simulation);
          _project.AddBuildingBlock(_populationSimulation);
          var classifiableIndividualSimulation = new ClassifiableSimulation {Subject = _simulation};
-         var classfiablePopulationSimulation = new ClassifiableSimulation {Subject = _populationSimulation};
-         var classifiableImportSimulation = new ClassifiableSimulation {Subject = _importedSimulaton};
+         var classifiablePopulationSimulation = new ClassifiableSimulation {Subject = _populationSimulation};
+         var classifiableImportSimulation = new ClassifiableSimulation {Subject = _importedSimulation};
          _project.AddClassifiable(classifiableIndividualSimulation);
-         _project.AddClassifiable(classfiablePopulationSimulation);
+         _project.AddClassifiable(classifiablePopulationSimulation);
          _individualSimulationNode = new SimulationNode(classifiableIndividualSimulation);
-         _populationSimulationNode = new SimulationNode(classfiablePopulationSimulation);
+         _populationSimulationNode = new SimulationNode(classifiablePopulationSimulation);
          _importedSimulationNode = new SimulationNode(classifiableImportSimulation);
          _usedObservedDataNode = A.Fake<ITreeNode>();
          A.CallTo(() => _treeNodeFactory.CreateFor(classifiableIndividualSimulation)).Returns(_individualSimulationNode);
-         A.CallTo(() => _treeNodeFactory.CreateFor(classfiablePopulationSimulation)).Returns(_populationSimulationNode);
+         A.CallTo(() => _treeNodeFactory.CreateFor(classifiablePopulationSimulation)).Returns(_populationSimulationNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(classifiableImportSimulation)).Returns(_importedSimulationNode);
          A.CallTo(() => _treeNodeFactory.CreateFor(_usedObservedData)).Returns(_usedObservedDataNode);
-         _project.AddBuildingBlock(_importedSimulaton);
+         _project.AddBuildingBlock(_importedSimulation);
 
          var simulationComparison = A.Fake<ISimulationComparison>().WithId("SimComp_Id");
          var classifiableComparison = new ClassifiableComparison {Subject = simulationComparison};
@@ -122,8 +129,8 @@ namespace PKSim.Presentation
 
          _project.AddClassifiable(classifiableComparison);
 
-         _templageCompoundBuildingBlock = A.Fake<IPKSimBuildingBlock>();
-         _usedBuildingBlockNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templageCompoundBuildingBlock);
+         _templateCompoundBuildingBlock = A.Fake<IPKSimBuildingBlock>();
+         _usedBuildingBlockNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templateCompoundBuildingBlock);
          A.CallTo(() => _treeNodeFactory.CreateFor(_simulation, _usedCompoundBuildingBlock)).Returns(_usedBuildingBlockNode);
          A.CallTo(() => _buildingBlockIconRetriever.IconFor(_simulation)).Returns(ApplicationIcons.SimulationGreen);
          A.CallTo(() => _buildingBlockIconRetriever.IconFor(_populationSimulation)).Returns(ApplicationIcons.SimulationGreen);
@@ -139,7 +146,8 @@ namespace PKSim.Presentation
             _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever,
             _regionResolver, _buildingBlockTask, _buildingBlockInProjectManager, 
             _toolTipNodeCreator, _projectRetriever, _classificationPresenter, 
-            _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager, _simulationComparisonTask);
+            _parameterAnalysablesInExplorerPresenter, _observedDataInSimulationManager, 
+            _simulationComparisonTask, _executionContext,_menuBarItemRepository);
 
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
       }
@@ -152,7 +160,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templageCompoundBuildingBlock);
+         _treeNode = new UsedBuildingBlockInSimulationNode(_simulation, _usedCompoundBuildingBlock, _templateCompoundBuildingBlock);
       }
 
       protected override void Because()
@@ -467,7 +475,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new SwapBuildingBlockEvent(_templageCompoundBuildingBlock, _newBuildingBlock));
+         sut.Handle(new SwapBuildingBlockEvent(_templateCompoundBuildingBlock, _newBuildingBlock));
       }
 
       [Observation]

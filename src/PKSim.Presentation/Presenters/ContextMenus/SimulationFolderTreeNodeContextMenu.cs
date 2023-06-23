@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
@@ -19,12 +20,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class SimulationFolderTreeNodeContextMenu : ContextMenu
    {
-      private readonly IContainer _container;
+      public static IEnumerable<IMenuBarItem> AddSimulationMenuItems(IMenuBarItemRepository repository)
+      {
+         yield return repository[MenuBarItemIds.NewSimulation];
+      }
 
       public SimulationFolderTreeNodeContextMenu(ITreeNode<RootNodeType> treeNode, IMenuBarItemRepository repository, ISimulationExplorerPresenter presenter, IContainer container) : base(container)
       {
-         _container = container;
-         _view.AddMenuItem(repository[MenuBarItemIds.NewSimulation]);
+         AddSimulationMenuItems(repository).Each(_view.AddMenuItem);
 
          _view.AddMenuItem(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(treeNode, presenter).AsGroupStarter());
 
@@ -34,13 +37,13 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          _view.AddMenuItem(SimulationClassificationCommonContextMenuItems.RemoveSimulationFolderMainMenu(treeNode, presenter).AsGroupStarter());
 
-         _view.AddMenuItem(loadSimulationFromSnapshot().AsGroupStarter());
+         _view.AddMenuItem(loadSimulationFromSnapshot(container).AsGroupStarter());
       }
 
-      private IMenuBarItem loadSimulationFromSnapshot()
+      private IMenuBarItem loadSimulationFromSnapshot(IContainer container)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Load from Snapshot"))
-            .WithCommand<LoadSimulationFromSnapshotUICommand>(_container)
+            .WithCommand<LoadSimulationFromSnapshotUICommand>(container)
             .WithIcon(ApplicationIcons.SnapshotImport)
             .ForDeveloper();
       }
