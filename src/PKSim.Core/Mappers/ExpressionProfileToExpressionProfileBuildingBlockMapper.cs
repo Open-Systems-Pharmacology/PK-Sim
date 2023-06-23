@@ -9,6 +9,7 @@ using PKSim.Core.Model;
 using static PKSim.Core.CoreConstants.CalculationMethod;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
+using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
 
 namespace PKSim.Core.Mappers
 {
@@ -18,9 +19,21 @@ namespace PKSim.Core.Mappers
 
    public class ExpressionProfileToExpressionProfileBuildingBlockMapper : PathAndValueBuildingBlockMapper<ExpressionProfile, ExpressionProfileBuildingBlock, ExpressionParameter>, IExpressionProfileToExpressionProfileBuildingBlockMapper
    {
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory, IEntityPathResolver entityPathResolver, IApplicationConfiguration applicationConfiguration, ILazyLoadTask lazyLoadTask, IFormulaFactory formulaFactory) :
+      private readonly IInitialConditionsCreator _initialConditionsCreator;
+      private readonly IMoleculeBuilderFactory _moleculeBuilderFactory;
+
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(
+         IObjectBaseFactory objectBaseFactory, 
+         IEntityPathResolver entityPathResolver, 
+         IApplicationConfiguration applicationConfiguration, 
+         ILazyLoadTask lazyLoadTask, 
+         IFormulaFactory formulaFactory,
+         IInitialConditionsCreator initialConditionsCreator,
+         IMoleculeBuilderFactory moleculeBuilderFactory) :
          base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory)
       {
+         _initialConditionsCreator = initialConditionsCreator;
+         _moleculeBuilderFactory = moleculeBuilderFactory;
       }
 
       protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, ExpressionProfile expressionProfile)
@@ -41,9 +54,17 @@ namespace PKSim.Core.Mappers
       public override ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
       {
          var expressionProfileBuildingBlock = base.MapFrom(expressionProfile);
-
+         addInitialConditions(expressionProfile, expressionProfileBuildingBlock);
          expressionProfileBuildingBlock.Type = mapExpressionType(expressionProfile.Molecule.MoleculeType);
          return expressionProfileBuildingBlock;
+      }
+
+      private void addInitialConditions(ExpressionProfile expressionProfile, ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+      {
+         var builder = _moleculeBuilderFactory.Create(expressionProfile.Molecule.MoleculeType, expressionProfileBuildingBlock.FormulaCache)
+            .WithName(expressionProfile.Molecule.Name);
+
+         _initialConditionsCreator.AddToExpressionProfile(expressionProfileBuildingBlock, expressionProfile.Individual.AllPhysicalContainersWithMoleculeFor(expressionProfile.Molecule), builder);
       }
 
       private ExpressionType mapExpressionType(QuantityType moleculeType)
