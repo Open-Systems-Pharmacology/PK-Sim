@@ -17,8 +17,8 @@ namespace PKSim.UI.Views.Charts
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         DragDrop += (o, e) => _individualSimulationComparisonPresenter.DragDrop(o, new DragEvent(e));
-         DragOver += (o, e) => _individualSimulationComparisonPresenter.DragOver(o, new DragEvent(e));
+         DragDrop += (o, e) => OnEvent(() => _individualSimulationComparisonPresenter.DragDrop(o, new DragEvent(e)));
+         DragOver += (o, e) => OnEvent(() => _individualSimulationComparisonPresenter.DragOver(o, new DragEvent(e)));
       }
 
       public void AttachPresenter(IIndividualSimulationComparisonPresenter presenter)
