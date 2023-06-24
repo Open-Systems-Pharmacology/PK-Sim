@@ -666,7 +666,7 @@ namespace PKSim.Assets
 
          public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
 
-         public static string SimulationHasNoResultsAndNeedsToBeRun(string simulationName) => $"Simulation '{simulationName}' needs to be run to appear in the comparison.";
+         public static string SimulationHasNoResultsAndCannotBeUsedInComparison(string simulationName) => $"Simulation '{simulationName}' needs to be run first before being used in a comparison.";
 
          public static string CouldNotCreatePartialProcessFor(string moleculeName, string processType)
          {

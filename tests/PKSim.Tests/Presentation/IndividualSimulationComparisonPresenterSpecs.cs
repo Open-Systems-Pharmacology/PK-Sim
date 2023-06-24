@@ -84,13 +84,12 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _dimensionFactory = A.Fake<IDimensionFactory>();
          _individualSimulationComparison = new IndividualSimulationComparison();
+         _dimensionFactory = A.Fake<IDimensionFactory>();
          var dataRepository = DomainHelperForSpecs.ObservedData();
          var curve = new Curve();
          curve.SetxData(dataRepository.BaseGrid, _dimensionFactory);
          curve.SetyData(dataRepository.FirstDataColumn(), _dimensionFactory);
-
          _individualSimulationComparison.AddCurve(curve);
          sut.InitializeAnalysis(_individualSimulationComparison);
          _simulation = A.Fake<IndividualSimulation>();
@@ -148,9 +147,8 @@ namespace PKSim.Presentation
       [Observation]
       public void should_show_a_warning_that_the_simulation_needs_to_be_run_first_to_be_visible()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxInfo(PKSimConstants.Error.SimulationHasNoResultsAndNeedsToBeRun(_simulation.Name))).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(PKSimConstants.Error.SimulationHasNoResultsAndCannotBeUsedInComparison(_simulation.Name))).MustHaveHappened();
       }
-
 
       [Observation]
       public void should_not_try_to_initialize_the_curve_with_default_settings()
@@ -180,4 +178,68 @@ namespace PKSim.Presentation
          A.CallTo(() => _chartPresenter.DisplayPresenter.Edit(_individualSimulationComparison)).MustHaveHappened();
       }
    }
+
+
+   public class When_editing_an_individual_simulation_comparison_without_any_predefined_curves_in_a_simulation : concern_for_IndividualSimulationComparisonPresenter
+   {
+      private IndividualSimulationComparison _individualSimulationComparison;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation= new IndividualSimulation
+         {
+            DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("sim")
+         };
+         _individualSimulationComparison = new IndividualSimulationComparison();
+         _individualSimulationComparison.AddSimulation(_simulation);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_individualSimulationComparison);
+      }
+
+      [Observation]
+      public void should_initialize_the_curves_in_the_chart()
+      {
+         A.CallTo(() => _chartTemplatingTask.UpdateDefaultSettings(_chartPresenter.EditorPresenter, A<IReadOnlyCollection<DataColumn>>._, A<IReadOnlyCollection<IndividualSimulation>>._, false, null)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_an_individual_simulation_comparison_with_any_predefined_curves_in_a_simulation : concern_for_IndividualSimulationComparisonPresenter
+   {
+      private IndividualSimulationComparison _individualSimulationComparison;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation
+         {
+            DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("sim")
+         };
+         _individualSimulationComparison = new IndividualSimulationComparison();
+         _individualSimulationComparison.AddSimulation(_simulation);
+         var dimensionFactory = A.Fake<IDimensionFactory>();
+         var dataRepository = DomainHelperForSpecs.ObservedData();
+         var curve = new Curve();
+         curve.SetxData(dataRepository.BaseGrid, dimensionFactory);
+         curve.SetyData(dataRepository.FirstDataColumn(), dimensionFactory);
+         _individualSimulationComparison.AddCurve(curve);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_individualSimulationComparison);
+      }
+
+      [Observation]
+      public void should_initialize_the_curves_in_the_chart()
+      {
+         A.CallTo(() => _chartTemplatingTask.UpdateDefaultSettings(_chartPresenter.EditorPresenter, A<IReadOnlyCollection<DataColumn>>._, A<IReadOnlyCollection<IndividualSimulation>>._, false, null)).MustNotHaveHappened();
+      }
+   }
+
 }

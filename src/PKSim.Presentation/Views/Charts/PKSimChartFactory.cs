@@ -39,10 +39,7 @@ namespace PKSim.Presentation.Views.Charts
          return chart;
       }
 
-      public ISimulationComparison CreateSummaryChart()
-      {
-         return Create<IndividualSimulationComparison>();
-      }
+      public IndividualSimulationComparison CreateIndividualSimulationComparison() => Create<IndividualSimulationComparison>();
 
       public ChartWithObservedData Create(Type chartType)
       {

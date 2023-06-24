@@ -48,11 +48,14 @@ namespace PKSim.Presentation.Services
          _dialogCreator = dialogCreator;
       }
 
-      public ISimulationComparison CreateIndividualSimulationComparison()
+      public ISimulationComparison CreateIndividualSimulationComparison(IndividualSimulation individualSimulation = null)
       {
-         var chart = _chartFactory.CreateSummaryChart();
-         addComparisonToProject(chart);
-         return chart;
+         var simulationComparison = _chartFactory.CreateIndividualSimulationComparison();
+         addComparisonToProject(simulationComparison);
+         if(individualSimulation != null && individualSimulation.HasResults)
+            simulationComparison.AddSimulation(individualSimulation);
+
+         return simulationComparison;
       }
 
       private void addComparisonToProject(ISimulationComparison simulationComparison)
