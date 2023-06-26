@@ -1200,7 +1200,9 @@ namespace PKSim.Assets
          public static readonly string GeneratePretermsData = "Generate Preterms Data";
          public static readonly string Comparison = "Compare Results";
          public static readonly string IndividualSimulationComparison = "Individual Simulations";
-         public static readonly string PopulationPopulationComparison = "Population Simulations";
+         public static readonly string PopulationSimulationComparison = "Population Simulations";
+         public static readonly string AddIndividualSimulationComparison = $"Add {IndividualSimulationComparison} Comparison";
+         public static readonly string AddPopulationSimulationComparison = $"Add {PopulationSimulationComparison} Comparison";
          public static readonly string AddNewProcess = "Add new...";
          public static readonly string ExportHistory = "Export History";
          public static readonly string CreateDerivedField = $"{UI.CreateGrouping}...";

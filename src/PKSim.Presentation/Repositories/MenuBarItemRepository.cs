@@ -334,7 +334,7 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<CreateIndividualSimulationComparisonUICommand>(_container)
             .WithIcon(ApplicationIcons.IndividualSimulationComparison);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.PopulationPopulationComparison)
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.PopulationSimulationComparison)
             .WithId(MenuBarItemIds.PopulationSimulationComparison)
             .WithDescription(PKSimConstants.UI.PopulationSimulationComparisonDescription)
             .WithCommand<CreatePopulationSimulationComparisonUICommand>(_container)
