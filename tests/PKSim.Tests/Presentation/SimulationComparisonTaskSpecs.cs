@@ -66,7 +66,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _chartFactory.CreateSummaryChart()).Returns(_individualSimulationComparison);
+         A.CallTo(() => _chartFactory.CreateIndividualSimulationComparison()).Returns(_individualSimulationComparison);
          A.CallTo(() => _executionContext.PublishEvent(A<SimulationComparisonCreatedEvent>.Ignored)).Invokes(
             x => _event = x.GetArgument<SimulationComparisonCreatedEvent>(0));
       }

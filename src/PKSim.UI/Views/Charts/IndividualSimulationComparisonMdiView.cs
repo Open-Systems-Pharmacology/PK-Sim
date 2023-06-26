@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Views;
@@ -27,13 +26,8 @@ namespace PKSim.UI.Views.Charts
       public override void InitializeBinding()
       {
          base.InitializeBinding();
-         DragDrop += DragDropEventHandler;
-         DragOver += (o, e) => _individualSimulationComparisonMdiPresenter.OnDragOver(o, new DragEvent(e));
-      }
-
-      private void DragDropEventHandler(object sender, DragEventArgs e)
-      {
-         _individualSimulationComparisonMdiPresenter.OnDragDrop(sender, new DragEvent(e));
+         DragDrop += (o, e) => OnEvent(() => _individualSimulationComparisonMdiPresenter.OnDragDrop(o, new DragEvent(e)));
+         DragOver += (o, e) => OnEvent(() => _individualSimulationComparisonMdiPresenter.OnDragOver(o, new DragEvent(e)));
       }
 
       public override void InitializeResources()

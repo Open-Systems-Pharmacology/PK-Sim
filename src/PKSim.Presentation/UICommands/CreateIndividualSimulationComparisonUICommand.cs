@@ -1,45 +1,47 @@
-using System;
-using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Services;
+using OSPSuite.Presentation.UICommands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation.UICommands
 {
-   public abstract class CreateSimulationComparisonCommand : IUICommand
+   public abstract class CreateSimulationComparisonCommand<TSimulation> : ActiveObjectUICommand<TSimulation> where TSimulation : Simulation
    {
-      private readonly ISimulationComparisonTask _simulationComparisonTask;
-      private readonly ISingleStartPresenterTask _singleStartPresenterTask;
-      private readonly Func<ISimulationComparisonTask, Func<ISimulationComparison>> _creator;
+      protected readonly ISimulationComparisonTask _simulationComparisonTask;
+      protected readonly ISingleStartPresenterTask _singleStartPresenterTask;
 
       protected CreateSimulationComparisonCommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask,
-         Func<ISimulationComparisonTask, Func<ISimulationComparison>> creator)
+         IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
       {
          _simulationComparisonTask = simulationComparisonTask;
          _singleStartPresenterTask = singleStartPresenterTask;
-         _creator = creator;
-      }
-
-      public void Execute()
-      {
-         _singleStartPresenterTask.StartForSubject(_creator(_simulationComparisonTask).Invoke());
       }
    }
 
-   public class CreateIndividualSimulationComparisonUICommand : CreateSimulationComparisonCommand
+   public class CreateIndividualSimulationComparisonUICommand : CreateSimulationComparisonCommand<IndividualSimulation>
    {
-      public CreateIndividualSimulationComparisonUICommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask)
-         : base(simulationComparisonTask, singleStartPresenterTask, x => x.CreateIndividualSimulationComparison)
+      public CreateIndividualSimulationComparisonUICommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask, IActiveSubjectRetriever activeSubjectRetriever)
+         : base(simulationComparisonTask, singleStartPresenterTask, activeSubjectRetriever)
       {
+      }
+
+      protected override void PerformExecute()
+      {
+         _singleStartPresenterTask.StartForSubject(_simulationComparisonTask.CreateIndividualSimulationComparison(Subject));
       }
    }
 
-   public class CreatePopulationSimulationComparisonUICommand : CreateSimulationComparisonCommand
+   public class CreatePopulationSimulationComparisonUICommand : CreateSimulationComparisonCommand<PopulationSimulation>
    {
-      public CreatePopulationSimulationComparisonUICommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask)
-         : base(simulationComparisonTask, singleStartPresenterTask, x => x.CreatePopulationSimulationComparison)
+      public CreatePopulationSimulationComparisonUICommand(ISimulationComparisonTask simulationComparisonTask, ISingleStartPresenterTask singleStartPresenterTask, IActiveSubjectRetriever activeSubjectRetriever)
+         : base(simulationComparisonTask, singleStartPresenterTask, activeSubjectRetriever)
       {
+      }
+
+      protected override void PerformExecute()
+      {
+         _singleStartPresenterTask.StartForSubject(_simulationComparisonTask.CreatePopulationSimulationComparison());
       }
    }
 }
