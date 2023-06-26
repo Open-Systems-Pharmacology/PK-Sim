@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="12.0.0-fqtrS" />
-    <PackageReference Include="OSPSuite.UI" Version="12.0.0-fqtrS" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.0-fqtrS" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.0.0-fqtrS" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.0.200" />
+    <PackageReference Include="OSPSuite.UI" Version="12.0.200" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.200" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.0.200" />
   </ItemGroup>
 
 </Project>
