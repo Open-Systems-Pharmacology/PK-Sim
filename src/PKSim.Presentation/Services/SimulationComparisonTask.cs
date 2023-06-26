@@ -136,7 +136,7 @@ namespace PKSim.Presentation.Services
          var snapshotContext = new SnapshotContext(_executionContext.CurrentProject, ProjectVersions.Current);
          var snapshot = await _simulationComparisonMapper.MapToSnapshot(simulationComparison);
          var clone = await _simulationComparisonMapper.MapToModel(snapshot, snapshotContext);
-         //this will ensure that the names are uniques
+         //this will ensure that the names are unique
          addComparisonToProject(clone);
          return clone;
       }
