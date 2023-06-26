@@ -27,6 +27,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return GenericMenu.EditDescriptionMenuFor(simulationComparison, _container)
             .AsGroupStarter();
 
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Clone)
+            .WithCommandFor<CloneSimulationComparisonCommand, ISimulationComparison>(simulationComparison, _container)
+            .WithIcon(ApplicationIcons.Clone)
+            .AsGroupStarter();
+
+
          var populationSimulationComparison = simulationComparison as PopulationSimulationComparison;
          if (populationSimulationComparison != null)
          {
