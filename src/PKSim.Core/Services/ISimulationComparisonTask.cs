@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -9,5 +10,6 @@ namespace PKSim.Core.Services
       ISimulationComparison CreatePopulationSimulationComparison();
       void ConfigurePopulationSimulationComparison(PopulationSimulationComparison populationSimulationComparison);
       bool Delete(IReadOnlyList<ISimulationComparison> simulationComparisons);
+      Task<ISimulationComparison> CloneSimulationComparision(ISimulationComparison simulationComparison);
    }
 }

@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Chart;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.PopulationAnalyses;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Chart;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Core.Snapshots.Mappers;
+using PKSim.Presentation.Presenters.PopulationAnalyses;
 using ISimulationAnalysisCreator = PKSim.Core.Services.ISimulationAnalysisCreator;
 
 namespace PKSim.Presentation.Services
@@ -27,16 +29,19 @@ namespace PKSim.Presentation.Services
       private readonly IExecutionContext _executionContext;
       private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
       private readonly IDialogCreator _dialogCreator;
+      private readonly SimulationComparisonMapper _simulationComparisonMapper;
 
       public SimulationComparisonTask(
-         IPKSimChartFactory chartFactory, 
+         IPKSimChartFactory chartFactory,
          IContainerTask containerTask,
-         IObjectBaseFactory objectBaseFactory, 
+         IObjectBaseFactory objectBaseFactory,
          IApplicationController applicationController,
-         ISingleStartPresenterTask singleStartPresenterTask, 
+         ISingleStartPresenterTask singleStartPresenterTask,
          IExecutionContext executionContext,
          ISimulationAnalysisCreator simulationAnalysisCreator,
-         IDialogCreator dialogCreator)
+         IDialogCreator dialogCreator,
+         SimulationComparisonMapper simulationComparisonMapper
+      )
       {
          _chartFactory = chartFactory;
          _containerTask = containerTask;
@@ -46,13 +51,14 @@ namespace PKSim.Presentation.Services
          _executionContext = executionContext;
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _dialogCreator = dialogCreator;
+         _simulationComparisonMapper = simulationComparisonMapper;
       }
 
       public ISimulationComparison CreateIndividualSimulationComparison(IndividualSimulation individualSimulation = null)
       {
          var simulationComparison = _chartFactory.CreateIndividualSimulationComparison();
          addComparisonToProject(simulationComparison);
-         if(individualSimulation != null && individualSimulation.HasResults)
+         if (individualSimulation != null && individualSimulation.HasResults)
             simulationComparison.AddSimulation(individualSimulation);
 
          return simulationComparison;
@@ -120,6 +126,19 @@ namespace PKSim.Presentation.Services
          simulationComparisons.Each(deleteSimulationComparison);
 
          return true;
+      }
+
+      public async Task<ISimulationComparison> CloneSimulationComparision(ISimulationComparison simulationComparison)
+      {
+         _executionContext.Load(simulationComparison);
+         //We clone from snapshot as cloning charts is too complicated. This ensures that we are using
+         //a fully tested approach to cloning
+         var snapshotContext = new SnapshotContext(_executionContext.CurrentProject, ProjectVersions.Current);
+         var snapshot = await _simulationComparisonMapper.MapToSnapshot(simulationComparison);
+         var clone = await _simulationComparisonMapper.MapToModel(snapshot, snapshotContext);
+         //this will ensure that the names are unique
+         addComparisonToProject(clone);
+         return clone;
       }
 
       private void deleteSimulationComparison(ISimulationComparison simulationComparison)
