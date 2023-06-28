@@ -892,10 +892,18 @@ namespace PKSim.Core
             HALF_LIFE_INTESTINE
          };
 
+         public static string OntogenyTableParameterFor(string parameter) => $"{parameter} table";
+
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
-         public static readonly string ONTOGENY_FACTOR_TABLE = $"{ONTOGENY_FACTOR} table";
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
-         public static readonly string ONTOGENY_FACTOR_GI_TABLE = $"{ONTOGENY_FACTOR_GI} table";
+         public static readonly string ONTOGENY_FACTOR_ALBUMIN = "Ontogeny factor (albumin)";
+         public static readonly string ONTOGENY_FACTOR_AGP = "Ontogeny factor (alpha1-acid glycoprotein)";
+
+         public static readonly string ONTOGENY_FACTOR_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR);
+         public static readonly string ONTOGENY_FACTOR_GI_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_GI);
+         public static readonly string ONTOGENY_FACTOR_ALBUMIN_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_ALBUMIN);
+         public static readonly string ONTOGENY_FACTOR_AGP_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_AGP);
+         
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
          public static readonly string NUMBER_OF_REPETITIONS = "NumberOfRepetitions";
          public static readonly string TIME_BETWEEN_REPETITIONS = "TimeBetweenRepetitions";
@@ -987,8 +995,6 @@ namespace PKSim.Core
          public const string LYMPH_FLOW_INCL_MUCOSA = "Lymph flow rate (incl. mucosa)";
          public const string RECIRCULATION_FLOW = "Fluid recirculation flow rate";
          public const string RECIRCULATION_FLOW_INCL_MUCOSA = "Fluid recirculation flow rate (incl. mucosa)";
-         public const string ONTOGENY_FACTOR_ALBUMIN = "Ontogeny factor (albumin)";
-         public const string ONTOGENY_FACTOR_AGP = "Ontogeny factor (alpha1-acid glycoprotein)";
          public const string PLASMA_PROTEIN_SCALE_FACTOR = "Plasma protein scale factor";
          public const string SMALL_INTESTINAL_TRANSIT_TIME = "Small intestinal transit time";
          public const string GASTRIC_EMPTYING_TIME = "Gastric emptying time";
@@ -1040,6 +1046,12 @@ namespace PKSim.Core
          {
             ONTOGENY_FACTOR_ALBUMIN,
             ONTOGENY_FACTOR_AGP
+         };
+
+         public static readonly IReadOnlyList<string> AllPlasmaProteinOntogenyFactorTables = new[]
+         {
+            ONTOGENY_FACTOR_ALBUMIN_TABLE, 
+            ONTOGENY_FACTOR_AGP_TABLE, 
          };
 
          public static readonly IReadOnlyList<string> HiddenParameterForMonodisperse = new[]

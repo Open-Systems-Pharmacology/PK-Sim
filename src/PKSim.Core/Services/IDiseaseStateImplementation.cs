@@ -198,7 +198,7 @@ namespace PKSim.Core.Services
          }
 
          //We are using a formula, we override with a constant
-         if (parameter.Formula.IsExplicit())
+         if (!parameter.Formula.IsConstant())
          {
             parameter.Formula = _formulaFactory.ConstantFormula(valueToUse, parameter.Dimension);
             //Make sure the formula is indeed used in case the value was overwritten before as fixed value

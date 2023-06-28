@@ -1,19 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
 using PKSim.Core;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Individuals;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Core.Services;
@@ -81,6 +78,7 @@ namespace PKSim.Presentation.Services
          if (data == null)
             return null;
 
+         //when imported from excel, we are importing using the Geometric std format
          var ontogeny = new UserDefinedOntogeny {Table = _ontogenyRepository.DataRepositoryToDistributedTableFormula(data), Name = data.Name};
 
          //only first ontogeny will be imported
@@ -131,7 +129,7 @@ namespace PKSim.Presentation.Services
             DisplayName = PKSimConstants.UI.GeometricStandardDeviation,
             IsMandatory = false,
             BaseGridName = ageColumn.Name,
-            RelatedColumnOf = ontogenyFactor.Name
+            RelatedColumnOf = ontogenyFactor.Name,
          };
 
          geoMean.SupportedDimensions.Add(geoMean.DefaultDimension);

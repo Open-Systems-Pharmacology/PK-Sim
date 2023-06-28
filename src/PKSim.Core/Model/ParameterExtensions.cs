@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Model
@@ -20,7 +21,7 @@ namespace PKSim.Core.Model
 
       public static void SetPercentile(this IParameter parameter, double percentile)
       {
-         if (!(parameter is IDistributedParameter distributedParameter))
+         if (parameter is not IDistributedParameter distributedParameter)
             return;
 
          distributedParameter.Percentile = percentile;
@@ -34,7 +35,7 @@ namespace PKSim.Core.Model
          if (parameter.IsExpression())
             return true;
 
-         if (OntogenyFactors.Contains(parameter.Name))
+         if(parameter.NameIsOneOf(OntogenyFactors.Union(OntogenyFactorTables)))
             return true;
 
          return false;
@@ -48,15 +49,11 @@ namespace PKSim.Core.Model
                 parameter.Name.StartsWith(FRACTION_EXPRESSED_PREFIX);
       }
 
-      public static bool IsStructural(this IParameter parameter)
-      {
-         return ParticleDistributionStructuralParameters.Contains(parameter.Name);
-      }
+      public static bool IsStructural(this IParameter parameter) => parameter.NameIsOneOf(ParticleDistributionStructuralParameters);
 
       public static bool IsOrganVolume(this IParameter parameter)
       {
-         return parameter.IsNamed(Constants.Parameters.VOLUME) &&
-                parameter.ParentContainer.IsAnImplementationOf<Organ>();
+         return parameter.IsNamed(VOLUME) && parameter.ParentContainer.IsAnImplementationOf<Organ>();
       }
 
       public static TParameter WithInfo<TParameter>(this TParameter parameter, ParameterInfo info) where TParameter : IParameter
