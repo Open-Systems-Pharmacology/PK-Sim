@@ -15,7 +15,6 @@ using OSPSuite.Utility.Format;
 using PKSim.CLI.Core;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using CoreRegister = PKSim.Core.CoreRegister;

@@ -18,8 +18,8 @@ namespace PKSim.Core.Repositories
       DistributedTableFormula DataRepositoryToDistributedTableFormula(DataRepository ontogenyDataRepository);
       DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName);
 
-      double PlasmaProteinOntogenyFactor(string protein, OriginData originData, RandomGenerator randomGenerator = null);
-      double PlasmaProteinOntogenyFactor(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator);
+      DistributedTableFormula PlasmaProteinOntogenyTableFormula(string protein, OriginData originData);
+      double PlasmaProteinOntogenyTableFormula(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator);
 
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny);
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny, string containerName);

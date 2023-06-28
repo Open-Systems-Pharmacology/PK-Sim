@@ -892,17 +892,17 @@ namespace PKSim.Core
             HALF_LIFE_INTESTINE
          };
 
-         private static string OntogenyTableParameter(string parameter) => $"{parameter} table";
+         public static string OntogenyTableParameterFor(string parameter) => $"{parameter} table";
 
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
          public static readonly string ONTOGENY_FACTOR_ALBUMIN = "Ontogeny factor (albumin)";
          public static readonly string ONTOGENY_FACTOR_AGP = "Ontogeny factor (alpha1-acid glycoprotein)";
 
-         public static readonly string ONTOGENY_FACTOR_TABLE = OntogenyTableParameter(ONTOGENY_FACTOR);
-         public static readonly string ONTOGENY_FACTOR_GI_TABLE = OntogenyTableParameter(ONTOGENY_FACTOR_GI);
-         public static readonly string ONTOGENY_FACTOR_ALBUMIN_TABLE = OntogenyTableParameter(ONTOGENY_FACTOR_ALBUMIN);
-         public static readonly string ONTOGENY_FACTOR_AGP_TABLE = OntogenyTableParameter(ONTOGENY_FACTOR_AGP);
+         public static readonly string ONTOGENY_FACTOR_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR);
+         public static readonly string ONTOGENY_FACTOR_GI_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_GI);
+         public static readonly string ONTOGENY_FACTOR_ALBUMIN_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_ALBUMIN);
+         public static readonly string ONTOGENY_FACTOR_AGP_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_AGP);
          
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
          public static readonly string NUMBER_OF_REPETITIONS = "NumberOfRepetitions";
