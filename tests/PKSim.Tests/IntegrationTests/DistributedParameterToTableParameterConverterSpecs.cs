@@ -110,7 +110,9 @@ namespace PKSim.IntegrationTests
             if (parameterName.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP))
                continue; //new ontogeny is defined up to 90 years, so the table will not be replaced by const
 
-            organism.Parameter(parameterName).Formula.ShouldBeAnInstanceOf<ConstantFormula>();
+
+            //Parameter are by default table formula with X Arguments 
+            organism.Parameter(parameterName).Formula.ShouldBeAnInstanceOf<TableFormulaWithXArgument>();
          }
       }
    }
