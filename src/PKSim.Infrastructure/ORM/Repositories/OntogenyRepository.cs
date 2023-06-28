@@ -270,7 +270,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
       public IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null)
       {
          var tableParameter = CoreConstants.Parameters.OntogenyTableParameterFor(parameterName);
-         return AllOntogenyFactorForStrictBiggerThanPMA(forMolecule(originData, tableParameter), originData, ONTOGENY_PLASMA, randomGenerator);
+         var molecule = SupportedProteins[tableParameter];
+         return AllOntogenyFactorForStrictBiggerThanPMA(forMolecule(originData, molecule), originData, ONTOGENY_PLASMA, randomGenerator);
       }
 
       private Func<OntogenyMetaData, double> ontogenyFactorRetriever(RandomGenerator randomGenerator, IReadOnlyList<OntogenyMetaData> allOntogenies)
