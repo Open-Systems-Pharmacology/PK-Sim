@@ -14,6 +14,7 @@ using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation;
 
 namespace PKSim.Presentation
 {
@@ -31,6 +32,7 @@ namespace PKSim.Presentation
       protected PopulationPivotAnalysis _populationAnalysis;
       protected IDimension _dimension1;
       protected IDimension _dimension2;
+      private IPresentationUserSettings _userSettings;
 
       protected override void Context()
       {
@@ -42,7 +44,17 @@ namespace PKSim.Presentation
          _populationAnalysisTemplateTask = A.Fake<IPopulationAnalysisTemplateTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _fieldDTOMapper = A.Fake<IPopulationAnalysisFieldToPopulationAnalysisFieldDTOMapper>();
-         sut = new PopulationAnalysisOutputFieldsPresenter(_view, _contextMenuFactory, _populationAnalysisFieldFactory, _eventPublisher, _populationAnalysisGroupingFieldCreator, _populationAnalysisTemplateTask, _dialogCreator, _fieldDTOMapper);
+         _userSettings= A.Fake<IPresentationUserSettings>();
+
+         sut = new PopulationAnalysisOutputFieldsPresenter(_view,
+            _contextMenuFactory,
+            _populationAnalysisFieldFactory,
+            _eventPublisher,
+            _populationAnalysisGroupingFieldCreator,
+            _populationAnalysisTemplateTask,
+            _dialogCreator,
+            _fieldDTOMapper,
+            _userSettings);
 
          A.CallTo(() => _view.SelectedField).Returns(null);
          _populationDataCollector = A.Fake<IPopulationDataCollector>();
@@ -52,7 +64,9 @@ namespace PKSim.Presentation
          _dimension1 = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          _dimension2 = DomainHelperForSpecs.LengthDimensionForSpecs();
 
-         A.CallTo(() => _populationAnalysisFieldFactory.CreateFor(A<IQuantity>._, A<string>._))
+         _userSettings.DefaultChartYScaling = Scalings.Log;
+
+         A.CallTo(() => _populationAnalysisFieldFactory.CreateFor(A<IQuantity>._, A<string>._, _userSettings.DefaultChartYScaling))
             .ReturnsLazily(s => new PopulationAnalysisOutputField { Dimension = s.Arguments[0].DowncastTo<IQuantity>().Dimension, Name = s.Arguments[1].ToString() });
       }
    }

@@ -16,7 +16,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
       PopulationAnalysisPKParameterField CreateFor(QuantityPKParameter pkParameter, QuantityType quantityType, string quantityDisplayPath);
       PopulationAnalysisCovariateField CreateFor(string covariate, IPopulationDataCollector populationDataCollector);
       PopulationAnalysisGroupingField CreateGroupingField(GroupingDefinition groupingDefinition, IPopulationAnalysisField populationAnalysisField);
-      PopulationAnalysisOutputField CreateFor(IQuantity quantity, string defaultName);
+      PopulationAnalysisOutputField CreateFor(IQuantity quantity, string defaultName, Scalings defaultScaling);
    }
 
    public class PopulationAnalysisFieldFactory : IPopulationAnalysisFieldFactory
@@ -60,7 +60,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          };
       }
 
-      public PopulationAnalysisOutputField CreateFor(IQuantity quantity, string defaultName)
+      public PopulationAnalysisOutputField CreateFor(IQuantity quantity, string defaultName, Scalings defaultScaling)
       {
          var field = new PopulationAnalysisOutputField
          {
@@ -68,6 +68,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
             QuantityType = quantity.QuantityType,
             Name = defaultName,
             Color = _colorGenerator.NextColor(),
+            Scaling = defaultScaling,
          };
          updateDimension(quantity, field);
          return field;
