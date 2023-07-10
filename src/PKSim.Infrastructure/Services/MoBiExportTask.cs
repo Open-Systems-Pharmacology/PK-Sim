@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
@@ -110,7 +109,6 @@ namespace PKSim.Infrastructure.Services
 
          var configuration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
          var moBiSimulation = _simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: false);
-         updateObserverForAllFlag(moBiSimulation);
          updateRepresentationInfo(moBiSimulation);
          updateFormulaIdIn(moBiSimulation);
 
@@ -139,17 +137,6 @@ namespace PKSim.Infrastructure.Services
       public Task ExportSimulationToPkmlFileAsync(Simulation simulation, string fileName)
       {
          return Task.Run(() => ExportSimulationToPkmlFile(simulation, fileName));
-      }
-
-      public void UpdateObserverForAllFlag(ObserverBuildingBlock observerBuildingBlock)
-      {
-         var allObserversForAll = observerBuildingBlock.Where(x => x.NameIsOneOf(CoreConstants.Observer.MoBiForAll));
-         allObserversForAll.Each(x => x.ForAll = true);
-      }
-
-      private void updateObserverForAllFlag(IModelCoreSimulation moBiSimulation)
-      {
-         moBiSimulation.Configuration.All<ObserverBuildingBlock>().Each(UpdateObserverForAllFlag);
       }
 
       public void ExportSimulationToPkmlFile(Simulation simulation)

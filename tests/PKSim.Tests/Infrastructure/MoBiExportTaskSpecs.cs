@@ -116,7 +116,7 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void should_have_resetted_the_id_of_the_simulation()
+      public void should_have_reset_the_id_of_the_simulation()
       {
          A.CallTo(() => _objectIdResetter.ResetIdFor(_simulationTransfer.Simulation)).MustHaveHappened();
       }
