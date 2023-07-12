@@ -21,17 +21,15 @@ namespace PKSim.Presentation.UICommands
       private readonly IPKMLPersistor _pkmlPersistor;
       private readonly IDialogCreator _dialogCreator;
       private readonly IHeavyWorkManager _heavyWorkManager;
-      private readonly IMoBiExportTask _moBiExportTask;
       private readonly ISnapshotObjectCreator _snapshotObjectCreator;
 
       public GeneratePKMLTemplatesCommand(ISimulationConfigurationTask simulationConfigurationTask, IPKMLPersistor pkmlPersistor, IDialogCreator dialogCreator,
-         IHeavyWorkManager heavyWorkManager, IMoBiExportTask moBiExportTask, ISnapshotObjectCreator snapshotObjectCreator)
+         IHeavyWorkManager heavyWorkManager, ISnapshotObjectCreator snapshotObjectCreator)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
          _pkmlPersistor = pkmlPersistor;
          _dialogCreator = dialogCreator;
          _heavyWorkManager = heavyWorkManager;
-         _moBiExportTask = moBiExportTask;
          _snapshotObjectCreator = snapshotObjectCreator;
       }
 
@@ -93,8 +91,6 @@ namespace PKSim.Presentation.UICommands
          defaultCompound.Parameter(CoreConstants.Parameters.MOLECULAR_WEIGHT).Value = double.NaN;
          defaultCompound.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = double.NaN;
          defaultCompound.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).Value = double.NaN;
-
-         _moBiExportTask.UpdateObserverForAllFlag(fourCompIvBolusMgPerKg.Observers);
 
          var buildingBlocks = new IBuildingBlock[]
          {

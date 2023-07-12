@@ -161,9 +161,6 @@ namespace PKSim.Core
             FRACTION_EXCRETED, FRACTION_EXCRETED_TO_URINE, FRACTION_EXCRETED_TO_BILE, FRACTION_EXCRETED_TO_FECES, FRACTION_OF_DOSE, RECEPTOR_OCCUPANCY
          };
 
-         public static IReadOnlyCollection<string> MoBiForAll => new[]
-            {CONCENTRATION_IN_CONTAINER, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
-
          public static string ObserverNameFrom(string observerName, string compoundName) => CompositeNameFor(observerName, compoundName);
       }
 
