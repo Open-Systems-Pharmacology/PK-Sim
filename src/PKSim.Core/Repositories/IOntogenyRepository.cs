@@ -19,7 +19,7 @@ namespace PKSim.Core.Repositories
       DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName);
 
       DistributedTableFormula PlasmaProteinOntogenyTableFormula(string protein, OriginData originData);
-      double PlasmaProteinOntogenyTableFormula(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator);
+      double PlasmaProteinOntogenyValueFor(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator);
 
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny);
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny, string containerName);
@@ -43,7 +43,7 @@ namespace PKSim.Core.Repositories
       /// <returns>A set of Sample {X = age, Y = factor}</returns>
       IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null);
 
-      ICache<string, string> SupportedProteins { get; }
+      IReadOnlyList<SupportedProtein> SupportedProteins { get; }
 
       /// <summary>
       /// Returns the parameter distribution associated with the ontogeny for the PMA defined in OriginData at location <paramref name="containerName"/>

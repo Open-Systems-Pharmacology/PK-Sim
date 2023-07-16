@@ -2,6 +2,7 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.FlatObjects;
@@ -52,6 +53,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
          Start();
          if (_calculationMethods.Contains(name))
             return _calculationMethods[name];
+
+         //TMP for now
+         if (name == "BMI")
+            return FindBy("Individual_AgeDependent");
 
          throw new CalculationMethodNotFoundException(name);
       }

@@ -225,7 +225,7 @@ namespace PKSim.Core.Services
 
       private static void setParticleRadiusDistributionParametersToLockedAndInvisible(IContainer formulationBuilder)
       {
-         // first, set all parameteres responsible for particle size distribution to locked
+         // first, set all parameters responsible for particle size distribution to locked
          CoreConstants.Parameters.ParticleDistributionStructuralParameters.Each(paramName => formulationBuilder.Parameter(paramName).Editable = false);
 
          // second, set some parameters to not visible depending on settings

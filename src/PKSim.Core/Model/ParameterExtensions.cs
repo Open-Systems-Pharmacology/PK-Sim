@@ -104,6 +104,10 @@ namespace PKSim.Core.Model
          if (parameter.IsIndividualMoleculeGlobal())
             return true;
 
+         // //parameter was overwritten by user clearly 
+         // if(parameter.IsFixedValue)
+         //    return true;
+
          if (parameter.IsDefault)
             return false;
 

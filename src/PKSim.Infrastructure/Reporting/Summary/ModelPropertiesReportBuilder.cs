@@ -19,7 +19,9 @@ namespace PKSim.Infrastructure.Reporting.Summary
       protected override void FillUpReport(ModelProperties modelProperties, ReportPart reportPart)
       {
          reportPart.Title = PKSimConstants.UI.SimulationModelConfiguration;
-         reportPart.AddToContent(_representationInfoRepository.DisplayNameFor(RepresentationObjectType.MODEL, modelProperties.ModelConfiguration.ModelName));
+         if(modelProperties.ModelConfiguration!=null)
+            reportPart.AddToContent(_representationInfoRepository.DisplayNameFor(RepresentationObjectType.MODEL, modelProperties.ModelConfiguration.ModelName));
+
          reportPart.AddPart(_reportGenerator.ReportFor(modelProperties.AllCalculationMethods()));
       }
    }

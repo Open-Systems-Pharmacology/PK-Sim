@@ -16,6 +16,7 @@ using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Groups;
+using static PKSim.Core.CoreConstants.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Infrastructure.ORM.Repositories
@@ -28,7 +29,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IDimensionRepository _dimensionRepository;
       private readonly List<Ontogeny> _allOntogenies;
       private readonly ICache<CompositeKey, IReadOnlyList<OntogenyMetaData>> _ontogenyValues;
-      public ICache<string, string> SupportedProteins { get; }
+      public IReadOnlyList<SupportedProtein> SupportedProteins { get; }
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IGroupRepository _groupRepository;
@@ -51,10 +52,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _groupRepository = groupRepository;
          _allOntogenies = new List<Ontogeny>();
          _ontogenyValues = new Cache<CompositeKey, IReadOnlyList<OntogenyMetaData>>(onMissingKey: x => new List<OntogenyMetaData>());
-         SupportedProteins = new Cache<string, string>
+         
+         SupportedProteins = new List<SupportedProtein>
          {
-            {CoreConstants.Parameters.ONTOGENY_FACTOR_AGP_TABLE, CoreConstants.Molecule.AGP},
-            {CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN_TABLE, CoreConstants.Molecule.Albumin}
+            new SupportedProtein(CoreConstants.Molecule.AGP, ONTOGENY_FACTOR_AGP, ONTOGENY_FACTOR_AGP_TABLE),
+            new SupportedProtein(CoreConstants.Molecule.ALBUMIN, ONTOGENY_FACTOR_ALBUMIN, ONTOGENY_FACTOR_ALBUMIN_TABLE),
          };
       }
 
@@ -96,7 +98,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IReadOnlyList<Ontogeny> AllFor(string speciesName)
       {
-         return allFor(speciesName).Where(x => !x.NameIsOneOf(SupportedProteins)).ToList();
+         return allFor(speciesName).Where(x => !x.NameIsOneOf(SupportedProteins.AllNames())).ToList();
       }
 
       private IReadOnlyList<Ontogeny> allFor(string speciesName)
@@ -156,7 +158,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          }
 
          var formula = _formulaFactory.CreateDistributedTableFormula().WithName(ontogenyDataRepository.Name);
-         formula.InitializedWith(CoreConstants.Parameters.PMA, ontogenyDataRepository.Name, baseGrid.Dimension, meanColumn.Dimension);
+         formula.InitializedWith(PMA, ontogenyDataRepository.Name, baseGrid.Dimension, meanColumn.Dimension);
          formula.XDisplayUnit = baseGrid.Dimension.Unit(baseGrid.DataInfo.DisplayUnitName);
          formula.YDisplayUnit = meanColumn.Dimension.Unit(meanColumn.DataInfo.DisplayUnitName);
 
@@ -190,7 +192,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return OntogenyToDistributedTableFormula(ontogeny, ONTOGENY_PLASMA);
       }
 
-      public double PlasmaProteinOntogenyTableFormula(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator)
+      public double PlasmaProteinOntogenyValueFor(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator)
       {
          var ontogeny = allFor(species).FindByName(protein) ?? new NullOntogeny();
          return OntogenyFactorFor(ontogeny, ONTOGENY_PLASMA, age, gestationalAge, randomGenerator);
@@ -269,9 +271,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null)
       {
-         var tableParameter = CoreConstants.Parameters.OntogenyTableParameterFor(parameterName);
-         var molecule = SupportedProteins[tableParameter];
-         return AllOntogenyFactorForStrictBiggerThanPMA(forMolecule(originData, molecule), originData, ONTOGENY_PLASMA, randomGenerator);
+         var molecule = SupportedProteins.Single(x => string.Equals(x.ParameterName, parameterName));
+         return AllOntogenyFactorForStrictBiggerThanPMA(forMolecule(originData, molecule.Name), originData, ONTOGENY_PLASMA, randomGenerator);
       }
 
       private Func<OntogenyMetaData, double> ontogenyFactorRetriever(RandomGenerator randomGenerator, IReadOnlyList<OntogenyMetaData> allOntogenies)

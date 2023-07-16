@@ -57,10 +57,15 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.PKAnalysesImportFromCSV);
       }
 
-      protected override IEnumerable<IMenuBarItem> ActionMenuItemsSpecificToType(PopulationSimulation populationSimulation)
+      protected override IEnumerable<IMenuBarItem> DebugMenuFor(PopulationSimulation simulation)
       {
-         yield break;
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Save Snapshot"))
+            .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation, _container)
+            .WithIcon(ApplicationIcons.SnapshotExport)
+            .ForDeveloper();
       }
+
+  
    }
 
    public class PopulationSimulationTreeNodeContextMenuFactory : SimulationTreeNodeContextMenuFactory<PopulationSimulation>

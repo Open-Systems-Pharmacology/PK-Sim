@@ -186,8 +186,8 @@ namespace PKSim.Core.Services
 
       private string moleculeNameFor(string moleculeName, string compoundName)
       {
-         return moleculeName.ReplaceKeywords(new[] { CoreConstants.Molecule.Drug, CoreConstants.Molecule.DrugFcRnComplexTemplate },
-            new[] { compoundName, CoreConstants.Molecule.DrugFcRnComplexName(compoundName) });
+         return moleculeName.ReplaceKeywords(new[] {CoreConstants.Molecule.Drug, CoreConstants.Molecule.DrugFcRnComplexTemplate},
+            new[] {compoundName, CoreConstants.Molecule.DrugFcRnComplexName(compoundName)});
       }
 
       private void addIndividualMolecules(IEnumerable<CompoundProperties> compoundPropertiesList)
@@ -215,12 +215,17 @@ namespace PKSim.Core.Services
 
          addMoleculeToBuildingBlock(molecule, compoundProperties: null);
 
-         //Update protein builder parameters with the parameter ids
+         //Update protein builder parameters with the parameter ids and values
          _parameterSetUpdater.UpdateValuesByName(individualMolecule, molecule.Parameters);
 
          //Update the building block ids
          _parameterIdUpdater.UpdateBuildingBlockId(molecule.Parameters, _individual);
+
+         //since parameter value were updated from default, some IsDefault will be reset to false
+         _parameterIdUpdater.ResetParameterIsDefaultState(molecule, individualMolecule.GetChildren<IParameter>());
       }
+
+  
 
       private void addMoleculeToBuildingBlock(MoleculeBuilder moleculeBuilder, CompoundProperties compoundProperties)
       {

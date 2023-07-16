@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Services
 {
@@ -200,8 +201,10 @@ namespace PKSim.Core.Services
 
       private void updateMoleculeParameters(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)
       {
-         var allTargetMoleculeParameters = allMoleculeParametersFor(targetSimulationSubject, targetMolecule);
-         var allSourceMoleculeParameters = allMoleculeParametersFor(sourceSimulationSubject, sourceMolecule);
+         //We filter ontogeny parameter tables that are updated separately
+         Func<IParameter, bool> isNotOntogenyFactorTable = x => !x.NameIsOneOf(OntogenyFactorTables);
+         var allTargetMoleculeParameters = allMoleculeParametersFor(targetSimulationSubject, targetMolecule, isNotOntogenyFactorTable);
+         var allSourceMoleculeParameters = allMoleculeParametersFor(sourceSimulationSubject, sourceMolecule, isNotOntogenyFactorTable);
 
          _parameterSetUpdater.UpdateValues(allSourceMoleculeParameters, allTargetMoleculeParameters, updateParameterOriginId);
       }
@@ -226,8 +229,8 @@ namespace PKSim.Core.Services
          SynchronizeAllSimulationSubjectsWithExpressionProfile(expressionProfile);
       }
 
-      private PathCache<IParameter> allMoleculeParametersFor(ISimulationSubject simulationSubject, IndividualMolecule molecule)
-         => _containerTask.PathCacheFor(simulationSubject.Individual.AllMoleculeParametersFor(molecule));
+      private PathCache<IParameter> allMoleculeParametersFor(ISimulationSubject simulationSubject, IndividualMolecule molecule, Func<IParameter, bool> predicate = null)
+         => _containerTask.PathCacheFor(simulationSubject.Individual.AllMoleculeParametersFor(molecule).Where(predicate ?? (_ => true)));
 
       private void updateTransporterDirections(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject)
       {

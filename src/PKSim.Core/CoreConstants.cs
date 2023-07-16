@@ -691,7 +691,7 @@ namespace PKSim.Core
          public static string LigandEndo = "LigandEndo";
          public static string LigandEndoComplex = "LigandEndo_Complex";
          public static string AGP = "AGP";
-         public static string Albumin = "ALB";
+         public static string ALBUMIN = "ALB";
          public static string DrugFcRnComplexTemplate = "FcRn_Complex";
 
          public static string DrugFcRnComplexName(string compoundName)

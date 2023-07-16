@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.UICommands;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -19,8 +19,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected SimulationContextMenu(TSimulation simulation, IContainer container) : base(simulation, container)
       {
       }
-
-      protected abstract IEnumerable<IMenuBarItem> ActionMenuItemsSpecificToType(TSimulation simulation);
 
       protected abstract IEnumerable<IMenuBarItem> ExportMenuItemsSpecificToType(TSimulation simulation);
 
@@ -32,6 +30,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .Union(ExportMenuItemsSpecificToType(simulation))
             .Union(deleteMenuFor(simulation))
             .Union(DebugMenuFor(simulation));
+      }
+
+      protected virtual IEnumerable<IMenuBarItem> ActionMenuItemsSpecificToType(TSimulation populationSimulation)
+      {
+         yield break;
       }
 
       protected virtual IEnumerable<IMenuBarItem> DebugMenuFor(TSimulation simulation)
@@ -51,7 +54,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithCommandFor<ExportSimulationToCppUICommand, Simulation>(simulation, _container)
             .ForDeveloper();
       }
-
 
       protected IMenuBarItem ExportODEForMatlabMenuItem(TSimulation simulation)
       {
