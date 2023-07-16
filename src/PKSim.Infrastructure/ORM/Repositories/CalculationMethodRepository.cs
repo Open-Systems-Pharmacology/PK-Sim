@@ -54,10 +54,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
          if (_calculationMethods.Contains(name))
             return _calculationMethods[name];
 
-         //TMP for now
-         if (name == "BMI")
-            return FindBy("Individual_AgeDependent");
-
          throw new CalculationMethodNotFoundException(name);
       }
    }
