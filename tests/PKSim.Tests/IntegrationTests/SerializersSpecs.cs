@@ -75,6 +75,7 @@ namespace PKSim.IntegrationTests
          if (type.Name.Contains("Exception")) return true;
          if (type.Name.Contains("Factory")) return true;
          if (type == typeof(RemoteTemplate)) return true;
+         if (type == typeof(SupportedProtein)) return true;
          if (type == typeof(LocalTemplate)) return true;
          if (type == typeof(RemoteTemplates)) return true;
          if (type == typeof(PopulationAgeSettings)) return true;

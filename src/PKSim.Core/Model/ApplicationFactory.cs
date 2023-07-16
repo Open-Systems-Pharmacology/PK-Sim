@@ -26,21 +26,30 @@ namespace PKSim.Core.Model
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IParameterSetUpdater _parameterSetUpdater;
+      private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IParticleApplicationCreator _particleApplicationCreator;
       private readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       private readonly IFormulaFactory _formulaFactory;
 
-      public ApplicationFactory(IApplicationRepository applicationRepository, IObjectBaseFactory objectBaseFactory,
-         IObjectPathFactory objectPathFactory, IParameterSetUpdater parameterSetUpdater,
-         IDimensionRepository dimensionRepository, IParameterContainerTask parameterContainerTask,
-         IParticleApplicationCreator particleApplicationCreator, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock, IFormulaFactory formulaFactory)
+      public ApplicationFactory(
+         IApplicationRepository applicationRepository, 
+         IObjectBaseFactory objectBaseFactory,
+         IObjectPathFactory objectPathFactory, 
+         IParameterSetUpdater parameterSetUpdater,
+         IParameterIdUpdater parameterIdUpdater,
+         IDimensionRepository dimensionRepository, 
+         IParameterContainerTask parameterContainerTask,
+         IParticleApplicationCreator particleApplicationCreator, 
+         ICloneManagerForBuildingBlock cloneManagerForBuildingBlock, 
+         IFormulaFactory formulaFactory)
       {
          _applicationRepository = applicationRepository;
          _objectBaseFactory = objectBaseFactory;
          _objectPathFactory = objectPathFactory;
          _parameterSetUpdater = parameterSetUpdater;
+         _parameterIdUpdater = parameterIdUpdater;
          _dimensionRepository = dimensionRepository;
          _parameterContainerTask = parameterContainerTask;
          _particleApplicationCreator = particleApplicationCreator;
@@ -157,6 +166,8 @@ namespace PKSim.Core.Model
       private void copyParameterValues(ISchemaItem schemaItem, IContainer targetContainer, IFormulaCache formulaCache)
       {
          _parameterSetUpdater.UpdateValuesByName(schemaItem, targetContainer);
+         //Also reset parameters that were update based on the schema item
+         _parameterIdUpdater.ResetParameterIsDefaultState(schemaItem, targetContainer);
 
          updateDose(schemaItem, targetContainer, formulaCache);
       }

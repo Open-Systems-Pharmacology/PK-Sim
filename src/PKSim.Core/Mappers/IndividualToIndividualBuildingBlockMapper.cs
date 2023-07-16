@@ -43,8 +43,7 @@ namespace PKSim.Core.Mappers
       protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, Individual individual)
       {
          bool isMetaDataForParameter(ParameterMetaData p) => p.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(p.ParameterName, parameter.Name);
-
-
+         
          //for individual, the CM to use depends on the CM available in the origin data as well as the container where the parameter resides.
          var calculationMethods = individual.OriginData.AllCalculationMethods().AllNames();
 
@@ -68,6 +67,7 @@ namespace PKSim.Core.Mappers
       {
          var individualParameter = base.MapParameter(parameter, individual);
          individualParameter.Info = parameter.Info.Clone();
+         individualParameter.IsDefault = parameter.IsDefault;
          individualParameter.Origin = new ParameterOrigin
          {
             ParameterId = parameter.Id,
