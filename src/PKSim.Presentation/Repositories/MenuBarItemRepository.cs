@@ -193,7 +193,7 @@ namespace PKSim.Presentation.Repositories
          var newSpecificBinding = CreateMenuButton.WithCaption(PKSimConstants.UI.AddSpecificBindingPartner)
             .WithId(MenuBarItemIds.NewExpressionProfileSpecificBindingPartner)
             .WithCommand<AddExpressionProfileCommand<IndividualOtherProtein>>(_container)
-            .WithIcon(ApplicationIcons.SpecificBinding);
+            .WithIcon(ApplicationIcons.Protein);
 
          newExpressionProfile.AddItem(newEnzyme);
          newExpressionProfile.AddItem(newTransporter);
