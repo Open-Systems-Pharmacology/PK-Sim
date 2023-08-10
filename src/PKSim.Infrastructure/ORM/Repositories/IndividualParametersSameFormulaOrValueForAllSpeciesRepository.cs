@@ -54,18 +54,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public bool IsSameFormula(ParameterMetaData parameterMetaData)
       {
+         Start();
          var (isSameFormula, _) = IsSameFormulaOrValue(parameterMetaData);
          return isSameFormula;
       }
 
       public bool IsSameValue(ParameterMetaData parameterMetaData)
       {
+         Start();
          var (_, isSameValue) = IsSameFormulaOrValue(parameterMetaData);
          return isSameValue;
       }
 
       public (bool IsSameFormula, bool IsSameValue) IsSameFormulaOrValue(ParameterMetaData parameterMetaData)
       {
+         Start();
          var parameterSameFormulaOrValue = 
             _parametersSameFormulaOrValueForAllSpeciesByContainerIdAndParameterName[(parameterMetaData.ContainerId, parameterMetaData.ParameterName)];
 
