@@ -4,7 +4,6 @@ using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure.ORM.Repositories;
@@ -28,18 +27,6 @@ namespace PKSim.IntegrationTests
       public void should_return_at_least_one_parameter()
       {
          _result.Count().ShouldBeGreaterThan(0);
-      }
-
-      [Observation]
-      [Ignore("WE have some protein parameters defined with building block type INDIVIDUAL. Not sure why.")]
-      public void all_parameter_paths_should_start_with_organism_or_neighborhoods()
-      {
-         //because we deal here with individual parameters only: only parameters with path "Organism|..." or "Neighborhoods|..." may appear in the list
-         _result.Each(p =>
-         {
-            var containerPath = p.ContainerPath;
-            (containerPath.StartsWith("Organism") || containerPath.StartsWith("Neighborhoods")).ShouldBeTrue($"{p.ContainerPath}|{p.ParameterName}");
-         });
       }
    }
 
