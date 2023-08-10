@@ -27,13 +27,13 @@ namespace PKSim.Core
       private readonly List<ParameterRateMetaData> _rateDefinitions = new List<ParameterRateMetaData>();
       private readonly List<ParameterValueMetaData> _valueDefinitions = new List<ParameterValueMetaData>();
       protected IParameter _paramRate1;
-      private IContainerParametersNotCommonForAllSpeciesRepository _commonParametersRepository;
+      private IIndividualParametersNotCommonForAllSpeciesRepository _commonParametersRepository;
 
       protected override void Context()
       {
          _parameterQuery = A.Fake<IParameterQuery>();
          _parameterFactory = A.Fake<IParameterFactory>();
-         _commonParametersRepository = A.Fake<IContainerParametersNotCommonForAllSpeciesRepository>();
+         _commonParametersRepository = A.Fake<IIndividualParametersNotCommonForAllSpeciesRepository>();
          sut = new ParameterContainerTask(_parameterQuery, _parameterFactory, _commonParametersRepository);
 
 
