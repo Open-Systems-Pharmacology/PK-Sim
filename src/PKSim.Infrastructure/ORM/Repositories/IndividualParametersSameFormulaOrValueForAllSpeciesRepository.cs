@@ -14,7 +14,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IFlatIndividualParametersSameFormulaOrValueForAllSpeciesRepository _flatIndividualParametersSameFormulaOrValueForAllSpeciesRepository;
 
       private readonly List<IndividualParameterSameFormulaOrValueForAllSpecies> _individualParametersSameFormulaOrValue = new List<IndividualParameterSameFormulaOrValueForAllSpecies>();
-      private readonly Cache<(int, string), IndividualParameterSameFormulaOrValueForAllSpecies> _parametersSameFormulaOrValueForAllSpeciesByContainerIdAndParameterName = 
+      private readonly Cache<(int, string), IndividualParameterSameFormulaOrValueForAllSpecies> _allByContainerIdAndParameterName = 
          new Cache<(int, string), IndividualParameterSameFormulaOrValueForAllSpecies>(onMissingKey:x=>null);
 
       public IndividualParametersSameFormulaOrValueForAllSpeciesRepository(
@@ -41,7 +41,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
                IsSameFormula = isSameFormula
             };
             _individualParametersSameFormulaOrValue.Add(individualParameterSameFormulaOrValueForAllSpecies);
-            _parametersSameFormulaOrValueForAllSpeciesByContainerIdAndParameterName.Add((containerId, parameterName),
+            _allByContainerIdAndParameterName.Add((containerId, parameterName),
                individualParameterSameFormulaOrValueForAllSpecies);
          }
       }
@@ -54,14 +54,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public bool IsSameFormula(ParameterMetaData parameterMetaData)
       {
-         Start();
          var (isSameFormula, _) = IsSameFormulaOrValue(parameterMetaData);
          return isSameFormula;
       }
 
       public bool IsSameValue(ParameterMetaData parameterMetaData)
       {
-         Start();
          var (_, isSameValue) = IsSameFormulaOrValue(parameterMetaData);
          return isSameValue;
       }
@@ -70,7 +68,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       {
          Start();
          var parameterSameFormulaOrValue = 
-            _parametersSameFormulaOrValueForAllSpeciesByContainerIdAndParameterName[(parameterMetaData.ContainerId, parameterMetaData.ParameterName)];
+            _allByContainerIdAndParameterName[(parameterMetaData.ContainerId, parameterMetaData.ParameterName)];
 
          return parameterSameFormulaOrValue == null
             ? (IsSameFormula: false, IsSameValue: false)
