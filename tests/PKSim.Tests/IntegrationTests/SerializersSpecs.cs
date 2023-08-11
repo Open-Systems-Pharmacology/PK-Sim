@@ -169,6 +169,8 @@ namespace PKSim.IntegrationTests
          if (type == typeof(CategoryType)) return true;
          if (type == typeof(ProcessActionType)) return true;
          if (type == typeof(LoadTemplateWithReference)) return true;
+         if (type == typeof(IndividualParameterBySpecies)) return true;
+         if (type == typeof(IndividualParameterSameFormulaOrValueForAllSpecies)) return true;
 
          //TODO not serialized yet
          if (type == typeof(QualificationPlan)) return true;

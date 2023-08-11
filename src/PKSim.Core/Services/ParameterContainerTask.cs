@@ -34,10 +34,10 @@ namespace PKSim.Core.Services
    public class ParameterContainerTask : IParameterContainerTask
    {
       private readonly IParameterFactory _parameterFactory;
-      private readonly IContainerParametersNotCommonForAllSpeciesRepository _commonParametersRepository;
+      private readonly IIndividualParametersNotCommonForAllSpeciesRepository _commonParametersRepository;
       private readonly IParameterQuery _parameterQuery;
 
-      public ParameterContainerTask(IParameterQuery parameterQuery, IParameterFactory parameterFactory, IContainerParametersNotCommonForAllSpeciesRepository commonParametersRepository)
+      public ParameterContainerTask(IParameterQuery parameterQuery, IParameterFactory parameterFactory, IIndividualParametersNotCommonForAllSpeciesRepository commonParametersRepository)
       {
          _parameterQuery = parameterQuery;
          _parameterFactory = parameterFactory;
