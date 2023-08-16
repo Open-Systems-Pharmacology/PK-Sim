@@ -38,7 +38,7 @@ namespace PKSim.IntegrationTests
       {
          var containerId = _flatContainerRepository.ContainerFrom(containerPath).Id;
 
-         return new ParameterMetaData()
+         return new ParameterMetaData
          {
             ContainerId = containerId,
             ParameterName = parameterName
@@ -47,55 +47,52 @@ namespace PKSim.IntegrationTests
 
       private (bool isSameFormula, bool isSameValue) isSameFormulaOrValue(string containerPath, string parameterName)
       {
-         return sut.IsSameFormulaOrValue(parameterMetaDataFor(containerPath, parameterName));
+         var parameterMetaData = parameterMetaDataFor(containerPath, parameterName);
+         var isSameFormula = sut.IsSameFormula(parameterMetaData);
+         var isSameValue = sut.IsSameValue(parameterMetaData);
+         return (isSameFormula, isSameValue);
       }
 
-      private bool isSameFormula(string containerPath, string parameterName)
-      {
-         return sut.IsSameFormula(parameterMetaDataFor(containerPath, parameterName));
-      }
+      private bool isSameFormula(string containerPath, string parameterName) => sut.IsSameFormula(parameterMetaDataFor(containerPath, parameterName));
 
-      private bool isSameValue(string containerPath, string parameterName)
-      {
-         return sut.IsSameValue(parameterMetaDataFor(containerPath, parameterName));
-      }
+      private bool isSameValue(string containerPath, string parameterName) => sut.IsSameValue(parameterMetaDataFor(containerPath, parameterName));
 
       protected static IEnumerable<object[]> TestData()
       {
          yield return new object[]
          {
-            "Organism", "Weight", (isSameFormula:true, isSameValue:false)
+            "Organism", "Weight", (isSameFormula: true, isSameValue: false)
          };
 
          yield return new object[]
          {
-            "Organism", "Height", (isSameFormula:false, isSameValue:false)
+            "Organism", "Height", (isSameFormula: false, isSameValue: false)
          };
 
          yield return new object[]
          {
-            "Organism|Bone", "Volume", (isSameFormula:false, isSameValue:false)
+            "Organism|Bone", "Volume", (isSameFormula: false, isSameValue: false)
          };
 
          yield return new object[]
          {
-            "Organism|Lumen|Duodenum", "Length", (isSameFormula:false, isSameValue:false)
+            "Organism|Lumen|Duodenum", "Length", (isSameFormula: false, isSameValue: false)
          };
 
          yield return new object[]
          {
-            "Organism|Bone", "Organ volume mouse", (isSameFormula:false, isSameValue:true)
+            "Organism|Bone", "Organ volume mouse", (isSameFormula: false, isSameValue: true)
          };
       }
 
       [Observation]
       [TestCaseSource(nameof(TestData))]
-      public void should_return_correct_values(string containerPath, string parameterName, 
+      public void should_return_correct_values(string containerPath, string parameterName,
          (bool isSameFormula, bool isSameValue) expectedValues)
       {
          var (sameFormula, sameValue) = isSameFormulaOrValue(containerPath, parameterName);
 
-         sameFormula.ShouldBeEqualTo(expectedValues.isSameFormula,"Formula equality not as expected");
+         sameFormula.ShouldBeEqualTo(expectedValues.isSameFormula, "Formula equality not as expected");
          sameValue.ShouldBeEqualTo(expectedValues.isSameValue, "Value equality not as expected");
 
          sameFormula.ShouldBeEqualTo(isSameFormula(containerPath, parameterName));

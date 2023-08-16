@@ -10,6 +10,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static PKSim.Core.CoreConstants.Groups;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
@@ -24,6 +25,7 @@ namespace PKSim.Core.Mappers
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
       private readonly IParameterQuery _parameterQuery;
+      private readonly IIndividualParametersSameFormulaOrValueForAllSpeciesRepository _sameFormulaOrValueForAllSpeciesRepository;
 
       public IndividualToIndividualBuildingBlockMapper(
          IObjectBaseFactory objectBaseFactory,
@@ -33,17 +35,19 @@ namespace PKSim.Core.Mappers
          IRepresentationInfoRepository representationInfoRepository,
          ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
          IFormulaFactory formulaFactory,
-         IParameterQuery parameterQuery) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory)
+         IParameterQuery parameterQuery,
+         IIndividualParametersSameFormulaOrValueForAllSpeciesRepository sameFormulaOrValueForAllSpeciesRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory)
       {
          _representationInfoRepository = representationInfoRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
          _parameterQuery = parameterQuery;
+         _sameFormulaOrValueForAllSpeciesRepository = sameFormulaOrValueForAllSpeciesRepository;
       }
 
       protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, Individual individual)
       {
          bool isMetaDataForParameter(ParameterMetaData p) => p.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(p.ParameterName, parameter.Name);
-         
+
          //for individual, the CM to use depends on the CM available in the origin data as well as the container where the parameter resides.
          var calculationMethods = individual.OriginData.AllCalculationMethods().AllNames();
 
@@ -60,7 +64,17 @@ namespace PKSim.Core.Mappers
 
       protected override IReadOnlyList<IParameter> AllParametersFor(Individual individual)
       {
-         return individual.GetAllChildren<IParameter>().Where(x => x.GroupName != CoreConstants.Groups.RELATIVE_EXPRESSION).ToList();
+         bool shouldExportParameter(IParameter parameter)
+         {
+            //these parameters are exported separately
+            if (parameter.GroupName == RELATIVE_EXPRESSION)
+               return false;
+
+            return !_sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameter);
+         }
+
+         //we only add parameters that either not defined in all species OR define in all species with a value or formula that is different between species
+         return individual.GetAllChildren<IParameter>(shouldExportParameter);
       }
 
       public override IndividualParameter MapParameter(IParameter parameter, Individual individual)

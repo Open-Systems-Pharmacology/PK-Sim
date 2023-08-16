@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PKSim.Core.Model
+﻿namespace PKSim.Core.Model
 {
    public class IndividualParameterSameFormulaOrValueForAllSpecies
    {
@@ -11,5 +7,6 @@ namespace PKSim.Core.Model
       public string ParameterName { get; set; }
       public bool IsSameFormula { get; set; }
       public bool IsSameValue => !IsSameFormula;
+      public bool IsSame => IsSameFormula || IsSameValue;
    }
 }

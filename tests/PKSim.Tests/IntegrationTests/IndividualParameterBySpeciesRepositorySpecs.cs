@@ -11,7 +11,7 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_IndividualParametersNotCommonForAllSpeciesRepository : ContextForIntegration<IIndividualParametersNotCommonForAllSpeciesRepository>
+   public abstract class concern_for_IndividualParametersNotCommonForAllSpeciesRepository : ContextForIntegration<IIndividualParameterBySpeciesRepository>
    {
    }
 

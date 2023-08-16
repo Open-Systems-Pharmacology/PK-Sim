@@ -6,7 +6,7 @@ using PKSim.Core.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
-   public class IndividualParametersNotCommonForAllSpeciesRepository : StartableRepository<IndividualParameterBySpecies>, IIndividualParametersNotCommonForAllSpeciesRepository
+   public class IndividualParameterBySpeciesRepository : StartableRepository<IndividualParameterBySpecies>, IIndividualParameterBySpeciesRepository
    {
       private readonly IFlatContainerRepository _flatContainerRepository;
       private readonly IFlatIndividualParametersNotCommonForAllSpeciesRepository _flatIndividualParametersNotCommonForAllSpeciesRepository;
@@ -16,7 +16,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly Cache<int, HashSet<string>> _parametersNotCommonForAllSpeciesByContainerId = new Cache<int, HashSet<string>>(onMissingKey: x => null);
       private readonly HashSet<string> _parametersNotCommonForAllSpeciesByFullPath = new HashSet<string>();
 
-      public IndividualParametersNotCommonForAllSpeciesRepository(
+      public IndividualParameterBySpeciesRepository(
          IFlatContainerRepository flatContainerRepository,
          IFlatIndividualParametersNotCommonForAllSpeciesRepository flatIndividualParametersNotCommonForAllSpeciesRepository)
       {

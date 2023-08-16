@@ -1,10 +1,10 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
-using FakeItEasy;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core
 {
@@ -125,8 +125,10 @@ namespace PKSim.Core
          _simulation = new IndividualSimulation();
          _entity = new PKSimParameter();
          _simulation.Model = new OSPSuite.Core.Domain.Model();
-         _simulation.Model.Root = new Container();
-         _simulation.Model.Root.Add(_entity);
+         _simulation.Model.Root = new Container
+         {
+            _entity
+         };
       }
 
       [Observation]
