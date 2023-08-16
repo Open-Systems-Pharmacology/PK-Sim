@@ -32,20 +32,20 @@ namespace PKSim.Core.Services
    public class ParameterContainerTask : IParameterContainerTask
    {
       private readonly IParameterFactory _parameterFactory;
-      private readonly IIndividualParameterBySpeciesRepository _commonParametersRepository;
+      private readonly IIndividualParameterBySpeciesRepository _individualParameterBySpeciesRepository;
       private readonly IIndividualParametersSameFormulaOrValueForAllSpeciesRepository _sameFormulaOrValueForAllSpeciesRepository;
       private readonly IParameterQuery _parameterQuery;
 
       public ParameterContainerTask(
          IParameterQuery parameterQuery,
          IParameterFactory parameterFactory,
-         IIndividualParameterBySpeciesRepository commonParametersRepository,
+         IIndividualParameterBySpeciesRepository individualParameterBySpeciesRepository,
          IIndividualParametersSameFormulaOrValueForAllSpeciesRepository sameFormulaOrValueForAllSpeciesRepository
       )
       {
          _parameterQuery = parameterQuery;
          _parameterFactory = parameterFactory;
-         _commonParametersRepository = commonParametersRepository;
+         _individualParameterBySpeciesRepository = individualParameterBySpeciesRepository;
          _sameFormulaOrValueForAllSpeciesRepository = sameFormulaOrValueForAllSpeciesRepository;
       }
 
@@ -68,7 +68,7 @@ namespace PKSim.Core.Services
          {
             //all non individual parameters are added to the spatial structure by default
             //otherwise, we add all parameters that are used by all species. The value used will be set based on the fact that the parameter has a shared value for all parameters or species or not
-            return parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual || _commonParametersRepository.UsedForAllSpecies(parameterMetaData);
+            return parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual || _individualParameterBySpeciesRepository.UsedForAllSpecies(parameterMetaData);
          }
 
 
