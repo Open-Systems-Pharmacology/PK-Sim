@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentNHibernate.Utils;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility.Container;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.IntegrationTests
 {
@@ -41,28 +44,54 @@ namespace PKSim.IntegrationTests
 
    public class When_testing_if_a_parameter_is_common_for_all_species : concern_for_IndividualParametersNotCommonForAllSpeciesRepository
    {
-      [Observation]
-      public void age_parameter_should_be_defined_not_for_all_species()
+      private readonly IFlatContainerRepository _flatContainerRepository = IoC.Resolve<IFlatContainerRepository>();
+
+      private ParameterMetaData parameterMetaDataFor(string containerPath, string parameterName)
       {
-         sut.UsedForAllSpecies("Organism","Age").ShouldBeFalse();
+         var containerId = _flatContainerRepository.ContainerFrom(containerPath).Id;
+
+         return new ParameterMetaData()
+         {
+            ContainerId = containerId,
+            ParameterName = parameterName
+         };
       }
 
-      [Observation]
-      public void weight_parameter_should_be_defined_for_all_species()
+      protected static IEnumerable<object[]> TestData_UsageForAllSpecies()
       {
-         sut.UsedForAllSpecies("Organism", "Weight").ShouldBeTrue();
+         yield return new object[]
+         {
+            "Organism", "Age", false //available only for human
+         };
+
+         yield return new object[]
+         {
+            "Organism", "Weight", true
+         };
+
+         yield return new object[]
+         {
+            "Organism|Bone", "Volume", false //distributed parameter for human, value parameter for others
+         };
+
+         yield return new object[]
+         {
+            "Organism|Lumen|Duodenum", "Length", true
+         };
+
+         yield return new object[]
+         {
+            "Organism|Bone", "Specific blood flow rate", false //distributed parameter for human, value parameter for others
+         };
       }
 
+      [TestCaseSource(nameof(TestData_UsageForAllSpecies))]
       [Observation]
-      public void age_parameter_should_be_defined_not_for_all_species_when_queried_by_full_path()
+      public void should_return_correct_usage_for_all_species(string containerPath, string parameterName, bool expectedUsageForAllSpecies)
       {
-         sut.UsedForAllSpecies("Organism|Age").ShouldBeFalse();
-      }
-
-      [Observation]
-      public void weight_parameter_should_be_defined_for_all_species_when_queried_by_full_path()
-      {
-         sut.UsedForAllSpecies("Organism|Weight").ShouldBeTrue();
+         sut.UsedForAllSpecies(containerPath,parameterName).ShouldBeEqualTo(expectedUsageForAllSpecies);
+         sut.UsedForAllSpecies($"{containerPath}|{parameterName}").ShouldBeEqualTo(expectedUsageForAllSpecies);
+         sut.UsedForAllSpecies(parameterMetaDataFor(containerPath,parameterName)).ShouldBeEqualTo(expectedUsageForAllSpecies);
       }
    }
 }
