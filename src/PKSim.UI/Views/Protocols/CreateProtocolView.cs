@@ -105,7 +105,7 @@ namespace PKSim.UI.Views.Protocols
          layoutItemName.Text = PKSimConstants.UI.Name.FormatForLabel();
          Caption = PKSimConstants.UI.CreateAdministrationProtocol;
          ApplicationIcon = ApplicationIcons.Protocol;
-         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
+         this.ResizeForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
 
       public override void AddSubItemView(ISubPresenterItem subPresenterItem, IView viewToAdd)

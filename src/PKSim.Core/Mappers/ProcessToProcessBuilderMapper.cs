@@ -374,11 +374,11 @@ namespace PKSim.Core.Mappers
       {
          var sourceCriteria = transporterBuilder.SourceCriteria;
          var allSourceTags = sourceCriteria.OfType<MatchTagCondition>().Select(x => x.Tag).ToList();
-         var (sourceIsLumen, sourceIsMucosa) = (allSourceTags.Contains(LUMEN), allSourceTags.Contains(MUCOSA));
+         var (sourceIsLumen, sourceIsMucosa) = (allSourceTags.Contains(Constants.LUMEN), allSourceTags.Contains(MUCOSA));
 
          var targetCriteria = transporterBuilder.TargetCriteria;
          var allTargetTags = targetCriteria.OfType<MatchTagCondition>().Select(x => x.Tag).ToList();
-         var (targetIsLumen, targetIsMucosa) = (allTargetTags.Contains(LUMEN), allTargetTags.Contains(MUCOSA));
+         var (targetIsLumen, targetIsMucosa) = (allTargetTags.Contains(Constants.LUMEN), allTargetTags.Contains(MUCOSA));
 
          var isLumen = sourceIsLumen || targetIsLumen;
          var isMucosa = sourceIsMucosa || targetIsMucosa;
