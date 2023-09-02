@@ -112,13 +112,13 @@ namespace PKSim.Core.Model
       private void addNeighborhood(NeighborhoodBuilder neighborhood, SpatialStructure spatialStructure, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache)
       {
          spatialStructure.AddNeighborhood(neighborhood);
-         _parameterContainerTask.AddModelParametersTo(neighborhood, originData, modelProperties, formulaCache);
-         _parameterContainerTask.AddModelParametersTo(neighborhood.MoleculeProperties, originData, modelProperties, formulaCache);
+         _parameterContainerTask.AddParametersToSpatialStructureContainer(neighborhood, originData, modelProperties, formulaCache);
+         _parameterContainerTask.AddParametersToSpatialStructureContainer(neighborhood.MoleculeProperties, originData, modelProperties, formulaCache);
       }
 
       private void addModelStructureTo(IContainer container, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache)
       {
-         _parameterContainerTask.AddModelParametersTo(container, originData, modelProperties, formulaCache);
+         _parameterContainerTask.AddParametersToSpatialStructureContainer(container, originData, modelProperties, formulaCache);
 
          foreach (var subContainer in _modelContainerQuery.SubContainersFor(originData.Population, modelProperties.ModelConfiguration, container))
          {

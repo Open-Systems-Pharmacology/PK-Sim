@@ -606,13 +606,6 @@ namespace PKSim.Assets
 
          public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
-         public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName) => $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
-
-         public static string FormulaParameterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
-         {
-            return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'.";
-         }
-
          public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute) => 
             $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
 

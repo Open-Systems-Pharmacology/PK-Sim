@@ -53,7 +53,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.ParameterRatesFor(_compartment, new[] {"Individual"});
+         _result = sut.ParameterRatesFor(_compartment, new[] {"Individual"}, x => true);
       }
 
       [Observation]
@@ -70,7 +70,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.ParameterDistributionsFor(_compartment, _originData);
+         _result = sut.ParameterDistributionsFor(_compartment, _originData, x => true);
       }
 
       [Observation]
@@ -87,7 +87,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _result = sut.ParameterValuesFor(_compartment, _originData);
+         _result = sut.ParameterValuesFor(_compartment, _originData, x=>true);
       }
 
       [Observation]

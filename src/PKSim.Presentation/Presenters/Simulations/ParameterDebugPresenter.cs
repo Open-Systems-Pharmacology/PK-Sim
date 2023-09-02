@@ -35,15 +35,23 @@ namespace PKSim.Presentation.Presenters.Simulations
          parameterIdTable.AddColumn("Building block Id");
          parameterIdTable.AddColumn("Parameter Id");
          parameterIdTable.AddColumn("Simulation Id");
+         parameterIdTable.AddColumn<bool>("Is Constant");
+         parameterIdTable.AddColumn<bool>("Editable");
+         parameterIdTable.AddColumn<bool>("Visible");
+
 
          foreach (var parameter in allParameters)
          {
             var row = parameterIdTable.NewRow();
-            row[0] = _entityPathResolver.PathFor(parameter);
-            row[1] = parameter.BuildingBlockType.ToString();
-            row[2] = parameter.Origin.BuilingBlockId;
-            row[3] = parameter.Origin.ParameterId;
-            row[4] = parameter.Origin.SimulationId;
+            var i = 0;
+            row[i++] = _entityPathResolver.PathFor(parameter);
+            row[i++] = parameter.BuildingBlockType.ToString();
+            row[i++] = parameter.Origin.BuilingBlockId;
+            row[i++] = parameter.Origin.ParameterId;
+            row[i++] = parameter.Origin.SimulationId;
+            row[i++] = parameter.Formula.IsConstant();
+            row[i++] = parameter.Editable;
+            row[i++] = parameter.Visible;
             parameterIdTable.Rows.Add(row);
          }
 
@@ -53,18 +61,6 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private bool parameterShouldBeDisplayed(IParameter parameter)
       {
-         if (!parameter.BuildingBlockType.Is(PKSimBuildingBlockType.Simulation))
-            return false;
-
-         if (!parameter.Formula.IsConstant())
-            return false;
-
-         if (!parameter.Visible)
-            return false;
-
-         if (!parameter.Editable)
-            return false;
-
          return true;
       }
    }

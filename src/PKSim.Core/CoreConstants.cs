@@ -792,7 +792,7 @@ namespace PKSim.Core
          public static readonly string HEART = "Heart";
          public static readonly string KIDNEY = "Kidney";
          public static readonly string LARGE_INTESTINE = "LargeIntestine";
-         public static readonly string LUMEN = "Lumen";
+         public static readonly string LUMEN = Constants.LUMEN;
          public static readonly string LUNG = "Lung";
          public static readonly string LIVER = "Liver";
          public static readonly string MUSCLE = "Muscle";

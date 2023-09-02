@@ -66,20 +66,27 @@ namespace PKSim.Core.Services
 
       private void updateSimulationAfterModelCreation(Simulation simulation)
       {
-         //last step. Once the model has been created, it is necessary to set the id of the simulation 
-         //in all parameter defined in the model
-         _parameterIdUpdater.UpdateSimulationId(simulation);
-
-         //local molecule parameters parameter id need to be updated as well
-         var allParameters = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
+         
          var individual = simulation.Individual;
 
+         var allIndividualParameters = _containerTask.CacheAllChildren<IParameter>(individual);
+         var allSimulationParameters = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
+
+         //Once the model has been created, it is necessary to update origin to ensure that references are set properly
+         //Simulation id for all parameters
+         _parameterIdUpdater.UpdateSimulationId(simulation);
+         //Parameter Ids for all parameters coming from individuals (as some where created in the spatial structure independently from the individual)
+         _parameterIdUpdater.UpdateParameterIds(allIndividualParameters, allSimulationParameters);
+         //Building block id for the same parameters
+         _parameterIdUpdater.UpdateBuildingBlockId(allSimulationParameters, individual);
+         
+         //local molecule parameters parameter id need to be updated as well
          individual.AllMolecules().Each(m =>
          {
             var allMoleculeParameters = individual.AllMoleculeParametersFor(m);
             allMoleculeParameters.Each(p =>
             {
-               var simulationParameter = allParameters[_entityPathResolver.PathFor(p)];
+               var simulationParameter = allSimulationParameters[_entityPathResolver.PathFor(p)];
                if (simulationParameter != null)
                   updateFromIndividualParameter(simulationParameter, p, individual);
             });

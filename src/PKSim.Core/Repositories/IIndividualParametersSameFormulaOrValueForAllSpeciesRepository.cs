@@ -1,4 +1,5 @@
-﻿using OSPSuite.Utility.Collections;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Repositories
@@ -7,6 +8,7 @@ namespace PKSim.Core.Repositories
    {
       bool IsSameFormula(ParameterMetaData parameterMetaData);
       bool IsSameValue(ParameterMetaData parameterMetaData);
-      (bool IsSameFormula, bool IsSameValue) IsSameFormulaOrValue(ParameterMetaData parameterMetaData);
+      (bool isSame, bool exists) IsSameFormulaOrValue(ParameterMetaData parameterMetaData);
+      bool IsSameFormulaOrValue(IParameter parameter);
    }
 }

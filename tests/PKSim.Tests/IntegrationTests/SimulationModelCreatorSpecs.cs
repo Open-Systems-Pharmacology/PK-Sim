@@ -1,21 +1,19 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.IntegrationTests
 {
    public class When_a_model_is_being_created_for_a_simulation : ContextForSimulationIntegration<ISimulationModelCreator>
    {
       private IndividualMolecule _enzyme;
-      private IndividualMolecule _protein;
 
       public override void GlobalContext()
       {
@@ -23,12 +21,11 @@ namespace PKSim.IntegrationTests
          var templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
-         
+
          var cypExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "CYP");
          _enzyme = cypExpression.Molecule;
 
          var protExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "PROT");
-         _protein = protExpression.Molecule;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, compound, protocol).DowncastTo<IndividualSimulation>();
 
