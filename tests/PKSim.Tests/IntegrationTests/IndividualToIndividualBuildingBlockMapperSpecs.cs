@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
+using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
@@ -16,7 +17,8 @@ namespace PKSim.IntegrationTests
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         //specify a population here as we need a human specific formula
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual(population: CoreConstants.Population.ICRP);
       }
    }
 
@@ -48,7 +50,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_replaced_the_ROOT_key_element_path_in_all_formula()
       {
-         var formula = _buildingBlock.FormulaCache.FindByName("PARAM_BW");
+         //this formula is defined as it is human specific
+         var formula = _buildingBlock.FormulaCache.FindByName("PARAM_eGFR");
          formula.ObjectPaths.Count.ShouldBeEqualTo(2);
          formula.ObjectPaths[0][0].ShouldBeEqualTo(Constants.ORGANISM);
       }

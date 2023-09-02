@@ -82,6 +82,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public bool IsSameFormulaOrValue(IParameter parameter)
       {
+         Start();
          var path = _entityPathResolver.PathFor(parameter);
          var parameterSameFormulaOrValue = _allByParameterPath[path];
          return parameterSameFormulaOrValue?.IsSame ?? false;
