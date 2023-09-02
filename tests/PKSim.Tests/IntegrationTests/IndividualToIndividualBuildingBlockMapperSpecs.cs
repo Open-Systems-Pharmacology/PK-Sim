@@ -50,7 +50,7 @@ namespace PKSim.IntegrationTests
       {
          var formula = _buildingBlock.FormulaCache.FindByName("PARAM_BW");
          formula.ObjectPaths.Count.ShouldBeEqualTo(2);
-         formula.ObjectPaths[0][0].ShouldBeEqualTo("Organism");
+         formula.ObjectPaths[0][0].ShouldBeEqualTo(Constants.ORGANISM);
       }
    }
 }
