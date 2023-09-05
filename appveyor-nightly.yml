@@ -5,6 +5,17 @@ version: '{build}'
 
 init:
 - ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
+- ps: |
+      $lastCommitDate = git log -1 --format=%ci
+      $currentDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+      $timeDiff = New-TimeSpan -Start $lastCommitDate -End $currentDate
+      if ($timeDiff.TotalHours -lt 24) {
+        Write-Host "Changes detected in the last 24 hours. Proceeding with the build."
+      }
+      else {
+        Write-Host "No changes in the last 24 hours. Skipping the build."
+        Exit-AppVeyorBuild
+      }
 
 dotnet_csproj:
   patch: true
@@ -17,6 +28,9 @@ dotnet_csproj:
 
 clone_depth: 1
 
+schedule:
+  - cron: "00 22 * * 1-5"
+  
 install:
   - set PATH=C:\Ruby25\bin;%PATH%
   - gem install xml-simple
