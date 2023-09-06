@@ -4,7 +4,7 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class ChangeEnzymaticProcessMetaboliteNameCommand : BuildingBlockChangeCommand
+   public class ChangeEnzymaticProcessMetaboliteNameCommand : BuildingBlockStructureChangeCommand
    {
       private EnzymaticProcess _process;
       private readonly string _newMetabolite;

@@ -1,15 +1,17 @@
 using System.Drawing;
+using System.Linq;
 using OSPSuite.Assets;
-using PKSim.Core.Model;
-using PKSim.Presentation.DTO;
-using PKSim.Presentation.DTO.Mappers;
-using PKSim.Presentation.Views.Diagrams;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Diagram;
 using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
+using PKSim.Presentation.DTO;
+using PKSim.Presentation.DTO.Mappers;
+using PKSim.Presentation.Views.Diagrams;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -19,7 +21,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       ///    Sets the subject of this reaction diagram to the simulation
       /// </summary>
       /// <param name="simulation">The simulation containing the reaction being displayed</param>
-      void Edit(Simulation simulation);
+      /// <param name="recreateDiagram">Specifies if the diagram model should be recreated (in case of update or config where the config might change)</param>
+      void Edit(Simulation simulation, bool recreateDiagram);
 
       void DiagramHasChanged();
    }
@@ -31,14 +34,14 @@ namespace PKSim.Presentation.Presenters.Simulations
       private readonly ISimulationToSimulationReactionDiagramDTOMapper _simulationReactionDiagramDTOMapper;
       private Simulation _simulation;
 
-      public ReactionDiagramPresenter(IReactionDiagramView view, 
-         IContainerBaseLayouter layouter, 
-         IDialogCreator dialogCreator, 
+      public ReactionDiagramPresenter(IReactionDiagramView view,
+         IContainerBaseLayouter layouter,
+         IDialogCreator dialogCreator,
          IDiagramModelFactory diagramModelFactory,
          IUserSettings userSettings,
-         IDiagramLayoutTask layoutTask, 
+         IDiagramLayoutTask layoutTask,
          ISimulationToSimulationReactionDiagramDTOMapper simulationReactionDiagramDTOMapper)
-         : base(view, layouter, dialogCreator,diagramModelFactory)
+         : base(view, layouter, dialogCreator, diagramModelFactory)
       {
          _userSettings = userSettings;
          _layoutTask = layoutTask;
@@ -48,12 +51,14 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void EditSimulation(IndividualSimulation simulation)
       {
-         Edit(simulation);
+         //false since we are editing an existing simulation not configuring one here
+         Edit(simulation, recreateDiagram:false);
       }
 
       public void EditSimulation(PopulationSimulation simulation)
       {
-         Edit(simulation);
+         //false since we are editing an existing simulation not configuring one here
+         Edit(simulation, recreateDiagram: false);
       }
 
       public ApplicationIcon Icon => _view.ApplicationIcon;
@@ -79,12 +84,18 @@ namespace PKSim.Presentation.Presenters.Simulations
          Refresh();
       }
 
-      public void Edit(Simulation simulation)
+      public void Edit(Simulation simulation, bool recreateDiagram)
       {
          _simulation = simulation;
-
-         var dto = _simulationReactionDiagramDTOMapper.MapFrom(simulation);
+         var dto = _simulationReactionDiagramDTOMapper.MapFrom(simulation, recreateDiagram);
          Edit(dto);
+      }
+
+      private void removeOrphanMolecules(IDiagramModel diagramModel)
+      {
+         diagramModel?.GetAllChildren<IMoleculeNode>()
+            .Where(x => !x.IsConnectedToReactions)
+            .ToList().Each(x => diagramModel.RemoveChildNode(x));
       }
 
       public void DiagramHasChanged()

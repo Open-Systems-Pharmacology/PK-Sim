@@ -23,7 +23,8 @@ namespace PKSim.Presentation.Presenters.Diagrams
 
       public void Show(Simulation simulation)
       {
-         _subPresenter.Edit(simulation);
+         //we are in the modal view shown with a potential outdated simulation
+         _subPresenter.Edit(simulation, recreateDiagram: true);
          _view.Display();
       }
    }

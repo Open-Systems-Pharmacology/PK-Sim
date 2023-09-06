@@ -19,19 +19,16 @@ namespace PKSim.UI
       protected Simulation _simulation;
       protected SimulationReactionDiagramDTO _dto;
       protected ReactionBuildingBlock _reactionBuildingBlock;
+      protected IDiagramModelFactory _diagramModelFactory;
 
       protected override void Context()
       {
          _reactionBuildingBlockCreator = A.Fake<IReactionBuildingBlockCreator>();
-         sut = new SimulationToSimulationReactionDiagramDTOMapper(_reactionBuildingBlockCreator);
+         _diagramModelFactory = A.Fake<IDiagramModelFactory>();
+         sut = new SimulationToSimulationReactionDiagramDTOMapper(_reactionBuildingBlockCreator, _diagramModelFactory);
          _reactionBuildingBlock = new ReactionBuildingBlock();
 
          _simulation = new IndividualSimulation();
-      }
-
-      protected override void Because()
-      {
-         _dto = sut.MapFrom(_simulation);
       }
    }
 
@@ -48,13 +45,17 @@ namespace PKSim.UI
          A.CallTo(() => _firstNode.Id).Returns("Id1");
          A.CallTo(() => _firstNode.Name).Returns("Name");
          _secondBuilder = new ReactionBuilder {Name = "Name", Id = "Id2"};
-         _simulation.AddReactions(_reactionBuildingBlock);
          _reactionBuildingBlock.Add(_secondBuilder);
+         A.CallTo(() => _reactionBuildingBlockCreator.CreateFor(_simulation)).Returns(_reactionBuildingBlock);
 
          _diagramModel = A.Fake<IDiagramModel>();
          _simulation.ReactionDiagramModel = _diagramModel;
-
          A.CallTo(() => _diagramModel.FindByName(_secondBuilder.Name)).Returns(_firstNode);
+      }
+
+      protected override void Because()
+      {
+         _dto = sut.MapFrom(_simulation, recreateDiagram: false);
       }
 
       [Observation]
@@ -68,7 +69,7 @@ namespace PKSim.UI
       [Observation]
       public void should_use_the_reaction_building_block_from_the_simulation()
       {
-         _dto.ReactionBuildingBlock.ShouldBeEqualTo(_simulation.Reactions.First());
+         _dto.ReactionBuildingBlock.ShouldBeEqualTo(_reactionBuildingBlock);
       }
 
       [Observation]
@@ -86,6 +87,11 @@ namespace PKSim.UI
          A.CallTo(() => _reactionBuildingBlockCreator.CreateFor(_simulation)).Returns(_reactionBuildingBlock);
       }
 
+      protected override void Because()
+      {
+         _dto = sut.MapFrom(_simulation, recreateDiagram: false);
+      }
+
       [Observation]
       public void should_create_a_new_reaction_building_block()
       {
@@ -96,6 +102,36 @@ namespace PKSim.UI
       public void should_use_the_reaction_diagram_model_from_the_simulation()
       {
          _dto.DiagramModel.ShouldBeEqualTo(_simulation.ReactionDiagramModel);
+      }
+   }
+
+   public class When_mapping_a_simulation_in_the_recreate_diagram_mode : concern_for_SimulationToSimulationReactionDiagramDTOMapper
+   {
+      private IDiagramModel _diagramModel;
+
+      protected override void Context()
+      {
+         base.Context();
+         _diagramModel = A.Fake<IDiagramModel>();
+         A.CallTo(() => _reactionBuildingBlockCreator.CreateFor(_simulation)).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _diagramModelFactory.Create()).Returns(_diagramModel);
+      }
+
+      protected override void Because()
+      {
+         _dto = sut.MapFrom(_simulation, recreateDiagram: true);
+      }
+
+      [Observation]
+      public void should_create_a_new_reaction_building_block()
+      {
+         _dto.ReactionBuildingBlock.ShouldBeEqualTo(_reactionBuildingBlock);
+      }
+
+      [Observation]
+      public void should_create_new_diagram_model()
+      {
+         _dto.DiagramModel.ShouldBeEqualTo(_diagramModel);
       }
    }
 }
