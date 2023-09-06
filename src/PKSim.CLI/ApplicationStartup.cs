@@ -26,9 +26,6 @@ namespace PKSim.CLI
    {
       public static void Initialize()
       {
-         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-
          var container = InfrastructureRegister.Initialize();
          container.RegisterImplementationOf(new SynchronizationContext());
          container.Register<IExceptionManager, CLIExceptionManager>(LifeStyle.Singleton);
