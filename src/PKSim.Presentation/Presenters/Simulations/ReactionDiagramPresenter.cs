@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Services;
@@ -7,7 +6,6 @@ using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Diagram;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
@@ -21,7 +19,10 @@ namespace PKSim.Presentation.Presenters.Simulations
       ///    Sets the subject of this reaction diagram to the simulation
       /// </summary>
       /// <param name="simulation">The simulation containing the reaction being displayed</param>
-      /// <param name="recreateDiagram">Specifies if the diagram model should be recreated (in case of update or config where the config might change)</param>
+      /// <param name="recreateDiagram">
+      ///    Specifies if the diagram model should be recreated (in case of update or config where the
+      ///    config might change)
+      /// </param>
       void Edit(Simulation simulation, bool recreateDiagram);
 
       void DiagramHasChanged();
@@ -52,7 +53,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       public void EditSimulation(IndividualSimulation simulation)
       {
          //false since we are editing an existing simulation not configuring one here
-         Edit(simulation, recreateDiagram:false);
+         Edit(simulation, recreateDiagram: false);
       }
 
       public void EditSimulation(PopulationSimulation simulation)
@@ -89,13 +90,6 @@ namespace PKSim.Presentation.Presenters.Simulations
          _simulation = simulation;
          var dto = _simulationReactionDiagramDTOMapper.MapFrom(simulation, recreateDiagram);
          Edit(dto);
-      }
-
-      private void removeOrphanMolecules(IDiagramModel diagramModel)
-      {
-         diagramModel?.GetAllChildren<IMoleculeNode>()
-            .Where(x => !x.IsConnectedToReactions)
-            .ToList().Each(x => diagramModel.RemoveChildNode(x));
       }
 
       public void DiagramHasChanged()
