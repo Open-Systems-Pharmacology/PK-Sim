@@ -27,9 +27,6 @@ dotnet_csproj:
 
 
 clone_depth: 1
-
-schedule:
-  - cron: "00 22 * * 1-5"
   
 install:
   - set PATH=C:\Ruby25\bin;%PATH%
