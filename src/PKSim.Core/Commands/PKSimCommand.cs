@@ -6,7 +6,7 @@ using OSPSuite.Core.Commands;
 
 namespace PKSim.Core.Commands
 {
-   public interface IPKSimCommand : IOSPSuiteCommmand<IExecutionContext>
+   public interface IPKSimCommand : IOSPSuiteCommand<IExecutionContext>
    {
    }
 

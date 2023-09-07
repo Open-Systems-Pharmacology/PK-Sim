@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.UI.Diagram.Managers;
@@ -26,7 +27,9 @@ namespace PKSim.UI.Mappers
       {
          //Note: We do not use the building block in the simulation here as it MIGHT be out of date due to 
          //simulation being configured
-         var reactionBuildingBlock = _reactionBuildingBlockCreator.CreateFor(simulation);
+         var reactionBuildingBlockInSimulation = simulation.Reactions.FirstOrDefault();
+         var shouldRecreateBuildingBlock = reactionBuildingBlockInSimulation == null || recreateDiagram;
+         var reactionBuildingBlock = shouldRecreateBuildingBlock ? _reactionBuildingBlockCreator.CreateFor(simulation) : reactionBuildingBlockInSimulation;
          var dto = new SimulationReactionDiagramDTO
          {
             DiagramModel = recreateDiagram ? _diagramModelFactory.Create() : simulation.ReactionDiagramModel,

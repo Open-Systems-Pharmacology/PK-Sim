@@ -108,12 +108,15 @@ namespace PKSim.UI
    public class When_mapping_a_simulation_in_the_recreate_diagram_mode : concern_for_SimulationToSimulationReactionDiagramDTOMapper
    {
       private IDiagramModel _diagramModel;
+      private ReactionBuildingBlock _simulationReactionBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _diagramModel = A.Fake<IDiagramModel>();
+         _simulationReactionBuildingBlock = new ReactionBuildingBlock();
          A.CallTo(() => _reactionBuildingBlockCreator.CreateFor(_simulation)).Returns(_reactionBuildingBlock);
+         _simulation.AddReactions(_simulationReactionBuildingBlock);
          A.CallTo(() => _diagramModelFactory.Create()).Returns(_diagramModel);
       }
 
@@ -132,6 +135,40 @@ namespace PKSim.UI
       public void should_create_new_diagram_model()
       {
          _dto.DiagramModel.ShouldBeEqualTo(_diagramModel);
+      }
+   }
+
+   public class When_mapping_a_simulation_in_the_recreate_diagram_mode_set_to_false : concern_for_SimulationToSimulationReactionDiagramDTOMapper
+   {
+      private IDiagramModel _diagramModel;
+      private ReactionBuildingBlock _simulationReactionBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _diagramModel = A.Fake<IDiagramModel>();
+         _simulationReactionBuildingBlock = new ReactionBuildingBlock();
+         A.CallTo(() => _reactionBuildingBlockCreator.CreateFor(_simulation)).Returns(_reactionBuildingBlock);
+         _simulation.AddReactions(_simulationReactionBuildingBlock);
+         _simulation.ReactionDiagramModel = A.Fake<IDiagramModel>();
+         A.CallTo(() => _diagramModelFactory.Create()).Returns(_diagramModel);
+      }
+
+      protected override void Because()
+      {
+         _dto = sut.MapFrom(_simulation, recreateDiagram: false);
+      }
+
+      [Observation]
+      public void should_use_simulation_reaction_building_block()
+      {
+         _dto.ReactionBuildingBlock.ShouldBeEqualTo(_simulationReactionBuildingBlock);
+      }
+
+      [Observation]
+      public void should_use_simulation_diagram_model()
+      {
+         _dto.DiagramModel.ShouldBeEqualTo(_simulation.ReactionDiagramModel);
       }
    }
 }
