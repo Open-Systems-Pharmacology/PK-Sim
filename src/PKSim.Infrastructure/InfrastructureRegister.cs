@@ -1,8 +1,7 @@
-using System;
+using System.Globalization;
+using System.Threading;
 using Castle.Facilities.TypedFactory;
-using Microsoft.Extensions.Logging;
 using OSPSuite.Core;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
@@ -41,7 +40,6 @@ using PKSim.Infrastructure.Serialization.Xml;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
-using IContainer = OSPSuite.Utility.Container.IContainer;
 using IWorkspace = PKSim.Presentation.IWorkspace;
 
 namespace PKSim.Infrastructure
@@ -50,6 +48,10 @@ namespace PKSim.Infrastructure
    {
       public static IContainer Initialize(bool registerContainerAsStatic = true)
       {
+         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+
+
          var container = initializeContainer(registerContainerAsStatic);
 
          container.AddRegister(x => x.FromType<OSPSuite.Infrastructure.InfrastructureRegister>());
@@ -66,6 +68,7 @@ namespace PKSim.Infrastructure
          EnvironmentHelper.ApplicationName = () => "pksim";
          return container;
       }
+
       private static void registerRunOptionsIn(IContainer container)
       {
          container.Register<StartOptions, IStartOptions, StartOptions>(LifeStyle.Singleton);
@@ -74,7 +77,7 @@ namespace PKSim.Infrastructure
       private static IContainer initializeContainer(bool registerContainerAsStatic)
       {
          var container = new CastleWindsorContainer();
-         if (registerContainerAsStatic) 
+         if (registerContainerAsStatic)
             IoC.InitializeWith(container);
 
          container.WindsorContainer.AddFacility<EventRegisterFacility>();
@@ -93,7 +96,8 @@ namespace PKSim.Infrastructure
          container.Register<IPKSimConfiguration, IApplicationConfiguration, PKSimConfiguration>(LifeStyle.Singleton);
 
          var configuration = container.Resolve<IPKSimConfiguration>();
-         CoreConstants.ProductDisplayName = configuration.ProductDisplayName; }
+         CoreConstants.ProductDisplayName = configuration.ProductDisplayName;
+      }
 
       private static void registerFactoryIn(IContainer container)
       {
@@ -174,11 +178,11 @@ namespace PKSim.Infrastructure
             scan.ExcludeNamespaceContainingType<SpeciesRepository>();
 
             //this type will be registered using another convention
-            scan.ExcludeNamespaceContainingType<IObjectConverter>(); //Converter
-            scan.ExcludeNamespaceContainingType<IReportBuilder>(); //report builder
-            scan.ExcludeNamespaceContainingType<IMarkdownBuilder>(); //Markdown builder
-            scan.ExcludeNamespaceContainingType<SimulationReporter>(); //tex reporter
-            scan.ExcludeNamespaceContainingType<IndividualTeXBuilder>(); //tex builder
+            scan.ExcludeNamespaceContainingType<IObjectConverter>();             //Converter
+            scan.ExcludeNamespaceContainingType<IReportBuilder>();               //report builder
+            scan.ExcludeNamespaceContainingType<IMarkdownBuilder>();             //Markdown builder
+            scan.ExcludeNamespaceContainingType<SimulationReporter>();           //tex reporter
+            scan.ExcludeNamespaceContainingType<IndividualTeXBuilder>();         //tex builder
             scan.ExcludeNamespaceContainingType<PKSimXmlSerializerRepository>(); //Serializer
 
             scan.ExcludeType<CommandMetaDataRepository>();

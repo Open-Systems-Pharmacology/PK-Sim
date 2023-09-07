@@ -113,7 +113,7 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Set the altered status of the building block with the id builingBlockId in the simulation to the altered value.
+      ///    Set the altered status of the building block with the id buildingBlockId in the simulation to the altered value.
       ///    <param name="altered">the value of the altered status</param>
       ///    <param name="usedBuildingBlockId">id of the building block for which the status should be changed</param>
       /// </summary>
@@ -168,6 +168,12 @@ namespace PKSim.Core.Model
       }
 
       public virtual void AddReactions(ReactionBuildingBlock reactionBuildingBlock) => _allReactions.Add(reactionBuildingBlock);
+
+      public virtual void UpdateReactions(IEnumerable<ReactionBuildingBlock> reactionBuildingBlocks)
+      {
+         _allReactions.Clear();
+         reactionBuildingBlocks.Each(AddReactions);
+      }
 
       /// <summary>
       ///    Remove the building block as used in the simulation
@@ -401,11 +407,17 @@ namespace PKSim.Core.Model
          Properties = sourceSimulation.Properties.Clone(cloneManager);
          sourceSimulation.UsedBuildingBlocks.Each(bb => AddUsedBuildingBlock(bb.Clone(cloneManager)));
          Model = cloneManager.Clone(sourceSimulation.Model);
+
+         //clear and add the used observed data to the simulation
+         _usedObservedData.Clear();
          sourceSimulation.UsedObservedData.Each(data => AddUsedObservedData(data.Clone()));
-         sourceSimulation.Reactions.Each(x => AddReactions(cloneManager.Clone(x)));
+
+         UpdateReactions(sourceSimulation.Reactions.Select(cloneManager.Clone));
+ 
          Settings = cloneManager.Clone(sourceSimulation.Settings);
          ReactionDiagramModel = sourceSimulation.ReactionDiagramModel.CreateCopy();
          OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
+
          //Output mappings have an underling reference to the source simulation which is destroyed with the previous call/
          //we reset the reference to the right simulation with this call
          OutputMappings.SwapSimulation(sourceSimulation, this);

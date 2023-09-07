@@ -49,8 +49,6 @@ namespace PKSim.UI.BootStrapping
 
       public void InitializeForStartup(LogLevel logLevel, Action<IContainer> registrationAction)
       {
-         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
          ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
 
          updateGoDiagramKey();

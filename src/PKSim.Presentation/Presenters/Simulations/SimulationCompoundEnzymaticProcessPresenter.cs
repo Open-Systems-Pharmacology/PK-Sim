@@ -54,17 +54,17 @@ namespace PKSim.Presentation.Presenters.Simulations
       private SimulationEnzymaticProcessSelectionDTO mapFrom(SimulationPartialProcess simulationPartialProcess)
       {
          var dto = new SimulationEnzymaticProcessSelectionDTO(simulationPartialProcess);
-         updateMetabliteSelectionFor(dto);
+         updateMetaboliteSelectionFor(dto);
          return dto;
       }
 
       public override void SelectionChanged(SimulationEnzymaticProcessSelectionDTO simulationPartialProcessDTO)
       {
          base.SelectionChanged(simulationPartialProcessDTO);
-         updateMetabliteSelectionFor(simulationPartialProcessDTO);
+         updateMetaboliteSelectionFor(simulationPartialProcessDTO);
       }
 
-      private void updateMetabliteSelectionFor(SimulationEnzymaticProcessSelectionDTO simulationPartialProcessDTO)
+      private void updateMetaboliteSelectionFor(SimulationEnzymaticProcessSelectionDTO simulationPartialProcessDTO)
       {
          var simulationPartialProcess = simulationPartialProcessDTO.SimulationPartialProcess;
          var partialProcessMapping = simulationPartialProcess.PartialProcessMapping as EnzymaticProcessSelection;

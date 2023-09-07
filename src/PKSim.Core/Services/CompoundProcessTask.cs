@@ -2,6 +2,7 @@
 using OSPSuite.Core.Domain;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using System.Threading;
 
 namespace PKSim.Core.Services
 {
@@ -69,12 +70,7 @@ namespace PKSim.Core.Services
 
       public IPKSimCommand SetMetaboliteForEnzymaticProcess(EnzymaticProcess process, string newMetabolite)
       {
-         return getChangeEnzymaticProcessMetaboliteCommand(process, newMetabolite, _executionContext).Run(_executionContext);
-      }
-
-      private static IPKSimCommand getChangeEnzymaticProcessMetaboliteCommand(EnzymaticProcess process, string newMetabolite, IExecutionContext executionContext)
-      {
-         return new ChangeEnzymaticProcessMetaboliteNameCommand(process, newMetabolite, executionContext);
+         return new ChangeEnzymaticProcessMetaboliteNameCommand(process, newMetabolite, _executionContext).Run(_executionContext);
       }
    }
 }

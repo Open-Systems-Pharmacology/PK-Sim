@@ -39,8 +39,6 @@ namespace PKSim.UI.Starter
 
       private static IContainer initializeForStartup(IContainer moBiContainer)
       {
-         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
          ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
 
          var pkSimContainer = InfrastructureRegister.Initialize(registerContainerAsStatic: false);
