@@ -15,7 +15,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public abstract class MultipleBuildingBlockNodeContextMenu<TBuildingBlock> : ContextMenu<IReadOnlyList<NamedBuildingBlock<TBuildingBlock>>, IExecutionContext> where TBuildingBlock : class, IPKSimBuildingBlock
    {
-
       protected MultipleBuildingBlockNodeContextMenu(IReadOnlyList<TBuildingBlock> buildingBlocks, IExecutionContext executionContext, IContainer container)
          : this(buildingBlocks.Select(bb => new NamedBuildingBlock<TBuildingBlock>(bb, bb.Name)).ToList(), executionContext, container)
       {
@@ -32,7 +31,9 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return SaveAsSystemTemplateMenuFor(buildingBlocks);
 
-         yield return CompareBuildingBlocks(buildingBlocks, executionContext);
+         var compareBuildingBlockMenuItem = CompareBuildingBlocks(buildingBlocks, executionContext);
+         if (compareBuildingBlockMenuItem != null)
+            yield return CompareBuildingBlocks(buildingBlocks, executionContext);
 
          yield return AddToJournal(buildingBlocks);
 
@@ -45,6 +46,9 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          var objectBaseList = buildingBlockList.Cast<IObjectBase>().ToList();
 
          var buildingBlockNames = buildingBlocks.Select(x => x.Name).ToList();
+
+         if (buildingBlockList.Count != 2)
+            return null;
 
          if (canStartComparisonFor(buildingBlockList))
             return ComparisonCommonContextMenuItems.CompareObjectsMenu(objectBaseList, buildingBlockNames, executionContext, _container);
@@ -88,9 +92,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       private static bool canStartComparisonFor(IReadOnlyList<TBuildingBlock> buildingBlocks)
       {
-         if (buildingBlocks.Count != 2)
-            return false;
-
          return buildingBlocks[0].BuildingBlockType != PKSimBuildingBlockType.Population;
       }
 
