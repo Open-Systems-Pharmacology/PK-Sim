@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -18,7 +21,7 @@ namespace PKSim.Presentation
 {
    public abstract class concern_for_MolWeightGroupPresenter : ContextSpecification<IMolWeightGroupPresenter>
    {
-      private IMolWeightGroupView _view;
+      protected IMolWeightGroupView _view;
       protected ICompoundToMolWeightDTOMapper _molWeightDTOMapper;
       protected IMolWeightHalogensPresenter _molWeightsHalogenPresenters;
       protected IParameterTask _parameterTask;
@@ -148,6 +151,34 @@ namespace PKSim.Presentation
       public void should_update_the_halogens_to_be_displayed_according_to_the_value_defined_in_the_alternative()
       {
          A.CallTo(() => _molWeightsHalogenPresenters.EditHalogens(A<IEnumerable<IParameter>>.Ignored)).MustHaveHappened();
+      }
+   }
+
+   public class When_the_mol_weight_group_presenter_is_editing_parameters_for_a_compound_that_does_not_have_the_expected_parameter_list : concern_for_MolWeightGroupPresenter
+   {
+      private IEnumerable<IParameter> _compoundParameters;
+      private List<IParameterDTO> _allParameterDTOs;
+
+      protected override void Context()
+      {
+         base.Context();
+         _compoundParameters = new List<IParameter>();
+         _molWeightDTO.MolWeightEffParameter = new ParameterDTO(null);
+         _molWeightDTO.HasHalogensParameter = new ParameterDTO(null);
+
+         A.CallTo(() => _view.BindTo(A<IEnumerable<IParameterDTO>>._))
+            .Invokes(x => _allParameterDTOs = x.GetArgument<IEnumerable<IParameterDTO>>(0).ToList());
+      }
+
+      protected override void Because()
+      {
+         sut.EditCompoundParameters(_compoundParameters);
+      }
+
+      [Observation]
+      public void should_have_remove_all_expected_parameters_that_are_undefined()
+      {
+         _allParameterDTOs.ShouldOnlyContain(_molWeightDTO.MolWeightParameter);
       }
    }
 }
