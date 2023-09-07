@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
@@ -96,7 +97,8 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadObserverSetForAsync(ObserverSetMappingDTO observerSetMappingDTO)
       {
-         updateObserverSetInMapping(observerSetMappingDTO, await _observerSetTask.LoadSingleFromTemplateAsync());
+         var observerSet = await _observerSetTask.SecureAwait(x => x.LoadSingleFromTemplateAsync());
+         updateObserverSetInMapping(observerSetMappingDTO, observerSet);
       }
 
       public void CreateObserverFor(ObserverSetMappingDTO observerSetMappingDTO)
@@ -117,7 +119,7 @@ namespace PKSim.Presentation.Presenters.Simulations
             return;
 
          observerSetMappingDTO.ObserverSet = observerSet;
-        _view.RefreshData();
+         _view.RefreshData();
          OnStatusChanged();
       }
 

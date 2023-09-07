@@ -2,20 +2,20 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using PKSim.Assets;
-using OSPSuite.Presentation.Nodes;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -44,7 +44,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       IEnumerable<ToolTipPart> ToolTipFor(CompoundSelectionDTO compoundSelectionDTO);
 
       /// <summary>
-      /// Ensures that the given <paramref name="templateCompound"/> is used instead of the compound with same name that might have changed in the simulation
+      ///    Ensures that the given <paramref name="templateCompound" /> is used instead of the compound with same name that
+      ///    might have changed in the simulation
       /// </summary>
       /// <param name="templateCompound">The template compound that should be selected</param>
       void UpdateSelectedCompound(Compound templateCompound);
@@ -135,7 +136,8 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadCompoundAsync()
       {
-         addToSelection(await _compoundTask.LoadSingleFromTemplateAsync());
+         var compound = await _compoundTask.SecureAwait(x => x.LoadSingleFromTemplateAsync());
+         addToSelection(compound);
       }
 
       public override void Initialize()
