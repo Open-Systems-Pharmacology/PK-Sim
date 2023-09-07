@@ -89,7 +89,7 @@ namespace PKSim.Presentation
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
 
          A.CallTo(_dataRepositoryTask).WithReturnType<IReadOnlyList<DataTable>>().Returns(new[] {_dataTable1, _dataTable2});
-         A.CallTo(() => _dataRepositoryTask.ExportToExcel(A<IEnumerable<DataTable>>._, _fileName, true))
+         A.CallTo(() => _dataRepositoryTask.ExportToExcel(A<IReadOnlyList<DataTable>>._, _fileName, true))
             .Invokes(x => _dataTables = x.GetArgument<IEnumerable<DataTable>>(0));
       }
 
@@ -107,7 +107,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_have_exported_the_results_to_excel()
       {
-         A.CallTo(() => _dataRepositoryTask.ExportToExcel(A<IEnumerable<DataTable>>._, _fileName, true)).MustHaveHappened();
+         A.CallTo(() => _dataRepositoryTask.ExportToExcel(A<IReadOnlyList<DataTable>>._, _fileName, true)).MustHaveHappened();
       }
 
       [Observation]
