@@ -240,9 +240,11 @@ namespace PKSim.Core.Model
       {
          var parameter = CreateFor(CoreConstants.Parameters.CONCENTRATION, PKSimBuildingBlockType.Simulation);
          parameter.BuildMode = ParameterBuildMode.Local;
-         parameter.Info.Visible = false;
+         parameter.Visible = false;
          parameter.Formula = _formulaFactory.ConcentrationFormulaFor(formulaCache);
          parameter.Dimension = _dimensionRepository.MolarConcentration;
+         parameter.CanBeVaried = false;
+         parameter.CanBeVariedInPopulation = false;
          parameter.DisplayUnit = _displayUnitRetriever.PreferredUnitFor(parameter);
          return parameter;
       }
