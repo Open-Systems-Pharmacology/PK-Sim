@@ -101,8 +101,13 @@ namespace PKSim.Presentation.Presenters.Compounds
          _molWeightParameters = compoundParameters.Where(x => string.Equals(x.GroupName, CoreConstants.Groups.COMPOUND_MW)).ToList();
          _halogenParameters = _molWeightParameters.Where(x => x.NameIsOneOf(CoreConstants.Parameters.Halogens)).ToList();
          _molWeightDTO = _molWeightDTOMapper.MapFrom(_molWeightParameters);
-         _editableParameters = new List<IParameter>(_halogenParameters) {_molWeightDTO.MolWeightParameter.Parameter};
-         _view.BindTo(new[] {_molWeightDTO.MolWeightParameter, _molWeightDTO.HasHalogensParameter, _molWeightDTO.MolWeightEffParameter});
+
+         //Some parameters may be null in case of an imported model for instance
+         _editableParameters = new List<IParameter>(_halogenParameters) {_molWeightDTO.MolWeightParameter.Parameter}.Where(x => x != null).ToList();
+         var parameterToBindTo = new[] {_molWeightDTO.MolWeightParameter, _molWeightDTO.HasHalogensParameter, _molWeightDTO.MolWeightEffParameter}
+            .Where(x => x.Parameter != null).ToList();
+
+         _view.BindTo(parameterToBindTo);
          _editValueOriginPresenter.Edit(_molWeightDTO.MolWeightParameter);
       }
 

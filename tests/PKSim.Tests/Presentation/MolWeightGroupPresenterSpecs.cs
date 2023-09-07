@@ -28,6 +28,7 @@ namespace PKSim.Presentation
       protected MolWeightDTO _molWeightDTO;
       protected IParameter _molWeightParameter;
       protected IParameter _molWeightParameterEff;
+      private IParameter _hasHalogensParameters;
 
       protected override void Context()
       {
@@ -43,11 +44,13 @@ namespace PKSim.Presentation
 
          _molWeightParameter = new PKSimParameter();
          _molWeightParameterEff = new PKSimParameter();
+         _hasHalogensParameters = new PKSimParameter();
 
          _molWeightDTO = new MolWeightDTO
          {
             MolWeightParameter = new ParameterDTO(_molWeightParameter),
-            MolWeightEffParameter = new ParameterDTO(_molWeightParameterEff)
+            MolWeightEffParameter = new ParameterDTO(_molWeightParameterEff),
+            HasHalogensParameter = new ParameterDTO(_hasHalogensParameters)
          };
 
          A.CallTo(_molWeightDTOMapper).WithReturnType<MolWeightDTO>().Returns(_molWeightDTO);
@@ -62,7 +65,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_intitialize_all_sub_presenters_halogens_presenter_as_well()
+      public void should_initialize_all_sub_presenters_halogens_presenter_as_well()
       {
          A.CallTo(() => _molWeightsHalogenPresenters.InitializeWith(sut)).MustHaveHappened();
       }
@@ -119,7 +122,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void the_presenter_should_not_register_a_change_commmand_since_the_parameter_is_readonly()
+      public void the_presenter_should_not_register_a_change_command_since_the_parameter_is_readonly()
       {
          A.CallTo(() => _commandRegister.AddCommand(_command)).MustNotHaveHappened();
       }
