@@ -9,8 +9,7 @@ namespace PKSim.Core.Services
    {
       /// <summary>
       ///    Clones an object in the context of a model building=>Will not share formula in any case but origin id for formula
-      ///    will
-      ///    be saved to minimize outputs
+      ///    will be saved to minimize outputs
       /// </summary>
       T CloneForModel<T>(T objectToClone) where T : class, IUpdatable;
 
