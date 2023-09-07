@@ -10,8 +10,6 @@ using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using DistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
-using IDistributionFormulaFactory = PKSim.Core.Model.IDistributionFormulaFactory;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 using ParameterFactory = PKSim.Core.Model.ParameterFactory;
@@ -35,7 +33,7 @@ namespace PKSim.Core
          _formulaFactory = A.Fake<IFormulaFactory>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
-         _interpolation= new LinearInterpolation();
+         _interpolation = new LinearInterpolation();
          sut = new ParameterFactory(_objectBaseFactory, _formulaFactory, _dimensionRepository, _displayUnitRetriever, _interpolation);
       }
    }
@@ -152,7 +150,7 @@ namespace PKSim.Core
          _subParameter = A.Fake<IParameter>();
          _originData = new OriginData {Age = new OriginDataParameter(40)};
          _distributions.Add(new ParameterDistributionMetaData {Distribution = DistributionType.Normal, Age = 20, ValueOrigin = _valueOrigin1});
-         _distributions.Add(new ParameterDistributionMetaData { Distribution = DistributionType.Normal, Age = 50, ValueOrigin = _valueOrigin2 });
+         _distributions.Add(new ParameterDistributionMetaData {Distribution = DistributionType.Normal, Age = 50, ValueOrigin = _valueOrigin2});
          A.CallTo(() => _formulaFactory.DistributionFor(A<IEnumerable<ParameterDistributionMetaData>>._, _parameter, _originData)).Returns(_distributionFormula);
          A.CallTo(() => _objectBaseFactory.CreateDistributedParameter()).Returns(_parameter);
          A.CallTo(() => _objectBaseFactory.CreateParameter()).Returns(_subParameter);
@@ -212,16 +210,57 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_returned_parameter_shoudld_have_a_min_of_zero_and_an_undefined_max()
+      public void the_returned_parameter_should_have_a_min_of_zero_and_an_undefined_max()
       {
          _result.MinValue.ShouldBeEqualTo(0);
          _result.MaxValue.ShouldBeNull();
       }
 
       [Observation]
-      public void the_returned_parameter_shoudld_have_a_value_set_to_the_default_value()
+      public void the_returned_parameter_should_have_a_value_set_to_the_default_value()
       {
          _result.Formula.ShouldBeEqualTo(_formula);
+      }
+   }
+
+   public class When_creating_a_concentration_parameter : concern_for_ParameterFactory
+   {
+      private IFormulaCache _formulaCache;
+      private IParameter _parameter;
+      private IFormula _concentrationFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _formulaCache = new FormulaCache();
+         _concentrationFormula = A.Fake<IFormula>();
+         A.CallTo(() => _formulaFactory.ConcentrationFormulaFor(_formulaCache)).Returns(_concentrationFormula);
+      }
+
+      protected override void Because()
+      {
+         _parameter = sut.CreateConcentrationParameterIn(_formulaCache);
+      }
+
+      [Observation]
+      public void should_ensure_that_the_parameter_cannot_be_varied()
+      {
+         _parameter.CanBeVaried.ShouldBeFalse();
+         _parameter.CanBeVariedInPopulation.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_parameter_should_have_the_expected_default_properties()
+      {
+         _parameter.BuildMode.ShouldBeEqualTo(ParameterBuildMode.Local);
+         _parameter.Visible.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_have_set_the_dimension_of_the_parameter_to_be_molar_concentration()
+      {
+         _parameter.Dimension.ShouldBeEqualTo(_dimensionRepository.MolarConcentration);
+         _parameter.Formula.ShouldBeEqualTo(_concentrationFormula);
       }
    }
 }
