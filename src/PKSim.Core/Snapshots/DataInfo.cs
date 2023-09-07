@@ -1,5 +1,4 @@
-﻿using System;
-using OSPSuite.Core.Domain.Data;
+﻿using OSPSuite.Core.Domain.Data;
 
 namespace PKSim.Core.Snapshots
 {
