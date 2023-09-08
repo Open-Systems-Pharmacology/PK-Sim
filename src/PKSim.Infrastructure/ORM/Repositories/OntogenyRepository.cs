@@ -181,7 +181,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName)
       {
-         //We use a clone in this case as we do want to make sure we do not have two difference two references to the same table 
+         //We use a clone in this case to ensure that we have two distinct references to the same table 
          //this would lead otherwise as the same table being referenced by a parameter and the ontogeny and an issue will arise when loading
          if (ontogeny is UserDefinedOntogeny userDefinedOntogeny)
             return _cloner.Clone(userDefinedOntogeny.Table);
