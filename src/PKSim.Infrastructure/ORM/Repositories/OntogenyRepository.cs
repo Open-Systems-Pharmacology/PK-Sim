@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Maths.Random;
@@ -15,6 +16,7 @@ using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using static PKSim.Core.CoreConstants.Groups;
 using static PKSim.Core.CoreConstants.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
@@ -33,6 +35,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IGroupRepository _groupRepository;
+      private ICloner _cloner;
 
       public OntogenyRepository(
          IFlatOntogenyRepository flatOntogenyRepository,
@@ -41,7 +44,8 @@ namespace PKSim.Infrastructure.ORM.Repositories
          IDimensionRepository dimensionRepository,
          IDisplayUnitRetriever displayUnitRetriever,
          IFormulaFactory formulaFactory,
-         IGroupRepository groupRepository)
+         IGroupRepository groupRepository,
+         ICloner cloner)
       {
          _flatOntogenyRepository = flatOntogenyRepository;
          _interpolation = interpolation;
@@ -50,6 +54,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          _displayUnitRetriever = displayUnitRetriever;
          _formulaFactory = formulaFactory;
          _groupRepository = groupRepository;
+         _cloner = cloner;
          _allOntogenies = new List<Ontogeny>();
          _ontogenyValues = new Cache<CompositeKey, IReadOnlyList<OntogenyMetaData>>(onMissingKey: x => new List<OntogenyMetaData>());
          
@@ -176,8 +181,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       public DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName)
       {
+         //We use a clone in this case to ensure that we have two distinct references to the same table 
+         //This would lead otherwise to the same table being referenced by a parameter and the ontogeny, and an issue will arise when loading
          if (ontogeny is UserDefinedOntogeny userDefinedOntogeny)
-            return userDefinedOntogeny.Table;
+            return _cloner.Clone(userDefinedOntogeny.Table);
 
          if (ontogeny is NullOntogeny)
             return null;
