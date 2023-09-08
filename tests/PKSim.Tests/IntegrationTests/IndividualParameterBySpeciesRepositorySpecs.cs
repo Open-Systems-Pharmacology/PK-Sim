@@ -44,7 +44,13 @@ namespace PKSim.IntegrationTests
 
    public class When_testing_if_a_parameter_is_common_for_all_species : concern_for_IndividualParametersNotCommonForAllSpeciesRepository
    {
-      private readonly IFlatContainerRepository _flatContainerRepository = IoC.Resolve<IFlatContainerRepository>();
+      private IFlatContainerRepository _flatContainerRepository;
+
+      protected override void Context()
+      {
+         base.Context();
+         _flatContainerRepository = IoC.Resolve<IFlatContainerRepository>();
+      }
 
       private ParameterMetaData parameterMetaDataFor(string containerPath, string parameterName)
       {
