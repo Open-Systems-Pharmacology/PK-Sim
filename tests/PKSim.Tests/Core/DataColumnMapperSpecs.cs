@@ -35,8 +35,8 @@ namespace PKSim.Core
          _baseGrid = observedData.BaseGrid;
          _relatedColumn = new DataColumn("related", DomainHelperForSpecs.NoDimension(), observedData.BaseGrid)
          {
-            Values = new[] { 0f, 0f, 0f },
-            DataInfo = { Origin = ColumnOrigins.ObservationAuxiliary }
+            Values = new[] {0f, 0f, 0f},
+            DataInfo = {Origin = ColumnOrigins.ObservationAuxiliary}
          };
          _dataColumn.AddRelatedColumn(_relatedColumn);
 
@@ -64,7 +64,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_baseGrid);
          _contextDataRepository = DomainHelperForSpecs.ObservedData();
          _dataInfo = new DataInfo(ColumnOrigins.BaseGrid);
-         _quantityInfo = new QuantityInfo(new[] { "path" }, QuantityType.Undefined);
+         _quantityInfo = new QuantityInfo(new[] {"path"}, QuantityType.Undefined);
 
          A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
          A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);
@@ -94,8 +94,13 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_dataColumn);
          _contextDataRepository = DomainHelperForSpecs.ObservedData();
-         _dataInfo = new DataInfo(ColumnOrigins.Observation);
-         _quantityInfo = new QuantityInfo(new[] { "path" }, QuantityType.Undefined);
+         _dataInfo = new DataInfo(ColumnOrigins.Observation)
+         {
+            DisplayUnitName = "mol/l"
+         };
+         //We assume that the display unit was changed somehow., This is the one we should use
+         _snapshot.Unit = "µmol/l";
+         _quantityInfo = new QuantityInfo(new[] {"path"}, QuantityType.Undefined);
 
          A.CallTo(() => _dataInfoMapper.MapToModel(_snapshot.DataInfo, A<SnapshotContext>._)).Returns(_dataInfo);
          A.CallTo(() => _quantityInfoMapper.MapToModel(_snapshot.QuantityInfo, A<SnapshotContext>._)).Returns(_quantityInfo);
@@ -107,7 +112,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void the_colum_contains_the_quantity_info()
+      public void the_column_contains_the_quantity_info()
       {
          _result.QuantityInfo.ShouldBeEqualTo(_quantityInfo);
       }
@@ -129,9 +134,14 @@ namespace PKSim.Core
       {
          _result.Name.ShouldBeEqualTo(_dataColumn.Name);
          _result.Dimension.ShouldBeEqualTo(_dataColumn.Dimension);
-         _result.DisplayUnit.ShouldBeEqualTo(_dataColumn.DisplayUnit);
          _result.Values.ShouldOnlyContainInOrder(_dataColumn.Values);
          _result.RelatedColumns.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_have_used_the_display_unit_defined_in_the_data_column_snapshot()
+      {
+         _result.DisplayUnit.ShouldBeEqualTo(_dataColumn.DisplayUnit);
       }
    }
 
