@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
@@ -156,7 +157,7 @@ namespace PKSim.Presentation.Presenters
       public async Task LoadBuildingBlockAsync()
       {
          var buildingBlockTask = _container.Resolve<IBuildingBlockTask<TBuildingBlock>>();
-         await buildingBlockTask.LoadSingleFromTemplateAsync();
+         await buildingBlockTask.SecureAwait(x => x.LoadSingleFromTemplateAsync());
          Edit(getNewlyAddedBuildingBlock());
       }
 

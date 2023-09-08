@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Presenters.Simulations
 {
@@ -115,7 +116,7 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadFormulationForAsync(FormulationMappingDTO formulationMappingDTO)
       {
-         var formulation = await _formulationTask.LoadFormulationForRouteAsync(formulationMappingDTO.Route);
+         var formulation = await _formulationTask.SecureAwait(x => x.LoadFormulationForRouteAsync(formulationMappingDTO.Route));
          updateFormulationInMapping(formulationMappingDTO, formulation);
       }
 
