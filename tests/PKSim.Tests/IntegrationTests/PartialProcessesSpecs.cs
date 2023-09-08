@@ -83,7 +83,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
 
          _allExpressionParameters[CoreConstants.Organ.BONE].Value = _relExpBone;
-         _allExpressionParameters[CoreConstants.Compartment.DUODENUM].Value = _relExpDuo;
+         _allExpressionParameters[Constants.Compartment.DUODENUM].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -114,7 +114,7 @@ namespace PKSim.IntegrationTests
             if (grandparent.Name.Equals(CoreConstants.Organ.BONE))
                parameter.Value.ShouldBeEqualTo(_relExpBone);
 
-            else if (grandparent.Name.Equals(CoreConstants.Compartment.DUODENUM))
+            else if (grandparent.Name.Equals(Constants.Compartment.DUODENUM))
                parameter.Value.ShouldBeEqualTo(_relExpDuo);
             else
                parameter.Value.ShouldBeEqualTo(0);
@@ -156,7 +156,7 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
 
          _allExpressionParameters[CoreConstants.Organ.BONE].Value = _relExpBone;
-         _allExpressionParameters[CoreConstants.Compartment.DUODENUM].Value = _relExpDuo;
+         _allExpressionParameters[Constants.Compartment.DUODENUM].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -182,7 +182,7 @@ namespace PKSim.IntegrationTests
             if (grandparent.Name.Equals(CoreConstants.Organ.BONE))
                parameter.Value.ShouldBeEqualTo(_relExpBone);
 
-            else if (grandparent.Name.Equals(CoreConstants.Compartment.DUODENUM))
+            else if (grandparent.Name.Equals(Constants.Compartment.DUODENUM))
                parameter.Value.ShouldBeEqualTo(_relExpDuo);
             else
                parameter.Value.ShouldBeEqualTo(0);
@@ -199,7 +199,7 @@ namespace PKSim.IntegrationTests
 
          _enzyme.Localization = Localization.Interstitial;
          _allExpressionParameters[CoreConstants.Organ.BONE].Value = _relExpBone;
-         _allExpressionParameters[CoreConstants.Compartment.DUODENUM].Value = _relExpDuo;
+         _allExpressionParameters[Constants.Compartment.DUODENUM].Value = _relExpDuo;
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
             .DowncastTo<IndividualSimulation>();
@@ -226,7 +226,7 @@ namespace PKSim.IntegrationTests
             if (grandparent.Name.Equals(CoreConstants.Organ.BONE))
                parameter.Value.ShouldBeEqualTo(_relExpBone);
 
-            else if (grandparent.Name.Equals(CoreConstants.Compartment.DUODENUM))
+            else if (grandparent.Name.Equals(Constants.Compartment.DUODENUM))
                parameter.Value.ShouldBeEqualTo(_relExpDuo); 
             else
                parameter.Value.ShouldBeEqualTo(0);

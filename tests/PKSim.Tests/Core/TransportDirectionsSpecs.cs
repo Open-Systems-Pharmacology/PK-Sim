@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using static OSPSuite.Core.Domain.Constants.Compartment;
 using static PKSim.Core.CoreConstants.Compartment;
 using static PKSim.Core.CoreConstants.Organ;
 
