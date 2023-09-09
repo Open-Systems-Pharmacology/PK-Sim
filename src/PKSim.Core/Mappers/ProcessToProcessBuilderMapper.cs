@@ -374,11 +374,11 @@ namespace PKSim.Core.Mappers
       {
          var sourceCriteria = transporterBuilder.SourceCriteria;
          var allSourceTags = sourceCriteria.OfType<MatchTagCondition>().Select(x => x.Tag).ToList();
-         var (sourceIsLumen, sourceIsMucosa) = (allSourceTags.Contains(Constants.LUMEN), allSourceTags.Contains(MUCOSA));
+         var (sourceIsLumen, sourceIsMucosa) = (allSourceTags.Contains(LUMEN), allSourceTags.Contains(MUCOSA));
 
          var targetCriteria = transporterBuilder.TargetCriteria;
          var allTargetTags = targetCriteria.OfType<MatchTagCondition>().Select(x => x.Tag).ToList();
-         var (targetIsLumen, targetIsMucosa) = (allTargetTags.Contains(Constants.LUMEN), allTargetTags.Contains(MUCOSA));
+         var (targetIsLumen, targetIsMucosa) = (allTargetTags.Contains(LUMEN), allTargetTags.Contains(MUCOSA));
 
          var isLumen = sourceIsLumen || targetIsLumen;
          var isMucosa = sourceIsMucosa || targetIsMucosa;
@@ -386,7 +386,7 @@ namespace PKSim.Core.Mappers
          if (isLumen && isMucosa)
          {
             //We just want to remove GI segments from the include list as we know, that the transport is between Lumen and Mucosa in this case
-            var segmentToDeletes = inducedProcess.OrgansToExclude.Intersect(LumenSegmentsDuodenumToRectum).ToList();
+            var segmentToDeletes = inducedProcess.OrgansToExclude.Intersect(Constants.Compartment.LumenSegmentsDuodenumToRectum).ToList();
             var criteria = sourceIsLumen ? sourceCriteria : targetCriteria;
             addAsNotMatchToCriteria(criteria, segmentToDeletes);
             return;

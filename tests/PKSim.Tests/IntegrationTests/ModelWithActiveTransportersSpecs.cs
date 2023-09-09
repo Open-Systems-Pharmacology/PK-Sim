@@ -91,7 +91,7 @@ namespace PKSim.IntegrationTests
          };
 
          var lumen = _simulation.Model.Root.Container("Organism").Container(CoreConstants.Organ.LUMEN);
-         foreach (var segment in CoreConstants.Compartment.LumenSegmentsDuodenumToRectum)
+         foreach (var segment in Constants.Compartment.LumenSegmentsDuodenumToRectum)
          {
             var massAbsorbedSegmentParameter = lumen.Container(segment).Container(_drugName).Parameter("Oral mass absorbed segment");
             massAbsorbedSegmentParameter.RHSFormula.ShouldNotBeNull();

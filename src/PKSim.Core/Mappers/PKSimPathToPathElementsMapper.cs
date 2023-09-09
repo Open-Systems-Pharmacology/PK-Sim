@@ -128,7 +128,7 @@ namespace PKSim.Core.Mappers
          if (quantity.HasAncestorNamed(CoreConstants.Organ.GALLBLADDER))
             adjustDisplayPathForGallBladder(pathElements, quantity);
 
-         else if (quantity.HasAncestorNamed(LUMEN))
+         else if (quantity.HasAncestorNamed(Organ.LUMEN))
             adjustDisplayPathForLumen(pathElements, quantity);
 
          else if (quantity.IsNamed(CoreConstants.Observer.PLASMA_UNBOUND))

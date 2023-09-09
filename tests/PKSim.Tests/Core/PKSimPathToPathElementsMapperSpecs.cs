@@ -9,6 +9,8 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation;
 using static OSPSuite.Core.Domain.Constants;
+using Compartment = PKSim.Core.Model.Compartment;
+using Organ = PKSim.Core.Model.Organ;
 
 namespace PKSim.Core
 {
@@ -69,7 +71,7 @@ namespace PKSim.Core
          _peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD).WithParentContainer(_organism);
          _smallIntestine = new Organ().WithName(CoreConstants.Organ.SMALL_INTESTINE).WithParentContainer(_organism);
          _mucosa = new Compartment().WithName(CoreConstants.Compartment.MUCOSA).WithParentContainer(_smallIntestine);
-         _mucosa_duo = new Compartment().WithName(CoreConstants.Compartment.DUODENUM).WithParentContainer(_mucosa);
+         _mucosa_duo = new Compartment().WithName(Constants.Compartment.DUODENUM).WithParentContainer(_mucosa);
          _mucosa_duo_interstitial = new Compartment().WithName(CoreConstants.Compartment.INTERSTITIAL).WithParentContainer(_mucosa_duo);
 
          _events = new Container().WithName(Constants.EVENTS);
@@ -345,7 +347,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_category_to_mucosa()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Compartment.DUODENUM, string.Empty, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, Constants.Compartment.DUODENUM, string.Empty, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Mucosa);
       }
    }
@@ -362,7 +364,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_category_to_mucosa()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Compartment.DUODENUM, CoreConstants.Compartment.INTERSTITIAL, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, Constants.Compartment.DUODENUM, CoreConstants.Compartment.INTERSTITIAL, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Mucosa);
       }
    }
