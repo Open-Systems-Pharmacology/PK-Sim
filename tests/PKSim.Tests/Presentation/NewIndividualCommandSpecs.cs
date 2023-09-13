@@ -24,7 +24,7 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_leverate_the_individual_task_to_create_an_individual()
+      public void should_leverage_the_individual_task_to_create_an_individual()
       {
          A.CallTo(() => _individualTask.AddToProject()).MustHaveHappened();
       }

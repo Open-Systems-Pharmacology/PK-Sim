@@ -61,6 +61,7 @@ namespace PKSim.Core.Services
          _individualPathWithRootExpander.AddRootToPathIn(individual);
          
          _keywordReplacerTask.ReplaceIn(individual);
+         _formulaTask.ExpandDynamicReferencesIn(individual.Root);
          _formulaTask.ExpandDynamicFormulaIn(individual);
          _referencesResolver.ResolveReferencesIn(individual);
       }
