@@ -63,7 +63,8 @@ namespace PKSim.IntegrationTests
       public void the_created_simulation_should_have_a_kidney_clearance_process_created_based_on_the_one_defined_in_the_compound()
       {
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>());
-         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(_kidneyProcess.Name);
+         var processNameInSimulation = CompositeNameFor(_kidneyProcess.Name, _compound.Name);
+         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(processNameInSimulation);
 
          allProcessParameters.FindByName(ConverterConstants.Parameters.PlasmaClearance).Value.ShouldBeEqualTo(_kidneyProcess.Parameter(ConverterConstants.Parameters.PlasmaClearance).Value);
       }
@@ -93,7 +94,8 @@ namespace PKSim.IntegrationTests
       public void the_created_simulation_should_have_a_kidney_GFR_clearance_process_created_based_on_the_one_defined_in_the_compound()
       {
          var allProcessParameters = _parameterGroupTask.ParametersInTopGroup(CoreConstants.Groups.COMPOUND_PROCESSES, _simulation.All<IParameter>());
-         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(_processGFR.Name);
+         var processNameInSimulation = CompositeNameFor(_processGFR.Name, _compound.Name);
+         allProcessParameters.Select(x => x.ParentContainer.Name).Distinct().ShouldOnlyContain(processNameInSimulation);
 
          allProcessParameters.FindByName(CoreConstants.Parameters.GFR_FRACTION).Value.ShouldBeEqualTo(_processGFR.Parameter(CoreConstants.Parameters.GFR_FRACTION).Value);
       }

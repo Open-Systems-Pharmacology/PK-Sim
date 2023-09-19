@@ -237,9 +237,9 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_passive_transport_named_after_the_process_name()
+      public void should_return_a_passive_transport_named_after_the_process_name_and_the_name_of_the_compound()
       {
-         _transport.Name.ShouldBeEqualTo(_process.Name);
+         _transport.Name.ShouldBeEqualTo(CompositeNameFor(_process.Name, "DRUG"));
       }
    }
 

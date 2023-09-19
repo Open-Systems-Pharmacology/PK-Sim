@@ -294,7 +294,7 @@ namespace PKSim.Core.Mappers
       public TransportBuilder PassiveTransportProcessFrom(CompoundProcess compoundProcess, string compoundName, IFormulaCache formulaCache)
       {
          var passiveProcess = _cloner.Clone(_simulationActiveProcessRepository.ProcessFor<PKSimTransport>(compoundProcess.InternalName));
-         passiveProcess.Name = compoundProcess.Name;
+         passiveProcess.Name = CompositeNameFor(compoundProcess.Name, compoundName);
          passiveProcess.ForAll = false;
          passiveProcess.AddMoleculeName(compoundName);
          updateTransporterFormulaFromCache(passiveProcess, formulaCache);
