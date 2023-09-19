@@ -1,13 +1,15 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using System;
+using System.Linq.Expressions;
 using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core
@@ -32,7 +34,7 @@ namespace PKSim.Core
 
          _ontogeny = new DatabaseOntogeny();
          _ontogenyRepository = A.Fake<IOntogenyRepository>();
-         _formulaFactory= A.Fake<IFormulaFactory>();
+         _formulaFactory = A.Fake<IFormulaFactory>();
          _entityPathResolver = new EntityPathResolverForSpecs();
          sut = new MoleculeOntogenyVariabilityUpdater(_ontogenyRepository, _entityPathResolver, _formulaFactory);
       }
@@ -93,7 +95,7 @@ namespace PKSim.Core
          _population = new RandomPopulation {Settings = new RandomPopulationSettings {BaseIndividual = _individual, NumberOfIndividuals = 2}};
          _population.IndividualValuesCache.Add(ageValues);
          _population.IndividualValuesCache.Add(gaValues);
-         _population.IndividualValuesCache.IndividualIds.AddRange(new []{1, 2});
+         _population.IndividualValuesCache.IndividualIds.AddRange(new[] {1, 2});
 
          A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, 1, 30, _population.RandomGenerator)).Returns(10);
          A.CallTo(() => _ontogenyRepository.OntogenyFactorFor(_ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, 2, 40, _population.RandomGenerator)).Returns(11);
@@ -133,7 +135,43 @@ namespace PKSim.Core
       [Observation]
       public void should_not_try_to_update_the_ontogenies()
       {
-         A.CallTo(() => _mousePopulation.AllOrganismValuesFor(A<string>._, _entityPathResolver)).MustNotHaveHappened();
+         A.CallTo((Expression<Action>) (() => _mousePopulation.AllOrganismValuesFor(A<string>._, _entityPathResolver))).MustNotHaveHappened();
+      }
+   }
+
+   public class When_updating_the_plasma_protein_ontogeny_for_a_given_individual : concern_for_MoleculeOntogenyVariabilityUpdater
+   {
+      private ISimulationSubject _individual;
+      private SupportedProtein _agpProtein;
+      private IParameter _ontogenyFactorAgpTable;
+      private DistributedTableFormula _tableFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individual = new Individual();
+         _tableFormula = new DistributedTableFormula();
+         var organism = new Organism();
+         _individual.Add(organism);
+         _ontogenyFactorAgpTable = DomainHelperForSpecs.ConstantParameterWithValue(10).WithName(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP_TABLE);
+         organism.Add(_ontogenyFactorAgpTable);
+
+         _agpProtein = new SupportedProtein(CoreConstants.Molecule.AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP_TABLE);
+         A.CallTo(() => _ontogenyRepository.SupportedProteins).Returns(new[] {_agpProtein});
+
+         A.CallTo(() => _ontogenyRepository.PlasmaProteinOntogenyTableFormula(_agpProtein.Name, _individual.OriginData)).Returns(_tableFormula);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePlasmaProteinsOntogenyFor(_individual);
+      }
+
+      [Observation]
+      public void should_ensure_that_that_the_default_value_is_set_to_null_if_the_formula_is_a_table_formula()
+      {
+         _ontogenyFactorAgpTable.Formula.ShouldBeEqualTo(_tableFormula);
+         _ontogenyFactorAgpTable.DefaultValue.ShouldBeNull();
       }
    }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -7,6 +6,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Infrastructure.ORM.Repositories
 {
@@ -42,14 +42,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
          foreach (var individualParameter in flatIndividualParametersSameFormulaOrValue)
          {
             var (containerId, parameterName, isSameFormula, _, _) = individualParameter;
+
+            //For ontogeny table parameter, we NEVER use the same formula as they are clearly individual specific parameters but are defined as constant in the database
+            if (parameterName.IsOneOf(ONTOGENY_FACTOR_TABLE, ONTOGENY_FACTOR_GI_TABLE, ONTOGENY_FACTOR_ALBUMIN_TABLE, ONTOGENY_FACTOR_AGP_TABLE))
+               continue;
+
             var containerPath = _flatContainerRepository.ContainerPathFrom(individualParameter.ContainerId);
+
+
             var individualParameterSameFormulaOrValueForAllSpecies = new IndividualParameterSameFormulaOrValueForAllSpecies
             {
                ContainerId = containerId,
                ContainerPath = containerPath,
                ParameterName = parameterName,
-               IsSameFormula = isSameFormula
             };
+
             _individualParametersSameFormulaOrValue.Add(individualParameterSameFormulaOrValueForAllSpecies);
             _allByContainerIdAndParameterName.Add((containerId, parameterName), individualParameterSameFormulaOrValueForAllSpecies);
             _allByParameterPath.Add(new[] {containerPath, parameterName}.ToPathString(), individualParameterSameFormulaOrValueForAllSpecies);
@@ -62,40 +69,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _individualParametersSameFormulaOrValue;
       }
 
-      public bool IsSameFormula(ParameterMetaData parameterMetaData)
-      {
-         var (isSameFormula, _, _) = isSameFormulaOrValue(parameterMetaData);
-         return isSameFormula;
-      }
-
-      public bool IsSameValue(ParameterMetaData parameterMetaData)
-      {
-         var (_, isSameValue, _) = isSameFormulaOrValue(parameterMetaData);
-         return isSameValue;
-      }
-
-      public (bool isSame, bool exists) IsSameFormulaOrValue(ParameterMetaData parameterMetaData)
-      {
-         var (isSameFormula, isSameValue, exists) = isSameFormulaOrValue(parameterMetaData);
-         return (isSameFormula || isSameValue, exists);
-      }
+      public bool IsSameFormulaOrValue(ParameterMetaData parameterMetaData) => isSameFormulaOrValue(parameterMetaData);
 
       public bool IsSameFormulaOrValue(IParameter parameter)
       {
          Start();
          var path = _entityPathResolver.PathFor(parameter);
          var parameterSameFormulaOrValue = _allByParameterPath[path];
-         return parameterSameFormulaOrValue?.IsSame ?? false;
+         return parameterSameFormulaOrValue != null;
       }
 
-      private (bool isSameFormula, bool isSameValue, bool exists) isSameFormulaOrValue(ParameterMetaData parameterMetaData)
+      private bool isSameFormulaOrValue(ParameterMetaData parameterMetaData)
       {
          Start();
          var parameterSameFormulaOrValue = _allByContainerIdAndParameterName[(parameterMetaData.ContainerId, parameterMetaData.ParameterName)];
-
-         return parameterSameFormulaOrValue == null
-            ? (false, false, false)
-            : (parameterSameFormulaOrValue.IsSameFormula, parameterSameFormulaOrValue.IsSameValue, true);
+         return parameterSameFormulaOrValue != null;
       }
    }
 }
