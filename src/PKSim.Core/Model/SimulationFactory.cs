@@ -54,7 +54,7 @@ namespace PKSim.Core.Model
       Simulation CreateForDDIRatio(Simulation originalSimulation);
 
       /// <summary>
-      ///    Creates a full simulation (including model) where the protocal for the <paramref name="compound" /> is set to
+      ///    Creates a full simulation (including model) where the protocol for the <paramref name="compound" /> is set to
       ///    <paramref name="protocol" />
       /// </summary>
       Simulation CreateForVSS(Protocol protocol, Individual individual, Compound compound);

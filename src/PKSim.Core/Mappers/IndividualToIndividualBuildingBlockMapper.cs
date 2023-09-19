@@ -27,8 +27,7 @@ namespace PKSim.Core.Mappers
       private readonly IParameterQuery _parameterQuery;
       private readonly IIndividualParametersSameFormulaOrValueForAllSpeciesRepository _sameFormulaOrValueForAllSpeciesRepository;
 
-      public IndividualToIndividualBuildingBlockMapper(
-         IObjectBaseFactory objectBaseFactory,
+      public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory,
          IEntityPathResolver entityPathResolver,
          IApplicationConfiguration applicationConfiguration,
          ILazyLoadTask lazyLoadTask,
@@ -36,7 +35,8 @@ namespace PKSim.Core.Mappers
          ICalculationMethodCategoryRepository calculationMethodCategoryRepository,
          IFormulaFactory formulaFactory,
          IParameterQuery parameterQuery,
-         IIndividualParametersSameFormulaOrValueForAllSpeciesRepository sameFormulaOrValueForAllSpeciesRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory)
+         IIndividualParametersSameFormulaOrValueForAllSpeciesRepository sameFormulaOrValueForAllSpeciesRepository,
+         ICloner cloner) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner)
       {
          _representationInfoRepository = representationInfoRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;

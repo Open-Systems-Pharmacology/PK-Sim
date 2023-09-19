@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using static PKSim.Core.CoreConstants.CalculationMethod;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
@@ -22,15 +23,15 @@ namespace PKSim.Core.Mappers
       private readonly IInitialConditionsCreator _initialConditionsCreator;
       private readonly IMoleculeBuilderFactory _moleculeBuilderFactory;
 
-      public ExpressionProfileToExpressionProfileBuildingBlockMapper(
-         IObjectBaseFactory objectBaseFactory, 
-         IEntityPathResolver entityPathResolver, 
-         IApplicationConfiguration applicationConfiguration, 
-         ILazyLoadTask lazyLoadTask, 
+      public ExpressionProfileToExpressionProfileBuildingBlockMapper(IObjectBaseFactory objectBaseFactory,
+         IEntityPathResolver entityPathResolver,
+         IApplicationConfiguration applicationConfiguration,
+         ILazyLoadTask lazyLoadTask,
          IFormulaFactory formulaFactory,
          IInitialConditionsCreator initialConditionsCreator,
-         IMoleculeBuilderFactory moleculeBuilderFactory) :
-         base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory)
+         IMoleculeBuilderFactory moleculeBuilderFactory, 
+         ICloner cloner) :
+         base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner)
       {
          _initialConditionsCreator = initialConditionsCreator;
          _moleculeBuilderFactory = moleculeBuilderFactory;
@@ -38,11 +39,7 @@ namespace PKSim.Core.Mappers
 
       protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, ExpressionProfile expressionProfile)
       {
-         var formula = parameter.Formula;
          //for expression profile, all formula are in the calculation method EXPRESSION_PARAMETERS unless they are distributed table
-         if (formula is TableFormula tableFormula)
-            return tableFormula;
-
          return _formulaFactory.RateFor(new RateKey(EXPRESSION_PARAMETERS, parameter.Formula.Name), formulaCache);
       }
 

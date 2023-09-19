@@ -70,16 +70,19 @@ namespace PKSim.Core.Services
             //otherwise, we add all parameters that are used by all species. The value used will be set based on the fact that the parameter has a shared value for all parameters or species or not
             return parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual || _individualParameterBySpeciesRepository.UsedForAllSpecies(parameterMetaData);
          }
-
-
+         
          void parameterValueModifier(ParameterMetaData parameterMetaData, IParameter parameter)
          {
-            //here we know that the parameter fulfills the criteria above. However, in case of a parameter that is used by all species, we need to verify that either the formula or the value is common 
+            //here we know that the parameter fulfills the criteria above.So we really only care about parameters that are individual parameters
+            //only reset of parameters for individuals
+            if (parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual)
+               return;
+
+             //However, in case of a parameter that is used by all species, we need to verify that either the formula or the value is common 
             //to all species. Otherwise, we set the value to NaN
             var isSame = _sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameterMetaData);
             if (!isSame)
                parameter.Formula = new ConstantFormula(double.NaN);
-
          }
 
          addParametersTo(parameterContainer, originData, modelProperties.AllCalculationMethods().Select(cm => cm.Name), addParameter, parameterValueModifier, formulaCache);
