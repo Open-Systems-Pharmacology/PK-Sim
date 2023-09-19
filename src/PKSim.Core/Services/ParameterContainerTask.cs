@@ -73,12 +73,11 @@ namespace PKSim.Core.Services
          
          void parameterValueModifier(ParameterMetaData parameterMetaData, IParameter parameter)
          {
-            //here we know that the parameter fulfills the criteria above.So we really only care about parameters that are individual parameters
-            //only reset of parameters for individuals
+            //here we know that the parameter fulfills the criteria above but we really only care about parameters that are individual parameters
             if (parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual)
                return;
 
-             //However, in case of a parameter that is used by all species, we need to verify that either the formula or the value is common 
+            //In case of a parameter that is used by all species, we need to verify that either the formula or the value is common 
             //to all species. Otherwise, we set the value to NaN
             var isSame = _sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameterMetaData);
             if (!isSame)
