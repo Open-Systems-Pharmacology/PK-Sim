@@ -6,9 +6,7 @@ namespace PKSim.Core.Repositories
 {
    public interface IIndividualParametersSameFormulaOrValueForAllSpeciesRepository : IStartableRepository<IndividualParameterSameFormulaOrValueForAllSpecies>
    {
-      bool IsSameFormula(ParameterMetaData parameterMetaData);
-      bool IsSameValue(ParameterMetaData parameterMetaData);
-      (bool isSame, bool exists) IsSameFormulaOrValue(ParameterMetaData parameterMetaData);
+      bool IsSameFormulaOrValue(ParameterMetaData parameterMetaData);
       bool IsSameFormulaOrValue(IParameter parameter);
    }
 }

@@ -71,13 +71,15 @@ namespace PKSim.Core.Services
 
       private void updatePlasmaProteinsOntogenyFor(Individual individual)
       {
-         _ontogenyRepository.SupportedProteins.Each(x => updatePlasmaProteinOntogenyTableFor(individual,x.TableParameterName, x.Name));
+         _ontogenyRepository.SupportedProteins.Each(x => updatePlasmaProteinOntogenyTableFor(individual, x.TableParameterName, x.Name));
       }
 
       private void updatePlasmaProteinOntogenyTableFor(Individual individual, string tableParameterName, string proteinName)
       {
          var parameter = individual.Organism.Parameter(tableParameterName);
-         if (parameter == null) return;
+         if (parameter == null) 
+            return;
+
          var tableFormula = _ontogenyRepository.PlasmaProteinOntogenyTableFormula(proteinName, individual.OriginData);
 
          updateOntogenyParameterTable(parameter, tableFormula);
@@ -116,16 +118,10 @@ namespace PKSim.Core.Services
       {
          //the formula may be null if no ontogeny was selected. In this case, we simply set a default formula of 1
          parameter.Formula = tableFormula ?? _formulaFactory.ValueFor(CoreConstants.DEFAULT_ONTOGENY_FACTOR, parameter.Dimension);
-      }
 
-      private void updateOntogenyParameter(IParameter parameter, double value)
-      {
-         //this can be the case if the parameter is defined in an expression profile
-         if (parameter == null)
-            return;
-
-         parameter.DefaultValue = value;
-         parameter.Value = parameter.DefaultValue.Value;
+         //in case of a tableFormula being set, make sure we also reset the default value of the parameter so that
+         //it will not look like the value was changed by the user
+         parameter.DefaultValue = tableFormula != null ? null : CoreConstants.DEFAULT_ONTOGENY_FACTOR;
       }
 
       public void UpdateAllOntogenies(Population population)
@@ -179,7 +175,7 @@ namespace PKSim.Core.Services
       private void updatePlasmaProteinOntogenyFor(Population population, IReadOnlyList<double> allAges, IReadOnlyList<double> allGAs, string parameterName, string proteinName)
       {
          var plasmaProteinOntogenyParameter = population.Organism.Parameter(parameterName);
-         if (plasmaProteinOntogenyParameter == null) 
+         if (plasmaProteinOntogenyParameter == null)
             return;
 
          var ontogenyFactors = new ParameterValues(_entityPathResolver.PathFor(plasmaProteinOntogenyParameter));
@@ -189,7 +185,7 @@ namespace PKSim.Core.Services
             ontogenyFactors.Add(_ontogenyRepository.PlasmaProteinOntogenyValueFor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
          }
 
-            population.IndividualValuesCache.Remove(ontogenyFactors.ParameterPath);
+         population.IndividualValuesCache.Remove(ontogenyFactors.ParameterPath);
          population.IndividualValuesCache.Add(ontogenyFactors);
       }
 

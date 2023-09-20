@@ -32,7 +32,13 @@ namespace PKSim.IntegrationTests
 
    public class When_testing_if_a_parameter_has_the_same_formula_or_value_for_all_species : concern_for_IndividualParametersSameFormulaOrValueForAllSpeciesRepository
    {
-      private readonly IFlatContainerRepository _flatContainerRepository = IoC.Resolve<IFlatContainerRepository>();
+      private IFlatContainerRepository _flatContainerRepository;
+
+      protected override void Context()
+      {
+         base.Context();
+         _flatContainerRepository = IoC.Resolve<IFlatContainerRepository>();
+      }
 
       private ParameterMetaData parameterMetaDataFor(string containerPath, string parameterName)
       {
@@ -45,58 +51,52 @@ namespace PKSim.IntegrationTests
          };
       }
 
-      private (bool isSameFormula, bool isSameValue) isSameFormulaOrValue(string containerPath, string parameterName)
+      private bool isSameFormulaOrValue(string containerPath, string parameterName)
       {
          var parameterMetaData = parameterMetaDataFor(containerPath, parameterName);
-         var isSameFormula = sut.IsSameFormula(parameterMetaData);
-         var isSameValue = sut.IsSameValue(parameterMetaData);
-         return (isSameFormula, isSameValue);
+         return sut.IsSameFormulaOrValue(parameterMetaData);
       }
-
-      private bool isSameFormula(string containerPath, string parameterName) => sut.IsSameFormula(parameterMetaDataFor(containerPath, parameterName));
-
-      private bool isSameValue(string containerPath, string parameterName) => sut.IsSameValue(parameterMetaDataFor(containerPath, parameterName));
 
       protected static IEnumerable<object[]> TestData()
       {
          yield return new object[]
          {
-            "Organism", "Weight", (isSameFormula: true, isSameValue: false)
+            "Organism", "Weight", true
          };
 
          yield return new object[]
          {
-            "Organism", "Height", (isSameFormula: false, isSameValue: false)
+            "Organism", "Height", false
          };
 
          yield return new object[]
          {
-            "Organism|Bone", "Volume", (isSameFormula: false, isSameValue: false)
+            "Organism|Bone", "Volume", false
          };
 
          yield return new object[]
          {
-            "Organism|Lumen|Duodenum", "Length", (isSameFormula: false, isSameValue: false)
+            "Organism|Lumen|Duodenum", "Length", false
          };
 
          yield return new object[]
          {
-            "Organism|Bone", "Organ volume mouse", (isSameFormula: false, isSameValue: true)
+            "Organism|Bone", "Organ volume mouse", true
+         };
+
+         //This is a special parameter that is defined as same in the table but in fact it is a table parameter and needs to be treated as species specific
+         yield return new object[]
+         {
+            "Organism", "Ontogeny factor (alpha1-acid glycoprotein) table", false
          };
       }
 
       [Observation]
       [TestCaseSource(nameof(TestData))]
-      public void should_return_correct_values(string containerPath, string parameterName,
-         (bool isSameFormula, bool isSameValue) expectedValues)
+      public void should_return_correct_values(string containerPath, string parameterName, bool isSame)
       {
-         var (sameFormula, sameValue) = isSameFormulaOrValue(containerPath, parameterName);
-
-         sameFormula.ShouldBeEqualTo(expectedValues.isSameFormula, "Formula equality not as expected");
-         sameValue.ShouldBeEqualTo(expectedValues.isSameValue, "Value equality not as expected");
-
-         sameFormula.ShouldBeEqualTo(isSameFormula(containerPath, parameterName));
-         sameValue.ShouldBeEqualTo(isSameValue(containerPath, parameterName));
+         var same = isSameFormulaOrValue(containerPath, parameterName);
+         same.ShouldBeEqualTo(isSame, $"Formula equality not as expected for {containerPath} {parameterName}");
       }
    }
 }

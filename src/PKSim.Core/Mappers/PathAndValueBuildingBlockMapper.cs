@@ -8,7 +8,9 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 
 namespace PKSim.Core.Mappers
 {
@@ -33,21 +35,23 @@ namespace PKSim.Core.Mappers
       protected IEntityPathResolver _entityPathResolver;
       protected IApplicationConfiguration _applicationConfiguration;
       private readonly ILazyLoadTask _lazyLoadTask;
-
       protected readonly IFormulaFactory _formulaFactory;
+      private readonly ICloner _cloner;
 
       protected PathAndValueBuildingBlockMapper(
          IObjectBaseFactory objectBaseFactory,
          IEntityPathResolver entityPathResolver,
          IApplicationConfiguration applicationConfiguration,
          ILazyLoadTask lazyLoadTask,
-         IFormulaFactory formulaFactory)
+         IFormulaFactory formulaFactory,
+         ICloner cloner)
       {
          _objectBaseFactory = objectBaseFactory;
          _entityPathResolver = entityPathResolver;
          _applicationConfiguration = applicationConfiguration;
          _lazyLoadTask = lazyLoadTask;
          _formulaFactory = formulaFactory;
+         _cloner = cloner;
       }
 
       protected TBuildingBlock CreateBaseObject(TPKSimBuildingBlock pkSimBuildingBlock)
@@ -112,14 +116,27 @@ namespace PKSim.Core.Mappers
 
       private IFormula retrieveTemplateFormulaFromCache(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
       {
-         var formulaName = parameter.Formula.Name;
+         var formula = parameter.Formula;
+         var formulaName = formula.Name;
          if (formulaCache.Contains(formulaName))
             return formulaCache[formulaName];
 
-         //This will add the formula top the cache 
-         var templateFormula = TemplateFormulaFor(parameter, formulaCache, pkSimBuildingBlock);
-         //We need to remove the ROOT keyword when exporting to PKML structure 
-         templateFormula?.ObjectPaths.Each(x => x.Remove(Constants.ROOT));
+         IFormula templateFormula;
+         switch (formula)
+         {
+            case TableFormula tableFormula:
+               templateFormula = _cloner.Clone(tableFormula);
+               formulaCache.Add(templateFormula);
+               break;
+            default:
+
+               //This will add the formula to the cache 
+               templateFormula = TemplateFormulaFor(parameter, formulaCache, pkSimBuildingBlock);
+               //We need to remove the ROOT keyword when exporting to PKML structure 
+               templateFormula?.ObjectPaths.Each(x => x.Remove(Constants.ROOT));
+               break;
+         }
+
          return templateFormula;
       }
 

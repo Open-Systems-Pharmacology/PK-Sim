@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Presentation.Core;
+using PKSim.Assets;
 using PKSim.Core;
+using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Individuals;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Assets;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Infrastructure.Import.Core;
-using OSPSuite.Infrastructure.Import.Services;
-using OSPSuite.Core.Services;
-using PKSim.Core.Commands;
 
 namespace PKSim.Presentation.Services
 {
@@ -29,12 +28,12 @@ namespace PKSim.Presentation.Services
       private readonly IDialogCreator _dialogCreator;
 
       public OntogenyTask(
-         IExecutionContext executionContext, 
-         IApplicationController applicationController, 
+         IExecutionContext executionContext,
+         IApplicationController applicationController,
          IDataImporter dataImporter,
-         IDimensionRepository dimensionRepository, 
-         IOntogenyRepository ontogenyRepository, 
-         IEntityTask entityTask, 
+         IDimensionRepository dimensionRepository,
+         IOntogenyRepository ontogenyRepository,
+         IEntityTask entityTask,
          IDialogCreator dialogCreator)
       {
          _executionContext = executionContext;
@@ -44,7 +43,7 @@ namespace PKSim.Presentation.Services
          _ontogenyRepository = ontogenyRepository;
          _entityTask = entityTask;
          _dialogCreator = dialogCreator;
-   }
+      }
 
       public ICommand SetOntogenyForMolecule(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject)
       {
@@ -71,7 +70,7 @@ namespace PKSim.Presentation.Services
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
          var fileName = _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA);
-         if(string.IsNullOrEmpty(fileName))
+         if (string.IsNullOrEmpty(fileName))
             return null;
 
          var data = _dataImporter.ImportDataSets(new List<MetaDataCategory>(), getColumnInfos(), dataImporterSettings, fileName).DataRepositories.FirstOrDefault();
@@ -93,7 +92,6 @@ namespace PKSim.Presentation.Services
 
          return SetOntogenyForMolecule(molecule, ontogeny, simulationSubject);
       }
-
 
       private IReadOnlyList<ColumnInfo> getColumnInfos()
       {
@@ -136,6 +134,6 @@ namespace PKSim.Presentation.Services
          columns.Add(geoMean);
 
          return columns;
-      } 
+      }
    }
 }

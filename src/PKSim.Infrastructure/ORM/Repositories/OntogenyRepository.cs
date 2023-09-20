@@ -35,7 +35,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IFormulaFactory _formulaFactory;
       private readonly IGroupRepository _groupRepository;
-      private ICloner _cloner;
+      private readonly ICloner _cloner;
 
       public OntogenyRepository(
          IFlatOntogenyRepository flatOntogenyRepository,

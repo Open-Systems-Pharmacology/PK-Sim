@@ -10,7 +10,9 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
 
 namespace PKSim.Core
@@ -27,6 +29,7 @@ namespace PKSim.Core
       private IFormulaFactory _formulaFactory;
       protected IInitialConditionsCreator _initialConditionsCreator;
       protected IMoleculeBuilderFactory _moleculeBuilderFactory;
+      protected ICloner _cloner;
 
       protected override void Context()
       {
@@ -37,11 +40,12 @@ namespace PKSim.Core
          _formulaFactory = A.Fake<IFormulaFactory>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _moleculeBuilderFactory = A.Fake<IMoleculeBuilderFactory>();
+         _cloner= A.Fake<ICloner>();
 
          A.CallTo(() => _objectBaseFactory.Create<ExpressionProfileBuildingBlock>()).Returns(new ExpressionProfileBuildingBlock());
          A.CallTo(() => _objectBaseFactory.Create<ExpressionParameter>()).ReturnsLazily(() => new ExpressionParameter());
 
-         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _formulaFactory, _initialConditionsCreator, _moleculeBuilderFactory);
+         sut = new ExpressionProfileToExpressionProfileBuildingBlockMapper(_objectBaseFactory, _objectPathFactory, _applicationConfiguration, _lazyLoadTask, _formulaFactory, _initialConditionsCreator, _moleculeBuilderFactory, _cloner);
       }
    }
 

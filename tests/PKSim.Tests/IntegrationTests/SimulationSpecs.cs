@@ -111,7 +111,7 @@ namespace PKSim.IntegrationTests
          _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.BSA).ShouldNotBeNull();
       }
    }
-   
+
    public class When_creating_an_individual_simulation_with_the_standard_building_block_and_iv_bolus : concern_for_IndividualSimulation
    {
       public override void GlobalContext()
@@ -335,8 +335,8 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual, _enzymeName, 
-            x => x.Molecule.Ontogeny = new UserDefinedOntogeny { Table = createOntogenyTable() });
+         DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual, _enzymeName,
+            x => x.Molecule.Ontogeny = new UserDefinedOntogeny {Table = createOntogenyTable()});
 
          var containerTask = IoC.Resolve<IContainerTask>();
          _individual.OriginData.Age = new OriginDataParameter(2);
@@ -404,6 +404,32 @@ namespace PKSim.IntegrationTests
          var formula = simParameter.Formula;
          if (formula.IsAnImplementationOf<DistributedTableFormula>()) return;
          errorList.Add($"Parameters '{parameterKey}' was not replaced with table formula (formula type is '{simParameter.Formula.GetType().Name})");
+      }
+   }
+
+   public class When_creating_an_individual_simulation_for_a_human_having_an_age_supporting_ontogeny_table : concern_for_IndividualSimulation
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _individual.OriginData.Age = new OriginDataParameter(0);
+         _individual.AgeParameter.Value = 0;
+
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_be_able_to_create_the_simulation()
+      {
+         _simulation.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_defined_the_ontogeny_table_parameters_as_table()
+      {
+         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP_TABLE).Formula.ShouldBeAnInstanceOf<TableFormula>();
+         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN_TABLE).Formula.ShouldBeAnInstanceOf<TableFormula>();
       }
    }
 
