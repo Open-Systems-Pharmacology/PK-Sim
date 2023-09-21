@@ -2,7 +2,6 @@
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Extensions;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;

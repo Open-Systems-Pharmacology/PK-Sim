@@ -70,6 +70,7 @@ namespace PKSim.Core.Mappers
          builderParameter.Path = _entityPathResolver.ObjectPathFor(parameter);
          builderParameter.Dimension = parameter.Dimension;
          builderParameter.DisplayUnit = parameter.DisplayUnit;
+         builderParameter.ValueOrigin.UpdateFrom(parameter.ValueOrigin);
          return builderParameter;
       }
 

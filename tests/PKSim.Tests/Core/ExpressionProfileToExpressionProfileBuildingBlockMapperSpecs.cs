@@ -109,6 +109,7 @@ namespace PKSim.Core
          var parameter = _expressionProfile.GetAllChildren<IParameter>().Last();
          parameter.Value = 99;
          parameter.Formula = null;
+         parameter.ValueOrigin.Source = ValueOriginSources.Database;
          var topContainer = new Container
          {
             ContainerType = ContainerType.Organ,
@@ -164,6 +165,7 @@ namespace PKSim.Core
          _result.Description.ShouldBeEqualTo("TestDescription");
          _result.MoleculeName.ShouldBeEqualTo("TestEnzyme");
          _result.Type.ShouldBeEqualTo(ExpressionTypes.MetabolizingEnzyme);
+         _result.ExpressionParameters.Last().ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
       }
    }
 }
