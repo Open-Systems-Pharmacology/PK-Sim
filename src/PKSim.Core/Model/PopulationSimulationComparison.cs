@@ -53,10 +53,7 @@ namespace PKSim.Core.Model
          _allSimulations.Remove(populationSimulation.Id);
       }
 
-      public void RemoveAllSimulations()
-      {
-         _allSimulations.Clear();
-      }
+      public void RemoveAllSimulations() => _allSimulations.Clear();
 
       public virtual void RemoveAnalysis(ISimulationAnalysis simulationAnalysis)
       {
