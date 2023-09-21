@@ -141,7 +141,8 @@ namespace PKSim.Core
       {
          base.Context();
 
-         var referenceSimulation = A.Fake<PopulationSimulation>().WithName("Sim");
+         //adding a character that should be escaped
+         var referenceSimulation = A.Fake<PopulationSimulation>().WithName("Sim's");
          _referenceGroupingItem = new GroupingItem {Label = "Reference", Color = Color.Black, Symbol = Symbols.Circle};
          _populationDataCollector.ReferenceSimulation = referenceSimulation;
          _populationDataCollector.ReferenceGroupingItem = _referenceGroupingItem;

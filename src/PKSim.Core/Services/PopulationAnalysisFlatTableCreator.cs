@@ -97,10 +97,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private PopulationSimulationComparison comparison
-      {
-         get { return _populationDataCollector.DowncastTo<PopulationSimulationComparison>(); }
-      }
+      private PopulationSimulationComparison comparison => _populationDataCollector.DowncastTo<PopulationSimulationComparison>();
 
       private IEnumerable<PopulationAnalysisDataField> numericDataFieldsFrom(IEnumerable<IPopulationAnalysisField> populationAnalysisFields)
       {
@@ -208,7 +205,7 @@ namespace PKSim.Core.Services
       }
 
       private string escapeField(string fieldToEscape)
-      {
+      {      
          if (string.IsNullOrEmpty(fieldToEscape))
             return fieldToEscape;
 
