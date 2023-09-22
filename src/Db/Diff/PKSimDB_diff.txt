@@ -1,3 +1,4 @@
+UPDATE tab_calculation_method_parameter_rates SET can_be_varied_in_population=1 WHERE parameter_id=32;
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ApplicationParameter' AND formula_rate='PARAM_Subcutaneous_t1/2';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Application_PKSim' AND formula_rate='ParticleBinDissolvedDrugMassCaecumIncrease';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Cellular permeability - Charge dependent Schmitt' AND formula_rate='PARAM_P_int_cell_factor';
@@ -53,6 +54,7 @@ DELETE FROM tab_calculation_method_rates WHERE calculation_method='PlasmaClearan
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='SchemaItemParameter' AND formula_rate='PARAM_FirstOrder_t1/2';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='SpecificClearance_PKSim' AND formula_rate='Zero_Rate';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='VascularEndoVolume' AND formula_rate='PARAM_Volume (endothelium)_LiverZone';
+DELETE FROM tab_molecules WHERE molecule='Liquid';
 DELETE FROM tab_object_paths WHERE path_id=249;
 DELETE FROM tab_object_paths WHERE path_id=250;
 DELETE FROM tab_object_paths WHERE path_id=1555;
