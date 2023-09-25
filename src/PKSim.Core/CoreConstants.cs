@@ -743,7 +743,6 @@ namespace PKSim.Core
          public static readonly string ARTERIAL_BLOOD = "ArterialBlood";
          public static readonly string BONE = "Bone";
          public static readonly string BRAIN = "Brain";
-         public static readonly string Dummy = "Dummy";
          public static readonly string ENDOGENOUS_IGG = "EndogenousIgG";
          public static readonly string FAT = "Fat";
          public static readonly string GALLBLADDER = "Gallbladder";

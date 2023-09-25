@@ -23,6 +23,28 @@ namespace PKSim.IntegrationTests
    {
    }
 
+   public class When_checking_the_changes_in_the_database_for_version_12_0 : concern_for_DatabaseUpdate
+   {
+      [Observation]
+      public void should_set_visible_fraction_interstitial_and_intracellular_parameters_as_editable()
+      {
+         var parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
+         verifyVisibleParameterIsEditable(parameterValueRepository, CoreConstants.Parameters.FRACTION_INTERSTITIAL);
+         verifyVisibleParameterIsEditable(parameterValueRepository, CoreConstants.Parameters.FRACTION_VASCULAR);
+      }
+
+      private static void verifyVisibleParameterIsEditable<T>(IParameterMetaDataRepository<T> parameterMetaDataRepository, string parameterName, string containerName = null) where T : ParameterMetaData
+      {
+         var parameters = parameterMetaDataRepository.All().Where(p => p.ParameterName.Equals(parameterName)).ToList();
+         if (containerName != null)
+            parameters = parameters.Where(x => x.ContainerName == containerName).ToList();
+
+         parameters.Count.ShouldBeGreaterThan(0);
+         parameters.Each(p => p.ReadOnly.ShouldBeEqualTo(!p.Visible));
+      }
+
+   }
+
    public class When_checking_the_changes_in_the_database_for_version_7_4_0 : concern_for_DatabaseUpdate
    {
       [Observation]

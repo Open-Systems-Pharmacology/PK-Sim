@@ -22,7 +22,6 @@ namespace PKSim.IntegrationTests
             sut.OrganTypeFor(ARTERIAL_BLOOD).ShouldBeEqualTo(OrganType.VascularSystem);
             sut.OrganTypeFor(BONE).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
             sut.OrganTypeFor(BRAIN).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
-            sut.OrganTypeFor(Dummy).ShouldBeEqualTo(OrganType.Unknown);
             sut.OrganTypeFor(ENDOGENOUS_IGG).ShouldBeEqualTo(OrganType.Unknown);
             sut.OrganTypeFor(FAT).ShouldBeEqualTo(OrganType.TissueOrgansNotInGiTract);
             sut.OrganTypeFor(GALLBLADDER).ShouldBeEqualTo(OrganType.Unknown);
