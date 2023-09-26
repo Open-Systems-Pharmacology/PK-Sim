@@ -1,4 +1,7 @@
 UPDATE tab_calculation_method_parameter_rates SET can_be_varied_in_population=1 WHERE parameter_id=32;
+INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_OralMassAbsorbed','Lumen','InContainer');
+INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_OralMassAbsorbed','MOLECULE','InContainer');
+INSERT INTO tab_calculation_method_rate_descriptor_conditions(calculation_method,formula_rate,tag,condition) VALUES('DynamicSumFormulas','PARAM_OralMassAbsorbed','Oral mass absorbed segment','Has');
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='ApplicationParameter' AND formula_rate='PARAM_Subcutaneous_t1/2';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Application_PKSim' AND formula_rate='ParticleBinDissolvedDrugMassCaecumIncrease';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Cellular permeability - Charge dependent Schmitt' AND formula_rate='PARAM_P_int_cell_factor';
@@ -21,6 +24,7 @@ DELETE FROM tab_calculation_method_rates WHERE calculation_method='CompoundCommo
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='CompoundCommon' AND formula_rate='PARAM_DiffusionCoefficient';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='DistributionCommon_PKSim' AND formula_rate='PARAM_K_bld';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='DistributionInVitro_PKSim' AND formula_rate='Binding partner';
+INSERT INTO tab_calculation_method_rates(calculation_method,formula_rate,formula,dimension) VALUES('DynamicSumFormulas','PARAM_OralMassAbsorbed','M_#i','Amount');
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='EndosomalSpaceBindingFormulas' AND formula_rate='PARAM_Fraction endosomal_LiverZone';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='EndosomalSpaceBindingFormulas' AND formula_rate='PARAM_Fraction of endosomal uptake from plasma_LiverZone';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='EndosomalSpaceBindingFormulas' AND formula_rate='PARAM_Fraction recycled to plasma_LiverZone';
@@ -43,6 +47,7 @@ DELETE FROM tab_calculation_method_rates WHERE calculation_method='Lumen_PKSim' 
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_Aeff_sin';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_L_sin';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_MassAbsorbedIntoPortalVein_RHS';
+DELETE FROM tab_calculation_method_rates WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_VolumeGut';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_kflow';
 DELETE FROM tab_calculation_method_rates WHERE calculation_method='Mucosa_Thickness_Animals' AND formula_rate='PARAM_MeanBW_From_BW';
@@ -87,6 +92,8 @@ DELETE FROM tab_container_names WHERE container_type='PROCESS' AND container_nam
 DELETE FROM tab_container_names WHERE container_type='PROCESS' AND container_name='BrainActiveInfluxFromPlasma_MM';
 DELETE FROM tab_container_parameter_rates WHERE container_id=186 AND container_type='COMPARTMENT' AND container_name='Dummy' AND parameter_name='Volume' AND calculation_method='CompartmentsVolume_2Poren';
 DELETE FROM tab_container_parameter_rates WHERE container_id=186 AND container_type='COMPARTMENT' AND container_name='Dummy' AND parameter_name='Volume' AND calculation_method='CompartmentsVolume_4Comp';
+INSERT INTO tab_container_parameter_rates(container_id,container_type,container_name,parameter_name,calculation_method,formula_rate,min_value,min_isallowed,max_value,max_isallowed,value_origin) VALUES(4805,'GENERAL','MoleculeProperties','Oral mass absorbed','DynamicSumFormulas','PARAM_OralMassAbsorbed',0.0,1,NULL,1,NULL);
+DELETE FROM tab_container_parameter_rates WHERE container_id=4805 AND container_type='GENERAL' AND container_name='MoleculeProperties' AND parameter_name='Oral mass absorbed' AND calculation_method='Lumen_PKSim';
 UPDATE tab_container_parameters SET read_only=0 WHERE container_id=147 AND container_type='ORGAN' AND container_name='ArterialBlood' AND parameter_name='Fraction vascular';
 UPDATE tab_container_parameters SET read_only=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction interstitial';
 UPDATE tab_container_parameters SET read_only=0 WHERE container_id=148 AND container_type='ORGAN' AND container_name='Bone' AND parameter_name='Fraction vascular';
@@ -1056,6 +1063,17 @@ DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' A
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_MassAbsorbedIntoPortalVein_RHS' AND path_id=1761 AND parameter_name='Mass transfer rate (mucosa to portal vein blood cells)';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_MassAbsorbedIntoPortalVein_RHS' AND path_id=1766 AND parameter_name='Mass transfer rate (intestine to mucosa plasma)';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_MassAbsorbedIntoPortalVein_RHS' AND path_id=1771 AND parameter_name='Mass transfer rate (intestine to mucosa blood cells)';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2713 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2720 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2724 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2728 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2732 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2736 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2740 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2744 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2748 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2752 AND parameter_name='Oral mass absorbed segment';
+DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Lumen_PKSim' AND formula_rate='PARAM_OralMassAbsorbed' AND path_id=2756 AND parameter_name='Oral mass absorbed segment';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Mucosa_Thickness_Animals' AND formula_rate='PARAM_MeanBW_From_BW' AND path_id=139 AND parameter_name='Weight';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='Mucosa_Thickness_Animals' AND formula_rate='PARAM_VolumeFromDefaultVolume' AND path_id=139 AND parameter_name='Volume (default)';
 DELETE FROM tab_rate_generic_parameters WHERE calculation_method='PlasmaClearance_PKSim' AND formula_rate='PARAM_min_PA_Q' AND path_id=139 AND parameter_name='P*SA interstitial -> intracellular';
@@ -1125,3 +1143,4 @@ DELETE FROM tab_rates WHERE formula_rate='VOLUME_gi_lil';
 DELETE FROM tab_rates WHERE formula_rate='VOLUME_gi_lje';
 DELETE FROM tab_rates WHERE formula_rate='VOLUME_gi_uil';
 DELETE FROM tab_rates WHERE formula_rate='VOLUME_gi_uje';
+INSERT INTO tab_tags(tag) VALUES('Oral mass absorbed segment');
