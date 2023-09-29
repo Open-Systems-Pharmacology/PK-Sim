@@ -369,13 +369,10 @@ namespace PKSim.Core
          public static readonly string NameTemplate = "<Template>";
          public static readonly string TypeTemplate = "<Type>";
          public static readonly string Drug = "DRUG";
-         public static readonly string Compound = "COMPOUND";
          public static readonly string AdvancedParameterCollection = "AdvancedParameters";
          public static readonly string ProtocolSchemaItem = "ProtocolSchemaItem";
          public static readonly string ObservedData = "ObservedData";
          public static readonly string InsolubleDrug = "InsolubleDrug";
-         public static readonly string SolverSettings = "SolverSettings";
-         public static readonly string SimulationOutput = "SimulationOutput";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
 
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
@@ -746,7 +743,6 @@ namespace PKSim.Core
          public static readonly string ARTERIAL_BLOOD = "ArterialBlood";
          public static readonly string BONE = "Bone";
          public static readonly string BRAIN = "Brain";
-         public static readonly string Dummy = "Dummy";
          public static readonly string ENDOGENOUS_IGG = "EndogenousIgG";
          public static readonly string FAT = "Fat";
          public static readonly string GALLBLADDER = "Gallbladder";

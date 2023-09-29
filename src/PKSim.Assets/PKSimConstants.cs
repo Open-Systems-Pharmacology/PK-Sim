@@ -1671,7 +1671,6 @@ namespace PKSim.Assets
          public static readonly string ChartDiagramBackColor = "Chart diagram background";
          public static readonly string DisabledColor = "Disabled";
          public static readonly string ChangedColor = "Parameter changed";
-         public static readonly string AvailableProteins = "Proteins";
          public static readonly string ModelSettings = "Model Settings";
          public static readonly string ModelParameters = "Model Parameters";
          public static readonly string DefaultSpecies = "Species";
