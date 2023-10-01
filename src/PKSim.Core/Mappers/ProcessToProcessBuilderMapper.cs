@@ -440,7 +440,7 @@ namespace PKSim.Core.Mappers
             reactionPartner.MoleculeName = reactionPartner.MoleculeName.ReplaceKeywords(allKeywords, allReplacements);
          }
 
-         // replaceKeywordsInTags(reactionBuilder.Tags, allKeywords, allReplacements);
+         replaceKeywordsInTags(reactionBuilder.Tags, allKeywords, allReplacements);
 
          var replacedModifiers = reactionBuilder.ModifierNames
             .Select(x => x.ReplaceKeywords(allKeywords, allReplacements));
