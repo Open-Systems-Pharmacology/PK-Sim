@@ -332,6 +332,8 @@ namespace PKSim.Core
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Protein, "P1").WithAlias("P1"));
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Reaction, "R1").WithAlias("R1"));
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Molecule, "M11").WithAlias("M1"));
+         reaction.AddTag(CoreConstants.KeyWords.Reaction);
+         reaction.AddTag(CoreConstants.KeyWords.Protein);
          A.CallTo(() => _cloner.Clone<ReactionBuilder>(_template)).Returns(reaction);
       }
 
@@ -347,10 +349,18 @@ namespace PKSim.Core
       }
 
       [Observation]
+      public void should_have_replaced_the_keywords_in_the_reaction_tags()
+      {
+         _reaction.Tags.Contains(_interactionProcess.Name).ShouldBeTrue();
+         _reaction.Tags.Contains(_protein.Name).ShouldBeTrue();
+      }
+
+      [Observation]
       public void should_have_replaced_the_protein_keyword()
       {
          _reaction.Formula.FormulaUsablePathBy("P1")[0].ShouldBeEqualTo(_protein.Name);
       }
+
 
       [Observation]
       public void should_have_replaced_the_molecule_keyword()
