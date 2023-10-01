@@ -186,7 +186,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_not_create_a_fraction_execreted_to_urine_observer_for_the_floating_metabolite_in_the_simulation()
+      public void should_not_create_a_fraction_excreted_to_urine_observer_for_the_floating_metabolite_in_the_simulation()
       {
          var kidneyUrineMetabolite = _simulation.Model.Root.EntityAt<MoleculeAmount>(Constants.ORGANISM, CoreConstants.Organ.KIDNEY, CoreConstants.Compartment.URINE, _metabolite.Name);
          kidneyUrineMetabolite.Children.FindByName(CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE).ShouldBeNull();

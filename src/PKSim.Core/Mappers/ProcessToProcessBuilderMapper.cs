@@ -226,10 +226,10 @@ namespace PKSim.Core.Mappers
          replaceKeywordsInReaction(reaction,
             new[]
             {
-               CoreConstants.Molecule.Drug, Molecule, CoreConstants.KeyWords.Reaction,
+               CoreConstants.Molecule.Drug, Molecule,
                CoreConstants.Molecule.DrugFcRnComplexTemplate
             },
-            new[] { compoundName, compoundName, reaction.Name, CoreConstants.Molecule.DrugFcRnComplexName(compoundName) });
+            new[] { compoundName, compoundName,CoreConstants.Molecule.DrugFcRnComplexName(compoundName) });
 
          formulaCache.Add(reaction.Formula);
          return reaction;
