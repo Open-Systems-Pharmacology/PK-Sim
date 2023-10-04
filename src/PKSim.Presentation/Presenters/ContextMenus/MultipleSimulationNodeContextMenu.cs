@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using PKSim.Core;
-using PKSim.Core.Model;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
+using PKSim.Core;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
