@@ -87,9 +87,9 @@ namespace PKSim.Core.Services
       private void setApplicationObserversNonPersistable(Simulation simulation)
       {
          //Set all observers defined in application to persistable false
-         var applications = simulation.Model.Root.Container(Constants.APPLICATIONS);
+         var eventsContainer = simulation.Model.Root.Container(Constants.EVENTS);
 
-         applications?.GetAllChildren<Observer>(applicationObserverShouldBeHidden)
+         eventsContainer?.GetAllChildren<Observer>(applicationObserverShouldBeHidden)
             .Each(x => x.Persistable = false);
       }
 

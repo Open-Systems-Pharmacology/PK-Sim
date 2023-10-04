@@ -1,6 +1,5 @@
 using PKSim.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;

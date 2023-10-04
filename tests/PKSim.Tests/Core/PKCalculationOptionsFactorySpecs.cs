@@ -20,7 +20,7 @@ namespace PKSim.Core
    {
       private ILazyLoadTask _lazyLoadTask;
       protected Simulation _simulation1;
-      protected IContainer _applications;
+      protected IContainer _events;
       protected IContainer _applications2;
       protected IContainer _rootContainer;
 
@@ -29,10 +29,10 @@ namespace PKSim.Core
          _simulation1 = A.Fake<Simulation>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _rootContainer = new Container();
-         _applications = new EventGroup {Name = Constants.APPLICATIONS, ContainerType = ContainerType.EventGroup};
+         _events = new EventGroup {Name = Constants.EVENTS, ContainerType = ContainerType.EventGroup};
          _applications2 = new EventGroup {Name = "APPLICATIONS_2", ContainerType = ContainerType.EventGroup};
          _simulation1.Model.Root = _rootContainer;
-         _rootContainer.Add(_applications);
+         _rootContainer.Add(_events);
          A.CallTo(() => _simulation1.BodyWeight).Returns(DomainHelperForSpecs.ConstantParameterWithValue(50));
          sut = new PKCalculationOptionsFactory(_lazyLoadTask);
       }
@@ -60,8 +60,8 @@ namespace PKSim.Core
          _drugMass2 = A.Fake<IParameter>().WithName(Constants.Parameters.DRUG_MASS);
          _drugMass2.Value = 20;
 
-         _applications.Add(container1);
-         _applications.Add(container2);
+         _events.Add(container1);
+         _events.Add(container2);
 
          container1.Add(new MoleculeAmount {Name = moleculeName});
          container1.Add(_startTime1);
@@ -372,7 +372,7 @@ namespace PKSim.Core
          _startTime = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
          _startTime.Value = 300;
 
-         _applications.Add(container1);
+         _events.Add(container1);
          container1.Add(new MoleculeAmount {Name = _moleculeName});
          container1.Add(_startTime);
 
@@ -451,8 +451,8 @@ namespace PKSim.Core
          _startTime2 = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
          _startTime2.Value = 500;
 
-         _applications.Add(container1);
-         _applications.Add(container2);
+         _events.Add(container1);
+         _events.Add(container2);
 
          _rootContainer.Add(_applications2);
          _applications2.Add(container3);

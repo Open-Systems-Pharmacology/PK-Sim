@@ -60,17 +60,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          //Add substructure (subcontainers with parameters and events)
          addApplicationStructureTo(applicationBuilder);
 
-         //add application (=event group) source criteria
-         //Each application will be settled under ApplicationSet-Container of
-         //the simulation
-         addApplicationSourceCriteria(applicationBuilder);
-
          return applicationBuilder;
-      }
-
-      private static void addApplicationSourceCriteria(ApplicationBuilder applicationBuilder)
-      {
-         applicationBuilder.SourceCriteria.Add(new MatchTagCondition(Constants.APPLICATIONS));
       }
 
       private void addEvents(IContainer container)

@@ -31,7 +31,7 @@ namespace PKSim.Core
       {
          base.Context();
          var organism = new Container().WithName(Constants.ORGANISM);
-         var applications = new Container().WithName(Constants.APPLICATIONS);
+         var events = new Container().WithName(Constants.EVENTS);
          var venousBlood = new Container().WithName(CoreConstants.Organ.VENOUS_BLOOD).WithParentContainer(organism);
          var peripheralVenousBlood = new Container().WithName(CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD).WithParentContainer(organism);
          var lumen = new Container().WithName(CoreConstants.Organ.LUMEN).WithParentContainer(organism);
@@ -61,7 +61,7 @@ namespace PKSim.Core
          _individualSimulation.Settings = new SimulationSettings();
          _individualSimulation.AddUsedBuildingBlock(new UsedBuildingBlock("Id", PKSimBuildingBlockType.Compound) {BuildingBlock = compound});
          _individualSimulation.Model = new OSPSuite.Core.Domain.Model();
-         _individualSimulation.Model.Root = new Container {organism, applications};
+         _individualSimulation.Model.Root = new Container {organism, events };
       }
 
       protected override void Because()
@@ -98,20 +98,20 @@ namespace PKSim.Core
       {
          base.Context();
          var organism = new Container().WithName(Constants.ORGANISM);
-         var applications = new Container().WithName(Constants.APPLICATIONS);
+         var events = new Container().WithName(Constants.EVENTS);
 
          _appConcentrationObserver = new Observer().WithName(CoreConstants.Observer.CONCENTRATION_IN_CONTAINER);
          _appUserDefinedObserver = new Observer().WithName("Super awesome observer");
 
-         applications.Add(_appConcentrationObserver);
-         applications.Add(_appUserDefinedObserver);
+         events.Add(_appConcentrationObserver);
+         events.Add(_appUserDefinedObserver);
 
 
          _individualSimulation = new IndividualSimulation
          {
             Model = new OSPSuite.Core.Domain.Model
             {
-               Root = new Container {organism, applications}
+               Root = new Container {organism, events}
             }
          };
       }
