@@ -219,16 +219,16 @@ namespace PKSim.IntegrationTests
       ///   e.g. "Organism|Lumen|Duodenum|C1"
       /// 
       ///   [binSolidDrugPaths] - paths to total amount of solid drug per particles bin
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1"
       /// 
       ///   [binInsolubleDrugPaths] - paths to total amount of insoluble drug per particles bin
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|InsolubleDrug|C1"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|InsolubleDrug|C1"
       /// 
       ///   [binSolidDrugPerSegmentPaths] - paths to amount of solid drug per particles bin per lumen segment
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Solid drug"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Solid drug"
       /// 
       ///   [binParticlesFractionPerSegmentPaths] -paths to number of particles fraction per particles bin per lumen segment
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Number of particles fraction"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Number of particles fraction"
       /// </returns>
       /// 
       private (string[] lumenPaths, string[] binSolidDrugPaths, string[] binInsolubleDrugPaths,
@@ -263,7 +263,7 @@ namespace PKSim.IntegrationTests
          return (from segment in _lumenSegments select $"Organism|Lumen|{segment}|{compoundName}").ToArray();
       }
 
-      private string applicationPath => $"Applications|{_protocol.Name}|{_formulation.Name}|Application_1";
+      private string applicationPath => $"{Constants.EVENTS}|{_protocol.Name}|{_formulation.Name}|Application_1";
 
       private string binPathFor(int binNumber) => $"{applicationPath}|ParticleBin_{binNumber+1}";
 
