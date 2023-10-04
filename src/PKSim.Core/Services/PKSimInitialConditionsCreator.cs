@@ -56,6 +56,9 @@ namespace PKSim.Core.Services
             allAvailableInitialConditions.Each(msv => msv.IsPresent = true);
          }
 
+         //Before returning the initial condition, we remove all entries for molecules that are not present
+         defaultInitialConditions.Where(x => !x.IsPresent).ToList().Each(defaultInitialConditions.Remove);
+
          return defaultInitialConditions;
       }
 
@@ -81,7 +84,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void setStartFormulasForStaticMolecules(InitialConditionsBuildingBlock defaultInitialConditions, Simulation simulation, IEnumerable<Compound> compounds)
+      private void setStartFormulasForStaticMolecules(InitialConditionsBuildingBlock initialConditionsBuildingBlock, Simulation simulation, IEnumerable<Compound> compounds)
       {
          var modelName = simulation.ModelConfiguration.ModelName;
          //get the names of molecules that are static (e.g. not enzymes, metabolites, etc.)
@@ -89,7 +92,8 @@ namespace PKSim.Core.Services
          var staticMoleculeNames = _modelContainerMoleculeRepository.MoleculeNamesIncludingDrug(modelName);
          var compoundNames = compounds.AllNames();
 
-         foreach (var initialCondition in defaultInitialConditions)
+         //Use to list as we maye be removing entry in the building block 
+         foreach (var initialCondition in initialConditionsBuildingBlock)
          {
             var dbMoleculeName = getDbMoleculeName(initialCondition.MoleculeName, compoundNames);
 
@@ -104,9 +108,9 @@ namespace PKSim.Core.Services
                initialCondition.NegativeValuesAllowed = false;
             }
 
-            var moleculeDbPath = initialCondition.ContainerPath.Clone<ObjectPath>();
 
-            moleculeDbPath.Add(dbMoleculeName);
+            var moleculeDbPath = initialCondition.ContainerPath
+               .Clone<ObjectPath>().AndAdd(dbMoleculeName);
 
             var rateKey = _moleculeStartFormulaRepository.RateKeyFor(moleculeDbPath, simulation.ModelProperties);
 
@@ -114,7 +118,7 @@ namespace PKSim.Core.Services
                continue; //no start formula available
 
             //set molecule start formula
-            initialCondition.Formula = _formulaFactory.RateFor(rateKey, defaultInitialConditions.FormulaCache);
+            initialCondition.Formula = _formulaFactory.RateFor(rateKey, initialConditionsBuildingBlock.FormulaCache);
          }
       }
 

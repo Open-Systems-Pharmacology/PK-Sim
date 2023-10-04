@@ -306,6 +306,13 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
+      public void should_have_remove_all_initial_conditions_not_present_by_default()
+      {
+         var initialConditions = _simulationConfiguration.ModuleConfigurations[0].SelectedInitialConditions;
+         initialConditions.Count(x => !x.IsPresent).ShouldBeEqualTo(0);
+      }
+
+      [Observation]
       public async Task should_be_able_to_simulate_the_simulation()
       {
          var simulationExporter = IoC.Resolve<IMoBiExportTask>();
