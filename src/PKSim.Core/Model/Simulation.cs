@@ -354,8 +354,6 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual bool IsImported => ModelProperties == null || ModelConfiguration == null;
 
-      public virtual IContainer ApplicationsContainer => Model?.Root?.Container(Constants.APPLICATIONS);
-
       /// <summary>
       ///    Returns true if the simulation results are up-to-date.
       ///    (true: simulation was performed with current parameters, false: simulation parameters have changed ...)

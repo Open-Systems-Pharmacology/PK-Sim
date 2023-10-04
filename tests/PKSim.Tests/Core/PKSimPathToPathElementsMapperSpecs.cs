@@ -46,7 +46,6 @@ namespace PKSim.Core
       protected EventGroup _eventGroup;
       protected Container _events;
       protected IContainer _formulation;
-      private Container _applications;
       protected EventGroup _application1;
       private Organ _kidney;
       private Compartment _kidneyUrine;
@@ -85,8 +84,7 @@ namespace PKSim.Core
          _drug = new MoleculeAmount().WithName(_drugName).WithParentContainer(_plasma);
 
          _drugUrineKidney = new MoleculeAmount().WithName(_drugName).WithParentContainer(_kidneyUrine);
-         _applications = new Container().WithName(Constants.APPLICATIONS);
-         _application1 = new EventGroup().WithName("App").WithParentContainer(_applications).WithContainerType(ContainerType.EventGroup);
+         _application1 = new EventGroup().WithName("App").WithParentContainer(_events).WithContainerType(ContainerType.EventGroup);
          _formulation = new Container().WithName("F1").WithParentContainer(_application1);
 
          _neighborhoods = new Container().WithName(Constants.NEIGHBORHOODS);
@@ -397,7 +395,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_container_to_the_name_of_the_parent_application()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.APPLICATIONS, _application1.Name, string.Empty, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, Constants.EVENTS, _application1.Name, string.Empty, string.Empty, _entity.Name);
       }
    }
 }

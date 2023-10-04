@@ -259,7 +259,6 @@ namespace PKSim.Presentation.Services
          {
             case PKSimBuildingBlockType.Formulation:
             case PKSimBuildingBlockType.Protocol:
-               return Constants.APPLICATIONS;
             case PKSimBuildingBlockType.Event:
                return Constants.EVENTS;
             default:

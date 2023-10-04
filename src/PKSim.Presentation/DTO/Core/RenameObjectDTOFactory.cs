@@ -9,9 +9,10 @@ namespace PKSim.Presentation.DTO.Core
    public class RenameObjectDTOFactory : OSPSuite.Presentation.DTO.RenameObjectDTOFactory
    {
       private readonly IPKSimProjectRetriever _projectRetriever;
+      private const PKSimBuildingBlockType _eventOrProtocol = PKSimBuildingBlockType.Event | PKSimBuildingBlockType.Protocol;
 
       public RenameObjectDTOFactory(
-         IPKSimProjectRetriever projectRetriever, 
+         IPKSimProjectRetriever projectRetriever,
          IObjectTypeResolver objectTypeResolver) : base(projectRetriever, objectTypeResolver)
       {
          _projectRetriever = projectRetriever;
@@ -27,7 +28,8 @@ namespace PKSim.Presentation.DTO.Core
 
       private RenameObjectDTO createFor(IPKSimBuildingBlock buildingBlock)
       {
-         return CreateRenameInProjectDTO(buildingBlock, _projectRetriever.Current.All(buildingBlock.BuildingBlockType));
+         var buildingBlockType = buildingBlock.BuildingBlockType.Is(_eventOrProtocol) ? _eventOrProtocol : buildingBlock.BuildingBlockType;
+         return CreateRenameInProjectDTO(buildingBlock, _projectRetriever.Current.All(buildingBlockType));
       }
    }
 }

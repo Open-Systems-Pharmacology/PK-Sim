@@ -17,7 +17,10 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       private readonly ICache<CompositeKey, ApplicationBuilder> _applicationBuilders;
 
-      public ApplicationRepository(IFlatContainerRepository flatContainerRepository, IFlatContainerToApplicationMapper applicationMapper, IFlatApplicationRepository flatApplicationRepository)
+      public ApplicationRepository(
+         IFlatContainerRepository flatContainerRepository, 
+         IFlatContainerToApplicationMapper applicationMapper, 
+         IFlatApplicationRepository flatApplicationRepository)
       {
          _flatContainerRepository = flatContainerRepository;
          _applicationMapper = applicationMapper;
@@ -33,25 +36,25 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
       protected override void DoStart()
       {
-         foreach (var flatApplicContainer in _flatContainerRepository.All().Where(c => string.Equals(c.Type, CoreConstants.ContainerType.APPLICATION)))
+         foreach (var flatApplicationContainer in _flatContainerRepository.All().Where(c => string.Equals(c.Type, CoreConstants.ContainerType.APPLICATION)))
          {
-            var applicationType = applicationTypeFrom(flatApplicContainer);
+            var applicationType = applicationTypeFrom(flatApplicationContainer);
             if (string.IsNullOrEmpty(applicationType))
                continue;
 
-            var applicBuilder = _applicationMapper.MapFrom(flatApplicContainer);
+            var applicationBuilder = _applicationMapper.MapFrom(flatApplicationContainer);
 
             //parent container of each application container is formulation!
-            var formulationType = applicBuilder.ParentContainer.Name;
+            var formulationType = applicationBuilder.ParentContainer.Name;
 
-            _applicationBuilders.Add(new CompositeKey(applicationType, formulationType), applicBuilder);
+            _applicationBuilders.Add(new CompositeKey(applicationType, formulationType), applicationBuilder);
          }
       }
 
-      private string applicationTypeFrom(FlatContainer flatApplicContainer)
+      private string applicationTypeFrom(FlatContainer flatApplicationContainer)
       {
          return (from flatApplication in _flatApplicationRepository.All()
-                 where string.Equals(flatApplication.Name, flatApplicContainer.Name)
+                 where string.Equals(flatApplication.Name, flatApplicationContainer.Name)
                  select flatApplication.ApplicationType).FirstOrDefault();
       }
 

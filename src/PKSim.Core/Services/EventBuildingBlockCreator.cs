@@ -134,36 +134,30 @@ namespace PKSim.Core.Services
 
       private void createApplications(IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
-         // create ApplicationSet-EventGroup
-         var applicationSet = _objectBaseFactory.Create<EventGroupBuilder>()
-            .WithName(Constants.APPLICATIONS)
-            .WithIcon(Constants.APPLICATIONS);
-
-         applicationSet.SourceCriteria.Add(new MatchTagCondition(Constants.ROOT_CONTAINER_TAG));
-
-         compoundPropertiesList.Each(cp => addProtocol(applicationSet, cp));
-
-         _eventGroupBuildingBlock.Add(applicationSet);
+         compoundPropertiesList.Each(addProtocol);
       }
 
-      private void addProtocol(EventGroupBuilder applicationSet, CompoundProperties compoundProperties)
+      private void addProtocol(CompoundProperties compoundProperties)
       {
          var protocol = compoundProperties.ProtocolProperties.Protocol;
          if (protocol == null)
             return;
 
-         var protocolEventGroup = _objectBaseFactory.Create<EventGroupBuilder>()
-            .WithName(protocol.Name)
-            .WithParentContainer(applicationSet);
+         var eventGroup = _objectBaseFactory.Create<EventGroupBuilder>()
+            .WithName(protocol.Name);
+
+         eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
          _schemaItemsMapper.MapFrom(protocol).Each((schemaItem, index) =>
          {
             //+1 to start at 1 for the nomenclature
-            string applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";
-            addApplication(protocolEventGroup, schemaItem, applicationName, compoundProperties, protocol);
+            var applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";
+            addApplication(eventGroup, schemaItem, applicationName, compoundProperties, protocol);
          });
 
-         _parameterIdUpdater.UpdateBuildingBlockId(protocolEventGroup, protocol);
+         _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, protocol);
+
+         _eventGroupBuildingBlock.Add(eventGroup);
       }
 
       private void addApplication(EventGroupBuilder protocolGroupBuilder, ISchemaItem schemaItem, string applicationName, CompoundProperties compoundProperties, Protocol protocol)
@@ -187,7 +181,6 @@ namespace PKSim.Core.Services
 
             protocolGroupBuilder.Add(applicationParentContainer);
             formulationType = formulation.FormulationType;
-
             formulationParameters = applicationParentContainer.GetChildren<IParameter>();
          }
          else

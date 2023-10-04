@@ -54,7 +54,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_renamed_the_application_container_in_the_model()
       {
-         _s1.Model.Root.EntityAt<Container>(Constants.APPLICATIONS, "bb").ShouldNotBeNull();
+         _s1.Model.Root.EntityAt<Container>(Constants.EVENTS, "bb").ShouldNotBeNull();
       }
 
       [Observation]
