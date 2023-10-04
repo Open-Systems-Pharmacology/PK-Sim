@@ -8,8 +8,8 @@ namespace PKSim.Presentation.Presenters.Individuals
 {
    public interface IIndividualMoleculePropertiesPresenter : IPresenter<IIndividualMoleculePropertiesView>, IEditParameterPresenter
    {
-      bool OntogenyVisible { set; }
-      bool MoleculeParametersVisible { set; }
+      bool OntogenyVisible { get; set; }
+      bool MoleculeParametersVisible { get; set; }
       void RefreshView();
    }
 
@@ -45,18 +45,20 @@ namespace PKSim.Presentation.Presenters.Individuals
       public bool OntogenyVisible
       {
          set => View.OntogenyVisible = value;
+         get => View.OntogenyVisible;
       }
 
       public bool MoleculeParametersVisible
       {
          set => View.MoleculeParametersVisible = value;
+         get => View.MoleculeParametersVisible;
       }
 
       public void Edit(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
          var parameters = new[] {molecule.ReferenceConcentration, molecule.HalfLifeLiver, molecule.HalfLifeIntestine};
          _moleculeParametersPresenter.Edit(parameters);
-         _ontogenySelectionPresenter.Edit(molecule, simulationSubject);     
+         _ontogenySelectionPresenter.Edit(molecule, simulationSubject);
          RefreshView();
       }
 

@@ -124,6 +124,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _protein = protein;
          _proteinDTO = _individualProteinMapper.MapFrom(protein, SimulationSubject);
+         OntogenyVisible = SimulationSubject?.IsAgeDependent ?? false;
          rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _expressionLocalizationPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
