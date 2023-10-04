@@ -31,9 +31,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return SaveAsSystemTemplateMenuFor(buildingBlocks);
 
-         var compareBuildingBlockMenuItem = CompareBuildingBlocks(buildingBlocks, executionContext);
-         if (compareBuildingBlockMenuItem != null)
-            yield return CompareBuildingBlocks(buildingBlocks, executionContext);
+         yield return CompareBuildingBlocks(buildingBlocks, executionContext);
 
          yield return AddToJournal(buildingBlocks);
 
