@@ -8,7 +8,7 @@ namespace PKSim.Core.Repositories
    {
       /// <summary>
       /// All molecules names - without DRUG, present in given model<para/>
-      /// (only static molecules, dynamically created moelcules (metabolites, enzymes, ...) are not present here
+      /// (only static molecules, dynamically created molecules (metabolites, enzymes, ...) are not present here
       /// </summary>
       IReadOnlyList<string> MoleculeNamesWithoutDrug(string modelName);
 
