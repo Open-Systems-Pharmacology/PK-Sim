@@ -156,7 +156,6 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.ActivateView(_activePresenter.BaseView);
          _activePresenter.DisableEdit();
          _activePresenter.ActivateMolecule(molecule);
-         _activePresenter.OntogenyVisible = _simulationSubject.IsAgeDependent;
          _activePresenter.MoleculeParametersVisible = _simulationSubject.IsAnImplementationOf<Individual>();
       }
 

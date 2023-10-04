@@ -7,7 +7,7 @@ namespace PKSim.Presentation.Views.Individuals
    {
       void AddOntogenyView(IResizableView view);
       void AddMoleculeParametersView(IResizableView view);
-      bool OntogenyVisible { set; }
-      bool MoleculeParametersVisible { set; }
+      bool OntogenyVisible { get; set; }
+      bool MoleculeParametersVisible { get; set; }
    }
 }
