@@ -48,6 +48,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
       private readonly IDiseaseStateSelectionPresenter _diseaseStateSelectionPresenter;
       private readonly IDiseaseStateRepository _diseaseStateRepository;
+      private readonly ICloner _cloner;
 
       public bool IndividualCreated { get; private set; }
 
@@ -64,7 +65,8 @@ namespace PKSim.Presentation.Presenters.Individuals
          IIndividualSettingsDTOToIndividualMapper individualMapper,
          IEditValueOriginPresenter editValueOriginPresenter,
          IDiseaseStateSelectionPresenter diseaseStateSelectionPresenter,
-         IDiseaseStateRepository diseaseStateRepository) : base(view)
+         IDiseaseStateRepository diseaseStateRepository, 
+         ICloner cloner) : base(view)
       {
          _speciesRepository = speciesRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
@@ -75,6 +77,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _editValueOriginPresenter = editValueOriginPresenter;
          _diseaseStateSelectionPresenter = diseaseStateSelectionPresenter;
          _diseaseStateRepository = diseaseStateRepository;
+         _cloner = cloner;
          _editValueOriginPresenter.ShowCaption = false;
          AddSubPresenters(_editValueOriginPresenter, _diseaseStateSelectionPresenter);
          _view.AddValueOriginView(_editValueOriginPresenter.View);
@@ -116,7 +119,8 @@ namespace PKSim.Presentation.Presenters.Individuals
 
       public void PrepareForCreating()
       {
-         var individual = _defaultIndividualRetriever.DefaultIndividual();
+         //clone individual to ensure that we do not modify the default individual cached
+         var individual = _cloner.Clone(_defaultIndividualRetriever.DefaultIndividual());
          loadFromIndividual(individual);
       }
 
