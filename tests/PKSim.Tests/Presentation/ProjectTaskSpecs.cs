@@ -1067,13 +1067,41 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void should_create_a_new_empty_project()
+      public void should_not_clear_the_project()
       {
-         A.CallTo(() => _workspace.AddCommand(A<CreateProjectCommand>._)).MustHaveHappened();
+         A.CallTo(() => _workspace.AddCommand(A<CreateProjectCommand>._)).MustNotHaveHappened();
       }
    }
 
-   public class When_laoding_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_loads_a_valid_snapshot : concern_for_ProjectTask
+   public class When_loading_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_continues_with_the_load_action : concern_for_ProjectTask
+   {
+      private ILoadProjectFromSnapshotPresenter _loadSnapshotPresenter;
+      private PKSimProject _newProject;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _newProject = new PKSimProject();
+         _loadSnapshotPresenter = A.Fake<ILoadProjectFromSnapshotPresenter>();
+         A.CallTo(() => _applicationController.Start<ILoadProjectFromSnapshotPresenter>()).Returns(_loadSnapshotPresenter);
+         A.CallTo(() => _workspace.ProjectHasChanged).Returns(false);
+         A.CallTo(() => _loadSnapshotPresenter.LoadProject()).Returns(_newProject);
+      }
+
+      protected override Task Because()
+      {
+         sut.LoadProjectFromSnapshot();
+         return _completed;
+      }
+
+      [Observation]
+      public void should_load_the_project_into_the_workspace()
+      {
+         A.CallTo(() => _workspace.AddCommand(A<LoadProjectFromSnapshotCommand>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_loading_a_snapshot_into_the_current_project_with_a_project_already_open_and_the_user_loads_a_valid_snapshot : concern_for_ProjectTask
    {
       private PKSimProject _newProject;
       private ILoadProjectFromSnapshotPresenter _loadSnapshotPresenter;
