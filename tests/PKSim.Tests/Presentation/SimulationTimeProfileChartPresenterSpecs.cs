@@ -537,7 +537,7 @@ namespace PKSim.Presentation
          base.Context();
          _simulation = new IndividualSimulation
          {
-            DataRepository = new NullDataRepository()
+            DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("SIM")
          };
          _dragEvent = A.Fake<IDragEvent>();
          _observedData = DomainHelperForSpecs.ObservedData();
@@ -582,8 +582,9 @@ namespace PKSim.Presentation
          base.Context();
          _simulation = new IndividualSimulation
          {
-            DataRepository = new NullDataRepository()
+            DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("SIM")
          };
+         
          _dragEvent = A.Fake<IDragEvent>();
          _observedData = DomainHelperForSpecs.ObservedData();
          _classification = new Classification {ClassificationType = ClassificationType.ObservedData};
