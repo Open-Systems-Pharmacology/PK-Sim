@@ -5,9 +5,10 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using OSPSuite.Core.Services;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
 
@@ -118,7 +119,6 @@ namespace PKSim.Core
          _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = 50; //50 mm
       }
-   
 
       protected override async Task Because()
       {
@@ -144,7 +144,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_updating_a_paraneter_from_a_snapshot_object_using_a_table_formula_and_the_value_was_not_changed_by_the_user : concern_for_ParameterMapper
+   public class When_updating_a_parameter_from_a_snapshot_object_using_a_table_formula_and_the_value_was_not_changed_by_the_user : concern_for_ParameterMapper
    {
       private SnapshotParameter _snapshotParameter;
       private double _parameterValue;
@@ -173,7 +173,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_hsave_set_the_table_formula_into_the_parameter_and_respected_the_fixed_value_flag()
+      public void should_have_set_the_table_formula_into_the_parameter_and_respected_the_fixed_value_flag()
       {
          _parameter.Formula.ShouldBeAnInstanceOf<OSPSuite.Core.Domain.Formulas.TableFormula>();
          _parameter.Value.ShouldBeEqualTo(_parameterValue);
@@ -181,7 +181,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_updating_a_paraneter_from_a_snapshot_object_using_a_table_formula_and_the_value_was_changed_by_the_user : concern_for_ParameterMapper
+   public class When_updating_a_parameter_from_a_snapshot_object_using_a_table_formula_and_the_value_was_changed_by_the_user : concern_for_ParameterMapper
    {
       private SnapshotParameter _snapshotParameter;
       private double _parameterValue;
@@ -210,7 +210,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_hsave_set_the_table_formula_into_the_parameter_and_respected_the_fixed_value_flag()
+      public void should_have_set_the_table_formula_into_the_parameter_and_respected_the_fixed_value_flag()
       {
          _parameter.Formula.ShouldBeAnInstanceOf<OSPSuite.Core.Domain.Formulas.TableFormula>();
          _parameter.Value.ShouldBeEqualTo(_parameterValue);
@@ -291,9 +291,42 @@ namespace PKSim.Core
          };
       }
 
-      protected override async Task Because()
+      protected override Task Because()
       {
-         await sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext());
+         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext());
+      }
+
+      [Observation]
+      public void should_map_the_matching_parameters()
+      {
+         _parameter.ValueInDisplayUnit.ShouldBeEqualTo(5);
+      }
+   }
+
+   public class When_mapping_all_localized_parameters_defined_in_a_container_and_the_path_started_with_applications_which_was_removed : concern_for_ParameterMapper
+   {
+      private LocalizedParameter _localParameter;
+      private IContainer _container;
+      private Container _eventContainer;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _eventContainer = new Container().WithName(Constants.EVENTS);
+         _container = new Container().WithName("ORG").Under(_eventContainer);
+         _container.Add(_parameter);
+
+         _localParameter = new LocalizedParameter
+         {
+            Path = "Applications|ORG|P1",
+            Value = 5,
+            Unit = _parameter.DisplayUnit.Name
+         };
+      }
+
+      protected override Task Because()
+      {
+         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext(new PKSimProject(), ProjectVersions.V11));
       }
 
       [Observation]
