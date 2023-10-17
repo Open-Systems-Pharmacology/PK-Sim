@@ -28,7 +28,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Charts;
 using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
 using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
@@ -522,22 +521,42 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_adding_observed_data_via_drag_and_drop_without_color_grouping : concern_for_SimulationTimeProfileChartPresenter
+   public class When_updating_the_analysis_based_on_a_simulation_without_results : concern_for_SimulationTimeProfileChartPresenter
    {
-      private IDragEvent _dragEvent;
-      private Classification _classification;
-      private ClassificationNode _observedDataFolderTree;
-      private DataRepository _observedData;
-      private ObservedDataNode _observedDataNode;
       private IndividualSimulation _simulation;
-      private List<DataRepository> _allDataRepositories;
 
       protected override void Context()
       {
          base.Context();
          _simulation = new IndividualSimulation
          {
-            DataRepository = new NullDataRepository()
+            DataRepository = null
+         };
+      }
+
+      [Observation]
+      public void should_not_crash()
+      {
+         sut.UpdateAnalysisBasedOn(_simulation);
+      }
+   }
+
+   public class When_adding_observed_data_via_drag_and_drop : concern_for_SimulationTimeProfileChartPresenter
+   {
+      private IDragEvent _dragEvent;
+      private Classification _classification;
+      private ClassificationNode _observedDataFolderTree;
+      protected DataRepository _observedData;
+      private ObservedDataNode _observedDataNode;
+      private IndividualSimulation _simulation;
+      protected List<DataRepository> _allDataRepositories;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new IndividualSimulation
+         {
+            DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("SIM")
          };
          _dragEvent = A.Fake<IDragEvent>();
          _observedData = DomainHelperForSpecs.ObservedData();
@@ -551,13 +570,20 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _observedDataTask.AddObservedDataToAnalysable(A<IReadOnlyList<DataRepository>>._, _simulation))
             .Invokes(x => _allDataRepositories = x.GetArgument<IReadOnlyList<DataRepository>>(0).ToList());
-
-         _userSettings.ColorGroupObservedDataFromSameFolder = false;
       }
 
       protected override void Because()
       {
          _chartDisplayPresenter.DragDrop += Raise.With(_dragEvent);
+      }
+   }
+
+   public class When_adding_observed_data_via_drag_and_drop_without_color_grouping : When_adding_observed_data_via_drag_and_drop
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _userSettings.ColorGroupObservedDataFromSameFolder = false;
       }
 
       [Observation]
@@ -567,42 +593,12 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_adding_observed_data_via_color_grouping : concern_for_SimulationTimeProfileChartPresenter
+   public class When_adding_observed_data_via_color_grouping : When_adding_observed_data_via_drag_and_drop
    {
-      private IDragEvent _dragEvent;
-      private Classification _classification;
-      private ClassificationNode _observedDataFolderTree;
-      private DataRepository _observedData;
-      private ObservedDataNode _observedDataNode;
-      private IndividualSimulation _simulation;
-      private List<DataRepository> _allDataRepositories;
-
       protected override void Context()
       {
          base.Context();
-         _simulation = new IndividualSimulation
-         {
-            DataRepository = new NullDataRepository()
-         };
-         _dragEvent = A.Fake<IDragEvent>();
-         _observedData = DomainHelperForSpecs.ObservedData();
-         _classification = new Classification {ClassificationType = ClassificationType.ObservedData};
-
-         _observedDataFolderTree = new ClassificationNode(_classification);
-         _observedDataNode = new ObservedDataNode(new ClassifiableObservedData {Subject = _observedData});
-         _observedDataFolderTree.AddChild(_observedDataNode);
-         A.CallTo(() => _dragEvent.Data<IEnumerable<ITreeNode>>()).Returns(new List<ITreeNode> {_observedDataFolderTree});
-         sut.UpdateAnalysisBasedOn(_simulation);
-
-         A.CallTo(() => _observedDataTask.AddObservedDataToAnalysable(A<IReadOnlyList<DataRepository>>._, _simulation))
-            .Invokes(x => _allDataRepositories = x.GetArgument<IReadOnlyList<DataRepository>>(0).ToList());
-
          _userSettings.ColorGroupObservedDataFromSameFolder = true;
-      }
-
-      protected override void Because()
-      {
-         _chartDisplayPresenter.DragDrop += Raise.With(_dragEvent);
       }
 
       [Observation]
