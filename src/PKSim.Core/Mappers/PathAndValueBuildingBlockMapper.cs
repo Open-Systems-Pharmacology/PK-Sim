@@ -20,11 +20,11 @@ namespace PKSim.Core.Mappers
 
    public interface IPathAndValueBuildingBlockMapper<in TPKSimBuildingBlock, out TBuildingBlock, out TBuilder> : IPathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock>
    {
+
       /// <summary>
       ///    Map the parameter to the underlying builder parameter.
-      ///    Note that formula or value will not be set. Only common parameter properties
       /// </summary>
-      TBuilder MapParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock);
+      TBuilder MapParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, IFormulaCache formulaCache);
    }
 
    public abstract class PathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock, TBuilder> : IPathAndValueBuildingBlockMapper<TPKSimBuildingBlock, TBuildingBlock, TBuilder> where TPKSimBuildingBlock : PKSimBuildingBlock
@@ -63,7 +63,7 @@ namespace PKSim.Core.Mappers
          return buildingBlock;
       }
 
-      public virtual TBuilder MapParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock)
+      protected virtual TBuilder CreateParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock)
       {
          var builderParameter = _objectBaseFactory.Create<TBuilder>();
          builderParameter.Name = parameter.Name;
@@ -74,7 +74,7 @@ namespace PKSim.Core.Mappers
          return builderParameter;
       }
 
-      protected virtual void MapFormulaOrValue(IParameter parameter, TBuilder builderParameter, TPKSimBuildingBlock pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
+      protected virtual void MapFormulaOrValue(IParameter parameter, TBuilder builderParameter, TPKSimBuildingBlock pkSimBuildingBlock, IFormulaCache formulaCache)
       {
          var parameterValue = getParameterValue(parameter);
          var valueChanged = parameter.ValueDiffersFromDefault();
@@ -108,14 +108,14 @@ namespace PKSim.Core.Mappers
          }
       }
 
-      private TBuilder mapBuilderParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
+      public TBuilder MapParameter(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, IFormulaCache formulaCache)
       {
-         var builderParameter = MapParameter(parameter, pkSimBuildingBlock);
+         var builderParameter = CreateParameter(parameter, pkSimBuildingBlock);
          MapFormulaOrValue(parameter, builderParameter, pkSimBuildingBlock, formulaCache);
          return builderParameter;
       }
 
-      private IFormula retrieveTemplateFormulaFromCache(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
+      private IFormula retrieveTemplateFormulaFromCache(IParameter parameter, TPKSimBuildingBlock pkSimBuildingBlock, IFormulaCache formulaCache)
       {
          var formula = parameter.Formula;
          var formulaName = formula.Name;
@@ -150,7 +150,7 @@ namespace PKSim.Core.Mappers
          //Cache used to store all formula that can be cached. This is required to avoid having the same formula defined multiple times in the building block
          //note that a clone of the original formula is added to the cache so that it can be modified if required
          var formulaCache = new BuildingBlockFormulaCache();
-         var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(x => mapBuilderParameter(x, sourcePKSimBuildingBlock, formulaCache));
+         var allBuilderParameters = AllParametersFor(sourcePKSimBuildingBlock).Select(x => MapParameter(x, sourcePKSimBuildingBlock, formulaCache));
          allBuilderParameters.Where(x => x != null).Each(buildingBlock.Add);
 
          //Formula cache already contains a clone of all formula. We can add as is

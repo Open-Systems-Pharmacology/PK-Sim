@@ -11,6 +11,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
 {
@@ -95,10 +96,19 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
-
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _iv).DowncastTo<IndividualSimulation>();
          _simulation.AllowAging = true;
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+         
+      }
+
+      [Observation]
+      public void should_be_able_to_run_the_simulation()
+      {
+         var simulationRunner = IoC.Resolve<ISimulationRunner>();
+         //this config may lead to negative values. We want to check here that the simulation can run without errors
+         simulationRunner.RunSimulation(_simulation, new SimulationRunOptions{CheckForNegativeValues = false}).Wait();
+         _simulation.HasResults.ShouldBeTrue();
       }
 
       [Observation]
