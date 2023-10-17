@@ -374,6 +374,8 @@ namespace PKSim.Core
          public static readonly string ObservedData = "ObservedData";
          public static readonly string InsolubleDrug = "InsolubleDrug";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
+         //only use for conversion of older snapshot. Do not use in code otherwise
+         public static readonly string Applications = "Applications";
 
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
          {

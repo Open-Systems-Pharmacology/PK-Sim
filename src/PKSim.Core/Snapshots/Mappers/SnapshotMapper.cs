@@ -36,6 +36,12 @@ namespace PKSim.Core.Snapshots.Mappers
       /// Returns true if the format is V10 or earlier
       /// </summary>
       public bool IsV10FormatOrEarlier => Version <= ProjectVersions.V10;
+
+
+      /// <summary>
+      /// Returns true if the format is V11 or earlier
+      /// </summary>
+      public bool IsV11FormatOrEarlier => Version <= ProjectVersions.V11;
    }
 
    public interface ISnapshotMapper
