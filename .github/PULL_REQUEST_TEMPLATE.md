@@ -33,6 +33,7 @@ Mark everything that needs to be checked before merging the PR.
 - [ ] Check if the code is well tested
 - [ ] Check if the code is readable and well formatted
 - [ ] Additional checks (document below if any)
+- [ ] Check if documentation update issue(s) are created if the option `This change requires a documentation update` above is selected
 
 # Screenshots (if appropriate):
 
