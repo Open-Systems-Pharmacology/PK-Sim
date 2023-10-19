@@ -29,7 +29,7 @@ skip_tags: true
 
 skip_commits:
   files:
-    - "*.md"
+    - "**/*.md"
 
 before_build:
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper
