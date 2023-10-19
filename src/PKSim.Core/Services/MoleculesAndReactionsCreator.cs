@@ -10,6 +10,7 @@ using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
+using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 
 namespace PKSim.Core.Services
 {

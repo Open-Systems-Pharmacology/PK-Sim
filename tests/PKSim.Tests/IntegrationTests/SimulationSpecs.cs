@@ -848,8 +848,8 @@ namespace PKSim.IntegrationTests
 
       protected async Task RunSimulationTest()
       {
-         var simulationEngine = IoC.Resolve<ISimulationRunner>();
-         await simulationEngine.RunSimulation(_simulation, _simulationRunOptions);
+         var simulationRunner = IoC.Resolve<ISimulationRunner>();
+         await simulationRunner.RunSimulation(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
 

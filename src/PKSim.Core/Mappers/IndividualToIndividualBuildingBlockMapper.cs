@@ -10,6 +10,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static PKSim.Assets.PKSimConstants.UI;
 using static PKSim.Core.CoreConstants.Groups;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
@@ -77,9 +78,9 @@ namespace PKSim.Core.Mappers
          return individual.GetAllChildren<IParameter>(shouldExportParameter);
       }
 
-      public override IndividualParameter MapParameter(IParameter parameter, Individual individual)
+      protected override IndividualParameter CreateParameter(IParameter parameter, Individual individual)
       {
-         var individualParameter = base.MapParameter(parameter, individual);
+         var individualParameter = base.CreateParameter(parameter, individual);
          individualParameter.Info = parameter.Info.Clone();
          individualParameter.IsDefault = parameter.IsDefault;
          individualParameter.Origin = new ParameterOrigin
@@ -91,7 +92,7 @@ namespace PKSim.Core.Mappers
          return individualParameter;
       }
 
-      protected override void MapFormulaOrValue(IParameter parameter, IndividualParameter builderParameter, Individual pkSimBuildingBlock, BuildingBlockFormulaCache formulaCache)
+      protected override void MapFormulaOrValue(IParameter parameter, IndividualParameter builderParameter, Individual pkSimBuildingBlock, IFormulaCache formulaCache)
       {
          base.MapFormulaOrValue(parameter, builderParameter, pkSimBuildingBlock, formulaCache);
          switch (parameter.Formula)
@@ -111,11 +112,11 @@ namespace PKSim.Core.Mappers
          individual.OriginData.DiseaseStateParameters.Each(x => addOriginDataToBuildingBlock(buildingBlock, x.Name, x));
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Species, individual.Species?.DisplayName);
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Gender, individual.OriginData.Gender?.DisplayName);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Age, individual.OriginData.Age);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.GestationalAge, individual.OriginData.GestationalAge);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Height, individual.OriginData.Height);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.BMI, individual.OriginData.BMI);
-         addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Weight, individual.OriginData.Weight);
+         addOriginDataToBuildingBlock(buildingBlock, Age, individual.OriginData.Age);
+         addOriginDataToBuildingBlock(buildingBlock, GestationalAge, individual.OriginData.GestationalAge);
+         addOriginDataToBuildingBlock(buildingBlock, Height, individual.OriginData.Height);
+         addOriginDataToBuildingBlock(buildingBlock, BMI, individual.OriginData.BMI);
+         addOriginDataToBuildingBlock(buildingBlock, Weight, individual.OriginData.Weight);
          addOriginDataToBuildingBlock(buildingBlock, PKSimConstants.UI.Population, individual.OriginData.Population?.DisplayName);
 
          individual.OriginData.AllCalculationMethods().Where(cm => _calculationMethodCategoryRepository.HasMoreThanOneOption(cm, individual.Species))

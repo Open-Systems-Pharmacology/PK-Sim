@@ -1,11 +1,10 @@
 using System;
-using System.Globalization;
 using System.Threading;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Services;
@@ -23,7 +22,6 @@ using PKSim.Infrastructure;
 using PKSim.Matlab;
 using PKSim.Presentation;
 using PKSim.Presentation.Services;
-using CoreRegister = PKSim.Core.CoreRegister;
 
 namespace PKSim.IntegrationTests
 {
@@ -56,6 +54,7 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IJournalDiagramManagerFactory>());
             container.RegisterImplementationOf(A.Fake<IDataImporter>());
 
+
             container.AddRegister(x =>
             {
                x.FromType<CoreRegister>();
@@ -65,6 +64,9 @@ namespace PKSim.IntegrationTests
                x.FromType<OSPSuite.Presentation.PresenterRegister>();
                x.FromType<BatchRegister>();
             });
+
+            //Register an other type that was already registered previously to ensure that we do use the presentation implementation
+            container.Register<IEntityValidationTask, CLIEntityValidationTask>();
 
 
             var userSettings = container.Resolve<IUserSettings>();
