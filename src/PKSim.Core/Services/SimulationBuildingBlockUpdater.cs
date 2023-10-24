@@ -147,7 +147,7 @@ namespace PKSim.Core.Services
          if (!sameStructureVersion)
             return false;
 
-         //For individual, there is a special handling required as we need to also check that the used expression profile have hte same structure version
+         //For individual, there is a special handling required as we need to also check that the used expression profile have the same structure version
          if (templateBuildingBlock is not Individual individualTemplate)
             return true;
 
@@ -158,11 +158,6 @@ namespace PKSim.Core.Services
             return false;
 
          //let's compare the expression profile in each individuals and see if they are comparable
-         //not the same length of expression profile, structural change
-         if (usedIndividual.AllExpressionProfiles().Count != individualTemplate.AllExpressionProfiles().Count)
-            return false;
-
-         //now lets' compare one by one . We know that if one is not found in the individual template, that means that one was added or remove
          return individualTemplate.AllExpressionProfiles().All(x =>
          {
             //assume we can find it by name. Otherwise => structural change
