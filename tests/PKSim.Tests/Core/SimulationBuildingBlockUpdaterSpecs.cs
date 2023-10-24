@@ -1,10 +1,10 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Core
 {
@@ -133,6 +133,94 @@ namespace PKSim.Core
       }
    }
 
+   public abstract class concern_for_SimulationBuildingBlockUpdaterForIndividual : concern_for_SimulationBuildingBlockUpdater
+   {
+      protected Individual _templateIndividual;
+      protected UsedBuildingBlock _usedIndividual;
+      protected ExpressionProfile _templateExpression;
+      protected Individual _individual;
+
+      protected override void Context()
+      {
+         base.Context();
+         _templateIndividual = new Individual
+         {
+            Id = "templateId",
+            StructureVersion = 1
+         };
+
+         _templateExpression = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>("Human", "CYP");
+         _templateExpression.Id = "templateExpressionProfile";
+         _templateExpression.StructureVersion = 5;
+
+         _templateIndividual.AddExpressionProfile(_templateExpression);
+
+         _individual = new Individual
+         {
+            StructureVersion = _templateIndividual.StructureVersion,
+         };
+
+
+         _usedIndividual = new UsedBuildingBlock(_templateIndividual.Id, PKSimBuildingBlockType.Individual)
+         {
+            StructureVersion = _templateIndividual.StructureVersion,
+            BuildingBlock = _individual
+         };
+      }
+   }
+
+   public class When_asked_if_a_quick_update_possible_between_an_individual_an_a_used_individual_with_expression_profile_presenting_a_structural_change : concern_for_SimulationBuildingBlockUpdaterForIndividual
+   {
+      protected override void Context()
+      {
+         base.Context();
+         var expression = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>("Human", "CYP");
+         expression.StructureVersion = _templateExpression.StructureVersion + 1;
+         _individual.AddExpressionProfile(expression);
+      }
+
+      [Observation]
+      public void should_not_allow_for_a_quick_update()
+      {
+         sut.QuickUpdatePossibleFor(_templateIndividual, _usedIndividual).ShouldBeFalse();
+      }
+   }
+
+   public class When_asked_if_a_quick_update_possible_between_an_individual_an_a_used_individual_with_expression_profile_presenting_no_structural_change : concern_for_SimulationBuildingBlockUpdaterForIndividual
+   {
+      protected override void Context()
+      {
+         base.Context();
+         var expression = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>("Human", "CYP");
+         expression.StructureVersion = _templateExpression.StructureVersion;
+         _individual.AddExpressionProfile(expression);
+      }
+
+      [Observation]
+      public void should_allow_for_a_quick_update()
+      {
+         sut.QuickUpdatePossibleFor(_templateIndividual, _usedIndividual).ShouldBeTrue();
+      }
+   }
+
+   public class When_asked_if_a_quick_update_possible_between_an_individual_an_a_used_individual_with_expression_profile_missing_by_name : concern_for_SimulationBuildingBlockUpdaterForIndividual
+   {
+      protected override void Context()
+      {
+         base.Context();
+
+         var expression = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>("Human", "AnotherCYP");
+         expression.StructureVersion = _templateExpression.StructureVersion;
+         _individual.AddExpressionProfile(expression);
+      }
+
+      [Observation]
+      public void should_not_allow_for_a_quick_update()
+      {
+         sut.QuickUpdatePossibleFor(_templateIndividual, _usedIndividual).ShouldBeFalse();
+      }
+   }
+
    public class When_updating_the_formulation_defined_in_a_simulation_according_to_the_formulation_mapping : concern_for_SimulationBuildingBlockUpdater
    {
       private Simulation _simulation;
@@ -169,23 +257,23 @@ namespace PKSim.Core
    public class When_updating_the_formulation_defined_in_a_simulation_according_to_the_formulation_mapping_using_both_a_template_and_a_simulation_formulation_for_the_same_formulation : concern_for_SimulationBuildingBlockUpdater
    {
       private Simulation _simulation;
- 
+
       protected override void Context()
       {
          base.Context();
          var formulation = new Formulation().WithName("F");
-         _simulation = new IndividualSimulation { Properties = new SimulationProperties() };
+         _simulation = new IndividualSimulation {Properties = new SimulationProperties()};
          var formulationUsedInSimulation = new Formulation().WithName("F");
          var compoundProperties = new CompoundProperties();
-         compoundProperties.ProtocolProperties.AddFormulationMapping(new FormulationMapping { Formulation = formulation });
-         compoundProperties.ProtocolProperties.AddFormulationMapping(new FormulationMapping { Formulation = formulationUsedInSimulation });
+         compoundProperties.ProtocolProperties.AddFormulationMapping(new FormulationMapping {Formulation = formulation});
+         compoundProperties.ProtocolProperties.AddFormulationMapping(new FormulationMapping {Formulation = formulationUsedInSimulation});
          _simulation.Properties.AddCompoundProperties(compoundProperties);
       }
 
       [Observation]
       public void should_throw_an_exception()
       {
-         The.Action(()=>sut.UpdateFormulationsInSimulation(_simulation)).ShouldThrowAn<PKSimException>();
+         The.Action(() => sut.UpdateFormulationsInSimulation(_simulation)).ShouldThrowAn<PKSimException>();
       }
    }
 
