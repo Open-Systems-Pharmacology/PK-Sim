@@ -241,16 +241,18 @@ namespace PKSim.Presentation.Services
 
       private IEnumerable<IContainer> getContainersToRename(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock, string oldContainerName)
       {
+         var containersToRename = new List<IContainer>();
+
          var rootContainer = simulation.Model.Root.EntityAt<IContainer>(getContainerPathToRename(templateBuildingBlock.BuildingBlockType));
          if (templateBuildingBlock.BuildingBlockType != PKSimBuildingBlockType.Formulation)
-            yield return rootContainer.Container(oldContainerName);
+            containersToRename.Add(rootContainer.Container(oldContainerName));
          else
          {
-            foreach (var formulationContainer in rootContainer.GetAllChildren<IContainer>(x => x.IsNamed(oldContainerName) && x.ContainerType == ContainerType.Formulation))
-            {
-               yield return formulationContainer;
-            }
+            rootContainer.GetAllChildren<IContainer>(x => x.IsNamed(oldContainerName) && x.ContainerType == ContainerType.Formulation).Each(formulationContainer =>
+               containersToRename.Add(formulationContainer));
          }
+
+         return containersToRename.Where(x => x != null);
       }
 
       private string getContainerPathToRename(PKSimBuildingBlockType buildingBlockType)
