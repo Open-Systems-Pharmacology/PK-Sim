@@ -247,11 +247,8 @@ namespace PKSim.Presentation.Services
          if (templateBuildingBlock.BuildingBlockType != PKSimBuildingBlockType.Formulation)
             containersToRename.Add(rootContainer.Container(oldContainerName));
          else
-         {
-            rootContainer.GetAllChildren<IContainer>(x => x.IsNamed(oldContainerName) && x.ContainerType == ContainerType.Formulation).Each(formulationContainer =>
-               containersToRename.Add(formulationContainer));
-         }
-
+            return rootContainer.GetAllChildren<IContainer>(x => x.IsNamed(oldContainerName) && x.ContainerType == ContainerType.Formulation);
+         
          return containersToRename.Where(x => x != null);
       }
 
