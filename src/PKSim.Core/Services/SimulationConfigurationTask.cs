@@ -74,7 +74,7 @@ namespace PKSim.Core.Services
       public SimulationConfiguration CreateFor(Simulation simulation, bool shouldValidate, bool createAgingDataInSimulation)
       {
          var module = _objectBaseFactory.Create<Module>().WithName(simulation.Name);
-         module.AddExtendedProperty(Constants.PK_SIM_VERSION, _applicationConfiguration.FullVersion);
+         module.PKSimVersion = _applicationConfiguration.FullVersion;
          var individual = simulation.Individual;
          var simulationConfiguration = new SimulationConfiguration
          {

@@ -159,7 +159,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_a_module_holding_the_current_PKSim_version()
       {
-         _module.ExtendedPropertyValueFor(Constants.PK_SIM_VERSION).ShouldBeEqualTo("X.Y.Z");
+         _module.PKSimVersion.ShouldBeEqualTo("X.Y.Z");
       }
 
       [Observation]
