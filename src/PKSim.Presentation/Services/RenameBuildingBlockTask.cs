@@ -242,6 +242,7 @@ namespace PKSim.Presentation.Services
       {
          var rootContainer = simulation.Model.Root.EntityAt<IContainer>(getContainerPathToRename(templateBuildingBlock.BuildingBlockType));
          if (templateBuildingBlock.BuildingBlockType != PKSimBuildingBlockType.Formulation)
+            //We filter for null as some containers may have been renamed/moved between versions.
             return new[] { rootContainer.Container(oldContainerName) }.Where(x => x != null);
          
          return rootContainer.GetAllChildren<IContainer>(x => x.IsNamed(oldContainerName) && x.ContainerType == ContainerType.Formulation);
