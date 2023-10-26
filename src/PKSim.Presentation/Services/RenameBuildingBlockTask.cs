@@ -11,7 +11,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -201,11 +200,11 @@ namespace PKSim.Presentation.Services
          renamedContainer.GetAllChildren<IFormulaUsable>().Each(reference =>
          {
             var allObjectReferencing = _objectReferencingRetriever.AllUsingFormulaReferencing(reference, simulation.Model);
-            renameFormulaPathInFormulas(allObjectReferencing, reference, renamedContainer.Name, oldContainerName);
+            renameFormulaPathInFormulas(allObjectReferencing, reference, oldContainerName);
          });
       }
 
-      private void renameFormulaPathInFormulas(IReadOnlyCollection<IUsingFormula> referencingFormulas, IFormulaUsable reference, string newName, string oldName)
+      private void renameFormulaPathInFormulas(IReadOnlyCollection<IUsingFormula> referencingFormulas, IFormulaUsable reference, string oldName)
       {
          foreach (var usingFormula in referencingFormulas)
          {
@@ -236,21 +235,17 @@ namespace PKSim.Presentation.Services
             return null;
 
          var referenceIndex = formula.ObjectReferences.Select(x => x.Object).IndexOf(reference);
-         return (referenceIndex >= 0) ? formula.ObjectPaths[referenceIndex] : null;
+         return referenceIndex >= 0 ? formula.ObjectPaths[referenceIndex] : null;
       }
 
       private IEnumerable<IContainer> getContainersToRename(Simulation simulation, IPKSimBuildingBlock templateBuildingBlock, string oldContainerName)
       {
          var rootContainer = simulation.Model.Root.EntityAt<IContainer>(getContainerPathToRename(templateBuildingBlock.BuildingBlockType));
          if (templateBuildingBlock.BuildingBlockType != PKSimBuildingBlockType.Formulation)
-            yield return rootContainer.Container(oldContainerName);
-         else
-         {
-            foreach (var formulationContainer in rootContainer.GetAllChildren<IContainer>(x => x.IsNamed(oldContainerName) && x.ContainerType == ContainerType.Formulation))
-            {
-               yield return formulationContainer;
-            }
-         }
+            //We filter for null as some containers may have been renamed/moved between versions.
+            return new[] { rootContainer.Container(oldContainerName) }.Where(x => x != null);
+         
+         return rootContainer.GetAllChildren<IContainer>(x => x.IsNamed(oldContainerName) && x.ContainerType == ContainerType.Formulation);
       }
 
       private string getContainerPathToRename(PKSimBuildingBlockType buildingBlockType)

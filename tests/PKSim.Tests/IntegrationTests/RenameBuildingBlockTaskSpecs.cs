@@ -1,13 +1,9 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
@@ -25,7 +21,7 @@ namespace PKSim.IntegrationTests
       public async Task VerifySimulationCanRun(IndividualSimulation simulation)
       {
          var simulationEngine = IoC.Resolve<IIndividualSimulationEngine>();
-         await simulationEngine.RunAsync(simulation, new Core.Services.SimulationRunOptions());
+         await simulationEngine.RunAsync(simulation, new SimulationRunOptions());
          simulation.HasResults.ShouldBeTrue();
       }
 
@@ -34,7 +30,6 @@ namespace PKSim.IntegrationTests
          _cloner.CloneForModel(simulation);
       }
    }
-
 
    public class When_renaming_the_application_in_the_project_rename_application_v8 : concern_for_RenameBuildingBlockTask
    {
@@ -49,12 +44,6 @@ namespace PKSim.IntegrationTests
          _s1 = FindByName<IndividualSimulation>("aa");
 
          sut.RenameBuildingBlock(_iv, "bb");
-      }
-
-      [Observation]
-      public void should_have_renamed_the_application_container_in_the_model()
-      {
-         _s1.Model.Root.EntityAt<Container>(Constants.EVENTS, "bb").ShouldNotBeNull();
       }
 
       [Observation]

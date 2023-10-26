@@ -62,7 +62,7 @@ namespace PKSim.Core
          _simulation = new IndividualSimulation {Properties = new SimulationProperties()};
          _simulation.Settings = new SimulationSettings();
          _simulation.ModelConfiguration = new ModelConfiguration();
-         _individual = new Individual().WithName("MyIndividuyal");
+         _individual = new Individual().WithName("MyIndividual");
          _compound = A.Fake<Compound>().WithName("MyCompound");
          _protocol = new SimpleProtocol().WithName("MyProtocol");
          _spatialStructure = new SpatialStructure();
@@ -159,7 +159,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_created_a_module_holding_the_current_PKSim_version()
       {
-         _module.ExtendedPropertyValueFor(CoreConstants.PK_SIM_VERSION).ShouldBeEqualTo("X.Y.Z");
+         _module.PKSimVersion.ShouldBeEqualTo("X.Y.Z");
       }
 
       [Observation]

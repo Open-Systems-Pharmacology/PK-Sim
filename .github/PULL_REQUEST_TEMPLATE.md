@@ -15,6 +15,10 @@ Please mark relevant options with an `x` in the brackets.
 - [ ] Algorithm update - updates algorithm documentation/questions/answers etc.
 - [ ] Other (please describe):
 
+https://github.com/Open-Systems-Pharmacology/docs
+https://github.com/Open-Systems-Pharmacology/developer-docs
+
+
 # How Has This Been Tested?
 
 Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
