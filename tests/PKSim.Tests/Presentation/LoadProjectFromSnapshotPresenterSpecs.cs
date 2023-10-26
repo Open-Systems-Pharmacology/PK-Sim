@@ -26,7 +26,6 @@ namespace PKSim.Presentation
       protected ILogPresenter _logPresenter;
       protected IRegistrationTask _registrationTask;
       protected IQualiticationPlanRunner _qualificationPlanRunner;
-      private IStartOptions _startOptions;
 
       protected override void Context()
       {
@@ -39,7 +38,6 @@ namespace PKSim.Presentation
          _logPresenter = A.Fake<ILogPresenter>();
          _registrationTask = A.Fake<IRegistrationTask>();
          _qualificationPlanRunner = A.Fake<IQualiticationPlanRunner>();
-         _startOptions= A.Fake<IStartOptions>();   
 
          sut = new LoadProjectFromSnapshotPresenter(
             _view, 
@@ -50,8 +48,7 @@ namespace PKSim.Presentation
             _logger,
             _eventPublisher,
             _qualificationPlanRunner,
-            _registrationTask, 
-            _startOptions);
+            _registrationTask);
       }
    }
 

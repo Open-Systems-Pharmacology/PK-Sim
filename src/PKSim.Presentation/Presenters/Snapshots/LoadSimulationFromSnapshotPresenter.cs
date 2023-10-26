@@ -39,9 +39,8 @@ namespace PKSim.Presentation.Presenters.Snapshots
          IOSPSuiteLogger logger,
          IEventPublisher eventPublisher,
          SimulationMapper simulationMapper,
-         IPKSimProjectRetriever projectRetriever,
-         IStartOptions startOptions
-      ) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher, startOptions)
+         IPKSimProjectRetriever projectRetriever
+      ) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)
       {
          _simulationMapper = simulationMapper;
          _projectRetriever = projectRetriever;

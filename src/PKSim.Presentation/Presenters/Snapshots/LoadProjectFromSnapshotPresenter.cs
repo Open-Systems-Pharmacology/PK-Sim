@@ -36,8 +36,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
          IOSPSuiteLogger logger,
          IEventPublisher eventPublisher,
          IQualiticationPlanRunner qualificationPlanRunner,
-         IRegistrationTask registrationTask, 
-         IStartOptions startOptions) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher, startOptions)
+         IRegistrationTask registrationTask) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher)
       {
          _qualificationPlanRunner = qualificationPlanRunner;
          _registrationTask = registrationTask;
