@@ -19,7 +19,6 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -29,6 +28,7 @@ using PKSim.Presentation.Presenters.ContextMenus;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
+using static PKSim.Assets.PKSimConstants;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Main
@@ -351,13 +351,16 @@ namespace PKSim.Presentation.Presenters.Main
       {
          var classification = parentClassificationNode.Tag;
          if (classification.ClassificationType != ClassificationType.Simulation)
-            yield break;
+            return Enumerable.Empty<ClassificationTemplate>();
 
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.Compound, ApplicationIcons.Compound);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.AdministrationProtocol, ApplicationIcons.Protocol);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.Individual, ApplicationIcons.Individual);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.Population, ApplicationIcons.Population);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.SimulationType, ApplicationIcons.Simulation);
+         return new []
+         {
+            new ClassificationTemplate(Classifications.Compound, ApplicationIcons.Compound),
+            new ClassificationTemplate(Classifications.AdministrationProtocol, ApplicationIcons.Protocol),
+            new ClassificationTemplate(Classifications.Individual, ApplicationIcons.Individual),
+            new ClassificationTemplate(Classifications.Population, ApplicationIcons.Population),
+            new ClassificationTemplate(Classifications.SimulationType, ApplicationIcons.Simulation)
+         };
       }
 
       public override void AddToClassificationTree(ITreeNode<IClassification> parentNode, string category)
@@ -369,19 +372,19 @@ namespace PKSim.Presentation.Presenters.Main
       private string retrieveCategoryValue(ClassifiableSimulation classifiableSimulation, string category)
       {
          var simulation = classifiableSimulation.Simulation;
-         if (string.Equals(PKSimConstants.Classifications.Compound, category))
+         if (string.Equals(Classifications.Compound, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Compound);
 
-         if (string.Equals(PKSimConstants.Classifications.AdministrationProtocol, category))
+         if (string.Equals(Classifications.AdministrationProtocol, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Protocol);
 
-         if (string.Equals(PKSimConstants.Classifications.Individual, category))
+         if (string.Equals(Classifications.Individual, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Individual);
 
-         if (string.Equals(PKSimConstants.Classifications.Population, category))
+         if (string.Equals(Classifications.Population, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Population);
 
-         if (string.Equals(PKSimConstants.Classifications.SimulationType, category))
+         if (string.Equals(Classifications.SimulationType, category))
             return displayTypeFor(simulation);
 
          return string.Empty;
@@ -390,8 +393,8 @@ namespace PKSim.Presentation.Presenters.Main
       private string displayTypeFor(Simulation simulation)
       {
          return simulation.IsAnImplementationOf<IndividualSimulation>()
-            ? PKSimConstants.UI.IndividualSimulation
-            : PKSimConstants.UI.PopulationSimulation;
+            ? UI.IndividualSimulation
+            : UI.PopulationSimulation;
       }
 
       public void Handle(SwapBuildingBlockEvent eventToHandle)
