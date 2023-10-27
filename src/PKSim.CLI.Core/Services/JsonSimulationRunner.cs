@@ -12,7 +12,6 @@ using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
