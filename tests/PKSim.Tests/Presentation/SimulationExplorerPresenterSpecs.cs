@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using FakeItEasy;
 using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
@@ -18,7 +17,6 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
-using OSPSuite.Presentation.Views;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Events;
@@ -26,7 +24,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Main;
-using PKSim.Presentation.Repositories;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
@@ -462,7 +459,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_simulation_explorer_presente_is_notified_of_the_swap_building_block_event : concern_for_SimulationExplorerPresenter
+   public class When_the_simulation_explorer_presenter_is_notified_of_the_swap_building_block_event : concern_for_SimulationExplorerPresenter
    {
       private IPKSimBuildingBlock _newBuildingBlock;
 
