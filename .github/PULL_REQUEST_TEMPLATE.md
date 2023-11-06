@@ -11,13 +11,9 @@ Please mark relevant options with an `x` in the brackets.
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] This change requires documentation changes (link at least one documentation issue):
+- [ ] This change requires documentation changes (link at least one [user](https://github.com/Open-Systems-Pharmacology/docs) or [developer](https://github.com/Open-Systems-Pharmacology/developer-docs) documentation issue):
 - [ ] Algorithm update - updates algorithm documentation/questions/answers etc.
 - [ ] Other (please describe):
-
-https://github.com/Open-Systems-Pharmacology/docs
-https://github.com/Open-Systems-Pharmacology/developer-docs
-
 
 # How Has This Been Tested?
 
