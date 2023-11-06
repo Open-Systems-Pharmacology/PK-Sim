@@ -81,7 +81,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_allow_the_user_to_edit_the_points_defined_in_the_formula()
       {
-         var allPoints = sut.AllPoints();
+         var allPoints = sut.AllPoints;
          A.CallTo(() => _view.BindTo(allPoints)).MustHaveHappened();
          allPoints.Count().ShouldBeEqualTo(2);
          allPoints.ElementAt(0).X.ShouldBeEqualTo(_p1.X);
@@ -110,14 +110,14 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.RemovePoint(sut.AllPoints().Last());
+         sut.RemovePoint(sut.AllPoints.Last());
          sut.Save();
       }
 
       [Observation]
       public void should_allow_the_user_to_edit_the_points_defined_in_the_formula()
       {
-         _editedFormula.AllPoints().Count().ShouldBeEqualTo(1);
+         _editedFormula.AllPoints.Count().ShouldBeEqualTo(1);
       }
    }
 
@@ -147,7 +147,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_allow_the_user_to_edit_the_points_defined_in_the_formula()
       {
-         _editedFormula.AllPoints().Count().ShouldBeEqualTo(3);
+         _editedFormula.AllPoints.Count().ShouldBeEqualTo(3);
       }
    }
 

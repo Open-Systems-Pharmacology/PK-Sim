@@ -31,12 +31,12 @@ namespace PKSim.Core.Model
 
       public virtual float[] PostmenstrualAges()
       {
-         return Table.AllPoints().Select(p => p.X).ToFloatArray();
+         return Table.AllPoints.Select(p => p.X).ToFloatArray();
       }
 
       public virtual float[] OntogenyFactors()
       {
-         return Table.AllPoints().Select(p => p.Y).ToFloatArray();
+         return Table.AllPoints.Select(p => p.Y).ToFloatArray();
       }
 
       public virtual float[] Deviations()

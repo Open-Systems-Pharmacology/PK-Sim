@@ -58,8 +58,8 @@ namespace PKSim.Core
       [Observation]
       public void should_have_generated_new_values_in_the_table_reflecting_the_percentile_change_according_to_the_distribution_define_for_each_point_in_the_table()
       {
-         _distributedTableFormula.AllPoints().ElementAt(0).Y.ShouldBeEqualTo(_normalDistribution0.CalculateValueFromPercentile(0.5));
-         _distributedTableFormula.AllPoints().ElementAt(1).Y.ShouldBeEqualTo(_normalDistribution1.CalculateValueFromPercentile(0.5 ));
+         _distributedTableFormula.AllPoints.ElementAt(0).Y.ShouldBeEqualTo(_normalDistribution0.CalculateValueFromPercentile(0.5));
+         _distributedTableFormula.AllPoints.ElementAt(1).Y.ShouldBeEqualTo(_normalDistribution1.CalculateValueFromPercentile(0.5 ));
       }
    }
 }	

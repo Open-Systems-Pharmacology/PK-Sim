@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -27,6 +28,8 @@ namespace PKSim.Core.Mappers
       private readonly ICalculationMethodCategoryRepository _calculationMethodCategoryRepository;
       private readonly IParameterQuery _parameterQuery;
       private readonly IIndividualParametersSameFormulaOrValueForAllSpeciesRepository _sameFormulaOrValueForAllSpeciesRepository;
+      private readonly IDimensionRepository _dimensionRepository;
+      private readonly NumericFormatter<double> _formatter;
 
       public IndividualToIndividualBuildingBlockMapper(IObjectBaseFactory objectBaseFactory,
          IEntityPathResolver entityPathResolver,
@@ -37,12 +40,15 @@ namespace PKSim.Core.Mappers
          IFormulaFactory formulaFactory,
          IParameterQuery parameterQuery,
          IIndividualParametersSameFormulaOrValueForAllSpeciesRepository sameFormulaOrValueForAllSpeciesRepository,
-         ICloner cloner) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner)
+         ICloner cloner,
+         IDimensionRepository dimensionRepository) : base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner)
       {
          _representationInfoRepository = representationInfoRepository;
          _calculationMethodCategoryRepository = calculationMethodCategoryRepository;
          _parameterQuery = parameterQuery;
          _sameFormulaOrValueForAllSpeciesRepository = sameFormulaOrValueForAllSpeciesRepository;
+         _dimensionRepository = dimensionRepository;
+         _formatter = new NumericFormatter<double>(NumericFormatterOptions.Instance);
       }
 
       protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, Individual individual)
@@ -128,7 +134,7 @@ namespace PKSim.Core.Mappers
       private void addCalculationMethodOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, CalculationMethod calculationMethod)
       {
          var repInfo = _representationInfoRepository.InfoFor(RepresentationObjectType.CATEGORY, calculationMethod.Category);
-         addOriginDataToBuildingBlock(buildingBlock, repInfo.DisplayName, calculationMethod.Category);
+         addOriginDataToBuildingBlock(buildingBlock, repInfo.DisplayName, calculationMethod.DisplayName);
       }
 
       private void addOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, string key, OriginDataParameter parameter)
@@ -136,7 +142,15 @@ namespace PKSim.Core.Mappers
          if (parameter == null)
             return;
 
-         addOriginDataToBuildingBlock(buildingBlock, keyForOriginDataParameter(key, parameter), $"{parameter.Value} {parameter.Unit}");
+         var displayValue = originDataFormattedForDisplay(parameter);
+         addOriginDataToBuildingBlock(buildingBlock, keyForOriginDataParameter(key, parameter), $"{displayValue} {parameter.Unit}");
+      }
+
+      private string originDataFormattedForDisplay(OriginDataParameter parameter)
+      {
+         var dimension = _dimensionRepository.DimensionForUnit(parameter.Unit);
+         var unit = dimension.FindUnit(parameter.Unit);
+         return _formatter.Format(dimension.BaseUnitValueToUnitValue(unit, parameter.Value));
       }
 
       private void addOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, string key, string value)
@@ -144,7 +158,7 @@ namespace PKSim.Core.Mappers
          if (string.IsNullOrEmpty(value))
             return;
 
-         buildingBlock.OriginData.Add(new ExtendedProperty<string> {Name = key, Value = value});
+         buildingBlock.OriginData.Add(new ExtendedProperty<string> { Name = key, Value = value });
       }
 
       private string keyForOriginDataParameter(string key, OriginDataParameter parameter) => string.IsNullOrEmpty(parameter.Name) ? key : parameter.Name;

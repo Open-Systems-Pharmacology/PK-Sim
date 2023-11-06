@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
          else
          {
             var tableFormula = parameter.Formula.DowncastTo<DistributedTableFormula>();
-            tableFormula.AllPoints().Each(p => p.Y *= _ratio);
+            tableFormula.AllPoints.Each(p => p.Y *= _ratio);
          }
       }
    }
