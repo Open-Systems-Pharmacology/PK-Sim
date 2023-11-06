@@ -150,7 +150,7 @@ namespace PKSim.Core.Mappers
       {
          var dimension = _dimensionRepository.DimensionForUnit(parameter.Unit);
          var unit = dimension.FindUnit(parameter.Unit);
-         return _formatter.Format(dimension.BaseUnitValueToUnitValue(unit, parameter.Value)).TrimEnd('0', '.');
+         return _formatter.Format(dimension.BaseUnitValueToUnitValue(unit, parameter.Value));
       }
 
       private void addOriginDataToBuildingBlock(IndividualBuildingBlock buildingBlock, string key, string value)
