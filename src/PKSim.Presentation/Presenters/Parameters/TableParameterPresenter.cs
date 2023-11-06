@@ -23,7 +23,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       void Save();
       void AddPoint();
       TableFormula EditedFormula { get; }
-      IEnumerable<ValuePointDTO> AllPoints();
+      IEnumerable<ValuePointDTO> AllPoints { get; }
       void SetXValue(ValuePointDTO valuePointDTO, double newValue);
       void SetYValue(ValuePointDTO valuePointDTO, double newValue);
 
@@ -120,7 +120,7 @@ namespace PKSim.Presentation.Presenters.Parameters
             _allPoints.CollectionChanged -= notifyChange;
 
          _allPoints = new NotifyList<ValuePointDTO>();
-         _editedFormula.AllPoints().Each(p => _allPoints.Add(new ValuePointDTO(_tableParameter, _editedFormula, p)));
+         _editedFormula.AllPoints.Each(p => _allPoints.Add(new ValuePointDTO(_tableParameter, _editedFormula, p)));
 
          var yName = string.IsNullOrEmpty(_editedFormula.YName) ? _tableParameter.Name : _editedFormula.YName;
          _view.XCaption = Constants.NameWithUnitFor(_editedFormula.XName, _editedFormula.XDisplayUnit);
@@ -156,7 +156,7 @@ namespace PKSim.Presentation.Presenters.Parameters
             if (_editedFormula == null)
                return base.CanClose;
 
-            return base.CanClose && _editedFormula.AllPoints().Any();
+            return base.CanClose && _editedFormula.AllPoints.Any();
          }
       }
 
@@ -198,10 +198,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          _view.EditPoint(newPoint);
       }
 
-      public IEnumerable<ValuePointDTO> AllPoints()
-      {
-         return _allPoints;
-      }
+      public IEnumerable<ValuePointDTO> AllPoints => _allPoints;
    }
 
    public class TableParameterPresenter : TableParameterPresenter<ITableParameterView>
