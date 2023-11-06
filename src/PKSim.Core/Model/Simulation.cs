@@ -399,7 +399,7 @@ namespace PKSim.Core.Model
       {
          base.UpdatePropertiesFrom(sourceObject, cloneManager);
          var sourceSimulation = sourceObject as Simulation;
-         if (sourceSimulation == null) 
+         if (sourceSimulation == null)
             return;
 
          Properties = sourceSimulation.Properties.Clone(cloneManager);
@@ -411,7 +411,7 @@ namespace PKSim.Core.Model
          sourceSimulation.UsedObservedData.Each(data => AddUsedObservedData(data.Clone()));
 
          UpdateReactions(sourceSimulation.Reactions.Select(cloneManager.Clone));
- 
+
          Settings = cloneManager.Clone(sourceSimulation.Settings);
          ReactionDiagramModel = sourceSimulation.ReactionDiagramModel.CreateCopy();
          OutputMappings.UpdatePropertiesFrom(sourceSimulation.OutputMappings, cloneManager);
@@ -559,12 +559,10 @@ namespace PKSim.Core.Model
       }
 
       /// <summary>
-      ///    Returns the building block used in the simulation with the given building block type
+      ///    Returns the building block used in the simulation with the given building block type.
+      ///    If multiple building blocks are found, the first one is returned.
       /// </summary>
-      public virtual UsedBuildingBlock UsedBuildingBlockInSimulation(PKSimBuildingBlockType buildingBlockType)
-      {
-         return UsedBuildingBlocksInSimulation(buildingBlockType).SingleOrDefault();
-      }
+      public virtual UsedBuildingBlock UsedBuildingBlockInSimulation(PKSimBuildingBlockType buildingBlockType) => UsedBuildingBlocksInSimulation(buildingBlockType).FirstOrDefault();
 
       public virtual string BuildingBlockName(PKSimBuildingBlockType buildingBlockType)
       {

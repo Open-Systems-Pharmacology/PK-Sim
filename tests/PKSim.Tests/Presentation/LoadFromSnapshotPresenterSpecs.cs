@@ -30,7 +30,6 @@ namespace PKSim.Presentation
       protected ILogPresenter _logPresenter;
       protected LoadFromSnapshotDTO _loadFromSnapshotDTO;
       protected string _objectType = "Ind";
-      protected IStartOptions _startOptions;
 
       protected override void Context()
       {
@@ -41,7 +40,6 @@ namespace PKSim.Presentation
          _logger = A.Fake<IOSPSuiteLogger>();
          _eventPublisher = A.Fake<IEventPublisher>();
          _logPresenter = A.Fake<ILogPresenter>();
-         _startOptions= A.Fake<IStartOptions>();   
 
          A.CallTo(() => _view.BindTo(A<LoadFromSnapshotDTO>._))
             .Invokes(x => _loadFromSnapshotDTO = x.GetArgument<LoadFromSnapshotDTO>(0));
@@ -49,7 +47,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _logPresenter.CanClose).Returns(true);
 
          A.CallTo(() => _objectTypeResolver.TypeFor<Individual>()).Returns(_objectType);
-         sut = new LoadFromSnapshotPresenter<Individual>(_view, _logPresenter, _snapshotTask, _dialogCreator, _objectTypeResolver, _logger, _eventPublisher, _startOptions);
+         sut = new LoadFromSnapshotPresenter<Individual>(_view, _logPresenter, _snapshotTask, _dialogCreator, _objectTypeResolver, _logger, _eventPublisher);
       }
    }
 

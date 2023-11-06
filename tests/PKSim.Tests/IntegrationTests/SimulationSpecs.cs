@@ -745,6 +745,25 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_retrieving_the_building_block_name_for_a_simulation_having_multiple_building_of_the_same_type : concern_for_IndividualSimulation
+   {
+      private Compound _compound2;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _compound2 = DomainFactoryForSpecs.CreateStandardCompound().WithName("COMP_FIRST");
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] { _compound2, _compound }, new[] { _protocol, DomainFactoryForSpecs.CreateStandardIVProtocol() }).DowncastTo<IndividualSimulation>();
+
+      }
+
+      [Observation]
+      public void should_return_the_first_building_block()
+      {
+         _simulation.BuildingBlockName(PKSimBuildingBlockType.Compound).ShouldBeEqualTo(_compound2.Name);
+      }
+   }
+
    public class When_cloning_a_simulation : concern_for_IndividualSimulation
    {
       private ICloner _cloner;
