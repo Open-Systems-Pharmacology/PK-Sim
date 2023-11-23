@@ -108,7 +108,7 @@ namespace PKSim.Infrastructure.Services
             throw new PKSimException(PKSimConstants.Error.CannotExportAnImportedSimulation);
 
          var configuration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         var moBiSimulation = _simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: false);
+         var moBiSimulation = _simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
          updateRepresentationInfo(moBiSimulation);
          updateFormulaIdIn(moBiSimulation);
 
