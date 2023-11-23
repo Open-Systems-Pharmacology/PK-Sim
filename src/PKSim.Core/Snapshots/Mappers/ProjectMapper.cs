@@ -115,7 +115,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await observedDataFrom(snapshot.ObservedData, snapshotContext);
          observedData?.Each(repository => addObservedDataToProject(project, repository));
 
-         var allSimulations = await allSimulationsFrom(project, projectContext, snapshot.Simulations, snapshotContext);
+         var allSimulations = await allSimulationsFrom(projectContext, snapshot.Simulations, snapshotContext);
          allSimulations?.Each(simulation => addSimulationToProject(project, simulation));
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(snapshot.SimulationComparisons, snapshotContext);
@@ -262,7 +262,7 @@ namespace PKSim.Core.Snapshots.Mappers
          project.GetOrCreateClassifiableFor<TClassifiableWrapper, TSubject>(subject);
       }
 
-      private async Task<IEnumerable<Model.Simulation>> allSimulationsFrom(ModelProject project, ProjectContext projectContext, Simulation[] snapshots, SnapshotContext snapshotContext)
+      private async Task<IReadOnlyList<Model.Simulation>> allSimulationsFrom(ProjectContext projectContext, Simulation[] snapshots, SnapshotContext snapshotContext)
       {
          var simulations = new List<Model.Simulation>();
 
