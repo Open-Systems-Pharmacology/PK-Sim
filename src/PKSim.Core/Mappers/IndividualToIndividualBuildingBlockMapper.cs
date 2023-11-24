@@ -149,7 +149,7 @@ namespace PKSim.Core.Mappers
       private string originDataFormattedForDisplay(OriginDataParameter parameter)
       {
          var dimension = _dimensionRepository.DimensionForUnit(parameter.Unit);
-         var unit = dimension.FindUnit(parameter.Unit);
+         var unit = dimension.UnitOrDefault(parameter.Unit);
          return _formatter.Format(dimension.BaseUnitValueToUnitValue(unit, parameter.Value));
       }
 
