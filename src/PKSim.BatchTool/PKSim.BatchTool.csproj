@@ -59,8 +59,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="12.0.257" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.0.257" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.259" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.0.259" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.56" GeneratePathProperty="true" />

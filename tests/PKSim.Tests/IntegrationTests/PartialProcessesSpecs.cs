@@ -327,8 +327,7 @@ namespace PKSim.IntegrationTests
 
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
 
-         var objectPatFactory = new ObjectPathFactoryForSpecs();
-         var path = objectPatFactory.CreateObjectPathFrom(Constants.ORGANISM,
+         var path = new ObjectPath(Constants.ORGANISM,
             CoreConstants.Organ.LIVER,
             CoreConstants.Compartment.PERICENTRAL,
             CoreConstants.Compartment.INTRACELLULAR,
