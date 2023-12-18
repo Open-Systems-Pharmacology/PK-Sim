@@ -24,7 +24,6 @@ namespace PKSim.Core.Model
    {
       private readonly IApplicationRepository _applicationRepository;
       private readonly IObjectBaseFactory _objectBaseFactory;
-      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly IDimensionRepository _dimensionRepository;
@@ -36,7 +35,6 @@ namespace PKSim.Core.Model
       public ApplicationFactory(
          IApplicationRepository applicationRepository, 
          IObjectBaseFactory objectBaseFactory,
-         IObjectPathFactory objectPathFactory, 
          IParameterSetUpdater parameterSetUpdater,
          IParameterIdUpdater parameterIdUpdater,
          IDimensionRepository dimensionRepository, 
@@ -47,7 +45,6 @@ namespace PKSim.Core.Model
       {
          _applicationRepository = applicationRepository;
          _objectBaseFactory = objectBaseFactory;
-         _objectPathFactory = objectPathFactory;
          _parameterSetUpdater = parameterSetUpdater;
          _parameterIdUpdater = parameterIdUpdater;
          _dimensionRepository = dimensionRepository;
@@ -158,7 +155,7 @@ namespace PKSim.Core.Model
       private void addDrugStartFormula(ApplicationBuilder applicationBuilder, IFormulaCache formulaCache)
       {
          var applicationMoleculeBuilder = _objectBaseFactory.Create<ApplicationMoleculeBuilder>().WithName(applicationBuilder.Name);
-         applicationMoleculeBuilder.RelativeContainerPath = _objectPathFactory.CreateObjectPathFrom(ObjectPath.PARENT_CONTAINER, applicationBuilder.Name);
+         applicationMoleculeBuilder.RelativeContainerPath = new ObjectPath(ObjectPath.PARENT_CONTAINER, applicationBuilder.Name);
          applicationMoleculeBuilder.Formula = _formulaFactory.DrugMassFormulaFor(formulaCache);
          applicationBuilder.AddMolecule(applicationMoleculeBuilder);
       }

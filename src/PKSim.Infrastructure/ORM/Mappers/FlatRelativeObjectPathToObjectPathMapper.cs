@@ -14,12 +14,10 @@ namespace PKSim.Infrastructure.ORM.Mappers
    public class FlatRelativeObjectPathToObjectPathMapper : IFlatRelativeObjectPathToObjectPathMapper
    {
       private readonly IFlatRelativeObjectPathRepository _flatObjectPathRepo;
-      private readonly IObjectPathFactory _objectPathFactory;
 
-      public FlatRelativeObjectPathToObjectPathMapper(IFlatRelativeObjectPathRepository flatRelativeObjectPathRepo, IObjectPathFactory objectPathFactory)
+      public FlatRelativeObjectPathToObjectPathMapper(IFlatRelativeObjectPathRepository flatRelativeObjectPathRepo)
       {
          _flatObjectPathRepo = flatRelativeObjectPathRepo;
-         _objectPathFactory = objectPathFactory;
       }
 
       public ObjectPath MapFrom(long flatObjectPathId)
@@ -40,7 +38,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
                relativePath.Add(flatObjectPath.ContainerName);
          }
          relativePath.Reverse();
-         return _objectPathFactory.CreateObjectPathFrom(relativePath.ToArray());
+         return relativePath.ToObjectPath();
       }
    }
 }
