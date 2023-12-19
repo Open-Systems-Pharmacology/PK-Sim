@@ -38,7 +38,7 @@ namespace PKSim.Core.Commands
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new SetExpressionProfileValueCommand(_parameter, _oldValue).AsInverseFor(this);
+         return new SetExpressionProfileValueCommand(_parameter, _oldValue, _updateSimulationSubjects).AsInverseFor(this);
       }
    }
 }
