@@ -358,10 +358,22 @@ namespace PKSim.Core.Services
 
       public ICommand SetParameterUnit(IParameter parameter, Unit displayUnit)
       {
+         if (parameter.IsExpressionProfile())
+            return setExpressionProfileUnitCommand(parameter, displayUnit, shouldUpdateDefaultStateAndValueOriginForDefaultParameter: true);
+
          if (parameter.IsStructural())
             return SetParameterUnitAsStructuralChange(parameter, displayUnit);
 
          return executeAndUpdatedDefaultStateAndValue(new SetParameterUnitCommand(parameter, displayUnit), parameter);
+      }
+
+      private IOSPSuiteCommand setExpressionProfileUnitCommand(IParameter parameter, Unit displayUnit, bool shouldUpdateDefaultStateAndValueOriginForDefaultParameter)
+      {
+         return executeAndUpdatedDefaultStateAndValue(
+            new SetExpressionProfileUnitCommand(parameter, displayUnit),
+            parameter,
+            shouldChangeVersion: true,
+            shouldUpdateDefaultStateAndValueOriginForDefaultParameter);
       }
 
       public ICommand SetParameterUnitAsStructuralChange(IParameter parameter, Unit displayUnit)

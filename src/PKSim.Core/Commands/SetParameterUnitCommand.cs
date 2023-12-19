@@ -21,7 +21,7 @@ namespace PKSim.Core.Commands
       {
          _oldDisplayUnit = _parameter.DisplayUnit;
          _oldDisplayUnitName = _oldDisplayUnit.Name;
-         double oldDisplayValue = _parameter.Dimension.BaseUnitValueToUnitValue(_oldDisplayUnit, _parameter.Value);
+         var oldDisplayValue = _parameter.Dimension.BaseUnitValueToUnitValue(_oldDisplayUnit, _parameter.Value);
          _valueToSet = _parameter.Dimension.UnitValueToBaseUnitValue(_newDisplayUnit, oldDisplayValue);
 
          base.PerformExecuteWith(context);
