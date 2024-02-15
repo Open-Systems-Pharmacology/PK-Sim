@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <Version>11.1.0</Version>
-    <PackageVersion>11.1.0</PackageVersion>
-    <AssemblyVersion>11.1.0</AssemblyVersion>
-    <FileVersion>11.1.0</FileVersion>
-    <InformationalVersion>11.1.0</InformationalVersion>
+    <Version>11.3.0</Version>
+    <PackageVersion>11.3.0</PackageVersion>
+    <AssemblyVersion>11.3.0</AssemblyVersion>
+    <FileVersion>11.3.0</FileVersion>
+    <InformationalVersion>11.3.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <Authors>Open-Systems-Pharmacology</Authors>
@@ -59,8 +59,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="11.2.155" />
-    <PackageReference Include="OSPSuite.Assets" Version="11.2.155" />
+    <PackageReference Include="OSPSuite.Core" Version="11.3.268" />
+    <PackageReference Include="OSPSuite.Assets" Version="11.3.268" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.53" GeneratePathProperty="true" />
