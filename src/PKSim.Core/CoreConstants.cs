@@ -286,7 +286,8 @@ namespace PKSim.Core
          {
             LINKS_COMMON, 
             SPECIFIC_CLEARANCE, 
-            DISTRIBUTION_IN_VITRO_PKSIM
+            DISTRIBUTION_IN_VITRO_PKSIM,
+            DYNAMIC_SUM_FORMULAS
          };
 
          public static readonly IReadOnlyList<string> ForCompounds = new List<string>
