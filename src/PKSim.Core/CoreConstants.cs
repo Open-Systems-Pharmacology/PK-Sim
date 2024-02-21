@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using static OSPSuite.Core.Domain.Constants;
+using static PKSim.Core.CoreConstants;
+using static PKSim.Core.CoreConstants.Reaction;
 
 namespace PKSim.Core
 {
@@ -1266,6 +1268,15 @@ namespace PKSim.Core
          public static readonly string FC_RN_BINDING_DRUG_PLASMA = FcRnBindingDrugPlasmaNameFrom("drug");
          public static readonly string FC_RN_BINDING_TISSUE = "FcRn binding tissue";
          public static readonly string TURNOVER = ProteinTurnoverNameFor("Protein");
+
+         public static readonly string[] REACTIONS_WHICH_REQUIRE_RENAMING = 
+         {
+            FC_RN_BINDING_DRUG_ENDOSOME,
+            FC_RN_BINDING_DRUG_INTERSTITIAL,
+            FC_RN_BINDING_DRUG_PLASMA,
+            FC_RN_BINDING_TISSUE,
+            TURNOVER
+         };
 
          public static string ProteinTurnoverNameFor(string proteinName)
          {
