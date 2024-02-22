@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -219,7 +221,15 @@ namespace PKSim.Core.Mappers
          //retrieve process for the simulation and create a clone
          var reaction = createReactionFromProcess(templateReactionBuilder, forbiddenNames);
 
-         //adjust reaction name (e.g. replace "drug" placeholder with compound name if needed
+         //adjust formula names of the reaction and its children (e.g. parameters) making them unique if needed
+         if (reaction.Name.IsOneOf(CoreConstants.Reaction.REACTIONS_WHICH_REQUIRE_RENAMING))
+         {
+            adjustFormulaNameFor(reaction.Formula, compoundName);
+            var allUsingFormulas = reaction.GetAllChildren<IUsingFormula>();
+            allUsingFormulas.Each(x => adjustFormulaNameFor(x.Formula, compoundName));
+         }
+
+         //adjust reaction name (e.g. replace "drug" placeholder with compound name if needed)
          reaction.Name = reactionNameFor(reaction.Name, compoundName);
 
          //replace keywords 
@@ -233,6 +243,14 @@ namespace PKSim.Core.Mappers
 
          formulaCache.Add(reaction.Formula);
          return reaction;
+      }
+
+      private void adjustFormulaNameFor(IFormula formula, string compoundName)
+      {
+         if (formula?.Name == null)
+            return;
+
+         formula.Name = $"{compoundName} - {formula.Name}";
       }
 
       private string reactionNameFor(string templateReactionName, string compoundName)

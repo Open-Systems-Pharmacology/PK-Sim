@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -483,4 +484,46 @@ namespace PKSim.Core
          _formulaCache.Contains(_reaction.Formula).ShouldBeTrue();
       }
    }
+
+   public class when_mapping_fcrn_binding_template_reaction_builder_to_a_reaction_builder : concern_for_ProcessToProcessBuilderMapper
+   {
+      protected ReactionBuilder _reaction;
+      protected string _compoundName = "Aspirin";
+      protected IFormulaCache _formulaCache;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var formula = new ExplicitFormula().WithFormulaString("123").WithName("FcRn binding drug in endosomal space");
+         formula.AddObjectPath(new FormulaUsablePath(new[] { "Organism", CoreConstants.KeyWords.Molecule }));
+         formula.AddObjectPath(new FormulaUsablePath(new[] { "Organism", CoreConstants.Molecule.DrugFcRnComplexTemplate }));
+         _reaction = new PKSimReaction().WithName("FcRn binding drug in endosomal space").WithId("xx").WithFormula(formula);
+
+         var parameter = new Parameter().WithName("XYZ").WithFormula(formula);
+         _reaction.Add(parameter);
+
+         _formulaCache = new BuildingBlockFormulaCache();
+
+         A.CallTo(() => _cloner.Clone(_reaction)).Returns(_reaction);
+      }
+
+      protected override void Because()
+      {
+         _reaction = sut.ReactionFrom(_reaction, _compoundName, new List<string>(), _formulaCache);
+      }
+
+      [Observation]
+      public void should_insert_the_compound_name_into_the_formula_name()
+      {
+         _reaction.Formula.Name.Contains(_compoundName).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void formula_names_of_all_reaction_children_should_contain_the_compound_name()
+      {
+         _reaction.GetAllChildren<IUsingFormula>().Each(x => x.Formula.Name.Contains(_compoundName).ShouldBeTrue());
+      }
+   }
+
 }

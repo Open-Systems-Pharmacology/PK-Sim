@@ -1,6 +1,7 @@
 ﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 
 namespace PKSim.Core.Extensions
@@ -45,6 +46,20 @@ namespace PKSim.Core.Extensions
                objectPath.Replace(keywords[i], replacementValues[i]);
             }
          }
+
+         //---- for sum formulas: replace keywords in tags
+         var sumFormula = formula as SumFormula;
+         if (sumFormula == null)
+            return;
+
+         foreach (var condition in sumFormula.Criteria)
+         {
+            for (int i = 0; i < keywords.Length; i++)
+            {
+               condition.Replace(keywords[i], replacementValues[i]);
+            }
+         }
+
       }
    }
 }
