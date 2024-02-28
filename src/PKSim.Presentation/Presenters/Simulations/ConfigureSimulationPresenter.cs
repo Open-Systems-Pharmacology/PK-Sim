@@ -35,10 +35,12 @@ namespace PKSim.Presentation.Presenters.Simulations
 
    public class ConfigureSimulationPresenter : ConfigureSimulationPresenterBase<IConfigureSimulationView>
    {
-      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterItemManager, ISimulationModelCreator simulationModelCreator,
+      public ConfigureSimulationPresenter(IConfigureSimulationView view, ISubPresenterItemManager<ISimulationItemPresenter> subPresenterItemManager,
+         ISimulationModelCreator simulationModelCreator,
          IHeavyWorkManager heavyWorkManager, ICloner cloner, IDialogCreator dialogCreator, ISimulationParametersUpdater simulationParametersUpdater,
          IFullPathDisplayResolver fullPathDisplayResolver, IBuildingBlockInSimulationSynchronizer buildingBlockInSimulationSynchronizer)
-         : base(view, subPresenterItemManager, simulationModelCreator, heavyWorkManager, cloner, dialogCreator, simulationParametersUpdater, fullPathDisplayResolver, buildingBlockInSimulationSynchronizer, CreationMode.Configure)
+         : base(view, subPresenterItemManager, simulationModelCreator, heavyWorkManager, cloner, dialogCreator, simulationParametersUpdater,
+            fullPathDisplayResolver, buildingBlockInSimulationSynchronizer, CreationMode.Configure)
       {
       }
 
@@ -50,7 +52,8 @@ namespace PKSim.Presentation.Presenters.Simulations
       }
    }
 
-   public abstract class ConfigureSimulationPresenterBase<TSimulationView> : SimulationWizardPresenter<TSimulationView>, IConfigureSimulationPresenter where TSimulationView : ISimulationWizardView
+   public abstract class ConfigureSimulationPresenterBase<TSimulationView> : SimulationWizardPresenter<TSimulationView>, IConfigureSimulationPresenter
+      where TSimulationView : ISimulationWizardView
    {
       private readonly ICloner _cloner;
       private readonly ISimulationParametersUpdater _simulationParametersUpdater;
@@ -63,13 +66,13 @@ namespace PKSim.Presentation.Presenters.Simulations
       protected ConfigureSimulationPresenterBase(
          TSimulationView view,
          ISubPresenterItemManager<ISimulationItemPresenter> subPresenterItemManager,
-         ISimulationModelCreator simulationModelCreator, 
+         ISimulationModelCreator simulationModelCreator,
          IHeavyWorkManager heavyWorkManager,
-         ICloner cloner, 
-         IDialogCreator dialogCreator, 
-         ISimulationParametersUpdater simulationParametersUpdater, 
-         IFullPathDisplayResolver fullPathDisplayResolver, 
-         IBuildingBlockInSimulationSynchronizer buildingBlockInSimulationSynchronizer, 
+         ICloner cloner,
+         IDialogCreator dialogCreator,
+         ISimulationParametersUpdater simulationParametersUpdater,
+         IFullPathDisplayResolver fullPathDisplayResolver,
+         IBuildingBlockInSimulationSynchronizer buildingBlockInSimulationSynchronizer,
          CreationMode creationMode)
          : base(view, subPresenterItemManager, simulationModelCreator, heavyWorkManager, dialogCreator)
       {
@@ -105,11 +108,13 @@ namespace PKSim.Presentation.Presenters.Simulations
                break;
             case PKSimBuildingBlockType.Formulation:
                itemToActivate = SimulationItems.CompoundProtocols;
-               updateAction = () => PresenterAt(SimulationItems.CompoundProtocols).UpdateSelectedFormulation(templateBuildingBlock.DowncastTo<Formulation>());
+               updateAction = () =>
+                  PresenterAt(SimulationItems.CompoundProtocols).UpdateSelectedFormulation(templateBuildingBlock.DowncastTo<Formulation>());
                break;
             case PKSimBuildingBlockType.Protocol:
                itemToActivate = SimulationItems.CompoundProtocols;
-               updateAction = () => PresenterAt(SimulationItems.CompoundProtocols).UpdateSelectedProtocol(templateBuildingBlock.DowncastTo<Protocol>());
+               updateAction = () =>
+                  PresenterAt(SimulationItems.CompoundProtocols).UpdateSelectedProtocol(templateBuildingBlock.DowncastTo<Protocol>());
                break;
             case PKSimBuildingBlockType.Event:
                break;
@@ -160,16 +165,11 @@ namespace PKSim.Presentation.Presenters.Simulations
 
          _simulationModelCreator.CreateModelFor(Simulation);
 
-         //After the simulation was created, we can update the output mapping (we need the model to be available in the simulation)
-         //to make sure we swap out the simulation references
-         _originalSimulation.OutputMappings.Each(x => Simulation.OutputMappings.Add(x.Clone()));
-         Simulation.OutputMappings.SwapSimulation(_originalSimulation, Simulation);
-
-         //now update all parameters from the original simulationToClone
+         //now update all parameters from the _originalSimulation
          var validationResult = _simulationParametersUpdater.ReconciliateSimulationParametersBetween(_originalSimulation, Simulation);
          displayMissingParametersMessage(validationResult);
 
-         //last update the version of the new simulationToClone
+         //last update the version of the new Simulation
          Simulation.Version++;
          Simulation.StructureVersion++;
       }
