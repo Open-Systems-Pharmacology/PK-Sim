@@ -368,6 +368,45 @@ namespace PKSim.Core
       }
    }
 
+   public class When_setting_the_unit_of_an_expression_parameter : concern_for_ParameterTask
+   {
+      private ICommand _result;
+      private Unit _unitToSet;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Name = CoreConstants.Parameters.REL_EXP;
+         _parameter.Value = 10;                                 //in L
+         _parameter.DisplayUnit = _volumeDimension.DefaultUnit; //L
+         _unitToSet = _volumeDimension.Unit("mL");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.SetParameterUnit(_parameter, _unitToSet);
+      }
+
+      [Observation]
+      public void the_unit_of_the_parameter_should_have_been_set_to_the_given_unit()
+      {
+         _parameter.DisplayUnit.ShouldBeEqualTo(_unitToSet);
+      }
+
+      [Observation]
+      public void the_value_of_parameter_should_have_been_set_updated()
+      {
+         _parameter.Value.ShouldBeEqualTo(0.01);
+      }
+
+      [Observation]
+      public void should_return_the_underlying_command_used_to_set_the_parameter_value()
+      {
+         _result.ShouldBeAnInstanceOf<SetExpressionProfileUnitCommand>();
+      }
+   }
+
+
    public class When_setting_the_unit_of_a_parameter_requiring_a_structural_change_command : concern_for_ParameterTask
    {
       private ICommand _result;
