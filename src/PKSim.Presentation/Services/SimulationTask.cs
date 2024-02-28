@@ -95,8 +95,11 @@ namespace PKSim.Presentation.Services
          _buildingBlockTask.Load(templateBuildingBlock);
          _buildingBlockTask.Load(simulation);
 
+         //Now that the simulation is loaded, we want to make sure that the captured ref to used building block also has a valid reference to the underlying building block
+         var loadedUsedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(usedBuildingBlock.TemplateId);
+
          //check if quick update possible. if yes =>perform quick update
-         if (_simulationBuildingBlockUpdater.QuickUpdatePossibleFor(templateBuildingBlock, usedBuildingBlock))
+         if (_simulationBuildingBlockUpdater.QuickUpdatePossibleFor(templateBuildingBlock, loadedUsedBuildingBlock))
          {
             var updateCommand = _blockParametersToSimulationUpdater.UpdateParametersFromBuildingBlockInSimulation(templateBuildingBlock, simulation);
             _buildingBlockTask.AddCommandToHistory(updateCommand);
@@ -115,8 +118,11 @@ namespace PKSim.Presentation.Services
          _buildingBlockTask.Load(templateBuildingBlock);
          _buildingBlockTask.Load(simulation);
 
+         //Now that the simulation is loaded, we want to make sure that the captured ref to used building block also has a valid reference to the underlying building block
+         var loadedUsedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(usedBuildingBlock.TemplateId);
+         
          //check if quick update possible. if yes =>perform quick update
-         if (_simulationBuildingBlockUpdater.QuickUpdatePossibleFor(templateBuildingBlock, usedBuildingBlock))
+         if (_simulationBuildingBlockUpdater.QuickUpdatePossibleFor(templateBuildingBlock, loadedUsedBuildingBlock))
          {
             var updateCommand = _simulationParametersToBlockUpdater.UpdateParametersFromSimulationInBuildingBlock(simulation, templateBuildingBlock);
             _buildingBlockTask.AddCommandToHistory(updateCommand);

@@ -70,6 +70,7 @@ namespace PKSim.Presentation
       private IPKSimBuildingBlock _templateBuildingBlock;
       private IPKSimCommand _updateCommand;
       private UsedBuildingBlock _usedBuildingBlock;
+      private UsedBuildingBlock _loadedUsedBuildingBlock;
 
       protected override void Context()
       {
@@ -78,7 +79,10 @@ namespace PKSim.Presentation
          _templateBuildingBlock = A.Fake<IPKSimBuildingBlock>();
          _updateCommand = A.Fake<IPKSimCommand>();
          _usedBuildingBlock = A.Fake<UsedBuildingBlock>();
-         A.CallTo(() => _simulationBuildingBlockUpdater.QuickUpdatePossibleFor(_templateBuildingBlock, _usedBuildingBlock)).Returns(true);
+         _loadedUsedBuildingBlock = A.Fake<UsedBuildingBlock>();
+         //make sure we a new instance to ensure usage of loaded used building block
+         A.CallTo(() => _simulation.UsedBuildingBlockByTemplateId(_usedBuildingBlock.TemplateId)).Returns(_loadedUsedBuildingBlock);
+         A.CallTo(() => _simulationBuildingBlockUpdater.QuickUpdatePossibleFor(_templateBuildingBlock, _loadedUsedBuildingBlock)).Returns(true);
          A.CallTo(() => _blockParametersToSimulationUpdater.UpdateParametersFromBuildingBlockInSimulation(_templateBuildingBlock, _simulation)).Returns(_updateCommand);
       }
 
