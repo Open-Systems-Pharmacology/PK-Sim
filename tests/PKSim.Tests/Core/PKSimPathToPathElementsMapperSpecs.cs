@@ -73,7 +73,7 @@ namespace PKSim.Core
          _mucosa_duo = new Compartment().WithName(Constants.Compartment.DUODENUM).WithParentContainer(_mucosa);
          _mucosa_duo_interstitial = new Compartment().WithName(CoreConstants.Compartment.INTERSTITIAL).WithParentContainer(_mucosa_duo);
 
-         _events = new Container().WithName(Constants.EVENTS);
+         _events = new Container().WithName(EVENTS);
          _eventGroup = new EventGroup().WithName("E1").WithParentContainer(_events);
          _plasma = new Compartment().WithName(CoreConstants.Compartment.PLASMA).WithParentContainer(_venousBlood);
          _drugContainerVenousBlood = new Container().WithName(_drugName).WithContainerType(ContainerType.Molecule).WithParentContainer(_venousBlood);
@@ -87,8 +87,8 @@ namespace PKSim.Core
          _application1 = new EventGroup().WithName("App").WithParentContainer(_events).WithContainerType(ContainerType.EventGroup);
          _formulation = new Container().WithName("F1").WithParentContainer(_application1);
 
-         _neighborhoods = new Container().WithName(Constants.NEIGHBORHOODS);
-         _liverCellToLiverIntNeighborhood = new Neighborhood {FirstNeighbor = _liverInt, SecondNeighbor = _liverCell}.WithParentContainer(_neighborhoods);
+         _neighborhoods = new Container().WithName(NEIGHBORHOODS);
+         _liverCellToLiverIntNeighborhood = new Neighborhood {FirstNeighbor = _liverInt, SecondNeighbor = _liverCell}.WithParentContainer(_neighborhoods).WithName("liver_int_cell");
          _concentrationDimension = DomainHelperForSpecs.ConcentrationDimensionForSpecs();
          _fractionDimension = DomainHelperForSpecs.FractionDimensionForSpecs();
       }
@@ -122,7 +122,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_name_of_the_bottom_compartment_to_the_name_of_the_observer()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Observer.PLASMA_UNBOUND, _drugName, CoreConstants.Output.Concentration);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Observer.PLASMA_UNBOUND, _drugName, CoreConstants.Output.Concentration);
       }
    }
 
@@ -139,7 +139,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_name_of_the_observer_to_concentration()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, _drugName, CoreConstants.Output.Concentration);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, _drugName, CoreConstants.Output.Concentration);
       }
    }
 
@@ -156,7 +156,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_rename_the_name_entry()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, _drugName, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Compartment.PLASMA, _drugName, _entity.Name);
       }
    }
 
@@ -173,7 +173,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_name_of_the_observer_as_compartment_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Observer.WHOLE_BLOOD, _drugName, CoreConstants.Output.Concentration);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.VENOUS_BLOOD, CoreConstants.Observer.WHOLE_BLOOD, _drugName, CoreConstants.Output.Concentration);
       }
    }
 
@@ -190,7 +190,7 @@ namespace PKSim.Core
       [Observation]
       public void should_keep_the_name_of_the_observer_as_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.KIDNEY, CoreConstants.Compartment.URINE, _drugName, CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.KIDNEY, CoreConstants.Compartment.URINE, _drugName, CoreConstants.Observer.FRACTION_EXCRETED_TO_URINE);
       }
    }
 
@@ -207,7 +207,7 @@ namespace PKSim.Core
       [Observation]
       public void should_keep_the_name_of_the_observer_as_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR, _drugName, CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName));
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.LIVER, CoreConstants.Compartment.INTRACELLULAR, _drugName, CompositeNameFor(CoreConstants.Observer.FRACTION_OF_DOSE, _drugName));
       }
    }
 
@@ -227,7 +227,7 @@ namespace PKSim.Core
       [Observation]
       public void should_keep_the_name_of_the_observer_as_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.KIDNEY, CoreConstants.Compartment.URINE, _drugName, _observerName);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.KIDNEY, CoreConstants.Compartment.URINE, _drugName, _observerName);
       }
    }
 
@@ -244,7 +244,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_display_name_of_the_observer_as_compartment_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, _drugName, CoreConstants.Output.Concentration);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.PERIPHERAL_VENOUS_BLOOD, CoreConstants.Observer.PLASMA_PERIPHERAL_VENOUS_BLOOD, _drugName, CoreConstants.Output.Concentration);
       }
    }
 
@@ -261,7 +261,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_set_a_value_for_the_compartment()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.GALLBLADDER, string.Empty, _drugName, CoreConstants.Observer.FRACTION_EXCRETED_TO_BILE);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.GALLBLADDER, string.Empty, _drugName, CoreConstants.Observer.FRACTION_EXCRETED_TO_BILE);
       }
    }
 
@@ -278,7 +278,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_display_name_of_the_observer_as_compartment_name()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.GALLBLADDER, CoreConstants.Observer.PLASMA_UNBOUND, _drugName, CoreConstants.Output.Concentration);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.GALLBLADDER, CoreConstants.Observer.PLASMA_UNBOUND, _drugName, CoreConstants.Output.Concentration);
       }
    }
 
@@ -295,7 +295,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_display_name_of_dimension()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.LUMEN, string.Empty, _drugName, CoreConstants.Output.Concentration);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.LUMEN, string.Empty, _drugName, CoreConstants.Output.Concentration);
       }
    }
 
@@ -312,7 +312,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_display_name_of_the_observer()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, CoreConstants.Organ.LUMEN, string.Empty, _drugName, CoreConstants.Observer.PLASMA_UNBOUND);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, CoreConstants.Organ.LUMEN, string.Empty, _drugName, CoreConstants.Observer.PLASMA_UNBOUND);
       }
    }
 
@@ -328,7 +328,7 @@ namespace PKSim.Core
       [Observation]
       public void should_use_the_parent_of_the_first_ancestor_as_container()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.NEIGHBORHOODS, CoreConstants.Organ.LIVER, string.Empty, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, NEIGHBORHOODS, CoreConstants.Organ.LIVER, string.Empty, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Organs);
       }
    }
@@ -345,7 +345,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_category_to_mucosa()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, Constants.Compartment.DUODENUM, string.Empty, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, Constants.Compartment.DUODENUM, string.Empty, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Mucosa);
       }
    }
@@ -362,7 +362,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_category_to_mucosa()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.ORGANISM, Constants.Compartment.DUODENUM, CoreConstants.Compartment.INTERSTITIAL, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, ORGANISM, Constants.Compartment.DUODENUM, CoreConstants.Compartment.INTERSTITIAL, string.Empty, _entity.Name);
          _pathElements.Category.ShouldBeEqualTo(PKSimConstants.ObjectTypes.Mucosa);
       }
    }
@@ -379,7 +379,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_container_to_the_name_of_the_parent_event_group()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.EVENTS, _eventGroup.Name, string.Empty, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, EVENTS, _eventGroup.Name, string.Empty, string.Empty, _entity.Name);
       }
    }
 
@@ -395,7 +395,7 @@ namespace PKSim.Core
       [Observation]
       public void should_set_the_container_to_the_name_of_the_parent_application()
       {
-         ShouldReturnPathElementValues(string.Empty, Constants.EVENTS, _application1.Name, string.Empty, string.Empty, _entity.Name);
+         ShouldReturnPathElementValues(string.Empty, EVENTS, _application1.Name, string.Empty, string.Empty, _entity.Name);
       }
    }
 }
