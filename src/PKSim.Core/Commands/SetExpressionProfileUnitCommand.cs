@@ -1,27 +1,20 @@
-using OSPSuite.Core.Commands.Core;
+﻿using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class SetExpressionProfileValueCommand : SetParameterValueCommand
+   public class SetExpressionProfileUnitCommand : SetParameterUnitCommand
    {
       private readonly bool _updateSimulationSubjects;
 
-      public SetExpressionProfileValueCommand(IParameter parameter, double valueToSet, bool updateSimulationSubjects = true)
-         : base(parameter, valueToSet)
+      public SetExpressionProfileUnitCommand(IParameter parameter, Unit newDisplayUnit, bool updateSimulationSubjects = true) : base(parameter, newDisplayUnit)
       {
          _updateSimulationSubjects = updateSimulationSubjects;
          ObjectType = PKSimConstants.ObjectTypes.Molecule;
-      }
-
-      protected override void UpdateParameter(IParameter parameter, IExecutionContext context)
-      {
-         base.UpdateParameter(parameter, context);
-         if (parameter == null) return;
-         parameter.IsDefault = (parameter.Value == 0);
       }
 
       protected override void UpdateDependenciesOnParameter(IParameter parameter, IExecutionContext context)
@@ -38,7 +31,7 @@ namespace PKSim.Core.Commands
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new SetExpressionProfileValueCommand(_parameter, _oldValue, _updateSimulationSubjects).AsInverseFor(this);
+         return new SetExpressionProfileUnitCommand(_parameter, _oldDisplayUnit, _updateSimulationSubjects).AsInverseFor(this);
       }
    }
 }

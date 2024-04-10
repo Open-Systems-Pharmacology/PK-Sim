@@ -4,15 +4,15 @@ image: Visual Studio 2019
 version: '{build}'
 
 init:
-- ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
+- ps: Update-AppveyorBuild -Version "$($env:ospsuite_nightly_version).$($env:appveyor_build_version)"
 
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '$(ospsuite_version).$(build_number)'
-  assembly_version: '$(ospsuite_version).$(build_number)'
-  file_version: '$(ospsuite_version).$(build_number)'
-  informational_version: '$(ospsuite_version).$(build_number)'
+  version: '$(ospsuite_nightly_version).$(build_number)'
+  assembly_version: '$(ospsuite_nightly_version).$(build_number)'
+  file_version: '$(ospsuite_nightly_version).$(build_number)'
+  informational_version: '$(ospsuite_nightly_version).$(build_number)'
 
 
 clone_depth: 1

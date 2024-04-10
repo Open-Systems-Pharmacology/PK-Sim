@@ -40,6 +40,8 @@ namespace PKSim.Presentation
       protected IDefaultIndividualRetriever _defaultIndividualRetriever;
       protected Individual _defaultIndividual;
       protected IDiseaseStateRepository _diseaseStateRepository;
+      private ICloner _cloner;
+      private Individual _clonedIndividual;
 
       protected override void Context()
       {
@@ -53,10 +55,11 @@ namespace PKSim.Presentation
          _editValueOriginPresenter = A.Fake<IEditValueOriginPresenter>();
          _defaultIndividualRetriever = A.Fake<IDefaultIndividualRetriever>();
          _diseaseStateRepository = A.Fake<IDiseaseStateRepository>();
-
+         _cloner= A.Fake<ICloner>();
          _individualSettingsDTO = new IndividualSettingsDTO();
          _individualPropertiesDTO = new ObjectBaseDTO();
-
+         _defaultIndividual = new Individual();
+         _clonedIndividual = new Individual();  
          _speciesPopulation = A.Fake<SpeciesPopulation>();
          _species = A.Fake<Species>();
          _gender = A.Fake<Gender>();
@@ -69,10 +72,12 @@ namespace PKSim.Presentation
          _individualSettingsDTO.Gender = _gender;
 
          A.CallTo(() => _defaultIndividualRetriever.DefaultIndividual()).Returns(_defaultIndividual);
-         A.CallTo(() => _individualSettingsDTOMapper.MapFrom(_defaultIndividual)).Returns(_individualSettingsDTO);
+         A.CallTo(() => _cloner.Clone(_defaultIndividual)).Returns(_clonedIndividual);
+         A.CallTo(() => _individualSettingsDTOMapper.MapFrom(_clonedIndividual)).Returns(_individualSettingsDTO);
          A.CallTo(() => _calculationMethodRepository.All()).Returns(new[] {_cmCat1, _cmCat2});
          _individualSettingsDTO.SubPopulation = _subPopulation;
          _parentPresenter = A.Fake<IIndividualPresenter>();
+
          sut = new IndividualSettingsPresenter(
             _view,
             _speciesRepository,
@@ -82,7 +87,8 @@ namespace PKSim.Presentation
             _individualSettingsDTOMapper,
             _individualMapper,
             _editValueOriginPresenter,
-            _diseaseStateRepository);
+            _diseaseStateRepository,
+            _cloner);
          sut.InitializeWith(_parentPresenter);
       }
    }

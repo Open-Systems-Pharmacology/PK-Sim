@@ -42,8 +42,10 @@ namespace PKSim.Core.Services
       ///    Returns false if a simple parameter value update cannot be performed (i.e. structural change was made)
       /// </summary>
       /// <param name="templateBuildingBlock">Template building block as defined in repository</param>
-      /// <param name="usedBuildingBlock">Used building block (the one based on the template building block at a given time)</param>
-      /// <returns></returns>
+      /// <param name="usedBuildingBlock">
+      ///    Used building block (the one based on the template building block at a given time). It
+      ///    it assumed that the object is loaded (e.g. reference to building block can be used
+      /// </param>
       bool QuickUpdatePossibleFor(IPKSimBuildingBlock templateBuildingBlock, UsedBuildingBlock usedBuildingBlock);
 
       /// <summary>
@@ -61,7 +63,7 @@ namespace PKSim.Core.Services
       bool BuildingBlockSupportsQuickUpdate(IPKSimBuildingBlock templateBuildingBlock);
 
       /// <summary>
-      /// Returns whether a building block comparison is available for the building block
+      ///    Returns whether a building block comparison is available for the building block
       /// </summary>
       bool BuildingBlockSupportComparison(IPKSimBuildingBlock templateBuildingBlock);
    }
@@ -140,7 +142,28 @@ namespace PKSim.Core.Services
          if (!BuildingBlockSupportsQuickUpdate(templateBuildingBlock))
             return false;
 
-         return templateBuildingBlock.StructureVersion == usedBuildingBlock.StructureVersion;
+         //not the same structure, easy return
+         var sameStructureVersion = templateBuildingBlock.StructureVersion == usedBuildingBlock.StructureVersion;
+         if (!sameStructureVersion)
+            return false;
+
+         //For individual, there is a special handling required as we need to also check that the used expression profile have the same structure version
+         if (templateBuildingBlock is not Individual individualTemplate)
+            return true;
+
+         //It has to be available by construction
+         var usedIndividual = usedBuildingBlock.BuildingBlock as Individual;
+         //but we return false just in case :)
+         if (usedIndividual == null)
+            return false;
+
+         //let's compare the expression profile in each individuals and see if they are comparable
+         return individualTemplate.AllExpressionProfiles().All(x =>
+         {
+            //assume we can find it by name. Otherwise => structural change
+            var usedExpressionProfile = usedIndividual.AllExpressionProfiles().FindByName(x.Name);
+            return usedExpressionProfile != null && x.StructureVersion == usedExpressionProfile.StructureVersion;
+         });
       }
 
       public void UpdateProtocolsInSimulation(Simulation simulation)
@@ -151,7 +174,7 @@ namespace PKSim.Core.Services
          UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, protocolProperties.Select(x => x.Protocol), PKSimBuildingBlockType.Protocol);
 
          var allSimulationProtocols = simulation.AllBuildingBlocks<Protocol>().ToList();
-         //update selected protocol with references in simulation instead of templats
+         //update selected protocol with references in simulation instead of templates
          protocolProperties.Each(x => x.Protocol = allSimulationProtocols.FindByName(x.Protocol.Name));
       }
 
