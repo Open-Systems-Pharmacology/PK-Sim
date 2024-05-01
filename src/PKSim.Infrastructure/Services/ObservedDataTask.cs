@@ -44,9 +44,10 @@ namespace PKSim.Infrastructure.Services
          IParameterChangeUpdater parameterChangeUpdater,
          IPKMLPersistor pkmlPersistor,
          IObjectTypeResolver objectTypeResolver,
-         IOutputMappingMatchingTask OutputMappingMatchingTask)
+         IOutputMappingMatchingTask OutputMappingMatchingTask,
+         IConfirmationManager confirmationManager)
          : base(dialogCreator, executionContext, dataRepositoryTask, containerTask,
-         objectTypeResolver)
+         objectTypeResolver, confirmationManager)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
