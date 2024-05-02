@@ -311,7 +311,7 @@ namespace PKSim.Infrastructure
          await base.Context();
 
          _simulation = new IndividualSimulation();
-         _usedObservedData = new UsedObservedData {Id = "dataRepositoryId", Simulation = _simulation};
+         _usedObservedData = new UsedObservedData { Id = "dataRepositoryId", Simulation = _simulation };
          _dataRepository = new DataRepository(_usedObservedData.Id);
          _simulation.AddUsedObservedData(_usedObservedData);
          _parameterIdentification = new ParameterIdentification();
@@ -321,12 +321,13 @@ namespace PKSim.Infrastructure
          var outputMapping = A.Fake<OutputMapping>();
          A.CallTo(() => outputMapping.UsesObservedData(_dataRepository)).Returns(true);
          A.CallTo(() => outputMapping.UsesSimulation(_simulation)).Returns(false);
+         A.CallTo(() => _dialogCreator.MessageBoxConfirm(A<string>._, A<Action>._, A<ViewResult>._)).Returns(ViewResult.Yes);
          _parameterIdentification.AddOutputMapping(outputMapping);
       }
 
       protected override Task Because()
       {
-         sut.RemoveUsedObservedDataFromSimulation(new[] {_usedObservedData});
+         sut.RemoveUsedObservedDataFromSimulation(new[] { _usedObservedData });
          return _completed;
       }
 
@@ -378,7 +379,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_ask_the_user_to_confirm_the_removal()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxConfirm(Captions.ReallyRemoveObservedDataFromSimulation, A<Action>.Ignored, ViewResult.Yes)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxConfirm(Captions.ReallyRemoveObservedDataFromSimulation, A<Action>._, ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]
