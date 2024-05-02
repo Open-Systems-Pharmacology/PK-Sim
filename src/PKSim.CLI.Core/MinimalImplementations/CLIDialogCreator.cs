@@ -83,9 +83,9 @@ namespace PKSim.CLI.Core.MinimalImplementations
          throw new NotSupportedException();
       }
 
-        public ViewResult MessageBoxConfirm(string message, Action doNotShowAgain, ViewResult defaultButton = ViewResult.Yes)
-        {
-            throw new NotImplementedException();
-        }
-    }
+      public ViewResult MessageBoxConfirm(string message, Action doNotShowAgain, ViewResult defaultButton = ViewResult.Yes)
+      {
+         throw new NotSupportedException();
+      }
+   }
 }
