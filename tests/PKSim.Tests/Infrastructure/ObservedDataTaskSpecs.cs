@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -377,7 +378,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_ask_the_user_to_confirm_the_removal()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(Captions.ReallyRemoveObservedDataFromSimulation, ViewResult.Yes)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxConfirm(Captions.ReallyRemoveObservedDataFromSimulation, A<Action>.Ignored, ViewResult.Yes)).MustHaveHappened();
       }
 
       [Observation]
