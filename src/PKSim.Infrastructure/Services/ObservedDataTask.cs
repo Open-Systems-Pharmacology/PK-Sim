@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Assets;
@@ -31,7 +32,7 @@ namespace PKSim.Infrastructure.Services
       private readonly ITemplateTask _templateTask;
       private readonly IParameterChangeUpdater _parameterChangeUpdater;
       private readonly IPKMLPersistor _pkmlPersistor;
-      private readonly IOutputMappingMatchingTask _OutputMappingMatchingTask;
+      private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       public ObservedDataTask(
          IPKSimProjectRetriever projectRetriever,
@@ -44,9 +45,10 @@ namespace PKSim.Infrastructure.Services
          IParameterChangeUpdater parameterChangeUpdater,
          IPKMLPersistor pkmlPersistor,
          IObjectTypeResolver objectTypeResolver,
-         IOutputMappingMatchingTask OutputMappingMatchingTask)
+         IOutputMappingMatchingTask outputMappingMatchingTask,
+         IConfirmationManager confirmationManager)
          : base(dialogCreator, executionContext, dataRepositoryTask, containerTask,
-         objectTypeResolver)
+         objectTypeResolver, confirmationManager)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;
@@ -54,7 +56,7 @@ namespace PKSim.Infrastructure.Services
          _templateTask = templateTask;
          _parameterChangeUpdater = parameterChangeUpdater;
          _pkmlPersistor = pkmlPersistor;
-         _OutputMappingMatchingTask = OutputMappingMatchingTask;
+         _outputMappingMatchingTask = outputMappingMatchingTask;
       }
 
       public override void Rename(DataRepository observedData)
@@ -112,7 +114,7 @@ namespace PKSim.Infrastructure.Services
             return;
 
          observedDataToAdd.Each(simulation.AddUsedObservedData);
-         observedDataList.Each(observedData => _OutputMappingMatchingTask.AddMatchingOutputMapping(observedData, simulation));
+         observedDataList.Each(observedData => _outputMappingMatchingTask.AddMatchingOutputMapping(observedData, simulation));
 
          _executionContext.PublishEvent(new ObservedDataAddedToAnalysableEvent(simulation, observedDataToAdd, showData));
          _executionContext.PublishEvent(new SimulationStatusChangedEvent(simulation));
