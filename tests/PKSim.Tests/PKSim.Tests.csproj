@@ -21,7 +21,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.289" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.290" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.56" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
