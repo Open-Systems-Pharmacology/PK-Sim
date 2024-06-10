@@ -29,6 +29,7 @@ namespace PKSim.UI.Views.Simulations
          _pkAnalysisToolTipManager = pkAnalysisToolTipManager;
          InitializeComponent();
          pivotGrid.ToolTipController = new ToolTipController();
+         pivotGrid.ToolTipController.Initialize();
          pivotGrid.ExceptionManager = exceptionManager;
 
          var compoundName = new PivotGridField(PKSimConstants.PKAnalysis.Compound, PivotArea.ColumnArea);

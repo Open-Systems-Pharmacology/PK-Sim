@@ -12,6 +12,7 @@ using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.ProteinExpression;
@@ -37,6 +38,7 @@ namespace PKSim.UI.Views.ProteinExpression
          InitializeComponent();
 
          grdTransfer.ToolTipController = new ToolTipController();
+         grdTransfer.ToolTipController.Initialize();
          grdTransfer.ToolTipController.GetActiveObjectInfo += OnGetActiveObjectInfo;
 
          radioGroup.SelectedIndexChanged += OnRadioGroupSelectedIndexChanged;
