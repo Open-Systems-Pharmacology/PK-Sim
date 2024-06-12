@@ -47,6 +47,7 @@ before_build:
 
 after_build:
   - 7z a package.zip C:\projects\PK-Sim\src\ConsoleApp\bin\Debug\*.*
+  - ps: Write-Output $env:APPVEYOR_BUILD_FOLDER
 
 build:
   verbosity: minimal
