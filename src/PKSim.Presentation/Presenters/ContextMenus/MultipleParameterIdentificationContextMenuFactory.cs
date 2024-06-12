@@ -34,7 +34,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IContextMenu CreateFor(IReadOnlyList<ClassifiableParameterIdentification> parameterIdentifications, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
       {
-         var paramIdentificationList = parameterIdentifications.Select(pi => pi.ParameterIdentification).ToList().AsReadOnly();
+         var paramIdentificationList = parameterIdentifications.Select(pi => pi.ParameterIdentification).ToList();
          return new MultipleParameterIdentificationContextMenu(paramIdentificationList, _executionContext, _container);
       }
 
