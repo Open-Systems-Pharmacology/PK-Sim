@@ -44,10 +44,17 @@ before_build:
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
   - nuget restore
 
+
+after_build:
+  - 7z a package.zip C:\projects\pk-sim\src\PKSim.UI\bin\Debug\*.*
+
 build:
   verbosity: minimal
   project: PKSim.sln
 
+on_finish:
+  - ps: Get-ChildItem package.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  
 test:
   categories:
     except:
