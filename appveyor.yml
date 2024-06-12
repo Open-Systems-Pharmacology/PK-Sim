@@ -47,7 +47,7 @@ before_build:
 
 after_build:
   - ls
-  # - 7z a package.zip %APPVEYOR_BUILD_FOLDER%\ConsoleApp\bin\Debug\*.*
+  - 7z a package.zip src\ConsoleApp\bin\Debug\*.*
 
 build:
   verbosity: minimal
