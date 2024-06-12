@@ -16,11 +16,9 @@ using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Exceptions;
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using ObservedDataTask = PKSim.Infrastructure.Services.ObservedDataTask;
@@ -32,7 +30,6 @@ namespace PKSim.Infrastructure
       protected IExecutionContext _executionContext;
       protected IDialogCreator _dialogCreator;
       protected IApplicationController _applicationController;
-      protected IObservedDataInSimulationManager _observedDataInSimulationManager;
       private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       protected ITemplateTask _templateTask;
@@ -40,10 +37,9 @@ namespace PKSim.Infrastructure
       private IPKSimProjectRetriever _projectRetriever;
       private IObjectTypeResolver _objectTypeResolver;
       private IParameterChangeUpdater _parameterChangeUpdater;
-      private IConfirmationManager _confirmationManager;
-      protected ISnapshotTask _snapshotTask;
       protected IPKMLPersistor _pkmlPersistor;
-      protected IOutputMappingMatchingTask _OutputMappingMatchingTask;
+      protected IOutputMappingMatchingTask _outputMappingMatchingTask;
+      protected IConfirmationManager _confirmationManager;
 
       protected override Task Context()
       {
@@ -56,15 +52,17 @@ namespace PKSim.Infrastructure
          _templateTask = A.Fake<ITemplateTask>();
          _parameterChangeUpdater = A.Fake<IParameterChangeUpdater>();
          _pkmlPersistor= A.Fake<IPKMLPersistor>();
-         _OutputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
+         _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
          _confirmationManager = A.Fake<IConfirmationManager>();
          _project = new PKSimProject();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          A.CallTo(() => _executionContext.Project).Returns(_project);
+         A.CallTo(() => _confirmationManager.IsConfirmationSuppressed(A<ConfirmationFlags>._)).Returns(false);
+
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          sut = new ObservedDataTask(_projectRetriever, _executionContext, _dialogCreator, _applicationController,
-            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver, _OutputMappingMatchingTask, _confirmationManager);
+            _dataRepositoryTask, _templateTask, _containerTask, _parameterChangeUpdater, _pkmlPersistor, _objectTypeResolver, _outputMappingMatchingTask, _confirmationManager);
 
          return _completed;
       }
@@ -311,7 +309,7 @@ namespace PKSim.Infrastructure
          await base.Context();
 
          _simulation = new IndividualSimulation();
-         _usedObservedData = new UsedObservedData { Id = "dataRepositoryId", Simulation = _simulation };
+         _usedObservedData = new UsedObservedData {Id = "dataRepositoryId", Simulation = _simulation};
          _dataRepository = new DataRepository(_usedObservedData.Id);
          _simulation.AddUsedObservedData(_usedObservedData);
          _parameterIdentification = new ParameterIdentification();
@@ -321,13 +319,13 @@ namespace PKSim.Infrastructure
          var outputMapping = A.Fake<OutputMapping>();
          A.CallTo(() => outputMapping.UsesObservedData(_dataRepository)).Returns(true);
          A.CallTo(() => outputMapping.UsesSimulation(_simulation)).Returns(false);
-         A.CallTo(() => _dialogCreator.MessageBoxConfirm(A<string>._, A<Action>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+         A.CallTo(() => _confirmationManager.IsConfirmationSuppressed(ConfirmationFlags.ObservedDataEntryRemoved)).Returns(true);
          _parameterIdentification.AddOutputMapping(outputMapping);
       }
 
       protected override Task Because()
       {
-         sut.RemoveUsedObservedDataFromSimulation(new[] { _usedObservedData });
+         sut.RemoveUsedObservedDataFromSimulation(new[] {_usedObservedData});
          return _completed;
       }
 

@@ -18,6 +18,11 @@ namespace PKSim.CLI.Core.MinimalImplementations
          _logger.AddError(message);
       }
 
+      public ViewResult MessageBoxConfirm(string message, Action doNotShowAgain, ViewResult defaultButton = ViewResult.Yes)
+      {
+         throw new NotSupportedException();
+      }
+
       public ViewResult MessageBoxYesNo(string message, string yes, string no, ViewResult defaultButton)
       {
          throw new NotSupportedException();
