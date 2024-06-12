@@ -46,8 +46,8 @@ before_build:
 
 
 after_build:
-  - ls
-  - 7z a package.zip src\ConsoleApp\bin\Debug\*.*
+  - cd src\ConsoleApp\bin\Debug
+  - 7z a package.zip *
 
 build:
   verbosity: minimal
