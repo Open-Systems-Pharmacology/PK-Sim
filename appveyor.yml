@@ -46,7 +46,7 @@ before_build:
 
 
 after_build:
-  - 7z a package.zip %APPVEYOR_BUILD_FOLDER%\PK-Sim\src\ConsoleApp\bin\Debug\*.*
+  - 7z a package.zip %APPVEYOR_BUILD_FOLDER%\ConsoleApp\bin\Debug\*.*
 
 build:
   verbosity: minimal
