@@ -46,7 +46,7 @@ before_build:
 
 
 after_build:
-  - cd src\ConsoleApp\bin\Debug
+  - cd src\ConsoleApp\bin\%CONFIGURATION%
   - 7z a package.zip *
 
 build:
