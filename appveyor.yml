@@ -46,7 +46,7 @@ before_build:
 
 
 after_build:
-  - cd src\ConsoleApp\bin\%CONFIGURATION%
+  - cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%
   - 7z a pk-sim-r-dependencies.zip @filelist.txt
 
 build:
