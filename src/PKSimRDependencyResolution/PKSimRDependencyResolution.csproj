@@ -203,5 +203,10 @@
       <Name>PKSim.R</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="filelist.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
