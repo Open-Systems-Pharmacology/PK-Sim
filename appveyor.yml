@@ -47,14 +47,14 @@ before_build:
 
 after_build:
   - cd src\ConsoleApp\bin\%CONFIGURATION%
-  - 7z a package.zip *
+  - 7z a pk-sim-r-dependencies.zip @filelist.txt
 
 build:
   verbosity: minimal
   project: PKSim.sln
 
 on_finish:
-  - ps: Get-ChildItem package.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: Get-ChildItem pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
   
 test:
   categories:

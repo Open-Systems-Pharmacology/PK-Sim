@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 		db_pre_commit.bat = db_pre_commit.bat
 		postclean.bat = postclean.bat
+		filelist.txt = filelist.txt
 		rakefile.rb = rakefile.rb
 		README.md = README.md
 		setup\setup.wxs = setup\setup.wxs
@@ -58,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R.Tests", "tests\PKSi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.UI.Starter", "src\PKSim.UI.Starter\PKSim.UI.Starter.csproj", "{35E511E9-0130-4E28-9DB3-EDCCB098D383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKDependencyApp", "src\ConsoleApp\PKDependencyApp.csproj", "{9ED5BBB7-3299-43DD-8068-CE47153F4CF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKSimRDependencyResolution", "src\PKSimRDependencyResolution\PKSimRDependencyResolution.csproj", "{9ED5BBB7-3299-43DD-8068-CE47153F4CF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
