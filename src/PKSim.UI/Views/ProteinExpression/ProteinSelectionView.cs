@@ -61,6 +61,7 @@ namespace PKSim.UI.Views.ProteinExpression
 
          grdSelection.DoubleClick += (s, e) => doProteinSelection();
          grdSelection.ToolTipController = new ToolTipController();
+         grdSelection.ToolTipController.Initialize();
          grdSelection.ToolTipController.GetActiveObjectInfo += onGetActiveObjectInfo;
          var view = grdSelection.FocusedView as ColumnView;
          if (view != null) view.FocusedRowChanged += onFocusedRowChanged;
