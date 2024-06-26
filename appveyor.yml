@@ -44,8 +44,8 @@ before_build:
   - nuget sources add -name cvodes -source https://ci.appveyor.com/nuget/ospsuite-simmodel-solver-cvodes
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
   - nuget restore
-
-
+  - dotnet list package --include-transitive
+  
 after_build:
   - cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%
   - 7z a pk-sim-r-dependencies.zip @filelist.txt
