@@ -51,7 +51,7 @@ after_build:
   - 7z a pk-sim-r-dependencies.zip @filelist.txt
 
 build:
-  verbosity: minimal
+  verbosity: detailed
   project: PKSim.sln
 
 on_finish:
