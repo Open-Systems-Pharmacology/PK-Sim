@@ -12,7 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 		db_pre_commit.bat = db_pre_commit.bat
 		postclean.bat = postclean.bat
-		filelist.txt = filelist.txt
 		rakefile.rb = rakefile.rb
 		README.md = README.md
 		setup\setup.wxs = setup\setup.wxs
