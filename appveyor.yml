@@ -32,7 +32,6 @@ skip_commits:
     - "**/*.md"
 
 before_build:
-  - nuget locals all -clear
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper
   - nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility
   - nuget sources add -name serializer -source https://ci.appveyor.com/nuget/ospsuite-serializer
