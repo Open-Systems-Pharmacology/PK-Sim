@@ -44,9 +44,6 @@ before_build:
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
   - nuget restore
 
-build_script:
-  - cmd: dotnet build PKSim.sln -v diag
-
 after_build:
   - cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%
   - 7z a pk-sim-r-dependencies.zip @filelist.txt
