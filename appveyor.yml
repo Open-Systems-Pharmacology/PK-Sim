@@ -1,8 +1,10 @@
 configuration: Debug
 image: Visual Studio 2022
-TARGET_FRAMEWORK: net472
 
 version: '{build}'
+
+environment:
+  TARGET_FRAMEWORK: net472
 
 init:
 - ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
