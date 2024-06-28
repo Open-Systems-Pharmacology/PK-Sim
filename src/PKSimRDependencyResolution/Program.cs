@@ -10,7 +10,7 @@ namespace ConsoleApp
    {
       static void Main(string[] args)
       {
-         Console.WriteLine("This console application includes all the dependencies needed for the PK-SIM project");
+         Console.WriteLine("This console application includes all the dependencies needed for PK-SIM");
       }
    }
 }

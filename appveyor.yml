@@ -49,7 +49,7 @@ before_build:
 
 after_build:
   - cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%
-  - 7z a pk-sim-r-dependencies.zip -x@filelist.txt *
+  - 7z a pk-sim-r-dependencies.zip -x@excludedFiles.txt *
 
 build:
   verbosity: minimal
