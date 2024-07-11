@@ -48,10 +48,11 @@ before_build:
   - nuget restore
 
 after_build:
-  - pushd .
-  - cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%
-  - 7z a pk-sim-r-dependencies.zip -x@excludedFiles.txt *
-  - popd
+  - cmd: >
+      pushd . &&
+      cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% &&
+      "C:\Program Files\7-Zip\7z.exe" a pk-sim-r-dependencies.zip -x@excludedFiles.txt * &&
+      popd
 
 build:
   verbosity: minimal
@@ -59,8 +60,10 @@ build:
 
 on_finish:
   - ps: |
-      $artifactPath = "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
+      $artifactPath = Join-Path $env:APPVEYOR_BUILD_FOLDER "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
+      Write-Host "Checking for artifact at: $artifactPath"
       if (Test-Path $artifactPath) {
+        Write-Host "Artifact found. Pushing to AppVeyor."
         Push-AppveyorArtifact -Path $artifactPath
       } else {
         Write-Error "Artifact path not found: $artifactPath"
