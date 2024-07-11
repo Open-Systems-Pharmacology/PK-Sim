@@ -48,7 +48,7 @@ before_build:
   - nuget restore
 
 after_build:
-    - 7z a pk-sim-r-dependencies.zip src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% -x@src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\excludedFiles.txt *
+  - 7z a pk-sim-r-dependencies.zip -x@src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\excludedFiles.txt src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\*
 
 build:
   verbosity: minimal
