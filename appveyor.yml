@@ -48,7 +48,24 @@ before_build:
   - nuget restore
 
 after_build:
-  - 7z a pk-sim-r-dependencies.zip -x@src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\excludedFiles.txt src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\*
+    - ps: >-
+        $baseDir = "src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%"
+        $tempDir = [System.IO.Path]::Combine($env:TEMP, "pk-sim-r-dependencies")
+
+        Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
+        New-Item -ItemType Directory -Path $tempDir | Out-Null
+
+        Get-ChildItem -Path $baseDir -Recurse -File | ForEach-Object {
+        if (-not (Select-String -Path $baseDir\excludedFiles.txt -Pattern $_.FullName -Quiet)) {
+            Copy-Item -Path $_.FullName -Destination $tempDir
+        }
+        }
+
+        Push-Location -Path $tempDir
+        & "C:\Program Files\7-Zip\7z.exe" a "$baseDir\pk-sim-r-dependencies.zip" *
+        Pop-Location
+
+        Remove-Item -Recurse -Force $tempDir
 
 build:
   verbosity: minimal
