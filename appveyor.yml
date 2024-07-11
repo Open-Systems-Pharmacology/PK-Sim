@@ -48,24 +48,24 @@ before_build:
   - nuget restore
 
 after_build:
-    - ps: >-
-        $baseDir = "src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%"
-        $tempDir = [System.IO.Path]::Combine($env:TEMP, "pk-sim-r-dependencies")
+  - ps: >-
+      $baseDir = "src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%"
+      $tempDir = [System.IO.Path]::Combine($env:TEMP, "pk-sim-r-dependencies")
 
-        Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
-        New-Item -ItemType Directory -Path $tempDir | Out-Null
+      Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
+      New-Item -ItemType Directory -Path $tempDir | Out-Null
 
-        Get-ChildItem -Path $baseDir -Recurse -File | ForEach-Object {
-        if (-not (Select-String -Path $baseDir\excludedFiles.txt -Pattern $_.FullName -Quiet)) {
-            Copy-Item -Path $_.FullName -Destination $tempDir
+      Get-ChildItem -Path $baseDir -Recurse -File | ForEach-Object {
+        if (-not (Select-String -Path "$baseDir\excludedFiles.txt" -Pattern $_.FullName -Quiet)) {
+          Copy-Item -Path $_.FullName -Destination $tempDir
         }
-        }
+      }
 
-        Push-Location -Path $tempDir
-        & "C:\Program Files\7-Zip\7z.exe" a "$baseDir\pk-sim-r-dependencies.zip" *
-        Pop-Location
+      Push-Location -Path $tempDir
+      & "C:\Program Files\7-Zip\7z.exe" a "$baseDir\pk-sim-r-dependencies.zip" *
+      Pop-Location
 
-        Remove-Item -Recurse -Force $tempDir
+      Remove-Item -Recurse -Force $tempDir
 
 build:
   verbosity: minimal
@@ -73,7 +73,7 @@ build:
 
 on_finish:
   - ps: Get-ChildItem pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-  
+
 test:
   categories:
     except:
@@ -81,7 +81,7 @@ test:
       - ProjectConverter
       - NightlyOnly
 
-install: 
+install:
   - ps: >-
       (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
 
