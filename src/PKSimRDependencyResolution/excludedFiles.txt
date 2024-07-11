@@ -5,7 +5,7 @@ ConsoleApp.exe
 ConsoleApp.exe.config
 ConsoleApp.pdb
 DevExpress.Data.v21.2.xml
-filelist.txt
+excludedFiles.txt
 ICSharpCode.SharpZipLib.pdb
 ICSharpCode.SharpZipLib.xml
 LumenWorks.Framework.IO.pdb
