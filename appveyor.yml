@@ -48,41 +48,17 @@ before_build:
   - nuget restore
 
 after_build:
-  - ps: |
-      $baseDir = "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK"
-      $zipFilePath = "$baseDir\pk-sim-r-dependencies.zip"
-      $tempDir = [System.IO.Path]::Combine($env:TEMP, "pk-sim-r-dependencies")
-      
-      $exclusions = Get-Content "$baseDir\excludedFiles.txt" | ForEach-Object { [regex]::Escape($_) }
-
-      Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
-      New-Item -ItemType Directory -Path $tempDir | Out-Null
-
-      Get-ChildItem -Path $baseDir -Recurse -File | ForEach-Object {
-        $exclude = $false
-        foreach ($pattern in $exclusions) {
-          if ($_.FullName -match $pattern) {
-            $exclude = $true
-            break
-          }
-        }
-        if (-not $exclude) {
-          Copy-Item -Path $_.FullName -Destination $tempDir
-        }
-      }
-
-      Push-Location -Path $tempDir
-      & "C:\Program Files\7-Zip\7z.exe" a $zipFilePath *
-      Pop-Location
-
-      Remove-Item -Recurse -Force $tempDir
+  - pushd .
+  - cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%
+  - 7z a pk-sim-r-dependencies.zip -x@excludedFiles.txt *
+  - popd
 
 build:
   verbosity: minimal
   project: PKSim.sln
 
 on_finish:
-  - ps: Push-AppveyorArtifact -Path "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
+  - ps: Get-ChildItem src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
 test:
   categories:
@@ -91,7 +67,7 @@ test:
       - ProjectConverter
       - NightlyOnly
 
-install:
+install: 
   - ps: >-
       (new-object net.webclient).DownloadFile('https://download.microsoft.com/download/A/2/D/A2D8587D-0027-4217-9DAD-38AFDB0A177E/msxml.msi', 'C:\\msxml.msi')
 
