@@ -57,7 +57,7 @@ after_build:
   - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%]"
   - 7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
   - rake "create_portable_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, pk-sim-portable-setup.zip]"
-  - 7z a pk-sim-r-dependencies.zip src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% -x@excludedFiles.txt *
+  - 7z a pk-sim-r-dependencies.zip src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% -x@src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\excludedFiles.txt *
 
 build:
   verbosity: minimal
