@@ -3,9 +3,6 @@ image: Visual Studio 2022
 
 version: '{build}'
 
-environment:
-  TARGET_FRAMEWORK: net472
-
 init:
 - ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
 
@@ -47,16 +44,10 @@ before_build:
   - nuget sources add -name core -source https://ci.appveyor.com/nuget/ospsuite-core
   - nuget restore
 
-after_build:
-  - 7z a pk-sim-r-dependencies.zip -x@src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\excludedFiles.txt src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\*
-
 build:
   verbosity: minimal
   project: PKSim.sln
 
-on_finish:
-  - ps: Get-ChildItem pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-  
 test:
   categories:
     except:
