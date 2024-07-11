@@ -3,6 +3,9 @@ image: Visual Studio 2022
 
 version: '{build}'
 
+environment:
+  TARGET_FRAMEWORK: net472
+
 init:
 - ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
 - ps: |
@@ -54,6 +57,7 @@ after_build:
   - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%]"
   - 7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
   - rake "create_portable_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, pk-sim-portable-setup.zip]"
+  - 7z a pk-sim-r-dependencies.zip src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% -x@excludedFiles.txt *
 
 build:
   verbosity: minimal
@@ -63,6 +67,7 @@ build:
 on_finish:
   - ps: Get-ChildItem setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
   - ps: Get-ChildItem .\setup\*.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: Get-ChildItem pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
 test:
   assemblies:
