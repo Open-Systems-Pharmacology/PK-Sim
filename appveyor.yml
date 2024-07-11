@@ -50,6 +50,7 @@ before_build:
 after_build:
   - ps: |
       $baseDir = "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK"
+      $zipFilePath = "$baseDir\pk-sim-r-dependencies.zip"
       $tempDir = [System.IO.Path]::Combine($env:TEMP, "pk-sim-r-dependencies")
       
       $exclusions = Get-Content "$baseDir\excludedFiles.txt" | ForEach-Object { [regex]::Escape($_) }
@@ -71,7 +72,7 @@ after_build:
       }
 
       Push-Location -Path $tempDir
-      & "C:\Program Files\7-Zip\7z.exe" a "$baseDir\pk-sim-r-dependencies.zip" *
+      & "C:\Program Files\7-Zip\7z.exe" a $zipFilePath *
       Pop-Location
 
       Remove-Item -Recurse -Force $tempDir
@@ -81,7 +82,7 @@ build:
   project: PKSim.sln
 
 on_finish:
-  - ps: Get-ChildItem pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: Push-AppveyorArtifact -Path "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
 
 test:
   categories:
