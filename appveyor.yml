@@ -58,7 +58,7 @@ build:
   project: PKSim.sln
 
 on_finish:
-  - ps: Get-ChildItem src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: Push-AppveyorArtifact -Path "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
 
 test:
   categories:
