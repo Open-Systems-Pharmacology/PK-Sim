@@ -58,7 +58,13 @@ build:
   project: PKSim.sln
 
 on_finish:
-  - ps: Push-AppveyorArtifact -Path "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
+  - ps: |
+      $artifactPath = "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
+      if (Test-Path $artifactPath) {
+        Push-AppveyorArtifact -Path $artifactPath
+      } else {
+        Write-Error "Artifact path not found: $artifactPath"
+      }
 
 test:
   categories:
