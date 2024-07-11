@@ -48,8 +48,8 @@ before_build:
   - nuget restore
 
 after_build:
-  - ps: >-
-      $baseDir = "src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%"
+  - ps: |
+      $baseDir = "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK"
       $tempDir = [System.IO.Path]::Combine($env:TEMP, "pk-sim-r-dependencies")
 
       Remove-Item -Recurse -Force $tempDir -ErrorAction Ignore
