@@ -57,7 +57,11 @@ after_build:
   - rake "create_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%]"
   - 7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
   - rake "create_portable_setup[%APPVEYOR_BUILD_VERSION%, %CONFIGURATION%, pk-sim-portable-setup.zip]"
-  - 7z a pk-sim-r-dependencies.zip -x@src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\excludedFiles.txt src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK%\*
+  - cmd: >
+      pushd . &&
+      cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% &&
+      "C:\Program Files\7-Zip\7z.exe" a pk-sim-r-dependencies.zip -x@excludedFiles.txt * &&
+      popd
 
 build:
   verbosity: minimal
@@ -67,7 +71,15 @@ build:
 on_finish:
   - ps: Get-ChildItem setup.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
   - ps: Get-ChildItem .\setup\*.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-  - ps: Get-ChildItem pk-sim-r-dependencies.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+  - ps: |
+      $artifactPath = Join-Path $env:APPVEYOR_BUILD_FOLDER "src\PKSimRDependencyResolution\bin\$env:CONFIGURATION\$env:TARGET_FRAMEWORK\pk-sim-r-dependencies.zip"
+      Write-Host "Checking for artifact at: $artifactPath"
+      if (Test-Path $artifactPath) {
+        Write-Host "Artifact found. Pushing to AppVeyor."
+        Push-AppveyorArtifact -Path $artifactPath
+      } else {
+        Write-Error "Artifact path not found: $artifactPath"
+      }
 
 test:
   assemblies:
