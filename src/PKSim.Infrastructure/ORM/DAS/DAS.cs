@@ -95,14 +95,7 @@ namespace PKSim.Infrastructure.ORM.DAS
             }
             else
             {
-               try
-               {
-                  _providerFactory = DbProviderFactories.GetFactory(dataProvider);
-               }
-               catch (Exception)
-               {
-                  throw new UnknownDataProvider();
-               }
+               throw new NotSupportedException(dataProvider);
             }
 
             Connection = _providerFactory.CreateConnection();
@@ -459,7 +452,7 @@ namespace PKSim.Infrastructure.ORM.DAS
          //store actual parameters and their values to support refreshing later on
          foreach (DbParameter parameter in _parameters)
          {
-            var paramValue = new ParameterValue {ParameterName = parameter.ParameterName, Value = parameter.Value};
+            var paramValue = new ParameterValue { ParameterName = parameter.ParameterName, Value = parameter.Value };
 
             switch (parameter.Direction)
             {
@@ -637,7 +630,7 @@ namespace PKSim.Infrastructure.ORM.DAS
          if (IsConnected)
          {
             DbParameter param = _providerFactory.CreateParameter();
-            param.Direction = (ParameterDirection) paramType;
+            param.Direction = (ParameterDirection)paramType;
             param.ParameterName = paramName.StartsWith("@") ? paramName : string.Concat("@", paramName);
             switch (serverType)
             {
@@ -751,7 +744,7 @@ namespace PKSim.Infrastructure.ORM.DAS
          if (IsConnected)
          {
             DbParameter param = _providerFactory.CreateParameter();
-            param.Direction = (ParameterDirection) paramType;
+            param.Direction = (ParameterDirection)paramType;
             param.ParameterName = paramName.StartsWith("@") ? paramName : string.Concat("@", paramName);
             param.Value = paramValue;
 

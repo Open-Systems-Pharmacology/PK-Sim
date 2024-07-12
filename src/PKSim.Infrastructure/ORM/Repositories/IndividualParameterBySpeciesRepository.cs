@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -46,12 +47,12 @@ namespace PKSim.Infrastructure.ORM.Repositories
             _parametersNotCommonForAllSpeciesByFullPath.Add(containerPath);
          }
 
-
          //cache the parameters by container path
          foreach (var containerParametersInContainer in _individualParametersNotCommonForAllSpecies.GroupBy(x => x.ContainerPath))
          {
             var containerId = containerParametersInContainer.First().ContainerId;
-            var allParametersInContainer = containerParametersInContainer.Select(cp => cp.ParameterName).ToHashSet();
+            var allParametersInContainer = new HashSet<string>();
+            containerParametersInContainer.Select(cp => cp.ParameterName).Each(x => allParametersInContainer.Add(x));
             _parametersNotCommonForAllSpeciesByContainerPath.Add(containerParametersInContainer.Key, allParametersInContainer);
             _parametersNotCommonForAllSpeciesByContainerId.Add(containerId, allParametersInContainer);
          }
