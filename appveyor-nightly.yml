@@ -4,7 +4,7 @@ image: Visual Studio 2022
 version: '{build}'
 
 environment:
-  TARGET_FRAMEWORK: net472
+  TARGET_FRAMEWORK: net8
 
 init:
 - ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
