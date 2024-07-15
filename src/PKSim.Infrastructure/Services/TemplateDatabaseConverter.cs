@@ -15,18 +15,5 @@ namespace PKSim.Infrastructure.Services
       {
          // Nothing to do starting 7.4
       }
-
-      private bool needsConverstion(DAS database, string queryToExecute)
-      {
-         try
-         {
-            database.CreateAndFillDataTable(queryToExecute);
-            return false;
-         }
-         catch (OleDbException)
-         {
-            return true;
-         }
-      }
    }
 }
