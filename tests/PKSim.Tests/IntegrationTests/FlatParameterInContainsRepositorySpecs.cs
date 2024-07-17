@@ -39,6 +39,13 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
+      public void all_parameters_should_have_build_mode_global_or_local()
+      {
+         _allParameters.Count(p => p.BuildMode != ParameterBuildMode.Global && p.BuildMode != ParameterBuildMode.Local)
+            .ShouldBeEqualTo(0);
+      }
+
+      [Observation]
       public void all_hidden_parameters_should_be_read_only()
       {
          var parameters = _allParameters.Where(x => !x.Visible)

@@ -75,17 +75,6 @@ namespace PKSim.IntegrationTests
          _parameterValues[_parameterPath].Value.ShouldBeEqualTo(10);
       }
 
-      [Observation]
-      public void should_have_not_created_entries_for_property_parameter_of_the_enzyme()
-      {
-         var propertyParameters = _enzyme.AllParameters().Where(x => x.BuildMode == ParameterBuildMode.Property).ToList();
-         propertyParameters.Count.ShouldBeGreaterThan(0);
-         propertyParameters.Each(x =>
-         {
-            var parameterPath = _entityPathResolver.ObjectPathFor(x);
-            _parameterValues[parameterPath].ShouldBeNull();
-         });
-      }
    }
 
    public class When_creating_a_parameter_start_value_for_an_individual_and_simulation_where_the_initial_concentration_was_changed_in_the_expression_profile : ContextForSimulationIntegration<IPKSimParameterValuesCreator>
