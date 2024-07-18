@@ -95,6 +95,8 @@ DELETE FROM tab_model_container_molecules WHERE model='TwoPores' AND container_i
 DELETE FROM tab_molecules WHERE molecule='FcRn kinetics endosome';
 DELETE FROM tab_molecules WHERE molecule='FcRn kinetics interstitial';
 DELETE FROM tab_molecules WHERE molecule='FcRn kinetics plasma';
+UPDATE tab_parameters SET description='Flag for conditions of the environment for paracellular absorption: 0 = no sink condition, 1 = sink condition' WHERE parameter_name='Paracellular absorption sink condition';
+UPDATE tab_parameters SET description='Flag for conditions of the environment for transcellular absorption: 0 = no sink condition, 1 = sink condition' WHERE parameter_name='Transcellular absorption sink condition';
 INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have,comment) VALUES('FcRn binding drug in endosomal space','Endogenous_IgG','PARENT',1,NULL);
 INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have,comment) VALUES('FcRn binding drug in endosomal space','Endosome','PARENT',1,NULL);
 INSERT INTO tab_process_descriptor_conditions(process,tag,tag_type,should_have,comment) VALUES('FcRn binding drug in interstitial','Endogenous_IgG','PARENT',1,NULL);
