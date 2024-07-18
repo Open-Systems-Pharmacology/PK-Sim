@@ -18,7 +18,21 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OSPSuite.R" Version="12.0.297" />
+    <PackageReference Include="OSPSuite.FuncParser.Ubuntu22" Version="4.0.0.59" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.R" Version="12.0.300" />
+    <PackageReference Include="OSPSuite.SimModel.Ubuntu22" Version="4.0.0.59" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES.Ubuntu22" Version="4.1.0.9" GeneratePathProperty="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(PkgOSPSuite_FuncParser_Ubuntu22)\OSPSuite.FuncParserNative\bin\native\x64\Release\libOSPSuite.FuncParserNative.so" Link="libOSPSuite.FuncParserNative.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_SimModel_Ubuntu22)\OSPSuite.SimModelNative\bin\native\x64\Release\libOSPSuite.SimModelNative.so" Link="libOSPSuite.SimModelNative.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES_Ubuntu22)\OSPSuite.SimModelSolver_CVODES\bin\native\x64\Release\libOSPSuite.SimModelSolver_CVODES.so" Link="libOSPSuite.SimModelSolver_CVODES.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.R\PKSim.R.csproj" />
