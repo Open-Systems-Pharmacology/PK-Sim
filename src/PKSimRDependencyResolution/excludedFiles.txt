@@ -38,6 +38,7 @@ OSPSuite.Infrastructure.xml
 OSPSuite.R.xml
 OSPSuite.SimModel.pdb
 PKSim.Assets.pdb
+PKSim.Assets.Images.pdb
 PKSim.Assets.xml
 PKSim.CLI.Core.pdb
 PKSim.CLI.Core.xml
@@ -48,6 +49,7 @@ PKSim.Infrastructure.xml
 PKSim.Presentation.pdb
 PKSim.Presentation.xml
 PKSim.R.pdb
+PKSim.R.xml
 Serilog.Extensions.Logging.File.xml
 Serilog.Extensions.Logging.xml
 Serilog.Formatting.Compact.xml
