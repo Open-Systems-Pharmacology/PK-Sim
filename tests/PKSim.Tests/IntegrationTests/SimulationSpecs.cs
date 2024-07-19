@@ -593,9 +593,6 @@ namespace PKSim.IntegrationTests
       public void should_create_required_molecules_in_subcompartments_of_endogenous_igg_organ()
       {
          string fcRn = CoreConstants.Molecule.FcRn;
-         const string fcRnKineticsEndosome = "FcRn kinetics endosome";
-         const string fcRnKineticsInterstitial = "FcRn kinetics interstitial";
-         const string fcRnKineticsPlasma = "FcRn kinetics plasma";
          string ligandEndo = CoreConstants.Molecule.LigandEndo;
          string ligandEndoComplex = CoreConstants.Molecule.LigandEndoComplex;
 
@@ -605,19 +602,19 @@ namespace PKSim.IntegrationTests
          var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
          var endoIggPlasmaMoleculeNames = moleculeNamesIn(plasma);
 
-         endoIggPlasmaMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsPlasma, ligandEndo, ligandEndoComplex);
+         endoIggPlasmaMoleculeNames.ShouldOnlyContain(fcRn, ligandEndo, ligandEndoComplex);
 
          // interstitial 
          var interstitial = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTERSTITIAL);
          var endoIggInterstitialMoleculeNames = moleculeNamesIn(interstitial);
 
-         endoIggInterstitialMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsInterstitial, ligandEndo, ligandEndoComplex);
+         endoIggInterstitialMoleculeNames.ShouldOnlyContain(fcRn, ligandEndo, ligandEndoComplex);
 
          // endosome
          var endosome = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.ENDOSOME);
          var endoIggEndosomeMoleculeNames = moleculeNamesIn(endosome);
 
-         endoIggEndosomeMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsEndosome, ligandEndo, ligandEndoComplex);
+         endoIggEndosomeMoleculeNames.ShouldOnlyContain(fcRn, ligandEndo, ligandEndoComplex);
 
          // IgG_Source
          var iggSrc = endoIgg.GetSingleChildByName<IContainer>("IgG_Source");
