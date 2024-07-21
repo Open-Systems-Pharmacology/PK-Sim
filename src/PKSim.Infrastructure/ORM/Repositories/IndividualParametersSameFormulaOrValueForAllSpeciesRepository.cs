@@ -55,6 +55,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
                ContainerId = containerId,
                ContainerPath = containerPath,
                ParameterName = parameterName,
+               IsSameFormula = isSameFormula,
             };
 
             _individualParametersSameFormulaOrValue.Add(individualParameterSameFormulaOrValueForAllSpecies);
@@ -69,7 +70,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return _individualParametersSameFormulaOrValue;
       }
 
-      public bool IsSameFormulaOrValue(ParameterMetaData parameterMetaData) => isSameFormulaOrValue(parameterMetaData);
+      public bool IsSameFormulaOrValue(ParameterMetaData parameterMetaData) => parameterSameFormulaOrValueFor(parameterMetaData) != null;
 
       public bool IsSameFormulaOrValue(IParameter parameter)
       {
@@ -79,11 +80,16 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return parameterSameFormulaOrValue != null;
       }
 
-      private bool isSameFormulaOrValue(ParameterMetaData parameterMetaData)
+      public bool IsSameFormula(ParameterMetaData parameterMetaData)
+      {
+         var parameterSameFormulaOrValue = parameterSameFormulaOrValueFor(parameterMetaData);
+         return parameterSameFormulaOrValue?.IsSameFormula ?? false;
+      }
+
+      private IndividualParameterSameFormulaOrValueForAllSpecies parameterSameFormulaOrValueFor(ParameterMetaData parameterMetaData)
       {
          Start();
-         var parameterSameFormulaOrValue = _allByContainerIdAndParameterName[(parameterMetaData.ContainerId, parameterMetaData.ParameterName)];
-         return parameterSameFormulaOrValue != null;
+         return _allByContainerIdAndParameterName[(parameterMetaData.ContainerId, parameterMetaData.ParameterName)];
       }
    }
 }
