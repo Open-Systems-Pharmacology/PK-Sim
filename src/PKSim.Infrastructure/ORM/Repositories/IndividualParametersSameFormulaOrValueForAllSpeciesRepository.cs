@@ -80,12 +80,6 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return parameterSameFormulaOrValue != null;
       }
 
-      public bool IsSameFormula(ParameterMetaData parameterMetaData)
-      {
-         var parameterSameFormulaOrValue = parameterSameFormulaOrValueFor(parameterMetaData);
-         return parameterSameFormulaOrValue?.IsSameFormula ?? false;
-      }
-
       private IndividualParameterSameFormulaOrValueForAllSpecies parameterSameFormulaOrValueFor(ParameterMetaData parameterMetaData)
       {
          Start();
