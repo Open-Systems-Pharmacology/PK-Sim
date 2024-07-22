@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Repositories;
@@ -33,6 +33,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
+      [Ignore("TODO s. https://github.com/Open-Systems-Pharmacology/MoBi/issues/1401")]
       public void should_contain_mean_height()
       {
          _organismParameters.Count(p => p.ParameterName.Equals(CoreConstants.Parameters.MEAN_HEIGHT))
