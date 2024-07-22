@@ -69,7 +69,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          {
             case ProcessActionType.Reaction:
                var reaction = newReaction();
-               addReactionPartnersTo(reaction, flatProcess.Name);
+               addReactionPartnersAndContainerCriteriaTo(reaction, flatProcess.Name);
                return reaction;
             case ProcessActionType.Transport:
                return _entityBaseFactory.Create<PKSimTransport>();
@@ -91,7 +91,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          return _entityBaseFactory.Create<PKSimReaction>();
       }
 
-      private void addReactionPartnersTo(PKSimReaction reaction, string reactionName)
+      private void addReactionPartnersAndContainerCriteriaTo(PKSimReaction reaction, string reactionName)
       {
          var allPartners = (from rp in _reactionPartnerRepository.All()
             where rp.Reaction.Equals(reactionName)
@@ -100,6 +100,20 @@ namespace PKSim.Infrastructure.ORM.Mappers
          foreach (var flatReactionPartner in allPartners)
          {
             addReactionPartnerTo(reaction, flatReactionPartner);
+         }
+
+         var conditions = from pd in _processDescriptorRepository.All()
+            where pd.TagType == ProcessTagType.Parent
+            where pd.Process == reactionName
+            select pd;
+
+         //TODO we should extend the DB structure to allow also InContainer/NotInContainer criteria
+         foreach (var condition in conditions)
+         {
+            if (condition.ShouldHave)
+               reaction.ContainerCriteria.Add(new MatchTagCondition(condition.Tag));
+            else
+               reaction.ContainerCriteria.Add(new NotMatchTagCondition(condition.Tag));
          }
       }
 

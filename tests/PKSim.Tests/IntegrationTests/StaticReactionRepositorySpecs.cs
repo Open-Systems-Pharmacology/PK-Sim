@@ -2,6 +2,7 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -11,6 +12,7 @@ namespace PKSim.IntegrationTests
    public abstract class concern_for_StaticReactionRepository : ContextForIntegration<IStaticReactionRepository>
    {
       protected const string _reactionName1 = "FcRn binding tissue";
+      protected const string _reactionPrefix = "FcRn binding drug in ";
    }
 
    public class When_retrieving_all_static_reactions_the_repository : concern_for_StaticReactionRepository
@@ -44,6 +46,7 @@ namespace PKSim.IntegrationTests
          _reaction.ShouldNotBeNull();
          _reaction.Educts.Count().ShouldBeGreaterThan(0);
          _reaction.Products.Count().ShouldBeGreaterThan(0);
+         _reaction.ContainerCriteria.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -61,13 +64,27 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void four_comp_reactions_list_should_be_empty()
       {
-         _fourCompReactions.Count().ShouldBeEqualTo(0);
+         _fourCompReactions.Count.ShouldBeEqualTo(0);
       }
 
       [Observation]
-      public void two_pores_reactions_list_should_contain_FcRn_binding_endosomal_tissue()
+      public void two_pores_reactions_list_should_contain_FcRn_binding_tissue()
       {
          _twoPoreReactions.Any(r => r.Name.Equals(_reactionName1)).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void two_pores_FcRn_binding_tissue_reaction_should_not_have_container_criteria()
+      {
+         _twoPoreReactions.First(r => r.Name.Equals(_reactionName1)).ContainerCriteria.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void two_pores_endogenousIgg_FcRn_binding_reactions_Should_have_container_criteria()
+      {
+         var reactions = _twoPoreReactions.Where(r => r.Name.StartsWith(_reactionPrefix)).ToList();
+         reactions.Count.ShouldBeEqualTo(3);
+         reactions.Each(r=>r.ContainerCriteria.Count.ShouldBeGreaterThan(0));
       }
    }
 }

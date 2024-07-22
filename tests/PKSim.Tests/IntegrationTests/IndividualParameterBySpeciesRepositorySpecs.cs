@@ -82,7 +82,7 @@ namespace PKSim.IntegrationTests
 
          yield return new object[]
          {
-            "Organism|Lumen|Duodenum", "Length", true
+            "Organism|Lumen|Duodenum", "Length", true //TODO I think it's wrong and should be false (human: formula, others: value)
          };
 
          yield return new object[]

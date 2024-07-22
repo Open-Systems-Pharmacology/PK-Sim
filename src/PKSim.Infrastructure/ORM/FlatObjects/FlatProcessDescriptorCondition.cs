@@ -1,9 +1,14 @@
 ﻿namespace PKSim.Infrastructure.ORM.FlatObjects
 {
+   /// <summary>
+   /// Source and Target are used for transport source/target container conditions
+   /// Parent is used e.g. for reactions (parent) container conditions
+   /// </summary>
    public enum ProcessTagType
    {
       Source,
-      Target
+      Target,
+      Parent
    }
 
    public class FlatProcessDescriptorCondition : FlatDescriptorConditionBase
