@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using OSPSuite.Assets;
 using OSPSuite.Core;
@@ -69,7 +70,7 @@ namespace PKSim.Infrastructure
          if (!DirectoryHelper.DirectoryExists(CurrentUserFolderPath))
             DirectoryHelper.CreateDirectory(CurrentUserFolderPath);
 
-         if (!DirectoryHelper.DirectoryExists(AllUsersFolderPath))
+         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !DirectoryHelper.DirectoryExists(AllUsersFolderPath))
             DirectoryHelper.CreateDirectory(AllUsersFolderPath);
       }
 
