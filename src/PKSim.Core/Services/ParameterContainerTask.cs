@@ -67,24 +67,21 @@ namespace PKSim.Core.Services
          bool addParameter(ParameterMetaData parameterMetaData)
          {
             //all non individual parameters are added to the spatial structure by default
-            //otherwise, we add all parameters that are used by all species. The value used will be set based on the fact that the parameter has a shared value for all parameters or species or not
-            return parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual || _individualParameterBySpeciesRepository.UsedForAllSpecies(parameterMetaData);
-         }
-         
-         void parameterValueModifier(ParameterMetaData parameterMetaData, IParameter parameter)
-         {
-            //here we know that the parameter fulfills the criteria above but we really only care about parameters that are individual parameters
             if (parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual)
-               return;
+               return true;
 
-            //In case of a parameter that is used by all species, we need to verify that either the formula or the value is common 
-            //to all species. Otherwise, we set the value to NaN
-            var isSame = _sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameterMetaData);
-            if (!isSame)
-               parameter.Formula = new ConstantFormula(double.NaN);
+            //parameter is not used for all species=> it should not be added to the spatial structure as it will be added dynamically from the individual selected
+            var isUsedForAllSpecies = _individualParameterBySpeciesRepository.UsedForAllSpecies(parameterMetaData);
+            if (!isUsedForAllSpecies)
+               return false;
+
+
+            //we only add parameter to the spatial structure that share the same value or formula. Otherwise we do not add them
+            return _sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameterMetaData);
          }
 
-         addParametersTo(parameterContainer, originData, modelProperties.AllCalculationMethods().Select(cm => cm.Name), addParameter, parameterValueModifier, formulaCache);
+
+         addParametersTo(parameterContainer, originData, modelProperties.AllCalculationMethods().Select(cm => cm.Name), addParameter, null, formulaCache);
       }
 
       public void AddActiveProcessParametersTo(CompoundProcess process) => addParametersTo(process, calculationMethods: CoreConstants.CalculationMethod.ForProcesses);

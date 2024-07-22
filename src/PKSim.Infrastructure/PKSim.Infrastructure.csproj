@@ -49,7 +49,7 @@
     <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.0.300" />
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.0.300" />
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.0.300" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.0.5" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.0.6" />
   </ItemGroup>
 
   <ItemGroup>
