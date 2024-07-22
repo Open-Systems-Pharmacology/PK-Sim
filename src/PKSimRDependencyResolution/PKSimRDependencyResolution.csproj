@@ -37,4 +37,12 @@
   <ItemGroup>
     <ProjectReference Include="..\PKSim.R\PKSim.R.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <AssemblyFiles Include="$(TargetDir)/runtimes/linux-x64/native/netstandard2.0/SQLite.Interop.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AssemblyFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(AssemblyFiles->Replace('/runtimes/linux-x64/native/netstandard2.0/SQLite.Interop.dll',
+		  'libSQLite.Interop.dll'))" />
+  </Target>
 </Project>

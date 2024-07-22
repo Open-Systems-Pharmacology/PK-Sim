@@ -60,7 +60,7 @@ after_build:
   - cmd: >
       pushd . &&
       cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% &&
-      "C:\Program Files\7-Zip\7z.exe" a pk-sim-r-dependencies.zip -x@excludedFiles.txt * &&
+      "C:\Program Files\7-Zip\7z.exe" a pk-sim-r-dependencies.zip -x@excludedFiles.txt * -xr!runtimes &&
       popd
 
 build:
