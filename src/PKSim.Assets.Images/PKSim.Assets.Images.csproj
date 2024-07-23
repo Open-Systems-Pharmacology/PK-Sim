@@ -9,6 +9,7 @@
     <InformationalVersion>12.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
     <Authors>Open-Systems-Pharmacology</Authors>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -28,6 +29,7 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.Assets" Version="12.0.300" />
     <PackageReference Include="OSPSuite.Assets.Images" Version="12.0.300" />
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
