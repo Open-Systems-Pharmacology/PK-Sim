@@ -44,6 +44,11 @@
 		<ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj" />
 
 	</ItemGroup>
-
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles->Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+	</Target>
 
 </Project>

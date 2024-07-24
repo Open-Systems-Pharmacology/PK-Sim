@@ -37,13 +37,18 @@
   <ItemGroup>
     <ProjectReference Include="..\PKSim.R\PKSim.R.csproj" />
   </ItemGroup>
-
+  <PropertyGroup>
+    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+  </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <ItemGroup>
       <LinuxFiles Include="$(TargetDir)runtimes/linux-x64/native/SQLite.Interop.dll" />
       <WindowsFiles Include="$(TargetDir)runtimes/win-x64/native/SQLite.Interop.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(LinuxFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(LinuxFiles->Replace('runtimes/linux-x64/native/SQLite.Interop.dll', 'libSQLite.Interop.dll'))" />
     <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles->Replace('runtimes/win-x64/native/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+    <Copy SourceFiles="@(LinuxFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(LinuxFiles->Replace('runtimes/linux-x64/native/SQLite.Interop.dll', 'libSQLite.Interop.dll'))" />
   </Target>
 </Project>

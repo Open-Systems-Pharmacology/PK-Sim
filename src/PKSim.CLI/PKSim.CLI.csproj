@@ -74,4 +74,11 @@
     <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+  </PropertyGroup>
+
 </Project>

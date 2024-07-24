@@ -71,5 +71,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
+  <PropertyGroup>
+    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+  </PropertyGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles->Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+  </Target>
 </Project>
