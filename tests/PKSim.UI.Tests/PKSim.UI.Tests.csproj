@@ -13,9 +13,6 @@
 		<Content Include="$(PkgOSPSuite_FuncParser)\OSPSuite.FuncParserNative\bin\native\x64\Release\OSPSuite.FuncParserNative.dll" Link="OSPSuite.FuncParserNative.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="$(PkgSystem_Data_SQLite_Core)\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
 		<Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml" Link="OSPSuite.PKParameters.xml">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
@@ -35,7 +32,7 @@
 		<PackageReference Include="OSPSuite.SimModel" Version="4.0.0.59" />
 		<PackageReference Include="OSPSuite.UI" Version="12.0.300" />
 		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.59" GeneratePathProperty="true" />
-		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" GeneratePathProperty="true" />
 		<None Include="..\..\src\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -47,6 +44,16 @@
 		<ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj" />
 
 	</ItemGroup>
-
-
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles->Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+	</Target>
+	<PropertyGroup>
+		<ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+		<CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+		<CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+		<CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+	</PropertyGroup>
 </Project>

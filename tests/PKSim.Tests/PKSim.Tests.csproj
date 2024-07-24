@@ -25,7 +25,7 @@
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.59" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.59" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.9" GeneratePathProperty="true" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\PKSim.BatchTool\PKSim.BatchTool.csproj" />
@@ -52,9 +52,6 @@
     <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES)\OSPSuite.SimModelSolver_CVODES\bin\native\x64\Release\OSPSuite.SimModelSolver_CVODES.dll" Link="OSPSuite.SimModelSolver_CVODES.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(PkgSystem_Data_SQLite_Core)\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\templates\templates.json" Link="templates.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -79,5 +76,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
+  <PropertyGroup>
+    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles->Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+  </Target>
 </Project>
