@@ -99,6 +99,8 @@
     <Exec Command="copy $(ProjectDir)..\PKSim.R\$(OutDir)PKSim.R.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.Matlab\$(OutDir)PKSim.Matlab.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.BatchTool\$(OutDir)PKSim.BatchTool.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.CLI\$(OutDir)PKSim.CLI.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.CLI\$(OutDir)CommandLine.* $(TargetDir)&#xD;&#xA;copy $(ProjectDir)..\PKSim.CLI\$(OutDir)Microsoft.Extensions.* $(TargetDir)&#xD;&#xA;" />
   </Target>
 
+  <!-- Content comes from Stub.system.data.sqlite.core. Basically, implements the same task as if you 
+  added this binary as content and copy to output folder -->
   <PropertyGroup>
     <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
