@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Serializer.Xml.Extensions;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -18,6 +19,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
       private bool _converted;
+      private const string _buildMode = "mode";
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V11;
 
       public Converter11To12(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner)
@@ -46,8 +48,20 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
             convertCalculationMethods(calculationMethodCacheElement);
          }
 
+         element.DescendantsAndSelf().Where(x => x.GetAttribute(_buildMode) != null).Each(convertBuildMode);
 
          return (ProjectVersions.V12, _converted);
+      }
+
+      private void convertBuildMode(XElement parameterNode)
+      {
+         var buildMode = parameterNode.GetAttribute(_buildMode);
+         
+         if (!string.Equals(buildMode, "Property"))
+            return;
+
+         parameterNode.SetAttributeValue(_buildMode, "Global");
+         _converted = true;
       }
 
       private void convertCalculationMethods(XElement calculationMethodCacheElement)
