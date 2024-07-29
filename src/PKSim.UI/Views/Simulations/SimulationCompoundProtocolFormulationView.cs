@@ -84,14 +84,14 @@ namespace PKSim.UI.Views.Simulations
             .WithEditorConfiguration(configureFormulation);
 
          _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => createFormulationButton);
 
 
          _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => loadFormulationButton);

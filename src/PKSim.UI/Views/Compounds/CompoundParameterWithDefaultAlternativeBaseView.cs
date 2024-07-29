@@ -14,6 +14,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -23,9 +24,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
-using static PKSim.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -64,9 +63,9 @@ namespace PKSim.UI.Views.Compounds
          _isDefaultRepository = new UxRepositoryItemCheckEdit(_gridView);
          _gridControl.ToolTipController = new ToolTipController().Initialize(imageListRetriever);
          _gridControl.ToolTipController.GetActiveObjectInfo += (o, e) => OnEvent(onToolTipControllerGetActiveObjectInfo, o, e);
-         _nameRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Ellipsis) {TextEditStyle = TextEditStyles.DisableTextEditor};
+         _nameRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Ellipsis) { TextEditStyle = TextEditStyles.DisableTextEditor };
          _nameRepository.Buttons[0].ToolTip = PKSimConstants.UI.Rename;
-         _gridViewBinder = new GridViewBinder<TParameterAlternativeDTO>(_gridView) {BindingMode = BindingMode.OneWay};
+         _gridViewBinder = new GridViewBinder<TParameterAlternativeDTO>(_gridView) { BindingMode = BindingMode.OneWay };
          InitializeWithGrid(_gridView);
       }
 
@@ -95,7 +94,7 @@ namespace PKSim.UI.Views.Compounds
          _colDefault = colDefault;
 
          _colButtons = _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(GetButtonRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);

@@ -105,7 +105,7 @@ namespace PKSim.UI.Views.Simulations
       protected virtual void InitializeSystemicBinding()
       {
          _gridViewSystemicBinder.Bind(x => x.Image)
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithRepository(dto => _imageRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .AsReadOnly();
@@ -149,7 +149,7 @@ namespace PKSim.UI.Views.Simulations
       protected IGridViewColumn BindToPartialImage()
       {
          return _gridViewPartialBinder.Bind(x => x.Image)
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithRepository(dto => _imageRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .AsReadOnly();

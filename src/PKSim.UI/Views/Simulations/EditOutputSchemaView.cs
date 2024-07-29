@@ -1,23 +1,20 @@
 using System.Collections.Generic;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Assets;
-using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Core;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using PKSim.UI.Views.Core;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.DTO;
-using OSPSuite.UI;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -41,7 +38,7 @@ namespace PKSim.UI.Views.Simulations
 
       public override void InitializeBinding()
       {
-         _gridViewBinder = new GridViewBinder<OutputIntervalDTO>(mainView) {BindingMode = BindingMode.OneWay, ValidationMode = ValidationMode.LeavingRow};
+         _gridViewBinder = new GridViewBinder<OutputIntervalDTO>(mainView) { BindingMode = BindingMode.OneWay, ValidationMode = ValidationMode.LeavingRow };
 
          _gridViewBinder.Bind(x => x.StartTime)
             .WithCaption(PKSimConstants.UI.StartTime)
@@ -62,7 +59,7 @@ namespace PKSim.UI.Views.Simulations
             .OnValueUpdating += (dto, valueInGuiUnit) => setParameterValue(dto.ResolutionParameter, valueInGuiUnit.NewValue);
 
          _buttonColumn = _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(getButtonRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
@@ -106,9 +103,9 @@ namespace PKSim.UI.Views.Simulations
 
       private void addRemoveButtonClick(ButtonPressedEventArgs e)
       {
-         if(e.Button==null)
+         if (e.Button == null)
             return;
-         
+
          if (Equals(e.Button.Tag, ButtonType.Add))
             _presenter.AddOutputInterval();
          else

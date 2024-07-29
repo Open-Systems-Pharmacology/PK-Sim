@@ -6,10 +6,10 @@ using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Parameters;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Presenters.Parameters;
+using OSPSuite.Presentation.Views.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation
@@ -30,13 +30,19 @@ namespace PKSim.Presentation
          _parameterTask = A.Fake<IParameterTask>();
          _formulaFactory = A.Fake<IFormulaFactory>();
          _cloner = A.Fake<ICloner>();
-         _tableFormula = new TableFormula {Id = "1"};
-         _tableFormula.XDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         _tableFormula = new TableFormula
+         {
+            Id = "1",
+            XDimension = DomainHelperForSpecs.TimeDimensionForSpecs()
+         };
          _tableFormula.XDisplayUnit = _tableFormula.XDimension.BaseUnit;
          _tableFormula.Dimension = DomainHelperForSpecs.LengthDimensionForSpecs();
          _tableFormula.YDisplayUnit = _tableFormula.Dimension.BaseUnit;
-         _editedFormula = new TableFormula {Id = "2"};
-         _editedFormula.XDimension = DomainHelperForSpecs.TimeDimensionForSpecs();
+         _editedFormula = new TableFormula
+         {
+            Id = "2",
+            XDimension = DomainHelperForSpecs.TimeDimensionForSpecs()
+         };
          _editedFormula.XDisplayUnit = _editedFormula.XDimension.BaseUnit;
          _editedFormula.Dimension = DomainHelperForSpecs.LengthDimensionForSpecs();
          _editedFormula.YDisplayUnit = _editedFormula.Dimension.BaseUnit;
@@ -47,7 +53,7 @@ namespace PKSim.Presentation
          _parameter = new PKSimParameter().WithFormula(_tableFormula);
       }
 
-      private class TableParametersForSpecs : TableParameterPresenter<ITableParameterView>
+      private class TableParametersForSpecs : Presenters.Parameters.TableParameterPresenter<ITableParameterView>
       {
          public TableParametersForSpecs(ITableParameterView view, IParameterTask parameterTask, ICloner cloneManager, IFormulaFactory formulaFactory) :
             base(view, parameterTask, formulaFactory, cloneManager, () => new TableFormula {Id = "new"})

@@ -1,6 +1,5 @@
 using DevExpress.Utils;
 using DevExpress.XtraGrid;
-using PKSim.Core;
 
 namespace PKSim.UI.Views.Core
 {
@@ -21,6 +20,5 @@ namespace PKSim.UI.Views.Core
          ShowColumnChooser = true;
          OptionsNavigation.AutoFocusNewRow = true;
       }
-
    }
 }

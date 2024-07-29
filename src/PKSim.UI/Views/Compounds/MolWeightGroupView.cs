@@ -14,6 +14,8 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
@@ -22,8 +24,6 @@ using PKSim.Assets;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Extensions;
-using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Compounds
 {

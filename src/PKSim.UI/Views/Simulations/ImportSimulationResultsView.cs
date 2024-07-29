@@ -1,23 +1,22 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.Assets;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using PKSim.Assets;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
 using static OSPSuite.UI.UIConstants.Size;
 using static PKSim.UI.UIConstants.Size;
-using BaseView = OSPSuite.UI.Views.BaseView;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -40,7 +39,7 @@ namespace PKSim.UI.Views.Simulations
          gridView.AllowsFiltering = false;
          gridView.ShowRowIndicator = false;
          gridView.OptionsSelection.EnableAppearanceFocusedRow = true;
-         _gridViewBinder = new GridViewBinder<SimulationResultsFileSelectionDTO>(gridView) {BindingMode = BindingMode.TwoWay};
+         _gridViewBinder = new GridViewBinder<SimulationResultsFileSelectionDTO>(gridView) { BindingMode = BindingMode.TwoWay };
          _filePathRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
          _screenBinder = new ScreenBinder<ImportSimulationResultsDTO>();
          _toolTipCreator = toolTipCreator;
@@ -65,7 +64,7 @@ namespace PKSim.UI.Views.Simulations
             .To(tbLog);
 
          _colImage = _gridViewBinder.Bind(x => x.Image)
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH);
 
@@ -87,10 +86,10 @@ namespace PKSim.UI.Views.Simulations
             .AsReadOnly();
 
          _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);
 
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.RemoveFile(_gridViewBinder.FocusedElement));
          _filePathRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.ChangePath(_gridViewBinder.FocusedElement));

@@ -141,7 +141,7 @@ namespace PKSim.UI.Views
             .AsReadOnly();
 
          _colButtons = _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(repositoryForTemplate)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);

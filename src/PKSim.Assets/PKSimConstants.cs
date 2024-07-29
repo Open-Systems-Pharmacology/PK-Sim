@@ -1442,8 +1442,7 @@ namespace PKSim.Assets
             public static string MinLessThanMax(string parameterName) => $"Minimum value for {parameterName} should be less than maximum value.";
 
             public static string MaxGreaterThanMin(string parameterName) => $"Maximum value for {parameterName} should be greater than minimum value.";
-            
-            public static string ValueShouldBeGreaterThanOrEqualToZero(string parameterName) => $"{parameterName} value should be greater than or equal to 0.";
+
 
             public static string MinGreaterThanDbMinValue(string parameterName, string displayMinValue, string unit)
             {
@@ -1602,7 +1601,6 @@ namespace PKSim.Assets
          public static readonly string OpenAnyway = "&Open Anyway";
          public static readonly string ImportAnyway = "&Import Anyway";
          public static readonly string Factor = "Factor";
-         public static readonly string EmptyColumn = " ";
          public static readonly string QuantityName = "Name";
          public static readonly string Compartment = "Compartment";
          public static readonly string Organ = "Organ";
@@ -1990,7 +1988,7 @@ namespace PKSim.Assets
          public static readonly string Experiment = "Experiment";
          public static readonly string ImportFormulation = "Import Formulation";
          public static readonly string ImportSolubilityTable = "Import Solubility Table";
-         public static readonly string AddPoint = "Add Point";
+         
          public static readonly string Filter = "Filter";
          public static readonly string SaveSimulationToXmlFile = "Save Simulation to xml File (PKSim Format)";
          public static readonly string SaveSimulationParameterToCsvFile = "Save Simulation parameters to csv File (PKSim Format)";
@@ -2517,11 +2515,6 @@ namespace PKSim.Assets
          public static string ConvertingSimulation(int currentSimulation, int numberOfSimulations) => $"Converting simulation {currentSimulation}/{numberOfSimulations}...";
 
          public static string ContactSupport(string productDisplayName, string support) => $"For more information, please contact your {productDisplayName} support ({support})";
-
-         public static string EditTableParameter(string parameter, bool editable)
-         {
-            return $"{(editable ? "Edit" : "Show")} table parameter '{parameter}'";
-         }
 
          public static string ChartSettingsSaved() => "Chart settings were saved into project.";
 
