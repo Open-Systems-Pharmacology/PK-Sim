@@ -1,13 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -15,20 +8,25 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using PKSim.UI.Extensions;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.Assets;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Views;
 using static OSPSuite.UI.UIConstants.Size;
-using UIConstants = OSPSuite.UI.UIConstants;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -66,7 +64,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
          //this makes sure that the field is not in edit mode as soon as we click on the field. This is required for a nice user experience with popup
          gridView.EditorShowMode = EditorShowMode.Click;
-         PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImagesForContextMenu };
 
          _colorRepository = new UxRepositoryItemColorPickEditWithHistory(gridView);
          _unitComboBoxRepository = new UxRepositoryItemComboBox(gridView);
@@ -75,7 +73,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
          _removeField.Buttons[_editButtonIndex].Enabled = false;
          _editGroupAndRemoveField = createEditAndRemoveRepo();
 
-         _repositoryItemDisabled = new RepositoryItemTextEdit {Enabled = false, ReadOnly = true};
+         _repositoryItemDisabled = new RepositoryItemTextEdit { Enabled = false, ReadOnly = true };
          _repositoryItemDisabled.CustomDisplayText += (o, e) => OnEvent(customDisplayText, e);
 
          _scalingComboBoxRepository.FillComboBoxRepositoryWith(EnumHelper.AllValuesFor<Scalings>());
@@ -119,7 +117,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
             .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.FieldColorChanged(o, e.OldValue, e.NewValue)));
 
          _colDelete = _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(getAddRemoveRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);

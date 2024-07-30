@@ -10,12 +10,11 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
-using PKSim.UI.Views.Core;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Views;
@@ -62,19 +61,19 @@ namespace PKSim.UI.Views.Simulations
             .WithEditorConfiguration(configureEventRepository);
 
         _colCreateEvent= _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => createButtonRepository);
 
         _colLoadEvent = _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithRepository(dto => loadButtonRepository);
 
         _colRemoveEvent =  _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => _removeButtonRepository);

@@ -13,6 +13,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -23,19 +24,18 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Compounds
 {
    public partial class SolubilityGroupView : CompoundParameterWithDefaultAlternativeBaseView<SolubilityAlternativeDTO>, ISolubilityGroupView
    {
-      private IGridViewColumn _colSolubitlity;
+      private IGridViewColumn _colSolubility;
       private IGridViewColumn _colRefPh;
       private IGridViewColumn _colGainPerCharge;
 
       private readonly PopupContainerControl _popupControl = new PopupContainerControl();
       private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
-      private readonly RepositoryItemTextEdit _stantdardParameterEditRepository = new RepositoryItemTextEdit();
+      private readonly RepositoryItemTextEdit _standardParameterEditRepository = new RepositoryItemTextEdit();
       private readonly RepositoryItemTextEdit _readonlyTextEdit = new RepositoryItemTextEdit();
       private readonly UxRepositoryItemButtonEdit _editTableParameterRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Glyph);
 
@@ -48,8 +48,8 @@ namespace PKSim.UI.Views.Compounds
          _repositoryItemPopupContainerEdit.CloseOnOuterMouseClick = false;
          _repositoryItemPopupContainerEdit.QueryDisplayText += queryDisplayText;
          _repositoryItemPopupContainerEdit.EditValueChanged += editValueChanged;
-         _stantdardParameterEditRepository.ConfigureWith(typeof(double));
-         _stantdardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
+         _standardParameterEditRepository.ConfigureWith(typeof(double));
+         _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _readonlyTextEdit.ReadOnly = true;
          _gridView.RowCellStyle += (o, e) => OnEvent(updateRowCellStyle, e);
          _gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, e);
@@ -67,7 +67,7 @@ namespace PKSim.UI.Views.Compounds
 
       public override void InitializeBinding()
       {
-         _colSolubitlity = _gridViewBinder.AutoBind(x => x.Solubility)
+         _colSolubility = _gridViewBinder.AutoBind(x => x.Solubility)
             .WithCaption(PKSimConstants.UI.RefSolubility)
             .WithFormat(param => param.SolubilityParameter.ParameterFormatter())
             .WithRepository(repoForSolubility)
@@ -131,7 +131,7 @@ namespace PKSim.UI.Views.Compounds
          if (solubilityAlternative.IsTable)
             return _editTableParameterRepository;
 
-         return _stantdardParameterEditRepository;
+         return _standardParameterEditRepository;
       }
 
       private RepositoryItem repoForSecondarySolubilityParameters(SolubilityAlternativeDTO solubilityAlternative)
@@ -139,7 +139,7 @@ namespace PKSim.UI.Views.Compounds
          if (solubilityAlternative.IsTable)
             return _readonlyTextEdit;
 
-         return _stantdardParameterEditRepository;
+         return _standardParameterEditRepository;
       }
 
       private void editSolubilityTable()
@@ -176,10 +176,10 @@ namespace PKSim.UI.Views.Compounds
 
       protected override bool ColumnIsValue(GridColumn gridColumn)
       {
-         if (_colSolubitlity == null || _colRefPh == null || _colGainPerCharge == null)
+         if (_colSolubility == null || _colRefPh == null || _colGainPerCharge == null)
             return false;
 
-         return gridColumn.IsOneOf(_colRefPh.XtraColumn, _colSolubitlity.XtraColumn, _colGainPerCharge.XtraColumn);
+         return gridColumn.IsOneOf(_colRefPh.XtraColumn, _colSolubility.XtraColumn, _colGainPerCharge.XtraColumn);
       }
 
       protected override void OnValueColumnMouseDown(UxGridView gridView, GridColumn col, int rowHandle)

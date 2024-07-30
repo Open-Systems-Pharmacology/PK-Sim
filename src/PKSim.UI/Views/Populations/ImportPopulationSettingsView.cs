@@ -1,24 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Assets;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Populations;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
 using PKSim.UI.Extensions;
-using OSPSuite.UI.Controls;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Populations
@@ -60,7 +58,7 @@ namespace PKSim.UI.Views.Populations
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
          _gridViewBinder.Bind(x => x.Image)
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithRepository(dto => _statusIconRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH);
 
@@ -75,7 +73,7 @@ namespace PKSim.UI.Views.Populations
             .AsReadOnly();
 
          _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);

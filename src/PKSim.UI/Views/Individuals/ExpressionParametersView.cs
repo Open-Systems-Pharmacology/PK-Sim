@@ -16,6 +16,8 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -25,7 +27,6 @@ using PKSim.Core;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
-using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.Individuals
 {
@@ -52,11 +53,11 @@ namespace PKSim.UI.Views.Individuals
       }
 
       private readonly RepositoryItemProgressBar _progressBarRepository = new RepositoryItemProgressBar
-         {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
+         { Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true };
 
       private readonly UxRepositoryItemButtonImage _isFixedParameterEditRepository =
          new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip)
-            {TextEditStyle = TextEditStyles.Standard};
+            { TextEditStyle = TextEditStyles.Standard };
 
       protected IExpressionParametersPresenter<TExpressionParameterDTO> _presenter;
 
@@ -177,7 +178,7 @@ namespace PKSim.UI.Views.Individuals
       {
          _colGrouping = _gridViewBinder.AutoBind(item => item.GroupingPathDTO)
             .WithRepository(dto => configureContainerRepository(dto.GroupingPathDTO))
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .AsReadOnly();
          _colGrouping.XtraColumn.GroupIndex = 0;
          _colGrouping.XtraColumn.SortMode = ColumnSortMode.Custom;

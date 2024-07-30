@@ -1,8 +1,8 @@
 ﻿using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Presentation.Presenters.Parameters;
+using OSPSuite.Presentation.Views.Parameters;
 using PKSim.Assets;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {

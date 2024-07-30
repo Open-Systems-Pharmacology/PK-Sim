@@ -18,7 +18,7 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -30,7 +30,6 @@ using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
-using PKSim.UI.Views.Core;
 using BaseView = DevExpress.XtraGrid.Views.Base.BaseView;
 
 namespace PKSim.UI.Views.Protocols
@@ -156,7 +155,7 @@ namespace PKSim.UI.Views.Protocols
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;
 
          _colAddRemoveSchema = _gridProtocolBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => schemaButtonRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
@@ -207,7 +206,7 @@ namespace PKSim.UI.Views.Protocols
          formulationColumn.OnValueUpdating += (dto, formulationType) => OnEvent(() => _presenter.SetFormulationType(dto, formulationType.NewValue));
 
          schemaItemBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => schemaItemButtonRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);
@@ -260,7 +259,7 @@ namespace PKSim.UI.Views.Protocols
 
       private void schemaButtonRepositoryButtonClick(object sender, ButtonPressedEventArgs e, SchemaDTO schemaDTO)
       {
-         var editor = (ButtonEdit) sender;
+         var editor = (ButtonEdit)sender;
          var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
          if (buttonIndex == 0)
             _presenter.AddNewSchema();
@@ -273,7 +272,7 @@ namespace PKSim.UI.Views.Protocols
 
       private void schemaItemButtonRepositoryButtonClick(object sender, ButtonPressedEventArgs e, SchemaItemDTO schemaItemDTO)
       {
-         var editor = (ButtonEdit) sender;
+         var editor = (ButtonEdit)sender;
          var buttonIndex = editor.Properties.Buttons.IndexOf(e.Button);
          if (buttonIndex == 0)
             _presenter.AddSchemaItemTo(schemaItemDTO.ParentSchema, schemaItemDTO);
@@ -347,7 +346,7 @@ namespace PKSim.UI.Views.Protocols
 
       private RepositoryItemButtonEdit createAddRemoveButtonRepository()
       {
-         var schemaItemButtonRepository = new RepositoryItemButtonEdit {TextEditStyle = TextEditStyles.HideTextEditor};
+         var schemaItemButtonRepository = new RepositoryItemButtonEdit { TextEditStyle = TextEditStyles.HideTextEditor };
          schemaItemButtonRepository.Buttons[0].Kind = ButtonPredefines.Plus;
          schemaItemButtonRepository.Buttons.Add(new EditorButton(ButtonPredefines.Delete));
          return schemaItemButtonRepository;
@@ -366,8 +365,8 @@ namespace PKSim.UI.Views.Protocols
 
       private void masterRowExpanded(object sender, CustomMasterRowEventArgs e)
       {
-         GridView masterView = (GridView) sender;
-         GridView detailView = (GridView) masterView.GetDetailView(e.RowHandle, e.RelationIndex);
+         GridView masterView = (GridView)sender;
+         GridView detailView = (GridView)masterView.GetDetailView(e.RowHandle, e.RelationIndex);
 
          detailView?.BestFitColumns();
       }
@@ -423,7 +422,7 @@ namespace PKSim.UI.Views.Protocols
 
       private GridViewBinder<SchemaItemDTO> schemaItemBinderAt(object baseView)
       {
-         var schemaItemView = (GridView) baseView;
+         var schemaItemView = (GridView)baseView;
          return _cache[schemaItemView] as GridViewBinder<SchemaItemDTO>;
       }
 
@@ -455,7 +454,7 @@ namespace PKSim.UI.Views.Protocols
          if (!_cache.Contains(view))
          {
             var gridView = view.DowncastTo<GridView>();
-            var binder = new GridViewBinder<T>(gridView) {BindingMode = BindingMode.OneWay};
+            var binder = new GridViewBinder<T>(gridView) { BindingMode = BindingMode.OneWay };
             _cache.Add(gridView, binder);
             initBinding(binder);
          }
