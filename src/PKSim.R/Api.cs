@@ -1,6 +1,8 @@
 ﻿using System;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.CLI.Core.RunOptions;
+using PKSim.CLI.Core.Services;
 using PKSim.R.Bootstrap;
 using PKSim.R.Services;
 
@@ -26,6 +28,8 @@ namespace PKSim.R
       public static IIndividualFactory GetIndividualFactory() => resolveTask<IIndividualFactory>();
 
       public static IPopulationFactory GetPopulationFactory() => resolveTask<IPopulationFactory>();
+
+      public static void RunSnapshot(SnapshotRunOptions runOptions) => resolveTask<IBatchRunner<SnapshotRunOptions>>().RunBatchAsync(runOptions).Wait();
 
       private static T resolveTask<T>()
       {
