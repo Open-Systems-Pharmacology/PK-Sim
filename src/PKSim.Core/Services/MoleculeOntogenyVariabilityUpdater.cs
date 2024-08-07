@@ -77,7 +77,7 @@ namespace PKSim.Core.Services
       private void updatePlasmaProteinOntogenyTableFor(Individual individual, string tableParameterName, string proteinName)
       {
          var parameter = individual.Organism.Parameter(tableParameterName);
-         if (parameter == null) 
+         if (parameter == null)
             return;
 
          var tableFormula = _ontogenyRepository.PlasmaProteinOntogenyTableFormula(proteinName, individual.OriginData);
@@ -116,6 +116,10 @@ namespace PKSim.Core.Services
 
       private void updateOntogenyParameterTable(IParameter parameter, TableFormula tableFormula)
       {
+         //Table parameter is only defined for age dependent species and this method might be called when creating the molecule with a non age dependent species 
+         if (parameter == null)
+            return;
+
          //the formula may be null if no ontogeny was selected. In this case, we simply set a default formula of 1
          parameter.Formula = tableFormula ?? _formulaFactory.ValueFor(CoreConstants.DEFAULT_ONTOGENY_FACTOR, parameter.Dimension);
 
