@@ -7,6 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using static PKSim.Core.CoreConstants.CalculationMethod;
 using static PKSim.Core.CoreConstants.Parameters;
 using FormulaCache = OSPSuite.Core.Domain.Formulas.FormulaCache;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
@@ -64,12 +65,7 @@ namespace PKSim.Core.Services
 
       protected abstract ApplicationIcon Icon { get; }
 
-      public virtual IndividualMolecule CreateEmpty()
-      {
-         var molecule = CreateMolecule(string.Empty);
-         AddConstantOntogenyParametersTo(molecule);
-         return molecule;
-      }
+      public virtual IndividualMolecule CreateEmpty() => CreateMolecule(string.Empty);
 
       public abstract IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
 
@@ -92,33 +88,38 @@ namespace PKSim.Core.Services
 
       protected ParameterRateMetaData InitialConcentrationParam(string rate) => rateParam(INITIAL_CONCENTRATION, rate);
 
-      protected ParameterRateMetaData OntogenyFactorFromTable(string parameterName, string rate)=>rateParam(parameterName, rate);
+      protected ParameterRateMetaData OntogenyFactorFromTable(string parameterName, string rate) => rateParam(parameterName, rate, ONTOGENY_FACTORS);
 
-      private ParameterRateMetaData rateParam(string paramName, string rate)
+      private ParameterRateMetaData rateParam(string paramName, string rate, string calculationMethod = "")
       {
-         var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
+         var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName, calculationMethod);
          var parameterRateMetaData = new ParameterRateMetaData();
          parameterRateMetaData.UpdatePropertiesFrom(parameterMetaData);
          parameterRateMetaData.Rate = rate;
          return parameterRateMetaData;
       }
 
-      protected TMolecule CreateMolecule(string moleculeName)
+      protected TMolecule CreateMolecule(string moleculeName, bool isAgeDependent = false)
       {
          var molecule = _objectBaseFactory.Create<TMolecule>().WithIcon(Icon.IconName).WithName(moleculeName);
          CreateMoleculeParameterIn(molecule, REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE);
          CreateMoleculeParameterIn(molecule, HALF_LIFE_LIVER, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_LIVER_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, DISEASE_FACTOR, CoreConstants.DEFAULT_DISEASE_FACTOR);
-         
-         //Default ontogeny parameter tables created for ALL molecules with a default value of 1
-         OntogenyFactorTables.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
+
+         //Default ontogeny parameter tables created for ALL molecules for age dependent species only
+         if (isAgeDependent)
+            AddAgeDependentOntogenyParametersTo(molecule);
+         else
+            AddConstantOntogenyParametersTo(molecule);
 
          return molecule;
       }
 
       public void AddAgeDependentOntogenyParametersTo(IndividualMolecule molecule)
       {
+         OntogenyFactorTables.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
+
          AddGlobalExpression(molecule,
             OntogenyFactorFromTable(ONTOGENY_FACTOR, CoreConstants.Rate.ONTOGENY_FACTOR_FROM_TABLE),
             OntogenyFactorFromTable(ONTOGENY_FACTOR_GI, CoreConstants.Rate.ONTOGENY_FACTOR_GI_FROM_TABLE));
@@ -178,9 +179,9 @@ namespace PKSim.Core.Services
          return parameter;
       }
 
-      protected IParameter CreateMoleculeParameterIn(IContainer parameterContainer, string parameterName, double defaultValue)
+      protected IParameter CreateMoleculeParameterIn(IContainer parameterContainer, string parameterName, double defaultValue, string calculationMethod = "")
       {
-         var parameterRateMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, parameterName);
+         var parameterRateMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, parameterName, calculationMethod);
          var parameterValue = new ParameterValueMetaData();
          parameterValue.UpdatePropertiesFrom(parameterRateMetaData);
          parameterValue.DefaultValue = defaultValue;

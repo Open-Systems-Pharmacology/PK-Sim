@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DevExpress.Data.Controls.ExpressionEditor;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -75,6 +76,10 @@ namespace PKSim.Core.Mappers
          {
             //these parameters are exported separately
             if (parameter.GroupName == RELATIVE_EXPRESSION)
+               return false;
+
+            //Ontogeny factor. Only export if parameter is not one of the global parameters
+            if (parameter.NameIsOneOf(CoreConstants.Parameters.OntogenyFactors))
                return false;
 
             return !_sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameter);

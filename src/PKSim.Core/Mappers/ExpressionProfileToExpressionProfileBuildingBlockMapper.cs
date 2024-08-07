@@ -8,6 +8,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using static PKSim.Core.CoreConstants.CalculationMethod;
+using static PKSim.Core.CoreConstants.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 using ILazyLoadTask = OSPSuite.Core.Domain.Services.ILazyLoadTask;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
@@ -29,7 +30,7 @@ namespace PKSim.Core.Mappers
          ILazyLoadTask lazyLoadTask,
          IFormulaFactory formulaFactory,
          IInitialConditionsCreator initialConditionsCreator,
-         IMoleculeBuilderFactory moleculeBuilderFactory, 
+         IMoleculeBuilderFactory moleculeBuilderFactory,
          ICloner cloner) :
          base(objectBaseFactory, entityPathResolver, applicationConfiguration, lazyLoadTask, formulaFactory, cloner)
       {
@@ -39,14 +40,12 @@ namespace PKSim.Core.Mappers
 
       protected override IFormula TemplateFormulaFor(IParameter parameter, IFormulaCache formulaCache, ExpressionProfile expressionProfile)
       {
-         //for expression profile, all formula are in the calculation method EXPRESSION_PARAMETERS unless they are distributed table
-         return _formulaFactory.RateFor(new RateKey(EXPRESSION_PARAMETERS, parameter.Formula.Name), formulaCache);
+         //Ontogeny factor parameter as formula will be a table formula defined in the ONTOGENY_FACTORS calculation method
+         var calculationMethod = parameter.NameIsOneOf(OntogenyFactors) ? ONTOGENY_FACTORS : EXPRESSION_PARAMETERS;
+         return _formulaFactory.RateFor(new RateKey(calculationMethod, parameter.Formula.Name), formulaCache);
       }
 
-      protected override IReadOnlyList<IParameter> AllParametersFor(ExpressionProfile expressionProfile)
-      {
-         return expressionProfile.GetAllChildren<IParameter>();
-      }
+      protected override IReadOnlyList<IParameter> AllParametersFor(ExpressionProfile expressionProfile) => expressionProfile.GetAllChildren<IParameter>();
 
       public override ExpressionProfileBuildingBlock MapFrom(ExpressionProfile expressionProfile)
       {
