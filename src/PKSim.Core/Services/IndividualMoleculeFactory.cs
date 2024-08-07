@@ -118,7 +118,7 @@ namespace PKSim.Core.Services
 
       public void AddAgeDependentOntogenyParametersTo(IndividualMolecule molecule)
       {
-         OntogenyFactorTables.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
+         OntogenyFactorTables.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR, ONTOGENY_FACTOR));
 
          AddGlobalExpression(molecule,
             OntogenyFactorFromTable(ONTOGENY_FACTOR, CoreConstants.Rate.ONTOGENY_FACTOR_FROM_TABLE),
