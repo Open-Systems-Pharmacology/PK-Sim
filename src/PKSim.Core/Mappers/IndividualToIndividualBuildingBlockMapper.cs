@@ -78,10 +78,6 @@ namespace PKSim.Core.Mappers
             if (parameter.GroupName == RELATIVE_EXPRESSION)
                return false;
 
-            //Ontogeny factor. Only export if parameter is not one of the global parameters
-            if (parameter.NameIsOneOf(CoreConstants.Parameters.OntogenyFactors))
-               return false;
-
             return !_sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameter);
          }
 
