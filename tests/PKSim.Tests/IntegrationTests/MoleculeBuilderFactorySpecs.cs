@@ -272,4 +272,29 @@ namespace PKSim.IntegrationTests
          _molecule.InteractionContainerCollection.Any().ShouldBeFalse();
       }
    }
+
+   public class When_mapping_a_an_enzyme_to_a_molecule_builder : concern_for_MoleculeBuilderFactory
+   {
+      private MoleculeBuilder _molecule;
+
+      protected override void Because()
+      {
+         _molecule = sut.Create(QuantityType.Enzyme, new FormulaCache());
+      }
+
+      [Observation]
+      public void should_not_add_the_ontogeny_factor_table_parameters()
+      {
+         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_TABLE).ShouldBeNull();
+         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI_TABLE).ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_add_the_ontogeny_factor_parameters_with_the_default_value()
+      {
+         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR).Value.ShouldBeEqualTo(CoreConstants.DEFAULT_ONTOGENY_FACTOR);
+         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI).Value.ShouldBeEqualTo(CoreConstants.DEFAULT_ONTOGENY_FACTOR);
+      }
+
+   }
 }

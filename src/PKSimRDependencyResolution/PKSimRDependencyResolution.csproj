@@ -18,8 +18,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OSPSuite.FuncParser.Ubuntu22" Version="4.0.0.59" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.R" Version="12.0.303" />
+    <PackageReference Include="OSPSuite.FuncParser.Ubuntu22" Version="4.0.0.67" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.R" Version="12.0.307" />
     <PackageReference Include="OSPSuite.SimModel.Ubuntu22" Version="4.0.0.59" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES.Ubuntu22" Version="4.1.0.9" GeneratePathProperty="true" />
   </ItemGroup>
@@ -48,7 +48,7 @@
       <LinuxFiles Include="$(TargetDir)runtimes/linux-x64/native/SQLite.Interop.dll" />
       <WindowsFiles Include="$(TargetDir)runtimes/win-x64/native/SQLite.Interop.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles->Replace('runtimes/win-x64/native/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
-    <Copy SourceFiles="@(LinuxFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(LinuxFiles->Replace('runtimes/linux-x64/native/SQLite.Interop.dll', 'libSQLite.Interop.dll'))" />
+    <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('runtimes/win-x64/native/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+    <Copy SourceFiles="@(LinuxFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(LinuxFiles-&gt;Replace('runtimes/linux-x64/native/SQLite.Interop.dll', 'libSQLite.Interop.dll'))" />
   </Target>
 </Project>

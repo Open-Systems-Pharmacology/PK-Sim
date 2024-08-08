@@ -499,7 +499,7 @@ namespace PKSim.IntegrationTests
    {
       private float[][] _prototypeSimulationDissolvedDrugLumen; //dissolved drug[lumen segment][time] in the prototype simulation
       private float[] _fractionAbsorbed, _prototypeSimulationFractionAbsorbed;
-      private float[] _peripheralVenousbloodPls, _prototypeSimulationPeripheralVenousbloodPls;
+      private float[] _peripheralVenousBloodPls, _prototypeSimulationPeripheralVenousBloodPls;
 
       private IndividualSimulation _prototypeSimulation;
 
@@ -532,8 +532,8 @@ namespace PKSim.IntegrationTests
          _fractionAbsorbed = ValuesFor(_simulation, fractionAbsorbedPath);
          _prototypeSimulationFractionAbsorbed = ValuesFor(_prototypeSimulation, fractionAbsorbedPath);
 
-         _peripheralVenousbloodPls = ValuesFor(_simulation, peripheralVenPlsPath);
-         _prototypeSimulationPeripheralVenousbloodPls = ValuesFor(_prototypeSimulation, peripheralVenPlsPath);
+         _peripheralVenousBloodPls = ValuesFor(_simulation, peripheralVenPlsPath);
+         _prototypeSimulationPeripheralVenousBloodPls = ValuesFor(_prototypeSimulation, peripheralVenPlsPath);
       }
 
       private void addOutputs(IndividualSimulation prototypeSimulation, string[] lumenPaths)
@@ -645,7 +645,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void peripheral_venous_blood_plasma_values_should_be_equal()
       {
-         compareSimulatedValues(_peripheralVenousbloodPls, _prototypeSimulationPeripheralVenousbloodPls, "peripheral venous blood (plasma)");
+         compareSimulatedValues(_peripheralVenousBloodPls, _prototypeSimulationPeripheralVenousBloodPls, "peripheral venous blood (plasma)");
       }
    }
 
