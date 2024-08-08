@@ -20,7 +20,7 @@ namespace PKSim.Core.Services
       ///    Returns an empty <see cref="IndividualMolecule" />  (only parameters are defined in the protein, no protein
       ///    container)
       /// </summary>
-      IndividualMolecule CreateEmpty();
+      IndividualMolecule CreateEmpty(string moleculeName, bool isAgeDependent);
 
       IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
 
@@ -65,7 +65,7 @@ namespace PKSim.Core.Services
 
       protected abstract ApplicationIcon Icon { get; }
 
-      public virtual IndividualMolecule CreateEmpty() => CreateMolecule(string.Empty);
+      public virtual IndividualMolecule CreateEmpty(string moleculeName, bool isAgeDependent) => CreateMolecule(moleculeName, isAgeDependent);
 
       public abstract IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
 
