@@ -110,9 +110,7 @@ namespace PKSim.Core.Services
          //Default ontogeny parameter tables created for ALL molecules for age dependent species only
          if (isAgeDependent)
             AddAgeDependentOntogenyParametersTo(molecule);
-         else
-            AddConstantOntogenyParametersTo(molecule);
-
+  
          return molecule;
       }
 
@@ -125,11 +123,11 @@ namespace PKSim.Core.Services
             OntogenyFactorFromTable(ONTOGENY_FACTOR_GI, CoreConstants.Rate.ONTOGENY_FACTOR_GI_FROM_TABLE));
       }
 
-      public void AddConstantOntogenyParametersTo(IndividualMolecule undefinedMolecule)
-      {
-         //Constant ontogeny parameters added for undefined enzymes
-         OntogenyFactors.Each(x => CreateMoleculeParameterIn(undefinedMolecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
-      }
+      // public void AddConstantOntogenyParametersTo(IndividualMolecule undefinedMolecule)
+      // {
+      //    //Constant ontogeny parameters added for undefined enzymes
+      //    OntogenyFactors.Each(x => CreateMoleculeParameterIn(undefinedMolecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
+      // }
 
       protected IParameter CreateFormulaParameterIn(
          IContainer parameterContainer,
