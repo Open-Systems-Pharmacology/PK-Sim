@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DevExpress.Data.Controls.ExpressionEditor;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -159,7 +158,7 @@ namespace PKSim.Core.Mappers
          if (string.IsNullOrEmpty(value))
             return;
 
-         buildingBlock.OriginData.Add(new ExtendedProperty<string> { Name = key, Value = value });
+         buildingBlock.OriginData.Add(new ExtendedProperty<string> {Name = key, Value = value});
       }
 
       private string keyForOriginDataParameter(string key, OriginDataParameter parameter) => string.IsNullOrEmpty(parameter.Name) ? key : parameter.Name;
