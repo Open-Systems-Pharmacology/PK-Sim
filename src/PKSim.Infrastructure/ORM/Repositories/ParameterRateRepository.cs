@@ -1,4 +1,5 @@
 using System.Linq;
+using OSPSuite.Core.Domain;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -57,6 +58,14 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          //set name of RHS rate
          parameterRateMetaData.RHSRate = rhsItems.ElementAt(0).Rate;
+      }
+
+      public ParameterRateMetaData ParameterMetaDataFor(string containerPath, string parameterName, string calculationMethod)
+      {
+         if(string.IsNullOrEmpty(calculationMethod))
+            return ParameterMetaDataFor(containerPath, parameterName);
+
+         return AllFor(containerPath).Find(x => string.Equals(x.ParameterName, parameterName) && string.Equals(x.CalculationMethod, calculationMethod));
       }
    }
 }

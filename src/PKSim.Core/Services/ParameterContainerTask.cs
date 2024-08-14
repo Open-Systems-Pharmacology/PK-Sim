@@ -4,8 +4,10 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using static PKSim.Core.CoreConstants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -69,6 +71,10 @@ namespace PKSim.Core.Services
             //all non individual parameters are added to the spatial structure by default
             if (parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual)
                return true;
+
+            //created in the expression profile
+            if (OntogenyFactorTables.Contains(parameterMetaData.ParameterName))
+               return false;
 
             //parameter is not used for all species=> it should not be added to the spatial structure as it will be added dynamically from the individual selected
             var isUsedForAllSpecies = _individualParameterBySpeciesRepository.UsedForAllSpecies(parameterMetaData);
@@ -137,7 +143,7 @@ namespace PKSim.Core.Services
       {
          addParametersTo(container, calculationMethods: CoreConstants.CalculationMethod.ForApplications);
          //parameter input dose should not be added to the container 
-         var inputDose = container.Parameter(CoreConstants.Parameters.INPUT_DOSE);
+         var inputDose = container.Parameter(INPUT_DOSE);
          if (inputDose != null)
             container.RemoveChild(inputDose);
       }

@@ -277,6 +277,7 @@ namespace PKSim.Core
          public static readonly string RENAL_AGING_HUMAN = "Renal_Aging_Human";
          public static readonly string RENAL_AGING_ANIMALS = "Renal_Aging_Animals";
          public static readonly string EXPRESSION_PARAMETERS = "ExpressionParameters";
+         public static readonly string ONTOGENY_FACTORS = "OntogenyFactors";
          public static readonly string DISEASE_STATES = "DiseaseStates";
 
          public static readonly IReadOnlyList<string> ForDiseaseStates = new List<string>

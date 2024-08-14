@@ -82,6 +82,7 @@ namespace PKSim.Core.Services
          };
          var moduleConfiguration = new ModuleConfiguration(module);
          simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
+
          //STEP1: Create spatial structure
          module.Add(_spatialStructureFactory.CreateFor(individual, simulation));
 
