@@ -32,7 +32,7 @@
     <ProjectReference Include="..\..\src\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
     <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj" />
     <ProjectReference Include="..\..\src\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\PKSim.Matlab\PKSim.Matlab.csproj" />
+    <ProjectReference Include="..\..\src\PKSim.R\PKSim.R.csproj" />
   </ItemGroup>
 
 
@@ -87,6 +87,6 @@
     <ItemGroup>
       <WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles->Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+    <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
   </Target>
 </Project>
