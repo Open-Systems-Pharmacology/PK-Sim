@@ -3,9 +3,9 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters.Charts;
-using OSPSuite.Presentation.Views.Parameters;
 using PKSim.Assets;
 using PKSim.Presentation.Presenters.Compounds;
+using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.Presentation
 {

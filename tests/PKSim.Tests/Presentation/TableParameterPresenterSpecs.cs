@@ -8,15 +8,16 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Presentation.Presenters.Parameters;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views.Parameters;
+using PKSim.Presentation.Presenters.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_TableParameterPresenter : ContextSpecification<ITableParameterPresenter>
    {
-      protected ITableParameterView _view;
+      protected ITableFormulaView _view;
       protected IParameterTask _parameterTask;
       private IFormulaFactory _formulaFactory;
       protected IParameter _parameter;
@@ -26,7 +27,7 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _view = A.Fake<ITableParameterView>();
+         _view = A.Fake<ITableFormulaView>();
          _parameterTask = A.Fake<IParameterTask>();
          _formulaFactory = A.Fake<IFormulaFactory>();
          _cloner = A.Fake<ICloner>();
@@ -53,9 +54,9 @@ namespace PKSim.Presentation
          _parameter = new PKSimParameter().WithFormula(_tableFormula);
       }
 
-      private class TableParametersForSpecs : Presenters.Parameters.TableParameterPresenter<ITableParameterView>
+      private class TableParametersForSpecs : Presenters.Parameters.TableParameterPresenter<ITableFormulaView>
       {
-         public TableParametersForSpecs(ITableParameterView view, IParameterTask parameterTask, ICloner cloneManager, IFormulaFactory formulaFactory) :
+         public TableParametersForSpecs(ITableFormulaView view, IParameterTask parameterTask, ICloner cloneManager, IFormulaFactory formulaFactory) :
             base(view, parameterTask, formulaFactory, cloneManager, () => new TableFormula {Id = "new"})
 
          {
@@ -88,7 +89,7 @@ namespace PKSim.Presentation
       public void should_allow_the_user_to_edit_the_points_defined_in_the_formula()
       {
          var allPoints = sut.AllPoints;
-         A.CallTo(() => _view.BindTo(allPoints)).MustHaveHappened();
+         A.CallTo(() => _view.BindTo(A<TableFormulaDTO>.That.Matches(x => x.AllPoints.Equals(allPoints)))).MustHaveHappened();
          allPoints.Count().ShouldBeEqualTo(2);
          allPoints.ElementAt(0).X.ShouldBeEqualTo(_p1.X);
          allPoints.ElementAt(0).Y.ShouldBeEqualTo(_p1.Y);

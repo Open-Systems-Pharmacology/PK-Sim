@@ -1,7 +1,7 @@
-﻿using OSPSuite.Presentation.Presenters.Parameters;
-using OSPSuite.Presentation.Views.Parameters;
+﻿using OSPSuite.Presentation.Views.Parameters;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Parameters;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -9,9 +9,9 @@ namespace PKSim.Presentation.Presenters.Compounds
    {
    }
 
-   public class TableSolubilityParameterPresenter : Parameters.TableParameterPresenter<ITableParameterView>, ITableSolubilityParameterPresenter
+   public class TableSolubilityParameterPresenter : TableParameterPresenter<ITableFormulaView>, ITableSolubilityParameterPresenter
    {
-      public TableSolubilityParameterPresenter(ITableParameterView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner, ICompoundAlternativeTask compoundAlternativeTask) :
+      public TableSolubilityParameterPresenter(ITableFormulaView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner, ICompoundAlternativeTask compoundAlternativeTask) :
          base(view, parameterTask, formulaFactory, cloner, compoundAlternativeTask.ImportSolubilityTableFormula)
       {
       }
