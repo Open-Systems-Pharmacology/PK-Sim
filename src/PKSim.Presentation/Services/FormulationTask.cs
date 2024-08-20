@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using PKSim.Assets;
 using PKSim.Core;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -26,7 +25,8 @@ namespace PKSim.Presentation.Services
       Formulation CreateFormulationForRoute(string applicationRoute);
       Task<Formulation> LoadFormulationForRouteAsync(string applicationRoute);
 
-      TableFormula ImportTableFormula();
+      DataRepository ImportTablePoints();
+      TableFormula TableFormulaFrom(DataRepository dataRepository);
    }
 
    public class FormulationTask : BuildingBlockTask<Formulation>, IFormulationTask
@@ -71,7 +71,7 @@ namespace PKSim.Presentation.Services
          throw new FormulationCannotBeUsedForRouteException(formulation, applicationRoute);
       }
 
-      public TableFormula ImportTableFormula()
+      public DataRepository ImportTablePoints()
       {
          var dataImporterSettings = new DataImporterSettings
          {
@@ -80,16 +80,15 @@ namespace PKSim.Presentation.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedFormula = _dataImporter.ImportDataSets(
+         return _dataImporter.ImportDataSets(
             new List<MetaDataCategory>(), 
             getColumnInfos(), 
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          ).DataRepositories.FirstOrDefault();
-         return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 
-      private TableFormula formulaFrom(DataRepository dataRepository)
+      public TableFormula TableFormulaFrom(DataRepository dataRepository)
       {
          var baseGrid = dataRepository.BaseGrid;
          var valueColumn = dataRepository.AllButBaseGrid().Single();
