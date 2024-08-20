@@ -5,6 +5,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters.Parameters;
 using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Parameters;
 
 namespace PKSim.Presentation.Services
 {

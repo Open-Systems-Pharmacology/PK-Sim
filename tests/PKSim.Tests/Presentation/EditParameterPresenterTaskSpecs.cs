@@ -11,6 +11,7 @@ using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
+using IEditTableParameterPresenter = PKSim.Presentation.Presenters.Parameters.IEditTableParameterPresenter;
 
 namespace PKSim.Presentation
 {
