@@ -30,11 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="12.0.313" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.0.311" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.5" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.0.6" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.0.313" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.313" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.0.311" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.311" />
   </ItemGroup>
 
   <ItemGroup>
