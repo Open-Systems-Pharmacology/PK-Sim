@@ -1,7 +1,7 @@
-using System;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters.Parameters;
@@ -27,8 +27,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       private readonly ICloner _cloner;
       private IParameter _tableParameter;
 
-      protected TableParameterPresenter(TView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner, Func<TableFormula> importTableFormula)
-         : base(view, importTableFormula)
+      protected TableParameterPresenter(TView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner)
+         : base(view)
       {
          _parameterTask = parameterTask;
          _formulaFactory = formulaFactory;
@@ -51,10 +51,12 @@ namespace PKSim.Presentation.Presenters.Parameters
          return _parameterTask.SetParameterFormula(tableParameter, tableFormula);
       }
 
-      protected override void ApplyImportedFormula(TableFormula importedFormula)
+      protected override void ApplyImportedTablePoints(DataRepository importedTablePoints)
       {
-         Edit(importedFormula);
+         Edit(TablePointsToTableFormula(importedTablePoints));
       }
+
+      protected abstract TableFormula TablePointsToTableFormula(DataRepository importedTablePoints);
 
       public override void SetXValue(ValuePointDTO valuePointDTO, double newValue) => valuePointDTO.X = newValue;
 
