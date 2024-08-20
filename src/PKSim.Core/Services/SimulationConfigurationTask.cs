@@ -75,6 +75,7 @@ namespace PKSim.Core.Services
       {
          var module = _objectBaseFactory.Create<Module>().WithName(simulation.Name);
          module.PKSimVersion = _applicationConfiguration.FullVersion;
+         module.IsPKSimModule = true;
          var individual = simulation.Individual;
          var simulationConfiguration = new SimulationConfiguration
          {
