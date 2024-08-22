@@ -7,6 +7,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views.Parameters;
@@ -54,17 +55,27 @@ namespace PKSim.Presentation
          _parameter = new PKSimParameter().WithFormula(_tableFormula);
       }
 
-      private class TableParametersForSpecs : Presenters.Parameters.TableParameterPresenter<ITableFormulaView>
+      private class TableParametersForSpecs : TableParameterPresenter<ITableFormulaView>
       {
          public TableParametersForSpecs(ITableFormulaView view, IParameterTask parameterTask, ICloner cloneManager, IFormulaFactory formulaFactory) :
-            base(view, parameterTask, formulaFactory, cloneManager, () => new TableFormula {Id = "new"})
+            base(view, parameterTask, formulaFactory, cloneManager)
 
          {
+         }
+
+         protected override TableFormula TablePointsToTableFormula(DataRepository importedTablePoints)
+         {
+            return new TableFormula().WithId(importedTablePoints.Id);
+         }
+
+         protected override DataRepository ImportTablePoints()
+         {
+            return new DataRepository { Id = "new" };
          }
       }
    }
 
-   public class When_editing_a_parameter_containg_a_table_formula : concern_for_TableParameterPresenter
+   public class When_editing_a_parameter_containing_a_table_formula : concern_for_TableParameterPresenter
    {
       private ValuePoint _p1;
       private ValuePoint _p2;
@@ -158,7 +169,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_checking_if_an_edited_table_paramaeter_is_valid : concern_for_TableParameterPresenter
+   public class When_checking_if_an_edited_table_parameter_is_valid : concern_for_TableParameterPresenter
    {
 
       protected override void Context()

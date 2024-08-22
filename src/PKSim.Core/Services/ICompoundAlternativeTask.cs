@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Model;
@@ -74,10 +75,9 @@ namespace PKSim.Core.Services
       /// </summary>
       TableFormula SolubilityTableForPh(ParameterAlternative solubilityAlternative, Compound compound);
 
-      /// <summary>
-      ///    Imports a solubility table from file and returns the imported table
-      /// </summary>
-      TableFormula ImportSolubilityTableFormula();
+      DataRepository ImportSolubilityTablePoints();
+
+      TableFormula TableFormulaFrom(DataRepository dataRepository);
 
       /// <summary>
       ///    Performs initialization steps for a brand new solubility alternative that should behave as a Table alternative
