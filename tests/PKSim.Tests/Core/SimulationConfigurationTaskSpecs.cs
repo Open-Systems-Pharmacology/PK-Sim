@@ -40,7 +40,7 @@ namespace PKSim.Core
       protected IIndividualToIndividualBuildingBlockMapper _individualBuildingBlockMapper;
       protected IExpressionProfileToExpressionProfileBuildingBlockMapper _expressionProfileBuildingBlockMapper;
       private IApplicationConfiguration _applicationConfiguration;
-
+      
       protected override void Context()
       {
          _spatialStructureFactory = A.Fake<IPKSimSpatialStructureFactory>();
@@ -124,6 +124,12 @@ namespace PKSim.Core
       public void should_add_the_event_defined_for_the_given_simulation()
       {
          _module.EventGroups.ShouldBeEqualTo(_eventBuildingBlock);
+      }
+
+      [Observation]
+      public void should_set_is_pksim_module_true()
+      {
+         _module.IsPKSimModule.ShouldBeTrue();
       }
 
       [Observation]
