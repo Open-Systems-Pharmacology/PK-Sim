@@ -29,10 +29,7 @@ namespace PKSim.Core.Services
 
       public override IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName)
       {
-         var molecule = CreateMolecule(moleculeName);
-
-         if (HasAgeParameter(simulationSubject))
-            AddAgeDependentOntogenyParametersTo(molecule);
+         var molecule = CreateMolecule(moleculeName, simulationSubject.IsAgeDependent);
 
          //default localization
          molecule.Localization = Localization.Intracellular;

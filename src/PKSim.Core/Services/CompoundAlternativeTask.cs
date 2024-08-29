@@ -178,7 +178,7 @@ namespace PKSim.Core.Services
          return new SetSpeciesInSpeciesDependentEntityCommand(parameterAlternative, species, _executionContext).Run(_executionContext);
       }
 
-      public TableFormula ImportSolubilityTableFormula()
+      public DataRepository ImportSolubilityTablePoints()
       {
          var dataImporterSettings = new DataImporterSettings
          {
@@ -187,16 +187,16 @@ namespace PKSim.Core.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var importedFormula = _dataImporter.ImportDataSets(
+         return _dataImporter.ImportDataSets(
             new List<MetaDataCategory>(), 
             getColumnInfos(), 
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          ).DataRepositories.FirstOrDefault();
-         return importedFormula == null ? null : formulaFrom(importedFormula);
+         
       }
 
-      private TableFormula formulaFrom(DataRepository dataRepository)
+      public TableFormula TableFormulaFrom(DataRepository dataRepository)
       {
          var baseGrid = dataRepository.BaseGrid;
          var valueColumn = dataRepository.AllButBaseGrid().Single();

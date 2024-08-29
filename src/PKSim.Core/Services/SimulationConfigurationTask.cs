@@ -75,6 +75,7 @@ namespace PKSim.Core.Services
       {
          var module = _objectBaseFactory.Create<Module>().WithName(simulation.Name);
          module.PKSimVersion = _applicationConfiguration.FullVersion;
+         module.IsPKSimModule = true;
          var individual = simulation.Individual;
          var simulationConfiguration = new SimulationConfiguration
          {
@@ -82,6 +83,7 @@ namespace PKSim.Core.Services
          };
          var moduleConfiguration = new ModuleConfiguration(module);
          simulationConfiguration.AddModuleConfiguration(moduleConfiguration);
+
          //STEP1: Create spatial structure
          module.Add(_spatialStructureFactory.CreateFor(individual, simulation));
 

@@ -19,9 +19,9 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using PKSim.Matlab;
 using PKSim.Presentation;
 using PKSim.Presentation.Services;
+using PKSim.R.Services;
 
 namespace PKSim.IntegrationTests
 {

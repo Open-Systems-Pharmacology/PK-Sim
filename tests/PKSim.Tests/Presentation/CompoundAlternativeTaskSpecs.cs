@@ -453,7 +453,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _tableFormula = sut.ImportSolubilityTableFormula();
+         _tableFormula = sut.TableFormulaFrom(sut.ImportSolubilityTablePoints());
       }
 
       [Observation]
