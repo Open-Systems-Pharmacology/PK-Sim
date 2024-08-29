@@ -31,6 +31,14 @@ namespace PKSim.R
 
       public static void RunSnapshot(SnapshotRunOptions runOptions) => resolveTask<IBatchRunner<SnapshotRunOptions>>().RunBatchAsync(runOptions).Wait();
 
+      public static void RunExport(ExportRunOptions runOptions) => resolveTask<IBatchRunner<ExportRunOptions>>().RunBatchAsync(runOptions).Wait();
+
+      public static void RunQualification(QualificationRunOptions runOptions) => resolveTask<IBatchRunner<QualificationRunOptions>>().RunBatchAsync(runOptions).Wait();
+
+      public static void RunJson(JsonRunOptions runOptions) => resolveTask<IBatchRunner<JsonRunOptions>>().RunBatchAsync(runOptions).Wait();
+
+      public static void RunSimulationExport(ExportRunOptions runOptions) => resolveTask<IExportSimulationRunner>().RunBatchAsync(runOptions).Wait();
+
       private static T resolveTask<T>()
       {
          try

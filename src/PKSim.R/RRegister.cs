@@ -32,18 +32,11 @@ namespace PKSim.R
 
       private static void registerCLITypes(IContainer container)
       {
-         // container.Register<IProgressUpdater, NoneProgressUpdater>();
-         // container.Register<IDialogCreator, CLIDialogCreator>();
-         // container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
          container.Register<IDiagramModel, CLIDiagramModel>();
          container.Register<IDataImporter, CLIDataImporter>();
          container.Register<IEntityValidationTask, CLIEntityValidationTask>();
-         // container.Register<IOntogenyTask, CLIIndividualOntogenyTask>();
          container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>(LifeStyle.Singleton);
-         // container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
-         // container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);
-         // container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
       }
    }
 }
