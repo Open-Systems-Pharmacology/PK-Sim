@@ -1,3 +1,4 @@
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
@@ -32,6 +33,7 @@ namespace PKSim.R
 
       private static void registerCLITypes(IContainer container)
       {
+         container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
          container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
          container.Register<IDiagramModel, CLIDiagramModel>();
          container.Register<IDataImporter, CLIDataImporter>();
