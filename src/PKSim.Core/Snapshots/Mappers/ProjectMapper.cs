@@ -257,13 +257,18 @@ namespace PKSim.Core.Snapshots.Mappers
          addClassifiableToProject<ClassifiableQualificationPlan, Model.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan, project.AllQualificationPlans);
       }
 
+      private void logDuplicateEntryError<T>(T subject) where T : class, IWithId, IWithName
+      {
+         _logger.AddError(PKSimConstants.Error.SnapshotDuplicateEntryByName(subject.Name, _executionContext.TypeFor(subject)));
+      }
+
       private void addClassifiableToProject<TClassifiableWrapper, TSubject>(ModelProject project, TSubject subject,
          Action<TSubject> addToProjectAction, IEnumerable<TSubject> existingInProject) where TClassifiableWrapper : Classifiable<TSubject>, new() where TSubject : class, IWithId, IWithName
       {
          var existing = existingInProject.FindByName(subject.Name);
          if (existing != null)
          {
-            _logger.AddError(PKSimConstants.Error.SnapshotDuplicateEntryByName(subject.Name, _executionContext.TypeFor(subject)));
+            logDuplicateEntryError(subject);
             return;
          }
 
@@ -356,7 +361,7 @@ namespace PKSim.Core.Snapshots.Mappers
             //we have a building block with the same name? The snapshot was probably edited by hand and is corrupted
             if (existingBuildingBlock != null)
             {
-               _logger.AddError(PKSimConstants.Error.SnapshotDuplicateEntryByName(existingBuildingBlock.Name, _executionContext.TypeFor(buildingBlock)));
+               logDuplicateEntryError(buildingBlock);
                continue;
             }
 
