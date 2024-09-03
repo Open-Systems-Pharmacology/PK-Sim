@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OSPSuite.Assets.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Assets
@@ -929,6 +930,10 @@ namespace PKSim.Assets
 
          public static string CouldNotFindMoleculeType(string moleculeType) =>
             $"Could not find the molecule type {moleculeType}";
+
+         public static string SnapshotDuplicateEntryByName(string name, string type) =>
+            $"Another {type} named '{name}' already exists in the project. Snapshot file is corrupted.";
+
       }
 
       public static class Information

@@ -37,6 +37,7 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly ICreationMetaDataFactory _creationMetaDataFactory;
       private readonly IOSPSuiteLogger _logger;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
+      private readonly IExecutionContext _executionContext;
 
       public ProjectMapper(
          SimulationMapper simulationMapper,
@@ -57,6 +58,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _lazyLoadTask = lazyLoadTask;
          _creationMetaDataFactory = creationMetaDataFactory;
          _logger = logger;
+         _executionContext = executionContext;
          //required to load the snapshot mapper via execution context to avoid circular references
          _snapshotMapper = new Lazy<ISnapshotMapper>(executionContext.Resolve<ISnapshotMapper>);
       }
@@ -231,33 +233,45 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void addSimulationToProject(ModelProject project, Model.Simulation simulation)
       {
-         addClassifiableToProject<ClassifiableSimulation, Model.Simulation>(project, simulation, project.AddBuildingBlock);
+         addClassifiableToProject<ClassifiableSimulation, Model.Simulation>(project, simulation, project.AddBuildingBlock, project.All<Model.Simulation>());
       }
 
       private void addObservedDataToProject(ModelProject project, ModelDataRepository repository)
       {
-         addClassifiableToProject<ClassifiableObservedData, ModelDataRepository>(project, repository, project.AddObservedData);
+         addClassifiableToProject<ClassifiableObservedData, ModelDataRepository>(project, repository, project.AddObservedData, project.AllObservedData);
       }
 
       private void addComparisonToProject(ModelProject project, ISimulationComparison simulationComparison)
       {
-         addClassifiableToProject<ClassifiableComparison, ISimulationComparison>(project, simulationComparison, project.AddSimulationComparison);
+         addClassifiableToProject<ClassifiableComparison, ISimulationComparison>(project, simulationComparison, project.AddSimulationComparison, project.AllSimulationComparisons);
       }
 
       private void addParameterIdentificationToProject(ModelProject project, ModelParameterIdentification parameterIdentification)
       {
          addClassifiableToProject<ClassifiableParameterIdentification, ModelParameterIdentification>(project, parameterIdentification,
-            project.AddParameterIdentification);
+            project.AddParameterIdentification, project.AllParameterIdentifications);
       }
 
       private void addQualificationPlanToProject(ModelProject project, Model.QualificationPlan qualificationPlan)
       {
-         addClassifiableToProject<ClassifiableQualificationPlan, Model.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan);
+         addClassifiableToProject<ClassifiableQualificationPlan, Model.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan, project.AllQualificationPlans);
+      }
+
+      private void logDuplicateEntryError<T>(T subject) where T : class, IWithId, IWithName
+      {
+         _logger.AddError(PKSimConstants.Error.SnapshotDuplicateEntryByName(subject.Name, _executionContext.TypeFor(subject)));
       }
 
       private void addClassifiableToProject<TClassifiableWrapper, TSubject>(ModelProject project, TSubject subject,
-         Action<TSubject> addToProjectAction) where TClassifiableWrapper : Classifiable<TSubject>, new() where TSubject : IWithId, IWithName
+         Action<TSubject> addToProjectAction, IEnumerable<TSubject> existingInProject) where TClassifiableWrapper : Classifiable<TSubject>, new() where TSubject : class, IWithId, IWithName
       {
+         var existing = existingInProject.FindByName(subject.Name);
+         if (existing != null)
+         {
+            logDuplicateEntryError(subject);
+            return;
+         }
+
          addToProjectAction(subject);
          project.GetOrCreateClassifiableFor<TClassifiableWrapper, TSubject>(subject);
       }
@@ -339,8 +353,19 @@ namespace PKSim.Core.Snapshots.Mappers
          foreach (var snapshot in snapshots)
          {
             var buildingBlock = await mapSnapshotToBuildingBlock<TModel, TSnapshot>(snapshot, snapshotContext);
-            if (buildingBlock != null)
-               buildingBlocks.Add(buildingBlock);
+            if (buildingBlock == null)
+               continue;
+
+            var existingBuildingBlock = buildingBlocks.FindByName(buildingBlock.Name);
+
+            //we have a building block with the same name? The snapshot was probably edited by hand and is corrupted
+            if (existingBuildingBlock != null)
+            {
+               logDuplicateEntryError(buildingBlock);
+               continue;
+            }
+
+            buildingBlocks.Add(buildingBlock);
          }
 
          return buildingBlocks;
