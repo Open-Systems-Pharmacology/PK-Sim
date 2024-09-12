@@ -59,17 +59,17 @@ namespace PKSim.CLI.Core.Services
 
          var allFilesToExports = allFilesToExportFrom(runOptions).ToList();
 
-         await Task.Run(() => startSnapshotRun(allFilesToExports, runOptions.ExportMode));
+         await Task.Run(() => startSnapshotRun(allFilesToExports, runOptions.ExportMode, runOptions.RunSimulations));
 
          _logger.AddInfo($"Snapshot run finished: {DateTime.Now.ToIsoFormat()}");
       }
 
-      private Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, SnapshotExportMode exportMode)
+      private Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, SnapshotExportMode exportMode, bool runSimulations)
       {
          if (exportMode == SnapshotExportMode.Snapshot)
             return startSnapshotRun(fileMaps, createSnapshotFromProjectFile);
 
-         return startSnapshotRun(fileMaps, createProjectFromSnapshotFile);
+         return startSnapshotRun(fileMaps, file => createProjectFromSnapshotFile(file, runSimulations));
       }
 
       private async Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, Func<FileMap, Task> exportFunc)
@@ -98,10 +98,10 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"{fileMaps.Count} {"project".PluralizeIf(fileMaps)} loaded and exported in {timeSpent.ToDisplay()}");
       }
 
-      private async Task createProjectFromSnapshotFile(FileMap file)
+      private async Task createProjectFromSnapshotFile(FileMap file, bool runSimulations)
       {
          _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
-         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile);
+         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile, runSimulations);
          if (project == null)
             return;
 
