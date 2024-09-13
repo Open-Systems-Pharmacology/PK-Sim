@@ -107,7 +107,14 @@ namespace PKSim.CLI.Core.Services
 
          _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
          _workspace.Project = project;
-         _workspacePersistor.SaveSession(_workspace, file.ProjectFile);
+         try
+         {
+            _workspacePersistor.SaveSession(_workspace, file.ProjectFile);
+         }
+         finally
+         {
+            _workspacePersistor.CloseSession();
+         }
          _logger.AddInfo($"Project saved to '{file.ProjectFile};");
       }
 
@@ -115,11 +122,18 @@ namespace PKSim.CLI.Core.Services
       {
          _logger.AddInfo($"Starting snapshot export for '{file.ProjectFile}'");
 
-         _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
-         _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
+         try
+         {
+            _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
+            _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
 
-         await _snapshotTask.ExportModelToSnapshotAsync(_workspace.Project, file.SnapshotFile);
-         _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");
+            await _snapshotTask.ExportModelToSnapshotAsync(_workspace.Project, file.SnapshotFile);
+            _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");
+         }
+         finally
+         {
+            _workspacePersistor.CloseSession();
+         }
       }
 
       private IEnumerable<FileMap> allFilesToExportFrom(SnapshotRunOptions runOptions)
