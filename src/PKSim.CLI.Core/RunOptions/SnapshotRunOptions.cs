@@ -11,6 +11,7 @@ namespace PKSim.CLI.Core.RunOptions
    {
       private string _outputFolder;
       private string _inputFolder;
+      public bool RunSimulations { get; set; } = true;
       public SnapshotExportMode ExportMode { get; set; } = SnapshotExportMode.Snapshot;
       public NotificationType NotificationType { get; set; } = NotificationType.Info | NotificationType.Error;
 
@@ -29,7 +30,7 @@ namespace PKSim.CLI.Core.RunOptions
       }
 
       public IReadOnlyList<string> Folders { get; set; }
-
+      
       public SnapshotRunOptions()
       {
          Folders = new List<string>();
