@@ -16,6 +16,7 @@
     <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
 	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
