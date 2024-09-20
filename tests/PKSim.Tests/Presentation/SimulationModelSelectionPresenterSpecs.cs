@@ -53,7 +53,7 @@ namespace PKSim.Presentation
          A.CallTo(() => _simulation.BuildingBlock<ISimulationSubject>()).Returns(_individual);
          _individual.OriginData = _originData;
          _originData.Species = _species;
-         A.CallTo(() => _modelPropertiesTask.Update(A<ModelProperties>._, A<ModelProperties>._, _originData)).Returns(_modelProperties);
+         
 
          sut = new SimulationModelSelectionPresenter(_view, _modelConfigurationRepository, _modelPropertiesTask, _modelPropertiesMapper,  _representationInfoRepository,_categoryCalculationMethodDTOMapper);
       }

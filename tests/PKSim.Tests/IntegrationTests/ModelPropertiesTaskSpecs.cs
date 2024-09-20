@@ -30,7 +30,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _updatedProperties = sut.Update(_modelProperties_4Comp, _modelProperties_2Pores, _originData);
+         _updatedProperties = _modelProperties_2Pores;
       }
 
       [Observation]
