@@ -74,6 +74,7 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string DynamicSumFormulas = "DynamicSumFormulas";
          public static readonly string BMI = "BMI";
          public static readonly string Individual_AgeDependent = "Individual_AgeDependent";
+         public static readonly string Individual_HeightDependent = "Individual_HeightDependent";
       }
 
       public static class Category
