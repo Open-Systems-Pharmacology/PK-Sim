@@ -73,7 +73,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
          foreach (var calculationMethodElement in all.Elements().ToList())
          {
             var name = calculationMethodElement.GetAttribute("name");
-            //BMI Calculation method was split into TWO calculation method. So we need to rename one and ADD A new one
+            //BMI Calculation method was split into TWO calculation methods. So we need to rename one and ADD A new one
             if (string.Equals(name, ConverterConstants.CalculationMethod.BMI))
             {
                calculationMethodElement.SetAttributeValue("name", ConverterConstants.CalculationMethod.Individual_HeightDependent);
