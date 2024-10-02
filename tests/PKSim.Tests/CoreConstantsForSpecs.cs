@@ -95,12 +95,7 @@ namespace PKSim
          {
             "AmnioticFluid",
             "ArterialBlood_UmbilicalCord",
-            "Breasts",
-            "Endometrium",
             "Fetus",
-            "Myometrium",
-            "PlacentaFetal",
-            "PlacentaMaternal",
             "VenousBlood_UmbilicalCord"
          }).ToList().AsReadOnly();
 
