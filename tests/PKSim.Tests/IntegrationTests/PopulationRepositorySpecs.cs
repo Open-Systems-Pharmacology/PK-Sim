@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Infrastructure;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.IntegrationTests
 {
@@ -32,7 +35,7 @@ namespace PKSim.IntegrationTests
       public void all_populations_contain_at_least_one_gender()
       {
          foreach (var pop in _result)
-            pop.Genders.Count().ShouldBeGreaterThan(0);
+            pop.Genders.Count.ShouldBeGreaterThan(0);
       }
 
       [Observation]
@@ -48,6 +51,27 @@ namespace PKSim.IntegrationTests
          {
             createPopulation(pop.Name).ShouldBeTrue($"Population {pop.Name} could not be created");
          }
+      }
+
+      [Observation]
+      public void volumes_and_specific_blood_flows_of_pregnancy_population_should_be_distributed_as_per_default()
+      {
+         var individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.PREGNANT);
+         var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
+
+         var allDistributedParameterPaths = population.IndividualValuesCache.AllParameterPaths().ToList();
+
+         CoreConstantsForSpecs.ContainerName.PregnancyOrgansWithBloodFlow.Each(organ =>
+            shouldContainOrganParameter(allDistributedParameterPaths, organ, CoreConstants.Parameters.SPECIFIC_BLOOD_FLOW_RATE));
+
+         CoreConstantsForSpecs.ContainerName.PregnancyOrgans.Each(organ =>
+            shouldContainOrganParameter(allDistributedParameterPaths, organ, Constants.Parameters.VOLUME));
+      }
+
+      private void shouldContainOrganParameter(List<string> allDistributedParameterPaths, string organ, string parameter)
+      {
+         var parameterPath = $"Organism|{organ}|{parameter}";
+         allDistributedParameterPaths.Contains(parameterPath).ShouldBeTrue($"{parameterPath} is not defined as distributed.");
       }
 
       private bool createPopulation(string populationName)
