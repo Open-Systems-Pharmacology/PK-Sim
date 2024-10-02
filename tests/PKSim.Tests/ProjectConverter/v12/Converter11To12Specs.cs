@@ -8,6 +8,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure.ProjectConverter.v12;
 using PKSim.IntegrationTests;
+using static PKSim.Infrastructure.ProjectConverter.ConverterConstants.CalculationMethod;
 
 namespace PKSim.ProjectConverter.v12
 {
@@ -47,6 +48,8 @@ namespace PKSim.ProjectConverter.v12
       private void validateIndividual(Individual individual)
       {
          individual.Organism.Parameter(CoreConstants.Parameters.PMA).ShouldNotBeNull();
+         individual.OriginData.CalculationMethodCache.Contains(Individual_HeightDependent).ShouldBeTrue();
+         individual.OriginData.CalculationMethodCache.Contains(Individual_AgeDependent).ShouldBeTrue();
       }
    }
 }

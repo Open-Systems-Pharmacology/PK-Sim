@@ -19,7 +19,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
       private readonly ICloner _cloner;
       private bool _converted;
-      private const string _buildMode = "mode";
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V11;
 
       public Converter11To12(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner)
@@ -48,19 +47,19 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
             convertCalculationMethods(calculationMethodCacheElement);
          }
 
-         element.DescendantsAndSelf().Where(x => x.GetAttribute(_buildMode) != null).Each(convertBuildMode);
+         element.DescendantsAndSelf().Where(x => x.GetAttribute("mode") != null).Each(convertBuildMode);
 
          return (ProjectVersions.V12, _converted);
       }
 
       private void convertBuildMode(XElement parameterNode)
       {
-         var buildMode = parameterNode.GetAttribute(_buildMode);
+         var buildMode = parameterNode.GetAttribute("mode");
          
          if (!string.Equals(buildMode, "Property"))
             return;
 
-         parameterNode.SetAttributeValue(_buildMode, "Global");
+         parameterNode.SetAttributeValue("mode", "Global");
          _converted = true;
       }
 
@@ -70,12 +69,17 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
          if (all == null)
             return;
 
-         foreach (var calculationMethodElement in all.Elements())
+         //TO list because we are going to modify the list while we iterate
+         foreach (var calculationMethodElement in all.Elements().ToList())
          {
             var name = calculationMethodElement.GetAttribute("name");
+            //BMI Calculation method was split into TWO calculation methods. So we need to rename one and ADD A new one
             if (string.Equals(name, ConverterConstants.CalculationMethod.BMI))
             {
-               calculationMethodElement.SetAttributeValue("name", ConverterConstants.CalculationMethod.Individual_AgeDependent);
+               calculationMethodElement.SetAttributeValue("name", ConverterConstants.CalculationMethod.Individual_HeightDependent);
+               var newElement = new XElement(calculationMethodElement.Name);
+               newElement.SetAttributeValue("name", ConverterConstants.CalculationMethod.Individual_AgeDependent);
+               all.Add(newElement);
                _converted = true;
             }
          }
