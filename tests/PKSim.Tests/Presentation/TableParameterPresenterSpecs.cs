@@ -68,6 +68,8 @@ namespace PKSim.Presentation
             return new TableFormula().WithId(importedTablePoints.Id);
          }
 
+         public override bool CanImport => true;
+
          protected override DataRepository ImportTablePoints()
          {
             return new DataRepository { Id = "new" };

@@ -65,7 +65,7 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       protected override IParameter Owner => _tableParameter;
 
-      public virtual void Edit(IParameter tableParameter)
+      public void Edit(IParameter tableParameter)
       {
          _tableParameter = tableParameter;
          _view.Editable = _tableParameter.Editable;
