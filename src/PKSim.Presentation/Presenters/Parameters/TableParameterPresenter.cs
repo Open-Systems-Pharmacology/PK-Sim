@@ -9,6 +9,7 @@ using OSPSuite.Presentation.Views.Parameters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Parameters;
+using PKSim.Presentation.Views.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation.Presenters.Parameters
@@ -64,10 +65,12 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       protected override IParameter Owner => _tableParameter;
 
-      public void Edit(IParameter tableParameter)
+      public virtual void Edit(IParameter tableParameter)
       {
          _tableParameter = tableParameter;
          _view.Editable = _tableParameter.Editable;
+         // setting Editable will reveal the import button so ImportVisible must be set after
+         _view.ImportVisible = CanImport;
          //do not edit the parameter formula itself as the user might cancel the edit
          var tableFormula = tableParameter.Formula as TableFormula;
 
@@ -77,6 +80,8 @@ namespace PKSim.Presentation.Presenters.Parameters
          tableFormula = tableFormula ?? CreateTableFormula();
          Edit(tableFormula ?? CreateTableFormula());
       }
+
+      public abstract bool CanImport { get; }
 
       protected virtual TableFormula CreateTableFormula()
       {
@@ -142,5 +147,29 @@ namespace PKSim.Presentation.Presenters.Parameters
       }
 
       public override void RemovePoint(ValuePointDTO pointToRemove) => _tableFormulaDTO.AllPoints.Remove(pointToRemove);
+   }
+
+   public class TableParameterPresenter : TableParameterPresenter<ITableFormulaView>, ITableParameterPresenter
+   {
+      public TableParameterPresenter(ITableFormulaView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner) :
+         base(view, parameterTask, formulaFactory, cloner)
+      {
+         // default import function disabled when context is not specified
+         view.ImportVisible = CanImport;
+      }
+
+      protected override DataRepository ImportTablePoints()
+      {
+         // default import function disabled when context is not specified
+         throw new System.NotImplementedException();
+      }
+
+      protected override TableFormula TablePointsToTableFormula(DataRepository importedTablePoints)
+      {
+         // default import function disabled when context is not specified
+         throw new System.NotImplementedException();
+      }
+
+      public override bool CanImport => false;
    }
 }
