@@ -161,13 +161,13 @@ namespace PKSim.Presentation.Presenters.Parameters
       protected override DataRepository ImportTablePoints()
       {
          // default import function disabled when context is not specified
-         throw new System.NotImplementedException();
+         return null;
       }
 
       protected override TableFormula TablePointsToTableFormula(DataRepository importedTablePoints)
       {
          // default import function disabled when context is not specified
-         throw new System.NotImplementedException();
+         return null;
       }
 
       public override bool CanImport => false;
