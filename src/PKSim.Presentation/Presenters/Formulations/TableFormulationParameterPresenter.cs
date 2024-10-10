@@ -27,6 +27,8 @@ namespace PKSim.Presentation.Presenters.Formulations
          return _formulationTask.TableFormulaFrom(importedTablePoints);
       }
 
+      public override bool CanImport => true;
+
       protected override DataRepository ImportTablePoints()
       {
          return _formulationTask.ImportTablePoints();
