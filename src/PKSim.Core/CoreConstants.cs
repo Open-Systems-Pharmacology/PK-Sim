@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using static OSPSuite.Core.Domain.Constants;
-using static PKSim.Core.CoreConstants;
-using static PKSim.Core.CoreConstants.Reaction;
 
 namespace PKSim.Core
 {
@@ -852,6 +850,13 @@ namespace PKSim.Core
             REFERENCE_CONCENTRATION,
             HALF_LIFE_LIVER,
             HALF_LIFE_INTESTINE
+         };
+
+         public static readonly IReadOnlyList<string> AllGlobalRelExpParameters = new[]
+         {
+            Constants.Parameters.REL_EXP_BLOOD_CELLS,
+            Constants.Parameters.REL_EXP_PLASMA,
+            Constants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM,
          };
 
          public static string OntogenyTableParameterFor(string parameter) => $"{parameter} table";

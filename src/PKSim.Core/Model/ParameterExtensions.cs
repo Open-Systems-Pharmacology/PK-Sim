@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
 using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Parameters;
 
@@ -47,6 +48,16 @@ namespace PKSim.Core.Model
                 IsIndividualMoleculeGlobal(parameter) ||
                 parameter.IsNamed(INITIAL_CONCENTRATION) ||
                 parameter.Name.StartsWith(FRACTION_EXPRESSED_PREFIX);
+      }
+
+      public static bool IsExpression(this IParameter parameter)
+      {
+         return parameter.HasExpressionName();
+      }
+
+      public static bool IsGlobalExpression(this IParameter parameter)
+      {
+         return parameter.HasGlobalExpressionName();
       }
 
       public static bool IsStructural(this IParameter parameter) => parameter.NameIsOneOf(ParticleDistributionStructuralParameters);

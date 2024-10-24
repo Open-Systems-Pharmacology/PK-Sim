@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Services;
