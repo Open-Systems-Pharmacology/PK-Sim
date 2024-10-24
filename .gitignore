@@ -271,3 +271,4 @@ paket-files/
 /src/Db/**/*.develop.sqlite
 /src/**/licenses.licx
 /src/**/launchSettings.json
+/PKSim.v3.ncrunchsolution

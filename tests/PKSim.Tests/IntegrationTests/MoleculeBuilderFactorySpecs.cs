@@ -9,6 +9,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using IMoleculeBuilderFactory = PKSim.Core.Model.IMoleculeBuilderFactory;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.IntegrationTests
 {
@@ -49,7 +50,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_add_the_concentration_parameter_to_the_created_molecule_builder_as_a_local_parameter()
       {
-         var param = _result.Parameter(CoreConstants.Parameters.CONCENTRATION);
+         var param = _result.Parameter(CONCENTRATION);
          param.ShouldNotBeNull();
          param.BuildMode.ShouldBeEqualTo(ParameterBuildMode.Local);
       }
@@ -57,7 +58,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_kept_the_global_relative_expression_parameters()
       {
-         Constants.Parameters.AllGlobalRelExpParameters.Each(parameterName => _result.Parameter(parameterName).ShouldNotBeNull());
+         AllGlobalRelExpParameters.Each(parameterName => _result.Parameter(parameterName).ShouldNotBeNull());
       }
    }
 
@@ -85,9 +86,9 @@ namespace PKSim.IntegrationTests
          //one parameter defined as a constant for which an alternative was also specififed
          var lipoGroup = _compound.ParameterAlternativeGroup(CoreConstants.Groups.COMPOUND_LIPOPHILICITY);
          _alternativeLipo1 = _parameterAlternativeFactory.CreateAlternativeFor(lipoGroup).WithName("ALT_LIPO1").WithId("ALT_LIPO1");
-         _alternativeLipo1.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value = 2;
+         _alternativeLipo1.Parameter(LIPOPHILICITY).Value = 2;
          _alternativeLipo2 = _parameterAlternativeFactory.CreateAlternativeFor(lipoGroup).WithName("ALT_LIPO2").WithId("ALT_LIPO2");
-         _alternativeLipo2.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value = 5;
+         _alternativeLipo2.Parameter(LIPOPHILICITY).Value = 5;
          lipoGroup.AddAlternative(_alternativeLipo1);
          lipoGroup.AddAlternative(_alternativeLipo2);
 
@@ -98,7 +99,7 @@ namespace PKSim.IntegrationTests
          //value cannot be changed by user
          _alternativePerm1 = _parameterAlternativeFactory.CreateDefaultAlternativeFor(permAlternativeGroup).WithName("ALT_PERM1").WithId("ALT_PERM1");
          _alternativePerm2 = _parameterAlternativeFactory.CreateAlternativeFor(permAlternativeGroup).WithName("ALT_PERM2").WithId("ALT_PERM2");
-         _alternativePerm2.Parameter(CoreConstants.Parameters.PERMEABILITY).Value = 10;
+         _alternativePerm2.Parameter(PERMEABILITY).Value = 10;
          permAlternativeGroup.AddAlternative(_alternativePerm1);
          permAlternativeGroup.AddAlternative(_alternativePerm2);
       }
@@ -152,8 +153,8 @@ namespace PKSim.IntegrationTests
          base.Context();
          _compoundProperties = new CompoundProperties();
          _interactionProperties = new InteractionProperties();
-         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _alternativeLipo2.Name, GroupName = CoreConstants.Groups.COMPOUND_LIPOPHILICITY});
-         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _alternativePerm1.Name, GroupName = CoreConstants.Groups.COMPOUND_PERMEABILITY});
+         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _alternativeLipo2.Name, GroupName = CoreConstants.Groups.COMPOUND_LIPOPHILICITY });
+         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _alternativePerm1.Name, GroupName = CoreConstants.Groups.COMPOUND_PERMEABILITY });
       }
 
       protected override void Because()
@@ -164,7 +165,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_let_the_parameter_defined_as_formula_untouched_but_not_editable()
       {
-         var permParameter = _molecule.Parameter(CoreConstants.Parameters.PERMEABILITY);
+         var permParameter = _molecule.Parameter(PERMEABILITY);
          permParameter.IsFixedValue.ShouldBeFalse();
          permParameter.Formula.ShouldBeAnInstanceOf<ExplicitFormula>();
          permParameter.Editable.ShouldBeFalse();
@@ -173,9 +174,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_update_the_parameter_value_according_to_the_selected_alternative_for_other_parameters()
       {
-         var lipoParameter = _molecule.Parameter(CoreConstants.Parameters.LIPOPHILICITY);
+         var lipoParameter = _molecule.Parameter(LIPOPHILICITY);
          lipoParameter.IsFixedValue.ShouldBeFalse();
-         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo2.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value);
+         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo2.Parameter(LIPOPHILICITY).Value);
       }
    }
 
@@ -190,8 +191,8 @@ namespace PKSim.IntegrationTests
          base.Context();
          _interactionProperties = new InteractionProperties();
          _compoundProperties = new CompoundProperties();
-         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _alternativeLipo1.Name, GroupName = CoreConstants.Groups.COMPOUND_LIPOPHILICITY});
-         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection {AlternativeName = _alternativePerm2.Name, GroupName = CoreConstants.Groups.COMPOUND_PERMEABILITY});
+         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _alternativeLipo1.Name, GroupName = CoreConstants.Groups.COMPOUND_LIPOPHILICITY });
+         _compoundProperties.AddCompoundGroupSelection(new CompoundGroupSelection { AlternativeName = _alternativePerm2.Name, GroupName = CoreConstants.Groups.COMPOUND_PERMEABILITY });
       }
 
       protected override void Because()
@@ -202,18 +203,18 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_override_the_parameters_define_as_formula()
       {
-         var permParameter = _molecule.Parameter(CoreConstants.Parameters.PERMEABILITY);
+         var permParameter = _molecule.Parameter(PERMEABILITY);
          permParameter.IsFixedValue.ShouldBeFalse();
          permParameter.Formula.ShouldBeAnInstanceOf<ConstantFormula>();
-         permParameter.Value.ShouldBeEqualTo(_alternativePerm2.Parameter(CoreConstants.Parameters.PERMEABILITY).Value);
+         permParameter.Value.ShouldBeEqualTo(_alternativePerm2.Parameter(PERMEABILITY).Value);
       }
 
       [Observation]
       public void should_update_the_parameter_value_according_to_the_selected_alternative_for_other_parameters()
       {
-         var lipoParameter = _molecule.Parameter(CoreConstants.Parameters.LIPOPHILICITY);
+         var lipoParameter = _molecule.Parameter(LIPOPHILICITY);
          lipoParameter.IsFixedValue.ShouldBeFalse();
-         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo1.Parameter(CoreConstants.Parameters.LIPOPHILICITY).Value);
+         lipoParameter.Value.ShouldBeEqualTo(_alternativeLipo1.Parameter(LIPOPHILICITY).Value);
       }
    }
 
@@ -227,8 +228,8 @@ namespace PKSim.IntegrationTests
       {
          base.Context();
          _interactionProperties = new InteractionProperties();
-         var inhibitionProcess = new InhibitionProcess {InteractionType = InteractionType.CompetitiveInhibition}.WithName("Proc");
-         var interaction = new InteractionSelection {CompoundName = _compound.Name, ProcessName = inhibitionProcess.Name};
+         var inhibitionProcess = new InhibitionProcess { InteractionType = InteractionType.CompetitiveInhibition }.WithName("Proc");
+         var interaction = new InteractionSelection { CompoundName = _compound.Name, ProcessName = inhibitionProcess.Name };
          _compound.AddProcess(inhibitionProcess);
          _interactionProperties.AddInteraction(interaction);
          _compoundProperties = new CompoundProperties();
@@ -285,16 +286,15 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_not_add_the_ontogeny_factor_table_parameters()
       {
-         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_TABLE).ShouldBeNull();
-         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI_TABLE).ShouldBeNull();
+         _molecule.Parameter(ONTOGENY_FACTOR_TABLE).ShouldBeNull();
+         _molecule.Parameter(ONTOGENY_FACTOR_GI_TABLE).ShouldBeNull();
       }
 
       [Observation]
       public void should_add_the_ontogeny_factor_parameters_with_the_default_value()
       {
-         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR).Value.ShouldBeEqualTo(CoreConstants.DEFAULT_ONTOGENY_FACTOR);
-         _molecule.Parameter(CoreConstants.Parameters.ONTOGENY_FACTOR_GI).Value.ShouldBeEqualTo(CoreConstants.DEFAULT_ONTOGENY_FACTOR);
+         _molecule.Parameter(ONTOGENY_FACTOR).Value.ShouldBeEqualTo(CoreConstants.DEFAULT_ONTOGENY_FACTOR);
+         _molecule.Parameter(ONTOGENY_FACTOR_GI).Value.ShouldBeEqualTo(CoreConstants.DEFAULT_ONTOGENY_FACTOR);
       }
-
    }
 }

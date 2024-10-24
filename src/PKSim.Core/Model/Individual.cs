@@ -5,6 +5,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Model
