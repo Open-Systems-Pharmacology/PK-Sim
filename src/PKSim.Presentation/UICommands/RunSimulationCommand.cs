@@ -25,7 +25,7 @@ namespace PKSim.Presentation.UICommands
 
    public class RunSimulationWithSettingsCommand : RunSimulationCommand
    {
-      public RunSimulationWithSettingsCommand(IInteractiveSimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever) : base(simulationRunner, activeSubjectRetriever, true)
+      public RunSimulationWithSettingsCommand(IInteractiveSimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever) : base(simulationRunner, activeSubjectRetriever, selectOutput:true)
       {
       }
    }

@@ -27,10 +27,41 @@ namespace PKSim.Core
          _cloner = A.Fake<ICloner>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _simulationRunner = A.Fake<ISimulationRunner>();
-         _lazyLoadTask= A.Fake<ILazyLoadTask>();
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _executionContext = A.Fake<IExecutionContext>();
          sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
          return _completed;
+      }
+   }
+
+   public class When_an_output_with_mapping_is_removed_from_simulation_run : concern_for_InteractiveSimulationRunner
+   {
+      private IndividualSimulation _simulation;
+      private QuantitySelection _quantitySelection;
+      private OutputSelections _modifiedOutputSelections;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulation = A.Fake<IndividualSimulation>();
+         _simulation.OutputSelections = new OutputSelections();
+         _quantitySelection = new QuantitySelection("output|selection");
+         _simulation.OutputSelections.AddOutput(_quantitySelection);
+         _modifiedOutputSelections = new OutputSelections();
+         _simulation.OutputMappings.Add(new OutputMapping { OutputSelection = new SimulationQuantitySelection(_simulation, _quantitySelection) });
+
+         A.CallTo(() => _simulationSettingsRetriever.SettingsFor(_simulation)).Returns(_modifiedOutputSelections);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunSimulation(_simulation, true);
+      }
+
+      [Observation]
+      public void the_runner_should_remove_the_mapping_from_the_simulation()
+      {
+         _simulation.OutputMappings.ShouldBeEmpty();
       }
    }
 
@@ -79,7 +110,8 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.RunSimulation(_simulation, false); ;
+         return sut.RunSimulation(_simulation, false);
+         ;
       }
 
       [Observation]
@@ -97,14 +129,14 @@ namespace PKSim.Core
       {
          await base.Context();
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(() => _simulation.Analyses).Returns(new List<ISimulationAnalysis> {A.Fake<ISimulationAnalysis>()});
+         A.CallTo(() => _simulation.Analyses).Returns(new List<ISimulationAnalysis> { A.Fake<ISimulationAnalysis>() });
          A.CallTo(() => _simulation.HasResults).Returns(true);
          await sut.RunSimulation(_simulation, false);
       }
 
       protected override Task Because()
       {
-         return sut.RunSimulation(_simulation, false); 
+         return sut.RunSimulation(_simulation, false);
       }
 
       [Observation]
@@ -172,7 +204,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_not_update_the_population_settings_in_the_popoulation()
+      public void should_not_update_the_population_settings_in_the_population()
       {
          _populationSimulation.OutputSelections.ShouldNotBeNull();
       }

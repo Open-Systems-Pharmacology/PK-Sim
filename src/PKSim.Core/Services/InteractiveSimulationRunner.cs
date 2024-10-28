@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -58,6 +61,8 @@ namespace PKSim.Core.Services
                return;
 
             simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
+            mappingsNotSelected(simulation).Each(simulation.OutputMappings.Remove);
+            
             _executionContext.PublishEvent(new SimulationOutputSelectionsChangedEvent(simulation));
          }
 
@@ -65,6 +70,12 @@ namespace PKSim.Core.Services
 
          addAnalysableToSimulationIfRequired(simulation);
       }
+
+      private static IReadOnlyList<OutputMapping> mappingsNotSelected(Simulation simulation) => 
+         simulation.OutputMappings.Where(outputMapping => !outputMappingIsSelected(simulation, outputMapping)).ToList();
+
+      private static bool outputMappingIsSelected(Simulation simulation, OutputMapping outputMapping) => 
+         simulation.OutputSelections.AllOutputs.Any(quantitySelection => Equals(quantitySelection.Path, outputMapping.OutputPath));
 
       private bool outputSelectionRequired(Simulation simulation, bool selectOutput)
       {
