@@ -531,10 +531,7 @@ namespace PKSim.Core.Model
       /// <typeparam name="TBuildingBlock">type of the building blocks we are looking for in the simulation</typeparam>
       public virtual IEnumerable<TBuildingBlock> AllBuildingBlocks<TBuildingBlock>() where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         return from usedBb in UsedBuildingBlocks
-            let bb = usedBb.BuildingBlock as TBuildingBlock
-            where bb != null
-            select bb;
+         return UsedBuildingBlocks.Select(x => x.BuildingBlock as TBuildingBlock).Where(x => x != null);
       }
 
       /// <summary>

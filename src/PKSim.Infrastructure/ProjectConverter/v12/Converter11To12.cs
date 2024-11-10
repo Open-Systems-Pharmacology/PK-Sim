@@ -7,6 +7,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.ProjectConverter.v12
@@ -17,13 +18,21 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
       IVisitor<Population>
    {
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly ISimulationBuildingBlockUpdater _simulationBuildingBlockUpdater;
       private readonly ICloner _cloner;
       private bool _converted;
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V11;
 
-      public Converter11To12(IDefaultIndividualRetriever defaultIndividualRetriever, ICloner cloner)
+      public Converter11To12(
+         IDefaultIndividualRetriever defaultIndividualRetriever,
+         IBuildingBlockRepository buildingBlockRepository,
+         ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater,
+         ICloner cloner)
       {
          _defaultIndividualRetriever = defaultIndividualRetriever;
+         _buildingBlockRepository = buildingBlockRepository;
+         _simulationBuildingBlockUpdater = simulationBuildingBlockUpdater;
          _cloner = cloner;
       }
 
@@ -55,7 +64,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
       private void convertBuildMode(XElement parameterNode)
       {
          var buildMode = parameterNode.GetAttribute("mode");
-         
+
          if (!string.Equals(buildMode, "Property"))
             return;
 
@@ -152,6 +161,26 @@ namespace PKSim.Infrastructure.ProjectConverter.v12
       private void convertSimulation(Simulation simulation)
       {
          convertIndividual(simulation.BuildingBlock<Individual>());
+
+         addMissingExpressionBuildingBlock(simulation);
+      }
+
+      private void addMissingExpressionBuildingBlock(Simulation simulation)
+      {
+         //in v11, the usage of the expression building block was not saved in the used building block. We need to add it if it's not there already
+
+         var usedSimulationSubject = simulation.UsedBuildingBlockInSimulation<ISimulationSubject>();
+
+         //this can happen for an imported simulation
+         if (usedSimulationSubject == null)
+            return;
+
+         var templateSimulationSubject = _buildingBlockRepository.ById<ISimulationSubject>(usedSimulationSubject.TemplateId);
+         //this should never happen
+         if (templateSimulationSubject == null)
+            return;
+
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, templateSimulationSubject.AllExpressionProfiles(), PKSimBuildingBlockType.ExpressionProfile);
       }
    }
 }

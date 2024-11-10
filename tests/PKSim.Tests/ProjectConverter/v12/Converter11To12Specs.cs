@@ -52,4 +52,22 @@ namespace PKSim.ProjectConverter.v12
          individual.OriginData.CalculationMethodCache.Contains(Individual_AgeDependent).ShouldBeTrue();
       }
    }
+
+   public class When_converting_the_v11_expression_profile_to_12 : ContextWithLoadedProject<Converter11To12>
+   {
+      private List<PopulationSimulation> _allSimulations;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("v11_expression_profile");
+         _allSimulations = All<PopulationSimulation>();
+      }
+
+      [Observation]
+      public void should_have_added_the_expression_used_by_the_individual_to_the_simulation()
+      {
+         _allSimulations.Each(s => s.AllBuildingBlocks<ExpressionProfile>().Count().ShouldBeGreaterThan(0));
+      }
+   }
 }
