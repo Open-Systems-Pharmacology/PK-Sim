@@ -55,13 +55,13 @@ namespace PKSim.ProjectConverter.v12
 
    public class When_converting_the_v11_expression_profile_to_12 : ContextWithLoadedProject<Converter11To12>
    {
-      private List<PopulationSimulation> _allSimulations;
+      private List<Simulation> _allSimulations;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          LoadProject("v11_expression_profile");
-         _allSimulations = All<PopulationSimulation>();
+         _allSimulations = All<Simulation>();
       }
 
       [Observation]
