@@ -62,6 +62,7 @@ namespace PKSim.ProjectConverter.v12
          base.GlobalContext();
          LoadProject("v11_expression_profile");
          _allSimulations = All<Simulation>();
+         _allSimulations.Each(Load);
       }
 
       [Observation]
