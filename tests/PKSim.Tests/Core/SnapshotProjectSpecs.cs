@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core.Snapshots;
 using Event = PKSim.Core.Snapshots.Event;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
+using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 
 namespace PKSim.Core
 {
@@ -15,6 +16,7 @@ namespace PKSim.Core
       protected Protocol _protocol;
       protected Population _population;
       protected Event _event;
+      protected ExpressionProfile _expressionProfile;
 
       protected override void Context()
       {
@@ -24,6 +26,12 @@ namespace PKSim.Core
          _protocol = new Protocol().WithName("Protocol");
          _population = new Population().WithName("Population");
          _event = new Event().WithName("Event");
+         _expressionProfile = new ExpressionProfile
+         {
+            Species = "Human",
+            Molecule = "E1",
+            Category = "Healthy",
+         };
 
          sut = new SnapshotProject
          {
@@ -32,7 +40,8 @@ namespace PKSim.Core
             Protocols = new[] {_protocol},
             Individuals = new[] {_individual},
             Populations = new[] {_population},
-            Events = new[] {_event}
+            Events = new[] {_event},
+            ExpressionProfiles = new[] {_expressionProfile}
          };
       }
    }
@@ -40,7 +49,7 @@ namespace PKSim.Core
    public class When_retrieving_building_blocks_by_type : concern_for_SnapshotProject
    {
       [Observation]
-      public void should_return_the_expected_buidling_blocks_for_the_basic_types()
+      public void should_return_the_expected_building_blocks_for_the_basic_types()
       {
          sut.BuildingBlocksByType(PKSimBuildingBlockType.Compound).ShouldBeEqualTo(sut.Compounds);
          sut.BuildingBlocksByType(PKSimBuildingBlockType.Formulation).ShouldBeEqualTo(sut.Formulations);
@@ -48,13 +57,14 @@ namespace PKSim.Core
          sut.BuildingBlocksByType(PKSimBuildingBlockType.Individual).ShouldBeEqualTo(sut.Individuals);
          sut.BuildingBlocksByType(PKSimBuildingBlockType.Population).ShouldBeEqualTo(sut.Populations);
          sut.BuildingBlocksByType(PKSimBuildingBlockType.Event).ShouldBeEqualTo(sut.Events);
+         sut.BuildingBlocksByType(PKSimBuildingBlockType.ExpressionProfile).ShouldBeEqualTo(sut.ExpressionProfiles);
       }
    }
 
    public class When_retrieving_building_block_by_type_and_name : concern_for_SnapshotProject
    {
       [Observation]
-      public void should_return_the_expected_buidling_block_if_it_exists()
+      public void should_return_the_expected_building_block_if_it_exists()
       {
          sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.Compound, _compound.Name).ShouldBeEqualTo(_compound);
          sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.Formulation, _formulation.Name).ShouldBeEqualTo(_formulation);
@@ -62,12 +72,14 @@ namespace PKSim.Core
          sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.Individual, _individual.Name).ShouldBeEqualTo(_individual);
          sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.Population, _population.Name).ShouldBeEqualTo(_population);
          sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.Event, _event.Name).ShouldBeEqualTo(_event);
+         sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.ExpressionProfile, "E1|Human|Healthy").ShouldBeEqualTo(_expressionProfile);
       }
 
       [Observation]
       public void should_return_null_if_the_building_block_does_not_exist()
       {
          sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.Compound, "NOPE").ShouldBeNull();
+         sut.BuildingBlockByTypeAndName(PKSimBuildingBlockType.ExpressionProfile, "E1|Rat|Healthy").ShouldBeNull();
       }
    }
 
