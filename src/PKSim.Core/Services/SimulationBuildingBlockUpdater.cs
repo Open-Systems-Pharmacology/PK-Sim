@@ -14,11 +14,11 @@ namespace PKSim.Core.Services
       /// <summary>
       ///    Sets a clone of the template building block as "used building block" in the simulation
       /// </summary>
-      /// <param name="simulation">Simulation that will be uing the template building block</param>
+      /// <param name="simulation">Simulation that will be using the template building block</param>
       /// <param name="templateBuildingBlock">template building block to be used</param>
       /// <param name="buildingBlockType">Type of building block</param>
       /// <remarks>
-      ///    This Method should only be used for building blocks whose occurence in a simulation is 0 or 1. (e.g Individual,
+      ///    This Method should only be used for building blocks whose occurrence in a simulation is 0 or 1. (e.g Individual,
       ///    Protocol, Compound)
       ///    For other type (e.g. Formulation, Events), this method is not suited
       /// </remarks>
@@ -31,7 +31,7 @@ namespace PKSim.Core.Services
       /// <param name="templateBuildingBlocks">All template building blocks</param>
       /// <param name="buildingBlockType">Type of building block</param>
       /// <remarks>
-      ///    This method should only be used for building blocks whose occurence in a simulation is 0 ..* (e.g. Formulation,
+      ///    This method should only be used for building blocks whose occurrence in a simulation is 0 ..* (e.g. Formulation,
       ///    Events) for which all building blocks need to be updated at once
       /// </remarks>
       void UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(Simulation simulation, IEnumerable<IPKSimBuildingBlock> templateBuildingBlocks, PKSimBuildingBlockType buildingBlockType);
