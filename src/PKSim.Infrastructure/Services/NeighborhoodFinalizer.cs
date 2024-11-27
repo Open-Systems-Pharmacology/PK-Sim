@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using FluentNHibernate.Utils;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.Repositories;
