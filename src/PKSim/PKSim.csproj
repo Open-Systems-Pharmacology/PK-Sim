@@ -87,6 +87,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PKSim.BatchTool\PKSim.BatchTool.csproj" />
+    <ProjectReference Include="..\PKSim.CLI\PKSim.CLI.csproj" />
     <ProjectReference Include="..\PKSim.UI.Starter\PKSim.UI.Starter.csproj" />
     <ProjectReference Include="..\PKSim.UI\PKSim.UI.csproj" />
   </ItemGroup>
