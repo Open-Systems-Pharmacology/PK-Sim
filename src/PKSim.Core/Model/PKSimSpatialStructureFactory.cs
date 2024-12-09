@@ -54,12 +54,6 @@ namespace PKSim.Core.Model
          var organism = _objectBaseFactory.Create<Organism>();
          spatialStructure.AddTopContainer(organism);
 
-         var eventContainer = _objectBaseFactory.Create<IContainer>()
-            .WithName(Constants.EVENTS)
-            .WithMode(ContainerMode.Logical);
-
-         spatialStructure.AddTopContainer(eventContainer);
-
          //FIRST: Global molecule parameters
          addModelStructureTo(spatialStructure.GlobalMoleculeDependentProperties, individual.OriginData, simulation.ModelProperties, spatialStructure.FormulaCache);
 
