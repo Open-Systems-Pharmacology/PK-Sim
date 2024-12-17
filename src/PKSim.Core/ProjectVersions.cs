@@ -1,5 +1,6 @@
 using OSPSuite.Core;
 using OSPSuite.Utility.Collections;
+using System.Linq;
 
 namespace PKSim.Core
 {
@@ -34,10 +35,7 @@ namespace PKSim.Core
          return (projectVersion <= Current.Version) && _knownVersions.Contains(projectVersion);
       }
 
-      public static bool ProjectIsTooOld(int projectVersion)
-      {
-         return projectVersion <= UNSUPPORTED;
-      }
+      public static ProjectVersion OldestSupportedVersion => _knownVersions.OrderBy(x => x.Version).First();
 
       public static ProjectVersion FindBy(int version)
       {
