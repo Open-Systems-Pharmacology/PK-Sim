@@ -152,9 +152,9 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_created_event_container_withing_spatial_structure_building_block()
       {
-         var organism = _simulationConfiguration.ModuleConfigurations[0].Module.BuildingBlocks.FirstOrDefault() as SpatialStructure;
-         organism.ShouldNotBeNull();
-         organism.TopContainers.FindByName("Events").ShouldNotBeNull();
+         var spatialStructure = _simulationConfiguration.ModuleConfigurations[0].Module.SpatialStructure;
+         spatialStructure.ShouldNotBeNull();
+         spatialStructure.TopContainers.FindByName("Events").ShouldNotBeNull();
       }
 
    }
