@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -120,5 +121,41 @@ namespace PKSim.IntegrationTests
       {
          _simulation.Model.Root.Container(Constants.ORGANISM).EntityAt<IParameter>(_parameterPathArray).Value.ShouldBeEqualTo(10);
       }
+   }
+
+   public class When_creating_a_simulation_with_spatial_structure_should_contain_parameter_building_block : ContextForSimulationIntegration<IPKSimParameterValuesCreator>
+   {
+      private ISimulationConfigurationTask _simulationConfigurationTask;
+      private SimulationConfiguration _simulationConfiguration;
+      private Individual _individual;
+      private Compound _compound;
+      private Protocol _protocol;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _compound = DomainFactoryForSpecs.CreateStandardCompound();
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         _simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _protocol)
+            .DowncastTo<IndividualSimulation>();
+
+         DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+      }
+
+      protected override void Because()
+      {
+         _simulationConfiguration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+      }
+
+      [Observation]
+      public void should_have_created_event_container_withing_spatial_structure_building_block()
+      {
+         var spatialStructure = _simulationConfiguration.ModuleConfigurations[0].Module.SpatialStructure;
+         spatialStructure.ShouldNotBeNull();
+         spatialStructure.TopContainers.FindByName("Events").ShouldNotBeNull();
+      }
+
    }
 }
