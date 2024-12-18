@@ -117,7 +117,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_throw_exception_on_empty_entity_path()
       {
-         sut.MapFrom(new Container(), new List<string>())
+         sut.MapFrom(new Container(), new List<string>());
       }
    }
 
