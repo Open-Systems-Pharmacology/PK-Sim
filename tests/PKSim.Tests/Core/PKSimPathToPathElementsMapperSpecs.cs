@@ -1,4 +1,5 @@
-﻿using OSPSuite.BDDHelper;
+﻿using System.Collections.Generic;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -106,6 +107,16 @@ namespace PKSim.Core
          _pathElements[PathElementId.BottomCompartment].DisplayName.ShouldBeEqualTo(compartment);
          _pathElements[PathElementId.Molecule].DisplayName.ShouldBeEqualTo(molecule);
          _pathElements[PathElementId.Name].DisplayName.ShouldBeEqualTo(name);
+      }
+   }
+
+   
+   public class When_creating_the_path_elements_for_an_empty_name : concern_for_PKSimPathToPathElementsMapper
+   {
+      [Observation]
+      public void should_not_throw_exception_on_empty_entity_path()
+      {
+         sut.MapFrom(new Container(), new List<string>());
       }
    }
 

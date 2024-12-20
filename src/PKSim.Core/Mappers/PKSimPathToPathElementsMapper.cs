@@ -61,13 +61,16 @@ namespace PKSim.Core.Mappers
 
       protected override PathElements CreatePathElementsFrom(IReadOnlyList<IContainer> containers, string name)
       {
+         IQuantity quantity = null;
          var pathElements = base.CreatePathElementsFrom(containers, name);
          var lastContainer = containers.LastOrDefault();
 
          if (lastContainer == null)
             return pathElements;
 
-         var quantity = lastContainer.EntityAt<IQuantity>(name);
+         if (!string.IsNullOrEmpty(name))
+            quantity = lastContainer.EntityAt<IQuantity>(name);
+
          if (quantity == null)
             return pathElements;
 
