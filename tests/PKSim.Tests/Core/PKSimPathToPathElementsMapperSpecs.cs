@@ -111,9 +111,8 @@ namespace PKSim.Core
    }
 
    
-   public class When_creating_the_path_elements_for_an_empty_name :concern_for_PKSimPathToPathElementsMapper
+   public class When_creating_the_path_elements_for_an_empty_name : concern_for_PKSimPathToPathElementsMapper
    {
-
       [Observation]
       public void should_not_throw_exception_on_empty_entity_path()
       {
