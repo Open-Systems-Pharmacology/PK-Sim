@@ -147,6 +147,8 @@ namespace PKSim.Presentation.Presenters.Main
          return _observedDataInExplorerPresenter.CanDrag(node);
       }
 
+      public override bool CopyAllowed() => false;
+
       public void Handle(SwapBuildingBlockEvent eventToHandle)
       {
          //need to remove the node of the old protocol when a protocol swap is happening as the normal remove building block event is not triggered

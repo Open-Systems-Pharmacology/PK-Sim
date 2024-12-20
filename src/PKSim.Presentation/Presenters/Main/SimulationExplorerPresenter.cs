@@ -81,6 +81,8 @@ namespace PKSim.Presentation.Presenters.Main
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
+      public override bool CopyAllowed() => false;
+
       public override bool CanDrag(ITreeNode node)
       {
          if (node == null)

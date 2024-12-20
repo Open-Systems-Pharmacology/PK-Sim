@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Classifications;
@@ -422,25 +423,25 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_true_when_dropping_a_simulation_node_on_a_simulation_folder_node()
       {
-         sut.CanDrop(_individualSimulationNode, _simulationFolderNode).ShouldBeTrue();
+         sut.CanDrop(_individualSimulationNode, _simulationFolderNode, DragDropKeyFlags.None).ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_true_when_dropping_a_comparison_node_on_a_comparison_folder_node()
       {
-         sut.CanDrop(_comparisonNode, _comparisonFolderNode).ShouldBeTrue();
+         sut.CanDrop(_comparisonNode, _comparisonFolderNode, DragDropKeyFlags.None).ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_when_dropping_a_comparison_node_on_a_simulation_folder_node()
       {
-         sut.CanDrop(_individualSimulationNode, _comparisonFolderNode).ShouldBeFalse();
+         sut.CanDrop(_individualSimulationNode, _comparisonFolderNode, DragDropKeyFlags.None).ShouldBeFalse();
       }
 
       [Observation]
       public void should_return_true_when_dropping_a_simulation_node_on_a_comparison_folder_node()
       {
-         sut.CanDrop(_comparisonNode, _simulationFolderNode).ShouldBeFalse();
+         sut.CanDrop(_comparisonNode, _simulationFolderNode, DragDropKeyFlags.None).ShouldBeFalse();
       }
    }
 
