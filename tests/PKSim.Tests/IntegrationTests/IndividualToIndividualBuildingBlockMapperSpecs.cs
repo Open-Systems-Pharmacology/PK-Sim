@@ -17,7 +17,6 @@ namespace PKSim.IntegrationTests
       protected Individual _individual;
       protected IndividualBuildingBlock _individualBuildingBlock;
 
-
       public override void GlobalContext()
       {
          base.GlobalContext();
@@ -25,17 +24,14 @@ namespace PKSim.IntegrationTests
          _individual = DomainFactoryForSpecs.CreateStandardIndividual(population: CoreConstants.Population.ICRP);
       }
 
-
       protected override void Because()
       {
          _individualBuildingBlock = sut.MapFrom(_individual);
       }
-
    }
 
    public class When_mapping_building_block_from_individual : concern_for_IndividualToIndividualBuildingBlockMapper
    {
-    
       [Observation]
       public void the_properties_of_the_building_block_should_match()
       {
@@ -84,6 +80,5 @@ namespace PKSim.IntegrationTests
          var allOntogenyFactors = _individualBuildingBlock.Where(x => x.Name.IsOneOf(AllPlasmaProteinOntogenyFactors.ToArray()));
          allOntogenyFactors.Count().ShouldBeEqualTo(2);
       }
-
    }
 }
