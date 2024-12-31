@@ -77,6 +77,10 @@ namespace PKSim.Core.Mappers
             if (parameter.GroupName == RELATIVE_EXPRESSION)
                return false;
 
+            //Ontogeny factor are exported also in the expression profile
+            if (parameter.IsExpressionOrOntogenyFactor())
+               return false;
+            
             return !_sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameter);
          }
 
