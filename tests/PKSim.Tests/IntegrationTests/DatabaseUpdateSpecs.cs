@@ -43,6 +43,14 @@ namespace PKSim.IntegrationTests
          parameters.Each(p => p.ReadOnly.ShouldBeEqualTo(!p.Visible));
       }
 
+      [Observation]
+      public void should_mark_hepatic_impairment_population_as_experimental()
+      {
+         var representationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+         var hiDisplayName = representationInfoRepository.DisplayNameFor(RepresentationObjectType.DISEASE_STATE,
+            CoreConstants.DiseaseStates.HI);
+         hiDisplayName.EndsWith(CoreConstantsForSpecs.ExperimentalFeature).ShouldBeTrue();
+      }
    }
 
    public class When_checking_the_changes_in_the_database_for_version_7_4_0 : concern_for_DatabaseUpdate
@@ -215,7 +223,7 @@ namespace PKSim.IntegrationTests
       {
          //get age settings for the given population (currently gender-independent, might change in the future)
          var populationAgeSettings = _populationAgeRepository.PopulationAgeSettingsFrom(populationName);
-         (var minAge, var maxAge) = getAgeBoundsFor(populationName, genderName);
+         var (minAge, maxAge) = getAgeBoundsFor(populationName, genderName);
 
          //---- min/max of the age should be set to min/max age available for this population
          populationAgeSettings.MinAge.ShouldBeEqualTo(minAge, $"Min age for {populationName}|{genderName}");
@@ -265,7 +273,6 @@ namespace PKSim.IntegrationTests
    {
       private IParameterValueRepository _parameterValueRepository;
       private IParameterRateRepository _parameterRateRepository;
-      private ISpeciesRepository _speciesRepository;
       private ICalculationMethodRepository _calculationMethodRepository;
       private IRateFormulaRepository _rateFormulaRepository;
       private IRateObjectPathsRepository _rateObjectPathsRepository;
@@ -276,7 +283,6 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
          _parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         _speciesRepository = IoC.Resolve<ISpeciesRepository>();
          _calculationMethodRepository = IoC.Resolve<ICalculationMethodRepository>();
          _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
          _rateObjectPathsRepository = IoC.Resolve<IRateObjectPathsRepository>();
@@ -379,7 +385,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_update_proteinmodel_values()
+      public void should_update_protein_model_values()
       {
          checkOrganParameter("Bone", "Flow fraction via large pores", 0.05);
          checkOrganParameter("Bone", "Radius (small pores)", 4.5e-8);
@@ -508,7 +514,7 @@ namespace PKSim.IntegrationTests
    public class When_checking_the_changes_in_the_database_for_version_6_4_2 : concern_for_DatabaseUpdate
    {
       [Observation]
-      public void should_have_set_the_building_block_type_of_ontogeny_factor_and_onteogeny_factor_gi_in_protein_to_individual()
+      public void should_have_set_the_building_block_type_of_ontogeny_factor_and_ontogeny_factor_gi_in_protein_to_individual()
       {
          var paramValueRepo = IoC.Resolve<IParameterRateRepository>();
 
@@ -525,8 +531,8 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_updated_the_description_for_residual_fraction()
       {
-         var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
-         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, ConverterConstants.Parameters.RESIDUAL_FRACTION)
+         var representationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+         representationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, ConverterConstants.Parameters.RESIDUAL_FRACTION)
             .Description.ShouldBeEqualTo("Residual fraction after measuring time");
       }
    }
@@ -578,7 +584,7 @@ namespace PKSim.IntegrationTests
    public class When_checking_the_changed_in_the_database_for_version_6_1 : concern_for_DatabaseUpdate
    {
       [Observation]
-      public void should_update_the_default_value_of_n_cells_per_incubuation_to_1000()
+      public void should_update_the_default_value_of_n_cells_per_incubation_to_1000()
       {
          var simulationActiveProcessRepository = IoC.Resolve<ISimulationActiveProcessRepository>();
          var process = simulationActiveProcessRepository.ProcessFor("HepatocytesRes");
@@ -606,7 +612,7 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void standard_deviation_for_all_reference_concentration_parametes_should_be_zero()
+      public void standard_deviation_for_all_reference_concentration_parameters_should_be_zero()
       {
          foreach (var moleculeParameter in _allMoleculeParameters)
          {
@@ -645,27 +651,27 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_set_the_saliva_icon_and_gall_bladder_icon()
       {
-         var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
-         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, GALLBLADDER)
+         var representationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+         representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, GALLBLADDER)
             .IconName.ShouldBeEqualTo(GALLBLADDER);
 
-         represenationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, SALIVA)
+         representationInfoRepository.InfoFor(RepresentationObjectType.CONTAINER, SALIVA)
             .IconName.ShouldBeEqualTo(SALIVA);
       }
 
       [Observation]
       public void should_have_set_the_display_name_and_description_for_auc_ratio_and_c_max_ratio()
       {
-         var represenationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
-         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, CoreConstants.PKAnalysis.AUCRatio)
+         var representationInfoRepository = IoC.Resolve<IRepresentationInfoRepository>();
+         representationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, CoreConstants.PKAnalysis.AUCRatio)
             .Description.ShouldNotBeNull();
 
-         represenationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, CoreConstants.PKAnalysis.C_maxRatio)
+         representationInfoRepository.InfoFor(RepresentationObjectType.PARAMETER, CoreConstants.PKAnalysis.C_maxRatio)
             .Description.ShouldNotBeNull();
       }
 
       [Observation]
-      public void should_have_created_the_irreversible_inhibiton_process_with_two_parameters()
+      public void should_have_created_the_irreversible_inhibition_process_with_two_parameters()
       {
          var compoundProcessRepository = IoC.Resolve<ICompoundProcessRepository>();
          var inhibitionProcess = compoundProcessRepository.All<InhibitionProcess>()
