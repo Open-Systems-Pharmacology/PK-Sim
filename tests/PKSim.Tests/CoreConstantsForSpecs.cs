@@ -5,6 +5,8 @@ namespace PKSim
 {
    public static class CoreConstantsForSpecs
    {
+      public const string ExperimentalFeature = "(experimental)";
+
       public static class ActiveTransport
       {
          public static readonly string ActiveEffluxSpecificIntracellularToInterstitial = "ActiveEffluxSpecificIntracellularToInterstitial";
