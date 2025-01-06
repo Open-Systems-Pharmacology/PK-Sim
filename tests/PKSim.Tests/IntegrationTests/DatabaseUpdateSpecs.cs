@@ -283,7 +283,6 @@ namespace PKSim.IntegrationTests
          base.GlobalContext();
          _parameterValueRepository = IoC.Resolve<IParameterValueRepository>();
          _parameterRateRepository = IoC.Resolve<IParameterRateRepository>();
-         IoC.Resolve<ISpeciesRepository>();
          _calculationMethodRepository = IoC.Resolve<ICalculationMethodRepository>();
          _rateFormulaRepository = IoC.Resolve<IRateFormulaRepository>();
          _rateObjectPathsRepository = IoC.Resolve<IRateObjectPathsRepository>();
