@@ -19,9 +19,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OSPSuite.FuncParser.Ubuntu22" Version="4.0.0.68" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.R" Version="12.0.356" />
-    <PackageReference Include="OSPSuite.SimModel.Ubuntu22" Version="4.0.0.61" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.FuncParser.MacOS" Version="4.0.0.68" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.R" Version="12.0.357" />
+    <PackageReference Include="OSPSuite.SimModel.Ubuntu22" Version="4.0.0.68" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel.MacOS" Version="4.0.0.68" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES.Ubuntu22" Version="4.1.0.10" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES.MacOS" Version="4.1.0.10" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(PkgOSPSuite_FuncParser_Ubuntu22)\OSPSuite.FuncParserNative\bin\native\x64\Release\libOSPSuite.FuncParserNative.so" Link="libOSPSuite.FuncParserNative.so">
@@ -34,6 +37,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+    <ItemGroup>
+      <Content Include="$(PkgOSPSuite_FuncParser_MacOS)\OSPSuite.FuncParserNative\bin\native\x64\Release\libOSPSuite.FuncParserNative.dylib" Link="libOSPSuite.FuncParserNative.dylib">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="$(PkgOSPSuite_SimModel_MacOS)\OSPSuite.SimModelNative\bin\native\x64\Release\libOSPSuite.SimModelNative.dylib" Link="libOSPSuite.SimModelNative.dylib">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES_MacOS)\OSPSuite.SimModelSolver_CVODES\bin\native\x64\Release\libOSPSuite.SimModelSolver_CVODES.dylib" Link="libOSPSuite.SimModelSolver_CVODES.dylib">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.R\PKSim.R.csproj" />
   </ItemGroup>
