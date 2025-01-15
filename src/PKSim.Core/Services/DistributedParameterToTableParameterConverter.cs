@@ -133,7 +133,7 @@ namespace PKSim.Core.Services
          _ = getOrCreateIndividualParameter(minToYearFactorParameter, individual);
          var individualAgeParameter = getOrCreateIndividualParameter(ageParameter, individual);
          var formula = _formulaFactory.AgeFormulaFor(age0Parameter, minToYearFactorParameter);
-         updateConstantParameterToFormula(individualAgeParameter, formula, individual);
+         updateParameterToTableFormula(individualAgeParameter, formula, individual);
       }
 
       private void createIndividualTableParameters(SimulationConfiguration simulationConfiguration)
@@ -177,7 +177,7 @@ namespace PKSim.Core.Services
       private void createOntogenyTableParameters(SimulationConfiguration simulationConfiguration)
       {
          var simulationPopulation = _simulation as PopulationSimulation;
-         var individual = simulationConfiguration.Individual; 
+         var individual = simulationConfiguration.Individual;
          foreach (var molecule in _baseIndividual.AllMolecules().Where(m => m.Ontogeny.IsDefined()))
          {
             var ontogenyFactorPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorParameter);
@@ -203,7 +203,7 @@ namespace PKSim.Core.Services
                continue;
 
             var individualParameter = getOrCreateIndividualParameter(parameter, individual);
-            updateConstantParameterToFormula(individualParameter, formula, individual);
+            updateParameterToTableFormula(individualParameter, formula, individual);
             createPopulationPlasmaProteinOntogenyTableParameter(parameter, _simulation as PopulationSimulation);
          }
       }
@@ -392,10 +392,9 @@ namespace PKSim.Core.Services
 
          //remove the parameter from the parent container and add a new one that will contain the table formula
          //retrieve the table formula corresponding to the individual values
-         //TODO how do we deal with this newParameter.Editable = false;
 
          var formula = createTableFormulaFrom(baseIndividualParameter, allDistributionsForParameter);
-         updateConstantParameterToFormula(individualParameter, formula, individualBuildingBlock);
+         updateParameterToTableFormula(individualParameter, formula, individualBuildingBlock);
       }
 
       private IReadOnlyList<ParameterDistributionMetaData> allDistributionsWithAgeStrictBiggerThanOriginData(
@@ -604,8 +603,10 @@ namespace PKSim.Core.Services
          return individualParameter;
       }
 
-      private void updateConstantParameterToFormula(IndividualParameter individualParameter, IFormula formula, IndividualBuildingBlock individualBuildingBlock)
+      private void updateParameterToTableFormula(IndividualParameter individualParameter, IFormula formula, IndividualBuildingBlock individualBuildingBlock)
       {
+         //set the distribution to null so that the parameter is not created as a distributed parameter anymore
+         individualParameter.DistributionType = null;
          individualParameter.Formula = formula;
          //Ensures that value is null so that we do not override the formula
          individualParameter.Value = null;

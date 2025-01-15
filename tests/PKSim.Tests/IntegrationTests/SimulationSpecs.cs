@@ -396,6 +396,21 @@ namespace PKSim.IntegrationTests
          Assert.IsTrue(errorList.Count == 0, errorList.ToString("\n"));
       }
 
+      [Observation]
+      public void should_have_removed_the_sub_parameters_of_distributed_parameters()
+      {
+         var parameters = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.EntityPath().Contains(CoreConstants.Parameters.HCT));
+         //only the main parameter should be present, not the sub parameters
+         parameters.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_distributed_parameter_should_have_been_replaced_with_a_parameter()
+      {
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.HCT);
+         parameter.IsDistributed().ShouldBeFalse();
+      }
+
       private void checkOntogenyFactorIsDefinedAsTableFormula(IParameter simParameter, List<string> errorList, string parameterKey)
       {
          var formula = simParameter.Formula;
