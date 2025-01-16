@@ -405,6 +405,13 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
+      public void the_new_parameter_should_be_readonly()
+      {
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.HCT);
+         parameter.Editable.ShouldBeFalse();
+      }
+
+      [Observation]
       public void the_distributed_parameter_should_have_been_replaced_with_a_parameter()
       {
          var parameter = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.HCT);

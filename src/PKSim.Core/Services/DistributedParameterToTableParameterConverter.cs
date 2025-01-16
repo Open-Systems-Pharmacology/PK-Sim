@@ -392,7 +392,7 @@ namespace PKSim.Core.Services
 
          //remove the parameter from the parent container and add a new one that will contain the table formula
          //retrieve the table formula corresponding to the individual values
-
+         individualParameter.Info.ReadOnly = true;
          var formula = createTableFormulaFrom(baseIndividualParameter, allDistributionsForParameter);
          updateParameterToTableFormula(individualParameter, formula, individualBuildingBlock);
       }
