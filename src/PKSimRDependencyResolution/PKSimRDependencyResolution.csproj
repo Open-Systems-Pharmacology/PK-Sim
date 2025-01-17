@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.FuncParser.Ubuntu22" Version="4.0.0.68" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.FuncParser.MacOS" Version="4.0.0.68" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.R" Version="12.0.358" />
+    <PackageReference Include="OSPSuite.R" Version="12.0.361" />
     <PackageReference Include="OSPSuite.SimModel.Ubuntu22" Version="4.0.0.68" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel.MacOS" Version="4.0.0.68" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES.Ubuntu22" Version="4.1.0.10" GeneratePathProperty="true" />
