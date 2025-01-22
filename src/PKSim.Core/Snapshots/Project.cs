@@ -60,6 +60,19 @@ namespace PKSim.Core.Snapshots
          }
       }
 
+      private string buildingBlockNameFor(IBuildingBlockSnapshot buildingBlockSnapshot)
+      {
+         //Special case for Expression profile where the name is not defined in the snapshot
+
+         switch (buildingBlockSnapshot)
+         {
+            case ExpressionProfile expressionProfile:
+               return Constants.ContainerName.ExpressionProfileName(expressionProfile.Molecule, expressionProfile.Species, expressionProfile.Category);
+            default:
+               return buildingBlockSnapshot.Name;
+         }
+      }
+
       public IBuildingBlockSnapshot BuildingBlockByTypeAndName(PKSimBuildingBlockType buildingBlockType, string name)
       {
          var buildingBlocks = BuildingBlocksByType(buildingBlockType);
@@ -80,13 +93,15 @@ namespace PKSim.Core.Snapshots
          }
       }
 
+      
+
       public bool Swap(IBuildingBlockSnapshot newBuildingBlock)
       {
          if (newBuildingBlock == null)
             return false;
 
          var type = newBuildingBlock.BuildingBlockType;
-         var name = newBuildingBlock.Name;
+         var name = buildingBlockNameFor(newBuildingBlock);
          var originalBuildingBlock = BuildingBlockByTypeAndName(type, name);
 
          if (originalBuildingBlock == null)

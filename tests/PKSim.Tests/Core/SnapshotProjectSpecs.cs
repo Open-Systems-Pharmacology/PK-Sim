@@ -117,4 +117,31 @@ namespace PKSim.Core
          sut.BuildingBlockByTypeAndName(_newIndividual.BuildingBlockType, _newIndividual.Name).ShouldBeEqualTo(_newIndividual);
       }
    }
+
+   public class When_swapping_an_expression_profile_building_block_for_another_building_block : concern_for_SnapshotProject
+   {
+      private ExpressionProfile _otherExpressionProfile;
+      private ExpressionProfile _newExpressionProfile;
+      private ExpressionProfile _oldExpressionProfile;
+
+      protected override void Context()
+      {
+         base.Context();
+         _otherExpressionProfile = new ExpressionProfile {Molecule = "OTHER", Species = "Human", Category = "Cat"};
+         _newExpressionProfile = new ExpressionProfile { Molecule = "MOL", Species = "Human", Category = "Cat" };
+         _oldExpressionProfile = new ExpressionProfile { Molecule = "MOL", Species = "Human", Category = "Cat" };
+         sut.ExpressionProfiles = new[] { _oldExpressionProfile, _otherExpressionProfile };
+      }
+
+      protected override void Because()
+      {
+         sut.Swap(_newExpressionProfile);
+      }
+
+      [Observation]
+      public void should_replace_the_building_block_in_the_list_of_typed_building_blocks()
+      {
+         sut.ExpressionProfiles.ShouldOnlyContainInOrder(_newExpressionProfile, _otherExpressionProfile);
+      }
+   }
 }
