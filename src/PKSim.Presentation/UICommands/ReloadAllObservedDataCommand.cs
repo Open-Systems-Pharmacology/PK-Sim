@@ -42,7 +42,6 @@ namespace PKSim.Presentation.UICommands
          var configuration = project.ImporterConfigurationBy(configurationId);
          _importObservedDataTask.AddAndReplaceObservedDataFromConfigurationToProject(configuration, observedDataFromSameFile);
          
-         _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);
       }
    }
 }
