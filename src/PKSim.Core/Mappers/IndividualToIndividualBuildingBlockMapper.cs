@@ -86,8 +86,7 @@ namespace PKSim.Core.Mappers
                return true;
 
             //we only export if the value has changed from default
-            var valueChanged = parameter.ValueDiffersFromDefault();
-            return valueChanged;
+            return parameter.ValueDiffersFromDefault();
          }
 
          //we only add parameters that either not defined in all species OR define in all species with a value or formula that is different between species
