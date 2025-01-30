@@ -73,10 +73,6 @@ namespace PKSim.Core.Mappers
       {
          bool shouldExportParameter(IParameter parameter)
          {
-            if (parameter.Name == "Fraction of blood for sampling")
-            {
-               parameter.Name = "Fraction of blood for sampling";
-            }
             //these parameters are exported separately
             if (parameter.GroupName == RELATIVE_EXPRESSION)
                return false;
