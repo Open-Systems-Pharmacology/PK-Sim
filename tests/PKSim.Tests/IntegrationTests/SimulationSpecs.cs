@@ -772,8 +772,7 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _compound2 = DomainFactoryForSpecs.CreateStandardCompound().WithName("COMP_FIRST");
-         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] { _compound2, _compound }, new[] { _protocol, DomainFactoryForSpecs.CreateStandardIVProtocol() }).DowncastTo<IndividualSimulation>();
-
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] {_compound2, _compound}, new[] {_protocol, DomainFactoryForSpecs.CreateStandardIVProtocol()}).DowncastTo<IndividualSimulation>();
       }
 
       [Observation]
@@ -1037,6 +1036,25 @@ namespace PKSim.IntegrationTests
       public When_creating_an_individual_simulation_with_drug_and_inductor_for_all_active_transport_processes()
          : base(CoreConstantsForSpecs.Process.INDUCTION)
       {
+      }
+   }
+
+   public class When_creating_a_simulation_by_overwriting_some_parameter_in_individual_such_as_fraction_of_blood : concern_for_IndividualSimulation
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         //set parameter to a value that we want to check in the simulation
+         var parameter = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.BONE, "Fraction of blood for sampling");
+         parameter.Value = 0.5;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_have_updated_the_parameters_in_the_simulation()
+      {
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.BONE, "Fraction of blood for sampling");
+         parameter.Value.ShouldBeEqualTo(0.5);
       }
    }
 }

@@ -85,7 +85,7 @@ namespace PKSim.Core.Mappers
             case ConstantFormula _:
                builderParameter.Value = parameterValue;
                break;
-            case DistributionFormula distributionFormula:
+            case DistributionFormula _:
             {
                //formula and did not change. Do not return
                if (!valueChanged)
