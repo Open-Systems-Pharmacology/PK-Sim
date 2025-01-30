@@ -73,6 +73,10 @@ namespace PKSim.Core.Mappers
       {
          bool shouldExportParameter(IParameter parameter)
          {
+            if (parameter.Name == "Fraction of blood for sampling")
+            {
+               parameter.Name = "Fraction of blood for sampling";
+            }
             //these parameters are exported separately
             if (parameter.GroupName == RELATIVE_EXPRESSION)
                return false;
@@ -80,8 +84,14 @@ namespace PKSim.Core.Mappers
             //Ontogeny factor are exported also in the expression profile
             if (parameter.IsExpressionOrOntogenyFactor())
                return false;
-            
-            return !_sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameter);
+
+            //different values for the same parameter in different species. It needs to be exported to the individual
+            if (!_sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameter))
+               return true;
+
+            //we only export if the value has changed from default
+            var valueChanged = parameter.ValueDiffersFromDefault();
+            return valueChanged;
          }
 
          //we only add parameters that either not defined in all species OR define in all species with a value or formula that is different between species
