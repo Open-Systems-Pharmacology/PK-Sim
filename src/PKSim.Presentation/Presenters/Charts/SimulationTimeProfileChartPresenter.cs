@@ -14,7 +14,6 @@ using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
 using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
 
@@ -65,7 +64,8 @@ namespace PKSim.Presentation.Presenters.Charts
       protected override void NotifyProjectChanged()
       {
          base.NotifyProjectChanged();
-         Simulation.HasChanged = true;
+         if (Simulation != null)
+            Simulation.HasChanged = true;
       }
 
       public void UpdateAnalysisBasedOn(IndividualSimulation individualSimulation)
@@ -89,7 +89,7 @@ namespace PKSim.Presentation.Presenters.Charts
          InitializeFromTemplateIfRequired();
       }
 
-      protected Simulation Simulation => _repositoryCache.First();
+      protected Simulation Simulation => _repositoryCache.FirstOrDefault();
 
       protected DataRepository DataRepository => DataRepositoryFor(Simulation);
 
@@ -118,7 +118,7 @@ namespace PKSim.Presentation.Presenters.Charts
          if (!canHandle(eventToHandle)) return;
          _chartTask.SetOriginTextFor(Simulation.Name, Chart);
       }
-      
+
       private void groupByCategoryColumn()
       {
          var categoryColumnSettings = Column(BrowserColumns.Category);
@@ -126,13 +126,13 @@ namespace PKSim.Presentation.Presenters.Charts
          categoryColumnSettings.GroupIndex = 1;
          ChartEditorPresenter.ApplyColumnSettings(categoryColumnSettings);
       }
-      
+
       private void configureEditor()
       {
          ChartEditorPresenter.SetGroupRowFormat(GridGroupRowFormats.HideColumnName);
          groupByCategoryColumn();
       }
-      
+
       protected override void ConfigureColumns()
       {
          base.ConfigureColumns();
