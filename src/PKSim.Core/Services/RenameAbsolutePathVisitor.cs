@@ -16,7 +16,7 @@ namespace PKSim.Core.Services
 
    public class RenameAbsolutePathVisitor : IRenameAbsolutePathVisitor,
       IVisitor<IUsingFormula>,
-      IVisitor<IEventAssignment>,
+      IVisitor<EventAssignment>,
       IVisitor<IParameter>,
       IVisitor<PopulationSimulation>
    {
@@ -48,10 +48,10 @@ namespace PKSim.Core.Services
          if (formula == null || formula.IsConstant())
             return;
 
-         formula.ObjectPaths.Where(isAbsolutePath).Each(renameObjectPath);
+         formula.ObjectPaths.Where(x => isAbsolutePath(x.PathAsString)).Each(renameObjectPath);
       }
 
-      private void renameObjectPath(IObjectPath objectPath)
+      private void renameObjectPath(ObjectPath objectPath)
       {
          objectPath.Replace(_oldName, _newName);
       }
@@ -61,7 +61,7 @@ namespace PKSim.Core.Services
          renameAbsolutePathIn(entityUsingFormula.Formula);
       }
 
-      public void Visit(IEventAssignment eventAssignment)
+      public void Visit(EventAssignment eventAssignment)
       {
          Visit((IUsingFormula) eventAssignment);
          renameObjectPath(eventAssignment.ObjectPath);

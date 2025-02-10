@@ -29,7 +29,7 @@ namespace PKSim.Core.Model
       private readonly IReportGenerator _reportGenerator;
       private readonly IMoleculeOntogenyVariabilityUpdater _ontogenyVariabilityUpdater;
       private readonly IGenderRepository _genderRepository;
-      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
+      private readonly IDiseaseStateImplementationRepository _diseaseStateImplementationRepository;
 
       public IndividualFactory(
          IIndividualModelTask individualModelTask,
@@ -40,7 +40,7 @@ namespace PKSim.Core.Model
          IReportGenerator reportGenerator,
          IMoleculeOntogenyVariabilityUpdater ontogenyVariabilityUpdater,
          IGenderRepository genderRepository,
-         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
+         IDiseaseStateImplementationRepository diseaseStateImplementationRepository)
       {
          _individualModelTask = individualModelTask;
          _objectBaseFactory = objectBaseFactory;
@@ -50,7 +50,7 @@ namespace PKSim.Core.Model
          _reportGenerator = reportGenerator;
          _ontogenyVariabilityUpdater = ontogenyVariabilityUpdater;
          _genderRepository = genderRepository;
-         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
+         _diseaseStateImplementationRepository = diseaseStateImplementationRepository;
       }
 
       public Individual CreateAndOptimizeFor(OriginData originData, int? seed = null)
@@ -63,7 +63,7 @@ namespace PKSim.Core.Model
          _createIndividualAlgorithm.Optimize(individual);
 
          //Apply disease states if required
-         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+         var diseaseStateImplementation = _diseaseStateImplementationRepository.FindFor(individual);
          diseaseStateImplementation.ApplyTo(individual);
 
          validate(individual);
@@ -138,7 +138,7 @@ namespace PKSim.Core.Model
                throw new CannotCreateIndividualWithConstraintsException(_reportGenerator.StringReportFor(individual.OriginData));
 
             //Apply disease states if required
-            var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(individual);
+            var diseaseStateImplementation = _diseaseStateImplementationRepository.FindFor(individual);
             //This will throw if not valid
             diseaseStateImplementation.Validate(individual.OriginData);
          }

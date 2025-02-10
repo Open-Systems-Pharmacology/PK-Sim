@@ -13,7 +13,7 @@ namespace PKSim.Core.Repositories
       /// </summary>
       /// <param name="compoundProcessName">Internal name of the compound process</param>
       /// <param name="processParameterName">Name of parameter</param>
-      IObjectPath MappedParameterPathFor(string compoundProcessName, string processParameterName);
+      ObjectPath MappedParameterPathFor(string compoundProcessName, string processParameterName);
 
       /// <summary>
       ///    Returns true if a mapping is available for the give{Process, ParameterName} otherwise false

@@ -21,13 +21,13 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Path to the mapped parameter (e.g. ORGANISM/Liver/Volume)
       /// </summary>
-      IObjectPath MappedParameterPath { get; set; }
+      ObjectPath MappedParameterPath { get; set; }
    }
 
    public class CompoundProcessParameterMapping : ICompoundProcessParameterMapping
    {
       public string ProcessName { get; set; }
       public string ParameterName { get; set; }
-      public IObjectPath MappedParameterPath { get; set; }
+      public ObjectPath MappedParameterPath { get; set; }
    }
 }

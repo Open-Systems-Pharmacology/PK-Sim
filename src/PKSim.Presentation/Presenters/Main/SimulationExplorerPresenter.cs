@@ -7,24 +7,28 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Classifications;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
+using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
+using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
+using PKSim.Presentation.Presenters.ContextMenus;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
+using static PKSim.Assets.PKSimConstants;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Main
@@ -45,6 +49,8 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
       private readonly IObservedDataInSimulationManager _observedDataInSimulationManager;
       private readonly ISimulationComparisonTask _simulationComparisonTask;
+      private readonly IExecutionContext _executionContext;
+      private readonly IMenuBarItemRepository _menuBarItemRepository;
 
       public SimulationExplorerPresenter(
          ISimulationExplorerView view,
@@ -60,7 +66,9 @@ namespace PKSim.Presentation.Presenters.Main
          IClassificationPresenter classificationPresenter,
          IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter,
          IObservedDataInSimulationManager observedDataInSimulationManager,
-         ISimulationComparisonTask simulationComparisonTask) :
+         ISimulationComparisonTask simulationComparisonTask,
+         IExecutionContext executionContext,
+         IMenuBarItemRepository menuBarItemRepository) :
          base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver,
             buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
@@ -68,8 +76,12 @@ namespace PKSim.Presentation.Presenters.Main
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
          _observedDataInSimulationManager = observedDataInSimulationManager;
          _simulationComparisonTask = simulationComparisonTask;
+         _executionContext = executionContext;
+         _menuBarItemRepository = menuBarItemRepository;
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
+
+      public override bool CopyAllowed() => false;
 
       public override bool CanDrag(ITreeNode node)
       {
@@ -117,8 +129,8 @@ namespace PKSim.Presentation.Presenters.Main
             _classificationPresenter.AddClassificationsToTree(project.AllClassificationsByType(ClassificationType.Comparison));
             _classificationPresenter.AddClassificationsToTree(project.AllClassificationsByType(ClassificationType.QualificationPlan));
 
-            project.AllClassifiablesByType<ClassifiableSimulation>().Each(x => addClassifiableSimulationToRootFolder(x));
-            project.AllClassifiablesByType<ClassifiableComparison>().Each(x => addClassifiableComparisonToRootFolder(x));
+            project.AllClassifiablesByType<ClassifiableSimulation>().Each(x => addClassifiableSimulationToFolder(x));
+            project.AllClassifiablesByType<ClassifiableComparison>().Each(x => addClassifiableComparisonToFolder(x));
 
             _parameterAnalysablesInExplorerPresenter.AddParameterAnalysablesToTree(project);
          }
@@ -128,29 +140,23 @@ namespace PKSim.Presentation.Presenters.Main
       {
          if (buildingBlock.BuildingBlockType != PKSimBuildingBlockType.Simulation)
             return null;
+
          return addSimulationToTree(buildingBlock.DowncastTo<Simulation>());
       }
 
       private ITreeNode addSimulationToTree(Simulation simulation)
       {
-         return AddSubjectToClassifyToTree<Simulation, ClassifiableSimulation>(simulation, addClassifiableSimulationToRootFolder);
+         return AddSubjectToClassifyToTree<Simulation, ClassifiableSimulation>(simulation, addClassifiableSimulationToFolder);
       }
 
-      private ITreeNode addSimulationComparisonToTree(ISimulationComparison simulationComparison)
-      {
-         return AddSubjectToClassifyToTree<ISimulationComparison, ClassifiableComparison>(simulationComparison,
-            addClassifiableComparisonToRootFolder);
-      }
+      private ITreeNode addSimulationComparisonToTree(ISimulationComparison simulationComparison) =>
+         AddSubjectToClassifyToTree<ISimulationComparison, ClassifiableComparison>(simulationComparison, addClassifiableComparisonToFolder);
 
-      private ITreeNode addClassifiableSimulationToRootFolder(ClassifiableSimulation classifiableSimulation)
-      {
-         return AddClassifiableToTree(classifiableSimulation, RootNodeTypes.SimulationFolder, addClassifiableSimulationToTree);
-      }
+      private ITreeNode addClassifiableSimulationToFolder(ClassifiableSimulation classifiableSimulation) =>
+         AddClassifiableToTree(classifiableSimulation, RootNodeTypes.SimulationFolder, addClassifiableSimulationToTree);
 
-      private ITreeNode addClassifiableComparisonToRootFolder(ClassifiableComparison classifiableComparison)
-      {
-         return AddClassifiableToTree(classifiableComparison, RootNodeTypes.ComparisonFolder, addClassifiableComparisonToTree);
-      }
+      private ITreeNode addClassifiableComparisonToFolder(ClassifiableComparison classifiableComparison) =>
+         AddClassifiableToTree(classifiableComparison, RootNodeTypes.ComparisonFolder, addClassifiableComparisonToTree);
 
       private ITreeNode addClassifiableComparisonToTree(ITreeNode<IClassification> classificationNode, ClassifiableComparison classifiableComparison)
       {
@@ -169,9 +175,11 @@ namespace PKSim.Presentation.Presenters.Main
 
          addUsedBuildingBlockNodes(simulation, simulationNode);
 
+
          AddClassifiableNodeToView(simulationNode, classificationNode);
 
          updateObservedDataFor(simulationNode, simulation);
+
          return simulationNode;
       }
 
@@ -184,6 +192,7 @@ namespace PKSim.Presentation.Presenters.Main
             .Under(simulationNode);
 
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.SimulationSubject);
+         //Used for debug purposes for now   addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.ExpressionProfile);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Compound);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Protocol);
          addUsedBuildingBlock(simulation, simulationNode, PKSimBuildingBlockType.Formulation);
@@ -244,7 +253,7 @@ namespace PKSim.Presentation.Presenters.Main
       private void handleRenamedObservedData(RenamedEvent renamedEvent)
       {
          var observedData = renamedEvent.RenamedObject as DataRepository;
-         if (observedData == null) 
+         if (observedData == null)
             return;
 
          _observedDataInSimulationManager.SimulationsUsing(observedData).Each(updateObservedDataForSimulation);
@@ -259,7 +268,7 @@ namespace PKSim.Presentation.Presenters.Main
       private void handleRenamedBuildingBlock(RenamedEvent renamedEvent)
       {
          var buildingBlock = renamedEvent.RenamedObject as IPKSimBuildingBlock;
-         if (buildingBlock == null) 
+         if (buildingBlock == null)
             return;
 
          if (buildingBlock.IsAnImplementationOf<Simulation>())
@@ -296,7 +305,6 @@ namespace PKSim.Presentation.Presenters.Main
       public override void NodeDoubleClicked(ITreeNode node)
       {
          var tag = node.TagAsObject;
-
          var classifiable = tag as ClassifiableSimulation;
          if (classifiable != null)
          {
@@ -315,17 +323,46 @@ namespace PKSim.Presentation.Presenters.Main
          return tag.IsAnImplementationOf<UsedBuildingBlock>() || tag.IsAnImplementationOf<UsedObservedData>();
       }
 
+      public override IEnumerable<IMenuBarItem> AllCustomMenuItemsFor(ClassificationNode classificationNode)
+      {
+         //this method ic called when a right click is made on a custom subfolder. 
+         //we save this subfolder so that we can potentially add the newly created items to it later
+         var activeClassification = classificationNode.Tag;
+         SetActiveClassification(activeClassification);
+         var allCustomMenuItems = new List<IMenuBarItem>();
+         switch (activeClassification.ClassificationType)
+         {
+            case ClassificationType.Comparison:
+               allCustomMenuItems.AddRange(ComparisonFolderTreeNodeContextMenu.AddComparisonMenuItems(_executionContext.Container));
+               break;
+            case ClassificationType.Simulation:
+               allCustomMenuItems.AddRange(SimulationFolderTreeNodeContextMenu.AddSimulationMenuItems(_menuBarItemRepository));
+               break;
+            case ClassificationType.ParameterIdentification:
+               allCustomMenuItems.Add(ParameterIdentificationContextMenuItems.CreateParameterIdentification(_executionContext.Container));
+               break;
+            case ClassificationType.SensitiviyAnalysis:
+               allCustomMenuItems.Add(SensitivityAnalysisContextMenuItems.CreateSensitivityAnalysis(_executionContext.Container));
+               break;
+         }
+
+         return allCustomMenuItems;
+      }
+
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)
       {
          var classification = parentClassificationNode.Tag;
          if (classification.ClassificationType != ClassificationType.Simulation)
-            yield break;
+            return Enumerable.Empty<ClassificationTemplate>();
 
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.Compound, ApplicationIcons.Compound);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.AdministrationProtocol, ApplicationIcons.Protocol);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.Individual, ApplicationIcons.Individual);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.Population, ApplicationIcons.Population);
-         yield return new ClassificationTemplate(PKSimConstants.Classifications.SimulationType, ApplicationIcons.Simulation);
+         return new []
+         {
+            new ClassificationTemplate(Classifications.Compound, ApplicationIcons.Compound),
+            new ClassificationTemplate(Classifications.AdministrationProtocol, ApplicationIcons.Protocol),
+            new ClassificationTemplate(Classifications.Individual, ApplicationIcons.Individual),
+            new ClassificationTemplate(Classifications.Population, ApplicationIcons.Population),
+            new ClassificationTemplate(Classifications.SimulationType, ApplicationIcons.Simulation)
+         };
       }
 
       public override void AddToClassificationTree(ITreeNode<IClassification> parentNode, string category)
@@ -337,19 +374,19 @@ namespace PKSim.Presentation.Presenters.Main
       private string retrieveCategoryValue(ClassifiableSimulation classifiableSimulation, string category)
       {
          var simulation = classifiableSimulation.Simulation;
-         if (string.Equals(PKSimConstants.Classifications.Compound, category))
+         if (string.Equals(Classifications.Compound, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Compound);
 
-         if (string.Equals(PKSimConstants.Classifications.AdministrationProtocol, category))
+         if (string.Equals(Classifications.AdministrationProtocol, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Protocol);
 
-         if (string.Equals(PKSimConstants.Classifications.Individual, category))
+         if (string.Equals(Classifications.Individual, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Individual);
 
-         if (string.Equals(PKSimConstants.Classifications.Population, category))
+         if (string.Equals(Classifications.Population, category))
             return simulation.BuildingBlockName(PKSimBuildingBlockType.Population);
 
-         if (string.Equals(PKSimConstants.Classifications.SimulationType, category))
+         if (string.Equals(Classifications.SimulationType, category))
             return displayTypeFor(simulation);
 
          return string.Empty;
@@ -358,8 +395,8 @@ namespace PKSim.Presentation.Presenters.Main
       private string displayTypeFor(Simulation simulation)
       {
          return simulation.IsAnImplementationOf<IndividualSimulation>()
-            ? PKSimConstants.UI.IndividualSimulation
-            : PKSimConstants.UI.PopulationSimulation;
+            ? UI.IndividualSimulation
+            : UI.PopulationSimulation;
       }
 
       public void Handle(SwapBuildingBlockEvent eventToHandle)

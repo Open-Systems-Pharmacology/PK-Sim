@@ -5,9 +5,9 @@ using PKSim.Core.Model;
 
 namespace PKSim.Core.Commands
 {
-   public class RemoveObserverFromObserverSetCommand : RemoveEntityFromContainerCommand<IObserverBuilder, ObserverSet, RemoveObserverFromObserverSetEvent>
+   public class RemoveObserverFromObserverSetCommand : RemoveEntityFromContainerCommand<ObserverBuilder, ObserverSet, RemoveObserverFromObserverSetEvent>
    {
-      public RemoveObserverFromObserverSetCommand(IObserverBuilder observer, ObserverSet observerSet, IExecutionContext context)
+      public RemoveObserverFromObserverSetCommand(ObserverBuilder observer, ObserverSet observerSet, IExecutionContext context)
          : base(observer, observerSet, context)
       {
       }

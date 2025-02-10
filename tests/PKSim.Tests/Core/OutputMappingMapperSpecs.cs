@@ -16,7 +16,7 @@ namespace PKSim.Core
       protected OutputMapping _outputMapping;
       protected Snapshots.OutputMapping _snapshot;
       protected Simulation _simulation;
-      protected IObserver _output;
+      protected Observer _output;
       protected DataRepository _dataRepository;
       protected IOSPSuiteLogger _logger;
       protected PKSimProject _project;

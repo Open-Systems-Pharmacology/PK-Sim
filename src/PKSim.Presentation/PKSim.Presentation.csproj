@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <Version>11.3.0</Version>
-    <PackageVersion>11.3.0</PackageVersion>
-    <AssemblyVersion>11.3.0</AssemblyVersion>
-    <FileVersion>11.3.0</FileVersion>
-    <InformationalVersion>11.3.0</InformationalVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>12.0.0</Version>
+    <PackageVersion>12.0.0</PackageVersion>
+    <AssemblyVersion>12.0.0</AssemblyVersion>
+    <FileVersion>12.0.0</FileVersion>
+    <InformationalVersion>12.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -23,15 +23,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTO\DiseaseStates\" />
+    <Folder Include="Presenters\DiseaseStates\" />
     <Folder Include="Properties\" />
+    <Folder Include="Views\DiseaseStates\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="11.3.272" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.0.0.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.3.272" />
-    <PackageReference Include="OSPSuite.Core" Version="11.3.272" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.0.364" />
+    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.5" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.0.6" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.0.364" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.364" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PKSim.Assets.Images\PKSim.Assets.Images.csproj" />
     <ProjectReference Include="..\PKSim.Assets\PKSim.Assets.csproj" />
     <ProjectReference Include="..\PKSim.Core\PKSim.Core.csproj" />
   </ItemGroup>

@@ -43,7 +43,7 @@ namespace PKSim.Core.Model.Extensions
 
       public static DataColumn FabsOral(this DataRepository dataRepository,string compoundName)
       {
-         return dataRepository.drugColumnFor(CoreConstants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName);
+         return dataRepository.drugColumnFor(Constants.Organ.LUMEN, CoreConstants.Observer.FABS_ORAL, CoreConstants.Observer.FABS_ORAL, compoundName);
       }
 
       public static IEnumerable<DataColumn> BelongingTo(this IEnumerable<DataColumn> dataColumns, Simulation simulation)

@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-using DevExpress.XtraLayout.Utils;
-using OSPSuite.Assets;
+﻿using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -29,7 +27,7 @@ namespace PKSim.UI.Views.Snapshots
          InitializeComponent();
       }
 
-     public override void InitializeBinding()
+      public override void InitializeBinding()
       {
          base.InitializeBinding();
 
@@ -66,11 +64,6 @@ namespace PKSim.UI.Views.Snapshots
          OkEnabled = okEnabled;
          CancelEnabled = cancelEnabled;
          buttonStart.Enabled = startEnabled;
-      }
-
-      public bool RunSimulationsSwitchVisible
-      {
-         set => layoutItemRunSimulations.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
       }
 
       protected override void SetOkButtonEnable()

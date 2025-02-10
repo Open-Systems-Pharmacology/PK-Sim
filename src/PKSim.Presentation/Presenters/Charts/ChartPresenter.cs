@@ -14,7 +14,6 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
 using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
 
@@ -67,7 +66,7 @@ namespace PKSim.Presentation.Presenters.Charts
          _view.SetPKAnalysisView(_pkAnalysisPresenter.View);
          AddSubPresenters(_pkAnalysisPresenter);
          _chartTemplatingTask = chartTemplatingTask;
-         _repositoryCache = new Cache<DataRepository, IndividualSimulation> { OnMissingKey = noDataForSimulation };
+         _repositoryCache = new Cache<DataRepository, IndividualSimulation> {OnMissingKey = noDataForSimulation};
 
          ChartEditorPresenter.SetShowDataColumnInDataBrowserDefinition(IsColumnVisibleInDataBrowser);
          ChartDisplayPresenter.DragDrop += OnDragDrop;
@@ -102,12 +101,16 @@ namespace PKSim.Presentation.Presenters.Charts
 
       protected virtual void UpdateAnalysisBasedOn(IndividualSimulation simulation, DataRepository dataRepository)
       {
+         //For some reasons, we land in this where the simulation does not have results but we had a chart. This can be the case after loading from snapshot
+         if (dataRepository.IsNull())
+            return;
+
          if (_repositoryCache.Contains(dataRepository))
          {
             using (_chartUpdater.UpdateTransaction(Chart))
             {
                ChartEditorPresenter.RemoveUnusedColumns();
-               AddDataRepositoriesToEditor(new[] { dataRepository });
+               AddDataRepositoriesToEditor(new[] {dataRepository});
                ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
             }
 
@@ -119,7 +122,7 @@ namespace PKSim.Presentation.Presenters.Charts
          else
          {
             _repositoryCache[dataRepository] = simulation;
-            AddDataRepositoriesToEditor(new[] { dataRepository });
+            AddDataRepositoriesToEditor(new[] {dataRepository});
             ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
          }
       }

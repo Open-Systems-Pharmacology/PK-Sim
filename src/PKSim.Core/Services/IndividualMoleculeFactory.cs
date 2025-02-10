@@ -7,6 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using static PKSim.Core.CoreConstants.CalculationMethod;
 using static PKSim.Core.CoreConstants.Parameters;
 using FormulaCache = OSPSuite.Core.Domain.Formulas.FormulaCache;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
@@ -19,7 +20,7 @@ namespace PKSim.Core.Services
       ///    Returns an empty <see cref="IndividualMolecule" />  (only parameters are defined in the protein, no protein
       ///    container)
       /// </summary>
-      IndividualMolecule CreateEmpty();
+      IndividualMolecule CreateEmpty(string moleculeName, bool isAgeDependent);
 
       IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
 
@@ -27,7 +28,7 @@ namespace PKSim.Core.Services
       ///    Add all predefined ontogeny parameters to the global molecule. This is only required for actual SimulationSubject
       /// </summary>
       /// <param name="individualMolecule"></param>
-      void AddOntogenyParameterTo(IndividualMolecule individualMolecule);
+      void AddAgeDependentOntogenyParametersTo(IndividualMolecule individualMolecule);
    }
 
    public abstract class IndividualMoleculeFactory<TMolecule, TMoleculeExpressionContainer> : IIndividualMoleculeFactory
@@ -64,12 +65,7 @@ namespace PKSim.Core.Services
 
       protected abstract ApplicationIcon Icon { get; }
 
-      public virtual IndividualMolecule CreateEmpty()
-      {
-         var molecule = CreateMolecule(string.Empty);
-         AddOntogenyParameterTo(molecule);
-         return molecule;
-      }
+      public virtual IndividualMolecule CreateEmpty(string moleculeName, bool isAgeDependent) => CreateMolecule(moleculeName, isAgeDependent);
 
       public abstract IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName);
 
@@ -92,16 +88,18 @@ namespace PKSim.Core.Services
 
       protected ParameterRateMetaData InitialConcentrationParam(string rate) => rateParam(INITIAL_CONCENTRATION, rate);
 
-      private ParameterRateMetaData rateParam(string paramName, string rate)
+      protected ParameterRateMetaData OntogenyFactorFromTable(string parameterName, string rate) => rateParam(parameterName, rate, ONTOGENY_FACTORS);
+
+      private ParameterRateMetaData rateParam(string paramName, string rate, string calculationMethod = "")
       {
-         var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName);
+         var parameterMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, paramName, calculationMethod);
          var parameterRateMetaData = new ParameterRateMetaData();
          parameterRateMetaData.UpdatePropertiesFrom(parameterMetaData);
          parameterRateMetaData.Rate = rate;
          return parameterRateMetaData;
       }
 
-      protected TMolecule CreateMolecule(string moleculeName)
+      protected TMolecule CreateMolecule(string moleculeName, bool isAgeDependent = false)
       {
          var molecule = _objectBaseFactory.Create<TMolecule>().WithIcon(Icon.IconName).WithName(moleculeName);
          CreateMoleculeParameterIn(molecule, REFERENCE_CONCENTRATION, CoreConstants.DEFAULT_REFERENCE_CONCENTRATION_VALUE);
@@ -109,14 +107,27 @@ namespace PKSim.Core.Services
          CreateMoleculeParameterIn(molecule, HALF_LIFE_INTESTINE, CoreConstants.DEFAULT_MOLECULE_HALF_LIFE_INTESTINE_VALUE_IN_MIN);
          CreateMoleculeParameterIn(molecule, DISEASE_FACTOR, CoreConstants.DEFAULT_DISEASE_FACTOR);
 
+         //Default ontogeny parameter tables created for ALL molecules for age dependent species only
+         if (isAgeDependent)
+            AddAgeDependentOntogenyParametersTo(molecule);
+  
          return molecule;
       }
 
-      public void AddOntogenyParameterTo(IndividualMolecule molecule)
+      public void AddAgeDependentOntogenyParametersTo(IndividualMolecule molecule)
       {
-         OntogenyFactors.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR)
-         );
+         OntogenyFactorTables.Each(x => CreateMoleculeParameterIn(molecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR, ONTOGENY_FACTORS));
+
+         AddGlobalExpression(molecule,
+            OntogenyFactorFromTable(ONTOGENY_FACTOR, CoreConstants.Rate.ONTOGENY_FACTOR_FROM_TABLE),
+            OntogenyFactorFromTable(ONTOGENY_FACTOR_GI, CoreConstants.Rate.ONTOGENY_FACTOR_GI_FROM_TABLE));
       }
+
+      // public void AddConstantOntogenyParametersTo(IndividualMolecule undefinedMolecule)
+      // {
+      //    //Constant ontogeny parameters added for undefined enzymes
+      //    OntogenyFactors.Each(x => CreateMoleculeParameterIn(undefinedMolecule, x, CoreConstants.DEFAULT_ONTOGENY_FACTOR));
+      // }
 
       protected IParameter CreateFormulaParameterIn(
          IContainer parameterContainer,
@@ -166,9 +177,9 @@ namespace PKSim.Core.Services
          return parameter;
       }
 
-      protected IParameter CreateMoleculeParameterIn(IContainer parameterContainer, string parameterName, double defaultValue)
+      protected IParameter CreateMoleculeParameterIn(IContainer parameterContainer, string parameterName, double defaultValue, string calculationMethod = "")
       {
-         var parameterRateMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, parameterName);
+         var parameterRateMetaData = _parameterRateRepository.ParameterMetaDataFor(_containerPath, parameterName, calculationMethod);
          var parameterValue = new ParameterValueMetaData();
          parameterValue.UpdatePropertiesFrom(parameterRateMetaData);
          parameterValue.DefaultValue = defaultValue;

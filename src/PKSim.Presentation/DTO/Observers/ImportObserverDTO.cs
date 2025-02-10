@@ -4,12 +4,12 @@ using OSPSuite.Presentation.DTO;
 
 namespace PKSim.Presentation.DTO.Observers
 {
-   public class ImportObserverDTO : ValidatableDTO<IObserverBuilder>, IWithName
+   public class ImportObserverDTO : ValidatableDTO<ObserverBuilder>, IWithName
    {
-      public IObserverBuilder Observer { get; }
+      public ObserverBuilder Observer { get; }
       public string FilePath { get; set; }
 
-      public ImportObserverDTO(IObserverBuilder observerBuilder) : base(observerBuilder)
+      public ImportObserverDTO(ObserverBuilder observerBuilder) : base(observerBuilder)
       {
          Observer = observerBuilder;
       }

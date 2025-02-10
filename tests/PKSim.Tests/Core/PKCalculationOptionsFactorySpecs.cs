@@ -1,13 +1,15 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
+﻿using System;
 using FakeItEasy;
-using PKSim.Core.Model;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using PKSim.Core.Model;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using IPKCalculationOptionsFactory = PKSim.Core.Services.IPKCalculationOptionsFactory;
 using PKCalculationOptionsFactory = PKSim.Core.Services.PKCalculationOptionsFactory;
@@ -18,7 +20,7 @@ namespace PKSim.Core
    {
       private ILazyLoadTask _lazyLoadTask;
       protected Simulation _simulation1;
-      protected IContainer _applications;
+      protected IContainer _events;
       protected IContainer _applications2;
       protected IContainer _rootContainer;
 
@@ -27,10 +29,10 @@ namespace PKSim.Core
          _simulation1 = A.Fake<Simulation>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _rootContainer = new Container();
-         _applications = new EventGroup {Name = Constants.APPLICATIONS, ContainerType = ContainerType.EventGroup};
+         _events = new EventGroup {Name = Constants.EVENTS, ContainerType = ContainerType.EventGroup};
          _applications2 = new EventGroup {Name = "APPLICATIONS_2", ContainerType = ContainerType.EventGroup};
          _simulation1.Model.Root = _rootContainer;
-         _rootContainer.Add(_applications);
+         _rootContainer.Add(_events);
          A.CallTo(() => _simulation1.BodyWeight).Returns(DomainHelperForSpecs.ConstantParameterWithValue(50));
          sut = new PKCalculationOptionsFactory(_lazyLoadTask);
       }
@@ -58,8 +60,8 @@ namespace PKSim.Core
          _drugMass2 = A.Fake<IParameter>().WithName(Constants.Parameters.DRUG_MASS);
          _drugMass2.Value = 20;
 
-         _applications.Add(container1);
-         _applications.Add(container2);
+         _events.Add(container1);
+         _events.Add(container2);
 
          container1.Add(new MoleculeAmount {Name = moleculeName});
          container1.Add(_startTime1);
@@ -70,9 +72,9 @@ namespace PKSim.Core
          container2.Add(_drugMass2);
       }
 
-      protected IReactionBuilder CreateReactionForCompoundAndMetabolite(string[] products, params string[] educts)
+      protected ReactionBuilder CreateReactionForCompoundAndMetabolite(string[] products, params string[] educts)
       {
-         var reaction = new ReactionBuilder();
+         var reaction = new ReactionBuilder().WithName(ShortGuid.NewGuid());
          educts.Each(educt => reaction.AddEduct(new ReactionPartnerBuilder(educt, 1)));
 
          products.Each(product => reaction.AddProduct(new ReactionPartnerBuilder(product, 1)));
@@ -124,7 +126,7 @@ namespace PKSim.Core
          _secondMetabolite = "secondMetabolite";
          _appliedCompound = "compound";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
 
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_metabolite1}, _appliedCompound));
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_secondMetabolite}, _metabolite1, _metabolite2));
@@ -196,7 +198,7 @@ namespace PKSim.Core
    {
       protected override void Because()
       {
-         A.CallTo(() => _simulation1.Reactions).Returns(null);
+         A.CallTo(() => _simulation1.Reactions).Returns(Array.Empty<ReactionBuildingBlock>());
       }
 
       [Observation]
@@ -222,7 +224,7 @@ namespace PKSim.Core
          _metabolite2 = "metabolite2";
          _appliedCompound = "compound";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
 
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_metabolite1, _metabolite2}, _appliedCompound));
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_secondMetabolite}, _metabolite1));
@@ -264,7 +266,7 @@ namespace PKSim.Core
             CreateReactionForCompoundAndMetabolite(new[] {_product}, _educt2)
          };
 
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
          CreateMultipleAdministrationForMolecule(_educt1);
          CreateMultipleAdministrationForMolecule(_educt2);
          A.CallTo(() => _simulation1.EndTime).Returns(1000);
@@ -293,7 +295,7 @@ namespace PKSim.Core
          _secondMetabolite2 = "secondMetabolite2";
          _appliedCompound = "compound";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
 
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_metabolite1}, _appliedCompound));
          _reactionBuildingBlock.Add(CreateReactionForCompoundAndMetabolite(new[] {_secondMetabolite, _secondMetabolite2}, _metabolite1));
@@ -320,7 +322,7 @@ namespace PKSim.Core
    {
       private string _metaboliteName;
       private string _compoundName;
-      private IReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionBuildingBlock _reactionBuildingBlock;
       private string _secondMetaboliteName;
       private PKCalculationOptions _result;
 
@@ -331,13 +333,14 @@ namespace PKSim.Core
          _compoundName = "compound";
          _secondMetaboliteName = "secondMetabolite";
          _reactionBuildingBlock = new ReactionBuildingBlock();
-         A.CallTo(() => _simulation1.Reactions).Returns(_reactionBuildingBlock);
+         A.CallTo(() => _simulation1.Reactions).Returns(new[] {_reactionBuildingBlock});
+
 
          var reaction = CreateReactionForCompoundAndMetabolite(new[] {_metaboliteName}, _compoundName);
-         _simulation1.Reactions.Add(reaction);
+         _reactionBuildingBlock.Add(reaction);
 
          reaction = CreateReactionForCompoundAndMetabolite(new[] {_secondMetaboliteName}, _metaboliteName);
-         _simulation1.Reactions.Add(reaction);
+        _reactionBuildingBlock.Add(reaction);
 
          CreateMultipleAdministrationForMolecule(_compoundName);
          A.CallTo(() => _simulation1.EndTime).Returns(1000);
@@ -369,7 +372,7 @@ namespace PKSim.Core
          _startTime = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
          _startTime.Value = 300;
 
-         _applications.Add(container1);
+         _events.Add(container1);
          container1.Add(new MoleculeAmount {Name = _moleculeName});
          container1.Add(_startTime);
 
@@ -417,11 +420,10 @@ namespace PKSim.Core
          _options.LastMinusOneInterval.StartValue.ShouldBeEqualTo(_startTime1.Value.ToFloat());
       }
 
-
       [Observation]
       public void should_return_the_expected_dose_for_all_intervals()
       {
-         _options.FirstInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value/_simulation1.BodyWeight.Value);
+         _options.FirstInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value / _simulation1.BodyWeight.Value);
          _options.LastMinusOneInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass1.Value / _simulation1.BodyWeight.Value);
          _options.LastInterval.DrugMassPerBodyWeight.ShouldBeEqualTo(_drugMass2.Value / _simulation1.BodyWeight.Value);
       }
@@ -449,8 +451,8 @@ namespace PKSim.Core
          _startTime2 = A.Fake<IParameter>().WithName(Constants.Parameters.START_TIME);
          _startTime2.Value = 500;
 
-         _applications.Add(container1);
-         _applications.Add(container2);
+         _events.Add(container1);
+         _events.Add(container2);
 
          _rootContainer.Add(_applications2);
          _applications2.Add(container3);

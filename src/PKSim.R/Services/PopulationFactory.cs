@@ -56,7 +56,8 @@ namespace PKSim.R.Services
             if (ontogeny == null)
                continue;
 
-            var molecule = _individualEnzymeFactory.CreateEmpty().WithName(moleculeOntogeny.Molecule);
+            //Age dep since we have ontogeny for this molecule
+            var molecule = _individualEnzymeFactory.CreateEmpty(moleculeOntogeny.Molecule, isAgeDependent:true);
             molecule.Ontogeny = ontogeny;
 
             population.AddMolecule(molecule);

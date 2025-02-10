@@ -196,7 +196,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_a_table_formula_containing_a_solubility_for_each_half_ph()
       {
-         _tableFormula.AllPoints().Count().ShouldBeEqualTo(14 * 2 + 1);
+         _tableFormula.AllPoints.Count().ShouldBeEqualTo(14 * 2 + 1);
       }
 
       [Observation]
@@ -453,7 +453,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _tableFormula = sut.ImportSolubilityTableFormula();
+         _tableFormula = sut.TableFormulaFrom(sut.ImportSolubilityTablePoints());
       }
 
       [Observation]

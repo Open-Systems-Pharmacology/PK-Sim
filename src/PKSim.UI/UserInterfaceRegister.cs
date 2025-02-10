@@ -7,6 +7,7 @@ using PKSim.UI.Views.Simulations;
 using OSPSuite.Core;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Presentation.Views.Individuals;
@@ -28,7 +29,9 @@ namespace PKSim.UI
 
          var shell = container.Resolve<IPKSimMainView>().DowncastTo<Shell>();
          container.RegisterImplementationOf(shell);
+         
          container.RegisterImplementationOf((IShell) shell);
+         container.RegisterImplementationOf((BaseShell) shell);
          container.RegisterImplementationOf((IMainView) shell);
 
          var exceptionView = container.Resolve<IExceptionView>();
@@ -49,7 +52,7 @@ namespace PKSim.UI
          container.Register(typeof(ISimulationCompoundProcessView<,>), typeof(SimulationCompoundProcessView<,>));
          container.Register(typeof(IExpressionParametersView<>), typeof(ExpressionParametersView<>));
 
-         container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
+         container.Register<IUserSettings, OSPSuite.Presentation.IPresentationUserSettings, ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
       }
    }
 }

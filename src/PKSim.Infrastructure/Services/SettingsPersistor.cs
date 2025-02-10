@@ -31,9 +31,14 @@ namespace PKSim.Infrastructure.Services
 
       public virtual TSettings Load()
       {
+         if (!ExistingFilesForSettings().Any())
+         {
+            return CreateLoadFailDefaultsFrom(_defaultSettings);
+         }
+         
          try
          {
-            foreach (var filePath in SettingsFilePaths.Where(FileHelper.FileExists))
+            foreach (var filePath in ExistingFilesForSettings())
             {
                var xmlContent = XmlHelper.XmlContentFromFile(filePath);
                return _stringSerializer.Deserialize<TSettings>(xmlContent);
@@ -42,10 +47,20 @@ namespace PKSim.Infrastructure.Services
          //We do not want to have a crash if the user has edited the configuration by hand
          catch (Exception)
          {
-            return _defaultSettings;
+            return CreateLoadFailDefaultsFrom(_defaultSettings);
          }
 
+         return CreateLoadFailDefaultsFrom(_defaultSettings);
+      }
+
+      protected virtual TSettings CreateLoadFailDefaultsFrom(TSettings defaultSettings)
+      {
          return _defaultSettings;
+      }
+
+      protected IReadOnlyList<string> ExistingFilesForSettings()
+      {
+         return SettingsFilePaths.Where(FileHelper.FileExists).ToList();
       }
 
       protected abstract IEnumerable<string> SettingsFilePaths { get; }

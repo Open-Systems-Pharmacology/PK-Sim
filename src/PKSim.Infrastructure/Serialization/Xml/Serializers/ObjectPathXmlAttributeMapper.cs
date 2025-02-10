@@ -5,9 +5,9 @@ using OSPSuite.Serializer.Attributes;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
-   public class ObjectPathXmlAttributeMapper : AttributeMapper<IObjectPath, SerializationContext>
+   public class ObjectPathXmlAttributeMapper : AttributeMapper<ObjectPath, SerializationContext>
    {
-      public override string Convert(IObjectPath objectPath, SerializationContext context)
+      public override string Convert(ObjectPath objectPath, SerializationContext context)
       {
          return objectPath == null ? string.Empty : objectPath.ToString();
       }
@@ -17,8 +17,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          if (string.IsNullOrEmpty(attributeValue))
             return new ObjectPath();
 
-         var objectPathFactory = context.Resolve<IObjectPathFactory>();
-         return objectPathFactory.CreateObjectPathFrom(attributeValue.ToPathArray());
+         return attributeValue.ToObjectPath();
       }
    }
 }

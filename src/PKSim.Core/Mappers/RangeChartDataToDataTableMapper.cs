@@ -3,6 +3,7 @@ using System.Data;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core.Mappers
 {
@@ -20,10 +21,10 @@ namespace PKSim.Core.Mappers
       {
          _xValueColumn = curveData.XAxis.Caption;
          _yValueColumn = curveData.YAxis.Caption;
-         _yLowerPercentileColumn = CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerPercentile, _yValueColumn);
-         _yUpperPercentileColumn = CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperPercentile, _yValueColumn);
-         _xMinimumColumn = CoreConstants.CompositeNameFor(PKSimConstants.UI.Minimum, _xValueColumn);
-         _xMaximumColumn = CoreConstants.CompositeNameFor(PKSimConstants.UI.Maximum, _xValueColumn);
+         _yLowerPercentileColumn = CompositeNameFor(PKSimConstants.UI.LowerPercentile, _yValueColumn);
+         _yUpperPercentileColumn = CompositeNameFor(PKSimConstants.UI.UpperPercentile, _yValueColumn);
+         _xMinimumColumn = CompositeNameFor(PKSimConstants.UI.Minimum, _xValueColumn);
+         _xMaximumColumn = CompositeNameFor(PKSimConstants.UI.Maximum, _xValueColumn);
          _xNumberOfIndividualsColumn = PKSimConstants.UI.NumberOfIndividuals;
 
          dataTable.AddColumn<float>(_xMinimumColumn);

@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -21,7 +22,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private readonly string _addProteinCaption;
       private readonly ApplicationIcon _addProteinIcon;
 
-      protected IndividualMoleculesContextMenu(IMoleculesPresenter presenter, string addProteinCaption, ApplicationIcon addProteinIcon)
+      protected IndividualMoleculesContextMenu(IMoleculesPresenter presenter, string addProteinCaption, ApplicationIcon addProteinIcon, IContainer container) : base(container)
       {
          _addProteinCaption = addProteinCaption;
          _addProteinIcon = addProteinIcon;
@@ -40,24 +41,24 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class EnzymesContextMenu : IndividualMoleculesContextMenu<IndividualEnzyme>
    {
-      public EnzymesContextMenu(IMoleculesPresenter presenter)
-         : base(presenter, PKSimConstants.UI.AddMetabolizingEnzyme, ApplicationIcons.Enzyme)
+      public EnzymesContextMenu(IMoleculesPresenter presenter, IContainer container)
+         : base(presenter, PKSimConstants.UI.AddMetabolizingEnzyme, ApplicationIcons.Enzyme, container)
       {
       }
    }
 
    public class OtherProteinsContextMenu : IndividualMoleculesContextMenu<IndividualOtherProtein>
    {
-      public OtherProteinsContextMenu(IMoleculesPresenter presenter)
-         : base(presenter, PKSimConstants.UI.AddSpecificBindingPartner, ApplicationIcons.Protein)
+      public OtherProteinsContextMenu(IMoleculesPresenter presenter, IContainer container)
+         : base(presenter, PKSimConstants.UI.AddSpecificBindingPartner, ApplicationIcons.Protein, container)
       {
       }
    }
 
    public class TransportersContextMenu : IndividualMoleculesContextMenu<IndividualTransporter>
    {
-      public TransportersContextMenu(IMoleculesPresenter presenter)
-         : base(presenter, PKSimConstants.UI.AddTransportProtein, ApplicationIcons.Transporter)
+      public TransportersContextMenu(IMoleculesPresenter presenter, IContainer container)
+         : base(presenter, PKSimConstants.UI.AddTransportProtein, ApplicationIcons.Transporter, container)
       {
       }
    }
@@ -84,37 +85,46 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class EnzymesTreeNodeContextMenuFactory : IndividualMoleculesContextMenuContextMenuFactory
    {
-      public EnzymesTreeNodeContextMenuFactory(IMenuBarItemRepository repository) : base(PKSimRootNodeTypes.IndividualMetabolizingEnzymes, repository)
+      private readonly IContainer _container;
+
+      public EnzymesTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IContainer container) : base(PKSimRootNodeTypes.IndividualMetabolizingEnzymes, repository)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(RootNode proteinsNode, IMoleculesPresenter moleculesPresenter)
       {
-         return new EnzymesContextMenu(moleculesPresenter);
+         return new EnzymesContextMenu(moleculesPresenter, _container);
       }
    }
 
    public class OtherProteinsContextMenuFactory : IndividualMoleculesContextMenuContextMenuFactory
    {
-      public OtherProteinsContextMenuFactory(IMenuBarItemRepository repository) : base(PKSimRootNodeTypes.IndividualProteinBindingPartners, repository)
+      private readonly IContainer _container;
+
+      public OtherProteinsContextMenuFactory(IMenuBarItemRepository repository, IContainer container) : base(PKSimRootNodeTypes.IndividualProteinBindingPartners, repository)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(RootNode proteinsNode, IMoleculesPresenter presenter)
       {
-         return new OtherProteinsContextMenu(presenter);
+         return new OtherProteinsContextMenu(presenter, _container);
       }
    }
 
    public class TransportersContextMenuFactory : IndividualMoleculesContextMenuContextMenuFactory
    {
-      public TransportersContextMenuFactory(IMenuBarItemRepository repository) : base(PKSimRootNodeTypes.IndividualTransportProteins, repository)
+      private readonly IContainer _container;
+
+      public TransportersContextMenuFactory(IMenuBarItemRepository repository, IContainer container) : base(PKSimRootNodeTypes.IndividualTransportProteins, repository)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(RootNode proteinsNode, IMoleculesPresenter presenter)
       {
-         return new TransportersContextMenu(presenter);
+         return new TransportersContextMenu(presenter, _container);
       }
    }
 }

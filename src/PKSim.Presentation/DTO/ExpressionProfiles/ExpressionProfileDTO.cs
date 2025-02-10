@@ -7,7 +7,8 @@ using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using static PKSim.Core.CoreConstants.ContainerName;
+using PKSim.Presentation.DTO.DiseaseStates;
+using static OSPSuite.Core.Domain.Constants.ContainerName;
 
 namespace PKSim.Presentation.DTO.ExpressionProfiles
 {
@@ -23,6 +24,8 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
       }
 
       public Species Species { get; set; }
+
+      public DiseaseStateDTO DiseaseState { get; } = new DiseaseStateDTO();
 
       public virtual string Category
       {
@@ -48,7 +51,7 @@ namespace PKSim.Presentation.DTO.ExpressionProfiles
 
       private bool moleculeSpeciesCategoryValid(string name) => !_allExistingExpressionProfileNames.Contains(name?.TrimmedValue()?.ToLower());
 
-      public string Name => ExpressionProfileName(MoleculeName, Species, Category);
+      public string Name => ExpressionProfileName(MoleculeName, Species?.DisplayName, Category);
 
       private static class ExpressionProfileRules
       {

@@ -1,86 +1,131 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Collections;
+using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Presenters.Parameters;
+using OSPSuite.Presentation.Views.Parameters;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Extensions;
 using PKSim.Core.Services;
-using PKSim.Presentation.DTO;
+using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Views.Parameters;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
-   public interface ITableParameterPresenter : ICommandCollectorPresenter
+   public interface ITableParameterPresenter : ITableFormulaPresenter
    {
       void Edit(IParameter tableParameter);
-      void ImportTable();
-      void RemovePoint(ValuePointDTO pointToRemove);
       void Save();
-      void AddPoint();
       TableFormula EditedFormula { get; }
-      IEnumerable<ValuePointDTO> AllPoints();
-      void SetXValue(ValuePointDTO valuePointDTO, double newValue);
-      void SetYValue(ValuePointDTO valuePointDTO, double newValue);
-
-      /// <summary>
-      ///    Action that can be called to configure the created <see cref="TableFormula" />
-      /// </summary>
-      Action<TableFormula> ConfigureCreatedTableAction { get; set; }
-
-      string Description { get; set; }
-
-      string ImportToolTip { get; set; }
    }
 
-   public abstract class TableParameterPresenter<TView> : AbstractCommandCollectorPresenter<TView, ITableParameterPresenter>, ITableParameterPresenter
-      where TView : ITableParameterView
+   public abstract class TableParameterPresenter<TView> : TableFormulaPresenter<TView>, ITableParameterPresenter where TView : ITableFormulaView
    {
-      private IParameter _tableParameter;
       private readonly IParameterTask _parameterTask;
       private readonly IFormulaFactory _formulaFactory;
       private readonly ICloner _cloner;
-      private readonly Func<TableFormula> _importTableFormula;
-      private TableFormula _editedFormula;
-      private INotifyList<ValuePointDTO> _allPoints = new NotifyList<ValuePointDTO>();
-      public Action<TableFormula> ConfigureCreatedTableAction { get; set; }
+      private IParameter _tableParameter;
 
-      protected TableParameterPresenter(TView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner, Func<TableFormula> importTableFormula)
+      protected TableParameterPresenter(TView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner)
          : base(view)
       {
          _parameterTask = parameterTask;
          _formulaFactory = formulaFactory;
          _cloner = cloner;
-         _importTableFormula = importTableFormula;
-         ConfigureCreatedTableAction = t => { };
+         view.ImportVisible = false;
       }
 
-      public void SetXValue(ValuePointDTO valuePointDTO, double newValue)
+      protected TableFormula NewTableFormula()
       {
-         //needed maybe if we have commands...
-         valuePointDTO.X = newValue;
+         return _formulaFactory.CreateTableFormula();
       }
 
-      public void SetYValue(ValuePointDTO valuePointDTO, double newValue)
+      protected TableFormula CreateClone(TableFormula tableFormula)
       {
-         //needed maybe if we have commands...
-         valuePointDTO.Y = newValue;
+         return _cloner.Clone(tableFormula);
       }
 
-      public string Description
+      protected ICommand SetParameterFormula(IParameter tableParameter, TableFormula tableFormula)
       {
-         set => View.Description = value;
-         get => View.Description;
+         return _parameterTask.SetParameterFormula(tableParameter, tableFormula);
       }
 
-      public string ImportToolTip
+      protected override void ApplyImportedTablePoints(DataRepository importedTablePoints)
       {
-         set => View.ImportToolTip = value;
-         get => View.ImportToolTip;
+         Edit(TablePointsToTableFormula(importedTablePoints));
+      }
+
+      protected abstract TableFormula TablePointsToTableFormula(DataRepository importedTablePoints);
+
+      public override void SetXValue(ValuePointDTO valuePointDTO, double newValue) => valuePointDTO.X = newValue;
+
+      public override void SetYValue(ValuePointDTO valuePointDTO, double newValue) => valuePointDTO.Y = newValue;
+
+      protected override IParameter Owner => _tableParameter;
+
+      public void Edit(IParameter tableParameter)
+      {
+         _tableParameter = tableParameter;
+         _view.Editable = _tableParameter.Editable;
+         // setting Editable will reveal the import button so ImportVisible must be set after
+         _view.ImportVisible = CanImport;
+         //do not edit the parameter formula itself as the user might cancel the edit
+         var tableFormula = tableParameter.Formula as TableFormula;
+
+         if (tableFormula != null)
+            tableFormula = CreateClone(tableFormula);
+
+         tableFormula = tableFormula ?? CreateTableFormula();
+         Edit(tableFormula ?? CreateTableFormula());
+      }
+
+      public abstract bool CanImport { get; }
+
+      protected virtual TableFormula CreateTableFormula()
+      {
+         var formula = NewTableFormula().WithName(OwnerName);
+         //use whatever default were created in the factory
+         formula.InitializedWith(formula.XName, OwnerName, formula.XDimension, _tableParameter.Dimension);
+
+         ConfigureCreatedTableAction(formula);
+
+         return formula;
+      }
+
+      public void Save()
+      {
+         //do not use AddCommand here as we only want to save the table without notifying any change events
+         //since all changed were performed already
+         CommandCollector.AddCommand(SetParameterFormula(_tableParameter, EditedFormula));
+      }
+
+      public override bool CanClose
+      {
+         get
+         {
+            if (_editedFormula == null)
+               return base.CanClose;
+
+            return base.CanClose && _editedFormula.AllPoints.Any();
+         }
+      }
+
+      public override void AddPoint()
+      {
+         var newPoint = new ParameterValuePointDTO(Owner, _editedFormula, new ValuePoint(double.NaN, double.NaN));
+         try
+         {
+            _tableFormulaDTO.AllPoints.Add(newPoint);
+         }
+         catch (ValuePointAlreadyExistsForPointException)
+         {
+            _tableFormulaDTO.AllPoints.Remove(newPoint);
+            throw;
+         }
+
+         _view.EditPoint(newPoint);
       }
 
       public TableFormula EditedFormula
@@ -88,7 +133,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          get
          {
             _editedFormula.ClearPoints();
-            _allPoints.Each(p => _editedFormula.AddPoint(valuePointFrom(p)));
+            _tableFormulaDTO.AllPoints.Each(p => _editedFormula.AddPoint(valuePointFrom(p)));
             return _editedFormula;
          }
       }
@@ -101,116 +146,30 @@ namespace PKSim.Presentation.Presenters.Parameters
             _editedFormula.Dimension.UnitValueToBaseUnitValue(_editedFormula.YDisplayUnit, valuePointDTO.Y));
       }
 
-      public void Edit(IParameter tableParameter)
-      {
-         _tableParameter = tableParameter;
-         _view.Editable = _tableParameter.Editable;
-         //do not edit the parameter formula itself as the user might cancel the edit
-         var tableFormula = tableParameter.Formula as TableFormula;
-         if (tableFormula != null)
-            tableFormula = _cloner.Clone(tableFormula);
-
-         editFormula(tableFormula);
-      }
-
-      private void editFormula(TableFormula tableFormula)
-      {
-         _editedFormula = tableFormula ?? CreateTableFormula();
-         if (_allPoints != null)
-            _allPoints.CollectionChanged -= notifyChange;
-
-         _allPoints = new NotifyList<ValuePointDTO>();
-         _editedFormula.AllPoints().Each(p => _allPoints.Add(new ValuePointDTO(_tableParameter, _editedFormula, p)));
-
-         var yName = string.IsNullOrEmpty(_editedFormula.YName) ? _tableParameter.Name : _editedFormula.YName;
-         _view.XCaption = Constants.NameWithUnitFor(_editedFormula.XName, _editedFormula.XDisplayUnit);
-         _view.YCaption = Constants.NameWithUnitFor(yName, _editedFormula.YDisplayUnit);
-
-         _view.BindTo(_allPoints);
-
-         _allPoints.CollectionChanged += notifyChange;
-         if (tableFormula == null)
-            ViewChanged();
-      }
-
-      protected virtual TableFormula CreateTableFormula()
-      {
-         var formula = _formulaFactory.CreateTableFormula().WithName(_tableParameter.Name);
-         //use whatever default were created in the factory
-         formula.InitializedWith(formula.XName, _tableParameter.Name, formula.XDimension, _tableParameter.Dimension);
-
-         ConfigureCreatedTableAction(formula);
-
-         return formula;
-      }
-
-      private void notifyChange(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
-      {
-         ViewChanged();
-      }
-
-      public override bool CanClose
-      {
-         get
-         {
-            if (_editedFormula == null)
-               return base.CanClose;
-
-            return base.CanClose && _editedFormula.AllPoints().Any();
-         }
-      }
-
-      public void ImportTable()
-      {
-         var importedFormula = _importTableFormula();
-         if (importedFormula == null)
-            return;
-
-         editFormula(importedFormula);
-         ViewChanged();
-      }
-
-      public void RemovePoint(ValuePointDTO pointToRemove)
-      {
-         _allPoints.Remove(pointToRemove);
-      }
-
-      public void Save()
-      {
-         //do not use AddCommand here as we only want to save the table without notifying any change events
-         //since all changed were performed already
-         CommandCollector.AddCommand(_parameterTask.SetParameterFormula(_tableParameter, EditedFormula));
-      }
-
-      public void AddPoint()
-      {
-         var newPoint = new ValuePointDTO(_tableParameter, _editedFormula, new ValuePoint(double.NaN, double.NaN));
-         try
-         {
-            _allPoints.Add(newPoint);
-         }
-         catch (ValuePointAlreadyExistsForPointException)
-         {
-            _allPoints.Remove(newPoint);
-            throw;
-         }
-
-         _view.EditPoint(newPoint);
-      }
-
-      public IEnumerable<ValuePointDTO> AllPoints()
-      {
-         return _allPoints;
-      }
+      public override void RemovePoint(ValuePointDTO pointToRemove) => _tableFormulaDTO.AllPoints.Remove(pointToRemove);
    }
 
-   public class TableParameterPresenter : TableParameterPresenter<ITableParameterView>
+   public class TableParameterPresenter : TableParameterPresenter<ITableFormulaView>, ITableParameterPresenter
    {
-      public TableParameterPresenter(ITableParameterView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner) :
-         base(view, parameterTask, formulaFactory, cloner, () => formulaFactory.CreateTableFormula())
+      public TableParameterPresenter(ITableFormulaView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner) :
+         base(view, parameterTask, formulaFactory, cloner)
       {
-         //default import function disabled when context is not specified
-         view.ImportVisible = false;
+         // default import function disabled when context is not specified
+         view.ImportVisible = CanImport;
       }
+
+      protected override DataRepository ImportTablePoints()
+      {
+         // default import function disabled when context is not specified
+         return null;
+      }
+
+      protected override TableFormula TablePointsToTableFormula(DataRepository importedTablePoints)
+      {
+         // default import function disabled when context is not specified
+         return null;
+      }
+
+      public override bool CanImport => false;
    }
 }

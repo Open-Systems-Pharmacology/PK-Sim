@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using FluentNHibernate.Utils;
 using OSPSuite.Core.Converters.v9;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;
+using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using PKSim.Core;
 using PKSim.Core.Model;

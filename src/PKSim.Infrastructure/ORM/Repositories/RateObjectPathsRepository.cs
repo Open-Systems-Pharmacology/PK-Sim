@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Collections;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -30,7 +30,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private readonly ICache<RateKey, IRateObjectPaths> _rateObjectPaths;
 
       public RateObjectPathsRepository(IFlatRateObjectPathRepository flatRateObjectPathRepo,
-                                       IFlatRateObjectToFormulaUsablePathMapper flatRateObjectToFormulaUsablePathMapper)
+         IFlatRateObjectToFormulaUsablePathMapper flatRateObjectToFormulaUsablePathMapper)
       {
          _rateObjectPaths = new Cache<RateKey, IRateObjectPaths>(rk => new NullObjectPaths());
          _flatRateObjectPathRepo = flatRateObjectPathRepo;
@@ -66,20 +66,21 @@ namespace PKSim.Infrastructure.ORM.Repositories
          return rateObjectPaths;
       }
 
-      public IEnumerable<IFormulaUsablePath> ObjectPathsFor(string rate, string calculationMethod)
+      public IEnumerable<FormulaUsablePath> ObjectPathsFor(string rate, string calculationMethod)
       {
          return ObjectPathsFor(new RateKey(calculationMethod, rate));
       }
 
-      public IEnumerable<IFormulaUsablePath> ObjectPathsFor(RateKey rateKey)
+      public IEnumerable<FormulaUsablePath> ObjectPathsFor(RateKey rateKey)
       {
          Start();
          return _rateObjectPaths[rateKey].ObjectPaths;
       }
 
-      public IFormulaUsablePath PathWithAlias(RateKey rateKey, string alias)
+      public FormulaUsablePath PathWithAlias(RateKey rateKey, string alias)
       {
-         return ObjectPathsFor(rateKey).FirstOrDefault(path => string.Equals(path.Alias, alias));
+         var formulaUsablePath = ObjectPathsFor(rateKey).FirstOrDefault(path => string.Equals(path.Alias, alias));
+         return formulaUsablePath?.Clone<FormulaUsablePath>();
       }
    }
 }

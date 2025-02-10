@@ -1,7 +1,6 @@
 ﻿using OSPSuite.BDDHelper;
 using FakeItEasy;
 using PKSim.Core.Repositories;
-using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure
 {

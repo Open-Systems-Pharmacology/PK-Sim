@@ -49,8 +49,6 @@ namespace PKSim.UI.BootStrapping
 
       public void InitializeForStartup(LogLevel logLevel, Action<IContainer> registrationAction)
       {
-         Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-         Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
          ApplicationIcons.DefaultIcon = ApplicationIcons.PKSim;
 
          updateGoDiagramKey();
@@ -122,7 +120,7 @@ namespace PKSim.UI.BootStrapping
                showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Infrastructure));
                container.AddRegister(x => x.FromType<InfrastructureRegister>());
 
-               showStatusMessage(progress, message: PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Presentation));
+               showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.Presentation));
                container.AddRegister(x => x.FromType<Presentation.PresenterRegister>());
 
                showStatusMessage(progress, PKSimConstants.UI.RegisterAssembly(PKSimConstants.UI.UserInterface));
@@ -153,7 +151,7 @@ namespace PKSim.UI.BootStrapping
          container.Resolve<ICloseSubjectPresenterInvoker>();
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
-         container.RegisterImplementationOf((IChangePropagator) mainPresenter);
+         container.RegisterImplementationOf((IChangePropagator)mainPresenter);
 
          //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
          container.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);

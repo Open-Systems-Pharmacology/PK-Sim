@@ -22,7 +22,7 @@ namespace PKSim.Core
       protected IParameter _nonMatchingIndividualParameter;
       protected Organism _organism;
       protected IParameter _individualParameter;
-      protected IObjectPath _objectPath;
+      protected ObjectPath _objectPath;
 
       protected override void Context()
       {

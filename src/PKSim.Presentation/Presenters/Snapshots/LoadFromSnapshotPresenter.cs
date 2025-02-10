@@ -57,8 +57,7 @@ namespace PKSim.Presentation.Presenters.Snapshots
          IDialogCreator dialogCreator,
          IObjectTypeResolver objectTypeResolver,
          IOSPSuiteLogger logger,
-         IEventPublisher eventPublisher, 
-         IStartOptions startOptions) : base(view)
+         IEventPublisher eventPublisher) : base(view)
       {
          _snapshotTask = snapshotTask;
          _dialogCreator = dialogCreator;
@@ -70,7 +69,6 @@ namespace PKSim.Presentation.Presenters.Snapshots
          _view.Caption = PKSimConstants.UI.LoadObjectFromSnapshot(typeToLoad);
          _view.AddLogView(_logPresenter.BaseView);
          _view.BindTo(_loadFromSnapshotDTO);
-         _view.RunSimulationsSwitchVisible = startOptions.IsDeveloperMode;
       }
 
       public override bool ShouldClose

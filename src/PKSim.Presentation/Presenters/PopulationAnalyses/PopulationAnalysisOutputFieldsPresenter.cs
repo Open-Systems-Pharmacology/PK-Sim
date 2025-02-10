@@ -10,6 +10,7 @@ using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.PopulationAnalyses;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -20,9 +21,21 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
    public class PopulationAnalysisOutputFieldsPresenter : PopulationAnalysisFieldsPresenter, IPopulationAnalysisOutputFieldsPresenter
    {
-      public PopulationAnalysisOutputFieldsPresenter(IPopulationAnalysisFieldsView view, IPopulationAnalysesContextMenuFactory contextMenuFactory, IPopulationAnalysisFieldFactory populationAnalysisFieldFactory, IEventPublisher eventPublisher, IPopulationAnalysisGroupingFieldCreator populationAnalysisGroupingFieldCreator, IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, IDialogCreator dialogCreator, IPopulationAnalysisFieldToPopulationAnalysisFieldDTOMapper fieldDTOMapper)
+      private readonly IPresentationUserSettings _userSettings;
+
+      public PopulationAnalysisOutputFieldsPresenter(
+         IPopulationAnalysisFieldsView view, 
+         IPopulationAnalysesContextMenuFactory contextMenuFactory, 
+         IPopulationAnalysisFieldFactory populationAnalysisFieldFactory, 
+         IEventPublisher eventPublisher, 
+         IPopulationAnalysisGroupingFieldCreator populationAnalysisGroupingFieldCreator, 
+         IPopulationAnalysisTemplateTask populationAnalysisTemplateTask, 
+         IDialogCreator dialogCreator, 
+         IPopulationAnalysisFieldToPopulationAnalysisFieldDTOMapper fieldDTOMapper, 
+         IPresentationUserSettings userSettings)
          : base(view, new[] {typeof (PopulationAnalysisOutputField)}, contextMenuFactory, populationAnalysisFieldFactory, eventPublisher, populationAnalysisGroupingFieldCreator, populationAnalysisTemplateTask, dialogCreator, fieldDTOMapper)
       {
+         _userSettings = userSettings;
          view.ColorSelectionVisible = true;
          view.CreateGroupingButtonVisible = false;
          EmptySelectionMessage = PKSimConstants.UI.ChooseOutputsToDisplay;
@@ -35,7 +48,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          if (outputUsesAnotherDimension(output, allUsedDimensions))
             throw new PKSimException(PKSimConstants.Error.CannotAddOutputFieldBecauseOfDimensionMismatch(defaultName, allUsedDimensions.Select(x => x.DisplayName), output.Dimension.DisplayName));
 
-         var outputField = _populationAnalysisFieldFactory.CreateFor(output, defaultName);
+         var outputField = _populationAnalysisFieldFactory.CreateFor(output, defaultName, _userSettings.DefaultChartYScaling);
          AddField(outputField);
          //select by default
 

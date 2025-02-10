@@ -4,6 +4,7 @@ using System.Linq;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Charts;
@@ -11,14 +12,12 @@ using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
-using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Charts;
 using IChartTemplatingTask = PKSim.Presentation.Services.IChartTemplatingTask;
 
@@ -43,12 +42,25 @@ namespace PKSim.Presentation.Presenters.Charts
    public class IndividualSimulationComparisonPresenter : ChartPresenter<IndividualSimulationComparison, IIndividualSimulationComparisonView, IIndividualSimulationComparisonPresenter>, IIndividualSimulationComparisonPresenter
    {
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IDialogCreator _dialogCreator;
+
       public event EventHandler Closing = delegate { };
 
-      public IndividualSimulationComparisonPresenter(IIndividualSimulationComparisonView view, ChartPresenterContext chartPresenterContext, IIndividualPKAnalysisPresenter pkAnalysisPresenter, IChartTask chartTask, IObservedDataTask observedDataTask, ILazyLoadTask lazyLoadTask, IChartTemplatingTask chartTemplatingTask, IChartUpdater chartUpdater, IUserSettings userSettings) :
-         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater, useSimulationNameToCreateCurveName:true, userSettings)
+      public IndividualSimulationComparisonPresenter(
+         IIndividualSimulationComparisonView view,
+         ChartPresenterContext chartPresenterContext,
+         IIndividualPKAnalysisPresenter pkAnalysisPresenter,
+         IChartTask chartTask,
+         IObservedDataTask observedDataTask,
+         ILazyLoadTask lazyLoadTask,
+         IChartTemplatingTask chartTemplatingTask,
+         IChartUpdater chartUpdater,
+         IUserSettings userSettings,
+         IDialogCreator dialogCreator) :
+         base(view, chartPresenterContext, chartTemplatingTask, pkAnalysisPresenter, chartTask, observedDataTask, chartUpdater, useSimulationNameToCreateCurveName: true, userSettings)
       {
          _lazyLoadTask = lazyLoadTask;
+         _dialogCreator = dialogCreator;
          PresentationKey = PresenterConstants.PresenterKeys.IndividualSimulationComparisonPresenter;
          ChartEditorPresenter.SetLinkSimDataMenuItemVisibility(true);
       }
@@ -66,10 +78,22 @@ namespace PKSim.Presentation.Presenters.Charts
       protected override void OnDragDrop(object sender, IDragEvent e)
       {
          var droppedNodes = e.Data<IReadOnlyList<ITreeNode>>();
-         if (containsIndividualSimulationNodes(droppedNodes))
-            individualSimulationsFrom(droppedNodes).Each(addSimulationToChart);
-         else
+         var messages = new List<string>();
+         if (!containsIndividualSimulationNodes(droppedNodes))
+         {
             base.OnDragDrop(sender, e);
+            return;
+         }
+
+         individualSimulationsFrom(droppedNodes).Each(s =>
+         {
+            addSimulationToChart(s);
+            if (!s.HasResults)
+               messages.Add(PKSimConstants.Error.SimulationHasNoResultsAndCannotBeUsedInComparison(s.Name));
+         });
+
+         if (messages.Any())
+            _dialogCreator.MessageBoxInfo(messages.ToString("\n"));
       }
 
       public void DragOver(object sender, IDragEvent e)
@@ -101,15 +125,13 @@ namespace PKSim.Presentation.Presenters.Charts
       {
          _lazyLoadTask.Load(simulation);
          if (!simulation.HasResults)
-            throw new PKSimException(PKSimConstants.Error.SimulationHasNoResultsAndCannotBeUsedInSummaryChart(simulation.Name));
+            return;
 
          Chart.AddSimulation(simulation);
          ChartEditorPresenter.AddOutputMappings(simulation.OutputMappings);
          UpdateAnalysisBasedOn(simulation, simulation.DataRepository);
-
          _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, simulation.DataRepository.ToList(), new[] {simulation}, addCurveIfNoSourceDefined: false);
          InitializeFromTemplateIfRequired();
-
          showChartView();
       }
 
@@ -201,7 +223,14 @@ namespace PKSim.Presentation.Presenters.Charts
 
       private void updateResultsInChart()
       {
-         Chart.AllSimulations.Each(s => UpdateAnalysisBasedOn(s, s.DataRepository));
+         var isEmptyChart = !Chart.Curves.Any();
+         Chart.AllSimulations.Each(s =>
+         {
+            UpdateAnalysisBasedOn(s, s.DataRepository);
+            //if there are no curves in the chart, we are probably just creating it programatically
+            if (isEmptyChart)
+               _chartTemplatingTask.UpdateDefaultSettings(ChartEditorPresenter, s.DataRepository.ToList(), new[] {s}, addCurveIfNoSourceDefined: false);
+         });
       }
 
       public void Handle(SimulationResultsUpdatedEvent eventToHandle)
@@ -235,7 +264,7 @@ namespace PKSim.Presentation.Presenters.Charts
          var repo = DataRepositoryFor(simulation);
          if (repo == null) return;
          _repositoryCache.Remove(repo);
-         ChartEditorPresenter.RemoveDataRepositories(new []{repo});
+         ChartEditorPresenter.RemoveDataRepositories(new[] {repo});
          ChartEditorPresenter.RemoveOutputMappings(simulation.OutputMappings);
          Chart.RemoveSimulation(simulation);
       }

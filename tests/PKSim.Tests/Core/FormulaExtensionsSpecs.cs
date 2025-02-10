@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Descriptors;
 using PKSim.Core.Model;
 
 namespace PKSim.Core
@@ -14,10 +15,14 @@ namespace PKSim.Core
    {
       protected override void Context()
       {
-         sut=new ExplicitFormula();
+         var sumFormula = new SumFormula();
+         sut = sumFormula;
          
          sut.AddObjectPath(new FormulaUsablePath(new string[]{"X1","Y1","Z1"}));
          sut.AddObjectPath(new FormulaUsablePath(new string[] { "X2", "Y2", "Z2" }));
+
+         sumFormula.Criteria.Add(new MatchTagCondition("X1"));
+         sumFormula.Criteria.Add(new MatchTagCondition("XYZ"));
       }
    }
 
@@ -29,7 +34,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_replace_keywords()
+      public void should_replace_keywords_in_object_paths_and_criteria_conditions()
       {
          var paths = sut.ObjectPaths.ToList();
 
@@ -37,6 +42,11 @@ namespace PKSim.Core
 
          paths[0].ToString().ShouldBeEqualTo("a|c|Z1");
          paths[1].ToString().ShouldBeEqualTo("b|Y2|Z2");
+
+         var sumFormula = sut as SumFormula;
+         sumFormula.Criteria.Count.ShouldBeEqualTo(2);
+         sumFormula.Criteria[0].Condition.ShouldBeEqualTo("a");
+         sumFormula.Criteria[1].Condition.ShouldBeEqualTo("XYZ");
       }
    }
 }

@@ -1,9 +1,9 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Validation;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO.ExpressionProfiles;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Presentation
 {
@@ -43,7 +43,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_false_if_the_category_species_and_molecule_name_combination_already_exists_in_the_project()
       {
-         sut.AddExistingExpressionProfileNames(new[] {CoreConstants.ContainerName.ExpressionProfileName("MOL", _human, "CAT")});
+         sut.AddExistingExpressionProfileNames(new[] {ContainerName.ExpressionProfileName("MOL", _human.DisplayName, "CAT")});
          sut.Category = "CAT";
          sut.MoleculeName = "MOL";
          sut.Species = _human;
@@ -54,7 +54,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_false_if_the_category_species_and_molecule_name_combination_already_exists_in_the_project_with_other_case()
       {
-         sut.AddExistingExpressionProfileNames(new[] { CoreConstants.ContainerName.ExpressionProfileName("MOL  ", _human, "cat") });
+         sut.AddExistingExpressionProfileNames(new[] { ContainerName.ExpressionProfileName("MOL  ", _human.DisplayName, "cat") });
          sut.Category = "CAT";
          sut.MoleculeName = "MOL";
          sut.Species = _human;
@@ -64,7 +64,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_true_if_the_category_species_and_molecule_name_combination_are_defined_and_the_combination_does_not_already_exist_in_the_project()
       {
-         sut.AddExistingExpressionProfileNames(new[] {CoreConstants.ContainerName.ExpressionProfileName("A", _rat, "C")});
+         sut.AddExistingExpressionProfileNames(new[] {ContainerName.ExpressionProfileName("A", _rat.DisplayName, "C")});
 
          sut.Category = "CAT";
          sut.Species = _human;

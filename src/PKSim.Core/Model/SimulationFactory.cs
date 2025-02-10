@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Services;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Model
 {
@@ -23,9 +23,12 @@ namespace PKSim.Core.Model
       ///    The created simulation does not have a model yet. Only basic building blocks are set.
       ///    If the <paramref name="originalSimulation" /> is not null, all other building blocks such as
       ///    <see cref="Formulation" /> ,  <see cref="Protocol" /> or <see cref="Event" /> will be used as well as their existing
-      ///    configuration in the simulation. 
+      ///    configuration in the simulation.
       /// </summary>
-      /// <remarks>References defined in <paramref name="originalSimulation"/> will be used in the newly created simulation. A clone of any existing simulation should be used</remarks>
+      /// <remarks>
+      ///    References defined in <paramref name="originalSimulation" /> will be used in the newly created simulation. A
+      ///    clone of any existing simulation should be used
+      /// </remarks>
       Simulation CreateFrom(ISimulationSubject simulationSubject, IReadOnlyList<Compound> compounds, ModelProperties modelProperties, Simulation originalSimulation = null);
 
       /// <summary>
@@ -51,7 +54,7 @@ namespace PKSim.Core.Model
       Simulation CreateForDDIRatio(Simulation originalSimulation);
 
       /// <summary>
-      ///    Creates a full simulation (including model) where the protocal for the <paramref name="compound" /> is set to
+      ///    Creates a full simulation (including model) where the protocol for the <paramref name="compound" /> is set to
       ///    <paramref name="protocol" />
       /// </summary>
       Simulation CreateForVSS(Protocol protocol, Individual individual, Compound compound);
@@ -70,7 +73,7 @@ namespace PKSim.Core.Model
       private readonly IDiagramModelFactory _diagramModelFactory;
       private readonly IInteractionTask _interactionTask;
 
-      public SimulationFactory(IObjectBaseFactory objectBaseFactory, 
+      public SimulationFactory(IObjectBaseFactory objectBaseFactory,
          ISimulationBuildingBlockUpdater simulationBuildingBlockUpdater, ISimulationModelCreator simulationModelCreator,
          IObjectIdResetter objectIdResetter, ICompoundPropertiesUpdater compoundPropertiesUpdater,
          ISimulationParametersUpdater simulationParametersUpdater, IModelPropertiesTask modelPropertiesTask,
@@ -106,6 +109,7 @@ namespace PKSim.Core.Model
 
          _simulationBuildingBlockUpdater.UpdateUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject, PKSimBuildingBlockType.SimulationSubject);
          _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, compounds, PKSimBuildingBlockType.Compound);
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, simulationSubject.AllExpressionProfiles(), PKSimBuildingBlockType.ExpressionProfile);
 
          //set basic properties
          if (originalSimulation != null)
@@ -126,10 +130,7 @@ namespace PKSim.Core.Model
          var simulation = templateSimulation.DowncastTo<IndividualSimulation>();
          var newSimulation = createModelLessSimulationBasedOn(simulation);
 
-         combination.GroupBy(x => x.CompoundName).Each(grouping =>
-         {
-            replaceCalculationMethodsWithNewCalculationMethods(grouping, newSimulation.CompoundPropertiesFor(grouping.Key));
-         });
+         combination.GroupBy(x => x.CompoundName).Each(grouping => { replaceCalculationMethodsWithNewCalculationMethods(grouping, newSimulation.CompoundPropertiesFor(grouping.Key)); });
 
          _simulationModelCreator.CreateModelFor(newSimulation);
 
@@ -155,8 +156,8 @@ namespace PKSim.Core.Model
          var simulation = createSimulation<TSimulation>();
          simulation.Name = modelCoreSimulation.Name;
          simulation.Model = modelCoreSimulation.Model;
-         simulation.Reactions = modelCoreSimulation.BuildConfiguration.Reactions;
-         simulation.SimulationSettings= modelCoreSimulation.BuildConfiguration.SimulationSettings;
+         simulation.UpdateReactions(modelCoreSimulation.Reactions);
+         simulation.Settings = modelCoreSimulation.Configuration.SimulationSettings;
          simulation.Origin = assessOriginFrom(simulation.Model);
          _objectIdResetter.ResetIdFor(simulation);
          return simulation;
@@ -174,7 +175,7 @@ namespace PKSim.Core.Model
 
       private TSimulation createSimulation<TSimulation>() where TSimulation : Simulation
       {
-         return createSimulation(typeof (TSimulation)).DowncastTo<TSimulation>();
+         return createSimulation(typeof(TSimulation)).DowncastTo<TSimulation>();
       }
 
       private Simulation createSimulation(Type type)
@@ -199,8 +200,8 @@ namespace PKSim.Core.Model
       {
          //we create a clone here to ensure that a name is set in the compound
          var vssCompound = _cloner.Clone(compound).WithName("VSS COMPOUND");
-         var simulation = CreateFrom(individual, new[] {vssCompound}, _modelPropertiesTask.DefaultFor(individual.OriginData));
-         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, new[] {protocol}, PKSimBuildingBlockType.Protocol);
+         var simulation = CreateFrom(individual, new[] { vssCompound }, _modelPropertiesTask.DefaultFor(individual.OriginData));
+         _simulationBuildingBlockUpdater.UpdateMultipleUsedBuildingBlockInSimulationFromTemplate(simulation, new[] { protocol }, PKSimBuildingBlockType.Protocol);
          _simulationModelCreator.CreateModelFor(simulation);
          return simulation;
       }
@@ -208,13 +209,13 @@ namespace PKSim.Core.Model
       public Simulation CreateForDDIRatio(Simulation originalSimulation)
       {
          //DDI Ratio=> manipulate inhibition parameters so that all DDI effects are effectively deactivated 
-         var ddiRatioSimulation =  createModelLessSimulationBasedOn(originalSimulation);
+         var ddiRatioSimulation = createModelLessSimulationBasedOn(originalSimulation);
 
          _simulationModelCreator.CreateModelFor(ddiRatioSimulation);
 
          // now update all parameters from the original simulation. We need to take protocol parameters as well as simulation parameters into account for the update
          // as simulation building block are all kept in sync with the changes values EXCEPT Protocol (1 to n mapping)
-         _simulationParametersUpdater.ReconciliateSimulationParametersBetween(originalSimulation, ddiRatioSimulation, PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Protocol) ;
+         _simulationParametersUpdater.ReconciliateSimulationParametersBetween(originalSimulation, ddiRatioSimulation, PKSimBuildingBlockType.Simulation | PKSimBuildingBlockType.Protocol);
 
          _interactionTask.AllInteractionContainers(ddiRatioSimulation)
             .SelectMany(c => c.AllParameters())
@@ -232,7 +233,7 @@ namespace PKSim.Core.Model
             return 0;
 
          if (parameterName.IsOneOf(CoreConstants.Parameters.KI, CoreConstants.Parameters.KI_U,
-                                   CoreConstants.Parameters.KI_C))
+                CoreConstants.Parameters.KI_C))
             return double.PositiveInfinity;
 
          //if we add any new parameters, the exception will be thrown per default, until we explicitly define

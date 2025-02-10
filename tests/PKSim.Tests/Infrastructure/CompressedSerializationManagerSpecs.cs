@@ -32,7 +32,7 @@ namespace PKSim.Infrastructure
    }
 
    
-   public class When_deserialzing_an_object_from_a_compressed_string : concern_for_CompressedSerializationManager
+   public class When_deserializing_an_object_from_a_compressed_string : concern_for_CompressedSerializationManager
    {
       [Observation]
       public void should_decompress_the_string_and_leverage_the_underlying_deserialize_the_object()
@@ -42,7 +42,7 @@ namespace PKSim.Infrastructure
    }
 
    
-   public class When_serialzing_an_object_to_a_compressed_string : concern_for_CompressedSerializationManager
+   public class When_serializing_an_object_to_a_compressed_string : concern_for_CompressedSerializationManager
    {
       [Observation]
       public void should_decompress_the_string_and_leverage_the_underlying_deserialize_the_object()

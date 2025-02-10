@@ -9,13 +9,14 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class SpecificBindingFolderContextMenu : ContextMenu<ITreeNode, ICompoundProcessesPresenter>
    {
-      public SpecificBindingFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter presenter)
-         : base(nodeRequestingContextMenu, presenter)
+      public SpecificBindingFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter presenter, IContainer container)
+         : base(nodeRequestingContextMenu, presenter, container)
       {
       }
 
@@ -30,14 +31,17 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class SpecificBindingFolderTreeNodeContextMenuFactory: CompoundProcessFolderTreeNodeContextMenuFactory
    {
-      public SpecificBindingFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository)
+      private readonly IContainer _container;
+
+      public SpecificBindingFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IContainer container)
          : base(PKSimRootNodeTypes.CompoundProteinBindingPartners, repository)
       {
+         _container = container;
       }
 
       protected override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, ICompoundProcessesPresenter presenter)
       {
-         return new SpecificBindingFolderContextMenu(treeNode, presenter);
+         return new SpecificBindingFolderContextMenu(treeNode, presenter, _container);
       }
    }
 }

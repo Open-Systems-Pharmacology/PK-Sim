@@ -13,6 +13,8 @@ using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Views.Individuals;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
+
 
 namespace PKSim.Presentation
 {
@@ -20,7 +22,7 @@ namespace PKSim.Presentation
    {
       protected IIndividualProteinExpressionsView _view;
       protected IIndividualProteinToIndividualProteinDTOMapper _individualProteinMapper;
-      protected IIndividualMoleculePropertiesPresenter<Individual> _moleculesPropertiesPresenter;
+      protected IIndividualMoleculePropertiesPresenter<Individual> _moleculePropertiesPresenter;
       protected IExpressionLocalizationPresenter<Individual> _expressionLocalizationPresenter;
       protected Individual _individual;
       protected IndividualEnzyme _enzyme;
@@ -42,18 +44,19 @@ namespace PKSim.Presentation
       {
          _view = A.Fake<IIndividualProteinExpressionsView>();
          _individualProteinMapper = A.Fake<IIndividualProteinToIndividualProteinDTOMapper>();
-         _moleculesPropertiesPresenter = A.Fake<IIndividualMoleculePropertiesPresenter<Individual>>();
+         _moleculePropertiesPresenter = A.Fake<IIndividualMoleculePropertiesPresenter<Individual>>();
          _expressionLocalizationPresenter = A.Fake<IExpressionLocalizationPresenter<Individual>>();
          _expressionParametersPresenter = A.Fake<IExpressionParametersPresenter>();
 
          sut = new IndividualEnzymeExpressionsPresenter<Individual>(
             _view, _individualProteinMapper,
-            _moleculesPropertiesPresenter,
+            _moleculePropertiesPresenter,
             _expressionLocalizationPresenter,
             _expressionParametersPresenter);
 
 
-         _individual = new Individual();
+         _individual = DomainHelperForSpecs.CreateIndividual();
+         _individual.OriginData.Population.IsAgeDependent = true;
          sut.SimulationSubject = _individual;
 
 
@@ -93,13 +96,35 @@ namespace PKSim.Presentation
       [Observation]
       public void should_edit_the_molecule_ontogeny()
       {
-         A.CallTo(() => _moleculesPropertiesPresenter.Edit(_enzyme, _individual)).MustHaveHappened();
+         A.CallTo(() => _moleculePropertiesPresenter.Edit(_enzyme, _individual)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_show_the_ontogeny_presenter_if_the_individual_is_age_dependent()
+      {
+         _moleculePropertiesPresenter.OntogenyVisible.ShouldBeTrue();
       }
 
       [Observation]
       public void should_update_the_expression_parameters()
       {
          A.CallTo(() => _expressionParametersPresenter.Edit(_enzymeDTO.AllExpressionParameters)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_an_enzyme_defined_in_an_individual_that_is_not_age_dependent : concern_for_IndividualProteinExpressionsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _individual.OriginData.Population.IsAgeDependent = false;
+         sut.ActivateMolecule(_enzyme);
+      }
+
+      [Observation]
+      public void should_hide_the_ontogeny_presenter()
+      {
+         _moleculePropertiesPresenter.OntogenyVisible.ShouldBeFalse();
       }
    }
 

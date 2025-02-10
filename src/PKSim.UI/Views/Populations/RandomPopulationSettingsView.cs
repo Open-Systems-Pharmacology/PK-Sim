@@ -60,6 +60,7 @@ namespace PKSim.UI.Views.Populations
 
          gridViewParameters.RowCellStyle += updateRowCellStyle;
          gridViewParameters.ShowColumnHeaders = false;
+         gridViewParameters.VertScrollVisibility = ScrollVisibility.Never;
       }
 
       public override void InitializeBinding()

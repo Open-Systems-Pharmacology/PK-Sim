@@ -105,7 +105,6 @@ namespace PKSim.UI.Views
          _screenBinder.Bind(x => x.TemplateDatabasePath).To(tbTemplateDatabase);
          _screenBinder.Bind(x => x.ChangedColor).To(colorChanged);
          _screenBinder.Bind(x => x.FormulaColor).To(colorFormula);
-         _screenBinder.Bind(x => x.DisabledColor).To(colorDisabled);
          _screenBinder.Bind(x => x.ChartDiagramBackColor).To(colorChartDiagramBack);
          _screenBinder.Bind(x => x.ChartBackColor).To(colorChartBack);
          _screenBinder.Bind(x => x.DefaultFractionUnboundName).To(cbDefaultFuName);
@@ -184,7 +183,6 @@ namespace PKSim.UI.Views
          layoutItemChartBackColor.Text = PKSimConstants.UI.ChartBackColor.FormatForLabel();
          layoutItemFormulaColor.Text = PKSimConstants.UI.FormulaColor.FormatForLabel();
          layoutItemChartDiagramBackColor.Text = PKSimConstants.UI.ChartDiagramBackColor.FormatForLabel();
-         layoutItemDisabledColor.Text = PKSimConstants.UI.DisabledColor.FormatForLabel();
          layoutItemChangedColor.Text = PKSimConstants.UI.ChangedColor.FormatForLabel();
          layoutItemDefaultSpecies.Text = PKSimConstants.UI.DefaultSpecies.FormatForLabel();
          layoutItemDefaultPopulation.Text = PKSimConstants.UI.DefaultPopulation.FormatForLabel();

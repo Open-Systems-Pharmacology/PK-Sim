@@ -11,7 +11,8 @@ namespace PKSim.Core.Commands
    {
       private readonly bool _updateSimulationSubjects;
 
-      public SetExpressionProfileUnitCommand(IParameter parameter, Unit newDisplayUnit, bool updateSimulationSubjects = true) : base(parameter, newDisplayUnit)
+      public SetExpressionProfileUnitCommand(IParameter parameter, Unit newDisplayUnit,
+         bool updateSimulationSubjects = true) : base(parameter, newDisplayUnit)
       {
          _updateSimulationSubjects = updateSimulationSubjects;
          ObjectType = PKSimConstants.ObjectTypes.Molecule;
@@ -31,7 +32,9 @@ namespace PKSim.Core.Commands
 
       protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
       {
-         return new SetExpressionProfileUnitCommand(_parameter, _oldDisplayUnit, _updateSimulationSubjects).AsInverseFor(this);
+         return new SetExpressionProfileUnitCommand(_parameter, _oldDisplayUnit, _updateSimulationSubjects)
+            .AsInverseFor(this);
       }
    }
+
 }

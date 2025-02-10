@@ -169,7 +169,7 @@ namespace PKSim.Core
          A.CallTo(() => _simulationComparisonMapper.MapToSnapshot(_simulationComparison)).Returns(_simulationComparisonSnapshot);
          A.CallTo(() => _parameterIdentificationMapper.MapToSnapshot(_parameterIdentification)).Returns(_parameterIdentificationSnapshot);
          A.CallTo(() => _qualificationPlanMapper.MapToSnapshot(_qualificationPlan)).Returns(_qualificationPlanSnapshot);
-       
+
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] {_observedDataClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).Returns(new[] {_simulationClassificationSnapshot});
          A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).Returns(new[] {_comparisonClassificationSnapshot});
@@ -344,7 +344,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations:true));
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: true));
       }
 
       [Observation]
@@ -425,7 +425,8 @@ namespace PKSim.Core
       [Observation]
       public void should_update_project_classification_for_parameter_identification()
       {
-         A.CallTo(() => _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification>(_snapshot.ParameterIdentificationClassifications, A<SnapshotContext>._, _newProject.AllParameterIdentifications))
+         A.CallTo(() =>
+               _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification>(_snapshot.ParameterIdentificationClassifications, A<SnapshotContext>._, _newProject.AllParameterIdentifications))
             .MustHaveHappened();
       }
 
@@ -433,6 +434,54 @@ namespace PKSim.Core
       public void should_log_an_error_for_simulation_that_could_not_be_loaded_from_snapshot()
       {
          A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_converting_a_corrupted_project_snapshot_to_project : concern_for_ProjectMapper
+   {
+      private PKSimProject _newProject;
+      private CreationMetaData _creationMetaData;
+      private ISnapshotMapper _defaultMapper;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _creationMetaData = new CreationMetaData();
+         A.CallTo(() => _creationMetaDataFactory.Create()).Returns(_creationMetaData);
+         _snapshot = new Project
+         {
+            ObservedData = new[] {_observedDataSnapshot, _observedDataSnapshot},
+            Individuals = new[] {_individualSnapshot, _individualSnapshot}
+         };
+
+         _defaultMapper = A.Fake<ISnapshotMapper>();
+         A.CallTo(() => _snapshotMapper.MapperFor(_individualSnapshot)).Returns(_defaultMapper);
+         A.CallTo(() => _snapshotMapper.MapperFor(_observedDataSnapshot)).Returns(_snapshotMapper);
+         A.CallTo(() => _defaultMapper.MapToModel(_individualSnapshot, A<SnapshotContext>._)).Returns(_individual);
+         A.CallTo(() => _snapshotMapper.MapToModel(_observedDataSnapshot, A<SnapshotContext>._)).Returns(_observedData);
+      }
+
+      protected override async Task Because()
+      {
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: false));
+      }
+
+      [Observation]
+      public void should_return_a_project_with_the_expected_building_blocks()
+      {
+         _newProject.All<Individual>().ShouldContain(_individual);
+      }
+
+      [Observation]
+      public void should_have_mapped_the_observed_data()
+      {
+         _newProject.AllObservedData.ShouldContain(_observedData);
+      }
+
+      [Observation]
+      public void should_log_an_error_for_duplicate_entries()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappenedTwiceExactly();
       }
    }
 }

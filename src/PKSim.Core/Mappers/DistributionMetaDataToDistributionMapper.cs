@@ -1,7 +1,8 @@
 ﻿using System;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Maths.Statistics;
 using OSPSuite.Utility;
-using PKSim.Core.Model;
+using DistributionType = OSPSuite.Core.Domain.Formulas.DistributionType;
 
 namespace PKSim.Core.Mappers
 {
@@ -13,16 +14,16 @@ namespace PKSim.Core.Mappers
    {
       public IDistribution MapFrom(IDistributionMetaData distributionMetaData)
       {
-         if (distributionMetaData.Distribution == DistributionTypes.Normal)
+         if (distributionMetaData.Distribution == DistributionType.Normal)
             return new NormalDistribution(distributionMetaData.Mean, distributionMetaData.Deviation);
 
-         if (distributionMetaData.Distribution == DistributionTypes.LogNormal)
+         if (distributionMetaData.Distribution == DistributionType.LogNormal)
             return new LogNormalDistribution(Math.Log(distributionMetaData.Mean), distributionMetaData.Deviation);
 
-         if (distributionMetaData.Distribution == DistributionTypes.Discrete)
+         if (distributionMetaData.Distribution == DistributionType.Discrete)
             return new NormalDistribution(distributionMetaData.Mean, 0);
 
-         throw new ArgumentException(string.Format("Cannot create distribution for meta data '{0}'", distributionMetaData.Distribution), "distributionMetaData");
+         throw new ArgumentException($"Cannot create distribution for meta data '{distributionMetaData.Distribution}'");
       }
    }
 }

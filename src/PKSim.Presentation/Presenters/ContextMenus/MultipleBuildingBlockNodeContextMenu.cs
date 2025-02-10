@@ -9,18 +9,19 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Presentation.UICommands;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public abstract class MultipleBuildingBlockNodeContextMenu<TBuildingBlock> : ContextMenu<IReadOnlyList<NamedBuildingBlock<TBuildingBlock>>, IExecutionContext> where TBuildingBlock : class, IPKSimBuildingBlock
    {
-      protected MultipleBuildingBlockNodeContextMenu(IReadOnlyList<TBuildingBlock> buildingBlocks, IExecutionContext executionContext)
-         : this(buildingBlocks.Select(bb => new NamedBuildingBlock<TBuildingBlock>(bb, bb.Name)).ToList(), executionContext)
+      protected MultipleBuildingBlockNodeContextMenu(IReadOnlyList<TBuildingBlock> buildingBlocks, IExecutionContext executionContext, IContainer container)
+         : this(buildingBlocks.Select(bb => new NamedBuildingBlock<TBuildingBlock>(bb, bb.Name)).ToList(), executionContext, container)
       {
       }
 
-      protected MultipleBuildingBlockNodeContextMenu(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
-         : base(buildingBlocks, executionContext)
+      protected MultipleBuildingBlockNodeContextMenu(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext, IContainer container)
+         : base(buildingBlocks, executionContext, container)
       {
       }
 
@@ -37,15 +38,18 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return DeleteSelectedBuildingBlockMenuItem(buildingBlocks);
       }
 
-      protected static IMenuBarItem CompareBuildingBlocks(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
+      protected IMenuBarItem CompareBuildingBlocks(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks, IExecutionContext executionContext)
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
          var objectBaseList = buildingBlockList.Cast<IObjectBase>().ToList();
 
          var buildingBlockNames = buildingBlocks.Select(x => x.Name).ToList();
 
+         if (buildingBlockList.Count != 2)
+            return null;
+
          if (canStartComparisonFor(buildingBlockList))
-            return ComparisonCommonContextMenuItems.CompareObjectsMenu(objectBaseList, buildingBlockNames, executionContext);
+            return ComparisonCommonContextMenuItems.CompareObjectsMenu(objectBaseList, buildingBlockNames, executionContext, _container);
 
          return comparisonNotPossibleMenu(buildingBlockList, executionContext);
       }
@@ -54,7 +58,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsTemplate)
-            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
+            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList, _container)
             .WithIcon(ApplicationIcons.SaveAsTemplate);
       }
 
@@ -62,33 +66,30 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSystemTemplate)
-            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList)
+            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(buildingBlockList, _container)
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .ForDeveloper();
       }
 
-      protected static IMenuBarItem AddToJournal(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
+      protected IMenuBarItem AddToJournal(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
       {
          var objectBaseList = buildingBlocks.Select(x => x.BuildingBlock).Cast<IObjectBase>().ToList();
 
-         return ObjectBaseCommonContextMenuItems.AddToJournal(objectBaseList);
+         return ObjectBaseCommonContextMenuItems.AddToJournal(objectBaseList, _container);
       }
 
-      protected static IMenuBarButton DeleteSelectedBuildingBlockMenuItem(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
+      protected IMenuBarButton DeleteSelectedBuildingBlockMenuItem(IReadOnlyList<NamedBuildingBlock<TBuildingBlock>> buildingBlocks)
       {
          var buildingBlockList = buildingBlocks.Select(x => x.BuildingBlock).ToList();
 
          return CreateMenuButton.WithCaption(MenuNames.Delete)
-            .WithCommandFor<DeleteBuildingBlocksUICommand, IReadOnlyList<IPKSimBuildingBlock>>(buildingBlockList)
+            .WithCommandFor<DeleteBuildingBlocksUICommand, IReadOnlyList<IPKSimBuildingBlock>>(buildingBlockList, _container)
             .WithIcon(ApplicationIcons.Delete)
             .AsGroupStarter();
       }
 
       private static bool canStartComparisonFor(IReadOnlyList<TBuildingBlock> buildingBlocks)
       {
-         if (buildingBlocks.Count != 2)
-            return false;
-
          return buildingBlocks[0].BuildingBlockType != PKSimBuildingBlockType.Population;
       }
 

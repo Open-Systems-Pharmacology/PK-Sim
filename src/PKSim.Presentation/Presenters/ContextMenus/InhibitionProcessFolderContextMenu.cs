@@ -11,13 +11,14 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class InhibitionProcessFolderContextMenu : ContextMenu<ITreeNode, ICompoundProcessesPresenter>
    {
-      public InhibitionProcessFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter context)
-         : base(nodeRequestingContextMenu, context)
+      public InhibitionProcessFolderContextMenu(ITreeNode nodeRequestingContextMenu, ICompoundProcessesPresenter context, IContainer container)
+         : base(nodeRequestingContextMenu, context, container)
       {
       }
 
@@ -32,14 +33,17 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class InhibitionProcessFolderTreeNodeContextMenuFactory : CompoundProcessFolderTreeNodeContextMenuFactory
    {
-      public InhibitionProcessFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository)
+      private readonly IContainer _container;
+
+      public InhibitionProcessFolderTreeNodeContextMenuFactory(IMenuBarItemRepository repository, IContainer container)
          : base(PKSimRootNodeTypes.InhibitionProcess, repository)
       {
+         _container = container;
       }
 
       protected override IContextMenu CreateFor(ITreeNode<RootNodeType> treeNode, ICompoundProcessesPresenter presenter)
       {
-         return new InhibitionProcessFolderContextMenu(treeNode, presenter);
+         return new InhibitionProcessFolderContextMenu(treeNode, presenter, _container);
       }
    }
 }

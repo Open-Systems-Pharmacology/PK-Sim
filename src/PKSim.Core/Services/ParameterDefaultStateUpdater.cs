@@ -7,13 +7,13 @@ namespace PKSim.Core.Services
 {
    public interface IParameterDefaultStateUpdater
    {
-      void UpdateDefaultFor(ISpatialStructure spatialStructure);
-      void UpdateDefaultFor(IEventGroupBuildingBlock eventGroupBuildingBlock);
+      void UpdateDefaultFor(SpatialStructure spatialStructure);
+      void UpdateDefaultFor(EventGroupBuildingBlock eventGroupBuildingBlock);
    }
 
    public class ParameterDefaultStateUpdater : IParameterDefaultStateUpdater
    {
-      public void UpdateDefaultFor(ISpatialStructure spatialStructure)
+      public void UpdateDefaultFor(SpatialStructure spatialStructure)
       {
          var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
          if (organism == null) return;
@@ -47,12 +47,12 @@ namespace PKSim.Core.Services
          organism.GetAllChildren<IParameter>(x=>x.NameIsOneOf(distributionParameters)).Each(resetDefault);
       }
 
-      public void UpdateDefaultFor(IEventGroupBuildingBlock eventGroupBuildingBlock)
+      public void UpdateDefaultFor(EventGroupBuildingBlock eventGroupBuildingBlock)
       {
          eventGroupBuildingBlock.Each(updateDefaultStateForEventParameters);
       }
 
-      private void updateDefaultStateForEventParameters(IEventGroupBuilder eventGroupBuilder)
+      private void updateDefaultStateForEventParameters(EventGroupBuilder eventGroupBuilder)
       {
          var parameterNames = new[]
          {

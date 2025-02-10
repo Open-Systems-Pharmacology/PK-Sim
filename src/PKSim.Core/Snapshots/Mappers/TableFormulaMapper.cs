@@ -77,7 +77,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          snapshot.UseDerivedValues = tableFormula.UseDerivedValues;
 
-         snapshot.Points = tableFormula.AllPoints().Select(p => snapshotPointFor(tableFormula, p)).ToList();
+         snapshot.Points = tableFormula.AllPoints.Select(p => snapshotPointFor(tableFormula, p)).ToList();
       }
    }
 }

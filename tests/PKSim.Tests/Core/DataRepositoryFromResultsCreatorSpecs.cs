@@ -29,7 +29,7 @@ namespace PKSim.Core
          _dataFactory = A.Fake<IDataRepositoryTask>();
          _dimensionRepository = A.Fake<IDimensionRepository>();
          sut = new DataRepositoryFromResultsCreator(
-            _dimensionRepository, new ObjectPathFactoryForSpecs(), _dataFactory);
+            _dimensionRepository, _dataFactory);
 
          _simulation = new IndividualSimulation().WithName("S");
          _simulation.Model = new OSPSuite.Core.Domain.Model();
@@ -54,8 +54,8 @@ namespace PKSim.Core
          _outputSelection = new OutputSelections();
          _outputSelection.AddOutput(new QuantitySelection(new[] { "LIVER", "C" }.ToPathString(), QuantityType.Molecule));
 
-         _simulation.SimulationSettings = new SimulationSettings();
-         _simulation.SimulationSettings.OutputSelections = _outputSelection;
+         _simulation.Settings = new SimulationSettings();
+         _simulation.Settings.OutputSelections = _outputSelection;
       }
 
       protected override void Because()

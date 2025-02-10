@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
@@ -22,7 +21,7 @@ namespace PKSim.Infrastructure.Services
 {
    public class MoBiExportTask : IMoBiExportTask, IVisitor<IObjectBase>
    {
-      private readonly IBuildConfigurationTask _buildConfigurationTask;
+      private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly ISimulationToModelCoreSimulationMapper _simulationMapper;
       private readonly IRepresentationInfoRepository _representationInfoRepository;
       private readonly IPKSimConfiguration _configuration;
@@ -35,12 +34,18 @@ namespace PKSim.Infrastructure.Services
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
 
-      public MoBiExportTask(IBuildConfigurationTask buildConfigurationTask, ISimulationToModelCoreSimulationMapper simulationMapper,
-         IRepresentationInfoRepository representationInfoRepository, IPKSimConfiguration configuration,
-         ILazyLoadTask lazyLoadTask, IDialogCreator dialogCreator, ISimulationPersistor simulationPersistor, IProjectRetriever projectRetriever,
+      public MoBiExportTask(
+         ISimulationConfigurationTask simulationConfigurationTask,
+         ISimulationToModelCoreSimulationMapper simulationMapper,
+         IRepresentationInfoRepository representationInfoRepository,
+         IPKSimConfiguration configuration,
+         ILazyLoadTask lazyLoadTask,
+         IDialogCreator dialogCreator,
+         ISimulationPersistor simulationPersistor,
+         IProjectRetriever projectRetriever,
          IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
       {
-         _buildConfigurationTask = buildConfigurationTask;
+         _simulationConfigurationTask = simulationConfigurationTask;
          _simulationMapper = simulationMapper;
          _representationInfoRepository = representationInfoRepository;
          _configuration = configuration;
@@ -81,10 +86,7 @@ namespace PKSim.Infrastructure.Services
             $"\"{contentFile}\""
          };
 
-         this.DoWithinExceptionHandler(() =>
-         {
-            _startableProcessFactory.CreateStartableProcess(moBiPath, args).Start();
-         });
+         this.DoWithinExceptionHandler(() => { _startableProcessFactory.CreateStartableProcess(moBiPath, args).Start(); });
       }
 
       private string retrieveMoBiExecutablePath()
@@ -105,12 +107,11 @@ namespace PKSim.Infrastructure.Services
          if (simulation.IsImported)
             throw new PKSimException(PKSimConstants.Error.CannotExportAnImportedSimulation);
 
-         var configuration = _buildConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         var moBiSimulation = _simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: false);
-         updateObserverForAllFlag(moBiSimulation);
+         var configuration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         var moBiSimulation = _simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
          updateRepresentationInfo(moBiSimulation);
          updateFormulaIdIn(moBiSimulation);
-         
+
          var simulationTransfer = new SimulationTransfer
          {
             Simulation = moBiSimulation,
@@ -138,17 +139,6 @@ namespace PKSim.Infrastructure.Services
          return Task.Run(() => ExportSimulationToPkmlFile(simulation, fileName));
       }
 
-      public void UpdateObserverForAllFlag(IObserverBuildingBlock observerBuildingBlock)
-      {
-         var allObserversForAll = observerBuildingBlock.Where(x => x.NameIsOneOf(CoreConstants.Observer.MoBiForAll));
-         allObserversForAll.Each(x => x.ForAll = true);
-      }
-
-      private void updateObserverForAllFlag(IModelCoreSimulation moBiSimulation)
-      {
-         UpdateObserverForAllFlag(moBiSimulation.BuildConfiguration.Observers);
-      }
-
       public void ExportSimulationToPkmlFile(Simulation simulation)
       {
          var moBiFile = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportSimulationToMoBiTitle, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, simulation.Name);
@@ -163,12 +153,7 @@ namespace PKSim.Infrastructure.Services
 
       private void updateRepresentationInfo(IModelCoreSimulation moBiSimulation)
       {
-         moBiSimulation.BuildConfiguration.SpatialStructure.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.Reactions.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.Molecules.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.PassiveTransports.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.Observers.AcceptVisitor(this);
-         moBiSimulation.BuildConfiguration.EventGroups.AcceptVisitor(this);
+         moBiSimulation.Configuration.AcceptVisitor(this);
          moBiSimulation.Model.AcceptVisitor(this);
       }
 

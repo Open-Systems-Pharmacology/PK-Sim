@@ -13,6 +13,7 @@ using OSPSuite.Core.Maths.Statistics;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Extensions;
+using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
@@ -26,14 +27,14 @@ namespace PKSim.Core.Services
       ///    Create a table parameter for each distributed parameter defined in the simulation subject of the simulation if the
       ///    simulation is aging
       /// </summary>
-      /// <param name="buildConfiguration"> spatialStructure that will be use to create the simulation </param>
+      /// <param name="simulationConfiguration"> spatialStructure that will be use to create the simulation </param>
       /// <param name="simulation"> Model less simulation that whose spatial structure will be created </param>
       /// <param name="createAgingDataInPopulationSimulation">
       ///    Set to <c>True</c>, generates the AgingData if <paramref name="simulation" /> is a population simulation. Note that
       ///    aging data will be added to the population simulation directly
       ///    and therefor modifying the instance of the simulation
       /// </param>
-      void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation);
+      void UpdateSimulationConfigurationForAging(SimulationConfiguration simulationConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation);
    }
 
    public class DistributedParameterToTableParameterConverter : IDistributedParameterToTableParameterConverter
@@ -41,15 +42,13 @@ namespace PKSim.Core.Services
       private readonly IFormulaFactory _formulaFactory;
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IParameterFactory _parameterFactory;
-      private readonly ICloneManager _cloneManager;
       private readonly IParameterQuery _parameterQuery;
       private readonly IDimensionRepository _dimensionRepository;
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
       private readonly IInterpolation _interpolation;
-      private readonly IParameterStartValuesCreator _parameterStartValuesCreator;
-      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IGenderRepository _genderRepository;
+      private readonly IIndividualToIndividualBuildingBlockMapper _individualBuildingBlockMapper;
       private readonly IDimension _timeDimension;
       private readonly Unit _yearUnit;
       private Simulation _simulation;
@@ -63,33 +62,30 @@ namespace PKSim.Core.Services
          IFormulaFactory formulaFactory,
          IEntityPathResolver entityPathResolver,
          IParameterFactory parameterFactory,
-         ICloneManager cloneManager,
          IParameterQuery parameterQuery,
          IDimensionRepository dimensionRepository,
          IOntogenyRepository ontogenyRepository,
          IFullPathDisplayResolver fullPathDisplayResolver,
          IInterpolation interpolation,
-         IParameterStartValuesCreator parameterStartValuesCreator,
-         IObjectPathFactory objectPathFactory,
-         IGenderRepository genderRepository)
+         IGenderRepository genderRepository,
+         IIndividualToIndividualBuildingBlockMapper individualBuildingBlockMapper
+      )
       {
          _formulaFactory = formulaFactory;
          _entityPathResolver = entityPathResolver;
          _parameterFactory = parameterFactory;
-         _cloneManager = cloneManager;
          _parameterQuery = parameterQuery;
          _dimensionRepository = dimensionRepository;
          _ontogenyRepository = ontogenyRepository;
          _fullPathDisplayResolver = fullPathDisplayResolver;
          _interpolation = interpolation;
-         _parameterStartValuesCreator = parameterStartValuesCreator;
-         _objectPathFactory = objectPathFactory;
          _genderRepository = genderRepository;
+         _individualBuildingBlockMapper = individualBuildingBlockMapper;
          _timeDimension = dimensionRepository.Time;
          _yearUnit = _timeDimension.Unit(dimensionRepository.AgeInYears.BaseUnit.Name);
       }
 
-      public void UpdateBuildConfigurationForAging(IBuildConfiguration buildConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation)
+      public void UpdateSimulationConfigurationForAging(SimulationConfiguration simulationConfiguration, Simulation simulation, bool createAgingDataInPopulationSimulation)
       {
          if (!simulation.AllowAging)
             return;
@@ -103,10 +99,9 @@ namespace PKSim.Core.Services
             var allHeightDistributionParameters = _parameterQuery.ParameterDistributionsFor(_baseIndividual.Organism, _baseOriginData.Population, _baseOriginData.SubPopulation, CoreConstants.Parameters.MEAN_HEIGHT);
             _allHeightDistributionMaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.MALE).ToList();
             _allHeightDistributionFemaleParameters = allHeightDistributionParameters.Where(p => p.Gender == CoreConstants.Gender.FEMALE).ToList();
-            createSpatialStructureTableParameters(buildConfiguration);
-            createOntogenyTableParameters(buildConfiguration);
-
-            updateAgeParameter(buildConfiguration);
+            createIndividualTableParameters(simulationConfiguration);
+            createOntogenyTableParameters(simulationConfiguration);
+            updateAgeParameter(simulationConfiguration);
          }
          finally
          {
@@ -116,12 +111,15 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void updateAgeParameter(IBuildConfiguration buildConfiguration)
+      private void updateAgeParameter(SimulationConfiguration simulationConfiguration)
       {
-         var spatialStructure = buildConfiguration.SpatialStructure;
-         var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
+         var individual = simulationConfiguration.Individual;
+         var organism = _baseIndividual.Organism;
          var ageParameter = organism.Parameter(CoreConstants.Parameters.AGE);
          var minToYearFactor = _timeDimension.BaseUnitValueToUnitValue(_yearUnit, 1);
+
+         //dummy parameters that will be added to the individualBuildingBlock. We use a dummy organism to ensure the path of dynamic parameters are correct
+         var dummyOrganism = new Organism();
          var age0Parameter = _parameterFactory.CreateFor(CoreConstants.Parameters.AGE_0, ageParameter.Value, ageParameter.Dimension.Name, PKSimBuildingBlockType.Simulation);
          age0Parameter.DisplayUnit = ageParameter.DisplayUnit;
          age0Parameter.Visible = false;
@@ -129,47 +127,33 @@ namespace PKSim.Core.Services
          var minToYearFactorParameter = _parameterFactory.CreateFor(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR, minToYearFactor, PKSimBuildingBlockType.Simulation);
          minToYearFactorParameter.Visible = false;
 
-         organism.Add(age0Parameter);
-         organism.Add(minToYearFactorParameter);
+         dummyOrganism.AddChildren(age0Parameter, minToYearFactorParameter);
 
+         var _ = getOrCreateIndividualParameter(age0Parameter, individual);
+         _ = getOrCreateIndividualParameter(minToYearFactorParameter, individual);
+         var individualAgeParameter = getOrCreateIndividualParameter(ageParameter, individual);
          var formula = _formulaFactory.AgeFormulaFor(age0Parameter, minToYearFactorParameter);
-         updateConstantParameterToFormula(ageParameter, formula, buildConfiguration);
-         addNewParametersToParameterStartValues(buildConfiguration, age0Parameter, minToYearFactorParameter);
+         updateParameterToTableFormula(individualAgeParameter, formula, individual);
       }
 
-      private void addNewParametersToParameterStartValues(IBuildConfiguration buildConfiguration, IParameter age0Parameter, IParameter minToYearFactorParameter)
+      private void createIndividualTableParameters(SimulationConfiguration simulationConfiguration)
       {
-         var psv = buildConfiguration.ParameterStartValues;
-         addParameterToParameterStartValues(psv, age0Parameter);
-         addParameterToParameterStartValues(psv, minToYearFactorParameter);
-      }
-
-      private void addParameterToParameterStartValues(IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock, IParameter parameter)
-      {
-         var path = _objectPathFactory.CreateAbsoluteObjectPath(parameter);
-         var psv = _parameterStartValuesCreator.CreateParameterStartValue(path, parameter);
-         parameterStartValuesBuildingBlock[psv.Path] = psv;
-      }
-
-      private void createSpatialStructureTableParameters(IBuildConfiguration buildConfiguration)
-      {
-         var spatialStructure = buildConfiguration.SpatialStructure;
+         var individual = simulationConfiguration.Individual;
          var allBaseIndividualDistributedParameters = new PathCache<IDistributedParameter>(_entityPathResolver).For(_baseIndividual.GetAllChildren<IDistributedParameter>(parameterShouldBeDefinedAsTable));
          if (!allBaseIndividualDistributedParameters.Any())
             return;
 
          var populationSimulation = _simulation as PopulationSimulation;
 
-         //Some special cache to optimize speed
-         var allContainerParameters = new PathCache<IDistributedParameter>(_entityPathResolver).For(spatialStructure.TopContainers.SelectMany(x => x.GetAllChildren<IDistributedParameter>()));
-         var allNeighborhoodParameters = new PathCache<IDistributedParameter>(_entityPathResolver).For(spatialStructure.Neighborhoods.SelectMany(x => x.GetAllChildren<IDistributedParameter>()));
 
          foreach (var individualParameterKeyValue in allBaseIndividualDistributedParameters.KeyValues)
          {
             var individualParameterPath = individualParameterKeyValue.Key;
             var individualParameter = individualParameterKeyValue.Value;
-            var structureParameter = allContainerParameters[individualParameterPath] ?? allNeighborhoodParameters[individualParameterPath];
-            if (structureParameter == null)
+            var individualBuildingBlockParameter = individual.FindByPath(individualParameterPath);
+
+            //if it's not found, it was not exported in the first place...should not happen but who knows
+            if (individualBuildingBlockParameter == null)
                continue;
 
             //cache all distributions for this parameter defined for the population and sub population.
@@ -177,40 +161,40 @@ namespace PKSim.Core.Services
             var allDistributionsForMaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.MALE).ToList();
             var allDistributionsForFemaleParameter = allDistributionsForParameter.Where(p => p.Gender == CoreConstants.Gender.FEMALE).ToList();
 
-            createSpatialStructureTableParameter(structureParameter, individualParameter, allDistributionsForMaleParameter, allDistributionsForFemaleParameter, buildConfiguration);
+            createIndividualTableParameter(individualBuildingBlockParameter, individualParameter, allDistributionsForMaleParameter, allDistributionsForFemaleParameter, individual);
 
             createPopulationTableParameter(individualParameterPath, individualParameter, populationSimulation, allDistributionsForMaleParameter, allDistributionsForFemaleParameter);
          }
 
          //Height parameter is not a distributed parameter. However, we need to define this parameter as table to ensure that height dependent parameters are updated properly
-         var heightParameter = spatialStructure.TopContainers.FindByName(Constants.ORGANISM).Parameter(CoreConstants.Parameters.HEIGHT);
+         var heightParameterPath = new ObjectPath(Constants.ORGANISM, CoreConstants.Parameters.HEIGHT).ToPathString();
+         var heightParameter = individual.FindByPath(heightParameterPath);
          var individualMeanHeightParameter = _baseIndividual.Organism.EntityAt<IDistributedParameter>(CoreConstants.Parameters.MEAN_HEIGHT);
-         createSpatialStructureTableParameter(heightParameter, individualMeanHeightParameter, _allHeightDistributionMaleParameters, _allHeightDistributionFemaleParameters, buildConfiguration);
-         createPopulationHeightTableParameter(new[] {Constants.ORGANISM, CoreConstants.Parameters.HEIGHT}.ToPathString(), individualMeanHeightParameter, populationSimulation);
+         createIndividualTableParameter(heightParameter, individualMeanHeightParameter, _allHeightDistributionMaleParameters, _allHeightDistributionFemaleParameters, individual);
+         createPopulationHeightTableParameter(heightParameterPath, individualMeanHeightParameter, populationSimulation);
       }
 
-      private void createOntogenyTableParameters(IBuildConfiguration buildConfiguration)
+      private void createOntogenyTableParameters(SimulationConfiguration simulationConfiguration)
       {
          var simulationPopulation = _simulation as PopulationSimulation;
-
+         var individual = simulationConfiguration.Individual;
          foreach (var molecule in _baseIndividual.AllMolecules().Where(m => m.Ontogeny.IsDefined()))
          {
             var ontogenyFactorPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorParameter);
             var ontogenyFactorGIPath = _entityPathResolver.ObjectPathFor(molecule.OntogenyFactorGIParameter);
-            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorParameter, buildConfiguration, ontogenyFactorPath, molecule);
-            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorGIParameter, buildConfiguration, ontogenyFactorGIPath, molecule);
+            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorParameter, individual, molecule);
+            createParameterValueVersionOntogenyTableParameter(molecule.OntogenyFactorGIParameter, individual, molecule);
 
             createPopulationOntogenyTableParameter(molecule.OntogenyFactorParameter, ontogenyFactorPath, molecule, simulationPopulation);
             createPopulationOntogenyTableParameter(molecule.OntogenyFactorGIParameter, ontogenyFactorGIPath, molecule, simulationPopulation);
          }
 
-         createPlasmaProteinOntogenyTable(buildConfiguration);
+         createPlasmaProteinOntogenyTable(individual);
       }
 
-      private void createPlasmaProteinOntogenyTable(IBuildConfiguration buildConfiguration)
+      private void createPlasmaProteinOntogenyTable(IndividualBuildingBlock individual)
       {
-         var spatialStructure = buildConfiguration.SpatialStructure;
-         var organism = spatialStructure.TopContainers.FindByName(Constants.ORGANISM);
+         var organism = _baseIndividual.Organism;
          foreach (var ontogenyParameterName in CoreConstants.Parameters.AllPlasmaProteinOntogenyFactors)
          {
             var parameter = organism.Parameter(ontogenyParameterName);
@@ -218,31 +202,30 @@ namespace PKSim.Core.Services
             if (formula == null)
                continue;
 
-            updateConstantParameterToFormula(parameter, formula, buildConfiguration);
+            var individualParameter = getOrCreateIndividualParameter(parameter, individual);
+            updateParameterToTableFormula(individualParameter, formula, individual);
             createPopulationPlasmaProteinOntogenyTableParameter(parameter, _simulation as PopulationSimulation);
          }
       }
 
       private void createParameterValueVersionOntogenyTableParameter(
          IParameter ontogenyFactorParameter,
-         IBuildConfiguration buildConfiguration,
-         IObjectPath ontogenyFactorPath,
+         IndividualBuildingBlock individual,
          IndividualMolecule molecule)
       {
-         var psv = buildConfiguration.ParameterStartValues;
-         var parameterStartValue = psv[ontogenyFactorPath];
-
-         parameterStartValue.Formula = createOntogenyTableFormulaFrom(ontogenyFactorParameter, molecule.Ontogeny, _baseOriginData);
-         if (parameterStartValue.Formula == null)
+         var individualParameter = createIndividualParameter(ontogenyFactorParameter, individual);
+         individualParameter.Formula = createOntogenyTableFormulaFrom(ontogenyFactorParameter, molecule.Ontogeny, _baseOriginData);
+         if (individualParameter.Formula == null)
             return;
 
-         parameterStartValue.StartValue = null;
-         psv.FormulaCache.Add(parameterStartValue.Formula);
+         individualParameter.Value = null;
+         individual[individualParameter.Path] = individualParameter;
+         individual.AddFormula(individualParameter.Formula);
       }
 
       private TableFormula createMoleculeOntogenyTableFormula(IParameter ontogenyFactor, OriginData originData, IReadOnlyList<Sample> allOntogenies)
       {
-         //null is ok here. It's the default value for formula in ParameterStartValue
+         //null is ok here. It's the default value for formula in ParameterValue
          if (allOntogenies.Count == 0)
             return null;
 
@@ -345,7 +328,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void createPopulationOntogenyTableParameter(IParameter ontogenyFactorParameter, IObjectPath ontogenyFactorPath, IndividualMolecule molecule, PopulationSimulation populationSimulation)
+      private void createPopulationOntogenyTableParameter(IParameter ontogenyFactorParameter, ObjectPath ontogenyFactorPath, IndividualMolecule molecule, PopulationSimulation populationSimulation)
       {
          addAgingDataToPopulationSimulation(populationSimulation, ontogenyFactorPath.ToString(), ontogenyFactorParameter,
             p => createOntogenyTableFormulaFrom(p.Parameter, molecule.Ontogeny, p.OriginData, populationSimulation.RandomGenerator));
@@ -396,12 +379,12 @@ namespace PKSim.Core.Services
          }
       }
 
-      private void createSpatialStructureTableParameter(
-         IParameter structureParameter,
+      private void createIndividualTableParameter(
+         IndividualParameter individualParameter,
          IDistributedParameter baseIndividualParameter,
          IReadOnlyList<ParameterDistributionMetaData> distributionsForMale,
          IReadOnlyList<ParameterDistributionMetaData> distributionsForFemale,
-         IBuildConfiguration buildConfiguration)
+         IndividualBuildingBlock individualBuildingBlock)
       {
          var allDistributionsForParameter = allDistributionsWithAgeStrictBiggerThanOriginData(distributionsForMale, distributionsForFemale, _baseIndividual.OriginData);
          if (!allDistributionsForParameter.Any())
@@ -409,14 +392,9 @@ namespace PKSim.Core.Services
 
          //remove the parameter from the parent container and add a new one that will contain the table formula
          //retrieve the table formula corresponding to the individual values
-         var newParameter = _parameterFactory.CreateFor(structureParameter.Name, structureParameter.BuildingBlockType);
-         newParameter.UpdatePropertiesFrom(structureParameter, _cloneManager);
-         var parentContainer = structureParameter.ParentContainer;
-         parentContainer.RemoveChild(structureParameter);
-         parentContainer.Add(newParameter);
-         newParameter.Editable = false;
+         individualParameter.Info.ReadOnly = true;
          var formula = createTableFormulaFrom(baseIndividualParameter, allDistributionsForParameter);
-         updateConstantParameterToFormula(newParameter, formula, buildConfiguration);
+         updateParameterToTableFormula(individualParameter, formula, individualBuildingBlock);
       }
 
       private IReadOnlyList<ParameterDistributionMetaData> allDistributionsWithAgeStrictBiggerThanOriginData(
@@ -486,7 +464,7 @@ namespace PKSim.Core.Services
 
          var distributionSamples = distributionSamplesFor(heightDistributions);
          var (meanHeight, deviation) = distributionSamples(originData);
-         var heightDistributionFormula = createDistributionFrom(DistributionTypes.Normal, meanHeight, deviation);
+         var heightDistributionFormula = createDistributionFrom(DistributionType.Normal, meanHeight, deviation);
 
          double currentHeight = originData.Height.Value;
          double currentPercentile = heightDistributionFormula.CalculatePercentileForValue(currentHeight).CorrectedPercentileValue();
@@ -521,7 +499,7 @@ namespace PKSim.Core.Services
             currentOriginData.Age.Value = originDistributionMetaData.Age;
 
             var (mean, deviation) = heightDistributionSamples(currentOriginData);
-            double heightAtPercentile = valueFrom(DistributionTypes.Normal, mean, deviation, currentPercentile);
+            double heightAtPercentile = valueFrom(DistributionType.Normal, mean, deviation, currentPercentile);
             double hrelForAge = heightAtPercentile / mean;
 
             scaleDistributionMetaData(distributionMetaData, hrelForAge, alpha);
@@ -568,10 +546,10 @@ namespace PKSim.Core.Services
 
       private IDistribution createDistributionFrom(DistributionType distributionType, double mean, double deviation)
       {
-         if (distributionType == DistributionTypes.LogNormal)
+         if (distributionType == DistributionType.LogNormal)
             return new LogNormalDistribution(Math.Log(mean), Math.Log(deviation));
 
-         if (distributionType == DistributionTypes.Normal)
+         if (distributionType == DistributionType.Normal)
             return new NormalDistribution(mean, deviation);
 
          return new UniformDistribution(mean, mean);
@@ -591,7 +569,7 @@ namespace PKSim.Core.Services
       {
          var scale = Math.Pow(hrel, alpha);
          parameterDistributionMeta.Mean *= scale;
-         if (parameterDistributionMeta.DistributionType == CoreConstants.Distribution.Normal)
+         if (parameterDistributionMeta.Distribution == DistributionType.Normal)
          {
             parameterDistributionMeta.Deviation *= scale;
          }
@@ -610,16 +588,29 @@ namespace PKSim.Core.Services
          return _timeDimension.UnitValueToBaseUnitValue(_yearUnit, futureAge);
       }
 
-      private void updateConstantParameterToFormula(IParameter parameter, IFormula formula, IBuildConfiguration buildConfiguration)
+      private IndividualParameter createIndividualParameter(IParameter parameter, IndividualBuildingBlock individual) => _individualBuildingBlockMapper.MapParameter(parameter, _baseIndividual, individual.FormulaCache);
+
+      private IndividualParameter getOrCreateIndividualParameter(IParameter parameter, IndividualBuildingBlock individual)
       {
-         parameter.Formula = formula;
-         buildConfiguration.SpatialStructure.AddFormula(formula);
-         removeParameterStartValueFor(parameter, buildConfiguration.ParameterStartValues);
+         var path = _entityPathResolver.ObjectPathFor(parameter);
+         var individualParameter = individual[path];
+         if (individualParameter == null)
+         {
+            individualParameter = createIndividualParameter(parameter, individual);
+            individual.Add(individualParameter);
+         }
+
+         return individualParameter;
       }
 
-      private void removeParameterStartValueFor(IParameter parameter, IParameterStartValuesBuildingBlock parameterStartValuesBuildingBlock)
+      private void updateParameterToTableFormula(IndividualParameter individualParameter, IFormula formula, IndividualBuildingBlock individualBuildingBlock)
       {
-         parameterStartValuesBuildingBlock.Remove(_entityPathResolver.ObjectPathFor(parameter));
+         //set the distribution to null so that the parameter is not created as a distributed parameter anymore
+         individualParameter.DistributionType = null;
+         individualParameter.Formula = formula;
+         //Ensures that value is null so that we do not override the formula
+         individualParameter.Value = null;
+         individualBuildingBlock.AddFormula(formula);
       }
 
       /// <summary>

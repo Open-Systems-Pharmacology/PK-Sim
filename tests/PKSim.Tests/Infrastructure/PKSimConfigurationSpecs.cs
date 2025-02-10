@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
@@ -71,7 +72,7 @@ namespace PKSim.Infrastructure
       {
          doWhilePreservingFileExists(() =>
          {
-            var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PK_SIM_DB_FILE);
+            var localFile = Path.Combine(new FileInfo(Assembly.GetAssembly(typeof(PKSimConfiguration)).Location).DirectoryName, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => string.Equals(s, localFile);
             sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(localFile);
@@ -83,7 +84,7 @@ namespace PKSim.Infrastructure
       {
          doWhilePreservingFileExists(() =>
          {
-            var localFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CoreConstants.PK_SIM_DB_FILE);
+            var localFile = Path.Combine(new FileInfo(Assembly.GetAssembly(typeof(PKSimConfiguration)).Location).DirectoryName, CoreConstants.PK_SIM_DB_FILE);
             FileHelper.FileExists = s => false;
             sut = new PKSimConfiguration();
             sut.PKSimDbPath.ShouldBeEqualTo(localFile);

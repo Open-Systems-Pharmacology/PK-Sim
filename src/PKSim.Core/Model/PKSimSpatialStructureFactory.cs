@@ -1,4 +1,5 @@
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -15,7 +16,7 @@ namespace PKSim.Core.Model
       /// </summary>
       /// <param name="individual">individual building block</param>
       /// <param name="simulation">Simulation</param>
-      ISpatialStructure CreateFor(Individual individual, Simulation simulation);
+      SpatialStructure CreateFor(Individual individual, Simulation simulation);
    }
 
    public class PKSimSpatialStructureFactory : SpatialStructureFactory, IPKSimSpatialStructureFactory
@@ -24,38 +25,34 @@ namespace PKSim.Core.Model
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IModelContainerQuery _modelContainerQuery;
       private readonly IModelNeighborhoodQuery _modelNeighborhoodQuery;
-      private readonly IParameterSetUpdater _parameterSetUpdater;
-      private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly INeighborhoodFinalizer _neighborhoodFinalizer;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
 
-      public PKSimSpatialStructureFactory(IObjectBaseFactory objectBaseFactory, IParameterContainerTask parameterContainerTask,
-         IModelContainerQuery modelContainerQuery, IModelNeighborhoodQuery modelNeighborhoodQuery,
-         IParameterSetUpdater parameterSetUpdater, IParameterIdUpdater parameterIdUpdater,
-         INeighborhoodFinalizer neighborhoodFinalizer, IEntityPathResolver entityPathResolver) : base(objectBaseFactory)
+      public PKSimSpatialStructureFactory(
+         IObjectBaseFactory objectBaseFactory,
+         IParameterContainerTask parameterContainerTask,
+         IModelContainerQuery modelContainerQuery,
+         IModelNeighborhoodQuery modelNeighborhoodQuery,
+         INeighborhoodFinalizer neighborhoodFinalizer,
+         IEntityPathResolver entityPathResolver,
+         IParameterDefaultStateUpdater parameterDefaultStateUpdater) : base(objectBaseFactory)
 
       {
          _objectBaseFactory = objectBaseFactory;
          _parameterContainerTask = parameterContainerTask;
          _modelContainerQuery = modelContainerQuery;
          _modelNeighborhoodQuery = modelNeighborhoodQuery;
-         _parameterSetUpdater = parameterSetUpdater;
-         _parameterIdUpdater = parameterIdUpdater;
          _neighborhoodFinalizer = neighborhoodFinalizer;
          _entityPathResolver = entityPathResolver;
+         _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
       }
 
-      public ISpatialStructure CreateFor(Individual individual, Simulation simulation)
+      public SpatialStructure CreateFor(Individual individual, Simulation simulation)
       {
-         var spatialStructure = Create().WithName(simulation.Name);
+         var spatialStructure = Create();
          var organism = _objectBaseFactory.Create<Organism>();
          spatialStructure.AddTopContainer(organism);
-
-         var eventContainer = _objectBaseFactory.Create<IContainer>()
-            .WithName(Constants.EVENTS)
-            .WithMode(ContainerMode.Logical);
-
-         spatialStructure.AddTopContainer(eventContainer);
 
          //FIRST: Global molecule parameters
          addModelStructureTo(spatialStructure.GlobalMoleculeDependentProperties, individual.OriginData, simulation.ModelProperties, spatialStructure.FormulaCache);
@@ -67,21 +64,17 @@ namespace PKSim.Core.Model
          //THIRD: update parameter values and ids
          updateParameterFromIndividual(spatialStructure, individual);
 
+         _parameterDefaultStateUpdater.UpdateDefaultFor(spatialStructure);
+
          return spatialStructure;
       }
 
-      private void updateParameterFromIndividual(ISpatialStructure spatialStructure, Individual individual)
+      private void updateParameterFromIndividual(SpatialStructure spatialStructure, Individual individual)
       {
          //Update parameter values for parameter that have been changed in individual
          var allIndividualParameters = new PathCache<IParameter>(_entityPathResolver).For(individual.GetAllChildren<IParameter>());
          var allContainerParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.TopContainers.SelectMany(x => x.GetAllChildren<IParameter>()));
          var allNeighborhoodParameters = new PathCache<IParameter>(_entityPathResolver).For(spatialStructure.Neighborhoods.SelectMany(x => x.GetAllChildren<IParameter>()));
-
-         _parameterSetUpdater.UpdateValues(allIndividualParameters, allContainerParameters);
-         _parameterSetUpdater.UpdateValues(allIndividualParameters, allNeighborhoodParameters);
-
-         _parameterIdUpdater.UpdateBuildingBlockId(allContainerParameters, individual);
-         _parameterIdUpdater.UpdateBuildingBlockId(allNeighborhoodParameters, individual);
 
          copyParameterTags(allIndividualParameters, allContainerParameters);
          copyParameterTags(allIndividualParameters, allNeighborhoodParameters);
@@ -98,7 +91,7 @@ namespace PKSim.Core.Model
          }
       }
 
-      private void addNeighborhoods(ISpatialStructure spatialStructure, Organism organism, Individual individual, ModelProperties modelProperties, IFormulaCache formulaCache)
+      private void addNeighborhoods(SpatialStructure spatialStructure, Organism organism, Individual individual, ModelProperties modelProperties, IFormulaCache formulaCache)
       {
          var neighborhoodList = _modelNeighborhoodQuery.NeighborhoodsFor(individual.Neighborhoods, modelProperties).ToList();
 
@@ -110,16 +103,16 @@ namespace PKSim.Core.Model
          _neighborhoodFinalizer.SetNeighborsIn(organism, neighborhoodList);
       }
 
-      private void addNeighborhood(INeighborhoodBuilder neighborhood, ISpatialStructure spatialStructure, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache)
+      private void addNeighborhood(NeighborhoodBuilder neighborhood, SpatialStructure spatialStructure, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache)
       {
          spatialStructure.AddNeighborhood(neighborhood);
-         _parameterContainerTask.AddModelParametersTo(neighborhood, originData, modelProperties, formulaCache);
-         _parameterContainerTask.AddModelParametersTo(neighborhood.MoleculeProperties, originData, modelProperties, formulaCache);
+         _parameterContainerTask.AddParametersToSpatialStructureContainer(neighborhood, originData, modelProperties, formulaCache);
+         _parameterContainerTask.AddParametersToSpatialStructureContainer(neighborhood.MoleculeProperties, originData, modelProperties, formulaCache);
       }
 
       private void addModelStructureTo(IContainer container, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache)
       {
-         _parameterContainerTask.AddModelParametersTo(container, originData, modelProperties, formulaCache);
+         _parameterContainerTask.AddParametersToSpatialStructureContainer(container, originData, modelProperties, formulaCache);
 
          foreach (var subContainer in _modelContainerQuery.SubContainersFor(originData.Population, modelProperties.ModelConfiguration, container))
          {
@@ -128,9 +121,6 @@ namespace PKSim.Core.Model
          }
       }
 
-      protected override ISpatialStructure CreateSpatialStructure()
-      {
-         return _objectBaseFactory.Create<IPKSimSpatialStructure>();
-      }
+      protected override SpatialStructure CreateSpatialStructure() => _objectBaseFactory.Create<PKSimSpatialStructure>().WithName(DefaultNames.SpatialStructure);
    }
 }

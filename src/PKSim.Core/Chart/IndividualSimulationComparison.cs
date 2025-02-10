@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 

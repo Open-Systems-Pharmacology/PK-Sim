@@ -17,7 +17,7 @@ namespace PKSim.Presentation.Presenters.Observers
 {
    public interface IImportObserverSetPresenter : IObserverSetItemPresenter
    {
-      IEnumerable<IObserverBuilder> Observers { get; }
+      IEnumerable<ObserverBuilder> Observers { get; }
       void RemoveObserver(ImportObserverDTO observer);
       void AddObserver();
       void SelectObserver(ImportObserverDTO observer);
@@ -50,7 +50,7 @@ namespace PKSim.Presentation.Presenters.Observers
          _view.BindTo(_observerDTOs);
       }
 
-      public IEnumerable<IObserverBuilder> Observers { get; } = new List<IObserverBuilder>();
+      public IEnumerable<ObserverBuilder> Observers { get; } = new List<ObserverBuilder>();
 
       public void Edit(ObserverSet observerSet)
       {
@@ -122,13 +122,13 @@ namespace PKSim.Presentation.Presenters.Observers
          return _dialogCreator.AskForFileToOpen(PKSimConstants.UI.SelectObserverFileToImport, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
       }
 
-      private ImportObserverDTO addObserver(IObserverBuilder observer, string filePath = null)
+      private ImportObserverDTO addObserver(ObserverBuilder observer, string filePath = null)
       {
          var observedDTO = map(observer, filePath);
          _observerDTOs.Add(observedDTO);
          return observedDTO;
       }
 
-      private ImportObserverDTO map(IObserverBuilder observer, string filePath = null) => new ImportObserverDTO(observer) {FilePath = filePath};
+      private ImportObserverDTO map(ObserverBuilder observer, string filePath = null) => new ImportObserverDTO(observer) {FilePath = filePath};
    }
 }

@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Infrastructure.Import.Services;
@@ -193,7 +194,7 @@ namespace PKSim.Core
          A.CallTo(() => _individualPropertiesCacheImporter.ImportFrom(_populationFile, _patchCache,A<IImportLogger>._)).Returns(_individualPropertiesCache);
 
          _advancedParameterContainer = new AdvancedParameter();
-         A.CallTo(() => _advancedParameterFactory.Create(advancedParameter, DistributionTypes.Unknown)).Returns(_advancedParameterContainer);
+         A.CallTo(() => _advancedParameterFactory.Create(advancedParameter, DistributionType.Unknown)).Returns(_advancedParameterContainer);
       }
 
       protected override void Because()

@@ -72,7 +72,7 @@ namespace PKSim.Core
       public void should_return_a_snapshot_containing_the_expected_properties()
       {
          _snapshot.Name.ShouldBeEqualTo(_advancedParameter.ParameterPath);
-         _snapshot.DistributionType.ShouldBeEqualTo(_advancedParameter.DistributionType.Id);
+         _snapshot.DistributionType.ShouldBeEqualTo(_advancedParameter.DistributionType);
          _snapshot.Seed.ShouldBeEqualTo(_originalSeed);
       }
    }
@@ -121,7 +121,7 @@ namespace PKSim.Core
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(5);
          _mappedAdvancedParameter = new AdvancedParameter {DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter()};
          _pathCache = new PathCacheForSpecs<IParameter> {{_advancedParameter.ParameterPath, _parameter}};
-         A.CallTo(() => _advancedParameterFactory.Create(_parameter, DistributionTypes.ById(_snapshot.DistributionType))).Returns(_mappedAdvancedParameter);
+         A.CallTo(() => _advancedParameterFactory.Create(_parameter, _snapshot.DistributionType)).Returns(_mappedAdvancedParameter);
       }
 
       protected override async Task Because()
@@ -166,7 +166,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _advancedParameterContainer.AllParameters(_entityPathResolver)).Returns(_pathCache);
          _mappedAdvancedParameter = new AdvancedParameter {DistributedParameter = DomainHelperForSpecs.NormalDistributedParameter()};
-         A.CallTo(() => _advancedParameterFactory.Create(_parameter, DistributionTypes.ById(_snapshot.DistributionType))).Returns(_mappedAdvancedParameter);
+         A.CallTo(() => _advancedParameterFactory.Create(_parameter, _snapshot.DistributionType)).Returns(_mappedAdvancedParameter);
       }
 
       protected override async Task Because()

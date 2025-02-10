@@ -6,6 +6,7 @@ using PKSim.Presentation.DTO.Individuals;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Views.Individuals;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Presentation.Presenters.Individuals
 {
@@ -123,6 +124,7 @@ namespace PKSim.Presentation.Presenters.Individuals
       {
          _protein = protein;
          _proteinDTO = _individualProteinMapper.MapFrom(protein, SimulationSubject);
+         OntogenyVisible = SimulationSubject?.IsAgeDependent ?? false;
          rebind();
          _moleculePropertiesPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());
          _expressionLocalizationPresenter.Edit(protein, SimulationSubject.DowncastTo<TSimulationSubject>());

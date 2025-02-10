@@ -8,6 +8,5 @@ namespace PKSim.Presentation.Views.ExpressionProfiles
    {
       void BindTo(ExpressionProfileDTO expressionProfileDTO);
       void AddExpressionView(IView view);
-      void DisableSettings();
    }
 }

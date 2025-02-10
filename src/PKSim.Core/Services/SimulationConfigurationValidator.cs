@@ -76,7 +76,7 @@ namespace PKSim.Core.Services
          var tableFormula = formulaParameter?.Formula as TableFormula;
 
          //at least one point in this formulation
-         if(tableFormula!=null && tableFormula.AllPoints().Any()) 
+         if(tableFormula!=null && tableFormula.AllPoints.Any()) 
             return;
 
          throw new InvalidSimulationConfigurationException(PKSimConstants.Error.TableFormulationRequiresAtLeastOnePoint(tableFormulation.Name));

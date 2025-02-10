@@ -8,13 +8,14 @@ using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public abstract class CompoundProcessContextMenu<TCompoundProcess> : ContextMenu<TCompoundProcess, ICompoundProcessesPresenter> where TCompoundProcess : PKSim.Core.Model.CompoundProcess
    {
-      protected CompoundProcessContextMenu(TCompoundProcess compoundProcess, ICompoundProcessesPresenter presenter)
-         : base(compoundProcess, presenter)
+      protected CompoundProcessContextMenu(TCompoundProcess compoundProcess, ICompoundProcessesPresenter presenter, IContainer container)
+         : base(compoundProcess, presenter, container)
       {
       }
 

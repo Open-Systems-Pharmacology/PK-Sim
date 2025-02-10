@@ -1,32 +1,33 @@
 ﻿using OSPSuite.BDDHelper;
-using FakeItEasy;
-using PKSim.Presentation.DTO;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
+using PKSim.Presentation.DTO;
 
 namespace PKSim.Presentation
 {
    public abstract class concern_for_SimulationReactionDiagramDTO : ContextSpecification<SimulationReactionDiagramDTO>
    {
-      protected IReactionBuildingBlock _reactionBuildingBlock;
+      protected ReactionBuildingBlock _reactionBuildingBlock;
+      protected ReactionBuilder _reaction1;
 
       protected override void Context()
       {
-         _reactionBuildingBlock = A.Fake<IReactionBuildingBlock>();
+         _reaction1 = new ReactionBuilder();
+         _reactionBuildingBlock = new ReactionBuildingBlock
+         {
+            _reaction1
+         };
+
          sut = new SimulationReactionDiagramDTO {ReactionBuildingBlock = _reactionBuildingBlock};
       }
    }
 
    public class iterating_builders_from_the_building_block_with_diagram : concern_for_SimulationReactionDiagramDTO
    {
-      protected override void Because()
-      {
-         sut.GetEnumerator();
-      }
-
       [Observation]
-      public void Should_have_called_enumerator_from_base_building_block()
+      public void should_return_the_reaction_from_the_underlying_building_block()
       {
-         A.CallTo(() => _reactionBuildingBlock.GetEnumerator()).MustHaveHappened();
+         sut.ShouldOnlyContain(_reaction1);
       }
    }
 }

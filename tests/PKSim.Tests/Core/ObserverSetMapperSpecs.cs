@@ -15,7 +15,7 @@ namespace PKSim.Core
       protected ObserverMapper _observerMapper;
       protected IObserverSetFactory _observerSetFactory;
       protected ObserverSet _observerSet;
-      private IObserverBuilder _observer;
+      private ObserverBuilder _observer;
       protected Observer _observerSnapshot;
 
       protected override Task Context()
@@ -60,7 +60,7 @@ namespace PKSim.Core
    {
       private Snapshots.ObserverSet _snapshot;
       private ObserverSet _newObserverSet;
-      private IObserverBuilder _newObserverBuilder;
+      private ObserverBuilder _newObserverBuilder;
 
       protected override async Task Context()
       {

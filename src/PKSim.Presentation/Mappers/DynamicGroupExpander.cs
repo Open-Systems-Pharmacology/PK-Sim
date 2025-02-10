@@ -6,10 +6,10 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Extensions;
 using PKSim.Core.Services;
-using PKSim.Presentation.Nodes;
 using OSPSuite.Core.Domain;
 using OSPSuite.Assets;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Presentation.Mappers
 {
@@ -52,7 +52,7 @@ namespace PKSim.Presentation.Mappers
          var protocolSchemaItemContainer = parameter.ParentContainer;
          var applicationContainer = protocolSchemaItemContainer.ParentContainer;
          //for now, the applied molecule amount is assumed to be under the application container (
-         var firstMoleculeAmount = applicationContainer.GetAllChildren<IMoleculeAmount>().First();
+         var firstMoleculeAmount = applicationContainer.GetAllChildren<MoleculeAmount>().First();
          return firstMoleculeAmount.Name;
       }
 
@@ -96,7 +96,7 @@ namespace PKSim.Presentation.Mappers
             if (!keyAvailableFunc(parametersForNewGroup.Key))
                continue;
 
-            var compositeKey = CoreConstants.CompositeNameFor(subGroupName, parametersForNewGroup.Key);
+            var compositeKey = CompositeNameFor(subGroupName, parametersForNewGroup.Key);
             var parameterContainer = parametersForNewGroup.First().ParentContainer;
             var dynamicNode = _treeNodeFactory.CreateDynamicGroup(compositeKey, parametersForNewGroup.Key, parametersForNewGroup);
             dynamicNode.Icon = ApplicationIcons.IconByNameOrDefault(parameterContainer.Icon, node.Icon);
@@ -117,7 +117,7 @@ namespace PKSim.Presentation.Mappers
          if (process.ContainerType == ContainerType.Reaction || process.ParentContainer == null)
             return processName;
 
-         return CoreConstants.CompositeNameFor(process.ParentContainer.Name, processName);
+         return CompositeNameFor(process.ParentContainer.Name, processName);
       }
    }
 }

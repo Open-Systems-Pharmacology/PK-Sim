@@ -9,14 +9,10 @@ using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
-using PKSim.Presentation.Mappers;
-
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Mappers;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
 {
@@ -71,9 +67,9 @@ namespace PKSim.Core
          _pivotedDataTable.Columns.Count.ShouldBeEqualTo(5);
          _pivotedDataTable.Columns.Contains(_xAxis.Caption).ShouldBeTrue();
          _pivotedDataTable.Columns[_xAxis.Caption].DataType.ShouldBeEqualTo(typeof(float));
-         _pivotedDataTable.Columns.Contains(string.Format("Male.Liver({0})", CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption))).ShouldBeTrue();
+         _pivotedDataTable.Columns.Contains(string.Format("Male.Liver({0})", CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption))).ShouldBeTrue();
          _pivotedDataTable.Columns.Contains(string.Format("Male.Liver({0})", _yAxis.Caption)).ShouldBeTrue();
-         _pivotedDataTable.Columns.Contains(string.Format("Male.Liver({0})", CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption))).ShouldBeTrue();
+         _pivotedDataTable.Columns.Contains(string.Format("Male.Liver({0})", CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption))).ShouldBeTrue();
          _pivotedDataTable.Columns.Contains(string.Format("Female.Kidney({0})", _yAxis.Caption)).ShouldBeTrue();
       }
 
@@ -89,9 +85,9 @@ namespace PKSim.Core
          _dataTable.Columns.Count.ShouldBeEqualTo(6);
 
          _dataTable.Columns[_xAxis.Caption].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption)].ShouldNotBeNull();
          _dataTable.Columns[_yAxis.Caption].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption)].ShouldNotBeNull();
       }
 
       [Observation]
@@ -99,7 +95,7 @@ namespace PKSim.Core
       {
          _dataTable.Rows.Count.ShouldBeEqualTo(3);
          _dataTable.AllValuesInColumn<float>(_xAxis.Caption).ShouldOnlyContain(1, 2, 3);
-         var values = _dataTable.AllValuesInColumn<object>(CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption));
+         var values = _dataTable.AllValuesInColumn<object>(CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption));
          values[0].ShouldBeEqualTo(DBNull.Value);
          values[1].ShouldBeEqualTo(20);
          values[2].ShouldBeEqualTo(DBNull.Value);
@@ -109,7 +105,7 @@ namespace PKSim.Core
          values[1].ShouldBeEqualTo(DBNull.Value);
          values[2].ShouldBeEqualTo(40);
 
-         values = _dataTable.AllValuesInColumn<object>(CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption));
+         values = _dataTable.AllValuesInColumn<object>(CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption));
          values[0].ShouldBeEqualTo(DBNull.Value);
          values[1].ShouldBeEqualTo(30);
          values[2].ShouldBeEqualTo(DBNull.Value);
@@ -174,9 +170,9 @@ namespace PKSim.Core
          _dataTable.Columns.Count.ShouldBeEqualTo(6);
 
          _dataTable.Columns[_xAxis.Caption].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption)].ShouldNotBeNull();
          _dataTable.Columns[_yAxis.Caption].ShouldNotBeNull();
-         _dataTable.Columns[CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption)].ShouldNotBeNull();
+         _dataTable.Columns[CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption)].ShouldNotBeNull();
       }
 
       [Observation]
@@ -184,7 +180,7 @@ namespace PKSim.Core
       {
          _dataTable.Rows.Count.ShouldBeEqualTo(6);
          _dataTable.AllValuesInColumn<float>(_xAxis.Caption).ShouldOnlyContain(1, 2, 3, 1, 2, 3);
-         var values = _dataTable.AllValuesInColumn<object>(CoreConstants.CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption));
+         var values = _dataTable.AllValuesInColumn<object>(CompositeNameFor(PKSimConstants.UI.LowerValue, _yAxis.Caption));
          values[0].ShouldBeEqualTo(DBNull.Value);
          values[1].ShouldBeEqualTo(20);
          values[2].ShouldBeEqualTo(10);
@@ -200,7 +196,7 @@ namespace PKSim.Core
          values[4].ShouldBeEqualTo(30);
          values[5].ShouldBeEqualTo(40);
 
-         values = _dataTable.AllValuesInColumn<object>(CoreConstants.CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption));
+         values = _dataTable.AllValuesInColumn<object>(CompositeNameFor(PKSimConstants.UI.UpperValue, _yAxis.Caption));
          values[0].ShouldBeEqualTo(DBNull.Value);
          values[1].ShouldBeEqualTo(30);
          values[2].ShouldBeEqualTo(10);

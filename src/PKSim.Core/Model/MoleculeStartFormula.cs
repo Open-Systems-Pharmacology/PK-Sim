@@ -10,7 +10,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Database path to the molecule, e.g. "ORGANISM\Liver\Plasma\DRUG"
       /// </summary>
-      IObjectPath MoleculePath { get; }
+      ObjectPath MoleculePath { get; }
 
       /// <summary>
       ///    Calculation method and rate for given formula
@@ -20,13 +20,13 @@ namespace PKSim.Core.Model
 
    public class MoleculeStartFormula : IMoleculeStartFormula
    {
-      public MoleculeStartFormula(IObjectPath moleculePath, string calculationMethod, string rate)
+      public MoleculeStartFormula(ObjectPath moleculePath, string calculationMethod, string rate)
       {
          MoleculePath = moleculePath;
          RateKey = new RateKey(calculationMethod, rate);
       }
 
-      public IObjectPath MoleculePath { get; private set; }
+      public ObjectPath MoleculePath { get; private set; }
       public RateKey RateKey { get; private set; }
    }
 }

@@ -42,8 +42,11 @@ namespace PKSim.Infrastructure
       private readonly ISimulationModelCreator _simulationModelCreator;
       private readonly IRegistrationTask _registrationTask;
 
-      public SimulationConstructor(ISimulationFactory simulationFactory, ISimulationBuildingBlockUpdater buildingBlockUpdater,
-         ISimulationModelCreator simulationModelCreator, IRegistrationTask registrationTask)
+      public SimulationConstructor(
+         ISimulationFactory simulationFactory,
+         ISimulationBuildingBlockUpdater buildingBlockUpdater,
+         ISimulationModelCreator simulationModelCreator,
+         IRegistrationTask registrationTask)
       {
          _simulationFactory = simulationFactory;
          _buildingBlockUpdater = buildingBlockUpdater;

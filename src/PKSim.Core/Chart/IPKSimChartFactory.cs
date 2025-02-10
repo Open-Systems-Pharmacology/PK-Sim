@@ -8,6 +8,6 @@ namespace PKSim.Core.Chart
    {
       ChartWithObservedData Create(Type chartType);
       TChartType CreateChartFor<TChartType>(IndividualSimulation individualSimulation) where TChartType : ChartWithObservedData;
-      ISimulationComparison CreateSummaryChart();
+      IndividualSimulationComparison CreateIndividualSimulationComparison();
    }
 }

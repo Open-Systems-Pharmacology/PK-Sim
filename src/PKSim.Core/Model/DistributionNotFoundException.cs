@@ -1,5 +1,6 @@
 using System;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using PKSim.Assets;
 
 namespace PKSim.Core.Model
@@ -12,7 +13,7 @@ namespace PKSim.Core.Model
       }
 
       public DistributionNotFoundException(IDistributionMetaData distributionMetaData) :
-         base(PKSimConstants.Error.DistributionUnknown(distributionMetaData.Distribution.Id))
+         base(PKSimConstants.Error.DistributionUnknown(distributionMetaData.Distribution.ToString()))
       {
       }
    }

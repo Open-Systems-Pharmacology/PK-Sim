@@ -6,7 +6,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -18,21 +17,19 @@ namespace PKSim.Presentation.UICommands
 {
    public class GeneratePKMLTemplatesCommand : IUICommand
    {
-      private readonly IBuildConfigurationTask _buildConfigurationTask;
+      private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly IPKMLPersistor _pkmlPersistor;
       private readonly IDialogCreator _dialogCreator;
       private readonly IHeavyWorkManager _heavyWorkManager;
-      private readonly IMoBiExportTask _moBiExportTask;
       private readonly ISnapshotObjectCreator _snapshotObjectCreator;
 
-      public GeneratePKMLTemplatesCommand(IBuildConfigurationTask buildConfigurationTask, IPKMLPersistor pkmlPersistor, IDialogCreator dialogCreator,
-         IHeavyWorkManager heavyWorkManager, IMoBiExportTask moBiExportTask, ISnapshotObjectCreator snapshotObjectCreator)
+      public GeneratePKMLTemplatesCommand(ISimulationConfigurationTask simulationConfigurationTask, IPKMLPersistor pkmlPersistor, IDialogCreator dialogCreator,
+         IHeavyWorkManager heavyWorkManager, ISnapshotObjectCreator snapshotObjectCreator)
       {
-         _buildConfigurationTask = buildConfigurationTask;
+         _simulationConfigurationTask = simulationConfigurationTask;
          _pkmlPersistor = pkmlPersistor;
          _dialogCreator = dialogCreator;
          _heavyWorkManager = heavyWorkManager;
-         _moBiExportTask = moBiExportTask;
          _snapshotObjectCreator = snapshotObjectCreator;
       }
 
@@ -74,7 +71,7 @@ namespace PKSim.Presentation.UICommands
          snapshotConfiguration.Protocols = new[] {intravenousBolusMg};
          snapshotConfiguration.ModelName = CoreConstants.Model.FOUR_COMP;
          var fourCompIvBolusMg = await configurationFrom(snapshotConfiguration);
-
+         
 
          twoPore.SpatialStructure.Name = "Human 2 Pores";
          twoPore.PassiveTransports.Name = "2 Pores Passive Transports";
@@ -95,8 +92,6 @@ namespace PKSim.Presentation.UICommands
          defaultCompound.Parameter(CoreConstants.Parameters.FRACTION_UNBOUND_PLASMA_REFERENCE_VALUE).Value = double.NaN;
          defaultCompound.Parameter(CoreConstants.Parameters.SOLUBILITY_AT_REFERENCE_PH).Value = double.NaN;
 
-         _moBiExportTask.UpdateObserverForAllFlag(fourCompIvBolusMgPerKg.Observers);
-
          var buildingBlocks = new IBuildingBlock[]
          {
             twoPore.SpatialStructure,
@@ -112,11 +107,12 @@ namespace PKSim.Presentation.UICommands
          buildingBlocks.Each(bb => saveToPKML(bb, exportFolder));
       }
 
-      private async Task<IBuildConfiguration> configurationFrom(SimulationConstruction simulationConstruction)
+      private async Task<Module> configurationFrom(SimulationConstruction simulationConstruction)
       {
          var simulation = await _snapshotObjectCreator.SimulationFor(simulationConstruction);
 
-         return _buildConfigurationTask.CreateFor(simulation, shouldValidate: false, createAgingDataInSimulation: false);
+         var simulationConfiguration= _simulationConfigurationTask.CreateFor(simulation, shouldValidate: false, createAgingDataInSimulation: false);
+         return simulationConfiguration.ModuleConfigurations.Select(x => x.Module).First();
       }
 
       private void saveToPKML(IBuildingBlock buildingBlock, string folder)

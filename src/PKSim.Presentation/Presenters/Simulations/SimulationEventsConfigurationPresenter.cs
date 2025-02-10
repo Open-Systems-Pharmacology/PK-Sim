@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
@@ -94,7 +95,8 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public async Task LoadEventAsync(EventMappingDTO eventMappingDTO)
       {
-         updateEventInMapping(eventMappingDTO, await _eventTask.LoadSingleFromTemplateAsync());
+         var eventTemplate = await _eventTask.SecureAwait(x => x.LoadSingleFromTemplateAsync());
+         updateEventInMapping(eventMappingDTO, eventTemplate);
       }
 
       public void CreateEventFor(EventMappingDTO eventMappingDTO)

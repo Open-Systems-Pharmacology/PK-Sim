@@ -10,7 +10,6 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -450,7 +449,7 @@ namespace PKSim.Core.Services
          if (distributedTableFormula == null)
             return new PKSimEmptyCommand();
 
-         if (distributedParameter.Formula.DistributionType() == DistributionTypes.Discrete)
+         if (distributedParameter.Formula.DistributionType == DistributionType.Discrete)
          {
             if (ValueComparer.AreValuesEqual(distributedParameter.Value, tableParameter.Value, CoreConstants.DOUBLE_RELATIVE_EPSILON))
                return new PKSimEmptyCommand();

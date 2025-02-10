@@ -59,7 +59,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
+            Name = Constants.Parameters.REL_EXP
          };
 
 
@@ -92,7 +92,7 @@ namespace PKSim.Core
             BuildingBlockType = PKSimBuildingBlockType.Individual,
             Formula = new ConstantFormula(0.0),
             GroupName = CoreConstants.Groups.RELATIVE_EXPRESSION,
-            Name = CoreConstants.Parameters.REL_EXP
+            Name = Constants.Parameters.REL_EXP
          };
 
 
@@ -376,7 +376,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _parameter.Name = CoreConstants.Parameters.REL_EXP;
+         _parameter.Name = Constants.Parameters.REL_EXP;
          _parameter.Value = 10;                                 //in L
          _parameter.DisplayUnit = _volumeDimension.DefaultUnit; //L
          _unitToSet = _volumeDimension.Unit("mL");

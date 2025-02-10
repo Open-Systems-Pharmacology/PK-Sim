@@ -67,10 +67,10 @@ namespace PKSim.Core.Snapshots.Mappers
          var dataInfo = await _dataInfoMapper.MapToModel(snapshot.DataInfo, snapshotContext);
          var dimension = dimensionFrom(snapshot);
          var dataColumn = dataInfo.Origin == ColumnOrigins.BaseGrid ? new BaseGrid(snapshot.Name, dimension) : new ModelDataColumn(snapshot.Name, dimension, dataRepository.BaseGrid);
+         //this needs to be set after DATA Info to be sure that we are using the value from the snapshot
+         dataColumn.DataInfo = dataInfo;
          dataColumn.DisplayUnit = displayUnitFor(dimension, snapshot.Unit);
          dataColumn.Values = valuesInBaseUnits(dataColumn, snapshot.Values);
-
-         dataColumn.DataInfo = dataInfo;
          dataColumn.QuantityInfo = await _quantityInfoMapper.MapToModel(snapshot.QuantityInfo, snapshotContext);
 
          var relatedColumns = await this.MapToModels(snapshot.RelatedColumns, snapshotContext);

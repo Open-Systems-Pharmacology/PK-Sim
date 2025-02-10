@@ -6,6 +6,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Infrastructure.Import.Services;
@@ -96,7 +97,7 @@ namespace PKSim.Core
          _allParameters.Add("P2", new PKSimParameter().WithName("P2"));
          _allCreateIndividualParameters.Add("P1", _allParameters.FindByName("P1"));
          _advancedParameter = new AdvancedParameter();
-         A.CallTo(() => _advancedParameterFactory.Create(_allParameters.FindByName("P2"), DistributionTypes.Unknown)).Returns(_advancedParameter);
+         A.CallTo(() => _advancedParameterFactory.Create(_allParameters.FindByName("P2"), DistributionType.Unknown)).Returns(_advancedParameter);
          A.CallTo(() => _createdPopulation.IndividualValuesCache.AllParameterPaths()).Returns(_allImportedParameters.ToArray());
       }
 

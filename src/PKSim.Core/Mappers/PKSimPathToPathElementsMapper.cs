@@ -11,8 +11,8 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
+using static OSPSuite.Core.Domain.Constants;
 using ContainerExtensions = PKSim.Core.Model.ContainerExtensions;
-using ContainerType = OSPSuite.Core.Domain.ContainerType;
 
 namespace PKSim.Core.Mappers
 {
@@ -26,7 +26,7 @@ namespace PKSim.Core.Mappers
       {
          _representationInfoRepository = representationInfoRepository;
          //Format is (Fraction of dose-DRUG_NAME)-Liver-COMPARTMENT
-         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{CoreConstants.Observer.FRACTION_OF_DOSE}{CoreConstants.COMPOSITE_SEPARATOR}\w*){CoreConstants.COMPOSITE_SEPARATOR}{CoreConstants.Organ.LIVER}{CoreConstants.COMPOSITE_SEPARATOR}\w*";
+         var fractionOfDoseLiverObserverPattern = $@"(?<{OBSERVER_NAME}>{CoreConstants.Observer.FRACTION_OF_DOSE}{COMPOSITE_SEPARATOR}\w*){COMPOSITE_SEPARATOR}{CoreConstants.Organ.LIVER}{COMPOSITE_SEPARATOR}\w*";
          _fractionOfDoseLiverRegex = new Regex(fractionOfDoseLiverObserverPattern);
       }
 
@@ -61,13 +61,16 @@ namespace PKSim.Core.Mappers
 
       protected override PathElements CreatePathElementsFrom(IReadOnlyList<IContainer> containers, string name)
       {
+         IQuantity quantity = null;
          var pathElements = base.CreatePathElementsFrom(containers, name);
          var lastContainer = containers.LastOrDefault();
 
          if (lastContainer == null)
             return pathElements;
 
-         var quantity = lastContainer.EntityAt<IQuantity>(name);
+         if (!string.IsNullOrEmpty(name))
+            quantity = lastContainer.EntityAt<IQuantity>(name);
+
          if (quantity == null)
             return pathElements;
 
@@ -128,7 +131,7 @@ namespace PKSim.Core.Mappers
          if (quantity.HasAncestorNamed(CoreConstants.Organ.GALLBLADDER))
             adjustDisplayPathForGallBladder(pathElements, quantity);
 
-         else if (quantity.HasAncestorNamed(CoreConstants.Organ.LUMEN))
+         else if (quantity.HasAncestorNamed(Organ.LUMEN))
             adjustDisplayPathForLumen(pathElements, quantity);
 
          else if (quantity.IsNamed(CoreConstants.Observer.PLASMA_UNBOUND))
@@ -141,8 +144,8 @@ namespace PKSim.Core.Mappers
          else if (!pathElements.Contains(PathElementId.BottomCompartment))
             adjustDisplayPathForContainerObserver(pathElements, quantity);
 
-         else if (quantity.IsAnImplementationOf<IObserver>())
-            adjustDisplayNameForMoleculeObserver(pathElements, quantity.DowncastTo<IObserver>());
+         else if (quantity.IsAnImplementationOf<Observer>())
+            adjustDisplayNameForMoleculeObserver(pathElements, quantity.DowncastTo<Observer>());
       }
 
       private void adjustDisplayPathForTotalFractionOfDose(PathElements pathElements, IQuantity quantity)
@@ -151,7 +154,7 @@ namespace PKSim.Core.Mappers
          pathElements[PathElementId.TopContainer] = new PathElement();
       }
 
-      private void adjustDisplayNameForMoleculeObserver(PathElements pathElements, IObserver observer)
+      private void adjustDisplayNameForMoleculeObserver(PathElements pathElements, Observer observer)
       {
          //For all fraction observers, the name should remain as is except for liver zone observers that need to be rename explicitly
          if (observerIsFractionOfDoseLiver(observer))
@@ -162,13 +165,13 @@ namespace PKSim.Core.Mappers
             updateNameElementToQuantityDimensionName(pathElements, observer);
       }
 
-      private void updateNameElementForFractionOfDose(PathElements pathElements, IObserver observer)
+      private void updateNameElementForFractionOfDose(PathElements pathElements, Observer observer)
       {
          var observerName = _fractionOfDoseLiverRegex.Matches(observer.Name)[0].Groups[OBSERVER_NAME].Value;
          pathElements[PathElementId.Name] = CreatePathElement(observerName);
       }
 
-      private bool observerIsFractionOfDoseLiver(IObserver observer) => _fractionOfDoseLiverRegex.IsMatch(observer.Name);
+      private bool observerIsFractionOfDoseLiver(Observer observer) => _fractionOfDoseLiverRegex.IsMatch(observer.Name);
 
       private void adjustDisplayPathForNeighborhood(PathElements pathElements, IQuantity quantity)
       {
@@ -214,7 +217,7 @@ namespace PKSim.Core.Mappers
          if (quantity.Dimension.Name == CoreConstants.Dimension.Fraction)
             return CoreConstants.Output.FractionDose;
 
-         if (quantity.Dimension.Name.IsOneOf(Constants.Dimension.MASS_AMOUNT, Constants.Dimension.MOLAR_AMOUNT))
+         if (quantity.Dimension.Name.IsOneOf(Dimension.MASS_AMOUNT, Dimension.MOLAR_AMOUNT))
             return CoreConstants.Output.Amount;
 
          if (quantityIsConcentration(quantity))
@@ -226,7 +229,7 @@ namespace PKSim.Core.Mappers
       private bool quantityIsConcentration(IQuantity quantity)
       {
          return quantity.Dimension != null &&
-                quantity.Dimension.Name.IsOneOf(CoreConstants.Dimension.MASS_CONCENTRATION, Constants.Dimension.MOLAR_CONCENTRATION);
+                quantity.Dimension.Name.IsOneOf(CoreConstants.Dimension.MASS_CONCENTRATION, Dimension.MOLAR_CONCENTRATION);
       }
    }
 }

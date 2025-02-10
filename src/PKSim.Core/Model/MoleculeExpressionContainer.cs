@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 
 namespace PKSim.Core.Model
 {
@@ -16,7 +17,7 @@ namespace PKSim.Core.Model
       /// <summary>
       ///    Parameter representing the relative expression value for this container
       /// </summary>
-      public IParameter RelativeExpressionParameter => this.Parameter(CoreConstants.Parameters.REL_EXP);
+      public IParameter RelativeExpressionParameter => this.Parameter(REL_EXP);
 
 
       /// <summary>

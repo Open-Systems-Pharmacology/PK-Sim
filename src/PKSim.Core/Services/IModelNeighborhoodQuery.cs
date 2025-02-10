@@ -12,7 +12,6 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="individualNeighborhoods">List of neighborhood already defined in the individual</param>
       /// <param name="modelProperties">Model Properties defining the criteria with which the neighborhoods should be retrieved</param>
-      IEnumerable<INeighborhoodBuilder> NeighborhoodsFor(IContainer individualNeighborhoods,
-                                                         ModelProperties modelProperties);
+      IEnumerable<NeighborhoodBuilder> NeighborhoodsFor(IContainer individualNeighborhoods, ModelProperties modelProperties);
    }
 }

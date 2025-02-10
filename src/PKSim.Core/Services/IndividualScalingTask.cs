@@ -6,6 +6,7 @@ using PKSim.Core.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Services
 {
@@ -68,7 +69,7 @@ namespace PKSim.Core.Services
          if (!parameter.Visible)
             return false;
 
-         if (parameter.IsExpressionOrOntogenyFactor() || parameter.NameIsOneOf(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN)) 
+         if (parameter.IsExpressionOrOntogenyFactor() || parameter.NameIsOneOf(AllPlasmaProteinOntogenyFactors.Union(AllPlasmaProteinOntogenyFactorTables))) 
             return false;
 
          //other conditions

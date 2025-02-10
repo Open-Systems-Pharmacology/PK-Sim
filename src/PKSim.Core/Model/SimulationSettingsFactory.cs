@@ -5,7 +5,7 @@ namespace PKSim.Core.Model
 {
    public interface ISimulationSettingsFactory
    {
-      ISimulationSettings CreateFor(Simulation simulation);
+      SimulationSettings CreateFor(Simulation simulation);
    }
 
    public class SimulationSettingsFactory : ISimulationSettingsFactory
@@ -21,13 +21,13 @@ namespace PKSim.Core.Model
          _solverSettingsFactory = solverSettingsFactory;
       }
 
-      public ISimulationSettings CreateFor(Simulation simulation)
+      public SimulationSettings CreateFor(Simulation simulation)
       {
          //was already defined..nothing to do
-         if (simulation.SimulationSettings != null)
-            return simulation.SimulationSettings;
+         if (simulation.Settings != null)
+            return simulation.Settings;
 
-         var settings = _objectBaseFactory.Create<ISimulationSettings>();
+         var settings = _objectBaseFactory.Create<SimulationSettings>();
          settings.OutputSchema = _outputSchemaFactory.CreateFor(simulation);
          settings.Solver = _solverSettingsFactory.CreateDefault();
          return settings;

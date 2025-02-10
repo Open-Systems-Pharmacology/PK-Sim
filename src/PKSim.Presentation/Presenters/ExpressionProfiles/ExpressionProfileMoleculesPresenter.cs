@@ -16,17 +16,11 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
 {
    public interface IExpressionProfileMoleculesPresenter : IExpressionProfileItemPresenter
    {
-      void SpeciesChanged();
-      /// <summary>
-      /// Are we in "Edit" mode ore "Creation" mode. 
-      /// </summary>
-      bool IsEditMode { get; set; }
       void LoadExpressionFromDatabaseQuery();
    }
 
    public class ExpressionProfileMoleculesPresenter : AbstractSubPresenter<IExpressionProfileMoleculesView, IExpressionProfileMoleculesPresenter>, IExpressionProfileMoleculesPresenter
    {
-      private readonly IExpressionProfileFactory _expressionProfileFactory;
       private readonly IApplicationController _applicationController;
       private readonly IExpressionProfileToExpressionProfileDTOMapper _expressionProfileDTOMapper;
       private readonly IExpressionProfileProteinDatabaseTask _expressionProfileProteinDatabaseTask;
@@ -35,19 +29,15 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
       private IIndividualMoleculeExpressionsPresenter _moleculeExpressionsPresenter;
       private ExpressionProfileDTO _expressionProfileDTO;
       private ExpressionProfile _expressionProfile;
-      private bool _isEditMode = false;
-
 
       public ExpressionProfileMoleculesPresenter(
          IExpressionProfileMoleculesView view,
-         IExpressionProfileFactory expressionProfileFactory,
          IApplicationController applicationController,
          IExpressionProfileToExpressionProfileDTOMapper expressionProfileDTOMapper,
          IExpressionProfileProteinDatabaseTask expressionProfileProteinDatabaseTask,
          IExpressionProfileUpdater expressionProfileUpdater,
          IMoleculeParameterTask moleculeParameterTask) : base(view)
       {
-         _expressionProfileFactory = expressionProfileFactory;
          _applicationController = applicationController;
          _expressionProfileDTOMapper = expressionProfileDTOMapper;
          _expressionProfileProteinDatabaseTask = expressionProfileProteinDatabaseTask;
@@ -63,32 +53,6 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          activateMoleculeExpressionPresenter();
       }
 
-      public void Save()
-      {
-         _expressionProfile.Category = _expressionProfileDTO.Category;
-         _expressionProfileUpdater.UpdateMoleculeName(_expressionProfile, _expressionProfileDTO.MoleculeName);
-      }
-
-      public void SpeciesChanged()
-      {
-         _expressionProfileFactory.UpdateSpecies(_expressionProfile, _expressionProfileDTO.Species);
-         refreshExpression();
-      }
-
-      public bool IsEditMode
-      {
-         get => _isEditMode;
-         set
-         {
-            _isEditMode = value;
-            //Edit vs Create. We can only change naming settings when CREATING an Expression Profile
-            if(_isEditMode)
-               _view.DisableSettings();
-
-         }
-      }
-
-      
       public void LoadExpressionFromDatabaseQuery()
       {
          if (!_expressionProfileProteinDatabaseTask.CanQueryProteinExpressionsFor(_expressionProfile))
@@ -98,11 +62,8 @@ namespace PKSim.Presentation.Presenters.ExpressionProfiles
          if (queryResults == null)
             return;
 
-         if (!IsEditMode)
-         {
-            _expressionProfileDTO.MoleculeName = queryResults.ProteinName;
-            _moleculeParameterTask.SetDefaultFor(_expressionProfile, _expressionProfileDTO.MoleculeName);
-         }
+         _expressionProfileDTO.MoleculeName = queryResults.ProteinName;
+         _moleculeParameterTask.SetDefaultFor(_expressionProfile, _expressionProfileDTO.MoleculeName);
 
          AddCommand(_expressionProfileUpdater.UpdateExpressionFromQuery(_expressionProfile, queryResults));
 

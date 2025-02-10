@@ -31,16 +31,13 @@ namespace PKSim.Core.Services
    public class DataRepositoryFromResultsCreator : IDataRepositoryFromResultsCreator
    {
       private readonly IDimensionRepository _dimensionRepository;
-      private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDataRepositoryTask _dataRepositoryTask;
 
       public DataRepositoryFromResultsCreator(
          IDimensionRepository dimensionRepository,
-         IObjectPathFactory objectPathFactory,
          IDataRepositoryTask dataRepositoryTask)
       {
          _dimensionRepository = dimensionRepository;
-         _objectPathFactory = objectPathFactory;
          _dataRepositoryTask = dataRepositoryTask;
       }
 
@@ -87,11 +84,11 @@ namespace PKSim.Core.Services
       /// <param name="simulation"></param>
       /// <param name="path"></param>
       /// <returns></returns>
-      private Tuple<IQuantity, IObjectPath> quantityAndPathFrom(Simulation simulation, IEnumerable<string> path)
+      private Tuple<IQuantity, ObjectPath> quantityAndPathFrom(Simulation simulation, IReadOnlyList<string> path)
       {
-         var objectPath = _objectPathFactory.CreateObjectPathFrom(path).AndAddAtFront(simulation.Name);
+         var objectPath = path.ToObjectPath().AndAddAtFront(simulation.Name);
          var quantity = objectPath.TryResolve<IQuantity>(simulation.Model.Root);
-         return new Tuple<IQuantity, IObjectPath>(quantity, objectPath);
+         return new Tuple<IQuantity, ObjectPath>(quantity, objectPath);
       }
 
       private DataRepository createDataRepositoryWithBaseGrid(Simulation simulation)

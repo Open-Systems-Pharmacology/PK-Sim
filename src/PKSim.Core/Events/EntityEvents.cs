@@ -122,11 +122,11 @@ namespace PKSim.Core.Events
    {
    }
 
-   public class RemoveObserverFromObserverSetEvent : RemoveEntityEvent<IObserverBuilder, ObserverSet>
+   public class RemoveObserverFromObserverSetEvent : RemoveEntityEvent<ObserverBuilder, ObserverSet>
    {
    }
 
-   public class AddObserverToObserverSetEvent : AddEntityEvent<IObserverBuilder, ObserverSet>
+   public class AddObserverToObserverSetEvent : AddEntityEvent<ObserverBuilder, ObserverSet>
    {
    }
 

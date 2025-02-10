@@ -54,7 +54,7 @@ namespace PKSim.Core.Services
          addToCache<Compartment>(PKSimConstants.ObjectTypes.Compartment);
          addToCache<Organ>(PKSimConstants.ObjectTypes.Organ);
          addToCache<Organism>(PKSimConstants.ObjectTypes.Organism);
-         addToCache<IMoleculeAmount>(PKSimConstants.ObjectTypes.Molecule);
+         addToCache<MoleculeAmount>(PKSimConstants.ObjectTypes.Molecule);
          addToCache<IndividualTransporter>(PKSimConstants.ObjectTypes.Transporter);
          addToCache<IndividualMolecule>(PKSimConstants.ObjectTypes.Molecule);
          addToCache<ISimulationSubject>(PKSimConstants.ObjectTypes.IndividualOrPopulation);
@@ -65,8 +65,8 @@ namespace PKSim.Core.Services
          addToCache<SpecificBindingPartialProcess>(PKSimConstants.UI.SpecificBindingProcesses);
          addToCache<InhibitionProcess>(PKSimConstants.ObjectTypes.InhibitionProcess);
          addToCache<InductionProcess>(PKSimConstants.ObjectTypes.InductionProcess);
-         addToCache<IEvent>(PKSimConstants.ObjectTypes.Event);
-         addToCache<IEventGroup>(PKSimConstants.ObjectTypes.Event);
+         addToCache<Event>(PKSimConstants.ObjectTypes.Event);
+         addToCache<EventGroup>(PKSimConstants.ObjectTypes.Event);
          addToCache<PopulationAnalysisGroupingField>(PKSimConstants.ObjectTypes.DerivedField);
          addToCache<PopulationAnalysisExpressionField>(PKSimConstants.ObjectTypes.ExpressionField);
          addToCache<PopulationAnalysisDerivedField>(PKSimConstants.ObjectTypes.DerivedField);
@@ -86,7 +86,7 @@ namespace PKSim.Core.Services
          addToCache<ScatterAnalysisChart>(PKSimConstants.UI.ScatterAnalysis);
          addToCache<RangeAnalysisChart>(PKSimConstants.UI.RangeAnalysis);
          addToCache<BoxWhiskerAnalysisChart>(PKSimConstants.UI.BoxWhiskerAnalysis);
-         addToCache<ISimulationSettings>(PKSimConstants.UI.SimulationSettings);
+         addToCache<SimulationSettings>(PKSimConstants.UI.SimulationSettings);
          addToCache<SimulationAnalysisWorkflow>(PKSimConstants.ObjectTypes.SimulationAnalysisWorkflow);
          addToCache<GenderRatio>(PKSimConstants.UI.GenderRatio);
          addToCache<ParameterRange>(PKSimConstants.ObjectTypes.Parameter);
@@ -105,7 +105,7 @@ namespace PKSim.Core.Services
          addToCache<SensitivityAnalysisPKParameterAnalysis>(Captions.SensitivityAnalysis.SensitivityAnalysisPKParameterAnalysis);
          addToCache<ParameterIdentification>(ObjectTypes.ParameterIdentification);
          addToCache<ObserverSet>(PKSimConstants.ObjectTypes.ObserverSet);
-         addToCache<IObserverBuilder>(ObjectTypes.ObserverBuilder);
+         addToCache<ObserverBuilder>(ObjectTypes.ObserverBuilder);
          addToCache<ExpressionProfile>(PKSimConstants.ObjectTypes.ExpressionProfile);
          addToCache<DiseaseState>(PKSimConstants.ObjectTypes.DiseaseState);
       }

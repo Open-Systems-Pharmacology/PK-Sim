@@ -30,17 +30,17 @@ namespace PKSim.Core
    {
       private Simulation _simulation;
       private IModelCoreSimulation _coreSimulation;
-      private ISimulationSettings _cloneSettings;
+      private SimulationSettings _cloneSettings;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<Simulation>().WithName("MyName");
          _simulation.Model = A.Fake<IModel>();
-         _cloneSettings= A.Fake<ISimulationSettings>();
+         _cloneSettings= A.Fake<SimulationSettings>();
          A.CallTo(() => _idGenerator.NewId()).Returns("id");
 
-         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_simulation.SimulationSettings)).Returns(_cloneSettings);
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_simulation.Settings)).Returns(_cloneSettings);
       }
 
       protected override void Because()
@@ -69,7 +69,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_clone_the_simulation_settings()
       {
-         _coreSimulation.BuildConfiguration.SimulationSettings.ShouldBeEqualTo(_cloneSettings);
+         _coreSimulation.Configuration.SimulationSettings.ShouldBeEqualTo(_cloneSettings);
       }
    }
 }

@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Data;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using DevExpress.Data.PivotGrid;
 using DevExpress.XtraPivotGrid;
 using FakeItEasy;
-using OSPSuite.Core.Extensions;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Mappers;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
 
-
-namespace PKSim.UI.Tests
+namespace PKSim.UI
 {
    public abstract class concern_for_PivotGridCellsToDataTableMapper : ContextSpecification<PivotGridCellsToDataTableMapper>
    {

@@ -54,7 +54,7 @@ namespace PKSim.Core
          var kidney = _individual.EntityAt<IContainer>(Constants.ORGANISM, CoreConstants.Organ.KIDNEY);
          _parameterLiver = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.LIVER, "PLiver");
          _parameterKidney = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.KIDNEY, "PKidney");
-         _parameterKidneyRelExp = DomainHelperForSpecs.ConstantParameterWithValue().WithName(CoreConstants.Parameters.REL_EXP);
+         _parameterKidneyRelExp = DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.REL_EXP);
          _parameterKidneyRelExp.DefaultValue = 10;
          kidney.Add(_parameterKidneyRelExp);
 

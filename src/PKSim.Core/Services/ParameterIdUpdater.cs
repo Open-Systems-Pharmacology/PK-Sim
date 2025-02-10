@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
@@ -58,6 +57,13 @@ namespace PKSim.Core.Services
       void UpdateBuildingBlockId(IContainer container, IPKSimBuildingBlock buildingBlock);
 
       void UpdateSimulationId(Simulation simulation);
+
+      /// <summary>
+      ///    Find parameters by name in the <paramref name="sourceContainer" /> based on the
+      ///    <paramref name="parameterUsedByNamesForLookup" /> and
+      ///    set the IsDefault value to false. This is really useful when simulation parameters from building block parameters
+      /// </summary>
+      void ResetParameterIsDefaultState(IContainer sourceContainer, IEnumerable<IWithName> parameterUsedByNamesForLookup);
    }
 
    public class ParameterIdUpdater : IParameterIdUpdater
@@ -112,7 +118,7 @@ namespace PKSim.Core.Services
          foreach (var sourceParameterKeyValue in sourceParameters.KeyValues)
          {
             var targetParameter = targetParameters[sourceParameterKeyValue.Key];
-            if(targetParameter!=null)
+            if (targetParameter != null)
                UpdateParameterId(sourceParameterKeyValue.Value, targetParameter);
          }
       }
@@ -132,8 +138,13 @@ namespace PKSim.Core.Services
       {
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
 
-         //also need to update in all buildign blocks of the simulation
+         //also need to update in all building blocks of the simulation
          simulation.UsedBuildingBlocks.Each(bb => { bb.BuildingBlock.GetAllChildren<IParameter>().Each(p => p.Origin.SimulationId = simulation.Id); });
+      }
+
+      public void ResetParameterIsDefaultState(IContainer sourceContainer, IEnumerable<IWithName> parameterUsedByNamesForLookup)
+      {
+         parameterUsedByNamesForLookup.Select(x => sourceContainer.Parameter(x.Name)).Where(x => x != null).Each(x => x.IsDefault = true);
       }
    }
 }

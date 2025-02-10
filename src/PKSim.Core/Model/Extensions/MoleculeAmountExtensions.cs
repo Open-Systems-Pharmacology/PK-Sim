@@ -4,11 +4,9 @@ namespace PKSim.Core.Model.Extensions
 {
    public static class MoleculeAmountExtensions
    {
-      public static bool IsIndividualMolecule(this IMoleculeAmount moleculeAmount)
+      public static bool IsIndividualMolecule(this MoleculeAmount moleculeAmount)
       {
-         return moleculeAmount.QuantityType == QuantityType.Enzyme ||
-                moleculeAmount.QuantityType == QuantityType.Transporter ||
-                moleculeAmount.QuantityType == QuantityType.OtherProtein;
+         return moleculeAmount.QuantityType is QuantityType.Enzyme or QuantityType.Transporter or QuantityType.OtherProtein;
       }
    }
 }

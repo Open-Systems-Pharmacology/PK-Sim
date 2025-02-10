@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using static PKSim.Core.CoreConstants.Parameters;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ProjectConverter
 {
@@ -47,10 +47,10 @@ namespace PKSim.Infrastructure.ProjectConverter
             return $"{parameter}{NORM_SUFFIX}";
          }
 
-         public static readonly string REL_EXP_NORM = NormParameterFor(REL_EXP);
-         public static readonly string REL_EXP_BLOOD_CELLS_NORM = NormParameterFor(REL_EXP_BLOOD_CELLS);
-         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(REL_EXP_PLASMA);
-         public static readonly string REL_EXP_VASCULAR_ENDOTHELIUM_NORM = NormParameterFor(REL_EXP_VASCULAR_ENDOTHELIUM);
+         public static readonly string REL_EXP_NORM = NormParameterFor(Constants.Parameters.REL_EXP);
+         public static readonly string REL_EXP_BLOOD_CELLS_NORM = NormParameterFor(Constants.Parameters.REL_EXP_BLOOD_CELLS);
+         public static readonly string REL_EXP_PLASMA_NORM = NormParameterFor(Constants.Parameters.REL_EXP_PLASMA);
+         public static readonly string REL_EXP_VASCULAR_ENDOTHELIUM_NORM = NormParameterFor(Constants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM);
 
          public static IList<string> DistributedParametersWithOnlyOneSupportingPoint => new List<string>
          {
@@ -72,6 +72,9 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string PKSim = "Cellular partition coefficient method - PK-Sim Standard";
          public static readonly string BSA_Mosteller = "Body surface area - Mosteller";
          public static readonly string DynamicSumFormulas = "DynamicSumFormulas";
+         public static readonly string BMI = "BMI";
+         public static readonly string Individual_AgeDependent = "Individual_AgeDependent";
+         public static readonly string Individual_HeightDependent = "Individual_HeightDependent";
       }
 
       public static class Category

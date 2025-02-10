@@ -3,7 +3,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
@@ -27,7 +26,7 @@ namespace PKSim.Core
          var container = new Container();
          var oneParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
          var objectPathFactory = new ObjectPathFactoryForSpecs();
-         _parameterToReset = DomainHelperForSpecs.ConstantParameterWithValue(_originValue).WithId("tralala").WithDimension(_dimension);
+         _parameterToReset = DomainHelperForSpecs.ConstantParameterWithValue(_originValue).WithName("tralala").WithId("tralala").WithDimension(_dimension);
          _parameterToReset.Formula = new ExplicitFormula("10");
          container.Add(oneParameter);
          container.Add(_parameterToReset);
@@ -66,7 +65,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_reseted_the_parameter_value_to_its_original_value()
+      public void should_have_reset_the_parameter_value_to_its_original_value()
       {
          _parameterToReset.Value.ShouldBeEqualTo(_originValue);
       }
@@ -112,7 +111,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_reseted_the_parameter_value_to_its_original_value()
+      public void should_have_reset_the_parameter_value_to_its_original_value()
       {
          _parameterToReset.Value.ShouldBeEqualTo(_originValue);
       }

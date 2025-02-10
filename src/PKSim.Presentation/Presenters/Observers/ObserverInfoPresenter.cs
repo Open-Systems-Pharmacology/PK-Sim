@@ -7,7 +7,7 @@ namespace PKSim.Presentation.Presenters.Observers
 {
    public interface IObserverInfoPresenter : IPresenter<IObserverInfoView>
    {
-      void Edit(IObserverBuilder observer);
+      void Edit(ObserverBuilder observer);
    }
 
    public class ObserverInfoPresenter : AbstractPresenter<IObserverInfoView, IObserverInfoPresenter>, IObserverInfoPresenter
@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Observers
          _observerMapper = observerMapper;
       }
 
-      public void Edit(IObserverBuilder observer)
+      public void Edit(ObserverBuilder observer)
       {
          if (observer == null)
             _view.Clear();

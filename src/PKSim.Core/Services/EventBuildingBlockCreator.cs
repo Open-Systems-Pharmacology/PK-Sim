@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -17,7 +18,7 @@ namespace PKSim.Core.Services
       ///    return the event building block built based on the given protocol and the associated formulation.
       ///    Special simulation event such as eat,sport etc.. should be managed in this class as well
       /// </summary>
-      IEventGroupBuildingBlock CreateFor(Simulation simulation);
+      EventGroupBuildingBlock CreateFor(Simulation simulation);
    }
 
    public class EventBuildingBlockCreator : IEventBuildingBlockCreator
@@ -31,7 +32,8 @@ namespace PKSim.Core.Services
       private readonly IParameterSetUpdater _parameterSetUpdater;
       private readonly IEventGroupRepository _eventGroupRepository;
       private Simulation _simulation;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
+      private readonly IParameterDefaultStateUpdater _parameterDefaultStateUpdater;
 
       public EventBuildingBlockCreator(IObjectBaseFactory objectBaseFactory,
          IProtocolToSchemaItemsMapper schemaItemsMapper,
@@ -40,7 +42,8 @@ namespace PKSim.Core.Services
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IParameterIdUpdater parameterIdUpdater,
          IParameterSetUpdater parameterSetUpdater,
-         IEventGroupRepository eventGroupRepository)
+         IEventGroupRepository eventGroupRepository,
+         IParameterDefaultStateUpdater parameterDefaultStateUpdater)
       {
          _objectBaseFactory = objectBaseFactory;
          _schemaItemsMapper = schemaItemsMapper;
@@ -50,19 +53,22 @@ namespace PKSim.Core.Services
          _parameterIdUpdater = parameterIdUpdater;
          _parameterSetUpdater = parameterSetUpdater;
          _eventGroupRepository = eventGroupRepository;
+         _parameterDefaultStateUpdater = parameterDefaultStateUpdater;
       }
 
-      public IEventGroupBuildingBlock CreateFor(Simulation simulation)
+      public EventGroupBuildingBlock CreateFor(Simulation simulation)
       {
          try
          {
             _simulation = simulation;
-            _eventGroupBuildingBlock = _objectBaseFactory.Create<IEventGroupBuildingBlock>().WithName(simulation.Name);
+            _eventGroupBuildingBlock = _objectBaseFactory.Create<EventGroupBuildingBlock>().WithName(DefaultNames.EventBuildingBlock);
             _cloneManagerForBuildingBlock.FormulaCache = _eventGroupBuildingBlock.FormulaCache;
 
             createApplications(_simulation.CompoundPropertiesList);
 
             createNonApplicationEvents();
+
+            _parameterDefaultStateUpdater.UpdateDefaultFor(_eventGroupBuildingBlock);
 
             return _eventGroupBuildingBlock;
          }
@@ -79,7 +85,7 @@ namespace PKSim.Core.Services
          var eventBuildingBlockInfos = (from eventMapping in _simulation.EventProperties.EventMappings
                let usedBuildingBlock = _simulation.UsedBuildingBlockByTemplateId(eventMapping.TemplateEventId)
                let eventBuildingBlock = usedBuildingBlock.BuildingBlock.DowncastTo<PKSimEvent>()
-               select new {eventBuildingBlock.Id, eventBuildingBlock.TemplateName, eventBuildingBlock.Name})
+               select new { eventBuildingBlock.Id, eventBuildingBlock.TemplateName, eventBuildingBlock.Name })
             .Distinct();
 
          // create event groups for each used event-building block
@@ -128,39 +134,33 @@ namespace PKSim.Core.Services
 
       private void createApplications(IReadOnlyList<CompoundProperties> compoundPropertiesList)
       {
-         // create ApplicationSet-EventGroup
-         var applicationSet = _objectBaseFactory.Create<IEventGroupBuilder>()
-            .WithName(Constants.APPLICATIONS)
-            .WithIcon(Constants.APPLICATIONS);
-
-         applicationSet.SourceCriteria.Add(new MatchTagCondition(Constants.ROOT_CONTAINER_TAG));
-
-         compoundPropertiesList.Each(cp => addProtocol(applicationSet, cp));
-
-         _eventGroupBuildingBlock.Add(applicationSet);
+         compoundPropertiesList.Each(addProtocol);
       }
 
-      private void addProtocol(IEventGroupBuilder applicationSet, CompoundProperties compoundProperties)
+      private void addProtocol(CompoundProperties compoundProperties)
       {
          var protocol = compoundProperties.ProtocolProperties.Protocol;
          if (protocol == null)
             return;
 
-         var protocolEventGroup = _objectBaseFactory.Create<IEventGroupBuilder>()
-            .WithName(protocol.Name)
-            .WithParentContainer(applicationSet);
+         var eventGroup = _objectBaseFactory.Create<EventGroupBuilder>()
+            .WithName(protocol.Name);
+
+         eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
          _schemaItemsMapper.MapFrom(protocol).Each((schemaItem, index) =>
          {
             //+1 to start at 1 for the nomenclature
-            string applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";
-            addApplication(protocolEventGroup, schemaItem, applicationName, compoundProperties, protocol);
+            var applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";
+            addApplication(eventGroup, schemaItem, applicationName, compoundProperties, protocol);
          });
 
-         _parameterIdUpdater.UpdateBuildingBlockId(protocolEventGroup, protocol);
+         _parameterIdUpdater.UpdateBuildingBlockId(eventGroup, protocol);
+
+         _eventGroupBuildingBlock.Add(eventGroup);
       }
 
-      private void addApplication(IEventGroupBuilder protocolGroupBuilder, ISchemaItem schemaItem, string applicationName, CompoundProperties compoundProperties, Protocol protocol)
+      private void addApplication(EventGroupBuilder protocolGroupBuilder, ISchemaItem schemaItem, string applicationName, CompoundProperties compoundProperties, Protocol protocol)
       {
          IContainer applicationParentContainer;
          string formulationType;
@@ -175,13 +175,12 @@ namespace PKSim.Core.Services
 
             //check if used formulation container is already created and create if needed
             if (protocolGroupBuilder.ContainsName(formulation.Name))
-               applicationParentContainer = protocolGroupBuilder.GetSingleChildByName<IEventGroupBuilder>(formulation.Name);
+               applicationParentContainer = protocolGroupBuilder.GetSingleChildByName<EventGroupBuilder>(formulation.Name);
             else
                applicationParentContainer = createFormulationAsEventGroupBuilderFrom(formulation);
 
             protocolGroupBuilder.Add(applicationParentContainer);
             formulationType = formulation.FormulationType;
-
             formulationParameters = applicationParentContainer.GetChildren<IParameter>();
          }
          else
@@ -195,9 +194,9 @@ namespace PKSim.Core.Services
             _applicationFactory.CreateFor(schemaItem, formulationType, applicationName, compoundProperties.Compound.Name, formulationParameters, _eventGroupBuildingBlock.FormulaCache));
       }
 
-      private IEventGroupBuilder createFormulationAsEventGroupBuilderFrom(Formulation formulation)
+      private EventGroupBuilder createFormulationAsEventGroupBuilderFrom(Formulation formulation)
       {
-         var formulationBuilder = _objectBaseFactory.Create<IEventGroupBuilder>();
+         var formulationBuilder = _objectBaseFactory.Create<EventGroupBuilder>();
 
          formulationBuilder.UpdatePropertiesFrom(formulation, _cloneManagerForBuildingBlock);
          foreach (var parameter in formulation.AllParameters())
@@ -219,19 +218,19 @@ namespace PKSim.Core.Services
 
       private static void setParticleRadiusDistributionParametersToLockedAndInvisible(IContainer formulationBuilder)
       {
-         // first, set all parameteres responsible for particle size distribution to locked
+         // first, set all parameters responsible for particle size distribution to locked
          CoreConstants.Parameters.ParticleDistributionStructuralParameters.Each(paramName => formulationBuilder.Parameter(paramName).Editable = false);
 
          // second, set some parameters to not visible depending on settings
-         var parameterNamesToBeInvisible = new List<string> { Constants.Parameters.PARTICLE_DISPERSE_SYSTEM};
+         var parameterNamesToBeInvisible = new List<string> { Constants.Parameters.PARTICLE_DISPERSE_SYSTEM };
 
-         var numberOfBins = (int) formulationBuilder.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value;
+         var numberOfBins = (int)formulationBuilder.Parameter(Constants.Parameters.NUMBER_OF_BINS).Value;
 
          if (numberOfBins == 1)
             parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForMonodisperse);
          else
          {
-            var particlesDistributionType = (int) formulationBuilder.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
+            var particlesDistributionType = (int)formulationBuilder.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION).Value;
 
             if (particlesDistributionType == CoreConstants.Parameters.PARTICLE_SIZE_DISTRIBUTION_NORMAL)
                parameterNamesToBeInvisible.AddRange(CoreConstants.Parameters.HiddenParameterForPolydisperseNormal);

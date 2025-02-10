@@ -9,11 +9,11 @@ using PKSim.Assets;
 
 namespace PKSim.Presentation.DTO.Observers
 {
-   public class ObserverDTO : ValidatableDTO<IObserverBuilder>
+   public class ObserverDTO : ValidatableDTO<ObserverBuilder>
    {
-      public IObserverBuilder Observer { get; }
+      public ObserverBuilder Observer { get; }
 
-      public ObserverDTO(IObserverBuilder observer) : base(observer)
+      public ObserverDTO(ObserverBuilder observer) : base(observer)
       {
          Observer = observer;
       }

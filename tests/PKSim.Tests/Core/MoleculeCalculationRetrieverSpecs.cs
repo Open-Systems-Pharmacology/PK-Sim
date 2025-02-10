@@ -27,18 +27,18 @@ namespace PKSim.Core
    public class When_retrieving_the_molecule_calculation_methods_used_in_a_given_simulation : concern_for_MoleculeCalculationRetriever
    {
       private Simulation _simulation;
-      private IEnumerable<ICoreCalculationMethod> _result;
-      private List<ICoreCalculationMethod> _allCoreCalculationMethods;
-      private ICoreCalculationMethod _coreCM1;
-      private ICoreCalculationMethod _coreCM2;
-      private ICoreCalculationMethod _coreCM3;
-      private ICoreCalculationMethod _coreCM4;
+      private IEnumerable<CoreCalculationMethod> _result;
+      private List<CoreCalculationMethod> _allCoreCalculationMethods;
+      private CoreCalculationMethod _coreCM1;
+      private CoreCalculationMethod _coreCM2;
+      private CoreCalculationMethod _coreCM3;
+      private CoreCalculationMethod _coreCM4;
       private CoreCalculationMethod _coreCM5;
 
       protected override void Context()
       {
          base.Context();
-         _allCoreCalculationMethods=new List<ICoreCalculationMethod>();
+         _allCoreCalculationMethods=new List<CoreCalculationMethod>();
          _simulation = new IndividualSimulation {Properties = new SimulationProperties()};
          var compound1 = new Compound().WithName("C1");
          var compound2 = new Compound().WithName("C2");

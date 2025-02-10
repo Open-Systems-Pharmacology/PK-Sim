@@ -3,7 +3,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
 
@@ -87,7 +86,7 @@ namespace PKSim.Core.Services
          if (predefinedVariability == null)
             return new PKSimEmptyCommand();
 
-         var advancedParameter = _advancedParameterFactory.Create(parameter, predefinedVariability.Formula.DistributionType());
+         var advancedParameter = _advancedParameterFactory.Create(parameter, predefinedVariability.Formula.DistributionType);
          advancedParameter.DistributedParameter.MeanParameter.Value = usePredefinedMeanVariability ? predefinedVariability.MeanParameter.Value : parameter.Value;
          advancedParameter.DistributedParameter.DeviationParameter.Value = predefinedVariability.DeviationParameter.Value;
 

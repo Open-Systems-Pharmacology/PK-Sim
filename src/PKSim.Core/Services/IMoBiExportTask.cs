@@ -32,7 +32,5 @@ namespace PKSim.Core.Services
       /// Exports the simulation into the file with path <paramref name="fileName"/>
       /// </summary>
       Task ExportSimulationToPkmlFileAsync(Simulation simulation, string fileName);
-
-      void UpdateObserverForAllFlag(IObserverBuildingBlock observerBuildingBlock);
    }
 }

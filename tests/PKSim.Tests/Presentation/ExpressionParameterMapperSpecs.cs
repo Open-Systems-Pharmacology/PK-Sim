@@ -93,7 +93,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _parameter.Name = Parameters.REL_EXP;
+         _parameter.Name = Constants.Parameters.REL_EXP;
          _molecule.WithParentContainer(_compartment);
          A.CallTo(() => _expressionParameterTask.ExpressionGroupFor(_parameter)).Returns(Groups.ORGANS_AND_TISSUES);
       }
@@ -116,7 +116,7 @@ namespace PKSim.Presentation
          base.Context();
          //Ensure that the organ is in lumen
          _organ.Name = Organ.LUMEN;
-         _parameter.Name = Parameters.REL_EXP;
+         _parameter.Name = Constants.Parameters.REL_EXP;
          _molecule.WithParentContainer(_compartment);
          A.CallTo(() => _expressionParameterTask.ExpressionGroupFor(_parameter)).Returns(Groups.ORGANS_AND_TISSUES);
       }

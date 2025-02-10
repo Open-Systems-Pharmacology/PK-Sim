@@ -5,7 +5,7 @@ using PKSim.Assets;
 
 namespace PKSim.Core.Model
 {
-   public class OriginDataParameter : IWithName
+   public class OriginDataParameter : IWithName, IWithValue
    {
       /// <summary>
       ///    Name of parameter. Can be null if parameter is used as field
@@ -57,13 +57,13 @@ namespace PKSim.Core.Model
    public class OriginData : IWithCalculationMethods, IWithValueOrigin
    {
       private DiseaseState _diseaseState;
-      public readonly List<OriginDataParameter> _allDiseaseStateParameters = new List<OriginDataParameter>();
+      public readonly List<OriginDataParameter> _allDiseaseStateParameters = new();
       public Species Species { get; set; }
       public SpeciesPopulation Population { get; set; }
       public SubPopulation SubPopulation { get; set; }
       public Gender Gender { get; set; }
-      public CalculationMethodCache CalculationMethodCache { get; private set; } = new CalculationMethodCache();
-      public ValueOrigin ValueOrigin { get; } = new ValueOrigin();
+      public CalculationMethodCache CalculationMethodCache { get; private set; } = new();
+      public ValueOrigin ValueOrigin { get; } = new();
 
       public OriginDataParameter Age { get; set; }
       public OriginDataParameter GestationalAge { get; set; }

@@ -1,33 +1,31 @@
 using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.IntegrationTests
 {
    public class When_a_model_is_being_created_for_a_simulation : ContextForSimulationIntegration<ISimulationModelCreator>
    {
-      private IndividualEnzyme _enzyme;
-      private IndividualEnzyme _protein;
+      private IndividualMolecule _enzyme;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
          var templateIndividual = DomainFactoryForSpecs.CreateStandardIndividual();
          var compound = DomainFactoryForSpecs.CreateStandardCompound();
          var protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
 
-         _enzyme = enzymeFactory.AddMoleculeTo(templateIndividual, "CYP").DowncastTo<IndividualEnzyme>();
+         var cypExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "CYP");
+         _enzyme = cypExpression.Molecule;
 
-         _protein = enzymeFactory.AddMoleculeTo(templateIndividual, "PROT").DowncastTo<IndividualEnzyme>();
+         var protExpression = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(templateIndividual, "PROT");
 
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(templateIndividual, compound, protocol).DowncastTo<IndividualSimulation>();
 
@@ -56,7 +54,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void should_have_set_the_molecule_amount_as_not_persistable_except_the_amount_in_urine_feces_and_gall_bladder()
       {
-         var allMoleculeAmounts = _simulation.All<IMoleculeAmount>();
+         var allMoleculeAmounts = _simulation.All<MoleculeAmount>();
          foreach (var moleculeAmount in allMoleculeAmounts)
          {
             if (moleculeAmount.HasAncestorNamed(CoreConstants.Compartment.URINE))

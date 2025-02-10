@@ -5,13 +5,14 @@ using PKSim.Core.Model;
 using PKSim.Presentation.UICommands;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public abstract class PopulationContextMenu : BuildingBlockContextMenu<Population>
    {
-      protected PopulationContextMenu(Population population)
-         : base(population)
+      protected PopulationContextMenu(Population population, IContainer container)
+         : base(population, container)
       {
       }
 
@@ -27,18 +28,18 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          return allMenuItems;
       }
 
-      private static IMenuBarButton exportPopulationToCSVMenuFor(Population population)
+      private IMenuBarButton exportPopulationToCSVMenuFor(Population population)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToCSV)
             .WithIcon(ApplicationIcons.PopulationExportToCSV)
-            .WithCommandFor<ExportPopulationToCSVCommand, Population>(population);
+            .WithCommandFor<ExportPopulationToCSVCommand, Population>(population, _container);
       }
 
-      private static IMenuBarButton extractIndividualsMenuFor(Population population)
+      private IMenuBarButton extractIndividualsMenuFor(Population population)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExtractIndividualsMenu)
             .WithIcon(ApplicationIcons.Individual)
-            .WithCommandFor<ExtractIndividualsFromPopulationCommand, Population>(population);
+            .WithCommandFor<ExtractIndividualsFromPopulationCommand, Population>(population, _container);
       }
    }
 }

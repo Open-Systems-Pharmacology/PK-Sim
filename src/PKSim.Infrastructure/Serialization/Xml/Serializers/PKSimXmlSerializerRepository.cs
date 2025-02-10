@@ -35,7 +35,6 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          AttributeMapperRepository.AddAttributeMapper(new SystemicProcessTypeXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new ApplicationTypeXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new ViewLayoutXmlAttributeMapper());
-         AttributeMapperRepository.AddAttributeMapper(new DistributionTypeXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new IconSizeAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new DosingIntervalXmlAttributeMapper());
          AttributeMapperRepository.AddAttributeMapper(new LabelGenerationStrategyXmlAttributeMapper());
@@ -63,7 +62,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
             x.UsingAttributeRepository(AttributeMapperRepository);
          });
 
-         //SBSuite.Presentation serializer
+         //OSPSuite.Presentation serializer
          this.AddPresentationSerializers();
       }
 

@@ -43,7 +43,6 @@ namespace PKSim.IntegrationTests
          _expressionProfile.Category.ShouldBeEqualTo(_usedExpressionProfileCategoryRepository.All().FirstOrDefault());
       }
 
-
       [Observation]
       public void should_have_created_a_molecule_for_the_given_molecule_type()
       {
@@ -51,9 +50,10 @@ namespace PKSim.IntegrationTests
       }
 
       [Observation]
-      public void should_not_have_added_the_ontogeny_parameter_into_the_individual_for_the_enzyme()
+      public void should_have_added_the_ontogeny_parameter_as_table_and_ontogeny_parameter_into_the_individual_for_the_enzyme()
       {
-         _expressionProfile.Molecule.AllOntogenyParameters.Where(x => x != null).ShouldBeEmpty();
+         var molecule = _expressionProfile.Molecule;
+         molecule.AllOntogenyParameters.Where(x => x != null).ShouldOnlyContain(molecule.OntogenyFactorTableParameter, molecule.OntogenyFactorGITableParameter, molecule.OntogenyFactorParameter, molecule.OntogenyFactorGIParameter);
       }
 
       [Observation]

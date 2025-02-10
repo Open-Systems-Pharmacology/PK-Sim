@@ -24,15 +24,14 @@ namespace PKSim.Core
    public class When_creating_the_reaction_building_block_based_on_the_settings_of_a_given_simulation : concern_for_ReactionBuildingBlockCreator
    {
       private Simulation _simulation;
-      private IReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionBuildingBlock _reactionBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<Simulation>();
-         _reactionBuildingBlock = A.Fake<IReactionBuildingBlock>();
-         A.CallTo(() => _moleculeAndReactionCreator.CreateFor(A<IBuildConfiguration>._, _simulation))
-            .Invokes(x => x.GetArgument<IBuildConfiguration>(0).Reactions = _reactionBuildingBlock);
+         _reactionBuildingBlock = A.Fake<ReactionBuildingBlock>();
+         A.CallTo(() => _moleculeAndReactionCreator.CreateFor(A<Module>._, _simulation)).Returns((new MoleculeBuildingBlock(), _reactionBuildingBlock));
       }
 
       [Observation]
@@ -42,18 +41,18 @@ namespace PKSim.Core
       }
    }
 
-   public class When_creating_a_rection_building_block_for_an_imported_simulation : concern_for_ReactionBuildingBlockCreator
+   public class When_creating_a_reaction_building_block_for_an_imported_simulation : concern_for_ReactionBuildingBlockCreator
    {
       private Simulation _simulation;
-      private IReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionBuildingBlock _reactionBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<Simulation>();
          A.CallTo(() => _simulation.IsImported).Returns(true);
-         _reactionBuildingBlock = A.Fake<IReactionBuildingBlock>();
-         A.CallTo(() => _objectBaseFactory.Create<IReactionBuildingBlock>()).Returns(_reactionBuildingBlock);
+         _reactionBuildingBlock = A.Fake<ReactionBuildingBlock>();
+         A.CallTo(() => _objectBaseFactory.Create<ReactionBuildingBlock>()).Returns(_reactionBuildingBlock);
       }
 
       [Observation]

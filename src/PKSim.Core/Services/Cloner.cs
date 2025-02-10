@@ -9,8 +9,7 @@ namespace PKSim.Core.Services
    {
       /// <summary>
       ///    Clones an object in the context of a model building=>Will not share formula in any case but origin id for formula
-      ///    will
-      ///    be saved to minimize outputs
+      ///    will be saved to minimize outputs
       /// </summary>
       T CloneForModel<T>(T objectToClone) where T : class, IUpdatable;
 
@@ -43,7 +42,7 @@ namespace PKSim.Core.Services
 
       public T Clone<T>(T objectToClone) where T : class, IUpdatable
       {
-         //formula cache are never used in pksim explicitely. And if need, we access CloneManagerForBuildingBlock
+         //formula cache are never used in pksim explicitly. And if need, we access CloneManagerForBuildingBlock
          _cloneManagerForBuildingBlock.FormulaCache = new FormulaCache();
          return createClone(objectToClone, _cloneManagerForBuildingBlock);
       }

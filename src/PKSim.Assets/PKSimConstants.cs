@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OSPSuite.Assets.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Assets
@@ -512,6 +513,8 @@ namespace PKSim.Assets
 
          public const string CKDOnlyAvailableForAdult = "Chronic kidney disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
 
+         public const string HIOnlyAvailableForAdult = "Hepatic impairment disease model is only available for adult. Make sure the input age is greater than or equal to 18 years.";
+
          public const string EventTemplateNotDefined = "Event template not defined.";
 
          public static string FormulationIsRequiredForType(string applicationType) => $"Formulation is required for type '{applicationType}'.";
@@ -537,17 +540,6 @@ namespace PKSim.Assets
             return $"The file '{fileFullPath}' is readonly and cannot be read by the application. Please make the project writable and try again.";
          }
 
-         public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, bool projectIsTooOld, string downloadUrl)
-         {
-            if (projectIsTooOld)
-               return $"The project is too old (compatible version {projectVersion}) and cannot be loaded with this version. (compatible version {currentVersion}).\n" +
-                 $"Visit our download page at {downloadUrl} to download an older version of the software compatible with this project.";
-
-            if (projectVersion > currentVersion)
-               return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}";
-
-            return $"Work in progress.\nThis project file was created with a beta or RC version (version {projectVersion}) and cannot be loaded.\nSorry :-(";
-         }
          public static string BuildingBlockVersionIsTooOld(int version)
          {
             return $"Work in progress.\nThe Building Block is too old (version {version}) and cannot be loaded.\nSorry :-(";
@@ -604,13 +596,6 @@ namespace PKSim.Assets
 
          public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
-         public static string ConstantParameterAlreadyExistsInContainer(string containerName, string parameterName) => $"Parameter '{parameterName}' already exists in '{containerName}' but is defined as a constant parameter.";
-
-         public static string FormulaParameterAlreadyExistsInContainerWithAnotherFormula(string containerName, string parameterName, string formulaString, string formulaStringToAdd)
-         {
-            return $"Parameter '{parameterName}' already exists in '{containerName}' with another formula:\nOld formula = '{formulaString}'\nNew formula = '{formulaStringToAdd}'.";
-         }
-
          public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute) => 
             $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
 
@@ -664,10 +649,7 @@ namespace PKSim.Assets
 
          public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
 
-         public static string SimulationHasNoResultsAndCannotBeUsedInSummaryChart(string simulationName)
-         {
-            return $"Simulation '{simulationName}' needs to be run first before being used in a summary chart.";
-         }
+         public static string SimulationHasNoResultsAndCannotBeUsedInComparison(string simulationName) => $"Simulation '{simulationName}' needs to be run first before being used in a comparison.";
 
          public static string CouldNotCreatePartialProcessFor(string moleculeName, string processType)
          {
@@ -934,6 +916,13 @@ namespace PKSim.Assets
 
          public static string ExpressionProfileForMoleculeNotFound(string molecule, string buildingBlockName, string buildingBlockType) =>
             $"Expression profile for molecule '{molecule}' was not found in the project. Please delete this molecule from {buildingBlockType.ToLower()} '{buildingBlockName}'.";
+
+         public static string CouldNotFindMoleculeType(string moleculeType) =>
+            $"Could not find the molecule type {moleculeType}";
+
+         public static string SnapshotDuplicateEntryByName(string name, string type) =>
+            $"Another {type} named '{name}' already exists in the project. Snapshot file is corrupted.";
+
       }
 
       public static class Information
@@ -1147,7 +1136,6 @@ namespace PKSim.Assets
          public static readonly string NewFormulation = "Add &Formulation...";
          public static readonly string NewEvent = "Add &Event...";
          public static readonly string NewObservers = "Add &Observers...";
-         public static readonly string NewExpressionProfile = "Add &Expression Profile";
          public static readonly string AddObservedData = "Add &Observed Data...";
          public static readonly string AddObservedDataFor = "Add Observed Data for";
          public static readonly string SaveAs = "Save As...";
@@ -1199,7 +1187,9 @@ namespace PKSim.Assets
          public static readonly string GeneratePretermsData = "Generate Preterms Data";
          public static readonly string Comparison = "Compare Results";
          public static readonly string IndividualSimulationComparison = "Individual Simulations";
-         public static readonly string PopulationPopulationComparison = "Population Simulations";
+         public static readonly string PopulationSimulationComparison = "Population Simulations";
+         public static readonly string AddIndividualSimulationComparison = $"Add {IndividualSimulationComparison} Comparison";
+         public static readonly string AddPopulationSimulationComparison = $"Add {PopulationSimulationComparison} Comparison";
          public static readonly string AddNewProcess = "Add new...";
          public static readonly string ExportHistory = "Export History";
          public static readonly string CreateDerivedField = $"{UI.CreateGrouping}...";
@@ -1446,8 +1436,7 @@ namespace PKSim.Assets
             public static string MinLessThanMax(string parameterName) => $"Minimum value for {parameterName} should be less than maximum value.";
 
             public static string MaxGreaterThanMin(string parameterName) => $"Maximum value for {parameterName} should be greater than minimum value.";
-            
-            public static string ValueShouldBeGreaterThanOrEqualToZero(string parameterName) => $"{parameterName} value should be greater than or equal to 0.";
+
 
             public static string MinGreaterThanDbMinValue(string parameterName, string displayMinValue, string unit)
             {
@@ -1494,7 +1483,7 @@ namespace PKSim.Assets
          public static readonly string Influx = "Influx";
          public static readonly string Efflux = "Efflux";
          public static readonly string BiDirectional = "Bi-Directional";
-         public static readonly string PgpLike = "<b>[DEPRECATED]</b> Pgp-Like - <i>Will be removed in version 12 of the software</i>";
+         public static readonly string PgpLike = "<b>[DEPRECATED]</b> Pgp-Like - <i>Will be removed in version 13 of the software</i>";
          public static readonly string EmptyName = "Empty";
          public static readonly string EmptyDescription = "<Empty>";
          public static readonly string Discrete = "Constant";
@@ -1606,7 +1595,6 @@ namespace PKSim.Assets
          public static readonly string OpenAnyway = "&Open Anyway";
          public static readonly string ImportAnyway = "&Import Anyway";
          public static readonly string Factor = "Factor";
-         public static readonly string EmptyColumn = " ";
          public static readonly string QuantityName = "Name";
          public static readonly string Compartment = "Compartment";
          public static readonly string Organ = "Organ";
@@ -1675,7 +1663,6 @@ namespace PKSim.Assets
          public static readonly string ChartDiagramBackColor = "Chart diagram background";
          public static readonly string DisabledColor = "Disabled";
          public static readonly string ChangedColor = "Parameter changed";
-         public static readonly string AvailableProteins = "Proteins";
          public static readonly string ModelSettings = "Model Settings";
          public static readonly string ModelParameters = "Model Parameters";
          public static readonly string DefaultSpecies = "Species";
@@ -1781,7 +1768,7 @@ namespace PKSim.Assets
          public static readonly string MaxValue = "Maximum Value";
          public static readonly string ArithmeticMean = "Arithmetic Mean";
          public static readonly string GeometricMean = "Geometric Mean";
-         public static readonly string StandardDeviation = "Standard Deviation";
+         public static readonly string GeometricStandardDeviation = "Geometric Standard Deviation";
          public static readonly string Median = "Median";
          public static readonly string PercentilePercent = "% Percentile";
          public static readonly string AllGender = "All";
@@ -1883,7 +1870,6 @@ namespace PKSim.Assets
          public static readonly string NewFormulationDescription = "Create a new formulation...";
          public static readonly string NewEventDescription = "Create a new event...";
          public static readonly string NewObserversDescription = "Create a new observer list...";
-         public static readonly string NewExpressionProfileDescription = "Create a new expression profile...";
          public static readonly string NewCompoundDescription = "Create a new compound...";
          public static readonly string OptionsDescription = "Manage the options for the application and the current user...";
          public static readonly string ExitDescription = "Exit the application";
@@ -1945,6 +1931,8 @@ namespace PKSim.Assets
          public static readonly string No = "No";
          public static readonly string Yes = "Yes";
          public static readonly string ExportObservedDataToPkml = "Export observed data to pkml";
+         public static readonly string ExportExpressionProfile = "Export expression profile to pkml";
+         public static readonly string ExportIndividual = "Export individual to pkml";
          public static readonly string ExportSimulationResultsToExcel = $"Export simulation results to {Excel}";
          public static readonly string ExportPopulationAnalysisToExcelTitle = $"Export analysis to {Excel}";
          public static readonly string ExportSimulationResultsToCSV = $"Export simulation results to CSV";
@@ -1994,7 +1982,7 @@ namespace PKSim.Assets
          public static readonly string Experiment = "Experiment";
          public static readonly string ImportFormulation = "Import Formulation";
          public static readonly string ImportSolubilityTable = "Import Solubility Table";
-         public static readonly string AddPoint = "Add Point";
+         
          public static readonly string Filter = "Filter";
          public static readonly string SaveSimulationToXmlFile = "Save Simulation to xml File (PKSim Format)";
          public static readonly string SaveSimulationParameterToCsvFile = "Save Simulation parameters to csv File (PKSim Format)";
@@ -2357,6 +2345,8 @@ namespace PKSim.Assets
 
          public static string OntogenyFor(string moleculeName) => $"{Ontogeny} for {moleculeName}";
 
+         public static string OntogenyFor(string moleculeName, string container) => $"{Ontogeny} for {moleculeName} - {container}";
+
          public static string AddParameterAsFavorites(string parameterName) => $"Add '{parameterName}' as favorite";
 
          public static string ProductIsUpToDate(string productName) => $"{productName} is up to date!";
@@ -2520,11 +2510,6 @@ namespace PKSim.Assets
 
          public static string ContactSupport(string productDisplayName, string support) => $"For more information, please contact your {productDisplayName} support ({support})";
 
-         public static string EditTableParameter(string parameter, bool editable)
-         {
-            return $"{(editable ? "Edit" : "Show")} table parameter '{parameter}'";
-         }
-
          public static string ChartSettingsSaved() => "Chart settings were saved into project.";
 
          public static string SimulationSettingsSavedFor(string settingsType)
@@ -2592,6 +2577,8 @@ namespace PKSim.Assets
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
+
+         public static string ChildPughScoreFor (string score)=> $"Child-Pugh {score}";
       }
 
       public static class Reporting

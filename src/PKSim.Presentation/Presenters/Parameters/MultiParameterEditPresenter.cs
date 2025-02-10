@@ -4,14 +4,13 @@ using System.Drawing;
 using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Parameters;
@@ -226,9 +225,10 @@ namespace PKSim.Presentation.Presenters.Parameters
 
       public bool ParameterIsDistributed(IParameterDTO parameterDTO)
       {
-         var distributedParameter = ParameterFrom(parameterDTO) as IDistributedParameter;
-         if (distributedParameter == null) return false;
-         return distributedParameter.Formula.DistributionType() != DistributionTypes.Discrete;
+         if (!(ParameterFrom(parameterDTO) is IDistributedParameter distributedParameter)) 
+            return false;
+
+         return distributedParameter.Formula.DistributionType != DistributionType.Discrete;
       }
 
       public override void SetParameterPercentile(IParameterDTO parameterDTO, double percentileInPercent)

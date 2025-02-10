@@ -10,7 +10,7 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Utility.Extensions;
@@ -20,8 +20,6 @@ using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Extensions;
-using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Compounds
@@ -125,7 +123,7 @@ namespace PKSim.UI.Views.Compounds
 
       public void AddValueOriginView(IView view)
       {
-         AddViewTo(layoutItemValueOrigin,layoutControl,  view);
+         AddViewTo(layoutItemValueOrigin, layoutControl, view);
       }
 
       public override bool HasError => _gridViewBinder.HasError;

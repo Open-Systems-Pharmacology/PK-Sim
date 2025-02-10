@@ -6,9 +6,11 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using static PKSim.Core.CoreConstants.ContainerName;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 using SnapshotTableFormula = PKSim.Core.Snapshots.TableFormula;
 using ModelTableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
@@ -155,7 +157,24 @@ namespace PKSim.Core.Snapshots.Mappers
             return Task.FromResult(false);
 
          var allParameters = _containerTask.CacheAllChildren<IParameter>(container);
-         return mapParameters(localizedParameters, x => allParameters[x.Path], x => x.Path, container.Name, snapshotContext, showParameterNotFoundWarning);
+         
+         return mapParameters(localizedParameters, x => allParameters[adjustedPath(x, snapshotContext)], x => x.Path, container.Name, snapshotContext, showParameterNotFoundWarning);
+      }
+
+      private string adjustedPath(LocalizedParameter localizedParameter, SnapshotContext snapshotContext)
+      {
+         if(!snapshotContext.IsV11FormatOrEarlier)
+            return localizedParameter.Path;
+
+         //for V11 or earlier, we may have to convert the path if it starts with Applications which was removed for Events
+         if (localizedParameter.Path.StartsWith(Applications))
+         {
+            var path = new ObjectPath(localizedParameter.Path.ToPathArray());
+            path.Replace(Applications, Constants.EVENTS);
+            return path.ToString();
+         }
+
+         return localizedParameter.Path; 
       }
 
       public virtual Task MapParameters(IReadOnlyList<SnapshotParameter> snapshots, IContainer container, string containerDescriptor, SnapshotContext snapshotContext)

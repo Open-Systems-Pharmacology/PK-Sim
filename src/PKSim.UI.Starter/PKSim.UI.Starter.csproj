@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Version>12.0.0</Version>
+    <PackageVersion>12.0.0</PackageVersion>
+    <AssemblyVersion>12.0.0</AssemblyVersion>
+    <FileVersion>12.0.0</FileVersion>
+    <InformationalVersion>12.0.0</InformationalVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
+      <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
+      <Private></Private>
+    </ProjectReference>
+    <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
+    <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj" />
+    <ProjectReference Include="..\PKSim.UI\PKSim.UI.csproj">
+      <Private></Private>
+      <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OSPSuite.Presentation" Version="12.0.364" />
+    <PackageReference Include="OSPSuite.UI" Version="12.0.364" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.364" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.0.364" />
+  </ItemGroup>
+
+</Project>

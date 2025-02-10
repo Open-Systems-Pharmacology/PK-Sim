@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -28,10 +29,7 @@ namespace PKSim.Core.Services
 
       public override IndividualMolecule AddMoleculeTo(ISimulationSubject simulationSubject, string moleculeName)
       {
-         var molecule = CreateMolecule(moleculeName);
-
-         if (HasAgeParameter(simulationSubject))
-            AddOntogenyParameterTo(molecule);
+         var molecule = CreateMolecule(moleculeName, simulationSubject.IsAgeDependent);
 
          //default localization
          molecule.Localization = Localization.Intracellular;

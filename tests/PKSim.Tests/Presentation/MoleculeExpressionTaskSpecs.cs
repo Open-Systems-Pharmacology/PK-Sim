@@ -2,7 +2,6 @@ using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using PKSim.Core;
@@ -36,9 +35,9 @@ namespace PKSim.Presentation
          var proteinFactory = A.Fake<IIndividualMoleculeFactory>();
          _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
          _moleculeContainer1 = new MoleculeExpressionContainer().WithName("C1");
-         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
+         _moleculeContainer1.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.REL_EXP));
          _moleculeContainer2 = new MoleculeExpressionContainer().WithName("C2");
-         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REL_EXP));
+         _moleculeContainer2.Add(DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(Constants.Parameters.REL_EXP));
          A.CallTo(() => _individualMoleculeFactoryResolver.FactoryFor<IndividualProtein>()).Returns(proteinFactory);
          _molecule = new IndividualEnzyme {Name = "CYP3A4"};
          _molecule.Add(_moleculeContainer1);
@@ -83,8 +82,6 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _moleculeFactory.AddMoleculeTo(_individual, _expressionProfile.MoleculeName)).MustHaveHappened();
       }
-
-
 
       [Observation]
       public void should_ensure_that_expression_profile_and_simulation_subject_are_synchronized()
@@ -134,4 +131,5 @@ namespace PKSim.Presentation
          _resultCommand.ShouldBeAnInstanceOf<RemoveMoleculeFromIndividualCommand>();
       }
    }
+
 }

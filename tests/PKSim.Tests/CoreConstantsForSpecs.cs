@@ -1,7 +1,12 @@
-﻿namespace PKSim
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace PKSim
 {
    public static class CoreConstantsForSpecs
    {
+      public const string ExperimentalFeature = "(experimental)";
+
       public static class ActiveTransport
       {
          public static readonly string ActiveEffluxSpecificIntracellularToInterstitial = "ActiveEffluxSpecificIntracellularToInterstitial";
@@ -78,6 +83,24 @@
       public static class ContainerName
       {
          public static readonly string IRREVERSIBLE_INHIBITION = "IrreversibleInhibition";
+         
+         public static IReadOnlyList<string> PregnancyOrgansWithBloodFlow = new[]
+         {
+            "Breasts", 
+            "Endometrium", 
+            "Myometrium", 
+            "PlacentaFetal", 
+            "PlacentaMaternal"
+         };
+
+         public static IReadOnlyList<string> PregnancyOrgans = PregnancyOrgansWithBloodFlow.Concat(new[]
+         {
+            "AmnioticFluid",
+            "ArterialBlood_UmbilicalCord",
+            "Fetus",
+            "VenousBlood_UmbilicalCord"
+         }).ToList().AsReadOnly();
+
       }
 
       public static class Neigborhood

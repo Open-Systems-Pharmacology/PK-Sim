@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 
@@ -24,17 +23,6 @@ namespace PKSim.Core.Services
       ///    Creates the default model properties for a predefined model configuration
       /// </summary>
       ModelProperties DefaultFor(ModelConfiguration modelConfiguration, OriginData originData);
-
-      /// <summary>
-      ///    Checks if the old and new model properties are compatible (same model and species). In that case, return the old one else
-      ///    we try to update as many properties as possible in the old one (such as cm , model etc.)
-      /// </summary>
-      ModelProperties Update(ModelProperties oldModelProperties, ModelProperties newModelProperties, OriginData originData);
-
-      /// <summary>
-      ///    Make sure that the model properties are uptodate with the definiton in the database. This should be called once the simulation is being loaded
-      /// </summary>
-      void UpdateCategoriesIn(ModelProperties modelProperties, OriginData originData);
    }
 
    public class ModelPropertiesTask : IModelPropertiesTask
@@ -81,72 +69,6 @@ namespace PKSim.Core.Services
 
          modelProperties.ModelConfiguration = modelConfiguration;
          return modelProperties;
-      }
-
-      public ModelProperties Update(ModelProperties oldModelProperties, ModelProperties newModelProperties, OriginData originData)
-      {
-         if (oldModelProperties == null)
-         {
-            UpdateCategoriesIn(newModelProperties, originData);
-            return newModelProperties;
-         }
-
-         var oldModelConfig = oldModelProperties.ModelConfiguration;
-         var newModelConfig = newModelProperties.ModelConfiguration;
-
-         //same species and same model=>we can return the old one
-         if (areCompatible(oldModelConfig, newModelConfig))
-         {
-            UpdateCategoriesIn(oldModelProperties, originData);
-            return oldModelProperties;
-         }
-
-         //in that case. Try to update as much CM as we can
-         foreach (var calculationMethod in newModelProperties.AllCalculationMethods().ToList())
-         {
-            string category = calculationMethod.Category;
-            var oldCalculationMethod = oldModelProperties.CalculationMethodFor(category);
-            var newCategory = newModelConfig.CalculationMethodCategories.FindByName(category);
-
-            if (oldCalculationMethod == null || !newCategory.AllItems().Contains(oldCalculationMethod))
-               continue;
-
-            newModelProperties.RemoveCalculationMethod(calculationMethod);
-            newModelProperties.AddCalculationMethod(oldCalculationMethod);
-         }
-
-         return newModelProperties;
-      }
-
-      //Make sure that newly added categories in the pksim db are available
-      public void UpdateCategoriesIn(ModelProperties modelProperties, OriginData originData)
-      {
-         var defaultModelProperties = DefaultFor(modelProperties.ModelConfiguration, originData);
-         foreach (var defaultCalculationMethod in defaultModelProperties.AllCalculationMethods())
-         {
-            var calculationMethod = modelProperties.CalculationMethodFor(defaultCalculationMethod.Category);
-            if (calculationMethod != null)
-               continue;
-
-            //cm does not exist in model properties. Yet it's defined in the default=> just add the new value
-            modelProperties.AddCalculationMethod(defaultCalculationMethod);
-         }
-      }
-
-      private bool areCompatible(ModelConfiguration oldModelConfiguration, ModelConfiguration newModelConfiguration)
-      {
-         return areModelEquals(oldModelConfiguration, newModelConfiguration) &&
-                areSpeciesEquals(oldModelConfiguration, newModelConfiguration);
-      }
-
-      private bool areModelEquals(ModelConfiguration oldModelConfiguration, ModelConfiguration newModelConfiguration)
-      {
-         return string.Equals(oldModelConfiguration.ModelName, newModelConfiguration.ModelName);
-      }
-
-      private bool areSpeciesEquals(ModelConfiguration oldModelConfiguration, ModelConfiguration newModelConfiguration)
-      {
-         return string.Equals(oldModelConfiguration.SpeciesName, newModelConfiguration.SpeciesName);
       }
    }
 }

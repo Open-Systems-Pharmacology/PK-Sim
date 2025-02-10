@@ -1,14 +1,14 @@
-﻿using OSPSuite.BDDHelper;
-using FakeItEasy;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.Core.Diagram;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Diagram.Elements;
+using OSPSuite.Presentation.Services;
 using PKSim.Core.Model;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Diagrams;
-using OSPSuite.Core.Diagram;
-using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Diagram.Elements;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation
 {
@@ -22,8 +22,8 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _diagramLayoutTask = A.Fake<IDiagramLayoutTask>();
-         _mapper= A.Fake<ISimulationToSimulationReactionDiagramDTOMapper>();
-         _diagramModelFactory= A.Fake<IDiagramModelFactory>();
+         _mapper = A.Fake<ISimulationToSimulationReactionDiagramDTOMapper>();
+         _diagramModelFactory = A.Fake<IDiagramModelFactory>();
          _simulationReactionDiagramDTO = new SimulationReactionDiagramDTO
          {
             DiagramModel = A.Fake<IDiagramModel>(),
@@ -31,13 +31,13 @@ namespace PKSim.Presentation
          };
 
          sut = new ReactionDiagramPresenter(A.Fake<IReactionDiagramView>(), A.Fake<IContainerBaseLayouter>(), A.Fake<IDialogCreator>(), _diagramModelFactory,
-            A.Fake<IUserSettings>(), _diagramLayoutTask,_mapper);
+            A.Fake<IUserSettings>(), _diagramLayoutTask, _mapper);
 
          A.CallTo(_mapper).WithReturnType<SimulationReactionDiagramDTO>().Returns(_simulationReactionDiagramDTO);
       }
    }
 
-   public class When_editing_a_simulation_with_a_diagram_presenter_ : concern_for_ReactionDiagramPresenter
+   public class When_editing_a_simulation_with_a_diagram_presenter_with_the_recreate_diagram_set_to_false : concern_for_ReactionDiagramPresenter
    {
       private Simulation _simulation;
 
@@ -49,16 +49,38 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Edit(_simulation);
+         sut.Edit(_simulation, false);
       }
 
       [Observation]
       public void should_create_a_simulation_reaction_diagram_object_based_on_the_given_simulation()
       {
-         A.CallTo(() => _mapper.MapFrom(_simulation)).MustHaveHappened();
+         A.CallTo(() => _mapper.MapFrom(_simulation, false)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simulation_with_a_diagram_presenter_with_the_recreate_diagram_set_to_true : concern_for_ReactionDiagramPresenter
+   {
+      private Simulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
       }
 
+      protected override void Because()
+      {
+         sut.Edit(_simulation, true);
+      }
+
+      [Observation]
+      public void should_create_a_simulation_reaction_diagram_object_based_on_the_given_simulation()
+      {
+         A.CallTo(() => _mapper.MapFrom(_simulation, true)).MustHaveHappened();
+      }
    }
+
 
    public class When_editing_a_building_block_dto_with_a_diagram_presenter : concern_for_ReactionDiagramPresenter
    {

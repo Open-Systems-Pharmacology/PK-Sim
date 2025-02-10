@@ -21,7 +21,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim", "src\PKSim\PKSim.csproj", "{E9E36D2F-309E-4AED-A89B-0889D62DC7E8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AEE05F2D-C709-4F03-BFDE-14FF68744F35} = {AEE05F2D-C709-4F03-BFDE-14FF68744F35}
-		{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6} = {2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}
 		{9BCFE7D4-F76C-453F-95CB-6F53F640C429} = {9BCFE7D4-F76C-453F-95CB-6F53F640C429}
 		{625D2DE8-F930-4D53-9576-4E3237A30814} = {625D2DE8-F930-4D53-9576-4E3237A30814}
 	EndProjectSection
@@ -36,8 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.Assets", "src\PKSim.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.Infrastructure", "src\PKSim.Infrastructure\PKSim.Infrastructure.csproj", "{4A55E410-29A7-4BD7-A731-09A9F04BFEFC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.Matlab", "src\PKSim.Matlab\PKSim.Matlab.csproj", "{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.BatchTool", "src\PKSim.BatchTool\PKSim.BatchTool.csproj", "{625D2DE8-F930-4D53-9576-4E3237A30814}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.UI.Tests", "tests\PKSim.UI.Tests\PKSim.UI.Tests.csproj", "{66E2BBE4-E88C-436F-9A14-B12106237FA6}"
@@ -45,8 +42,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.CLI", "src\PKSim.CLI\PKSim.CLI.csproj", "{9BCFE7D4-F76C-453F-95CB-6F53F640C429}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.CLI.Core", "src\PKSim.CLI.Core\PKSim.CLI.Core.csproj", "{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.Matlab.Tests", "tests\PKSim.Matlab.Tests\PKSim.Matlab.Tests.csproj", "{A074308C-CB4B-4E6D-9C28-65124145E6B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.Tests", "tests\PKSim.Tests\PKSim.Tests.csproj", "{590B08C3-CAF6-4A90-9BFE-60EEBEC3C661}"
 EndProject
@@ -56,7 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R", "src\PKSim.R\PKSi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.R.Tests", "tests\PKSim.R.Tests\PKSim.R.Tests.csproj", "{4E310F99-4604-4502-8F0B-A4E4F27B062B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.UI.Starter", "tests\PKSim.UI.Starter\PKSim.UI.Starter.csproj", "{795B1096-E236-4A0B-AB67-590F264F9F8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSim.UI.Starter", "src\PKSim.UI.Starter\PKSim.UI.Starter.csproj", "{35E511E9-0130-4E28-9DB3-EDCCB098D383}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PKSimRDependencyResolution", "src\PKSimRDependencyResolution\PKSimRDependencyResolution.csproj", "{9ED5BBB7-3299-43DD-8068-CE47153F4CF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,10 +85,6 @@ Global
 		{4A55E410-29A7-4BD7-A731-09A9F04BFEFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A55E410-29A7-4BD7-A731-09A9F04BFEFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A55E410-29A7-4BD7-A731-09A9F04BFEFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F19A0C6-4C93-4A78-8DB6-E4C3EDE8E6F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{625D2DE8-F930-4D53-9576-4E3237A30814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{625D2DE8-F930-4D53-9576-4E3237A30814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{625D2DE8-F930-4D53-9576-4E3237A30814}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -108,10 +101,6 @@ Global
 		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62F91EF9-5720-449D-9EC8-E9A7D5BA09B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A074308C-CB4B-4E6D-9C28-65124145E6B9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{590B08C3-CAF6-4A90-9BFE-60EEBEC3C661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{590B08C3-CAF6-4A90-9BFE-60EEBEC3C661}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{590B08C3-CAF6-4A90-9BFE-60EEBEC3C661}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -128,17 +117,21 @@ Global
 		{4E310F99-4604-4502-8F0B-A4E4F27B062B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E310F99-4604-4502-8F0B-A4E4F27B062B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E310F99-4604-4502-8F0B-A4E4F27B062B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{795B1096-E236-4A0B-AB67-590F264F9F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35E511E9-0130-4E28-9DB3-EDCCB098D383}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ED5BBB7-3299-43DD-8068-CE47153F4CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ED5BBB7-3299-43DD-8068-CE47153F4CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ED5BBB7-3299-43DD-8068-CE47153F4CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ED5BBB7-3299-43DD-8068-CE47153F4CF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		VisualSVNWorkingCopyRoot = 
 		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
+		VisualSVNWorkingCopyRoot = 
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"

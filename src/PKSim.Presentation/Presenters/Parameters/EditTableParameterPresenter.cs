@@ -1,11 +1,11 @@
-using System;
-using PKSim.Assets;
-using PKSim.Presentation.Views.Parameters;
+﻿using System;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
+using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
@@ -15,7 +15,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       TableFormula EditedFormula { get; }
    }
 
-   public abstract class EditTableParameterPresenter<T> : 
+   public abstract class EditTableParameterPresenter<T> :
       AbstractDisposablePresenter<IEditTableParameterView, IEditTableParameterPresenter>, IEditTableParameterPresenter where T : ITableParameterPresenter
    {
       private readonly T _tableParameterPresenter;
@@ -25,7 +25,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       protected EditTableParameterPresenter(
          IEditTableParameterView view,
          T tableParameterPresenter,
-         IFullPathDisplayResolver fullPathDisplayResolver, 
+         IFullPathDisplayResolver fullPathDisplayResolver,
          ISimpleChartPresenter chartPresenter) : base(view)
       {
          _tableParameterPresenter = tableParameterPresenter;
@@ -40,7 +40,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       public bool Edit(IParameter tableParameter)
       {
          _tableParameterPresenter.Edit(tableParameter);
-         _view.Caption = PKSimConstants.UI.EditTableParameter(_fullPathDisplayResolver.FullPathFor(tableParameter), tableParameter.Editable);
+         _view.Caption = Captions.EditTableParameter(_fullPathDisplayResolver.FullPathFor(tableParameter), tableParameter.Editable);
          _view.CancelVisible = tableParameter.Editable;
          plotTable();
          _view.Display();
@@ -54,10 +54,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          View.OkEnabled = CanClose;
       }
 
-      private void plotTable()
-      {
-         _chartPresenter.Plot(EditedFormula);
-      }
+      private void plotTable() => _chartPresenter.Plot(EditedFormula);
 
       public TableFormula EditedFormula => _tableParameterPresenter.EditedFormula;
    }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -36,12 +37,12 @@ namespace PKSim.Presentation.Presenters.Individuals
       private readonly ExpressionProfileSelectionDTO _expressionProfileSelectionDTO;
       private Type _moleculeType;
       private Action _createExpressionProfileAction;
-      private Func<Task>_loadExpressionProfileAsync;
+      private Func<Task> _loadExpressionProfileAsync;
       private IReadOnlyCollection<ExpressionProfile> _allExpressionProfilesForMoleculeType;
       private ISimulationSubject _simulationSubject;
 
       public ExpressionProfileSelectionPresenter(
-         IExpressionProfileSelectionView view, 
+         IExpressionProfileSelectionView view,
          IMoleculePropertiesMapper moleculePropertiesMapper,
          IBuildingBlockRepository buildingBlockRepository,
          IExpressionProfileTask expressionProfileTask)
@@ -65,7 +66,7 @@ namespace PKSim.Presentation.Presenters.Individuals
 
          _loadExpressionProfileAsync = async () =>
          {
-            await _expressionProfileTask.LoadSingleFromTemplateAsync();
+            await _expressionProfileTask.SecureAwait(x => x.LoadSingleFromTemplateAsync());
             refreshExpressionProfilesForMolecule();
          };
 
@@ -76,7 +77,7 @@ namespace PKSim.Presentation.Presenters.Individuals
          _view.ApplicationIcon = _moleculePropertiesMapper.MoleculeIconFor<TMolecule>();
          _expressionProfileSelectionDTO.AllExistingMolecules = simulationSubject.AllMolecules().AllNames();
          _view.BindTo(_expressionProfileSelectionDTO);
-         _view.Display(); 
+         _view.Display();
          if (_view.Canceled)
             return null;
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
 {
@@ -86,6 +86,7 @@ namespace PKSim.Core
       public static readonly string DEFAULT_SKIN = "Office 2013 Light Gray";
       public static readonly string VALUE_PROPERTY_NAME = "Value";
       public static readonly string PROJECT_UNDEFINED = "Undefined";
+      
       public static readonly string VERSION_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/Suite/master/versions.json";
       public static readonly string REMOTE_TEMPLATE_FILE_URL = "https://raw.githubusercontent.com/Open-Systems-Pharmacology/OSPSuite.BuildingBlockTemplates/main/templates.json";
       public static readonly string ISSUE_TRACKER_URL = "https://github.com/open-systems-pharmacology/pk-sim/issues";
@@ -98,8 +99,6 @@ namespace PKSim.Core
       //tolerated precision to relatively compare to double values 
       public const double DOUBLE_RELATIVE_EPSILON = 1e-2;
 
-      public const char COMPOSITE_SEPARATOR = '-';
-
       //not as readonly as the text will be updated with the current version
       public static string ProductDisplayName = PRODUCT_NAME_WITH_TRADEMARK;
 
@@ -108,25 +107,6 @@ namespace PKSim.Core
       public static string DefaultPKAnalysesExportNameFor(string simulationName) => $"{simulationName}-PK-Analyses";
 
       public static string DefaultPopulationExportNameFor(string containerName) => $"{containerName}-Population";
-
-      public static string CompositeNameFor(params string[] names) => compositeNameFor(COMPOSITE_SEPARATOR, names);
-
-
-      private static string compositeNameFor(char separator, params string[] names)
-      {
-         if (names == null || names.Length == 0)
-            return string.Empty;
-
-         var nonEmptyNames = names.ToList();
-         nonEmptyNames.RemoveAll(string.IsNullOrEmpty);
-
-         return nonEmptyNames.Select(x=>x.Trim()).ToString($"{separator}");
-      }
-
-      public static IReadOnlyList<string> NamesFromCompositeName(string compositeName, char separator = COMPOSITE_SEPARATOR)
-      {
-         return compositeName.Split(separator);
-      }
 
       public static class DirectoryKey
       {
@@ -181,9 +161,6 @@ namespace PKSim.Core
             FRACTION_EXCRETED, FRACTION_EXCRETED_TO_URINE, FRACTION_EXCRETED_TO_BILE, FRACTION_EXCRETED_TO_FECES, FRACTION_OF_DOSE, RECEPTOR_OCCUPANCY
          };
 
-         public static IReadOnlyCollection<string> MoBiForAll => new[]
-            {CONCENTRATION_IN_CONTAINER, FRACTION_EXCRETED_TO_URINE, TISSUE, PLASMA_PERIPHERAL_VENOUS_BLOOD, PLASMA_UNBOUND_PERIPHERAL_VENOUS_BLOOD};
-
          public static string ObserverNameFrom(string observerName, string compoundName) => CompositeNameFor(observerName, compoundName);
       }
 
@@ -213,6 +190,8 @@ namespace PKSim.Core
          public static readonly string PARAM_F_EXP_INTERSTITIAL = "PARAM_f_exp_interstitial";
          public static readonly string PARAM_F_EXP_BASOLATERAL = "PARAM_f_exp_basolateral";
          public static readonly string PARAM_F_EXP_BRN_TISSUE = "PARAM_f_exp_brn_tissue";
+         public static readonly string ONTOGENY_FACTOR_FROM_TABLE = "TableFormulaWithXArgument_OntogenyFactor";
+         public static readonly string ONTOGENY_FACTOR_GI_FROM_TABLE = "TableFormulaWithXArgument_OntogenyFactorGI";
       }
 
       public static class Alias
@@ -296,6 +275,7 @@ namespace PKSim.Core
          public static readonly string RENAL_AGING_HUMAN = "Renal_Aging_Human";
          public static readonly string RENAL_AGING_ANIMALS = "Renal_Aging_Animals";
          public static readonly string EXPRESSION_PARAMETERS = "ExpressionParameters";
+         public static readonly string ONTOGENY_FACTORS = "OntogenyFactors";
          public static readonly string DISEASE_STATES = "DiseaseStates";
 
          public static readonly IReadOnlyList<string> ForDiseaseStates = new List<string>
@@ -307,7 +287,8 @@ namespace PKSim.Core
          {
             LINKS_COMMON, 
             SPECIFIC_CLEARANCE, 
-            DISTRIBUTION_IN_VITRO_PKSIM
+            DISTRIBUTION_IN_VITRO_PKSIM,
+            DYNAMIC_SUM_FORMULAS
          };
 
          public static readonly IReadOnlyList<string> ForCompounds = new List<string>
@@ -347,18 +328,6 @@ namespace PKSim.Core
          public static readonly string SALIVA = "Saliva";
          public static readonly string PERIPORTAL = "Periportal";
          public static readonly string PERICENTRAL = "Pericentral";
-         public static readonly string STOMACH = "Stomach";
-         public static readonly string DUODENUM = "Duodenum";
-         public static readonly string UPPER_JEJUNUM = "UpperJejunum";
-         public static readonly string LOWER_JEJUNUM = "LowerJejunum";
-         public static readonly string UPPER_ILEUM = "UpperIleum";
-         public static readonly string LOWER_ILEUM = "LowerIleum";
-         public static readonly string CAECUM = "Caecum";
-         public static readonly string COLON_ASCENDENS = "ColonAscendens";
-         public static readonly string COLON_TRANSVERSUM = "ColonTransversum";
-         public static readonly string COLON_DESCENDENS = "ColonDescendens";
-         public static readonly string COLON_SIGMOID = "ColonSigmoid";
-         public static readonly string RECTUM = "Rectum";
          public static readonly string FECES = "Feces";
 
          public static readonly IReadOnlyList<string> LiverZones = new List<string>
@@ -375,32 +344,6 @@ namespace PKSim.Core
             PLASMA,
             ENDOSOME,
          };
-
-         public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToLowerIleum = new List<string>
-         {
-            DUODENUM,
-            UPPER_JEJUNUM,
-            LOWER_JEJUNUM,
-            UPPER_ILEUM,
-            LOWER_ILEUM
-         };
-
-         public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToCaecum = new List<string>(LumenSegmentsDuodenumToLowerIleum)
-         {
-            CAECUM
-         };
-
-         public static readonly IReadOnlyList<string> LumenSegmentsDuodenumToRectum = new List<string>(LumenSegmentsDuodenumToCaecum)
-         {
-            COLON_ASCENDENS,
-            COLON_TRANSVERSUM,
-            COLON_DESCENDENS,
-            COLON_SIGMOID,
-            RECTUM
-         };
-
-         public static readonly IReadOnlyList<string> LumenSegmentsStomachToRectum =
-            new List<string>(new[] {STOMACH}.Concat(LumenSegmentsDuodenumToRectum));
       }
 
       public static class Compound
@@ -428,14 +371,13 @@ namespace PKSim.Core
          public static readonly string NameTemplate = "<Template>";
          public static readonly string TypeTemplate = "<Type>";
          public static readonly string Drug = "DRUG";
-         public static readonly string Compound = "COMPOUND";
          public static readonly string AdvancedParameterCollection = "AdvancedParameters";
          public static readonly string ProtocolSchemaItem = "ProtocolSchemaItem";
          public static readonly string ObservedData = "ObservedData";
          public static readonly string InsolubleDrug = "InsolubleDrug";
-         public static readonly string SolverSettings = "SolverSettings";
-         public static readonly string SimulationOutput = "SimulationOutput";
          public static readonly string EventGroupMainSubContainer = "EventGroupSubContainer";
+         //only use for conversion of older snapshot. Do not use in code otherwise
+         public static readonly string Applications = "Applications";
 
          public static string BuildingBlockInSimulationNameFor(string buildingBlockName, string simulationName)
          {
@@ -448,29 +390,17 @@ namespace PKSim.Core
 
          public static string PartialProcessName(string proteinName, string dataSource) => CompositeNameFor(proteinName, dataSource);
 
-         public static string ExpressionProfileName(string moleculeName, Core.Model.Species species,  string category) 
-            => compositeNameFor(char.Parse(ObjectPath.PATH_DELIMITER),  moleculeName, species?.DisplayName, category);
-
-         public static (string moleculeName, string speciesName, string category) NamesFromExpressionProfileName(string expressionProfileName)
-         {
-            var names =  NamesFromCompositeName(expressionProfileName, char.Parse(ObjectPath.PATH_DELIMITER));
-            if (names.Count != 3)
-               return (string.Empty, string.Empty, string.Empty);
-
-            return (names[0], names[1], names[2]);
-         }
-
          public static string GlobalExpressionContainerNameFor(string expressionParameter)
          {
             switch (expressionParameter)
             {
-               case Parameters.REL_EXP_PLASMA:
+               case Constants.Parameters.REL_EXP_PLASMA:
                   return Compartment.PLASMA;
-               case Parameters.REL_EXP_BLOOD_CELLS:
+               case Constants.Parameters.REL_EXP_BLOOD_CELLS:
                case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS:
                case Parameters.FRACTION_EXPRESSED_BLOOD_CELLS_MEMBRANE:
                   return Compartment.BLOOD_CELLS;
-               case Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
+               case Constants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM:
                case Parameters.FRACTION_EXPRESSED_VASC_ENDO_ENDOSOME:
                case Parameters.FRACTION_EXPRESSED_VASC_ENDO_PLASMA_SIDE:
                case Parameters.FRACTION_EXPRESSED_VASC_ENDO_TISSUE_SIDE:
@@ -721,7 +651,7 @@ namespace PKSim.Core
          public static string LigandEndo = "LigandEndo";
          public static string LigandEndoComplex = "LigandEndo_Complex";
          public static string AGP = "AGP";
-         public static string Albumin = "ALB";
+         public static string ALBUMIN = "ALB";
          public static string DrugFcRnComplexTemplate = "FcRn_Complex";
 
          public static string DrugFcRnComplexName(string compoundName)
@@ -808,6 +738,8 @@ namespace PKSim.Core
          public const string VIEW_DISEASE_STATES = "VIEW_DISEASE_STATES";
          public const string VIEW_POPULATION_DISEASE_STATES = "VIEW_POPULATION_DISEASE_STATES";
          public const string VIEW_CONTAINER_PARAMETER_DESCRIPTOR_CONDITIONS = "VIEW_CONTAINER_PARAMETER_DESCRIPTOR_CONDITIONS";
+         public const string VIEW_INDIVIDUAL_PARAMETER_NOT_FOR_ALL_SPECIES = "VIEW_INDIVIDUAL_PARAMETER_NOT_FOR_ALL_SPECIES";
+         public const string VIEW_INDIVIDUAL_PARAMETER_SAME_FORMULA_OR_VALUE_FOR_ALL_SPECIES = "VIEW_INDIVIDUAL_PARAMETER_SAME_FORMULA_OR_VALUE_FOR_ALL_SPECIES";
       }
 
       public static class Organ
@@ -815,7 +747,6 @@ namespace PKSim.Core
          public static readonly string ARTERIAL_BLOOD = "ArterialBlood";
          public static readonly string BONE = "Bone";
          public static readonly string BRAIN = "Brain";
-         public static readonly string Dummy = "Dummy";
          public static readonly string ENDOGENOUS_IGG = "EndogenousIgG";
          public static readonly string FAT = "Fat";
          public static readonly string GALLBLADDER = "Gallbladder";
@@ -823,7 +754,7 @@ namespace PKSim.Core
          public static readonly string HEART = "Heart";
          public static readonly string KIDNEY = "Kidney";
          public static readonly string LARGE_INTESTINE = "LargeIntestine";
-         public static readonly string LUMEN = "Lumen";
+         public static readonly string LUMEN = Constants.Organ.LUMEN;
          public static readonly string LUNG = "Lung";
          public static readonly string LIVER = "Liver";
          public static readonly string MUSCLE = "Muscle";
@@ -885,16 +816,16 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> AllParametersInfluencedByFractionAbsorbed = new[]
          {
-            Constants.PKParameters.Vd,
-            Constants.PKParameters.Vss,
-            Constants.PKParameters.MRT,
-            Constants.PKParameters.Thalf,
-            Constants.PKParameters.AUC_inf,
-            Constants.PKParameters.AUC_inf_norm,
-            Constants.PKParameters.AUC_inf_tD1,
-            Constants.PKParameters.AUC_inf_tD1_norm,
-            Constants.PKParameters.AUC_inf_tDLast,
-            Constants.PKParameters.AUC_inf_tLast_norm
+            PKParameters.Vd,
+            PKParameters.Vss,
+            PKParameters.MRT,
+            PKParameters.Thalf,
+            PKParameters.AUC_inf,
+            PKParameters.AUC_inf_norm,
+            PKParameters.AUC_inf_tD1,
+            PKParameters.AUC_inf_tD1_norm,
+            PKParameters.AUC_inf_tDLast,
+            PKParameters.AUC_inf_tLast_norm
          };
       }
 
@@ -913,10 +844,6 @@ namespace PKSim.Core
          public static readonly string CONCENTRATION = Constants.Parameters.CONCENTRATION;
          public static readonly string MOLECULAR_WEIGHT = Constants.Parameters.MOL_WEIGHT;
          public static readonly string REFERENCE_CONCENTRATION = "Reference concentration";
-         public const string REL_EXP = "Relative expression";
-         public const string REL_EXP_BLOOD_CELLS = "Relative expression in blood cells";
-         public const string REL_EXP_PLASMA = "Relative expression in plasma";
-         public const string REL_EXP_VASCULAR_ENDOTHELIUM = "Relative expression in vascular endothelium";
 
          public static readonly IReadOnlyList<string> AllGlobalMoleculeParameters = new[]
          {
@@ -927,13 +854,23 @@ namespace PKSim.Core
 
          public static readonly IReadOnlyList<string> AllGlobalRelExpParameters = new[]
          {
-            REL_EXP_BLOOD_CELLS,
-            REL_EXP_PLASMA,
-            REL_EXP_VASCULAR_ENDOTHELIUM,
+            Constants.Parameters.REL_EXP_BLOOD_CELLS,
+            Constants.Parameters.REL_EXP_PLASMA,
+            Constants.Parameters.REL_EXP_VASCULAR_ENDOTHELIUM,
          };
+
+         public static string OntogenyTableParameterFor(string parameter) => $"{parameter} table";
 
          public static readonly string ONTOGENY_FACTOR = Constants.ONTOGENY_FACTOR;
          public static readonly string ONTOGENY_FACTOR_GI = "Ontogeny factor GI";
+         public static readonly string ONTOGENY_FACTOR_ALBUMIN = "Ontogeny factor (albumin)";
+         public static readonly string ONTOGENY_FACTOR_AGP = "Ontogeny factor (alpha1-acid glycoprotein)";
+
+         public static readonly string ONTOGENY_FACTOR_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR);
+         public static readonly string ONTOGENY_FACTOR_GI_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_GI);
+         public static readonly string ONTOGENY_FACTOR_ALBUMIN_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_ALBUMIN);
+         public static readonly string ONTOGENY_FACTOR_AGP_TABLE = OntogenyTableParameterFor(ONTOGENY_FACTOR_AGP);
+         
          public static readonly string PARTICLE_BIN_DRUG_MASS = "DrugMass of particle bin";
          public static readonly string NUMBER_OF_REPETITIONS = "NumberOfRepetitions";
          public static readonly string TIME_BETWEEN_REPETITIONS = "TimeBetweenRepetitions";
@@ -943,7 +880,7 @@ namespace PKSim.Core
          public static readonly string DOSE_PER_BODY_SURFACE_AREA = "DosePerBodySurfaceArea";
          public static readonly string AGE = "Age";
          public static readonly string AGE_0 = "Age of individual at t=0";
-         public static readonly string PMA = "Postmenstrual age";
+         public static readonly string PMA = "Post menstrual age";
          public static readonly string WEIGHT = "Weight";
          public static readonly string HCT = "Hematocrit";
          public static readonly string WEIGHT_IN_PROCESS = "Body weight";
@@ -1025,8 +962,6 @@ namespace PKSim.Core
          public const string LYMPH_FLOW_INCL_MUCOSA = "Lymph flow rate (incl. mucosa)";
          public const string RECIRCULATION_FLOW = "Fluid recirculation flow rate";
          public const string RECIRCULATION_FLOW_INCL_MUCOSA = "Fluid recirculation flow rate (incl. mucosa)";
-         public const string ONTOGENY_FACTOR_ALBUMIN = "Ontogeny factor (albumin)";
-         public const string ONTOGENY_FACTOR_AGP = "Ontogeny factor (alpha1-acid glycoprotein)";
          public const string PLASMA_PROTEIN_SCALE_FACTOR = "Plasma protein scale factor";
          public const string SMALL_INTESTINAL_TRANSIT_TIME = "Small intestinal transit time";
          public const string GASTRIC_EMPTYING_TIME = "Gastric emptying time";
@@ -1068,10 +1003,22 @@ namespace PKSim.Core
             ONTOGENY_FACTOR
          };
 
+         public static readonly IReadOnlyList<string> OntogenyFactorTables = new[]
+         {
+            ONTOGENY_FACTOR_GI_TABLE,
+            ONTOGENY_FACTOR_TABLE
+         };
+
          public static readonly IReadOnlyList<string> AllPlasmaProteinOntogenyFactors = new[]
          {
             ONTOGENY_FACTOR_ALBUMIN,
             ONTOGENY_FACTOR_AGP
+         };
+
+         public static readonly IReadOnlyList<string> AllPlasmaProteinOntogenyFactorTables = new[]
+         {
+            ONTOGENY_FACTOR_ALBUMIN_TABLE, 
+            ONTOGENY_FACTOR_AGP_TABLE, 
          };
 
          public static readonly IReadOnlyList<string> HiddenParameterForMonodisperse = new[]
@@ -1328,6 +1275,15 @@ namespace PKSim.Core
          public static readonly string FC_RN_BINDING_TISSUE = "FcRn binding tissue";
          public static readonly string TURNOVER = ProteinTurnoverNameFor("Protein");
 
+         public static readonly string[] REACTIONS_WHICH_REQUIRE_RENAMING = 
+         {
+            FC_RN_BINDING_DRUG_ENDOSOME,
+            FC_RN_BINDING_DRUG_INTERSTITIAL,
+            FC_RN_BINDING_DRUG_PLASMA,
+            FC_RN_BINDING_TISSUE,
+            TURNOVER
+         };
+
          public static string ProteinTurnoverNameFor(string proteinName)
          {
             return $"{proteinName} Turnover";
@@ -1357,6 +1313,7 @@ namespace PKSim.Core
       public static class DiseaseStates
       {
          public const string CKD = "CKD";
+         public const string HI = "HI";
          public const string HEALTHY = "Healthy";
 
       }

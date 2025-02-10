@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Services
 {
@@ -53,6 +54,19 @@ namespace PKSim.Core.Services
       /// <param name="sourceExpressionProfile">Expression profile to update used as source</param>
       /// <param name="targetExpressionProfile">Expression profile to update</param>
       void SynchronizeExpressionProfileWithExpressionProfile(ExpressionProfile sourceExpressionProfile, ExpressionProfile targetExpressionProfile);
+
+      /// <summary>
+      ///    Updates the values from all expression profiles used by the <paramref name="templateSimulationSubject" /> into the
+      ///    <paramref name="simulation" />
+      ///    This is required for instance when synchronizing and individual with a simulation=>Underlying building block may
+      ///    need to be updated as well
+      /// </summary>
+      /// <param name="templateSimulationSubject">
+      ///    Template simulation subject (building block) that should be used to update the
+      ///    expression profile in the simulation
+      /// </param>
+      /// <param name="simulation">Simulation to update </param>
+      void SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(ISimulationSubject templateSimulationSubject, Simulation simulation);
    }
 
    public class ExpressionProfileUpdater : IExpressionProfileUpdater
@@ -65,7 +79,6 @@ namespace PKSim.Core.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly IExecutionContext _executionContext;
-      private readonly IDiseaseStateImplementationFactory _diseaseStateImplementationFactory;
 
       public ExpressionProfileUpdater(
          IParameterSetUpdater parameterSetUpdater,
@@ -75,8 +88,7 @@ namespace PKSim.Core.Services
          IPKSimProjectRetriever projectRetriever,
          ILazyLoadTask lazyLoadTask,
          IParameterIdUpdater parameterIdUpdater,
-         IExecutionContext executionContext,
-         IDiseaseStateImplementationFactory diseaseStateImplementationFactory)
+         IExecutionContext executionContext)
       {
          _parameterSetUpdater = parameterSetUpdater;
          _containerTask = containerTask;
@@ -86,7 +98,6 @@ namespace PKSim.Core.Services
          _lazyLoadTask = lazyLoadTask;
          _parameterIdUpdater = parameterIdUpdater;
          _executionContext = executionContext;
-         _diseaseStateImplementationFactory = diseaseStateImplementationFactory;
       }
 
       public ICommand UpdateExpressionFromQuery(ExpressionProfile expressionProfile, QueryExpressionResults queryResults)
@@ -144,15 +155,6 @@ namespace PKSim.Core.Services
          var (sourceMolecule, sourceIndividual) = expressionProfile;
          // ExpressionProfile => SimulationSubject, we want to make sure that the parameters in simulation subject are linked to their expression profile origin parameters
          synchronizeExpressionProfiles(sourceMolecule, sourceIndividual, moleculeInIndividual, simulationSubject, updateParameterOriginId: true);
-
-         //Once the synchronization was performed, apply changes to simulation subject molecules based on disease state
-         updateMoleculeParametersForDiseaseState(simulationSubject, moleculeInIndividual);
-      }
-
-      private void updateMoleculeParametersForDiseaseState(ISimulationSubject simulationSubject, IndividualMolecule moleculeInIndividual)
-      {
-         var diseaseStateImplementation = _diseaseStateImplementationFactory.CreateFor(simulationSubject.Individual);
-         diseaseStateImplementation.ApplyTo(moleculeInIndividual);
       }
 
       public void SynchronizeExpressionProfileWithSimulationSubject(ExpressionProfile expressionProfile, ISimulationSubject simulationSubject)
@@ -179,10 +181,27 @@ namespace PKSim.Core.Services
          synchronizeExpressionProfiles(sourceMolecule, sourceIndividual, targetMolecule, targetIndividual, updateParameterOriginId: false);
       }
 
+      public void SynchronizeExpressionProfilesUsedInSimulationSubjectWithSimulation(ISimulationSubject templateSimulationSubject, Simulation simulation)
+      {
+         templateSimulationSubject.AllExpressionProfiles().Each(template =>
+         {
+            var usedBuildingBlock = simulation.UsedBuildingBlockByTemplateId(template.Id);
+            if (usedBuildingBlock?.BuildingBlock is not ExpressionProfile simulationExpressionProfile)
+               return;
+
+            SynchronizeExpressionProfileWithExpressionProfile(template, simulationExpressionProfile);
+            //They are supposed to be the same => same version
+            simulationExpressionProfile.Version = template.Version;
+            usedBuildingBlock.Version = template.Version;
+         });
+      }
+
       private void updateMoleculeParameters(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject, bool updateParameterOriginId)
       {
-         var allTargetMoleculeParameters = allMoleculeParametersFor(targetSimulationSubject, targetMolecule);
-         var allSourceMoleculeParameters = allMoleculeParametersFor(sourceSimulationSubject, sourceMolecule);
+         //We filter ontogeny parameter tables that are updated separately
+         Func<IParameter, bool> isNotOntogenyFactorTable = x => !x.NameIsOneOf(OntogenyFactorTables);
+         var allTargetMoleculeParameters = allMoleculeParametersFor(targetSimulationSubject, targetMolecule, isNotOntogenyFactorTable);
+         var allSourceMoleculeParameters = allMoleculeParametersFor(sourceSimulationSubject, sourceMolecule, isNotOntogenyFactorTable);
 
          _parameterSetUpdater.UpdateValues(allSourceMoleculeParameters, allTargetMoleculeParameters, updateParameterOriginId);
       }
@@ -207,8 +226,8 @@ namespace PKSim.Core.Services
          SynchronizeAllSimulationSubjectsWithExpressionProfile(expressionProfile);
       }
 
-      private PathCache<IParameter> allMoleculeParametersFor(ISimulationSubject simulationSubject, IndividualMolecule molecule)
-         => _containerTask.PathCacheFor(simulationSubject.Individual.AllMoleculeParametersFor(molecule));
+      private PathCache<IParameter> allMoleculeParametersFor(ISimulationSubject simulationSubject, IndividualMolecule molecule, Func<IParameter, bool> predicate = null)
+         => _containerTask.PathCacheFor(simulationSubject.Individual.AllMoleculeParametersFor(molecule).Where(predicate ?? (_ => true)));
 
       private void updateTransporterDirections(IndividualMolecule sourceMolecule, ISimulationSubject sourceSimulationSubject, IndividualMolecule targetMolecule, ISimulationSubject targetSimulationSubject)
       {

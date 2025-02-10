@@ -18,7 +18,7 @@ namespace PKSim.UI.Views.Core
       {
       }
 
-      public BuildingBlockWizardView(Shell shell) : base(shell)
+      public BuildingBlockWizardView(BaseShell shell) : base(shell)
       {
          InitializeComponent();
       }
@@ -34,7 +34,7 @@ namespace PKSim.UI.Views.Core
       {
          base.InitializeResources();
          layoutItemName.Text = PKSimConstants.UI.Name.FormatForLabel();
-         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
+         this.ResizeForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
 
       public virtual void BindToProperties(ObjectBaseDTO populationPropertiesDTO)

@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Core.Services
 {
    public interface IMoleculeOntogenyVariabilityUpdater
    {
-      void UpdatePlasmaProteinsOntogenyFor(Individual individual);
-      void UpdatePlasmaProteinsOntogenyFor(Population population);
+      void UpdatePlasmaProteinsOntogenyFor(ISimulationSubject simulationSubject);
 
       void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject);
-      void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Individual individual);
-      void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Population population);
 
       /// <summary>
       ///    Updates the ontogeny factor for all plasma proteins and molecules defined in the population
@@ -27,66 +27,77 @@ namespace PKSim.Core.Services
    {
       private readonly IOntogenyRepository _ontogenyRepository;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IFormulaFactory _formulaFactory;
 
-      public MoleculeOntogenyVariabilityUpdater(IOntogenyRepository ontogenyRepository, IEntityPathResolver entityPathResolver)
+      public MoleculeOntogenyVariabilityUpdater(
+         IOntogenyRepository ontogenyRepository,
+         IEntityPathResolver entityPathResolver,
+         IFormulaFactory formulaFactory)
       {
          _ontogenyRepository = ontogenyRepository;
          _entityPathResolver = entityPathResolver;
+         _formulaFactory = formulaFactory;
       }
 
-      public void UpdatePlasmaProteinsOntogenyFor(Individual individual)
-      {
-         foreach (var supportedProtein in _ontogenyRepository.SupportedProteins.KeyValues)
-         {
-            updatePlasmaProteinOntogenyFor(individual, supportedProtein.Key, supportedProtein.Value);
-         }
-      }
-
-      private void updatePlasmaProteinOntogenyFor(Individual individual, string parameterName, string proteinNAme)
-      {
-         var parameter = individual.Organism.Parameter(parameterName);
-         if (parameter == null) return;
-         updateOntogenyParameter(parameter, _ontogenyRepository.PlasmaProteinOntogenyFactor(proteinNAme, individual.OriginData));
-      }
-
-      public void UpdatePlasmaProteinsOntogenyFor(Population population)
-      {
-         updatePlasmaProteinsOntogenyFor(population, allAgesIn(population), allGAsIn(population));
-      }
-
-      public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject)
+      public void UpdatePlasmaProteinsOntogenyFor(ISimulationSubject simulationSubject)
       {
          switch (simulationSubject)
          {
             case Individual individual:
-               UpdateMoleculeOntogeny(molecule, ontogeny, individual);
+               updatePlasmaProteinsOntogenyFor(individual);
                break;
             case Population population:
-               UpdateMoleculeOntogeny(molecule, ontogeny, population);
+               updatePlasmaProteinsOntogenyFor(population);
                break;
             default:
                throw new ArgumentOutOfRangeException(nameof(simulationSubject));
          }
       }
 
-      public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Individual individual)
+      public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, ISimulationSubject simulationSubject)
       {
-         molecule.Ontogeny = ontogeny;
-         updateOntogenyParameter(molecule.OntogenyFactorGIParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM, individual.OriginData));
-         updateOntogenyParameter(molecule.OntogenyFactorParameter, _ontogenyRepository.OntogenyFactorFor(ontogeny, CoreConstants.Groups.ONTOGENY_LIVER, individual.OriginData));
+         switch (simulationSubject)
+         {
+            case Individual:
+               updateMoleculeOntogeny(molecule, ontogeny);
+               break;
+            case Population population:
+               updateMoleculeOntogenyInPopulation(molecule, ontogeny, population);
+               break;
+            default:
+               throw new ArgumentOutOfRangeException(nameof(simulationSubject));
+         }
       }
 
-      private void updateOntogenyParameter(IParameter parameter, double value)
+      private void updatePlasmaProteinsOntogenyFor(Individual individual)
       {
-         //this can be the case if the parameter is defined in an expression profile
+         _ontogenyRepository.SupportedProteins.Each(x => updatePlasmaProteinOntogenyTableFor(individual, x.TableParameterName, x.Name));
+      }
+
+      private void updatePlasmaProteinOntogenyTableFor(Individual individual, string tableParameterName, string proteinName)
+      {
+         var parameter = individual.Organism.Parameter(tableParameterName);
          if (parameter == null)
             return;
 
-         parameter.DefaultValue = value;
-         parameter.Value = parameter.DefaultValue.Value;
+         var tableFormula = _ontogenyRepository.PlasmaProteinOntogenyTableFormula(proteinName, individual.OriginData);
+
+         updateOntogenyParameterTable(parameter, tableFormula);
       }
 
-      public void UpdateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny, Population population)
+      private void updatePlasmaProteinsOntogenyFor(Population population)
+      {
+         updatePlasmaProteinsOntogenyFor(population, allAgesIn(population), allGAsIn(population));
+      }
+
+      private void updateMoleculeOntogeny(IndividualMolecule molecule, Ontogeny ontogeny)
+      {
+         molecule.Ontogeny = ontogeny;
+         updateOntogenyParameterTable(molecule.OntogenyFactorGITableParameter, ontogeny, CoreConstants.Groups.ONTOGENY_DUODENUM);
+         updateOntogenyParameterTable(molecule.OntogenyFactorTableParameter, ontogeny, CoreConstants.Groups.ONTOGENY_LIVER);
+      }
+
+      private void updateMoleculeOntogenyInPopulation(IndividualMolecule molecule, Ontogeny ontogeny, Population population)
       {
          updateMoleculeOntogeny(molecule, ontogeny, population, allAgesIn(population), allGAsIn(population));
       }
@@ -95,6 +106,26 @@ namespace PKSim.Core.Services
       {
          population.IndividualValuesCache.Remove(ontogenyFactorPath);
          population.IndividualValuesCache.Remove(ontogenyFactorGIPath);
+      }
+
+      private void updateOntogenyParameterTable(IParameter parameter, Ontogeny ontogeny, string containerName)
+      {
+         var tableFormula = _ontogenyRepository.OntogenyToDistributedTableFormula(ontogeny, containerName);
+         updateOntogenyParameterTable(parameter, tableFormula);
+      }
+
+      private void updateOntogenyParameterTable(IParameter parameter, TableFormula tableFormula)
+      {
+         //Table parameter is only defined for age dependent species and this method might be called when creating the molecule with a non age dependent species 
+         if (parameter == null)
+            return;
+
+         //the formula may be null if no ontogeny was selected. In this case, we simply set a default formula of 1
+         parameter.Formula = tableFormula ?? _formulaFactory.ValueFor(CoreConstants.DEFAULT_ONTOGENY_FACTOR, parameter.Dimension);
+
+         //in case of a tableFormula being set, make sure we also reset the default value of the parameter so that
+         //it will not look like the value was changed by the user
+         parameter.DefaultValue = tableFormula != null ? null : CoreConstants.DEFAULT_ONTOGENY_FACTOR;
       }
 
       public void UpdateAllOntogenies(Population population)
@@ -139,21 +170,23 @@ namespace PKSim.Core.Services
 
       private void updatePlasmaProteinsOntogenyFor(Population population, IReadOnlyList<double> allAges, IReadOnlyList<double> allGAs)
       {
-         foreach (var supportedProtein in _ontogenyRepository.SupportedProteins.KeyValues)
+         foreach (var supportedProtein in _ontogenyRepository.SupportedProteins)
          {
-            updatePlasmaProteinOntogenyFor(population, allAges, allGAs, supportedProtein.Key, supportedProtein.Value);
+            updatePlasmaProteinOntogenyFor(population, allAges, allGAs, supportedProtein.ParameterName, supportedProtein.Name);
          }
       }
 
       private void updatePlasmaProteinOntogenyFor(Population population, IReadOnlyList<double> allAges, IReadOnlyList<double> allGAs, string parameterName, string proteinName)
       {
          var plasmaProteinOntogenyParameter = population.Organism.Parameter(parameterName);
-         if (plasmaProteinOntogenyParameter == null) return;
+         if (plasmaProteinOntogenyParameter == null)
+            return;
+
          var ontogenyFactors = new ParameterValues(_entityPathResolver.PathFor(plasmaProteinOntogenyParameter));
 
          for (int i = 0; i < population.NumberOfItems; i++)
          {
-            ontogenyFactors.Add(_ontogenyRepository.PlasmaProteinOntogenyFactor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
+            ontogenyFactors.Add(_ontogenyRepository.PlasmaProteinOntogenyValueFor(proteinName, allAges[i], allGAs[i], population.Species.Name, population.RandomGenerator));
          }
 
          population.IndividualValuesCache.Remove(ontogenyFactors.ParameterPath);

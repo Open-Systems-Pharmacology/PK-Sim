@@ -1,5 +1,6 @@
 ﻿using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 
@@ -37,7 +38,7 @@ namespace PKSim.Core.Commands
          else
          {
             var tableFormula = parameter.Formula.DowncastTo<DistributedTableFormula>();
-            tableFormula.AllPoints().Each(p => p.Y *= _ratio);
+            tableFormula.AllPoints.Each(p => p.Y *= _ratio);
          }
       }
    }

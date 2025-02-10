@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using static PKSim.Core.CoreConstants.Parameters;
 
 namespace PKSim.Core.Services
 {
@@ -60,12 +59,16 @@ namespace PKSim.Core.Services
 
       public void CreateModelFor(Individual individual)
       {
-         addModelStructureTo(individual.Organism, individual.OriginData, addParameter: true);
-         setAgeSettings(individual.Organism.Parameter(CoreConstants.Parameters.AGE),
-            individual.OriginData.Population.Name, setValueAndDisplayUnit: false);
+         var organism = individual.Organism;
+         var originData = individual.OriginData;
+
+         addModelStructureTo(organism, originData, addParameter: true);
+
+         setAgeSettings(organism.Parameter(AGE), originData.Population.Name, setValueAndDisplayUnit: false);
+
          addWeightParameterTags(individual);
 
-         addModelStructureTo(individual.Neighborhoods, individual.OriginData, addParameter: true);
+         addModelStructureTo(individual.Neighborhoods, originData, addParameter: true);
 
          _buildingBlockFinalizer.Finalize(individual);
       }
@@ -83,7 +86,7 @@ namespace PKSim.Core.Services
 
       public IParameter MeanAgeFor(OriginData originData)
       {
-         var ageParameter = MeanOrganismParameter(originData, CoreConstants.Parameters.AGE);
+         var ageParameter = MeanOrganismParameter(originData, AGE);
          setAgeSettings(ageParameter, originData.Population.Name, setValueAndDisplayUnit: true);
 
          return ageParameter;
@@ -94,7 +97,7 @@ namespace PKSim.Core.Services
       private void addWeightParameterTags(Individual individual)
       {
          var allOrganWeightParameters = individual.Organism.GetAllChildren<Parameter>
-            (p => p.Name.Equals(CoreConstants.Parameters.WEIGHT_TISSUE)).ToList();
+            (p => p.Name.Equals(WEIGHT_TISSUE)).ToList();
 
          allOrganWeightParameters.Each(addParentTagsTo);
       }
@@ -128,18 +131,13 @@ namespace PKSim.Core.Services
          //for population not preterm where the parameter is actually defined, the value of the parameter should be set to another default
          if (param != null && !originData.Population.IsPreterm)
             param.Value = CoreConstants.NOT_PRETERM_GESTATIONAL_AGE_IN_WEEKS;
+
          return param;
       }
 
-      public IParameter MeanWeightFor(OriginData originData)
-      {
-         return MeanOrganismParameter(originData, CoreConstants.Parameters.MEAN_WEIGHT);
-      }
+      public IParameter MeanWeightFor(OriginData originData) => MeanOrganismParameter(originData, MEAN_WEIGHT);
 
-      public IParameter MeanHeightFor(OriginData originData)
-      {
-         return MeanOrganismParameter(originData, CoreConstants.Parameters.MEAN_HEIGHT);
-      }
+      public IParameter MeanHeightFor(OriginData originData) => MeanOrganismParameter(originData, MEAN_HEIGHT);
 
       public IParameter MeanOrganismParameter(OriginData originData, string parameterName)
       {
@@ -150,13 +148,12 @@ namespace PKSim.Core.Services
 
       public IParameter BMIBasedOn(OriginData originData, IParameter parameterWeight, IParameter parameterHeight)
       {
-         var standardBMI = MeanOrganismParameter(originData, CoreConstants.Parameters.BMI);
-         if (standardBMI == null) return null;
+         var standardBMI = MeanOrganismParameter(originData, BMI);
+         if (standardBMI == null) 
+            return null;
 
          var organism = new Container().WithName(Constants.ORGANISM);
-         organism.Add(parameterHeight);
-         organism.Add(parameterWeight);
-         organism.Add(standardBMI);
+         organism.AddChildren(parameterWeight, parameterHeight, standardBMI);
 
          standardBMI.Formula = _formulaFactory.BMIFormulaFor(parameterWeight, parameterHeight);
          standardBMI.Formula.ResolveObjectPathsFor(standardBMI);

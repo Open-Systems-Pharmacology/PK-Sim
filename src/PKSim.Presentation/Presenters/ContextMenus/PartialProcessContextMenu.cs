@@ -7,13 +7,14 @@ using PKSim.Presentation.Presenters.Compounds;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class PartialProcessContextMenu : CompoundProcessContextMenu<PartialProcess>
    {
-      public PartialProcessContextMenu(PartialProcess compoundProcess, ICompoundProcessesPresenter presenter)
-         : base(compoundProcess, presenter)
+      public PartialProcessContextMenu(PartialProcess compoundProcess, ICompoundProcessesPresenter presenter, IContainer container)
+         : base(compoundProcess, presenter, container)
       {
       }
 
@@ -29,9 +30,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class PartialProcessTreeNodeContextMenuFactory : CompoundProcessTreeNodeContextMenuFactory<PartialProcess>
    {
+      private readonly IContainer _container;
+
+      public PartialProcessTreeNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       protected override IContextMenu CreateFor(PartialProcess compoundProcess, ICompoundProcessesPresenter compoundProcessesPresenter)
       {
-         return new PartialProcessContextMenu(compoundProcess, compoundProcessesPresenter);
+         return new PartialProcessContextMenu(compoundProcess, compoundProcessesPresenter, _container);
       }
    }
 }

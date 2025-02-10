@@ -259,6 +259,11 @@ namespace PKSim.UI.Views.Parameters
          }
       }
 
+      public bool AllowVerticalScrolling
+      {
+         set => gridView.VertScrollVisibility = value ? ScrollVisibility.Auto : ScrollVisibility.Never;
+      }
+
       public void SaveEditor()
       {
          gridView.PostEditor();
@@ -311,8 +316,8 @@ namespace PKSim.UI.Views.Parameters
       {
          gridParameters.RefreshDataSource();
       }
-
-      public int OptimalHeight => gridView.OptimalHeight;
+      //adding the padding from the sometimes hidden item to the height of the gridview as it seems to play a role
+      public int OptimalHeight => gridView.OptimalHeight + layoutItemScaling.Padding.All;
 
       public bool AllowMultiSelect
       {

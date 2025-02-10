@@ -17,7 +17,7 @@ namespace PKSim.Presentation.Services
    public interface IPKAnalysisExportTask
    {
       void ExportToExcel(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable pkAnalysisDataTable, IEnumerable<Simulation> simulations);
-      IEnumerable<DataTable> ExportToDataTable(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable dataTable, IEnumerable<Simulation> simulations);
+      IReadOnlyList<DataTable> ExportToDataTable(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable dataTable, IEnumerable<Simulation> simulations);
       void ExportToExcel(DataTable dataTable, string defaultName);
    }
 
@@ -54,7 +54,7 @@ namespace PKSim.Presentation.Services
          _dataRepositoryTask.ExportToExcel(allDataTables, fileName, launchExcel: true);
       }
 
-      public IEnumerable<DataTable> ExportToDataTable(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable dataTable, IEnumerable<Simulation> simulations)
+      public IReadOnlyList<DataTable> ExportToDataTable(IEnumerable<DataColumn> dataColumns, GlobalPKAnalysis globalPKAnalysis, DataTable dataTable, IEnumerable<Simulation> simulations)
       {
          var allDataTables = new List<DataTable>();
          var allSimulations = simulations.ToList();

@@ -1,5 +1,5 @@
+﻿using OSPSuite.Presentation.Views;
 using PKSim.Presentation.Presenters.Parameters;
-using OSPSuite.Presentation.Views;
 
 namespace PKSim.Presentation.Views.Parameters
 {

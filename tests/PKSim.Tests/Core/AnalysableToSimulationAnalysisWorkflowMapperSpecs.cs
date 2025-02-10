@@ -28,7 +28,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _populationSimulation = new PopulationSimulation {SimulationSettings = new SimulationSettings()};
+         _populationSimulation = new PopulationSimulation {Settings = new SimulationSettings()};
          _analysis1= A.Fake<ISimulationAnalysis>();
          _analysis2= A.Fake<ISimulationAnalysis>();
          _populationSimulation.AddAnalysis(_analysis1);

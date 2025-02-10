@@ -24,7 +24,7 @@ namespace PKSim.Core
       protected InteractionProcess _irreversibleInhibition2;
       protected InhibitionProcess _uncompetitiveInhibition;
 
-      protected IObjectPathFactory _objectPathFactory;
+      protected ObjectPathFactory _objectPathFactory;
       protected IDimensionRepository _dimensionRepository;
       private IInteractionTask _interactionTask;
 
@@ -94,7 +94,7 @@ namespace PKSim.Core
 
    public class When_updating_the_modifiers_defined_in_a_reaction_process_for_an_irreversible_inhibition : concern_for_IrreversibleInhibitionKineticUpdaterSpecification
    {
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {
@@ -141,7 +141,7 @@ namespace PKSim.Core
    public class When_updating_the_references_to_used_parameters_for_the_km_factor_formula_for_an_irreversible_inhibition_interactions : concern_for_IrreversibleInhibitionKineticUpdaterSpecification
    {
       private IParameter _kmFactor;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {
@@ -183,7 +183,7 @@ namespace PKSim.Core
    public class When_updating_the_references_to_used_parameters_for_the_cl_spec_factor_formula_for_an_irreversible_inhibition_interactions : concern_for_IrreversibleInhibitionKineticUpdaterSpecification
    {
       private IParameter _clSpecFactor;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {

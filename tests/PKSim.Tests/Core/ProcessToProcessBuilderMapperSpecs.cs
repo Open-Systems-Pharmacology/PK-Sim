@@ -1,21 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
+using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_ProcessToProcessBuilderMapper : ContextSpecification<IProcessToProcessBuilderMapper>
    {
-      protected ICloner _cloneManager;
+      protected ICloner _cloner;
       protected ISimulationActiveProcessRepository _simulationActiveProcessRepository;
       protected IParameterSetUpdater _parameterSetUpdater;
       protected IObjectBaseFactory _objectBaseFactory;
@@ -24,19 +26,19 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _cloneManager = A.Fake<ICloner>();
+         _cloner = A.Fake<ICloner>();
          _simulationActiveProcessRepository = A.Fake<ISimulationActiveProcessRepository>();
          _parameterSetUpdater = A.Fake<IParameterSetUpdater>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _parameterContainerTask = A.Fake<IParameterContainerTask>();
-         _transportTemplateRepository= A.Fake<ITransportTemplateRepository>();
-         sut = new ProcessToProcessBuilderMapper(_cloneManager,_transportTemplateRepository, _simulationActiveProcessRepository, _parameterSetUpdater, _objectBaseFactory, _parameterContainerTask);
+         _transportTemplateRepository = A.Fake<ITransportTemplateRepository>();
+         sut = new ProcessToProcessBuilderMapper(_cloner, _transportTemplateRepository, _simulationActiveProcessRepository, _parameterSetUpdater, _objectBaseFactory, _parameterContainerTask);
       }
    }
 
    public class when_mapping_template_reaction_builder_to_a_reaction_builder : concern_for_ProcessToProcessBuilderMapper
    {
-      protected IReactionBuilder _reaction;
+      protected ReactionBuilder _reaction;
       protected string _compoundName = "Aspirin";
       protected IFormulaCache _formulaCache;
 
@@ -54,7 +56,7 @@ namespace PKSim.Core
          _reaction.AddModifier(CoreConstants.KeyWords.Molecule);
          _formulaCache = new BuildingBlockFormulaCache();
 
-         A.CallTo(() => _cloneManager.Clone(_reaction)).Returns(_reaction);
+         A.CallTo(() => _cloner.Clone(_reaction)).Returns(_reaction);
       }
 
       protected override void Because()
@@ -85,11 +87,11 @@ namespace PKSim.Core
    public class When_mapping_a_process_to_a_reaction_builder : concern_for_ProcessToProcessBuilderMapper
    {
       private CompoundProcess _process;
-      private IMoleculeBuilder _drug;
-      private IMoleculeBuilder _metabolite;
+      private MoleculeBuilder _drug;
+      private MoleculeBuilder _metabolite;
       private string _enzymeName;
       private FormulaCache _formulaCache;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
       private ExplicitFormula _parameterFormula;
       private PKSimParameter _parameterInReaction;
       private ExplicitFormula _kinetic;
@@ -115,7 +117,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _simulationActiveProcessRepository.ProcessFor<PKSimReaction>(_process.InternalName)).Returns(pkSimReaction);
          pkSimReaction.Formula = _kinetic;
-         A.CallTo(() => _cloneManager.Clone<IReactionBuilder>(pkSimReaction)).Returns(pkSimReaction);
+         A.CallTo(() => _cloner.Clone((ReactionBuilder)pkSimReaction)).Returns(pkSimReaction);
       }
 
       protected override void Because()
@@ -130,14 +132,14 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_have_replaced_the_keywords_defined_in_the_reacion_kinetic_by_the_actual_protein_and_molecule_name()
+      public void should_have_replaced_the_keywords_defined_in_the_reaction_kinetic_by_the_actual_protein_and_molecule_name()
       {
          _kinetic.ObjectPaths.ElementAt(0).ShouldOnlyContain("Organism", _drug.Name);
          _kinetic.ObjectPaths.ElementAt(1).ShouldOnlyContain("Organism", _enzymeName);
       }
 
       [Observation]
-      public void should_have_replaced_the_keywords_defined_in_the_reacion_parameters_by_the_actual_protein_and_molecule_name()
+      public void should_have_replaced_the_keywords_defined_in_the_reaction_parameters_by_the_actual_protein_and_molecule_name()
       {
          _parameterFormula.ObjectPaths.ElementAt(0).ShouldOnlyContain("Liver", _drug.Name);
       }
@@ -151,26 +153,26 @@ namespace PKSim.Core
       [Observation]
       public void should_have_set_the_name_of_the_reaction_to_the_name_of_the_incoming_process_combine_with_the_name_of_the_drug()
       {
-         _reaction.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_drug.Name, _process.Name));
+         _reaction.Name.ShouldBeEqualTo(CompositeNameFor(_drug.Name, _process.Name));
       }
 
       [Observation]
       public void should_have_set_the_name_of_the_kinetic_to_the_name_of_the_incoming_process_combine_with_the_name_of_the_formula()
       {
-         _reaction.Formula.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_reaction.Name, "KINETIC"));
+         _reaction.Formula.Name.ShouldBeEqualTo(CompositeNameFor(_reaction.Name, "KINETIC"));
       }
    }
 
-   public class When_mapping_a_process_to_a_reaciton_builder_where_one_of_the_educt_or_product_has_the_same_name_as_the_process : concern_for_ProcessToProcessBuilderMapper
+   public class When_mapping_a_process_to_a_reaction_builder_where_one_of_the_educt_or_product_has_the_same_name_as_the_process : concern_for_ProcessToProcessBuilderMapper
    {
       private EnzymaticProcess _process;
-      private IMoleculeBuilder _drug;
-      private IMoleculeBuilder _metabolite;
+      private MoleculeBuilder _drug;
+      private MoleculeBuilder _metabolite;
       private string _enzymeName;
       private FormulaCache _formulaCache;
       private ExplicitFormula _kinetic;
       private ExplicitFormula _parameterFormula;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {
@@ -191,7 +193,7 @@ namespace PKSim.Core
 
          A.CallTo(() => _simulationActiveProcessRepository.ProcessFor<PKSimReaction>(_process.InternalName)).Returns(pkSimReaction);
          pkSimReaction.Formula = _kinetic;
-         A.CallTo(() => _cloneManager.Clone(pkSimReaction)).Returns(pkSimReaction);
+         A.CallTo(() => _cloner.Clone((ReactionBuilder) pkSimReaction)).Returns(pkSimReaction);
       }
 
       protected override void Because()
@@ -210,7 +212,7 @@ namespace PKSim.Core
    {
       private IFormulaCache _formulaCache;
       private CompoundProcess _process;
-      private ITransportBuilder _transport;
+      private TransportBuilder _transport;
       private PKSimTransport _pkSimTransport;
 
       protected override void Context()
@@ -220,7 +222,7 @@ namespace PKSim.Core
          _pkSimTransport = new PKSimTransport {Formula = A.Fake<IFormula>()};
          _process = new SystemicProcess {InternalName = "Proc", Name = "BLA BLA"};
          A.CallTo(() => _simulationActiveProcessRepository.ProcessFor<PKSimTransport>(_process.InternalName)).Returns(_pkSimTransport);
-         A.CallTo(() => _cloneManager.Clone(_pkSimTransport)).Returns(_pkSimTransport);
+         A.CallTo(() => _cloner.Clone(_pkSimTransport)).Returns(_pkSimTransport);
       }
 
       protected override void Because()
@@ -236,29 +238,29 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_return_a_passive_transport_named_after_the_process_name()
+      public void should_return_a_passive_transport_named_after_the_process_name_and_the_name_of_the_compound()
       {
-         _transport.Name.ShouldBeEqualTo(_process.Name);
+         _transport.Name.ShouldBeEqualTo(CompositeNameFor(_process.Name, "DRUG"));
       }
    }
 
    public class When_creating_a_protein_turnover_reaction_for_a_given_protein : concern_for_ProcessToProcessBuilderMapper
    {
       private IFormulaCache _formulaCache;
-      private IReactionBuilder _template;
-      private IMoleculeBuilder _protein;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _template;
+      private MoleculeBuilder _protein;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {
          base.Context();
          _formulaCache = new FormulaCache();
-         _protein = A.Fake<IMoleculeBuilder>().WithName("CYP3A4");
+         _protein = A.Fake<MoleculeBuilder>().WithName("CYP3A4");
          var reaction = new ReactionBuilder {Formula = new ExplicitFormula().WithName("ABC")};
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Protein, "P1").WithAlias("P1"));
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Reaction, "R1").WithAlias("R1"));
-         _template = A.Fake<IReactionBuilder>().WithName(CoreConstants.Reaction.TURNOVER);
-         A.CallTo(() => _cloneManager.Clone(_template)).Returns(reaction);
+         _template = A.Fake<ReactionBuilder>().WithName(CoreConstants.Reaction.TURNOVER);
+         A.CallTo(() => _cloner.Clone(_template)).Returns(reaction);
       }
 
       protected override void Because()
@@ -306,10 +308,10 @@ namespace PKSim.Core
    public class When_creating_an_irreversible_binding_reaction_for_a_given_interaction_process_and_protein : concern_for_ProcessToProcessBuilderMapper
    {
       private InteractionProcess _interactionProcess;
-      private IMoleculeBuilder _protein;
+      private MoleculeBuilder _protein;
       private IFormulaCache _formulaCache;
       private Compound _compound;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
       private PKSimReaction _template;
 
       protected override void Context()
@@ -331,7 +333,9 @@ namespace PKSim.Core
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Protein, "P1").WithAlias("P1"));
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Reaction, "R1").WithAlias("R1"));
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Molecule, "M11").WithAlias("M1"));
-         A.CallTo(() => _cloneManager.Clone<IReactionBuilder>(_template)).Returns(reaction);
+         reaction.AddTag(CoreConstants.KeyWords.Reaction);
+         reaction.AddTag(CoreConstants.KeyWords.Protein);
+         A.CallTo(() => _cloner.Clone<ReactionBuilder>(_template)).Returns(reaction);
       }
 
       protected override void Because()
@@ -342,7 +346,14 @@ namespace PKSim.Core
       [Observation]
       public void should_return_a_reaction_having_the_expected_name()
       {
-         _reaction.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_compound.Name, _interactionProcess.Name));
+         _reaction.Name.ShouldBeEqualTo(CompositeNameFor(_compound.Name, _interactionProcess.Name));
+      }
+
+      [Observation]
+      public void should_have_replaced_the_keywords_in_the_reaction_tags()
+      {
+         _reaction.Tags.Contains(_interactionProcess.Name).ShouldBeTrue();
+         _reaction.Tags.Contains(_protein.Name).ShouldBeTrue();
       }
 
       [Observation]
@@ -350,6 +361,7 @@ namespace PKSim.Core
       {
          _reaction.Formula.FormulaUsablePathBy("P1")[0].ShouldBeEqualTo(_protein.Name);
       }
+
 
       [Observation]
       public void should_have_replaced_the_molecule_keyword()
@@ -391,10 +403,10 @@ namespace PKSim.Core
    public class When_creating_an_induction_reaction_for_a_given_interaction_process_and_protein : concern_for_ProcessToProcessBuilderMapper
    {
       private InteractionProcess _interactionProcess;
-      private IMoleculeBuilder _protein;
+      private MoleculeBuilder _protein;
       private IFormulaCache _formulaCache;
       private Compound _compound;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
       private PKSimReaction _template;
 
       protected override void Context()
@@ -412,11 +424,11 @@ namespace PKSim.Core
          _template = new PKSimReaction();
          A.CallTo(() => _simulationActiveProcessRepository.ProcessFor<PKSimReaction>(_interactionProcess.InternalName)).Returns(_template);
 
-         var reaction = new PKSimReaction { Formula = new ExplicitFormula().WithName("ABC") };
+         var reaction = new PKSimReaction {Formula = new ExplicitFormula().WithName("ABC")};
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Protein, "P1").WithAlias("P1"));
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Reaction, "R1").WithAlias("R1"));
          reaction.Formula.AddObjectPath(new FormulaUsablePath(CoreConstants.KeyWords.Molecule, "M11").WithAlias("M1"));
-         A.CallTo(() => _cloneManager.Clone<IReactionBuilder>(_template)).Returns(reaction);
+         A.CallTo(() => _cloner.Clone<ReactionBuilder>(_template)).Returns(reaction);
       }
 
       protected override void Because()
@@ -427,7 +439,7 @@ namespace PKSim.Core
       [Observation]
       public void should_return_a_reaction_having_the_expected_name()
       {
-         _reaction.Name.ShouldBeEqualTo(CoreConstants.CompositeNameFor(_compound.Name, _interactionProcess.Name));
+         _reaction.Name.ShouldBeEqualTo(CompositeNameFor(_compound.Name, _interactionProcess.Name));
       }
 
       [Observation]
@@ -472,4 +484,46 @@ namespace PKSim.Core
          _formulaCache.Contains(_reaction.Formula).ShouldBeTrue();
       }
    }
+
+   public class when_mapping_fcrn_binding_template_reaction_builder_to_a_reaction_builder : concern_for_ProcessToProcessBuilderMapper
+   {
+      protected ReactionBuilder _reaction;
+      protected string _compoundName = "Aspirin";
+      protected IFormulaCache _formulaCache;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var formula = new ExplicitFormula().WithFormulaString("123").WithName("FcRn binding drug in endosomal space");
+         formula.AddObjectPath(new FormulaUsablePath(new[] { "Organism", CoreConstants.KeyWords.Molecule }));
+         formula.AddObjectPath(new FormulaUsablePath(new[] { "Organism", CoreConstants.Molecule.DrugFcRnComplexTemplate }));
+         _reaction = new PKSimReaction().WithName("FcRn binding drug in endosomal space").WithId("xx").WithFormula(formula);
+
+         var parameter = new Parameter().WithName("XYZ").WithFormula(formula);
+         _reaction.Add(parameter);
+
+         _formulaCache = new BuildingBlockFormulaCache();
+
+         A.CallTo(() => _cloner.Clone(_reaction)).Returns(_reaction);
+      }
+
+      protected override void Because()
+      {
+         _reaction = sut.ReactionFrom(_reaction, _compoundName, new List<string>(), _formulaCache);
+      }
+
+      [Observation]
+      public void should_insert_the_compound_name_into_the_formula_name()
+      {
+         _reaction.Formula.Name.Contains(_compoundName).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void formula_names_of_all_reaction_children_should_contain_the_compound_name()
+      {
+         _reaction.GetAllChildren<IUsingFormula>().Each(x => x.Formula.Name.Contains(_compoundName).ShouldBeTrue());
+      }
+   }
+
 }

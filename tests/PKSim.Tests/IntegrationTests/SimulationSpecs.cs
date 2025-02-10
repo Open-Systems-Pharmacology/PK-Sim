@@ -8,14 +8,12 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
@@ -34,6 +32,8 @@ namespace PKSim.IntegrationTests
       protected Protocol _protocol;
       protected IPKAnalysesTask _pkAnalysesTask;
       protected SimulationRunOptions _simulationRunOptions;
+      protected ExpressionProfile _expressionProfile;
+      protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
 
       public override void GlobalContext()
       {
@@ -41,6 +41,8 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         _moleculeExpressionTask = IoC.Resolve<IMoleculeExpressionTask<Individual>>();
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "CYP2A6");
          _pkAnalysesTask = IoC.Resolve<IPKAnalysesTask>();
          _simulationRunOptions = new SimulationRunOptions();
       }
@@ -276,21 +278,21 @@ namespace PKSim.IntegrationTests
 
    public class When_creating_an_individual_simulation_2pores_with_the_standard_building_block : concern_for_IndividualSimulation
    {
-      private IBuildConfiguration _buildConfiguration;
+      private SimulationConfiguration _simulationConfiguration;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
-         var buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
-         _buildConfiguration = buildConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         var simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
+         _simulationConfiguration = simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
       }
 
       [Observation]
       public void should_set_negative_values_allowed_true_to_predefined_compartments_and_molecules()
       {
-         var msv = _buildConfiguration.MoleculeStartValues;
+         var msv = _simulationConfiguration.All<InitialConditionsBuildingBlock>().SelectMany(x => x);
          var moleculesWithAllowedNegativeValues = (from molecule in msv
             where molecule.NegativeValuesAllowed
             select molecule).ToList();
@@ -301,6 +303,13 @@ namespace PKSim.IntegrationTests
       public void should_be_able_to_create_the_simulation()
       {
          _simulation.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_remove_all_initial_conditions_not_present_by_default()
+      {
+         var initialConditions = _simulationConfiguration.ModuleConfigurations[0].SelectedInitialConditions;
+         initialConditions.Count(x => !x.IsPresent).ShouldBeEqualTo(0);
       }
 
       [Observation]
@@ -333,10 +342,8 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
 
-         var enzymeFactory = IoC.Resolve<IIndividualEnzymeFactory>();
-         var individualProtein = enzymeFactory.AddMoleculeTo(_individual, _enzymeName);
-         individualProtein.Ontogeny = new UserDefinedOntogeny() {Table = createOntogenyTable()};
-         _individual.AddMolecule(individualProtein.DowncastTo<IndividualEnzyme>().WithName(_enzymeName));
+         DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual, _enzymeName,
+            x => x.Molecule.Ontogeny = new UserDefinedOntogeny {Table = createOntogenyTable()});
 
          var containerTask = IoC.Resolve<IContainerTask>();
          _individual.OriginData.Age = new OriginDataParameter(2);
@@ -370,7 +377,7 @@ namespace PKSim.IntegrationTests
             if (parameter.Value.NameIsOneOf(CoreConstants.Parameters.MEAN_HEIGHT, CoreConstants.Parameters.MEAN_WEIGHT))
                continue;
 
-            if (parameter.Value.Formula.DistributionType() == DistributionTypes.Discrete)
+            if (parameter.Value.Formula.DistributionType == DistributionType.Discrete)
                continue;
 
             //only one point for this parameters
@@ -389,6 +396,28 @@ namespace PKSim.IntegrationTests
          Assert.IsTrue(errorList.Count == 0, errorList.ToString("\n"));
       }
 
+      [Observation]
+      public void should_have_removed_the_sub_parameters_of_distributed_parameters()
+      {
+         var parameters = _simulation.Model.Root.GetAllChildren<IParameter>(x => x.EntityPath().Contains(CoreConstants.Parameters.HCT));
+         //only the main parameter should be present, not the sub parameters
+         parameters.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_new_parameter_should_be_readonly()
+      {
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.HCT);
+         parameter.Editable.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_distributed_parameter_should_have_been_replaced_with_a_parameter()
+      {
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.HCT);
+         parameter.IsDistributed().ShouldBeFalse();
+      }
+
       private void checkOntogenyFactorIsDefinedAsTableFormula(IParameter simParameter, List<string> errorList, string parameterKey)
       {
          var formula = simParameter.Formula;
@@ -404,6 +433,32 @@ namespace PKSim.IntegrationTests
          var formula = simParameter.Formula;
          if (formula.IsAnImplementationOf<DistributedTableFormula>()) return;
          errorList.Add($"Parameters '{parameterKey}' was not replaced with table formula (formula type is '{simParameter.Formula.GetType().Name})");
+      }
+   }
+
+   public class When_creating_an_individual_simulation_for_a_human_having_an_age_supporting_ontogeny_table : concern_for_IndividualSimulation
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _individual.OriginData.Age = new OriginDataParameter(0);
+         _individual.AgeParameter.Value = 0;
+
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_be_able_to_create_the_simulation()
+      {
+         _simulation.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_have_defined_the_ontogeny_table_parameters_as_table()
+      {
+         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.ONTOGENY_FACTOR_AGP_TABLE).Formula.ShouldBeAnInstanceOf<TableFormula>();
+         _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Parameters.ONTOGENY_FACTOR_ALBUMIN_TABLE).Formula.ShouldBeAnInstanceOf<TableFormula>();
       }
    }
 
@@ -560,9 +615,6 @@ namespace PKSim.IntegrationTests
       public void should_create_required_molecules_in_subcompartments_of_endogenous_igg_organ()
       {
          string fcRn = CoreConstants.Molecule.FcRn;
-         const string fcRnKineticsEndosome = "FcRn kinetics endosome";
-         const string fcRnKineticsInterstitial = "FcRn kinetics interstitial";
-         const string fcRnKineticsPlasma = "FcRn kinetics plasma";
          string ligandEndo = CoreConstants.Molecule.LigandEndo;
          string ligandEndoComplex = CoreConstants.Molecule.LigandEndoComplex;
 
@@ -572,19 +624,19 @@ namespace PKSim.IntegrationTests
          var plasma = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.PLASMA);
          var endoIggPlasmaMoleculeNames = moleculeNamesIn(plasma);
 
-         endoIggPlasmaMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsPlasma, ligandEndo, ligandEndoComplex);
+         endoIggPlasmaMoleculeNames.ShouldOnlyContain(fcRn, ligandEndo, ligandEndoComplex);
 
          // interstitial 
          var interstitial = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.INTERSTITIAL);
          var endoIggInterstitialMoleculeNames = moleculeNamesIn(interstitial);
 
-         endoIggInterstitialMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsInterstitial, ligandEndo, ligandEndoComplex);
+         endoIggInterstitialMoleculeNames.ShouldOnlyContain(fcRn, ligandEndo, ligandEndoComplex);
 
          // endosome
          var endosome = endoIgg.GetSingleChildByName<IContainer>(CoreConstants.Compartment.ENDOSOME);
          var endoIggEndosomeMoleculeNames = moleculeNamesIn(endosome);
 
-         endoIggEndosomeMoleculeNames.ShouldOnlyContain(fcRn, fcRnKineticsEndosome, ligandEndo, ligandEndoComplex);
+         endoIggEndosomeMoleculeNames.ShouldOnlyContain(fcRn, ligandEndo, ligandEndoComplex);
 
          // IgG_Source
          var iggSrc = endoIgg.GetSingleChildByName<IContainer>("IgG_Source");
@@ -607,13 +659,13 @@ namespace PKSim.IntegrationTests
 
       private IEnumerable<string> moleculeNamesIn(IContainer container)
       {
-         return (from molecule in container.GetAllChildren<IMoleculeAmount>()
+         return (from molecule in container.GetAllChildren<MoleculeAmount>()
             select molecule.Name).ToList();
       }
 
       private IEnumerable<string> reactionNamesIn(IContainer container)
       {
-         return (from molecule in container.GetAllChildren<IReaction>()
+         return (from molecule in container.GetAllChildren<Reaction>()
             select molecule.Name).ToList();
       }
 
@@ -712,6 +764,23 @@ namespace PKSim.IntegrationTests
       }
    }
 
+   public class When_retrieving_the_building_block_name_for_a_simulation_having_multiple_building_of_the_same_type : concern_for_IndividualSimulation
+   {
+      private Compound _compound2;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _compound2 = DomainFactoryForSpecs.CreateStandardCompound().WithName("COMP_FIRST");
+         _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, new[] {_compound2, _compound}, new[] {_protocol, DomainFactoryForSpecs.CreateStandardIVProtocol()}).DowncastTo<IndividualSimulation>();
+      }
+
+      [Observation]
+      public void should_return_the_first_building_block()
+      {
+         _simulation.BuildingBlockName(PKSimBuildingBlockType.Compound).ShouldBeEqualTo(_compound2.Name);
+      }
+   }
 
    public class When_cloning_a_simulation : concern_for_IndividualSimulation
    {
@@ -816,8 +885,8 @@ namespace PKSim.IntegrationTests
 
       protected async Task RunSimulationTest()
       {
-         var simulationEngine = IoC.Resolve<ISimulationRunner>();
-         await simulationEngine.RunSimulation(_simulation, _simulationRunOptions);
+         var simulationRunner = IoC.Resolve<ISimulationRunner>();
+         await simulationRunner.RunSimulation(_simulation, _simulationRunOptions);
          _simulation.HasResults.ShouldBeTrue();
       }
 
@@ -967,6 +1036,25 @@ namespace PKSim.IntegrationTests
       public When_creating_an_individual_simulation_with_drug_and_inductor_for_all_active_transport_processes()
          : base(CoreConstantsForSpecs.Process.INDUCTION)
       {
+      }
+   }
+
+   public class When_creating_a_simulation_by_overwriting_some_parameter_in_individual_such_as_fraction_of_blood : concern_for_IndividualSimulation
+   {
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         //set parameter to a value that we want to check in the simulation
+         var parameter = _individual.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.BONE, "Fraction of blood for sampling");
+         parameter.Value = 0.5;
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+      }
+
+      [Observation]
+      public void should_have_updated_the_parameters_in_the_simulation()
+      {
+         var parameter = _simulation.Model.Root.EntityAt<IParameter>(Constants.ORGANISM, CoreConstants.Organ.BONE, "Fraction of blood for sampling");
+         parameter.Value.ShouldBeEqualTo(0.5);
       }
    }
 }

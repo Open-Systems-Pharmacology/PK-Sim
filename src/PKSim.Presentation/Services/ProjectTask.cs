@@ -226,16 +226,16 @@ namespace PKSim.Presentation.Services
       {
          if (!shouldCloseProject()) return;
 
-         closeProject();
 
          using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
          {
             var project = presenter.LoadProject();
+            //Action was canceled, do not change anything
             if (project == null)
-            {
-               createNewProject();
                return;
-            }
+
+            //Make sure we close the project before loading the new one from snapshot
+            closeProject();
 
             _workspace.AddCommand(new LoadProjectFromSnapshotCommand(_workspace, project, presenter.SnapshotFile).Run(_executionContext));
          }

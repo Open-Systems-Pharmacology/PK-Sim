@@ -10,14 +10,12 @@ namespace PKSim.Core.Services
 {
    public interface IParameterQuery
    {
-      IEnumerable<ParameterRateMetaData> ParameterRatesFor(IContainer parameterContainer, IEnumerable<string> calculationMethods);
       IEnumerable<ParameterRateMetaData> ParameterRatesFor(IContainer parameterContainer, IEnumerable<string> calculationMethods, Func<ParameterMetaData, bool> predicate);
 
-      IEnumerable<ParameterValueMetaData> ParameterValuesFor(IContainer parameterContainer, OriginData originData);
       IEnumerable<ParameterValueMetaData> ParameterValuesFor(IContainer parameterContainer, OriginData originData, Func<ParameterMetaData, bool> predicate);
 
       IReadOnlyList<ParameterDistributionMetaData> ParameterDistributionsFor(IContainer parameterContainer, SpeciesPopulation population, SubPopulation subPopulation, string parameterName);
-      IEnumerable<ParameterDistributionMetaData> ParameterDistributionsFor(IContainer parameterContainer, OriginData originData);
+
       IEnumerable<ParameterDistributionMetaData> ParameterDistributionsFor(IContainer parameterContainer, OriginData originData, Func<ParameterMetaData, bool> predicate);
 
       IEnumerable<ParameterDistributionMetaData> AllParameterDistributionsFor(OriginData originData);
@@ -41,23 +39,17 @@ namespace PKSim.Core.Services
          _entityPathResolver = entityPathResolver;
       }
 
-      public IEnumerable<ParameterRateMetaData> ParameterRatesFor(IContainer parameterContainer, IEnumerable<string> calculationMethods)
-      {
-         return ParameterRatesFor(parameterContainer, calculationMethods, x => true);
-      }
 
       public IEnumerable<ParameterRateMetaData> ParameterRatesFor(IContainer parameterContainer, IEnumerable<string> calculationMethods, Func<ParameterMetaData, bool> predicate)
       {
+         if(calculationMethods==null)
+            return Enumerable.Empty<ParameterRateMetaData>();
+
          var containerPath = _entityPathResolver.PathFor(parameterContainer);
          return from parameterRateDefinition in _parameterRateRepository.AllFor(containerPath)
                 where predicate(parameterRateDefinition)
                 where calculationMethods.Contains(parameterRateDefinition.CalculationMethod)
                 select parameterRateDefinition;
-      }
-
-      public IEnumerable<ParameterValueMetaData> ParameterValuesFor(IContainer parameterContainer, OriginData originData)
-      {
-         return ParameterValuesFor(parameterContainer, originData, x => true);
       }
 
       public IEnumerable<ParameterValueMetaData> ParameterValuesFor(IContainer parameterContainer, OriginData originData, Func<ParameterMetaData, bool> predicate)
@@ -79,11 +71,6 @@ namespace PKSim.Core.Services
          return distributedParameterMetaDataFor(_parameterDistributionRepository.AllFor(containerPath), population, subPopulation)
             .Where(p => string.Equals(p.ParameterName, parameterName))
             .ToList();
-      }
-
-      public IEnumerable<ParameterDistributionMetaData> ParameterDistributionsFor(IContainer parameterContainer, OriginData originData)
-      {
-         return ParameterDistributionsFor(parameterContainer, originData, x => true);
       }
 
       public IEnumerable<ParameterDistributionMetaData> ParameterDistributionsFor(IContainer parameterContainer, OriginData originData, Func<ParameterMetaData, bool> predicate)

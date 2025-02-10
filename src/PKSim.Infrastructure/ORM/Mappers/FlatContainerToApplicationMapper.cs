@@ -15,11 +15,11 @@ using PKSim.Infrastructure.ORM.Repositories;
 
 namespace PKSim.Infrastructure.ORM.Mappers
 {
-   public interface IFlatContainerToApplicationMapper : IMapper<FlatContainer, IApplicationBuilder>
+   public interface IFlatContainerToApplicationMapper : IMapper<FlatContainer, ApplicationBuilder>
    {
    }
 
-   public class FlatContainerToApplicationMapper : FlatContainerIdToContainerMapperBase<IApplicationBuilder>, IFlatContainerToApplicationMapper
+   public class FlatContainerToApplicationMapper : FlatContainerIdToContainerMapperBase<ApplicationBuilder>, IFlatContainerToApplicationMapper
    {
       private readonly IParameterContainerTask _parameterContainerTask;
       private readonly IApplicationTransportRepository _applicationTransportRepository;
@@ -42,7 +42,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          _eventMapper = eventMapper;
       }
 
-      public IApplicationBuilder MapFrom(FlatContainer flatApplicationContainer)
+      public ApplicationBuilder MapFrom(FlatContainer flatApplicationContainer)
       {
          var applicationBuilder = MapCommonPropertiesFrom(flatApplicationContainer);
 
@@ -60,17 +60,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          //Add substructure (subcontainers with parameters and events)
          addApplicationStructureTo(applicationBuilder);
 
-         //add application (=event group) source criteria
-         //Each application will be settled under ApplicationSet-Container of
-         //the simulation
-         addApplicationSourceCriteria(applicationBuilder);
-
          return applicationBuilder;
-      }
-
-      private static void addApplicationSourceCriteria(IApplicationBuilder applicationBuilder)
-      {
-         applicationBuilder.SourceCriteria.Add(new MatchTagCondition(Constants.APPLICATIONS));
       }
 
       private void addEvents(IContainer container)
@@ -83,7 +73,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
          }
       }
 
-      private void createParentFormulation(IApplicationBuilder applicationBuilder, int? formulationContainerId)
+      private void createParentFormulation(ApplicationBuilder applicationBuilder, int? formulationContainerId)
       {
          var flatFormulation = _flatContainerRepository.ContainerFrom(formulationContainerId);
          var formulation = _objectBaseFactory.Create<IContainer>().WithName(flatFormulation.Name);
@@ -131,7 +121,7 @@ namespace PKSim.Infrastructure.ORM.Mappers
       /// <summary>
       ///    Add application processes to the application builder
       /// </summary>
-      private void addApplicationProcessesTo(IApplicationBuilder applicationBuilder)
+      private void addApplicationProcessesTo(ApplicationBuilder applicationBuilder)
       {
          var applicationProcess = _applicationTransportRepository.TransportsFor(applicationBuilder.Name);
          applicationProcess.Each(applicationBuilder.AddTransport);

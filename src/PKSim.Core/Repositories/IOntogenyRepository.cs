@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Maths.Random;
 using OSPSuite.Utility.Collections;
@@ -12,8 +14,12 @@ namespace PKSim.Core.Repositories
       double OntogenyFactorFor(Ontogeny ontogeny, string containerName, OriginData originData, RandomGenerator randomGenerator = null);
       double OntogenyFactorFor(Ontogeny ontogeny, string containerName, double? age, double? gestationalAge, RandomGenerator randomGenerator);
 
-      double PlasmaProteinOntogenyFactor(string protein, OriginData originData, RandomGenerator randomGenerator = null);
-      double PlasmaProteinOntogenyFactor(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator);
+      DataRepository OntogenyToRepository(Ontogeny ontogeny, string containerName);
+      DistributedTableFormula DataRepositoryToDistributedTableFormula(DataRepository ontogenyDataRepository);
+      DistributedTableFormula OntogenyToDistributedTableFormula(Ontogeny ontogeny, string containerName);
+
+      DistributedTableFormula PlasmaProteinOntogenyTableFormula(string protein, OriginData originData);
+      double PlasmaProteinOntogenyValueFor(string protein, double? age, double? gestationalAge, string species, RandomGenerator randomGenerator);
 
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny);
       IReadOnlyList<OntogenyMetaData> AllValuesFor(Ontogeny ontogeny, string containerName);
@@ -37,7 +43,7 @@ namespace PKSim.Core.Repositories
       /// <returns>A set of Sample {X = age, Y = factor}</returns>
       IReadOnlyList<Sample> AllPlasmaProteinOntogenyFactorForStrictBiggerThanPMA(string parameterName, OriginData originData, RandomGenerator randomGenerator = null);
 
-      ICache<string, string> SupportedProteins { get; }
+      IReadOnlyList<SupportedProtein> SupportedProteins { get; }
 
       /// <summary>
       /// Returns the parameter distribution associated with the ontogeny for the PMA defined in OriginData at location <paramref name="containerName"/>

@@ -1,16 +1,14 @@
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Core.Model.Extensions;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Formulas;
 
 namespace PKSim.Core
 {
    public class When_retrieving_the_distribution_type_for_a_formula : StaticContextSpecification
    {
-      private IDistributionFormula _normalDistributionFormula;
-      private IDistributionFormula _logNormalDistributionFormula;
+      private DistributionFormula _normalDistributionFormula;
+      private DistributionFormula _logNormalDistributionFormula;
       private UniformDistributionFormula _uniformDistributionFormula;
 
       protected override void Context()
@@ -23,9 +21,9 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_accurate_distribution_type()
       {
-         _normalDistributionFormula.DistributionType().ShouldBeEqualTo(DistributionTypes.Normal);
-         _logNormalDistributionFormula.DistributionType().ShouldBeEqualTo(DistributionTypes.LogNormal);
-         _uniformDistributionFormula.DistributionType().ShouldBeEqualTo(DistributionTypes.Uniform);
+         _normalDistributionFormula.DistributionType.ShouldBeEqualTo(DistributionType.Normal);
+         _logNormalDistributionFormula.DistributionType.ShouldBeEqualTo(DistributionType.LogNormal);
+         _uniformDistributionFormula.DistributionType.ShouldBeEqualTo(DistributionType.Uniform);
       }
    }
 }

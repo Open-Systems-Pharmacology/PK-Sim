@@ -1,30 +1,39 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using OSPSuite.Core.Diagram;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.UI.Diagram.Managers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO;
 using PKSim.Presentation.DTO.Mappers;
-using OSPSuite.Core.Diagram;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.UI.Diagram.Managers;
 
 namespace PKSim.UI.Mappers
 {
    public class SimulationToSimulationReactionDiagramDTOMapper : ISimulationToSimulationReactionDiagramDTOMapper
    {
       private readonly IReactionBuildingBlockCreator _reactionBuildingBlockCreator;
+      private readonly IDiagramModelFactory _diagramModelFactory;
 
-      public SimulationToSimulationReactionDiagramDTOMapper(IReactionBuildingBlockCreator reactionBuildingBlockCreator)
+      public SimulationToSimulationReactionDiagramDTOMapper(
+         IReactionBuildingBlockCreator reactionBuildingBlockCreator, IDiagramModelFactory diagramModelFactory)
       {
          _reactionBuildingBlockCreator = reactionBuildingBlockCreator;
+         _diagramModelFactory = diagramModelFactory;
       }
 
-      public SimulationReactionDiagramDTO MapFrom(Simulation simulation)
+      public SimulationReactionDiagramDTO MapFrom(Simulation simulation, bool recreateDiagram)
       {
+         //Note: We do not use the building block in the simulation here as it MIGHT be out of date due to 
+         //simulation being configured
+         var reactionBuildingBlockInSimulation = simulation.Reactions.FirstOrDefault();
+         var shouldRecreateBuildingBlock = reactionBuildingBlockInSimulation == null || recreateDiagram;
+         var reactionBuildingBlock = shouldRecreateBuildingBlock ? _reactionBuildingBlockCreator.CreateFor(simulation) : reactionBuildingBlockInSimulation;
          var dto = new SimulationReactionDiagramDTO
          {
-            DiagramModel = simulation.ReactionDiagramModel,
-            ReactionBuildingBlock = simulation.Reactions ?? _reactionBuildingBlockCreator.CreateFor(simulation),
+            DiagramModel = recreateDiagram ? _diagramModelFactory.Create() : simulation.ReactionDiagramModel,
+            ReactionBuildingBlock = reactionBuildingBlock,
             DiagramManager = new ReactionDiagramManager<SimulationReactionDiagramDTO>()
          };
 
@@ -33,19 +42,19 @@ namespace PKSim.UI.Mappers
          return dto;
       }
 
-      private void reIdNodesFromNewBuildingBlock(IDiagramModel diagramModel, IEnumerable<IReactionBuilder> reactionBuildingBlock)
+      private void reIdNodesFromNewBuildingBlock(IDiagramModel diagramModel, IEnumerable<ReactionBuilder> reactionBuildingBlock)
       {
          if (diagramModel == null || reactionBuildingBlock == null)
             return;
 
          var reIdentifiedNodes = new Dictionary<string, string>();
 
-         reactionBuildingBlock.Each(builder =>
+         reactionBuildingBlock.Each(reaction =>
          {
-            var oldNode = diagramModel.FindByName(builder.Name);
+            var oldNode = diagramModel.FindByName(reaction.Name);
             if (oldNode == null) return;
-            if (!string.Equals(oldNode.Id, builder.Id))
-               reIdentifiedNodes.Add(oldNode.Id, builder.Id);
+            if (!string.Equals(oldNode.Id, reaction.Id))
+               reIdentifiedNodes.Add(oldNode.Id, reaction.Id);
          });
 
 

@@ -49,7 +49,7 @@ namespace PKSim.Core
          base.Context();
          _simulation = A.Fake<Simulation>();
          _protocol = A.Fake<Protocol>();
-         _simulation.SimulationSettings = null;
+         _simulation.Settings = null;
          _currentEndTimeInHours = 50;
          _currentEndTimeInMinutes = _currentEndTimeInHours * 60;
          _highResolutionInterval = A.Fake<OutputInterval>();

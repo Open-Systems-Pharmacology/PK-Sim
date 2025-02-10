@@ -1,21 +1,11 @@
 ﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Assets;
 
 namespace PKSim.Core.Extensions
 {
    public static class FormulaExtensions
    {
-      public static TFormula InitializedWith<TFormula>(this TFormula tableFormula, string xName, string yName, IDimension xDimension, IDimension yDimension) where TFormula : TableFormula
-      {
-         tableFormula.XName = xName;
-         tableFormula.YName = yName;
-         tableFormula.XDimension = xDimension;
-         tableFormula.Dimension = yDimension;
-         return tableFormula;
-      }
-
       public static void ReplaceKeywordInObjectPaths(
          this IFormula formula,
          string keyword,
@@ -43,6 +33,19 @@ namespace PKSim.Core.Extensions
             for (int i = 0; i < keywords.Length; i++)
             {
                objectPath.Replace(keywords[i], replacementValues[i]);
+            }
+         }
+
+         //---- for sum formulas: replace keywords in tags
+         var sumFormula = formula as SumFormula;
+         if (sumFormula == null)
+            return;
+
+         foreach (var condition in sumFormula.Criteria)
+         {
+            for (int i = 0; i < keywords.Length; i++)
+            {
+               condition.Replace(keywords[i], replacementValues[i]);
             }
          }
       }

@@ -1,20 +1,20 @@
-﻿using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Services;
-using OSPSuite.Utility.Extensions;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Binders;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Views.Compounds;
-using PKSim.UI.Views.Core;
-using OSPSuite.Presentation.Views;
-using OSPSuite.UI.Binders;
-using OSPSuite.UI.Extensions;
+using UxGridView = OSPSuite.UI.Controls.UxGridView;
 
 namespace PKSim.UI.Views.Compounds
 {
@@ -56,7 +56,7 @@ namespace PKSim.UI.Views.Compounds
          return _addAndRemoveButtonRepository;
       }
 
-      protected override void OnValueColumnMouseDown(UxGridView gridView, GridColumn col, int rowHandle)
+      protected override void OnValueColumnMouseDown(UxGridView uxGridView, GridColumn col, int rowHandle)
       {
          var parameterAlternativeDTO = _gridViewBinder.ElementAt(rowHandle);
          if (parameterAlternativeDTO == null) return;
@@ -97,7 +97,7 @@ namespace PKSim.UI.Views.Compounds
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
       }
 
-      private ICompoundParameterGroupWithCalculatedDefaultPresenter withCalculatedDefaultPresenter => 
+      private ICompoundParameterGroupWithCalculatedDefaultPresenter withCalculatedDefaultPresenter =>
          _presenter.DowncastTo<ICompoundParameterGroupWithCalculatedDefaultPresenter>();
    }
 }

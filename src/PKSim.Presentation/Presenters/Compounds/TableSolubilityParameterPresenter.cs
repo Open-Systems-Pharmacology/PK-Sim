@@ -1,7 +1,9 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Views.Parameters;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Parameters;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
@@ -9,11 +11,26 @@ namespace PKSim.Presentation.Presenters.Compounds
    {
    }
 
-   public class TableSolubilityParameterPresenter : TableParameterPresenter<ITableParameterView>, ITableSolubilityParameterPresenter
+   public class TableSolubilityParameterPresenter : TableParameterPresenter<ITableFormulaView>, ITableSolubilityParameterPresenter
    {
-      public TableSolubilityParameterPresenter(ITableParameterView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner, ICompoundAlternativeTask compoundAlternativeTask) :
-         base(view, parameterTask, formulaFactory, cloner, compoundAlternativeTask.ImportSolubilityTableFormula)
+      private readonly ICompoundAlternativeTask _compoundAlternativeTask;
+
+      public TableSolubilityParameterPresenter(ITableFormulaView view, IParameterTask parameterTask, IFormulaFactory formulaFactory, ICloner cloner, ICompoundAlternativeTask compoundAlternativeTask) :
+         base(view, parameterTask, formulaFactory, cloner)
       {
+         _compoundAlternativeTask = compoundAlternativeTask;
+      }
+
+      protected override TableFormula TablePointsToTableFormula(DataRepository importedTablePoints)
+      {
+         return _compoundAlternativeTask.TableFormulaFrom(importedTablePoints);
+      }
+
+      public override bool CanImport => true;
+
+      protected override DataRepository ImportTablePoints()
+      {
+         return _compoundAlternativeTask.ImportSolubilityTablePoints();
       }
    }
-}	
+}

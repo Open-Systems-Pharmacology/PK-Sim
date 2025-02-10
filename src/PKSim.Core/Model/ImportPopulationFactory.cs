@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -106,7 +107,7 @@ namespace PKSim.Core.Model
             if (_allCreateIndividualParameters.Contains(parameterPath))
                continue;
 
-            var advancedParameter = _advancedParameterFactory.Create(_allParameters[parameterPath], DistributionTypes.Unknown);
+            var advancedParameter = _advancedParameterFactory.Create(_allParameters[parameterPath], DistributionType.Unknown);
 
             //do not generate random values as these were loaded from files
             importPopulation.AddAdvancedParameter(advancedParameter, generateRandomValues: false);

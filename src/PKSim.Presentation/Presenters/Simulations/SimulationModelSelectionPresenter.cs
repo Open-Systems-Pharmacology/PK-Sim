@@ -59,7 +59,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       public void ModelSelectionChanging(ModelConfiguration newModelConfiguration)
       {
          ModelConfiguration = newModelConfiguration;
-         _modelPropertiesToUse = _modelPropertiesTask.Update(ModelProperties, _modelPropertiesTask.DefaultFor(newModelConfiguration, _originData), _originData);
+         _modelPropertiesToUse = _modelPropertiesTask.DefaultFor(newModelConfiguration, _originData);
       }
 
       public void ModelSelectionChanged()
@@ -93,10 +93,9 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       private void editModelProperties(ModelProperties newModelProperties)
       {
-         var modelProperties = _modelPropertiesTask.Update(ModelProperties, newModelProperties, _originData);
-         _modelConfigurationDTO = new ModelConfigurationDTO {ModelConfiguration = modelProperties.ModelConfiguration};
+         _modelConfigurationDTO = new ModelConfigurationDTO {ModelConfiguration = newModelProperties.ModelConfiguration};
          _view.BindTo(_modelConfigurationDTO);
-         updateModelProperties(modelProperties);
+         updateModelProperties(newModelProperties);
       }
 
       private void updateModelProperties(ModelProperties modelProperties)
@@ -112,6 +111,6 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public ModelProperties ModelProperties => _modelPropertiesMapper.MapFrom(_modelConfigurationDTO);
 
-      private ModelConfiguration selectedModelConfiguration => _modelConfigurationDTO != null ? _modelConfigurationDTO.ModelConfiguration : null;
+      private ModelConfiguration selectedModelConfiguration => _modelConfigurationDTO?.ModelConfiguration;
    }
 }

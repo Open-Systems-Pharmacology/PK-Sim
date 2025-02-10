@@ -11,6 +11,7 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.IntegrationTests
 {
@@ -21,7 +22,7 @@ namespace PKSim.IntegrationTests
       protected Individual _individual;
       protected Population _population;
       protected IEntityPathResolver _entityPathResolver;
-      protected IBuildConfigurationTask _buildConfigurationTask;
+      protected ISimulationConfigurationTask _simulationConfigurationTask;
 
       public override void GlobalContext()
       {
@@ -31,7 +32,7 @@ namespace PKSim.IntegrationTests
          _individual = DomainFactoryForSpecs.CreateStandardIndividual(CoreConstants.Population.PRETERM);
          _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _entityPathResolver = IoC.Resolve<IEntityPathResolver>();
-         _buildConfigurationTask = IoC.Resolve<IBuildConfigurationTask>();
+         _simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
       }
    }
 
@@ -87,18 +88,6 @@ namespace PKSim.IntegrationTests
          organism.Parameter(CoreConstants.Parameters.AGE_0).ShouldNotBeNull();
          organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR).ShouldNotBeNull();
       }
-
-      [Observation]
-      public void should_have_added_the_age_0_parameter_and_the_min_to_year_conversion_factor_to_the_parameter_start_values()
-      {
-         var organism = _simulation.Model.Root.Container(Constants.ORGANISM);
-         var age0Path = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.AGE_0));
-         var minToYearFactorPath = _entityPathResolver.ObjectPathFor(organism.Parameter(CoreConstants.Parameters.MIN_TO_YEAR_FACTOR));
-         var buildConfiguration = _buildConfigurationTask.CreateFor(_simulation, shouldValidate: false, createAgingDataInSimulation: true);
-         var psv = buildConfiguration.ParameterStartValues;
-         psv[age0Path].ShouldNotBeNull();
-         psv[minToYearFactorPath].ShouldNotBeNull();
-      }
    }
 
    public class When_constructing_an_adult_population_simulation_aging : concern_for_DistributedParameterToTableParameterConverter<IndividualSimulation>
@@ -107,10 +96,19 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
-
          _simulation = DomainFactoryForSpecs.CreateModelLessSimulationWith(_individual, _compound, _iv).DowncastTo<IndividualSimulation>();
          _simulation.AllowAging = true;
          DomainFactoryForSpecs.AddModelToSimulation(_simulation);
+         
+      }
+
+      [Observation]
+      public void should_be_able_to_run_the_simulation()
+      {
+         var simulationRunner = IoC.Resolve<ISimulationRunner>();
+         //this config may lead to negative values. We want to check here that the simulation can run without errors
+         simulationRunner.RunSimulation(_simulation, new SimulationRunOptions{CheckForNegativeValues = false}).Wait();
+         _simulation.HasResults.ShouldBeTrue();
       }
 
       [Observation]
@@ -122,7 +120,9 @@ namespace PKSim.IntegrationTests
             if (parameterName.Equals(CoreConstants.Parameters.ONTOGENY_FACTOR_AGP))
                continue; //new ontogeny is defined up to 90 years, so the table will not be replaced by const
 
-            organism.Parameter(parameterName).Formula.ShouldBeAnInstanceOf<ConstantFormula>();
+
+            //Parameter are by default table formula with X Arguments 
+            organism.Parameter(parameterName).Formula.ShouldBeAnInstanceOf<TableFormulaWithXArgument>();
          }
       }
    }

@@ -44,7 +44,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _results = sut.ParameterDistributionsFor(_container, _originData);
+         _results = sut.ParameterDistributionsFor(_container, _originData, x=>true);
       }
       
       [Observation]
@@ -67,7 +67,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         _results = sut.ParameterDistributionsFor(_container, _originData);
+         _results = sut.ParameterDistributionsFor(_container, _originData, x => true);
       }
 
       [Observation]

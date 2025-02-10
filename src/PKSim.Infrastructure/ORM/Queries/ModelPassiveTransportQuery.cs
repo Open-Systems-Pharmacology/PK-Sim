@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.ORM.Queries
 {
@@ -17,9 +18,9 @@ namespace PKSim.Infrastructure.ORM.Queries
       private readonly IPassiveTransportRepository _passiveTransportRepo;
 
       public ModelPassiveTransportQuery(IObjectBaseFactory objectBaseFactory,
-                                        IPassiveTransportRepository passiveTransportRepo,
-                                        ICloneManagerForBuildingBlock cloneManager,
-                                        IModelPassiveTransportMoleculeNameRepository modelPassiveTransportMoleculeNameRepo)
+         IPassiveTransportRepository passiveTransportRepo,
+         ICloneManagerForBuildingBlock cloneManager,
+         IModelPassiveTransportMoleculeNameRepository modelPassiveTransportMoleculeNameRepo)
       {
          _objectBaseFactory = objectBaseFactory;
          _passiveTransportRepo = passiveTransportRepo;
@@ -27,10 +28,10 @@ namespace PKSim.Infrastructure.ORM.Queries
          _modelPassiveTransportMoleculeNameRepo = modelPassiveTransportMoleculeNameRepo;
       }
 
-      public IPassiveTransportBuildingBlock AllPassiveTransportsFor(Simulation simulation)
+      public PassiveTransportBuildingBlock AllPassiveTransportsFor(Simulation simulation)
       {
-         var passiveTransportBuilderCollection = _objectBaseFactory.Create<IPassiveTransportBuildingBlock>()
-            .WithName(simulation.Name);
+         var passiveTransportBuilderCollection = _objectBaseFactory.Create<PassiveTransportBuildingBlock>()
+            .WithName(DefaultNames.PassiveTransportBuildingBlock);
 
          var modelProperties = simulation.ModelProperties;
          var compoundNames = simulation.AllBuildingBlocks<Compound>().AllNames().ToList();

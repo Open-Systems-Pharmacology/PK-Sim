@@ -4,18 +4,17 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.RepositoryItems;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.PopulationAnalyses;
 using PKSim.Presentation.Presenters.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using PKSim.UI.Views.Core;
 
 namespace PKSim.UI.Views.PopulationAnalyses
 {
@@ -71,7 +70,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
          _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(getButtonRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH * 2);

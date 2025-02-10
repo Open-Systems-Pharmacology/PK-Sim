@@ -40,7 +40,7 @@ namespace PKSim.Core
 
          _tableFormula.AddPoint(60, 1); //60 min, 1m
          _tableFormula.AddPoint(120, 2); //120 min, 2m
-         _tableFormula.AllPoints().ElementAt(1).RestartSolver = true;
+         _tableFormula.AllPoints.ElementAt(1).RestartSolver = true;
 
          A.CallTo(() => _dimensionRepository.DimensionByName(_tableFormula.XDimension.Name)).Returns(_tableFormula.XDimension);
          A.CallTo(() => _dimensionRepository.DimensionByName(_tableFormula.Dimension.Name)).Returns(_tableFormula.Dimension);
@@ -115,12 +115,12 @@ namespace PKSim.Core
       [Observation]
       public void should_create_one_value_point_for_each_point_defined_in_the_snapshot_formula()
       {
-         _newTableFormula.AllPoints().Count().ShouldBeEqualTo(_tableFormula.AllPoints().Count());
+         _newTableFormula.AllPoints.Count().ShouldBeEqualTo(_tableFormula.AllPoints.Count());
 
-         for (int i = 0; i < _newTableFormula.AllPoints().Count(); i++)
+         for (int i = 0; i < _newTableFormula.AllPoints.Count(); i++)
          {
-            var p1 = _newTableFormula.AllPoints().ElementAt(i);
-            var p2 = _tableFormula.AllPoints().ElementAt(i);
+            var p1 = _newTableFormula.AllPoints.ElementAt(i);
+            var p2 = _tableFormula.AllPoints.ElementAt(i);
             p1.X.ShouldBeEqualTo(p2.X);
             p1.Y.ShouldBeEqualTo(p2.Y);
             p1.RestartSolver.ShouldBeEqualTo(p2.RestartSolver);

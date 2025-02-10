@@ -54,17 +54,17 @@ namespace PKSim.Core
    public class When_finalizing_an_building_block_that_is_an_individual : concern_for_BuildingBlockFinalizer
    {
       private Individual _individual;
-      private INeighborhood _neighborhood1;
-      private INeighborhood _neighborhood2;
+      private Neighborhood _neighborhood1;
+      private Neighborhood _neighborhood2;
 
       protected override void Context()
       {
          base.Context();
          _individual = new Individual();
          var neighborhoods = A.Fake<IContainer>().WithName(Constants.NEIGHBORHOODS);
-         _neighborhood1 = A.Fake<INeighborhood>();
-         _neighborhood2 = A.Fake<INeighborhood>();
-         A.CallTo(() => neighborhoods.GetChildren<INeighborhood>()).Returns(new[] {_neighborhood1, _neighborhood2});
+         _neighborhood1 = A.Fake<Neighborhood>();
+         _neighborhood2 = A.Fake<Neighborhood>();
+         A.CallTo(() => neighborhoods.GetChildren<Neighborhood>()).Returns(new[] {_neighborhood1, _neighborhood2});
          _individual.Add(neighborhoods);
       }
 
@@ -82,7 +82,7 @@ namespace PKSim.Core
       [Observation]
       public void should_replace_the_keyword_used_in_the_individuals()
       {
-         A.CallTo(() => _keywordReplacerTask.ReplaceIn(_individual)).MustHaveHappened();
+         A.CallTo(() => _keywordReplacerTask.ReplaceInSpatialStructure(_individual, A<ReplacementContext>._)).MustHaveHappened();
       }
 
       [Observation]
@@ -95,14 +95,14 @@ namespace PKSim.Core
    public class When_finalizing_an_building_block_that_is_a_simulation : concern_for_BuildingBlockFinalizer
    {
       private Simulation _simulation;
-      private Individual _indvidual;
+      private Individual _individual;
 
       protected override void Context()
       {
          base.Context();
-         _indvidual = A.Fake<Individual>();
+         _individual = A.Fake<Individual>();
          _simulation = A.Fake<Simulation>();
-         A.CallTo(() => _simulation.Individual).Returns(_indvidual);
+         A.CallTo(() => _simulation.Individual).Returns(_individual);
          _simulation.Model = A.Fake<IModel>();
       }
 
@@ -120,7 +120,7 @@ namespace PKSim.Core
       [Observation]
       public void should_finalize_the_individual_in_this_simulation()
       {
-         A.CallTo(() => _neighborhoodFinalizer.SetNeighborsIn(_indvidual)).MustHaveHappened();
+         A.CallTo(() => _neighborhoodFinalizer.SetNeighborsIn(_individual)).MustHaveHappened();
       }
 
       [Observation]

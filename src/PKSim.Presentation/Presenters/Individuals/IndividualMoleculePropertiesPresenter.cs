@@ -8,8 +8,8 @@ namespace PKSim.Presentation.Presenters.Individuals
 {
    public interface IIndividualMoleculePropertiesPresenter : IPresenter<IIndividualMoleculePropertiesView>, IEditParameterPresenter
    {
-      bool OntogenyVisible { set; }
-      bool MoleculeParametersVisible { set; }
+      bool OntogenyVisible { get; set; }
+      bool MoleculeParametersVisible { get; set; }
       void RefreshView();
    }
 
@@ -34,7 +34,8 @@ namespace PKSim.Presentation.Presenters.Individuals
          _ontogenySelectionPresenter = ontogenySelectionPresenter;
          _moleculeParametersPresenter = moleculeParametersPresenter;
          _moleculeParametersPresenter.IsSimpleEditor = true;
-
+         //do not allow scrolling as we will adjust height dynamically
+         _moleculeParametersPresenter.View.AllowVerticalScrolling = false;
          AddSubPresenters(_ontogenySelectionPresenter, _moleculeParametersPresenter);
 
          view.AddOntogenyView(_ontogenySelectionPresenter.View);
@@ -44,18 +45,20 @@ namespace PKSim.Presentation.Presenters.Individuals
       public bool OntogenyVisible
       {
          set => View.OntogenyVisible = value;
+         get => View.OntogenyVisible;
       }
 
       public bool MoleculeParametersVisible
       {
          set => View.MoleculeParametersVisible = value;
+         get => View.MoleculeParametersVisible;
       }
 
       public void Edit(IndividualMolecule molecule, TSimulationSubject simulationSubject)
       {
          var parameters = new[] {molecule.ReferenceConcentration, molecule.HalfLifeLiver, molecule.HalfLifeIntestine};
          _moleculeParametersPresenter.Edit(parameters);
-         _ontogenySelectionPresenter.Edit(molecule, simulationSubject);     
+         _ontogenySelectionPresenter.Edit(molecule, simulationSubject);
          RefreshView();
       }
 

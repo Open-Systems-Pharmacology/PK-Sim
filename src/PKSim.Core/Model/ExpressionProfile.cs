@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Visitor;
-using static PKSim.Core.CoreConstants.ContainerName;
+using static OSPSuite.Core.Domain.Constants.ContainerName;
 
 namespace PKSim.Core.Model
 {
@@ -24,8 +25,15 @@ namespace PKSim.Core.Model
 
       public virtual Species Species => Individual?.Species;
 
+      public virtual DiseaseState DiseaseState => Individual?.OriginData?.DiseaseState;
+
       public ExpressionProfile() : base(PKSimBuildingBlockType.ExpressionProfile)
       {
+      }
+
+      public override IReadOnlyList<T> GetAllChildren<T>()
+      {
+         return Individual.GetAllChildren<T>();
       }
 
       public virtual string MoleculeName => Molecule?.Name;
@@ -38,7 +46,7 @@ namespace PKSim.Core.Model
 
       public override string Name
       {
-         get => ExpressionProfileName(MoleculeName, Species, Category);
+         get => ExpressionProfileName(MoleculeName, Species?.DisplayName, Category);
          set
          {
             if (string.Equals(Name, value))

@@ -13,7 +13,7 @@ namespace PKSim.Core
    public abstract class concern_for_UncompetitiveInhibitionKineticUpdaterSpecification : ContextSpecification<UncompetitiveInhibitionKineticUpdaterSpecification>
    {
       private IDimensionRepository _dimensionRepository;
-      private IObjectPathFactory _objectPathFactory;
+      private ObjectPathFactory _objectPathFactory;
       private InhibitionProcess _competitiveInhibition;
       protected InhibitionProcess _uncompetitiveInhibition2;
       protected InhibitionProcess _uncompetitiveInhibition1;
@@ -127,7 +127,7 @@ namespace PKSim.Core
    public class When_updating_the_references_to_used_parameters_for_the_km_factor_formula_for_an_uncompetitive_inhibition_interactions_with_autoinhibition : concern_for_UncompetitiveInhibitionKineticUpdaterSpecification
    {
       private IParameter _kmFactor;
-      private IReactionBuilder _reaction;
+      private ReactionBuilder _reaction;
 
       protected override void Context()
       {

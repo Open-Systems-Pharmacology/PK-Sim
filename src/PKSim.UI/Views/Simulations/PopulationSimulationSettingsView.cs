@@ -46,7 +46,7 @@ namespace PKSim.UI.Views.Simulations
          _presenter.UpdateSaveSettingsButtonItem(_toolTipCreator, _uxDropDownButton);
          ReplaceExtraButtonWith(_uxDropDownButton);
          tablePanel.AdjustLongButtonWidth(_uxDropDownButton);
-         this.ReziseForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
+         this.ResizeForCurrentScreen(fractionHeight: SCREEN_RESIZE_FRACTION, fractionWidth: SCREEN_RESIZE_FRACTION);
       }
    }
 }

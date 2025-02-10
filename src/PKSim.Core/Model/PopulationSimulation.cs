@@ -42,7 +42,7 @@ namespace PKSim.Core.Model
       /// <param name="tableFormula">TableFormula representing the growth function for the parameter</param>
       public virtual void AddAgingTableFormula(string parameterPath, int individualIndex, TableFormula tableFormula)
       {
-         foreach (var point in tableFormula.AllPoints())
+         foreach (var point in tableFormula.AllPoints)
          {
             AgingData.Add(individualIndex, parameterPath, point.X, point.Y);
          }

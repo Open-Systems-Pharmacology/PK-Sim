@@ -1,3 +1,4 @@
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -22,15 +23,16 @@ namespace PKSim.Presentation.Presenters.Simulations
          ISimulationOutputMappingToOutputMappingDTOMapper outputMappingDTOMapper,
          IQuantityToSimulationQuantitySelectionDTOMapper simulationQuantitySelectionDTOMapper,
          IObservedDataTask observedDataTask,
-         IEventPublisher eventPublisher, 
-         IOutputMappingMatchingTask outputMappingMatchingTask) : 
-         base(view, entitiesInSimulationRetriever, observedDataRepository, outputMappingDTOMapper, simulationQuantitySelectionDTOMapper, observedDataTask, eventPublisher, outputMappingMatchingTask)
+         IEventPublisher eventPublisher,
+         IOutputMappingMatchingTask outputMappingMatchingTask,
+         IOSPSuiteExecutionContext executionContext) :
+         base(view, entitiesInSimulationRetriever, observedDataRepository, outputMappingDTOMapper, simulationQuantitySelectionDTOMapper, observedDataTask, eventPublisher, outputMappingMatchingTask, executionContext)
       {
       }
 
       public void EditSimulation(IndividualSimulation simulation)
       {
-        base.EditSimulation(simulation);
+         base.EditSimulation(simulation);
       }
 
       public void EditSimulation(PopulationSimulation simulation)

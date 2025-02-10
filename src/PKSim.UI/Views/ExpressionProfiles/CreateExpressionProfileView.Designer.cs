@@ -31,37 +31,42 @@ namespace PKSim.UI.Views.ExpressionProfiles
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.cbCategory = new OSPSuite.UI.Controls.UxMRUEdit();
          this.labelCategoryDescription = new DevExpress.XtraEditors.LabelControl();
          this.cbMoleculeName = new OSPSuite.UI.Controls.UxMRUEdit();
-         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
          this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemMoleculeName = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemSpecies = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.cbCategory = new OSPSuite.UI.Controls.UxMRUEdit();
          this.layoutItemCategory = new DevExpress.XtraLayout.LayoutControlItem();
+         this.panelDiseaseState = new DevExpress.XtraEditors.PanelControl();
+         this.layoutItemDiseaseState = new DevExpress.XtraLayout.LayoutControlItem();
+         this.cbSpecies = new PKSim.UI.Views.Core.UxImageComboBoxEdit();
+         this.layoutItemSpecies = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.cbCategory.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeName.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeName)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbCategory.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemCategory)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelDiseaseState)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDiseaseState)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
          // 
-         this.tablePanel.Location = new System.Drawing.Point(0, 133);
+         this.tablePanel.Location = new System.Drawing.Point(0, 131);
          this.tablePanel.Size = new System.Drawing.Size(565, 43);
          // 
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.panelDiseaseState);
          this.layoutControl.Controls.Add(this.cbCategory);
          this.layoutControl.Controls.Add(this.labelCategoryDescription);
          this.layoutControl.Controls.Add(this.cbMoleculeName);
@@ -70,9 +75,20 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.Root = this.Root;
-         this.layoutControl.Size = new System.Drawing.Size(565, 133);
+         this.layoutControl.Size = new System.Drawing.Size(565, 131);
          this.layoutControl.TabIndex = 38;
          this.layoutControl.Text = "uxLayoutControl1";
+         // 
+         // cbCategory
+         // 
+         this.cbCategory.Location = new System.Drawing.Point(144, 60);
+         this.cbCategory.Name = "cbCategory";
+         this.cbCategory.Properties.AllowRemoveMRUItems = false;
+         this.cbCategory.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.cbCategory.Size = new System.Drawing.Size(409, 20);
+         this.cbCategory.StyleController = this.layoutControl;
+         this.cbCategory.TabIndex = 8;
          // 
          // labelCategoryDescription
          // 
@@ -95,17 +111,6 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.cbMoleculeName.StyleController = this.layoutControl;
          this.cbMoleculeName.TabIndex = 4;
          // 
-         // cbSpecies
-         // 
-         this.cbSpecies.Location = new System.Drawing.Point(144, 12);
-         this.cbSpecies.Name = "cbSpecies";
-         this.cbSpecies.Properties.AllowMouseWheel = false;
-         this.cbSpecies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbSpecies.Size = new System.Drawing.Size(409, 20);
-         this.cbSpecies.StyleController = this.layoutControl;
-         this.cbSpecies.TabIndex = 6;
-         // 
          // Root
          // 
          this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -114,9 +119,10 @@ namespace PKSim.UI.Views.ExpressionProfiles
             this.layoutItemMoleculeName,
             this.layoutItemSpecies,
             this.layoutControlItem1,
-            this.layoutItemCategory});
+            this.layoutItemCategory,
+            this.layoutItemDiseaseState});
          this.Root.Name = "Root";
-         this.Root.Size = new System.Drawing.Size(565, 133);
+         this.Root.Size = new System.Drawing.Size(565, 131);
          this.Root.TextVisible = false;
          // 
          // layoutItemMoleculeName
@@ -129,33 +135,14 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutItemMoleculeName.Size = new System.Drawing.Size(545, 24);
          this.layoutItemMoleculeName.TextSize = new System.Drawing.Size(120, 13);
          // 
-         // layoutItemSpecies
-         // 
-         this.layoutItemSpecies.Control = this.cbSpecies;
-         this.layoutItemSpecies.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemSpecies.Name = "layoutItemSpecies";
-         this.layoutItemSpecies.Size = new System.Drawing.Size(545, 24);
-         this.layoutItemSpecies.TextSize = new System.Drawing.Size(120, 13);
-         // 
          // layoutControlItem1
          // 
          this.layoutControlItem1.Control = this.labelCategoryDescription;
          this.layoutControlItem1.Location = new System.Drawing.Point(0, 72);
          this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(545, 41);
+         this.layoutControlItem1.Size = new System.Drawing.Size(545, 17);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
-         // 
-         // cbCategory
-         // 
-         this.cbCategory.Location = new System.Drawing.Point(144, 60);
-         this.cbCategory.Name = "cbCategory";
-         this.cbCategory.Properties.AllowRemoveMRUItems = false;
-         this.cbCategory.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbCategory.Size = new System.Drawing.Size(409, 20);
-         this.cbCategory.StyleController = this.layoutControl;
-         this.cbCategory.TabIndex = 8;
          // 
          // layoutItemCategory
          // 
@@ -165,12 +152,47 @@ namespace PKSim.UI.Views.ExpressionProfiles
          this.layoutItemCategory.Size = new System.Drawing.Size(545, 24);
          this.layoutItemCategory.TextSize = new System.Drawing.Size(120, 13);
          // 
+         // panelDiseaseState
+         // 
+         this.panelDiseaseState.Location = new System.Drawing.Point(12, 101);
+         this.panelDiseaseState.Name = "panelDiseaseState";
+         this.panelDiseaseState.Size = new System.Drawing.Size(541, 18);
+         this.panelDiseaseState.TabIndex = 9;
+         // 
+         // layoutItemDiseaseState
+         // 
+         this.layoutItemDiseaseState.Control = this.panelDiseaseState;
+         this.layoutItemDiseaseState.Location = new System.Drawing.Point(0, 89);
+         this.layoutItemDiseaseState.Name = "layoutItemDiseaseState";
+         this.layoutItemDiseaseState.Size = new System.Drawing.Size(545, 22);
+         this.layoutItemDiseaseState.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemDiseaseState.TextVisible = false;
+         // 
+         // cbSpecies
+         // 
+         this.cbSpecies.Location = new System.Drawing.Point(144, 12);
+         this.cbSpecies.Name = "cbSpecies";
+         this.cbSpecies.Properties.AllowMouseWheel = false;
+         this.cbSpecies.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.cbSpecies.Size = new System.Drawing.Size(409, 20);
+         this.cbSpecies.StyleController = this.layoutControl;
+         this.cbSpecies.TabIndex = 6;
+         // 
+         // layoutItemSpecies
+         // 
+         this.layoutItemSpecies.Control = this.cbSpecies;
+         this.layoutItemSpecies.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemSpecies.Name = "layoutItemSpecies";
+         this.layoutItemSpecies.Size = new System.Drawing.Size(545, 24);
+         this.layoutItemSpecies.TextSize = new System.Drawing.Size(120, 13);
+         // 
          // CreateExpressionProfileView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Caption = "CreateExpressionProfileView";
-         this.ClientSize = new System.Drawing.Size(565, 176);
+         this.ClientSize = new System.Drawing.Size(565, 174);
          this.Controls.Add(this.layoutControl);
          this.Margin = new System.Windows.Forms.Padding(5);
          this.Name = "CreateExpressionProfileView";
@@ -181,14 +203,17 @@ namespace PKSim.UI.Views.ExpressionProfiles
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
+         this.layoutControl.PerformLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.cbCategory.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbMoleculeName.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemMoleculeName)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbCategory.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemCategory)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelDiseaseState)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDiseaseState)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbSpecies.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemSpecies)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -206,5 +231,7 @@ namespace PKSim.UI.Views.ExpressionProfiles
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
       private OSPSuite.UI.Controls.UxMRUEdit cbCategory;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemCategory;
+      private DevExpress.XtraEditors.PanelControl panelDiseaseState;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemDiseaseState;
    }
 }

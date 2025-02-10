@@ -95,7 +95,7 @@ namespace PKSim.CLI
          var simulation = new IndividualSimulation
          {
             Name = simulationName,
-            SimulationSettings = new SimulationSettings(),
+            Settings = new SimulationSettings(),
             DataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor(simulationName)
          };
 

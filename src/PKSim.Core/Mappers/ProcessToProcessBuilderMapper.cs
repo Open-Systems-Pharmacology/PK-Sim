@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -11,7 +13,9 @@ using PKSim.Core.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static OSPSuite.Core.Domain.Constants;
 using static PKSim.Core.CoreConstants.Compartment;
+using static PKSim.Core.CoreConstants.KeyWords;
 using static PKSim.Core.CoreConstants.Organ;
 
 namespace PKSim.Core.Mappers
@@ -24,7 +28,7 @@ namespace PKSim.Core.Mappers
       ///    <paramref name="compoundBuilder" />
       ///    and the enzyme <paramref name="enzymeName" /> and create the <paramref name="metabolite" />
       /// </summary>
-      IReactionBuilder MetabolismReactionFrom(CompoundProcess process, IMoleculeBuilder compoundBuilder, IMoleculeBuilder metabolite,
+      ReactionBuilder MetabolismReactionFrom(CompoundProcess process, MoleculeBuilder compoundBuilder, MoleculeBuilder metabolite,
          string enzymeName, IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache);
 
       /// <summary>
@@ -33,7 +37,7 @@ namespace PKSim.Core.Mappers
       ///    <paramref name="compoundBuilder" />
       ///    and the enzyme <paramref name="enzymeName" /> and create an enzyme complex
       /// </summary>
-      IReactionBuilder ComplexReactionFrom(CompoundProcess process, IMoleculeBuilder compoundBuilder, IMoleculeBuilder complex, string enzymeName,
+      ReactionBuilder ComplexReactionFrom(CompoundProcess process, MoleculeBuilder compoundBuilder, MoleculeBuilder complex, string enzymeName,
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache);
 
       /// <summary>
@@ -46,12 +50,12 @@ namespace PKSim.Core.Mappers
       ///    Creates a passive transport process based on the given compound process that will be applied to the molecule
       ///    <paramref name="compoundName" />
       /// </summary>
-      ITransportBuilder PassiveTransportProcessFrom(CompoundProcess compoundProcess, string compoundName, IFormulaCache formulaCache);
+      TransportBuilder PassiveTransportProcessFrom(CompoundProcess compoundProcess, string compoundName, IFormulaCache formulaCache);
 
       /// <summary>
       ///    Creates general reaction builder from template
       /// </summary>
-      IReactionBuilder ReactionFrom(IReactionBuilder templateReactionBuilder, string compoundName, IReadOnlyCollection<string> forbiddenNames,
+      ReactionBuilder ReactionFrom(ReactionBuilder templateReactionBuilder, string compoundName, IReadOnlyCollection<string> forbiddenNames,
          IFormulaCache formulaCache);
 
       /// <summary>
@@ -64,7 +68,7 @@ namespace PKSim.Core.Mappers
       ///    name
       /// </param>
       /// <param name="formulaCache">Formula cache where the kinetic will be saved</param>
-      IReactionBuilder TurnoverReactionFrom(IReactionBuilder templateReaction, IMoleculeBuilder protein, IReadOnlyCollection<string> forbiddenNames,
+      ReactionBuilder TurnoverReactionFrom(ReactionBuilder templateReaction, MoleculeBuilder protein, IReadOnlyCollection<string> forbiddenNames,
          IFormulaCache formulaCache);
 
       /// <summary>
@@ -78,7 +82,7 @@ namespace PKSim.Core.Mappers
       ///    name
       /// </param>
       /// <param name="formulaCache">Formula cache where the kinetic will be saved</param>
-      IReactionBuilder InactivationReactionFrom(InteractionProcess interactionProcess, IMoleculeBuilder protein,
+      ReactionBuilder InactivationReactionFrom(InteractionProcess interactionProcess, MoleculeBuilder protein,
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache);
 
       /// <summary>
@@ -92,7 +96,7 @@ namespace PKSim.Core.Mappers
       ///    name
       /// </param>
       /// <param name="formulaCache">Formula cache where the kinetic will be saved</param>
-      IReactionBuilder InductionReactionFrom(InteractionProcess interactionProcess, IMoleculeBuilder protein,
+      ReactionBuilder InductionReactionFrom(InteractionProcess interactionProcess, MoleculeBuilder protein,
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache);
    }
 
@@ -121,15 +125,14 @@ namespace PKSim.Core.Mappers
          _parameterContainerTask = parameterContainerTask;
       }
 
-      public IReactionBuilder MetabolismReactionFrom(CompoundProcess process, IMoleculeBuilder compoundBuilder, IMoleculeBuilder metabolite,
+      public ReactionBuilder MetabolismReactionFrom(CompoundProcess process, MoleculeBuilder compoundBuilder, MoleculeBuilder metabolite,
          string enzymeName, IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache)
       {
          //retrieve process for the simulation and create a clone
          var reaction = createReactionFromProcess(compoundBuilder, process, forbiddenNames);
 
          //replace keywords 
-         replaceKeywordsInProcess(reaction, new[] {CoreConstants.KeyWords.Molecule, CoreConstants.KeyWords.Protein, CoreConstants.KeyWords.Reaction},
-            new[] {compoundBuilder.Name, enzymeName, reaction.Name});
+         replaceKeywordsInReaction(reaction, new[] { Molecule, Protein}, new[] { compoundBuilder.Name, enzymeName});
 
          reaction.AddEduct(new ReactionPartnerBuilder(compoundBuilder.Name, 1));
          reaction.AddProduct(new ReactionPartnerBuilder(metabolite.Name, 1));
@@ -139,16 +142,16 @@ namespace PKSim.Core.Mappers
          return reaction;
       }
 
-      public IReactionBuilder ComplexReactionFrom(CompoundProcess process, IMoleculeBuilder compoundBuilder, IMoleculeBuilder complex,
+      public ReactionBuilder ComplexReactionFrom(CompoundProcess process, MoleculeBuilder compoundBuilder, MoleculeBuilder complex,
          string enzymeName, IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache)
       {
          //retrieve process for the simulation and create a clone
          var reaction = createReactionFromProcess(compoundBuilder, process, forbiddenNames);
 
          //replace keywords 
-         replaceKeywordsInProcess(reaction,
-            new[] {CoreConstants.KeyWords.Molecule, CoreConstants.KeyWords.Protein, CoreConstants.KeyWords.Complex, CoreConstants.KeyWords.Reaction},
-            new[] {compoundBuilder.Name, enzymeName, complex.Name, reaction.Name});
+         replaceKeywordsInReaction(reaction,
+            new[] { Molecule, Protein, Complex},
+            new[] { compoundBuilder.Name, enzymeName, complex.Name});
 
          reaction.AddEduct(new ReactionPartnerBuilder(compoundBuilder.Name, 1));
          reaction.AddEduct(new ReactionPartnerBuilder(enzymeName, 1));
@@ -158,22 +161,21 @@ namespace PKSim.Core.Mappers
          return reaction;
       }
 
-      public IReactionBuilder TurnoverReactionFrom(IReactionBuilder templateReaction, IMoleculeBuilder protein,
+      public ReactionBuilder TurnoverReactionFrom(ReactionBuilder templateReaction, MoleculeBuilder protein,
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache)
       {
          var reaction = createReactionFromProcess(templateReaction, forbiddenNames);
          reaction.Name = reactionNameFor(reaction.Name, protein.Name);
-         reaction.Formula.Name = CoreConstants.CompositeNameFor(reaction.Name, reaction.Formula.Name);
+         reaction.Formula.Name = CompositeNameFor(reaction.Name, reaction.Formula.Name);
 
-         replaceKeywordsInProcess(reaction, new[] {CoreConstants.KeyWords.Protein, CoreConstants.KeyWords.Reaction},
-            new[] {protein.Name, reaction.Name});
+         replaceKeywordsInReaction(reaction, new[] { Protein}, new[] { protein.Name });
          reaction.AddProduct(new ReactionPartnerBuilder(protein.Name, 1));
 
          formulaCache.Add(reaction.Formula);
          return reaction;
       }
 
-      public IReactionBuilder InactivationReactionFrom(InteractionProcess interactionProcess, IMoleculeBuilder protein,
+      public ReactionBuilder InactivationReactionFrom(InteractionProcess interactionProcess, MoleculeBuilder protein,
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache)
       {
          var reaction = interactionReactionFrom(interactionProcess, protein, forbiddenNames, formulaCache);
@@ -181,7 +183,7 @@ namespace PKSim.Core.Mappers
          return reaction;
       }
 
-      public IReactionBuilder InductionReactionFrom(InteractionProcess interactionProcess, IMoleculeBuilder protein,
+      public ReactionBuilder InductionReactionFrom(InteractionProcess interactionProcess, MoleculeBuilder protein,
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache)
       {
          var reaction = interactionReactionFrom(interactionProcess, protein, forbiddenNames, formulaCache);
@@ -195,41 +197,60 @@ namespace PKSim.Core.Mappers
          return reaction;
       }
 
-      private IReactionBuilder interactionReactionFrom(InteractionProcess interactionProcess, IMoleculeBuilder protein,
+      private ReactionBuilder interactionReactionFrom(InteractionProcess interactionProcess, MoleculeBuilder protein,
          IReadOnlyCollection<string> forbiddenNames, IFormulaCache formulaCache)
       {
          var compound = interactionProcess.ParentCompound;
-         var reactionName = CoreConstants.CompositeNameFor(compound.Name, interactionProcess.Name);
+         var reactionName = CompositeNameFor(compound.Name, interactionProcess.Name);
          var reaction = createReactionFromProcess(interactionProcess, reactionName, forbiddenNames);
 
          //replace keywords 
-         replaceKeywordsInProcess(reaction, new[] {CoreConstants.KeyWords.Molecule, CoreConstants.KeyWords.Protein, CoreConstants.KeyWords.Reaction},
-            new[] {compound.Name, protein.Name, interactionProcess.Name});
+         replaceKeywordsInReaction(reaction, 
+            new[] { Molecule, Protein, CoreConstants.KeyWords.Reaction },
+            //we do not want to use the name of the reaction in this case as reaction parameters are defined
+            //in the interaction process container
+            new[] { compound.Name, protein.Name, interactionProcess.Name });
 
          formulaCache.Add(reaction.Formula);
          return reaction;
       }
 
-      public IReactionBuilder ReactionFrom(IReactionBuilder templateReactionBuilder, string compoundName, IReadOnlyCollection<string> forbiddenNames,
+      public ReactionBuilder ReactionFrom(ReactionBuilder templateReactionBuilder, string compoundName, IReadOnlyCollection<string> forbiddenNames,
          IFormulaCache formulaCache)
       {
          //retrieve process for the simulation and create a clone
          var reaction = createReactionFromProcess(templateReactionBuilder, forbiddenNames);
 
-         //adjust reaction name (e.g. replace "drug" placeholder with compound name if needed
+         //adjust formula names of the reaction and its children (e.g. parameters) making them unique if needed
+         if (reaction.Name.IsOneOf(CoreConstants.Reaction.REACTIONS_WHICH_REQUIRE_RENAMING))
+         {
+            adjustFormulaNameFor(reaction.Formula, compoundName);
+            var allUsingFormulas = reaction.GetAllChildren<IUsingFormula>();
+            allUsingFormulas.Each(x => adjustFormulaNameFor(x.Formula, compoundName));
+         }
+
+         //adjust reaction name (e.g. replace "drug" placeholder with compound name if needed)
          reaction.Name = reactionNameFor(reaction.Name, compoundName);
 
          //replace keywords 
-         replaceKeywordsInProcess(reaction,
+         replaceKeywordsInReaction(reaction,
             new[]
             {
-               CoreConstants.Molecule.Drug, CoreConstants.KeyWords.Molecule, CoreConstants.KeyWords.Reaction,
+               CoreConstants.Molecule.Drug, Molecule,
                CoreConstants.Molecule.DrugFcRnComplexTemplate
             },
-            new[] {compoundName, compoundName, reaction.Name, CoreConstants.Molecule.DrugFcRnComplexName(compoundName)});
+            new[] { compoundName, compoundName,CoreConstants.Molecule.DrugFcRnComplexName(compoundName) });
 
          formulaCache.Add(reaction.Formula);
          return reaction;
+      }
+
+      private void adjustFormulaNameFor(IFormula formula, string compoundName)
+      {
+         if (formula?.Name == null)
+            return;
+
+         formula.Name = $"{compoundName} - {formula.Name}";
       }
 
       private string reactionNameFor(string templateReactionName, string compoundName)
@@ -254,12 +275,12 @@ namespace PKSim.Core.Mappers
          return reactionName;
       }
 
-      private IReactionBuilder createReactionFromProcess(IReactionBuilder templateReactionBuilder, IReadOnlyCollection<string> forbiddenNames)
+      private ReactionBuilder createReactionFromProcess(ReactionBuilder templateReactionBuilder, IReadOnlyCollection<string> forbiddenNames)
       {
          return createReactionFromProcess(templateReactionBuilder, templateReactionBuilder, templateReactionBuilder.Name, forbiddenNames);
       }
 
-      private IReactionBuilder createReactionFromProcess(IContainer reactionParameterContainer, IReactionBuilder templateReactionBuilder,
+      private ReactionBuilder createReactionFromProcess(IContainer reactionParameterContainer, ReactionBuilder templateReactionBuilder,
          string newReactionName, IReadOnlyCollection<string> forbiddenNames)
       {
          //retrieve process for the simulation and create a clone
@@ -272,28 +293,28 @@ namespace PKSim.Core.Mappers
          return reaction;
       }
 
-      private IReactionBuilder createReactionFromProcess(IMoleculeBuilder moleculeBuilder, CompoundProcess process,
+      private ReactionBuilder createReactionFromProcess(MoleculeBuilder moleculeBuilder, CompoundProcess process,
          IReadOnlyCollection<string> forbiddenNames)
       {
-         var reactionName = CoreConstants.CompositeNameFor(moleculeBuilder.Name, process.Name);
+         var reactionName = CompositeNameFor(moleculeBuilder.Name, process.Name);
          return createReactionFromProcess(process, reactionName, forbiddenNames);
       }
 
-      private IReactionBuilder createReactionFromProcess(CompoundProcess process, string reactionName, IReadOnlyCollection<string> forbiddenNames)
+      private ReactionBuilder createReactionFromProcess(CompoundProcess process, string reactionName, IReadOnlyCollection<string> forbiddenNames)
       {
          //retrieve process for the simulation and create a clone
          var reaction = createReactionFromProcess(process, _simulationActiveProcessRepository.ProcessFor<PKSimReaction>(process.InternalName),
             reactionName, forbiddenNames);
 
          //make sure formula name is unique as it can be shared among processes
-         reaction.Formula.Name = CoreConstants.CompositeNameFor(reaction.Name, reaction.Formula.Name);
+         reaction.Formula.Name = CompositeNameFor(reaction.Name, reaction.Formula.Name);
          return reaction;
       }
 
-      public ITransportBuilder PassiveTransportProcessFrom(CompoundProcess compoundProcess, string compoundName, IFormulaCache formulaCache)
+      public TransportBuilder PassiveTransportProcessFrom(CompoundProcess compoundProcess, string compoundName, IFormulaCache formulaCache)
       {
          var passiveProcess = _cloner.Clone(_simulationActiveProcessRepository.ProcessFor<PKSimTransport>(compoundProcess.InternalName));
-         passiveProcess.Name = compoundProcess.Name;
+         passiveProcess.Name = CompositeNameFor(compoundProcess.Name, compoundName);
          passiveProcess.ForAll = false;
          passiveProcess.AddMoleculeName(compoundName);
          updateTransporterFormulaFromCache(passiveProcess, formulaCache);
@@ -355,7 +376,7 @@ namespace PKSim.Core.Mappers
                var inducedProcess = inducedProcessCache[transportTemplate.ProcessName];
                if (inducedProcess == null)
                {
-                  inducedProcess = new InducedProcess {Name = transportTemplate.ProcessName};
+                  inducedProcess = new InducedProcess { Name = transportTemplate.ProcessName };
                   inducedProcess.AddOrgansToExclude(allOrganNames);
                   inducedProcessCache.Add(inducedProcess);
                }
@@ -369,7 +390,7 @@ namespace PKSim.Core.Mappers
          return inducedProcessCache;
       }
 
-      private void updateTransporterTagsFor(ITransportBuilder transporterBuilder, InducedProcess inducedProcess)
+      private void updateTransporterTagsFor(TransportBuilder transporterBuilder, InducedProcess inducedProcess)
       {
          var sourceCriteria = transporterBuilder.SourceCriteria;
          var allSourceTags = sourceCriteria.OfType<MatchTagCondition>().Select(x => x.Tag).ToList();
@@ -385,7 +406,7 @@ namespace PKSim.Core.Mappers
          if (isLumen && isMucosa)
          {
             //We just want to remove GI segments from the include list as we know, that the transport is between Lumen and Mucosa in this case
-            var segmentToDeletes = inducedProcess.OrgansToExclude.Intersect(LumenSegmentsDuodenumToRectum).ToList();
+            var segmentToDeletes = inducedProcess.OrgansToExclude.Intersect(Constants.Compartment.LumenSegmentsDuodenumToRectum).ToList();
             var criteria = sourceIsLumen ? sourceCriteria : targetCriteria;
             addAsNotMatchToCriteria(criteria, segmentToDeletes);
             return;
@@ -401,7 +422,7 @@ namespace PKSim.Core.Mappers
       private void addAsNotMatchToCriteria(DescriptorCriteria criteria, IEnumerable<string> list)
          => list.Each(x => criteria.Add(new NotMatchTagCondition(x)));
 
-      private ITransportBuilder activeTransportFrom(CompoundProcess process, InducedProcess inducedProcess, IFormulaCache formulaCache)
+      private TransportBuilder activeTransportFrom(CompoundProcess process, InducedProcess inducedProcess, IFormulaCache formulaCache)
       {
          //retrieve process for the simulation and create a clone
          var simulationProcess = _simulationActiveProcessRepository.TransportFor(inducedProcess.Name, process.InternalName);
@@ -416,7 +437,7 @@ namespace PKSim.Core.Mappers
          return activeTransport;
       }
 
-      private void updateTransporterFormulaFromCache(ITransportBuilder transportBuilder, IFormulaCache formulaCache)
+      private void updateTransporterFormulaFromCache(TransportBuilder transportBuilder, IFormulaCache formulaCache)
       {
          var formula = transportBuilder.Formula;
          //only add transporter formula if not already defined in the cache
@@ -426,27 +447,36 @@ namespace PKSim.Core.Mappers
             formulaCache.Add(formula);
       }
 
-      private void replaceKeywordsInProcess(IReactionBuilder reactionBuilder, string[] keywords, string[] replacementValues)
+      private void replaceKeywordsInReaction(ReactionBuilder reactionBuilder, string[] keywords, string[] replacements)
       {
-         replaceFormulaKeywords(reactionBuilder, keywords, replacementValues);
-         reactionBuilder.Parameters.Each(p => replaceFormulaKeywords(p, keywords, replacementValues));
+         //add reaction keyword last so that any instanced of this keyword added previously would trump the 
+         //one added automatically
+         var allKeywords = new List<string>(keywords) { CoreConstants.KeyWords.Reaction }.ToArray();
+         var allReplacements = new List<string>(replacements) { reactionBuilder.Name }.ToArray();
+
+         replaceFormulaKeywords(reactionBuilder, allKeywords, allReplacements);
+         reactionBuilder.Parameters.Each(p => replaceFormulaKeywords(p, allKeywords, allReplacements));
 
          foreach (var reactionPartner in reactionBuilder.Educts.Union(reactionBuilder.Products))
          {
-            reactionPartner.MoleculeName = reactionPartner.MoleculeName.ReplaceKeywords(keywords, replacementValues);
+            reactionPartner.MoleculeName = reactionPartner.MoleculeName.ReplaceKeywords(allKeywords, allReplacements);
          }
+
+         replaceKeywordsInTags(reactionBuilder.Tags, allKeywords, allReplacements);
 
          var replacedModifiers = new List<string>();
          foreach (var modifier in reactionBuilder.ModifierNames)
          {
-            replacedModifiers.Add(modifier.ReplaceKeywords(keywords, replacementValues));
+            replacedModifiers.Add(modifier.ReplaceKeywords(allKeywords, allReplacements));
          }
 
          reactionBuilder.ClearModifiers();
-         foreach (var replacedModifier in replacedModifiers)
-         {
-            reactionBuilder.AddModifier(replacedModifier);
-         }
+         replacedModifiers.Each(reactionBuilder.AddModifier);
+      }
+
+      private void replaceKeywordsInTags(Tags tags, string[] keywords, string[] replacements)
+      {
+         keywords.Each((keyword, i) => tags.Replace(keyword, replacements[i]));
       }
 
       private void replaceFormulaKeywords(IUsingFormula usingFormula, string[] keywords, string[] replacementValues)

@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -25,18 +24,18 @@ namespace PKSim.Infrastructure.ORM.Queries
          _neighborhoodBuilderFactory = neighborhoodBuilderFactory;
       }
 
-      public IEnumerable<INeighborhoodBuilder> NeighborhoodsFor(IContainer individualNeighborhoods, ModelProperties modelProperties)
+      public IEnumerable<NeighborhoodBuilder> NeighborhoodsFor(IContainer individualNeighborhoods, ModelProperties modelProperties)
       {
          //ToList is important here as we do not want to always return the value from the database if the query is called in a linq expression
          return modelNeighborhoodsFor(modelProperties.ModelConfiguration.ModelName, individualNeighborhoods)
-                  .Select(mapFrom).ToList();
+            .Select(mapFrom).ToList();
       }
 
-      private INeighborhoodBuilder mapFrom(IContainer neighborhood)
+      private NeighborhoodBuilder mapFrom(IContainer neighborhood)
       {
-         var neighborhoodBuilder=_neighborhoodBuilderFactory.Create().WithName(neighborhood.Name);
+         var neighborhoodBuilder = _neighborhoodBuilderFactory.Create().WithName(neighborhood.Name);
 
-         neighborhood.Tags.Each(tag=>neighborhoodBuilder.AddTag(tag.Value));
+         neighborhood.Tags.Each(tag => neighborhoodBuilder.AddTag(tag.Value));
 
          return neighborhoodBuilder;
       }

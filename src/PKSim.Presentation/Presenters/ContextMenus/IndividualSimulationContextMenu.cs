@@ -5,6 +5,7 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.UICommands;
@@ -13,7 +14,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public class IndividualSimulationContextMenu : SimulationContextMenu<IndividualSimulation>
    {
-      public IndividualSimulationContextMenu(IndividualSimulation individualSimulation) : base(individualSimulation)
+      public IndividualSimulationContextMenu(IndividualSimulation individualSimulation, IContainer container) : base(individualSimulation, container)
       {
       }
 
@@ -26,14 +27,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected override IEnumerable<IMenuBarItem> ExportMenuItemsSpecificToType(IndividualSimulation individualSimulation)
       {
          var exportToExcel = CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationResultsToExcel)
-            .WithCommandFor<ExportSimulationResultsToExcelCommand, IndividualSimulation>(individualSimulation)
+            .WithCommandFor<ExportSimulationResultsToExcelCommand, IndividualSimulation>(individualSimulation, _container)
             .WithIcon(ApplicationIcons.ExportToExcel);
 
          exportToExcel.Enabled = simulationHasResult(individualSimulation);
          yield return exportToExcel;
 
          var exportToCSV = CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationResultsToCSV)
-            .WithCommandFor<ExportSimulationResultsToCSVCommand, Simulation>(individualSimulation)
+            .WithCommandFor<ExportSimulationResultsToCSVCommand, Simulation>(individualSimulation, _container)
             .WithIcon(ApplicationIcons.ExportToCSV);
 
          exportToCSV.Enabled = simulationHasResult(individualSimulation);
@@ -41,13 +42,13 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationModelToFile)
             .WithIcon(ApplicationIcons.Report)
-            .WithCommandFor<CreateSimulationReportCommand, Simulation>(individualSimulation);
+            .WithCommandFor<CreateSimulationReportCommand, Simulation>(individualSimulation, _container);
       }
 
       protected override IEnumerable<IMenuBarItem> DebugMenuFor(IndividualSimulation simulation)
       {
          yield return CreateMenuButton.WithCaption(MenuNames.ExportSimModelXml)
-            .WithCommandFor<ExportSimulationToSimModelXmlUICommand, Simulation>(simulation)
+            .WithCommandFor<ExportSimulationToSimModelXmlUICommand, Simulation>(simulation, _container)
             .AsGroupStarter()
             .ForDeveloper();
 
@@ -56,19 +57,19 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return ExportODEForRMenuItem(simulation);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Parameter Ids Export"))
-            .WithCommandFor<ParameterExportForDebugCommand, Simulation>(simulation)
+            .WithCommandFor<ParameterExportForDebugCommand, Simulation>(simulation, _container)
             .ForDeveloper();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Simulation Serialization Xml Export"))
-            .WithCommandFor<SimulationXmlExportCommand, Simulation>(simulation)
+            .WithCommandFor<SimulationXmlExportCommand, Simulation>(simulation, _container)
             .ForDeveloper();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Simulation Parameter Export To CSV"))
-            .WithCommandFor<SimulationParameterExportToCsvCommand, Simulation>(simulation)
+            .WithCommandFor<SimulationParameterExportToCsvCommand, Simulation>(simulation, _container)
             .ForDeveloper();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Save Snapshot"))
-            .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation)
+            .WithCommandFor<ExportSimulationSnapshotUICommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.SnapshotExport)
             .ForDeveloper();
 
@@ -77,12 +78,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected IMenuBarItem CreateParameterIdentificationMenuItemFor(IndividualSimulation simulation)
       {
-         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] {simulation});
+         return ParameterIdentificationContextMenuItems.CreateParameterIdentificationFor(new[] {simulation}, _container);
       }
 
       protected IMenuBarItem CreateSensitivityAnalysisMenuItemFor(IndividualSimulation simulation)
       {
-         return SensitivityAnalysisContextMenuItems.CreateSensitivityAnalysisFor(simulation);
+         return SensitivityAnalysisContextMenuItems.CreateSensitivityAnalysisFor(simulation, _container);
       }
 
       private bool simulationHasResult(Simulation simulation)
@@ -96,9 +97,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
    public class IndividualSimulationTreeNodeContextMenuFactory : SimulationTreeNodeContextMenuFactory<IndividualSimulation>
    {
+      private readonly IContainer _container;
+
+      public IndividualSimulationTreeNodeContextMenuFactory(IContainer container)
+      {
+         _container = container;
+      }
+
       protected override IContextMenu CreateFor(IndividualSimulation simulation, IPresenterWithContextMenu<ITreeNode> presenter)
       {
-         return new IndividualSimulationContextMenu(simulation);
+         return new IndividualSimulationContextMenu(simulation, _container);
       }
    }
 }

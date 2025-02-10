@@ -75,6 +75,7 @@ namespace PKSim.IntegrationTests
          if (type.Name.Contains("Exception")) return true;
          if (type.Name.Contains("Factory")) return true;
          if (type == typeof(RemoteTemplate)) return true;
+         if (type == typeof(SupportedProtein)) return true;
          if (type == typeof(LocalTemplate)) return true;
          if (type == typeof(RemoteTemplates)) return true;
          if (type == typeof(PopulationAgeSettings)) return true;
@@ -168,6 +169,8 @@ namespace PKSim.IntegrationTests
          if (type == typeof(CategoryType)) return true;
          if (type == typeof(ProcessActionType)) return true;
          if (type == typeof(LoadTemplateWithReference)) return true;
+         if (type == typeof(IndividualParameterBySpecies)) return true;
+         if (type == typeof(IndividualParameterSameFormulaOrValueForAllSpecies)) return true;
 
          //TODO not serialized yet
          if (type == typeof(QualificationPlan)) return true;

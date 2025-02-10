@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -43,7 +44,7 @@ namespace PKSim.Core.Commands
 
          var distributedTableFormula = parameter.Formula.DowncastTo<DistributedTableFormula>();
          distributedTableFormula.Percentile = _percentile;
-         var allPoints = distributedTableFormula.AllPoints().ToArray();
+         var allPoints = distributedTableFormula.AllPoints.ToArray();
          var distributionMapper = context.Resolve<IDistributionMetaDataToDistributionMapper>();
 
          for (int i = 0; i < distributedTableFormula.AllDistributionMetaData().Count; i++)

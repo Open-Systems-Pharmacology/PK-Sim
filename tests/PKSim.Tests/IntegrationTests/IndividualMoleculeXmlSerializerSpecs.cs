@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
@@ -20,8 +21,8 @@ namespace PKSim.IntegrationTests
          base.Context();
          _enzyme = new IndividualEnzyme();
          _table = new DistributedTableFormula();
-         _table.AddPoint(1, 10, new DistributionMetaData {Mean = 10, Deviation = 100, Distribution = DistributionTypes.Normal});
-         _table.AddPoint(2, 20, new DistributionMetaData {Mean = 20, Deviation = 200, Distribution = DistributionTypes.Normal});
+         _table.AddPoint(1, 10, new DistributionMetaData {Mean = 10, Deviation = 100, Distribution = DistributionType.Normal});
+         _table.AddPoint(2, 20, new DistributionMetaData {Mean = 20, Deviation = 200, Distribution = DistributionType.Normal});
          _enzyme.Ontogeny = new UserDefinedOntogeny {Table = _table};
       }
 

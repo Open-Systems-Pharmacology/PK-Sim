@@ -1,32 +1,59 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
 
-    <IsPackable>false</IsPackable>
-    <OutputPath>bin\$(Configuration)</OutputPath>
+		<IsPackable>false</IsPackable>
+		<OutputPath>bin\$(Configuration)</OutputPath>
 
-    <RootNamespace>PKSim.UI</RootNamespace>
-  </PropertyGroup>
+		<RootNamespace>PKSim.UI</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="7.2.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.1.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="nunit" Version="3.13.2" />
-    <PackageReference Include="OSPSuite.Assets" Version="11.3.272" />
-    <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
-    <PackageReference Include="OSPSuite.Core" Version="11.3.272" />
-    <PackageReference Include="OSPSuite.UI" Version="11.3.272" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="$(PkgOSPSuite_FuncParser)\OSPSuite.FuncParserNative\bin\native\x64\Release\OSPSuite.FuncParserNative.dll" Link="OSPSuite.FuncParserNative.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml" Link="OSPSuite.PKParameters.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="..\..\dimensions\OSPSuite.Dimensions.xml" Link="OSPSuite.Dimensions.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<PackageReference Include="FakeItEasy" Version="7.2.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.1.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+		<PackageReference Include="nunit" Version="3.13.2" />
+		<PackageReference Include="OSPSuite.Assets" Version="12.0.364" />
+		<PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
+		<PackageReference Include="OSPSuite.Core" Version="12.0.364" />
+		<PackageReference Include="OSPSuite.SimModel" Version="4.0.0.68" />
+		<PackageReference Include="OSPSuite.UI" Version="12.0.364" />
+		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.68" GeneratePathProperty="true" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" GeneratePathProperty="true" />
+		<None Include="..\..\src\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj" />
-    <ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj" />
+		<ProjectReference Include="..\..\src\PKSim.UI.Starter\PKSim.UI.Starter.csproj" />
+		<ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj" />
 
-  
+	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+	</Target>
+	<PropertyGroup>
+		<ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+		<CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+		<CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+		<CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+	</PropertyGroup>
 </Project>

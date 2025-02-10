@@ -32,9 +32,9 @@ namespace PKSim.Presentation
       }
 
       [Observation]
-      public void Underlying_presenter_should_have_been_initialized()
+      public void Underlying_presenter_should_have_been_initialized_in_recreate_mode()
       {
-         A.CallTo(() => _reactionDiagramPresenter.Edit(_simulation)).MustHaveHappened();
+         A.CallTo(() => _reactionDiagramPresenter.Edit(_simulation, true)).MustHaveHappened();
       }
 
       [Observation]

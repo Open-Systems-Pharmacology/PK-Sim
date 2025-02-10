@@ -190,6 +190,8 @@ namespace PKSim.Core
 
       public IProject Project => CurrentProject;
 
+      public IContainer Container =>_container;
+
       public void AddToHistory(ICommand command)
       {
          _projectRetriever.AddToHistory(command);

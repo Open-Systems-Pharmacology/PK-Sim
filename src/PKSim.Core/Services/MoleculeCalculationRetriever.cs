@@ -10,15 +10,15 @@ namespace PKSim.Core.Services
    public interface IMoleculeCalculationRetriever
    {
       /// <summary>
-      /// Returns the distinct <see cref="ICoreCalculationMethod"/> used in the <paramref name="simulation"/>
+      /// Returns the distinct <see cref="CoreCalculationMethod"/> used in the <paramref name="simulation"/>
       /// </summary>
-      IEnumerable<ICoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(Simulation simulation);
+      IEnumerable<CoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(Simulation simulation);
 
 
       /// <summary>
-      /// Returns the distinct <see cref="ICoreCalculationMethod"/> used in the <paramref name="withCalculationMethods"/>
+      /// Returns the distinct <see cref="CoreCalculationMethod"/> used in the <paramref name="withCalculationMethods"/>
       /// </summary>
-      IEnumerable<ICoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(IWithCalculationMethods withCalculationMethods);
+      IEnumerable<CoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(IWithCalculationMethods withCalculationMethods);
 
    }
 
@@ -33,13 +33,13 @@ namespace PKSim.Core.Services
          _coreCalculationMethodRepository = coreCalculationMethodRepository;
       }
 
-      public IEnumerable<ICoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(Simulation simulation)
+      public IEnumerable<CoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(Simulation simulation)
       {
          return simulation.CompoundPropertiesList.SelectMany(AllMoleculeCalculationMethodsUsedBy)
             .Distinct();
       }
 
-      public IEnumerable<ICoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(IWithCalculationMethods withCalculationMethods)
+      public IEnumerable<CoreCalculationMethod> AllMoleculeCalculationMethodsUsedBy(IWithCalculationMethods withCalculationMethods)
       {
          return withCalculationMethods.AllCalculationMethods()
             .Select(calculationMethod => new {calculationMethod, category = _calculationMethodCategoryRepository.FindBy(calculationMethod.Category)})

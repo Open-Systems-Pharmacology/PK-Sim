@@ -20,7 +20,7 @@ namespace PKSim.IntegrationTests
    public abstract class concern_for_SimulationWithParticlesFormulation : concern_for_IndividualSimulation
    {
       protected Formulation _formulation;
-      protected string[] _lumenSegments = CoreConstants.Compartment.LumenSegmentsStomachToRectum.ToArray();
+      protected string[] _lumenSegments = Constants.Compartment.AllLumenSegments.ToArray();
 
       protected float _appliedDrugMass; //initial drug mass of the application
 
@@ -58,7 +58,7 @@ namespace PKSim.IntegrationTests
          {
             //disable intestinal absorption and luminal flow to feces for easier mass balance checks
             MoleculeProperties(CoreConstants.Parameters.INTESTINAL_PERMEABILITY).Value = 0;
-            IntestinalTransitRateFor(CoreConstants.Compartment.RECTUM).Value = 0;
+            IntestinalTransitRateFor(Constants.Compartment.RECTUM).Value = 0;
          }
 
          //store initial drug mass
@@ -89,7 +89,7 @@ namespace PKSim.IntegrationTests
 
       protected virtual bool DisableIntestinalAbsorptionAndLuminalFlow => true;
 
-      protected IContainer Application => _simulation.Model.Root.Container("Applications").Container(_protocol.Name)
+      protected IContainer Application => _simulation.Model.Root.Container(Constants.EVENTS).Container(_protocol.Name)
                                           .Container(_formulation.Name).Container("Application_1");
 
       protected IContainer ParticleBin(int binIndex)
@@ -147,7 +147,7 @@ namespace PKSim.IntegrationTests
 
       protected int NumberOfLumenSegments => _lumenSegments.Length;
 
-      protected int NumberOfSimulatedtimePoints => _times.Length;
+      protected int NumberOfSimulatedTimePoints => _times.Length;
 
       protected virtual double ComparisonTolerance => 1e-5;
 
@@ -207,7 +207,7 @@ namespace PKSim.IntegrationTests
 
       protected void AddOutputTo(IndividualSimulation simulation, string path, QuantityType quantityType = QuantityType.Drug)
       {
-         simulation.SimulationSettings.OutputSelections.AddOutput(new QuantitySelection(path, quantityType));
+         simulation.Settings.OutputSelections.AddOutput(new QuantitySelection(path, quantityType));
       }
 
       /// <summary>
@@ -219,16 +219,16 @@ namespace PKSim.IntegrationTests
       ///   e.g. "Organism|Lumen|Duodenum|C1"
       /// 
       ///   [binSolidDrugPaths] - paths to total amount of solid drug per particles bin
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1"
       /// 
       ///   [binInsolubleDrugPaths] - paths to total amount of insoluble drug per particles bin
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|InsolubleDrug|C1"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|InsolubleDrug|C1"
       /// 
       ///   [binSolidDrugPerSegmentPaths] - paths to amount of solid drug per particles bin per lumen segment
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Solid drug"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Solid drug"
       /// 
       ///   [binParticlesFractionPerSegmentPaths] -paths to number of particles fraction per particles bin per lumen segment
-      ///   e.g. "Applications|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Number of particles fraction"
+      ///   e.g. "Events|Protocol|Formulation_Particles|Application_1|ParticleBin_1|C1|ParticlesDrugReleaseDuodenum|Number of particles fraction"
       /// </returns>
       /// 
       private (string[] lumenPaths, string[] binSolidDrugPaths, string[] binInsolubleDrugPaths,
@@ -263,7 +263,7 @@ namespace PKSim.IntegrationTests
          return (from segment in _lumenSegments select $"Organism|Lumen|{segment}|{compoundName}").ToArray();
       }
 
-      private string applicationPath => $"Applications|{_protocol.Name}|{_formulation.Name}|Application_1";
+      private string applicationPath => $"{Constants.EVENTS}|{_protocol.Name}|{_formulation.Name}|Application_1";
 
       private string binPathFor(int binNumber) => $"{applicationPath}|ParticleBin_{binNumber+1}";
 
@@ -303,10 +303,10 @@ namespace PKSim.IntegrationTests
       /// </summary>
       protected void SetSolubilitySchema1WithStopIn(string segment)
       {
-         Solubility(CoreConstants.Compartment.STOMACH).Value = 1e-3; //[kg/l]
-         Solubility(CoreConstants.Compartment.DUODENUM).Value = 0;
+         Solubility(Constants.Compartment.STOMACH).Value = 1e-3; //[kg/l]
+         Solubility(Constants.Compartment.DUODENUM).Value = 0;
          ParticleRadiusDissolved = 0;
-         IntestinalTransitRateFor(CoreConstants.Compartment.DUODENUM).Value = 0;
+         IntestinalTransitRateFor(Constants.Compartment.DUODENUM).Value = 0;
       }
 
       /// <summary>
@@ -320,7 +320,7 @@ namespace PKSim.IntegrationTests
          for (var segmentIdx = 1; segmentIdx < stopSegmentIdx; segmentIdx++)
             Solubility(_lumenSegments[segmentIdx]).Value = 100;
 
-         IntestinalTransitRateFor(CoreConstants.Compartment.STOMACH).Value = 1e-3;
+         IntestinalTransitRateFor(Constants.Compartment.STOMACH).Value = 1e-3;
          SetSolubilitySchema1WithStopIn(segment);
       }
 
@@ -336,7 +336,7 @@ namespace PKSim.IntegrationTests
       {
          for (int binIdx = 0; binIdx < NumberOfBins; binIdx++)
          {
-            for (int timeIdx = 0; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+            for (int timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
             {
                var sum = LumenValuesFor(_binParticlesFractionPerSegment, binIdx, timeIdx).Sum();
                sum.ShouldBeEqualTo(1.0f, ComparisonTolerance, $"Bin={binIdx + 1}; time[{timeIdx}]={_times[timeIdx]}: sum of particle fractions was {sum}");
@@ -381,7 +381,7 @@ namespace PKSim.IntegrationTests
          float totalDrug = 0;
 
          for (int binIdx = 0; binIdx < NumberOfBins; binIdx++)
-            totalDrug += drugValues[binIdx][NumberOfSimulatedtimePoints - 1];
+            totalDrug += drugValues[binIdx][NumberOfSimulatedTimePoints - 1];
 
          return totalDrug;
       }
@@ -396,7 +396,7 @@ namespace PKSim.IntegrationTests
       {
          _appliedDrugMass.ShouldBeGreaterThan(0f); //just to be sure we have really applied smthg :)
 
-         for (int timeIdx = 0; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+         for (int timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
          {
             var drugMass = 0f;
 
@@ -463,7 +463,7 @@ namespace PKSim.IntegrationTests
 
       protected void CheckSolidDrugZeroForTimeGreaterThanZero()
       {
-         for (int timeIdx = 1; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+         for (int timeIdx = 1; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
          {
             for (int binIdx = 0; binIdx < NumberOfBins; binIdx++)
             {
@@ -476,7 +476,7 @@ namespace PKSim.IntegrationTests
       {
          var comparisonTolerance = _simulation.Solver.AbsTol;
 
-         for (var timeIdx = 1; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+         for (var timeIdx = 1; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
          {
             var previousValue = values[timeIdx - 1];
             var currentValue = values[timeIdx];
@@ -499,7 +499,7 @@ namespace PKSim.IntegrationTests
    {
       private float[][] _prototypeSimulationDissolvedDrugLumen; //dissolved drug[lumen segment][time] in the prototype simulation
       private float[] _fractionAbsorbed, _prototypeSimulationFractionAbsorbed;
-      private float[] _peripheralVenousbloodPls, _prototypeSimulationPeripheralVenousbloodPls;
+      private float[] _peripheralVenousBloodPls, _prototypeSimulationPeripheralVenousBloodPls;
 
       private IndividualSimulation _prototypeSimulation;
 
@@ -532,8 +532,8 @@ namespace PKSim.IntegrationTests
          _fractionAbsorbed = ValuesFor(_simulation, fractionAbsorbedPath);
          _prototypeSimulationFractionAbsorbed = ValuesFor(_prototypeSimulation, fractionAbsorbedPath);
 
-         _peripheralVenousbloodPls = ValuesFor(_simulation, peripheralVenPlsPath);
-         _prototypeSimulationPeripheralVenousbloodPls = ValuesFor(_prototypeSimulation, peripheralVenPlsPath);
+         _peripheralVenousBloodPls = ValuesFor(_simulation, peripheralVenPlsPath);
+         _prototypeSimulationPeripheralVenousBloodPls = ValuesFor(_prototypeSimulation, peripheralVenPlsPath);
       }
 
       private void addOutputs(IndividualSimulation prototypeSimulation, string[] lumenPaths)
@@ -615,7 +615,7 @@ namespace PKSim.IntegrationTests
       {
          var threshold = 100*_simulation.Solver.AbsTol;
 
-         for (var timeIdx = 0; timeIdx < NumberOfSimulatedtimePoints; timeIdx++)
+         for (var timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
          {
             var newValue = newValues[timeIdx];
             var prototypeValue = prototypeValues[timeIdx];
@@ -645,7 +645,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void peripheral_venous_blood_plasma_values_should_be_equal()
       {
-         compareSimulatedValues(_peripheralVenousbloodPls, _prototypeSimulationPeripheralVenousbloodPls, "peripheral venous blood (plasma)");
+         compareSimulatedValues(_peripheralVenousBloodPls, _prototypeSimulationPeripheralVenousBloodPls, "peripheral venous blood (plasma)");
       }
    }
 
@@ -688,7 +688,7 @@ namespace PKSim.IntegrationTests
          PrecipitatedDrugSoluble = false;
 
          //set low solubility in duodenum to assure precipitation
-         Solubility(CoreConstants.Compartment.DUODENUM).Value = 1e-12;
+         Solubility(Constants.Compartment.DUODENUM).Value = 1e-12;
       }
 
       [Observation]
@@ -759,7 +759,7 @@ namespace PKSim.IntegrationTests
          PrecipitatedDrugSoluble = false;
 
          //set low solubility in duodenum to assure precipitation
-         Solubility(CoreConstants.Compartment.DUODENUM).Value = 1e-12;
+         Solubility(Constants.Compartment.DUODENUM).Value = 1e-12;
       }
 
       [Observation]
@@ -798,20 +798,20 @@ namespace PKSim.IntegrationTests
 
          //following this schema, most of drug will be dissolved in the stomach
          //in duodenum the drug will be accumulated and nearly all drug will turn into solid form again
-         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.DUODENUM);
+         SetSolubilitySchema1WithStopIn(Constants.Compartment.DUODENUM);
       }
 
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
+         CheckSolidDrugDecreasing(Constants.Compartment.STOMACH);
       }
 
       [Observation]
       public void solid_drug_in_duodenum_should_be_monotonically_increasing()
       {
          //due to solubility=0 and flow to the next segment=0 solid drug must increase over time
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.DUODENUM);
+         CheckSolidDrugIncreasing(Constants.Compartment.DUODENUM);
       }
 
       [Observation]
@@ -844,13 +844,13 @@ namespace PKSim.IntegrationTests
 
          //following this schema, nearly all drug will be dissolved in the stomach
          //in duodenum the drug will be accumulated and nearly all drug will turn into insoluble (precipitated) form
-         SetSolubilitySchema1WithStopIn(CoreConstants.Compartment.DUODENUM);
+         SetSolubilitySchema1WithStopIn(Constants.Compartment.DUODENUM);
       }
 
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
+         CheckSolidDrugDecreasing(Constants.Compartment.STOMACH);
       }
 
       [Observation]
@@ -862,7 +862,7 @@ namespace PKSim.IntegrationTests
       [Observation]
       public void solid_drug_in_duodenum_should_be_monotonically_increasing()
       {
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.DUODENUM);
+         CheckSolidDrugIncreasing(Constants.Compartment.DUODENUM);
       }
 
       [Observation]
@@ -893,30 +893,30 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = true;
 
-         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
+         _simulation.Settings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
-         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.RECTUM);
+         SetSolubilitySchema2WithStopIn(Constants.Compartment.RECTUM);
       }
 
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
+         CheckSolidDrugDecreasing(Constants.Compartment.STOMACH);
       }
 
       [Observation]
       public void solid_drug_in_rectum_should_be_monotonically_increasing()
       {
          //due to solubility=0 and flow to the next segment=0 solid drug must increase over time
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.RECTUM);
+         CheckSolidDrugIncreasing(Constants.Compartment.RECTUM);
       }
 
       [Observation]
       public void solid_drug_in_duodenum_should_be_monotonically_increasing()
       {
-         CheckSolidDrugIncreasing(CoreConstants.Compartment.DUODENUM);
+         CheckSolidDrugIncreasing(Constants.Compartment.DUODENUM);
       }
 
       [Observation]
@@ -953,17 +953,17 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = false;
 
-         _simulation.SimulationSettings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
+         _simulation.Settings.OutputSchema.Intervals.Last().EndTime.Value = 10 * 24 * 60; //10 days
 
          //following this schema, most of the drug will be dissolved in the stomach
          //in rectum the drug will be accumulated and most of the drug will turn into insoluble (precipitated) form
-         SetSolubilitySchema2WithStopIn(CoreConstants.Compartment.RECTUM);
+         SetSolubilitySchema2WithStopIn(Constants.Compartment.RECTUM);
       }
 
       [Observation]
       public void solid_drug_in_stomach_should_be_monotonically_decreasing()
       {
-         CheckSolidDrugDecreasing(CoreConstants.Compartment.STOMACH);
+         CheckSolidDrugDecreasing(Constants.Compartment.STOMACH);
       }
 
       [Observation]

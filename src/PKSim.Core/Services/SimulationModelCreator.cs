@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
@@ -15,7 +16,7 @@ namespace PKSim.Core.Services
 
    public class SimulationModelCreator : ISimulationModelCreator
    {
-      private readonly IBuildConfigurationTask _buildConfigurationTask;
+      private readonly ISimulationConfigurationTask _simulationConfigurationTask;
       private readonly IModelConstructor _modelConstructor;
       private readonly IParameterIdUpdater _parameterIdUpdater;
       private readonly ISimulationSettingsFactory _simulationSettingsFactory;
@@ -24,16 +25,16 @@ namespace PKSim.Core.Services
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IContainerTask _containerTask;
 
-      public SimulationModelCreator(IBuildConfigurationTask buildConfigurationTask, 
-         IModelConstructor modelConstructor, 
+      public SimulationModelCreator(ISimulationConfigurationTask simulationConfigurationTask,
+         IModelConstructor modelConstructor,
          IParameterIdUpdater parameterIdUpdater,
-         ISimulationSettingsFactory simulationSettingsFactory, 
-         ISimulationPersistableUpdater simulationPersistableUpdater, 
+         ISimulationSettingsFactory simulationSettingsFactory,
+         ISimulationPersistableUpdater simulationPersistableUpdater,
          ISimulationConfigurationValidator simulationConfigurationValidator,
          IEntityPathResolver entityPathResolver,
          IContainerTask containerTask)
       {
-         _buildConfigurationTask = buildConfigurationTask;
+         _simulationConfigurationTask = simulationConfigurationTask;
          _modelConstructor = modelConstructor;
          _parameterIdUpdater = parameterIdUpdater;
          _simulationSettingsFactory = simulationSettingsFactory;
@@ -47,57 +48,52 @@ namespace PKSim.Core.Services
       {
          _simulationConfigurationValidator.ValidateConfigurationFor(simulation);
 
-         simulation.SimulationSettings = _simulationSettingsFactory.CreateFor(simulation);
-         var buildConfiguration = _buildConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
-         buildConfiguration.ShowProgress = shouldShowProgress;
-         buildConfiguration.ShouldValidate = shouldValidate;
+         simulation.Settings = _simulationSettingsFactory.CreateFor(simulation);
+         var simulationConfiguration = _simulationConfigurationTask.CreateFor(simulation, shouldValidate, createAgingDataInSimulation: true);
+         simulationConfiguration.ShowProgress = shouldShowProgress;
+         simulationConfiguration.ShouldValidate = shouldValidate;
 
-         var creationResult = _modelConstructor.CreateModelFrom(buildConfiguration, simulation.Name);
+         var creationResult = _modelConstructor.CreateModelFrom(simulationConfiguration, simulation.Name);
 
          if (creationResult.IsInvalid)
             throw new CannotCreateSimulationException(creationResult.ValidationResult);
 
          simulation.Model = creationResult.Model;
-         simulation.Reactions = buildConfiguration.Reactions;
+         simulation.UpdateReactions(simulationConfiguration.All<ReactionBuildingBlock>());
 
          updateSimulationAfterModelCreation(simulation);
       }
 
       private void updateSimulationAfterModelCreation(Simulation simulation)
       {
-         //last step. Once the model has been created, it is necessary to set the id of the simulation 
-         //in all parameter defined in the model
-         _parameterIdUpdater.UpdateSimulationId(simulation);
-
-         //local molecule parameters parameter id need to be updated as well
-         var allParameters = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
+         
          var individual = simulation.Individual;
 
+         var allIndividualParameters = _containerTask.CacheAllChildren<IParameter>(individual);
+         var allSimulationParameters = _containerTask.CacheAllChildren<IParameter>(simulation.Model.Root);
+
+         //Once the model has been created, it is necessary to update origin to ensure that references are set properly
+         //Simulation id for all parameters
+         _parameterIdUpdater.UpdateSimulationId(simulation);
+         //Parameter Ids for all parameters coming from individuals (as some where created in the spatial structure independently from the individual)
+         _parameterIdUpdater.UpdateParameterIds(allIndividualParameters, allSimulationParameters);
+         //Building block id for the same parameters
+         _parameterIdUpdater.UpdateBuildingBlockId(allSimulationParameters, individual);
+         
+         //local molecule parameters parameter id need to be updated as well
          individual.AllMolecules().Each(m =>
          {
             var allMoleculeParameters = individual.AllMoleculeParametersFor(m);
             allMoleculeParameters.Each(p =>
             {
-               var simulationParameter = allParameters[_entityPathResolver.PathFor(p)];
+               var simulationParameter = allSimulationParameters[_entityPathResolver.PathFor(p)];
                if (simulationParameter != null)
                   updateFromIndividualParameter(simulationParameter, p, individual);
             });
          });
 
-         //we need to update the observer types according to their location (container observer are always of type drug, amount observer are depending on parent)
-         var allObservers = simulation.All<IObserver>();
-         foreach (var observer in allObservers)
-         {
-            var quantity = observer.ParentContainer as IQuantity;
-            if (quantity != null)
-               observer.QuantityType = QuantityType.Observer | quantity.QuantityType;
-            else
-               observer.QuantityType = QuantityType.Observer | QuantityType.Drug;
-         }
-
          _simulationPersistableUpdater.ResetPersistable(simulation);
       }
-
 
       private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual)
       {

@@ -28,7 +28,7 @@ namespace PKSim.Core
          _targetIndividual = new Individual();
          _scalingMethodTask = A.Fake<IScalingMethodTask>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), _entityPathResolver);
+         _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), _entityPathResolver, new ObjectPathFactoryForSpecs());
          sut = new IndividualScalingTask(_scalingMethodTask, _containerTask);
       }
    }
@@ -57,7 +57,7 @@ namespace PKSim.Core
          _targetParam3 = A.Fake<IParameter>().WithName("P3");
          _targetRefConcParam = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
          _originRefConcParam = DomainHelperForSpecs.ConstantParameterWithValue(5).WithName(CoreConstants.Parameters.REFERENCE_CONCENTRATION);
-         _originRelExpParam = A.Fake<IParameter>().WithName(CoreConstants.Parameters.REL_EXP);
+         _originRelExpParam = A.Fake<IParameter>().WithName(Constants.Parameters.REL_EXP);
 
          _originParam1 = A.Fake<IParameter>().WithName(_targetParam1.Name);
          _originParam2 = A.Fake<IParameter>().WithName(_targetParam2.Name);
@@ -141,7 +141,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_return_the_expression_parameters()
       {
-         _allParameterScalings.Any(x => x.SourceParameter.IsNamed(CoreConstants.Parameters.REL_EXP)).ShouldBeFalse();
+         _allParameterScalings.Any(x => x.SourceParameter.IsNamed(Constants.Parameters.REL_EXP)).ShouldBeFalse();
       }
 
       [Observation]

@@ -1,15 +1,16 @@
-﻿using PKSim.Core.Model;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
 {
    public interface IReactionBuildingBlockCreator
    {
       /// <summary>
-      /// Creates a <see cref="IReactionBuildingBlock"/> based on the process settings defined in the <paramref name="simulation"/>
+      ///    Creates a <see cref="ReactionBuildingBlock" /> based on the process settings defined in the
+      ///    <paramref name="simulation" />
       /// </summary>
-      IReactionBuildingBlock CreateFor(Simulation simulation);
+      ReactionBuildingBlock CreateFor(Simulation simulation);
    }
 
    public class ReactionBuildingBlockCreator : IReactionBuildingBlockCreator
@@ -23,15 +24,23 @@ namespace PKSim.Core.Services
          _objectBaseFactory = objectBaseFactory;
       }
 
-      public IReactionBuildingBlock CreateFor(Simulation simulation)
+      public ReactionBuildingBlock CreateFor(Simulation simulation)
       {
          if (simulation.IsImported)
-            return _objectBaseFactory.Create<IReactionBuildingBlock>();
+            return _objectBaseFactory.Create<ReactionBuildingBlock>();
 
-         var buildConfiguration = new BuildConfiguration();
-         buildConfiguration.PassiveTransports = new PassiveTransportBuildingBlock();
-         _moleculesAndReactionsCreator.CreateFor(buildConfiguration, simulation);
-         return buildConfiguration.Reactions;
+         var simulationConfiguration = new SimulationConfiguration();
+         var module = new Module
+         {
+            new PassiveTransportBuildingBlock()
+         };
+
+         var (molecules, reactions) = _moleculesAndReactionsCreator.CreateFor(module, simulation);
+         module.Add(molecules);
+         module.Add(reactions);
+
+         simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
+         return module.Reactions;
       }
    }
 }

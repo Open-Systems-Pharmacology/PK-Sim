@@ -1,13 +1,12 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core.Model;
-using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Parameters;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Presenters.Charts;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Formulas;
+using PKSim.Presentation.Presenters.Parameters;
+using PKSim.Presentation.Views.Parameters;
 
 namespace PKSim.Presentation
 {
@@ -71,7 +70,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _parameter = new PKSimParameter {Editable = false};
+         _parameter = new Parameter { Editable = false };
          A.CallTo(() => _view.Canceled).Returns(false);
       }
 
@@ -101,7 +100,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _parameter = new PKSimParameter {Editable = true};
+         _parameter = new Parameter { Editable = true };
          A.CallTo(() => _view.Canceled).Returns(true);
       }
 
@@ -131,7 +130,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _parameter = new PKSimParameter {Editable = true};
+         _parameter = new Parameter { Editable = true };
          A.CallTo(() => _view.Canceled).Returns(false);
       }
 

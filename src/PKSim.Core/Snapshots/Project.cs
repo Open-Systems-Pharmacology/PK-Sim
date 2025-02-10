@@ -60,8 +60,40 @@ namespace PKSim.Core.Snapshots
          }
       }
 
-      public IBuildingBlockSnapshot BuildingBlockByTypeAndName(PKSimBuildingBlockType buildingBlockType, string name) =>
-         BuildingBlocksByType(buildingBlockType)?.FindByName(name);
+      private string buildingBlockNameFor(IBuildingBlockSnapshot buildingBlockSnapshot)
+      {
+         //Special case for Expression profile where the name is not defined in the snapshot
+
+         switch (buildingBlockSnapshot)
+         {
+            case ExpressionProfile expressionProfile:
+               return Constants.ContainerName.ExpressionProfileName(expressionProfile.Molecule, expressionProfile.Species, expressionProfile.Category);
+            default:
+               return buildingBlockSnapshot.Name;
+         }
+      }
+
+      public IBuildingBlockSnapshot BuildingBlockByTypeAndName(PKSimBuildingBlockType buildingBlockType, string name)
+      {
+         var buildingBlocks = BuildingBlocksByType(buildingBlockType);
+         if (buildingBlocks == null)
+            return null;
+
+         switch (buildingBlockType)
+         {
+            //special case for expression profile where name is a created based of a composite key
+            case PKSimBuildingBlockType.ExpressionProfile:
+            {
+               var (moleculeName, speciesName, category) = Constants.ContainerName.NamesFromExpressionProfileName(name);
+               return ExpressionProfiles.Find(x => string.Equals(x.Molecule, moleculeName) && string.Equals(x.Species, speciesName) && string.Equals(x.Category, category));
+            }
+
+            default:
+               return buildingBlocks.FindByName(name);
+         }
+      }
+
+      
 
       public bool Swap(IBuildingBlockSnapshot newBuildingBlock)
       {
@@ -69,7 +101,7 @@ namespace PKSim.Core.Snapshots
             return false;
 
          var type = newBuildingBlock.BuildingBlockType;
-         var name = newBuildingBlock.Name;
+         var name = buildingBlockNameFor(newBuildingBlock);
          var originalBuildingBlock = BuildingBlockByTypeAndName(type, name);
 
          if (originalBuildingBlock == null)

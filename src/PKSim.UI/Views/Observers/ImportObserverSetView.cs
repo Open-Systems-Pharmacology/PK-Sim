@@ -6,7 +6,6 @@ using OSPSuite.Assets;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using PKSim.Assets;
@@ -84,7 +83,7 @@ namespace PKSim.UI.Views.Observers
             .AsReadOnly();
 
          _gridViewBinder.AddUnboundColumn()
-            .WithCaption(PKSimConstants.UI.EmptyColumn)
+            .WithCaption(Captions.EmptyColumn)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(x => _removeButtonRepository)
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 2);

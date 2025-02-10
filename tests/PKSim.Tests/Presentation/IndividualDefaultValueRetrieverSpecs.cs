@@ -24,8 +24,6 @@ namespace PKSim.Presentation
       protected ISubPopulationToSubPopulationDTOMapper _subPopulationMapper;
       private ICalculationMethodToCategoryCalculationMethodDTOMapper _calculationMethodMapper;
       protected IPopulationRepository _populationRepository;
-      protected ICloner _cloner;
-      protected IDiseaseStateRepository _diseaseStateRepository;
 
       protected override void Context()
       {
@@ -36,8 +34,6 @@ namespace PKSim.Presentation
          _subPopulationMapper = A.Fake<ISubPopulationToSubPopulationDTOMapper>();
          _calculationMethodMapper = A.Fake<ICalculationMethodToCategoryCalculationMethodDTOMapper>();
          _populationRepository = A.Fake<IPopulationRepository>();
-         _cloner= A.Fake<ICloner>();
-         _diseaseStateRepository= A.Fake<IDiseaseStateRepository>(); 
 
          sut = new IndividualDefaultValuesUpdater(
             _individualModelTask,
@@ -46,9 +42,7 @@ namespace PKSim.Presentation
             _originDataTask,
             _subPopulationMapper,
             _calculationMethodMapper,
-            _populationRepository,
-            _cloner,
-            _diseaseStateRepository);
+            _populationRepository);
       }
    }
 

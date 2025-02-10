@@ -152,7 +152,7 @@ namespace PKSim.Presentation.Services
       private bool shouldAddPathElementToNodeHierarchy(PathElement pathElementDTO, PathElements pathElements)
       {
          return !string.IsNullOrEmpty(pathElementDTO.DisplayName)
-                && !pathElementDTO.DisplayName.IsOneOf(Constants.ORGANISM, Constants.NEIGHBORHOODS, CoreConstants.Organ.LUMEN, Constants.APPLICATIONS, Constants.EVENTS)
+                && !pathElementDTO.DisplayName.IsOneOf(Constants.ORGANISM, Constants.NEIGHBORHOODS, CoreConstants.Organ.LUMEN, Constants.EVENTS)
                 && !Equals(parameterDisplayElementDTOFor(pathElements), pathElementDTO); //means that the parameter won't have the same display name as the parent node
       }
 

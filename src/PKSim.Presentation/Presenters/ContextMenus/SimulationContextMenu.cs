@@ -1,25 +1,24 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.UICommands;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
    public abstract class SimulationContextMenu<TSimulation> : BuildingBlockContextMenu<TSimulation> where TSimulation : Simulation
    {
-      protected SimulationContextMenu(TSimulation simulation) : base(simulation)
+      protected SimulationContextMenu(TSimulation simulation, IContainer container) : base(simulation, container)
       {
       }
-
-      protected abstract IEnumerable<IMenuBarItem> ActionMenuItemsSpecificToType(TSimulation simulation);
 
       protected abstract IEnumerable<IMenuBarItem> ExportMenuItemsSpecificToType(TSimulation simulation);
 
@@ -31,6 +30,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .Union(ExportMenuItemsSpecificToType(simulation))
             .Union(deleteMenuFor(simulation))
             .Union(DebugMenuFor(simulation));
+      }
+
+      protected virtual IEnumerable<IMenuBarItem> ActionMenuItemsSpecificToType(TSimulation populationSimulation)
+      {
+         yield break;
       }
 
       protected virtual IEnumerable<IMenuBarItem> DebugMenuFor(TSimulation simulation)
@@ -47,15 +51,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem ExportSimulationToCppMenuItem(TSimulation simulation)
       {
          return CreateMenuButton.WithCaption(MenuNames.ExportForCpp)
-            .WithCommandFor<ExportSimulationToCppUICommand, Simulation>(simulation)
+            .WithCommandFor<ExportSimulationToCppUICommand, Simulation>(simulation, _container)
             .ForDeveloper();
       }
-
 
       protected IMenuBarItem ExportODEForMatlabMenuItem(TSimulation simulation)
       {
          return CreateMenuButton.WithCaption(MenuNames.AsDeveloperOnly(MenuNames.ExportODEForMatlab))
-            .WithCommandFor<ExportODEForMatlabUICommand, Simulation>(simulation)
+            .WithCommandFor<ExportODEForMatlabUICommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.Matlab)
             .ForDeveloper();
       }
@@ -63,21 +66,21 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem ExportODEForRMenuItem(TSimulation simulation)
       {
          return CreateMenuButton.WithCaption(MenuNames.AsDeveloperOnly(MenuNames.ExportODEForR))
-            .WithCommandFor<ExportODEForRUICommand, Simulation>(simulation)
+            .WithCommandFor<ExportODEForRUICommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.R)
             .ForDeveloper();
       }
 
       private IEnumerable<IMenuBarItem> commonItemsForSimulations(TSimulation simulation)
       {
-         yield return GenericMenu.EditMenuFor<EditSimulationCommand, Simulation>(simulation);
+         yield return GenericMenu.EditMenuFor<EditSimulationCommand, Simulation>(simulation, _container);
          yield return RenameMenuFor(simulation);
 
          yield return DescriptionMenuFor(simulation)
             .AsGroupStarter();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Clone)
-            .WithCommandFor<CloneSimulationCommand, Simulation>(simulation)
+            .WithCommandFor<CloneSimulationCommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.SimulationClone)
             .AsDisabledIf(simulation.IsImported)
             .AsGroupStarter();
@@ -85,10 +88,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Configure)
             .AsDisabledIf(simulation.IsImported)
             .WithIcon(ApplicationIcons.SimulationConfigure)
-            .WithCommandFor<ConfigureSimulationCommand, Simulation>(simulation);
+            .WithCommandFor<ConfigureSimulationCommand, Simulation>(simulation, _container);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
-            .WithCommandFor<RunSimulationCommand, Simulation>(simulation)
+            .WithCommandFor<RunSimulationCommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.Run)
             .AsGroupStarter();
       }
@@ -96,13 +99,13 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private IEnumerable<IMenuBarItem> commonExportItemsFormSimulation(TSimulation simulation)
       {
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToMoBi)
-            .WithCommandFor<ExportSimulationToMoBiCommand, Simulation>(simulation)
+            .WithCommandFor<ExportSimulationToMoBiCommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.MoBi)
             .AsGroupStarter()
             .AsDisabledIf(simulation.IsImported);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveToMoBiSimulation)
-            .WithCommandFor<SaveSimulationToMoBiFileCommand, Simulation>(simulation)
+            .WithCommandFor<SaveSimulationToMoBiFileCommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.PKMLSave)
             .AsDisabledIf(simulation.IsImported);
 

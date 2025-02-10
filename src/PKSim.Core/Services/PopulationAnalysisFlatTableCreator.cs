@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Services
 {
@@ -59,8 +59,10 @@ namespace PKSim.Core.Services
                {
                   row[fieldValues.Key] = fieldValues.Value[i];
                }
+
                _dataTable.Rows.Add(row);
             }
+
             _dataTable.EndLoadData();
 
             //add an expression field for each covariate field for reference simulation handling
@@ -95,10 +97,7 @@ namespace PKSim.Core.Services
          }
       }
 
-      private PopulationSimulationComparison comparison
-      {
-         get { return _populationDataCollector.DowncastTo<PopulationSimulationComparison>(); }
-      }
+      private PopulationSimulationComparison comparison => _populationDataCollector.DowncastTo<PopulationSimulationComparison>();
 
       private IEnumerable<PopulationAnalysisDataField> numericDataFieldsFrom(IEnumerable<IPopulationAnalysisField> populationAnalysisFields)
       {
@@ -128,7 +127,7 @@ namespace PKSim.Core.Services
          if (!hasReferenceSimulation)
             return null;
 
-         return new DataColumn(covariateField.Key, typeof (string))
+         return new DataColumn(covariateField.Key, typeof(string))
          {
             Expression = getReferenceExpression(
                comparison.ReferenceSimulation.Name,
@@ -187,7 +186,7 @@ namespace PKSim.Core.Services
             return string.Empty;
 
          var columnName = ShortGuid.NewGuid().ToString();
-         addDataField(comparison.AllSimulationNames, typeof (string), columnName);
+         addDataField(comparison.AllSimulationNames, typeof(string), columnName);
 
          return columnName;
       }
@@ -202,7 +201,35 @@ namespace PKSim.Core.Services
 
       private string getReferenceExpression(string referenceSimulationName, string referenceLabel, string elseCase)
       {
-         return $"iif([{_simulationNameColumnName}]='{referenceSimulationName}', '{referenceLabel}', {elseCase})";
+         return $"iif([{_simulationNameColumnName}]='{escapeField(referenceSimulationName)}', '{referenceLabel}', {elseCase})";
+      }
+
+      private string escapeField(string fieldToEscape)
+      {      
+         if (string.IsNullOrEmpty(fieldToEscape))
+            return fieldToEscape;
+
+         var sb = new StringBuilder(fieldToEscape.Length);
+         foreach (var c in fieldToEscape)
+         {
+            switch (c)
+            {
+               case ']':
+               case '[':
+               case '%':
+               case '*':
+                  sb.Append("[").Append(c).Append("]");
+                  break;
+               case '\'':
+                  sb.Append("''");
+                  break;
+               default:
+                  sb.Append(c);
+                  break;
+            }
+         }
+
+         return sb.ToString();
       }
 
       private void updateExpressionWithSimulationName(DataColumn column, PopulationSimulation referenceSimulation, GroupingItem referenceGroupingItem)

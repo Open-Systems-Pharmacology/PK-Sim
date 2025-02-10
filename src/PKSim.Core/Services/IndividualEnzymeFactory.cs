@@ -5,6 +5,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using static PKSim.Core.CoreConstants.Parameters;
+using static OSPSuite.Core.Domain.Constants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -30,7 +31,6 @@ namespace PKSim.Core.Services
       public IndividualEnzyme AddUndefinedLiverTo(Individual individual)
       {
          var undefinedLiver = CreateMolecule(CoreConstants.Molecule.UndefinedLiver);
-         AddOntogenyParameterTo(undefinedLiver);
 
          undefinedLiver.Localization = Localization.Intracellular;
          undefinedLiver.ReferenceConcentration.Visible = false;

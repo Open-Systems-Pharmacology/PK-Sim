@@ -7,6 +7,7 @@ using OSPSuite.Core.Maths.Interpolations;
 using OSPSuite.Core.Services;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using static OSPSuite.Core.Domain.Formulas.DistributionType;
 
 namespace PKSim.Core.Model
 {
@@ -154,7 +155,7 @@ namespace PKSim.Core.Model
          return create(distributionMetaData, p => _formulaFactory.DistributionFor(distributionMetaData, p));
       }
 
-      private IDistributedParameter create(ParameterDistributionMetaData distributionMetaData, Func<IDistributedParameter, IDistributionFormula> createFormula)
+      private IDistributedParameter create(ParameterDistributionMetaData distributionMetaData, Func<IDistributedParameter, DistributionFormula> createFormula)
       {
          var parameter = _objectBaseFactory.CreateDistributedParameter();
          setParameterProperties(parameter, distributionMetaData);
@@ -188,12 +189,12 @@ namespace PKSim.Core.Model
 
          percentile.Value = CoreConstants.DEFAULT_PERCENTILE;
          param.Add(percentile);
-         if (distributionMetaData.Distribution == DistributionTypes.Normal)
+         if (distributionMetaData.Distribution == Normal)
          {
             param.Add(createHiddenParameterBasedOn(Constants.Distribution.MEAN, distributionMetaData));
             param.Add(createHiddenParameterBasedOn(Constants.Distribution.DEVIATION, distributionMetaData));
          }
-         else if (distributionMetaData.Distribution == DistributionTypes.LogNormal)
+         else if (distributionMetaData.Distribution == LogNormal)
          {
             //log normal=> we need to reset dimension 
             param.Add(createHiddenParameterBasedOn(Constants.Distribution.MEAN, distributionMetaData));
@@ -204,16 +205,16 @@ namespace PKSim.Core.Model
             gsd.DisplayUnit = _dimensionRepository.NoDimension.DefaultUnit;
             param.Add(gsd);
          }
-         else if (distributionMetaData.Distribution == DistributionTypes.Uniform)
+         else if (distributionMetaData.Distribution == Uniform)
          {
             param.Add(createHiddenParameterBasedOn(Constants.Distribution.MINIMUM, distributionMetaData));
             param.Add(createHiddenParameterBasedOn(Constants.Distribution.MAXIMUM, distributionMetaData));
          }
-         else if (distributionMetaData.Distribution == DistributionTypes.Discrete)
+         else if (distributionMetaData.Distribution == Discrete)
          {
             param.Add(createHiddenParameterBasedOn(Constants.Distribution.MEAN, distributionMetaData));
          }
-         else if (distributionMetaData.Distribution == DistributionTypes.Unknown)
+         else if (distributionMetaData.Distribution == Unknown)
          {
             /*nothing to do*/
          }
@@ -252,7 +253,7 @@ namespace PKSim.Core.Model
       {
          parameter.Name = parameterMetaData.ParameterName;
          parameter.BuildMode = parameterMetaData.BuildMode;
-         parameter.Info = parameterMetaData.Clone();
+         parameter.Info.UpdatePropertiesFrom(parameterMetaData);
          parameter.Dimension = _dimensionRepository.DimensionByName(parameterMetaData.Dimension);
          parameter.IsDefault = parameterMetaData.IsDefault;
          parameter.ValueOrigin.UpdateAllFrom(parameterMetaData.ValueOrigin);

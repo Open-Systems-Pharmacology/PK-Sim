@@ -18,8 +18,9 @@ using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.UI;
 using OSPSuite.UI.Binders;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
@@ -28,7 +29,6 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
-using PKSim.UI.Views.Core;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace PKSim.UI.Views.Parameters
@@ -64,10 +64,10 @@ namespace PKSim.UI.Views.Parameters
          _imageListRetriever = imageListRetriever;
          _toolTipController = new ToolTipController();
          _toolTipCreator = toolTipCreator;
-         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip) {TextEditStyle = TextEditStyles.Standard};
+         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, PKSimConstants.UI.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _toolTipController.Initialize(_imageListRetriever);
-         PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImagesForContextMenu};
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImagesForContextMenu };
          _standardParameterEditRepository.ConfigureWith(typeof(double));
          _standardParameterEditRepository.Appearance.TextOptions.HAlignment = HorzAlignment.Far;
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
@@ -85,7 +85,7 @@ namespace PKSim.UI.Views.Parameters
          _gridView.EndGrouping += (o, e) => _gridView.ExpandAllGroups();
          _comboBoxUnit = new ComboBoxUnitParameter(_gridView.GridControl);
          _favoriteRepository = new UxRepositoryItemCheckEdit(_gridView);
-         _discreteParameterRepository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever) {LargeImages = _imageListRetriever.AllImages16x16};
+         _discreteParameterRepository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever) { LargeImages = _imageListRetriever.AllImages16x16 };
          InitializeWithGrid(_gridView);
          _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView)
          {

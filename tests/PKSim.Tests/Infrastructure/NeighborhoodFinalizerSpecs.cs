@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using FakeItEasy;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using PKSim.Core.Model;
@@ -6,9 +9,6 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure.ORM.FlatObjects;
 using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Infrastructure.Services;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 
 namespace PKSim.Infrastructure
 {
@@ -19,33 +19,32 @@ namespace PKSim.Infrastructure
 
       protected override void Context()
       {
-         _flatNeighborhoodRepository =A.Fake<IFlatNeighborhoodRepository>();
-         _flatContainerRepository=A.Fake<IFlatContainerRepository>();
-         sut = new NeighborhoodFinalizer(_flatNeighborhoodRepository,_flatContainerRepository);
+         _flatNeighborhoodRepository = A.Fake<IFlatNeighborhoodRepository>();
+         _flatContainerRepository = A.Fake<IFlatContainerRepository>();
+         sut = new NeighborhoodFinalizer(_flatNeighborhoodRepository, _flatContainerRepository);
       }
    }
 
-   
    public class When_setting_the_first_and_second_neighboors_of_the_neighbhorhood_defined_in_an_individual : concern_for_NeighborhoodFinalizer
    {
-      private PKSim.Core.Model.Organism _organism;
-      private List<INeighborhoodBuilder> _neighborhoods;
+      private Organism _organism;
+      private List<NeighborhoodBuilder> _neighborhoods;
       private IContainer _firstNeighbor;
       private IContainer _secondNeighbor;
-      private INeighborhoodBuilder _neighborhood;
+      private NeighborhoodBuilder _neighborhood;
 
       protected override void Context()
       {
          base.Context();
-         _neighborhood = A.Fake<INeighborhoodBuilder>().WithName("toto");
-         _organism = A.Fake<PKSim.Core.Model.Organism>();
+         _neighborhood = A.Fake<NeighborhoodBuilder>().WithName("toto");
+         _organism = A.Fake<Organism>();
          _firstNeighbor = A.Fake<IContainer>();
          _secondNeighbor = A.Fake<IContainer>();
-         _neighborhoods = new List<INeighborhoodBuilder> { _neighborhood};
+         _neighborhoods = new List<NeighborhoodBuilder> {_neighborhood};
          var flatNeighborhood = new FlatNeighborhood {FirstNeighborId = 1, SecondNeighborId = 2};
          A.CallTo(() => _flatNeighborhoodRepository.NeighborhoodFrom(_neighborhood.Name)).Returns(flatNeighborhood);
-         var containerPath1 = A.Fake<IObjectPath>();
-         var containerPath2 = A.Fake<IObjectPath>();
+         var containerPath1 = A.Fake<ObjectPath>();
+         var containerPath2 = A.Fake<ObjectPath>();
          A.CallTo(() => _flatContainerRepository.ContainerPathFrom(flatNeighborhood.FirstNeighborId)).Returns(containerPath1);
          A.CallTo(() => _flatContainerRepository.ContainerPathFrom(flatNeighborhood.SecondNeighborId)).Returns(containerPath2);
          A.CallTo(() => containerPath1.Resolve<IContainer>(_organism)).Returns(_firstNeighbor);
@@ -54,7 +53,7 @@ namespace PKSim.Infrastructure
 
       protected override void Because()
       {
-         sut.SetNeighborsIn(_organism,_neighborhoods);
+         sut.SetNeighborsIn(_organism, _neighborhoods);
       }
 
       [Observation]
@@ -64,4 +63,4 @@ namespace PKSim.Infrastructure
          _neighborhood.SecondNeighbor.ShouldBeEqualTo(_secondNeighbor);
       }
    }
-}	
+}

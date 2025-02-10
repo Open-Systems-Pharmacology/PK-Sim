@@ -4,9 +4,10 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using static PKSim.Core.CoreConstants.Parameters;
 using IParameterFactory = PKSim.Core.Model.IParameterFactory;
 
 namespace PKSim.Core.Services
@@ -19,26 +20,35 @@ namespace PKSim.Core.Services
       void AddActiveProcessParametersTo(CompoundProcess process);
       void AddProcessBuilderParametersTo(IContainer process);
       void AddFormulationParametersTo(Formulation formulation);
-      void AddMoleculeParametersTo(IMoleculeBuilder molecule, IFormulaCache formulaCache);
+      void AddMoleculeParametersTo(MoleculeBuilder molecule, IFormulaCache formulaCache);
       void AddApplicationParametersTo(IContainer container);
       void AddSchemaItemParametersTo(ISchemaItem schemaItem);
       void AddEventParametersTo(IContainer container);
       void AddCompoundParametersTo(Compound compound);
       void AddDiseaseStateParametersTo(DiseaseState diseaseState);
 
-      void AddModelParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer;
-      void AddApplicationTransportParametersTo(ITransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache);
+      void AddParametersToSpatialStructureContainer<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer;
+      void AddApplicationTransportParametersTo(TransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache);
    }
 
    public class ParameterContainerTask : IParameterContainerTask
    {
       private readonly IParameterFactory _parameterFactory;
+      private readonly IIndividualParameterBySpeciesRepository _individualParameterBySpeciesRepository;
+      private readonly IIndividualParametersSameFormulaOrValueForAllSpeciesRepository _sameFormulaOrValueForAllSpeciesRepository;
       private readonly IParameterQuery _parameterQuery;
 
-      public ParameterContainerTask(IParameterQuery parameterQuery, IParameterFactory parameterFactory)
+      public ParameterContainerTask(
+         IParameterQuery parameterQuery,
+         IParameterFactory parameterFactory,
+         IIndividualParameterBySpeciesRepository individualParameterBySpeciesRepository,
+         IIndividualParametersSameFormulaOrValueForAllSpeciesRepository sameFormulaOrValueForAllSpeciesRepository
+      )
       {
          _parameterQuery = parameterQuery;
          _parameterFactory = parameterFactory;
+         _individualParameterBySpeciesRepository = individualParameterBySpeciesRepository;
+         _sameFormulaOrValueForAllSpeciesRepository = sameFormulaOrValueForAllSpeciesRepository;
       }
 
       public void AddIndividualParametersTo<TContainer>(TContainer parameterContainer, OriginData originData) where TContainer : IContainer
@@ -52,22 +62,37 @@ namespace PKSim.Core.Services
             param => param.BuildingBlockType == PKSimBuildingBlockType.Individual && string.Equals(param.ParameterName, parameterName));
       }
 
-      public void AddDiseaseStateParametersTo(DiseaseState diseaseState)
+      public void AddDiseaseStateParametersTo(DiseaseState diseaseState) => addParametersTo(diseaseState, calculationMethods: CoreConstants.CalculationMethod.ForDiseaseStates);
+
+      public void AddParametersToSpatialStructureContainer<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer
       {
-         addParametersTo(diseaseState, null, CoreConstants.CalculationMethod.ForDiseaseStates);
+         bool addParameter(ParameterMetaData parameterMetaData)
+         {
+            //all non individual parameters are added to the spatial structure by default
+            if (parameterMetaData.BuildingBlockType != PKSimBuildingBlockType.Individual)
+               return true;
+
+            //created in the expression profile
+            if (OntogenyFactorTables.Contains(parameterMetaData.ParameterName))
+               return false;
+
+            //parameter is not used for all species=> it should not be added to the spatial structure as it will be added dynamically from the individual selected
+            var isUsedForAllSpecies = _individualParameterBySpeciesRepository.UsedForAllSpecies(parameterMetaData);
+            if (!isUsedForAllSpecies)
+               return false;
+
+
+            //we only add parameter to the spatial structure that share the same value or formula. Otherwise we do not add them
+            return _sameFormulaOrValueForAllSpeciesRepository.IsSameFormulaOrValue(parameterMetaData);
+         }
+
+
+         addParametersTo(parameterContainer, originData, modelProperties.AllCalculationMethods().Select(cm => cm.Name), addParameter, null, formulaCache);
       }
 
-      public void AddModelParametersTo<TContainer>(TContainer parameterContainer, OriginData originData, ModelProperties modelProperties, IFormulaCache formulaCache) where TContainer : IContainer
-      {
-         addParametersTo(parameterContainer, originData, modelProperties.AllCalculationMethods().Select(cm => cm.Name), param => true, formulaCache);
-      }
+      public void AddActiveProcessParametersTo(CompoundProcess process) => addParametersTo(process, calculationMethods: CoreConstants.CalculationMethod.ForProcesses);
 
-      public void AddActiveProcessParametersTo(CompoundProcess process)
-      {
-         addParametersTo(process, null, CoreConstants.CalculationMethod.ForProcesses);
-      }
-
-      public void AddApplicationTransportParametersTo(ITransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache)
+      public void AddApplicationTransportParametersTo(TransportBuilder applicationTransportBuilder, string applicationName, string formulationName, IFormulaCache formulaCache)
       {
          //assuming that all application transports are located directly under
          //the application container
@@ -78,7 +103,7 @@ namespace PKSim.Core.Services
          formulation.Add(application);
          application.Add(transport);
 
-         addParametersTo(transport, null, CoreConstants.CalculationMethod.ForApplications, x => true, formulaCache);
+         addParametersTo(transport, calculationMethods: CoreConstants.CalculationMethod.ForApplications, formulaCache: formulaCache);
 
          updateProcessesParameters(transport, applicationTransportBuilder);
       }
@@ -86,7 +111,7 @@ namespace PKSim.Core.Services
       public void AddProcessBuilderParametersTo(IContainer processBuilder)
       {
          var container = new Container().WithName(processBuilder.Name);
-         addParametersTo(container, null, CoreConstants.CalculationMethod.ForProcesses);
+         addParametersTo(container, calculationMethods: CoreConstants.CalculationMethod.ForProcesses);
          updateProcessesParameters(container, processBuilder);
       }
 
@@ -107,97 +132,90 @@ namespace PKSim.Core.Services
       {
          string oldName = formulation.Root.Name;
          formulation.Root.Name = formulation.Name;
-         addParametersTo(formulation.Root, null, CoreConstants.CalculationMethod.ForFormulations);
+         addParametersTo(formulation.Root, calculationMethods: CoreConstants.CalculationMethod.ForFormulations);
          formulation.Root.Name = oldName;
       }
 
-      public void AddMoleculeParametersTo(IMoleculeBuilder molecule, IFormulaCache formulaCache)
-      {
-         addParametersTo(molecule, null, CoreConstants.CalculationMethod.ForCompounds, x => true, formulaCache);
-      }
+      public void AddMoleculeParametersTo(MoleculeBuilder molecule, IFormulaCache formulaCache)
+         => addParametersTo(molecule, calculationMethods: CoreConstants.CalculationMethod.ForCompounds, formulaCache: formulaCache);
 
       public void AddApplicationParametersTo(IContainer container)
       {
-         addParametersTo(container, null, CoreConstants.CalculationMethod.ForApplications);
+         addParametersTo(container, calculationMethods: CoreConstants.CalculationMethod.ForApplications);
          //parameter input dose should not be added to the container 
-         var inputDose = container.Parameter(CoreConstants.Parameters.INPUT_DOSE);
+         var inputDose = container.Parameter(INPUT_DOSE);
          if (inputDose != null)
             container.RemoveChild(inputDose);
       }
 
       public void AddSchemaItemParametersTo(ISchemaItem schemaItem)
-      {
-         addParametersTo(schemaItem, null, CoreConstants.CalculationMethod.ForSchemaItems);
-      }
+         => addParametersTo(schemaItem, calculationMethods: CoreConstants.CalculationMethod.ForSchemaItems);
 
       public void AddEventParametersTo(IContainer container)
-      {
-         addParametersTo(container, null, CoreConstants.CalculationMethod.ForEvents);
-      }
+         => addParametersTo(container, calculationMethods: CoreConstants.CalculationMethod.ForEvents);
 
       public void AddCompoundParametersTo(Compound compound)
       {
-         //reset compound name
-         string oldName = compound.Root.Name;
+         //reset compound name so that formula can be resolved
+         var oldName = compound.Root.Name;
          compound.Root.Name = CoreConstants.ContainerName.Drug;
-         addParametersTo(compound.Root, null, CoreConstants.CalculationMethod.ForCompounds, x => x.BuildingBlockType == PKSimBuildingBlockType.Compound);
+         addParametersTo(compound.Root, calculationMethods: CoreConstants.CalculationMethod.ForCompounds, predicate: x => x.BuildingBlockType == PKSimBuildingBlockType.Compound);
          compound.Root.Name = oldName;
       }
 
-      private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods = null) where T : IContainer
+      /// <summary>
+      ///    Add all parameters defined in the database for the given <paramref name="originData" /> and
+      ///    <paramref name="calculationMethods" /> in <paramref name="parameterContainer" />
+      /// </summary>
+      /// <param name="parameterContainer">Container where all parameters will be added</param>
+      /// <param name="originData">Origin data used to retrieve constant parameter values</param>
+      /// <param name="calculationMethods">Calculation methods used to retrieve rate parameter values</param>
+      /// <param name="predicate">Optional predicate used to filter out some parameter from the query</param>
+      /// <param name="parameterValueModifier">
+      ///    Optional action that will allow the caller to manipulate the default value created
+      ///    for the parameter
+      /// </param>
+      /// <param name="formulaCache">Formula cache where the formula will be defined for a rate parameter</param>
+      private void addParametersTo(
+         IContainer parameterContainer,
+         OriginData originData = null,
+         IEnumerable<string> calculationMethods = null,
+         Func<ParameterMetaData, bool> predicate = null,
+         Action<ParameterMetaData, IParameter> parameterValueModifier = null,
+         IFormulaCache formulaCache = null)
       {
-         addParametersTo(parameterContainer, originData, calculationMethods ?? Enumerable.Empty<string>(), x => true);
-      }
+         var predicateToUse = predicate ?? (x => true);
+         var parameterValueModifierToUse = parameterValueModifier ?? ((_, _) => { });
 
-      private void addParametersTo<T>(T parameterContainer, OriginData originData, IEnumerable<string> calculationMethods, Func<ParameterMetaData, bool> predicate, IFormulaCache formulaCache = null)
-         where T : IContainer
-      {
          //RATE PARAMETERS
-         foreach (ParameterRateMetaData parameterRateDefinition in _parameterQuery.ParameterRatesFor(parameterContainer, calculationMethods, predicate))
+         foreach (var parameterRateMetaData in _parameterQuery.ParameterRatesFor(parameterContainer, calculationMethods, predicateToUse))
          {
             //parameter already available,
-            var parameter = _parameterFactory.CreateFor(parameterRateDefinition, formulaCache);
-            if (shouldAddRateParameterTo(parameterContainer, parameter))
-               parameterContainer.Add(parameter);
+            var parameter = _parameterFactory.CreateFor(parameterRateMetaData, formulaCache);
+            parameterValueModifierToUse(parameterRateMetaData, parameter);
+            parameterContainer.Add(parameter);
          }
 
          //CONSTANT PARAMETERS
-         foreach (ParameterValueMetaData parameterDefinition in _parameterQuery.ParameterValuesFor(parameterContainer, originData, predicate))
+         foreach (var parameterValueMetaData in _parameterQuery.ParameterValuesFor(parameterContainer, originData, predicateToUse))
          {
-            parameterContainer.Add(_parameterFactory.CreateFor(parameterDefinition));
+            var parameter = _parameterFactory.CreateFor(parameterValueMetaData);
+            parameterValueModifierToUse(parameterValueMetaData, parameter);
+            parameterContainer.Add(parameter);
          }
 
          //DISTRIBUTION PARAMETERS
-         foreach (var distributionGroup in _parameterQuery.ParameterDistributionsFor(parameterContainer, originData, predicate).GroupBy(dist => dist.ParameterName))
+         foreach (var parameterDistributionMetaData in _parameterQuery.ParameterDistributionsFor(parameterContainer, originData, predicateToUse).GroupBy(dist => dist.ParameterName))
          {
-            var parameter = _parameterFactory.CreateFor(distributionGroup.ToList(), originData);
+            var parameter = _parameterFactory.CreateFor(parameterDistributionMetaData.ToList(), originData);
 
             //Parameter might be distributed only for a few species
             if (parameterContainer.ContainsName(parameter.Name))
                parameterContainer.RemoveChild(parameterContainer.Parameter(parameter.Name));
 
+            //no need to use the parameter modifier here as they are unique by species by definition
             parameterContainer.Add(parameter);
          }
-      }
-
-      private static bool shouldAddRateParameterTo(IContainer parameterContainer, IParameter parameterToAdd)
-      {
-         //parameter does not exist. Can be added to the container
-         var parameter = parameterContainer.Parameter(parameterToAdd.Name);
-         if (parameter == null)
-            return true;
-
-         //parameter already exist. If the parameter have the same formula, it should not be added
-         //otherwise, it is an exception (configuration problem in PKSim)
-         if (parameter.Formula.IsConstant())
-            throw new PKSimException(PKSimConstants.Error.ConstantParameterAlreadyExistsInContainer(parameterContainer.Name, parameter.Name));
-
-         var formula = parameter.Formula.DowncastTo<ExplicitFormula>();
-         var formulaToAdd = parameterToAdd.Formula.DowncastTo<ExplicitFormula>();
-         if (string.Equals(formula.FormulaString, formulaToAdd.FormulaString))
-            return false;
-
-         throw new PKSimException(PKSimConstants.Error.FormulaParameterAlreadyExistsInContainerWithAnotherFormula(parameterContainer.Name, parameter.Name, formula.FormulaString, formulaToAdd.FormulaString));
       }
    }
 }
