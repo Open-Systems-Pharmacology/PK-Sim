@@ -1,20 +1,20 @@
 configuration: Debug
 image: Visual Studio 2022
 
-version: '{build}'
+version: '12.1.{build}'
 
-init:
-- ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
+init: 
+  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set patch_version=12.1.1) ELSE (Set patch_version=%APPVEYOR_BUILD_VERSION%)
 
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '$(ospsuite_version).$(build_number)'
-  assembly_version: '$(ospsuite_version).$(build_number)'
-  file_version: '$(ospsuite_version).$(build_number)'
-  informational_version: '$(ospsuite_version).$(build_number)'
+  version: '$(patch_version)'
+  assembly_version: '$(patch_version)'
+  file_version: '$(patch_version)'
+  informational_version: '$(patch_version)'
 
-clone_depth: 1
+clone_depth: 1 
 
 install:
   - set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"

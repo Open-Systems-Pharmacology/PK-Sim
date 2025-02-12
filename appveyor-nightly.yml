@@ -1,13 +1,13 @@
 configuration: Debug
 image: Visual Studio 2022
 
-version: '{build}'
+version: '12.1.{build}'
 
 environment:
   TARGET_FRAMEWORK: net8
 
 init:
-- ps: Update-AppveyorBuild -Version "$($env:ospsuite_version).$($env:appveyor_build_version)"
+- cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set patch_version=12.1.1) ELSE (Set patch_version=%APPVEYOR_BUILD_VERSION%)
 - ps: |
       $lastCommitDate = git log -1 --format=%ci
       $currentDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -23,10 +23,10 @@ init:
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '$(ospsuite_version).$(build_number)'
-  assembly_version: '$(ospsuite_version).$(build_number)'
-  file_version: '$(ospsuite_version).$(build_number)'
-  informational_version: '$(ospsuite_version).$(build_number)'
+  version: '$(patch_version)'
+  assembly_version: '$(patch_version)'
+  file_version: '$(patch_version)'
+  informational_version: '$(patch_version)'
 
 
 clone_depth: 1
