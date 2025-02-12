@@ -1,18 +1,21 @@
 configuration: Debug
 image: Visual Studio 2022
 
-version: '12.1.{build}'
+environment:
+  app_version: '12.1'
+
+version: '$(app_version).{build}'
 
 init: 
-  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set patch_version=12.1.1) ELSE (Set patch_version=%APPVEYOR_BUILD_VERSION%)
+  - cmd: if DEFINED APPVEYOR_PULL_REQUEST_NUMBER (Set build_number=1) ELSE (Set build_number=%APPVEYOR_BUILD_NUMBER%)
 
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '$(patch_version)'
-  assembly_version: '$(patch_version)'
-  file_version: '$(patch_version)'
-  informational_version: '$(patch_version)'
+  version: '$(app_version).$(build_number)'
+  assembly_version: '$(app_version).$(build_number)'
+  file_version: '$(app_version).$(build_number)'
+  informational_version: '$(app_version).$(build_number)'
 
 clone_depth: 1 
 
