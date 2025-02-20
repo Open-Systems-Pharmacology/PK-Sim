@@ -1,0 +1,48 @@
+name: Build and Test
+
+on:
+  push:
+  pull_request:
+    branches:
+    - develop
+
+env:
+  MAJOR: 12
+  MINOR: 1
+  RUN: ${{ github.run_number }}
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore dependencies
+        run: |
+          nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
+          nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
+          nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
+          nuget sources add -name serializer -source https://ci.appveyor.com/nuget/ospsuite-serializer 
+          nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding 
+          nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting 
+          nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
+          dotnet restore
+
+      - name: Build
+        run: msbuild PKSim.sln /p:Version=12.1.9999
+
+      - name: Test
+        run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+
+      - name: Push test log as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: testLog_Windows
+          path: ./testLog*.html

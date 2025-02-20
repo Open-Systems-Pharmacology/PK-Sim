@@ -1,0 +1,110 @@
+# Changing the workflow name will reset the run number
+name: Build Nightly 12.1
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+    
+
+env:
+  MAJOR: 12
+  MINOR: 1
+  RUN: ${{ github.run_number }}
+  TARGET_FRAMEWORK: net8
+
+jobs:
+  get-latest-commit-timespan:
+    runs-on: ubuntu-latest
+    outputs:
+      LATEST_COMMIT_TIMESPAN: ${{ steps.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get the previous commit timespan
+        id: get-latest-commit-timespan
+        shell: bash
+        run: |
+          commit=$(git log origin/develop -1 --format="%at")
+          echo $commit
+          now=$(date +%s)
+          echo $now
+          timespan=$[now - commit]
+          echo "Timespan: ${timespan}"
+          echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_ENV
+          echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_OUTPUT
+
+  build-nightly:
+    needs: get-latest-commit-timespan
+    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore dependencies
+        run: |
+          nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
+          nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
+          nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
+          nuget sources add -name serializer -source https://ci.appveyor.com/nuget/ospsuite-serializer 
+          nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding 
+          nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting 
+          nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
+          dotnet restore
+
+      - name: define env variables
+        run: |
+          echo "APP_VERSION=${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.RUN }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build
+        run: |
+          rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
+          msbuild PKSim.sln /p:Version=${{env.APP_VERSION}}
+
+      - name : Test
+        run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+
+      - name: Create Setup
+        run: |
+          rake "create_setup[${{env.APP_VERSION}}, Debug]"
+          rake "create_portable_setup[${{env.APP_VERSION}}, Debug, pk-sim-portable-setup.zip]"
+      
+      - name: Create R dependency artifact
+        run: |
+          pushd . &&
+          cd src\PKSimRDependencyResolution\bin\%CONFIGURATION%\%TARGET_FRAMEWORK% &&
+          7z.exe" a pk-sim-r-dependencies.zip -x@excludedFiles.txt * -xr!runtimes &&
+          popd
+
+      - name: Push test log as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: testLog_Windows
+          path: ./testLog*.html
+
+      - name: Push nightly installer as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKSim Installer ${{env.APP_VERSION}}
+          path: setup\deploy\*.msi
+
+      - name: Push nightly portable as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKSim Portable ${{env.APP_VERSION}}
+          path: setup\PKSim ${{env.APP_VERSION}}
+
+      - name: Push R dependencies as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKSim R Dependencies
+          path: src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}\pk-sim-r-dependencies.zip
