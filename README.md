@@ -27,7 +27,7 @@ to obtain a multiple dose simulation model, or substitute the compound to obtain
 
 
 ## Code Status
-[![Build status](https://ci.appveyor.com/api/projects/status/65aa66s8aj2tcp45/branch/develop?svg=true)](https://ci.appveyor.com/project/open-systems-pharmacology-ci/pk-sim/branch/develop)
+[![Build status](https://img.shields.io/github/actions/workflow/status/Open-Systems-Pharmacology/PK-Sim/build-and-test.yml?logo=nuget&label=Build%20status)](https://github.com/Open-Systems-Pharmacology/PK-Sim/actions/workflows/build-and-test.yml)
 [![Coverage status](https://codecov.io/gh/Open-Systems-Pharmacology/PK-Sim/branch/develop/graph/badge.svg)](https://codecov.io/gh/Open-Systems-Pharmacology/PK-Sim)
 
 ## Code of conduct
