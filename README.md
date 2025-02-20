@@ -37,6 +37,6 @@ Everyone interacting in the Open Systems Pharmacology community (codebases, issu
 We encourage contribution to the Open Systems Pharmacology community. Before getting started please read the [contribution guidelines](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CONTRIBUTING.md). If you are contributing code, please be familiar with the [coding standards](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CODING_STANDARDS.md).
 
 ## License
-PK-Sim is released under the [GPLv2 License](LICENSE).
+PK-Sim is released under the [GPLv2 License](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/LICENSE).
 
 All trademarks within this document belong to their legitimate owners.
