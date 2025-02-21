@@ -41,7 +41,8 @@ jobs:
 
   build-nightly:
     needs: get-latest-commit-timespan
-    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
+    #temp
+    # if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
     runs-on: windows-latest
     steps:
       - name: Checkout code
