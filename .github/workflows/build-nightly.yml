@@ -86,7 +86,7 @@ jobs:
         run: |
           pushd .
           cd src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}
-          7z.exe a pk-sim-r-dependencies.zip -x@excludedFiles.txt * -xr!runtimes
+          7z.exe a pk-sim-r-dependencies.zip -x@"excludedFiles.txt" * -xr!runtimes
           popd
 
       - name: Push test log as artifact
