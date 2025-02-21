@@ -35,7 +35,7 @@ jobs:
           nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding 
           nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting 
           nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
-          dotnet restore
+          nuget restore
 
       - name: Build
         run: msbuild PKSim.sln /p:Version=12.1.9999
