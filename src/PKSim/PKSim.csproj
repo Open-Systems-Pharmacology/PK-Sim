@@ -12,7 +12,6 @@
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
 	  <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
