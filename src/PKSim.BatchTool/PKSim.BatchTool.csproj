@@ -12,7 +12,6 @@
     <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
     <Description>PKSim.BatchTool - Batch runner for json based PK-Sim simulations</Description>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
