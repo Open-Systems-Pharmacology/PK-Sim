@@ -5,9 +5,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 2 * * *'
-  pull_request:
-    branches:
-    - develop
 
 env:
   MAJOR: 12
@@ -41,8 +38,7 @@ jobs:
 
   build-nightly:
     needs: get-latest-commit-timespan
-    #temp
-    # if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
+    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -73,9 +69,8 @@ jobs:
           rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
           msbuild PKSim.sln /p:Version=${{env.APP_VERSION}}
 
-      # temp
-      # - name : Test
-      #   run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+      - name : Test
+        run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Create Setup
         run: |
