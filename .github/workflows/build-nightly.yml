@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PKSim Portable ${{env.APP_VERSION}}
-          path: setup\PKSim ${{env.APP_VERSION}}
+          path: setup\PK-Sim ${{env.APP_VERSION}}
 
       - name: Push R dependencies as artifact
         uses: actions/upload-artifact@v4
