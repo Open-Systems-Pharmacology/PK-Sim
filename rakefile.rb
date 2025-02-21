@@ -3,6 +3,7 @@ require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
 require_relative 'src/Db/db'
+require 'ostruct'
 
 task :cover do
 	filter = []
