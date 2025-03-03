@@ -20,13 +20,7 @@ jobs:
       - name: Restore dependencies
         run: |
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
-          nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
-          nuget sources add -name utility -source https://ci.appveyor.com/nuget/ospsuite-utility 
-          nuget sources add -name serializer -source https://ci.appveyor.com/nuget/ospsuite-serializer 
-          nuget sources add -name databinding -source https://ci.appveyor.com/nuget/ospsuite-databinding 
-          nuget sources add -name texreporting -source https://ci.appveyor.com/nuget/ospsuite-texreporting 
-          nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
-          dotnet restore
+          nuget restore
 
       - name: Build
         run: msbuild PKSim.sln /p:Version=12.1.999
