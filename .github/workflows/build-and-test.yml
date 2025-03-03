@@ -12,6 +12,7 @@ env:
   MAJOR: 12
   MINOR: 1
   RUN: ${{ github.run_number }}
+  TARGET_FRAMEWORK: net8
 
 jobs:
 
