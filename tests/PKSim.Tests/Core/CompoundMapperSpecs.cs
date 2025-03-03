@@ -53,8 +53,8 @@ namespace PKSim.Core
             Name = "Compound",
             Description = "Description"
          };
-         _pkaValueOrigin = new OSPSuite.Core.Domain.ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro, Description = "PKA"};
-         _snapshotValueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethodId.InVivo, Description = "PKA"};
+         _pkaValueOrigin = new OSPSuite.Core.Domain.ValueOrigin { Method = ValueOriginDeterminationMethods.InVitro, Description = "PKA" };
+         _snapshotValueOrigin = new ValueOrigin { Method = ValueOriginDeterminationMethodId.InVivo, Description = "PKA" };
 
          addPkAParameters(_compound, 0, 8, CompoundType.Base);
          addPkAParameters(_compound, 1, 4, CompoundType.Acid);
@@ -69,13 +69,13 @@ namespace PKSim.Core
 
          _compoundIntestinalPermeabilityAlternativeGroup.DefaultAlternative.IsDefault = true;
          //Calculated alternative will not be the default alternative for intestinal perm
-         _calculatedAlternative = new ParameterAlternative {Name = PKSimConstants.UI.CalculatedAlernative, IsDefault = false};
+         _calculatedAlternative = new ParameterAlternative { Name = PKSimConstants.UI.CalculatedAlernative, IsDefault = false };
          _compoundIntestinalPermeabilityAlternativeGroup.AddAlternative(_calculatedAlternative);
          //Mapping of a calculated alternative returns null
          A.CallTo(() => _alternativeMapper.MapToSnapshot(_calculatedAlternative)).Returns(Task.FromResult<Alternative>(null));
 
          _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.IS_SMALL_MOLECULE));
-         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int) PlasmaProteinBindingPartner.Glycoprotein).WithName(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
+         _compound.Add(DomainHelperForSpecs.ConstantParameterWithValue((int)PlasmaProteinBindingPartner.Glycoprotein).WithName(Constants.Parameters.PLASMA_PROTEIN_BINDING_PARTNER));
 
          _partialProcess = new EnzymaticProcess().WithName("EnzymaticProcess");
          _systemicProcess = new SystemicProcess().WithName("SystemicProcess");
@@ -107,7 +107,7 @@ namespace PKSim.Core
          pkaParameter.ValueOrigin.UpdateFrom(_pkaValueOrigin);
          A.CallTo(() => _valueOriginMapper.MapToSnapshot(pkaParameter.ValueOrigin)).Returns(_snapshotValueOrigin);
          compound.Add(pkaParameter);
-         var compoundTypeParameter = DomainHelperForSpecs.ConstantParameterWithValue((int) compoundType).WithName(Constants.Parameters.ParameterCompoundType(index));
+         var compoundTypeParameter = DomainHelperForSpecs.ConstantParameterWithValue((int)compoundType).WithName(Constants.Parameters.ParameterCompoundType(index));
          compoundTypeParameter.ValueOrigin.UpdateFrom(_pkaValueOrigin);
          A.CallTo(() => _valueOriginMapper.MapToSnapshot(compoundTypeParameter.ValueOrigin)).Returns(_snapshotValueOrigin);
          compound.Add(compoundTypeParameter);
@@ -205,9 +205,9 @@ namespace PKSim.Core
          _snapshot.IsSmallMolecule = false;
          _snapshot.PkaTypes = new[]
          {
-            new PkaType {Pka = 1, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin},
-            new PkaType {Pka = 2, Type = CompoundType.Base, ValueOrigin = _snapshotValueOrigin},
-            new PkaType {Pka = 3, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin},
+            new PkaType { Pka = 1, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin },
+            new PkaType { Pka = 2, Type = CompoundType.Base, ValueOrigin = _snapshotValueOrigin },
+            new PkaType { Pka = 3, Type = CompoundType.Acid, ValueOrigin = _snapshotValueOrigin },
          };
 
          _fractionUnboundAlternative = new ParameterAlternative().WithName("Alternative");
@@ -215,7 +215,7 @@ namespace PKSim.Core
          A.CallTo(() => _alternativeMapper.MapToModel(_snapshot.FractionUnbound[0], A<AlternativeMapperSnapshotContext>.That.Matches(x => x.ParameterAlternativeGroup == _fractionUnboundParameterGroup)))
             .Returns(_fractionUnboundAlternative);
 
-         _snapshot.Processes = new[] {_snapshotProcess1};
+         _snapshot.Processes = new[] { _snapshotProcess1 };
          _newProcess = new EnzymaticProcess();
          A.CallTo(() => _processMapper.MapToModel(_snapshotProcess1, A<SnapshotContext>._)).Returns(_newProcess);
       }
@@ -286,13 +286,13 @@ namespace PKSim.Core
          _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA3).Value.ShouldBeEqualTo(_snapshot.PkaTypes[2].Pka);
          _newCompound.Parameter(CoreConstants.Parameters.PARAMETER_PKA3).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
 
-         _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[0].Type);
+         _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE1).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[0].Type);
          _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE1).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
 
-         _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[1].Type);
+         _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE2).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[1].Type);
          _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE2).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
 
-         _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int) _snapshot.PkaTypes[2].Type);
+         _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE3).Value.ShouldBeEqualTo((int)_snapshot.PkaTypes[2].Type);
          _newCompound.Parameter(Constants.Parameters.COMPOUND_TYPE3).ValueOrigin.ShouldBeEqualTo(_pkaValueOrigin);
       }
 
@@ -305,5 +305,13 @@ namespace PKSim.Core
 
          F.ValueOrigin.ShouldBeEqualTo(molWeight.ValueOrigin);
       }
+   }
+
+   public class ParameterAlternativeEqualityComparer : GenericEqualityComparer<ParameterAlternative>
+   {
+   }
+
+   public class SystemicProcessEqualityComparer : GenericEqualityComparer<SystemicProcess>
+   {
    }
 }

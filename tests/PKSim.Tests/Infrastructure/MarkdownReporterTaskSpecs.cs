@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Services;
@@ -51,5 +52,14 @@ namespace PKSim.Infrastructure
       {
          sut.ExportToMarkdownString(_compound).ShouldBeEqualTo("COMP");
       }
+   }
+
+   public class IndividualEqualityComparer : GenericEqualityComparer<Individual>
+   {
+
+   }
+
+   public class CompoundEqualityComparer : GenericEqualityComparer<Compound>
+   {
    }
 }

@@ -10,7 +10,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-
+    <Version Condition="'$(Version)' == ''">12.1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.16" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.5" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.0.6" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.1.16" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.16" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.1" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.59" />
   </ItemGroup>
 
   <ItemGroup>

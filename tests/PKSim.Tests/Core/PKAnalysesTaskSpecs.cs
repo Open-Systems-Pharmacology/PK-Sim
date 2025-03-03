@@ -1456,4 +1456,9 @@ namespace PKSim.Core
          _result.ShouldBeFalse();
       }
    }
+
+   public class AdvancedProtocolEqualityComparer : GenericEqualityComparer<AdvancedProtocol>
+   {
+
+   }
 }

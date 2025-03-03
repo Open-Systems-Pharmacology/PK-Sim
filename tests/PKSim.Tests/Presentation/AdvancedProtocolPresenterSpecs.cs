@@ -92,7 +92,7 @@ namespace PKSim.Presentation
          _allSchemas.Add(_schema);
          A.CallTo(() => _schemaDTO.Schema).Returns(_schema);
          sut.EditProtocol(_advancedProtocol);
-         A.CallTo(() => _schema.SchemaItems).Returns(new[] {_schemaItem});
+         A.CallTo(() => _schema.SchemaItems).Returns(new[] { _schemaItem });
          _schemaItemDTOToDuplicate = new SchemaItemDTO(_schemaItem);
       }
 
@@ -128,7 +128,7 @@ namespace PKSim.Presentation
          _schemaItemDTOToDelete.ParentSchema = _schemaDTO;
          _schemaItemToDelete = _schemaItemDTOToDelete.SchemaItem;
          A.CallTo(() => _schemaDTO.Schema).Returns(_schema);
-         A.CallTo(() => _schema.SchemaItems).Returns(new[] {_schemaItem, _schemaItemToDelete});
+         A.CallTo(() => _schema.SchemaItems).Returns(new[] { _schemaItem, _schemaItemToDelete });
          A.CallTo(() => _protocolTask.RemoveSchemaItemFrom(_schemaItemToDelete, _schema)).Returns(_deleteSchemaItemCommand);
       }
 
@@ -204,7 +204,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new AddSchemaItemToSchemaEvent {Container = _schema, Entity = _schemaItem});
+         sut.Handle(new AddSchemaItemToSchemaEvent { Container = _schema, Entity = _schemaItem });
       }
 
       [Observation]
@@ -235,7 +235,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new AddSchemaItemToSchemaEvent {Container = _schema, Entity = _schemaItem});
+         sut.Handle(new AddSchemaItemToSchemaEvent { Container = _schema, Entity = _schemaItem });
       }
 
       [Observation]
@@ -266,7 +266,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new RemoveSchemaItemFromSchemaEvent {Container = _schema, Entity = _schemaItem});
+         sut.Handle(new RemoveSchemaItemFromSchemaEvent { Container = _schema, Entity = _schemaItem });
       }
 
       [Observation]
@@ -292,7 +292,7 @@ namespace PKSim.Presentation
          _schemaItemDTO = DomainHelperForSpecs.SchemaItemDTO(ApplicationTypes.Intravenous);
          _schemaItem = _schemaItemDTO.SchemaItem;
          A.CallTo(() => _schemaDTO.Schema).Returns(_schema);
-         A.CallTo(() => _schemaDTO.SchemaItems).Returns(new BindingList<SchemaItemDTO> {_schemaItemDTO});
+         A.CallTo(() => _schemaDTO.SchemaItems).Returns(new BindingList<SchemaItemDTO> { _schemaItemDTO });
          A.CallTo(() => _advancedProtocol.Contains(_schema)).Returns(true);
          _allSchemas.Add(_schema);
          A.CallTo(() => _schemaDTOMapper.MapFrom(_schema)).Returns(_schemaDTO);
@@ -301,7 +301,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new RemoveSchemaItemFromSchemaEvent {Container = _schema, Entity = _schemaItem});
+         sut.Handle(new RemoveSchemaItemFromSchemaEvent { Container = _schema, Entity = _schemaItem });
       }
 
       [Observation]
@@ -326,7 +326,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_crash()
       {
-         sut.Handle(new RemoveSchemaItemFromSchemaEvent {Container = _schema, Entity = _schemaItem});
+         sut.Handle(new RemoveSchemaItemFromSchemaEvent { Container = _schema, Entity = _schemaItem });
       }
    }
 
@@ -345,7 +345,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_not_crash()
       {
-         sut.Handle(new AddSchemaItemToSchemaEvent() {Container = _schema, Entity = _schemaItem});
+         sut.Handle(new AddSchemaItemToSchemaEvent() { Container = _schema, Entity = _schemaItem });
       }
    }
 
@@ -375,7 +375,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.UserDefined, TargetOrgan = "Liv", TargetCompartment = "Cell"};
+         _schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.UserDefined, TargetOrgan = "Liv", TargetCompartment = "Cell" };
 
          _schemaItemDTO = new SchemaItemDTO(_schemaItem);
       }
@@ -407,14 +407,14 @@ namespace PKSim.Presentation
 
    public class When_checking_if_a_schema_item_dto_has_dynamic_content_to_display : concern_for_AdvancedProtocolPresenter
    {
-      private readonly SchemaItem _userDefinedSchemaItem = new SchemaItem {ApplicationType = ApplicationTypes.UserDefined};
-      private readonly SchemaItem _schemaItemWithParameters = new SchemaItem {ApplicationType = ApplicationTypes.IntravenousBolus};
-      private readonly SchemaItem _schemaItemWithoutParameters = new SchemaItem {ApplicationType = ApplicationTypes.Intravenous};
+      private readonly SchemaItem _userDefinedSchemaItem = new SchemaItem { ApplicationType = ApplicationTypes.UserDefined };
+      private readonly SchemaItem _schemaItemWithParameters = new SchemaItem { ApplicationType = ApplicationTypes.IntravenousBolus };
+      private readonly SchemaItem _schemaItemWithoutParameters = new SchemaItem { ApplicationType = ApplicationTypes.Intravenous };
 
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _protocolTask.AllDynamicParametersFor(_schemaItemWithParameters)).Returns(new[] {DomainHelperForSpecs.ConstantParameterWithValue(10)});
+         A.CallTo(() => _protocolTask.AllDynamicParametersFor(_schemaItemWithParameters)).Returns(new[] { DomainHelperForSpecs.ConstantParameterWithValue(10) });
          A.CallTo(() => _protocolTask.AllDynamicParametersFor(_schemaItemWithoutParameters)).Returns(Enumerable.Empty<IParameter>());
       }
 
@@ -448,7 +448,7 @@ namespace PKSim.Presentation
 
    public class When_the_advanced_protocol_presenter_is_setting_the_application_type_to_user_defined_for_a_schema_item : concern_for_AdvancedProtocolPresenter
    {
-      private readonly SchemaItem _schemaItem = new SchemaItem {ApplicationType = ApplicationTypes.IntravenousBolus};
+      private readonly SchemaItem _schemaItem = new SchemaItem { ApplicationType = ApplicationTypes.IntravenousBolus };
       private SchemaItemDTO _schemaItemDTO;
 
       protected override void Context()
@@ -468,5 +468,10 @@ namespace PKSim.Presentation
          _schemaItem.TargetOrgan.ShouldBeEqualTo(CoreConstants.Organ.ARTERIAL_BLOOD);
          _schemaItem.TargetCompartment.ShouldBeEqualTo(CoreConstants.Compartment.PLASMA);
       }
+   }
+
+   public class SchematicItemEqualityComparer : GenericEqualityComparer<SchemaItem>
+   {
+
    }
 }

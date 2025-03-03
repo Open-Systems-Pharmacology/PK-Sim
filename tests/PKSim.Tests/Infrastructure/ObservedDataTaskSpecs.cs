@@ -449,4 +449,9 @@ namespace PKSim.Infrastructure
          A.CallTo(() => _pkmlPersistor.SaveToPKML( _observedData, _fileName)).MustHaveHappened();
       }
    }
+
+   public class DataRepositoryEqualityComparer : GenericEqualityComparer<DataRepository>
+   {  
+
+   }
 }

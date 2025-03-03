@@ -43,8 +43,22 @@ jobs:
       - name: Test
         run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
+      - name: Create R dependency artifact
+        run: |
+          pushd .
+          cd src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}
+          7z.exe a pk-sim-r-dependencies.zip -x@"excludedFiles.txt" * -xr!runtimes
+          popd
+
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4
         with:
           name: testLog_Windows
           path: ./testLog*.html
+
+      - name: Push R dependencies as artifact
+        if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKSim R Dependencies
+          path: src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}\pk-sim-r-dependencies.zip

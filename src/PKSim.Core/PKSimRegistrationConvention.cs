@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility;
@@ -22,6 +23,9 @@ namespace PKSim.Core
       public override void Process(Type concreteType, IContainer container, LifeStyle lifeStyle)
       {
          if (concreteType.IsNested)
+            return;
+
+         if (concreteType.GetCustomAttribute<System.Runtime.CompilerServices.CompilerGeneratedAttribute>() != null)
             return;
 
          if (Register(concreteType, container, lifeStyle))

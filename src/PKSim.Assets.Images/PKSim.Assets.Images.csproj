@@ -11,6 +11,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PKSim.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <Version Condition="'$(Version)' == ''">12.1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.16" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.16" />
-    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.59" />
+    <PackageReference Include="System.Resources.Extensions" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup>

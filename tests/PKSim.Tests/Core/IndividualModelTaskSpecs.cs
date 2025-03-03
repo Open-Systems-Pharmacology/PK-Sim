@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -22,13 +22,13 @@ namespace PKSim.Core
 
       public override void GlobalContext()
       {
-        base.GlobalContext();
+         base.GlobalContext();
          _speciesContainerQuery = A.Fake<ISpeciesContainerQuery>();
          _parameterContainerTask = A.Fake<IParameterContainerTask>();
          _buildingBlockFinalizer = A.Fake<IBuildingBlockFinalizer>();
          _formulaFactory = A.Fake<IFormulaFactory>();
          _populationAgeRepository = A.Fake<IPopulationAgeRepository>();
-         _compartment =new Compartment().WithName("compartment");
+         _compartment = new Compartment().WithName("compartment");
          _organ = new Organ().WithName("organ");
          _organ.Name = "organ";
          _organism = new Organism().WithName("organism");
@@ -53,9 +53,9 @@ namespace PKSim.Core
          _individual.Add(_organism);
          _individual.Add(_neighborhoods);
          _originData.Population = new SpeciesPopulation();
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _individual)).Returns(new[] {_organism});
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _organism)).Returns(new[] {_organ});
-         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _organ)).Returns(new[] {_compartment});
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _individual)).Returns(new[] { _organism });
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _organism)).Returns(new[] { _organ });
+         A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _organ)).Returns(new[] { _compartment });
          A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _compartment)).Returns(new List<IContainer>());
          A.CallTo(() => _speciesContainerQuery.SubContainersFor(_originData.Population, _neighborhoods)).Returns(new List<IContainer>());
       }
@@ -91,5 +91,21 @@ namespace PKSim.Core
       {
          A.CallTo(() => _buildingBlockFinalizer.Finalize(_individual)).MustHaveHappened();
       }
+   }
+
+   public class OrganismEqualityComparer : GenericEqualityComparer<Organism>
+   {
+   }
+
+   public class OrganEqualityComparer : GenericEqualityComparer<Organ>
+   {
+   }
+
+   public class ContainerEqualityComparer : GenericEqualityComparer<Container>
+   {
+   }
+
+   public class CompartmentEqualityComparer : GenericEqualityComparer<Compartment>
+   {
    }
 }
