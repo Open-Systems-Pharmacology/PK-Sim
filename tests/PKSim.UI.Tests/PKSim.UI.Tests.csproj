@@ -3,7 +3,7 @@
 		<TargetFramework>net472</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<OutputPath>bin\$(Configuration)</OutputPath>
-      <Version Condition="'$(Version)' == ''">12.1.0.0</Version>
+      <Version Condition="'$(Version)' == ''">12.1.0</Version>
 		<RootNamespace>PKSim.UI</RootNamespace>
 	</PropertyGroup>
 

@@ -12,7 +12,7 @@
     <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
     <Description>PKSim.BatchTool - Batch runner for json based PK-Sim simulations</Description>
-    <Version Condition="'$(Version)' == ''">12.1.0.0</Version>
+    <Version Condition="'$(Version)' == ''">12.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

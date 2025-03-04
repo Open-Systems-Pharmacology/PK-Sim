@@ -9,7 +9,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <Version Condition="'$(Version)' == ''">12.1.0.0</Version>
+    <Version Condition="'$(Version)' == ''">12.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
