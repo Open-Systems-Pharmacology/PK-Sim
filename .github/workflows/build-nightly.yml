@@ -87,3 +87,17 @@ jobs:
         with:
           name: PKSim Portable ${{env.APP_VERSION}}
           path: setup\PK-Sim ${{env.APP_VERSION}}
+
+  cleanup-job:
+    needs: get-latest-commit-timespan
+    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN >= 86400
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel workflow run
+        run: |
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel"
