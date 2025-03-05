@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		appveyor-coverage.yml = appveyor-coverage.yml
-		appveyor-nightly.yml = appveyor-nightly.yml
-		appveyor.yml = appveyor.yml
+		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
+		.github\workflows\build-nightly.yml = .github\workflows\build-nightly.yml
+		.github\workflows\coverage.yml = .github\workflows\coverage.yml
 		db_pre_commit.bat = db_pre_commit.bat
 		postclean.bat = postclean.bat
 		rakefile.rb = rakefile.rb
@@ -130,8 +130,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 		VisualSVNWorkingCopyRoot = 
+		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"
