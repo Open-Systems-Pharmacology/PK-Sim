@@ -74,8 +74,10 @@
     <ItemGroup>
       <LinuxFiles Include="$(TargetDir)runtimes/linux-x64/native/SQLite.Interop.dll" />
       <WindowsFiles Include="$(TargetDir)runtimes/win-x64/native/SQLite.Interop.dll" />
+      <MacFiles Include="$(TargetDir)runtimes/osx-x64/native/SQLite.Interop.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('runtimes/win-x64/native/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
     <Copy SourceFiles="@(LinuxFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(LinuxFiles-&gt;Replace('runtimes/linux-x64/native/SQLite.Interop.dll', 'libSQLite.Interop.dll'))" />
+    <Copy SourceFiles="@(MacFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(MacFiles-&gt;Replace('runtimes/osx-x64/native/SQLite.Interop.dll', 'libSQLite.Interop.dll.dylib'))" />
   </Target>
 </Project>
