@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.UI" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.UI" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.65" />
   </ItemGroup>
 
 </Project>

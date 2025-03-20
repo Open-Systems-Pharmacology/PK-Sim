@@ -80,7 +80,7 @@ namespace PKSim.Infrastructure.Services
 
             if (fileName.IsNullOrEmpty()) return null;
 
-            var xel = XElement.Load(fileName); // We have to correctly handle the case of cancellation
+            var xel = XElementSerializer.PermissiveLoad(fileName); // We have to correctly handle the case of cancellation
             return serializer.Deserialize<ImporterConfiguration>(xel, serializationContext);
          }
       }

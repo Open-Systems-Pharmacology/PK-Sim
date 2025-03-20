@@ -133,7 +133,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       private void loadDimensionsFromFile()
       {
          var serializer = _unitSystemXmlSerializerRepository.SerializerFor(_dimensionFactory);
-         var xel = XElement.Load(_pkSimConfiguration.DimensionFilePath);
+         var xel = XElementSerializer.PermissiveLoad(_pkSimConfiguration.DimensionFilePath);
          serializer.Deserialize(_dimensionFactory, xel, SerializationTransaction.Create(_container));
       }
 

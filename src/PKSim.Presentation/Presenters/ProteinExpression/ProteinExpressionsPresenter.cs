@@ -16,6 +16,8 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Core.Serialization;
+using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Presentation.Presenters.ProteinExpression
 {
@@ -229,7 +231,7 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
 
          if (isOldQuery)
          {
-            setQueryConfiguation(_querySettings.QueryConfiguration);
+            setQueryConfiguration(_querySettings.QueryConfiguration);
             _view.ActivateControl(ExpressionItems.ExpressionData);
             _view.SetControlEnabled(ExpressionItems.Transfer, true);
             SetWizardButtonEnabled(ExpressionItems.ExpressionData);
@@ -395,9 +397,9 @@ namespace PKSim.Presentation.Presenters.ProteinExpression
          return element.ToString(SaveOptions.DisableFormatting);
       }
 
-      private void setQueryConfiguation(string xml)
+      private void setQueryConfiguration(string xml)
       {
-         var rootElement = XElement.Load(new StringReader(xml));
+         var rootElement = XElementSerializer.PermissiveLoad(new MemoryStream(Encoding.Default.GetBytes(xml)));
 
          var expressionDataSetElement = rootElement.Element(CoreConstants.Serialization.ExpressionDataSet);
          if (expressionDataSetElement == null)

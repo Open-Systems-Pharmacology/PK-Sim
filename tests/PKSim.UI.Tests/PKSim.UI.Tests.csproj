@@ -24,11 +24,11 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 		<PackageReference Include="nunit" Version="3.14.0" />
-		<PackageReference Include="OSPSuite.Assets" Version="12.1.59" />
+		<PackageReference Include="OSPSuite.Assets" Version="12.1.65" />
 		<PackageReference Include="OSPSuite.BDDHelper" Version="4.0.1.1" />
-		<PackageReference Include="OSPSuite.Core" Version="12.1.59" />
+		<PackageReference Include="OSPSuite.Core" Version="12.1.65" />
 		<PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" />
-		<PackageReference Include="OSPSuite.UI" Version="12.1.59" />
+		<PackageReference Include="OSPSuite.UI" Version="12.1.65" />
 		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
 		<None Include="..\..\src\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">

@@ -20,7 +20,7 @@
     <PackageReference Include="OSPSuite.FuncParser.Ubuntu22" Version="4.0.0.73" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.FuncParser.MacOS.x64" Version="4.0.0.73" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.FuncParser.MacOS.Arm64" Version="4.0.0.73" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.R" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.R" Version="12.1.65" />
     <PackageReference Include="OSPSuite.SimModel.Ubuntu22" Version="4.0.0.75" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel.MacOS.x64" Version="4.0.0.75" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel.MacOS.Arm64" Version="4.0.0.75" GeneratePathProperty="true" />

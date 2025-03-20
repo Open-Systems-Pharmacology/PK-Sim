@@ -35,15 +35,15 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.1.59" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.1.65" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.1.65" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
   </ItemGroup>
 
