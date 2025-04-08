@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+permissions:
+  actions: write
+
 env:
   MAJOR: 12
   MINOR: 1
