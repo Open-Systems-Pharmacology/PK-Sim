@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Concurrent;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.Zip;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Journal;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
@@ -24,8 +19,6 @@ namespace PKSim.Core.Services
       private IProgressUpdater _progressUpdater;
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      
-
 
       public IndividualSimulationEngine(ISimModelManager simModelManager, IProgressManager progressManager,
          ISimulationResultsSynchronizer simulationResultsSynchronizer,
@@ -68,7 +61,7 @@ namespace PKSim.Core.Services
          catch (Exception ex)
          {
             terminated();
-            if(!(ex is TaskCanceledException)) //do not throw if this has been canceled
+            if (!(ex is TaskCanceledException)) //do not throw if this has been canceled
                throw;
          }
          finally
@@ -87,8 +80,8 @@ namespace PKSim.Core.Services
          _progressUpdater = _progressManager.Create();
          _progressUpdater.Initialize(100, PKSimConstants.UI.Calculating);
       }
-      
-      private async Task  runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default)
+
+      private async Task runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default)
       {
          var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel: false);
          var simResults = await _simModelManager.RunSimulationAsync(modelCoreSimulation, cancellationToken, simulationRunOptions);
@@ -115,11 +108,6 @@ namespace PKSim.Core.Services
       private void simulationProgress(object sender, SimulationProgressEventArgs simulationProgressArgs)
       {
          _progressUpdater?.ReportProgress(simulationProgressArgs.Progress, PKSimConstants.UI.Calculating);
-      }
-
-      public void StopSimulation(Simulation simulation)
-      {
-      
       }
    }
 }

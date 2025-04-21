@@ -47,7 +47,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private IEnumerable<IMenuBarItem> deleteMenuFor(TSimulation simulation)
       {
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
-
                .WithCommandFor<DeleteBuildingBlockUICommand, IPKSimBuildingBlock>(simulation, _container)
                .WithIcon(ApplicationIcons.Delete)
                .AsGroupStarter();
@@ -78,8 +77,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       private IEnumerable<IMenuBarItem> commonItemsForSimulations(TSimulation simulation)
       {
-      
-        
          yield return GenericMenu.EditMenuFor<EditSimulationCommand, Simulation>(simulation, _container);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Rename)

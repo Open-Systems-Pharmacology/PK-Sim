@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Events;
@@ -58,16 +56,12 @@ namespace PKSim.Core.Services
          };
       }
 
-      public bool IsSimulationRunning(Simulation simulation)
-      {
-         return _cancellationTokenSources.TryGetValue(simulation, out var cts) &&
-                !cts.IsCancellationRequested;
-      }
+      public bool IsSimulationRunning(Simulation simulation) =>
+         _cancellationTokenSources.TryGetValue(simulation, out var cts) && !cts.IsCancellationRequested;
 
-      public Task RunSimulation(Simulation simulation, bool selectOutput)
-      {
-         return runSimulationAsync(simulation, selectOutput);
-      }
+      public Task RunSimulation(Simulation simulation, bool selectOutput) => 
+         runSimulationAsync(simulation, selectOutput);
+      
 
       private async Task runSimulationAsync(Simulation simulation, bool selectOutput)
       {
