@@ -1601,6 +1601,7 @@ namespace PKSim.Assets
          public static readonly string Simulation = "Simulation";
          public static readonly string OrganType = "Organ Type";
          public static readonly string Calculating = "Calculating...";
+         public static readonly string SimulationRun = "Simulation(s) Running";
          public static string CalculationPopulationSimulation(int number, int total) => $"Simulation {number}/{total}...";
          public static readonly string StartTime = "Start Time";
          public static readonly string EndTime = "End Time";

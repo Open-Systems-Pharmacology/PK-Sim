@@ -277,7 +277,7 @@ namespace PKSim.Presentation.Repositories
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Stop)
             .WithId(MenuBarItemIds.Stop)
             .WithDescription(PKSimConstants.UI.StopDescription)
-            .WithCommand<StopSimulationCommand>(_container)
+            .WithCommand<StopAllSimulationsCommand>(_container)
             .WithIcon(ApplicationIcons.Stop);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.TimeProfileAnalysis)

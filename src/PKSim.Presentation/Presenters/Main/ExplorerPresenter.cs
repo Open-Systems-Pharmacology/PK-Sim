@@ -21,7 +21,6 @@ namespace PKSim.Presentation.Presenters.Main
    public interface IExplorerPresenter : OSPSuite.Presentation.Presenters.IExplorerPresenter, IMainViewItemPresenter,
       IListener<BuildingBlockAddedEvent>,
       IListener<BuildingBlockRemovedEvent>,
-      IListener<SimulationRunStartedEvent>,
       IListener<SimulationRunFinishedEvent>
    {
    }
@@ -60,11 +59,6 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(BuildingBlockRemovedEvent eventToHandle)
       {
          RemoveNodeFor(eventToHandle.BuildingBlock);
-      }
-
-      public void Handle(SimulationRunStartedEvent eventToHandle)
-      {
-         _view.Enabled = false;
       }
 
       public void Handle(SimulationRunFinishedEvent eventToHandle)

@@ -385,7 +385,6 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
-         DisableAll();
          _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = true;
       }
 

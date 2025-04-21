@@ -262,20 +262,6 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_project_presenter_is_being_notified_that_a_simulation_is_starting_ : concern_for_BuildingBlockExplorerPresenter
-   {
-      protected override void Because()
-      {
-         sut.Handle(new SimulationRunStartedEvent());
-      }
-
-      [Observation]
-      public void should_disable_the_view()
-      {
-         _view.Enabled.ShouldBeFalse();
-      }
-   }
-
    public class When_the_project_presenter_is_being_notified_that_a_simulation_has_terminated : concern_for_BuildingBlockExplorerPresenter
    {
       protected override void Because()

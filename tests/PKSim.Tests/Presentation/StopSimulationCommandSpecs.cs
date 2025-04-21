@@ -2,6 +2,8 @@ using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.Core.Services;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation
 {
@@ -12,7 +14,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          _simulationRunner = A.Fake<IInteractiveSimulationRunner>();
-         sut = new StopSimulationCommand(_simulationRunner);
+         sut = new StopSimulationCommand(_simulationRunner, A.Fake<IActiveSubjectRetriever>());
       }
    }
 
@@ -27,7 +29,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_simulation_runner_to_stop_the_current_run()
       {
-         A.CallTo(() => _simulationRunner.StopSimulation()).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.StopSimulation(A<Simulation>.Ignored)).MustHaveHappened();
       }
    }
 }	

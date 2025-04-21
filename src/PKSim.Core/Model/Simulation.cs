@@ -20,7 +20,7 @@ namespace PKSim.Core.Model
       private readonly List<ReactionBuildingBlock> _allReactions = new List<ReactionBuildingBlock>();
       
       //This is not used in PK-Sim. Just for compatibility reason
-      public EntitySources EntitySources { get; } = new EntitySources();
+      public SimulationEntitySources EntitySources { get; } = new SimulationEntitySources();
 
       private SimulationProperties _properties;
       private SimulationResults _results;
