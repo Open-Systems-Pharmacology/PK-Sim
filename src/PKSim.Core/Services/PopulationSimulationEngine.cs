@@ -117,20 +117,5 @@ namespace PKSim.Core.Services
       {
          _progressUpdater.ReportProgress(e.NumberOfCalculatedSimulation, PKSimConstants.UI.CalculationPopulationSimulation(e.NumberOfCalculatedSimulation, e.NumberOfSimulations));
       }
-
-      public void StopSimulation(Simulation simulation)
-      {
-         throw new NotImplementedException();
-      }
-
-      public void StopAllSimulations()
-      {
-         throw new NotImplementedException();
-      }
-
-      public bool IsSimulationRunning(Simulation simulation)
-      {
-         throw new NotImplementedException();
-      }
    }
 }
