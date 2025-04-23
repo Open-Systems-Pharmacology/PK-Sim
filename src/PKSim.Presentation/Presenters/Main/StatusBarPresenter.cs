@@ -49,9 +49,9 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IApplicationConfiguration _applicationConfiguration;
       private int _numberOfReportsBeingCreated;
       public event EventHandler StatusChanged = delegate { };
-      private readonly ConcurrentDictionary<string, bool> _simulations = new ConcurrentDictionary<string, bool>();
+      private readonly ConcurrentDictionary<string, bool> _runningSimulationsDictionary = new ConcurrentDictionary<string, bool>();
 
-      private int activeSimulations => _simulations.Count(x => x.Value);
+      private int activeSimulationsCount => _runningSimulationsDictionary.Count(x => x.Value);
 
 
       public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration)
@@ -142,7 +142,7 @@ namespace PKSim.Presentation.Presenters.Main
             .And.Visible(true);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption($"{_simulations.Count} {eventToHandle.Message}")
+            .WithCaption($"{_runningSimulationsDictionary.Count} {eventToHandle.Message}")
             .And.Visible(true);
       }
 
@@ -157,7 +157,7 @@ namespace PKSim.Presentation.Presenters.Main
             .WithValue(eventToHandle.ProgressPercent);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption($"{activeSimulations} {eventToHandle.Message}");
+            .WithCaption($"{activeSimulationsCount} {eventToHandle.Message}");
       }
 
       public void Handle(ProgressDoneEvent eventToHandle)
@@ -167,13 +167,13 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
-         _simulations[eventToHandle.Simulation.Id] = true;
+         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = true;
       }
 
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
-         _simulations[eventToHandle.Simulation.Id] = false;
-         if (activeSimulations == 0)
+         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
+         if (activeSimulationsCount == 0)
          {
             resetCountersAndHideBar();
          }
@@ -181,7 +181,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       private void resetCountersAndHideBar()
       {
-         _simulations.Clear();
+         _runningSimulationsDictionary.Clear();
          hideProgressBar();
       }
 
@@ -230,9 +230,9 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(ProgressDoneWithMessageEvent eventToHandle)
       {
-         var message = $"{activeSimulations} {eventToHandle.Message}";
+         var message = $"{activeSimulationsCount} {eventToHandle.Message}";
 
-         if (activeSimulations == 0)
+         if (activeSimulationsCount == 0)
          {
             resetCountersAndHideBar();
             return;
