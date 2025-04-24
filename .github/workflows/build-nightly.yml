@@ -6,9 +6,6 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
-permissions:
-  actions: write
-
 env:
   MAJOR: 12
   MINOR: 1
@@ -120,6 +117,8 @@ jobs:
     needs: get-latest-commit-timespan
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN >= 86400
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - name: Cancel workflow run
         run: |
