@@ -126,10 +126,7 @@ namespace PKSim.Core.Services
 
       public void StopSimulation(Simulation simulation)
       {
-         if (tryCancelAndDispose(simulation))
-         {
-            _executionContext.PublishEvent(new SimulationRunCanceledEvent());
-         }
+         tryCancelAndDispose(simulation);
       }
 
       public void StopAllSimulations()
@@ -140,16 +137,14 @@ namespace PKSim.Core.Services
          }
       }
 
-      private bool tryCancelAndDispose(Simulation simulation)
+      private void tryCancelAndDispose(Simulation simulation)
       {
          if (_cancellationTokenSources.TryRemove(simulation, out var cts))
          {
             cts.Cancel();
             cts.Dispose();
-            return true;
+            _executionContext.PublishEvent(new SimulationRunCanceledEvent());
          }
-
-         return false;
       }
 
    }
