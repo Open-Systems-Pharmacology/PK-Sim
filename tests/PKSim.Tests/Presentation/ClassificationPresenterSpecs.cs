@@ -586,7 +586,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.RemoveEmptyClassifications();
+         sut.RemoveEmptyClassifcations();
       }
 
       [Observation]

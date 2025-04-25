@@ -117,16 +117,6 @@ namespace PKSim.Core.Services
          return !simulation.OutputSelections.HasSelection;
       }
 
-      public void StopSimulation(Simulation simulation)
-      {
-         if (_cancellationTokenSources.TryRemove(simulation, out var cts))
-         {
-            cts.Cancel();
-            cts.Dispose();
-            _executionContext.PublishEvent(new SimulationRunCanceledEvent());
-         }
-      }
-
       private void addAnalysableToSimulationIfRequired(Simulation simulation)
       {
          if (simulation == null || !simulation.HasResults) return;
@@ -134,16 +124,33 @@ namespace PKSim.Core.Services
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);
       }
 
+      public void StopSimulation(Simulation simulation)
+      {
+         if (tryCancelAndDispose(simulation))
+         {
+            _executionContext.PublishEvent(new SimulationRunCanceledEvent());
+         }
+      }
+
       public void StopAllSimulations()
       {
          foreach (var simulation in _cancellationTokenSources.Keys.ToList())
          {
-            if (_cancellationTokenSources.TryRemove(simulation, out var cts))
-            {
-               cts.Cancel();
-               cts.Dispose();
-            }
+            tryCancelAndDispose(simulation);
          }
       }
+
+      private bool tryCancelAndDispose(Simulation simulation)
+      {
+         if (_cancellationTokenSources.TryRemove(simulation, out var cts))
+         {
+            cts.Cancel();
+            cts.Dispose();
+            return true;
+         }
+
+         return false;
+      }
+
    }
 }

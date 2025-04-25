@@ -92,7 +92,7 @@ namespace PKSim.Presentation.Presenters.Main
             var pksimProject = project.DowncastTo<PKSimProject>();
             pksimProject.All<IPKSimBuildingBlock>().Each(x => AddBuildingBlockToTree(x));
 
-            _observedDataInExplorerPresenter.AddAllClassificationsToTree(project);
+            _observedDataInExplorerPresenter.AddObservedDataToTree(); 
          }
       }
 
