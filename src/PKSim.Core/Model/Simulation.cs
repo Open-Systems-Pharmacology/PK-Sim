@@ -18,6 +18,9 @@ namespace PKSim.Core.Model
       private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(bb => bb.Id);
       private readonly List<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private readonly List<ReactionBuildingBlock> _allReactions = new List<ReactionBuildingBlock>();
+      
+      //This is not used in PK-Sim. Just for compatibility reason
+      public SimulationEntitySources EntitySources { get; } = new SimulationEntitySources();
 
       private SimulationProperties _properties;
       private SimulationResults _results;
@@ -503,6 +506,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public virtual IParameter BodyWeight => Model.BodyWeight;
 
+  
       /// <summary>
       ///    Returns the total drug mass defined in the simulation.
       /// </summary>

@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
@@ -61,7 +62,7 @@ namespace PKSim.Core.Services
          _populationRunner.SimulationProgress += simulationProgress;
       }
 
-      public async Task<PopulationRunResults> RunAsync(PopulationSimulation populationSimulation, SimulationRunOptions simulationRunOptions)
+      public async Task RunAsync(PopulationSimulation populationSimulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default)
       {
          _progressUpdater = _progressManager.Create();
          _progressUpdater.Initialize(populationSimulation.NumberOfItems, PKSimConstants.UI.Calculating);
@@ -74,19 +75,18 @@ namespace PKSim.Core.Services
             var populationData = _populationExporter.CreatePopulationDataFor(populationSimulation);
             var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(populationSimulation, shouldCloneModel: false);
             var runOptions = new RunOptions {NumberOfCoresToUse = _userSettings.MaximumNumberOfCoresToUse};
-            var simulationRunStartedEvent = new SimulationRunStartedEvent();
+            var simulationRunStartedEvent = new SimulationRunStartedEvent(populationSimulation);
             RaiseEvent(simulationRunStartedEvent);
-            var populationRunResults = await _populationRunner.RunPopulationAsync(modelCoreSimulation, runOptions, populationData, populationSimulation.AgingData.ToDataTable());
+            var populationRunResults = await _populationRunner.RunPopulationAsync(modelCoreSimulation, runOptions, populationData, populationSimulation.AgingData.ToDataTable(), cancellationToken: cancellationToken);
             _simulationResultsSynchronizer.Synchronize(populationSimulation, populationRunResults.Results);
             _populationSimulationAnalysisSynchronizer.UpdateAnalysesDefinedIn(populationSimulation);
             RaiseEvent(new SimulationResultsUpdatedEvent(populationSimulation));
 
-            return populationRunResults;
          }
          catch (OperationCanceledException)
          {
             simulationTerminated();
-            return null;
+            return;
          }
          catch (Exception)
          {
@@ -111,11 +111,6 @@ namespace PKSim.Core.Services
          _progressUpdater?.Dispose();
          _populationRunner.Terminated -= terminated;
          _populationRunner.SimulationProgress -= simulationProgress;
-      }
-
-      public void Stop()
-      {
-         _populationRunner.StopSimulation();
       }
 
       private void simulationProgress(object sender, MultipleSimulationsProgressEventArgs e)

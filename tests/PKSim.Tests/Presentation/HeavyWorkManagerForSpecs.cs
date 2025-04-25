@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using OSPSuite.Core.Services;
 
 namespace PKSim.Presentation
@@ -7,12 +8,12 @@ namespace PKSim.Presentation
    {
       public event EventHandler<HeavyWorkEventArgs> HeavyWorkedFinished = delegate { };
 
-      public bool Start(Action heavyWorkAction)
+      public bool Start(Action heavyWorkAction, CancellationTokenSource cts = null)
       {
          return Start(heavyWorkAction, string.Empty);
       }
 
-      public virtual bool Start(Action heavyWorkAction, string caption)
+      public virtual bool Start(Action heavyWorkAction, string caption, CancellationTokenSource cts = null)
       {
          heavyWorkAction();
          return true;
@@ -27,7 +28,7 @@ namespace PKSim.Presentation
 
    public class HeavyWorkManagerFailingForSpecs : HeavyWorkManagerForSpecs
    {
-      public override bool Start(Action heavyWorkAction, string caption)
+      public override bool Start(Action heavyWorkAction, string caption, CancellationTokenSource cts = null)
       {
          base.Start(heavyWorkAction, caption);
          return false;

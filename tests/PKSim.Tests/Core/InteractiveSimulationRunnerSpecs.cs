@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -194,7 +195,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_run_the_population_simulation()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(_populationSimulation, A<SimulationRunOptions>._)).MustNotHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_populationSimulation, A<SimulationRunOptions>._, A<CancellationToken>.Ignored)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -231,7 +232,7 @@ namespace PKSim.Core
       [Observation]
       public void should_run_the_population_simulation()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(_populationSimulation, A<SimulationRunOptions>._)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_populationSimulation, A<SimulationRunOptions>._, A<CancellationToken>.Ignored)).MustHaveHappened();
       }
 
       [Observation]

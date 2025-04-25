@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -553,7 +554,7 @@ namespace PKSim.Core
          _snapshot.HasResults = true;
          _calculatedDataRepository = DomainHelperForSpecs.ObservedData("Calculated");
 
-         A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, A<SimulationRunOptions>._))
+         A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, A<SimulationRunOptions>._, A<CancellationToken>.Ignored))
             .Invokes(x => { individualSimulation.DataRepository = _calculatedDataRepository; });
 
          A.CallTo(() => _eventMappingMapper.MapToModel(_eventSelection, A<SnapshotContext>._)).Returns(_eventMapping);
@@ -619,7 +620,7 @@ namespace PKSim.Core
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, A<SimulationRunOptions>._)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, A<SimulationRunOptions>._, A<CancellationToken>.Ignored)).MustHaveHappened();
       }
 
       [Observation]
