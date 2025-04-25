@@ -27,7 +27,7 @@ jobs:
       - name: Restore dependencies
         run: |
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
-          nuget restore
+          dotnet restore
 
       - name: Build
         run: msbuild PKSim.sln /p:Version=12.1.9999

@@ -6,9 +6,6 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
-permissions:
-  actions: write
-
 env:
   MAJOR: 12
   MINOR: 1
@@ -42,6 +39,11 @@ jobs:
     needs: get-latest-commit-timespan
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
     runs-on: windows-latest
+    env:
+      ES_USERNAME: ${{ secrets.ES_USERNAME }}
+      ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
+      ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
+      ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -54,7 +56,7 @@ jobs:
       - name: Restore dependencies
         run: |
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
-          nuget restore
+          dotnet restore
 
       - name: define env variables
         run: |
@@ -68,10 +70,30 @@ jobs:
       - name : Test
         run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
+      - name: Sign PKSim.exe with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./src/PKSim/bin/Debug/net472/PKSim.exe
+          
+      - name: Sign PKSim.BatchTool.exe with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./src/PKSim/bin/Debug/net472/PKSim.BatchTool.exe
+          
+      - name: Sign PKSim.CLI.exe with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./src/PKSim/bin/Debug/net472/PKSim.CLI.exe
+          
       - name: Create Setup
         run: |
           rake "create_setup[${{env.APP_VERSION}}, Debug]"
           rake "create_portable_setup[${{env.APP_VERSION}}, Debug, pk-sim-portable-setup.zip]"
+
+      - name: Sign PKSim setup with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./setup/deploy/PK-Sim.${{ env.APP_VERSION }}.msi
 
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4
@@ -95,6 +117,8 @@ jobs:
     needs: get-latest-commit-timespan
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN >= 86400
     runs-on: ubuntu-latest
+    permissions:
+      actions: write
     steps:
       - name: Cancel workflow run
         run: |
