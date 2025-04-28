@@ -48,7 +48,7 @@ namespace PKSim.Infrastructure
          //serializers only defined for type but not for element
          A.CallTo(() => _serializerRepository.SerializerFor(typeof(IEntity))).Returns(_entitySerializer);
 
-         A.CallTo(() => _serializerRepository.SerializerFor(_element)).Throws(new SerializerNotFoundException("toto"));
+         A.CallTo(() => _serializerRepository.SerializerFor(_element)).Returns(null);
       }
 
       protected override void Because()

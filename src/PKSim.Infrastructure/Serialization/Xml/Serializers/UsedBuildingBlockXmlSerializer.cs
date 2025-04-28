@@ -33,6 +33,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          var buildingBlockNode = usedBuildingBlockNode.Elements().First();
          var serializer = SerializerRepository.SerializerFor(buildingBlockNode);
 
+         if (serializer == null)
+            return;
+
          usedBuildingBlock.BuildingBlock = serializer.Deserialize<IPKSimBuildingBlock>(buildingBlockNode, context);
       }
    }
