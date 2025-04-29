@@ -228,7 +228,7 @@ namespace PKSim.Core
       {
          var newIdentificationParameter = new IdentificationParameter();
 
-         parameterSelections.Each(x => { newIdentificationParameter.AddLinkedParameter(x); });
+         parameterSelections.Each(newIdentificationParameter.AddLinkedParameter);
          return newIdentificationParameter;
       }
 
