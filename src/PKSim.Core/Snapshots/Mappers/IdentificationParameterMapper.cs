@@ -75,14 +75,14 @@ namespace PKSim.Core.Snapshots.Mappers
          return identificationParameter;
       }
 
-      private ParameterSelection parameterSelectionFrom(string parameterFullPath, ParameterIdentificationContext snapshotContext)
+      private ParameterSelection parameterSelectionFrom(string parameterFullPath, ParameterIdentificationContext parameterIdentificationContext)
       {
          var parameterPath = new ObjectPath(parameterFullPath.ToPathArray());
          if (parameterPath.Count == 0)
             return null;
 
          var simulationName = parameterPath[0];
-         var simulation = snapshotContext.Project.All<Model.Simulation>().FindByName(simulationName);
+         var simulation = parameterIdentificationContext.Project.All<Model.Simulation>().FindByName(simulationName);
          if (simulation == null)
          {
             _logger.AddWarning(PKSimConstants.Error.CouldNotFindSimulation(simulationName));
@@ -91,7 +91,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          parameterPath.RemoveAt(0);
 
-         if (snapshotContext.IsV11FormatOrEarlier)
+         if (parameterIdentificationContext.IsV11FormatOrEarlier)
             updatePathsForV12(parameterPath);
 
          return new ParameterSelection(simulation, parameterPath);
