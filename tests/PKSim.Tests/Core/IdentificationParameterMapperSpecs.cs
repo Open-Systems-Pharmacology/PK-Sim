@@ -10,7 +10,6 @@ using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using Parameter = PKSim.Core.Snapshots.Parameter;
@@ -46,8 +45,8 @@ namespace PKSim.Core
       protected override Task Context()
       {
          _parameterMapper = A.Fake<ParameterMapper>();
-         _identificationParameterFactory= A.Fake<IIdentificationParameterFactory>();
-         _logger= A.Fake<IOSPSuiteLogger>();
+         _identificationParameterFactory = A.Fake<IIdentificationParameterFactory>();
+         _logger = A.Fake<IOSPSuiteLogger>();
          _identificationParameterTask = A.Fake<IIdentificationParameterTask>();
          sut = new IdentificationParameterMapper(_parameterMapper, _identificationParameterFactory, _identificationParameterTask, _logger);
 
@@ -69,10 +68,11 @@ namespace PKSim.Core
          _gfrFraction = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P4");
          _renalClearances = DomainHelperForSpecs.ConstantParameterWithValue().WithName("P5");
          _simulation = A.Fake<Simulation>().WithName("S");
-         _simulation.Model.Root = new Container {
-            _parameter1, 
-            _parameter2, 
-            new Container{ _parameter3 }.WithName(CoreConstants.ContainerName.Applications),
+         _simulation.Model.Root = new Container
+         {
+            _parameter1,
+            _parameter2,
+            new Container { _parameter3 }.WithName(CoreConstants.ContainerName.Applications),
             new Container
             {
                new Container
@@ -228,11 +228,7 @@ namespace PKSim.Core
       {
          var newIdentificationParameter = new IdentificationParameter();
 
-         parameterSelections.Each(x =>
-         {
-
-            newIdentificationParameter.AddLinkedParameter(x);
-         });
+         parameterSelections.Each(x => { newIdentificationParameter.AddLinkedParameter(x); });
          return newIdentificationParameter;
       }
 
