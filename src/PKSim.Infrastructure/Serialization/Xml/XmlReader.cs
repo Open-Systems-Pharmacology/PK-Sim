@@ -1,9 +1,8 @@
 using System;
 using System.Xml.Linq;
-using OSPSuite.Serializer;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer.Xml;
 using PKSim.Infrastructure.Serialization.Xml.Serializers;
-using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.Serialization.Xml
 {
@@ -24,7 +23,7 @@ namespace PKSim.Infrastructure.Serialization.Xml
 
       public T ReadFrom(XElement element, SerializationContext serializationContext)
       {
-         var itemSerializer = resolveSerializer(typeof (T), element);
+         var itemSerializer = resolveSerializer(typeof(T), element);
          _serializerRepository.DeserializeFormulaCache(element, serializationContext, itemSerializer.ObjectType);
          return itemSerializer.Deserialize<T>(element, serializationContext);
       }
@@ -39,15 +38,10 @@ namespace PKSim.Infrastructure.Serialization.Xml
 
       private IXmlSerializer<SerializationContext> resolveSerializer(Type typeOfObject, XElement element)
       {
-         try
-         {
-            return _serializerRepository.SerializerFor(element);
-         }
+         var serializer = _serializerRepository.SerializerFor(element);
+
          //this can happen if the given type was not registered explicitly in the serializer.
-         catch (SerializerNotFoundException)
-         {
-            return _serializerRepository.SerializerFor(typeOfObject);
-         }
+         return serializer ?? _serializerRepository.SerializerFor(typeOfObject);
       }
    }
 }
