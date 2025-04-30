@@ -6,7 +6,9 @@ using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
-using PKSim.Core.Model;
+using PKSim.Core.Extensions;
+using static OSPSuite.Core.Domain.Constants;
+using static PKSim.Core.CoreConstants.ContainerName;
 using ModelIdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
 using SnapshotIdentificationParameter = PKSim.Core.Snapshots.IdentificationParameter;
 
@@ -51,7 +53,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (snapshot.LinkedParameters == null || !snapshot.LinkedParameters.Any())
             return null;
 
-         var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, snapshotContext.Project));
+         var parameterSelections = snapshot.LinkedParameters.Select(x => parameterSelectionFrom(x, snapshotContext));
 
          var identificationParameter = _identificationParameterFactory.CreateFor(parameterSelections, snapshotContext.ParameterIdentification);
          if (identificationParameter == null)
@@ -73,14 +75,14 @@ namespace PKSim.Core.Snapshots.Mappers
          return identificationParameter;
       }
 
-      private ParameterSelection parameterSelectionFrom(string parameterFullPath, PKSimProject project)
+      private ParameterSelection parameterSelectionFrom(string parameterFullPath, ParameterIdentificationContext parameterIdentificationContext)
       {
          var parameterPath = new ObjectPath(parameterFullPath.ToPathArray());
          if (parameterPath.Count == 0)
             return null;
 
          var simulationName = parameterPath[0];
-         var simulation = project.All<Model.Simulation>().FindByName(simulationName);
+         var simulation = parameterIdentificationContext.Project.All<Model.Simulation>().FindByName(simulationName);
          if (simulation == null)
          {
             _logger.AddWarning(PKSimConstants.Error.CouldNotFindSimulation(simulationName));
@@ -88,7 +90,30 @@ namespace PKSim.Core.Snapshots.Mappers
          }
 
          parameterPath.RemoveAt(0);
+
+         if (parameterIdentificationContext.IsV11FormatOrEarlier)
+            updatePathsForV12(parameterPath);
+
          return new ParameterSelection(simulation, parameterPath);
+      }
+
+      private static void updatePathsForV12(ObjectPath parameterPath)
+      {
+         parameterPath.Replace(Applications, EVENTS);
+
+         replaceRenalClearanceName(parameterPath, PKSimConstants.UI.GlomerularFiltration);
+         replaceRenalClearanceName(parameterPath, PKSimConstants.UI.RenalClearance);
+      }
+
+      // renal clearances container names have been modified to append the name of the compound
+      private static void replaceRenalClearanceName(ObjectPath parameterPath, string processName)
+      {
+         var processContainerName = parameterPath.FirstOrDefault(x => x.StartsWith(processName));
+         if (string.IsNullOrEmpty(processContainerName)) 
+            return;
+
+         var compoundName = parameterPath.ElementAt(parameterPath.IndexOf(processContainerName) - 1);
+         parameterPath.Replace(processContainerName, CompositeNameFor(processContainerName, compoundName));
       }
    }
 }
