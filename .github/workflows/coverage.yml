@@ -23,7 +23,7 @@ jobs:
           nuget restore
 
       - name: Build
-        run: msbuild PKSim.sln /p:Version=12.1.999
+        run: msbuild PKSim.sln /p:Version=13.0.999
 
         
       - name: Cover and report
