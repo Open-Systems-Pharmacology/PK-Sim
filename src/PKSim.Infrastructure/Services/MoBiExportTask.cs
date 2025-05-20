@@ -33,6 +33,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IJournalRetriever _journalRetriever;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
+      private readonly ISimulationToProjectSnapshotMapper _simulationToProjectSnapshotMapper;
 
       public MoBiExportTask(
          ISimulationConfigurationTask simulationConfigurationTask,
@@ -43,7 +44,11 @@ namespace PKSim.Infrastructure.Services
          IDialogCreator dialogCreator,
          ISimulationPersistor simulationPersistor,
          IProjectRetriever projectRetriever,
-         IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
+         IObjectIdResetter objectIdResetter,
+         IJournalRetriever journalRetriever,
+         IApplicationSettings applicationSettings,
+         IStartableProcessFactory startableProcessFactory,
+         ISimulationToProjectSnapshotMapper simulationToProjectSnapshotMapper)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
          _simulationMapper = simulationMapper;
@@ -57,6 +62,7 @@ namespace PKSim.Infrastructure.Services
          _journalRetriever = journalRetriever;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
+         _simulationToProjectSnapshotMapper = simulationToProjectSnapshotMapper;
       }
 
       public void StartWith(Simulation simulation)
@@ -126,7 +132,14 @@ namespace PKSim.Infrastructure.Services
             simulationTransfer.Favorites = currentProject.Favorites;
          }
 
+         createSimulationProjectSnapshot(simulation, moBiSimulation);
+
          _simulationPersistor.Save(simulationTransfer, moBiFile);
+      }
+
+      private void createSimulationProjectSnapshot(Simulation simulation, IModelCoreSimulation modelCoreSimulation)
+      {
+         modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = _simulationToProjectSnapshotMapper.MapFrom(simulation);
       }
 
       private void updateFormulaIdIn(IModelCoreSimulation modelCoreSimulation)

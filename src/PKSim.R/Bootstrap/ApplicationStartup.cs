@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -12,7 +11,6 @@ using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
-using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using CoreRegister = PKSim.Core.CoreRegister;
@@ -21,7 +19,7 @@ using ICoreUserSettings = PKSim.Core.ICoreUserSettings;
 
 namespace PKSim.R.Bootstrap
 {
-   internal class ApplicationStartup
+   internal class ApplicationStartup : Core.ApplicationStartup
    {
       private static IContainer _container;
 
@@ -53,7 +51,7 @@ namespace PKSim.R.Bootstrap
 
          var configuration = container.Resolve<IPKSimConfiguration>();
          var currentPath = new FileInfo(Assembly.GetAssembly(GetType()).Location).DirectoryName;
-         if(!File.Exists(configuration.PKSimDbPath))
+         if (!File.Exists(configuration.PKSimDbPath))
             configuration.PKSimDbPath = Path.Combine(currentPath, CoreConstants.PK_SIM_DB_FILE);
 
          if (!File.Exists(configuration.PKParametersFilePath))
@@ -83,29 +81,9 @@ namespace PKSim.R.Bootstrap
 
       private static void redirectAssemblies()
       {
-          redirectAssembly("NHibernate", new Version(5, 2, 0, 0), "aa95f207798dfdb4");
-          redirectAssembly("Microsoft.Extensions.Options", new Version(3, 1, 0, 0), "adb9793829ddae60");
-          redirectAssembly("Microsoft.Extensions.Logging.Abstractions", new Version(3, 1, 0, 0), "adb9793829ddae60");
-      }
-
-      private static void redirectAssembly(string shortName, Version targetVersion, string publicKeyToken)
-      {
-         Assembly Handler(object sender, ResolveEventArgs args)
-         {
-            var requestedAssembly = new AssemblyName(args.Name);
-            if (requestedAssembly.Name != shortName) return null; 
-
-            requestedAssembly.Version = targetVersion;
-            requestedAssembly.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=" + publicKeyToken).GetPublicKeyToken());
-            requestedAssembly.CultureInfo = CultureInfo.InvariantCulture;
-
-            //once found, not need to react to event anymore
-            AppDomain.CurrentDomain.AssemblyResolve -= Handler;
-
-            return Assembly.Load(requestedAssembly);
-         }
-
-         AppDomain.CurrentDomain.AssemblyResolve += Handler;
+         RedirectAssembly("NHibernate", new Version(5, 2, 0, 0), "aa95f207798dfdb4");
+         RedirectAssembly("Microsoft.Extensions.Options", new Version(3, 1, 0, 0), "adb9793829ddae60");
+         RedirectAssembly("Microsoft.Extensions.Logging.Abstractions", new Version(3, 1, 0, 0), "adb9793829ddae60");
       }
    }
 }

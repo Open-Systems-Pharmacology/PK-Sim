@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
@@ -11,16 +12,20 @@ using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
+using PKSim.Core.Snapshots;
 using PKSim.Infrastructure.Services;
+using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
+using Simulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_MoBiExportTask : ContextSpecification<IMoBiExportTask>
+   public abstract class concern_for_MoBiExportTask : ContextSpecification<MoBiExportTask>
    {
       protected ISimulationConfigurationTask _simulationConfigurationTask;
       protected ISimulationToModelCoreSimulationMapper _simulationMapper;
@@ -34,6 +39,9 @@ namespace PKSim.Infrastructure
       private IJournalRetriever _journalRetriever;
       protected IApplicationSettings _applicationSettings;
       protected IStartableProcessFactory _startableProcessFactory;
+      protected ISimulationToProjectSnapshotMapper _simulationToProjectSnapshotMapper;
+      protected Simulation _sim;
+      private IModelCoreSimulation _modelCoreSimulation;
 
       protected override void Context()
       {
@@ -49,21 +57,36 @@ namespace PKSim.Infrastructure
          _journalRetriever = A.Fake<IJournalRetriever>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
+         _simulationToProjectSnapshotMapper = A.Fake<ISimulationToProjectSnapshotMapper>();
+         _sim = A.Fake<Simulation>();
+
+         _modelCoreSimulation = new ModelCoreSimulation
+         {
+            Configuration = new SimulationConfiguration(),
+            Model = new Model
+            {
+               Root = new Container()
+            }
+         };
+         _modelCoreSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
+
+         A.CallTo(() => _simulationMapper.MapFrom(_sim, A<SimulationConfiguration>._, true)).Returns(_modelCoreSimulation);
+
+         A.CallTo(() => _simulationToProjectSnapshotMapper.MapFrom(A<Simulation>._)).Returns("A snapshot");
 
          sut = new MoBiExportTask(_simulationConfigurationTask, _simulationMapper, _representationInfoRepository,
-            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory);
+            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _simulationToProjectSnapshotMapper);
       }
    }
 
    public class When_exporting_a_simulation_to_pkml_file_that_was_imported_from_pkml : concern_for_MoBiExportTask
    {
-      private Simulation _sim;
+      
       private string _fileName;
 
       protected override void Context()
       {
          base.Context();
-         _sim = A.Fake<Simulation>();
          _fileName = "toto";
          A.CallTo(() => _sim.IsImported).Returns(true);
       }
@@ -77,7 +100,6 @@ namespace PKSim.Infrastructure
 
    public class When_exporting_a_simulation_to_pkml_file : concern_for_MoBiExportTask
    {
-      private Simulation _sim;
       private string _fileName;
       private SimulationTransfer _simulationTransfer;
       private DataRepository _observedData1;
@@ -85,7 +107,6 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         _sim = A.Fake<Simulation>();
          _fileName = "toto";
          _observedData1 = new DataRepository();
          A.CallTo(() => _sim.UsedObservedData).Returns(new[] {new UsedObservedData {Id = "OBS"}});
@@ -115,6 +136,12 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
+      public void the_simulation_transfer_should_have_a_snapshot_set()
+      {
+         _simulationTransfer.Simulation.Configuration.ModuleConfigurations.First().Module.Snapshot.ShouldBeEqualTo("A snapshot");
+      }
+
+      [Observation]
       public void should_have_reset_the_id_of_the_simulation()
       {
          A.CallTo(() => _objectIdResetter.ResetIdFor(_simulationTransfer.Simulation)).MustHaveHappened();
@@ -123,7 +150,6 @@ namespace PKSim.Infrastructure
 
    public class When_exporting_a_simulation_to_MoBi_and_the_application_was_installed_using_the_setup : concern_for_MoBiExportTask
    {
-      private Simulation _simulation;
       private readonly string _moBiConfigPath = "MoBiConfigPath";
       private Func<string, bool> _oldFileHelper;
 
@@ -137,13 +163,12 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         _simulation = A.Fake<Simulation>();
          A.CallTo(() => _configuration.MoBiPath).Returns(_moBiConfigPath);
       }
 
       protected override void Because()
       {
-         sut.StartWith(_simulation);
+         sut.StartWith(_sim);
       }
 
       [Observation]
@@ -161,7 +186,6 @@ namespace PKSim.Infrastructure
 
    public class When_exporting_a_simulation_to_MoBi_and_the_application_was_installed_using_a_portable_setup_and_mobi_executable_path_can_be_found_on_system_using_the_application_settings : concern_for_MoBiExportTask
    {
-      private Simulation _simulation;
       private readonly string _moBiAppSettingsPath = "MoBiAppSettingsPath";
       private Func<string, bool> _oldFileHelper;
 
@@ -175,13 +199,12 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          base.Context();
-         _simulation = A.Fake<Simulation>();
          A.CallTo(() => _applicationSettings.MoBiPath).Returns(_moBiAppSettingsPath);
       }
 
       protected override void Because()
       {
-         sut.StartWith(_simulation);
+         sut.StartWith(_sim);
       }
 
       [Observation]
