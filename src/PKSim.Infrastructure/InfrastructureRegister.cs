@@ -41,6 +41,7 @@ using PKSim.Infrastructure.Serialization.Xml.Serializers;
 using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using IWorkspace = PKSim.Presentation.IWorkspace;
+using StringSerializer = PKSim.Infrastructure.Serialization.StringSerializer;
 
 namespace PKSim.Infrastructure
 {

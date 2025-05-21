@@ -23,12 +23,17 @@ namespace PKSim.Infrastructure.Serialization.Json
 
       public async Task Serialize(object objectToSerialize, string fileName)
       {
-         var data = JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented, _settings);
+         var data = Serialize(objectToSerialize);
 
          using (var sw = new StreamWriter(fileName))
          {
             await sw.WriteAsync(data);
          }
+      }
+
+      public string Serialize(object objectToSerialize)
+      {
+         return JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented, _settings);
       }
 
       public async Task<object[]> DeserializeAsArray(string fileName, Type objectType)

@@ -1,6 +1,7 @@
-﻿using System.Globalization;
+﻿using System;
 using System.Threading;
 using DevExpress.LookAndFeel;
+using DevExpress.XtraBars;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
 using OSPSuite.Assets;
@@ -20,10 +21,11 @@ using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
+using PresenterRegister = OSPSuite.Presentation.PresenterRegister;
 
 namespace PKSim.UI.Starter
 {
-   public static class ApplicationStartup
+   public class ApplicationStartup : Core.ApplicationStartup
    {
       static IContainer _container;
 
@@ -32,6 +34,7 @@ namespace PKSim.UI.Starter
          if (_container != null)
             return _container;
 
+         RedirectAssembly("System.ComponentModel.Annotations", new Version(4, 2, 1, 0), "b03f5f7f11d50a3a");
          _container = initializeForStartup(IoC.Container);
 
          return _container;
@@ -49,7 +52,7 @@ namespace PKSim.UI.Starter
             pkSimContainer.RegisterImplementationOf(new DockManager());
             pkSimContainer.RegisterImplementationOf(new RibbonBarManager(new RibbonControl()));
             pkSimContainer.RegisterImplementationOf(UserLookAndFeel.Default);
-            pkSimContainer.RegisterImplementationOf(new DevExpress.XtraBars.BarManager());
+            pkSimContainer.RegisterImplementationOf(new BarManager());
 
             // Cross register the main view and presentation components from MoBi into the PKSim
             // container so that modal dialogs can be viewed within the MoBi shell
@@ -59,7 +62,7 @@ namespace PKSim.UI.Starter
             pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IMainViewPresenter>());
             pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IMainView>());
             pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IJournalPresenter>());
-            
+
             pkSimContainer.RegisterImplementationOf(NumericFormatterOptions.Instance);
             pkSimContainer.RegisterImplementationOf(SynchronizationContext.Current);
             pkSimContainer.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
@@ -68,7 +71,7 @@ namespace PKSim.UI.Starter
 
             // Full registration of OSPSuite Core UI and Presentation
             pkSimContainer.AddRegister(x => x.FromType<UIRegister>());
-            pkSimContainer.AddRegister(x => x.FromType<OSPSuite.Presentation.PresenterRegister>());
+            pkSimContainer.AddRegister(x => x.FromType<PresenterRegister>());
 
             // Full registration of PKSim Core and Infrastructure
             pkSimContainer.AddRegister(x => x.FromType<CoreRegister>());
@@ -77,7 +80,7 @@ namespace PKSim.UI.Starter
             // Registration of PKSim presentation and UI for starter
             pkSimContainer.AddRegister(x => x.FromType<PKSimStarterPresenterRegister>());
             pkSimContainer.AddRegister(x => x.FromType<PKSimStarterUserInterfaceRegister>());
-            
+
             pkSimContainer.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
             InfrastructureRegister.LoadSerializers(pkSimContainer);
             pkSimContainer.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
