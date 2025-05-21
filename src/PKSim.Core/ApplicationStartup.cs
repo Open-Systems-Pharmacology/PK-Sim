@@ -11,7 +11,8 @@ public class ApplicationStartup
       Assembly Handler(object sender, ResolveEventArgs args)
       {
          var requestedAssembly = new AssemblyName(args.Name);
-         if (requestedAssembly.Name != shortName) return null;
+         if (requestedAssembly.Name != shortName) 
+            return null;
 
          requestedAssembly.Version = targetVersion;
          requestedAssembly.SetPublicKeyToken(new AssemblyName("x, PublicKeyToken=" + publicKeyToken).GetPublicKeyToken());
