@@ -107,6 +107,13 @@ namespace PKSim.Infrastructure.Services
          throw new PKSimException(PKSimConstants.Error.MoBiNotFound);
       }
 
+      public string Serialize(SimulationTransfer transfer)
+      {
+         updateRepresentationInfo(transfer.Simulation);
+         updateFormulaIdIn(transfer.Simulation);
+         return _simulationPersistor.Serialize(transfer);
+      }
+
       private void exportSimulationToFile(Simulation simulation, string moBiFile)
       {
          _lazyLoadTask.Load(simulation);

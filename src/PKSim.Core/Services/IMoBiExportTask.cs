@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using OSPSuite.Core.Serialization.Exchange;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -31,5 +33,7 @@ namespace PKSim.Core.Services
       ///    Exports the simulation into the file with path <paramref name="fileName" />
       /// </summary>
       Task ExportSimulationToPkmlFileAsync(Simulation simulation, string fileName);
+
+      string Serialize(SimulationTransfer transfer);
    }
 }
