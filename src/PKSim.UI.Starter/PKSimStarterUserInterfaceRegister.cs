@@ -1,4 +1,6 @@
-﻿using OSPSuite.Utility.Container;
+﻿using OSPSuite.Core.Services;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Presentation.UICommands;
 using PKSim.UI.UICommands;
@@ -21,6 +23,7 @@ namespace PKSim.UI.Starter
          });
          container.Register<OSPSuite.UI.Services.IToolTipCreator, IToolTipCreator, ToolTipCreator>(LifeStyle.Transient);
          container.Register<IExitCommand, ExitCommand>();
+         container.Register<IProgressUpdater, NoneProgressUpdater>();
       }
    }
 }
