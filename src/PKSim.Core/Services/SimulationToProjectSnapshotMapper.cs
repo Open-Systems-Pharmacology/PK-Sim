@@ -28,11 +28,20 @@ public class SimulationToProjectSnapshotSnapshotMapper(
    {
       var project = new PKSimProject().WithName(simulation.Name);
 
-      simulation.UsedBuildingBlocks.Select(x => pkSimProjectRetriever.Current.BuildingBlockById(x.TemplateId)).Each(project.AddBuildingBlock);
+      simulation.UsedBuildingBlocks.Select(x => pkSimProjectRetriever.Current.BuildingBlockById(x.TemplateId)).Each(x => addBuildingBlockAndDependents(x, project));
       simulation.UsedObservedData.Select(pkSimProjectRetriever.Current.ObservedDataBy).Each(project.AddObservedData);
 
+     
       project.AddBuildingBlock(simulation);
 
       return project;
+   }
+
+   private void addBuildingBlockAndDependents(IPKSimBuildingBlock pkSimBuildingBlock, PKSimProject project)
+   {
+      project.AddBuildingBlock(pkSimBuildingBlock);
+
+      if (pkSimBuildingBlock is Individual individualBuildingBlock)
+         individualBuildingBlock.AllExpressionProfiles().Each(project.AddBuildingBlock);
    }
 }
