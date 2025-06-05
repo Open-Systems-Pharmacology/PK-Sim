@@ -50,9 +50,6 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
       - name: Restore dependencies
         run: |
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
@@ -65,7 +62,7 @@ jobs:
       - name: Build
         run: |
           rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
-          msbuild PKSim.sln /p:Version=${{env.APP_VERSION}}
+          dotnet build PKSim.sln /p:Version=${{env.APP_VERSION}}
 
       - name : Test
         run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
