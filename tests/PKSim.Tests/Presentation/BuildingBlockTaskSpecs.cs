@@ -37,7 +37,6 @@ namespace PKSim.Presentation
       protected ITemplateTaskQuery _templateTaskQuery;
       protected ISingleStartPresenterTask _singleStartPresenterTask;
       protected IBuildingBlockRepository _buildingBlockRepository;
-      protected ILazyLoadTask _lazyLoadTask;
       protected ISimulationReferenceUpdater _simulationReferenceUpdater;
       protected IPresentationSettingsTask _presenterSettingsTask;
 
@@ -55,7 +54,6 @@ namespace PKSim.Presentation
          _renamePresenter = A.Fake<IRenameObjectPresenter>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _singleStartPresenterTask = A.Fake<ISingleStartPresenterTask>();
-         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _presenterSettingsTask = A.Fake<IPresentationSettingsTask>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
 
@@ -68,7 +66,6 @@ namespace PKSim.Presentation
             _templateTaskQuery,
             _singleStartPresenterTask,
             _buildingBlockRepository,
-            _lazyLoadTask,
             _presenterSettingsTask,
             _simulationReferenceUpdater);
 
