@@ -13,9 +13,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: 'true'
-      
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v2
 
       - name: Restore dependencies
         run: |
@@ -23,8 +20,7 @@ jobs:
           nuget restore
 
       - name: Build
-        run: msbuild PKSim.sln /p:Version=13.0.999
-
+        run: dotnet build PKSim.sln /p:Version=12.1.999
         
       - name: Cover and report
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/dotCover@main
