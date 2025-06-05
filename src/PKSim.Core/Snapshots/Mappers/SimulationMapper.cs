@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -273,7 +277,7 @@ namespace PKSim.Core.Snapshots.Mappers
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, SimulationContext snapshotContext)
       {
          var project = snapshotContext.Project;
-         _logger.AddInfo(PKSimConstants.Information.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
+         _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
 
          //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered 
          //in global context once the whole snapshot mapping process is completed
@@ -353,7 +357,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          //This might be a process that was deselected explicitly by the user
          var molecule = simulationSubject.MoleculeByName(snapshotInteraction.MoleculeName);
-         return molecule == null ? null : new NoInteractionProcess {MoleculeName = molecule.Name};
+         return molecule == null ? null : new NoInteractionProcess { MoleculeName = molecule.Name };
       }
 
       private async Task runSimulation(SnapshotSimulation snapshot, ModelSimulation simulation)
@@ -381,7 +385,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return Task.FromResult(new List<TAnalysis>().ToArray());
 
          var project = simulationContext.Project;
-         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData, simulationContext) {RunSimulation = simulationContext.Run};
+         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData, simulationContext) { RunSimulation = simulationContext.Run };
 
          var individualSimulation = simulation as IndividualSimulation;
          if (individualSimulation?.DataRepository != null)

@@ -3,6 +3,8 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

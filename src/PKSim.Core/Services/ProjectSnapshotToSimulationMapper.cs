@@ -3,6 +3,8 @@ using System.Linq;
 using System.Text;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;

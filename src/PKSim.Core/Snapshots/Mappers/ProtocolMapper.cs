@@ -5,6 +5,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using ModelProtocol = PKSim.Core.Model.Protocol;
 using SnapshotProtocol = PKSim.Core.Snapshots.Protocol;
+using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

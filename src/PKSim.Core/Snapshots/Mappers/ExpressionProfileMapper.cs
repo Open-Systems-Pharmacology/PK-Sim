@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

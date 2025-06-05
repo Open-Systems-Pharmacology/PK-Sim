@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Model;
 

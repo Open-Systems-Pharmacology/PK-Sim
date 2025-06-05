@@ -2,13 +2,15 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
+using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using IContainer = OSPSuite.Utility.Container.IContainer;
+using QualificationStepRunnerFactory = PKSim.Core.Services.QualificationStepRunnerFactory;
 
 namespace PKSim.Presentation
 {
-   public abstract class concern_for_QualificationStepRunnerFactory : ContextSpecification<IQualificationStepRunnerFactory>
+   public abstract class concern_for_QualificationStepRunnerFactory : ContextSpecification<QualificationStepRunnerFactory>
    {
       private IContainer _container;
       protected RunParameterIdentificationQualificationStepRunner _runParameterIdentificationStepRunner;

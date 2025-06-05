@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Repositories;
 using SnapshotFormulaUsablePath = PKSim.Core.Snapshots.FormulaUsablePath;
 

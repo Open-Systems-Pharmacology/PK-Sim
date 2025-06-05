@@ -3,6 +3,8 @@ using System.Text;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;

@@ -1,35 +1,23 @@
 ﻿using System;
-using OSPSuite.Utility.Container;
-using PKSim.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Model;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
-namespace PKSim.Core.Services
+namespace PKSim.Core.Services;
+
+public class QualificationStepRunnerFactory(IContainer container) : OSPSuite.Core.Services.QualificationStepRunnerFactory(container)
 {
-   public interface IQualificationStepRunnerFactory
+   public override IQualificationStepRunner CreateFor(IQualificationStep qualificationStep)
    {
-      IQualificationStepRunner CreateFor(IQualificationStep qualificationStep);
-   }
-
-   public class QualificationStepRunnerFactory: IQualificationStepRunnerFactory
-   {
-      private readonly IContainer _container;
-
-      public QualificationStepRunnerFactory(IContainer container)
+      switch (qualificationStep)
       {
-         _container = container;
+         case RunParameterIdentificationQualificationStep _:
+            return _container.Resolve<RunParameterIdentificationQualificationStepRunner>();
+         case RunSimulationQualificationStep _:
+            return _container.Resolve<RunSimulationQualificationStepRunner>();
       }
 
-      public IQualificationStepRunner CreateFor(IQualificationStep qualificationStep)
-      {
-         switch (qualificationStep)
-         {
-            case RunParameterIdentificationQualificationStep _:
-               return _container.Resolve<RunParameterIdentificationQualificationStepRunner>();
-            case RunSimulationQualificationStep _:
-               return _container.Resolve<RunSimulationQualificationStepRunner>();
-         }
-
-         throw new ArgumentException(PKSimConstants.Error.UnableToFindAQualificationStepRunnerFor(qualificationStep.GetType().Name));
-      }
+      throw new ArgumentException(OSPSuite.Assets.Error.UnableToFindAQualificationStepRunnerFor(qualificationStep.GetType().Name));
    }
 }

@@ -7,9 +7,9 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Maths.Interpolations;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Data;
-using OSPSuite.Infrastructure.Import.Services;
 using PKSim.Core.Comparison;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
@@ -23,7 +23,7 @@ namespace PKSim.Core
    {
       public override void RegisterInContainer(IContainer container)
       {
-         container.AddRegister(x => x.FromInstance(new OSPSuite.Core.CoreRegister {RegisterParameter = false}));
+         container.AddRegister(x => x.FromInstance(new OSPSuite.Core.CoreRegister { RegisterParameter = false }));
 
          //Register PKSim.Core 
          container.AddScanner(scan =>
@@ -41,12 +41,12 @@ namespace PKSim.Core
             scan.ExcludeType<IndividualSimulationEngine>();
             scan.ExcludeType<DefaultIndividualRetriever>();
             scan.ExcludeType<IPopulationSimulationEngine>();
-            
+
             //Do not register the InteractiveSimulationRunner as it should be registered only if needed
             scan.ExcludeType<InteractiveSimulationRunner>();
-            scan.ExcludeType<SnapshotMapper>();
 
             scan.ExcludeNamespaceContainingType<IndividualDiffBuilder>();
+            scan.ExcludeNamespaceContainingType<ExpressionProfileMapper>();
             scan.WithConvention<PKSimRegistrationConvention>();
          });
 
@@ -58,15 +58,22 @@ namespace PKSim.Core
             scan.IncludeType<ObjectTypeResolver>();
             scan.IncludeType<DistributionFormulaFactory>();
             scan.IncludeType<ProjectChangedNotifier>();
-            scan.IncludeType<SnapshotMapper>();
             scan.IncludeType<DefaultIndividualRetriever>();
 
             scan.RegisterAs(LifeStyle.Singleton);
             scan.WithConvention<PKSimRegistrationConvention>();
          });
-         
+
+         // Registered to satisfy the repository of ISnapshotMapperSpecification
+         container.AddScanner(scan =>
+         {
+            scan.AssemblyContainingType<CoreRegister>();
+            scan.IncludeNamespaceContainingType<ExpressionProfileMapper>();
+            scan.WithConvention<RegisterTypeConvention<ISnapshotMapperSpecification>>();
+         });
+
          container.Register<ICoreSimulationFactory, SimulationFactory>();
-         container.Register<ISetParameterTask,  ParameterTask>(LifeStyle.Transient);
+         container.Register<ISetParameterTask, ParameterTask>(LifeStyle.Transient);
          container.Register<ITransferOptimizedParametersToSimulationsTask, TransferOptimizedParametersToSimulationsTask<IExecutionContext>>();
          container.Register<IIndividualSimulationEngine, ISimulationEngine<IndividualSimulation, SimulationRunResults>, IndividualSimulationEngine>(LifeStyle.Transient);
          container.Register<IPopulationSimulationEngine, ISimulationEngine<PopulationSimulation, PopulationRunResults>, PopulationSimulationEngine>(LifeStyle.Transient);

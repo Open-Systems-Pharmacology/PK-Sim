@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using QualificationPlan = PKSim.Core.Model.QualificationPlan;
+using QualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 
 namespace PKSim.Core
 {

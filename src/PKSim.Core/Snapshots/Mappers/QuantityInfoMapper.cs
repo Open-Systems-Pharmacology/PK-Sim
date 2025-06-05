@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots.Mappers;
 using ModelQuantityInfo = OSPSuite.Core.Domain.Data.QuantityInfo;
 using SnapshotQuantityInfo = PKSim.Core.Snapshots.QuantityInfo;
 

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -157,7 +159,7 @@ namespace PKSim.Core.Snapshots.Mappers
          SnapshotContext snapshotContext)
          => _parameterIdentificationMapper.MapToModels(snapshotParameterIdentifications, snapshotContext);
 
-      private Task<Model.QualificationPlan[]> allQualificationPlansFrom(QualificationPlan[] qualificationPlans, SnapshotContext snapshotContext)
+      private Task<OSPSuite.Core.Domain.QualificationPlan[]> allQualificationPlansFrom(QualificationPlan[] qualificationPlans, SnapshotContext snapshotContext)
          => _qualificationPlanMapper.MapToModels(qualificationPlans, snapshotContext);
 
       private async Task<SimulationComparison[]> mapSimulationComparisonsToSnapshots(IReadOnlyCollection<ISimulationComparison> allSimulationComparisons)
@@ -175,7 +177,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return await _simulationMapper.MapToSnapshots(allSimulations, project);
       }
 
-      private async Task<QualificationPlan[]> mapQualificationPlansToSnapshots(IReadOnlyCollection<Model.QualificationPlan> allQualificationPlans)
+      private async Task<QualificationPlan[]> mapQualificationPlansToSnapshots(IReadOnlyCollection<OSPSuite.Core.Domain.QualificationPlan> allQualificationPlans)
       {
          return await _qualificationPlanMapper.MapToSnapshots(allQualificationPlans);
       }
@@ -224,7 +226,7 @@ namespace PKSim.Core.Snapshots.Mappers
                snapshot.SimulationComparisonClassifications, snapshotContext, project.AllSimulationComparisons),
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, ModelParameterIdentification>(
                snapshot.ParameterIdentificationClassifications, snapshotContext, project.AllParameterIdentifications),
-            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, Model.QualificationPlan>(
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableQualificationPlan, OSPSuite.Core.Domain.QualificationPlan>(
                snapshot.QualificationPlanClassifications, snapshotContext, project.AllQualificationPlans),
          };
 
@@ -252,9 +254,9 @@ namespace PKSim.Core.Snapshots.Mappers
             project.AddParameterIdentification, project.AllParameterIdentifications);
       }
 
-      private void addQualificationPlanToProject(ModelProject project, Model.QualificationPlan qualificationPlan)
+      private void addQualificationPlanToProject(ModelProject project, OSPSuite.Core.Domain.QualificationPlan qualificationPlan)
       {
-         addClassifiableToProject<ClassifiableQualificationPlan, Model.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan, project.AllQualificationPlans);
+         addClassifiableToProject<ClassifiableQualificationPlan, OSPSuite.Core.Domain.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan, project.AllQualificationPlans);
       }
 
       private void logDuplicateEntryError<T>(T subject) where T : class, IWithId, IWithName
