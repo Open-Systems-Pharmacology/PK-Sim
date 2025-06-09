@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
 using SnapshotQualificationPlan = PKSim.Core.Snapshots.QualificationPlan;
-using ModelQualificationPlan = PKSim.Core.Model.QualificationPlan;
+using ModelQualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

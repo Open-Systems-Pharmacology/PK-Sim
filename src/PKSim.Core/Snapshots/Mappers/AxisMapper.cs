@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Repositories;
 using ModelAxis = OSPSuite.Core.Chart.Axis;
 using SnapshotAxis = PKSim.Core.Snapshots.Axis;

@@ -5,6 +5,7 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using ModelSchema = PKSim.Core.Model.Schema;
 using SnapshotSchema = PKSim.Core.Snapshots.Schema;
+using OSPSuite.Core.Extensions;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

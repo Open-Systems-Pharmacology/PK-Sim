@@ -2,6 +2,7 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -26,8 +27,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOSPSuiteLogger _logger;
 
       public ObserverMapper(
-         DescriptorConditionMapper descriptorConditionMapper, 
-         ExplicitFormulaMapper explicitFormulaMapper, 
+         DescriptorConditionMapper descriptorConditionMapper,
+         ExplicitFormulaMapper explicitFormulaMapper,
          MoleculeListMapper moleculeListMapper,
          IObjectBaseFactory objectBaseFactory,
          IDimensionRepository dimensionRepository,
@@ -56,7 +57,8 @@ namespace PKSim.Core.Snapshots.Mappers
             case AmountObserverBuilder _:
                snapshot.Type = AMOUNT_OBSERVER;
                break;
-            case ContainerObserverBuilder _:;
+            case ContainerObserverBuilder _:
+               ;
                snapshot.Type = CONTAINER_OBSERVER;
                break;
          }
@@ -81,11 +83,9 @@ namespace PKSim.Core.Snapshots.Mappers
          var moleculeList = await _moleculeListMapper.MapToModel(snapshot.MoleculeList, snapshotContext);
          observer.MoleculeList.Update(moleculeList);
          return observer;
-
       }
 
-
-      private ObserverBuilder createObserverFrom(SnapshotObserver snapshot)
+      private ModelObserver createObserverFrom(SnapshotObserver snapshot)
       {
          if (string.IsNullOrEmpty(snapshot.Type))
             return null;

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using SnapshotSolverSettings = PKSim.Core.Snapshots.SolverSettings;
 using ModelSolverSettings = OSPSuite.Core.Domain.SolverSettings;

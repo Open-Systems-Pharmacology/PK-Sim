@@ -466,22 +466,16 @@ namespace PKSim.Assets
 
          public static string CouldNotFindOutputInSimulation(string outputFullPath, string simulationName) => $"Cannot find output '{outputFullPath}' in simulation '{simulationName}'";
 
-         public static string CouldNotFind(string objectType, string objectName) => $"Cannot find {objectType.ToLower()} '{objectName}'";
-
-         public static string CouldNotFindParameterIdentification(string parameterIdentificationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.ParameterIdentification, parameterIdentificationName);
-
-         public static string CouldNotFindQualificationStep(string qualificationStepType) => CouldNotFind(ObjectTypes.QualificationStep, qualificationStepType);
-
-         public static string NotMappingDefinedForQualificationStep(string qualificationStepType) => $"No mapping defined for {ObjectTypes.QualificationStep.ToLower()} '{qualificationStepType}'";
+         public static string CouldNotFindParameterIdentification(string parameterIdentificationName) => OSPSuite.Assets.Error.CouldNotFind(OSPSuite.Assets.ObjectTypes.ParameterIdentification, parameterIdentificationName);
 
          public static string TableFormulationRequiresAtLeastOnePoint(string formulation) => $"Table formulation '{formulation}' requires at least one point to be used in a simulation.";
 
-         public static string CouldNotFindSimulation(string simulationName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
+         public static string CouldNotFindSimulation(string simulationName) => OSPSuite.Assets.Error.CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
 
          public static string CannotCreateIdentificationParameter(string parameterPath, string parameterIdentificationName)
             => $"Cannot create identification parameter '{parameterPath}' for parameter identification '{parameterIdentificationName}'.";
 
-         public static string ParameterIsRequired(string parameterName) => CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
+         public static string ParameterIsRequired(string parameterName) => OSPSuite.Assets.Error.CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
 
          public static string SimulationResultsFileDoesNotHaveTheExpectedFormat
          {
@@ -833,13 +827,9 @@ namespace PKSim.Assets
 
          public static string CannotExtractIndividualFrom(string objectType) => $"Individual extraction is not available for '{objectType}'.";
 
-         public static string SnapshotNotFoundFor(string modelTypeName) => $"Snapshot not found for '{modelTypeName}'.";
-
          public static string SnapshotParameterNotFoundInContainer(string parameterName, string container) => $"Snapshot parameter '{parameterName}' was not found in '{container}'.";
 
          public static string SnapshotParameterNotFound(string parameterName) => $"Snapshot parameter '{parameterName}' was not found.";
-
-         public const string SnapshotIsOutdated = "Snapshot is outdated and cannot be loaded for the following reason: ";
          
          public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported.";
 
@@ -853,16 +843,6 @@ namespace PKSim.Assets
 
          public static string SnapshotProcessNameNotFound(string processName) => $"Snapshot process '{processName}' not found in the PK-Sim database.";
 
-         public static string MapToModelNotSupportedWithoutContext(string modelType, string contextType)
-         {
-            return $"{modelType} should not be created from snapshot directly. Instead use the overload with {contextType}.";
-         }
-
-         public static string MapToSnapshotNotSupportedWithoutContext(string snapshotType, string contextType)
-         {
-            return $"{snapshotType} should not be created from model directly. Instead use the overload with {contextType}.";
-         }
-
          public const string PopulationSnapshotOnlySupportedForRandomPopulation = "Population snapshot can only be created for randomized population.";
 
          public const string SimulationSubjectUndefinedInSnapshot = "Simulation subject (Individual or Population) is not defined in snapshot.";
@@ -873,15 +853,11 @@ namespace PKSim.Assets
 
          public static string OnlyPKSimSimulationCanBeExportedToSnapshot(string simulationName, string origin) => $"Snapshot export is not supported for {origin} simulation '{simulationName}'.";
 
-         public static string SnapshotFileMismatch(string desiredType) => $"Snapshot file cannot be used to load a {desiredType.ToLowerInvariant()}.";
-
          public static string CannotLoadRelatedItemAsObjectAlreadyExistInProject(string objectType, string objectName) => $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
 
          public static string CompoundGroupNotFoundFor(string compoundGroup, string compoundName) => $"Cannot find compound group '{compoundGroup}' for compound '{compoundName}'";
 
          public static string CompoundAlternativeNotFoundFor(string alternativeName, string defaultAlternativeName, string compoundGroup, string compoundName) => $"Cannot find alternative '{alternativeName}' in compound group '{compoundGroup}' for compound '{compoundName}'. Default alternative '{defaultAlternativeName}' will be used instead";
-
-         public static string UnableToFindAQualificationStepRunnerFor(string qualificationStep) => $"Cannot find {ObjectTypes.QualificationStep} runner for '{qualificationStep}'";
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
 
@@ -1063,19 +1039,7 @@ namespace PKSim.Assets
             return $"{ObservedDataYAsTooltip(y)}\n{TimeProfileYAsTooltip(lowerValue, upperValue)}";
          }
 
-         public static string Starting(string type, string name) => $"Starting {type.ToLower()} '{name}'...";
-
          public static string ObservedDataYAsTooltip(string y) => ScatterYAsTooltip(y);
-
-         public static string LoadingSnapshot(string snapshotFile, string type) => $"Loading {type} from {ObjectTypes.Snapshot.ToLower()} file '{snapshotFile}'";
-
-         public static string SnapshotLoaded(string typeToLoad) => $"{typeToLoad} loaded from {ObjectTypes.Snapshot.ToLower()}";
-
-         public static string LoadingSimulation(string simulationName, int count, int total) => $"Loading simulation '{simulationName}' ({count}/{total})...";
-
-         public static string StartingQualificationPlan(string qualificationPlan) => Starting(ObjectTypes.QualificationPlan, qualificationPlan);
-
-         public static string StartingQualificationStep(string qualificationStep) => Starting(ObjectTypes.QualificationStep, qualificationStep);
       }
 
       public static class MenuNames
@@ -1110,10 +1074,7 @@ namespace PKSim.Assets
          public static readonly string About = "&About...";
          public static readonly string OpenProject = "&Open...";
          public static readonly string ProjectDescription = "&Description...";
-         public static readonly string ExportProjectToSnapshot = "Export to Snapshot";
-         public static readonly string LoadProjectFromSnapshot = "Load from Snapshot";
-         public static readonly string ExportProjectToSnapshotMenu = $"&{ExportProjectToSnapshot}...";
-         public static readonly string LoadProjectFromSnapshotMenu = $"{LoadProjectFromSnapshot}...";
+
          public static readonly string Clone = "Clone...";
          public static readonly string CloneMenu = "Clone";
          public static readonly string ActivateSimulation = "Set as Active Simulation";
@@ -1272,9 +1233,6 @@ namespace PKSim.Assets
          public static readonly string Species = "Species";
          public static readonly string SimulationAnalysisWorkflow = "Analysis";
          public static readonly string IndividualOrPopulation = $"{Individual} or {Population}";
-         public static readonly string QualificationStep = "Qualification Step";
-         public static readonly string QualificationPlan = "Qualification Plan";
-         public static readonly string Snapshot = "Snapshot";
          public static readonly string ObserverSet = "Observers";
          public static readonly string ExpressionProfile = "Expression Profile";
          public static readonly string DiseaseState = "Disease State";
@@ -1622,8 +1580,7 @@ namespace PKSim.Assets
          public static readonly string OpeningProjectDatabase = "Opening project database...";
          public static readonly string CreatingProjectDatabase = "Creating project database...";
          public static readonly string LoadingProject = "Loading project...";
-         public static readonly string LoadingSnapshot = "Loading snapshot...";
-         public static readonly string SnapshotFile = "Select snapshot file";
+
          public static readonly string SavingProject = "Saving project...";
          public static readonly string LoadingHistory = "Loading history...";
          public static readonly string LoadingLayout = "Loading layout...";
@@ -1858,8 +1815,6 @@ namespace PKSim.Assets
          public static readonly string NewProjectDescription = "Create a new project...";
          public static readonly string OpenProjectDescription = "Open an existing project...";
          public static readonly string ProjectDescriptionDescription = "Show or edit project description...";
-         public static readonly string ExportProjectToSnapshotDescription = "Export project to snapshot...";
-         public static readonly string LoadProjectFromSnapshotDescription = "Load project from snapshot...";
          public static readonly string CloseProjectDescription = "Close the project";
          public static readonly string NewSimulationDescription = "Create a new simulation...";
          public static readonly string ImportIndividualSimulationDescription = "Import an individual simulation from file...";
@@ -2070,7 +2025,7 @@ namespace PKSim.Assets
          public static readonly string Range = "Range";
          public static readonly string ImportFolder = "Import all files from a specific folder";
          public static readonly string ImportFiles = "Import single files";
-         public static readonly string StartImport = "Start Import";
+         
          public static readonly string Browse = "Browse";
          public static readonly string SelectFolderContainingSimulationResults = "Select folder containing the results to import";
          public static readonly string FileSuccessfullyImported = "File successfully imported";
@@ -2215,15 +2170,9 @@ namespace PKSim.Assets
          public static readonly string GlobalPKAnalysisDescription = "The median value calculated from all individual values";
 
          public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
-
-         public static string DoYouWantToProceed(params string[] messages) => $"WARNING:\n{messages.ToString("\n")}\n\nDo you wish to continue?";
-
-         private static readonly string _snapshotOfProjectWithChangedSimulationText = "Some simulations are in a changed state (red icon) and may not be re-imported correctly.";
+         public static readonly string SnapshotOfProjectCreatedWithEarlierVersion = OSPSuite.Assets.Captions.DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText);
+         public static readonly string SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation = OSPSuite.Assets.Captions.DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText, OSPSuite.Assets.Captions.SnapshotOfProjectWithChangedSimulationText);
          private static readonly string _snapshotOfProjectCreatedWithEarlierVersionText = "Project was created with an older version of PK-Sim (earlier than 7.3.0). The created snapshot file will likely be incomplete. Only use if you know what you are doing!";
-
-         public static readonly string SnapshotOfProjectWithChangedSimulation = DoYouWantToProceed(_snapshotOfProjectWithChangedSimulationText);
-         public static readonly string SnapshotOfProjectCreatedWithEarlierVersion = DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText);
-         public static readonly string SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation = DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText, _snapshotOfProjectWithChangedSimulationText);
 
          public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
 
@@ -2555,14 +2504,9 @@ namespace PKSim.Assets
          public static string FilterAreaDragFieldMessage() => "Drag a field here to remove grouping";
 
          public static readonly string ChartYScale = "Chart Y Scale";
-
-         public static string  SelectSnapshotExportFile(string objectName, string objectType) => $"Export snapshot for {objectType.ToLowerInvariant()} '{objectName}'";
-
-         public static string  LoadObjectFromSnapshot(string objectType) => $"Load {objectType.ToLowerInvariant()} from snapshot";
-
-         public static string LoadFromSnapshot = "Load Snapshot";
+         
          public static string SelectExpressionProfile = "Select an expression profile";
-         public static string RunSimulations = "Run Simulations";
+
 
          public static string NumberOfTemplatesSelectedIs(int number, string templateType) => $"{number} {templateType.PluralizeIf(number).ToLowerInvariant()} selected";
 
@@ -2575,7 +2519,7 @@ namespace PKSim.Assets
             "If you don't make a backup, you will be the only one to blame!"
          };
 
-         public static readonly string ReallyClearUnusedContent = DoYouWantToProceed(_reallyClearUnusedContent);
+         public static readonly string ReallyClearUnusedContent = OSPSuite.Assets.Captions.DoYouWantToProceed(_reallyClearUnusedContent);
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";

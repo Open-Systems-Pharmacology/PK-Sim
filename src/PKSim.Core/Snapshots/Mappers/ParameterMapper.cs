@@ -8,8 +8,10 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using static OSPSuite.Core.Extensions.SnapshotMapperBaseExtensions;
 using static PKSim.Core.CoreConstants.ContainerName;
 using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
 using SnapshotTableFormula = PKSim.Core.Snapshots.TableFormula;
@@ -137,11 +139,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return createFrom<LocalizedParameter>(parameter, x => { x.Path = pathResolverFunc(parameter); });
       }
 
-      public virtual Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters) => orderByPath(SnapshotMapperBaseExtensions.MapTo(parameters, LocalizedParameterFrom));
+      public virtual Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters) => orderByPath(MapTo(parameters, LocalizedParameterFrom));
 
       public virtual Task<LocalizedParameter[]> LocalizedParametersFrom(IEnumerable<IParameter> parameters, Func<IParameter, string> pathResolverFunc)
       {
-         return orderByPath(SnapshotMapperBaseExtensions.MapTo(parameters, x => LocalizedParameterFrom(x, pathResolverFunc)));
+         return orderByPath(MapTo(parameters, x => LocalizedParameterFrom(x, pathResolverFunc)));
       }
 
       private async Task<LocalizedParameter[]> orderByPath(Task<LocalizedParameter[]> localizedParametersTask)

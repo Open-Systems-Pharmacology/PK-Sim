@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots.Mappers;
 using SnapshotParameterRange = PKSim.Core.Snapshots.ParameterRange;
 using ModelParameterRange = PKSim.Core.Model.ParameterRange;
 

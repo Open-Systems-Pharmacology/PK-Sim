@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.DTO.Snapshots;
-using PKSim.Presentation.Views.Snapshots;
 
 namespace PKSim.Presentation.Presenters.Snapshots
 {
