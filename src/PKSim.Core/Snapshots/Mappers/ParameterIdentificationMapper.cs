@@ -7,7 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
-using SnapshotParameterIdentification = PKSim.Core.Snapshots.ParameterIdentification;
+using SnapshotParameterIdentification = OSPSuite.Core.Snapshots.ParameterIdentification;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

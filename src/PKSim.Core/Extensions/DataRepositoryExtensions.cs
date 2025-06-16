@@ -46,16 +46,6 @@ namespace PKSim.Core.Extensions
             });
       }
 
-      public static void AddColumns(this DataRepository repository, IEnumerable<DataColumn> columns)
-      {
-         columns.Each(repository.Add);
-      }
-
-      public static bool ColumnIsInRelatedColumns(this DataRepository repository, DataColumn column)
-      {
-         return repository.SelectMany(x => x.RelatedColumns).Contains(column);
-      }
-
       private static string valueMapper(IEnumerable<IExtendedProperty> properties, IExtendedProperty value)
       {
          return valueMapper(properties, value.ValueAsObject.ToString());

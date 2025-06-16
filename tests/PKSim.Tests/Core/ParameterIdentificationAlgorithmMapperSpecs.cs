@@ -4,8 +4,10 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using SnapshotContext = PKSim.Core.Snapshots.Mappers.SnapshotContext;
 
 namespace PKSim.Core
 {

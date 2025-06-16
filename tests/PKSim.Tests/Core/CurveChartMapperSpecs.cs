@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Chart;
 using PKSim.Core.Snapshots.Mappers;
-using CurveChart = PKSim.Core.Snapshots.CurveChart;
+using CurveChart = OSPSuite.Core.Snapshots.CurveChart;
 
 namespace PKSim.Core
 {
@@ -19,8 +19,8 @@ namespace PKSim.Core
       protected SimulationTimeProfileChart _curveChart;
       protected Axis _axis;
       protected Curve _curve;
-      protected Snapshots.Axis _snapshotAxis;
-      protected Snapshots.Curve _snapshotCurve;
+      protected OSPSuite.Core.Snapshots.Axis _snapshotAxis;
+      protected OSPSuite.Core.Snapshots.Curve _snapshotCurve;
       protected CurveChart _snapshot;
       protected ChartMapper _chartMapper;
       protected IIdGenerator _idGenerator;
@@ -59,10 +59,10 @@ namespace PKSim.Core
 
          _curveChart.AddCurve(_curve);
 
-         _snapshotAxis = new Snapshots.Axis();
+         _snapshotAxis = new OSPSuite.Core.Snapshots.Axis();
          A.CallTo(() => _axisMapper.MapToSnapshot(_axis)).Returns(_snapshotAxis);
 
-         _snapshotCurve = new Snapshots.Curve();
+         _snapshotCurve = new OSPSuite.Core.Snapshots.Curve();
          A.CallTo(() => _curveMapper.MapToSnapshot(_curve)).Returns(_snapshotCurve);
 
          return _completed;

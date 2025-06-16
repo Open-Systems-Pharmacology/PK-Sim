@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Snapshots.Mappers;
 using ModelCurveOptions = OSPSuite.Core.Chart.CurveOptions;
-using SnapshotCurveOptions = PKSim.Core.Snapshots.CurveOptions;
+using SnapshotCurveOptions = OSPSuite.Core.Snapshots.CurveOptions;
 
 namespace PKSim.Core.Snapshots.Mappers;
 

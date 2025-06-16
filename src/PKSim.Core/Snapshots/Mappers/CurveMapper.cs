@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
-using SnapshotCurve = PKSim.Core.Snapshots.Curve;
+using SnapshotCurve = OSPSuite.Core.Snapshots.Curve;
 using ModelCurve = OSPSuite.Core.Chart.Curve;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ModelDataColumn = OSPSuite.Core.Domain.Data.DataColumn;

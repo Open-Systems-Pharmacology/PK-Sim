@@ -1,5 +1,6 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Snapshots;
 
 namespace PKSim.Core

@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using ModelCurveChart = OSPSuite.Core.Chart.CurveChart;
-using SnapshotCurveChart = PKSim.Core.Snapshots.CurveChart;
+using SnapshotCurveChart = OSPSuite.Core.Snapshots.CurveChart;
 
 namespace PKSim.Core.Snapshots.Mappers;
 

@@ -4,6 +4,7 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;

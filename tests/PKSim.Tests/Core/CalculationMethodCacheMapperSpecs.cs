@@ -19,7 +19,7 @@ namespace PKSim.Core
       protected CalculationMethodCache _calculationMethodCache;
       protected CalculationMethod _calculationMethodWithMultipleOptions;
       protected CalculationMethod _calculationMethodWithSingleOption;
-      protected Snapshots.CalculationMethodCache _snapshot;
+      protected OSPSuite.Core.Snapshots.CalculationMethodCache _snapshot;
       protected CalculationMethodCategory _singleCategory;
       protected CalculationMethodCategory _multipleCategory;
       protected CalculationMethod _anotherCalculationMethodInMultipleOptions;

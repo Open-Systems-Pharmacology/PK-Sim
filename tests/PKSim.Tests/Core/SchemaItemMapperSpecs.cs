@@ -37,7 +37,7 @@ namespace PKSim.Core
          _parameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("Param1");
          _schemaItem.Add(_parameter);
 
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new Snapshots.Parameter().WithName(_parameter.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new OSPSuite.Core.Snapshots.Parameter().WithName(_parameter.Name));
 
          return Task.FromResult(true);
       }

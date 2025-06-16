@@ -10,7 +10,7 @@ using PKSim.R.Domain;
 using PKSim.R.Services;
 using static PKSim.Core.Services.CKDDiseaseStateImplementation;
 using IIndividualFactory = PKSim.R.Services.IIndividualFactory;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.R
 {

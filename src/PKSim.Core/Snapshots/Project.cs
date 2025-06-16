@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using Classification = OSPSuite.Core.Snapshots.Classification;
 
 namespace PKSim.Core.Snapshots
 {

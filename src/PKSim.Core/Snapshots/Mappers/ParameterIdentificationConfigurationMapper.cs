@@ -2,7 +2,7 @@
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Snapshots.Mappers;
 using ModelParameterIdentificationConfiguration = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationConfiguration;
-using SnapshotParameterIdentificationConfiguration = PKSim.Core.Snapshots.ParameterIdentificationConfiguration;
+using SnapshotParameterIdentificationConfiguration = OSPSuite.Core.Snapshots.ParameterIdentificationConfiguration;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

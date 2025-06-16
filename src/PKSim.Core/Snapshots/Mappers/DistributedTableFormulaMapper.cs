@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using SnapshotTableFormula = PKSim.Core.Snapshots.DistributedTableFormula;
+using SnapshotTableFormula = OSPSuite.Core.Snapshots.DistributedTableFormula;
 using ModelTableFormula = OSPSuite.Core.Domain.Formulas.DistributedTableFormula;
 
 namespace PKSim.Core.Snapshots.Mappers

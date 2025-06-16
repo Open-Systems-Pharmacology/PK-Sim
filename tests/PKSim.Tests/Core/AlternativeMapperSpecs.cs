@@ -8,9 +8,9 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 using TableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
-using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
+using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core
 {

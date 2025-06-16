@@ -3,7 +3,7 @@ using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core.Snapshots
 {
-   public class ExpressionContainer : Parameter
+   public class ExpressionContainer : OSPSuite.Core.Snapshots.Parameter
    {
       //Old format v9
       public MembraneLocation? MembraneLocation { get; set; }

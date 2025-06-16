@@ -7,7 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using SnapshotCalculationMethodCache = PKSim.Core.Snapshots.CalculationMethodCache;
+using SnapshotCalculationMethodCache = OSPSuite.Core.Snapshots.CalculationMethodCache;
 using ModelCalculationMethodCache = OSPSuite.Core.Domain.CalculationMethodCache;
 
 namespace PKSim.Core.Snapshots.Mappers;

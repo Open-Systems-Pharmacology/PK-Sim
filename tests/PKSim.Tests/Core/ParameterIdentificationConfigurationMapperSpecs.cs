@@ -3,18 +3,18 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using PKSim.Core.Snapshots;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using ParameterIdentificationConfiguration = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationConfiguration;
-using ParameterIdentificationRunMode = PKSim.Core.Snapshots.ParameterIdentificationRunMode;
+using ParameterIdentificationRunMode = OSPSuite.Core.Snapshots.ParameterIdentificationRunMode;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_ParameterIdentificationConfigurationMapper : ContextSpecificationAsync<ParameterIdentificationConfigurationMapper>
    {
       protected ParameterIdentificationConfiguration _parameterIdentificationConfiguration;
-      protected Snapshots.ParameterIdentificationConfiguration _snapshot;
+      protected OSPSuite.Core.Snapshots.ParameterIdentificationConfiguration _snapshot;
       protected OptimizationAlgorithmProperties _algoProperties;
       protected ParameterIdentificationRunModeMapper _parameterIdentificationRunModeMapper;
       protected ParameterIdentificationRunMode _snapshotRunMode;
