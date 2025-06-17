@@ -13,6 +13,7 @@ using PKSim.R.Domain;
 using static OSPSuite.Core.Domain.Constants.Parameters;
 using static PKSim.Core.CoreConstants.Parameters;
 using ICoreIndividualFactory = PKSim.Core.Model.IIndividualFactory;
+using OSPSuite.R.Domain;
 
 namespace PKSim.R.Services
 {
