@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using SnapshotOutputMapping = PKSim.Core.Snapshots.OutputMapping;

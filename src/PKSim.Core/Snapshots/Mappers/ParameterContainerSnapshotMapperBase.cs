@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Model;
+using OSPSuite.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

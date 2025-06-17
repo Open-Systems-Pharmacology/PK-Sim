@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Repositories;
 using SnapshotExplicitFormula = PKSim.Core.Snapshots.ExplicitFormula;

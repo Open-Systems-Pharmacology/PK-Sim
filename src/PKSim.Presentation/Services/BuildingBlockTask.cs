@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
@@ -18,8 +19,6 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Presenters.Snapshots;
-using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
 namespace PKSim.Presentation.Services
 {
@@ -44,7 +43,6 @@ namespace PKSim.Presentation.Services
          ITemplateTaskQuery templateTaskQuery,
          ISingleStartPresenterTask singleStartPresenterTask,
          IBuildingBlockRepository buildingBlockRepository,
-         ILazyLoadTask lazyLoadTask,
          IPresentationSettingsTask presentationSettingsTask,
          ISimulationReferenceUpdater simulationReferenceUpdater)
       {
@@ -137,7 +135,7 @@ namespace PKSim.Presentation.Services
 
       public bool Delete<TBuildingBlock>(TBuildingBlock buildingBlockToDelete) where TBuildingBlock : class, IPKSimBuildingBlock
       {
-         return Delete(new[] {buildingBlockToDelete});
+         return Delete(new[] { buildingBlockToDelete });
       }
 
       public IPKSimCommand DeleteCommand<TBuildingBlock>(TBuildingBlock buildingBlockToDelete) where TBuildingBlock : class, IPKSimBuildingBlock

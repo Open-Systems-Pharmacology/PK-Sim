@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using PKSim.Assets;
@@ -50,7 +52,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_have_debug_logged_the_fact_that_the_qualification_step_was_starting()
       {
-         A.CallTo(() => _logger.AddToLog(PKSimConstants.Information.StartingQualificationStep(_runParameterIdentificationStep.Display), LogLevel.Debug, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _logger.AddToLog(Captions.StartingQualificationStep(_runParameterIdentificationStep.Display), LogLevel.Debug, A<string>._)).MustHaveHappened();
       }
 
       [Observation]

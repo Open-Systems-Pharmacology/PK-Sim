@@ -6,15 +6,12 @@ using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
-using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
-using PKSim.Core.Snapshots.Services;
 using PKSim.Infrastructure.Serialization.Json;
-
 
 namespace PKSim.Infrastructure
 {
-   public abstract class concern_for_SnapshotSerializer : ContextSpecificationAsync<IJsonSerializer>
+   public abstract class concern_for_SnapshotSerializer : ContextSpecificationAsync<JsonSerializer>
    {
       protected Parameter _parameter;
       protected string _fileName;
@@ -40,8 +37,7 @@ namespace PKSim.Infrastructure
       }
    }
 
-  
-   public class When_serializing_a_parameter_with_a_value_set: concern_for_SnapshotSerializer
+   public class When_serializing_a_parameter_with_a_value_set : concern_for_SnapshotSerializer
    {
       [TestCase(null)]
       [TestCase(1.123456789)]
@@ -51,7 +47,7 @@ namespace PKSim.Infrastructure
       [TestCase(449.9999999999991, 450)]
       [TestCase(199.999998E-2)]
       [TestCase(199.999999998E-2, 2d)]
-      public async Task should_serialized_the_number_using_the_expected_precision(double? originalValue, double? expectedValue=null)
+      public async Task should_serialized_the_number_using_the_expected_precision(double? originalValue, double? expectedValue = null)
       {
          _parameter.Value = originalValue;
          await sut.Serialize(_parameter, _fileName);
@@ -68,7 +64,7 @@ namespace PKSim.Infrastructure
 
       protected override async Task Because()
       {
-         await sut.Serialize(new[] {_parameter, _parameter}, _fileName);
+         await sut.Serialize(new[] { _parameter, _parameter }, _fileName);
          _deserializedParameters = (await sut.DeserializeAsArray(_fileName, typeof(Parameter))).Cast<Parameter>();
       }
 
@@ -86,7 +82,6 @@ namespace PKSim.Infrastructure
 
       protected override async Task Context()
       {
-
          await base.Context();
          _curveOptions = new CurveOptions
          {
@@ -114,7 +109,6 @@ namespace PKSim.Infrastructure
 
       protected override async Task Context()
       {
-
          await base.Context();
          _curveOptions = new CurveOptions
          {

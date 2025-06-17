@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using ModelParameterIdentificationRunMode = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationRunMode;
 using SnapshotParameterIdentificationRunMode = PKSim.Core.Snapshots.ParameterIdentificationRunMode;

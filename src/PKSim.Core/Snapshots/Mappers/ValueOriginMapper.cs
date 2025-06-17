@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Repositories;
 using ModelValueOrigin = OSPSuite.Core.Domain.ValueOrigin;
 using SnapshotValueOrigin = PKSim.Core.Snapshots.ValueOrigin;

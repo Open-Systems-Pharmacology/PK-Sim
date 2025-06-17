@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -23,8 +24,9 @@ using ObserverSet = PKSim.Core.Model.ObserverSet;
 using Population = PKSim.Core.Model.Population;
 using Project = PKSim.Core.Snapshots.Project;
 using Protocol = PKSim.Core.Model.Protocol;
-using QualificationPlan = PKSim.Core.Model.QualificationPlan;
+using QualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 using Simulation = PKSim.Core.Snapshots.Simulation;
+using SnapshotContext = PKSim.Core.Snapshots.Mappers.SnapshotContext;
 
 namespace PKSim.Core
 {

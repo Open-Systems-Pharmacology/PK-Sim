@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;

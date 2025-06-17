@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -13,13 +11,13 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters;
-using PKSim.Presentation.Presenters.Snapshots;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 
 namespace PKSim.Infrastructure.Services
@@ -48,7 +46,7 @@ namespace PKSim.Infrastructure.Services
          IOutputMappingMatchingTask outputMappingMatchingTask,
          IConfirmationManager confirmationManager)
          : base(dialogCreator, executionContext, dataRepositoryTask, containerTask,
-         objectTypeResolver, confirmationManager)
+            objectTypeResolver, confirmationManager)
       {
          _projectRetriever = projectRetriever;
          _executionContext = executionContext;

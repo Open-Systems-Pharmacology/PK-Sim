@@ -2,10 +2,10 @@
 using System.Linq;
 using NUnit.Framework;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.IntegrationTests

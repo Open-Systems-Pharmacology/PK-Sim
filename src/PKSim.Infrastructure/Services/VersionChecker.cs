@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using PKSim.Core.Services;
 
 namespace PKSim.Infrastructure.Services

@@ -3,12 +3,12 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Serialization.Json;
 using OSPSuite.Presentation.Presenters;
 using PKSim.BatchTool.DTO;
 using PKSim.BatchTool.Views;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
-using PKSim.Infrastructure.Serialization.Json;
 
 namespace PKSim.BatchTool.Presenters
 {
@@ -58,15 +58,9 @@ namespace PKSim.BatchTool.Presenters
          _snapshotFolderListDTO.CurrentFolder = string.Empty;
       }
 
-      public void RemoveFolder(FolderDTO folderDTO)
-      {
-         _snapshotFolderListDTO.RemoveFolder(folderDTO);
-      }
+      public void RemoveFolder(FolderDTO folderDTO) => _snapshotFolderListDTO.RemoveFolder(folderDTO);
 
-      public void ClearFolderList()
-      {
-         _snapshotFolderListDTO.ClearList();
-      }
+      public void ClearFolderList() => _snapshotFolderListDTO.ClearList();
 
       public void ImportFolderList()
       {
@@ -75,7 +69,7 @@ namespace PKSim.BatchTool.Presenters
             return;
 
          ClearFolderList();
-         var settings = new PKSimJsonSerializerSettings();
+         var settings = new OSPSuiteJsonSerializerSettings();
          var folders = JsonConvert.DeserializeObject<IEnumerable<string>>(File.ReadAllText(file), settings);
          _snapshotFolderListDTO.AddFolders(folders);
       }
@@ -86,7 +80,7 @@ namespace PKSim.BatchTool.Presenters
          if (string.IsNullOrEmpty(file))
             return;
 
-         var settings = new PKSimJsonSerializerSettings();
+         var settings = new OSPSuiteJsonSerializerSettings();
          File.WriteAllText(file, JsonConvert.SerializeObject(_snapshotFolderListDTO.Folders.Select(x => x.Folder), Formatting.Indented, settings));
       }
 

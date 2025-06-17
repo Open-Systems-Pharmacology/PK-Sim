@@ -31,8 +31,6 @@ namespace PKSim.Presentation.Services
       bool SaveCurrentProjectAs();
       void OpenProject();
       void Run(StartOptions startOptions);
-      void LoadProjectFromSnapshot();
-      Task ExportCurrentProjectToSnapshot();
    }
 
    public class ProjectTask : IProjectTask
@@ -59,7 +57,7 @@ namespace PKSim.Presentation.Services
          IJournalTask journalTask,
          IJournalRetriever journalRetriever,
          ISnapshotTask snapshotTask,
-         IBuildingBlockInProjectManager buildingBlockInProjectManager 
+         IBuildingBlockInProjectManager buildingBlockInProjectManager
       )
       {
          _workspace = workspace;
@@ -226,7 +224,6 @@ namespace PKSim.Presentation.Services
       {
          if (!shouldCloseProject()) return;
 
-
          using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
          {
             var project = presenter.LoadProject();
@@ -250,7 +247,7 @@ namespace PKSim.Presentation.Services
          if (exitIf(anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation))
             return Task.CompletedTask;
 
-         if (exitIf(anySimulationInChangedState && !projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectWithChangedSimulation))
+         if (exitIf(anySimulationInChangedState && !projectExportWillCreateNoise, Captions.SnapshotOfProjectWithChangedSimulation))
             return Task.CompletedTask;
 
          if (exitIf(!anySimulationInChangedState && projectExportWillCreateNoise, PKSimConstants.UI.SnapshotOfProjectCreatedWithEarlierVersion))

@@ -2,10 +2,11 @@ using System;
 using System.Linq;
 using System.Text;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots.Mappers;
 using ModelSimulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Core.Services;
@@ -31,7 +32,7 @@ public class SimulationToProjectSnapshotSnapshotMapper(
       simulation.UsedBuildingBlocks.Select(x => pkSimProjectRetriever.Current.BuildingBlockById(x.TemplateId)).Each(x => addBuildingBlockAndDependents(x, project));
       simulation.UsedObservedData.Select(pkSimProjectRetriever.Current.ObservedDataBy).Each(project.AddObservedData);
 
-     
+
       project.AddBuildingBlock(simulation);
 
       return project;

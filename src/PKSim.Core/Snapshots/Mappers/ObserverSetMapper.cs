@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotObserverSet = PKSim.Core.Snapshots.ObserverSet;
