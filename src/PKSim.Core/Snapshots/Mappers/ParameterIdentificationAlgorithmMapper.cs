@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Snapshots.Mappers;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Snapshots.Mappers

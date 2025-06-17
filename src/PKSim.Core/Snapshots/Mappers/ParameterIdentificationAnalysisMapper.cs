@@ -4,7 +4,9 @@ using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
+using CurveChart = OSPSuite.Core.Snapshots.CurveChart;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

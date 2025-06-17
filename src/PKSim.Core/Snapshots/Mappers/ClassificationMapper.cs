@@ -1,58 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots.Mappers;
-using ModelClassification = OSPSuite.Core.Domain.Classification;
-using SnapshotClassification = PKSim.Core.Snapshots.Classification;
+using PKSim.Core.Model;
 
 namespace PKSim.Core.Snapshots.Mappers;
 
-public class ClassificationSnapshotContext(ClassificationType classificationType, SnapshotContext baseContext) : SnapshotContext(baseContext)
+public class ClassificationSnapshotContext : ClassificationSnapshotContext<PKSimProject>
 {
-   public ClassificationType ClassificationType { get; } = classificationType;
+   public ClassificationSnapshotContext(ClassificationType classificationType, SnapshotContext<PKSimProject> baseContext) : base(classificationType, baseContext, ProjectVersions.Current)
+   {
+      
+   }
+   
 }
 
-public class ClassificationMapper : SnapshotMapperBase<ModelClassification, SnapshotClassification, ClassificationSnapshotContext, ClassificationContext>
-{
-   public override Task<ModelClassification> MapToModel(SnapshotClassification snapshot, ClassificationSnapshotContext snapshotContext)
-   {
-      var classification = new ModelClassification
-      {
-         ClassificationType = snapshotContext.ClassificationType,
-         Name = snapshot.Name
-      };
-
-      return Task.FromResult(classification);
-   }
-
-   public override Task<SnapshotClassification> MapToSnapshot(ModelClassification model, ClassificationContext context)
-   {
-      return mapTreeFrom(model, context);
-   }
-
-   private async Task<SnapshotClassification> mapTreeFrom(ModelClassification classification, ClassificationContext context)
-   {
-      var root = await SnapshotFrom(classification, x => { x.Name = classification.Name; });
-
-      var childClassifications = childClassificationsFrom(classification, context.Classifications);
-      var childClassifiables = childClassifiablesFrom(classification, context.Classifiables);
-
-      if (childClassifications.Any())
-         root.Classifications = await Task.WhenAll(childClassifications.Select(x => mapTreeFrom(x, context)));
-
-      if (childClassifiables.Any())
-         root.Classifiables = childClassifiables.ToArray();
-
-      return root;
-   }
-
-   private string[] childClassifiablesFrom(ModelClassification classification, IReadOnlyCollection<IClassifiableWrapper> classifiables) => 
-      childrenFrom(classification, classifiables).AllNames().ToArray();
-
-   private static IReadOnlyList<ModelClassification> childClassificationsFrom(ModelClassification classification, IReadOnlyCollection<ModelClassification> classifications) => 
-      childrenFrom(classification, classifications).ToList();
-
-   private static IEnumerable<T> childrenFrom<T>(ModelClassification classification, IReadOnlyCollection<T> classifications) where T : IClassifiable => 
-      classifications.Where(x => Equals(x.Parent, classification));
-}
+public class ClassificationMapper : ClassificationMapper<PKSimProject>;

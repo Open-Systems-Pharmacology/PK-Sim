@@ -48,10 +48,10 @@ namespace PKSim.Core
          _schema.Add(_parameter2);
          _schema.Add(_parameter3);
 
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new Snapshots.Parameter().WithName(_parameter.Name));
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new Snapshots.Parameter().WithName(_parameter1.Name));
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new Snapshots.Parameter().WithName(_parameter2.Name));
-         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter3)).Returns(new Snapshots.Parameter().WithName(_parameter3.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter)).Returns(new OSPSuite.Core.Snapshots.Parameter().WithName(_parameter.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter1)).Returns(new OSPSuite.Core.Snapshots.Parameter().WithName(_parameter1.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter2)).Returns(new OSPSuite.Core.Snapshots.Parameter().WithName(_parameter2.Name));
+         A.CallTo(() => _parameterMapper.MapToSnapshot(_parameter3)).Returns(new OSPSuite.Core.Snapshots.Parameter().WithName(_parameter3.Name));
 
          A.CallTo(() => _schemaItemMapper.MapToSnapshot(_schemaItem)).Returns(new Snapshots.SchemaItem().WithName(_schemaItem.Name));
 

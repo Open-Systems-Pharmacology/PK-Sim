@@ -12,7 +12,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
@@ -20,7 +20,7 @@ namespace PKSim.Core
    {
       protected ParameterMapper _parameterMapper;
       protected IdentificationParameter _identificationParameter;
-      protected Snapshots.IdentificationParameter _snapshot;
+      protected OSPSuite.Core.Snapshots.IdentificationParameter _snapshot;
       protected Simulation _simulation;
       private IParameter _parameter1;
       private IParameter _parameter2;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Core.Snapshots

@@ -9,6 +9,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using SnapshotDiseaseState = PKSim.Core.Snapshots.DiseaseState;
 using ModelOriginData = PKSim.Core.Model.OriginData;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core.Snapshots.Mappers;
 

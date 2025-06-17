@@ -11,7 +11,7 @@ using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using OSPSuite.Core.Services;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 
 namespace PKSim.Core

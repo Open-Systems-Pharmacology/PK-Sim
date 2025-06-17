@@ -16,13 +16,13 @@ namespace PKSim.Core
    public abstract class concern_for_CurveMapper : ContextSpecificationAsync<CurveMapper>
    {
       protected Curve _curve;
-      protected Snapshots.Curve _snapshot;
+      protected OSPSuite.Core.Snapshots.Curve _snapshot;
       protected IDimensionFactory _dimensionFactory;
       protected DataColumn _xColumn;
       protected DataColumn _yColumn;
       protected DataRepository _dataRepository;
       protected CurveOptionsMapper _curveOptionsMapper;
-      protected Snapshots.CurveOptions _snapshotCurveOptions;
+      protected OSPSuite.Core.Snapshots.CurveOptions _snapshotCurveOptions;
       protected IOSPSuiteLogger _logger;
 
       protected override Task Context()
@@ -47,7 +47,7 @@ namespace PKSim.Core
          _curve.SetxData(_xColumn, _dimensionFactory);
          _curve.SetyData(_yColumn, _dimensionFactory);
 
-         _snapshotCurveOptions = new Snapshots.CurveOptions();
+         _snapshotCurveOptions = new OSPSuite.Core.Snapshots.CurveOptions();
          A.CallTo(() => _curveOptionsMapper.MapToSnapshot(_curve.CurveOptions)).Returns(_snapshotCurveOptions);
          return _completed;
       }

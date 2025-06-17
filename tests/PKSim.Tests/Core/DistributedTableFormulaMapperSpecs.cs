@@ -13,7 +13,7 @@ namespace PKSim.Core
       protected IFormulaFactory _formulaFactory;
       protected TableFormulaMapper _tableFormulaMapper;
       protected DistributedTableFormula _distributedTableFormula;
-      protected Snapshots.DistributedTableFormula _snapshot;
+      protected OSPSuite.Core.Snapshots.DistributedTableFormula _snapshot;
       protected DistributionMetaData _distributionMetaData1;
       protected DistributionMetaData _distributionMetaData2;
 

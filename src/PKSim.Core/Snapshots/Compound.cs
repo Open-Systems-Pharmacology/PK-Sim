@@ -1,6 +1,9 @@
 ﻿using PKSim.Core.Model;
 using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using CalculationMethodCache = OSPSuite.Core.Snapshots.CalculationMethodCache;
+using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core.Snapshots
 {

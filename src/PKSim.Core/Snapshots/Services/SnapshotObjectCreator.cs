@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core.Snapshots.Services
 {

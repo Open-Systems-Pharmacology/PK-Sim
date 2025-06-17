@@ -3,7 +3,7 @@ using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Snapshots
 {
-   public class PopulationAnalysisChart : Chart
+   public class PopulationAnalysisChart : OSPSuite.Core.Snapshots.Chart
    {
       public PopulationAnalysisType Type { get; set; }
       public PopulationAnalysis Analysis { get; set; }

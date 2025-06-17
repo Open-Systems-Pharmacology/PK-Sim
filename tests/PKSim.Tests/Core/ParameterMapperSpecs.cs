@@ -6,11 +6,13 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using SnapshotParameter = PKSim.Core.Snapshots.Parameter;
-using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
+using SnapshotParameter = OSPSuite.Core.Snapshots.Parameter;
+using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
+using SnapshotTableFormula = OSPSuite.Core.Snapshots.TableFormula;
+using TableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
 
 namespace PKSim.Core
 {
@@ -85,14 +87,14 @@ namespace PKSim.Core
    public class When_mapping_a_parameter_having_a_table_formula_as_formula_to_snapshot : concern_for_ParameterMapper
    {
       private SnapshotParameter _snapshotParameter;
-      private TableFormula _snapshotTableFormula;
+      private SnapshotTableFormula _snapshotTableFormula;
 
       protected override async Task Context()
       {
          await base.Context();
-         var tableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
+         var tableFormula = new TableFormula();
          _parameter.Formula = tableFormula;
-         _snapshotTableFormula = new TableFormula();
+         _snapshotTableFormula = new SnapshotTableFormula();
          A.CallTo(() => _tableFormulaMapper.MapToSnapshot(tableFormula)).Returns(_snapshotTableFormula);
       }
 
@@ -156,8 +158,8 @@ namespace PKSim.Core
          _parameter.Value = _parameterValue;
          _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
-         _snapshotParameter.TableFormula = new TableFormula();
-         var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
+         _snapshotParameter.TableFormula = new SnapshotTableFormula();
+         var modelTableFormula = new TableFormula();
          A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula, A<SnapshotContext>._)).Returns(modelTableFormula);
 
          //Ensure that the first value is the parameter value
@@ -175,7 +177,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_set_the_table_formula_into_the_parameter_and_respected_the_fixed_value_flag()
       {
-         _parameter.Formula.ShouldBeAnInstanceOf<OSPSuite.Core.Domain.Formulas.TableFormula>();
+         _parameter.Formula.ShouldBeAnInstanceOf<TableFormula>();
          _parameter.Value.ShouldBeEqualTo(_parameterValue);
          _parameter.IsFixedValue.ShouldBeFalse();
       }
@@ -193,8 +195,8 @@ namespace PKSim.Core
          _parameter.Value = _parameterValue;
          _snapshotParameter = await sut.MapToSnapshot(_parameter);
          _snapshotParameter.Value = _parameter.ValueInDisplayUnit;
-         _snapshotParameter.TableFormula = new TableFormula();
-         var modelTableFormula = new OSPSuite.Core.Domain.Formulas.TableFormula();
+         _snapshotParameter.TableFormula = new SnapshotTableFormula();
+         var modelTableFormula = new TableFormula();
          A.CallTo(() => _tableFormulaMapper.MapToModel(_snapshotParameter.TableFormula, A<SnapshotContext>._)).Returns(modelTableFormula);
 
          //Set a first value that is not the parameter value
@@ -212,7 +214,7 @@ namespace PKSim.Core
       [Observation]
       public void should_have_set_the_table_formula_into_the_parameter_and_respected_the_fixed_value_flag()
       {
-         _parameter.Formula.ShouldBeAnInstanceOf<OSPSuite.Core.Domain.Formulas.TableFormula>();
+         _parameter.Formula.ShouldBeAnInstanceOf<TableFormula>();
          _parameter.Value.ShouldBeEqualTo(_parameterValue);
          _parameter.IsFixedValue.ShouldBeTrue();
       }
@@ -293,7 +295,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext());
+         return sut.MapLocalizedParameters(new[] { _localParameter }, _container, new SnapshotContext());
       }
 
       [Observation]
@@ -326,7 +328,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new SnapshotContext(new PKSimProject(), ProjectVersions.V11));
+         return sut.MapLocalizedParameters(new[] { _localParameter }, _container, new SnapshotContext(new PKSimProject(), ProjectVersions.V11));
       }
 
       [Observation]
@@ -354,7 +356,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapLocalizedParameters(new[] {_localParameter}, _container, new ParameterSnapshotContext(null, new SnapshotContext()));
+         return sut.MapLocalizedParameters(new[] { _localParameter }, _container, new ParameterSnapshotContext(null, new SnapshotContext()));
       }
 
       [Observation]
@@ -385,7 +387,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
+         await sut.MapParameters(new[] { _snapshot, }, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]
@@ -414,7 +416,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapParameters(new[] {_snapshot,}, _container, _container.Name, new SnapshotContext());
+         await sut.MapParameters(new[] { _snapshot, }, _container, _container.Name, new SnapshotContext());
       }
 
       [Observation]

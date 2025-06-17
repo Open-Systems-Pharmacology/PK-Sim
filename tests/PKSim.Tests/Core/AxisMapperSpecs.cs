@@ -14,7 +14,7 @@ namespace PKSim.Core
    public abstract class concern_for_AxisMapper : ContextSpecificationAsync<AxisMapper>
    {
       protected Axis _axis;
-      protected Snapshots.Axis _snapshot;
+      protected OSPSuite.Core.Snapshots.Axis _snapshot;
       protected IDimension _dimension;
       protected IDimensionRepository _dimensionRepository;
 
