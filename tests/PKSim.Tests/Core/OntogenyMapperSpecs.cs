@@ -14,7 +14,7 @@ namespace PKSim.Core
       protected DistributedTableFormulaMapper _distributedTableFormulaMapper;
       protected Ontogeny _ontogeny;
       protected DistributedTableFormula _distributedTableFormula;
-      protected Snapshots.DistributedTableFormula _snapshotTable;
+      protected OSPSuite.Core.Snapshots.DistributedTableFormula _snapshotTable;
       protected ISimulationSubject _simulationSubject;
       private IOntogenyRepository _ontogenyRepository;
 
@@ -26,7 +26,7 @@ namespace PKSim.Core
          sut = new OntogenyMapper(_distributedTableFormulaMapper, _ontogenyRepository);
 
          _distributedTableFormula = new DistributedTableFormula();
-         _snapshotTable = new Snapshots.DistributedTableFormula();
+         _snapshotTable = new OSPSuite.Core.Snapshots.DistributedTableFormula();
          A.CallTo(() => _distributedTableFormulaMapper.MapToSnapshot(_distributedTableFormula)).Returns(_snapshotTable);
 
          _simulationSubject = A.Fake<ISimulationSubject>();

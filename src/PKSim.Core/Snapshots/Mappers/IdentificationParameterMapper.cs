@@ -1,16 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using PKSim.Assets;
 using PKSim.Core.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using static OSPSuite.Core.Domain.Constants;
 using static PKSim.Core.CoreConstants.ContainerName;
 using ModelIdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.IdentificationParameter;
-using SnapshotIdentificationParameter = PKSim.Core.Snapshots.IdentificationParameter;
+using SnapshotIdentificationParameter = OSPSuite.Core.Snapshots.IdentificationParameter;
+
+namespace OSPSuite.Core.Snapshots.Mappers
+{
+   
+}
 
 namespace PKSim.Core.Snapshots.Mappers
 {

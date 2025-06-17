@@ -14,7 +14,7 @@ using DiseaseState = PKSim.Core.Snapshots.DiseaseState;
 using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {

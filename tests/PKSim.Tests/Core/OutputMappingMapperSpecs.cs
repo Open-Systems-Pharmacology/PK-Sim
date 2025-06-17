@@ -4,7 +4,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
@@ -14,7 +13,7 @@ namespace PKSim.Core
    public abstract class concern_for_OutputMappingMapper : ContextSpecificationAsync<OutputMappingMapper>
    {
       protected OutputMapping _outputMapping;
-      protected Snapshots.OutputMapping _snapshot;
+      protected OSPSuite.Core.Snapshots.OutputMapping _snapshot;
       protected Simulation _simulation;
       protected Observer _output;
       protected DataRepository _dataRepository;
@@ -28,10 +27,10 @@ namespace PKSim.Core
          _project = new PKSimProject();
          _simulation = A.Fake<Simulation>().WithName("S");
          _output = new Observer().WithName("OBS");
-         _simulation.Model.Root = new Container {_output};
-         _logger= A.Fake<IOSPSuiteLogger>();
+         _simulation.Model.Root = new Container { _output };
+         _logger = A.Fake<IOSPSuiteLogger>();
          _dataRepository = DomainHelperForSpecs.ObservedData("OBS_DATA");
-         _project.AddObservedData(_dataRepository);   
+         _project.AddObservedData(_dataRepository);
          _outputMapping = new OutputMapping
          {
             Scaling = Scalings.Log,
@@ -130,7 +129,6 @@ namespace PKSim.Core
          _snapshot.ObservedData.ShouldBeNull();
       }
    }
-
 
    public class When_mapping_an_output_mapping_snapshot_to_model_in_a_simulation_context : concern_for_OutputMappingMapper
    {

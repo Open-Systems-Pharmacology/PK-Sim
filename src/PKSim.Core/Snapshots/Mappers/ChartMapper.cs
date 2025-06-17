@@ -14,9 +14,9 @@ public class ChartSnapshotContext : SnapshotContext
    }
 }
 
-public class ChartMapper : ObjectBaseSnapshotMapperBase<IChart, Chart, ChartSnapshotContext, Chart>
+public class ChartMapper : ObjectBaseSnapshotMapperBase<IChart, OSPSuite.Core.Snapshots.Chart, ChartSnapshotContext, OSPSuite.Core.Snapshots.Chart>
 {
-   public override Task<Chart> MapToSnapshot(IChart chart, Chart snapshot)
+   public override Task<OSPSuite.Core.Snapshots.Chart> MapToSnapshot(IChart chart, OSPSuite.Core.Snapshots.Chart snapshot)
    {
       MapModelPropertiesToSnapshot(chart, snapshot);
       snapshot.Settings = chart.ChartSettings;
@@ -28,7 +28,7 @@ public class ChartMapper : ObjectBaseSnapshotMapperBase<IChart, Chart, ChartSnap
       return Task.FromResult(snapshot);
    }
 
-   public override Task<IChart> MapToModel(Chart snapshot, ChartSnapshotContext snapshotContext)
+   public override Task<IChart> MapToModel(OSPSuite.Core.Snapshots.Chart snapshot, ChartSnapshotContext snapshotContext)
    {
       var chart = snapshotContext.Chart;
       MapSnapshotPropertiesToModel(snapshot, chart);

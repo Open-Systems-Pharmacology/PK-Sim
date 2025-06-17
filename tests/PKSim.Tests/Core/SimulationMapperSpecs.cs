@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
@@ -32,7 +33,7 @@ using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAn
 using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
-using SnapshotOutputMapping = PKSim.Core.Snapshots.OutputMapping;
+using SnapshotOutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 
 namespace PKSim.Core

@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Snapshots

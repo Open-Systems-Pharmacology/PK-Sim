@@ -9,7 +9,7 @@ namespace PKSim.Core
    public abstract class concern_for_CurveOptionsMapper : ContextSpecificationAsync<CurveOptionsMapper>
    {
       protected CurveOptions _curveOption;
-      protected Snapshots.CurveOptions _snapshot;
+      protected OSPSuite.Core.Snapshots.CurveOptions _snapshot;
 
       protected override Task Context()
       {

@@ -10,8 +10,8 @@ using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using DiseaseState = PKSim.Core.Snapshots.DiseaseState;
 using OriginData = PKSim.Core.Snapshots.OriginData;
-using Parameter = PKSim.Core.Snapshots.Parameter;
-using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
+using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core
 {

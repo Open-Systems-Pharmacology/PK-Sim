@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
@@ -13,7 +14,7 @@ using IdentificationParameter = OSPSuite.Core.Domain.ParameterIdentifications.Id
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using OutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using Simulation = PKSim.Core.Model.Simulation;
-using SnapshotParameterIdentification = PKSim.Core.Snapshots.ParameterIdentification;
+using SnapshotParameterIdentification = OSPSuite.Core.Snapshots.ParameterIdentification;
 
 namespace PKSim.Core
 {
@@ -27,10 +28,10 @@ namespace PKSim.Core
       protected ParameterIdentificationConfiguration _snapshotParameterIdentificationConfiguration;
       protected OutputMappingMapper _outputMappingMapper;
       protected OutputMapping _outputMapping;
-      protected Snapshots.OutputMapping _snapshotOutputMapping;
+      protected OSPSuite.Core.Snapshots.OutputMapping _snapshotOutputMapping;
       protected IdentificationParameterMapper _identificationParameterMapper;
       protected IdentificationParameter _identificationParameter;
-      protected Snapshots.IdentificationParameter _snapshotIdentificationParameter;
+      protected OSPSuite.Core.Snapshots.IdentificationParameter _snapshotIdentificationParameter;
       protected ParameterIdentificationAnalysisMapper _parameterIdentificationAnalysisMapper;
       protected ISimulationAnalysis _parameterIdentificationAnalysis;
       protected ParameterIdentificationAnalysis _snapshotParameterIdentificationAnalysis;
@@ -54,7 +55,7 @@ namespace PKSim.Core
 
          _parameterIdentification = new ModelParameterIdentification();
          _snapshotParameterIdentificationConfiguration = new ParameterIdentificationConfiguration();
-         _snapshotOutputMapping = new Snapshots.OutputMapping();
+         _snapshotOutputMapping = new OSPSuite.Core.Snapshots.OutputMapping();
          _outputMapping = new OutputMapping();
          _parameterIdentification.AddSimulation(_simulation);
          _parameterIdentification.AddOutputMapping(_outputMapping);
@@ -62,7 +63,7 @@ namespace PKSim.Core
          _identificationParameter = new IdentificationParameter {Name = "IP"};
          _parameterIdentification.AddIdentificationParameter(_identificationParameter);
 
-         _snapshotIdentificationParameter = new Snapshots.IdentificationParameter();
+         _snapshotIdentificationParameter = new OSPSuite.Core.Snapshots.IdentificationParameter();
          _snapshotParameterIdentificationAnalysis = new ParameterIdentificationAnalysis();
          _parameterIdentificationAnalysis = A.Fake<ISimulationAnalysis>();
          _parameterIdentification.AddAnalysis(_parameterIdentificationAnalysis);

@@ -2,7 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using OSPSuite.Core.Domain;
-using PKSim.Core.Model;
+using OSPSuite.Core.Snapshots;
+using OutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
 
 namespace PKSim.Core.Snapshots
 {
@@ -37,7 +38,7 @@ namespace PKSim.Core.Snapshots
 
       public CompoundProcessSelection[] Interactions { get; set; }
 
-      public IReadOnlyList<Chart> Analyses
+      public IReadOnlyList<OSPSuite.Core.Snapshots.Chart> Analyses
       {
          get
          {
@@ -47,7 +48,7 @@ namespace PKSim.Core.Snapshots
             if (PopulationAnalyses != null)
                return PopulationAnalyses;
 
-            return new List<Chart>();
+            return new List<OSPSuite.Core.Snapshots.Chart>();
          }
       }
 

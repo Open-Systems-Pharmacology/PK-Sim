@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility;
-using PKSim.Core.Snapshots;
 using PKSim.Infrastructure.Serialization.Json;
 
 namespace PKSim.Infrastructure

@@ -10,7 +10,7 @@ namespace PKSim.Core
    public abstract class concern_for_ChartMapper : ContextSpecificationAsync<ChartMapper>
    {
       protected IChart _chart;
-      protected Snapshots.Chart _snapshot;
+      protected OSPSuite.Core.Snapshots.Chart _snapshot;
 
       protected override Task Context()
       {
@@ -25,7 +25,7 @@ namespace PKSim.Core
          _chart.Title = "A great title";
          _chart.IncludeOriginData = true;
 
-         _snapshot = new Snapshots.CurveChart();
+         _snapshot = new OSPSuite.Core.Snapshots.CurveChart();
 
          sut = new ChartMapper();
          return _completed;

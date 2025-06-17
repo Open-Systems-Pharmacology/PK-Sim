@@ -3,9 +3,9 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using PKSim.Core.Snapshots;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using ParameterIdentificationRunMode = PKSim.Core.Snapshots.ParameterIdentificationRunMode;
+using ParameterIdentificationRunMode = OSPSuite.Core.Snapshots.ParameterIdentificationRunMode;
 
 namespace PKSim.Core
 {

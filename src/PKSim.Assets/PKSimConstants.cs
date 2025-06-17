@@ -72,10 +72,6 @@ namespace PKSim.Assets
             return sb.ToString();
          }
 
-         public static string UnitNotFoundInDimensionForParameter(string unit, string dimension, string parameterName)
-         {
-            return $"Unit '{unit}' not found for parameter {parameterName} with dimension '{dimension}'";
-         }
 
          public static string CannotUseExpressionProfilesDefinedForAnotherSpecies(string sourceIndividualSpecies, string targetIndividualSpecies)
          {
@@ -827,8 +823,6 @@ namespace PKSim.Assets
 
          public static string CannotExtractIndividualFrom(string objectType) => $"Individual extraction is not available for '{objectType}'.";
 
-         public static string SnapshotParameterNotFoundInContainer(string parameterName, string container) => $"Snapshot parameter '{parameterName}' was not found in '{container}'.";
-
          public static string SnapshotParameterNotFound(string parameterName) => $"Snapshot parameter '{parameterName}' was not found.";
          
          public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported.";
@@ -896,9 +890,6 @@ namespace PKSim.Assets
 
          public static string CouldNotFindMoleculeType(string moleculeType) =>
             $"Could not find the molecule type {moleculeType}";
-
-         public static string SnapshotDuplicateEntryByName(string name, string type) =>
-            $"Another {type} named '{name}' already exists in the project. Snapshot file is corrupted.";
 
       }
 

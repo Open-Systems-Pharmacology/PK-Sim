@@ -1,4 +1,5 @@
 ﻿using OSPSuite.Core.Domain;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core.Snapshots
 {

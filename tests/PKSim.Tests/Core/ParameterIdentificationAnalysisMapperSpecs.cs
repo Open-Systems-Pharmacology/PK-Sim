@@ -5,8 +5,8 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Snapshots;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
@@ -21,7 +21,7 @@ namespace PKSim.Core
       protected ParameterIdentificationAnalysis _snapshot;
       protected CurveChart _chartSnapshot;
       protected DataRepository _localRepository;
-      protected Snapshots.DataRepository _snapshotLocalRepository;
+      protected OSPSuite.Core.Snapshots.DataRepository _snapshotLocalRepository;
       private IIdGenerator _idGenerator;
       protected ParameterIdentificationContext _parameterIdentificationContext;
       private ParameterIdentification _parameterIdentification;
@@ -38,7 +38,7 @@ namespace PKSim.Core
          _parameterIdentificationAnalysis = new T().WithName("Chart");
          _chartSnapshot = new CurveChart();
          _localRepository = DomainHelperForSpecs.ObservedData();
-         _snapshotLocalRepository = new Snapshots.DataRepository();
+         _snapshotLocalRepository = new OSPSuite.Core.Snapshots.DataRepository();
          A.CallTo(() => _dataRepositoryMapper.MapToSnapshot(_localRepository)).Returns(_snapshotLocalRepository);
 
          _parameterIdentification = new ParameterIdentification();

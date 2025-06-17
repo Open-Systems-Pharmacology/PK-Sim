@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {

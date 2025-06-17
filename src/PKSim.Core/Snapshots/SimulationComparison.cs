@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model.PopulationAnalyses;
+﻿using OSPSuite.Core.Snapshots;
+using PKSim.Core.Model.PopulationAnalyses;
 
 namespace PKSim.Core.Snapshots
 {
