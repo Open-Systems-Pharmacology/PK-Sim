@@ -1,22 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Maths;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Maths;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using static PKSim.Core.Services.StatisticalDataCalculator;
 
 namespace PKSim.Core.Services
 {
    public interface IStatisticalDataCalculator
    {
-      IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation);
+      IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation, DeviationModes deviationMode = DeviationModes.Range);
    }
 
    public class StatisticalDataCalculator : IStatisticalDataCalculator
    {
-      public IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation)
+      public enum DeviationModes
+      {
+         Range,
+         Value
+      }
+
+      public IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation, DeviationModes deviationMode = DeviationModes.Range)
       {
          var percentileSelection = statisticalAggregation as PercentileStatisticalAggregation;
          if (percentileSelection != null)
@@ -32,10 +39,16 @@ namespace PKSim.Core.Services
                yield return calculateArithmeticMeanFor(sortedResults);
                break;
             case StatisticalAggregationType.ArithmeticStandardDeviation:
-               var aritMean = calculateArithmeticMeanFor(sortedResults);
-               var aritStd = calculateArithmeticStandardDeviationFor(sortedResults);
-               yield return calculateLowerArithmeticStandardDeviationFor(aritMean, aritStd);
-               yield return calculateUpperArithmeticStandardDeviationFor(aritMean, aritStd);
+               var arithmeticStd = calculateArithmeticStandardDeviationFor(sortedResults);
+
+               if (deviationMode == DeviationModes.Value)
+                  yield return arithmeticStd;
+               else
+               {
+                  var aritMean = calculateArithmeticMeanFor(sortedResults);
+                  yield return calculateLowerArithmeticStandardDeviationFor(aritMean, arithmeticStd);
+                  yield return calculateUpperArithmeticStandardDeviationFor(aritMean, arithmeticStd);
+               }
                break;
             case StatisticalAggregationType.GeometricMean:
                yield return calculateGeometricMeanFor(sortedResults);
@@ -49,10 +62,16 @@ namespace PKSim.Core.Services
                yield return calculatePercentileFor(97.5f, sortedResults);
                break;
             case StatisticalAggregationType.GeometricStandardDeviation:
-               var geoMean = calculateGeometricMeanFor(sortedResults);
+               
                var geoStd = calculateGeometricStandardDeviationFor(sortedResults);
-               yield return calculateLowerGeometricStandardDeviationFor(geoMean, geoStd);
-               yield return calculateUpperGeometricStandardDeviationFor(geoMean, geoStd);
+               if (deviationMode == DeviationModes.Value)
+                  yield return geoStd;
+               else
+               {
+                  var geoMean = calculateGeometricMeanFor(sortedResults);
+                  yield return calculateLowerGeometricStandardDeviationFor(geoMean, geoStd);
+                  yield return calculateUpperGeometricStandardDeviationFor(geoMean, geoStd);
+               }
                break;
             case StatisticalAggregationType.Min:
                yield return calculateMinFor(sortedResults);
