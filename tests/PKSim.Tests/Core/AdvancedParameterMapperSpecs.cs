@@ -11,6 +11,9 @@ using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using AdvancedParameter = PKSim.Core.Model.AdvancedParameter;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Snapshots.Services;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 
@@ -90,7 +93,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_snapshot, new AdvancedParameterSnapshotContext(new PathCacheForSpecs<IParameter>(), new SnapshotContext()));
+         _result = await sut.MapToModel(_snapshot, new AdvancedParameterSnapshotContext(new PathCacheForSpecs<IParameter>(), new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -126,7 +129,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newAdvancedParameter = await sut.MapToModel(_snapshot, new AdvancedParameterSnapshotContext(_pathCache, new SnapshotContext()));
+         _newAdvancedParameter = await sut.MapToModel(_snapshot, new AdvancedParameterSnapshotContext(_pathCache, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -171,7 +174,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(new[] {_snapshot}, _advancedParameterContainer, new SnapshotContext());
+         await sut.MapToModel(new[] {_snapshot}, _advancedParameterContainer, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using SnapshotMoleculeList = PKSim.Core.Snapshots.MoleculeList;
 using ModelMoleculeList = OSPSuite.Core.Domain.Builder.MoleculeList;

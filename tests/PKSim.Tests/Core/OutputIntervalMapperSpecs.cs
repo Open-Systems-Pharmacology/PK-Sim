@@ -3,6 +3,9 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using IOutputIntervalFactory = PKSim.Core.Model.IOutputIntervalFactory;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
@@ -32,9 +35,9 @@ namespace PKSim.Core
          {
             Name = "Interval"
          };
-         _endTimeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:true).WithName(Constants.Parameters.END_TIME);
-         _resolutionParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:true).WithName(Constants.Parameters.RESOLUTION);
-         _anotherParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault:false).WithName("Another");
+         _endTimeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault: true).WithName(Constants.Parameters.END_TIME);
+         _resolutionParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault: true).WithName(Constants.Parameters.RESOLUTION);
+         _anotherParameter = DomainHelperForSpecs.ConstantParameterWithValue(1, isDefault: false).WithName("Another");
          _outputInterval.Add(_endTimeParameter);
          _outputInterval.Add(_anotherParameter);
          _outputInterval.Add(_resolutionParameter);
@@ -86,14 +89,14 @@ namespace PKSim.Core
          await base.Context();
          _snapshot = await sut.MapToSnapshot(_outputInterval);
          _intervalParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("P1");
-         var interval = new OutputInterval {_intervalParameter};
+         var interval = new OutputInterval { _intervalParameter };
 
          A.CallTo(() => _outputIntervalFactory.CreateDefault()).Returns(interval);
       }
 
       protected override async Task Because()
       {
-        _newInteval= await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newInteval = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

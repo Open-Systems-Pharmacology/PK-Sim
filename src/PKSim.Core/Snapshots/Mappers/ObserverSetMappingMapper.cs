@@ -23,7 +23,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override Task<ObserverSetMapping> MapToModel(ObserverSetSelection snapshot, SnapshotContext snapshotContextContext)
       {
-         var observerSet = snapshotContextContext.Project.BuildingBlockByName<Model.ObserverSet>(snapshot.Name);
+         var observerSet = snapshotContextContext.PKSimProject().BuildingBlockByName<Model.ObserverSet>(snapshot.Name);
          if (observerSet == null)
          {
             _logger.AddError(PKSimConstants.Error.CannotFindObserverSetForMapping(snapshot.Name));

@@ -16,6 +16,10 @@ using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using TableFormulaMapper = PKSim.Core.Snapshots.Mappers.TableFormulaMapper;
+using IdentificationParameterMapper = PKSim.Core.Snapshots.Mappers.IdentificationParameterMapper;
+using ParameterIdentificationRunModeMapper = PKSim.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
+using ValueOriginMapper = PKSim.Core.Snapshots.Mappers.ValueOriginMapper;
 
 namespace PKSim.Core
 {
@@ -30,7 +34,7 @@ namespace PKSim.Core
          {
             scan.AssemblyContainingType<CoreRegister>();
 
-            //Exclude type that should be register as singleton because of caching 
+            //Exclude type that should be registered as singleton because of caching 
             scan.ExcludeType<FormulationValuesRetriever>();
             scan.ExcludeType<ObjectTypeResolver>();
             scan.ExcludeType<PKSimDimensionFactory>();
@@ -71,6 +75,10 @@ namespace PKSim.Core
             scan.IncludeNamespaceContainingType<ExpressionProfileMapper>();
             scan.WithConvention<RegisterTypeConvention<ISnapshotMapperSpecification>>();
          });
+         container.Register<OSPSuite.Core.Snapshots.Mappers.TableFormulaMapper, TableFormulaMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.ValueOriginMapper, ValueOriginMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.IdentificationParameterMapper, IdentificationParameterMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper, ParameterIdentificationRunModeMapper>();
 
          container.Register<ICoreSimulationFactory, SimulationFactory>();
          container.Register<ISetParameterTask, ParameterTask>(LifeStyle.Transient);

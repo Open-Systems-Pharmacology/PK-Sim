@@ -5,6 +5,9 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
@@ -174,7 +177,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newValueMappingGrouping = await sut.MapToModel(_snapshot, new SnapshotContext()) as ValueMappingGroupingDefinition;
+         _newValueMappingGrouping = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as ValueMappingGroupingDefinition;
       }
 
       [Observation]
@@ -199,7 +202,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newFixedLimitsGrouping = await sut.MapToModel(_snapshot, new SnapshotContext()) as FixedLimitsGroupingDefinition;
+         _newFixedLimitsGrouping = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as FixedLimitsGroupingDefinition;
       }
 
       [Observation]
@@ -231,7 +234,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newNumberOfBinsGrouping = await sut.MapToModel(_snapshot, new SnapshotContext()) as NumberOfBinsGroupingDefinition;
+         _newNumberOfBinsGrouping = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as NumberOfBinsGroupingDefinition;
       }
 
       [Observation]

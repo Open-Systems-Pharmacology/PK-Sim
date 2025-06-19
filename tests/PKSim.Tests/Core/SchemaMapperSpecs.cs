@@ -3,9 +3,12 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Core
 {
@@ -110,7 +113,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSchema = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newSchema = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

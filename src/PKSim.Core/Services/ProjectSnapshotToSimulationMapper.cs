@@ -9,7 +9,6 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Snapshots.Mappers;
 using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core.Services;
@@ -25,7 +24,7 @@ public class ProjectSnapshotToSimulationMapper(
    public IModelCoreSimulation MapFrom(string snapshotString)
    {
       var snapshot = jsonSerializer.DeserializeFromString(Encoding.UTF8.GetString(Convert.FromBase64String(snapshotString)), typeof(Project)).Result as Project;
-      var project = snapshotMapper.MapToModel(snapshot, new ProjectContext(runSimulations: false)).Result as PKSimProject;
+      var project = snapshotMapper.MapToModel(snapshot, new ProjectContext(new PKSimProject(), runSimulations: false)).Result as PKSimProject;
 
       if (project.All<Simulation>().Count != 1)
          throw new OSPSuiteException(PKSimConstants.Error.AProjectSnapshotShouldOnlyContainOneSimuilationWhenUsedToRebuildAModule);

@@ -89,14 +89,14 @@ public class CompoundPropertiesMapper : SnapshotMapperBase<ModelCompoundProperti
 
    public override async Task<ModelCompoundProperties> MapToModel(SnapshotCompoundProperties snapshot, SnapshotContextWithSimulation snapshotContext)
    {
-      var simulation = snapshotContext.Simulation;
+      var simulation = snapshotContext.Simulation as Model.Simulation;
       var compoundProperties = simulation.CompoundPropertiesFor(snapshot.Name);
       var simulationSubject = simulation.BuildingBlock<ISimulationSubject>();
 
       await _calculationMethodCacheMapper.MapToModel(snapshot.CalculationMethods, new CalculationMethodCacheSnapshotContext(compoundProperties.CalculationMethodCache, snapshotContext));
       updateAlternativeSelections(snapshot.Alternatives, compoundProperties);
       compoundProperties.Processes = await modelProcessSelectionFrom(snapshot.Processes, compoundProperties.Compound, simulationSubject, snapshotContext);
-      compoundProperties.ProtocolProperties = modelProtocolPropertiesFrom(snapshot.Protocol, snapshotContext.Project);
+      compoundProperties.ProtocolProperties = modelProtocolPropertiesFrom(snapshot.Protocol, snapshotContext.PKSimProject());
 
       return compoundProperties;
    }

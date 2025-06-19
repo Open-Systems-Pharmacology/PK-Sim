@@ -4,6 +4,9 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -135,7 +138,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newPivotAnalysis, new SnapshotContext()));
+         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newPivotAnalysis, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -172,7 +175,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newStatisticalAnalysis, new SnapshotContext()));
+         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newStatisticalAnalysis, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -196,7 +199,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newBoxWhiskerAnalysis, new SnapshotContext()));
+         await sut.MapToModel(_snapshot, new PopulationAnalysisSnapshotContext(_newBoxWhiskerAnalysis, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]

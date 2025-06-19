@@ -1,12 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using System.Threading.Tasks;
+using OSPSuite.Core.Domain;
 using ModelSchemaItem = PKSim.Core.Model.SchemaItem;
 using SnapshotSchemaItem = PKSim.Core.Snapshots.SchemaItem;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SchemaItemMapper : ParameterContainerSnapshotMapperBase<ModelSchemaItem, SnapshotSchemaItem>
+   public class SchemaItemMapper : ParameterContainerSnapshotMapperBase<ModelSchemaItem, SnapshotSchemaItem, SnapshotContext>
    {
       private readonly ISchemaItemFactory _schemaItemFactory;
 
@@ -37,5 +39,7 @@ namespace PKSim.Core.Snapshots.Mappers
          schemaItem.TargetCompartment = snapshot.TargetCompartment;
          return schemaItem;
       }
+
+      protected override bool ShouldExportToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
    }
 }

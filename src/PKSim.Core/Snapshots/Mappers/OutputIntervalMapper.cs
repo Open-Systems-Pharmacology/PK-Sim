@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots.Mappers;
+using System.Threading.Tasks;
+using PKSim.Core.Model;
 using IOutputIntervalFactory = PKSim.Core.Model.IOutputIntervalFactory;
-using SnapshotOutputInterval = PKSim.Core.Snapshots.OutputInterval;
 using ModelOutputInterval = OSPSuite.Core.Domain.OutputInterval;
+using SnapshotOutputInterval = PKSim.Core.Snapshots.OutputInterval;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -24,12 +26,11 @@ namespace PKSim.Core.Snapshots.Mappers
          });
       }
 
-      protected override bool ShouldExportParameterToSnapshot(IParameter parameter)
+      protected override bool ShouldExportToSnapshot(IParameter parameter)
       {
          //we want to ensure that start time and end time are always exported
-         return parameter.NameIsOneOf(Constants.Parameters.START_TIME, Constants.Parameters.END_TIME, Constants.Parameters.RESOLUTION) || base.ShouldExportParameterToSnapshot(parameter);
+         return parameter.NameIsOneOf(Constants.Parameters.START_TIME, Constants.Parameters.END_TIME, Constants.Parameters.RESOLUTION) || parameter.ShouldExportToSnapshot();
       }
-
       public override async Task<ModelOutputInterval> MapToModel(SnapshotOutputInterval snapshot, SnapshotContext snapshotContext)
       {
          var outputInterval = _outputIntervalFactory.CreateDefault();

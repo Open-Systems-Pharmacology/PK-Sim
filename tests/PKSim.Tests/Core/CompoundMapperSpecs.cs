@@ -1,18 +1,22 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using System.Linq;
+using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots;
 using CalculationMethodCache = OSPSuite.Core.Snapshots.CalculationMethodCache;
+using CalculationMethodCacheMapper = PKSim.Core.Snapshots.Mappers.CalculationMethodCacheMapper;
 using Compound = PKSim.Core.Snapshots.Compound;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
 using ValueOrigin = OSPSuite.Core.Snapshots.ValueOrigin;
+using ValueOriginMapper = PKSim.Core.Snapshots.Mappers.ValueOriginMapper;
 
 namespace PKSim.Core
 {
@@ -227,7 +231,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCompound = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newCompound = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

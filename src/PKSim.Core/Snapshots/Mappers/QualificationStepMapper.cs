@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
@@ -53,7 +54,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return Task.FromResult<IQualificationStep>(null);
          }
 
-         mapQualificationStepPropertiesToModel(qualificationStep, snapshot, snapshotContext.Project);
+         mapQualificationStepPropertiesToModel(qualificationStep, snapshot, snapshotContext.PKSimProject());
 
          return Task.FromResult(qualificationStep);
       }
@@ -72,12 +73,12 @@ namespace PKSim.Core.Snapshots.Mappers
             case RunSimulationQualificationStep runSimulationQualificationStep:
                var simulation = project.All<Model.Simulation>().FindByName(snapshot.Subject);
                if (simulation == null)
-                  throw new SnapshotOutdatedException(PKSimConstants.Error.CouldNotFindSimulation(snapshot.Subject));
+                  throw new SnapshotOutdatedException(Error.CouldNotFindSimulation(snapshot.Subject));
 
                runSimulationQualificationStep.Simulation = simulation;
                break;
             default:
-               throw new ArgumentException(OSPSuite.Assets.Error.NotMappingDefinedForQualificationStep(qualificationStep.GetType().Name));
+               throw new ArgumentException(Error.NotMappingDefinedForQualificationStep(qualificationStep.GetType().Name));
          }
       }
 

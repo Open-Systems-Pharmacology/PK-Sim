@@ -3,6 +3,8 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -240,7 +242,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), ProjectVersions.V9));
+         _newExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.V9));
       }
 
       [Observation]
@@ -284,7 +286,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newTransporterExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newTransporterExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]
@@ -316,7 +318,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOtherProteinExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newOtherProteinExpressionProfile = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

@@ -3,6 +3,8 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -83,7 +85,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newEventMapping = await sut.MapToModel(_snapshot, new SnapshotContext(_project, 1));
+         _newEventMapping = await sut.MapToModel(_snapshot, new SnapshotContext(_project, SnapshotVersions.Current));
       }
 
       [Observation]
