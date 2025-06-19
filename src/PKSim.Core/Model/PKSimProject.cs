@@ -142,12 +142,12 @@ namespace PKSim.Core.Model
       /// <summary>
       /// Returns all <see cref="DataRepository"/> defined in the project. They are collected from all <see cref="IndividualSimulation"/> having results and all ObservedData defined in the project
       /// </summary>
-      public IEnumerable<DataRepository> AllDataRepositories()
+      public override IReadOnlyCollection<DataRepository> AllDataRepositories()
       {
          return All<IndividualSimulation>()
             .Where(s => s.HasResults)
             .Select(s => s.DataRepository)
-            .Union(AllObservedData);
+            .Union(base.AllDataRepositories()).ToList();
       }
    }
 }

@@ -3,22 +3,25 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using ISolverSettingsFactory = PKSim.Core.Model.ISolverSettingsFactory;
-
+using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
 
 namespace PKSim.Core
 {
    public abstract class concern_for_SolverSettingsMapper : ContextSpecificationAsync<SolverSettingsMapper>
    {
       protected SolverSettings _solverSettings;
-      protected Snapshots.SolverSettings _snapshot;
+      protected OSPSuite.Core.Snapshots.SolverSettings _snapshot;
       protected ISolverSettingsFactory _solverSettingsFactory;
 
       protected override Task Context()
       {
          _solverSettingsFactory = A.Fake<ISolverSettingsFactory>();
-     
+
          _solverSettings = new SolverSettings
          {
             DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(Constants.Parameters.USE_JACOBIAN),
@@ -80,7 +83,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newSolverSettings = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newSolverSettings = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

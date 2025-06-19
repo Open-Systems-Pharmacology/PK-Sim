@@ -460,16 +460,9 @@ namespace PKSim.Assets
 
          public static string PregnantPopulationCanOnlyBeUsedWithMoBiModel(string speciesPopulation) => $"Population based on '{speciesPopulation}' can only be used with pregnancy models imported from MoBi.";
 
-         public static string CouldNotFindOutputInSimulation(string outputFullPath, string simulationName) => $"Cannot find output '{outputFullPath}' in simulation '{simulationName}'";
-
          public static string CouldNotFindParameterIdentification(string parameterIdentificationName) => OSPSuite.Assets.Error.CouldNotFind(OSPSuite.Assets.ObjectTypes.ParameterIdentification, parameterIdentificationName);
 
          public static string TableFormulationRequiresAtLeastOnePoint(string formulation) => $"Table formulation '{formulation}' requires at least one point to be used in a simulation.";
-
-         public static string CouldNotFindSimulation(string simulationName) => OSPSuite.Assets.Error.CouldNotFind(OSPSuite.Assets.ObjectTypes.Simulation, simulationName);
-
-         public static string CannotCreateIdentificationParameter(string parameterPath, string parameterIdentificationName)
-            => $"Cannot create identification parameter '{parameterPath}' for parameter identification '{parameterIdentificationName}'.";
 
          public static string ParameterIsRequired(string parameterName) => OSPSuite.Assets.Error.CouldNotFind(OSPSuite.Assets.ObjectTypes.Parameter, parameterName);
 
@@ -638,8 +631,6 @@ namespace PKSim.Assets
             return $"Calculation method '{calculationMethod}' in category '{category}' is not defined for species '{species}'.";
          }
 
-         public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
-
          public static string SimulationHasNoResultsAndCannotBeUsedInComparison(string simulationName) => $"Simulation '{simulationName}' needs to be run first before being used in a comparison.";
 
          public static string CouldNotCreatePartialProcessFor(string moleculeName, string processType)
@@ -704,8 +695,6 @@ namespace PKSim.Assets
             sb.AppendLine($"Found: {foundQuantities.ToString(",")}");
             return sb.ToString();
          }
-
-         public static string CouldNotFindQuantityWithPath(string quantityPath) => $"Could not find quantity with path '{quantityPath}'.";
 
          public static string NotEnoughPKValuesForParameter(string parameterName, string quantityPath, int expectedValue, int currentValue)
          {
@@ -891,6 +880,7 @@ namespace PKSim.Assets
          public static string CouldNotFindMoleculeType(string moleculeType) =>
             $"Could not find the molecule type {moleculeType}";
 
+         public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
       }
 
       public static class Information
@@ -1674,7 +1664,7 @@ namespace PKSim.Assets
          public static readonly string Fraction = "Fraction";
          public static readonly string TubularSecretion = "Tubular Secretion";
          public static readonly string InVitroAssay = "In-Vitro Assay";
-         public static readonly string GlomerularFiltration = "Glomerular Filtration";
+         public static readonly string GlomerularFiltration = OSPSuite.Assets.Captions.GlomerularFiltration;
          public static readonly string ShowCalculatedValues = "Show Values";
          public static readonly string ShowSolubilityPhChart = "Show Graph";
          public static readonly string CalculatedValue = "Calculated";
@@ -1905,7 +1895,7 @@ namespace PKSim.Assets
          public static readonly string SpecificBindingProcesses = "Specific Binding";
          public static readonly string TransportAndExcretionProcesses = "Transport & Excretion";
          public static readonly string BiliaryClearance = "Biliary Clearance";
-         public static readonly string RenalClearance = "Renal Clearances";
+         public static readonly string RenalClearance = OSPSuite.Assets.Captions.RenalClearance;
          public static readonly string TotalHepaticClearance = "Total Hepatic Clearance";
          public static readonly string MetabolicProcesses = "Metabolism";
          public static readonly string SimulationMetabolism = MetabolicProcesses;

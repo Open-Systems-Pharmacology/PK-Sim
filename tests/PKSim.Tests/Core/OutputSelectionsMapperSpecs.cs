@@ -6,9 +6,12 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
+using Parameter = OSPSuite.Core.Domain.Parameter;
 
 namespace PKSim.Core
 {
@@ -79,7 +82,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOutputSelections = await sut.MapToModel(_snapshot, new SnapshotContextWithSimulation(_simulation, new SnapshotContext()));
+         _newOutputSelections = await sut.MapToModel(_snapshot, new SnapshotContextWithSimulation(_simulation, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -108,7 +111,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot, new SnapshotContextWithSimulation(_simulation, new SnapshotContext()));
+         return sut.MapToModel(_snapshot, new SnapshotContextWithSimulation(_simulation, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]

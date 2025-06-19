@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using SnapshotTableFormula = OSPSuite.Core.Snapshots.DistributedTableFormula;

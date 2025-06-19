@@ -5,6 +5,9 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots;
@@ -246,7 +249,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newParameterField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisParameterField;
+         _newParameterField = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as PopulationAnalysisParameterField;
       }
 
       [Observation]
@@ -271,7 +274,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newPKParameterField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisPKParameterField;
+         _newPKParameterField = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as PopulationAnalysisPKParameterField;
       }
 
       [Observation]
@@ -298,7 +301,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCovariateField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisCovariateField;
+         _newCovariateField = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as PopulationAnalysisCovariateField;
       }
 
       [Observation]
@@ -322,7 +325,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOutputField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisOutputField;
+         _newOutputField = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as PopulationAnalysisOutputField;
       }
 
       [Observation]
@@ -351,7 +354,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newGroupingField = await sut.MapToModel(_snapshot, new SnapshotContext()) as PopulationAnalysisGroupingField;
+         _newGroupingField = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as PopulationAnalysisGroupingField;
       }
 
       [Observation]

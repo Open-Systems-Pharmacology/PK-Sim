@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -68,7 +69,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          individualSnapshot.ExpressionProfiles?.Each(x =>
          {
-            var expressionProfile = snapshotContext.Project.BuildingBlockByName<Model.ExpressionProfile>(x);
+            var expressionProfile = snapshotContext.PKSimProject().BuildingBlockByName<Model.ExpressionProfile>(x);
             _moleculeExpressionTask.AddExpressionProfile(individual, expressionProfile);
          });
 
@@ -82,7 +83,7 @@ namespace PKSim.Core.Snapshots.Mappers
          if (expressionProfilesSnapshot == null)
             return;
 
-         var project = snapshotContext.Project;
+         var project = snapshotContext.PKSimProject();
 
          expressionProfilesSnapshot.Each(x =>
          {

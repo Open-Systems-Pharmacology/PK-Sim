@@ -4,6 +4,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Collections;
 using PKSim.Core;
 using PKSim.Core.Mappers;
@@ -115,7 +117,7 @@ namespace PKSim.R.Services
 
       private OriginData originDataFrom(Core.Snapshots.OriginData originData)
       {
-         return _originDataMapper.MapToModel(originData, new SnapshotContext()).Result;
+         return _originDataMapper.MapToModel(originData, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
       }
 
       private ParameterValueWithUnit parameterValueFrom(IParameter parameter)

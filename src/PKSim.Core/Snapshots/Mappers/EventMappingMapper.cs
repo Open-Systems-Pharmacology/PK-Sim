@@ -28,7 +28,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<EventMapping> MapToModel(EventSelection snapshot, SnapshotContext snapshotContext)
       {
-         var pksimEvent = snapshotContext.Project.BuildingBlockByName<PKSimEvent>(snapshot.Name);
+         var pksimEvent = snapshotContext.PKSimProject().BuildingBlockByName<PKSimEvent>(snapshot.Name);
          var eventMapping = _eventMappingFactory.Create(pksimEvent);
          await _parameterMapper.MapToModel(snapshot.StartTime, new ParameterSnapshotContext(eventMapping.StartTime, snapshotContext));
          return eventMapping;

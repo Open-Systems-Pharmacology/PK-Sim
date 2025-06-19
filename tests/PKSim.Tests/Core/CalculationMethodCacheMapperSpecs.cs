@@ -5,10 +5,13 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
+using CalculationMethodCache = OSPSuite.Core.Domain.CalculationMethodCache;
 
 namespace PKSim.Core
 {
@@ -100,7 +103,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot, new CalculationMethodCacheSnapshotContext(_calculationMethodCache, new SnapshotContext()));
+         return sut.MapToModel(_snapshot, new CalculationMethodCacheSnapshotContext(_calculationMethodCache, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -127,7 +130,7 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         return sut.MapToModel(_snapshot, new CalculationMethodCacheSnapshotContext(_calculationMethodCache, new SnapshotContext()));
+         return sut.MapToModel(_snapshot, new CalculationMethodCacheSnapshotContext(_calculationMethodCache, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]

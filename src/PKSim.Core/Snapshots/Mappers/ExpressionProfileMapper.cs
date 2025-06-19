@@ -2,6 +2,7 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Services;

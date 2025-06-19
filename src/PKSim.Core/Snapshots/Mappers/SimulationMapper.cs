@@ -276,7 +276,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, SimulationContext snapshotContext)
       {
-         var project = snapshotContext.Project;
+         var project = snapshotContext.PKSimProject();
          _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
 
          //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered 
@@ -332,7 +332,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<InteractionSelection> interactionSelectionFrom(CompoundProcessSelection snapshotInteraction, ISimulationSubject simulationSubject, SnapshotContext snapshotContext)
       {
-         var process = findProcess(snapshotContext.Project, snapshotInteraction, simulationSubject);
+         var process = findProcess(snapshotContext.PKSimProject(), snapshotInteraction, simulationSubject);
          if (process == null)
             return null;
 
@@ -403,7 +403,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<ModelSimulation> createModelLessSimulationFrom(SnapshotSimulation snapshot, SnapshotContext snapshotContext)
       {
-         var project = snapshotContext.Project;
+         var project = snapshotContext.PKSimProject();
          var simulationSubject = simulationSubjectFrom(snapshot, project);
          var compounds = compoundsFrom(snapshot.Compounds, project);
          var modelProperties = modelPropertiesFrom(snapshot.Model, simulationSubject);

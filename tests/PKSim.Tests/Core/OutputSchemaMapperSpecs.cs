@@ -4,6 +4,9 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using IOutputSchemaFactory = PKSim.Core.Model.IOutputSchemaFactory;
 
@@ -68,7 +71,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOutputSchema = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newOutputSchema = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

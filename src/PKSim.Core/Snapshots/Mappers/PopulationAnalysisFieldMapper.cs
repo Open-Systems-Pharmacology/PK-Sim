@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Repositories;

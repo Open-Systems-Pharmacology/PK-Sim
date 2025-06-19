@@ -2,6 +2,7 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using SnapshotDescriptorCondition = PKSim.Core.Snapshots.DescriptorCondition;
 

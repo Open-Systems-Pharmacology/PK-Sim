@@ -2,6 +2,8 @@
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -215,7 +217,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_enzymaticProcess, new SnapshotContext())) as EnzymaticProcessSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_enzymaticProcess, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))) as EnzymaticProcessSelection;
       }
 
       [Observation]
@@ -240,7 +242,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_specificBindingProcess, new SnapshotContext())) as ProcessSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_specificBindingProcess, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))) as ProcessSelection;
       }
 
       [Observation]
@@ -264,7 +266,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_transportSystemicProcess, new SnapshotContext())) as SystemicProcessSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_transportSystemicProcess, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))) as SystemicProcessSelection;
       }
 
       [Observation]
@@ -289,7 +291,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_interactionProcess, new SnapshotContext())) as InteractionSelection;
+         _processSelection = await sut.MapToModel(_snapshot, new CompoundProcessSnapshotContext(_interactionProcess, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))) as InteractionSelection;
       }
 
       [Observation]

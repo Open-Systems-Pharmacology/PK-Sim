@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
@@ -564,7 +565,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(run: true, new SnapshotContext(_project, ProjectVersions.Current)));
+         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(run: true, new SnapshotContext(_project, SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -696,7 +697,7 @@ namespace PKSim.Core
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .Returns(_populationSimulationAnalysisChart);
 
-         _snapshotSimulationContext = new SimulationContext(run: false, new SnapshotContext(_project, 10));
+         _snapshotSimulationContext = new SimulationContext(run: false, new SnapshotContext(_project, SnapshotVersions.V10));
       }
 
       protected override async Task Because()

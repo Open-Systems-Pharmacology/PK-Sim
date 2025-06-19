@@ -15,7 +15,6 @@ using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
 using Project = PKSim.Core.Snapshots.Project;
-using SnapshotContext = PKSim.Core.Snapshots.Mappers.SnapshotContext;
 
 namespace PKSim.Core
 {
