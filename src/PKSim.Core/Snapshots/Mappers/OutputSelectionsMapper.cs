@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -44,7 +45,7 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             var quantity = allQuantities[path];
             if (quantity == null)
-               _logger.AddWarning(PKSimConstants.Error.CouldNotFindQuantityWithPath(path));
+               _logger.AddWarning(Error.CouldNotFindQuantityWithPath(path));
             else
                outputSelections.AddOutput(new QuantitySelection(path, quantity.QuantityType));
          });

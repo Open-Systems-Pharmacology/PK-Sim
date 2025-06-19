@@ -7,6 +7,9 @@ using OSPSuite.Core.Domain.Descriptors;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 
 namespace PKSim.Core
 {
@@ -96,12 +99,12 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newInContainer = await sut.MapToModel(_inContainerSnapshot, new SnapshotContext());
-         _newNotInContainer = await sut.MapToModel(_notInContainerSnapshot, new SnapshotContext());
-         _newMatchAllCondition = await sut.MapToModel(_matchAllConditionSnapshot, new SnapshotContext());
-         _newNotMatchAllCondition = await sut.MapToModel(_notMatchAllConditionSnapshot, new SnapshotContext());
-         _newNotMatchCondition = await sut.MapToModel(_notMatchConditionSnapshot, new SnapshotContext());
-         _newInParentCondition = await sut.MapToModel(_inParentConditionSnapshot, new SnapshotContext());
+         _newInContainer = await sut.MapToModel(_inContainerSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
+         _newNotInContainer = await sut.MapToModel(_notInContainerSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
+         _newMatchAllCondition = await sut.MapToModel(_matchAllConditionSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
+         _newNotMatchAllCondition = await sut.MapToModel(_notMatchAllConditionSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
+         _newNotMatchCondition = await sut.MapToModel(_notMatchConditionSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
+         _newInParentCondition = await sut.MapToModel(_inParentConditionSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]
@@ -153,7 +156,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result = await sut.MapToModel(_invalid, new SnapshotContext());
+         _result = await sut.MapToModel(_invalid, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

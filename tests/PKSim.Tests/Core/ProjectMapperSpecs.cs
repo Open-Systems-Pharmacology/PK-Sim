@@ -22,12 +22,12 @@ using ExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 using Formulation = PKSim.Core.Model.Formulation;
 using Individual = PKSim.Core.Model.Individual;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
+using ParameterIdentificationMapper = OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationMapper;
 using Population = PKSim.Core.Model.Population;
 using Project = PKSim.Core.Snapshots.Project;
 using Protocol = PKSim.Core.Model.Protocol;
 using QualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 using Simulation = PKSim.Core.Snapshots.Simulation;
-using SnapshotContext = PKSim.Core.Snapshots.Mappers.SnapshotContext;
 
 namespace PKSim.Core
 {
@@ -347,7 +347,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: true));
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: true));
       }
 
       [Observation]
@@ -466,7 +466,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: false));
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
       }
 
       [Observation]

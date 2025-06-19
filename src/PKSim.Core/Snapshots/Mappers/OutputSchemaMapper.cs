@@ -5,6 +5,7 @@ using PKSim.Core.Model;
 using SnapshotOutputSchema = PKSim.Core.Snapshots.OutputSchema;
 using ModelOutputSchema = OSPSuite.Core.Domain.OutputSchema;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

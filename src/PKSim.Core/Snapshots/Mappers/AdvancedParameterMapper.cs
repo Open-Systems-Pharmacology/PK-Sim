@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
@@ -53,6 +54,8 @@ namespace PKSim.Core.Snapshots.Mappers
       {
          return AddParametersToSnapshot(model.AllParameters, snapshot);
       }
+
+      protected override bool ShouldExportToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
 
       public override async Task<ModelAdvancedParameter> MapToModel(SnapshotAdvancedParameter snapshot, AdvancedParameterSnapshotContext snapshotContext)
       {

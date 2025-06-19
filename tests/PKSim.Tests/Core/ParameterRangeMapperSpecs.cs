@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 
@@ -22,7 +24,7 @@ namespace PKSim.Core
          _parameterRange.MaxValueInDisplayUnit = 180;
          _parameterRange.MinValueInDisplayUnit = 120;
 
-         _parameterRangeContext = new ParameterRangeSnapshotContext(_parameterRange, new SnapshotContext());
+         _parameterRangeContext = new ParameterRangeSnapshotContext(_parameterRange, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
          return Task.FromResult(true);
       }
    }

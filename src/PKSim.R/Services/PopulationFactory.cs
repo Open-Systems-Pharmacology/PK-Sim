@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
@@ -42,7 +44,7 @@ namespace PKSim.R.Services
 
       public CreatePopulationResults CreatePopulation(PopulationCharacteristics populationCharacteristics)
       {
-         var populationSettings = _populationSettingsMapper.MapToModel(populationCharacteristics, new SnapshotContext()).Result;
+         var populationSettings = _populationSettingsMapper.MapToModel(populationCharacteristics, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
          validate(populationSettings);
          var population = _randomPopulationFactory.CreateFor(populationSettings, new CancellationToken(), seed: populationCharacteristics.Seed).Result;
 

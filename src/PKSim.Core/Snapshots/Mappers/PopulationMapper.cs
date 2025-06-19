@@ -7,6 +7,7 @@ using PKSim.Core.Model;
 using SnapshotPopulation = PKSim.Core.Snapshots.Population;
 using ModelPopulation = PKSim.Core.Model.Population;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

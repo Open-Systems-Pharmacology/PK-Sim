@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Snapshots;
-using OSPSuite.Core.Snapshots.Mappers;
-using OSPSuite.Utility.Extensions;
 using ModelParameterIdentificationRunMode = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentificationRunMode;
 using SnapshotParameterIdentificationRunMode = OSPSuite.Core.Snapshots.ParameterIdentificationRunMode;
 
+
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ParameterIdentificationRunModeMapper : SnapshotMapperBase<ModelParameterIdentificationRunMode, SnapshotParameterIdentificationRunMode>
+   public class ParameterIdentificationRunModeMapper : OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper
    {
       private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
 
@@ -18,28 +17,18 @@ namespace PKSim.Core.Snapshots.Mappers
          _calculationMethodCacheMapper = calculationMethodCacheMapper;
       }
 
-      public override async Task<SnapshotParameterIdentificationRunMode> MapToSnapshot(ModelParameterIdentificationRunMode runMode)
-      {
-         if (runMode == null || runMode.IsAnImplementationOf<StandardParameterIdentificationRunMode>())
-            return null;
-
-         var snapshot = await SnapshotFrom(runMode);
-         await mapRunModeParameters(snapshot, runMode);
-         return snapshot;
-      }
-
-      private async Task mapRunModeParameters(SnapshotParameterIdentificationRunMode snapshot, ModelParameterIdentificationRunMode runMode)
+      protected override async Task MapRunModeParameters(SnapshotParameterIdentificationRunMode snapshot, ModelParameterIdentificationRunMode runMode)
       {
          switch (runMode)
          {
-            case MultipleParameterIdentificationRunMode multipleParameterIdentificationRunMode:
-               snapshot.NumberOfRuns = multipleParameterIdentificationRunMode.NumberOfRuns;
-               break;
             case CategorialParameterIdentificationRunMode categorialParameterIdentificationRunMode:
                if (categorialParameterIdentificationRunMode.AllTheSame)
                   snapshot.AllTheSameSelection = await _calculationMethodCacheMapper.MapToSnapshot(categorialParameterIdentificationRunMode.AllTheSameSelection);
                else
                   snapshot.CalculationMethods = await calculationMethodsCacheFor(categorialParameterIdentificationRunMode);
+               break;
+            default:
+               base.MapRunModeParameters(snapshot, runMode);
                break;
          }
       }
@@ -55,19 +44,8 @@ namespace PKSim.Core.Snapshots.Mappers
          return cache;
       }
 
-      public override Task<ModelParameterIdentificationRunMode> MapToModel(SnapshotParameterIdentificationRunMode snapshot, SnapshotContext snapshotContext)
+      protected override ModelParameterIdentificationRunMode RunModeFrom(SnapshotParameterIdentificationRunMode snapshot)
       {
-         return Task.FromResult(mapRunModeFrom(snapshot));
-      }
-
-      private ModelParameterIdentificationRunMode mapRunModeFrom(SnapshotParameterIdentificationRunMode snapshot)
-      {
-         if (snapshot == null)
-            return new StandardParameterIdentificationRunMode();
-
-         if (snapshot.NumberOfRuns.HasValue)
-            return new MultipleParameterIdentificationRunMode {NumberOfRuns = snapshot.NumberOfRuns.Value};
-
          if (snapshot.AllTheSameSelection != null)
             return allTheSameFrom(snapshot);
 
@@ -79,7 +57,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private ModelParameterIdentificationRunMode categorialRunModeFrom(SnapshotParameterIdentificationRunMode snapshot)
       {
-         var runMode = new CategorialParameterIdentificationRunMode {AllTheSame = false};
+         var runMode = new CategorialParameterIdentificationRunMode { AllTheSame = false };
 
          foreach (var kv in snapshot.CalculationMethods)
          {

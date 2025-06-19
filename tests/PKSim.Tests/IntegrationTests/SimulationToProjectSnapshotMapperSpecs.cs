@@ -64,7 +64,7 @@ namespace PKSim.IntegrationTests
       protected override void Because()
       {
          var project = _jsonSerializer.DeserializeFromString<Project>(Encoding.UTF8.GetString(Convert.FromBase64String(sut.MapFrom(_simulation)))).Result;
-         _deserializedProject = _snapshotMapper.MapToModel(project, new ProjectContext(runSimulations: false)).Result as PKSimProject;
+         _deserializedProject = _snapshotMapper.MapToModel(project, new ProjectContext(new PKSimProject(), runSimulations: false)).Result as PKSimProject;
       }
 
       [Observation]

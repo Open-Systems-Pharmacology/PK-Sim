@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
@@ -138,7 +139,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_individual);
          _project = new PKSimProject();
 
-         _snapshotContext = new SnapshotContext(_project, ProjectVersions.V11);
+         _snapshotContext = new SnapshotContext(_project, SnapshotVersions.V11);
 
          _snapshot.Name = "New individual";
          _snapshot.Description = "The description that will be deserialized";

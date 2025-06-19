@@ -2,10 +2,12 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
+using DistributedTableFormula = OSPSuite.Core.Domain.Formulas.DistributedTableFormula;
 
 namespace PKSim.Core
 {
@@ -140,7 +142,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOntogeny = await sut.MapToModel(_snapshot, new SnapshotContextWithSubject(_simulationSubject, new SnapshotContext()));
+         _newOntogeny = await sut.MapToModel(_snapshot, new SnapshotContextWithSubject(_simulationSubject, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]

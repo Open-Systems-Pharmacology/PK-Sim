@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using static PKSim.Core.CoreConstants.Groups;
@@ -12,7 +13,7 @@ using static OSPSuite.Core.Extensions.SnapshotMapperBaseExtensions;
 
 namespace PKSim.Core.Snapshots.Mappers;
 
-public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound, SnapshotCompound>
+public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound, SnapshotCompound, SnapshotContext>
 {
    private readonly AlternativeMapper _alternativeMapper;
    private readonly CalculationMethodCacheMapper _calculationMethodCacheMapper;
@@ -179,6 +180,8 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
       return AddParametersToSnapshot(parameters, snapshot);
    }
 
+   protected override bool ShouldExportToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
+
    private IReadOnlyList<IParameter> parameterOverwrittenByUserIn(ModelCompound compound)
    {
       var parameters = new List<IParameter>();
@@ -195,7 +198,7 @@ public class CompoundMapper : ParameterContainerSnapshotMapperBase<ModelCompound
    private IEnumerable<IParameter> changedGroupParameters(IContainer container, string groupName)
    {
       return container.AllParameters(x => string.Equals(x.GroupName, groupName))
-         .Where(ShouldExportParameterToSnapshot);
+         .Where(ShouldExportToSnapshot);
    }
 
    private async Task<Alternative[]> mapAlternatives(ModelCompound compound, string alternativeGroupName)

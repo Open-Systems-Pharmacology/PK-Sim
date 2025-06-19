@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
@@ -133,7 +135,7 @@ namespace PKSim.Presentation.Services
          _executionContext.Load(simulationComparison);
          //We clone from snapshot as cloning charts is too complicated. This ensures that we are using
          //a fully tested approach to cloning
-         var snapshotContext = new SnapshotContext(_executionContext.CurrentProject, ProjectVersions.Current);
+         var snapshotContext = new SnapshotContext(_executionContext.CurrentProject, SnapshotVersions.Current);
          var snapshot = await _simulationComparisonMapper.MapToSnapshot(simulationComparison);
          var clone = await _simulationComparisonMapper.MapToModel(snapshot, snapshotContext);
          //this will ensure that the names are unique

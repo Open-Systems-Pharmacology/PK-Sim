@@ -9,7 +9,6 @@ using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using SnapshotContext = PKSim.Core.Snapshots.Mappers.SnapshotContext;
 
 namespace PKSim.Core
 {

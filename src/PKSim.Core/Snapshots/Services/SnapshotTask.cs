@@ -2,12 +2,12 @@
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Core.Snapshots.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
-using SnapshotContext = PKSim.Core.Snapshots.Mappers.SnapshotContext;
 
 namespace PKSim.Core.Snapshots.Services;
 
@@ -56,9 +56,9 @@ public class SnapshotTask : SnapshotTask<PKSimProject, Project>, ISnapshotTask
       return await LoadModelFromSnapshot<T>(snapshot);
    }
 
-   protected override Task<PKSimProject> ProjectFrom(Project snapshot, bool runSimulations) => _projectMapper.MapToModel(snapshot, new ProjectContext(runSimulations));
+   protected override Task<PKSimProject> ProjectFrom(Project snapshot, bool runSimulations) => _projectMapper.MapToModel(snapshot, new ProjectContext(new PKSimProject(), runSimulations));
 
-   protected override OSPSuite.Core.Snapshots.Mappers.SnapshotContext GetSnapshotContext() => new SnapshotContext(_projectRetriever.Current, ProjectVersions.Current);
+   protected override SnapshotContext GetSnapshotContext() => new SnapshotContext(_projectRetriever.Current, SnapshotVersions.Current);
 
    protected override PKSimProject GetProject() => _projectRetriever.Current;
 }

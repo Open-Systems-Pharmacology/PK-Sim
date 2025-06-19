@@ -4,8 +4,11 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
 using ParameterIdentificationRunMode = OSPSuite.Core.Snapshots.ParameterIdentificationRunMode;
+using ParameterIdentificationRunModeMapper = PKSim.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
 
 namespace PKSim.Core
 {
@@ -59,7 +62,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newStandardRunMode = await sut.MapToModel(_snapshot, new SnapshotContext()) as StandardParameterIdentificationRunMode;
+         _newStandardRunMode = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as StandardParameterIdentificationRunMode;
       }
 
       [Observation]
@@ -112,7 +115,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newMultipleRun = await sut.MapToModel(_snapshot, new SnapshotContext()) as MultipleParameterIdentificationRunMode;
+         _newMultipleRun = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as MultipleParameterIdentificationRunMode;
       }
 
       [Observation]
@@ -172,7 +175,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot, new SnapshotContext()) as CategorialParameterIdentificationRunMode;
+         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as CategorialParameterIdentificationRunMode;
       }
 
       [Observation]
@@ -239,7 +242,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot, new SnapshotContext()) as CategorialParameterIdentificationRunMode;
+         _newCategorialParameterIdentificationRunMode = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as CategorialParameterIdentificationRunMode;
       }
 
       [Observation]
