@@ -12,18 +12,24 @@ namespace PKSim.Core.Services
 {
    public interface IStatisticalDataCalculator
    {
-      IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation, DeviationModes deviationMode = DeviationModes.Range);
+      IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation, DeviationModes deviationMode);
    }
 
    public class StatisticalDataCalculator : IStatisticalDataCalculator
    {
       public enum DeviationModes
       {
+         /// <summary>
+         /// The deviation will be represented by two values as a range around the mean
+         /// </summary>
          Range,
+         /// <summary>
+         /// The deviation will be represented by a single value
+         /// </summary>
          Value
       }
 
-      public IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation, DeviationModes deviationMode = DeviationModes.Range)
+      public IEnumerable<float[]> StatisticalDataFor(FloatMatrix sortedResults, StatisticalAggregation statisticalAggregation, DeviationModes deviationMode)
       {
          var percentileSelection = statisticalAggregation as PercentileStatisticalAggregation;
          if (percentileSelection != null)

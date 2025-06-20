@@ -31,7 +31,7 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _results = sut.StatisticalDataFor(_floatMatrix, _selection).ToList();
+         _results = sut.StatisticalDataFor(_floatMatrix, _selection, StatisticalDataCalculator.DeviationModes.Range).ToList();
       }
    }
 
