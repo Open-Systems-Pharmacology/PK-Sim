@@ -242,7 +242,7 @@ namespace PKSim.Core.Services
 
       private IReadOnlyList<TimeProfileYValue> getResultsFor(StatisticalAggregation statisticalAggregation, FloatMatrix quantityResults)
       {
-         var curveValues = _statisticalDataCalculator.StatisticalDataFor(quantityResults, statisticalAggregation).ToList();
+         var curveValues = _statisticalDataCalculator.StatisticalDataFor(quantityResults, statisticalAggregation, StatisticalDataCalculator.DeviationModes.Range).ToList();
          //line curve
          if (curveValues.Count == 1)
             return timeProfilePointValues(curveValues[0]);
