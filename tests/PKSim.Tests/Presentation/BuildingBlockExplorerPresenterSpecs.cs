@@ -22,8 +22,8 @@ using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
+using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
-
 
 namespace PKSim.Presentation
 {
@@ -54,6 +54,7 @@ namespace PKSim.Presentation
       protected IClassificationPresenter _classificationPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       private IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
+      protected ILazyLoadTask _lazyLoadTask;
 
       protected override void Context()
       {
@@ -65,7 +66,7 @@ namespace PKSim.Presentation
          _project = new PKSimProject();
          var compound = new Compound().WithName("compound");
          _individual = new Individual().WithName("individual");
-         _individual.OriginData = new OriginData {Species = new Species()};
+         _individual.OriginData = new OriginData { Species = new Species() };
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(compound);
          _observedDataInExplorerPresenter = A.Fake<IObservedDataInExplorerPresenter>();
@@ -77,8 +78,9 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _classificationPresenter = A.Fake<IClassificationPresenter>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          sut = new BuildingBlockExplorerPresenter(_view, _treeNodeFactory, _contextMenuFactory, _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever, _regionResolver,
-            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter);
+            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter, _lazyLoadTask);
 
          _compoundFolderNode = new RootNode(PKSimRootNodeTypes.CompoundFolder);
          _individualFolderNode = new RootNode(PKSimRootNodeTypes.IndividualFolder);
@@ -87,7 +89,7 @@ namespace PKSim.Presentation
          _observersFolderNode = new RootNode(PKSimRootNodeTypes.ObserverSetFolder);
          _populationFolderNode = new RootNode(PKSimRootNodeTypes.PopulationFolder);
          _eventRootNode = new RootNode(PKSimRootNodeTypes.EventFolder);
-         _simulationNode = new SimulationNode(new ClassifiableSimulation {Subject = new IndividualSimulation {Id = "1"}});
+         _simulationNode = new SimulationNode(new ClassifiableSimulation { Subject = new IndividualSimulation { Id = "1" } });
          _compoundNode = new ObjectWithIdAndNameNode<Compound>(compound);
          _individualNode = new ObjectWithIdAndNameNode<Individual>(_individual);
          _observationRootNode = new RootNode(RootNodeTypes.ObservedDataFolder);
@@ -112,6 +114,20 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.EventFolder.Id)).Returns(_eventRootNode);
 
          A.CallTo(() => _view.AddNode(A<ITreeNode>._)).ReturnsLazily(s => s.Arguments[0].DowncastTo<ITreeNode>());
+      }
+   }
+
+   public class When_the_building_block_explorer_presenter_is_notified_of_the_project_loaded_event : concern_for_BuildingBlockExplorerPresenter
+   {
+      protected override void Because()
+      {
+         sut.Handle(new ProjectLoadedEvent(_project));
+      }
+
+      [Observation]
+      public void should_execute_the_lazy_load_for_individual()
+      {
+         A.CallTo(() => _lazyLoadTask.Load(A<Individual>.Ignored)).MustHaveHappened();
       }
    }
 
@@ -281,13 +297,13 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_true_if_all_nodes_have_the_same_type()
       {
-         sut.AllowMultiSelectFor(new[] {A.Fake<ClassificationNode>(), A.Fake<ClassificationNode>()}).ShouldBeTrue();
+         sut.AllowMultiSelectFor(new[] { A.Fake<ClassificationNode>(), A.Fake<ClassificationNode>() }).ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_otherwise()
       {
-         sut.AllowMultiSelectFor(new ITreeNode[] {A.Fake<ClassificationNode>(), A.Fake<ObservedDataNode>()}).ShouldBeFalse();
+         sut.AllowMultiSelectFor(new ITreeNode[] { A.Fake<ClassificationNode>(), A.Fake<ObservedDataNode>() }).ShouldBeFalse();
       }
    }
 }

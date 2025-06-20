@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -21,7 +20,6 @@ using PKSim.Presentation.Presenters.Snapshots;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.UICommands;
 using IProjectTask = PKSim.Presentation.Services.IProjectTask;
-
 
 namespace PKSim.Presentation
 {
@@ -92,7 +90,7 @@ namespace PKSim.Presentation
          FileHelper.FileExists = x => string.Equals(x, _simFile);
          A.CallTo(() => _executionContext.Resolve<NewImportPopulationSimulationCommand>()).Returns(_importPopulationSimlationCommand);
          _startOptions = new StartOptions();
-         _startOptions.InitializeFrom(new[] {"/pop", _simFile});
+         _startOptions.InitializeFrom(new[] { "/pop", _simFile });
       }
 
       protected override Task Because()
