@@ -1,6 +1,4 @@
-using System;
 using System.Linq;
-using System.Text;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -23,7 +21,7 @@ public class SimulationToProjectSnapshotMapper(
    {
       var pkSimProject = createProjectFrom(simulation);
       var projectSnapshot = snapshotMapper.MapToSnapshot(pkSimProject).Result as Project;
-      return Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonSerializer.Serialize(projectSnapshot)));
+      return jsonSerializer.SerializeToBase64String(projectSnapshot);
    }
 
    private PKSimProject createProjectFrom(ModelSimulation simulation)

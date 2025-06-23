@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -11,7 +12,7 @@ using PKSim.Infrastructure;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_ProjectSnapshotToSimulationMapper : ContextForSimulationIntegration<IProjectSnapshotToSimulationMapper, IndividualSimulation>
+   public abstract class concern_for_ProjectSnapshotToSimulationMapper : ContextForSimulationIntegration<ProjectSnapshotToSimulationTransferMapper, IndividualSimulation>
    {
       protected string _snapshotString;
       protected Compound _compound;
@@ -20,7 +21,7 @@ namespace PKSim.IntegrationTests
       protected ICoreWorkspace _workspace;
       protected DataRepository _observedData;
       protected ISimulationToProjectSnapshotMapper _simulationMapper;
-      protected IModelCoreSimulation _modelCoreSimulation;
+      protected SimulationTransfer _simulationTransfer;
 
       public override void GlobalContext()
       {
@@ -51,19 +52,19 @@ namespace PKSim.IntegrationTests
    {
       protected override void Because()
       {
-         _modelCoreSimulation = sut.MapFrom(_snapshotString);
+         _simulationTransfer = sut.MapFrom(_snapshotString);
       }
 
       [Observation]
       public void the_model_core_simulation_has_a_module_configuration()
       {
-         _modelCoreSimulation.Configuration.ModuleConfigurations.Count.ShouldBeEqualTo(1);
+         _simulationTransfer.Simulation.Configuration.ModuleConfigurations.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
       public void the_model_core_simulation_module_configuration_has_a_snapshot()
       {
-         _modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot.ShouldNotBeNull();
+         _simulationTransfer.Simulation.Configuration.ModuleConfigurations.First().Module.Snapshot.ShouldNotBeNull();
       }
    }
 }
