@@ -1,3 +1,4 @@
+using System.Linq;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
@@ -57,6 +58,12 @@ namespace PKSim.IntegrationTests
       public void the_model_core_simulation_has_a_module_configuration()
       {
          _modelCoreSimulation.Configuration.ModuleConfigurations.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_model_core_simulation_module_configuration_has_a_snapshot()
+      {
+         _modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot.ShouldNotBeNull();
       }
    }
 }

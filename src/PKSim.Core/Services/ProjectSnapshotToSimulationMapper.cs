@@ -19,7 +19,8 @@ public class ProjectSnapshotToSimulationMapper(
    IJsonSerializer jsonSerializer,
    ISnapshotMapper snapshotMapper,
    ISimulationConfigurationTask simulationConfigurationTask,
-   ISimulationToModelCoreSimulationMapper simulationMapper) : IProjectSnapshotToSimulationMapper
+   ISimulationToModelCoreSimulationMapper simulationMapper,
+   IModuleSnapshotSerializer moduleSnapshotSerializer) : IProjectSnapshotToSimulationMapper
 {
    public IModelCoreSimulation MapFrom(string snapshotString)
    {
@@ -31,6 +32,10 @@ public class ProjectSnapshotToSimulationMapper(
       var simulation = project.All<Simulation>().First();
 
       var configuration = simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
-      return simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
+      var modelCoreSimulation = simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
+
+      // The module should contain the snapshot from which it was created
+      modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = moduleSnapshotSerializer.Serialize(snapshot);
+      return modelCoreSimulation;
    }
 }

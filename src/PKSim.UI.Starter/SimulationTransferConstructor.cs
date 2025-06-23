@@ -11,7 +11,7 @@ namespace PKSim.UI.Starter
          var projectSnapshotToSimulationMapper = container.Resolve<IProjectSnapshotToSimulationMapper>();
          var moBiExportTask = container.Resolve<IMoBiExportTask>();
          var modelCoreSimulation = projectSnapshotToSimulationMapper.MapFrom(projectSnapshot);
-         var transfer =  new SimulationTransfer
+         var transfer = new SimulationTransfer
          {
             Simulation = modelCoreSimulation,
          };

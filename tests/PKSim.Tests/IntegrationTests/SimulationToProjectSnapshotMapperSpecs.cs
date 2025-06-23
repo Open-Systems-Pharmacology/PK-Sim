@@ -9,7 +9,6 @@ using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Mappers;
 using PKSim.Infrastructure;
 using Compound = PKSim.Core.Model.Compound;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
