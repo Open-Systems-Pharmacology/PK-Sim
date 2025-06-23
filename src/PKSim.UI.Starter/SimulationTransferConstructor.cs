@@ -1,5 +1,4 @@
-﻿using OSPSuite.Core.Serialization.Exchange;
-using PKSim.Core.Services;
+﻿using PKSim.Core.Services;
 
 namespace PKSim.UI.Starter
 {
@@ -8,15 +7,11 @@ namespace PKSim.UI.Starter
       public static object CreateSimulationTransfer(string projectSnapshot)
       {
          var container = ApplicationStartup.Initialize();
-         var projectSnapshotToSimulationMapper = container.Resolve<IProjectSnapshotToSimulationMapper>();
+         var projectSnapshotToSimulationTransferMapper = container.Resolve<IProjectSnapshotToSimulationTransferMapper>();
          var moBiExportTask = container.Resolve<IMoBiExportTask>();
-         var modelCoreSimulation = projectSnapshotToSimulationMapper.MapFrom(projectSnapshot);
-         var transfer =  new SimulationTransfer
-         {
-            Simulation = modelCoreSimulation,
-         };
 
-         return moBiExportTask.Serialize(transfer);
+         var simulationTransfer = projectSnapshotToSimulationTransferMapper.MapFrom(projectSnapshot);
+         return moBiExportTask.Serialize(simulationTransfer);
       }
    }
 }

@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
-using System.Text;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility;
@@ -13,17 +11,17 @@ using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core.Services;
 
-public interface IProjectSnapshotToSimulationMapper : IMapper<string, IModelCoreSimulation>;
+public interface IProjectSnapshotToSimulationTransferMapper : IMapper<string, SimulationTransfer>;
 
-public class ProjectSnapshotToSimulationMapper(
+public class ProjectSnapshotToSimulationTransferMapper(
    IJsonSerializer jsonSerializer,
    ISnapshotMapper snapshotMapper,
    ISimulationConfigurationTask simulationConfigurationTask,
-   ISimulationToModelCoreSimulationMapper simulationMapper) : IProjectSnapshotToSimulationMapper
+   ISimulationToModelCoreSimulationMapper simulationMapper) : IProjectSnapshotToSimulationTransferMapper
 {
-   public IModelCoreSimulation MapFrom(string snapshotString)
+   public SimulationTransfer MapFrom(string snapshotString)
    {
-      var snapshot = jsonSerializer.DeserializeFromString(Encoding.UTF8.GetString(Convert.FromBase64String(snapshotString)), typeof(Project)).Result as Project;
+      var snapshot = jsonSerializer.DeserializeFromBase64String<Project>(snapshotString).Result;
       var project = snapshotMapper.MapToModel(snapshot, new ProjectContext(new PKSimProject(), runSimulations: false)).Result as PKSimProject;
 
       if (project.All<Simulation>().Count != 1)
@@ -31,6 +29,15 @@ public class ProjectSnapshotToSimulationMapper(
       var simulation = project.All<Simulation>().First();
 
       var configuration = simulationConfigurationTask.CreateFor(simulation, shouldValidate: true, createAgingDataInSimulation: false);
-      return simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
+      var modelCoreSimulation = simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
+
+      // The module should contain the snapshot from which it was created
+      modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = snapshotString;
+
+      return new SimulationTransfer
+      {
+         Simulation = modelCoreSimulation,
+         AllObservedData = project.AllObservedData.ToList()
+      };
    }
 }
