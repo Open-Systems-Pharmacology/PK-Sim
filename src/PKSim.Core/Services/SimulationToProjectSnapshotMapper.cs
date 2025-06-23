@@ -14,7 +14,7 @@ namespace PKSim.Core.Services;
 
 public interface ISimulationToProjectSnapshotMapper : IMapper<ModelSimulation, string>;
 
-public class SimulationToProjectSnapshotSnapshotMapper(
+public class SimulationToProjectSnapshotMapper(
    ISnapshotMapper snapshotMapper,
    IPKSimProjectRetriever pkSimProjectRetriever,
    IJsonSerializer jsonSerializer) : ISimulationToProjectSnapshotMapper
