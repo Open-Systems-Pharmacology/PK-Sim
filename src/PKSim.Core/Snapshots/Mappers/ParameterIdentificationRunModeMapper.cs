@@ -28,7 +28,7 @@ namespace PKSim.Core.Snapshots.Mappers
                   snapshot.CalculationMethods = await calculationMethodsCacheFor(categorialParameterIdentificationRunMode);
                break;
             default:
-               base.MapRunModeParameters(snapshot, runMode);
+               await base.MapRunModeParameters(snapshot, runMode);
                break;
          }
       }

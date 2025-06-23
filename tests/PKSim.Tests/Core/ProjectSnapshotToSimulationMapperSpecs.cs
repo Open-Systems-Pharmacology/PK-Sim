@@ -27,7 +27,7 @@ namespace PKSim.Core
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _jsonSerializer = A.Fake<IJsonSerializer>();
 
-         sut = new ProjectSnapshotToSimulationMapper(_jsonSerializer, _snapshotMapper, _simulationConfigurationTask, _simulationMapper, new ModuleSnapshotSerializer(_jsonSerializer));
+         sut = new ProjectSnapshotToSimulationMapper(_jsonSerializer, _snapshotMapper, _simulationConfigurationTask, _simulationMapper);
       }
    }
 

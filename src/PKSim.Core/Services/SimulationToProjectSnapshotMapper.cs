@@ -1,5 +1,8 @@
+using System;
 using System.Linq;
+using System.Text;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -14,13 +17,13 @@ public interface ISimulationToProjectSnapshotMapper : IMapper<ModelSimulation, s
 public class SimulationToProjectSnapshotSnapshotMapper(
    ISnapshotMapper snapshotMapper,
    IPKSimProjectRetriever pkSimProjectRetriever,
-   IModuleSnapshotSerializer moduleSnapshotSerializer) : ISimulationToProjectSnapshotMapper
+   IJsonSerializer jsonSerializer) : ISimulationToProjectSnapshotMapper
 {
    public string MapFrom(ModelSimulation simulation)
    {
       var pkSimProject = createProjectFrom(simulation);
       var projectSnapshot = snapshotMapper.MapToSnapshot(pkSimProject).Result as Project;
-      return moduleSnapshotSerializer.Serialize(projectSnapshot);
+      return Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonSerializer.Serialize(projectSnapshot)));
    }
 
    private PKSimProject createProjectFrom(ModelSimulation simulation)

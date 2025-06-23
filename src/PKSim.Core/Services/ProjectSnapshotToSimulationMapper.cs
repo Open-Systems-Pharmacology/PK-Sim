@@ -19,8 +19,7 @@ public class ProjectSnapshotToSimulationMapper(
    IJsonSerializer jsonSerializer,
    ISnapshotMapper snapshotMapper,
    ISimulationConfigurationTask simulationConfigurationTask,
-   ISimulationToModelCoreSimulationMapper simulationMapper,
-   IModuleSnapshotSerializer moduleSnapshotSerializer) : IProjectSnapshotToSimulationMapper
+   ISimulationToModelCoreSimulationMapper simulationMapper) : IProjectSnapshotToSimulationMapper
 {
    public IModelCoreSimulation MapFrom(string snapshotString)
    {
@@ -35,7 +34,7 @@ public class ProjectSnapshotToSimulationMapper(
       var modelCoreSimulation = simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
 
       // The module should contain the snapshot from which it was created
-      modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = moduleSnapshotSerializer.Serialize(snapshot);
+      modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = snapshotString;
       return modelCoreSimulation;
    }
 }
