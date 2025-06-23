@@ -12,7 +12,7 @@ using PKSim.Infrastructure;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_ProjectSnapshotToSimulationMapper : ContextForSimulationIntegration<ProjectSnapshotToSimulationTransferMapper, IndividualSimulation>
+   public abstract class concern_for_ProjectSnapshotToSimulationMapper : ContextForSimulationIntegration<IProjectSnapshotToSimulationTransferMapper, IndividualSimulation>
    {
       protected string _snapshotString;
       protected Compound _compound;
