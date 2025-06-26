@@ -24,40 +24,26 @@ using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
-using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation.Presenters.Main
 {
    public interface IBuildingBlockExplorerPresenter : IExplorerPresenter,
       IListener<SwapBuildingBlockEvent>,
-      IListener<RenamedEvent>,
-      IListener<ProjectLoadedEvent>
+      IListener<RenamedEvent>
    {
    }
 
    public class BuildingBlockExplorerPresenter : ExplorerPresenter<IBuildingBlockExplorerView, IBuildingBlockExplorerPresenter>, IBuildingBlockExplorerPresenter
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
-      private readonly ILazyLoadTask _lazyLoadTask;
 
-      public BuildingBlockExplorerPresenter(IBuildingBlockExplorerView view, 
-         ITreeNodeFactory treeNodeFactory, 
-         ITreeNodeContextMenuFactory treeNodeContextMenuFactory, 
-         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, 
-         IBuildingBlockIconRetriever buildingBlockIconRetriever,
-         IRegionResolver regionResolver, 
-         IBuildingBlockTask buildingBlockTask, 
-         IToolTipPartCreator toolTipPartCreator, 
-         IProjectRetriever projectRetriever, 
-         IClassificationPresenter classificationPresenter, 
-         IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
-         ILazyLoadTask lazyLoadTask)
+      public BuildingBlockExplorerPresenter(IBuildingBlockExplorerView view, ITreeNodeFactory treeNodeFactory, ITreeNodeContextMenuFactory treeNodeContextMenuFactory, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IBuildingBlockIconRetriever buildingBlockIconRetriever,
+         IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, IToolTipPartCreator toolTipPartCreator, IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IObservedDataInExplorerPresenter observedDataInExplorerPresenter)
          : base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.BuildingBlockExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _observedDataInExplorerPresenter = observedDataInExplorerPresenter;
          _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ObservedDataFolder);
-         _lazyLoadTask = lazyLoadTask;
       }
 
       protected override ITreeNode AddBuildingBlockToTree(IPKSimBuildingBlock buildingBlock)
@@ -194,13 +180,6 @@ namespace PKSim.Presentation.Presenters.Main
             return;
 
          RefreshTreeAfterRename();
-      }
-
-      public void Handle(ProjectLoadedEvent eventToHandle)
-      {
-         //This should be here since there are too many ways to open a simulation
-         //and this should be done before any simulation is loaded.
-         eventToHandle.Project.All<Individual>().Each(_lazyLoadTask.Load);
       }
    }
 }

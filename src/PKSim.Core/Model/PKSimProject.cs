@@ -19,6 +19,8 @@ namespace PKSim.Core.Model
       /// </summary>
       public OutputSelections OutputSelections { get; set; }
 
+      public int MetaDataVersion { get; set; }
+
       private bool _hasChanged;
 
       public override bool HasChanged

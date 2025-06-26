@@ -79,6 +79,8 @@ namespace PKSim.Infrastructure.Serialization.ORM.Mappers
             if (projectMetaData.Version == ProjectVersions.Current)
                _project.HasChanged = false;
 
+            _project.MetaDataVersion = projectMetaData.Version;
+
             return _project;
          }
          finally
