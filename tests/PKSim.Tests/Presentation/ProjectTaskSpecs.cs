@@ -272,7 +272,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -626,7 +626,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
