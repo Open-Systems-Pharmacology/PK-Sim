@@ -22,8 +22,8 @@ using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.Regions;
 using PKSim.Presentation.Services;
 using PKSim.Presentation.Views.Main;
-using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
+
 
 namespace PKSim.Presentation
 {
@@ -54,7 +54,6 @@ namespace PKSim.Presentation
       protected IClassificationPresenter _classificationPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       private IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
-      protected ILazyLoadTask _lazyLoadTask;
 
       protected override void Context()
       {
@@ -78,9 +77,8 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _classificationPresenter = A.Fake<IClassificationPresenter>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
-         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          sut = new BuildingBlockExplorerPresenter(_view, _treeNodeFactory, _contextMenuFactory, _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever, _regionResolver,
-            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter, _lazyLoadTask);
+            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter);
 
          _compoundFolderNode = new RootNode(PKSimRootNodeTypes.CompoundFolder);
          _individualFolderNode = new RootNode(PKSimRootNodeTypes.IndividualFolder);
@@ -114,20 +112,6 @@ namespace PKSim.Presentation
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.EventFolder.Id)).Returns(_eventRootNode);
 
          A.CallTo(() => _view.AddNode(A<ITreeNode>._)).ReturnsLazily(s => s.Arguments[0].DowncastTo<ITreeNode>());
-      }
-   }
-
-   public class When_the_building_block_explorer_presenter_is_notified_of_the_project_loaded_event : concern_for_BuildingBlockExplorerPresenter
-   {
-      protected override void Because()
-      {
-         sut.Handle(new ProjectLoadedEvent(_project));
-      }
-
-      [Observation]
-      public void should_execute_the_lazy_load_for_individual()
-      {
-         A.CallTo(() => _lazyLoadTask.Load(A<Individual>.Ignored)).MustHaveHappened();
       }
    }
 
