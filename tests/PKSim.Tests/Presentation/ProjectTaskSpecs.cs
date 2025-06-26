@@ -41,6 +41,7 @@ namespace PKSim.Presentation
       protected ISnapshotTask _snapshotTask;
       protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected Simulation _simulation;
+      protected ILazyLoadTask _lazyLoadTask;
 
       public override Task GlobalContext()
       {
@@ -58,14 +59,14 @@ namespace PKSim.Presentation
          _workspace.Project = _project;
          _workspace.WorkspaceLayout = new WorkspaceLayout();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
-
+         _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _simulation = new IndividualSimulation();
 
          _project.AddBuildingBlock(_simulation);
 
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings,
-            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager);
+            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask);
 
          _oldFileExitst = FileHelper.FileExists;
 
