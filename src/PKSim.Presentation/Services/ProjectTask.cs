@@ -330,13 +330,10 @@ namespace PKSim.Presentation.Services
          {
             _workspace.OpenProject(projectFile);
 
-            if (_workspace.Project.MetaDataVersion < ProjectVersions.V11)
-            {
-               _workspace.Project.All<Individual>().Each(x =>
-               {
-                  _lazyLoadTask.Load(x);
-               });
-            }  
+            // Since the individuals are lazy loaded, and the deserialization is relying on the context.CurrentProject
+            // which is not loaded but AFTER the deserialization.
+            // Ideally this should go down in the callstack, but we are getting a circular dependency issue.
+            _workspace.Project.All<Individual>().Each(_lazyLoadTask.Load);
          }
 
          try
