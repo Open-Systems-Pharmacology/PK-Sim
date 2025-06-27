@@ -53,9 +53,9 @@ public class SimulationToProjectSnapshotMapper(
       }
    }
 
-   private static void addExpression(PKSimProject project, ExpressionProfile x)
+   private static void addExpression(PKSimProject project, ExpressionProfile expressionProfile)
    {
-      if (!project.All<ExpressionProfile>().ExistsByName(x.Name))
-         project.AddBuildingBlock(x);
+      if (!project.All<ExpressionProfile>().ExistsByName(expressionProfile.Name))
+         project.AddBuildingBlock(expressionProfile);
    }
 }
