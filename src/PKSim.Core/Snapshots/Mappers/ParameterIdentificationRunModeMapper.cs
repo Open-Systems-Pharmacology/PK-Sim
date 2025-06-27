@@ -17,7 +17,7 @@ namespace PKSim.Core.Snapshots.Mappers
          _calculationMethodCacheMapper = calculationMethodCacheMapper;
       }
 
-      protected override async Task MapRunModeParameters(SnapshotParameterIdentificationRunMode snapshot, ModelParameterIdentificationRunMode runMode)
+      protected override async void MapRunModeParameters(SnapshotParameterIdentificationRunMode snapshot, ModelParameterIdentificationRunMode runMode)
       {
          switch (runMode)
          {
@@ -28,7 +28,7 @@ namespace PKSim.Core.Snapshots.Mappers
                   snapshot.CalculationMethods = await calculationMethodsCacheFor(categorialParameterIdentificationRunMode);
                break;
             default:
-               await base.MapRunModeParameters(snapshot, runMode);
+               base.MapRunModeParameters(snapshot, runMode);
                break;
          }
       }

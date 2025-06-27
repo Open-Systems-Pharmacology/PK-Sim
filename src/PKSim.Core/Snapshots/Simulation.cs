@@ -4,6 +4,8 @@ using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots;
 using OutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
+using OutputSchema = OSPSuite.Core.Snapshots.OutputSchema;
+using OutputSelections = OSPSuite.Core.Snapshots.OutputSelections;
 using SolverSettings = OSPSuite.Core.Snapshots.SolverSettings;
 
 namespace PKSim.Core.Snapshots

@@ -18,7 +18,10 @@ using PKSim.Core.Snapshots.Mappers;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using TableFormulaMapper = PKSim.Core.Snapshots.Mappers.TableFormulaMapper;
 using IdentificationParameterMapper = PKSim.Core.Snapshots.Mappers.IdentificationParameterMapper;
+using OutputIntervalMapper = PKSim.Core.Snapshots.Mappers.OutputIntervalMapper;
+using OutputSchemaMapper = PKSim.Core.Snapshots.Mappers.OutputSchemaMapper;
 using ParameterIdentificationRunModeMapper = PKSim.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
+using SolverSettingsMapper = PKSim.Core.Snapshots.Mappers.SolverSettingsMapper;
 using ValueOriginMapper = PKSim.Core.Snapshots.Mappers.ValueOriginMapper;
 
 namespace PKSim.Core
@@ -79,6 +82,9 @@ namespace PKSim.Core
          container.Register<OSPSuite.Core.Snapshots.Mappers.ValueOriginMapper, ValueOriginMapper>();
          container.Register<OSPSuite.Core.Snapshots.Mappers.IdentificationParameterMapper, IdentificationParameterMapper>();
          container.Register<OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper, ParameterIdentificationRunModeMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputIntervalMapper, OutputIntervalMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputSchemaMapper, OutputSchemaMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.SolverSettingsMapper, SolverSettingsMapper>();
 
          container.Register<ICoreSimulationFactory, SimulationFactory>();
          container.Register<ISetParameterTask, ParameterTask>(LifeStyle.Transient);

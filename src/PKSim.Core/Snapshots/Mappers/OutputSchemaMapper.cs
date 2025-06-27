@@ -1,45 +1,21 @@
-﻿using System.Threading.Tasks;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using SnapshotOutputSchema = PKSim.Core.Snapshots.OutputSchema;
+﻿using OSPSuite.Core.Domain.Services;
+using IOutputSchemaFactory = PKSim.Core.Model.IOutputSchemaFactory;
 using ModelOutputSchema = OSPSuite.Core.Domain.OutputSchema;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class OutputSchemaMapper : SnapshotMapperBase<ModelOutputSchema, SnapshotOutputSchema>
+   public class OutputSchemaMapper : OSPSuite.Core.Snapshots.Mappers.OutputSchemaMapper
    {
-      private readonly OutputIntervalMapper _outputIntervalMapper;
       private readonly IOutputSchemaFactory _outputSchemaFactory;
-      private readonly IContainerTask _containerTask;
 
-      public OutputSchemaMapper(OutputIntervalMapper outputIntervalMapper, IOutputSchemaFactory outputSchemaFactory, IContainerTask containerTask)
+      public OutputSchemaMapper(OutputIntervalMapper outputIntervalMapper, IOutputSchemaFactory outputSchemaFactory, IContainerTask containerTask) : base(outputIntervalMapper, containerTask)
       {
-         _outputIntervalMapper = outputIntervalMapper;
          _outputSchemaFactory = outputSchemaFactory;
-         _containerTask = containerTask;
       }
 
-      public override async Task<SnapshotOutputSchema> MapToSnapshot(ModelOutputSchema outputSchema)
+      protected override ModelOutputSchema CreateEmpty()
       {
-         var snapshot = await SnapshotFrom(outputSchema);
-         var intervals = await _outputIntervalMapper.MapToSnapshots(outputSchema.Intervals);
-         intervals?.Each(snapshot.Add);
-         return snapshot;
-      }
-
-      public override async Task<ModelOutputSchema> MapToModel(SnapshotOutputSchema snapshot, SnapshotContext snapshotContext)
-      {
-         var outputSchema = _outputSchemaFactory.CreateEmpty();
-         var intervals = await _outputIntervalMapper.MapToModels(snapshot, snapshotContext);
-         intervals?.Each(interval =>
-         {
-            interval.Name = _containerTask.CreateUniqueName(outputSchema, interval.Name);
-            outputSchema.AddInterval(interval);
-         });
-         return outputSchema;
+         return _outputSchemaFactory.CreateEmpty();
       }
    }
 }

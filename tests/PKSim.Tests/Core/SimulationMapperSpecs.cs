@@ -29,13 +29,15 @@ using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
-using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
+using OutputSchemaMapper = PKSim.Core.Snapshots.Mappers.OutputSchemaMapper;
+using OutputSelections = OSPSuite.Core.Snapshots.OutputSelections;
 using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SnapshotOutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
+using SolverSettingsMapper = PKSim.Core.Snapshots.Mappers.SolverSettingsMapper;
 
 namespace PKSim.Core
 {

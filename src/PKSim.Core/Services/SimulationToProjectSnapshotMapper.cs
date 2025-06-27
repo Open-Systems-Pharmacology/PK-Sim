@@ -31,7 +31,6 @@ public class SimulationToProjectSnapshotMapper(
       simulation.UsedBuildingBlocks.Select(x => pkSimProjectRetriever.Current.BuildingBlockById(x.TemplateId)).Each(x => addBuildingBlockAndDependents(x, project));
       simulation.UsedObservedData.Select(pkSimProjectRetriever.Current.ObservedDataBy).Each(project.AddObservedData);
 
-
       project.AddBuildingBlock(simulation);
 
       return project;
@@ -39,9 +38,24 @@ public class SimulationToProjectSnapshotMapper(
 
    private void addBuildingBlockAndDependents(IPKSimBuildingBlock pkSimBuildingBlock, PKSimProject project)
    {
-      project.AddBuildingBlock(pkSimBuildingBlock);
+      switch (pkSimBuildingBlock)
+      {
+         case Individual individualBuildingBlock:
+            individualBuildingBlock.AllExpressionProfiles().Each(x => addExpression(project, x));
+            project.AddBuildingBlock(individualBuildingBlock);
+            return;
+         case ExpressionProfile expressionProfile:
+            addExpression(project, expressionProfile);
+            return;
+         default:
+            project.AddBuildingBlock(pkSimBuildingBlock);
+            return;
+      }
+   }
 
-      if (pkSimBuildingBlock is Individual individualBuildingBlock)
-         individualBuildingBlock.AllExpressionProfiles().Each(project.AddBuildingBlock);
+   private static void addExpression(PKSimProject project, ExpressionProfile x)
+   {
+      if (!project.All<ExpressionProfile>().ExistsByName(x.Name))
+         project.AddBuildingBlock(x);
    }
 }

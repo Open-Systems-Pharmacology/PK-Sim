@@ -36,8 +36,7 @@ public class ProjectSnapshotToSimulationTransferMapper(
 
       return new SimulationTransfer
       {
-         Simulation = modelCoreSimulation,
-         AllObservedData = project.AllObservedData.ToList()
+         Simulation = modelCoreSimulation
       };
    }
 }
