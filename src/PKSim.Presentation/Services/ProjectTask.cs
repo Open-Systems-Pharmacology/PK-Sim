@@ -12,6 +12,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -48,6 +49,7 @@ namespace PKSim.Presentation.Services
       private readonly IJournalRetriever _journalRetriever;
       private readonly ISnapshotTask _snapshotTask;
       private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
+      private readonly ILazyLoadTask _lazyLoadTask;
 
       public ProjectTask(IWorkspace workspace,
          IApplicationController applicationController,
@@ -59,7 +61,8 @@ namespace PKSim.Presentation.Services
          IJournalTask journalTask,
          IJournalRetriever journalRetriever,
          ISnapshotTask snapshotTask,
-         IBuildingBlockInProjectManager buildingBlockInProjectManager 
+         IBuildingBlockInProjectManager buildingBlockInProjectManager,
+         ILazyLoadTask lazyLoadTask
       )
       {
          _workspace = workspace;
@@ -73,6 +76,7 @@ namespace PKSim.Presentation.Services
          _journalRetriever = journalRetriever;
          _snapshotTask = snapshotTask;
          _buildingBlockInProjectManager = buildingBlockInProjectManager;
+         _lazyLoadTask = lazyLoadTask;
       }
 
       public void NewProject()
@@ -325,6 +329,11 @@ namespace PKSim.Presentation.Services
          void openProject()
          {
             _workspace.OpenProject(projectFile);
+
+            // Since the individuals are lazy loaded, and the deserialization is relying on the context.CurrentProject
+            // which is not loaded but AFTER the deserialization.
+            // Ideally this should go down in the callstack, but we are getting a circular dependency issue.
+            _workspace.Project.All<Individual>().Each(_lazyLoadTask.Load);
          }
 
          try
