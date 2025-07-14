@@ -19,6 +19,7 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
+using PKSim.Infrastructure.ORM.Repositories;
 using PKSim.Presentation;
 using PKSim.Presentation.Services;
 using PKSim.R.Services;
@@ -42,7 +43,6 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
-            container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
             container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>();
             container.Register<ISimulationConstructor, SimulationConstructor>();
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
@@ -58,15 +58,15 @@ namespace PKSim.IntegrationTests
             container.AddRegister(x =>
             {
                x.FromType<CoreRegister>();
-               x.FromType<CLIRegister>();
                x.FromType<InfrastructureRegister>();
+               x.FromType<CLIRegister>();
                x.FromType<PresenterRegister>();
                x.FromType<OSPSuite.Presentation.PresenterRegister>();
                x.FromType<BatchRegister>();
             });
 
-            //Register an other type that was already registered previously to ensure that we do use the presentation implementation
-            container.Register<IEntityValidationTask, CLIEntityValidationTask>();
+            //Register another type that was already registered previously to ensure that we do use the presentation implementation
+            container.Register<IEntityValidationTask, OSPSuite.CLI.Core.MinimalImplementations.CLIEntityValidationTask>();
 
 
             var userSettings = container.Resolve<IUserSettings>();

@@ -9,6 +9,7 @@ namespace PKSim.CLI.Core
    {
       public override void RegisterInContainer(IContainer container)
       {
+         container.AddRegister(x => x.FromInstance(new OSPSuite.CLI.Core.CLIRegister()));
          container.AddScanner(x =>
          {
             x.AssemblyContainingType<CLIRegister>();

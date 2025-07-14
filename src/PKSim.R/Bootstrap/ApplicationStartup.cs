@@ -73,10 +73,7 @@ namespace PKSim.R.Bootstrap
          container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
          container.Register<ICoreUserSettings, CLIUserSettings>();
          container.Register<IProgressUpdater, NoneProgressUpdater>();
-         container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
          container.Register<IOntogenyTask, CLIIndividualOntogenyTask>();
-         container.Register<IExceptionManager, CLIExceptionManager>();
-         container.Register<IDialogCreator, CLIDialogCreator>();
       }
 
       private static void redirectAssemblies()
