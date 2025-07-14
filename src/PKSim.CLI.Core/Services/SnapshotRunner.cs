@@ -4,32 +4,20 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Assets.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
-using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.CLI.Core.Services
 {
-   public enum SnapshotExportMode
-   {
-      /// <summary>
-      ///    Exports project files from json files
-      /// </summary>
-      Project,
-
-      /// <summary>
-      ///    Exports json files from project files
-      /// </summary>
-      Snapshot
-   }
-
    public class SnapshotRunner : IBatchRunner<SnapshotRunOptions>
    {
       private readonly ICoreWorkspace _workspace;
@@ -115,6 +103,7 @@ namespace PKSim.CLI.Core.Services
          {
             _workspacePersistor.CloseSession();
          }
+
          _logger.AddInfo($"Project saved to '{file.ProjectFile};");
       }
 

@@ -4,16 +4,16 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
-using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
-using PKSim.Presentation.Core;
 
 namespace PKSim.CLI
 {
@@ -69,7 +69,7 @@ namespace PKSim.CLI
          _runOptions.OutputFolder = _outputFolder;
          _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
          _projectFile = Path.Combine(_outputFolder, $"{_fileName}{CoreConstants.Filter.PROJECT_EXTENSION}");
-         sut.AllFilesFrom = (folder, filter) => new[] {new FileInfo(_snapshotFile) };
+         sut.AllFilesFrom = (folder, filter) => new[] { new FileInfo(_snapshotFile) };
       }
 
       protected override Task Because()
@@ -86,7 +86,7 @@ namespace PKSim.CLI
       [Observation]
       public void should_generate_the_project_from_snapshot()
       {
-         A.CallTo(() => _workspacePersistor.SaveSession(_workspace, _projectFile)).MustHaveHappened();  
+         A.CallTo(() => _workspacePersistor.SaveSession(_workspace, _projectFile)).MustHaveHappened();
       }
 
       [Observation]
@@ -148,7 +148,7 @@ namespace PKSim.CLI
       {
          await base.Context();
          _runOptions.ExportMode = SnapshotExportMode.Project;
-         _runOptions.Folders = new[] {_inputFolder};
+         _runOptions.Folders = new[] { _inputFolder };
          _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
          _projectFile = Path.Combine(_inputFolder, $"{_fileName}{CoreConstants.Filter.PROJECT_EXTENSION}");
          sut.AllFilesFrom = (folder, filter) => new[] { new FileInfo(_snapshotFile) };
@@ -170,6 +170,5 @@ namespace PKSim.CLI
       {
          A.CallTo(() => _workspacePersistor.SaveSession(_workspace, _projectFile)).MustHaveHappened();
       }
-    
    }
 }

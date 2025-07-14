@@ -1,6 +1,6 @@
-﻿using OSPSuite.Presentation.Views;
+﻿using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.Presentation.Views;
 using PKSim.BatchTool.Presenters;
-using PKSim.CLI.Core.RunOptions;
 
 namespace PKSim.BatchTool.Views
 {

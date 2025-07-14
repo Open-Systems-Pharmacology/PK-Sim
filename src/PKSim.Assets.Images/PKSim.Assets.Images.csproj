@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.0-VaQwm" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.0-VaQwm" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.0-MjAHd" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.0-MjAHd" />
     <PackageReference Include="System.Resources.Extensions" Version="9.0.2" />
   </ItemGroup>
 
