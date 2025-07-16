@@ -104,7 +104,7 @@ namespace PKSim.CLI.Core.Services
             _workspacePersistor.CloseSession();
          }
 
-         _logger.AddInfo($"Project saved to '{file.ProjectFile};");
+         _logger.AddInfo($"Project saved to '{file.ProjectFile}';");
       }
 
       private async Task createSnapshotFromProjectFile(FileMap file)
