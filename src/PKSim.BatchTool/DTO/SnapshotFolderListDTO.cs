@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
-using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool.DTO
 {
@@ -20,7 +20,7 @@ namespace PKSim.BatchTool.DTO
          set => SetProperty(ref _currentFolder, value);
       }
 
-      public void AddFolder(string folder) => AddFolder(new FolderDTO {Folder = folder});
+      public void AddFolder(string folder) => AddFolder(new FolderDTO { Folder = folder });
 
       public void AddFolder(FolderDTO folderDTO)
       {

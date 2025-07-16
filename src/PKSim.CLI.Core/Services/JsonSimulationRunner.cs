@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Threading.Tasks;
 using OSPSuite.Assets.Extensions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
@@ -44,7 +45,7 @@ namespace PKSim.CLI.Core.Services
       public async Task RunBatchAsync(JsonRunOptions runOptions)
       {
          _logger.AddInfo($"Starting batch run: {DateTime.Now.ToIsoFormat()}");
-         
+
          _simulationRunOptions.RunForAllOutputs = runOptions.RunForAllOutputs;
          _simulationRunOptions.JacobianUse = runOptions.JacobianUse;
          await Task.Run(() => startJsonSimulationRun(runOptions));
@@ -54,10 +55,10 @@ namespace PKSim.CLI.Core.Services
 
       private async Task startJsonSimulationRun(JsonRunOptions runOptions)
       {
-          var (inputFolder, outputFolder, exportMode) = runOptions;
+         var (inputFolder, outputFolder, exportMode) = runOptions;
 
          clear();
-         
+
          var inputDirectory = new DirectoryInfo(inputFolder);
          if (!inputDirectory.Exists)
             throw new OSPSuiteException($"Input folder '{inputFolder}' does not exist");
@@ -114,6 +115,7 @@ namespace PKSim.CLI.Core.Services
             row[0] = simulationName;
             dataTable.Rows.Add(row);
          }
+
          var fileName = Path.Combine(outputDirectory.FullName, $"{outputDirectory.Name}.csv");
          if (FileHelper.FileExists(fileName))
          {

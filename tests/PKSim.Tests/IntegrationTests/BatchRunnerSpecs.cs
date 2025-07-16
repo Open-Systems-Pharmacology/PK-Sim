@@ -1,7 +1,8 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using PKSim.CLI.Core.RunOptions;
-using PKSim.CLI.Core.Services;
 
 namespace PKSim.IntegrationTests
 {
@@ -24,11 +25,9 @@ namespace PKSim.IntegrationTests
 
    public class Should_be_able_to_create_a_batch_runner_for_snapshot_run : concern_for_BatchRunnerSpecs<SnapshotRunOptions>
    {
-
    }
 
    public class Should_be_able_to_create_a_batch_runner_for_export_run : concern_for_BatchRunnerSpecs<ExportRunOptions>
    {
    }
-
 }

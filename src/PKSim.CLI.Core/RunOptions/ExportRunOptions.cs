@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
@@ -16,8 +17,8 @@ namespace PKSim.CLI.Core.RunOptions
       public bool RunSimulation { get; set; }
 
       /// <summary>
-      /// Specifies if all simulations should be exported if the provided list of Simulations is empty.
-      /// Default is true and will be overwritten for special use cases
+      ///    Specifies if all simulations should be exported if the provided list of Simulations is empty.
+      ///    Default is true and will be overwritten for special use cases
       /// </summary>
       public bool ExportAllSimulationsIfListIsEmpty { get; set; } = true;
 

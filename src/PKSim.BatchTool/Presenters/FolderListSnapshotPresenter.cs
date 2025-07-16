@@ -2,12 +2,12 @@
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Serialization.Json;
 using OSPSuite.Presentation.Presenters;
 using PKSim.BatchTool.DTO;
 using PKSim.BatchTool.Views;
-using PKSim.CLI.Core.RunOptions;
 using PKSim.Core;
 
 namespace PKSim.BatchTool.Presenters

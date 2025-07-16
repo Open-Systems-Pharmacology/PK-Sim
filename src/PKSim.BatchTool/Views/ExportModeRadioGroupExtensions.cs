@@ -1,9 +1,9 @@
 ﻿using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraLayout;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
-using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool.Views
 {
