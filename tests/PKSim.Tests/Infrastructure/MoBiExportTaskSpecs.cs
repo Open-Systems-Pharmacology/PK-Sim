@@ -197,6 +197,47 @@ namespace PKSim.Infrastructure
       }
    }
 
+   public class When_exporting_a_simulation_to_MoBi_and_the_application_was_installed_using_setup_and_mobi_executable_path_can_be_found_on_system_using_the_application_settings : concern_for_MoBiExportTask
+   {
+      private Simulation _simulation;
+      private readonly string _moBiAppSettingsPath = "MoBiAppSettingsPath";
+      private readonly string _moBiConfigPath = "MoBiConfigPath";
+      private Func<string, bool> _oldFileHelper;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _oldFileHelper = FileHelper.FileExists;
+         FileHelper.FileExists = s => s == _moBiAppSettingsPath || s== _moBiConfigPath;
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<Simulation>();
+         //the two files are defined
+         A.CallTo(() => _applicationSettings.MoBiPath).Returns(_moBiAppSettingsPath);
+         A.CallTo(() => _configuration.MoBiPath).Returns(_moBiConfigPath);
+      }
+
+      protected override void Because()
+      {
+         sut.StartWith(_simulation);
+      }
+
+      [Observation]
+      public void should_start_mobi_from_the_application_settings()
+      {
+         A.CallTo(() => _startableProcessFactory.CreateStartableProcess(_moBiAppSettingsPath, A<string[]>._)).MustHaveHappened();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         FileHelper.FileExists = _oldFileHelper;
+      }
+   }
+
    public class When_exporting_a_simulation_to_MoBi_and_mobi_is_not_found_on_the_system : concern_for_MoBiExportTask
    {
       private Simulation _simulation;
