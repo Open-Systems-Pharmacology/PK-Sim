@@ -1,4 +1,5 @@
 using PKSim.Core.Model;
+using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary

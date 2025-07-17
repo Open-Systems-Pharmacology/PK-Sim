@@ -3,6 +3,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 using PKSim.Infrastructure.Reporting.Summary.Items;
 

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Reporting;
 using PKSim.Assets;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
@@ -22,7 +23,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
       protected override void FillUpReport(IEnumerable<CalculationMethod> calculationMethods, ReportPart reportPart)
       {
          var calcMethodPart = new TablePart(keyName: PKSimConstants.UI.Category, valueName: PKSimConstants.UI.CalculationMethods)
-            {Title = PKSimConstants.UI.CalculationMethods};
+            { Title = PKSimConstants.UI.CalculationMethods };
 
          foreach (var calculationMethod in calculationMethods)
          {

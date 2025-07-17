@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using PKSim.Assets;
-using PKSim.Core.Reporting;
+using OSPSuite.Core.Reporting;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting
 {

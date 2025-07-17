@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core.Reporting;
+using OSPSuite.Core.Reporting;
 using PKSim.Presentation.Mappers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;

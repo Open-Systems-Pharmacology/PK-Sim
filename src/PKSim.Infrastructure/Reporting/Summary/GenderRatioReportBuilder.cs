@@ -1,6 +1,6 @@
+using OSPSuite.Core.Reporting;
 using OSPSuite.Utility.Format;
 using PKSim.Core.Model;
-using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Infrastructure.Reporting.Summary

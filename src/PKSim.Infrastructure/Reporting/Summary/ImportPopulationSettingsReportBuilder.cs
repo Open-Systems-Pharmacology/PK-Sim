@@ -3,7 +3,7 @@ using System.Linq;
 using PKSim.Assets;
 using OSPSuite.Utility;
 using PKSim.Core.Model;
-using PKSim.Core.Reporting;
+using OSPSuite.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {

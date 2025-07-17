@@ -1,6 +1,7 @@
-﻿using PKSim.Core.Model.PopulationAnalyses;
+﻿using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Reporting;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Reporting;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
@@ -9,7 +10,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
       private readonly IReportGenerator _reportGenerator;
       private readonly IObjectTypeResolver _objectTypeResolver;
 
-      public PopulationAnalysisFieldReportBuilder(IReportGenerator reportGenerator,IObjectTypeResolver objectTypeResolver)
+      public PopulationAnalysisFieldReportBuilder(IReportGenerator reportGenerator, IObjectTypeResolver objectTypeResolver)
       {
          _reportGenerator = reportGenerator;
          _objectTypeResolver = objectTypeResolver;

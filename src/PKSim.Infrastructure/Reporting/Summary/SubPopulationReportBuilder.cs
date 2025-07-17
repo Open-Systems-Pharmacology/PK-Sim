@@ -1,6 +1,6 @@
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Reporting;
+using OSPSuite.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {

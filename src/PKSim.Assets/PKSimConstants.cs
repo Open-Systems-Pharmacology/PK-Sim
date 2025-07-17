@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OSPSuite.Assets;
 using OSPSuite.Assets.Extensions;
-using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Assets
@@ -71,7 +71,6 @@ namespace PKSim.Assets
             sb.AppendLine("Please check/adjust process mapping in the PROCESSES Tab of the Clone/Configure dialog if needed.");
             return sb.ToString();
          }
-
 
          public static string CannotUseExpressionProfilesDefinedForAnotherSpecies(string sourceIndividualSpecies, string targetIndividualSpecies)
          {
@@ -580,10 +579,10 @@ namespace PKSim.Assets
 
          public static string UnableToUpdateParameterException(string parameterPath, string simulationName) => $"Unable to update parameter.\nParameter with path '{parameterPath}' not found in simulation '{simulationName}'.";
 
-         public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute) => 
+         public static string FormulationCannotBeUsedWithRoute(string formulationName, string applicationRoute) =>
             $"Formulation '{formulationName}' cannot be used with route '{applicationRoute}.";
 
-         public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute) => 
+         public static string NoFormulationFoundForRoute(string protocolName, string applicationRoute) =>
             $"No formulation found for route '{applicationRoute}' in administration protocol '{protocolName}'.";
 
          public static string UnableToCreateSimulationWithMoleculesHavingSameName(string duplicateName)
@@ -598,7 +597,7 @@ namespace PKSim.Assets
             return $"Molecule cannot be renamed to '{moleculeName}'. Two or more processes would have the same name.";
          }
 
-         public static string CannotSelectTheSamePartialProcessMoreThanOnce(string processName) => 
+         public static string CannotSelectTheSamePartialProcessMoreThanOnce(string processName) =>
             $"'{processName}' cannot be selected more than once.";
 
          public static string CouldNotFindSpecies(string species, IEnumerable<string> availableSpecies)
@@ -662,8 +661,6 @@ namespace PKSim.Assets
          {
             return $"Cannot create aging simulation: The percentile for parameter '{parameterPath}' is invalid. (percentile = {percentile}).";
          }
-
-         public static string FileDoesNotExist(string fileFullPath) => $"File '{fileFullPath}' does not exist.";
 
          public static string NoDataFieldFoundFor(string name) => $"No data field found for '{name}'.";
 
@@ -762,7 +759,7 @@ namespace PKSim.Assets
 
          public static string UnitIsNotDefinedInDimension(string unit, string dimension)
          {
-            return $"Unit '{unit}' is not defined in dimension '{dimension}'."; 
+            return $"Unit '{unit}' is not defined in dimension '{dimension}'.";
          }
 
          public static string DerivedFieldCannotBeUsedForFieldOfType(string derivedField, string dataField, Type dataType)
@@ -782,7 +779,7 @@ namespace PKSim.Assets
 
          public static string CannotAddOutputFieldBecauseOfDimensionMismatch(string outputName, IEnumerable<string> allowedDimensions, string currentDimension)
          {
-            return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] {currentDimension});
+            return cannotAddToAnalysisBecauseOfDimensionMismatch("output", outputName, allowedDimensions, new[] { currentDimension });
          }
 
          public static string CannotAddObservedDataBecauseOfDimensionMismatch(string observedDataName, IEnumerable<string> allowedDimensions, IEnumerable<string> usedDimensions)
@@ -813,7 +810,7 @@ namespace PKSim.Assets
          public static string CannotExtractIndividualFrom(string objectType) => $"Individual extraction is not available for '{objectType}'.";
 
          public static string SnapshotParameterNotFound(string parameterName) => $"Snapshot parameter '{parameterName}' was not found.";
-         
+
          public static string MoleculeTypeNotSupported(string moleculeType) => $"Molecule type '{moleculeType}' not supported.";
 
          public static string RelativeExpressionContainerNotFound(string containerName) => $"Relative expression container '{containerName}' not found.";
@@ -844,23 +841,11 @@ namespace PKSim.Assets
 
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load {ObjectTypes.Simulation} '{simulationName}'";
 
-         public static string UnableToLoadQualificationConfigurationFromFile(string fileFullPath) => $"Unable to read configuration from file '{fileFullPath}'";
-
-         public static string CannotFindBuildingBlockInSnapshot(string buildingBlockType, string buildingBlockName, string project) => $"Could not find {buildingBlockType} '{buildingBlockName}' in snapshot '{project}'.";
-
-         public static string CannotFindSimulationInSnapshot(string simulationName, string project) => CannotFindBuildingBlockInSnapshot(ObjectTypes.Simulation, simulationName, project);
-
-         public static string SimulationUsedInPlotsAreNotExported(IReadOnlyList<string> simulationNames, string project)
-            => $"{ObjectTypes.Simulation.PluralizeIf(simulationNames)} {simulationNames.ToString(", ", "'")} used in plots {"is".PluralizeIf(simulationNames)} not found in the list of exported simulations for {ObjectTypes.Project} {project}";
-
-         public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) => 
+         public static string CannotFindSimulationParameterInSnapshot(string parameterPath, string simulationName, string project) =>
             $"Could not find {ObjectTypes.Parameter} with path '{parameterPath}' in {ObjectTypes.Simulation} '{simulationName}' defined in snapshot {project}.";
-
-         public static string CannotLoadSnapshotFromFile(string fileFullPath) => $"Cannot load snapshot from file '{fileFullPath}'. Please make sure that the file exists and that it is a valid snapshot file.";
 
          public static string AlteredBuildingBlockNotFoundInSimulation(string simulationName, string buildingBlockName, string buildingBlockType) =>
             $"Could not update the altered flag for {buildingBlockType} building block '{buildingBlockName}' as it is not used in {ObjectTypes.Simulation} '{simulationName}'.";
-
 
          public static string CannotCreateTransportProcessWithKinetic(string processName, string compoundProcess) =>
             $"The kinetic used in compound process '{compoundProcess}' cannot be used with '{processName}'. Please select another process type in your compound.";
@@ -968,7 +953,7 @@ namespace PKSim.Assets
             return $"X = {x}";
          }
 
-         public static string BoxWhiskerYAsTooltip(string lowerWhisker, int lowerWiskerIndividualId, string lowerBox, int lowerBoxIndividualId, string median, int medianIndividualId, string upperBox, int upperboxIndividualId, string upperWhisker,int  upperWhiskerIndividualId,  string[] outliers, int[] outlierIndividualIds)
+         public static string BoxWhiskerYAsTooltip(string lowerWhisker, int lowerWiskerIndividualId, string lowerBox, int lowerBoxIndividualId, string median, int medianIndividualId, string upperBox, int upperboxIndividualId, string upperWhisker, int upperWhiskerIndividualId, string[] outliers, int[] outlierIndividualIds)
          {
             var sb = new StringBuilder();
 
@@ -982,10 +967,7 @@ namespace PKSim.Assets
             {
                sb.AppendLine();
                sb.AppendLine("<b>Outliers</b>");
-               outliers.Each((v, i) =>
-               {
-                  sb.AppendLine(valueWithIndividualId(v,outlierIndividualIds[i]));
-               });
+               outliers.Each((v, i) => { sb.AppendLine(valueWithIndividualId(v, outlierIndividualIds[i])); });
             }
 
             return sb.ToString();
@@ -1014,7 +996,7 @@ namespace PKSim.Assets
          {
             return $"Upper = {upperValue}\nLower = {lowerValue}";
          }
-         
+
          public static string ObservedDataYAsTooltip(string y, string lowerValue, string upperValue)
          {
             return $"{ObservedDataYAsTooltip(y)}\n{TimeProfileYAsTooltip(lowerValue, upperValue)}";
@@ -1026,7 +1008,6 @@ namespace PKSim.Assets
       public static class MenuNames
       {
          public static string AsDeveloperOnly(string menuName) => OSPSuite.Assets.MenuNames.AsDeveloperOnly(menuName);
-
 
          public static readonly string LoadFromTemplate = UI.LoadFromTemplate;
          public static readonly string SaveAsTemplate = UI.SaveAsTemplate;
@@ -1159,8 +1140,8 @@ namespace PKSim.Assets
 
          public static string RunSimulation(string simulationName) => $"Run {ObjectTypes.Simulation.ToLower()} {simulationName}";
 
-         public static string ParameterIdentificationResultsTransferredToSimulations(string parameterIdentificationName) => 
-            OSPSuite.Assets.Captions.ParameterIdentification.ParameterIdentificationTransferredToSimulations(parameterIdentificationName);
+         public static string ParameterIdentificationResultsTransferredToSimulations(string parameterIdentificationName) =>
+            Captions.ParameterIdentification.ParameterIdentificationTransferredToSimulations(parameterIdentificationName);
       }
 
       public static class ObjectTypes
@@ -1376,7 +1357,6 @@ namespace PKSim.Assets
             public static string MinLessThanMax(string parameterName) => $"Minimum value for {parameterName} should be less than maximum value.";
 
             public static string MaxGreaterThanMin(string parameterName) => $"Maximum value for {parameterName} should be greater than minimum value.";
-
 
             public static string MinGreaterThanDbMinValue(string parameterName, string displayMinValue, string unit)
             {
@@ -1644,8 +1624,10 @@ namespace PKSim.Assets
          public static readonly string CalculationMethods = "Calculation methods";
          public static readonly string ReferencePopulation = "Reference Population";
          public const string ExpressionProfileCategory = "Phenotype";
+
          public static readonly string ExpressionProfileCategoryDescription =
             "Multiple expression profiles of the same protein can be defined to describe different phenotypes or disease states (e.g. Healthy, Extensive etc.)";
+
          public static readonly string Category = "Category";
          public static readonly string CreateIndividual = "Create Individual";
          public static readonly string CreateSimulationSettings = "Create Simulation Settings";
@@ -1664,7 +1646,7 @@ namespace PKSim.Assets
          public static readonly string Fraction = "Fraction";
          public static readonly string TubularSecretion = "Tubular Secretion";
          public static readonly string InVitroAssay = "In-Vitro Assay";
-         public static readonly string GlomerularFiltration = OSPSuite.Assets.Captions.GlomerularFiltration;
+         public static readonly string GlomerularFiltration = Captions.GlomerularFiltration;
          public static readonly string ShowCalculatedValues = "Show Values";
          public static readonly string ShowSolubilityPhChart = "Show Graph";
          public static readonly string CalculatedValue = "Calculated";
@@ -1756,7 +1738,7 @@ namespace PKSim.Assets
          public static readonly string CloneSimulation = "Clone Simulation";
          public static readonly string ConfigureSimulationDescription = "Configure Simulation";
          public static string EditIndividualSimulation(string simulationName) => $"Simulation: '{simulationName}'";
-         public static string EditPopulationSimulation(string simulationName)  => $"Population Simulation : '{simulationName}'";
+         public static string EditPopulationSimulation(string simulationName) => $"Population Simulation : '{simulationName}'";
          public static readonly string RegisterAssembliesWithDefaultConvention = "Loading assemblies";
          public static readonly string RegisterCoreDependencies = "Registering core dependencies";
          public static readonly string RegisterORMDependencies = "Configuring database access";
@@ -1776,7 +1758,7 @@ namespace PKSim.Assets
          public static readonly string ProtocolEndTime = "Protocol end time";
          public static readonly string DosingInterval = "Dosing interval";
          public static readonly string ApplicationType = "Administration type";
-         public static readonly string TargetOrgan = "Target organ"; 
+         public static readonly string TargetOrgan = "Target organ";
          public static readonly string TargetCompartment = "Target compartment";
          public static readonly string PlaceholderFormulation = "Placeholder for formulation";
          public static readonly string ProtocolProperties = "Protocol Properties";
@@ -1895,7 +1877,7 @@ namespace PKSim.Assets
          public static readonly string SpecificBindingProcesses = "Specific Binding";
          public static readonly string TransportAndExcretionProcesses = "Transport & Excretion";
          public static readonly string BiliaryClearance = "Biliary Clearance";
-         public static readonly string RenalClearance = OSPSuite.Assets.Captions.RenalClearance;
+         public static readonly string RenalClearance = Captions.RenalClearance;
          public static readonly string TotalHepaticClearance = "Total Hepatic Clearance";
          public static readonly string MetabolicProcesses = "Metabolism";
          public static readonly string SimulationMetabolism = MetabolicProcesses;
@@ -1920,7 +1902,7 @@ namespace PKSim.Assets
          public static readonly string Experiment = "Experiment";
          public static readonly string ImportFormulation = "Import Formulation";
          public static readonly string ImportSolubilityTable = "Import Solubility Table";
-         
+
          public static readonly string Filter = "Filter";
          public static readonly string SaveSimulationToXmlFile = "Save Simulation to xml File (PKSim Format)";
          public static readonly string SaveSimulationParameterToCsvFile = "Save Simulation parameters to csv File (PKSim Format)";
@@ -2006,7 +1988,7 @@ namespace PKSim.Assets
          public static readonly string Range = "Range";
          public static readonly string ImportFolder = "Import all files from a specific folder";
          public static readonly string ImportFiles = "Import single files";
-         
+
          public static readonly string Browse = "Browse";
          public static readonly string SelectFolderContainingSimulationResults = "Select folder containing the results to import";
          public static readonly string FileSuccessfullyImported = "File successfully imported";
@@ -2072,7 +2054,7 @@ namespace PKSim.Assets
          public static readonly string Reference = "Reference";
          public static readonly string ImportPopulationSettings = "Imported Population";
          public static readonly string ImportPopulationSettingsDescription = "The base individual is used as template for the population: Parameters are replaced by values imported from file, if they exist. Otherwise, parameters are taken from the base individual.";
-         public static readonly string SimulationsUsedInComparison= "Simulations used in comparison";
+         public static readonly string SimulationsUsedInComparison = "Simulations used in comparison";
          public static readonly string UsedAsReferenceSimulation = "Used as Reference Simulation";
          public static readonly string ExportSimulationResultsToExcelDescription = ExportSimulationResultsToExcel;
          public static readonly string StatisticalOutputSelectionDescription = "Output: Select distribution statistics for display";
@@ -2094,7 +2076,7 @@ namespace PKSim.Assets
          public static readonly string Sink = "Sink";
          public static readonly string AddInhibitionProcess = "Add Inhibition Process...";
          public static readonly string AddInductionProcess = "Add Induction Process...";
-         public static readonly string AddInteraction= "Add Interaction";
+         public static readonly string AddInteraction = "Add Interaction";
          public static readonly string AffectedEnzymeOrTransporter = "Affected enzyme / transporter";
          public static readonly string SpecificOrganPermeability = "Specific Organ Permeability";
          public static readonly string Metabolite = "Metabolite";
@@ -2107,8 +2089,8 @@ namespace PKSim.Assets
          public static string DoYouWantToLoadMetabolites(int numberOfSelectedCompound) => $"Do you also want to load the metabolite(s) of the selected {"compound".PluralizeIf(numberOfSelectedCompound)}?";
          public static readonly string LowerPercentile = "Lower Percentile";
          public static readonly string UpperPercentile = "Upper Percentile";
-         public static readonly string LowerValue= "Lower Value";
-         public static readonly string UpperValue= "Upper Value";
+         public static readonly string LowerValue = "Lower Value";
+         public static readonly string UpperValue = "Upper Value";
          public static readonly string ShowOutliers = "Show outliers";
          public static readonly string ShowOutliersToolTip = "Outliers will be shown on analysis and report when this option is selected";
          public static readonly string Solver = "Solver";
@@ -2151,8 +2133,8 @@ namespace PKSim.Assets
          public static readonly string GlobalPKAnalysisDescription = "The median value calculated from all individual values";
 
          public static readonly string[] DefaultExpressionProfileCategories = { Healthy };
-         public static readonly string SnapshotOfProjectCreatedWithEarlierVersion = OSPSuite.Assets.Captions.DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText);
-         public static readonly string SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation = OSPSuite.Assets.Captions.DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText, OSPSuite.Assets.Captions.SnapshotOfProjectWithChangedSimulationText);
+         public static readonly string SnapshotOfProjectCreatedWithEarlierVersion = Captions.DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText);
+         public static readonly string SnapshotOfProjectCreatedWithEarlierVersionAndWithChangedSimulation = Captions.DoYouWantToProceed(_snapshotOfProjectCreatedWithEarlierVersionText, Captions.SnapshotOfProjectWithChangedSimulationText);
          private static readonly string _snapshotOfProjectCreatedWithEarlierVersionText = "Project was created with an older version of PK-Sim (earlier than 7.3.0). The created snapshot file will likely be incomplete. Only use if you know what you are doing!";
 
          public static string NumberOfIndividualsToExtract(int count, string populationName) => $"{count} {"individual".PluralizeIf(count)} will be extracted from population {populationName}.";
@@ -2181,8 +2163,8 @@ namespace PKSim.Assets
 
          public static string ExtractIndividualFromPopulation(string populationName) => $"Extract Individuals from Population '{populationName}'";
 
-         public static string ExtractIndividualPopulationDescription(string populationName, int numberOfIndividuals) => 
-            $"Population '{populationName}' has {numberOfIndividuals} individuals. Individual Ids for this population are defined between 0 and {numberOfIndividuals-1}.";
+         public static string ExtractIndividualPopulationDescription(string populationName, int numberOfIndividuals) =>
+            $"Population '{populationName}' has {numberOfIndividuals} individuals. Individual Ids for this population are defined between 0 and {numberOfIndividuals - 1}.";
 
          public static string GenderRationFor(string gender) => $"{gender} ratio";
 
@@ -2247,7 +2229,7 @@ namespace PKSim.Assets
                sb.AppendLine("The Excel table for formulation import should have <b>two colums</b>.");
                sb.AppendLine(" -  The first column represents the Time (unit Time e.g. in hours).");
                sb.AppendLine(" -  The second column represents the fraction of the dose released at t.");
-               return sb.ToString();               
+               return sb.ToString();
             }
          }
 
@@ -2294,8 +2276,7 @@ namespace PKSim.Assets
             }
          }
 
-
-         public static string ReallyRemoveFieldUsedInGrouping(string fieldName, IEnumerable<string> referencingFields )
+         public static string ReallyRemoveFieldUsedInGrouping(string fieldName, IEnumerable<string> referencingFields)
          {
             return string.Format("Field '{0}' is used by {1}.\nRemoving '{0}' will also remove any fields depending on it. Do you want to continue?",
                fieldName, referencingFields.ToString(",", "'"));
@@ -2337,11 +2318,11 @@ namespace PKSim.Assets
 
          public static string RenameGroupParameterAlternativeCaption(string groupName) => $"Rename {groupName.ToLower()} value";
 
-         public static IReadOnlyList<string> PredefinedSolubilityAlternatives() => new []{ DefaultAlternative, "S_aq", "S_buffer", "S_FaSSIF", "S_FeSSIF", "S_FaSSGF" };
+         public static IReadOnlyList<string> PredefinedSolubilityAlternatives() => new[] { DefaultAlternative, "S_aq", "S_buffer", "S_FaSSIF", "S_FeSSIF", "S_FaSSGF" };
 
-         public static IReadOnlyList<string> PredefinedFractionUnboundAlternatives() => new []{ DefaultAlternative, "fu_plasma", "fu_invitro" };
+         public static IReadOnlyList<string> PredefinedFractionUnboundAlternatives() => new[] { DefaultAlternative, "fu_plasma", "fu_invitro" };
 
-         public static IReadOnlyList<string> PredefinedLipophilicityAlternatives() => new []{ DefaultAlternative, "LogP", "LogMA", "LogD", "cLogP", "cLogMA", "cLogD" };
+         public static IReadOnlyList<string> PredefinedLipophilicityAlternatives() => new[] { DefaultAlternative, "LogP", "LogMA", "LogD", "cLogP", "cLogMA", "cLogD" };
 
          public static string EditFormulation(string name) => $"Formulation: '{name}'";
 
@@ -2409,7 +2390,7 @@ namespace PKSim.Assets
 
          public static string ReallyDeleteObjectOfType(string type, IReadOnlyList<string> names)
          {
-            var displayNames = names.ToString(", ","'");
+            var displayNames = names.ToString(", ", "'");
             var displayTypes = type.PluralizeIf(names);
             var message = $"Really delete {displayTypes.ToLowerInvariant()} {displayNames}?";
 
@@ -2485,27 +2466,27 @@ namespace PKSim.Assets
          public static string FilterAreaDragFieldMessage() => "Drag a field here to remove grouping";
 
          public static readonly string ChartYScale = "Chart Y Scale";
-         
-         public static string SelectExpressionProfile = "Select an expression profile";
 
+         public static string SelectExpressionProfile = "Select an expression profile";
 
          public static string NumberOfTemplatesSelectedIs(int number, string templateType) => $"{number} {templateType.PluralizeIf(number).ToLowerInvariant()} selected";
 
          public static string UserTemplateDatabaseDatabaseUsedOldFormatAndCannotBeLoaded(string userTemplateDatabasePath, string wikiPageUrl) =>
             $"The template database located at\n\t\t'{userTemplateDatabasePath}'\n\nuses a file format that is not supported anymore. Please refer to\n\t\t'{wikiPageUrl}'\n\nto learn how to convert your database.";
 
-         private static readonly string[] _reallyClearUnusedContent = {
+         private static readonly string[] _reallyClearUnusedContent =
+         {
             "Removing unused content could permanently corrupt your project.",
             "You should make a backup of your project before proceeding.",
             "If you don't make a backup, you will be the only one to blame!"
          };
 
-         public static readonly string ReallyClearUnusedContent = OSPSuite.Assets.Captions.DoYouWantToProceed(_reallyClearUnusedContent);
+         public static readonly string ReallyClearUnusedContent = Captions.DoYouWantToProceed(_reallyClearUnusedContent);
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
 
-         public static string ChildPughScoreFor (string score)=> $"Child-Pugh {score}";
+         public static string ChildPughScoreFor(string score) => $"Child-Pugh {score}";
       }
 
       public static class Reporting
@@ -2529,7 +2510,7 @@ namespace PKSim.Assets
          public static readonly string AdministrationProtocol = ObjectTypes.AdministrationProtocol;
          public static readonly string Individual = ObjectTypes.Individual;
          public static readonly string Population = ObjectTypes.Population;
-         public static readonly string SimulationType= "Simulation Type";
+         public static readonly string SimulationType = "Simulation Type";
       }
 
       public static class PKAnalysis

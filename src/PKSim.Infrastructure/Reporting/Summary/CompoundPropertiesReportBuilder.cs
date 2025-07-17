@@ -1,3 +1,4 @@
+using OSPSuite.Core.Reporting;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
@@ -20,9 +21,9 @@ namespace PKSim.Infrastructure.Reporting.Summary
       {
          var processes = compoundProperties.Processes;
          var compoundConfig = new TablePart(PKSimConstants.UI.Parameter, PKSimConstants.UI.AlternativeInCompound)
-            {
-               Title = PKSimConstants.UI.SimulationCompoundsConfiguration
-            };
+         {
+            Title = PKSimConstants.UI.SimulationCompoundsConfiguration
+         };
 
 
          foreach (var alternativeSelection in compoundProperties.CompoundGroupSelections)

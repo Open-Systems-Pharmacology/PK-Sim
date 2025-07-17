@@ -4,6 +4,7 @@ using OSPSuite.TeXReporting.Builder;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Services;
+using PKSim.Infrastructure.Reporting.TeX.Items;
 
 namespace PKSim.Infrastructure.Reporting.TeX.Builders
 {
@@ -16,10 +17,10 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       protected override IEnumerable<object> BuildingBlockReport(RandomPopulation population, OSPSuiteTracker tracker)
       {
          return new List<object>
-                   {
-                      population.Settings,
-                      new Items.SelectedDistribution(population)
-                   };
+         {
+            population.Settings,
+            new SelectedDistribution(population)
+         };
       }
    }
 }

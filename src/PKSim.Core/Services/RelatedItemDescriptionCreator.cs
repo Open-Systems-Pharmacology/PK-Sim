@@ -1,8 +1,9 @@
-﻿using OSPSuite.Utility.Visitor;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Journal;
+using OSPSuite.Core.Reporting;
+using OSPSuite.Utility.Visitor;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Journal;
 
 namespace PKSim.Core.Services
 {

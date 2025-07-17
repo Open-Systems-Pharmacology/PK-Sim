@@ -8,6 +8,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Reporting;
 
 namespace PKSim.Core.Reporting
 {

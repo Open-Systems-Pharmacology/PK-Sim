@@ -23,6 +23,7 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using PKSim.Core;
+using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;

@@ -4,6 +4,7 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.Infrastructure.ORM.DAS;
+using static OSPSuite.Assets.Error;
 
 namespace PKSim.Infrastructure.ORM.Core
 {
@@ -38,7 +39,7 @@ namespace PKSim.Infrastructure.ORM.Core
             DatabaseObject = new DAS.DAS();
 
          if (!FileHelper.FileExists(databasePath))
-            throw new OSPSuiteException(PKSimConstants.Error.FileDoesNotExist(databasePath));
+            throw new OSPSuiteException(FileDoesNotExist(databasePath));
 
          DatabaseObject.Connect(databasePath.ToUNCPath(), _userName, _password, GetProvider());
       }

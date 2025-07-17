@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Reporting;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -37,7 +38,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
             var particleDisperseSystem = formulation.Parameter(Constants.Parameters.PARTICLE_DISPERSE_SYSTEM);
             var particleDistribution = formulation.Parameter(Constants.Parameters.PARTICLE_SIZE_DISTRIBUTION);
             var displayParticleDistribution = _infoRepository.DisplayNameFor(particleDistribution);
-            tablePart = new TablePart(PKSimConstants.UI.Parameter) {Caption = parameterTableCaption};
+            tablePart = new TablePart(PKSimConstants.UI.Parameter) { Caption = parameterTableCaption };
 
             if (particleDisperseSystem.Value == CoreConstants.Parameters.MONODISPERSE)
             {

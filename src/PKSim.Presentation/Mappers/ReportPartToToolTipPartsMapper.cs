@@ -1,9 +1,8 @@
 using System.Collections.Generic;
+using OSPSuite.Core.Reporting;
 using PKSim.Assets;
-using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core.Reporting;
 using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Mappers

@@ -1,3 +1,4 @@
+using OSPSuite.Core.Reporting;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;

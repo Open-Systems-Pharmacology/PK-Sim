@@ -5,7 +5,7 @@ using FakeItEasy;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
-using PKSim.Core.Reporting;
+using OSPSuite.Core.Reporting;
 using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Simulations;

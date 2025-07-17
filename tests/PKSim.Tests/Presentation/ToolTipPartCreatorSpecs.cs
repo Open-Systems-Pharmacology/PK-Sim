@@ -2,13 +2,13 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Reporting;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Services;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Nodes;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
-
 
 namespace PKSim.Presentation
 {
@@ -19,9 +19,9 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _toolTipMapper= A.Fake<IReportPartToToolTipPartsMapper>();
-         _reportGenerator= A.Fake<IReportGenerator>();
-         sut = new ToolTipPartCreator(_reportGenerator,_toolTipMapper);
+         _toolTipMapper = A.Fake<IReportPartToToolTipPartsMapper>();
+         _reportGenerator = A.Fake<IReportGenerator>();
+         sut = new ToolTipPartCreator(_reportGenerator, _toolTipMapper);
       }
    }
 
@@ -33,12 +33,12 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _toolTips=new List<ToolTipPart>();
-         var simulation= A.Fake<Simulation>();
-         var reportPart=new ReportPart();
+         _toolTips = new List<ToolTipPart>();
+         var simulation = A.Fake<Simulation>();
+         var reportPart = new ReportPart();
          A.CallTo(() => _reportGenerator.ReportFor(simulation)).Returns(reportPart);
          A.CallTo(() => _toolTipMapper.MapFrom(reportPart)).Returns(_toolTips);
-         _classifiableWrapper = new ClassifiableSimulation {Subject = simulation};
+         _classifiableWrapper = new ClassifiableSimulation { Subject = simulation };
       }
 
       [Observation]
@@ -47,4 +47,4 @@ namespace PKSim.Presentation
          sut.ToolTipFor(_classifiableWrapper).ShouldOnlyContain(_toolTips);
       }
    }
-}	
+}

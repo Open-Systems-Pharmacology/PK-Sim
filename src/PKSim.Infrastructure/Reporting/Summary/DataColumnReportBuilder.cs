@@ -1,4 +1,5 @@
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary
@@ -14,7 +15,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
 
       protected override void FillUpReport(DataColumn column, ReportPart reportPart)
       {
-         if(column.DataInfo==null) return;
+         if (column.DataInfo == null) return;
          reportPart.AddPart(_reportGenerator.ReportFor(column.DataInfo.ExtendedProperties).WithTitle(column.Name));
       }
    }
