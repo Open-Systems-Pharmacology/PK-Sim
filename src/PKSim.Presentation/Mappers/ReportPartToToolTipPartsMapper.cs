@@ -1,16 +1,15 @@
 using System.Collections.Generic;
-using OSPSuite.Core.Reporting;
-using PKSim.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Presentation.Core;
+using PKSim.Assets;
+using PKSim.Core.Reporting;
 
 namespace PKSim.Presentation.Mappers
 {
    public interface IReportPartToToolTipPartsMapper : IMapper<ReportPart, IList<ToolTipPart>>,
-                                                      IMapper<string, IList<ToolTipPart>>
+      IMapper<string, IList<ToolTipPart>>
    {
-
    }
 
    public class ReportPartToToolTipPartsMapper : IReportPartToToolTipPartsMapper
@@ -26,8 +25,8 @@ namespace PKSim.Presentation.Mappers
       {
          if (reportPart == null) return;
 
-         var toolTipPart = new ToolTipPart {Title = reportPart.Title, Content = reportPart.Content};
-         if(!string.IsNullOrEmpty(toolTipPart.Content))
+         var toolTipPart = new ToolTipPart { Title = reportPart.Title, Content = reportPart.Content };
+         if (!string.IsNullOrEmpty(toolTipPart.Content))
             toolTipParts.Add(toolTipPart);
 
          reportPart.SubParts.Each(x => addToolTipPart(toolTipParts, x));
@@ -35,7 +34,7 @@ namespace PKSim.Presentation.Mappers
 
       public IList<ToolTipPart> MapFrom(string input)
       {
-         var report = new ReportPart {Title = PKSimConstants.UI.Description};
+         var report = new ReportPart { Title = PKSimConstants.UI.Description };
          report.AddToContent(input);
          return MapFrom(report);
       }

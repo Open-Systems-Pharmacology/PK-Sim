@@ -1,5 +1,4 @@
 ﻿using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Reporting;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Reporting;
 

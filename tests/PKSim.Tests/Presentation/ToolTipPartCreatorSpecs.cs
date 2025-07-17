@@ -2,7 +2,6 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Reporting;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
 using PKSim.Core.Model;

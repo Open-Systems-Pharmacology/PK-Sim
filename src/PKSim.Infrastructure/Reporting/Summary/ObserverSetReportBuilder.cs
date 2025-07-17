@@ -1,6 +1,6 @@
 ﻿using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using OSPSuite.Core.Reporting;
+using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
@@ -9,10 +9,7 @@ namespace PKSim.Infrastructure.Reporting.Summary
       protected override void FillUpReport(ObserverSet observerSet, ReportPart reportPart)
       {
          reportPart.Title = observerSet.Name;
-         observerSet.Observers.Each(x =>
-         {
-            reportPart.AddToContent(x.Name);
-         });
+         observerSet.Observers.Each(x => { reportPart.AddToContent(x.Name); });
       }
    }
 }

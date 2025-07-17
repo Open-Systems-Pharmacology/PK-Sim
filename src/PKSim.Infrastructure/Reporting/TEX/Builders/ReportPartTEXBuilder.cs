@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using OSPSuite.Core.Reporting;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Items;

@@ -4,7 +4,6 @@ using OSPSuite.Utility.Format;
 using PKSim.Assets;
 using PKSim.Core.Mappers;
 using PKSim.Core.Model;
-using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 

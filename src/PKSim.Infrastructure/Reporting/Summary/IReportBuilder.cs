@@ -1,8 +1,6 @@
 using System;
-using OSPSuite.Core.Reporting;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary

@@ -1,4 +1,3 @@
-using OSPSuite.Core.Reporting;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 

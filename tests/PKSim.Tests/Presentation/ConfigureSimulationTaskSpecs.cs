@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
-using OSPSuite.Core.Reporting;
-using PKSim.Core.Services;
-using PKSim.Presentation.Core;
-using PKSim.Presentation.Presenters.Simulations;
-using PKSim.Presentation.Services;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using PKSim.Core;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Presenters.Simulations;
+using PKSim.Presentation.Services;
 
 namespace PKSim.Presentation
 {
@@ -37,10 +33,10 @@ namespace PKSim.Presentation
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          _simulationSettingsRetriever = A.Fake<ISimulationSettingsRetriever>();
          _parameterIdUpdater = A.Fake<IParameterIdUpdater>();
-         _simulationResultsTask= A.Fake<ISimulationResultsTask>();
+         _simulationResultsTask = A.Fake<ISimulationResultsTask>();
          _parameterIdentificationTask = A.Fake<IParameterIdentificationTask>();
          sut = new ConfigureSimulationTask(_buildingBlockTask, _activeSubjectRetriever, _simulationSettingsRetriever, _applicationController,
-            _executionContext, _parameterIdUpdater,_simulationResultsTask);
+            _executionContext, _parameterIdUpdater, _simulationResultsTask);
       }
    }
 
@@ -80,7 +76,6 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _buildingBlockTask.Load(_simulationToConfigure)).MustHaveHappened();
       }
-
 
       [Observation]
       public void should_start_the_presenter_to_configure_the_simulation()

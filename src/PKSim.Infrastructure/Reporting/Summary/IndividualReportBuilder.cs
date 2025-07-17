@@ -1,12 +1,11 @@
 using PKSim.Core.Model;
-using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
    public class IndividualReportBuilder : DelegateReportBuilder<Individual>
    {
-      public IndividualReportBuilder(IReportGenerator reportGenerator):base(reportGenerator)
+      public IndividualReportBuilder(IReportGenerator reportGenerator) : base(reportGenerator)
       {
       }
 

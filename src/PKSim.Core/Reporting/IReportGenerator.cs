@@ -1,5 +1,3 @@
-using OSPSuite.Core.Reporting;
-
 namespace PKSim.Core.Reporting
 {
    /// <summary>

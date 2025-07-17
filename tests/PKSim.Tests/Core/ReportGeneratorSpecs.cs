@@ -3,7 +3,6 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Reporting;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;

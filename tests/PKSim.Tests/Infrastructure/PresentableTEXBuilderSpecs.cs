@@ -1,13 +1,12 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using PKSim.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Reporting;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Services;
+using PKSim.Core;
 using PKSim.Infrastructure.Reporting.TeX.Builders;
 
 namespace PKSim.Infrastructure

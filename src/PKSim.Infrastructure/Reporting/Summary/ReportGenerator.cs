@@ -1,6 +1,6 @@
 using System;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Reporting;
+using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 using IReportGenerator = PKSim.Core.Reporting.IReportGenerator;
 

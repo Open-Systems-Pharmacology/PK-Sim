@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Reporting;
 using PKSim.Assets;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;

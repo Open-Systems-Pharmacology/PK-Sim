@@ -1,5 +1,3 @@
-using PKSim.Core.Model;
-using OSPSuite.Core.Reporting;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 

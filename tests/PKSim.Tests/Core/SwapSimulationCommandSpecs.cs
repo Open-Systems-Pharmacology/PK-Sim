@@ -1,18 +1,16 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using PKSim.Core.Commands;
-using PKSim.Core.Model;
-using OSPSuite.Core.Reporting;
-using PKSim.Core.Services;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Domain.Services;
+using PKSim.Core.Commands;
+using PKSim.Core.Model;
+using PKSim.Core.Reporting;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -30,7 +28,7 @@ namespace PKSim.Core
          _context = A.Fake<IExecutionContext>();
          _oldSimulation = new IndividualSimulation().WithName("Old");
          _newSimulation = new IndividualSimulation().WithName("New");
-         _project =new PKSimProject();
+         _project = new PKSimProject();
          _simulationDifferenceBuilder = A.Fake<ISimulationCommandDescriptionBuilder>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -52,7 +50,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _sensitivityAnalysis = new SensitivityAnalysis {Simulation = _oldSimulation};
+         _sensitivityAnalysis = new SensitivityAnalysis { Simulation = _oldSimulation };
          _project.AddSensitivityAnalysis(_sensitivityAnalysis);
       }
 
@@ -85,7 +83,7 @@ namespace PKSim.Core
       [Observation]
       public void the_project_must_be_updated_with_the_simulation_correctly_classified_according_to_the_old_simulation_classification()
       {
-         _project.AllClassifiables.OfType<ClassifiableSimulation>().Select(x=>x.Simulation).ShouldContain(_newSimulation);
+         _project.AllClassifiables.OfType<ClassifiableSimulation>().Select(x => x.Simulation).ShouldContain(_newSimulation);
       }
    }
 
@@ -131,7 +129,6 @@ namespace PKSim.Core
          sut.ExtendedDescription.Contains("toto").ShouldBeTrue();
       }
    }
-
 
    public class The_inverse_of_the_swap_simulation_command : concern_for_SwapSimulationCommand
    {
