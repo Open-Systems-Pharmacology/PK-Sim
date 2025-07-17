@@ -1,7 +1,7 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Domain;
+using PKSim.Assets;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Reporting;
-using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {

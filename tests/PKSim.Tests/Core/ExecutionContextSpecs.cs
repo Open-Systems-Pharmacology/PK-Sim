@@ -1,15 +1,14 @@
 using System;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
-using FakeItEasy;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Services;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ILazyLoadTask = PKSim.Core.Services.ILazyLoadTask;
 
@@ -55,7 +54,7 @@ namespace PKSim.Core
          _project = A.Fake<PKSimProject>();
          _idThatDoesNotExist = "tralalalal";
          _parameter = A.Fake<IParameter>();
-         _parameterChangeUpdater= A.Fake<IParameterChangeUpdater>();
+         _parameterChangeUpdater = A.Fake<IParameterChangeUpdater>();
          A.CallTo(() => _projectRetriever.CurrentProject).Returns(_project);
          _idThatDoesExist = "toto";
          _container = A.Fake<IContainer>();

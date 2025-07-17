@@ -5,13 +5,14 @@ using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
-using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -28,7 +29,7 @@ namespace PKSim.CLI
       protected ISimulationExporter _simulationExporter;
       protected ILazyLoadTask _lazyLoadTask;
 
-      protected ExportRunOptions _exportRunOptions = new ExportRunOptions {ExportMode = SimulationExportMode.Json | SimulationExportMode.Xml};
+      protected ExportRunOptions _exportRunOptions = new ExportRunOptions { ExportMode = SimulationExportMode.Json | SimulationExportMode.Xml };
 
       private Func<string, bool> _oldFileExists;
       private Func<string, string> _oldCreateDirectory;
@@ -80,7 +81,7 @@ namespace PKSim.CLI
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          sut = new ExportSimulationRunner(_logger, _workspacePersistor, _workspace, _simulationExporter, _lazyLoadTask);
 
-         _project = new PKSimProject {Name = _projectName};
+         _project = new PKSimProject { Name = _projectName };
          _simulation1 = createSimulationWithResults(_simulation1Name);
          _simulation2 = createSimulationWithResults(_simulation2Name);
 
@@ -185,7 +186,7 @@ namespace PKSim.CLI
       {
          await base.Context();
          _exportRunOptions.ProjectFile = _projectFileName;
-         _exportRunOptions.Simulations = new[] {_simulation1.Name};
+         _exportRunOptions.Simulations = new[] { _simulation1.Name };
          _exportRunOptions.RunSimulation = false;
          _project.AddBuildingBlock(_simulation1);
          _project.AddBuildingBlock(_simulation2);
@@ -296,7 +297,7 @@ namespace PKSim.CLI
       {
          await base.Context();
          _exportRunOptions.ProjectFile = _projectFileName;
-         _exportRunOptions.Simulations = new[] {_simulation2Name};
+         _exportRunOptions.Simulations = new[] { _simulation2Name };
          _project.AddBuildingBlock(_simulation1);
       }
 

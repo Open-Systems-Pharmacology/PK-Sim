@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using OSPSuite.Presentation.Nodes;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Presentation.Mappers;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Services;
 
 namespace PKSim.Presentation.Nodes
 {

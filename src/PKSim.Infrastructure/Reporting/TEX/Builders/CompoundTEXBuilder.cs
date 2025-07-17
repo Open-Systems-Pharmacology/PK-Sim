@@ -26,7 +26,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       private OSPSuiteTracker _tracker;
 
       public CompoundTeXBuilder(ITeXBuilderRepository builderRepository, IReportGenerator reportGenerator, ILazyLoadTask lazyLoadTask,
-                                IRepresentationInfoRepository representationRepository, ICompoundAlternativeTask compoundAlternativeTask)
+         IRepresentationInfoRepository representationRepository, ICompoundAlternativeTask compoundAlternativeTask)
          : base(builderRepository, reportGenerator, lazyLoadTask)
       {
          _representationRepository = representationRepository;
@@ -45,7 +45,6 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             report.AddRangeSafe(lipophilicyAlternatives(compound));
             report.AddRangeSafe(fractionUnboundAlternatives(compound));
             report.AddRangeSafe(solubilityAlternatives(compound));
-
 
 
             report.Add(new SubSection(PKSimConstants.UI.ADME));
@@ -93,12 +92,10 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          report.AddRange(thisSection);
       }
 
-
-
       private void createTranspoortAndExcretion(Compound compound, List<object> report, BuildTracker tracker)
       {
          var thisSection = new List<object>();
-         
+
          thisSection.AddRangeSafe(partialProcesses<TransportPartialProcess>(compound));
          thisSection.AddRangeSafe(systemicProcesses(compound, SystemicProcessTypes.Renal));
          thisSection.AddRangeSafe(systemicProcesses(compound, SystemicProcessTypes.Biliary));
@@ -120,7 +117,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       private void createDistribution(Compound compound, List<object> report, BuildTracker tracker)
       {
          var thisSection = new List<object>();
-         
+
          thisSection.AddRangeSafe(permeabilityAlternatives(compound));
 
          addCalculationMethodsAccordingToPredicate(compound, thisSection,
@@ -129,7 +126,6 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          thisSection.AddRangeSafe(partialProcesses<SpecificBindingPartialProcess>(compound));
 
          addToReport(report, tracker, thisSection, PKSimConstants.UI.Distribution);
-
       }
 
       private void createAbsorption(Compound compound, List<object> report, BuildTracker tracker)
@@ -155,7 +151,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> calculationMethods(IEnumerable<CalculationMethod> calculationMethods)
       {
-         var report = new List<object> {calculationMethods.ToList()};
+         var report = new List<object> { calculationMethods.ToList() };
          return report;
       }
 
@@ -185,17 +181,17 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       {
          var molWeight = _representationRepository.DisplayNameFor(RepresentationObjectType.PARAMETER, Constants.Parameters.MOL_WEIGHT);
          return new List<object>
-            {
-               compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE),
-               new SubSubSection(molWeight),
-               new ParameterList(molWeight,
-                                 compound.Parameter(Constants.Parameters.MOL_WEIGHT),
-                                 compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT),
-                                 compound.Parameter(Constants.Parameters.I),
-                                 compound.Parameter(Constants.Parameters.F),
-                                 compound.Parameter(Constants.Parameters.CL),
-                                 compound.Parameter(Constants.Parameters.BR))
-            };
+         {
+            compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE),
+            new SubSubSection(molWeight),
+            new ParameterList(molWeight,
+               compound.Parameter(Constants.Parameters.MOL_WEIGHT),
+               compound.Parameter(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT),
+               compound.Parameter(Constants.Parameters.I),
+               compound.Parameter(Constants.Parameters.F),
+               compound.Parameter(Constants.Parameters.CL),
+               compound.Parameter(Constants.Parameters.BR))
+         };
       }
 
       private IEnumerable<object> dissociationConstants(Compound compound)
@@ -246,19 +242,19 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             setParameterValue(alternative.Parameter(CoreConstants.Parameters.SOLUBILITY_GAIN_PER_CHARGE), row, PKSimConstants.UI.SolubilityGainPerCharge);
          }
 
-         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY, CreateColumns, (Action<DataRow, ParameterAlternative>) FillColumns, PKSimConstants.Reporting.SolubilityDescription);
+         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_SOLUBILITY, CreateColumns, (Action<DataRow, ParameterAlternative>)FillColumns, PKSimConstants.Reporting.SolubilityDescription);
       }
 
       private IEnumerable<object> intestinalPermeabilityAlternatives(Compound compound)
       {
          return calculatedAlternatives(compound, CoreConstants.Groups.COMPOUND_INTESTINAL_PERMEABILITY, PKSimConstants.UI.Permeability,
-                                       CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY, PKSimConstants.Reporting.IntestinalPermeabilityDescription, x => x.IntestinalPermeabilityValuesFor);
+            CoreConstants.Parameters.SPECIFIC_INTESTINAL_PERMEABILITY, PKSimConstants.Reporting.IntestinalPermeabilityDescription, x => x.IntestinalPermeabilityValuesFor);
       }
 
       private IEnumerable<object> permeabilityAlternatives(Compound compound)
       {
          return calculatedAlternatives(compound, CoreConstants.Groups.COMPOUND_PERMEABILITY, PKSimConstants.UI.Permeability,
-                                       CoreConstants.Parameters.PERMEABILITY, PKSimConstants.Reporting.PermeabilityDescription, x => x.PermeabilityValuesFor);
+            CoreConstants.Parameters.PERMEABILITY, PKSimConstants.Reporting.PermeabilityDescription, x => x.PermeabilityValuesFor);
       }
 
       private IEnumerable<object> fractionUnboundAlternatives(Compound compound)
@@ -275,7 +271,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             row[PKSimConstants.UI.Species] = alternative.Species.DisplayName;
          }
 
-         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CreateColumns, (Action<DataRow, ParameterAlternativeWithSpecies>) FillColumns, PKSimConstants.Reporting.FractionUnboundDescription);
+         return createAlternatives(compound, CoreConstants.Groups.COMPOUND_FRACTION_UNBOUND, CreateColumns, (Action<DataRow, ParameterAlternativeWithSpecies>)FillColumns, PKSimConstants.Reporting.FractionUnboundDescription);
       }
 
       private IEnumerable<object> lipophilicyAlternatives(Compound compound)
@@ -331,6 +327,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
                table.Rows.Add(row);
             }
          }
+
          return tableWithParagraph(table, description, compound.Name);
       }
 
@@ -340,7 +337,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
          void FillColumns(DataRow row, ParameterAlternative alternative) => setParameterValue(alternative.Parameter(parameterName), row, columnName);
 
-         return createAlternatives(compound, groupName, CreateColumns, (Action<DataRow, ParameterAlternative>) FillColumns, description);
+         return createAlternatives(compound, groupName, CreateColumns, (Action<DataRow, ParameterAlternative>)FillColumns, description);
       }
 
       private void setParameterValue(IParameter parameter, DataRow row, string columnName)
@@ -356,6 +353,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             row.Table.Columns[columnName].SetUnit(parameter.DisplayUnit.Name);
             unit = parameter.DisplayUnit.Name;
          }
+
          return unit;
       }
 

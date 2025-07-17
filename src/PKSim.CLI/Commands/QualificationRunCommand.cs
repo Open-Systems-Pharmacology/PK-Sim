@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using CommandLine;
-using PKSim.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.RunOptions;
 
 namespace PKSim.CLI.Commands
 {

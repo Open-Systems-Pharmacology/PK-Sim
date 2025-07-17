@@ -1,11 +1,11 @@
 using System;
-using OSPSuite.Core.Domain;
-using PKSim.Core.Model;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
-using FakeItEasy;
 using PKSim.Infrastructure.Reporting.Summary;
 
 namespace PKSim.Core
@@ -17,13 +17,12 @@ namespace PKSim.Core
 
       protected override void Context()
       {
-         _reportBuilderRepository =A.Fake<IReportBuilderRepository>();
-         _representationInfoRepository =A.Fake<IRepresentationInfoRepository>();
-         sut = new ReportGenerator(_reportBuilderRepository,_representationInfoRepository);
+         _reportBuilderRepository = A.Fake<IReportBuilderRepository>();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         sut = new ReportGenerator(_reportBuilderRepository, _representationInfoRepository);
       }
    }
 
-   
    public class When_generating_a_report_for_an_object : concern_for_ReportGenerator
    {
       private IEntity _entity;
@@ -33,7 +32,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _report =new ReportPart();
+         _report = new ReportPart();
          _entity = new PKSimParameter();
          _reportBuilder = A.Fake<IReportBuilder<IEntity>>();
          A.CallTo(() => _reportBuilderRepository.BuilderFor(_entity)).Returns(_reportBuilder);
@@ -47,7 +46,6 @@ namespace PKSim.Core
       }
    }
 
-   
    public class When_generating_a_report_for_an_object_for_which_no_report_builder_was_found : concern_for_ReportGenerator
    {
       private IEntity _entity;
@@ -68,4 +66,4 @@ namespace PKSim.Core
          sut.ReportFor(_entity).Content.Contains(_description).ShouldBeTrue();
       }
    }
-}	
+}

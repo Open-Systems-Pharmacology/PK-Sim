@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -11,7 +9,9 @@ using OSPSuite.Core.Reporting;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets.Extensions;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
 
 namespace PKSim.Presentation.Presenters
 {
@@ -20,7 +20,7 @@ namespace PKSim.Presentation.Presenters
       private readonly IObjectTypeResolver _objectTypeResolver;
 
       public ReportingPresenter(IReportingView view, IReportTemplateRepository reportTemplateRepository,
-                                IDialogCreator dialogCreator, IReportingTask reportingTask, IObjectTypeResolver objectTypeResolver, IStartOptions startOptions)
+         IDialogCreator dialogCreator, IReportingTask reportingTask, IObjectTypeResolver objectTypeResolver, IStartOptions startOptions)
          : base(view, reportTemplateRepository, dialogCreator, reportingTask, startOptions)
       {
          _objectTypeResolver = objectTypeResolver;

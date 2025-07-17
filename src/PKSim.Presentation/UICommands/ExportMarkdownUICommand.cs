@@ -2,8 +2,8 @@
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
-using PKSim.Core;
 using PKSim.Core.Services;
+using static OSPSuite.Core.Domain.Constants.Filter;
 
 namespace PKSim.Presentation.UICommands
 {
@@ -20,7 +20,7 @@ namespace PKSim.Presentation.UICommands
 
       protected override async void PerformExecute()
       {
-         var file = _dialogCreator.AskForFileToSave("Select markdown file", Constants.Filter.FileFilter("Markdown File", CoreConstants.Filter.MARKDOWN_EXTENSION), Constants.DirectoryKey.REPORT, Subject.Name);
+         var file = _dialogCreator.AskForFileToSave("Select markdown file", FileFilter("Markdown File", MARKDOWN_EXTENSION), Constants.DirectoryKey.REPORT, Subject.Name);
          if (string.IsNullOrEmpty(file))
             return;
 
