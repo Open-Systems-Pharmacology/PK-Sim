@@ -8,6 +8,7 @@ using OSPSuite.Presentation.Core;
 using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
+using PKSim.Core.Reporting;
 using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Services;
