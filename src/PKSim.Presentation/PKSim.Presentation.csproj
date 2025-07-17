@@ -25,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.0-jwcFf" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.24" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.1" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.0-jwcFf" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.0-jwcFf" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.24" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.24" />
   </ItemGroup>
 
   <ItemGroup>
