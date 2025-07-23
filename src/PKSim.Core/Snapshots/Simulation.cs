@@ -14,8 +14,7 @@ namespace PKSim.Core.Snapshots
    {
       public PKSimBuildingBlockType BuildingBlockType { get; } = PKSimBuildingBlockType.Simulation;
 
-      [Required]
-      public string Model { get; set; }
+      [Required] public string Model { get; set; }
 
       public bool? AllowAging { get; set; }
       public string[] ObservedData { get; set; }
@@ -54,7 +53,6 @@ namespace PKSim.Core.Snapshots
             return new List<OSPSuite.Core.Snapshots.Chart>();
          }
       }
-
 
       public LocalizedParameter ParameterByPath(string parameterPath) =>
          Parameters?.Find(x => string.Equals(x.Path, parameterPath));
