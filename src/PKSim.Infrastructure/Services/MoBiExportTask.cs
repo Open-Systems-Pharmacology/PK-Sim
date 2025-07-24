@@ -97,12 +97,13 @@ namespace PKSim.Infrastructure.Services
 
       private string retrieveMoBiExecutablePath()
       {
+         //Path was defined in application settings? it takes precedence over the configuration
+         if (FileHelper.FileExists(_applicationSettings.MoBiPath))
+            return _applicationSettings.MoBiPath;
+
          //Installed properly via Setup? return standard path
          if (FileHelper.FileExists(_configuration.MoBiPath))
             return _configuration.MoBiPath;
-
-         if (FileHelper.FileExists(_applicationSettings.MoBiPath))
-            return _applicationSettings.MoBiPath;
 
          throw new PKSimException(PKSimConstants.Error.MoBiNotFound);
       }
