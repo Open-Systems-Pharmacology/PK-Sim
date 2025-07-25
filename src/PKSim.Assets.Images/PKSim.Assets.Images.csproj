@@ -15,6 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\SmallMoleculesStructure.png" />
+    <None Remove="Resources\TwoPoresModelStructure.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
 
@@ -33,6 +38,11 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\SmallMoleculesStructure.png" />
+    <EmbeddedResource Include="Resources\TwoPoresModelStructure.png" />
   </ItemGroup>
 
   <ItemGroup>
