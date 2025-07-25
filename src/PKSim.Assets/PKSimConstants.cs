@@ -2186,7 +2186,7 @@ namespace PKSim.Assets
          public static readonly string SimulationProperties = "Simulation Properties";
          public static readonly string IndividualIds = "Individual Ids";
          public static readonly string IndividualIdsDescription = "Ids of individuals to extract separated with comma (e.g. 1, 4, 8)";
-         public static readonly string UseWatermark = "Use watermark in charts when exporting to clipboard?";
+         public static readonly string UseWatermark = "Use watermark in charts when exporting to clipboard or file?";
          public static readonly string WatermarkText = "Text";
          public static readonly string WatermarkProperties = "Watermark Properties";
          public static readonly string CreateTableSolubilityAlternative = "Create as pH-Solubility table";
