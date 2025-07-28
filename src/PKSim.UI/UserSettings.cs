@@ -103,7 +103,7 @@ namespace PKSim.UI
          NumberOfIndividualsPerBin = CoreConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN;
          DefaultSpecies = CoreConstants.Species.HUMAN;
          DefaultPopulation = CoreConstants.Population.ICRP;
-         DefaultParameterGroupingMode = ParameterGroupingModeId.Simple;
+         DefaultParameterGroupingMode = ParameterGroupingModeId.Advanced;
          LayoutVersion = CoreConstants.LAYOUT_VERSION;
          AbsTol = CoreConstants.DEFAULT_ABS_TOL;
          RelTol = CoreConstants.DEFAULT_REL_TOL;
