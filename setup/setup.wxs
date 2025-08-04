@@ -148,8 +148,6 @@
         </Directory>
       </Directory>
 
-      <Merge Id="msxml4sxs32" SourceFile="$(var.DeployDir)/msxml4sxs32.msm" Language="1033" DiskId="1" />
-      <Merge Id="msxml4sys32" SourceFile="$(var.DeployDir)/msxml4sys32.msm" Language="1033" DiskId="1" />
       <Merge Id="vb6" SourceFile="$(var.DeployDir)/MSVBVM60.msm" Language="1033" DiskId="1" />
       <Merge Id="comcat" SourceFile="$(var.DeployDir)/COMCAT.msm" Language="1033" DiskId="1" />
       <Merge Id="ole" SourceFile="$(var.DeployDir)/OLEAUT32.msm" Language="1033" DiskId="1" />
@@ -187,9 +185,7 @@
       <ComponentRef Id="OSPSuite.Dimensions" />
       <ComponentRef Id="OSPSuite.PKParameters" />
       <ComponentRef Id="templates" />
-
-      <MergeRef Id="msxml4sys32" />
-      <MergeRef Id="msxml4sxs32" />
+     
       <MergeRef Id="vb6" />
       <MergeRef Id="comcat" />
       <MergeRef Id="ole" />
