@@ -15,16 +15,15 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Restore dependencies
+      - name: Add NuGet Repository
         run: |
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
-          dotnet restore
 
       - name: Build
-        run: dotnet build PKSim.sln /p:Version=12.1.9999
+        run: dotnet build PKSim.sln /p:Version=12.1.9999 -p:ExcludeDesigner=true
 
       - name: Test
-        run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+        run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4

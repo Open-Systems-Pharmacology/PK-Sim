@@ -50,10 +50,9 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Restore dependencies
+      - name: Add NuGet Repository
         run: |
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
-          dotnet restore
 
       - name: define env variables
         run: |
@@ -62,25 +61,25 @@ jobs:
       - name: Build
         run: |
           rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
-          dotnet build PKSim.sln /p:Version=${{env.APP_VERSION}}
+          dotnet build PKSim.sln /p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
 
       - name : Test
-        run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+        run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Sign PKSim.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
         with:
-          file_path: ./src/PKSim/bin/Debug/net472/PKSim.exe
+          file_path: ./src/PKSim/bin/Debug/net8.0-windows/PKSim.exe
           
       - name: Sign PKSim.BatchTool.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
         with:
-          file_path: ./src/PKSim/bin/Debug/net472/PKSim.BatchTool.exe
+          file_path: ./src/PKSim/bin/Debug/net8.0-windows/PKSim.BatchTool.exe
           
       - name: Sign PKSim.CLI.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
         with:
-          file_path: ./src/PKSim/bin/Debug/net472/PKSim.CLI.exe
+          file_path: ./src/PKSim/bin/Debug/net8.0-windows/PKSim.CLI.exe
           
       - name: Create Setup
         run: |

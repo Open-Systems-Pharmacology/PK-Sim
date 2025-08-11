@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
   </PropertyGroup>
@@ -19,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.33" />
-    <PackageReference Include="OSPSuite.UI" Version="13.0.33" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.33" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.33" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.34" />
   </ItemGroup>
 
 </Project>
