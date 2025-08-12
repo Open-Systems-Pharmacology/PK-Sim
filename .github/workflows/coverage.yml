@@ -14,13 +14,12 @@ jobs:
         with:
           submodules: 'true'
 
-      - name: Restore dependencies
+      - name: Add NuGet repository
         run: |
           nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
-          nuget restore
 
       - name: Build
-        run: dotnet build PKSim.sln /p:Version=12.1.999
+        run: dotnet build PKSim.sln /p:Version=12.1.999 -p:ExcludeDesigner=true
         
       - name: Cover and report
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/dotCover@main

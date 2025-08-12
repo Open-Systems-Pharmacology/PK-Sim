@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<OutputPath>bin\$(Configuration)</OutputPath>
       <Version Condition="'$(Version)' == ''">13.0.0</Version>
@@ -24,12 +24,12 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 		<PackageReference Include="nunit" Version="3.14.0" />
-		<PackageReference Include="OSPSuite.Assets" Version="13.0.33" />
+		<PackageReference Include="OSPSuite.Assets" Version="13.0.34" />
 		<PackageReference Include="OSPSuite.BDDHelper" Version="4.0.1.1" />
-		<PackageReference Include="OSPSuite.Core" Version="13.0.33" />
-		<PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" />
-		<PackageReference Include="OSPSuite.UI" Version="13.0.33" />
-		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
+		<PackageReference Include="OSPSuite.Core" Version="13.0.34" />
+		<PackageReference Include="OSPSuite.SimModel" Version="4.0.0.76" />
+		<PackageReference Include="OSPSuite.UI" Version="13.0.34" />
+		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.74" GeneratePathProperty="true" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
 		<None Include="..\..\src\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -42,12 +42,6 @@
 		<ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj" />
 
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<ItemGroup>
-			<WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
-		</ItemGroup>
-		<Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
-	</Target>
 	<PropertyGroup>
 		<ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
 		<CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>

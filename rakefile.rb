@@ -20,7 +20,6 @@ task :cover do
   targetProjects = [
 	"PKSim.Tests.csproj",
 	"PKSim.R.Tests.csproj",
-	"PKSim.Matlab.Tests.csproj",
 	"PKSim.UI.Tests.csproj",
 	];
 
@@ -142,7 +141,7 @@ end
 private
 
 def relative_src_dir_for(configuration)
-	File.join( 'src', 'PKSim', 'bin', configuration, 'net472')
+	File.join( 'src', 'PKSim', 'bin', configuration, 'net8.0-windows')
 end
 
 def src_dir_for(configuration)
