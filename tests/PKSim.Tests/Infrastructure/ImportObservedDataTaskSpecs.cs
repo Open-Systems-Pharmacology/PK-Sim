@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Serialization.Xml;
@@ -15,9 +16,6 @@ using PKSim.Infrastructure.Services;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
-using DevExpress.Utils.Extensions;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Infrastructure
 {
@@ -83,36 +81,35 @@ namespace PKSim.Infrastructure
          var fakeCol = A.Fake<DataColumn>();
 
          A.CallTo(() => overwrittenDataSet.Columns).Returns(new List<DataColumn> { fakeCol });
-         
+
          var existingDataSet = A.Fake<DataRepository>();
 
          var existingBaseGrid = A.Fake<BaseGrid>();
 
-         A.CallTo(() => existingBaseGrid.Values).Returns(new List<float>{0});
+         A.CallTo(() => existingBaseGrid.Values).Returns(new List<float> { 0 });
 
          A.CallTo(() => existingDataSet.BaseGrid).Returns(existingBaseGrid);
 
          A.CallTo(() => _dataImporter.AreFromSameMetaDataCombination(existingDataSet, overwrittenDataSet))
-             .Returns(true);
+            .Returns(true);
 
          _observedDataFromSameFile = new List<DataRepository> { existingDataSet };
 
          A.CallTo(() => _dataImporter.CalculateReloadDataSetsFromConfiguration(
-                 A<IReadOnlyList<DataRepository>>._,
-                 A<IReadOnlyList<DataRepository>>._))
-           .Returns(new ReloadDataSets(
-               new List<DataRepository>(),                     // NewDataSets
-               new List<DataRepository> { overwrittenDataSet },// OverwrittenDataSets -> triggers foreach
-               new List<DataRepository>()                      // ToBeDeleted
-           ));
+               A<IReadOnlyList<DataRepository>>._,
+               A<IReadOnlyList<DataRepository>>._))
+            .Returns(new ReloadDataSets(
+               new List<DataRepository>(), // NewDataSets
+               new List<DataRepository> { overwrittenDataSet }, // OverwrittenDataSets -> triggers foreach
+               new List<DataRepository>() // ToBeDeleted
+            ));
 
          A.CallTo(() => _dialogCreator.AskForFileToOpen(
-                 A<string>._, A<string>._, A<string>._, A<string>._, A<string>._))
-           .Returns("dummy.csv");
+               A<string>._, A<string>._, A<string>._, A<string>._, A<string>._))
+            .Returns("dummy.csv");
 
          sut.AddAndReplaceObservedDataFromConfigurationToProject(
-             A.Fake<ImporterConfiguration>(), _observedDataFromSameFile);
-
+            A.Fake<ImporterConfiguration>(), _observedDataFromSameFile);
       }
 
       [Observation]

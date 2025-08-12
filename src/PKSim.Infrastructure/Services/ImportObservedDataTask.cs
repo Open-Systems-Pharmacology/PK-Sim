@@ -42,21 +42,21 @@ namespace PKSim.Infrastructure.Services
       private readonly IParameterIdentificationTask _parameterIdentificationTask;
       private readonly ICoreWorkspace _workspace;
 
-      public ImportObservedDataTask(IDataImporter dataImporter, 
+      public ImportObservedDataTask(IDataImporter dataImporter,
          IExecutionContext executionContext,
-         IBuildingBlockRepository buildingBlockRepository, 
+         IBuildingBlockRepository buildingBlockRepository,
          ISpeciesRepository speciesRepository,
-         IDefaultIndividualRetriever defaultIndividualRetriever, 
+         IDefaultIndividualRetriever defaultIndividualRetriever,
          IRepresentationInfoRepository representationInfoRepository,
-         IObservedDataTask observedDataTask, 
-         IParameterChangeUpdater parameterChangeUpdater, 
-         IDialogCreator dialogCreator, 
+         IObservedDataTask observedDataTask,
+         IParameterChangeUpdater parameterChangeUpdater,
+         IDialogCreator dialogCreator,
          IContainer container,
-         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository, 
-         IEventPublisher eventPublisher, 
+         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository,
+         IEventPublisher eventPublisher,
          IParameterIdentificationTask parameterIdentificationTask,
          ICoreWorkspace workspace
-         )
+      )
       {
          _dataImporter = dataImporter;
          _executionContext = executionContext;
