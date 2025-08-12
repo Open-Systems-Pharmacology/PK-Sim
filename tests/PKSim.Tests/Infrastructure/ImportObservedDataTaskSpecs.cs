@@ -24,7 +24,6 @@ namespace PKSim.Infrastructure
       protected IParameterIdentificationTask _parameterIdentificationTask;
       protected ICoreWorkspace _coreWorkspace;
 
-      // keep references so we can configure them later
       protected IDataImporter _dataImporter;
       protected IDialogCreator _dialogCreator;
 
@@ -60,7 +59,7 @@ namespace PKSim.Infrastructure
                A<IReadOnlyList<ColumnInfo>>._,
                A<DataImporterSettings>._,
                A<string>._))
-            .Returns(new List<DataRepository>()); // empty but non-null
+            .Returns(new List<DataRepository>()); 
 
          sut = new ImportObservedDataTask(
             _dataImporter, executionContext, buildingBlockRepository, speciesRepository,
@@ -99,9 +98,9 @@ namespace PKSim.Infrastructure
                A<IReadOnlyList<DataRepository>>._,
                A<IReadOnlyList<DataRepository>>._))
             .Returns(new ReloadDataSets(
-               new List<DataRepository>(), // NewDataSets
-               new List<DataRepository> { overwrittenDataSet }, // OverwrittenDataSets -> triggers foreach
-               new List<DataRepository>() // ToBeDeleted
+               new List<DataRepository>(),
+               new List<DataRepository> { overwrittenDataSet },
+               new List<DataRepository>()
             ));
 
          A.CallTo(() => _dialogCreator.AskForFileToOpen(
