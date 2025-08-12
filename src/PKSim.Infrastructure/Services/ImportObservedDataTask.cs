@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -41,12 +40,23 @@ namespace PKSim.Infrastructure.Services
       private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
       private readonly IEventPublisher _eventPublisher;
       private readonly IParameterIdentificationTask _parameterIdentificationTask;
+      private readonly ICoreWorkspace _workspace;
 
-      public ImportObservedDataTask(IDataImporter dataImporter, IExecutionContext executionContext,
-         IBuildingBlockRepository buildingBlockRepository, ISpeciesRepository speciesRepository,
-         IDefaultIndividualRetriever defaultIndividualRetriever, IRepresentationInfoRepository representationInfoRepository,
-         IObservedDataTask observedDataTask, IParameterChangeUpdater parameterChangeUpdater, IDialogCreator dialogCreator, IContainer container,
-         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository, IEventPublisher eventPublisher, IParameterIdentificationTask parameterIdentificationTask)
+      public ImportObservedDataTask(IDataImporter dataImporter, 
+         IExecutionContext executionContext,
+         IBuildingBlockRepository buildingBlockRepository, 
+         ISpeciesRepository speciesRepository,
+         IDefaultIndividualRetriever defaultIndividualRetriever, 
+         IRepresentationInfoRepository representationInfoRepository,
+         IObservedDataTask observedDataTask, 
+         IParameterChangeUpdater parameterChangeUpdater, 
+         IDialogCreator dialogCreator, 
+         IContainer container,
+         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository, 
+         IEventPublisher eventPublisher, 
+         IParameterIdentificationTask parameterIdentificationTask,
+         ICoreWorkspace workspace
+         )
       {
          _dataImporter = dataImporter;
          _executionContext = executionContext;
@@ -61,6 +71,7 @@ namespace PKSim.Infrastructure.Services
          _modelingXmlSerializerRepository = modelingXmlSerializerRepository;
          _eventPublisher = eventPublisher;
          _parameterIdentificationTask = parameterIdentificationTask;
+         _workspace = workspace;
       }
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
@@ -132,6 +143,8 @@ namespace PKSim.Infrastructure.Services
                   else
                      existingColumn.Values = column.Values;
                }
+
+               _workspace.Project.HasChanged = true;
             }
 
             _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);

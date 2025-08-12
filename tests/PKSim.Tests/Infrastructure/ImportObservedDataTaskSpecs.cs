@@ -3,9 +3,9 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
-using OSPSuite.Core.Import;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
@@ -14,16 +14,25 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
 using IObservedDataTask = PKSim.Core.Services.IObservedDataTask;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
+using DevExpress.Utils.Extensions;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace PKSim.Infrastructure
 {
    public abstract class concern_for_ImportObservedDataTask : ContextSpecification<IImportObservedDataTask>
    {
       protected IParameterIdentificationTask _parameterIdentificationTask;
+      protected ICoreWorkspace _coreWorkspace;
+
+      // keep references so we can configure them later
+      protected IDataImporter _dataImporter;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
-         var dataImporter = A.Fake<IDataImporter>();
+         _dataImporter = A.Fake<IDataImporter>();
          var executionContext = A.Fake<IExecutionContext>();
          var buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          var speciesRepository = A.Fake<ISpeciesRepository>();
@@ -31,38 +40,92 @@ namespace PKSim.Infrastructure
          var representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          var observedDataTask = A.Fake<IObservedDataTask>();
          var parameterChangeUpdater = A.Fake<IParameterChangeUpdater>();
-         var dialogCreator = A.Fake<IDialogCreator>();
+         _dialogCreator = A.Fake<IDialogCreator>();
          var container = A.Fake<IContainer>();
          var modelingXmlSerializerRepository = A.Fake<IOSPSuiteXmlSerializerRepository>();
          var eventPublisher = A.Fake<IEventPublisher>();
+         _coreWorkspace = A.Fake<ICoreWorkspace>();
          _parameterIdentificationTask = A.Fake<IParameterIdentificationTask>();
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(
+               A<string>._,
+               A<string>._,
+               A<string>._,
+               A<string>._,
+               A<string>._
+            ))
+            .Returns("dummy.csv");
 
-         var overwrittenData = new List<DataRepository>
-         {
-            A.Fake<DataRepository>(),
-         };
 
-         A.CallTo(() => dataImporter.CalculateReloadDataSetsFromConfiguration(A<IReadOnlyList<DataRepository>>.Ignored, A<IReadOnlyList<DataRepository>>.Ignored))
-            .Returns(new ReloadDataSets(new List<DataRepository>(), overwrittenData, new List<DataRepository>()));
+         A.CallTo(() => _dataImporter.ImportFromConfiguration(
+               A<ImporterConfiguration>._,
+               A<IReadOnlyList<MetaDataCategory>>._,
+               A<IReadOnlyList<ColumnInfo>>._,
+               A<DataImporterSettings>._,
+               A<string>._))
+            .Returns(new List<DataRepository>()); // empty but non-null
 
-         sut = new ImportObservedDataTask(dataImporter, executionContext, buildingBlockRepository, speciesRepository,
-            defaultIndividualRetriever, representationInfoRepository, observedDataTask, parameterChangeUpdater,
-            dialogCreator, container, modelingXmlSerializerRepository, eventPublisher, _parameterIdentificationTask);
+         sut = new ImportObservedDataTask(
+            _dataImporter, executionContext, buildingBlockRepository, speciesRepository,
+            defaultIndividualRetriever, representationInfoRepository, observedDataTask,
+            parameterChangeUpdater, _dialogCreator, container, modelingXmlSerializerRepository,
+            eventPublisher, _parameterIdentificationTask, _coreWorkspace);
       }
    }
 
-   public class When_adding_and_replacing_observed_data_from_configuration_to_project : concern_for_ImportObservedDataTask
+   public class When_adding_and_replacing_observed_data_from_configuration_to_project
+      : concern_for_ImportObservedDataTask
    {
+      private IReadOnlyList<DataRepository> _observedDataFromSameFile;
+
       protected override void Because()
       {
-         sut.AddAndReplaceObservedDataFromConfigurationToProject(A.Fake<ImporterConfiguration>(), A.Fake<IReadOnlyList<DataRepository>>());
+         var overwrittenDataSet = A.Fake<DataRepository>();
+         var fakeCol = A.Fake<DataColumn>();
+
+         A.CallTo(() => overwrittenDataSet.Columns).Returns(new List<DataColumn> { fakeCol });
+         
+         var existingDataSet = A.Fake<DataRepository>();
+
+         var existingBaseGrid = A.Fake<BaseGrid>();
+
+         A.CallTo(() => existingBaseGrid.Values).Returns(new List<float>{0});
+
+         A.CallTo(() => existingDataSet.BaseGrid).Returns(existingBaseGrid);
+
+         A.CallTo(() => _dataImporter.AreFromSameMetaDataCombination(existingDataSet, overwrittenDataSet))
+             .Returns(true);
+
+         _observedDataFromSameFile = new List<DataRepository> { existingDataSet };
+
+         A.CallTo(() => _dataImporter.CalculateReloadDataSetsFromConfiguration(
+                 A<IReadOnlyList<DataRepository>>._,
+                 A<IReadOnlyList<DataRepository>>._))
+           .Returns(new ReloadDataSets(
+               new List<DataRepository>(),                     // NewDataSets
+               new List<DataRepository> { overwrittenDataSet },// OverwrittenDataSets -> triggers foreach
+               new List<DataRepository>()                      // ToBeDeleted
+           ));
+
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(
+                 A<string>._, A<string>._, A<string>._, A<string>._, A<string>._))
+           .Returns("dummy.csv");
+
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(
+             A.Fake<ImporterConfiguration>(), _observedDataFromSameFile);
+
       }
 
       [Observation]
       public void should_call_update_parameter_identification_Using()
       {
-         A.CallTo(() => _parameterIdentificationTask.UpdateParameterIdentificationsUsing(A<IReadOnlyList<DataRepository>>._))
+         A.CallTo(() => _parameterIdentificationTask.UpdateParameterIdentificationsUsing(_observedDataFromSameFile))
             .MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_set_has_changed_to_true()
+      {
+         _coreWorkspace.Project.HasChanged.ShouldBeEqualTo(true);
       }
    }
 }
