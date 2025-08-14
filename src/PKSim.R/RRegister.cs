@@ -1,4 +1,6 @@
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.R.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Core;
 using PKSim.Core;
@@ -27,6 +29,7 @@ namespace PKSim.R
       private static void registerCLITypes(IContainer container)
       {
          container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
+         container.Register<ICsvDynamicSeparatorSelector, ICsvSeparatorSelector, CsvSeparatorSelector>(LifeStyle.Singleton);
       }
    }
 }
