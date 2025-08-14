@@ -10,6 +10,7 @@
     <NoWarn>1591</NoWarn>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />

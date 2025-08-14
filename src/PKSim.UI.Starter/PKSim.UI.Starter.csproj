@@ -4,6 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">

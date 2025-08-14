@@ -5,6 +5,7 @@
 		<OutputPath>bin\$(Configuration)</OutputPath>
       <Version Condition="'$(Version)' == ''">13.0.0</Version>
 		<RootNamespace>PKSim.UI</RootNamespace>
+      <IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
