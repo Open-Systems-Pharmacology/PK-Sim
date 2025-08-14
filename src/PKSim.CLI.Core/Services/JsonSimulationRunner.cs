@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.CLI.Core.Services;
-using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
@@ -140,7 +139,7 @@ namespace PKSim.CLI.Core.Services
          try
          {
             var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(projectFile.FullName);
-            
+
             // The workspace project will be needed to create the exported module snapshot in case PKML export is selected
             _workspace.Project = project;
             var simulations = project.All<Simulation>();
