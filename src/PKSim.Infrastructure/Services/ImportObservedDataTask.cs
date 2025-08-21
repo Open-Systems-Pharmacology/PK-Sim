@@ -96,8 +96,16 @@ namespace PKSim.Infrastructure.Services
          }
       }
 
-      public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile)
+      public void AddAndReplaceObservedDataFromConfigurationToProject(string configurationId, IReadOnlyList<DataRepository> observedDataFromSameFile)
       {
+         var configuration = _executionContext.Project.ImporterConfigurationBy(configurationId);
+
+         if (configuration == null)
+         {
+            _dialogCreator.MessageBoxError(PKSimConstants.Error.ImporterConfigurationNotFoundInProject);
+            return;
+         }
+
          var importedObservedData = getObservedDataFromImporter(configuration, null, false, false);
          var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile);
 

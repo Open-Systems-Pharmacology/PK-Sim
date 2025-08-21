@@ -26,11 +26,12 @@ namespace PKSim.Infrastructure
 
       protected IDataImporter _dataImporter;
       protected IDialogCreator _dialogCreator;
+      protected IExecutionContext _executionContext;
 
       protected override void Context()
       {
          _dataImporter = A.Fake<IDataImporter>();
-         var executionContext = A.Fake<IExecutionContext>();
+         _executionContext = A.Fake<IExecutionContext>();
          var buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          var speciesRepository = A.Fake<ISpeciesRepository>();
          var defaultIndividualRetriever = A.Fake<IDefaultIndividualRetriever>();
@@ -62,20 +63,52 @@ namespace PKSim.Infrastructure
             .Returns(new List<DataRepository>()); 
 
          sut = new ImportObservedDataTask(
-            _dataImporter, executionContext, buildingBlockRepository, speciesRepository,
+            _dataImporter, _executionContext, buildingBlockRepository, speciesRepository,
             defaultIndividualRetriever, representationInfoRepository, observedDataTask,
             parameterChangeUpdater, _dialogCreator, container, modelingXmlSerializerRepository,
             eventPublisher, _parameterIdentificationTask, _coreWorkspace);
       }
    }
 
-   public class When_adding_and_replacing_observed_data_from_configuration_to_project
-      : concern_for_ImportObservedDataTask
+   public class When_adding_and_replacing_observed_data_from_configuration_to_project_and_the_configuration_is_not_found
+   : concern_for_ImportObservedDataTask
    {
       private IReadOnlyList<DataRepository> _observedDataFromSameFile;
+      private readonly string _configurationId = "configurationId";
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedDataFromSameFile = new List<DataRepository>();
+         A.CallTo(() => _executionContext.Project.ImporterConfigurationBy(_configurationId)).Returns(null);
+      }
 
       protected override void Because()
       {
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(_configurationId, _observedDataFromSameFile);
+      }
+
+      [Observation]
+      public void the_dialog_creator_indicates_error()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxError(Assets.PKSimConstants.Error.ImporterConfigurationNotFoundInProject)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_set_has_not_changed_to_true()
+      {
+         _coreWorkspace.Project.HasChanged.ShouldBeEqualTo(false);
+      }
+   }
+
+   public class When_adding_and_replacing_observed_data_from_configuration_to_project : concern_for_ImportObservedDataTask
+   {
+      private IReadOnlyList<DataRepository> _observedDataFromSameFile;
+      private readonly string _configurationId = "configurationId";
+
+      protected override void Context()
+      {
+         base.Context();
          var overwrittenDataSet = A.Fake<DataRepository>();
          var fakeCol = A.Fake<DataColumn>();
 
@@ -107,8 +140,12 @@ namespace PKSim.Infrastructure
                A<string>._, A<string>._, A<string>._, A<string>._, A<string>._))
             .Returns("dummy.csv");
 
-         sut.AddAndReplaceObservedDataFromConfigurationToProject(
-            A.Fake<ImporterConfiguration>(), _observedDataFromSameFile);
+         A.CallTo(() => _executionContext.Project.ImporterConfigurationBy(_configurationId)).Returns(A.Fake<ImporterConfiguration>());
+      }
+
+      protected override void Because()
+      {
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(_configurationId, _observedDataFromSameFile);
       }
 
       [Observation]
