@@ -48,6 +48,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
                .WithCommandFor<DeleteBuildingBlockUICommand, IPKSimBuildingBlock>(simulation, _container)
+               .WithEnabled(!_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(simulation))
                .WithIcon(ApplicationIcons.Delete)
                .AsGroupStarter();
       }
@@ -95,6 +96,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Configure)
             .AsDisabledIf(simulation.IsImported)
+            .WithEnabled(!_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(simulation))
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationCommand, Simulation>(simulation, _container);
          

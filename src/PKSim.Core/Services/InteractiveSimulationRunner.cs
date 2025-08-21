@@ -59,9 +59,8 @@ namespace PKSim.Core.Services
       public bool IsSimulationRunning(Simulation simulation) =>
          _cancellationTokenSources.TryGetValue(simulation, out var cts) && !cts.IsCancellationRequested;
 
-      public Task RunSimulation(Simulation simulation, bool selectOutput) => 
+      public Task RunSimulation(Simulation simulation, bool selectOutput) =>
          runSimulationAsync(simulation, selectOutput);
-      
 
       private async Task runSimulationAsync(Simulation simulation, bool selectOutput)
       {
@@ -146,6 +145,5 @@ namespace PKSim.Core.Services
             _executionContext.PublishEvent(new SimulationRunCanceledEvent());
          }
       }
-
    }
 }
