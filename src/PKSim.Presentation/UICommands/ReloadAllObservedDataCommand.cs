@@ -35,8 +35,7 @@ namespace PKSim.Presentation.UICommands
          var observedDataFromSameFile =
             project.AllObservedData.Where(r => !string.IsNullOrEmpty(r.ConfigurationId) && r.ConfigurationId == configurationId ); //actually the question here is: configID means they come from the same file right?
 
-         var configuration = project.ImporterConfigurationBy(configurationId);
-         _importObservedDataTask.AddAndReplaceObservedDataFromConfigurationToProject(configuration, observedDataFromSameFile.ToList());
+         _importObservedDataTask.AddAndReplaceObservedDataFromConfigurationToProject(configurationId, observedDataFromSameFile.ToList());
       }
    }
 }
