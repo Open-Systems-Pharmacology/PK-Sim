@@ -48,6 +48,10 @@ namespace PKSim.UI.Starter
 
          using (pkSimContainer.OptimizeDependencyResolution())
          {
+            var synchronizationContext = moBiContainer.Resolve<SynchronizationContext>();
+            SynchronizationContext.SetSynchronizationContext(synchronizationContext);
+            pkSimContainer.RegisterImplementationOf(synchronizationContext);
+            
             // Register base DevExpress components
             pkSimContainer.RegisterImplementationOf(new DockManager());
             pkSimContainer.RegisterImplementationOf(new RibbonBarManager(new RibbonControl()));
@@ -64,7 +68,7 @@ namespace PKSim.UI.Starter
             pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IJournalPresenter>());
 
             pkSimContainer.RegisterImplementationOf(NumericFormatterOptions.Instance);
-            pkSimContainer.RegisterImplementationOf(SynchronizationContext.Current);
+            // pkSimContainer.RegisterImplementationOf(SynchronizationContext.Current);
             pkSimContainer.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, IWorkspace, Workspace>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, IUserSettings, UserSettings>(LifeStyle.Singleton);
