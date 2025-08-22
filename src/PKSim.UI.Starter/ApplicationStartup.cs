@@ -48,6 +48,9 @@ namespace PKSim.UI.Starter
 
          using (pkSimContainer.OptimizeDependencyResolution())
          {
+            // Set SynchronizationContext using MoBi Application context before registering new DevExpress components
+            // They will create and use a new context but will not start a message loop until a UI is loaded
+            // There are some methods in the API that do not use a UI
             var synchronizationContext = moBiContainer.Resolve<SynchronizationContext>();
             SynchronizationContext.SetSynchronizationContext(synchronizationContext);
             pkSimContainer.RegisterImplementationOf(synchronizationContext);
