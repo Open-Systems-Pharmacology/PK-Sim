@@ -24,7 +24,7 @@ namespace PKSim.UI.StarterTests
       {
          SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
          IoC.InitializeWith(new CastleWindsorContainer());
-
+         IoC.RegisterImplementationOf(SynchronizationContext.Current);
          // To initialize the local container, the application starter will take some components from the
          // static container
          IoC.Container.RegisterImplementationOf(A.Fake<IMainViewPresenter>());
