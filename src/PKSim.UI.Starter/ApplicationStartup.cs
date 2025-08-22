@@ -71,7 +71,6 @@ namespace PKSim.UI.Starter
             pkSimContainer.RegisterImplementationOf(moBiContainer.Resolve<IJournalPresenter>());
 
             pkSimContainer.RegisterImplementationOf(NumericFormatterOptions.Instance);
-            // pkSimContainer.RegisterImplementationOf(SynchronizationContext.Current);
             pkSimContainer.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreWorkspace, OSPSuite.Core.IWorkspace, IWorkspace, Workspace>(LifeStyle.Singleton);
             pkSimContainer.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, IPresentationUserSettings, IUserSettings, UserSettings>(LifeStyle.Singleton);
