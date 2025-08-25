@@ -30,6 +30,15 @@ namespace PKSim.Presentation
 
          sut.EditSimulation(_simulation);
       }
+
+   }
+   public class When_the_simulation_is_edited : concern_for_IndividualSimulationParametersPresenter
+   {
+      [Observation]
+      public void should_call_the_is_simulation_idle_on_edit()
+      {
+         A.CallTo(() => _interactiveSimulationRunner.IsSimulationIdle(_simulation)).MustHaveHappened();
+      }
    }
 
    public class When_the_simulation_parameter_presenter_is_initializing : concern_for_IndividualSimulationParametersPresenter

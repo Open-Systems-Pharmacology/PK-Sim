@@ -48,7 +48,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
                .WithCommandFor<DeleteBuildingBlockUICommand, IPKSimBuildingBlock>(simulation, _container)
-               .WithEnabled(!_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(simulation))
+               .WithEnabled(simulation.IsIdle(_container))
                .WithIcon(ApplicationIcons.Delete)
                .AsGroupStarter();
       }
@@ -81,7 +81,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return GenericMenu.EditMenuFor<EditSimulationCommand, Simulation>(simulation, _container);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Rename)
-            .WithEnabled(!_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(simulation))
+            .WithEnabled(simulation.IsIdle(_container))
             .WithCommandFor<RenameBuildingBlockUICommand, IPKSimBuildingBlock>(simulation, _container)
             .WithIcon(ApplicationIcons.Rename);
       
@@ -96,18 +96,18 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Configure)
             .AsDisabledIf(simulation.IsImported)
-            .WithEnabled(!_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(simulation))
+            .WithEnabled(simulation.IsIdle(_container))
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationCommand, Simulation>(simulation, _container);
          
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
-            .WithEnabled(!_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(simulation))
+            .WithEnabled(simulation.IsIdle(_container))
             .WithCommandFor<RunSimulationCommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.Run)
             .AsGroupStarter();
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Stop)
-            .WithEnabled(_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(simulation))
+            .WithEnabled(simulation.IsRunning(_container))
             .WithCommandFor<StopSimulationCommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.Stop)
             .AsGroupStarter();

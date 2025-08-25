@@ -33,7 +33,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          if (CanUpdate)
             yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Update)
                .WithUpdateCommandFor(_simulation, templateBuildingBlock, usedBuildingBlock)
-               .WithEnabled(!_container.Resolve<IInteractiveSimulationRunner>().IsSimulationRunning(_simulation))
+               .WithEnabled(_simulation.IsIdle(_container))
                .WithIcon(ApplicationIcons.Update);
 
          if (CanCommit)

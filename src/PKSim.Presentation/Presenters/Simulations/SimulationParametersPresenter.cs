@@ -41,7 +41,7 @@ namespace PKSim.Presentation.Presenters.Simulations
       {
          _simulation = simulation;
          _parameterGroupsPresenter.InitializeWith(simulation.Model.Root, AllSimulationParametersToShow(simulation));
-         _view.SetParametersTabEnabled(!_interactiveSimulationRunner.IsSimulationRunning(simulation));
+         _view.SetParametersTabEnabled(_interactiveSimulationRunner.IsSimulationIdle(simulation));
       }
 
       protected abstract IEnumerable<IParameter> AllSimulationParametersToShow(TSimulation simulation);
@@ -78,6 +78,9 @@ namespace PKSim.Presentation.Presenters.Simulations
 
       public void Handle(SimulationRunCanceledEvent eventToHandle)
       {
+         if (!_simulation.Equals(eventToHandle.Simulation))
+            return;
+
          _view.SetParametersTabEnabled(true);
       }
    }
