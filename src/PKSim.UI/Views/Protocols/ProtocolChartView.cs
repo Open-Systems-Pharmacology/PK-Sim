@@ -6,6 +6,8 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
+using System;
+using System.Drawing.Imaging;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -33,6 +35,7 @@ namespace PKSim.UI.Views.Protocols
       {
          _presenter = presenter;
          chart.AddCopyToClipboardPopupMenu(presenter);
+         chart.AddExportToImagePopupMenu(presenter, ImageFormat.Png);
       }
 
       public void Clear()
@@ -125,6 +128,14 @@ namespace PKSim.UI.Views.Protocols
       public void CopyToClipboard(string watermark)
       {
          chart.CopyToClipboard(watermark);
+      }
+
+      public void ExportToImage(string filePath, ImageFormat imageFormat, string waterMark = "")
+      {
+         if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException("File path must be provided", nameof(filePath));
+
+         chart.ExportToImage(filePath, imageFormat);
       }
    }
 }

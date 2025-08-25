@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Core;
 using PKSim.Core.Chart;
@@ -31,7 +32,14 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       event EventHandler OnExportDataToExcel;
 
-  void ClearPlot();
+      void ClearPlot();
+
+      /// <summary>
+      ///    Exports the underlying data to Image
+      /// </summary>
+      void ExportDataToImage();
+
+      event EventHandler OnExportDataToImage;
    }
 
    public interface IPopulationAnalysisChartPresenter<TX, TY> : IPopulationAnalysisChartPresenter
@@ -72,6 +80,8 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IApplicationSettings _applicationSettings;
       public event EventHandler OnEdit = delegate { };
       public event EventHandler OnExportDataToExcel = delegate { };
+      public event EventHandler OnExportDataToImage;
+
       private readonly IChartsDataBinder<TX, TY> _chartDataBinder;
       private ChartData<TX, TY> _chartData;
 
@@ -145,6 +155,11 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public void ExportDataToExcel()
       {
          OnExportDataToExcel(this, EventArgs.Empty);
+      }
+
+      public void ExportDataToImage()
+      {
+         OnExportDataToImage(this, EventArgs.Empty);
       }
    }
 }

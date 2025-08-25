@@ -6,7 +6,8 @@ namespace PKSim.Presentation.Views.Protocols
 {
    public interface IProtocolChartView : 
       IView<IProtocolChartPresenter>, 
-      ICanCopyToClipboardWithWatermark
+      ICanCopyToClipboardWithWatermark,
+      ICanExportToImageWithWatermark
    {
       void Plot(IProtocolChartData dataToPlot);
       void Clear();

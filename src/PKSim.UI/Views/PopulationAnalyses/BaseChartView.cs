@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
 using DevExpress.Utils;
@@ -199,6 +200,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
             Chart.AddPopupMenu(MenuNames.Edit, _presenter.Edit, ApplicationIcons.Edit);
 
          Chart.AddPopupMenu(MenuNames.ExportToExcel, _presenter.ExportDataToExcel, ApplicationIcons.Excel);
+
+         Chart.AddPopupMenu(MenuNames.ExportToPng, _presenter.ExportDataToImage, ApplicationIcons.ExportToPNG);
       }
 
       private void copyToClipboard()

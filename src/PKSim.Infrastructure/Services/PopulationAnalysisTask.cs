@@ -6,8 +6,11 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
-using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
+using System.Drawing.Imaging;
+using System;
+using PKSim.Core.Snapshots;
+using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 
 namespace PKSim.Infrastructure.Services
 {
@@ -49,6 +52,19 @@ namespace PKSim.Infrastructure.Services
          tables.Each(t => t.TableName = $"{analysisName} {t.TableName}");
 
          _dataRepositoryTask.ExportToExcel(tables, fileName, launchExcel: true);
+      }
+
+
+      public void ExportToPng(UxHistogramControl chart, string analysisName)
+      {
+         if (string.IsNullOrEmpty(analysisName))
+            analysisName = PKSimConstants.UI.Analysis;
+
+         var fileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportPopulationAnalysisToExcelTitle, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, analysisName);
+         if (string.IsNullOrEmpty(fileName))
+            return;
+
+         chart.ExportToImage(filePath, imageFormat);
       }
    }
 }

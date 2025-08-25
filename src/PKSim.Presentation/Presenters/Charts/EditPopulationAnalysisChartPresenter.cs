@@ -41,6 +41,7 @@ namespace PKSim.Presentation.Presenters.Charts
          _populationAnalysisChartPresenter.AllowEdit = true;
          _populationAnalysisChartPresenter.OnEdit += (o, e) => editPopulationAnalysis();
          _populationAnalysisChartPresenter.OnExportDataToExcel += (o, e) => exportDataToExcel();
+         _populationAnalysisChartPresenter.OnExportDataToImage += (o, e) => exportDataToImage();
          _populationSimulationAnalysisStarter = populationSimulationAnalysisStarter;
          _populationAnalysisTask = populationAnalysisTask;
          View.SetChartView(_populationAnalysisChartPresenter.BaseView);
@@ -52,6 +53,11 @@ namespace PKSim.Presentation.Presenters.Charts
       private void exportDataToExcel()
       {
          _populationAnalysisTask.ExportToExcel(CreateChartData(), PopulationAnalysisChart.Name);
+      }
+
+      private void exportDataToImage()
+      {
+         _populationAnalysisChartPresenter.ExportDataToImage();
       }
 
       private void editPopulationAnalysis()

@@ -5,6 +5,10 @@ using OSPSuite.Core.Chart;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
+using System.Drawing.Imaging;
+using System;
+using OSPSuite.Core.Domain;
+using SixLabors.ImageSharp.Formats;
 
 namespace PKSim.UI.Views.Populations
 {
@@ -22,6 +26,7 @@ namespace PKSim.UI.Views.Populations
       {
          _presenter = presenter;
          chart.AddCopyToClipboardPopupMenu(presenter);
+         chart.AddExportToImagePopupMenu(presenter, ImageFormat.Png);
          chart.EndColorFor = _presenter.EndColorFor;
          chart.StartColorFor = _presenter.StartColorFor;
       }
@@ -44,6 +49,14 @@ namespace PKSim.UI.Views.Populations
       public void CopyToClipboard(string watermark)
       {
          chart.CopyToClipboard(watermark);
+      }
+
+      public void ExportToImage(string filePath, ImageFormat imageFormat, string waterMark = "")
+      {
+         if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException("File path must be provided", nameof(filePath));
+
+         chart.ExportToImage(filePath, imageFormat);
       }
    }
 }

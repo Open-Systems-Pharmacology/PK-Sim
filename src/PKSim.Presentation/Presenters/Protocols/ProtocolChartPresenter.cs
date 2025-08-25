@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -19,7 +21,9 @@ namespace PKSim.Presentation.Presenters.Protocols
 {
    public interface IProtocolChartPresenter : 
       IPresenter<IProtocolChartView>,
-      ICanCopyToClipboard 
+      ICanCopyToClipboard,
+      ICanExportToImage
+
    {
       void PlotProtocol(Protocol protocol);
       void PlotProtocols(ICache<Compound, Protocol> protocols);
@@ -34,18 +38,21 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly IDimensionRepository _dimensionRepository;
       private IProtocolChartData _protocolChartData;
       private readonly IApplicationSettings _applicationSettings;
+      private readonly IDialogCreator _dialogCreator;
 
       public ProtocolChartPresenter(
          IProtocolChartView view,
          IProtocolToSchemaItemsMapper schemaItemsMapper,
          ISchemaItemToSchemaItemDTOMapper schemaItemDTOMapper,
          IDimensionRepository dimensionRepository, 
-         IApplicationSettings applicationSettings) : base(view)
+         IApplicationSettings applicationSettings,
+         IDialogCreator dialogCreator) : base(view)
       {
          _schemaItemsMapper = schemaItemsMapper;
          _schemaItemDTOMapper = schemaItemDTOMapper;
          _dimensionRepository = dimensionRepository;
          _applicationSettings = applicationSettings;
+         _dialogCreator = dialogCreator;
       }
 
       public void PlotProtocol(Protocol protocol)
@@ -108,6 +115,15 @@ namespace PKSim.Presentation.Presenters.Protocols
       public void CopyToClipboard()
       {
          View.CopyToClipboard(_applicationSettings.WatermarkTextToUse);
+      }
+
+      public void ExportToImage()
+      {
+         var filePath = _dialogCreator.AskForFileToSave(Captions.ExportChartToPng, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT);
+         if (string.IsNullOrEmpty(filePath))
+            return;
+
+         View.ExportToImage(filePath, ImageFormat.Png, _applicationSettings.WatermarkTextToUse);
       }
    }
 }
