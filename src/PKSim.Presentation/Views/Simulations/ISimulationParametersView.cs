@@ -6,5 +6,7 @@ namespace PKSim.Presentation.Views.Simulations
    public interface ISimulationParametersView : IView<ISimulationParametersPresenter>
    {
       void AddParametersView(IView view);
+      void SetParametersTabEnabled(bool enabled);
+
    }
 }

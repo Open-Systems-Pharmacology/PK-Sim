@@ -18,6 +18,7 @@ namespace PKSim.Core.Services
       void StopSimulation(Simulation simulation);
       void StopAllSimulations();
       bool IsSimulationRunning(Simulation simulation);
+      bool IsSimulationIdle(Simulation simulation);
    }
 
    public class InteractiveSimulationRunner : IInteractiveSimulationRunner
@@ -59,9 +60,8 @@ namespace PKSim.Core.Services
       public bool IsSimulationRunning(Simulation simulation) =>
          _cancellationTokenSources.TryGetValue(simulation, out var cts) && !cts.IsCancellationRequested;
 
-      public Task RunSimulation(Simulation simulation, bool selectOutput) => 
+      public Task RunSimulation(Simulation simulation, bool selectOutput) =>
          runSimulationAsync(simulation, selectOutput);
-      
 
       private async Task runSimulationAsync(Simulation simulation, bool selectOutput)
       {
@@ -143,9 +143,14 @@ namespace PKSim.Core.Services
          {
             cts.Cancel();
             cts.Dispose();
-            _executionContext.PublishEvent(new SimulationRunCanceledEvent());
+            _executionContext.PublishEvent(new SimulationRunCanceledEvent(simulation));
          }
       }
 
+      public bool IsSimulationIdle(Simulation simulation)
+      {
+         return !_cancellationTokenSources.TryGetValue(simulation, out var cts)
+                || cts.IsCancellationRequested;
+      }
    }
 }

@@ -393,6 +393,7 @@ namespace PKSim.Assets
          public const string ValueIsRequired = "Value is required.";
          public const string DescriptionIsRequired = "Description is required.";
          public const string UnknownObserverBuilderType = "Observer builer type unknown.";
+         public const string ImporterConfigurationNotFoundInProject = "Importer configuration for this dataset was not found in this project.\n\nThe data cannot be reloaded.";
          public const string AProjectSnapshotShouldOnlyContainOneSimuilationWhenUsedToRebuildAModule = "A project snapshot should only contain one simulation when used to rebuild a module";
          public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
          public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
@@ -1125,7 +1126,7 @@ namespace PKSim.Assets
          public static readonly string ExportSnapshot = "Save Snapshot...";
          public static readonly string LoadFromSnapshot = "Load from Snapshot...";
          public static readonly string RemoveUnusedContent = "Remove Unused Content";
-
+         public static readonly string StopAllSimulations = "Stop All Simulations";
          public static string CompareBuildingBlocks(string buildingBlockType) => $"Compare {buildingBlockType}s";
 
          public static string AddObservedDataToSimulation(string simulationName) => $"Add to {ObjectTypes.Simulation} '{simulationName}'";
@@ -1793,6 +1794,7 @@ namespace PKSim.Assets
          public static readonly string RunDescription = "Simulate the active simulation";
          public static readonly string RunWithSettingsDescription = "Select simulation settings and simulate the active simulation";
          public static readonly string StopDescription = "Stop the current simulation";
+         public static readonly string StopAllDescription = "Stop all running simulations";
          public static readonly string ShowIndividualResultsDescription = "Create a new chart displaying simulation results";
          public static readonly string StartPopulationAnalysisDescription = "Start a new population analysis";
          public static readonly string ScatterAnalysisDescription = "Start a new scatter analysis";

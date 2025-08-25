@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Parameters;
@@ -15,17 +16,28 @@ namespace PKSim.Presentation
    {
       protected IParameterGroupsPresenter _parameterGroupPresenter;
       protected ISimulationParametersView _view;
+      protected IInteractiveSimulationRunner _interactiveSimulationRunner;
       protected IndividualSimulation _simulation;
 
       protected override void Context()
       {
          _view = A.Fake<ISimulationParametersView>();
          _parameterGroupPresenter = A.Fake<IParameterGroupsPresenter>();
+         _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
          _simulation = new IndividualSimulation {Model = A.Fake<IModel>()};
          A.CallTo(() => _parameterGroupPresenter.View).Returns(A.Fake<IParameterGroupsView>());
-         sut = new IndividualSimulationParametersPresenter(_view, _parameterGroupPresenter);
+         sut = new IndividualSimulationParametersPresenter(_view, _parameterGroupPresenter, _interactiveSimulationRunner);
 
          sut.EditSimulation(_simulation);
+      }
+
+   }
+   public class When_the_simulation_is_edited : concern_for_IndividualSimulationParametersPresenter
+   {
+      [Observation]
+      public void should_call_the_is_simulation_idle_on_edit()
+      {
+         A.CallTo(() => _interactiveSimulationRunner.IsSimulationIdle(_simulation)).MustHaveHappened();
       }
    }
 
