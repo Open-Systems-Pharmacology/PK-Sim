@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Simulations;
 
@@ -13,8 +14,8 @@ namespace PKSim.Presentation.Presenters.Simulations
 
    public class PopulationSimulationParametersPresenter : SimulationParametersPresenter<PopulationSimulation>, IPopulationSimulationParametersPresenter
    {
-      public PopulationSimulationParametersPresenter(ISimulationParametersView view, IParameterGroupsPresenter parameterGroupsPresenter)
-         : base(view, parameterGroupsPresenter)
+      public PopulationSimulationParametersPresenter(ISimulationParametersView view, IParameterGroupsPresenter parameterGroupsPresenter, IInteractiveSimulationRunner interactiveSimulationRunner)
+         : base(view, parameterGroupsPresenter, interactiveSimulationRunner)
       {
       }
 

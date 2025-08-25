@@ -26,6 +26,11 @@ namespace PKSim.UI.Views.Simulations
 
       public void AddParametersView(IView view) => this.FillWith(view);
 
+      public void SetParametersTabEnabled(bool enabled)
+      {
+         Enabled = enabled;
+      }
+
       public override string Caption => PKSimConstants.UI.Parameters;
    }
 }
