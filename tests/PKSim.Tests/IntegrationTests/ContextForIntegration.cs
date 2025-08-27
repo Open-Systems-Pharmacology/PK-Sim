@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.CLI.Core.MinimalImplementations;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -15,7 +16,6 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using PKSim.BatchTool;
 using PKSim.CLI.Core;
-using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
@@ -42,7 +42,6 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
-            container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
             container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>();
             container.Register<ISimulationConstructor, SimulationConstructor>();
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
@@ -58,16 +57,12 @@ namespace PKSim.IntegrationTests
             container.AddRegister(x =>
             {
                x.FromType<CoreRegister>();
-               x.FromType<CLIRegister>();
                x.FromType<InfrastructureRegister>();
+               x.FromType<CLIRegister>();
                x.FromType<PresenterRegister>();
                x.FromType<OSPSuite.Presentation.PresenterRegister>();
                x.FromType<BatchRegister>();
             });
-
-            //Register an other type that was already registered previously to ensure that we do use the presentation implementation
-            container.Register<IEntityValidationTask, CLIEntityValidationTask>();
-
 
             var userSettings = container.Resolve<IUserSettings>();
             userSettings.AbsTol = 1e-10;
