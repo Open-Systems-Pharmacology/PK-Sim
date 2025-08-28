@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using PKSim.Assets;
-using PKSim.Core;
-using PKSim.Core.Model;
-using PKSim.Core.Repositories;
-using PKSim.Core.Services;
-using PKSim.Presentation.Views.Populations;
+﻿using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
+using PKSim.Core;
+using PKSim.Core.Model;
+using PKSim.Core.Repositories;
+using PKSim.Core.Services;
+using PKSim.Presentation.Views.Populations;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
 
 namespace PKSim.Presentation.Presenters.Populations
 {
    public interface IPopulationDistributionPresenter :
       IPresenter<IPopulationParameterDistributionView>,
-      ICanCopyToClipboard
+      ICanExportCharts
    {
       Color StartColorFor(string series);
       Color EndColorFor(string series);
@@ -42,6 +43,7 @@ namespace PKSim.Presentation.Presenters.Populations
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IPKParameterRepository _pkParameterRepository;
       private readonly IApplicationSettings _applicationSettings;
+      private readonly IDialogCreator _dialogCreator;
 
       public PopulationDistributionPresenter(
          IPopulationParameterDistributionView view,
@@ -49,7 +51,8 @@ namespace PKSim.Presentation.Presenters.Populations
          IRepresentationInfoRepository representationInfoRepository,
          IDisplayUnitRetriever displayUnitRetriever,
          IPKParameterRepository pkParameterRepository,
-         IApplicationSettings applicationSettings)
+         IApplicationSettings applicationSettings, 
+         IDialogCreator dialogCreator)
          : base(view)
       {
          _distributionDataCreator = distributionDataCreator;
@@ -57,6 +60,7 @@ namespace PKSim.Presentation.Presenters.Populations
          _displayUnitRetriever = displayUnitRetriever;
          _pkParameterRepository = pkParameterRepository;
          _applicationSettings = applicationSettings;
+         _dialogCreator = dialogCreator;
       }
 
       public void Plot(IVectorialParametersContainer vectorialParametersContainer, IParameter parameter, DistributionSettings settings = null, IDimension dimension = null, Unit displayUnit = null)
@@ -157,6 +161,15 @@ namespace PKSim.Presentation.Presenters.Populations
       public void ResetPlot()
       {
          _view.ResetPlot();
+      }
+
+      public void ExportToPng()
+      {
+         var fileName = _dialogCreator.AskForFileToSave(Captions.ExportChartToPng, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT);
+         if (string.IsNullOrEmpty(fileName))
+            return;
+
+         _view.ExportToPng(fileName, _applicationSettings.WatermarkTextToUse);
       }
 
       public void CopyToClipboard()

@@ -13,5 +13,6 @@ namespace PKSim.Presentation.Views.Populations
       void Plot(ContinuousDistributionData dataToPlot, DistributionSettings settings);
       void Plot(DiscreteDistributionData dataToPlot, DistributionSettings settings);
       void ResetPlot();
+      void ExportToPng(string fileName, string watermark);
    }
 }
