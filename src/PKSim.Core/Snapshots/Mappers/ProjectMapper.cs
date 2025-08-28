@@ -74,43 +74,43 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      public override async Task<ModelProject> MapToModel(SnapshotProject snapshot, ProjectContext projectContext)
+      public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext projectContext)
       {
-         _logger.AddDebug($"Loading project '{snapshot.Name}' from snapshot...", snapshot.Name);
+         _logger.AddDebug($"Loading project '{projectSnapshot.Name}' from snapshot...", projectSnapshot.Name);
 
          var project = new ModelProject
          {
-            Name = snapshot.Name,
-            Description = snapshot.Description,
+            Name = projectSnapshot.Name,
+            Description = projectSnapshot.Description,
             Creation = _creationMetaDataFactory.Create()
          };
 
          //The entry point of our context structure. 
-         System.Diagnostics.Debug.WriteLine(snapshot.Version);
-         var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindBy(snapshot.Version));
+         System.Diagnostics.Debug.WriteLine(projectSnapshot.Version);
+         var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByPKSimProjectVersion(projectSnapshot.Version));
 
-         project.Creation.InternalVersion = snapshot.Version;
-         project.Creation.Version = ProjectVersions.FindBy(snapshot.Version)?.VersionDisplay;
+         project.Creation.InternalVersion = projectSnapshot.Version;
+         project.Creation.Version = ProjectVersions.FindBy(projectSnapshot.Version)?.VersionDisplay;
 
-         await allBuildingBlocksFrom(snapshot, snapshotContext);
+         await allBuildingBlocksFrom(projectSnapshot, snapshotContext);
 
-         var observedData = await ObservedDataFrom(snapshot.ObservedData, snapshotContext);
+         var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
          observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-         var allSimulations = await allSimulationsFrom(projectContext, snapshot.Simulations, snapshotContext);
+         var allSimulations = await allSimulationsFrom(projectContext, projectSnapshot.Simulations, snapshotContext);
          allSimulations?.Each(simulation => addSimulationToProject(project, simulation));
 
-         var allSimulationComparisons = await allSimulationComparisonsFrom(snapshot.SimulationComparisons, snapshotContext);
+         var allSimulationComparisons = await allSimulationComparisonsFrom(projectSnapshot.SimulationComparisons, snapshotContext);
          allSimulationComparisons?.Each(comparison => addComparisonToProject(project, comparison));
 
-         var allParameterIdentifications = await AllParameterIdentificationsFrom(snapshot.ParameterIdentifications, snapshotContext);
+         var allParameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
          allParameterIdentifications?.Each(parameterIdentification => AddParameterIdentificationToProject(project, parameterIdentification));
 
-         var allQualificationPlans = await allQualificationPlansFrom(snapshot.QualificationPlans, snapshotContext);
+         var allQualificationPlans = await allQualificationPlansFrom(projectSnapshot.QualificationPlans, snapshotContext);
          allQualificationPlans?.Each(qualificationPlan => addQualificationPlanToProject(project, qualificationPlan));
 
          //Map all classifications once project is loaded
-         await updateProjectClassifications(snapshot, snapshotContext);
+         await updateProjectClassifications(projectSnapshot, snapshotContext);
 
          return project;
       }
