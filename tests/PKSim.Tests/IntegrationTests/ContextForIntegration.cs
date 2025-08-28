@@ -68,6 +68,7 @@ namespace PKSim.IntegrationTests
             //Register an other type that was already registered previously to ensure that we do use the presentation implementation
             container.Register<IEntityValidationTask, CLIEntityValidationTask>();
             
+            
             var userSettings = container.Resolve<IUserSettings>();
             userSettings.AbsTol = 1e-10;
             userSettings.RelTol = 1e-5;
