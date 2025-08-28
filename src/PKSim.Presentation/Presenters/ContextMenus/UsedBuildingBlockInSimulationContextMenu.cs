@@ -1,13 +1,14 @@
 using System.Collections.Generic;
-using PKSim.Assets;
-using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Model;
+using PKSim.Core.Services;
+using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -16,12 +17,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected readonly Simulation _simulation;
       protected readonly UsedBuildingBlock _usedBuildingBlock;
       private readonly TBuildingBlock _templateBuildingBlock;
+      private readonly IContainer _container;
 
       public UsedBuildingBlockInSimulationContextMenu(Simulation simulation, UsedBuildingBlock usedBuildingBlock, TBuildingBlock templateBuildingBlock, IContainer container) : base(container)
       {
          _simulation = simulation;
          _usedBuildingBlock = usedBuildingBlock;
          _templateBuildingBlock = templateBuildingBlock;
+         _container = container;
          AllMenuItemsFor(_usedBuildingBlock, _templateBuildingBlock).Each(_view.AddMenuItem);
       }
 
@@ -30,6 +33,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          if (CanUpdate)
             yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Update)
                .WithUpdateCommandFor(_simulation, templateBuildingBlock, usedBuildingBlock)
+               .WithEnabled(_simulation.IsIdle(_container))
                .WithIcon(ApplicationIcons.Update);
 
          if (CanCommit)
@@ -43,7 +47,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
                .WithIcon(ApplicationIcons.Comparison);
       }
 
- 
       protected virtual ApplicationIcon RetrieveCommitIcon()
       {
          return _templateBuildingBlock.StructureVersion == _usedBuildingBlock.StructureVersion

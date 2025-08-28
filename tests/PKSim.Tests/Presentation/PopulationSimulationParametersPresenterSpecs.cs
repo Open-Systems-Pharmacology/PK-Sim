@@ -9,6 +9,7 @@ using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using OSPSuite.Core.Domain;
+using PKSim.Core.Services;
 
 
 namespace PKSim.Presentation
@@ -17,12 +18,13 @@ namespace PKSim.Presentation
    {
       private ISimulationParametersView _view;
       protected IParameterGroupsPresenter _parameterGroupPresenter;
-
+      protected IInteractiveSimulationRunner _interactiveSimulationRunner;
       protected override void Context()
       {
          _view = A.Fake<ISimulationParametersView>();
+         _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
          _parameterGroupPresenter = A.Fake<IParameterGroupsPresenter>();
-         sut = new PopulationSimulationParametersPresenter(_view, _parameterGroupPresenter);
+         sut = new PopulationSimulationParametersPresenter(_view, _parameterGroupPresenter, _interactiveSimulationRunner);
       }
    }
 

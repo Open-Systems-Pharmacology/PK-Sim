@@ -8,6 +8,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
@@ -26,18 +27,19 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> ExportMenuItemsSpecificToType(IndividualSimulation individualSimulation)
       {
+         var isSimulationIdle = individualSimulation.IsIdle(_container);
          var exportToExcel = CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationResultsToExcel)
             .WithCommandFor<ExportSimulationResultsToExcelCommand, IndividualSimulation>(individualSimulation, _container)
             .WithIcon(ApplicationIcons.ExportToExcel);
 
-         exportToExcel.Enabled = simulationHasResult(individualSimulation);
+         exportToExcel.Enabled = simulationHasResult(individualSimulation) && isSimulationIdle;
          yield return exportToExcel;
 
          var exportToCSV = CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationResultsToCSV)
             .WithCommandFor<ExportSimulationResultsToCSVCommand, Simulation>(individualSimulation, _container)
             .WithIcon(ApplicationIcons.ExportToCSV);
 
-         exportToCSV.Enabled = simulationHasResult(individualSimulation);
+         exportToCSV.Enabled = simulationHasResult(individualSimulation) && isSimulationIdle;
          yield return exportToCSV;
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSimulationModelToFile)
