@@ -15,8 +15,8 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using PKSim.BatchTool;
 using PKSim.CLI.Core;
-using PKSim.Core;
 using PKSim.CLI.Core.MinimalImplementations;
+using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
@@ -64,7 +64,10 @@ namespace PKSim.IntegrationTests
                x.FromType<OSPSuite.Presentation.PresenterRegister>();
                x.FromType<BatchRegister>();
             });
-
+            
+            //Register an other type that was already registered previously to ensure that we do use the presentation implementation
+            container.Register<IEntityValidationTask, CLIEntityValidationTask>();
+            
             var userSettings = container.Resolve<IUserSettings>();
             userSettings.AbsTol = 1e-10;
             userSettings.RelTol = 1e-5;
