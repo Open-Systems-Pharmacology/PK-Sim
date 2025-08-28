@@ -24,7 +24,6 @@ namespace PKSim.Presentation
       protected IDisplayUnitRetriever _displayUnitRetriever;
       protected IPKParameterRepository _pkParameterRepository;
       protected IApplicationSettings _applicationSettings;
-      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -34,8 +33,7 @@ namespace PKSim.Presentation
          _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
          _applicationSettings = A.Fake<IApplicationSettings>();
-         _dialogCreator = A.Fake<IDialogCreator>();
-         sut = new PopulationDistributionPresenter(_view, _distributionDataCreator, _representationInfoRepository, _displayUnitRetriever, _pkParameterRepository, _applicationSettings, _dialogCreator);
+         sut = new PopulationDistributionPresenter(_view, _distributionDataCreator, _representationInfoRepository, _displayUnitRetriever, _pkParameterRepository, _applicationSettings);
       }
    }
 

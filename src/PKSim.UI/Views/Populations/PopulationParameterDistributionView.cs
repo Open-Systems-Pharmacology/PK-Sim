@@ -5,7 +5,6 @@ using OSPSuite.Core.Chart;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
-using System.Drawing.Imaging;
 
 namespace PKSim.UI.Views.Populations
 {

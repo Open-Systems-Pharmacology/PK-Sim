@@ -22,7 +22,6 @@ namespace PKSim.Presentation.Presenters.Protocols
    public interface IProtocolChartPresenter : 
       IPresenter<IProtocolChartView>,
       ICanCopyToClipboard
-
    {
       void PlotProtocol(Protocol protocol);
       void PlotProtocols(ICache<Compound, Protocol> protocols);
@@ -37,21 +36,18 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly IDimensionRepository _dimensionRepository;
       private IProtocolChartData _protocolChartData;
       private readonly IApplicationSettings _applicationSettings;
-      private readonly IDialogCreator _dialogCreator;
 
       public ProtocolChartPresenter(
          IProtocolChartView view,
          IProtocolToSchemaItemsMapper schemaItemsMapper,
          ISchemaItemToSchemaItemDTOMapper schemaItemDTOMapper,
          IDimensionRepository dimensionRepository, 
-         IApplicationSettings applicationSettings,
-         IDialogCreator dialogCreator) : base(view)
+         IApplicationSettings applicationSettings) : base(view)
       {
          _schemaItemsMapper = schemaItemsMapper;
          _schemaItemDTOMapper = schemaItemDTOMapper;
          _dimensionRepository = dimensionRepository;
          _applicationSettings = applicationSettings;
-         _dialogCreator = dialogCreator;
       }
 
       public void PlotProtocol(Protocol protocol)

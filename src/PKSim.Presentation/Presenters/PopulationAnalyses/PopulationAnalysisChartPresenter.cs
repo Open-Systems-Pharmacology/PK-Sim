@@ -36,9 +36,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       void ClearPlot();
 
-      /// <summary>
-      ///    Exports the underlying data to Image
-      /// </summary>
       void ExportDataToImage();
    }
 
@@ -89,7 +86,10 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public virtual bool AllowEdit { get; set; }
 
-      protected PopulationAnalysisChartPresenter(TView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, IApplicationSettings applicationSettings, IDialogCreator dialogCreator)
+      protected PopulationAnalysisChartPresenter(TView view, 
+         IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, 
+         IApplicationSettings applicationSettings, 
+         IDialogCreator dialogCreator)
          : base(view)
       {
          _chartDataBinder = view.ChartsDataBinder;

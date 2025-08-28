@@ -6,8 +6,6 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
-using System;
-using System.Drawing.Imaging;
 
 namespace PKSim.UI.Views.Protocols
 {

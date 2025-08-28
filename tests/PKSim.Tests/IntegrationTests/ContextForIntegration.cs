@@ -16,6 +16,7 @@ using OSPSuite.Utility.Exceptions;
 using PKSim.BatchTool;
 using PKSim.CLI.Core;
 using PKSim.Core;
+using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
@@ -41,6 +42,7 @@ namespace PKSim.IntegrationTests
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IApplicationController, ApplicationController>(LifeStyle.Singleton);
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
+            container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
             container.Register<IOntogenyFactorsRetriever, OntogenyFactorsRetriever>();
             container.Register<ISimulationConstructor, SimulationConstructor>();
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
@@ -56,8 +58,8 @@ namespace PKSim.IntegrationTests
             container.AddRegister(x =>
             {
                x.FromType<CoreRegister>();
-               x.FromType<InfrastructureRegister>();
                x.FromType<CLIRegister>();
+               x.FromType<InfrastructureRegister>();
                x.FromType<PresenterRegister>();
                x.FromType<OSPSuite.Presentation.PresenterRegister>();
                x.FromType<BatchRegister>();

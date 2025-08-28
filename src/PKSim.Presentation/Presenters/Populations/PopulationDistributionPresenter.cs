@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -15,7 +14,6 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
-using OSPSuite.Assets;
 
 namespace PKSim.Presentation.Presenters.Populations
 {
@@ -44,16 +42,14 @@ namespace PKSim.Presentation.Presenters.Populations
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IPKParameterRepository _pkParameterRepository;
       private readonly IApplicationSettings _applicationSettings;
-      private readonly IDialogCreator _dialogCreator;
+
       public PopulationDistributionPresenter(
          IPopulationParameterDistributionView view,
          IDistributionDataCreator distributionDataCreator,
          IRepresentationInfoRepository representationInfoRepository,
          IDisplayUnitRetriever displayUnitRetriever,
          IPKParameterRepository pkParameterRepository,
-         IApplicationSettings applicationSettings,
-         IDialogCreator dialogCreator
-         )
+         IApplicationSettings applicationSettings)
          : base(view)
       {
          _distributionDataCreator = distributionDataCreator;
@@ -61,7 +57,6 @@ namespace PKSim.Presentation.Presenters.Populations
          _displayUnitRetriever = displayUnitRetriever;
          _pkParameterRepository = pkParameterRepository;
          _applicationSettings = applicationSettings;
-         _dialogCreator = dialogCreator;
       }
 
       public void Plot(IVectorialParametersContainer vectorialParametersContainer, IParameter parameter, DistributionSettings settings = null, IDimension dimension = null, Unit displayUnit = null)

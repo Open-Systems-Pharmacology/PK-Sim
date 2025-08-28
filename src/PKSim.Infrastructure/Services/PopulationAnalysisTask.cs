@@ -6,8 +6,8 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Chart;
 using PKSim.Core.Mappers;
+using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Core.Services;
-using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 
 namespace PKSim.Infrastructure.Services
 {
