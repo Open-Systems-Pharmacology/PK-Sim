@@ -17,8 +17,8 @@ using DistributionSettings = PKSim.Core.Chart.DistributionSettings;
 
 namespace PKSim.Presentation.Presenters.Populations
 {
-   public interface IPopulationDistributionPresenter : 
-      IPresenter<IPopulationParameterDistributionView>, 
+   public interface IPopulationDistributionPresenter :
+      IPresenter<IPopulationParameterDistributionView>,
       ICanCopyToClipboard
    {
       Color StartColorFor(string series);
@@ -45,12 +45,11 @@ namespace PKSim.Presentation.Presenters.Populations
 
       public PopulationDistributionPresenter(
          IPopulationParameterDistributionView view,
-         IDistributionDataCreator distributionDataCreator, 
-         IRepresentationInfoRepository representationInfoRepository, 
-         IDisplayUnitRetriever displayUnitRetriever, 
+         IDistributionDataCreator distributionDataCreator,
+         IRepresentationInfoRepository representationInfoRepository,
+         IDisplayUnitRetriever displayUnitRetriever,
          IPKParameterRepository pkParameterRepository,
-         IApplicationSettings applicationSettings
-         )
+         IApplicationSettings applicationSettings)
          : base(view)
       {
          _distributionDataCreator = distributionDataCreator;

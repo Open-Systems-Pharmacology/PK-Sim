@@ -30,6 +30,8 @@ namespace PKSim.Presentation.Views.PopulationAnalyses
       ///    Event is fired when some data are dropped onto view
       /// </summary>
       event EventHandler<IDragEvent> OnDragDropEvent;
+
+      void ExportToPng(string watermark, string filePath);
    }
 
    public interface IChartWithSettings

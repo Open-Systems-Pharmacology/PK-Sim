@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -32,11 +33,12 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IObjectTypeResolver _objectTypeResolver;
 
       public BoxWhiskerChartPresenter(
-         IBoxWhiskerChartView view, 
+         IBoxWhiskerChartView view,
          IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter,
          IApplicationSettings applicationSettings,
-         IIndividualExtractor individualExtractor, 
-         IObjectTypeResolver objectTypeResolver) : base(view, populationAnalysisChartSettingsPresenter,applicationSettings)
+         IIndividualExtractor individualExtractor,
+         IObjectTypeResolver objectTypeResolver,
+         IDialogCreator dialogCreator) : base(view, populationAnalysisChartSettingsPresenter, applicationSettings, dialogCreator)
       {
          _individualExtractor = individualExtractor;
          _objectTypeResolver = objectTypeResolver;

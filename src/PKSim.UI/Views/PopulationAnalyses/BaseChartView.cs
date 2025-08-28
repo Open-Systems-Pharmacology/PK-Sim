@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
 using DevExpress.Utils;
@@ -10,7 +11,6 @@ using DevExpress.XtraCharts;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
@@ -79,6 +79,9 @@ namespace PKSim.UI.Views.PopulationAnalyses
       protected virtual void ConfigurePopup(CancelEventArgs cancelEventArgs)
       {
       }
+
+      public void ExportToPng(string watermark, string filePath) => 
+         Chart.ExportChartToImageFile(_presenter.AnalysisChart, watermark, filePath, ImageFormat.Png);
 
       public override void InitializeResources()
       {
@@ -199,6 +202,8 @@ namespace PKSim.UI.Views.PopulationAnalyses
             Chart.AddPopupMenu(MenuNames.Edit, _presenter.Edit, ApplicationIcons.Edit);
 
          Chart.AddPopupMenu(MenuNames.ExportToExcel, _presenter.ExportDataToExcel, ApplicationIcons.Excel);
+
+         Chart.AddPopupMenu(MenuNames.ExportToPng, _presenter.ExportChartToPngFile, ApplicationIcons.ExportToPNG);
       }
 
       private void copyToClipboard()

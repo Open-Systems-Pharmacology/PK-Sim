@@ -19,7 +19,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 {
    public interface IProtocolChartPresenter : 
       IPresenter<IProtocolChartView>,
-      ICanCopyToClipboard 
+      ICanCopyToClipboard
    {
       void PlotProtocol(Protocol protocol);
       void PlotProtocols(ICache<Compound, Protocol> protocols);
