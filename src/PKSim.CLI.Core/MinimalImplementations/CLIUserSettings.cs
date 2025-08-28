@@ -4,6 +4,7 @@ using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
+using System;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {
@@ -20,7 +21,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public string DefaultFractionUnboundName { get; set; }
       public string DefaultSolubilityName { get; set; }
       public OutputSelections OutputSelections { get; set; }
-      public int MaximumNumberOfCoresToUse { get; set; }
+      public int MaximumNumberOfCoresToUse { get; set; } = Math.Max(Environment.ProcessorCount - 1, 1);
       public PopulationAnalysisType DefaultPopulationAnalysis { get; set; }
       public string TemplateDatabasePath { get; set; }
 
