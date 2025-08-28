@@ -4,6 +4,7 @@ using OSPSuite.Utility.Validation;
 using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
+using System;
 
 namespace PKSim.CLI.Core.MinimalImplementations
 {
@@ -26,6 +27,7 @@ namespace PKSim.CLI.Core.MinimalImplementations
 
       public void ResetToDefault()
       {
+         MaximumNumberOfCoresToUse = Math.Max(Environment.ProcessorCount - 1, 1);
          AbsTol = CoreConstants.DEFAULT_ABS_TOL;
          RelTol = CoreConstants.DEFAULT_REL_TOL;
          NumberOfBins = CoreConstants.DEFAULT_NUMBER_OF_BINS;

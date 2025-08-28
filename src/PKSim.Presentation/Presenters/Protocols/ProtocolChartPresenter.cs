@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -14,12 +13,14 @@ using PKSim.Core.Repositories;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.DTO.Protocols;
 using PKSim.Presentation.Views.Protocols;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PKSim.Presentation.Presenters.Protocols
 {
    public interface IProtocolChartPresenter : 
       IPresenter<IProtocolChartView>,
-      ICanCopyToClipboard
+      ICanExportCharts
    {
       void PlotProtocol(Protocol protocol);
       void PlotProtocols(ICache<Compound, Protocol> protocols);
@@ -34,18 +35,20 @@ namespace PKSim.Presentation.Presenters.Protocols
       private readonly IDimensionRepository _dimensionRepository;
       private IProtocolChartData _protocolChartData;
       private readonly IApplicationSettings _applicationSettings;
+      private readonly IDialogCreator _dialogCreator;
 
       public ProtocolChartPresenter(
          IProtocolChartView view,
          IProtocolToSchemaItemsMapper schemaItemsMapper,
          ISchemaItemToSchemaItemDTOMapper schemaItemDTOMapper,
          IDimensionRepository dimensionRepository, 
-         IApplicationSettings applicationSettings) : base(view)
+         IApplicationSettings applicationSettings, IDialogCreator dialogCreator) : base(view)
       {
          _schemaItemsMapper = schemaItemsMapper;
          _schemaItemDTOMapper = schemaItemDTOMapper;
          _dimensionRepository = dimensionRepository;
          _applicationSettings = applicationSettings;
+         _dialogCreator = dialogCreator;
       }
 
       public void PlotProtocol(Protocol protocol)
@@ -103,6 +106,15 @@ namespace PKSim.Presentation.Presenters.Protocols
       private IReadOnlyList<SchemaItemDTO> schemaItemsDTOFrom(Protocol protocol)
       {
          return _schemaItemsMapper.MapFrom(protocol).MapAllUsing(_schemaItemDTOMapper);
+      }
+
+      public void ExportToPng()
+      {
+         var fileName = _dialogCreator.AskForFileToSave(Captions.ExportChartToPng, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT);
+         if (string.IsNullOrEmpty(fileName))
+            return;
+
+         _view.ExportToPng(fileName, _applicationSettings.WatermarkTextToUse);
       }
 
       public void CopyToClipboard()
