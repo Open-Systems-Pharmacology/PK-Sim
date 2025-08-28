@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -36,7 +36,7 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       void ClearPlot();
 
-      void ExportDataToImage();
+      void ExportChartToPngFile();
    }
 
    public interface IPopulationAnalysisChartPresenter<TX, TY> : IPopulationAnalysisChartPresenter
@@ -86,9 +86,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
 
       public virtual bool AllowEdit { get; set; }
 
-      protected PopulationAnalysisChartPresenter(TView view, 
-         IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, 
-         IApplicationSettings applicationSettings, 
+      protected PopulationAnalysisChartPresenter(TView view,
+         IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter,
+         IApplicationSettings applicationSettings,
          IDialogCreator dialogCreator)
          : base(view)
       {
@@ -112,9 +112,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
          _chartDataBinder.ClearPlot();
       }
 
-      public void ExportDataToImage()
+      public void ExportChartToPngFile()
       {
-         var fileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportPopulationAnalysisToExcelTitle, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT, AnalysisChart.Name);
+         var fileName = _dialogCreator.AskForFileToSave(Captions.ExportChartToPng, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT, AnalysisChart.Name);
          if (string.IsNullOrEmpty(fileName))
             return;
 

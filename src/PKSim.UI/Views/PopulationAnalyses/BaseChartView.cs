@@ -203,7 +203,7 @@ namespace PKSim.UI.Views.PopulationAnalyses
 
          Chart.AddPopupMenu(MenuNames.ExportToExcel, _presenter.ExportDataToExcel, ApplicationIcons.Excel);
 
-         Chart.AddPopupMenu(MenuNames.ExportToPng, _presenter.ExportDataToImage, ApplicationIcons.ExportToPNG);
+         Chart.AddPopupMenu(MenuNames.ExportToPng, _presenter.ExportChartToPngFile, ApplicationIcons.ExportToPNG);
       }
 
       private void copyToClipboard()
