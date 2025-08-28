@@ -21,8 +21,7 @@ namespace PKSim.Presentation.Presenters.Protocols
 {
    public interface IProtocolChartPresenter : 
       IPresenter<IProtocolChartView>,
-      ICanCopyToClipboard,
-      ICanExportToImage
+      ICanCopyToClipboard
 
    {
       void PlotProtocol(Protocol protocol);
@@ -115,15 +114,6 @@ namespace PKSim.Presentation.Presenters.Protocols
       public void CopyToClipboard()
       {
          View.CopyToClipboard(_applicationSettings.WatermarkTextToUse);
-      }
-
-      public void ExportToImage()
-      {
-         var filePath = _dialogCreator.AskForFileToSave(Captions.ExportChartToPng, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT);
-         if (string.IsNullOrEmpty(filePath))
-            return;
-
-         View.ExportToImage(filePath, ImageFormat.Png, _applicationSettings.WatermarkTextToUse);
       }
    }
 }

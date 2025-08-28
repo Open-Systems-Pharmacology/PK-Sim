@@ -21,8 +21,7 @@ namespace PKSim.Presentation.Presenters.Populations
 {
    public interface IPopulationDistributionPresenter :
       IPresenter<IPopulationParameterDistributionView>,
-      ICanCopyToClipboard,
-      ICanExportToImage
+      ICanCopyToClipboard
    {
       Color StartColorFor(string series);
       Color EndColorFor(string series);
@@ -168,15 +167,6 @@ namespace PKSim.Presentation.Presenters.Populations
       public void CopyToClipboard()
       {
          View.CopyToClipboard(_applicationSettings.WatermarkTextToUse);
-      }
-
-      public void ExportToImage()
-      {
-         var filePath = _dialogCreator.AskForFileToSave(Captions.ExportChartToPng, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT);
-         if (string.IsNullOrEmpty(filePath))
-            return;
-
-         View.ExportToImage(filePath, ImageFormat.Png, _applicationSettings.WatermarkTextToUse);
       }
    }
 }

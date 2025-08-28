@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -38,8 +40,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       ///    Exports the underlying data to Image
       /// </summary>
       void ExportDataToImage();
-
-      event EventHandler OnExportDataToImage;
    }
 
    public interface IPopulationAnalysisChartPresenter<TX, TY> : IPopulationAnalysisChartPresenter
@@ -64,9 +64,9 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       ObservedCurveData ObservedCurveDataFor(string paneId, string caption);
 
       /// <summary>
-      /// Returns the watermark that should be used in the plot if any
+      ///    Returns the watermark that should be used in the plot if any
       /// </summary>
-      string Watermark { get;  }
+      string Watermark { get; }
    }
 
    public abstract class PopulationAnalysisChartPresenter<TView, TPresenter, TX, TY> : AbstractPresenter<TView, TPresenter>,
@@ -80,21 +80,22 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly IApplicationSettings _applicationSettings;
       public event EventHandler OnEdit = delegate { };
       public event EventHandler OnExportDataToExcel = delegate { };
-      public event EventHandler OnExportDataToImage;
 
       private readonly IChartsDataBinder<TX, TY> _chartDataBinder;
       private ChartData<TX, TY> _chartData;
+      private readonly IDialogCreator _dialogCreator;
 
       public PopulationAnalysisChart AnalysisChart { get; private set; }
 
       public virtual bool AllowEdit { get; set; }
 
-      protected PopulationAnalysisChartPresenter(TView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, IApplicationSettings applicationSettings)
+      protected PopulationAnalysisChartPresenter(TView view, IPopulationAnalysisChartSettingsPresenter populationAnalysisChartSettingsPresenter, IApplicationSettings applicationSettings, IDialogCreator dialogCreator)
          : base(view)
       {
          _chartDataBinder = view.ChartsDataBinder;
          _populationAnalysisChartSettingsPresenter = populationAnalysisChartSettingsPresenter;
          _applicationSettings = applicationSettings;
+         _dialogCreator = dialogCreator;
          _populationAnalysisChartSettingsPresenter.SetEditConfigurationAction(Edit);
          AddSubPresenters(_populationAnalysisChartSettingsPresenter);
          _view.SetChartSettingsEditor(_populationAnalysisChartSettingsPresenter.BaseView);
@@ -109,6 +110,15 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public virtual void ClearPlot()
       {
          _chartDataBinder.ClearPlot();
+      }
+
+      public void ExportDataToImage()
+      {
+         var fileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.ExportPopulationAnalysisToExcelTitle, Constants.Filter.DIAGRAM_IMAGE_FILTER, Constants.DirectoryKey.REPORT, AnalysisChart.Name);
+         if (string.IsNullOrEmpty(fileName))
+            return;
+
+         View.ExportToPng(Watermark, fileName);
       }
 
       public virtual void Show(ChartData<TX, TY> chartData, PopulationAnalysisChart populationAnalysisChart)
@@ -155,11 +165,6 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       public void ExportDataToExcel()
       {
          OnExportDataToExcel(this, EventArgs.Empty);
-      }
-
-      public void ExportDataToImage()
-      {
-         OnExportDataToImage(this, EventArgs.Empty);
       }
    }
 }

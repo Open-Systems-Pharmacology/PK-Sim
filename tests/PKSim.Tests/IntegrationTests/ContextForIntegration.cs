@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.CLI.Core.MinimalImplementations;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;

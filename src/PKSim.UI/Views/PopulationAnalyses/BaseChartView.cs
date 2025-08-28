@@ -11,7 +11,6 @@ using DevExpress.XtraCharts;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views;
-using OSPSuite.UI;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Core;
 using OSPSuite.UI.Extensions;
@@ -81,6 +80,11 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
       }
 
+      public void ExportToPng(string watermark, string filePath)
+      {
+         Chart.ExportChartToImageFile(_presenter.AnalysisChart, watermark, filePath, ImageFormat.Png);
+      }
+      
       public override void InitializeResources()
       {
          base.InitializeResources();

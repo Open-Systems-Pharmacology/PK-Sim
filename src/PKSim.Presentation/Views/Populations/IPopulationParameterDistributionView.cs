@@ -8,8 +8,7 @@ namespace PKSim.Presentation.Views.Populations
 {
    public interface IPopulationParameterDistributionView : 
       IView<IPopulationDistributionPresenter>,
-      ICanCopyToClipboardWithWatermark,
-      ICanExportToImageWithWatermark
+      ICanCopyToClipboardWithWatermark
    {
       void Plot(ContinuousDistributionData dataToPlot, DistributionSettings settings);
       void Plot(DiscreteDistributionData dataToPlot, DistributionSettings settings);

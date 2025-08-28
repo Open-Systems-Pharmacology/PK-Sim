@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
@@ -25,6 +26,7 @@ namespace PKSim.Presentation
       private ChartData<BoxWhiskerXValue, BoxWhiskerYValue> _chartData;
       protected BoxWhiskerAnalysisChart _boxWhiskerAnalysisChart;
       private IApplicationSettings _applicationSettings;
+      private IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -33,7 +35,8 @@ namespace PKSim.Presentation
          _individualExtractor = A.Fake<IIndividualExtractor>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _applicationSettings= A.Fake<IApplicationSettings>();
-         sut = new BoxWhiskerChartPresenter(_view, _chartSettingsPresenter, _applicationSettings, _individualExtractor, _objectTypeResolver);
+         _dialogCreator = A.Fake<IDialogCreator>();
+         sut = new BoxWhiskerChartPresenter(_view, _chartSettingsPresenter, _applicationSettings, _individualExtractor, _objectTypeResolver, _dialogCreator);
 
          _chartData = A.Fake<ChartData<BoxWhiskerXValue, BoxWhiskerYValue>>();
          _boxWhiskerAnalysisChart = new BoxWhiskerAnalysisChart();
