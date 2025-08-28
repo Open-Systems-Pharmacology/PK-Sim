@@ -21,12 +21,13 @@ namespace PKSim.CLI.Core.MinimalImplementations
       public string DefaultFractionUnboundName { get; set; }
       public string DefaultSolubilityName { get; set; }
       public OutputSelections OutputSelections { get; set; }
-      public int MaximumNumberOfCoresToUse { get; set; } = Math.Max(Environment.ProcessorCount - 1, 1);
+      public int MaximumNumberOfCoresToUse { get; set; }
       public PopulationAnalysisType DefaultPopulationAnalysis { get; set; }
       public string TemplateDatabasePath { get; set; }
 
       public void ResetToDefault()
       {
+         MaximumNumberOfCoresToUse = Math.Max(Environment.ProcessorCount - 1, 1);
          AbsTol = CoreConstants.DEFAULT_ABS_TOL;
          RelTol = CoreConstants.DEFAULT_REL_TOL;
          NumberOfBins = CoreConstants.DEFAULT_NUMBER_OF_BINS;
