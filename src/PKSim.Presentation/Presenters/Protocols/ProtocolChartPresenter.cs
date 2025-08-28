@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.Linq;
-using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;

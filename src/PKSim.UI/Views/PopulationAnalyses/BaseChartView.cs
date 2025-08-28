@@ -80,11 +80,9 @@ namespace PKSim.UI.Views.PopulationAnalyses
       {
       }
 
-      public void ExportToPng(string watermark, string filePath)
-      {
+      public void ExportToPng(string watermark, string filePath) => 
          Chart.ExportChartToImageFile(_presenter.AnalysisChart, watermark, filePath, ImageFormat.Png);
-      }
-      
+
       public override void InitializeResources()
       {
          base.InitializeResources();
