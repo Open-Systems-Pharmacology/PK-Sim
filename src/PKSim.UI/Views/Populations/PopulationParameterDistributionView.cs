@@ -1,4 +1,5 @@
-﻿using OSPSuite.UI.Services;
+﻿using System.Drawing.Imaging;
+using OSPSuite.UI.Services;
 using PKSim.Presentation.Presenters.Populations;
 using PKSim.Presentation.Views.Populations;
 using OSPSuite.Core.Chart;
@@ -36,14 +37,10 @@ namespace PKSim.UI.Views.Populations
          chart.Plot(dataToPlot, settings);
       }
 
-      public void ResetPlot()
-      {
-         chart.ResetPlot();
-      }
+      public void ResetPlot() => chart.ResetPlot();
 
-      public void CopyToClipboard(string watermark)
-      {
-         chart.CopyToClipboard(watermark);
-      }
+      public void ExportToPng(string filePath, string watermark) => chart.ExportChartToImageFile(watermark, filePath, ImageFormat.Png);
+
+      public void CopyToClipboard(string watermark) => chart.CopyToClipboard(watermark);
    }
 }

@@ -14,5 +14,6 @@ namespace PKSim.Presentation.Views.Protocols
       string YAxisTitle { get; set; }
       string Y2AxisTitle { get; set; }
       double BarWidth { get; set; }
+      void ExportToPng(string filePath, string watermark);
    }
 }

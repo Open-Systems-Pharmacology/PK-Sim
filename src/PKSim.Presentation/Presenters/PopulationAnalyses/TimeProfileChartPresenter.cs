@@ -1,10 +1,11 @@
 ﻿using System;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
+using PKSim.Core;
 using PKSim.Core.Chart;
 using PKSim.Core.Model.PopulationAnalyses;
 using PKSim.Presentation.Views.PopulationAnalyses;
-using OSPSuite.Presentation.Presenters;
-using PKSim.Core;
 
 namespace PKSim.Presentation.Presenters.PopulationAnalyses
 {
@@ -28,8 +29,11 @@ namespace PKSim.Presentation.Presenters.PopulationAnalyses
       private readonly ITimeProfileChartSettingsPresenter _timeProfileChartSettingsPresenter;
       public event Action ObservedDataSettingsChanged = delegate { };
 
-      public TimeProfileChartPresenter(ITimeProfileChartView view, ITimeProfileChartSettingsPresenter timeProfileChartSettingsPresenter, IApplicationSettings applicationSettings)
-         : base(view, timeProfileChartSettingsPresenter, applicationSettings)
+      public TimeProfileChartPresenter(ITimeProfileChartView view,
+         ITimeProfileChartSettingsPresenter timeProfileChartSettingsPresenter,
+         IApplicationSettings applicationSettings,
+         IDialogCreator dialogCreator)
+         : base(view, timeProfileChartSettingsPresenter, applicationSettings, dialogCreator)
       {
          view.DragDropEnabled = true;
          _timeProfileChartSettingsPresenter = timeProfileChartSettingsPresenter;
