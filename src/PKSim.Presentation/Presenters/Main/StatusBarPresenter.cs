@@ -175,7 +175,7 @@ namespace PKSim.Presentation.Presenters.Main
          _runningSimulationsDictionary[eventToHandle.Simulation.Id] = true;
       }
 
-      public void Handle(SimulationRunFinishedEvent eventToHandle)
+         public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
          if (activeSimulationsCount == 0)
