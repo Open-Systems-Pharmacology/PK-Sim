@@ -50,14 +50,15 @@ namespace PKSim.Presentation.Presenters.Main
       private int _numberOfReportsBeingCreated;
       public event EventHandler StatusChanged = delegate { };
       private readonly ConcurrentDictionary<string, bool> _runningSimulationsDictionary = new ConcurrentDictionary<string, bool>();
-
+      private readonly IEventPublisher _eventPublisher;
       private int activeSimulationsCount => _runningSimulationsDictionary.Count(x => x.Value);
 
 
-      public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration)
+      public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration, IEventPublisher envEventPublisher)
       {
          _view = view;
          _applicationConfiguration = applicationConfiguration;
+         _eventPublisher = envEventPublisher;
       }
 
       public void Initialize()
@@ -148,7 +149,11 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunCanceledEvent eventToHandle)
       {
-         resetCountersAndHideBar();
+         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
+         if (activeSimulationsCount == 0)
+         {
+            resetCountersAndHideBar();
+         }
       }
 
       public void Handle(ProgressingEvent eventToHandle)
@@ -183,6 +188,7 @@ namespace PKSim.Presentation.Presenters.Main
       {
          _runningSimulationsDictionary.Clear();
          hideProgressBar();
+         _eventPublisher.PublishEvent(new AllSimulationsFinishedEvent());
       }
 
       public void Handle(ApplicationInitializedEvent eventToHandle)
