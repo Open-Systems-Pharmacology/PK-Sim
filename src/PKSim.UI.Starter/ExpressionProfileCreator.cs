@@ -36,7 +36,7 @@ namespace PKSim.UI.Starter
 
       private static object createExpressionProfile<T>() where T : IndividualMolecule
       {
-         var container = ApplicationStartup.Initialize();
+         var container = UIApplicationStartup.Initialize();
 
          using (var presenter = container.Resolve<ICreateExpressionProfilePresenter>())
          {
@@ -51,7 +51,7 @@ namespace PKSim.UI.Starter
 
       public static object GetExpressionDatabaseQuery(ExpressionProfileBuildingBlock buildingBlock)
       {
-         var container = ApplicationStartup.Initialize();
+         var container = UIApplicationStartup.Initialize();
 
          var expressionProfileProteinDatabaseTask = container.Resolve<IExpressionProfileProteinDatabaseTask>();
          loadApplicationSettings(container);

@@ -7,7 +7,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Services;
 using OSPSuite.Utility.Container;
 using PKSim.CLI.Commands;
-using PKSim.CLI.Core.Services;
 using PKSim.Core;
 
 namespace PKSim.CLI

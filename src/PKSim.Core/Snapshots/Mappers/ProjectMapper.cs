@@ -47,6 +47,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var snapshot = await SnapshotFrom(project, x =>
          {
             x.Version = ProjectVersions.Current;
+            x.Name = SnapshotValueFor(project.Name);
             x.Description = SnapshotValueFor(project.Description);
          });
 

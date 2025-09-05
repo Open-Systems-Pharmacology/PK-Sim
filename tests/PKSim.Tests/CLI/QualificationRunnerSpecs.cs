@@ -37,12 +37,13 @@ namespace PKSim.CLI
       protected QualificationRunOptions _runOptions;
       protected QualificationConfiguration _qualificationConfiguration;
       private Func<string, string> _oldCreateDirectory;
-      protected List<string> _createdDirectories = new List<string>();
+      protected List<string> _createdDirectories = [];
       private Func<string, bool> _oldFileExists;
       private Func<string, bool> _oldDirectoryExists;
       private Action<string, bool> _oldDeleteDirectory;
       protected IDataRepositoryExportTask _dataRepositoryTask;
       protected IMarkdownReporterTask _markdownReporterTask;
+      protected IQualificationInputTask _qualificationInputTask;
 
       public override async Task GlobalContext()
       {
@@ -68,8 +69,9 @@ namespace PKSim.CLI
          _logger = A.Fake<IOSPSuiteLogger>();
          _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _markdownReporterTask = A.Fake<IMarkdownReporterTask>();
+         _qualificationInputTask = new QualificationInputTask(_logger, _markdownReporterTask);
 
-         sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _dataRepositoryTask, _markdownReporterTask, _logger);
+         sut = new QualificationRunner(_snapshotTask, _jsonSerializer, _workspace, _workspacePersistor, _exportSimulationRunner, _dataRepositoryTask, _qualificationInputTask, _logger);
 
          _runOptions = new QualificationRunOptions();
          _qualificationConfiguration = new QualificationConfiguration();

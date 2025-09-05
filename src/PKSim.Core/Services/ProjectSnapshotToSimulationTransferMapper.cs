@@ -11,7 +11,7 @@ using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core.Services;
 
-public interface IProjectSnapshotToSimulationTransferMapper : IMapper<string, SimulationTransfer>;
+public interface IProjectSnapshotToSimulationTransferMapper : IMapper<string, (SimulationTransfer transfer, PKSimProject project)>;
 
 public class ProjectSnapshotToSimulationTransferMapper(
    IJsonSerializer jsonSerializer,
@@ -19,7 +19,7 @@ public class ProjectSnapshotToSimulationTransferMapper(
    ISimulationConfigurationTask simulationConfigurationTask,
    ISimulationToModelCoreSimulationMapper simulationMapper) : IProjectSnapshotToSimulationTransferMapper
 {
-   public SimulationTransfer MapFrom(string snapshotString)
+   public (SimulationTransfer transfer, PKSimProject project) MapFrom(string snapshotString)
    {
       var snapshot = jsonSerializer.DeserializeFromBase64String<Project>(snapshotString).Result;
       var project = snapshotMapper.MapToModel(snapshot, new ProjectContext(new PKSimProject(), runSimulations: false)).Result as PKSimProject;
@@ -34,9 +34,9 @@ public class ProjectSnapshotToSimulationTransferMapper(
       // The module should contain the snapshot from which it was created
       modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = snapshotString;
 
-      return new SimulationTransfer
+      return (new SimulationTransfer
       {
          Simulation = modelCoreSimulation
-      };
+      }, project);
    }
 }
