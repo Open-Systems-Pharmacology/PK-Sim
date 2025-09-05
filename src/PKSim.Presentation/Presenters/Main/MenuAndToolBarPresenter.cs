@@ -276,7 +276,7 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsAccordingToSimulationState();
       }
 
-      private void updateSimulationItemsAccordingToSimulationState(bool? isRunning = null)
+      private void updateSimulationItemsAccordingToSimulationState(bool isRunning = false)
       {
          bool enabled = _simulationState.IsActivated && _enabled;
          bool resultsEnabled = enabled && _simulationState.HasResult;
@@ -284,7 +284,7 @@ namespace PKSim.Presentation.Presenters.Main
          bool enableIndividualSimulationItems = enabled && _simulationState.IsIndividual;
          bool enabledPKSimSimulationOnlyItems = enabled && !_simulationState.IsImported;
 
-         var canRun = enabled && !(isRunning ?? false || _simulationState.IsRunning);
+         var canRun = enabled && !(isRunning || _simulationState.IsRunning);
          _menuBarItemRepository[MenuBarItemIds.Run].Enabled = canRun;
          _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = canRun;
 
@@ -336,7 +336,7 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsFor(eventToHandle.Simulation as Simulation);
       }
 
-      private void updateSimulationItemsFor(Simulation simulation, bool? isRunning = null)
+      private void updateSimulationItemsFor(Simulation simulation, bool isRunning = false)
       {
          var activeSimulation = _activeSubjectRetriever.Active<Simulation>();
          bool simIsActive = (activeSimulation != null) && (activeSimulation == simulation);
