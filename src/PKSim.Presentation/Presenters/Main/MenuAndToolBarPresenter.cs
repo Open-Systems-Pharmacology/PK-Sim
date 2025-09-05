@@ -284,9 +284,9 @@ namespace PKSim.Presentation.Presenters.Main
          bool enableIndividualSimulationItems = enabled && _simulationState.IsIndividual;
          bool enabledPKSimSimulationOnlyItems = enabled && !_simulationState.IsImported;
 
-         var canRun = enabled && !(isRunning || _simulationState.IsRunning);
-         _menuBarItemRepository[MenuBarItemIds.Run].Enabled = canRun;
-         _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = canRun;
+         var isSimulationAlreadyRunning = (isRunning || _simulationState.IsRunning);
+         _menuBarItemRepository[MenuBarItemIds.Run].Enabled = enabled && !isSimulationAlreadyRunning;
+         _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = enabled && !isSimulationAlreadyRunning; ;
 
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToMoBi].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToPkml].Enabled = enabled;
@@ -328,7 +328,7 @@ namespace PKSim.Presentation.Presenters.Main
          enableDefaultItems();
          updateProjectItems(isEnabled: true);
 
-         updateSimulationItemsFor(eventToHandle.Simulation, false);
+         updateSimulationItemsFor(eventToHandle.Simulation, isRunning: false);
       }
 
       public void Handle(SimulationResultsUpdatedEvent eventToHandle)
@@ -396,7 +396,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
-         updateSimulationItemsFor(eventToHandle.Simulation, true);
+         updateSimulationItemsFor(eventToHandle.Simulation,  isRunning: true);
          _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = true;
       }
 

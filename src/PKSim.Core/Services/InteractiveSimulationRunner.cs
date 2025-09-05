@@ -94,7 +94,6 @@ namespace PKSim.Core.Services
             {
                if (_cancellationTokenSources.TryRemove(simulation, out var ctsToDispose))
                {
-                  //Fire event here. 
                   ctsToDispose.Dispose();
                }
             }
