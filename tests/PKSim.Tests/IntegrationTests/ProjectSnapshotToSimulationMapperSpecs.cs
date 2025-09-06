@@ -52,7 +52,7 @@ namespace PKSim.IntegrationTests
    {
       protected override void Because()
       {
-         _simulationTransfer = sut.MapFrom(_snapshotString);
+         (_simulationTransfer, _) = sut.MapFrom(_snapshotString);
       }
 
       [Observation]

@@ -32,7 +32,7 @@ namespace PKSim.UI.StarterTests
          IoC.Container.RegisterImplementationOf(A.Fake<IJournalPresenter>());
          IoC.Container.RegisterImplementationOf(new BaseShell() as IShell);
 
-         _container = ApplicationStartup.Initialize();
+         _container = UIApplicationStartup.Initialize();
       }
    }
 

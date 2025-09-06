@@ -10,7 +10,7 @@ namespace PKSim.UI.Starter
    {
       public static object CreateIndividual()
       {
-         var container = ApplicationStartup.Initialize();
+         var container = UIApplicationStartup.Initialize();
 
          using (var presenter = container.Resolve<ICreateIndividualPresenter>())
          {

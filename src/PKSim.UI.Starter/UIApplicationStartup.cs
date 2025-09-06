@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using DevExpress.LookAndFeel;
+﻿using DevExpress.LookAndFeel;
 using DevExpress.XtraBars;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
@@ -21,11 +19,13 @@ using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Presentation;
+using System;
+using System.Threading;
 using PresenterRegister = OSPSuite.Presentation.PresenterRegister;
 
 namespace PKSim.UI.Starter
 {
-   public class ApplicationStartup : Core.ApplicationStartup
+   public class UIApplicationStartup : ApplicationStartup
    {
       static IContainer _container;
 

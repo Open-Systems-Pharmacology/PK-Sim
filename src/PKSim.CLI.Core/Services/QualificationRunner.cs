@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using OSPSuite.CLI.Core.RunOptions;
+﻿using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -12,8 +9,10 @@ using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using static OSPSuite.Assets.Error;
-using static PKSim.Assets.PKSimConstants.Error;
 using Project = PKSim.Core.Snapshots.Project;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 
@@ -24,7 +23,7 @@ namespace PKSim.CLI.Core.Services
       private readonly ICoreWorkspace _workspace;
       private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IExportSimulationRunner _exportSimulationRunner;
-      private readonly IMarkdownReporterTask _markdownReporterTask;
+      private readonly IQualificationInputTask _qualificationInputTask;
 
       public QualificationRunner(ISnapshotTask snapshotTask,
          IJsonSerializer jsonSerializer,
@@ -32,28 +31,28 @@ namespace PKSim.CLI.Core.Services
          IWorkspacePersistor workspacePersistor,
          IExportSimulationRunner exportSimulationRunner,
          IDataRepositoryExportTask dataRepositoryExportTask,
-         IMarkdownReporterTask markdownReporterTask,
+         IQualificationInputTask qualificationInputTask,
          IOSPSuiteLogger logger
       ) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
       {
          _workspace = workspace;
          _workspacePersistor = workspacePersistor;
          _exportSimulationRunner = exportSimulationRunner;
-         _markdownReporterTask = markdownReporterTask;
+         _qualificationInputTask = qualificationInputTask;
       }
 
       protected override void SaveProjectContext(string projectFile) => _workspacePersistor.SaveSession(_workspace, projectFile);
 
       protected override void LoadProjectContext(PKSimProject project) => _workspace.Project = project;
 
-      protected override void ValidateInputs(Project snapshotProject, QualificationConfiguration configuration)
+      protected override void ValidateInputs(Project snapshotProject, QualificationConfiguration configuration) => 
+         _qualificationInputTask.ValidateInputs(snapshotProject, configuration);
+
+      protected override async Task<(PKSimProject, InputMapping[])> LoadProjectAndExportInputs(QualificationRunOptions runOptions, Project snapshot, QualificationConfiguration config)
       {
-         configuration.Inputs?.Each(x =>
-         {
-            var buildingBlock = snapshotProject.BuildingBlockByTypeAndName(x.Type, x.Name);
-            if (buildingBlock == null)
-               throw new QualificationRunException(CannotFindBuildingBlockInSnapshot(x.Type.ToString(), x.Name, snapshotProject.Name));
-         });
+         var project = await _snapshotTask.LoadProjectFromSnapshotAsync(snapshot, runOptions.Run);
+         
+         return (project, _qualificationInputTask.ExportInputs(project, config));
       }
 
       protected override SimulationExportMode ExportMode(QualificationRunOptions runOptions) => runOptions.Run ? SimulationExportMode.Xml | SimulationExportMode.Csv : SimulationExportMode.Pkml;
@@ -124,11 +123,6 @@ namespace PKSim.CLI.Core.Services
       {
          var referenceSimulation = snapshotProject.Simulations?.FindByName(simulationName);
          return referenceSimulation ?? throw new QualificationRunException(CannotFindSimulationInSnapshot(simulationName, snapshotProject.Name));
-      }
-
-      protected override Task ExportToMarkdown(object buildingBlock, string fileFullPath, int? inputSectionLevel)
-      {
-         return _markdownReporterTask.ExportToMarkdown(buildingBlock, fileFullPath, inputSectionLevel);
       }
    }
 }
