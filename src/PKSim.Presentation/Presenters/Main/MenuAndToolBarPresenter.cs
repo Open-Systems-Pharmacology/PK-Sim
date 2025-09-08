@@ -1,14 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using PKSim.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using PKSim.Core.Events;
-using PKSim.Core.Model;
-using PKSim.Presentation.Core;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.ParameterIdentifications;
@@ -16,14 +10,21 @@ using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.Presentation.Presenters.Events;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
+using PKSim.Assets;
 using PKSim.Core;
-using System.Collections.Generic;
+using PKSim.Core.Events;
+using PKSim.Core.Model;
+using PKSim.Presentation.Core;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -46,7 +47,8 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<ParameterIdentificationStartedEvent>,
       IListener<ParameterIdentificationTerminatedEvent>,
       IListener<SensitivityAnalysisStartedEvent>,
-      IListener<SensitivityAnalysisTerminatedEvent>
+      IListener<SensitivityAnalysisTerminatedEvent>,
+      IListener<AllSimulationsFinishedEvent>
    {
    }
 
@@ -66,14 +68,21 @@ namespace PKSim.Presentation.Presenters.Main
       private bool _enabled;
       private SimulationState _simulationState;
       private readonly List<ParameterIdentification> _runningParameterIdentifications = new List<ParameterIdentification>();
+      private readonly IContainer _container;
 
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
       private SensitivityAnalysis _runningSensitivityAnalysis;
 
-      public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
-         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider,
-         ISkinManager skinManager, IStartOptions startOptions, ICoreWorkspace workspace, IActiveSubjectRetriever activeSubjectRetriever) : base(view, menuBarItemRepository, mruProvider)
+      public MenuAndToolBarPresenter(IMenuAndToolBarView view,
+         IMenuBarItemRepository menuBarItemRepository,
+         IButtonGroupRepository buttonGroupRepository,
+         IMRUProvider mruProvider,
+         ISkinManager skinManager,
+         IStartOptions startOptions,
+         ICoreWorkspace workspace,
+         IActiveSubjectRetriever activeSubjectRetriever,
+         IContainer container) : base(view, menuBarItemRepository, mruProvider)
       {
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;
@@ -81,6 +90,7 @@ namespace PKSim.Presentation.Presenters.Main
          _startOptions = startOptions;
          _workspace = workspace;
          _activeSubjectRetriever = activeSubjectRetriever;
+         _container = container;
          _enabled = true;
       }
 
@@ -237,6 +247,7 @@ namespace PKSim.Presentation.Presenters.Main
          _simulationState.HasResult = simulationHasResults(simulation);
          _simulationState.IsIndividual = isIndividualSimulation;
          _simulationState.IsImported = simulation.IsImported;
+         _simulationState.IsRunning = simulation.IsRunning(_container);
       }
 
       private bool simulationHasResults(Simulation simulation)
@@ -265,7 +276,7 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsAccordingToSimulationState();
       }
 
-      private void updateSimulationItemsAccordingToSimulationState()
+      private void updateSimulationItemsAccordingToSimulationState(bool isRunning = false)
       {
          bool enabled = _simulationState.IsActivated && _enabled;
          bool resultsEnabled = enabled && _simulationState.HasResult;
@@ -273,9 +284,10 @@ namespace PKSim.Presentation.Presenters.Main
          bool enableIndividualSimulationItems = enabled && _simulationState.IsIndividual;
          bool enabledPKSimSimulationOnlyItems = enabled && !_simulationState.IsImported;
 
-         //All simulation type items
-         _menuBarItemRepository[MenuBarItemIds.Run].Enabled = enabled;
-         _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = enabled;
+         var isSimulationAlreadyRunning = (isRunning || _simulationState.IsRunning);
+         _menuBarItemRepository[MenuBarItemIds.Run].Enabled = enabled && !isSimulationAlreadyRunning;
+         _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = enabled && !isSimulationAlreadyRunning; ;
+
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToMoBi].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToPkml].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationResultsToCSV].Enabled = enabled;
@@ -316,7 +328,7 @@ namespace PKSim.Presentation.Presenters.Main
          enableDefaultItems();
          updateProjectItems(isEnabled: true);
 
-         updateSimulationItemsFor(eventToHandle.Simulation);
+         updateSimulationItemsFor(eventToHandle.Simulation, isRunning: false);
       }
 
       public void Handle(SimulationResultsUpdatedEvent eventToHandle)
@@ -324,13 +336,12 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsFor(eventToHandle.Simulation as Simulation);
       }
 
-      private void updateSimulationItemsFor(Simulation simulation)
+      private void updateSimulationItemsFor(Simulation simulation, bool isRunning = false)
       {
          var activeSimulation = _activeSubjectRetriever.Active<Simulation>();
-         _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = false;
          bool simIsActive = (activeSimulation != null) && (activeSimulation == simulation);
          updateSimulationStateFrom(simulation, isActiveSimulation: simIsActive);
-         updateSimulationItemsAccordingToSimulationState();
+         updateSimulationItemsAccordingToSimulationState(isRunning);
       }
 
       private void updateProjectItems(bool isEnabled)
@@ -385,6 +396,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
+         updateSimulationItemsFor(eventToHandle.Simulation,  isRunning: true);
          _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = true;
       }
 
@@ -457,6 +469,12 @@ namespace PKSim.Presentation.Presenters.Main
          /// </summary>
          public bool IsIndividual { get; set; }
 
+         /// <summary>
+         ///    Returns <c>true</c> if running <see cref="Simulation" />
+         ///    <c>false</c>
+         /// </summary>
+         public bool IsRunning { get; set; }
+
          public void Reset()
          {
             IsActivated = false;
@@ -516,7 +534,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
-         var parameterIdentification = parameterIdentificationEvent.ParameterIdentification; 
+         var parameterIdentification = parameterIdentificationEvent.ParameterIdentification;
          _runningParameterIdentifications.Add(parameterIdentification);
          updateParameterIdentificationItems(parameterIdentification);
       }
@@ -527,7 +545,7 @@ namespace PKSim.Presentation.Presenters.Main
          _runningParameterIdentifications.Remove(parameterIdentification);
          //only update if selected subject in the actual parameter identification terminated
          var activeSubject = _activeSubjectRetriever.Active<ParameterIdentification>();
-         if(Equals(activeSubject, parameterIdentification))
+         if (Equals(activeSubject, parameterIdentification))
             updateParameterIdentificationItems(parameterIdentification);
       }
 
@@ -568,6 +586,11 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.RunSensitivityAnalysis].Enabled = !sensitivityRunning;
          _menuBarItemRepository[MenuBarItemIds.StopSensitivityAnalysis].Enabled = sensitivityRunning;
          _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisPKParameterAnalysis].Enabled = hasResult;
+      }
+
+      public void Handle(AllSimulationsFinishedEvent eventToHandle)
+      {
+         _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = false;
       }
    }
 }

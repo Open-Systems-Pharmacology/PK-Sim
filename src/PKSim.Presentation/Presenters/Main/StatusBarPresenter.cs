@@ -1,22 +1,22 @@
 ﻿using System;
-using PKSim.Assets;
-using PKSim.Presentation.Core;
+using System.Collections.Concurrent;
+using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Journal;
 using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using System.Collections.Concurrent;
-using System.Linq;
+using PKSim.Assets;
 using PKSim.Core.Events;
+using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -50,14 +50,14 @@ namespace PKSim.Presentation.Presenters.Main
       private int _numberOfReportsBeingCreated;
       public event EventHandler StatusChanged = delegate { };
       private readonly ConcurrentDictionary<string, bool> _runningSimulationsDictionary = new ConcurrentDictionary<string, bool>();
-
+      private readonly IEventPublisher _eventPublisher;
       private int activeSimulationsCount => _runningSimulationsDictionary.Count(x => x.Value);
 
-
-      public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration)
+      public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration, IEventPublisher envEventPublisher)
       {
          _view = view;
          _applicationConfiguration = applicationConfiguration;
+         _eventPublisher = envEventPublisher;
       }
 
       public void Initialize()
@@ -148,7 +148,11 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunCanceledEvent eventToHandle)
       {
-         resetCountersAndHideBar();
+         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
+         if (activeSimulationsCount == 0)
+         {
+            resetCountersAndHideBar();
+         }
       }
 
       public void Handle(ProgressingEvent eventToHandle)
@@ -183,6 +187,7 @@ namespace PKSim.Presentation.Presenters.Main
       {
          _runningSimulationsDictionary.Clear();
          hideProgressBar();
+         _eventPublisher.PublishEvent(new AllSimulationsFinishedEvent());
       }
 
       public void Handle(ApplicationInitializedEvent eventToHandle)
@@ -241,6 +246,7 @@ namespace PKSim.Presentation.Presenters.Main
          update(StatusBarElements.ProgressStatus)
             .WithCaption($"{message}");
       }
+
       private void updateReportInfo()
       {
          string caption = "";
