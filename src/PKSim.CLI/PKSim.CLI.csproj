@@ -64,7 +64,6 @@
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.76" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
 
   </ItemGroup>
 
