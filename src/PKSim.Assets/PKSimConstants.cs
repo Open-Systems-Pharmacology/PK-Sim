@@ -1644,7 +1644,6 @@ namespace PKSim.Assets
          public static readonly string Fraction = "Fraction";
          public static readonly string TubularSecretion = "Tubular Secretion";
          public static readonly string InVitroAssay = "In-Vitro Assay";
-         public static readonly string GlomerularFiltration = Captions.GlomerularFiltration;
          public static readonly string ShowCalculatedValues = "Show Values";
          public static readonly string ShowSolubilityPhChart = "Show Graph";
          public static readonly string CalculatedValue = "Calculated";
@@ -1875,9 +1874,6 @@ namespace PKSim.Assets
          public static readonly string AddSpecificBindingPartner = AddMolecule(ProteinBindingPartner);
          public static readonly string SpecificBindingProcesses = "Specific Binding";
          public static readonly string TransportAndExcretionProcesses = "Transport & Excretion";
-         public static readonly string BiliaryClearance = "Biliary Clearance";
-         public static readonly string RenalClearance = Captions.RenalClearance;
-         public static readonly string TotalHepaticClearance = "Total Hepatic Clearance";
          public static readonly string MetabolicProcesses = "Metabolism";
          public static readonly string SimulationMetabolism = MetabolicProcesses;
          public static readonly string SimulationSpecificBinding = SpecificBindingProcesses;

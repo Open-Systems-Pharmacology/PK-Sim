@@ -36,10 +36,10 @@
 
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.51" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.51" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.56" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.56" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.3" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.51" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.56" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.74" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.76" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />

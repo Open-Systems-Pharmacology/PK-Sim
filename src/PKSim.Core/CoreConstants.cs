@@ -1,6 +1,7 @@
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Domain;
 using static OSPSuite.Core.Domain.Constants;
 
 namespace PKSim.Core
@@ -1138,6 +1139,11 @@ namespace PKSim.Core
          public static readonly string BILIARY_CLEARANCE_TO_GALL_BLADDER = "LiverActiveEffluxToGallbladder_FirstOrder";
          public static readonly string BILIARY_CLEARANCE_TO_DUODENUM = "LiverActiveEffluxToDuodenum_FirstOrder";
          public static readonly string KIDNEY_CLEARANCE = "KidneyClearance";
+
+         public static readonly string BiliaryClearance = "Biliary Clearance";
+         public static readonly string RenalClearances = Processes.RenalClearances;
+         public static readonly string TotalHepaticClearance = "Total Hepatic Clearance";
+         public static readonly string GlomerularFiltration = Processes.GlomerularFiltration;
       }
 
       public static class ProcessType
