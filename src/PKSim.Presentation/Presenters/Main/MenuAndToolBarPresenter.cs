@@ -276,18 +276,21 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsAccordingToSimulationState();
       }
 
-      private void updateSimulationItemsAccordingToSimulationState(bool isRunning = false)
+      /// <summary>
+      ///    Updates the state of all menu items related to simulation according to the current state of the simulation
+      /// </summary>
+      /// <param name="isSimulationRunning">If defined, super seeds the simulationState </param>
+      private void updateSimulationItemsAccordingToSimulationState(bool? isSimulationRunning = null)
       {
-         bool enabled = _simulationState.IsActivated && _enabled;
-         bool resultsEnabled = enabled && _simulationState.HasResult;
-         bool enablePopSimulationItems = enabled && !_simulationState.IsIndividual;
-         bool enableIndividualSimulationItems = enabled && _simulationState.IsIndividual;
-         bool enabledPKSimSimulationOnlyItems = enabled && !_simulationState.IsImported;
+         var enabled = _simulationState.IsActivated && _enabled;
+         var resultsEnabled = enabled && _simulationState.HasResult;
+         var enablePopSimulationItems = enabled && !_simulationState.IsIndividual;
+         var enableIndividualSimulationItems = enabled && _simulationState.IsIndividual;
+         var enabledPKSimSimulationOnlyItems = enabled && !_simulationState.IsImported;
+         var isRunning = enabled && (isSimulationRunning ?? _simulationState.IsRunning);
 
-         var isSimulationAlreadyRunning = (isRunning || _simulationState.IsRunning);
-         _menuBarItemRepository[MenuBarItemIds.Run].Enabled = enabled && !isSimulationAlreadyRunning;
-         _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = enabled && !isSimulationAlreadyRunning; ;
-
+         _menuBarItemRepository[MenuBarItemIds.Run].Enabled = !isRunning;
+         _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = !isRunning;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToMoBi].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationToPkml].Enabled = enabled;
          _menuBarItemRepository[MenuBarItemIds.ExportActiveSimulationResultsToCSV].Enabled = enabled;
@@ -305,7 +308,6 @@ namespace PKSim.Presentation.Presenters.Main
          _menuBarItemRepository[MenuBarItemIds.ImportActiveSimulationResults].Enabled = enablePopSimulationItems;
          _menuBarItemRepository[MenuBarItemIds.SavePopulationSimulationWorkflow].Enabled = enablePopSimulationItems;
          _menuBarItemRepository[MenuBarItemIds.LoadPopulationSimulationWorkflow].Enabled = enablePopSimulationItems;
-
          _menuBarItemRepository[MenuBarItemIds.ShowIndividualResults].Enabled = resultsEnabled;
          _menuBarItemRepository[MenuBarItemIds.PredictedVsObservedSimulationAnalysis].Enabled = resultsEnabled;
          _menuBarItemRepository[MenuBarItemIds.ResidualsVsTimeSimulationAnalysis].Enabled = resultsEnabled;
@@ -327,7 +329,6 @@ namespace PKSim.Presentation.Presenters.Main
       {
          enableDefaultItems();
          updateProjectItems(isEnabled: true);
-
          updateSimulationItemsFor(eventToHandle.Simulation, isRunning: false);
       }
 
@@ -336,11 +337,11 @@ namespace PKSim.Presentation.Presenters.Main
          updateSimulationItemsFor(eventToHandle.Simulation as Simulation);
       }
 
-      private void updateSimulationItemsFor(Simulation simulation, bool isRunning = false)
+      private void updateSimulationItemsFor(Simulation simulation, bool? isRunning = null)
       {
          var activeSimulation = _activeSubjectRetriever.Active<Simulation>();
-         bool simIsActive = (activeSimulation != null) && (activeSimulation == simulation);
-         updateSimulationStateFrom(simulation, isActiveSimulation: simIsActive);
+         var isActiveSimulation = Equals(activeSimulation, simulation);
+         updateSimulationStateFrom(simulation, isActiveSimulation);
          updateSimulationItemsAccordingToSimulationState(isRunning);
       }
 
@@ -396,7 +397,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
-         updateSimulationItemsFor(eventToHandle.Simulation,  isRunning: true);
+         updateSimulationItemsFor(eventToHandle.Simulation, isRunning: true);
          _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = true;
       }
 
@@ -410,9 +411,7 @@ namespace PKSim.Presentation.Presenters.Main
       {
          _enabled = true;
          enableDefaultItems();
-
          updateProjectItems(isEnabled: eventToHandle.ProjectLoaded);
-
          updateSimulationItemsAccordingToSimulationState();
       }
 
@@ -511,8 +510,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Visit(Simulation simulation)
       {
-         updateSimulationStateFrom(simulation, isActiveSimulation: true);
-         updateSimulationItemsAccordingToSimulationState();
+         updateSimulationItemsFor(simulation);
          updateResultsVisibility(shouldShowIndividualResults: _simulationState.IsIndividual);
       }
 
