@@ -166,17 +166,19 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(ProgressDoneEvent eventToHandle)
       {
-         hideProgressBar();
+         setProgressBarVisibility();
       }
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
          _runningSimulationsDictionary[eventToHandle.Simulation.Id] = true;
+         setProgressBarVisibility();
       }
 
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
+         setProgressBarVisibility();
          if (activeSimulationsCount == 0)
          {
             resetCountersAndHideBar();
@@ -186,7 +188,7 @@ namespace PKSim.Presentation.Presenters.Main
       private void resetCountersAndHideBar()
       {
          _runningSimulationsDictionary.Clear();
-         hideProgressBar();
+         setProgressBarVisibility();
          _eventPublisher.PublishEvent(new AllSimulationsFinishedEvent());
       }
 
@@ -196,7 +198,7 @@ namespace PKSim.Presentation.Presenters.Main
          update(StatusBarElements.Version)
             .WithCaption($"{_applicationConfiguration.FullVersionDisplay}");
 
-         hideProgressBar();
+         setProgressBarVisibility();
       }
 
       public void Handle(JournalLoadedEvent journalLoadedEvent)
@@ -260,15 +262,29 @@ namespace PKSim.Presentation.Presenters.Main
             .WithCaption(caption);
       }
 
-      private void hideProgressBar()
+      private void setProgressBarVisibility()
       {
-         update(StatusBarElements.ProgressBar)
-            .Visible(false)
-            .And.WithValue(0);
+         if (activeSimulationsCount > 1)
+         {
+            update(StatusBarElements.ProgressBar)
+               .Visible(false)
+               .And.WithValue(0);
+         }
+         else if(activeSimulationsCount == 1)
+         {
+            update(StatusBarElements.ProgressBar)
+               .Visible(true);
+         }
 
-         update(StatusBarElements.ProgressStatus)
-            .WithCaption(string.Empty)
-            .And.Visible(false);
+         if (activeSimulationsCount == 0)
+         {
+            update(StatusBarElements.ProgressBar)
+               .Visible(false);
+
+            update(StatusBarElements.ProgressStatus)
+               .WithCaption(string.Empty)
+               .And.Visible(false);
+         }
       }
 
       public void Handle(StatusMessageEvent eventToHandle)
