@@ -18,7 +18,7 @@ using Simulation = PKSim.Core.Snapshots.Simulation;
 
 namespace PKSim.CLI.Core.Services
 {
-   public class QualificationRunner : QualificationRunner<Project, PKSimProject>
+   public class QualificationRunner : QualificationRunner<Project, PKSimProject, QualificationRunOptions>
    {
       private readonly ICoreWorkspace _workspace;
       private readonly IWorkspacePersistor _workspacePersistor;
