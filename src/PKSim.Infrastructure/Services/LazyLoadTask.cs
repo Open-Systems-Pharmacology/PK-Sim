@@ -3,7 +3,6 @@ using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 
@@ -15,7 +14,6 @@ namespace PKSim.Infrastructure.Services
       private readonly ISimulationResultsLoader _simulationResultsLoader;
       private readonly ISimulationChartsLoader _simulationChartsLoader;
       private readonly IRegistrationTask _registrationTask;
-      private readonly IProgressManager _progressManager;
       private readonly ISimulationComparisonContentLoader _simulationComparisonContentLoader;
       private readonly ISimulationAnalysesLoader _simulationAnalysesLoader;
       private readonly IParameterIdentificationContentLoader _parameterIdentificationContentLoader;
@@ -29,14 +27,12 @@ namespace PKSim.Infrastructure.Services
          ISimulationAnalysesLoader simulationAnalysesLoader,
          IParameterIdentificationContentLoader parameterIdentificationContentLoader,
          ISensitivityAnalysisContentLoader sensitivityAnalysisContentLoader,
-         IRegistrationTask registrationTask,
-         IProgressManager progressManager)
+         IRegistrationTask registrationTask)
       {
          _contentLoader = contentLoader;
          _simulationResultsLoader = simulationResultsLoader;
          _simulationChartsLoader = simulationChartsLoader;
          _registrationTask = registrationTask;
-         _progressManager = progressManager;
          _simulationComparisonContentLoader = simulationComparisonContentLoader;
          _simulationAnalysesLoader = simulationAnalysesLoader;
          _parameterIdentificationContentLoader = parameterIdentificationContentLoader;
@@ -89,21 +85,16 @@ namespace PKSim.Infrastructure.Services
 
       private void loadObjectBase<T>(T objectToLoad) where T : IObjectBase
       {
-         using (var progressUpdater = _progressManager.Create())
-         {
-            progressUpdater.ReportStatusMessage(PKSimConstants.UI.LoadingObject(objectToLoad.Name));
+         //first unregistered the object to load that might contain dummy objects that should be deleted
+         _registrationTask.Unregister(objectToLoad);
 
-            //first unregistered the object to load that might contain dummy objects that should be deleted
-            _registrationTask.Unregister(objectToLoad);
+         //load object content
+         _contentLoader.LoadContentFor(objectToLoad);
 
-            //load object content
-            _contentLoader.LoadContentFor(objectToLoad);
+         _registrationTask.Register(objectToLoad);
 
-            _registrationTask.Register(objectToLoad);
-
-            //special loading steps for simulation
-            loadSimulations(objectToLoad as Simulation);
-         }
+         //special loading steps for simulation
+         loadSimulations(objectToLoad as Simulation);
       }
 
       private void loadSimulations(Simulation simulation)
@@ -123,7 +114,7 @@ namespace PKSim.Infrastructure.Services
 
          //make sure each individual gets the expression profile defined in the simulation)  
          var simulationSubject = simulation.BuildingBlock<ISimulationSubject>();
-       
+
          //this can happen for an imported simulation
          if (simulationSubject != null)
             simulation.AllBuildingBlocks<ExpressionProfile>().Each(simulationSubject.AddExpressionProfile);
