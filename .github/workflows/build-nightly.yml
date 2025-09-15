@@ -39,11 +39,11 @@ jobs:
     needs: get-latest-commit-timespan
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
     runs-on: windows-latest
-    env:
-      ES_USERNAME: ${{ secrets.ES_USERNAME }}
-      ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
-      ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
-      ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
+#    env:
+#      ES_USERNAME: ${{ secrets.ES_USERNAME }}
+#      ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
+#      ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
+#      ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
