@@ -87,10 +87,10 @@ jobs:
           rake "create_setup[${{env.APP_VERSION}}, Debug]"
           rake "create_portable_setup[${{env.APP_VERSION}}, Debug, pk-sim-portable-setup.zip]"
 
-      - name: Sign PKSim setup with CodeSignTool
-        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
-        with:
-          file_path: ./setup/deploy/PK-Sim.${{ env.APP_VERSION }}.msi
+#      - name: Sign PKSim setup with CodeSignTool
+#        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+#        with:
+#          file_path: ./setup/deploy/PK-Sim.${{ env.APP_VERSION }}.msi
 
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4
