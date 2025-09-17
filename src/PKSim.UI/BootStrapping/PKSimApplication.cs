@@ -19,6 +19,7 @@ namespace PKSim.UI.BootStrapping
       private readonly IApplicationController _applicationController;
       private readonly StartOptions _startOptions;
       private ISplashViewPresenter _splashPresenter;
+      private IPKSimMainViewPresenter _mainViewPresenter;
 
       public PKSimApplication(IApplicationController applicationController, ApplicationStartup applicationStartup, IEventPublisher eventPublisher, StartOptions startOptions)
       {
@@ -43,9 +44,9 @@ namespace PKSim.UI.BootStrapping
 
       protected override void OnCreateMainForm()
       {
-         var mainViewPresenter = _applicationController.Start<IMainViewPresenter>().DowncastTo<IPKSimMainViewPresenter>();
-         mainViewPresenter.StartOptions = _startOptions;
-         MainForm = mainViewPresenter.BaseView.DowncastTo<Form>();
+         _mainViewPresenter = _applicationController.Start<IMainViewPresenter>().DowncastTo<IPKSimMainViewPresenter>();
+         _mainViewPresenter.StartOptions = _startOptions;
+         MainForm = _mainViewPresenter.BaseView.DowncastTo<Form>();
          _eventPublisher.RemoveListener(_splashPresenter);
          _splashPresenter = null;
       }

@@ -31,7 +31,65 @@ namespace PKSim.Core
 
       protected override void Because()
       {
-         _results = sut.StatisticalDataFor(_floatMatrix, _selection).ToList();
+         _results = sut.StatisticalDataFor(_floatMatrix, _selection, StatisticalDataCalculator.DeviationModes.Range).ToList();
+      }
+   }
+
+   public class When_calculation_arithmetic_deviation_for_as_value : concern_for_StatisticalDataCalculator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _selection = new PredefinedStatisticalAggregation { Method = StatisticalAggregationType.ArithmeticStandardDeviation };
+      }
+
+      protected override void Because()
+      {
+         _results = sut.StatisticalDataFor(_floatMatrix, _selection, StatisticalDataCalculator.DeviationModes.Value).ToList();
+      }
+
+      [Observation]
+      public void the_results_should_be_the_standard_deviation()
+      {
+         _results[0][0].ShouldBeEqualTo(_values1.ArithmeticStandardDeviation());
+         _results[0][1].ShouldBeEqualTo(_values2.ArithmeticStandardDeviation());
+         _results[0][2].ShouldBeEqualTo(_values3.ArithmeticStandardDeviation());
+      }
+
+      [Observation]
+      public void the_results_should_contain_the_standard_deviation_only()
+      {
+         _results.Count.ShouldBeEqualTo(1);
+         _results[0].Length.ShouldBeEqualTo(3);
+      }
+   }
+
+   public class When_calculation_geometric_deviation_for_as_value : concern_for_StatisticalDataCalculator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _selection = new PredefinedStatisticalAggregation { Method = StatisticalAggregationType.GeometricStandardDeviation };
+      }
+
+      protected override void Because()
+      {
+         _results = sut.StatisticalDataFor(_floatMatrix, _selection, StatisticalDataCalculator.DeviationModes.Value).ToList();
+      }
+
+      [Observation]
+      public void the_results_should_be_the_standard_deviation()
+      {
+         _results[0][0].ShouldBeEqualTo(_values1.GeometricStandardDeviation());
+         _results[0][1].ShouldBeEqualTo(_values2.GeometricStandardDeviation());
+         _results[0][2].ShouldBeEqualTo(_values3.GeometricStandardDeviation());
+      }
+
+      [Observation]
+      public void the_results_should_contain_the_standard_deviation_only()
+      {
+         _results.Count.ShouldBeEqualTo(1);
+         _results[0].Length.ShouldBeEqualTo(3);
       }
    }
 

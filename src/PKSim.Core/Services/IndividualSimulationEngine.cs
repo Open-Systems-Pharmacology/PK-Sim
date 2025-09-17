@@ -1,6 +1,6 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
@@ -33,6 +33,7 @@ namespace PKSim.Core.Services
 
       private void terminated(object sender, EventArgs eventArgs)
       {
+         RaiseEvent(new ProgressDoneWithMessageEvent(PKSimConstants.UI.SimulationRun));
          terminated();
       }
 
@@ -44,24 +45,24 @@ namespace PKSim.Core.Services
          _simModelManager.SimulationProgress -= simulationProgress;
       }
 
-      public async Task<SimulationRunResults> RunAsync(IndividualSimulation individualSimulation, SimulationRunOptions simulationRunOptions)
+      public async Task RunAsync(IndividualSimulation individualSimulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default)
       {
          _shouldRaiseEvents = simulationRunOptions.RaiseEvents;
          initializeProgress();
-
          _simModelManager.SimulationProgress += simulationProgress;
          //make sure that thread methods always catch and handle any exception,
          //otherwise we risk unplanned application termination
          var begin = SystemTime.UtcNow();
          try
          {
-            RaiseEvent(new SimulationRunStartedEvent());
-            return await runSimulation(individualSimulation, simulationRunOptions);
+            RaiseEvent(new SimulationRunStartedEvent(individualSimulation));
+            await runSimulation(individualSimulation, simulationRunOptions, cancellationToken);
          }
-         catch (Exception)
+         catch (Exception ex)
          {
             terminated();
-            throw;
+            if (!(ex is TaskCanceledException)) //do not throw if this has been canceled
+               throw;
          }
          finally
          {
@@ -80,29 +81,20 @@ namespace PKSim.Core.Services
          _progressUpdater.Initialize(100, PKSimConstants.UI.Calculating);
       }
 
-      public void Stop()
+      private async Task runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default)
       {
-         _simModelManager.StopSimulation();
-      }
+         var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel: false);
+         var simResults = await _simModelManager.RunSimulationAsync(modelCoreSimulation, cancellationToken, simulationRunOptions);
 
-      private Task<SimulationRunResults> runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions)
-      {
-         return Task.Run(() =>
-         {
-            var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel: false);
-            var simResults = _simModelManager.RunSimulation(modelCoreSimulation, simulationRunOptions);
+         if (!simResults.Success)
+            return;
 
-            if (!simResults.Success)
-               return Task.FromResult(simResults);
+         _simulationResultsSynchronizer.Synchronize(simulation, simResults.Results);
+         updateResultsName(simulation);
 
-            _simulationResultsSynchronizer.Synchronize(simulation, simResults.Results);
-            updateResultsName(simulation);
+         simulation.ClearPKCache();
 
-            simulation.ClearPKCache();
-
-            RaiseEvent(new SimulationResultsUpdatedEvent(simulation));
-            return Task.FromResult(simResults);
-         });
+         RaiseEvent(new SimulationResultsUpdatedEvent(simulation));
       }
 
       private void updateResultsName(IndividualSimulation simulation)

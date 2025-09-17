@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 
@@ -6,7 +7,6 @@ namespace PKSim.Core.Services
 {
    public interface ISimulationEngine
    {
-      void Stop();
    }
 
    public interface ISimulationEngine<TSimulation, TResult> : ISimulationEngine where TSimulation : Simulation
@@ -16,7 +16,7 @@ namespace PKSim.Core.Services
       /// </summary>
       /// <param name="simulation">simulation to run</param>
       /// <param name="simulationRunOptions">Run options for this simulation run</param>
-      Task<TResult> RunAsync(TSimulation simulation, SimulationRunOptions simulationRunOptions);   
+      Task RunAsync(TSimulation simulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default);
    }
 
    public interface IIndividualSimulationEngine : ISimulationEngine<IndividualSimulation, SimulationRunResults>

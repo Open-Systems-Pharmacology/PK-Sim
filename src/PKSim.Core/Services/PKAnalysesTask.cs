@@ -918,7 +918,7 @@ namespace PKSim.Core.Services
          var results = new List<PopulationPKAnalysis>();
          selectedStatistics.Each(statisticalAnalysis =>
          {
-            var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis).ToList();
+            var aggregated = _statisticalDataCalculator.StatisticalDataFor(matrix, statisticalAnalysis, StatisticalDataCalculator.DeviationModes.Value).ToList();
             aggregated.Each((agg, index) =>
             {
                var name = correctNameFromMetric(_representationInfoRepository.DisplayNameFor(statisticalAnalysis), aggregated.Count > 1, index == 0, captionPrefix);

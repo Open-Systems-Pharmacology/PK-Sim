@@ -24,16 +24,18 @@ namespace PKSim.Presentation
       protected IDisplayUnitRetriever _displayUnitRetriever;
       protected IPKParameterRepository _pkParameterRepository;
       protected IApplicationSettings _applicationSettings;
+      private IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
          _view = A.Fake<IPopulationParameterDistributionView>();
+         _dialogCreator = A.Fake<IDialogCreator>();
          _distributionDataCreator = A.Fake<IDistributionDataCreator>();
          _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
          _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
          _pkParameterRepository = A.Fake<IPKParameterRepository>();
          _applicationSettings = A.Fake<IApplicationSettings>();
-         sut = new PopulationDistributionPresenter(_view, _distributionDataCreator, _representationInfoRepository, _displayUnitRetriever, _pkParameterRepository, _applicationSettings);
+         sut = new PopulationDistributionPresenter(_view, _distributionDataCreator, _representationInfoRepository, _displayUnitRetriever, _pkParameterRepository, _applicationSettings, _dialogCreator);
       }
    }
 

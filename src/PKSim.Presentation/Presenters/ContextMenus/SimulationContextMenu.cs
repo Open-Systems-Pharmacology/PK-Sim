@@ -9,6 +9,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.UICommands;
 
@@ -18,6 +19,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
    {
       protected SimulationContextMenu(TSimulation simulation, IContainer container) : base(simulation, container)
       {
+         
       }
 
       protected abstract IEnumerable<IMenuBarItem> ExportMenuItemsSpecificToType(TSimulation simulation);
@@ -44,8 +46,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
       private IEnumerable<IMenuBarItem> deleteMenuFor(TSimulation simulation)
       {
-         yield return DeleteMenuFor(simulation)
-            .AsGroupStarter();
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Delete)
+               .WithCommandFor<DeleteBuildingBlockUICommand, IPKSimBuildingBlock>(simulation, _container)
+               .WithEnabled(simulation.IsIdle(_container))
+               .WithIcon(ApplicationIcons.Delete)
+               .AsGroupStarter();
       }
 
       protected IMenuBarItem ExportSimulationToCppMenuItem(TSimulation simulation)
@@ -74,8 +79,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       private IEnumerable<IMenuBarItem> commonItemsForSimulations(TSimulation simulation)
       {
          yield return GenericMenu.EditMenuFor<EditSimulationCommand, Simulation>(simulation, _container);
-         yield return RenameMenuFor(simulation);
 
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Rename)
+            .WithEnabled(simulation.IsIdle(_container))
+            .WithCommandFor<RenameBuildingBlockUICommand, IPKSimBuildingBlock>(simulation, _container)
+            .WithIcon(ApplicationIcons.Rename);
+      
          yield return DescriptionMenuFor(simulation)
             .AsGroupStarter();
 
@@ -87,12 +96,20 @@ namespace PKSim.Presentation.Presenters.ContextMenus
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Configure)
             .AsDisabledIf(simulation.IsImported)
+            .WithEnabled(simulation.IsIdle(_container))
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationCommand, Simulation>(simulation, _container);
-
+         
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
+            .WithEnabled(simulation.IsIdle(_container))
             .WithCommandFor<RunSimulationCommand, Simulation>(simulation, _container)
             .WithIcon(ApplicationIcons.Run)
+            .AsGroupStarter();
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Stop)
+            .WithEnabled(simulation.IsRunning(_container))
+            .WithCommandFor<StopSimulationCommand, Simulation>(simulation, _container)
+            .WithIcon(ApplicationIcons.Stop)
             .AsGroupStarter();
       }
 

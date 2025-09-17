@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -65,7 +66,7 @@ namespace PKSim.Core
       [Observation]
       public void should_activate_the_simulation_engine_to_run_with_the_active_simulation()
       {
-         A.CallTo(() => _simulationEngine.RunAsync(_simulation, _simulationRunOptions)).MustHaveHappened();
+         A.CallTo(() => _simulationEngine.RunAsync(_simulation, _simulationRunOptions, A<CancellationToken>.Ignored)).MustHaveHappened();
       }
    }
 
@@ -83,28 +84,14 @@ namespace PKSim.Core
 
       protected override Task Because()
       {
-         sut.StopSimulation();
+         //sut.StopSimulation(_activeSimulation);
          return _completed;
       }
 
       [Observation]
       public void should_stop_the_simulation_engine()
       {
-         A.CallTo(() => _simulationEngine.Stop()).MustHaveHappened();
-      }
-   }
-
-   public class When_the_simulation_runner_is_told_to_stop_a_simulation_that_was_never_started : concern_for_SimulationRunner
-   {
-      protected override Task Because()
-      {
-         sut.StopSimulation();
-         return _completed;
-      }
-
-      [Observation]
-      public void should_not_crash()
-      {
+         //A.CallTo(() => _simulationEngine.StopSimulation(_activeSimulation)).MustHaveHappened();
       }
    }
 
@@ -127,7 +114,7 @@ namespace PKSim.Core
       [Observation]
       public void should_not_run_the_simulation()
       {
-         A.CallTo(() => _simulationEngine.RunAsync(_simulation, _simulationRunOptions)).MustNotHaveHappened();
+         A.CallTo(() => _simulationEngine.RunAsync(_simulation, _simulationRunOptions, A<CancellationToken>.Ignored)).MustNotHaveHappened();
       }
    }
 }

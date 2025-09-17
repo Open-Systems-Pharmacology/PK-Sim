@@ -3,11 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>net472;net8</TargetFrameworks>
     <OutputType>Exe</OutputType>
-    <Version>12.0.0</Version>
-    <PackageVersion>12.0.0</PackageVersion>
-    <AssemblyVersion>12.0.0</AssemblyVersion>
-    <FileVersion>12.0.0</FileVersion>
-    <InformationalVersion>12.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -18,6 +13,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591, 3246</NoWarn>
     <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+    <Version Condition="'$(Version)' == ''">12.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,16 +53,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.0" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.0.6" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.68" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.68" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.10" GeneratePathProperty="true" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" GeneratePathProperty="true" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.2" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
 
   </ItemGroup>
 
@@ -80,6 +76,7 @@
     <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
 </Project>

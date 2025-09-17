@@ -18,8 +18,6 @@ using PKSim.Presentation.Views.Main;
 namespace PKSim.Presentation.Presenters.Main
 {
    public interface IPKSimMainViewPresenter : IMainViewPresenter,
-      IListener<SimulationRunStartedEvent>,
-      IListener<SimulationRunFinishedEvent>,
       IListener<ShowNotificationEvent>,
       IListener<ReportCreationStartedEvent>,
       IListener<ReportCreationFinishedEvent>
@@ -111,17 +109,7 @@ namespace PKSim.Presentation.Presenters.Main
          _view.DisplayNotification(PKSimConstants.UI.ReportCreationFinished,
             PKSimConstants.UI.ReportCreationFinishedMessage(reportFinishedEvent.ReportFullPath), reportFinishedEvent.ReportFullPath);
       }
-
-      public void Handle(SimulationRunStartedEvent eventToHandle)
-      {
-         View.AllowChildActivation = false;
-      }
-
-      public void Handle(SimulationRunFinishedEvent eventToHandle)
-      {
-         View.AllowChildActivation = true;
-      }
-
+      
       public void Handle(ShowNotificationEvent eventToHandle)
       {
          showNotification(eventToHandle.Caption, eventToHandle.Notification, eventToHandle.Url);

@@ -274,10 +274,10 @@ namespace PKSim.Presentation.Repositories
             .WithCommand<RunSimulationWithSettingsCommand>(_container)
             .WithIcon(ApplicationIcons.ConfigureAndRun);
 
-         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Stop)
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.StopAllSimulations)
             .WithId(MenuBarItemIds.Stop)
-            .WithDescription(PKSimConstants.UI.StopDescription)
-            .WithCommand<StopSimulationCommand>(_container)
+            .WithDescription(PKSimConstants.UI.StopAllDescription)
+            .WithCommand<StopAllSimulationsCommand>(_container)
             .WithIcon(ApplicationIcons.Stop);
 
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.TimeProfileAnalysis)

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoverageParams>
+  <TargetArguments>
+    tests\PKSim.R.Tests\bin\Debug\net472\PKSim.R.Tests.dll
+    tests\PKSim.Tests\bin\Debug\net472\PKSim.Tests.dll
+    tests\PKSim.UI.Tests\bin\Debug\net472\PKSim.UI.Tests.dll
+  </TargetArguments>
+  <TargetWorkingDir>./</TargetWorkingDir>
+ 
+  <ExcludeFileMasks>
+    <Mask>src/**/*.Designer.cs</Mask>
+    <Mask>src/PKSim.UI/Views/**</Mask>
+  </ExcludeFileMasks>
+
+  <Filters>
+    <ExcludeFilters>
+      <FilterEntry>
+        <ModuleMask>FakeItEasy</ModuleMask>
+      </FilterEntry>
+    </ExcludeFilters>
+  </Filters>
+</CoverageParams>

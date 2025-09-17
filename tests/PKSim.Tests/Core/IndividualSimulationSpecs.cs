@@ -628,4 +628,9 @@ namespace PKSim.Core
          sut.HasChanged.ShouldBeTrue();
       }
    }
+
+   public class SimpleProtocolEqualityComparer : GenericEqualityComparer<SimpleProtocol>
+   {
+
+   }
 }

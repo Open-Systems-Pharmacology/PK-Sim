@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+    <OutputPath>bin\$(Configuration)</OutputPath>
+
+    <RootNamespace>PKSim.Matlab</RootNamespace>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="7.2.0" />
+    <PackageReference Include="nunit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.0.298" />
+    <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.0.1" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.298" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.59" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.59" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PKSim.BatchTool\PKSim.BatchTool.csproj" />
+    <ProjectReference Include="..\..\src\PKSim.CLI.Core\PKSim.CLI.Core.csproj" />
+    <ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj" />
+    <ProjectReference Include="..\..\src\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\PKSim.Matlab\PKSim.Matlab.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Content Include="..\..\dimensions\OSPSuite.Dimensions.xml" Link="OSPSuite.Dimensions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\pkparameters\OSPSuite.PKParameters.xml" Link="OSPSuite.PKParameters.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_FuncParser)\OSPSuite.FuncParserNative\bin\native\x64\Release\OSPSuite.FuncParserNative.dll" Link="OSPSuite.FuncParserNative.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_SimModel)\OSPSuite.SimModelNative\bin\native\x64\Release\OSPSuite.SimModelNative.dll" Link="OSPSuite.SimModelNative.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES)\OSPSuite.SimModelSolver_CVODES\bin\native\x64\Release\OSPSuite.SimModelSolver_CVODES.dll" Link="OSPSuite.SimModelSolver_CVODES.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgSystem_Data_SQLite_Core)\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\templates\templates.json" Link="templates.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\src\Db\TemplateDB\PKSimTemplateDBSystem.templateDbSystem" Link="PKSimTemplateDBSystem.templateDbSystem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+</Project>

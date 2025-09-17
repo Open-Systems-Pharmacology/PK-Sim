@@ -1,19 +1,22 @@
 ﻿using System;
-using PKSim.Assets;
-using PKSim.Presentation.Core;
+using System.Collections.Concurrent;
+using System.Linq;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Journal;
 using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
+using PKSim.Core.Events;
+using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.Main
 {
@@ -32,8 +35,11 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<JournalLoadedEvent>,
       IListener<JournalClosedEvent>,
       IListener<ReportCreationStartedEvent>,
-      IListener<ReportCreationFinishedEvent>
-
+      IListener<ReportCreationFinishedEvent>,
+      IListener<SimulationRunStartedEvent>,
+      IListener<SimulationRunFinishedEvent>,
+      IListener<ProgressDoneWithMessageEvent>,
+      IListener<SimulationRunCanceledEvent>
    {
    }
 
@@ -43,11 +49,15 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IApplicationConfiguration _applicationConfiguration;
       private int _numberOfReportsBeingCreated;
       public event EventHandler StatusChanged = delegate { };
+      private readonly ConcurrentDictionary<string, bool> _runningSimulationsDictionary = new ConcurrentDictionary<string, bool>();
+      private readonly IEventPublisher _eventPublisher;
+      private int activeSimulationsCount => _runningSimulationsDictionary.Count(x => x.Value);
 
-      public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration)
+      public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration, IEventPublisher envEventPublisher)
       {
          _view = view;
          _applicationConfiguration = applicationConfiguration;
+         _eventPublisher = envEventPublisher;
       }
 
       public void Initialize()
@@ -132,8 +142,17 @@ namespace PKSim.Presentation.Presenters.Main
             .And.Visible(true);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption(eventToHandle.Message)
+            .WithCaption($"{_runningSimulationsDictionary.Count} {eventToHandle.Message}")
             .And.Visible(true);
+      }
+
+      public void Handle(SimulationRunCanceledEvent eventToHandle)
+      {
+         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
+         if (activeSimulationsCount == 0)
+         {
+            resetCountersAndHideBar();
+         }
       }
 
       public void Handle(ProgressingEvent eventToHandle)
@@ -142,12 +161,35 @@ namespace PKSim.Presentation.Presenters.Main
             .WithValue(eventToHandle.ProgressPercent);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption(eventToHandle.Message);
+            .WithCaption($"{activeSimulationsCount} {eventToHandle.Message}");
       }
 
       public void Handle(ProgressDoneEvent eventToHandle)
       {
-         hideProgressBar();
+         setProgressBarVisibility();
+      }
+
+      public void Handle(SimulationRunStartedEvent eventToHandle)
+      {
+         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = true;
+         setProgressBarVisibility();
+      }
+
+      public void Handle(SimulationRunFinishedEvent eventToHandle)
+      {
+         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
+         setProgressBarVisibility();
+         if (activeSimulationsCount == 0)
+         {
+            resetCountersAndHideBar();
+         }
+      }
+
+      private void resetCountersAndHideBar()
+      {
+         _runningSimulationsDictionary.Clear();
+         setProgressBarVisibility();
+         _eventPublisher.PublishEvent(new AllSimulationsFinishedEvent());
       }
 
       public void Handle(ApplicationInitializedEvent eventToHandle)
@@ -156,7 +198,7 @@ namespace PKSim.Presentation.Presenters.Main
          update(StatusBarElements.Version)
             .WithCaption($"{_applicationConfiguration.FullVersionDisplay}");
 
-         hideProgressBar();
+         setProgressBarVisibility();
       }
 
       public void Handle(JournalLoadedEvent journalLoadedEvent)
@@ -193,6 +235,20 @@ namespace PKSim.Presentation.Presenters.Main
             .And.Enabled(enabled);
       }
 
+      public void Handle(ProgressDoneWithMessageEvent eventToHandle)
+      {
+         var message = $"{activeSimulationsCount} {eventToHandle.Message}";
+
+         if (activeSimulationsCount == 0)
+         {
+            resetCountersAndHideBar();
+            return;
+         }
+
+         update(StatusBarElements.ProgressStatus)
+            .WithCaption($"{message}");
+      }
+
       private void updateReportInfo()
       {
          string caption = "";
@@ -206,15 +262,29 @@ namespace PKSim.Presentation.Presenters.Main
             .WithCaption(caption);
       }
 
-      private void hideProgressBar()
+      private void setProgressBarVisibility()
       {
-         update(StatusBarElements.ProgressBar)
-            .Visible(false)
-            .And.WithValue(0);
+         if (activeSimulationsCount > 1)
+         {
+            update(StatusBarElements.ProgressBar)
+               .Visible(false)
+               .And.WithValue(0);
+         }
+         else if(activeSimulationsCount == 1)
+         {
+            update(StatusBarElements.ProgressBar)
+               .Visible(true);
+         }
 
-         update(StatusBarElements.ProgressStatus)
-            .WithCaption(string.Empty)
-            .And.Visible(false);
+         if (activeSimulationsCount == 0)
+         {
+            update(StatusBarElements.ProgressBar)
+               .Visible(false);
+
+            update(StatusBarElements.ProgressStatus)
+               .WithCaption(string.Empty)
+               .And.Visible(false);
+         }
       }
 
       public void Handle(StatusMessageEvent eventToHandle)

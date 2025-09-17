@@ -13,6 +13,6 @@ namespace PKSim.Core.Services
       void AddObservedDataFromConfigurationToProject(ImporterConfiguration configuration);
       void AddObservedDataFromConfigurationToProjectForDataRepository(ImporterConfiguration configuration, string dataRepositoryName);
       ImporterConfiguration OpenXmlConfiguration();
-      void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile);
+      void AddAndReplaceObservedDataFromConfigurationToProject(string configurationId, IReadOnlyList<DataRepository> observedDataFromSameFile);
    }
 }

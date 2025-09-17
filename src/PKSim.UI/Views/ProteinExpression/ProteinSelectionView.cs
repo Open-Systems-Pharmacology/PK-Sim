@@ -235,7 +235,7 @@ namespace PKSim.UI.Views.ProteinExpression
 
       private void onOpenLink(object sender, OpenLinkEventArgs e)
       {
-         const string STR_GENE_NAME_DB_BASE_URL = "http://www.ncbi.nlm.nih.gov/gene/";
+         const string STR_GENE_NAME_DB_BASE_URL = "https://www.ncbi.nlm.nih.gov/datasets/gene/";
          e.EditValue = string.Concat(STR_GENE_NAME_DB_BASE_URL, e.EditValue);
       }
 

@@ -2,6 +2,7 @@ using System.Linq;
 using System.Xml.Linq;
 using PKSim.Core.Model;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers
 {
@@ -32,6 +33,9 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          base.TypedDeserialize(usedBuildingBlock, usedBuildingBlockNode, context);
          var buildingBlockNode = usedBuildingBlockNode.Elements().First();
          var serializer = SerializerRepository.SerializerFor(buildingBlockNode);
+
+         if (serializer == null)
+            throw new SerializerNotFoundException(buildingBlockNode.Name.LocalName);
 
          usedBuildingBlock.BuildingBlock = serializer.Deserialize<IPKSimBuildingBlock>(buildingBlockNode, context);
       }

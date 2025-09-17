@@ -45,7 +45,6 @@ namespace PKSim.Presentation
       protected IObservedDataTask _observedDataTask;
       protected IChartEditorAndDisplayPresenter _chartEditorAndDisplayPresenter;
       protected IList<ChartEditorLayoutTemplate> _allTemplates;
-      protected IStartOptions _runOptions;
       protected IChartEditorLayoutTask _chartLayoutTask;
       protected IChartTemplatingTask _chartTemplatingTask;
       private IProjectRetriever _projectRetriever;
@@ -459,6 +458,34 @@ namespace PKSim.Presentation
       }
    }
 
+   public class When_notified_that_the_time_profile_chart_was_renamed_but_simulation_results_were_not_added : concern_for_SimulationTimeProfileChartPresenter
+   {
+      private SimulationTimeProfileChart _chart;
+      private DataRepository _observedData;
+      private readonly string _newName = "NEW NAME";
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedData = A.Fake<DataRepository>();
+         _chart = new SimulationTimeProfileChart();
+         _chart.AddObservedData(_observedData);
+         sut.InitializeAnalysis(_chart);
+         _chart.Name = _newName;
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new RenamedEvent(_chart));
+      }
+
+      [Observation]
+      public void should_update_the_view_caption()
+      {
+         _view.Caption.ShouldBeEqualTo(_newName);
+      }
+   }
+
    public class When_notified_that_the_time_profile_chart_was_renamed : concern_for_SimulationTimeProfileChartPresenter
    {
       private SimulationTimeProfileChart _chart;
@@ -487,6 +514,12 @@ namespace PKSim.Presentation
       public void should_update_the_view_caption()
       {
          _view.Caption.ShouldBeEqualTo(_newName);
+      }
+
+      [Observation]
+      public void the_simulation_should_be_marked_as_changed()
+      {
+         _simulation.HasChanged.ShouldBeTrue();
       }
    }
 

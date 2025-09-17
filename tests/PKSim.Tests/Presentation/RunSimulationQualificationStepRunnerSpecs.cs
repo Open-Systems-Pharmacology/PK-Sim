@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -38,7 +39,7 @@ namespace PKSim.Presentation
       [Observation]
       public void should_leverage_the_simulation_runner_to_run_the_simulation()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, null)).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, null, A<CancellationToken>.Ignored)).MustHaveHappened();
       }
    }
 }	

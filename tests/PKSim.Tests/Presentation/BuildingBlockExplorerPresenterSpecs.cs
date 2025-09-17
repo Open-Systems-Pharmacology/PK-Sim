@@ -65,7 +65,7 @@ namespace PKSim.Presentation
          _project = new PKSimProject();
          var compound = new Compound().WithName("compound");
          _individual = new Individual().WithName("individual");
-         _individual.OriginData = new OriginData {Species = new Species()};
+         _individual.OriginData = new OriginData { Species = new Species() };
          _project.AddBuildingBlock(_individual);
          _project.AddBuildingBlock(compound);
          _observedDataInExplorerPresenter = A.Fake<IObservedDataInExplorerPresenter>();
@@ -87,7 +87,7 @@ namespace PKSim.Presentation
          _observersFolderNode = new RootNode(PKSimRootNodeTypes.ObserverSetFolder);
          _populationFolderNode = new RootNode(PKSimRootNodeTypes.PopulationFolder);
          _eventRootNode = new RootNode(PKSimRootNodeTypes.EventFolder);
-         _simulationNode = new SimulationNode(new ClassifiableSimulation {Subject = new IndividualSimulation {Id = "1"}});
+         _simulationNode = new SimulationNode(new ClassifiableSimulation { Subject = new IndividualSimulation { Id = "1" } });
          _compoundNode = new ObjectWithIdAndNameNode<Compound>(compound);
          _individualNode = new ObjectWithIdAndNameNode<Individual>(_individual);
          _observationRootNode = new RootNode(RootNodeTypes.ObservedDataFolder);
@@ -262,20 +262,6 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_project_presenter_is_being_notified_that_a_simulation_is_starting_ : concern_for_BuildingBlockExplorerPresenter
-   {
-      protected override void Because()
-      {
-         sut.Handle(new SimulationRunStartedEvent());
-      }
-
-      [Observation]
-      public void should_disable_the_view()
-      {
-         _view.Enabled.ShouldBeFalse();
-      }
-   }
-
    public class When_the_project_presenter_is_being_notified_that_a_simulation_has_terminated : concern_for_BuildingBlockExplorerPresenter
    {
       protected override void Because()
@@ -295,13 +281,13 @@ namespace PKSim.Presentation
       [Observation]
       public void should_return_true_if_all_nodes_have_the_same_type()
       {
-         sut.AllowMultiSelectFor(new[] {A.Fake<ClassificationNode>(), A.Fake<ClassificationNode>()}).ShouldBeTrue();
+         sut.AllowMultiSelectFor(new[] { A.Fake<ClassificationNode>(), A.Fake<ClassificationNode>() }).ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_otherwise()
       {
-         sut.AllowMultiSelectFor(new ITreeNode[] {A.Fake<ClassificationNode>(), A.Fake<ObservedDataNode>()}).ShouldBeFalse();
+         sut.AllowMultiSelectFor(new ITreeNode[] { A.Fake<ClassificationNode>(), A.Fake<ObservedDataNode>() }).ShouldBeFalse();
       }
    }
 }

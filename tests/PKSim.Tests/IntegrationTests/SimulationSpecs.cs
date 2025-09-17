@@ -187,11 +187,7 @@ namespace PKSim.IntegrationTests
             var simulationEngine = IoC.Resolve<IPopulationSimulationEngine>();
             var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
             simSettingsRetriever.CreatePKSimDefaults(simulation);
-            var result = await simulationEngine.RunAsync(simulation, _simulationRunOptions);
-            if (result.Errors.Any())
-            {
-               errors.Add($"Population simulation for the population '{populationName}' failed: {result.Errors.Select(x => x.ErrorMessage).ToString("\n")}");
-            }
+            await simulationEngine.RunAsync(simulation, _simulationRunOptions);
          }
          catch (Exception ex)
          {

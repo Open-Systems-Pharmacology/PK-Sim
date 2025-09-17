@@ -1,9 +1,7 @@
 using FakeItEasy;
-using NPOI.SS.Formula.Functions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Infrastructure.Services;
@@ -13,9 +11,8 @@ namespace PKSim.Infrastructure
    public abstract class concern_for_LazyLoadTask : ContextSpecification<ILazyLoadTask>
    {
       protected IPKSimBuildingBlock _objectToLoad;
-      protected IRegistrationTask _registrationTask;
-      protected IProgressManager _progressManager;
-      protected IProgressUpdater _progressUpdater;
+
+      protected IRegistrationTask _registrationTask; 
       protected IContentLoader _contentLoader;
       protected ISimulationResultsLoader _simulationResultsLoader;
       protected ISimulationComparisonContentLoader _simulationComparisonContentLoader;
@@ -27,8 +24,6 @@ namespace PKSim.Infrastructure
       protected override void Context()
       {
          _registrationTask = A.Fake<IRegistrationTask>();
-         _progressManager = A.Fake<IProgressManager>();
-         _progressUpdater = A.Fake<IProgressUpdater>();
          _contentLoader = A.Fake<IContentLoader>();
          _simulationChartsLoader = A.Fake<ISimulationChartsLoader>();
          _simulationResultsLoader = A.Fake<ISimulationResultsLoader>();
@@ -37,10 +32,9 @@ namespace PKSim.Infrastructure
          _parameterIdentificationContentLoader = A.Fake<IParameterIdentificationContentLoader>();
          _sensitivityAnalysisContentLoader = A.Fake<ISensitivityAnalysisContentLoader>();
 
-         A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
          sut = new LazyLoadTask(_contentLoader, _simulationResultsLoader, _simulationChartsLoader,
             _simulationComparisonContentLoader, _simulationAnalysesLoader, _parameterIdentificationContentLoader, _sensitivityAnalysisContentLoader,
-            _registrationTask, _progressManager);
+            _registrationTask);
          _objectToLoad = A.Fake<IPKSimBuildingBlock>();
          _objectToLoad.Id = "objectId";
       }

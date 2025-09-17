@@ -6,6 +6,26 @@ namespace PKSim.Core.Events
 {
    public class SimulationRunStartedEvent
    {
+      public SimulationRunStartedEvent(Simulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public Simulation Simulation { get; }
+   }
+
+   public class AllSimulationsFinishedEvent
+   {
+   }
+
+   public class SimulationRunCanceledEvent
+   {
+      public SimulationRunCanceledEvent(Simulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public Simulation Simulation { get; }
    }
 
    public class SimulationRunFinishedEvent

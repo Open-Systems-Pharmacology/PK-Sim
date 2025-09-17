@@ -2,11 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>12.0.0</Version>
-    <PackageVersion>12.0.0</PackageVersion>
-    <AssemblyVersion>12.0.0</AssemblyVersion>
-    <FileVersion>12.0.0</FileVersion>
-    <InformationalVersion>12.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -15,6 +10,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <Version Condition="'$(Version)' == ''">12.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.364" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.128" />
   </ItemGroup>
 
   <ItemGroup>

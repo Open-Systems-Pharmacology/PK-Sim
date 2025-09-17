@@ -2,6 +2,7 @@
 using OSPSuite.BDDHelper;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using System.Threading;
 
 namespace PKSim.Core
 {
@@ -33,7 +34,7 @@ namespace PKSim.Core
       [Observation]
       public void the_runner_should_not_raise_events_when_running_ddi_simulations()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(A<Simulation>._, A<SimulationRunOptions>.That.Matches(x => x.RaiseEvents == false))).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(A<Simulation>._, A<SimulationRunOptions>.That.Matches(x => x.RaiseEvents == false), A<CancellationToken>.Ignored)).MustHaveHappened();
       }
    }
 
@@ -47,7 +48,7 @@ namespace PKSim.Core
       [Observation]
       public void the_runner_should_not_raise_events_when_running_bioavailability_simulations()
       {
-         A.CallTo(() => _simulationRunner.RunSimulation(A<Simulation>._, A<SimulationRunOptions>.That.Matches(x => x.RaiseEvents == false))).MustHaveHappened();
+         A.CallTo(() => _simulationRunner.RunSimulation(A<Simulation>._, A<SimulationRunOptions>.That.Matches(x => x.RaiseEvents == false), A<CancellationToken>.Ignored)).MustHaveHappened();
       }
    }
 }

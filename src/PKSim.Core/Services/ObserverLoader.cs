@@ -78,7 +78,7 @@ namespace PKSim.Core.Services
          int version;
          using (var serializationContext = SerializationTransaction.Create(_container, _dimensionFactory, _objectBaseFactory, new WithIdRepository(), _cloneManagerForModel))
          {
-            var element = XElement.Load(pkmlFileFullPath);
+            var element = XElementSerializer.PermissiveLoad(pkmlFileFullPath);
             version = element.GetPKMLVersion();
             var elementName = element.Name.LocalName;
             convertXml(element, version);

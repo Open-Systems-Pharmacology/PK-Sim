@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -12,7 +15,10 @@ namespace PKSim.Core.Services
    public interface IInteractiveSimulationRunner
    {
       Task RunSimulation(Simulation simulation, bool selectOutput);
-      void StopSimulation();
+      void StopSimulation(Simulation simulation);
+      void StopAllSimulations();
+      bool IsSimulationRunning(Simulation simulation);
+      bool IsSimulationIdle(Simulation simulation);
    }
 
    public class InteractiveSimulationRunner : IInteractiveSimulationRunner
@@ -23,14 +29,15 @@ namespace PKSim.Core.Services
       private readonly ISimulationAnalysisCreator _simulationAnalysisCreator;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IExecutionContext _executionContext;
+      private readonly ConcurrentDictionary<Simulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<Simulation, CancellationTokenSource>();
 
       private readonly SimulationRunOptions _simulationRunOptions;
 
       public InteractiveSimulationRunner(
-         ISimulationSettingsRetriever simulationSettingsRetriever, 
-         ISimulationRunner simulationRunner, 
-         ICloner cloner, 
-         ISimulationAnalysisCreator simulationAnalysisCreator, 
+         ISimulationSettingsRetriever simulationSettingsRetriever,
+         ISimulationRunner simulationRunner,
+         ICloner cloner,
+         ISimulationAnalysisCreator simulationAnalysisCreator,
          ILazyLoadTask lazyLoadTask,
          IExecutionContext executionContext)
       {
@@ -50,31 +57,53 @@ namespace PKSim.Core.Services
          };
       }
 
-      public async Task RunSimulation(Simulation simulation, bool selectOutput)
+      public bool IsSimulationRunning(Simulation simulation) =>
+         _cancellationTokenSources.TryGetValue(simulation, out var cts) && !cts.IsCancellationRequested;
+
+      public Task RunSimulation(Simulation simulation, bool selectOutput) =>
+         runSimulationAsync(simulation, selectOutput);
+
+      private async Task runSimulationAsync(Simulation simulation, bool selectOutput)
       {
-         _lazyLoadTask.Load(simulation);
-
-         if (outputSelectionRequired(simulation, selectOutput))
+         var cts = new CancellationTokenSource();
+         if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
+            return;
+         try
          {
-            var outputSelections = _simulationSettingsRetriever.SettingsFor(simulation);
-            if (outputSelections == null)
-               return;
+            _lazyLoadTask.Load(simulation);
 
-            simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
-            mappingsNotSelected(simulation).Each(simulation.OutputMappings.Remove);
-            
-            _executionContext.PublishEvent(new SimulationOutputSelectionsChangedEvent(simulation));
+            if (outputSelectionRequired(simulation, selectOutput))
+            {
+               var outputSelections = _simulationSettingsRetriever.SettingsFor(simulation);
+               if (outputSelections == null)
+                  return;
+
+               simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
+               mappingsNotSelected(simulation).Each(simulation.OutputMappings.Remove);
+
+               _executionContext.PublishEvent(new SimulationOutputSelectionsChangedEvent(simulation));
+            }
+
+            await _simulationRunner.RunSimulation(simulation, _simulationRunOptions, cts.Token);
+
+            addAnalysableToSimulationIfRequired(simulation);
          }
-
-         await _simulationRunner.RunSimulation(simulation, _simulationRunOptions);
-
-         addAnalysableToSimulationIfRequired(simulation);
+         finally
+         {
+            if (_cancellationTokenSources.ContainsKey(simulation))
+            {
+               if (_cancellationTokenSources.TryRemove(simulation, out var ctsToDispose))
+               {
+                  ctsToDispose.Dispose();
+               }
+            }
+         }
       }
 
-      private static IReadOnlyList<OutputMapping> mappingsNotSelected(Simulation simulation) => 
+      private static IReadOnlyList<OutputMapping> mappingsNotSelected(Simulation simulation) =>
          simulation.OutputMappings.Where(outputMapping => !outputMappingIsSelected(simulation, outputMapping)).ToList();
 
-      private static bool outputMappingIsSelected(Simulation simulation, OutputMapping outputMapping) => 
+      private static bool outputMappingIsSelected(Simulation simulation, OutputMapping outputMapping) =>
          simulation.OutputSelections.AllOutputs.Any(quantitySelection => Equals(quantitySelection.Path, outputMapping.OutputPath));
 
       private bool outputSelectionRequired(Simulation simulation, bool selectOutput)
@@ -88,16 +117,40 @@ namespace PKSim.Core.Services
          return !simulation.OutputSelections.HasSelection;
       }
 
-      public void StopSimulation()
-      {
-         _simulationRunner.StopSimulation();
-      }
-
       private void addAnalysableToSimulationIfRequired(Simulation simulation)
       {
          if (simulation == null || !simulation.HasResults) return;
          if (simulation.Analyses.Count() != 0) return;
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);
+      }
+
+      public void StopSimulation(Simulation simulation)
+      {
+         tryCancelAndDispose(simulation);
+      }
+
+      public void StopAllSimulations()
+      {
+         foreach (var simulation in _cancellationTokenSources.Keys.ToList())
+         {
+            tryCancelAndDispose(simulation);
+         }
+      }
+
+      private void tryCancelAndDispose(Simulation simulation)
+      {
+         if (_cancellationTokenSources.TryRemove(simulation, out var cts))
+         {
+            cts.Cancel();
+            cts.Dispose();
+            _executionContext.PublishEvent(new SimulationRunCanceledEvent(simulation));
+         }
+      }
+
+      public bool IsSimulationIdle(Simulation simulation)
+      {
+         return !_cancellationTokenSources.TryGetValue(simulation, out var cts)
+                || cts.IsCancellationRequested;
       }
    }
 }

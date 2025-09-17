@@ -1,9 +1,14 @@
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Nodes;
-using FakeItEasy;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Presentation.Views;
+using PKSim.Core;
 using PKSim.Core.Commands;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -14,12 +19,8 @@ using PKSim.Presentation.Mappers;
 using PKSim.Presentation.Nodes;
 using PKSim.Presentation.Presenters.Compounds;
 using PKSim.Presentation.Presenters.Parameters;
-using PKSim.Presentation.Views.Compounds;
-using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Views;
 using PKSim.Presentation.Services;
+using PKSim.Presentation.Views.Compounds;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation
@@ -36,7 +37,6 @@ namespace PKSim.Presentation
       protected IEntityTask _entityTask;
       protected ICommandCollector _commandRegister;
       protected ICompoundProcessPresenter _compoundProcessPresenter;
-      protected IRepresentationInfoRepository _representationInfoRepository;
       protected IDialogCreator _dialogCreator;
       protected INoItemInSelectionPresenter _noItemInSelectionPresenter;
       protected ICompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper;
@@ -51,7 +51,7 @@ namespace PKSim.Presentation
          _commandRegister = A.Fake<ICommandCollector>();
          A.CallTo(() => _view.TreeView).Returns(A.Fake<IUxTreeView>());
          _compoundProcessTask = A.Fake<ICompoundProcessTask>();
-         _compoundProcessPresentationTask= A.Fake<ICompoundProcessPresentationTask>(); 
+         _compoundProcessPresentationTask = A.Fake<ICompoundProcessPresentationTask>();
          _partialProcessNodeMapper = A.Fake<IPartialProcessToTreeNodeMapper>();
          _compoundProcessPresenter = A.Fake<ICompoundProcessPresenter>();
          _compoundEnzymaticProcessPresenter = A.Fake<IEnzymaticCompoundProcessPresenter>();
@@ -59,7 +59,7 @@ namespace PKSim.Presentation
          _contextMenuFactory = A.Fake<ITreeNodeContextMenuFactory>();
          _entityTask = A.Fake<IEntityTask>();
          _partialProcessesNode = new RootNode(PKSimRootNodeTypes.CompoundMetabolizingEnzymes);
-         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         A.Fake<IRepresentationInfoRepository>();
          _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper = A.Fake<ICompoundParameterNodeTypeToCompoundParameterGroupPresenterMapper>();
 
          _dialogCreator = A.Fake<IDialogCreator>();
@@ -67,7 +67,7 @@ namespace PKSim.Presentation
 
          sut = new CompoundProcessesPresenter(_view, _compoundProcessTask, _compoundProcessPresentationTask, _partialProcessNodeMapper, _treeNodeFactory,
             _contextMenuFactory, _compoundProcessPresenter, _entityTask, _dialogCreator, _noItemInSelectionPresenter,
-            _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper, _compoundEnzymaticProcessPresenter, 
+            _compoundParameterNodeTypeToCompoundParameterGroupPresenterMapper, _compoundEnzymaticProcessPresenter,
             new PartialProcessToRootNodeTypeMapper(), new SystemicProcessToRootNodeTypeMapper());
          sut.InitializeWith(_commandRegister);
          A.CallTo(() => _view.TreeView.NodeById(PKSimRootNodeTypes.CompoundMetabolizingEnzymes.Id)).Returns(_partialProcessesNode);
@@ -84,8 +84,8 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         var proc1 = A.Fake<EnzymaticProcess>().WithName("proc1");
-         var proc2 = A.Fake<EnzymaticProcess>().WithName("proc2");
+         var proc1 = new EnzymaticProcess().WithName("proc1");
+         var proc2 = new EnzymaticProcess().WithName("proc2");
          _node1 = A.Fake<ITreeNode>();
          A.CallTo(() => _node1.Id).Returns("1");
          _node2 = A.Fake<ITreeNode>();
@@ -120,7 +120,6 @@ namespace PKSim.Presentation
       {
          A.CallTo(() => _view.AddNode(A<ITreeNode>._)).MustHaveHappened();
       }
-
 
       [Observation]
       public void should_add_node_for_absorption_process()
@@ -195,7 +194,7 @@ namespace PKSim.Presentation
       }
    }
 
-   public class When_the_compound_metabolism_presenter_is_told_to_active_a_node_representing_an_enzymaic_process : concern_for_CompoundProcessesPresenter
+   public class When_the_compound_metabolism_presenter_is_told_to_active_a_node_representing_an_enzymatic_process : concern_for_CompoundProcessesPresenter
    {
       private ITreeNode<EnzymaticProcess> _processNode;
       private EnzymaticProcess _process;
@@ -256,7 +255,6 @@ namespace PKSim.Presentation
       }
    }
 
-
    public class when_resolving_presenters_for_a_node_type : concern_for_CompoundProcessesPresenter
    {
       private ITreeNode _treeNode;
@@ -270,7 +268,6 @@ namespace PKSim.Presentation
 
          A.CallTo(() => _treeNode.TagAsObject).Returns(_compoundParameterNodeType);
          sut.EditCompound(_compound);
-
       }
 
       protected override void Because()
@@ -325,9 +322,9 @@ namespace PKSim.Presentation
       }
    }
 
-   public abstract class When_adding_processes_to_the_compound_for_a_molecule_that_alreadyexists<TFirstProcess, TSeconProcess> : concern_for_CompoundProcessesPresenter
+   public abstract class When_adding_processes_to_the_compound_for_a_molecule_that_already_exists<TFirstProcess, TSecondProcess> : concern_for_CompoundProcessesPresenter
       where TFirstProcess : PartialProcess, new()
-      where TSeconProcess : PartialProcess, new()
+      where TSecondProcess : PartialProcess, new()
    {
       private PartialProcess _newProcess;
       private ITreeNode _moleculeNode1;
@@ -345,7 +342,7 @@ namespace PKSim.Presentation
          _moleculeNode1 = new PartialProcessMoleculeNode("CYP", new TFirstProcess());
          _moleculeNode1.AddChild(_compoundProcessNode1);
 
-         var moleculeNode2 = new PartialProcessMoleculeNode("CYP", new TSeconProcess());
+         var moleculeNode2 = new PartialProcessMoleculeNode("CYP", new TSecondProcess());
          moleculeNode2.AddChild(_compoundProcessNode2);
 
          A.CallTo(() => _partialProcessNodeMapper.MapFrom(existingProcess)).Returns(_moleculeNode1);
@@ -356,7 +353,6 @@ namespace PKSim.Presentation
          sut.Handle(new AddCompoundProcessEvent { Entity = existingProcess });
       }
 
-      
       protected override void Because()
       {
          sut.Handle(new AddCompoundProcessEvent { Entity = _newProcess });
@@ -379,7 +375,7 @@ namespace PKSim.Presentation
    }
 
    public class When_adding_an_inhibition_process_to_the_compound_for_a_molecule_that_already_exists :
-      When_adding_processes_to_the_compound_for_a_molecule_that_alreadyexists<InhibitionProcess, InhibitionProcess>
+      When_adding_processes_to_the_compound_for_a_molecule_that_already_exists<InhibitionProcess, InhibitionProcess>
    {
       protected override string GetRootNodeId()
       {
@@ -388,7 +384,7 @@ namespace PKSim.Presentation
    }
 
    public class When_adding_an_specific_binding_process_to_the_compound_for_a_molecule_that_already_exists :
-   When_adding_processes_to_the_compound_for_a_molecule_that_alreadyexists<SpecificBindingPartialProcess, SpecificBindingPartialProcess>
+      When_adding_processes_to_the_compound_for_a_molecule_that_already_exists<SpecificBindingPartialProcess, SpecificBindingPartialProcess>
    {
       protected override string GetRootNodeId()
       {
@@ -397,7 +393,7 @@ namespace PKSim.Presentation
    }
 
    public class When_adding_an_transport_process_to_the_compound_for_a_molecule_that_already_exists :
-      When_adding_processes_to_the_compound_for_a_molecule_that_alreadyexists<TransportPartialProcess, TransportPartialProcessWithSpecies>
+      When_adding_processes_to_the_compound_for_a_molecule_that_already_exists<TransportPartialProcess, TransportPartialProcessWithSpecies>
    {
       protected override string GetRootNodeId()
       {
@@ -406,11 +402,16 @@ namespace PKSim.Presentation
    }
 
    public class When_adding_an_enzymatic_process_to_the_compound_for_a_molecule_that_already_exists :
-      When_adding_processes_to_the_compound_for_a_molecule_that_alreadyexists<EnzymaticProcess, EnzymaticProcessWithSpecies>
+      When_adding_processes_to_the_compound_for_a_molecule_that_already_exists<EnzymaticProcess, EnzymaticProcessWithSpecies>
    {
       protected override string GetRootNodeId()
       {
          return PKSimRootNodeTypes.CompoundMetabolizingEnzymes.Id;
       }
+   }
+
+   public class EnzymaticProcessEqualityComparer : GenericEqualityComparer<EnzymaticProcess>
+   {
+
    }
 }

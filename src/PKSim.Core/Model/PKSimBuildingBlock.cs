@@ -22,9 +22,9 @@ namespace PKSim.Core.Model
       bool HasChanged { get; set; }
 
       /// <summary>
-      /// A building block might use building block internally to hold structure
-      /// (ExpressionProfile or Population have an internal individual instance).
-      /// In this case, this would be the reference to the parent building block
+      ///    A building block might use building block internally to hold structure
+      ///    (ExpressionProfile or Population have an internal individual instance).
+      ///    In this case, this would be the reference to the parent building block
       /// </summary>
       PKSimBuildingBlock OwnedBy { get; set; }
    }
@@ -110,6 +110,12 @@ namespace PKSim.Core.Model
       public virtual IReadOnlyList<TContainer> GetAllContainersAndSelf<TContainer>(Func<TContainer, bool> predicate)
          where TContainer : class, IContainer => Root.GetAllContainersAndSelf(predicate);
 
+      public IReadOnlyList<TEntity> GetAllChildrenAndSelf<TEntity>() where TEntity : class, IEntity =>
+         Root.GetAllChildrenAndSelf<TEntity>();
+
+      public IReadOnlyList<TEntity> GetAllChildrenAndSelf<TEntity>(Func<TEntity, bool> predicate) where TEntity : class, IEntity =>
+         Root.GetAllChildrenAndSelf(predicate);
+
       public virtual ContainerType ContainerType
       {
          get => Root.ContainerType;
@@ -125,7 +131,7 @@ namespace PKSim.Core.Model
       }
 
       public virtual IReadOnlyList<IEntity> Children => Root.Children;
-      
+
       public ObjectPath ParentPath { get; set; }
 
       public IEnumerator<IEntity> GetEnumerator()

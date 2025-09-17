@@ -3,11 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Version>12.0.0</Version>
-    <PackageVersion>12.0.0</PackageVersion>
-    <AssemblyVersion>12.0.0</AssemblyVersion>
-    <FileVersion>12.0.0</FileVersion>
-    <InformationalVersion>12.0.0</InformationalVersion>
+    <Version Condition="'$(Version)' == ''">12.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
@@ -23,10 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.UI" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.Core" Version="12.0.364" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.0.364" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.UI" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.128" />
   </ItemGroup>
 
 </Project>

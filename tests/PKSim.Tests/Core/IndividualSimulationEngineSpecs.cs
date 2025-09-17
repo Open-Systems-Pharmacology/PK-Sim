@@ -57,7 +57,7 @@ namespace PKSim.Core
          _simulation.Name = "Hello";
          _simulation.DataRepository = new DataRepository();
          _simulation.AucIV["TOTO"] = 55;
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), new DataRepository()));
+         A.CallTo(_simModelManager).WithReturnType<Task<SimulationRunResults>>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), new DataRepository()));
       }
 
       protected override Task Because()
@@ -170,21 +170,6 @@ namespace PKSim.Core
       public void should_not_notify_the_value_changed_event()
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationResultsUpdatedEvent>._)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_the_simulation_engine_is_asked_to_stop_a_simulation_run : concern_for_IndividualSimulationEngine
-   {
-      protected override Task Because()
-      {
-         sut.Stop();
-         return _completed;
-      }
-
-      [Observation]
-      public void should_stop_the_simulation()
-      {
-         A.CallTo(() => _simModelManager.StopSimulation()).MustHaveHappened();
       }
    }
 }

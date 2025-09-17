@@ -10,6 +10,7 @@ using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using PKSim.Core;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Presentation
 {
@@ -23,7 +24,7 @@ namespace PKSim.Presentation
       protected ICoreWorkspace _workspace;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
       private IStartOptions _startOptions;
-
+      private IContainer _container;
       protected override void Context()
       {
          _view = A.Fake<IMenuAndToolBarView>();
@@ -34,8 +35,9 @@ namespace PKSim.Presentation
          _workspace = A.Fake<ICoreWorkspace>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          _startOptions= A.Fake<IStartOptions>();
+         _container = A.Fake<IContainer>();
 
-         sut = new MenuAndToolBarPresenter(_view, _menuBarItemRepository, _buttonGroupRepository, _mruProvider, _skinManager, _startOptions, _workspace, _activeSubjectRetriever);
+         sut = new MenuAndToolBarPresenter(_view, _menuBarItemRepository, _buttonGroupRepository, _mruProvider, _skinManager, _startOptions, _workspace, _activeSubjectRetriever, _container);
 
 
          A.CallTo(() => _menuBarItemRepository[A<MenuBarItemId>._]).ReturnsLazily(item =>

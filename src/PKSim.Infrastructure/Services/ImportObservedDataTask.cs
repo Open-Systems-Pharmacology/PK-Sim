@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Core.Serialization.Xml;
@@ -30,7 +29,6 @@ namespace PKSim.Infrastructure.Services
    {
       private readonly IDataImporter _dataImporter;
       private readonly IExecutionContext _executionContext;
-      private readonly IDimensionRepository _dimensionRepository;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly ISpeciesRepository _speciesRepository;
       private readonly IDefaultIndividualRetriever _defaultIndividualRetriever;
@@ -41,16 +39,27 @@ namespace PKSim.Infrastructure.Services
       private readonly IContainer _container;
       private readonly IOSPSuiteXmlSerializerRepository _modelingXmlSerializerRepository;
       private readonly IEventPublisher _eventPublisher;
+      private readonly IParameterIdentificationTask _parameterIdentificationTask;
+      private readonly ICoreWorkspace _workspace;
 
-      public ImportObservedDataTask(IDataImporter dataImporter, IExecutionContext executionContext,
-         IDimensionRepository dimensionRepository, IBuildingBlockRepository buildingBlockRepository, ISpeciesRepository speciesRepository,
-         IDefaultIndividualRetriever defaultIndividualRetriever, IRepresentationInfoRepository representationInfoRepository,
-         IObservedDataTask observedDataTask, IParameterChangeUpdater parameterChangeUpdater, IDialogCreator dialogCreator, IContainer container,
-         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository, IEventPublisher eventPublisher)
+      public ImportObservedDataTask(IDataImporter dataImporter,
+         IExecutionContext executionContext,
+         IBuildingBlockRepository buildingBlockRepository,
+         ISpeciesRepository speciesRepository,
+         IDefaultIndividualRetriever defaultIndividualRetriever,
+         IRepresentationInfoRepository representationInfoRepository,
+         IObservedDataTask observedDataTask,
+         IParameterChangeUpdater parameterChangeUpdater,
+         IDialogCreator dialogCreator,
+         IContainer container,
+         IOSPSuiteXmlSerializerRepository modelingXmlSerializerRepository,
+         IEventPublisher eventPublisher,
+         IParameterIdentificationTask parameterIdentificationTask,
+         ICoreWorkspace workspace
+      )
       {
          _dataImporter = dataImporter;
          _executionContext = executionContext;
-         _dimensionRepository = dimensionRepository;
          _buildingBlockRepository = buildingBlockRepository;
          _speciesRepository = speciesRepository;
          _defaultIndividualRetriever = defaultIndividualRetriever;
@@ -61,6 +70,8 @@ namespace PKSim.Infrastructure.Services
          _container = container;
          _modelingXmlSerializerRepository = modelingXmlSerializerRepository;
          _eventPublisher = eventPublisher;
+         _parameterIdentificationTask = parameterIdentificationTask;
+         _workspace = workspace;
       }
 
       public void AddObservedDataToProject() => AddObservedDataToProjectForCompound(null);
@@ -80,15 +91,23 @@ namespace PKSim.Infrastructure.Services
 
             if (fileName.IsNullOrEmpty()) return null;
 
-            var xel = XElement.Load(fileName); // We have to correctly handle the case of cancellation
+            var xel = XElementSerializer.PermissiveLoad(fileName); // We have to correctly handle the case of cancellation
             return serializer.Deserialize<ImporterConfiguration>(xel, serializationContext);
          }
       }
 
-      public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IEnumerable<DataRepository> observedDataFromSameFile)
+      public void AddAndReplaceObservedDataFromConfigurationToProject(string configurationId, IReadOnlyList<DataRepository> observedDataFromSameFile)
       {
+         var configuration = _executionContext.Project.ImporterConfigurationBy(configurationId);
+
+         if (configuration == null)
+         {
+            _dialogCreator.MessageBoxError(PKSimConstants.Error.ImporterConfigurationNotFoundInProject);
+            return;
+         }
+
          var importedObservedData = getObservedDataFromImporter(configuration, null, false, false);
-         var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
+         var reloadDataSets = _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile);
 
          if (reloadDataSets == null) return;
 
@@ -103,6 +122,7 @@ namespace PKSim.Infrastructure.Services
          {
             _observedDataTask.Delete(dataSet);
          }
+
 
          foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
          {
@@ -131,9 +151,15 @@ namespace PKSim.Infrastructure.Services
                   else
                      existingColumn.Values = column.Values;
                }
+
+               _workspace.Project.HasChanged = true;
             }
 
-            _eventPublisher.PublishEvent(new ObservedDataValueChangedEvent(existingDataSet));
+            _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);
+            foreach (var dataset in observedDataFromSameFile)
+            {
+               _eventPublisher.PublishEvent(new ObservedDataValueChangedEvent(dataset));
+            }
          }
       }
 
@@ -208,7 +234,7 @@ namespace PKSim.Infrastructure.Services
       {
          var dataImporterSettings = new DataImporterSettings
          {
-            Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}", 
+            Caption = $"{CoreConstants.ProductDisplayName} - {PKSimConstants.UI.ImportObservedData}",
             IconName = ApplicationIcons.ObservedData.IconName,
             // CheckMolWeightAgainstMolecule = true
          };
@@ -238,9 +264,8 @@ namespace PKSim.Infrastructure.Services
          return importedObservedData;
       }
 
-      private void addObservedData( Compound compound = null, bool allowCompoundNameEdit = false)
+      private void addObservedData(Compound compound = null, bool allowCompoundNameEdit = false)
       {
-
          var (metaDataCategories, dataImporterSettings) = initializeSettings(compound, allowCompoundNameEdit);
          var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
             metaDataCategories,
@@ -279,8 +304,6 @@ namespace PKSim.Infrastructure.Services
          baseGrid.QuantityInfo = new QuantityInfo(new[] { observedData.Name, baseGridName }, QuantityType.Time);
       }
 
-
-
       private void adjustMolWeight(DataRepository observedData)
       {
          _parameterChangeUpdater.UpdateMolWeightIn(observedData);
@@ -309,10 +332,10 @@ namespace PKSim.Infrastructure.Services
       public IReadOnlyList<string> DefaultMetaDataCategories { get; } = CoreConstants.ObservedData.DefaultProperties;
 
       public IReadOnlyList<string> ReadOnlyMetaDataCategories { get; } = new List<string> { };
-    
+
       public bool MolWeightAlwaysEditable { get; } = false;
 
-      public bool MolWeightVisible { get; }=  true;
+      public bool MolWeightVisible { get; } = true;
 
       private IEnumerable<string> predefinedGenders => predefinedValuesFor(addPredefinedGenderValues);
 

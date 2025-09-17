@@ -114,8 +114,8 @@ namespace PKSim.Core
          _observedData = new DataRepository().WithName("OD");
          _expressionProfile = DomainHelperForSpecs.CreateExpressionProfile<IndividualEnzyme>();
          _parameterIdentification = new OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification().WithName("PI").WithId("PI_ID");
-         _classifiableObservedData = new ClassifiableObservedData {Subject = _observedData};
-         _classification = new Classification {ClassificationType = ClassificationType.ObservedData}.WithName("OD Classification");
+         _classifiableObservedData = new ClassifiableObservedData { Subject = _observedData };
+         _classification = new Classification { ClassificationType = ClassificationType.ObservedData }.WithName("OD Classification");
          _simulationComparison = new IndividualSimulationComparison().WithName("COMP").WithId("SimComp");
          _simulation = new IndividualSimulation().WithName("IND_SIM").WithId("IndSim");
          _qualificationPlan = new QualificationPlan().WithName("QP").WithId("QP_ID");
@@ -170,11 +170,11 @@ namespace PKSim.Core
          A.CallTo(() => _parameterIdentificationMapper.MapToSnapshot(_parameterIdentification)).Returns(_parameterIdentificationSnapshot);
          A.CallTo(() => _qualificationPlanMapper.MapToSnapshot(_qualificationPlan)).Returns(_qualificationPlanSnapshot);
 
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] {_observedDataClassificationSnapshot});
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).Returns(new[] {_simulationClassificationSnapshot});
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).Returns(new[] {_comparisonClassificationSnapshot});
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableParameterIdentification>(_project)).Returns(new[] {_parameterIdentificationClassificationSnapshot});
-         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableQualificationPlan>(_project)).Returns(new[] {_qualificationPlanClassificationSnapshot});
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableObservedData>(_project)).Returns(new[] { _observedDataClassificationSnapshot });
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableSimulation>(_project)).Returns(new[] { _simulationClassificationSnapshot });
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableComparison>(_project)).Returns(new[] { _comparisonClassificationSnapshot });
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableParameterIdentification>(_project)).Returns(new[] { _parameterIdentificationClassificationSnapshot });
+         A.CallTo(() => _classificationSnapshotTask.MapClassificationsToSnapshots<ClassifiableQualificationPlan>(_project)).Returns(new[] { _qualificationPlanClassificationSnapshot });
 
          return _completed;
       }
@@ -263,33 +263,33 @@ namespace PKSim.Core
       [Observation]
       public void should_load_the_exported_building_blocks()
       {
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _compound)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _formulation)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _event)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _individual)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _population)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _observerSet)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _protocol)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock) _expressionProfile)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_compound)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_formulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_event)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_individual)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_population)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_observerSet)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_protocol)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((IPKSimBuildingBlock)_expressionProfile)).MustHaveHappened();
       }
 
       [Observation]
       public void should_load_the_simulation_comparison_results()
       {
-         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable) _simulationComparison)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable)_simulationComparison)).MustHaveHappened();
       }
 
       [Observation]
       public void should_load_the_parameter_identification_results()
       {
-         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable) _parameterIdentification)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable)_parameterIdentification)).MustHaveHappened();
       }
 
       [Observation]
       public void should_load_the_exported_simulation_results()
       {
-         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable) _simulation)).MustHaveHappened();
-         A.CallTo(() => _lazyLoadTask.LoadResults((Model.Simulation) _simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.Load((ILazyLoadable)_simulation)).MustHaveHappened();
+         A.CallTo(() => _lazyLoadTask.LoadResults((Model.Simulation)_simulation)).MustHaveHappened();
       }
    }
 
@@ -308,7 +308,7 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_project);
          _snapshot.Version = ProjectVersions.V7_1_0;
          _corruptedSimulationSnapshot = new Simulation();
-         _snapshot.Simulations = new[] {_snapshot.Simulations[0], _corruptedSimulationSnapshot,};
+         _snapshot.Simulations = new[] { _snapshot.Simulations[0], _corruptedSimulationSnapshot, };
          _defaultMapper = A.Fake<ISnapshotMapper>();
          A.CallTo(() => _snapshotMapper.MapperFor(_individualSnapshot)).Returns(_defaultMapper);
          A.CallTo(() => _defaultMapper.MapToModel(_individualSnapshot, A<SnapshotContext>._)).Returns(_individual);
@@ -450,8 +450,8 @@ namespace PKSim.Core
          A.CallTo(() => _creationMetaDataFactory.Create()).Returns(_creationMetaData);
          _snapshot = new Project
          {
-            ObservedData = new[] {_observedDataSnapshot, _observedDataSnapshot},
-            Individuals = new[] {_individualSnapshot, _individualSnapshot}
+            ObservedData = new[] { _observedDataSnapshot, _observedDataSnapshot },
+            Individuals = new[] { _individualSnapshot, _individualSnapshot }
          };
 
          _defaultMapper = A.Fake<ISnapshotMapper>();
@@ -483,5 +483,25 @@ namespace PKSim.Core
       {
          A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappenedTwiceExactly();
       }
+   }
+
+   public class ExpressionProfileEqualityComparer : GenericEqualityComparer<ExpressionProfile>
+   {
+   }
+
+   public class RandomPopulationEqualityComparer : GenericEqualityComparer<RandomPopulation>
+   {
+   }
+
+   public class FormulationEqualityComparer : GenericEqualityComparer<Formulation>
+   {
+   }
+
+   public class PKSimEventEqualityComparer : GenericEqualityComparer<PKSimEvent>
+   {
+   }
+
+   public class ObserverSetEqualityComparer : GenericEqualityComparer<ObserverSet>
+   {
    }
 }

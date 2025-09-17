@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -8,8 +9,7 @@ namespace PKSim.Core.Services
 {
    public interface ISimulationRunner
    {
-      Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null);
-      void StopSimulation();
+      Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null, CancellationToken cancellationToken = default);
    }
 
    public class SimulationRunner : ISimulationRunner
@@ -34,7 +34,7 @@ namespace PKSim.Core.Services
          _simulationPersistableUpdater = simulationPersistableUpdater;
       }
 
-      public Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null)
+      public Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null, CancellationToken cancellationToken = default)
       {
          _simulationRunOptions = simulationRunOptions ?? new SimulationRunOptions();
          _lazyLoadTask.Load(simulation);
@@ -45,26 +45,19 @@ namespace PKSim.Core.Services
          switch (simulation)
          {
             case IndividualSimulation individualSimulation:
-               return runSimulation<IndividualSimulation, SimulationRunResults>(individualSimulation);
+               return runSimulation<IndividualSimulation, SimulationRunResults>(individualSimulation, cancellationToken);
 
             case PopulationSimulation populationSimulation:
-               return runSimulation<PopulationSimulation, PopulationRunResults>(populationSimulation);
+               return runSimulation<PopulationSimulation, PopulationRunResults>(populationSimulation, cancellationToken);
          }
 
          return _simulationDidNotRun;
       }
-
-      public void StopSimulation()
-      {
-         if (_simulationEngine == null) return;
-         _simulationEngine.Stop();
-         _simulationEngine = null;
-      }
-
-      private async Task runSimulation<TSimulation, TResult>(TSimulation simulation) where TSimulation : Simulation
+ 
+      private async Task runSimulation<TSimulation, TResult>(TSimulation simulation, CancellationToken cancellationToken = default) where TSimulation : Simulation
       {
          var simulationEngine = _simulationEngineFactory.Create<TSimulation, TResult>();
-         _simulationEngine = simulationEngine;
+         _simulationEngine = simulationEngine; 
 
          if (_simulationRunOptions.RunForAllOutputs)
             _simulationPersistableUpdater.ResetPersistable(simulation);
@@ -72,7 +65,7 @@ namespace PKSim.Core.Services
             _simulationPersistableUpdater.UpdatePersistableFromSettings(simulation);
 
          updateSolverSettings(simulation);
-         await simulationEngine.RunAsync(simulation, _simulationRunOptions);
+         await simulationEngine.RunAsync(simulation, _simulationRunOptions, cancellationToken);
          simulation.HasChanged = true;
       }
 

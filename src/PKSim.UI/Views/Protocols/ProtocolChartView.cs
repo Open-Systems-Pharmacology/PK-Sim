@@ -1,11 +1,13 @@
 using DevExpress.Utils;
 using DevExpress.XtraCharts;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Domain;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using PKSim.Presentation.Presenters.Protocols;
 using PKSim.Presentation.Views.Protocols;
+using System.Drawing.Imaging;
 
 namespace PKSim.UI.Views.Protocols
 {
@@ -33,6 +35,7 @@ namespace PKSim.UI.Views.Protocols
       {
          _presenter = presenter;
          chart.AddCopyToClipboardPopupMenu(presenter);
+         chart.AddExportToPngPopupMenu(presenter);
       }
 
       public void Clear()
@@ -122,9 +125,9 @@ namespace PKSim.UI.Views.Protocols
          _toolTipController.HideHint();
       }
 
-      public void CopyToClipboard(string watermark)
-      {
-         chart.CopyToClipboard(watermark);
-      }
+      public void CopyToClipboard(string watermark) => chart.CopyToClipboard(watermark);
+
+      public void ExportToPng(string filePath, string watermark) => 
+         chart.ExportChartToImageFile(watermark, filePath, ImageFormat.Png);
    }
 }

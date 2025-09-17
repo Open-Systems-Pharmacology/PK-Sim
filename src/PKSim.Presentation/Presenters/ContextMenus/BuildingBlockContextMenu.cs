@@ -6,6 +6,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
@@ -15,6 +16,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected BuildingBlockContextMenu(TBuildingBlock buildingBlock, IContainer container)
          : base(buildingBlock, container)
       {
+         
       }
 
       protected virtual IEnumerable<IMenuBarItem> AllStandardMenuItemsFor<TCommand>(TBuildingBlock buildingBlock) where TCommand : IEditBuildingBlockUICommand<TBuildingBlock>

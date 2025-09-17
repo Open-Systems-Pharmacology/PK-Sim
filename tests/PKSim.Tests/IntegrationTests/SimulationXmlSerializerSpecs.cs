@@ -1,10 +1,9 @@
 ﻿using System.Linq;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using NUnit.Framework;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.ParameterIdentifications;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Infrastructure;
@@ -62,13 +61,11 @@ namespace PKSim.IntegrationTests
          _deserializedSimulation.Settings.ShouldNotBeNull();
       }
 
-
       [Observation]
       public void should_have_deserialized_the_solver_settings()
       {
          _deserializedSimulation.Solver.ShouldNotBeNull();
       }
-
 
       [Observation]
       public void should_have_deserialized_the_output_selection()
@@ -88,7 +85,7 @@ namespace PKSim.IntegrationTests
          foreach (var compound in _deserializedSimulation.Compounds)
          {
             var cp = _deserializedSimulation.CompoundPropertiesFor(compound);
-            Assert.AreSame(cp.Compound,compound);
+            Assert.AreSame(cp.Compound, compound);
          }
       }
 
