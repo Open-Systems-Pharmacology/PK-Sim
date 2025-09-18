@@ -16,7 +16,7 @@ using System;
 using System.Threading;
 using OSPSuite.Presentation;
 
-namespace PKSim.UI.Starter;
+namespace PKSim.Starter;
 
 public class CLIApplicationStartup : ApplicationStartup
 {

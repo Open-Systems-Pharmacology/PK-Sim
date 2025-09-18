@@ -2,7 +2,7 @@
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.Individuals;
 
-namespace PKSim.UI.Starter
+namespace PKSim.Starter
 {
    public class PKSimStarterPresenterRegister : BasePresenterRegister
    {

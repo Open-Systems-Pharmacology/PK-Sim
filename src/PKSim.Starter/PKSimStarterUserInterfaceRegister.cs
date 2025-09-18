@@ -3,9 +3,10 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using PKSim.Core;
 using PKSim.Presentation.UICommands;
+using PKSim.UI;
 using PKSim.UI.UICommands;
 
-namespace PKSim.UI.Starter
+namespace PKSim.Starter
 {
    public class PKSimStarterUserInterfaceRegister : Register
    {
@@ -15,11 +16,11 @@ namespace PKSim.UI.Starter
          {
             scan.AssemblyContainingType<UserInterfaceRegister>();
             scan.WithConvention<PKSimRegistrationConvention>();
-            scan.IncludeNamespaceContainingType<Views.ExpressionProfiles.CreateExpressionProfileView>();
-            scan.IncludeNamespaceContainingType<Views.Individuals.CreateIndividualView>();
-            scan.IncludeNamespaceContainingType<Views.DiseaseStates.DiseaseStateSelectionView>();
-            scan.IncludeNamespaceContainingType<Views.Parameters.ParameterGroupsView>();
-            scan.IncludeNamespaceContainingType<Views.ProteinExpression.ProteinExpressionsView>();
+            scan.IncludeNamespaceContainingType<UI.Views.ExpressionProfiles.CreateExpressionProfileView>();
+            scan.IncludeNamespaceContainingType<UI.Views.Individuals.CreateIndividualView>();
+            scan.IncludeNamespaceContainingType<UI.Views.DiseaseStates.DiseaseStateSelectionView>();
+            scan.IncludeNamespaceContainingType<UI.Views.Parameters.ParameterGroupsView>();
+            scan.IncludeNamespaceContainingType<UI.Views.ProteinExpression.ProteinExpressionsView>();
          });
          container.Register<OSPSuite.UI.Services.IToolTipCreator, IToolTipCreator, ToolTipCreator>(LifeStyle.Transient);
          container.Register<IExitCommand, ExitCommand>();

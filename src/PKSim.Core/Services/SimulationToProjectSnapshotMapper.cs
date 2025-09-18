@@ -1,16 +1,18 @@
-using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
+using System.Linq;
+using ExpressionProfile = PKSim.Core.Model.ExpressionProfile;
+using Individual = PKSim.Core.Model.Individual;
 using ModelSimulation = PKSim.Core.Model.Simulation;
 using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core.Services;
 
-public interface ISimulationToProjectSnapshotMapper : IMapper<ModelSimulation, string>;
+public interface ISimulationToProjectSnapshotMapper : IMapper<ModelSimulation, string>, IMapper<Individual, string>, IMapper<ExpressionProfile, string>;
 
 public class SimulationToProjectSnapshotMapper(
    ISnapshotMapper snapshotMapper,
@@ -57,5 +59,18 @@ public class SimulationToProjectSnapshotMapper(
    {
       if (!project.All<ExpressionProfile>().ExistsByName(expressionProfile.Name))
          project.AddBuildingBlock(expressionProfile);
+   }
+
+   public string MapFrom(Individual individual)
+   {
+      var snapshot = snapshotMapper.MapToSnapshot(individual).Result as Snapshots.Individual;
+      snapshot.ExpressionProfiles = null;
+      return jsonSerializer.SerializeToBase64String(snapshot);
+   }
+
+   public string MapFrom(ExpressionProfile expressionProfile)
+   {
+      var snapshot = snapshotMapper.MapToSnapshot(expressionProfile).Result as Snapshots.ExpressionProfile;
+      return jsonSerializer.SerializeToBase64String(snapshot);
    }
 }

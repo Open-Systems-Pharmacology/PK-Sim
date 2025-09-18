@@ -12,7 +12,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
-   internal abstract class concern_for_ProjectSnapshotToSimulationTransferMapper : ContextSpecificationAsync<ProjectSnapshotToSimulationTransferMapper>
+   internal abstract class concern_for_ProjectSnapshotToSimulationTransferMapper : ContextSpecificationAsync<ProjectSnapshotToModuleMapper>
    {
       private ISimulationToModelCoreSimulationMapper _simulationMapper;
       private ISimulationConfigurationTask _simulationConfigurationTask;
@@ -27,7 +27,7 @@ namespace PKSim.Core
          _snapshotMapper = A.Fake<ISnapshotMapper>();
          _jsonSerializer = A.Fake<IJsonSerializer>();
 
-         sut = new ProjectSnapshotToSimulationTransferMapper(_jsonSerializer, _snapshotMapper, _simulationConfigurationTask, _simulationMapper);
+         sut = new ProjectSnapshotToModuleMapper(_jsonSerializer, _snapshotMapper, _simulationConfigurationTask, _simulationMapper);
       }
    }
 

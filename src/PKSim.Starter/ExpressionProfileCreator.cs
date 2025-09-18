@@ -15,7 +15,7 @@ using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Services;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
-namespace PKSim.UI.Starter
+namespace PKSim.Starter
 {
    public static class ExpressionProfileCreator
    {

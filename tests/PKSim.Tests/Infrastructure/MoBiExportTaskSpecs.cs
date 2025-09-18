@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FakeItEasy;
+using FluentNHibernate.Utils;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -69,6 +70,7 @@ namespace PKSim.Infrastructure
             }
          };
          _modelCoreSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module()));
+         _modelCoreSimulation.Configuration.Individual = [];
 
          A.CallTo(() => _simulationMapper.MapFrom(_sim, A<SimulationConfiguration>._, true)).Returns(_modelCoreSimulation);
 

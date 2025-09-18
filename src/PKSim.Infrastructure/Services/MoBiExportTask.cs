@@ -139,7 +139,7 @@ namespace PKSim.Infrastructure.Services
             simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
             simulationTransfer.Favorites = currentProject.Favorites;
          }
-
+         
          createSimulationProjectSnapshot(simulation, moBiSimulation);
 
          _simulationPersistor.Save(simulationTransfer, moBiFile);
@@ -148,6 +148,17 @@ namespace PKSim.Infrastructure.Services
       private void createSimulationProjectSnapshot(Simulation simulation, IModelCoreSimulation modelCoreSimulation)
       {
          modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = _simulationToProjectSnapshotMapper.MapFrom(simulation);
+
+         if (simulation.Individual != null && modelCoreSimulation.Configuration.Individual != null)
+         {
+            modelCoreSimulation.Configuration.Individual.Snapshot = _simulationToProjectSnapshotMapper.MapFrom(simulation.Individual);
+         }
+
+         var expressionProfiles = simulation.AllBuildingBlocks<ExpressionProfile>().ToList();
+         if (expressionProfiles.Any())
+         {
+            expressionProfiles.Each(x => modelCoreSimulation.Configuration.ExpressionProfiles.FindByName(x.Name).Snapshot = _simulationToProjectSnapshotMapper.MapFrom(x));
+         }
       }
 
       private void updateFormulaIdIn(IModelCoreSimulation modelCoreSimulation)
