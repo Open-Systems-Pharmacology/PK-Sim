@@ -12,7 +12,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PKSim.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <LangVersion>latest</LangVersion>
-    <Version Condition="'$(Version)' == ''">12.1.0</Version>
+    <Version Condition="'$(Version)' == ''">12.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
