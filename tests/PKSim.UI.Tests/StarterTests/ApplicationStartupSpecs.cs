@@ -12,9 +12,9 @@ using PKSim.Core.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
-using PKSim.UI.Starter;
+using PKSim.Starter;
 
-namespace PKSim.UI.StarterTests
+namespace PKSim.StarterTests
 {
    public class concern_for_ApplicationStartup : StaticContextSpecification
    {

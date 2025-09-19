@@ -13,7 +13,7 @@ using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core.Model;
 using PKSim.Presentation;
 
-namespace PKSim.UI.Starter;
+namespace PKSim.Starter;
 
 public class CLIStarterUserSettings : CLIUserSettings, IUserSettings
 {

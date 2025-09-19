@@ -21,9 +21,10 @@ using PKSim.Infrastructure;
 using PKSim.Presentation;
 using System;
 using System.Threading;
+using PKSim.UI;
 using PresenterRegister = OSPSuite.Presentation.PresenterRegister;
 
-namespace PKSim.UI.Starter
+namespace PKSim.Starter
 {
    public class UIApplicationStartup : ApplicationStartup
    {

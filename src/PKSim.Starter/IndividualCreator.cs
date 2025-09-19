@@ -4,7 +4,7 @@ using PKSim.Core.Model;
 using PKSim.Presentation;
 using PKSim.Presentation.Presenters.Individuals;
 
-namespace PKSim.UI.Starter
+namespace PKSim.Starter
 {
    public static class IndividualCreator
    {

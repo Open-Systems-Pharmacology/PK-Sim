@@ -1,6 +1,6 @@
 using System.Linq;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility;
@@ -11,18 +11,18 @@ using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core.Services;
 
-public interface IProjectSnapshotToSimulationTransferMapper : IMapper<string, (SimulationTransfer transfer, PKSimProject project)>;
+public interface IProjectSnapshotToModuleMapper : IMapper<string, (Module module, PKSimProject project)>;
 
-public class ProjectSnapshotToSimulationTransferMapper(
+public class ProjectSnapshotToModuleMapper(
    IJsonSerializer jsonSerializer,
    ISnapshotMapper snapshotMapper,
    ISimulationConfigurationTask simulationConfigurationTask,
-   ISimulationToModelCoreSimulationMapper simulationMapper) : IProjectSnapshotToSimulationTransferMapper
+   ISimulationToModelCoreSimulationMapper simulationMapper)
+   : SnapshotExchangeMapper<(Module module, PKSimProject project), Project, PKSimProject>(jsonSerializer, snapshotMapper), IProjectSnapshotToModuleMapper
 {
-   public (SimulationTransfer transfer, PKSimProject project) MapFrom(string snapshotString)
+   public override (Module module, PKSimProject project) MapFrom(string snapshotString)
    {
-      var snapshot = jsonSerializer.DeserializeFromBase64String<Project>(snapshotString).Result;
-      var project = snapshotMapper.MapToModel(snapshot, new ProjectContext(new PKSimProject(), runSimulations: false)).Result as PKSimProject;
+      var project = PKSimModelFor(snapshotString);
 
       if (project.All<Simulation>().Count != 1)
          throw new OSPSuiteException(PKSimConstants.Error.AProjectSnapshotShouldOnlyContainOneSimuilationWhenUsedToRebuildAModule);
@@ -32,11 +32,9 @@ public class ProjectSnapshotToSimulationTransferMapper(
       var modelCoreSimulation = simulationMapper.MapFrom(simulation, configuration, shouldCloneModel: true);
 
       // The module should contain the snapshot from which it was created
-      modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = snapshotString;
+      var module = modelCoreSimulation.Configuration.ModuleConfigurations.First().Module;
+      module.Snapshot = snapshotString;
 
-      return (new SimulationTransfer
-      {
-         Simulation = modelCoreSimulation
-      }, project);
+      return (module, project);
    }
 }
