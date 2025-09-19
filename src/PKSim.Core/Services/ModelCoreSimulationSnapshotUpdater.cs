@@ -1,10 +1,10 @@
+using System.Linq;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
-using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
-using System.Linq;
 using ExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 using Individual = PKSim.Core.Model.Individual;
 using ModelSimulation = PKSim.Core.Model.Simulation;
@@ -12,18 +12,26 @@ using Project = PKSim.Core.Snapshots.Project;
 
 namespace PKSim.Core.Services;
 
-public interface ISimulationToProjectSnapshotMapper : IMapper<ModelSimulation, string>, IMapper<Individual, string>, IMapper<ExpressionProfile, string>;
+public interface IModelCoreSimulationSnapshotUpdater
+{
+   void AddSnapshotsToModelCoreSimulation(ModelSimulation pkSimSimulation, IModelCoreSimulation coreSimulation);
+}
 
-public class SimulationToProjectSnapshotMapper(
+public class ModelCoreSimulationSnapshotUpdater(
    ISnapshotMapper snapshotMapper,
    IPKSimProjectRetriever pkSimProjectRetriever,
-   IJsonSerializer jsonSerializer) : ISimulationToProjectSnapshotMapper
+   IJsonSerializer jsonSerializer) : IModelCoreSimulationSnapshotUpdater
 {
-   public string MapFrom(ModelSimulation simulation)
+   public void AddSnapshotsToModelCoreSimulation(ModelSimulation pkSimSimulation, IModelCoreSimulation coreSimulation)
    {
-      var pkSimProject = createProjectFrom(simulation);
+      var pkSimProject = createProjectFrom(pkSimSimulation);
       var projectSnapshot = snapshotMapper.MapToSnapshot(pkSimProject).Result as Project;
-      return jsonSerializer.SerializeToBase64String(projectSnapshot);
+
+      initializeModuleSnapshots(coreSimulation, projectSnapshot);
+
+      initializeIndividualSnapshots(coreSimulation, projectSnapshot);
+
+      initializeExpressionSnapshots(coreSimulation, projectSnapshot);
    }
 
    private PKSimProject createProjectFrom(ModelSimulation simulation)
@@ -61,16 +69,23 @@ public class SimulationToProjectSnapshotMapper(
          project.AddBuildingBlock(expressionProfile);
    }
 
-   public string MapFrom(Individual individual)
+   private void initializeExpressionSnapshots(IModelCoreSimulation coreSimulation, Project projectSnapshot) =>
+      coreSimulation.Configuration.ExpressionProfiles.Each(x => x.Snapshot = jsonSerializer.SerializeToBase64String(projectSnapshot.ExpressionProfiles.Single(p => string.Equals(p.ExpressionName, x.Name))));
+
+   private void initializeIndividualSnapshots(IModelCoreSimulation coreSimulation, Project projectSnapshot)
    {
-      var snapshot = snapshotMapper.MapToSnapshot(individual).Result as Snapshots.Individual;
-      snapshot.ExpressionProfiles = null;
-      return jsonSerializer.SerializeToBase64String(snapshot);
+      var individualBuildingBlock = coreSimulation.Configuration.Individual;
+      if (individualBuildingBlock == null)
+         return;
+
+      var individualSnapshot = projectSnapshot.Individuals.FindByName(individualBuildingBlock.Name);
+      
+      // clear expression profiles for this snapshot since they are serialized separately
+      individualSnapshot.ExpressionProfiles = null;
+      
+      individualBuildingBlock.Snapshot = jsonSerializer.SerializeToBase64String(individualSnapshot);
    }
 
-   public string MapFrom(ExpressionProfile expressionProfile)
-   {
-      var snapshot = snapshotMapper.MapToSnapshot(expressionProfile).Result as Snapshots.ExpressionProfile;
-      return jsonSerializer.SerializeToBase64String(snapshot);
-   }
+   private void initializeModuleSnapshots(IModelCoreSimulation coreSimulation, Project projectSnapshot) =>
+      coreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = jsonSerializer.SerializeToBase64String(projectSnapshot);
 }

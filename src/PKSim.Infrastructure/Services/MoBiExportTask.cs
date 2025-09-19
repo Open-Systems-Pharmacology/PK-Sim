@@ -33,7 +33,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IJournalRetriever _journalRetriever;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
-      private readonly ISimulationToProjectSnapshotMapper _simulationToProjectSnapshotMapper;
+      private readonly IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
 
       public MoBiExportTask(
          ISimulationConfigurationTask simulationConfigurationTask,
@@ -48,7 +48,7 @@ namespace PKSim.Infrastructure.Services
          IJournalRetriever journalRetriever,
          IApplicationSettings applicationSettings,
          IStartableProcessFactory startableProcessFactory,
-         ISimulationToProjectSnapshotMapper simulationToProjectSnapshotMapper)
+         IModelCoreSimulationSnapshotUpdater modelCoreSimulationSnapshotUpdater)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
          _simulationMapper = simulationMapper;
@@ -62,7 +62,7 @@ namespace PKSim.Infrastructure.Services
          _journalRetriever = journalRetriever;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
-         _simulationToProjectSnapshotMapper = simulationToProjectSnapshotMapper;
+         _modelCoreSimulationSnapshotUpdater = modelCoreSimulationSnapshotUpdater;
       }
 
       public void StartWith(Simulation simulation)
@@ -139,26 +139,10 @@ namespace PKSim.Infrastructure.Services
             simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
             simulationTransfer.Favorites = currentProject.Favorites;
          }
-         
-         createSimulationProjectSnapshot(simulation, moBiSimulation);
+
+         _modelCoreSimulationSnapshotUpdater.AddSnapshotsToModelCoreSimulation(simulation, moBiSimulation);
 
          _simulationPersistor.Save(simulationTransfer, moBiFile);
-      }
-
-      private void createSimulationProjectSnapshot(Simulation simulation, IModelCoreSimulation modelCoreSimulation)
-      {
-         modelCoreSimulation.Configuration.ModuleConfigurations.First().Module.Snapshot = _simulationToProjectSnapshotMapper.MapFrom(simulation);
-
-         if (simulation.Individual != null && modelCoreSimulation.Configuration.Individual != null)
-         {
-            modelCoreSimulation.Configuration.Individual.Snapshot = _simulationToProjectSnapshotMapper.MapFrom(simulation.Individual);
-         }
-
-         var expressionProfiles = simulation.AllBuildingBlocks<ExpressionProfile>().ToList();
-         if (expressionProfiles.Any())
-         {
-            expressionProfiles.Each(x => modelCoreSimulation.Configuration.ExpressionProfiles.FindByName(x.Name).Snapshot = _simulationToProjectSnapshotMapper.MapFrom(x));
-         }
       }
 
       private void updateFormulaIdIn(IModelCoreSimulation modelCoreSimulation)

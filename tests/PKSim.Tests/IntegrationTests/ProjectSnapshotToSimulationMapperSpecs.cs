@@ -3,6 +3,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
@@ -14,13 +15,15 @@ namespace PKSim.IntegrationTests
 {
    public abstract class concern_for_ProjectSnapshotToSimulationMapper : ContextForSimulationIntegration<IProjectSnapshotToModuleMapper, IndividualSimulation>
    {
-      protected string _snapshotString;
       protected Compound _compound;
       protected Individual _individual;
       protected Protocol _protocol;
       protected ICoreWorkspace _workspace;
       protected DataRepository _observedData;
-      protected ISimulationToProjectSnapshotMapper _simulationMapper;
+      protected IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
+      private ISimulationToModelCoreSimulationMapper _simulationMapper;
+      private ISimulationConfigurationTask _simulationConfigurationTask;
+      protected IModelCoreSimulation _moBiSimulation;
 
       public override void GlobalContext()
       {
@@ -28,9 +31,11 @@ namespace PKSim.IntegrationTests
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
+         _simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
+         _simulationMapper = IoC.Resolve<ISimulationToModelCoreSimulationMapper>();
 
          _workspace = IoC.Resolve<ICoreWorkspace>();
-         _simulationMapper = IoC.Resolve<ISimulationToProjectSnapshotMapper>();
+         _modelCoreSimulationSnapshotUpdater = IoC.Resolve<IModelCoreSimulationSnapshotUpdater>();
          _workspace.Project = new PKSimProject();
 
          _observedData = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("S").WithName("obs data");
@@ -43,7 +48,10 @@ namespace PKSim.IntegrationTests
          _simulation.AddUsedObservedData(UsedObservedData.From(_observedData));
          _workspace.Project.AddBuildingBlock(_simulation);
 
-         _snapshotString = _simulationMapper.MapFrom(_simulation);
+         var configuration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
+         _moBiSimulation = _simulationMapper.MapFrom(_simulation, configuration, shouldCloneModel: true);
+
+         _modelCoreSimulationSnapshotUpdater.AddSnapshotsToModelCoreSimulation(_simulation, _moBiSimulation);
       }
    }
 
@@ -53,7 +61,7 @@ namespace PKSim.IntegrationTests
 
       protected override void Because()
       {
-         (_module, _) = sut.MapFrom(_snapshotString);
+         (_module, _) = sut.MapFrom(_moBiSimulation.Configuration.ModuleConfigurations.Single().Module.Snapshot);
       }
 
       [Observation]

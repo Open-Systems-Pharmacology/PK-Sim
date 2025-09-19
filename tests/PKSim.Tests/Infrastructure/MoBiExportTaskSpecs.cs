@@ -40,7 +40,7 @@ namespace PKSim.Infrastructure
       private IJournalRetriever _journalRetriever;
       protected IApplicationSettings _applicationSettings;
       protected IStartableProcessFactory _startableProcessFactory;
-      protected ISimulationToProjectSnapshotMapper _simulationToProjectSnapshotMapper;
+      protected IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
       protected Simulation _sim;
       private IModelCoreSimulation _modelCoreSimulation;
 
@@ -58,7 +58,7 @@ namespace PKSim.Infrastructure
          _journalRetriever = A.Fake<IJournalRetriever>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
-         _simulationToProjectSnapshotMapper = A.Fake<ISimulationToProjectSnapshotMapper>();
+         _modelCoreSimulationSnapshotUpdater = A.Fake<IModelCoreSimulationSnapshotUpdater>();
          _sim = A.Fake<Simulation>();
 
          _modelCoreSimulation = new ModelCoreSimulation
@@ -74,10 +74,8 @@ namespace PKSim.Infrastructure
 
          A.CallTo(() => _simulationMapper.MapFrom(_sim, A<SimulationConfiguration>._, true)).Returns(_modelCoreSimulation);
 
-         A.CallTo(() => _simulationToProjectSnapshotMapper.MapFrom(A<Simulation>._)).Returns("A snapshot");
-
          sut = new MoBiExportTask(_simulationConfigurationTask, _simulationMapper, _representationInfoRepository,
-            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _simulationToProjectSnapshotMapper);
+            _configuration, _lazyLoadTask, _dialogCreator, _simulationPersistor, _projectRetriever, _objectIdResetter, _journalRetriever, _applicationSettings, _startableProcessFactory, _modelCoreSimulationSnapshotUpdater);
       }
    }
 
@@ -138,9 +136,9 @@ namespace PKSim.Infrastructure
       }
 
       [Observation]
-      public void the_simulation_transfer_should_have_a_snapshot_set()
+      public void snapshots_should_be_set_by_the_snapshot_task()
       {
-         _simulationTransfer.Simulation.Configuration.ModuleConfigurations.First().Module.Snapshot.ShouldBeEqualTo("A snapshot");
+         A.CallTo(() => _modelCoreSimulationSnapshotUpdater.AddSnapshotsToModelCoreSimulation(A<Simulation>._, A<IModelCoreSimulation>._)).MustHaveHappened();
       }
 
       [Observation]
