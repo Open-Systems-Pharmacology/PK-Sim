@@ -1,6 +1,5 @@
 using System.Linq;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;

@@ -7,12 +7,13 @@ using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-using PKSim.Core.Snapshots.Mappers;
 using PKSim.Infrastructure;
 using System;
 using System.Linq;
 using System.Text;
+
 using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Utility.Extensions;
 using Compound = PKSim.Core.Model.Compound;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using Individual = PKSim.Core.Model.Individual;
@@ -21,7 +22,7 @@ using Protocol = PKSim.Core.Model.Protocol;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_SimulationToProjectSnapshotMapper : ContextForSimulationIntegration<IModelCoreSimulationSnapshotUpdater, IndividualSimulation>
+   public abstract class concern_for_ModelCoreSimulationSnapshotUpdater : ContextForSimulationIntegration<IModelCoreSimulationSnapshotUpdater, IndividualSimulation>
    {
       protected Compound _compound;
       protected Individual _individual;
@@ -32,12 +33,14 @@ namespace PKSim.IntegrationTests
       protected DataRepository _observedData;
       protected ISimulationConfigurationTask _simulationConfigurationTask;
       protected ISimulationToModelCoreSimulationMapper _simulationMapper;
+      private ExpressionProfile _expressionProfile;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual);
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _snapshotMapper = IoC.Resolve<ISnapshotMapper>();
          _jsonSerializer = IoC.Resolve<IJsonSerializer>();
@@ -51,21 +54,22 @@ namespace PKSim.IntegrationTests
          _workspace.Project.AddBuildingBlock(_compound);
          _workspace.Project.AddBuildingBlock(_individual);
          _workspace.Project.AddBuildingBlock(_protocol);
+         _workspace.Project.AddBuildingBlock(_expressionProfile);
          _workspace.Project.AddObservedData(_observedData);
+
+         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
+         _simulation.AddUsedObservedData(UsedObservedData.From(_observedData));
+         _workspace.Project.AddBuildingBlock(_simulation);
       }
    }
 
-   public class When_mapping_simulation_to_project_snapshot_string : concern_for_SimulationToProjectSnapshotMapper
+   public class mapping_model_core_simulation_to_project_snapshot_string : concern_for_ModelCoreSimulationSnapshotUpdater
    {
       private PKSimProject _deserializedProject;
       private IModelCoreSimulation _moBiSimulation;
       protected override void Context()
       {
          base.Context();
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
-         _simulation.AddUsedObservedData(UsedObservedData.From(_observedData));
-         _workspace.Project.AddBuildingBlock(_simulation);
-
          var configuration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
          _moBiSimulation = _simulationMapper.MapFrom(_simulation, configuration, shouldCloneModel: true);
       }
@@ -85,6 +89,14 @@ namespace PKSim.IntegrationTests
          _deserializedProject.All<Individual>().Count.ShouldBeEqualTo(1);
          _deserializedProject.All<IndividualSimulation>().Count.ShouldBeEqualTo(1);
          _deserializedProject.AllObservedData.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_snapshots_should_be_set()
+      {
+         _moBiSimulation.Configuration.Individual.Snapshot.ShouldNotBeEmpty();
+         _moBiSimulation.Configuration.ModuleConfigurations.Single().Module.Snapshot.ShouldNotBeEmpty();
+         _moBiSimulation.Configuration.ExpressionProfiles.Each(x => x.Snapshot.ShouldNotBeEmpty());
       }
    }
 }
