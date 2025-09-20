@@ -85,7 +85,7 @@ jobs:
       - name: Create Setup
         run: |
           rake "create_setup[${{env.APP_VERSION}}, Debug]"
-          rake "create_portable_setup[${{env.APP_VERSION}}, Debug, pk-sim-portable-setup.zip]"
+          rake "create_portable_setup[${{env.APP_VERSION}}, Debug, PKSim_Portable.zip]"
 
 #      - name: Sign PKSim setup with CodeSignTool
 #        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
@@ -107,8 +107,8 @@ jobs:
       - name: Push nightly portable as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PKSim Portable ${{env.APP_VERSION}}
-          path: setup\PK-Sim ${{env.APP_VERSION}}
+          name: PKSim_Portable
+          path: setup\PKSim_Portable.zip
 
   cleanup-job:
     needs: get-latest-commit-timespan
