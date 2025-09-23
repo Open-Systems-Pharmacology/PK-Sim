@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build and Test 12.2
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 env:
   MAJOR: 12
-  MINOR: 1
+  MINOR: 2
   RUN: ${{ github.run_number }}
   TARGET_FRAMEWORK: net8
 
@@ -27,7 +27,7 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: dotnet build PKSim.sln /p:Version=12.1.9999
+        run: dotnet build PKSim.sln /p:Version=12.2.9999
 
       - name: Test
         run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"

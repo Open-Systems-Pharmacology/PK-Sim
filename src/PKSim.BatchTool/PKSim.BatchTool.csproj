@@ -13,7 +13,7 @@
     <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
     <Description>PKSim.BatchTool - Batch runner for json based PK-Sim simulations</Description>
-    <Version Condition="'$(Version)' == ''">12.1.0</Version>
+    <Version Condition="'$(Version)' == ''">12.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -60,8 +60,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="12.1.128" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Core" Version="12.2.1" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.2.1" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" GeneratePathProperty="true" />

@@ -10,7 +10,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <Version Condition="'$(Version)' == ''">12.1.0</Version>
+    <Version Condition="'$(Version)' == ''">12.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.128" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.128" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.128" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.2.1" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="12.2.1" />
+    <PackageReference Include="OSPSuite.Core" Version="12.2.1" />
   </ItemGroup>
 
   <ItemGroup>
