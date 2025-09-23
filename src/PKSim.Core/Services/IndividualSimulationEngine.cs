@@ -52,10 +52,8 @@ namespace PKSim.Core.Services
          _simModelManager.SimulationProgress += simulationProgress;
          //make sure that thread methods always catch and handle any exception,
          //otherwise we risk unplanned application termination
-         var begin = SystemTime.UtcNow();
          try
          {
-            RaiseEvent(new SimulationRunStartedEvent(individualSimulation));
             await runSimulation(individualSimulation, simulationRunOptions, cancellationToken);
          }
          catch (Exception ex)
@@ -63,12 +61,6 @@ namespace PKSim.Core.Services
             terminated();
             if (!(ex is TaskCanceledException)) //do not throw if this has been canceled
                throw;
-         }
-         finally
-         {
-            var end = SystemTime.UtcNow();
-            var timeSpent = end - begin;
-            RaiseEvent(new SimulationRunFinishedEvent(individualSimulation, timeSpent));
          }
       }
 

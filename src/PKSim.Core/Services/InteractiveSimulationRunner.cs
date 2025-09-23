@@ -1,11 +1,15 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -30,8 +34,9 @@ namespace PKSim.Core.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IExecutionContext _executionContext;
       private readonly ConcurrentDictionary<Simulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<Simulation, CancellationTokenSource>();
-
+      private readonly IEventPublisher _eventPublisher;
       private readonly SimulationRunOptions _simulationRunOptions;
+      protected bool _shouldRaiseEvents;
 
       public InteractiveSimulationRunner(
          ISimulationSettingsRetriever simulationSettingsRetriever,
@@ -39,7 +44,8 @@ namespace PKSim.Core.Services
          ICloner cloner,
          ISimulationAnalysisCreator simulationAnalysisCreator,
          ILazyLoadTask lazyLoadTask,
-         IExecutionContext executionContext)
+         IExecutionContext executionContext,
+         IEventPublisher eventPublisher)
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationRunner = simulationRunner;
@@ -47,11 +53,12 @@ namespace PKSim.Core.Services
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _executionContext = executionContext;
+         _eventPublisher = eventPublisher;
 
          _simulationRunOptions = new SimulationRunOptions
          {
             CheckForNegativeValues = true,
-            RaiseEvents = true,
+            RaiseEvents = true, //This is always true, but still worth checking before rising an event since it can change.
             RunForAllOutputs = false,
             SimModelExportMode = SimModelExportMode.Optimized
          };
@@ -65,7 +72,9 @@ namespace PKSim.Core.Services
 
       private async Task runSimulationAsync(Simulation simulation, bool selectOutput)
       {
+         _shouldRaiseEvents = _simulationRunOptions.RaiseEvents;
          var cts = new CancellationTokenSource();
+         var begin = new DateTime();
          if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
             return;
          try
@@ -83,7 +92,8 @@ namespace PKSim.Core.Services
 
                _executionContext.PublishEvent(new SimulationOutputSelectionsChangedEvent(simulation));
             }
-
+            begin = SystemTime.UtcNow();
+            _eventPublisher.PublishEvent(new SimulationRunStartedEvent(simulation));
             await _simulationRunner.RunSimulation(simulation, _simulationRunOptions, cts.Token);
 
             addAnalysableToSimulationIfRequired(simulation);
@@ -92,10 +102,13 @@ namespace PKSim.Core.Services
          {
             if (_cancellationTokenSources.ContainsKey(simulation))
             {
+               var end = SystemTime.UtcNow();
+               var timeSpent = end - begin;
                if (_cancellationTokenSources.TryRemove(simulation, out var ctsToDispose))
                {
                   ctsToDispose.Dispose();
                }
+               _eventPublisher.PublishEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
             }
          }
       }
@@ -122,6 +135,11 @@ namespace PKSim.Core.Services
          if (simulation == null || !simulation.HasResults) return;
          if (simulation.Analyses.Count() != 0) return;
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);
+      }
+      private void raiseEvent<T>(T eventToPublish)
+      {
+         if (_shouldRaiseEvents)
+            _eventPublisher.PublishEvent(eventToPublish);
       }
 
       public void StopSimulation(Simulation simulation)
