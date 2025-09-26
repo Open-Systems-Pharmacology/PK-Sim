@@ -6,6 +6,7 @@ using OSPSuite.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
+using PKSim.Core.Services;
 
 namespace PKSim.Presentation
 {
@@ -14,12 +15,15 @@ namespace PKSim.Presentation
       private IStatusBarView _statusBarView;
       private IApplicationConfiguration _applicationConfiguration;
       private IEventPublisher _eventPublisher;
+      private IInteractiveSimulationRunner _interactiveSimulationRunner;
+
       protected override void Context()
       {
          _eventPublisher = A.Fake<IEventPublisher>();
          _statusBarView = A.Fake<IStatusBarView>();
          _applicationConfiguration = A.Fake<IApplicationConfiguration>();
-         sut = new StatusBarPresenter(_statusBarView, _applicationConfiguration, _eventPublisher);
+         _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
+         sut = new StatusBarPresenter(_statusBarView, _applicationConfiguration, _eventPublisher, _interactiveSimulationRunner);
       }
 
       protected override void Because()

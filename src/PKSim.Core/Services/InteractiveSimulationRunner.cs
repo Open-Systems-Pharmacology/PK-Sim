@@ -23,6 +23,9 @@ namespace PKSim.Core.Services
       void StopAllSimulations();
       bool IsSimulationRunning(Simulation simulation);
       bool IsSimulationIdle(Simulation simulation);
+      int ActiveSimulationsCount { get; }
+      IReadOnlyCollection<Simulation> ActiveSimulations { get; }
+      bool AnySimulationRunning { get; }
    }
 
    public class InteractiveSimulationRunner : IInteractiveSimulationRunner
@@ -38,14 +41,17 @@ namespace PKSim.Core.Services
       private readonly SimulationRunOptions _simulationRunOptions;
       protected bool _shouldRaiseEvents;
 
+      public int ActiveSimulationsCount => _cancellationTokenSources.Count;
+      public IReadOnlyCollection<Simulation> ActiveSimulations => _cancellationTokenSources.Keys.ToList().AsReadOnly();
+      public bool AnySimulationRunning => ActiveSimulationsCount > 0;
+
       public InteractiveSimulationRunner(
          ISimulationSettingsRetriever simulationSettingsRetriever,
          ISimulationRunner simulationRunner,
          ICloner cloner,
          ISimulationAnalysisCreator simulationAnalysisCreator,
          ILazyLoadTask lazyLoadTask,
-         IExecutionContext executionContext,
-         IEventPublisher eventPublisher)
+         IExecutionContext executionContext)
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationRunner = simulationRunner;
@@ -53,7 +59,6 @@ namespace PKSim.Core.Services
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _executionContext = executionContext;
-         _eventPublisher = eventPublisher;
 
          _simulationRunOptions = new SimulationRunOptions
          {
@@ -75,8 +80,10 @@ namespace PKSim.Core.Services
          _shouldRaiseEvents = _simulationRunOptions.RaiseEvents;
          var cts = new CancellationTokenSource();
          var begin = new DateTime();
-         if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
+
+         if (!_cancellationTokenSources.TryAdd(simulation, cts))
             return;
+
          try
          {
             _lazyLoadTask.Load(simulation);
@@ -93,7 +100,7 @@ namespace PKSim.Core.Services
                _executionContext.PublishEvent(new SimulationOutputSelectionsChangedEvent(simulation));
             }
             begin = SystemTime.UtcNow();
-            _eventPublisher.PublishEvent(new SimulationRunStartedEvent(simulation));
+            _executionContext.PublishEvent(new SimulationRunStartedEvent(simulation));
             await _simulationRunner.RunSimulation(simulation, _simulationRunOptions, cts.Token);
 
             addAnalysableToSimulationIfRequired(simulation);
@@ -105,10 +112,8 @@ namespace PKSim.Core.Services
                var end = SystemTime.UtcNow();
                var timeSpent = end - begin;
                if (_cancellationTokenSources.TryRemove(simulation, out var ctsToDispose))
-               {
                   ctsToDispose.Dispose();
-               }
-               _eventPublisher.PublishEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
+               _executionContext.PublishEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
             }
          }
       }
@@ -117,7 +122,7 @@ namespace PKSim.Core.Services
          simulation.OutputMappings.Where(outputMapping => !outputMappingIsSelected(simulation, outputMapping)).ToList();
 
       private static bool outputMappingIsSelected(Simulation simulation, OutputMapping outputMapping) =>
-         simulation.OutputSelections.AllOutputs.Any(quantitySelection => Equals(quantitySelection.Path, outputMapping.OutputPath));
+         simulation.OutputSelections.AllOutputs.Any(q => Equals(q.Path, outputMapping.OutputPath));
 
       private bool outputSelectionRequired(Simulation simulation, bool selectOutput)
       {
@@ -139,7 +144,7 @@ namespace PKSim.Core.Services
       private void raiseEvent<T>(T eventToPublish)
       {
          if (_shouldRaiseEvents)
-            _eventPublisher.PublishEvent(eventToPublish);
+            _executionContext.PublishEvent(eventToPublish);
       }
 
       public void StopSimulation(Simulation simulation)
@@ -150,9 +155,7 @@ namespace PKSim.Core.Services
       public void StopAllSimulations()
       {
          foreach (var simulation in _cancellationTokenSources.Keys.ToList())
-         {
             tryCancelAndDispose(simulation);
-         }
       }
 
       private void tryCancelAndDispose(Simulation simulation)

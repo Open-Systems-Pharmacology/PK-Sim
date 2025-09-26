@@ -48,7 +48,8 @@ namespace PKSim.Presentation.Presenters.Main
       IListener<ParameterIdentificationTerminatedEvent>,
       IListener<SensitivityAnalysisStartedEvent>,
       IListener<SensitivityAnalysisTerminatedEvent>,
-      IListener<AllSimulationsFinishedEvent>
+      IListener<AllSimulationsFinishedEvent>,
+      IListener<SimulationRunCanceledEvent>
    {
    }
 
@@ -287,7 +288,7 @@ namespace PKSim.Presentation.Presenters.Main
          var enablePopSimulationItems = enabled && !_simulationState.IsIndividual;
          var enableIndividualSimulationItems = enabled && _simulationState.IsIndividual;
          var enabledPKSimSimulationOnlyItems = enabled && !_simulationState.IsImported;
-         var isRunning = enabled && (isSimulationRunning ?? _simulationState.IsRunning);
+         var isRunning = enabled && (_simulationState.IsRunning);
 
          _menuBarItemRepository[MenuBarItemIds.Run].Enabled = !isRunning;
          _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = !isRunning;
@@ -589,6 +590,13 @@ namespace PKSim.Presentation.Presenters.Main
       public void Handle(AllSimulationsFinishedEvent eventToHandle)
       {
          _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = false;
+      }
+
+      public void Handle(SimulationRunCanceledEvent eventToHandle)
+      {
+         enableDefaultItems();
+         updateProjectItems(isEnabled: true);
+         updateSimulationItemsFor(eventToHandle.Simulation, isRunning: false);
       }
    }
 }

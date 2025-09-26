@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
+using OSPSuite.Utility.Events;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -21,6 +22,8 @@ namespace PKSim.Core
       protected ISimulationRunner _simulationRunner;
       protected ILazyLoadTask _lazyLoadTask;
       protected IExecutionContext _executionContext;
+      protected IInteractiveSimulationRunner _interactiveSimulationRunner;
+      protected IEventPublisher _eventPublisher;
 
       protected override Task Context()
       {
@@ -30,7 +33,9 @@ namespace PKSim.Core
          _simulationRunner = A.Fake<ISimulationRunner>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _executionContext = A.Fake<IExecutionContext>();
-         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
+         _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
+         _eventPublisher = A.Fake<IEventPublisher>();
+         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext, _eventPublisher);
          return _completed;
       }
    }
