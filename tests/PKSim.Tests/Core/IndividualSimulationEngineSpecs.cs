@@ -72,13 +72,6 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_notify_the_simulation_started_and_finishing_event()
-      {
-         A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationRunStartedEvent>._)).MustHaveHappened();
-         A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationRunFinishedEvent>._)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_notify_the_simulation_results_updated_event()
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationResultsUpdatedEvent>._)).MustHaveHappened();

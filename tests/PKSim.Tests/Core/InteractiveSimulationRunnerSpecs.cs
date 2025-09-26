@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Chart;
+using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
@@ -23,7 +24,6 @@ namespace PKSim.Core
       protected ILazyLoadTask _lazyLoadTask;
       protected IExecutionContext _executionContext;
       protected IInteractiveSimulationRunner _interactiveSimulationRunner;
-      protected IEventPublisher _eventPublisher;
 
       protected override Task Context()
       {
@@ -34,8 +34,7 @@ namespace PKSim.Core
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _executionContext = A.Fake<IExecutionContext>();
          _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
-         _eventPublisher = A.Fake<IEventPublisher>();
-         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext, _eventPublisher);
+         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
          return _completed;
       }
    }
@@ -62,6 +61,13 @@ namespace PKSim.Core
       protected override Task Because()
       {
          return sut.RunSimulation(_simulation, true);
+      }
+
+      [Observation]
+      public void should_notify_the_simulation_started_and_finishing_event()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationRunStartedEvent>._)).MustHaveHappened();
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationRunFinishedEvent>._)).MustHaveHappened();
       }
 
       [Observation]
