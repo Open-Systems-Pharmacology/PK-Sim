@@ -79,11 +79,10 @@ namespace PKSim.Core.Services
       {
          _shouldRaiseEvents = _simulationRunOptions.RaiseEvents;
          var cts = new CancellationTokenSource();
-         var begin = new DateTime();
-
-         if (!_cancellationTokenSources.TryAdd(simulation, cts))
+         if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
             return;
 
+         var begin = new DateTime();
          try
          {
             _lazyLoadTask.Load(simulation);
@@ -97,10 +96,10 @@ namespace PKSim.Core.Services
                simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
                mappingsNotSelected(simulation).Each(simulation.OutputMappings.Remove);
 
-               _executionContext.PublishEvent(new SimulationOutputSelectionsChangedEvent(simulation));
+               raiseEvent(new SimulationOutputSelectionsChangedEvent(simulation));
             }
             begin = SystemTime.UtcNow();
-            _executionContext.PublishEvent(new SimulationRunStartedEvent(simulation));
+            raiseEvent(new SimulationRunStartedEvent(simulation));
             await _simulationRunner.RunSimulation(simulation, _simulationRunOptions, cts.Token);
 
             addAnalysableToSimulationIfRequired(simulation);
@@ -113,7 +112,7 @@ namespace PKSim.Core.Services
                var timeSpent = end - begin;
                if (_cancellationTokenSources.TryRemove(simulation, out var ctsToDispose))
                   ctsToDispose.Dispose();
-               _executionContext.PublishEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
+               raiseEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
             }
          }
       }
@@ -164,7 +163,7 @@ namespace PKSim.Core.Services
          {
             cts.Cancel();
             cts.Dispose();
-            _executionContext.PublishEvent(new SimulationRunCanceledEvent(simulation));
+            raiseEvent(new SimulationRunCanceledEvent(simulation));
          }
       }
 
