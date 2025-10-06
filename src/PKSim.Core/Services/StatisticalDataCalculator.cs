@@ -135,12 +135,12 @@ namespace PKSim.Core.Services
 
       private float[] calculateMaxFor(FloatMatrix quantityResults)
       {
-         return calculateValueFor(quantityResults, x => x.Last());
+         return calculateValueFor(quantityResults, x => x.Length > 0 ? x.Last() : float.NaN);
       }
 
       private float[] calculateMinFor(FloatMatrix quantityResults)
       {
-         return calculateValueFor(quantityResults, x => x.First());
+         return calculateValueFor(quantityResults, x => x.Length > 0 ? x.First() : float.NaN);
       }
 
       private float[] calculateMedianFor(FloatMatrix quantityResults)
