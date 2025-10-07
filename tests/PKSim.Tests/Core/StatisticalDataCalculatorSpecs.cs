@@ -250,4 +250,50 @@ namespace PKSim.Core
       {
       }
    }
+
+   public class When_calculating_the_min_with_empty_arrays : concern_for_StatisticalDataCalculator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _floatMatrix = new FloatMatrix();
+         _floatMatrix.AddSortedValues(new float[] {1, 10, 100});
+         _floatMatrix.AddSortedValues(new float[] {});  // empty array
+         _floatMatrix.AddSortedValues(new float[] {3, 30, 300});
+         _selection = new PredefinedStatisticalAggregation {Method = StatisticalAggregationType.Min};
+      }
+
+      [Observation]
+      public void should_return_nan_for_empty_array()
+      {
+         _results.Count.ShouldBeEqualTo(1);
+         _results[0].Length.ShouldBeEqualTo(3);
+         _results[0][0].ShouldBeEqualTo(1);
+         _results[0][1].ShouldBeEqualTo(float.NaN);
+         _results[0][2].ShouldBeEqualTo(3);
+      }
+   }
+
+   public class When_calculating_the_max_with_empty_arrays : concern_for_StatisticalDataCalculator
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _floatMatrix = new FloatMatrix();
+         _floatMatrix.AddSortedValues(new float[] {1, 10, 100});
+         _floatMatrix.AddSortedValues(new float[] {});  // empty array
+         _floatMatrix.AddSortedValues(new float[] {3, 30, 300});
+         _selection = new PredefinedStatisticalAggregation {Method = StatisticalAggregationType.Max};
+      }
+
+      [Observation]
+      public void should_return_nan_for_empty_array()
+      {
+         _results.Count.ShouldBeEqualTo(1);
+         _results[0].Length.ShouldBeEqualTo(3);
+         _results[0][0].ShouldBeEqualTo(100);
+         _results[0][1].ShouldBeEqualTo(float.NaN);
+         _results[0][2].ShouldBeEqualTo(300);
+      }
+   }
 }
