@@ -10,6 +10,7 @@ env:
   MAJOR: 12
   MINOR: 2
   RUN: ${{ github.run_number }}
+  TARGET_FRAMEWORK: net8
 
 jobs:
   get-latest-commit-timespan:
@@ -87,6 +88,13 @@ jobs:
           rake "create_setup[${{env.APP_VERSION}}, Debug]"
           rake "create_portable_setup[${{env.APP_VERSION}}, Debug, pk-sim-portable-setup.zip]"
 
+      - name: Create R dependency artifact
+        run: |
+          pushd .
+          cd src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}
+          7z.exe a pk-sim-r-dependencies.zip -x@"excludedFiles.txt" * -xr!runtimes
+          popd
+
 #      - name: Sign PKSim setup with CodeSignTool
 #        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
 #        with:
@@ -109,6 +117,12 @@ jobs:
         with:
           name: PKSim Portable ${{env.APP_VERSION}}
           path: setup\PK-Sim ${{env.APP_VERSION}}
+
+      - name: Push R dependencies as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKSim R Dependencies
+          path: src\PKSimRDependencyResolution\bin\Debug\${{env.TARGET_FRAMEWORK}}\pk-sim-r-dependencies.zip
 
   cleanup-job:
     needs: get-latest-commit-timespan
