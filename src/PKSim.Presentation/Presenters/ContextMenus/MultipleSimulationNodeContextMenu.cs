@@ -50,8 +50,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
             .WithEnabled(simulations.All(x => x.BuildingBlock.IsIdle(_container)))
             .WithCommandFor<RunSimulationsCommand, IReadOnlyList<Simulation>>(simulations.Select(x => x.BuildingBlock).ToList(), _container)
-            .WithIcon(ApplicationIcons.Run)
-            .AsGroupStarter();
+            .WithIcon(ApplicationIcons.Run);
 
          yield return AddToJournal(simulations);
 
