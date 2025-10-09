@@ -1,12 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
+using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
+using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -42,6 +46,12 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<NamedBuildingBlock<Simulation>> simulations, IExecutionContext executionContext)
       {
          yield return CompareBuildingBlocks(simulations, executionContext);
+
+         yield return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.Run)
+            .WithEnabled(simulations.All(x => x.BuildingBlock.IsIdle(_container)))
+            .WithCommandFor<RunSimulationsCommand, IReadOnlyList<Simulation>>(simulations.Select(x => x.BuildingBlock).ToList(), _container)
+            .WithIcon(ApplicationIcons.Run)
+            .AsGroupStarter();
 
          yield return AddToJournal(simulations);
 
