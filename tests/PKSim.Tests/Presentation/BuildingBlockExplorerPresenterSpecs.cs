@@ -14,6 +14,7 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
+using PKSim.Core;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -54,6 +55,7 @@ namespace PKSim.Presentation
       protected IClassificationPresenter _classificationPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       private IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
+      private IExecutionContext _executionContext;
 
       protected override void Context()
       {
@@ -77,8 +79,9 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _classificationPresenter = A.Fake<IClassificationPresenter>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
+         _executionContext = A.Fake<IExecutionContext>();
          sut = new BuildingBlockExplorerPresenter(_view, _treeNodeFactory, _contextMenuFactory, _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever, _regionResolver,
-            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter);
+            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter, _executionContext);
 
          _compoundFolderNode = new RootNode(PKSimRootNodeTypes.CompoundFolder);
          _individualFolderNode = new RootNode(PKSimRootNodeTypes.IndividualFolder);

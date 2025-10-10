@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
@@ -329,11 +330,11 @@ namespace PKSim.Presentation.Services
          void openProject()
          {
             _workspace.OpenProject(projectFile);
-
             // Since the individuals are lazy loaded, and the deserialization is relying on the context.CurrentProject
             // which is not loaded but AFTER the deserialization.
             // Ideally this should go down in the callstack, but we are getting a circular dependency issue.
             _workspace.Project.All<Individual>().Each(_lazyLoadTask.Load);
+            _executionContext.CurrentProject.HasChanged = false;
          }
 
          try
