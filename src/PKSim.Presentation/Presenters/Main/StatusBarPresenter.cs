@@ -50,10 +50,8 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IApplicationConfiguration _applicationConfiguration;
       private int _numberOfReportsBeingCreated;
       public event EventHandler StatusChanged = delegate { };
-      //private readonly ConcurrentDictionary<string, bool> _runningSimulationsDictionary = new ConcurrentDictionary<string, bool>();
       private readonly IEventPublisher _eventPublisher;
       private readonly IInteractiveSimulationRunner _interactiveSimulationRunner;
-      //private int activeSimulationsCount => _runningSimulationsDictionary.Count(x => x.Value);
 
       public StatusBarPresenter(
          IStatusBarView view, 
