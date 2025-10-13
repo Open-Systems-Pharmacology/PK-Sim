@@ -12,6 +12,10 @@ env:
   RUN: ${{ github.run_number }}
   TARGET_FRAMEWORK: net8
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   get-latest-commit-timespan:
     runs-on: ubuntu-latest

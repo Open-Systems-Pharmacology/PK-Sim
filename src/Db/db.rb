@@ -33,8 +33,9 @@ end
 def download_pksimdb_file
   uri = "https://github.com/Open-Systems-Pharmacology/PK-Sim/raw/develop/src/Db/PKSimDB.sqlite"
   puts "Downloading #{PKSIM_DB_FILE_NAME} from #{uri} under #{developPKSimDB}"
-  URI.open(developPKSimDB, 'wb') do |fo| 
-    fo.print URI.open(uri,:read_timeout => nil).read
+  content = URI.open(uri, :read_timeout => nil).read
+  File.open(developPKSimDB, 'wb') do |fo|
+    fo.print content
   end
 end
 
