@@ -10,6 +10,10 @@ env:
   MINOR: 2
   RUN: ${{ github.run_number }}
 
+permissions:
+  contents: read
+  packages: read
+  
 jobs:
 
   build:
