@@ -81,7 +81,7 @@ namespace PKSim.Presentation
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
          _executionContext = A.Fake<IExecutionContext>();
          sut = new BuildingBlockExplorerPresenter(_view, _treeNodeFactory, _contextMenuFactory, _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever, _regionResolver,
-            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter, _executionContext);
+            _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter);
 
          _compoundFolderNode = new RootNode(PKSimRootNodeTypes.CompoundFolder);
          _individualFolderNode = new RootNode(PKSimRootNodeTypes.IndividualFolder);

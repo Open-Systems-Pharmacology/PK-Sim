@@ -40,8 +40,8 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
 
       public BuildingBlockExplorerPresenter(IBuildingBlockExplorerView view, ITreeNodeFactory treeNodeFactory, ITreeNodeContextMenuFactory treeNodeContextMenuFactory, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IBuildingBlockIconRetriever buildingBlockIconRetriever,
-         IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, IToolTipPartCreator toolTipPartCreator, IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IObservedDataInExplorerPresenter observedDataInExplorerPresenter, IExecutionContext executionContext)
-         : base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.BuildingBlockExplorer, projectRetriever, classificationPresenter, toolTipPartCreator, executionContext)
+         IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, IToolTipPartCreator toolTipPartCreator, IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IObservedDataInExplorerPresenter observedDataInExplorerPresenter)
+         : base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver, buildingBlockTask, RegionNames.BuildingBlockExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _observedDataInExplorerPresenter = observedDataInExplorerPresenter;
          _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ObservedDataFolder);

@@ -10,8 +10,8 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
-using PKSim.Core;
 using PKSim.Core.Events;
+using PKSim.Core.Helpers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
@@ -35,11 +35,11 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       protected readonly IBuildingBlockIconRetriever _buildingBlockIconRetriever;
       protected readonly IBuildingBlockTask _buildingBlockTask;
-      protected readonly IExecutionContext _executionContext;
+
       protected ExplorerPresenter(TView view, ITreeNodeFactory treeNodeFactory, ITreeNodeContextMenuFactory treeNodeContextMenuFactory,
          IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory,
          IBuildingBlockIconRetriever buildingBlockIconRetriever, IRegionResolver regionResolver, IBuildingBlockTask buildingBlockTask, RegionName regionName,
-         IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IToolTipPartCreator toolTipPartCreator, IExecutionContext executionContext) :
+         IProjectRetriever projectRetriever, IClassificationPresenter classificationPresenter, IToolTipPartCreator toolTipPartCreator) :
          base(view, regionResolver, classificationPresenter, toolTipPartCreator, regionName, projectRetriever)
       {
          _treeNodeFactory = treeNodeFactory;
@@ -47,7 +47,6 @@ namespace PKSim.Presentation.Presenters.Main
          _multipleTreeNodeContextMenuFactory = multipleTreeNodeContextMenuFactory;
          _buildingBlockIconRetriever = buildingBlockIconRetriever;
          _buildingBlockTask = buildingBlockTask;
-         _executionContext = executionContext;
       }
 
       protected abstract ITreeNode AddBuildingBlockToTree(IPKSimBuildingBlock buildingBlock);
@@ -98,9 +97,10 @@ namespace PKSim.Presentation.Presenters.Main
 
       protected void EditBuildingBlock(IPKSimBuildingBlock buildingBlock)
       {
-         var hasChanges = _executionContext.CurrentProject.HasChanged;
-         _buildingBlockTask.Edit(buildingBlock);
-         _executionContext.CurrentProject.HasChanged = hasChanges;
+         using (ProjectChangedHelper.Scope(_projectRetriever))
+         {
+            _buildingBlockTask.Edit(buildingBlock);
+         }
       }
    }
 }

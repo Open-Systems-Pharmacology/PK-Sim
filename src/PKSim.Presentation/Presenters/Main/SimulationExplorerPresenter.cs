@@ -71,7 +71,7 @@ namespace PKSim.Presentation.Presenters.Main
          IMenuBarItemRepository menuBarItemRepository
          ) :
          base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver,
-            buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator, executionContext)
+            buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {
          _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
