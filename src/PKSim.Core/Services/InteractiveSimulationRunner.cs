@@ -39,7 +39,6 @@ namespace PKSim.Core.Services
       private readonly ConcurrentDictionary<Simulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<Simulation, CancellationTokenSource>();
       private readonly IEventPublisher _eventPublisher;
       private readonly SimulationRunOptions _simulationRunOptions;
-      protected bool _shouldRaiseEvents;
 
       public int ActiveSimulationsCount => _cancellationTokenSources.Count;
       public IReadOnlyCollection<Simulation> ActiveSimulations => _cancellationTokenSources.Keys.ToList().AsReadOnly();
@@ -77,7 +76,6 @@ namespace PKSim.Core.Services
 
       private async Task runSimulationAsync(Simulation simulation, bool selectOutput)
       {
-         _shouldRaiseEvents = _simulationRunOptions.RaiseEvents;
          var cts = new CancellationTokenSource();
          if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
             return;
@@ -142,7 +140,7 @@ namespace PKSim.Core.Services
       }
       private void raiseEvent<T>(T eventToPublish)
       {
-         if (_shouldRaiseEvents)
+         if (_simulationRunOptions.RaiseEvents)
             _executionContext.PublishEvent(eventToPublish);
       }
 
