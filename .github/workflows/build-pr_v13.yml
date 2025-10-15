@@ -5,6 +5,10 @@ on:
     branches:
     - V13
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
 
   build:
