@@ -88,9 +88,11 @@ namespace PKSim.Infrastructure.ORM.Repositories
             filteredTable.ImportRow(row);
          }
 
-         _allElements = new System.Collections.Generic.List<FlatIndividualParametersNotCommonForAllSpecies>(_mapper.MapFrom(filteredTable));
+         // Use reflection to set the base class's private _allElements field
+         var baseType = typeof(MetaDataRepository<FlatIndividualParametersNotCommonForAllSpecies>);
+         var field = baseType.GetField("_allElements", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         var mappedData = new System.Collections.Generic.List<FlatIndividualParametersNotCommonForAllSpecies>(_mapper.MapFrom(filteredTable));
+         field.SetValue(this, mappedData);
       }
-
-      private System.Collections.Generic.IList<FlatIndividualParametersNotCommonForAllSpecies> _allElements;
    }
 }
