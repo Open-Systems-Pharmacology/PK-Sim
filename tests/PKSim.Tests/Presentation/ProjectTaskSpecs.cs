@@ -1152,7 +1152,6 @@ namespace PKSim.Presentation
       }
    }
 
-
    public class When_asked_to_close_a_project_that_has_parameter_identifications_running : concern_for_ProjectTask
    {
       private string _message;
