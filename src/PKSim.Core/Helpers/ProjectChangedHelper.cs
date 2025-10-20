@@ -1,13 +1,12 @@
 ﻿using System;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 
 namespace PKSim.Core.Helpers
 {
    public static class ProjectChangedHelper
    {
-      public static IDisposable Scope(IProjectRetriever projectRetriever)
-         => new ScopeGuard(projectRetriever?.CurrentProject ?? throw new ArgumentNullException(nameof(projectRetriever)));
+      public static IDisposable Scope(IProject project)
+         => new ScopeGuard(project);
 
       private sealed class ScopeGuard : IDisposable
       {
@@ -17,7 +16,7 @@ namespace PKSim.Core.Helpers
 
          public ScopeGuard(IProject project)
          {
-            _project = project ?? throw new ArgumentNullException(nameof(project));
+            _project = project;
             _original = _project.HasChanged;
          }
 

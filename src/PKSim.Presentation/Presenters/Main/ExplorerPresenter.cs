@@ -97,7 +97,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       protected void EditBuildingBlock(IPKSimBuildingBlock buildingBlock)
       {
-         using (ProjectChangedHelper.Scope(_projectRetriever))
+         using (ProjectChangedHelper.Scope(_projectRetriever.CurrentProject))
          {
             _buildingBlockTask.Edit(buildingBlock);
          }

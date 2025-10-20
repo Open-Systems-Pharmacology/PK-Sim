@@ -55,7 +55,6 @@ namespace PKSim.Presentation
       protected IClassificationPresenter _classificationPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       private IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
-      private IExecutionContext _executionContext;
 
       protected override void Context()
       {
@@ -79,7 +78,6 @@ namespace PKSim.Presentation
          _projectRetriever = A.Fake<IProjectRetriever>();
          _classificationPresenter = A.Fake<IClassificationPresenter>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
-         _executionContext = A.Fake<IExecutionContext>();
          sut = new BuildingBlockExplorerPresenter(_view, _treeNodeFactory, _contextMenuFactory, _multipleTreeNodeContextMenuFactory, _buildingBlockIconRetriever, _regionResolver,
             _buildingBlockTask, _toolTipCreator, _projectRetriever, _classificationPresenter, _observedDataInExplorerPresenter);
 
