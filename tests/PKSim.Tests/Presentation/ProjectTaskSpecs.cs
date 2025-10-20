@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
@@ -42,6 +45,7 @@ namespace PKSim.Presentation
       protected IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       protected Simulation _simulation;
       protected ILazyLoadTask _lazyLoadTask;
+      protected IParameterIdentificationRunner _parameterIdentificationRunner;
 
       public override Task GlobalContext()
       {
@@ -61,12 +65,12 @@ namespace PKSim.Presentation
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _simulation = new IndividualSimulation();
-
+         _parameterIdentificationRunner = A.Fake<IParameterIdentificationRunner>();
          _project.AddBuildingBlock(_simulation);
 
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
             _executionContext, _heavyWorkManager, _workspaceLayoutUpdater, _userSettings,
-            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask);
+            _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner);
 
          _oldFileExitst = FileHelper.FileExists;
 
@@ -272,7 +276,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -626,7 +630,7 @@ namespace PKSim.Presentation
       protected override Task Context()
       {
          sut = new ProjectTask(_workspace, _applicationController, _dialogCreator,
-            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask);
+            _executionContext, new HeavyWorkManagerFailingForSpecs(), _workspaceLayoutUpdater, _userSettings, _journalTask, _journalRetriever, _snapshotTask, _buildingBlockInProjectManager, _lazyLoadTask, _parameterIdentificationRunner);
 
          A.CallTo(() => _workspace.ProjectHasChanged).Returns(true);
          _project.FilePath = FileHelper.GenerateTemporaryFileName();
@@ -1145,6 +1149,44 @@ namespace PKSim.Presentation
       public void should_overwrite_the_current_project()
       {
          A.CallTo(() => _workspace.LoadProject(_newProject)).MustHaveHappened();
+      }
+   }
+
+   public class When_asked_to_close_a_project_that_has_parameter_identifications_running : concern_for_ProjectTask
+   {
+      private string _message;
+      private readonly string _parameterIdentificationName = "PI 1";
+      protected override Task Context()
+      {
+         var parameterIdentification = new ParameterIdentification();
+         parameterIdentification.Name = _parameterIdentificationName;
+         var lstParameterIdentificationsRunning = new List<ParameterIdentification> { parameterIdentification };
+         _project.HasChanged = false;
+         A.CallTo(() => _parameterIdentificationRunner.IsRunning).Returns(true);
+         A.CallTo(() => _parameterIdentificationRunner.RunningParameterIdentifications)
+            .Returns(lstParameterIdentificationsRunning);
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
+            .Invokes(x => _message = x.GetArgument<string>(0));
+
+         return _completed;
+      }
+
+      protected override Task Because()
+      {
+         sut.CloseCurrentProject();
+         return _completed;
+      }
+
+      [Observation]
+      public void should_display_a_warning_to_the_user_with_the_name_of_the_running_parameter_identification()
+      {
+         _message.Contains(_parameterIdentificationName).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_call_confirmation_dialog()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges, ViewResult.Yes)).MustNotHaveHappened();
       }
    }
 }

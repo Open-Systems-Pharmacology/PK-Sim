@@ -6,6 +6,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Services;
@@ -50,6 +51,7 @@ namespace PKSim.Presentation.Services
       private readonly ISnapshotTask _snapshotTask;
       private readonly IBuildingBlockInProjectManager _buildingBlockInProjectManager;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IParameterIdentificationRunner _parameterIdentificationRunner;
 
       public ProjectTask(IWorkspace workspace,
          IApplicationController applicationController,
@@ -62,7 +64,8 @@ namespace PKSim.Presentation.Services
          IJournalRetriever journalRetriever,
          ISnapshotTask snapshotTask,
          IBuildingBlockInProjectManager buildingBlockInProjectManager,
-         ILazyLoadTask lazyLoadTask
+         ILazyLoadTask lazyLoadTask,
+         IParameterIdentificationRunner parameterIdentificationRunner
       )
       {
          _workspace = workspace;
@@ -77,6 +80,7 @@ namespace PKSim.Presentation.Services
          _snapshotTask = snapshotTask;
          _buildingBlockInProjectManager = buildingBlockInProjectManager;
          _lazyLoadTask = lazyLoadTask;
+         _parameterIdentificationRunner = parameterIdentificationRunner;
       }
 
       public void NewProject()
@@ -108,6 +112,12 @@ namespace PKSim.Presentation.Services
 
       private bool shouldCloseProject()
       {
+         if (_parameterIdentificationRunner.IsRunning)
+         {
+            showRunningParameterIdentificationWarnings();
+            return false;
+         }
+
          if (!_workspace.ProjectHasChanged) return true;
 
          var viewResult = _dialogCreator.MessageBoxYesNoCancel(PKSimConstants.UI.SaveProjectChanges);
@@ -120,6 +130,12 @@ namespace PKSim.Presentation.Services
             default:
                return true;
          }
+      }
+
+      private void showRunningParameterIdentificationWarnings()
+      {
+         var parameterIdentifications = _parameterIdentificationRunner.RunningParameterIdentifications.ToList();
+         _dialogCreator.MessageBoxInfo(Captions.ParameterIdentification.ParameterIdentificationsAreRunning(parameterIdentifications.AllNames()));
       }
 
       public bool SaveCurrentProject()
