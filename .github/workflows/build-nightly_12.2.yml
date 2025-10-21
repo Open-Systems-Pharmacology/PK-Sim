@@ -44,11 +44,11 @@ jobs:
     needs: get-latest-commit-timespan
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
     runs-on: windows-latest
-#    env:
-#      ES_USERNAME: ${{ secrets.ES_USERNAME }}
-#      ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
-#      ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
-#      ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
+    env:
+      ES_USERNAME: ${{ secrets.ES_USERNAME }}
+      ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
+      ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
+      ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -72,20 +72,20 @@ jobs:
       - name : Test
         run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
-#      - name: Sign PKSim.exe with CodeSignTool
-#        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
-#        with:
-#          file_path: ./src/PKSim/bin/Debug/net472/PKSim.exe
+      - name: Sign PKSim.exe with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./src/PKSim/bin/Debug/net472/PKSim.exe
           
-#      - name: Sign PKSim.BatchTool.exe with CodeSignTool
-#        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
-#        with:
-#          file_path: ./src/PKSim/bin/Debug/net472/PKSim.BatchTool.exe
+      - name: Sign PKSim.BatchTool.exe with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./src/PKSim/bin/Debug/net472/PKSim.BatchTool.exe
           
-#      - name: Sign PKSim.CLI.exe with CodeSignTool
-#        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
-#        with:
-#          file_path: ./src/PKSim/bin/Debug/net472/PKSim.CLI.exe
+      - name: Sign PKSim.CLI.exe with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./src/PKSim/bin/Debug/net472/PKSim.CLI.exe
           
       - name: Create Setup
         run: |
@@ -99,10 +99,10 @@ jobs:
           7z.exe a pk-sim-r-dependencies.zip -x@"excludedFiles.txt" * -xr!runtimes
           popd
 
-#      - name: Sign PKSim setup with CodeSignTool
-#        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
-#        with:
-#          file_path: ./setup/deploy/PK-Sim.${{ env.APP_VERSION }}.msi
+      - name: Sign PKSim setup with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./setup/deploy/PK-Sim.${{ env.APP_VERSION }}.msi
 
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4
