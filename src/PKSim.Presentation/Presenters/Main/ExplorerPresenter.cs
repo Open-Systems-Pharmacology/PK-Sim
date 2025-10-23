@@ -11,6 +11,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Events;
+using PKSim.Core.Helpers;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Services;
@@ -96,7 +97,10 @@ namespace PKSim.Presentation.Presenters.Main
 
       protected void EditBuildingBlock(IPKSimBuildingBlock buildingBlock)
       {
-         _buildingBlockTask.Edit(buildingBlock);
+         using (ProjectChangedHelper.Scope(_projectRetriever.CurrentProject))
+         {
+            _buildingBlockTask.Edit(buildingBlock);
+         }
       }
    }
 }
