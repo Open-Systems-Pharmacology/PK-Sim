@@ -85,7 +85,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_executing_the_reset_command_for_a_default__expression_parameter : concern_for_ResetExpressionParameterCommand
+   public class When_executing_the_reset_command_for_a_default_expression_parameter : concern_for_ResetExpressionParameterCommand
    {
       private ValueOrigin _databaseValueOrigin;
       private ExpressionProfile _expressionProfile;
