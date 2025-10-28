@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -88,8 +87,6 @@ namespace PKSim.Core
    public class When_executing_the_reset_command_for_a_default_parameter : concern_for_ResetParameterCommand
    {
       private ValueOrigin _databaseValueOrigin;
-      private ExpressionProfile _expressionProfile;
-      private IExpressionProfileUpdater _expressionProfileUpdater;
       
       protected override void Context()
       {
@@ -104,12 +101,7 @@ namespace PKSim.Core
             Source = ValueOriginSources.Database
          };
 
-         _expressionProfile = new ExpressionProfile();
-         _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
-
          A.CallTo(() => _parameterInContainerRepository.ValueOriginFor(_parameterToReset)).Returns(_databaseValueOrigin);
-         A.CallTo(() => _executionContext.BuildingBlockContaining(_parameterToReset)).Returns(_expressionProfile);
-         A.CallTo(() => _executionContext.Resolve<IExpressionProfileUpdater>()).Returns(_expressionProfileUpdater);
       }
 
       protected override void Because()
