@@ -16,6 +16,7 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Events;
+using PKSim.Core.Services;
 using PKSim.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.Main
@@ -49,15 +50,19 @@ namespace PKSim.Presentation.Presenters.Main
       private readonly IApplicationConfiguration _applicationConfiguration;
       private int _numberOfReportsBeingCreated;
       public event EventHandler StatusChanged = delegate { };
-      private readonly ConcurrentDictionary<string, bool> _runningSimulationsDictionary = new ConcurrentDictionary<string, bool>();
       private readonly IEventPublisher _eventPublisher;
-      private int activeSimulationsCount => _runningSimulationsDictionary.Count(x => x.Value);
-
-      public StatusBarPresenter(IStatusBarView view, IApplicationConfiguration applicationConfiguration, IEventPublisher envEventPublisher)
+      private readonly IInteractiveSimulationRunner _interactiveSimulationRunner;
+      private string countMessage => _interactiveSimulationRunner.ActiveSimulationsCount == 1 ? string.Empty : _interactiveSimulationRunner.ActiveSimulationsCount.ToString();
+      public StatusBarPresenter(
+         IStatusBarView view, 
+         IApplicationConfiguration applicationConfiguration, 
+         IEventPublisher envEventPublisher,
+         IInteractiveSimulationRunner interactiveSimulationRunner)
       {
          _view = view;
          _applicationConfiguration = applicationConfiguration;
          _eventPublisher = envEventPublisher;
+         _interactiveSimulationRunner = interactiveSimulationRunner;
       }
 
       public void Initialize()
@@ -142,14 +147,13 @@ namespace PKSim.Presentation.Presenters.Main
             .And.Visible(true);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption($"{_runningSimulationsDictionary.Count} {eventToHandle.Message}")
+            .WithCaption($"{_interactiveSimulationRunner.ActiveSimulationsCount} {eventToHandle.Message}")
             .And.Visible(true);
       }
 
       public void Handle(SimulationRunCanceledEvent eventToHandle)
       {
-         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
-         if (activeSimulationsCount == 0)
+         if (_interactiveSimulationRunner.ActiveSimulationsCount == 0)
          {
             resetCountersAndHideBar();
          }
@@ -157,11 +161,12 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(ProgressingEvent eventToHandle)
       {
+         var message = countMessage;
          update(StatusBarElements.ProgressBar)
             .WithValue(eventToHandle.ProgressPercent);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption($"{activeSimulationsCount} {eventToHandle.Message}");
+            .WithCaption($"{message} {eventToHandle.Message}");
       }
 
       public void Handle(ProgressDoneEvent eventToHandle)
@@ -171,15 +176,13 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
-         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = true;
          setProgressBarVisibility();
       }
 
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
-         _runningSimulationsDictionary[eventToHandle.Simulation.Id] = false;
          setProgressBarVisibility();
-         if (activeSimulationsCount == 0)
+         if (_interactiveSimulationRunner.ActiveSimulationsCount == 0)
          {
             resetCountersAndHideBar();
          }
@@ -187,7 +190,6 @@ namespace PKSim.Presentation.Presenters.Main
 
       private void resetCountersAndHideBar()
       {
-         _runningSimulationsDictionary.Clear();
          setProgressBarVisibility();
          _eventPublisher.PublishEvent(new AllSimulationsFinishedEvent());
       }
@@ -237,13 +239,13 @@ namespace PKSim.Presentation.Presenters.Main
 
       public void Handle(ProgressDoneWithMessageEvent eventToHandle)
       {
-         var message = $"{activeSimulationsCount} {eventToHandle.Message}";
-
-         if (activeSimulationsCount == 0)
+         if (_interactiveSimulationRunner.ActiveSimulationsCount == 0)
          {
             resetCountersAndHideBar();
             return;
          }
+         
+         var message = $"{countMessage} {eventToHandle.Message}";
 
          update(StatusBarElements.ProgressStatus)
             .WithCaption($"{message}");
@@ -264,6 +266,7 @@ namespace PKSim.Presentation.Presenters.Main
 
       private void setProgressBarVisibility()
       {
+         var activeSimulationsCount = _interactiveSimulationRunner.ActiveSimulationsCount;
          if (activeSimulationsCount > 1)
          {
             update(StatusBarElements.ProgressBar)
