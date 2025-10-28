@@ -27,8 +27,6 @@ namespace PKSim.Core.Commands
          resetValueOriginForDefaultParameter(parameter, context);
       }
 
-
-
       private void resetValueOriginForDefaultParameter(IParameter parameter, IExecutionContext context)
       {
          var valueOriginRepository = context.Resolve<IValueOriginRepository>();
