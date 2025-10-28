@@ -2,6 +2,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
@@ -27,6 +28,17 @@ namespace PKSim.Core.Commands
          resetValueOriginForDefaultParameter(parameter, context);
       }
 
+      protected override void UpdateDependenciesOnParameter(IParameter parameter, IExecutionContext context)
+      {
+         base.UpdateDependenciesOnParameter(parameter, context);
+
+         if (context.BuildingBlockContaining(parameter) is not ExpressionProfile expressionProfile) 
+            return;
+         
+         var updateTask = context.Resolve<IExpressionProfileUpdater>();
+         updateTask.SynchronizeAllSimulationSubjectsWithExpressionProfile(expressionProfile);
+      }
+
       private void resetValueOriginForDefaultParameter(IParameter parameter, IExecutionContext context)
       {
          var valueOriginRepository = context.Resolve<IValueOriginRepository>();
@@ -34,7 +46,7 @@ namespace PKSim.Core.Commands
          var valueOrigin = valueOriginRepository.ValueOriginFor(parameter);
          parameter.UpdateValueOriginFrom(valueOrigin);
 
-         //reset only available for trully default parameter with a default value
+         //reset only available for truly default parameter with a default value
          parameter.IsDefault = true;
       }
 

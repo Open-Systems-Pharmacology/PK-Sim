@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
@@ -87,7 +88,9 @@ namespace PKSim.Core
    public class When_executing_the_reset_command_for_a_default_parameter : concern_for_ResetParameterCommand
    {
       private ValueOrigin _databaseValueOrigin;
-
+      private ExpressionProfile _expressionProfile;
+      private IExpressionProfileUpdater _expressionProfileUpdater;
+      
       protected override void Context()
       {
          base.Context();
@@ -100,9 +103,13 @@ namespace PKSim.Core
             Method = ValueOriginDeterminationMethods.InVivo,
             Source = ValueOriginSources.Database
          };
-         
+
+         _expressionProfile = new ExpressionProfile();
+         _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
 
          A.CallTo(() => _parameterInContainerRepository.ValueOriginFor(_parameterToReset)).Returns(_databaseValueOrigin);
+         A.CallTo(() => _executionContext.BuildingBlockContaining(_parameterToReset)).Returns(_expressionProfile);
+         A.CallTo(() => _executionContext.Resolve<IExpressionProfileUpdater>()).Returns(_expressionProfileUpdater);
       }
 
       protected override void Because()
@@ -129,6 +136,12 @@ namespace PKSim.Core
          _parameterToReset.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVivo);
          _parameterToReset.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
       }
+
+      [Observation]
+      public void the_expression_update_task_should_be_used_to_synchronize_simulation_subjects()
+      {
+         A.CallTo(() => _expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(_expressionProfile)).MustHaveHappened();
+      }
    }
 
    public class When_executing_the_inverse_command_of_the_reset_parameter_command : concern_for_ResetParameterCommand
@@ -145,7 +158,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_simply_set_the_value_of_the_parameter_again_using_a_set_command()
+      public void should_set_the_value_of_the_parameter_again_using_a_set_command()
       {
          _parameterToReset.Value.ShouldBeEqualTo(25);
          _parameterToReset.IsFixedValue.ShouldBeTrue();
