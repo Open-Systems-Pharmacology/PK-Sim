@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,6 +95,7 @@ namespace PKSim.Core.Services
 
                raiseEvent(new SimulationOutputSelectionsChangedEvent(simulation));
             }
+
             begin = SystemTime.UtcNow();
             raiseEvent(new SimulationRunStartedEvent(simulation));
             await _simulationRunner.RunSimulation(simulation, _simulationRunOptions, cts.Token);
@@ -138,6 +138,7 @@ namespace PKSim.Core.Services
          if (simulation.Analyses.Count() != 0) return;
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);
       }
+
       private void raiseEvent<T>(T eventToPublish)
       {
          if (_simulationRunOptions.RaiseEvents)
