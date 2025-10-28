@@ -288,7 +288,7 @@ namespace PKSim.Presentation.Presenters.Main
          var enablePopSimulationItems = enabled && !_simulationState.IsIndividual;
          var enableIndividualSimulationItems = enabled && _simulationState.IsIndividual;
          var enabledPKSimSimulationOnlyItems = enabled && !_simulationState.IsImported;
-         var isRunning = enabled && (_simulationState.IsRunning);
+         var isRunning = enabled && _simulationState.IsRunning;
 
          _menuBarItemRepository[MenuBarItemIds.Run].Enabled = !isRunning;
          _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = !isRunning;
