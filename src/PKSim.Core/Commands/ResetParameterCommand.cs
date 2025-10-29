@@ -7,7 +7,7 @@ namespace PKSim.Core.Commands
 {
    public class ResetParameterCommand : EditParameterCommand
    {
-      private double _oldValue;
+      protected double _oldValue;
 
       public ResetParameterCommand(IParameter parameter) : base(parameter)
       {

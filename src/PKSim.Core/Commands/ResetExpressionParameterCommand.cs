@@ -1,3 +1,4 @@
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -19,5 +20,10 @@ public class ResetExpressionParameterCommand : ResetParameterCommand
 
       var updateTask = context.Resolve<IExpressionProfileUpdater>();
       updateTask.SynchronizeAllSimulationSubjectsWithExpressionProfile(expressionProfile);
+   }
+
+   protected override ICommand<IExecutionContext> GetInverseCommand(IExecutionContext context)
+   {
+      return new SetExpressionProfileValueCommand(_parameter, _oldValue).AsInverseFor(this);
    }
 }
