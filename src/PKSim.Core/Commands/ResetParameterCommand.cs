@@ -7,7 +7,7 @@ namespace PKSim.Core.Commands
 {
    public class ResetParameterCommand : EditParameterCommand
    {
-      private double _oldValue;
+      protected double _oldValue;
 
       public ResetParameterCommand(IParameter parameter) : base(parameter)
       {
@@ -34,7 +34,7 @@ namespace PKSim.Core.Commands
          var valueOrigin = valueOriginRepository.ValueOriginFor(parameter);
          parameter.UpdateValueOriginFrom(valueOrigin);
 
-         //reset only available for trully default parameter with a default value
+         //reset only available for truly default parameter with a default value
          parameter.IsDefault = true;
       }
 

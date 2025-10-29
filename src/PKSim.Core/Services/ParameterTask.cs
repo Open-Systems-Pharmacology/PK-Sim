@@ -403,6 +403,9 @@ namespace PKSim.Core.Services
 
       public ICommand ResetParameter(IParameter parameter)
       {
+         if (parameter.IsExpressionProfile())
+            return new ResetExpressionParameterCommand(parameter).Run(_executionContext);
+
          return new ResetParameterCommand(parameter).Run(_executionContext);
       }
 

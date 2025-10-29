@@ -1,4 +1,4 @@
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -7,10 +7,11 @@ using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Commands;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
+using PKSim.Core.Services;
 
 namespace PKSim.Core
 {
-   public abstract class concern_for_ResetParameterCommand : ContextSpecification<ResetParameterCommand>
+   public abstract class concern_for_ResetExpressionParameterCommand : ContextSpecification<ResetExpressionParameterCommand>
    {
       protected IParameter _parameterToReset;
       protected IExecutionContext _executionContext;
@@ -38,11 +39,11 @@ namespace PKSim.Core
          _parameterInContainerRepository = A.Fake<IValueOriginRepository>();
          A.CallTo(() => _executionContext.Resolve<IValueOriginRepository>()).Returns(_parameterInContainerRepository);
 
-         sut = new ResetParameterCommand(_parameterToReset);
+         sut = new ResetExpressionParameterCommand(_parameterToReset);
       }
    }
 
-   public class When_executing_the_reset_command_for_a_non_default_parameter : concern_for_ResetParameterCommand
+   public class When_executing_the_reset_command_for_a_non_default_expression_parameter : concern_for_ResetExpressionParameterCommand
    {
       protected override void Context()
       {
@@ -84,10 +85,12 @@ namespace PKSim.Core
       }
    }
 
-   public class When_executing_the_reset_command_for_a_default_parameter : concern_for_ResetParameterCommand
+   public class When_executing_the_reset_command_for_a_default_expression_parameter : concern_for_ResetExpressionParameterCommand
    {
       private ValueOrigin _databaseValueOrigin;
-      
+      private ExpressionProfile _expressionProfile;
+      private IExpressionProfileUpdater _expressionProfileUpdater;
+
       protected override void Context()
       {
          base.Context();
@@ -101,7 +104,12 @@ namespace PKSim.Core
             Source = ValueOriginSources.Database
          };
 
+         _expressionProfile = new ExpressionProfile();
+         _expressionProfileUpdater = A.Fake<IExpressionProfileUpdater>();
+
          A.CallTo(() => _parameterInContainerRepository.ValueOriginFor(_parameterToReset)).Returns(_databaseValueOrigin);
+         A.CallTo(() => _executionContext.BuildingBlockContaining(_parameterToReset)).Returns(_expressionProfile);
+         A.CallTo(() => _executionContext.Resolve<IExpressionProfileUpdater>()).Returns(_expressionProfileUpdater);
       }
 
       protected override void Because()
@@ -128,9 +136,15 @@ namespace PKSim.Core
          _parameterToReset.ValueOrigin.Method.ShouldBeEqualTo(ValueOriginDeterminationMethods.InVivo);
          _parameterToReset.ValueOrigin.Source.ShouldBeEqualTo(ValueOriginSources.Database);
       }
+
+      [Observation]
+      public void the_expression_update_task_should_be_used_to_synchronize_simulation_subjects()
+      {
+         A.CallTo(() => _expressionProfileUpdater.SynchronizeAllSimulationSubjectsWithExpressionProfile(_expressionProfile)).MustHaveHappened();
+      }
    }
 
-   public class When_executing_the_inverse_command_of_the_reset_parameter_command : concern_for_ResetParameterCommand
+   public class When_executing_the_inverse_command_of_the_reset_expression_parameter_command : concern_for_ResetExpressionParameterCommand
    {
       protected override void Context()
       {
