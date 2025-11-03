@@ -560,4 +560,24 @@ namespace PKSim.Presentation
          _view.SelectedParameters.ShouldOnlyContainInOrder(_parameterDTO);
       }
    }
+
+   public class When_the_multi_parameter_edit_presenter_resolves_a_path : concern_for_MultiParameterEditPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _view.SelectedParameters = new[] { _parameterDTO, };
+      }
+
+      protected override void Because()
+      {
+         sut.PathFor(_parameterDTO);
+      }
+
+      [Observation]
+      public void the_parameter_task_is_used_to_resolve_the_path()
+      {
+         A.CallTo(() => _parameterTask.PathFor(_parameter)).MustHaveHappened();
+      }
+   }
 }

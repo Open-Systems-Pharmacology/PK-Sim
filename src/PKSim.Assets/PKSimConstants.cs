@@ -1204,6 +1204,7 @@ namespace PKSim.Assets
          public static string CompareBuildingBlocks(string buildingBlockType) => $"Compare {buildingBlockType}s";
 
          public static string AddObservedDataToSimulation(string simulationName) => $"Add to {ObjectTypes.Simulation} '{simulationName}'";
+         public static readonly string CopyPath = "Copy Path";
       }
 
       public static class QualificationSteps
