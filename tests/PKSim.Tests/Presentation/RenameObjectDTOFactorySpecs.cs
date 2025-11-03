@@ -4,8 +4,10 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Validation;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Presentation.DTO;
 using RenameObjectDTOFactory = PKSim.Presentation.DTO.Core.RenameObjectDTOFactory;
 
 namespace PKSim.Presentation
@@ -24,6 +26,40 @@ namespace PKSim.Presentation
 
          _project = new PKSimProject();
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
+      }
+   }
+
+   public class When_creating_a_rename_DTO_for_a_simulation : concern_for_RenameObjectDTOFactory
+   {
+      private RenameObjectDTO _dto;
+      private IndividualSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IndividualSimulation>();
+         A.CallTo(() => _simulation.Name).Returns("simulation");
+         A.CallTo(() => _simulation.CompoundNames).ReturnsLazily(() => new []{"compound"});
+      }
+
+      protected override void Because()
+      {
+         _dto = sut.CreateFor(_simulation);
+      }
+
+      [Observation]
+      public void the_dto_should_be_created_for_simulation()
+      {
+         _dto.ShouldBeAnInstanceOf<RenamePKSimSimulationDTO>();
+      }
+
+      [Observation]
+      public void the_dto_should_be_invalid_when_simulation_shares_name_with_compound()
+      {
+         _dto.Name = "newName";
+         _dto.IsValid().ShouldBeTrue();
+         _dto.Name = "compound";
+         _dto.IsValid().ShouldBeFalse();
       }
    }
 
