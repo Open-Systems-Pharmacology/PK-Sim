@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows;
 using DevExpress.Utils;
-using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
-using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using DevExpress.XtraLayout.Utils;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding.DevExpress;
@@ -60,21 +56,7 @@ namespace PKSim.UI.Views.Parameters
          gridView.EndGrouping += updateGrouping;
          CustomSortEnabled = true;
          gridView.SelectionChanged += (o, e) => OnEvent(_presenter.SelectedParametersChanged);
-         gridView.PopupMenuShowing += (o, e) => OnEvent(() => OnPopupMenuShowing(o, e));
       }
-
-      private void OnPopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
-      {
-         if (e.HitInfo.HitTest != GridHitTest.RowIndicator || !e.Menu.Items.Any() || gridView.GetSelectedRows().Length != 1)
-            return;
-
-         e.Menu.Items.Add(copyPathMenuItem());
-      }
-
-      private DXMenuItem copyPathMenuItem() =>
-         new DXMenuItem(PKSimConstants.MenuNames.CopyPath, (s, args) => copyPath(), ApplicationIcons.Copy);
-
-      private void copyPath() => Clipboard.SetText(_presenter.PathFor(_gridViewBinder.FocusedElement));
 
       private void updateGrouping(object sender, EventArgs e)
       {
@@ -149,8 +131,8 @@ namespace PKSim.UI.Views.Parameters
 
       private void initRepositories()
       {
-         _repositoryForStandardParameter = new RepositoryItemTextEdit { ReadOnly = true, Enabled = false };
-         _progressBarRepository = new RepositoryItemProgressBar { Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true };
+         _repositoryForStandardParameter = new RepositoryItemTextEdit {ReadOnly = true, Enabled = false};
+         _progressBarRepository = new RepositoryItemProgressBar {Minimum = 0, Maximum = 100, PercentView = true, ShowTitle = true};
          _repositoryForStandardParameter.CustomDisplayText += (o, e) => { e.DisplayText = string.Empty; };
       }
 
@@ -334,7 +316,6 @@ namespace PKSim.UI.Views.Parameters
       {
          gridParameters.RefreshDataSource();
       }
-
       //adding the padding from the sometimes hidden item to the height of the gridview as it seems to play a role
       public int OptimalHeight => gridView.OptimalHeight + layoutItemScaling.Padding.All;
 
