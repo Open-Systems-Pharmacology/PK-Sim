@@ -3,6 +3,8 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Model.PopulationAnalyses;
@@ -83,7 +85,7 @@ namespace PKSim.Core
          _project.AddBuildingBlock(_populationSimulation2);
          _project.AddBuildingBlock(_referenceSimulation);
 
-         _snapshotContext = new SnapshotContext(_project, ProjectVersions.V10);
+         _snapshotContext = new SnapshotContext(_project, SnapshotVersions.V10);
          return _completed;
       }
    }

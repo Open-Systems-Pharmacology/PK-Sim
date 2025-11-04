@@ -4,6 +4,9 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
@@ -93,7 +96,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _result =  await sut.MapToModel(null, new SimulationAnalysisContext(null, new SnapshotContext()));
+         _result =  await sut.MapToModel(null, new SimulationAnalysisContext(null, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -111,7 +114,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         _simulationAnalysisContext = new SimulationAnalysisContext(new []{_observedDataRepository }, new SnapshotContext());
+         _simulationAnalysisContext = new SimulationAnalysisContext(new []{_observedDataRepository }, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
          _snapshot = await sut.MapToSnapshot(_observedDataCollection);
       }
 

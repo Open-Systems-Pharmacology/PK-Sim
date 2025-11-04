@@ -1,13 +1,16 @@
-﻿using System.Threading.Tasks;
-using FakeItEasy;
+﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using PKSim.Core.Snapshots.Services;
+using System.Threading.Tasks;
+using OSPSuite.Core.Snapshots;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
@@ -103,7 +106,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newFormulation = await sut.MapToModel(_snapshot, new SnapshotContext()); 
+         _newFormulation = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)); 
       }
 
       [Observation]

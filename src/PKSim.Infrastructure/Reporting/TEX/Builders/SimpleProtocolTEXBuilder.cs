@@ -24,7 +24,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
          table.AddIs(PKSimConstants.UI.ApplicationType, simpleProtocol.ApplicationType.DisplayName);
          table.AddIs(PKSimConstants.UI.DosingInterval, simpleProtocol.DosingInterval.DisplayName);
          var parameters = new ParameterList(PKSimConstants.UI.Parameters, simpleProtocol.AllParameters().Where(simpleProtocol.ParameterShouldBeExported));
-         return new object[] {table, parameters};
+         return new object[] { table, parameters };
       }
    }
 }

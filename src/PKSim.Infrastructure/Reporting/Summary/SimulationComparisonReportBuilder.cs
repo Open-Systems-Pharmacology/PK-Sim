@@ -5,7 +5,7 @@ using PKSim.Core.Reporting;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {
-   public abstract class SimulationComparisonReportBuilder<T,S>: ReportBuilder<T> where T : ISimulationComparison<S> where S : Simulation
+   public abstract class SimulationComparisonReportBuilder<T, S> : ReportBuilder<T> where T : ISimulationComparison<S> where S : Simulation
    {
       protected override void FillUpReport(T comparison, ReportPart reportPart)
       {
@@ -17,11 +17,11 @@ namespace PKSim.Infrastructure.Reporting.Summary
       }
    }
 
-   public class IndividualSimulationComparisonReportBuilder : SimulationComparisonReportBuilder<IndividualSimulationComparison,IndividualSimulation>
+   public class IndividualSimulationComparisonReportBuilder : SimulationComparisonReportBuilder<IndividualSimulationComparison, IndividualSimulation>
    {
    }
 
-   public class PopulationSimulationComparisonReportBuilder : SimulationComparisonReportBuilder<PopulationSimulationComparison,PopulationSimulation>
+   public class PopulationSimulationComparisonReportBuilder : SimulationComparisonReportBuilder<PopulationSimulationComparison, PopulationSimulation>
    {
       protected override void FillUpReport(PopulationSimulationComparison simulationComparison, ReportPart reportPart)
       {

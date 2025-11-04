@@ -1,12 +1,11 @@
-﻿using PKSim.Assets;
+﻿using OSPSuite.Core.Domain;
+using PKSim.Assets;
 
-namespace PKSim.Core.Model
+namespace PKSim.Core.Model;
+
+public class RunSimulationQualificationStep : IQualificationStep
 {
-   public class RunSimulationQualificationStep : IQualificationStep
-   {
-      public Simulation Simulation { get; set; }
+   public Simulation Simulation { get; set; }
 
-      public string Display => PKSimConstants.QualificationSteps.RunSimulation(Simulation.Name);
-
-   }
+   public string Display => PKSimConstants.QualificationSteps.RunSimulation(Simulation.Name);
 }

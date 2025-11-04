@@ -20,7 +20,6 @@ task :cover do
   targetProjects = [
 	"PKSim.Tests.csproj",
 	"PKSim.R.Tests.csproj",
-	"PKSim.Matlab.Tests.csproj",
 	"PKSim.UI.Tests.csproj",
 	];
 
@@ -113,7 +112,7 @@ task :postclean do |t, args|
 	packages_dir =  src_dir_for("Debug")
 
 	all_users_dir = ENV['ALLUSERSPROFILE']
-	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '12.2')
+	all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '13.0')
 
 	copy_dependencies solution_dir,  all_users_application_dir do
 		copy_dimensions_xml
@@ -142,7 +141,7 @@ end
 private
 
 def relative_src_dir_for(configuration)
-	File.join( 'src', 'PKSim', 'bin', configuration, 'net472')
+	File.join( 'src', 'PKSim', 'bin', configuration, 'net8.0-windows')
 end
 
 def src_dir_for(configuration)

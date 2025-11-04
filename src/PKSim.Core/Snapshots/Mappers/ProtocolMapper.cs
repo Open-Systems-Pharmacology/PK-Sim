@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -8,7 +10,7 @@ using SnapshotProtocol = PKSim.Core.Snapshots.Protocol;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class ProtocolMapper : ParameterContainerSnapshotMapperBase<ModelProtocol, SnapshotProtocol>
+   public class ProtocolMapper : ParameterContainerSnapshotMapperBase<ModelProtocol, SnapshotProtocol, SnapshotContext>
    {
       private readonly IProtocolFactory _protocolFactory;
       private readonly SchemaMapper _schemaMapper;
@@ -91,5 +93,7 @@ namespace PKSim.Core.Snapshots.Mappers
          simpleProtocol.TargetCompartment = snapshotProtocol.TargetCompartment;
          return Task.FromResult<ModelProtocol>(simpleProtocol);
       }
+
+      protected override bool ShouldExportToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
    }
 }

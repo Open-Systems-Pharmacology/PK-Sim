@@ -105,6 +105,7 @@ namespace PKSim.Core.Services
          {
             volumes[i] = volumes[i] * weightRatio;
          }
+
          setOrganVolumesTo(individual, volumes);
       }
 
@@ -285,6 +286,7 @@ namespace PKSim.Core.Services
          {
             transformedWeights[i] = Math.Pow(10, organWeightsNonFat[i]);
          }
+
          return transformedWeights;
       }
 
@@ -327,6 +329,7 @@ namespace PKSim.Core.Services
          {
             constants[i] = new SimplexConstant(Math.Log10(values[i]), 1);
          }
+
          return constants;
       }
 
@@ -361,6 +364,7 @@ namespace PKSim.Core.Services
          {
             p *= props[i];
          }
+
          return p;
       }
 
@@ -448,6 +452,7 @@ namespace PKSim.Core.Services
          {
             organVolumes[i] = organWeights[i] / _organDensity[i];
          }
+
          return organVolumes;
       }
 

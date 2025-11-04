@@ -234,7 +234,7 @@ namespace PKSim.Presentation.Services
          if (formula == null)
             return null;
 
-         var referenceIndex = formula.ObjectReferences.Select(x => x.Object).IndexOf(reference);
+         var referenceIndex = formula.ObjectReferences.Select(x => x.Object).ToList().IndexOf(reference);
          return referenceIndex >= 0 ? formula.ObjectPaths[referenceIndex] : null;
       }
 

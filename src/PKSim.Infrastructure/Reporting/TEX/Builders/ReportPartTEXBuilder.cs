@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Items;
@@ -57,6 +56,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             {
                dataRow[i + 1] = row.Value[i];
             }
+
             table.Rows.Add(dataRow);
          }
 

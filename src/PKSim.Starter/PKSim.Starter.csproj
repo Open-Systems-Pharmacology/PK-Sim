@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">
+      <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
+      <Private></Private>
+    </ProjectReference>
+    <ProjectReference Include="..\PKSim.Infrastructure\PKSim.Infrastructure.csproj" />
+    <ProjectReference Include="..\PKSim.Presentation\PKSim.Presentation.csproj" />
+    <ProjectReference Include="..\PKSim.UI\PKSim.UI.csproj">
+      <Private></Private>
+      <CopyLocalSatelliteAssemblies></CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.65" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.65" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.65" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.65" />
+  </ItemGroup>
+
+</Project>

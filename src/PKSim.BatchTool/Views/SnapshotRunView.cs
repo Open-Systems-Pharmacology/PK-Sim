@@ -1,13 +1,13 @@
 ﻿using System.Drawing;
 using DevExpress.XtraBars.Navigation;
 using OSPSuite.Assets;
+using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.DataBinding;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Collections;
 using PKSim.BatchTool.Presenters;
-using PKSim.CLI.Core.RunOptions;
 
 namespace PKSim.BatchTool.Views
 {
@@ -86,7 +86,7 @@ namespace PKSim.BatchTool.Views
             return;
 
          //add some extra padding 
-         layoutItemPage.AdjustControlHeight( height + layoutItemPage.Padding.All + page.BackgroundPadding.All + 10, layoutControl);
+         layoutItemPage.AdjustControlHeight(height + layoutItemPage.Padding.All + page.BackgroundPadding.All + 10, layoutControl);
       }
 
       private void initView(IResizableView view)

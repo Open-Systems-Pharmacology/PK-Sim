@@ -1,4 +1,6 @@
-﻿namespace PKSim.Core.Snapshots
+﻿using OSPSuite.Core.Snapshots;
+
+namespace PKSim.Core.Snapshots
 {
    public class Observer : SnapshotBase
    {

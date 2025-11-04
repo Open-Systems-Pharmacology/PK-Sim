@@ -4,12 +4,15 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Mappers;
+using PKSim.Core.Snapshots.Services;
 using CompoundProcess = PKSim.Core.Snapshots.CompoundProcess;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core
 {
@@ -155,7 +158,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newEnzymaticProcess = await sut.MapToModel(_snapshot, new SnapshotContext()) as EnzymaticProcess;
+         _newEnzymaticProcess = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as EnzymaticProcess;
       }
 
       [Observation]
@@ -210,7 +213,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newEnzymaticProcess = await sut.MapToModel(_snapshot, new SnapshotContext()) as EnzymaticProcessWithSpecies;
+         _newEnzymaticProcess = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)) as EnzymaticProcessWithSpecies;
       }
 
     [Observation]

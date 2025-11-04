@@ -3,14 +3,15 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
-using Parameter = PKSim.Core.Snapshots.Parameter;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 using TableFormula = OSPSuite.Core.Domain.Formulas.TableFormula;
-using ValueOrigin = PKSim.Core.Snapshots.ValueOrigin;
 
 namespace PKSim.Core
 {
@@ -24,7 +25,6 @@ namespace PKSim.Core
       protected Alternative _snapshot;
       protected ParameterAlternativeWithSpecies _alternativeWithSpecies;
       protected Species _species;
-      protected ValueOrigin _snapshotValueOrigin;
       protected ICompoundAlternativeTask _compoundAlternativeTask;
 
       protected override Task Context()
@@ -36,7 +36,7 @@ namespace PKSim.Core
 
          sut = new AlternativeMapper(_parameterMapper, _parameterAlternativeFactory, _compoundAlternativeTask, _speciesRepository);
 
-         _parameterGroup = new ParameterAlternativeGroup {Name = "ParameterGroup"};
+         _parameterGroup = new ParameterAlternativeGroup { Name = "ParameterGroup" };
          _alternative = new ParameterAlternative
          {
             Name = "Alternative1",
@@ -44,7 +44,7 @@ namespace PKSim.Core
             Description = "Hello"
          };
 
-         _species = new Species {Name = "Hello"};
+         _species = new Species { Name = "Hello" };
          _alternativeWithSpecies = new ParameterAlternativeWithSpecies
          {
             Name = "Alternative2",
@@ -54,7 +54,7 @@ namespace PKSim.Core
          };
 
          _parameterGroup.AddAlternative(_alternativeWithSpecies);
-         A.CallTo(() => _speciesRepository.All()).Returns(new[] {_species});
+         A.CallTo(() => _speciesRepository.All()).Returns(new[] { _species });
 
 
          return _completed;
@@ -128,15 +128,15 @@ namespace PKSim.Core
          _snapshot = await sut.MapToSnapshot(_alternativeWithSpecies);
          var newAlternativeWithSpecies = new ParameterAlternativeWithSpecies();
          A.CallTo(() => _parameterAlternativeFactory.CreateAlternativeFor(_parameterGroup)).Returns(newAlternativeWithSpecies);
-         _snapshotParameter = new Parameter {Name = "P1"};
+         _snapshotParameter = new Parameter { Name = "P1" };
          _alternativeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(_snapshotParameter.Name);
          newAlternativeWithSpecies.Add(_alternativeParameter);
-         _snapshot.Parameters = new[] {_snapshotParameter};
+         _snapshot.Parameters = new[] { _snapshotParameter };
       }
 
       protected override async Task Because()
       {
-         _newAlternativeWithSpecies = await sut.MapToModel(_snapshot, new AlternativeMapperSnapshotContext(_parameterGroup, new SnapshotContext())) as ParameterAlternativeWithSpecies;
+         _newAlternativeWithSpecies = await sut.MapToModel(_snapshot, new AlternativeMapperSnapshotContext(_parameterGroup, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))) as ParameterAlternativeWithSpecies;
       }
 
       [Observation]
@@ -170,16 +170,16 @@ namespace PKSim.Core
          A.CallTo(() => _parameterAlternativeFactory.CreateAlternativeFor(_parameterGroup)).Returns(newAlternative);
          _parameterGroup.Name = CoreConstants.Groups.COMPOUND_SOLUBILITY;
 
-         _snapshotParameter = new Parameter {Name = CoreConstants.Parameters.SOLUBILITY_TABLE};
+         _snapshotParameter = new Parameter { Name = CoreConstants.Parameters.SOLUBILITY_TABLE };
          _alternativeParameter = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(_snapshotParameter.Name);
          _alternativeParameter.Formula = new TableFormula();
          newAlternative.Add(_alternativeParameter);
-         _snapshot.Parameters = new[] {_snapshotParameter};
+         _snapshot.Parameters = new[] { _snapshotParameter };
       }
 
       protected override async Task Because()
       {
-         _newAlternative = await sut.MapToModel(_snapshot, new AlternativeMapperSnapshotContext(_parameterGroup, new SnapshotContext()));
+         _newAlternative = await sut.MapToModel(_snapshot, new AlternativeMapperSnapshotContext(_parameterGroup, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]

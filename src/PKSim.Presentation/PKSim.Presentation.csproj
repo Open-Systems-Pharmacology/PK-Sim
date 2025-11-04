@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -10,7 +10,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="12.2.17" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.1" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.2.17" />
-    <PackageReference Include="OSPSuite.Core" Version="12.2.17" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.65" />
+    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.3" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.65" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.65" />
   </ItemGroup>
 
   <ItemGroup>

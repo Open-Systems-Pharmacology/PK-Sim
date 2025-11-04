@@ -9,6 +9,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Chart;
@@ -27,13 +29,15 @@ using ModelConfiguration = PKSim.Core.Model.ModelConfiguration;
 using ModelOutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
 using OutputSchema = OSPSuite.Core.Domain.OutputSchema;
-using OutputSelections = PKSim.Core.Snapshots.OutputSelections;
+using OutputSchemaMapper = PKSim.Core.Snapshots.Mappers.OutputSchemaMapper;
+using OutputSelections = OSPSuite.Core.Snapshots.OutputSelections;
 using PopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
 using Protocol = PKSim.Core.Model.Protocol;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
-using SnapshotOutputMapping = PKSim.Core.Snapshots.OutputMapping;
+using SnapshotOutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
 using SolverSettings = OSPSuite.Core.Domain.SolverSettings;
+using SolverSettingsMapper = PKSim.Core.Snapshots.Mappers.SolverSettingsMapper;
 
 namespace PKSim.Core
 {
@@ -563,7 +567,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(run: true, new SnapshotContext(_project, ProjectVersions.Current)));
+         _simulation = await sut.MapToModel(_snapshot, new SimulationContext(run: true, new SnapshotContext(_project, SnapshotVersions.Current)));
       }
 
       [Observation]
@@ -695,7 +699,7 @@ namespace PKSim.Core
             .Invokes(x => _context = x.GetArgument<SimulationAnalysisContext>(1))
             .Returns(_populationSimulationAnalysisChart);
 
-         _snapshotSimulationContext = new SimulationContext(run: false, new SnapshotContext(_project, 10));
+         _snapshotSimulationContext = new SimulationContext(run: false, new SnapshotContext(_project, SnapshotVersions.V10));
       }
 
       protected override async Task Because()

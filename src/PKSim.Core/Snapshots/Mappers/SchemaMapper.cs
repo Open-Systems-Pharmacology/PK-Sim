@@ -5,6 +5,8 @@ using PKSim.Assets;
 using PKSim.Core.Model;
 using ModelSchema = PKSim.Core.Model.Schema;
 using SnapshotSchema = PKSim.Core.Snapshots.Schema;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Snapshots.Mappers;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -26,11 +28,11 @@ namespace PKSim.Core.Snapshots.Mappers
          return snapshot;
       }
 
-      protected override bool ShouldExportParameterToSnapshot(IParameter parameter)
+      protected override bool ShouldExportToSnapshot(IParameter parameter)
       {
          //we want to ensure that start time and end time are always exported
          return parameter.NameIsOneOf(Constants.Parameters.START_TIME, CoreConstants.Parameters.NUMBER_OF_REPETITIONS,
-            CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS) || base.ShouldExportParameterToSnapshot(parameter);
+            CoreConstants.Parameters.TIME_BETWEEN_REPETITIONS) || parameter.ShouldExportToSnapshot();
       }
 
       public override async Task<ModelSchema> MapToModel(SnapshotSchema snapshot, SnapshotContext snapshotContext)

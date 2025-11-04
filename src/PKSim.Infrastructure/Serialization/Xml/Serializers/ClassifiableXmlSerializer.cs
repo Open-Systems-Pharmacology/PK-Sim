@@ -1,4 +1,5 @@
-﻿using PKSim.Core.Model;
+﻿using OSPSuite.Core.Domain;
+using PKSim.Core.Model;
 using OSPSuite.Core.Serialization.Xml;
 
 namespace PKSim.Infrastructure.Serialization.Xml.Serializers

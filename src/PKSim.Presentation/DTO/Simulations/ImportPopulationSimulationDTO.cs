@@ -74,7 +74,7 @@ namespace PKSim.Presentation.DTO.Simulations
                return CreateRule.For<ImportPopulationSimulationDTO>()
                   .Property(item => item.PopulationFile)
                   .WithRule((item, file) => item.PopulationImportMode != PopulationImportMode.File || FileHelper.FileExists(file))
-                  .WithError((item, file) => PKSimConstants.Error.FileDoesNotExist(file));
+                  .WithError((item, file) => OSPSuite.Assets.Error.FileDoesNotExist(file));
             }
          }
 

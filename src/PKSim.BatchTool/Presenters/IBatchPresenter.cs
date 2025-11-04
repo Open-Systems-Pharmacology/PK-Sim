@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OSPSuite.Core.Extensions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using PKSim.BatchTool.Views;
-using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool.Presenters
 {

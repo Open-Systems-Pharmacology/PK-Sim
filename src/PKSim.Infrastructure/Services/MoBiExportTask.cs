@@ -33,6 +33,7 @@ namespace PKSim.Infrastructure.Services
       private readonly IJournalRetriever _journalRetriever;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
+      private readonly IModelCoreSimulationSnapshotUpdater _modelCoreSimulationSnapshotUpdater;
 
       public MoBiExportTask(
          ISimulationConfigurationTask simulationConfigurationTask,
@@ -43,7 +44,11 @@ namespace PKSim.Infrastructure.Services
          IDialogCreator dialogCreator,
          ISimulationPersistor simulationPersistor,
          IProjectRetriever projectRetriever,
-         IObjectIdResetter objectIdResetter, IJournalRetriever journalRetriever, IApplicationSettings applicationSettings, IStartableProcessFactory startableProcessFactory)
+         IObjectIdResetter objectIdResetter,
+         IJournalRetriever journalRetriever,
+         IApplicationSettings applicationSettings,
+         IStartableProcessFactory startableProcessFactory,
+         IModelCoreSimulationSnapshotUpdater modelCoreSimulationSnapshotUpdater)
       {
          _simulationConfigurationTask = simulationConfigurationTask;
          _simulationMapper = simulationMapper;
@@ -57,6 +62,7 @@ namespace PKSim.Infrastructure.Services
          _journalRetriever = journalRetriever;
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
+         _modelCoreSimulationSnapshotUpdater = modelCoreSimulationSnapshotUpdater;
       }
 
       public void StartWith(Simulation simulation)
@@ -102,6 +108,13 @@ namespace PKSim.Infrastructure.Services
          throw new PKSimException(PKSimConstants.Error.MoBiNotFound);
       }
 
+      public string Serialize(SimulationTransfer transfer)
+      {
+         updateRepresentationInfo(transfer.Simulation);
+         updateFormulaIdIn(transfer.Simulation);
+         return _simulationPersistor.Serialize(transfer);
+      }
+
       private void exportSimulationToFile(Simulation simulation, string moBiFile)
       {
          _lazyLoadTask.Load(simulation);
@@ -126,6 +139,8 @@ namespace PKSim.Infrastructure.Services
             simulationTransfer.AllObservedData = simulation.UsedObservedData.Select(o => currentProject.ObservedDataBy(o.Id)).ToList();
             simulationTransfer.Favorites = currentProject.Favorites;
          }
+
+         _modelCoreSimulationSnapshotUpdater.AddSnapshotsToModelCoreSimulation(simulation, moBiSimulation);
 
          _simulationPersistor.Save(simulationTransfer, moBiFile);
       }

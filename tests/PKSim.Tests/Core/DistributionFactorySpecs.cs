@@ -33,7 +33,7 @@ namespace PKSim.Core
          _reportGenerator = A.Fake<IReportGenerator>();
          _originData = A.Fake<OriginData>();
          A.CallTo(() => _reportGenerator.StringReportFor(_originData)).Returns("Origin Data");
-         A.CallTo(() => _repository.All()).Returns(new[] {_distributionSpecFactory});
+         A.CallTo(() => _repository.All()).Returns(new[] { _distributionSpecFactory });
          sut = new DistributionFormulaFactory(_repository, _reportGenerator);
       }
    }

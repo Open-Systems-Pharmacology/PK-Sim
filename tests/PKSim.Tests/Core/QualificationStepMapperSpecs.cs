@@ -4,6 +4,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
@@ -25,7 +27,7 @@ namespace PKSim.Core
          sut = new QualificationStepMapper(_logger);
 
          _project = new PKSimProject();
-         _snapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
+         _snapshotContext = new SnapshotContext(_project, SnapshotVersions.Current);
          return _completed;
       }
    }

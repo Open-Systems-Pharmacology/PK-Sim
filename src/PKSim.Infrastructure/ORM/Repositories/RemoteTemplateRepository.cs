@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Exceptions;
@@ -14,7 +15,6 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.Infrastructure.ORM.Repositories
@@ -116,7 +116,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
       protected override void DoStart()
       {
          var snapshots = Task.Run(() => _jsonSerializer.Deserialize<RemoteTemplates>(_configuration.RemoteTemplateSummaryPath)).Result;
-         
+
          snapshots.Templates.Each(x =>
          {
             var (version, repositoryUrl) = extractDataFromUrl(x.Url);
@@ -140,15 +140,15 @@ namespace PKSim.Infrastructure.ORM.Repositories
 
          var segments = new Uri(url).Segments;
          //The url does not respect the expected format. Returned the default raw url
-         if(segments.Length != 5)
+         if (segments.Length != 5)
             return invalidUrl;
 
          var versionSegment = segments[3];
-         if(!versionSegment.StartsWith("v") || !versionSegment.EndsWith("/"))
+         if (!versionSegment.StartsWith("v") || !versionSegment.EndsWith("/"))
             return invalidUrl;
 
          //Removes the v at the beginning end the "/" at the ned
-         var version = versionSegment.Substring(1, versionSegment.Length -2);
+         var version = versionSegment.Substring(1, versionSegment.Length - 2);
          return (version, $"https://github.com/{segments[1]}{segments[2]}tree/{versionSegment}");
       }
 

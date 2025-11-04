@@ -1,17 +1,16 @@
 ﻿using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Core.Snapshots.Services;
 using PKSim.Presentation.Presenters.Snapshots;
-using PKSim.Presentation.Views.Snapshots;
 
 namespace PKSim.Presentation
 {
@@ -25,7 +24,7 @@ namespace PKSim.Presentation
       protected IEventPublisher _eventPublisher;
       protected ILogPresenter _logPresenter;
       protected IRegistrationTask _registrationTask;
-      protected IQualiticationPlanRunner _qualificationPlanRunner;
+      protected IQualificationPlanRunner _qualificationPlanRunner;
 
       protected override void Context()
       {
@@ -37,7 +36,7 @@ namespace PKSim.Presentation
          _eventPublisher = A.Fake<IEventPublisher>();
          _logPresenter = A.Fake<ILogPresenter>();
          _registrationTask = A.Fake<IRegistrationTask>();
-         _qualificationPlanRunner = A.Fake<IQualiticationPlanRunner>();
+         _qualificationPlanRunner = A.Fake<IQualificationPlanRunner>();
 
          sut = new LoadProjectFromSnapshotPresenter(
             _view, 

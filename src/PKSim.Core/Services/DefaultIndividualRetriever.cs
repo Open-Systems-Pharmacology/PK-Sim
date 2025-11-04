@@ -1,4 +1,6 @@
-﻿using OSPSuite.Utility.Collections;
+﻿using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
@@ -57,7 +59,7 @@ namespace PKSim.Core.Services
             };
 
             //We do not need to pass any valid snapshot context in this case.
-            var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext()).Result;
+            var originData = _originDataMapper.MapToModel(originDataSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
             _individualCacheProSpecies[speciesPopulation] = _individualFactory.CreateStandardFor(originData);
          }
 

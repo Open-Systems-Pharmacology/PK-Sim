@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using PKSim.Core.Reporting;
-using PKSim.Presentation.Mappers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Presentation.Core;
+using PKSim.Core.Reporting;
+using PKSim.Presentation.Mappers;
 
 namespace PKSim.Presentation
 {
@@ -16,7 +16,6 @@ namespace PKSim.Presentation
       }
    }
 
-   
    public class When_converting_a_report_part_with_a_title_and_content : concern_for_ReportPartToToolTipPartsMapper
    {
       private ReportPart _reportPart;
@@ -33,6 +32,7 @@ namespace PKSim.Presentation
       {
          _result = sut.MapFrom(_reportPart);
       }
+
       [Observation]
       public void should_return_only_one_tool_tip_part_with_the_accurate_title_and_content()
       {
@@ -41,4 +41,4 @@ namespace PKSim.Presentation
          _result.ElementAt(0).Content.ShouldBeEqualTo(_reportPart.Content);
       }
    }
-}	
+}

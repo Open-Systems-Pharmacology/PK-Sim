@@ -15,7 +15,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       protected override IEnumerable<object> BuildingBlockReport(Formulation formulation, OSPSuiteTracker tracker)
       {
-         return new[] {_reportGenerator.ReportFor(formulation)};
+         return new[] { _reportGenerator.ReportFor(formulation) };
       }
    }
 }
