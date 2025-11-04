@@ -36,8 +36,8 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         _dataRepository= A.Fake<DataRepository>();   
-         sut.Handle(new ObservedDataRemovedEvent(_dataRepository, _project));
+         _dataRepository = A.Fake<DataRepository>();
+         sut.Handle(new ObservedDataRemovedEvent(new[] { _dataRepository }, _project));
       }
 
       [Observation]
