@@ -45,6 +45,7 @@
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.2.17" />
     <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.2.17" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

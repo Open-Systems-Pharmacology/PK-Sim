@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using OSPSuite.Core.Extensions;
 
 namespace PKSim.Infrastructure.Serialization
@@ -19,7 +19,7 @@ namespace PKSim.Infrastructure.Serialization
       public void MigrateSchema(string fileFullPath)
       {
          var path = fileFullPath.ToUNCPath();
-         using (var sqlLite = new SQLiteConnection($"Data Source={path}"))
+         using (var sqlLite = new SqliteConnection($"Data Source={path}"))
          {
             sqlLite.Open();
             migrateTo5_3(sqlLite);
@@ -28,7 +28,7 @@ namespace PKSim.Infrastructure.Serialization
       }
 
       //change from 5.2 to 5.3
-      private void migrateTo5_3(SQLiteConnection sqlite)
+      private void migrateTo5_3(SqliteConnection sqlite)
       {
          if (!needsConversionTo5_3(sqlite)) return;
 
@@ -53,7 +53,7 @@ namespace PKSim.Infrastructure.Serialization
       }
 
       //change from 6.1 to 6.2
-      private void migrateTo6_2(SQLiteConnection sqlite)
+      private void migrateTo6_2(SqliteConnection sqlite)
       {
          if (!needsConversionTo6_2(sqlite)) return;
 
@@ -61,19 +61,19 @@ namespace PKSim.Infrastructure.Serialization
          sqlite.ExecuteNonQuery("ALTER TABLE OBSERVED_DATA RENAME TO USED_OBSERVED_DATA");
       }
 
-      private bool needsConversionTo6_2(SQLiteConnection sqlite)
+      private bool needsConversionTo6_2(SqliteConnection sqlite)
       {
          //USED_OBSERVED_DATA table was added in 6.2
          return !hasTable(sqlite, "USED_OBSERVED_DATA");
       }
 
-      private bool needsConversionTo5_3(SQLiteConnection sqlLite)
+      private bool needsConversionTo5_3(SqliteConnection sqlLite)
       {
          //SIMULATION_COMPARISONS table was added in 5.3
          return !hasTable(sqlLite, "SIMULATION_COMPARISONS");
       }
 
-      private static bool hasTable(SQLiteConnection sqlLite, string tableName)
+      private static bool hasTable(SqliteConnection sqlLite, string tableName)
       {
          try
          {

@@ -52,7 +52,7 @@ namespace PKSim.Infrastructure.Services
          configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", $"Data Source={path};Version=3;New=False;Compress=True;");
+         configuration.SetProperty("connection.connection_string", $"Data Source={path};Cache=Shared");
 
          return Fluently.Configure(configuration)
             .Mappings(cfg =>
