@@ -52,9 +52,7 @@ namespace PKSim.Presentation.Presenters.Main
       public event EventHandler StatusChanged = delegate { };
       private readonly IEventPublisher _eventPublisher;
       private readonly IInteractiveSimulationRunner _interactiveSimulationRunner;
-      private string countMessage => (_interactiveSimulationRunner.ActiveSimulationsCount == 1 || _interactiveSimulationRunner.ActiveSimulationsCount == 0) 
-         ? string.Empty 
-         : _interactiveSimulationRunner.ActiveSimulationsCount.ToString();
+      private string countMessage => (_interactiveSimulationRunner.ActiveSimulationsCount <= 1) ? string.Empty : _interactiveSimulationRunner.ActiveSimulationsCount.ToString();
 
       public StatusBarPresenter(
          IStatusBarView view, 
