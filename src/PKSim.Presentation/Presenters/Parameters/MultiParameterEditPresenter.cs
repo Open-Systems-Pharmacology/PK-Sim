@@ -143,6 +143,8 @@ namespace PKSim.Presentation.Presenters.Parameters
       event Action OnSelectedParametersChanged;
 
       void DisableEdit();
+      
+      string PathFor(ParameterDTO parameterDTO);
    }
 
    public class MultiParameterEditPresenter : ParameterSetPresenter<IMultiParameterEditView, IMultiParameterEditPresenter>, IMultiParameterEditPresenter
@@ -367,6 +369,7 @@ namespace PKSim.Presentation.Presenters.Parameters
          _view.ReadOnly = true;
       }
 
+      public string PathFor(ParameterDTO parameterDTO) => _parameterTask.PathFor(parameterDTO.Parameter);
 
       public void ShowContextMenu(IParameterDTO parameterDTO, Point popupLocation)
       {

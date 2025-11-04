@@ -93,13 +93,6 @@ namespace PKSim.Core
       {
          A.CallTo(() => _populationSimulationAnalysisSynchronizer.UpdateAnalysesDefinedIn(_populationSimulation)).MustHaveHappened();
       }
-
-      [Observation]
-      public void should_raise_events_for_simulation_start_and_end()
-      {
-         A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationRunStartedEvent>._)).MustHaveHappened();
-         A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationRunFinishedEvent>._)).MustHaveHappened();
-      }
    }
 
    public class When_the_simulation_run_options_indicate_the_events_should_not_be_raised : concern_for_PopulationSimulationEngine

@@ -394,6 +394,7 @@ namespace PKSim.Assets
          public const string DescriptionIsRequired = "Description is required.";
          public const string UnknownObserverBuilderType = "Observer builer type unknown.";
          public const string ImporterConfigurationNotFoundInProject = "Importer configuration for this dataset was not found in this project.\n\nThe data cannot be reloaded.";
+         public const string SimulationCannotShareNamesWithCompounds = "Simulation cannot share names with compounds";
          public const string AProjectSnapshotShouldOnlyContainOneSimuilationWhenUsedToRebuildAModule = "A project snapshot should only contain one simulation when used to rebuild a module";
          public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
          public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
@@ -1130,6 +1131,7 @@ namespace PKSim.Assets
          public static string CompareBuildingBlocks(string buildingBlockType) => $"Compare {buildingBlockType}s";
 
          public static string AddObservedDataToSimulation(string simulationName) => $"Add to {ObjectTypes.Simulation} '{simulationName}'";
+         public static readonly string CopyPath = "Copy Path";
       }
 
       public static class QualificationSteps
