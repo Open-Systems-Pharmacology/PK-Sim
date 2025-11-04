@@ -19,7 +19,7 @@ namespace PKSim.Infrastructure.Serialization
       public void MigrateSchema(string fileFullPath)
       {
          var path = fileFullPath.ToUNCPath();
-         using (var sqlLite = new SqliteConnection($"Data Source={path}"))
+         using (var sqlLite = new SqliteConnection($"Data Source={path};Foreign Keys=False"))
          {
             sqlLite.Open();
             migrateTo5_3(sqlLite);
