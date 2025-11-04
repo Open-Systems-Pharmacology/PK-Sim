@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -171,5 +172,92 @@ namespace PKSim.CLI
          A.CallTo(() => _workspacePersistor.SaveSession(_workspace, _projectFile)).MustHaveHappened();
       }
     
+   }
+
+   public class When_running_the_snapshot_runner_and_snapshot_loading_fails : concern_for_SnapshotRunner
+   {
+      private readonly string _fileName = "snapshotFile";
+      private string _snapshotFile;
+      private string _projectFile;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _runOptions.ExportMode = SnapshotExportMode.Project;
+         _runOptions.InputFolder = _inputFolder;
+         _runOptions.OutputFolder = _outputFolder;
+         _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
+         _projectFile = Path.Combine(_outputFolder, $"{_fileName}{CoreConstants.Filter.PROJECT_EXTENSION}");
+         sut.AllFilesFrom = (folder, filter) => new[] {new FileInfo(_snapshotFile) };
+
+         // Mock the snapshot task to return null (simulating a failed load)
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_snapshotFile, true)).Returns((PKSimProject)null);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void should_log_error_when_snapshot_loading_fails()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_attempt_to_save_project_when_loading_fails()
+      {
+         A.CallTo(() => _workspacePersistor.SaveSession(A<ICoreWorkspace>._, A<string>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_still_close_session_even_when_loading_fails()
+      {
+         A.CallTo(() => _workspacePersistor.CloseSession()).MustHaveHappened();
+      }
+   }
+
+   public class When_running_the_snapshot_runner_and_database_save_fails : concern_for_SnapshotRunner
+   {
+      private readonly string _fileName = "snapshotFile";
+      private string _snapshotFile;
+      private string _projectFile;
+      private PKSimProject _mockProject;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _runOptions.ExportMode = SnapshotExportMode.Project;
+         _runOptions.InputFolder = _inputFolder;
+         _runOptions.OutputFolder = _outputFolder;
+         _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
+         _projectFile = Path.Combine(_outputFolder, $"{_fileName}{CoreConstants.Filter.PROJECT_EXTENSION}");
+         sut.AllFilesFrom = (folder, filter) => new[] {new FileInfo(_snapshotFile) };
+
+         _mockProject = A.Fake<PKSimProject>();
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(_snapshotFile, true)).Returns(_mockProject);
+         
+         // Mock the workspace persistor to throw an exception during save
+         A.CallTo(() => _workspacePersistor.SaveSession(_workspace, _projectFile))
+            .Throws(new Exception("Database connection failed"));
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void should_log_error_when_database_save_fails()
+      {
+         A.CallTo(() => _logger.AddToLog(A<string>._, LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_still_close_session_even_when_save_fails()
+      {
+         A.CallTo(() => _workspacePersistor.CloseSession()).MustHaveHappened();
+      }
    }
 }
