@@ -89,29 +89,22 @@ namespace PKSim.CLI.Core.Services
       private async Task createProjectFromSnapshotFile(FileMap file, bool runSimulations)
       {
          _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
+         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile, runSimulations);
+         if (project == null)
+            return;
+
+         _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
+         _workspace.Project = project;
          try
          {
-            var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile, runSimulations);
-            if (project == null)
-            {
-               _logger.AddError($"Failed to load project from snapshot file '{file.SnapshotFile}'. The snapshot may be corrupted or incompatible.");
-               return;
-            }
-
-            _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
-            _workspace.Project = project;
             _workspacePersistor.SaveSession(_workspace, file.ProjectFile);
-            _logger.AddInfo($"Project saved to '{file.ProjectFile}'");
-         }
-         catch (Exception ex)
-         {
-            _logger.AddError($"Error processing snapshot file '{file.SnapshotFile}': {ex.Message}");
-            throw;
          }
          finally
          {
             _workspacePersistor.CloseSession();
          }
+
+         _logger.AddInfo($"Project saved to '{file.ProjectFile}';");
       }
 
       private async Task createSnapshotFromProjectFile(FileMap file)
