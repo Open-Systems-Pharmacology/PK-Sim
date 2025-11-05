@@ -32,6 +32,15 @@
        <Pack>True</Pack>
        <PackagePath></PackagePath>
     </Content>
+    <Content Include="$(PkgMicrosoft_Data_Sqlite)\runtimes\win-x64\native\e_sqlite3.dll" Link="e_sqlite3.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgMicrosoft_Data_Sqlite)\runtimes\linux-x64\native\libe_sqlite3.so" Link="libe_sqlite3.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(PkgMicrosoft_Data_Sqlite)\runtimes\osx-arm64\native\libe_sqlite3.dylib" Link="libe_sqlite3.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 
@@ -43,7 +52,7 @@
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.75" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.77" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" GeneratePathProperty="true" />
 
   </ItemGroup>
 
