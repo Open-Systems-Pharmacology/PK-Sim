@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -31,6 +32,7 @@ namespace PKSim.Core
       private IModelCoreSimulation _modelSimulation;
       private PopulationRunResults _runResults;
       protected SimulationRunOptions _simulationRunOptions;
+      private IDialogCreator _dialogCreator;
 
       protected override Task Context()
       {
@@ -43,6 +45,7 @@ namespace PKSim.Core
          _popExportTask = A.Fake<IPopulationExportTask>();
          _userSettings = A.Fake<ICoreUserSettings>();
          _populationSimulationAnalysisSynchronizer = A.Fake<IPopulationSimulationAnalysisSynchronizer>();
+         _dialogCreator = A.Fake<IDialogCreator>();
 
          sut = new PopulationSimulationEngine(_populationRunner,
             _progressManager,
@@ -51,7 +54,9 @@ namespace PKSim.Core
             _popExportTask,
             _simMapper,
             _userSettings,
-            _populationSimulationAnalysisSynchronizer);
+            _populationSimulationAnalysisSynchronizer,
+            _dialogCreator
+            );
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
 
