@@ -100,16 +100,8 @@ namespace PKSim.CLI.Core.Services
 
             _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
             _workspace.Project = project;
-            try
-            {
-               _workspacePersistor.SaveSession(_workspace, file.ProjectFile);
-               _logger.AddInfo($"Project saved to '{file.ProjectFile}'");
-            }
-            catch (Exception ex)
-            {
-               _logger.AddError($"Failed to save project to '{file.ProjectFile}': {ex.Message}");
-               throw;
-            }
+            _workspacePersistor.SaveSession(_workspace, file.ProjectFile);
+            _logger.AddInfo($"Project saved to '{file.ProjectFile}'");
          }
          catch (Exception ex)
          {
