@@ -52,7 +52,8 @@ namespace PKSim.Presentation.Presenters.Main
       public event EventHandler StatusChanged = delegate { };
       private readonly IEventPublisher _eventPublisher;
       private readonly IInteractiveSimulationRunner _interactiveSimulationRunner;
-      private string countMessage => _interactiveSimulationRunner.ActiveSimulationsCount == 1 ? string.Empty : _interactiveSimulationRunner.ActiveSimulationsCount.ToString();
+      private string countMessage => (_interactiveSimulationRunner.ActiveSimulationsCount <= 1) ? string.Empty : _interactiveSimulationRunner.ActiveSimulationsCount.ToString();
+
       public StatusBarPresenter(
          IStatusBarView view, 
          IApplicationConfiguration applicationConfiguration, 
@@ -147,7 +148,7 @@ namespace PKSim.Presentation.Presenters.Main
             .And.Visible(true);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption($"{_interactiveSimulationRunner.ActiveSimulationsCount} {eventToHandle.Message}")
+            .WithCaption($"{countMessage} {eventToHandle.Message}")
             .And.Visible(true);
       }
 

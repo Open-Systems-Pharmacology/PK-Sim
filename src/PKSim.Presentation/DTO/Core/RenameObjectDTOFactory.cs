@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.DTO;
 using PKSim.Core.Model;
@@ -20,10 +21,26 @@ namespace PKSim.Presentation.DTO.Core
 
       public override RenameObjectDTO CreateFor(IWithName objectBase)
       {
-         if (objectBase is IPKSimBuildingBlock buildingBlock)
-            return createFor(buildingBlock);
+         switch (objectBase)
+         {
+            case Simulation simulation:
+               return createFor(simulation);
+            case IPKSimBuildingBlock buildingBlock:
+               return createFor(buildingBlock);
+            default:
+               return base.CreateFor(objectBase);
+         }
+      }
 
-         return base.CreateFor(objectBase);
+      private RenameObjectDTO createFor(Simulation simulation)
+      {
+         var renameObjectDTO = new RenamePKSimSimulationDTO(simulation.Name)
+         {
+            ContainerType = ObjectTypes.Project
+         };
+         renameObjectDTO.AddUsedNames(_projectRetriever.Current.All(simulation.BuildingBlockType).AllNames());
+         renameObjectDTO.AddCompoundNames(simulation.CompoundNames);
+         return renameObjectDTO;
       }
 
       private RenameObjectDTO createFor(IPKSimBuildingBlock buildingBlock)
