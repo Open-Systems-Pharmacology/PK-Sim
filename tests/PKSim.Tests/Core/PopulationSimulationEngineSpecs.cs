@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
@@ -11,7 +13,6 @@ using OSPSuite.Utility.Events;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
-
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.Core
@@ -30,9 +31,9 @@ namespace PKSim.Core
       protected PopulationSimulation _populationSimulation;
       private DataTable _populationData;
       private IModelCoreSimulation _modelSimulation;
-      private PopulationRunResults _runResults;
+      protected PopulationRunResults _runResults;
       protected SimulationRunOptions _simulationRunOptions;
-      private IDialogCreator _dialogCreator;
+      protected IDialogCreator _dialogCreator;
 
       protected override Task Context()
       {
@@ -56,7 +57,7 @@ namespace PKSim.Core
             _userSettings,
             _populationSimulationAnalysisSynchronizer,
             _dialogCreator
-            );
+         );
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
 
@@ -64,7 +65,7 @@ namespace PKSim.Core
          _modelSimulation = A.Fake<IModelCoreSimulation>();
          _populationData = A.Fake<DataTable>();
          _runResults = new PopulationRunResults();
-         
+
          A.CallTo(() => _popExportTask.CreatePopulationDataFor(_populationSimulation, A<bool>._)).Returns(_populationData);
          A.CallTo(() => _simMapper.MapFrom(_populationSimulation, false)).Returns(_modelSimulation);
          A.CallTo(() => _populationRunner.RunPopulationAsync(_modelSimulation, A<RunOptions>._, _populationData, A<DataTable>._, A<DataTable>._, CancellationToken.None)).Returns(_runResults);
@@ -75,7 +76,6 @@ namespace PKSim.Core
 
    public class When_the_population_simulation_engine_is_starting_a_simulation_run_for_a_given_population_simulation : concern_for_PopulationSimulationEngine
    {
-
       protected override async Task Context()
       {
          await base.Context();
@@ -118,6 +118,45 @@ namespace PKSim.Core
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationRunStartedEvent>._)).MustNotHaveHappened();
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationRunFinishedEvent>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_the_simulation_results_has_at_least_one_failure : concern_for_PopulationSimulationEngine
+   {
+      private string _message;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var individualResult = new IndividualResults();
+         individualResult.Id = 1;
+         var individualResult2 = new IndividualResults();
+         individualResult2.Id = 2;
+         _runResults.Add(individualResult);
+         _runResults.AddFailure(2, "Failed Simulation");
+
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
+            .Invokes(x => _message = x.GetArgument<string>(0));
+         _simulationRunOptions = new SimulationRunOptions { RaiseEvents = false };
+         A.CallTo(() => _populationRunner.RunPopulationAsync(
+               A<IModelCoreSimulation>.Ignored,
+               A<RunOptions>.Ignored,
+               A<DataTable>.Ignored,
+               A<DataTable>.Ignored,
+               A<DataTable>.Ignored,
+               A<CancellationToken>.Ignored))
+            .Returns(_runResults);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunAsync(_populationSimulation, _simulationRunOptions);
+      }
+
+      [Observation]
+      public void should_show_message_with_simulations_failed()
+      {
+         _message.Contains("1 out of 2 were successful for simulation").ShouldBeTrue();
       }
    }
 }
