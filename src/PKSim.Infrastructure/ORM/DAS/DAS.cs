@@ -519,7 +519,7 @@ namespace PKSim.Infrastructure.ORM.DAS
             using (var reader = cmd.ExecuteReader())
             {
                // Build column schema if table is empty
-               if (dataTable.Columns.Count == 0)
+               if (dataTable.Columns.Count() == 0)
                {
                   var schemaTable = reader.GetSchemaTable();
                   if (schemaTable != null)
