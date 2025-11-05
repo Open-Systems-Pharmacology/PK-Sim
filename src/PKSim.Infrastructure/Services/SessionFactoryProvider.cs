@@ -10,7 +10,7 @@ namespace PKSim.Infrastructure.Services
 {
    public class SessionFactoryProvider : ISessionFactoryProvider
    {
-      public ISessionFactory InitalizeSessionFactoryFor(string dataSource)
+      public ISessionFactory InitializeSessionFactoryFor(string dataSource)
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
          //Create schema for database
@@ -48,8 +48,8 @@ namespace PKSim.Infrastructure.Services
          var path = dataSource.ToUNCPath();
 
          configuration.SetProperty("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-         configuration.SetProperty("connection.driver_class", "NHibernate.Driver.SQLite20Driver");
-         configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
+         configuration.SetProperty("connection.driver_class", typeof(NHibernate.Extensions.Sqlite.SqliteDriver).AssemblyQualifiedName);
+         configuration.SetProperty("dialect", typeof(NHibernate.Extensions.Sqlite.SqliteDialect).AssemblyQualifiedName);
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
          configuration.SetProperty("connection.connection_string", $"Data Source={path};Cache=Shared");
