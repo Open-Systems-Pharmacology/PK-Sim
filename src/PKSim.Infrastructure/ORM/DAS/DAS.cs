@@ -515,43 +515,17 @@ namespace PKSim.Infrastructure.ORM.DAS
          dataTable.Rows.Clear();
          try
          {
-            // Manual data reading to avoid constraint issues with DataTable.Load()
-            using (var reader = cmd.ExecuteReader())
-            {
-               // Build column schema if table is empty
-               if (dataTable.Columns.Count() == 0)
-               {
-                  var schemaTable = reader.GetSchemaTable();
-                  if (schemaTable != null)
-                  {
-                     foreach (System.Data.DataRow schemaRow in schemaTable.Rows)
-                     {
-                        var columnName = schemaRow["ColumnName"].ToString();
-                        var dataType = (Type)schemaRow["DataType"];
-                        // Use base DataTable's Columns collection
-                        ((DataTable)dataTable).Columns.Add(columnName, dataType);
-                     }
-                  }
-               }
-
-               // Read data row by row to avoid constraint issues
-               while (reader.Read())
-               {
-                  var row = dataTable.NewRow();
-                  for (int fieldIndex = 0; fieldIndex < reader.FieldCount; fieldIndex++)
-                  {
-                     row[fieldIndex] = reader.IsDBNull(fieldIndex) ? DBNull.Value : reader.GetValue(fieldIndex);
-                  }
-                  // Use base DataTable's Rows collection
-                  ((DataTable)dataTable).Rows.Add(row);
-               }
-            }
+            using var adapter = new DASSQLAdapter();
+            adapter.SelectCommand = cmd;
+            adapter.Fill(dataTable);
          }
          catch (Exception ex)
          {
             throw new Exception($"Error occurred with statement <{sql}>.", ex);
          }
       }
+
+      private class DASSQLAdapter : DbDataAdapter;
 
       /// <summary>
       ///    This function queries the next value of the given AutoValueCreator object.
