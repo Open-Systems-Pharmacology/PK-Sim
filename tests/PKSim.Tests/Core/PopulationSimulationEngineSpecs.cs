@@ -138,13 +138,10 @@ namespace PKSim.Core
          A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
             .Invokes(x => _message = x.GetArgument<string>(0));
          _simulationRunOptions = new SimulationRunOptions { RaiseEvents = false };
-         A.CallTo(() => _populationRunner.RunPopulationAsync(
-               A<IModelCoreSimulation>.Ignored,
-               A<RunOptions>.Ignored,
-               A<DataTable>.Ignored,
-               A<DataTable>.Ignored,
-               A<DataTable>.Ignored,
-               A<CancellationToken>.Ignored))
+
+         A.CallTo(_populationRunner)
+            .WithReturnType<Task<PopulationRunResults>>() 
+            .WithAnyArguments()
             .Returns(_runResults);
       }
 

@@ -98,14 +98,15 @@ namespace PKSim.Core.Services
 
       private void evaluateResultsAndShowMessage(PopulationSimulation populationSimulation, PopulationRunResults populationRunResults)
       {
-         var failingSimulations = populationRunResults.IndividualRunInfos.Where(x => x.Success != true);
+         var failingSimulations = populationRunResults.IndividualRunInfos.Where(x => x.Success != true).ToList();
 
-         if (failingSimulations.Any())
-         {
-            var successfulCount = populationRunResults.IndividualRunInfos.Count() - failingSimulations.Count();
-            var message = $"{successfulCount} out of {populationRunResults.IndividualRunInfos.Count()} were successful for simulation {populationSimulation.Name}";
-            _dialogCreator.MessageBoxInfo(message);
-         }
+         if (!failingSimulations.Any())
+            return;
+
+
+         var successfulCount = populationRunResults.IndividualRunInfos.Count() - failingSimulations.Count();
+         var message = PKSimConstants.UI.PopulationSimulationSuccessful(successfulCount, populationRunResults.IndividualRunInfos.Count(),populationSimulation.Name);
+         _dialogCreator.MessageBoxInfo(message);
       }
 
       private void simulationTerminated()
