@@ -22,8 +22,6 @@ namespace PKSim.Infrastructure.Services
       public ISessionFactory OpenSessionFactoryFor(string dataSource)
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
-         var update = new SchemaUpdate(cfg);
-         update.Execute(useStdOut: false, doUpdate: true);
          return createSessionFactory(cfg);
       }
 
@@ -46,7 +44,7 @@ namespace PKSim.Infrastructure.Services
       {
          var configuration = new Configuration();
          var path = dataSource.ToUNCPath();
-
+         
          configuration.SetProperty("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
          configuration.SetProperty("connection.driver_class", typeof(NHibernate.Extensions.Sqlite.SqliteDriver).AssemblyQualifiedName);
          configuration.SetProperty("dialect", typeof(NHibernate.Extensions.Sqlite.SqliteDialect).AssemblyQualifiedName);

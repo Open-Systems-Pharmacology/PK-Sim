@@ -20,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.0-gWjLd" />
-    <PackageReference Include="OSPSuite.UI" Version="13.0.0-gWjLd" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.0-gWjLd" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.0-gWjLd" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.0-vapXg" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.0-vapXg" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.0-vapXg" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.0-vapXg" />
   </ItemGroup>
 
 </Project>
