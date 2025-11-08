@@ -21,16 +21,12 @@ namespace PKSim.Infrastructure.ORM.DAS
 
       public DAS()
       {
-         // Initialize the provider factory to Microsoft.Data.Sqlite by default
-         _providerFactory = Microsoft.Data.Sqlite.SqliteFactory.Instance;
       }
 
       //this is just a dummy command to create a parameters collection to store parameters
       private DbCommand _command;
       private DbParameterCollection _parameters;
       private DbTransaction _transaction;
-      private string _provider;
-      private string _connectionString;
       private bool _transactionOpen;
 
       /// <summary>
@@ -95,7 +91,7 @@ namespace PKSim.Infrastructure.ORM.DAS
 
          if (!IsConnected)
          {
-            if ((dataProvider == "Microsoft.Data.Sqlite"))
+            if (dataProvider == "Microsoft.Data.Sqlite")
             {
                _providerFactory = SqliteFactory.Instance;
             }
@@ -109,16 +105,12 @@ namespace PKSim.Infrastructure.ORM.DAS
             Connection.Open();
             if (Connection.State == ConnectionState.Open)
             {
-               _provider = dataProvider;
-               _connectionString = connectionString;
                _command = _providerFactory.CreateCommand();
                _parameters = _command.Parameters;
                returnValue = true;
             }
             else
             {
-               _provider = "";
-               _connectionString = "";
                returnValue = false;
             }
          }
