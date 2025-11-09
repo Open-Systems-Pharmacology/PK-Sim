@@ -153,7 +153,6 @@ namespace PKSim.Infrastructure.ORM.DAS
                case DataProviders.SQLite:
                   sProvider = "Microsoft.Data.Sqlite";
                   connBuilder.Add("Data Source", dbName);
-                  connBuilder.Add("Foreign Keys", "False");
                   if (!string.IsNullOrEmpty(password))
                   {
                      connBuilder.Add("Password", password);
