@@ -2,7 +2,6 @@ using System.IO;
 using OSPSuite.BDDHelper;
 using OSPSuite.Infrastructure.Serialization.Services;
 using PKSim.Infrastructure.Serialization.ORM.MetaData;
-using OSPSuite.Infrastructure.Services;
 using PKSim.Core;
 
 namespace PKSim.Infrastructure
@@ -25,7 +24,7 @@ namespace PKSim.Infrastructure
       [Observation]
       public void should_be_able_to_open_a_session()
       {
-         using (var session = _sessionFactory.OpenSession())
+         using (_sessionFactory.OpenSession())
          {
          }
       }
