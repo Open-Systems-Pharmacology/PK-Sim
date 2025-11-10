@@ -54,6 +54,7 @@ namespace PKSim.IntegrationTests
          {
             var fromDb = session.Load<IndividualMetaData>(_individualMetaData.Id);
             NHibernateUtil.IsInitialized(fromDb.Content).ShouldBeFalse();
+            var content = fromDb.Content.Data;
             NHibernateUtil.IsInitialized(fromDb.Content).ShouldBeTrue();
          }
       }
