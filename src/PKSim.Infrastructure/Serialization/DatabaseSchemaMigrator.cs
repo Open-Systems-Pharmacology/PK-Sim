@@ -1,7 +1,8 @@
-﻿using System;
-using System.Data;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Serialization.Extensions;
+using System;
+using System.Data;
 
 namespace PKSim.Infrastructure.Serialization
 {
@@ -19,7 +20,7 @@ namespace PKSim.Infrastructure.Serialization
       public void MigrateSchema(string fileFullPath)
       {
          var path = fileFullPath.ToUNCPath();
-         using (var sqlLite = new SqliteConnection($"Data Source={path};Foreign Keys=False"))
+         using (var sqlLite = new SqliteConnection(ConnectionStringHelper.ConnectionStringFor(path)))
          {
             sqlLite.Open();
             migrateTo5_3(sqlLite);

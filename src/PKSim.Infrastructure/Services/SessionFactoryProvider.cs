@@ -1,9 +1,11 @@
 using FluentNHibernate.Cfg;
 using NHibernate;
 using NHibernate.Cfg;
+using NHibernate.Extensions.Sqlite;
 using NHibernate.Tool.hbm2ddl;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Serialization.Extensions;
 using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace PKSim.Infrastructure.Services
@@ -44,13 +46,13 @@ namespace PKSim.Infrastructure.Services
       {
          var configuration = new Configuration();
          var path = dataSource.ToUNCPath();
-         
+
          configuration.SetProperty("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-         configuration.SetProperty("connection.driver_class", typeof(NHibernate.Extensions.Sqlite.SqliteDriver).AssemblyQualifiedName);
-         configuration.SetProperty("dialect", typeof(NHibernate.Extensions.Sqlite.SqliteDialect).AssemblyQualifiedName);
+         configuration.SetProperty("connection.driver_class", typeof(SqliteDriver).AssemblyQualifiedName);
+         configuration.SetProperty("dialect", typeof(SqliteDialect).AssemblyQualifiedName);
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", $"Data Source={path};Cache=Shared");
+         configuration.SetProperty("connection.connection_string", ConnectionStringHelper.ConnectionStringFor(path));
 
          return Fluently.Configure(configuration)
             .Mappings(cfg =>
