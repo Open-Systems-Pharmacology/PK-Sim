@@ -36,15 +36,15 @@
     <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NHibernate.Extensions.Sqlite" Version="8.0.14" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.0-vapXg" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.69" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
   </ItemGroup>

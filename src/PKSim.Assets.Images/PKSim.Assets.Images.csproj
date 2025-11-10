@@ -28,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.0-vapXg" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.0-vapXg" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.69" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.69" />
     <PackageReference Include="System.Resources.Extensions" Version="9.0.2" />
   </ItemGroup>
 
