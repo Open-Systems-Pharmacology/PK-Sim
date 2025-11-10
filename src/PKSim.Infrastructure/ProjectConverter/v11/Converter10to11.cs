@@ -32,6 +32,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
       private readonly ICloner _cloner;
       private readonly IContainerTask _containerTask;
       private readonly Converter100To110 _coreConverter;
+      private readonly IEntityPathResolver _entityPathResolver;
       private bool _converted;
 
       public Converter10to11(
@@ -43,7 +44,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          IDefaultIndividualRetriever defaultIndividualRetriever,
          ICloner cloner,
          IContainerTask containerTask,
-         Converter100To110 coreConverter
+         Converter100To110 coreConverter,
+         IEntityPathResolver entityPathResolver
       )
       {
          _expressionProfileFactory = expressionProfileFactory;
@@ -55,6 +57,7 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          _cloner = cloner;
          _containerTask = containerTask;
          _coreConverter = coreConverter;
+         _entityPathResolver = entityPathResolver;
       }
 
       public bool IsSatisfiedBy(int version) => version == ProjectVersions.V10;
@@ -109,8 +112,6 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          originParameterElement.SetAttributeValue("value", value);
          originParameterElement.SetAttributeValue("unit", unit);
          originDataElement.Add(originParameterElement);
-
-         return;
       }
 
       public void Visit(Individual individual)
@@ -124,6 +125,12 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          addExpressionProfilesUsedBySimulationSubjectToProject(population);
          makeInitialConcentrationParametersNotVariableInPopulation(population);
          convertIndividual(population.FirstIndividual);
+         convertPopulation(population);
+      }
+
+      private void convertPopulation(Population population)
+      {
+         population.AllVectorialParameters(_entityPathResolver).Where(x => x.BuildingBlockType.Is(PKSimBuildingBlockType.Individual) && x.IsDistributed()).Each(x => x.IsChangedByCreateIndividual = true);
       }
 
       private void convertIndividual(Individual individual)
@@ -138,15 +145,15 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
 
       private void updateFractionOfBloodForSampling(Individual individual)
       {
-         var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
-         var oneStandardFractionOfBloodParameter = defaultHuman.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_OF_BLOOD_FOR_SAMPLING)).First();
+         var defaultIndividual = _defaultIndividualRetriever.DefaultIndividualFor(individual.Population);
+         var oneStandardFractionOfBloodParameter = defaultIndividual.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_OF_BLOOD_FOR_SAMPLING)).First();
          var allFractionOfBloodParameters = individual.GetAllChildren<IParameter>(x => x.IsNamed(FRACTION_OF_BLOOD_FOR_SAMPLING));
          allFractionOfBloodParameters.Each(x => { x.Info.UpdatePropertiesFrom(oneStandardFractionOfBloodParameter.Info); });
       }
 
       private void updateIsChangedByCreatedIndividualFlag(Individual individual)
       {
-         var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
+         var defaultHuman = _defaultIndividualRetriever.DefaultIndividualFor(individual.Population);
          var allIsChangedByIndividualParameter = _containerTask.CacheAllChildrenSatisfying<IParameter>(defaultHuman, x => x.IsChangedByCreateIndividual);
          var allParameters = _containerTask.CacheAllChildren<IParameter>(individual);
          allIsChangedByIndividualParameter.KeyValues.Each(kv =>
@@ -173,8 +180,8 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
          if (gfr == null || bsa == null)
             return;
 
-         var defaultHuman = _defaultIndividualRetriever.DefaultHuman();
-         var parameter = defaultHuman.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
+         var defaultIndividual = _defaultIndividualRetriever.DefaultIndividualFor(individual.Population);
+         var parameter = defaultIndividual.Organism.EntityAt<IParameter>(KIDNEY, E_GFR);
          kidney.Add(_cloner.Clone(parameter));
       }
 
@@ -200,9 +207,9 @@ namespace PKSim.Infrastructure.ProjectConverter.v11
                .Each(x => x.IsFixedValue = false);
 
             expressionProfile.Individual.AllMoleculeParametersFor(expressionProfile.Molecule)
-                 .Where(x => !x.Editable)
-                 .Where(x => !x.IsDefault)
-                 .Each(x => x.IsDefault = true);
+               .Where(x => !x.Editable)
+               .Where(x => !x.IsDefault)
+               .Each(x => x.IsDefault = true);
 
             //only add at the end once the expression profile has been updated
             simulationSubject.AddExpressionProfile(expressionProfile);

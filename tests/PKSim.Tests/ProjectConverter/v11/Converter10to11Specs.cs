@@ -3,6 +3,8 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core;
 using PKSim.Core.Model;
@@ -66,6 +68,39 @@ namespace PKSim.ProjectConverter.v11
          var pop = _allPopulations.FindByName("Pop");
          var ind = pop.FirstIndividual;
          ind.OriginData.Population.ShouldNotBeNull();
+      }
+   }
+
+   public class When_converting_pregnant_population_v10_to_v11 : ContextWithLoadedProject<Converter10to11>
+   {
+      private List<Population> _allPopulations;
+      private IContainerTask _containerTask;
+      private List<Individual> _allIndividuals;
+      private IEntityPathResolver _entityPathResolver;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         LoadProject("pregnant_populations_V10");
+         _entityPathResolver = IoC.Resolve<EntityPathResolver>();
+         _containerTask = IoC.Resolve<IContainerTask>();
+         _allPopulations = All<Population>();
+         _allIndividuals = All<Individual>();
+
+         _allIndividuals.Each(Load);
+         _allPopulations.Each(Load);
+      }
+
+      [Observation]
+      public void pregnant_individual_volume_parameters_are_updated_to_IsChangedByCreateIndividual()
+      {
+         _allIndividuals.All(ind => _containerTask.CacheAllChildrenSatisfying<IParameter>(ind, x => x.Name.Equals("Volume")).All(x => x.IsChangedByCreateIndividual)).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void fetal_hematocrit_parameters_are_updated_to_IsChangedByCreateIndividual()
+      {
+         _allPopulations.All(pop => pop.AllVectorialParameters(_entityPathResolver).Where(x => x.Name.Equals("Fetal Hematocrit")).All(x => x.IsChangedByCreateIndividual)).ShouldBeTrue();
       }
    }
 
