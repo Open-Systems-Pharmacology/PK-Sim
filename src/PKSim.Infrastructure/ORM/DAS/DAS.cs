@@ -1,7 +1,7 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 namespace PKSim.Infrastructure.ORM.DAS
 {
@@ -19,12 +19,14 @@ namespace PKSim.Infrastructure.ORM.DAS
 
       public DbConnection Connection { get; private set; }
 
+      public DAS()
+      {
+      }
+
       //this is just a dummy command to create a parameters collection to store parameters
       private DbCommand _command;
       private DbParameterCollection _parameters;
       private DbTransaction _transaction;
-      private string _provider;
-      private string _connectionString;
       private bool _transactionOpen;
 
       /// <summary>
@@ -89,9 +91,9 @@ namespace PKSim.Infrastructure.ORM.DAS
 
          if (!IsConnected)
          {
-            if ((dataProvider == "System.Data.SQLite"))
+            if (dataProvider == "Microsoft.Data.Sqlite")
             {
-               _providerFactory = new SQLiteFactory();
+               _providerFactory = SqliteFactory.Instance;
             }
             else
             {
@@ -103,16 +105,12 @@ namespace PKSim.Infrastructure.ORM.DAS
             Connection.Open();
             if (Connection.State == ConnectionState.Open)
             {
-               _provider = dataProvider;
-               _connectionString = connectionString;
                _command = _providerFactory.CreateCommand();
                _parameters = _command.Parameters;
                returnValue = true;
             }
             else
             {
-               _provider = "";
-               _connectionString = "";
                returnValue = false;
             }
          }
@@ -153,8 +151,10 @@ namespace PKSim.Infrastructure.ORM.DAS
             switch (dataProvider)
             {
                case DataProviders.SQLite:
-                  sProvider = "System.Data.SQLite";
+                  sProvider = "Microsoft.Data.Sqlite";
                   connBuilder.Add("Data Source", dbName);
+                  connBuilder.Add("Foreign Keys", "False");
+                  connBuilder.Add("Pooling", "False");
                   if (!string.IsNullOrEmpty(password))
                   {
                      connBuilder.Add("Password", password);
@@ -508,17 +508,17 @@ namespace PKSim.Infrastructure.ORM.DAS
          dataTable.Rows.Clear();
          try
          {
-            using (var adapter = _providerFactory.CreateDataAdapter())
-            {
-               adapter.SelectCommand = cmd;
-               adapter.Fill(dataTable);
-            }
+            using var adapter = new DASSQLAdapter();
+            adapter.SelectCommand = cmd;
+            adapter.Fill(dataTable);
          }
          catch (Exception ex)
          {
             throw new Exception($"Error occurred with statement <{sql}>.", ex);
          }
       }
+
+      private class DASSQLAdapter : DbDataAdapter;
 
       /// <summary>
       ///    This function queries the next value of the given AutoValueCreator object.
@@ -564,7 +564,7 @@ namespace PKSim.Infrastructure.ORM.DAS
       ///    <para>
       ///       Each parameter has an identifying name and an associated value.
       ///       You can automatically bind a parameter to SQL and PL/SQL statements of other objects,
-      ///       by using the parameter’s name as a placeholder (@Name) in the SQL statement.
+      ///       by using the parameter s name as a placeholder (@Name) in the SQL statement.
       ///       Such use of parameters can simplify dynamic queries and increase program performance.
       ///    </para>
       ///    <para>
@@ -676,7 +676,7 @@ namespace PKSim.Infrastructure.ORM.DAS
       ///    <para>
       ///       Each parameter has an identifying name and an associated value.
       ///       You can automatically bind a parameter to SQL and PL/SQL statements of other objects,
-      ///       by using the parameter’s name as a placeholder (@Name) in the SQL statement.
+      ///       by using the parameter s name as a placeholder (@Name) in the SQL statement.
       ///       Such use of parameters can simplify dynamic queries and increase program performance.
       ///    </para>
       ///    <para>
@@ -764,7 +764,7 @@ namespace PKSim.Infrastructure.ORM.DAS
       /// <remarks>
       ///    Each parameter has an identifying name and an associated value.
       ///    You can automatically bind a parameter to SQL and PL/SQL statements of other objects,
-      ///    by using the parameter’s name as a placeholder (:Name) in the SQL or PL/SQL statement.
+      ///    by using the parameter s name as a placeholder (:Name) in the SQL or PL/SQL statement.
       ///    Such use of parameters can simplify dynamic queries and increase program performance.
       ///    If you set an incorrect <see cref="ParameterModes"></see>, such as <see cref="ParameterModes.PARM_INOUT"></see>
       ///    for a stored procedure parameter type IN, this can result in errors.

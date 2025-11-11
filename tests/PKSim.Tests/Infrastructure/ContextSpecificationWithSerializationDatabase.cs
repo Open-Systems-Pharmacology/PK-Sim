@@ -1,7 +1,6 @@
+using NHibernate;
 using OSPSuite.BDDHelper;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-using NHibernate;
 using PKSim.Infrastructure.Services;
 
 namespace PKSim.Infrastructure
@@ -29,7 +28,7 @@ namespace PKSim.Infrastructure
          if (string.IsNullOrEmpty(_dataBaseFile))
             _dataBaseFile = FileHelper.GenerateTemporaryFileName();
 
-         _sessionFactory = _sessionFactoryProvider.InitalizeSessionFactoryFor(_dataBaseFile);
+         _sessionFactory = _sessionFactoryProvider.InitializeSessionFactoryFor(_dataBaseFile);
       }
 
       public override void GlobalCleanup()
