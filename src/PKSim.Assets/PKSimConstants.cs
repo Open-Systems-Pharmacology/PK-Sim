@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OSPSuite.Assets;
 using OSPSuite.Assets.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Assets
@@ -2484,6 +2485,17 @@ namespace PKSim.Assets
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
 
          public static string ChildPughScoreFor(string score) => $"Child-Pugh {score}";
+
+         public static string PopulationSimulationSuccessful(int successCount, int totalCount, string simulationName)
+         {
+            //Probably this is never the case, but we have to prevent dividing by zero anyways. 
+            if (totalCount == 0)
+               return $"No simulations were run for {simulationName}.";
+
+            var rate = (double)successCount / totalCount * 100;
+            return $"{successCount} out of {totalCount} were successful for simulation {simulationName} ({rate:F1}% success rate).";
+         }
+
       }
 
       public static class Reporting
