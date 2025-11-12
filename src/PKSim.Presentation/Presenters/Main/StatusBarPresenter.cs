@@ -150,6 +150,8 @@ namespace PKSim.Presentation.Presenters.Main
          update(StatusBarElements.ProgressStatus)
             .WithCaption($"{countMessage} {eventToHandle.Message}")
             .And.Visible(true);
+
+         setProgressBarVisibility();
       }
 
       public void Handle(SimulationRunCanceledEvent eventToHandle)

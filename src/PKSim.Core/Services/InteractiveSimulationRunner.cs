@@ -38,6 +38,8 @@ namespace PKSim.Core.Services
       private readonly ConcurrentDictionary<Simulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<Simulation, CancellationTokenSource>();
       private readonly IEventPublisher _eventPublisher;
       private readonly SimulationRunOptions _simulationRunOptions;
+      private readonly SemaphoreSlim _parallelGate;
+      private readonly ICoreUserSettings _userSettings;
 
       public int ActiveSimulationsCount => _cancellationTokenSources.Count;
       public IReadOnlyCollection<Simulation> ActiveSimulations => _cancellationTokenSources.Keys.ToList().AsReadOnly();
@@ -49,7 +51,9 @@ namespace PKSim.Core.Services
          ICloner cloner,
          ISimulationAnalysisCreator simulationAnalysisCreator,
          ILazyLoadTask lazyLoadTask,
-         IExecutionContext executionContext)
+         IExecutionContext executionContext,
+         ICoreUserSettings userSettings
+         )
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationRunner = simulationRunner;
@@ -57,6 +61,8 @@ namespace PKSim.Core.Services
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _executionContext = executionContext;
+         _userSettings = userSettings;
+         _parallelGate = new SemaphoreSlim(Math.Max(1, _userSettings.MaximumNumberOfCoresToUse));
 
          _simulationRunOptions = new SimulationRunOptions
          {
@@ -80,6 +86,7 @@ namespace PKSim.Core.Services
             return;
 
          var begin = new DateTime();
+         await _parallelGate.WaitAsync(cts.Token).ConfigureAwait(false);
          try
          {
             _lazyLoadTask.Load(simulation);
@@ -92,13 +99,15 @@ namespace PKSim.Core.Services
 
                simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
                mappingsNotSelected(simulation).Each(simulation.OutputMappings.Remove);
-
                raiseEvent(new SimulationOutputSelectionsChangedEvent(simulation));
             }
 
             begin = SystemTime.UtcNow();
             raiseEvent(new SimulationRunStartedEvent(simulation));
-            await _simulationRunner.RunSimulation(simulation, _simulationRunOptions, cts.Token);
+
+            await _simulationRunner
+               .RunSimulation(simulation, _simulationRunOptions, cts.Token)
+               .ConfigureAwait(false);
 
             addAnalysableToSimulationIfRequired(simulation);
          }
@@ -112,6 +121,7 @@ namespace PKSim.Core.Services
                   ctsToDispose.Dispose();
                raiseEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
             }
+            _parallelGate.Release();
          }
       }
 
