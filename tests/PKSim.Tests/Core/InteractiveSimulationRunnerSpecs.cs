@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -24,6 +25,8 @@ namespace PKSim.Core
       protected ILazyLoadTask _lazyLoadTask;
       protected IExecutionContext _executionContext;
       protected IInteractiveSimulationRunner _interactiveSimulationRunner;
+      protected ICoreUserSettings _coreUserSettings;
+      protected ISynchronizationContextUiDispatcher _synchronizationContextUiDispatcher;
 
       protected override Task Context()
       {
@@ -34,7 +37,10 @@ namespace PKSim.Core
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _executionContext = A.Fake<IExecutionContext>();
          _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
-         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
+         _synchronizationContextUiDispatcher = A.Fake<ISynchronizationContextUiDispatcher>();
+         _coreUserSettings = A.Fake<ICoreUserSettings>();
+
+         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext, _coreUserSettings , _synchronizationContextUiDispatcher);
          return _completed;
       }
    }
@@ -103,8 +109,16 @@ namespace PKSim.Core
       [Observation]
       public void should_create_a_chart_for_the_simulation()
       {
-         A.CallTo(() => _simulationAnalysisCreator.CreateAnalysisFor(_simulation)).MustHaveHappened();
+
+         A.CallTo(() => _synchronizationContextUiDispatcher.Post(A<Action>.Ignored)).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_call_synchronization_context_ui_dispatcher()
+      {
+         A.CallTo(() => _synchronizationContextUiDispatcher.Post(A<Action>.Ignored)).MustHaveHappened();
+      }
+      
    }
 
    public class When_the_simulation_is_notified_that_a_simulation_without_results_and_plot_was_calculated : concern_for_InteractiveSimulationRunner
