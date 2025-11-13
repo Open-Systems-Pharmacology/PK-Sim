@@ -359,4 +359,41 @@ namespace PKSim.Core
          _result.IsEmpty().ShouldBeTrue();
       }
    }
+
+   public class When_updating_a_building_block_parameter_from_a_simulation_parameter_with_different_values : concern_for_ParameterUpdater
+   {
+      protected override void Context()
+      {
+         base.Context();
+         // Simulates the scenario where organ volumes are modified in a simulation
+         // The source parameter (from simulation) may have IsDefault=true 
+         // but the values differ
+         _sourceParameter.Value = 10;
+         _sourceParameter.DefaultValue = 5;
+         _sourceParameter.IsDefault = true; // Even though value differs from default
+         _sourceParameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         
+         _targetParameter.Value = 5;
+         _targetParameter.DefaultValue = 5;
+         _targetParameter.IsDefault = true;
+         _targetParameter.BuildingBlockType = PKSimBuildingBlockType.Individual;
+         
+         A.CallTo(() => _formulaTypeMapper.MapFrom(_sourceParameter)).Returns(FormulaType.Constant);
+         A.CallTo(() => _formulaTypeMapper.MapFrom(_targetParameter)).Returns(FormulaType.Constant);
+      }
+
+      [Observation]
+      public void should_update_the_target_parameter_value()
+      {
+         _targetParameter.Value.ShouldBeEqualTo(10);
+      }
+
+      [Observation]
+      public void should_mark_target_parameter_as_non_default_so_it_exports_to_snapshot()
+      {
+         // The fix ensures IsDefault is set to false when values differ
+         // This is crucial for the parameter to be exported to snapshot
+         _targetParameter.IsDefault.ShouldBeFalse();
+      }
+   }
 }
