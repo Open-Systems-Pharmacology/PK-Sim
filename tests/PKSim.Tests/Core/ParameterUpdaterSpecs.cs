@@ -366,12 +366,12 @@ namespace PKSim.Core
       {
          base.Context();
          // Simulates the scenario where organ volumes are modified in a simulation
-         // The source parameter (from simulation) may have IsDefault=true 
-         // but the values differ
+         // The source parameter is from the used building block in the simulation (a copy of the original)
+         // It may have IsDefault=true but the values differ
          _sourceParameter.Value = 10;
          _sourceParameter.DefaultValue = 5;
          _sourceParameter.IsDefault = true; // Even though value differs from default
-         _sourceParameter.BuildingBlockType = PKSimBuildingBlockType.Simulation;
+         _sourceParameter.BuildingBlockType = PKSimBuildingBlockType.Individual; // Used building block has same type as template
          
          _targetParameter.Value = 5;
          _targetParameter.DefaultValue = 5;
