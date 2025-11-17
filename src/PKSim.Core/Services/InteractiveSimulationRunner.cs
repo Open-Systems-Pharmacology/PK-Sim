@@ -12,7 +12,6 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
-using static PKSim.Assets.PKSimConstants;
 
 namespace PKSim.Core.Services
 {
@@ -41,7 +40,7 @@ namespace PKSim.Core.Services
       private readonly SimulationRunOptions _simulationRunOptions;
       private readonly SemaphoreSlim _parallelGate;
       private readonly ICoreUserSettings _userSettings;
-      private readonly ISynchronizationContextUiDispatcher _sinchronizationContextUiDispatcher;
+      private readonly ISynchronizationContextUiDispatcher _synchronizationContextUiDispatcher;
 
       public int ActiveSimulationsCount => _cancellationTokenSources.Count;
       public IReadOnlyCollection<Simulation> ActiveSimulations => _cancellationTokenSources.Keys.ToList().AsReadOnly();
@@ -55,8 +54,8 @@ namespace PKSim.Core.Services
          ILazyLoadTask lazyLoadTask,
          IExecutionContext executionContext,
          ICoreUserSettings userSettings,
-         ISynchronizationContextUiDispatcher sinchronizationContextUiDispatcher
-         )
+         ISynchronizationContextUiDispatcher synchronizationContextUiDispatcher
+      )
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationRunner = simulationRunner;
@@ -66,7 +65,7 @@ namespace PKSim.Core.Services
          _executionContext = executionContext;
          _userSettings = userSettings;
          _parallelGate = new SemaphoreSlim(Math.Max(1, _userSettings.MaximumNumberOfCoresToUse));
-         _sinchronizationContextUiDispatcher = sinchronizationContextUiDispatcher;
+         _synchronizationContextUiDispatcher = synchronizationContextUiDispatcher;
          _simulationRunOptions = new SimulationRunOptions
          {
             CheckForNegativeValues = true,
@@ -124,6 +123,7 @@ namespace PKSim.Core.Services
                   ctsToDispose.Dispose();
                raiseEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
             }
+
             _parallelGate.Release();
          }
       }
@@ -146,14 +146,14 @@ namespace PKSim.Core.Services
       }
 
       private Task runOnUiAsync(Action action, CancellationToken ct = default)
-         => _sinchronizationContextUiDispatcher.InvokeAsync(action, ct);
+         => _synchronizationContextUiDispatcher.InvokeAsync(action, ct);
 
       private void addAnalysableToSimulationIfRequired(Simulation simulation)
       {
          if (simulation == null || !simulation.HasResults) return;
          if (simulation.Analyses.Any()) return;
 
-         _sinchronizationContextUiDispatcher.Post(() => _simulationAnalysisCreator.CreateAnalysisFor(simulation));
+         _synchronizationContextUiDispatcher.Post(() => _simulationAnalysisCreator.CreateAnalysisFor(simulation));
       }
 
       private void raiseEvent<T>(T eventToPublish)
