@@ -26,7 +26,7 @@ namespace PKSim.Presentation.DTO.Compounds
                try
                {
                   dto.Parameter.Value = dto.Parameter.ConvertToBaseUnit(valueInDisplayUnit);
-                  return dto._effectiveMolWeightParameter.Value > 0;
+                  return dto._effectiveMolWeightParameter.Value >= 0;
                }
                finally
                {
