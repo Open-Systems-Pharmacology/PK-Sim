@@ -28,6 +28,7 @@ namespace PKSim.Presentation
       protected ParameterDTO _parameterDTO;
       protected IParameter _effectiveMolWeight;
       protected IReadOnlyList<IParameter> _halogens;
+      private IParameterToMolWeightParameterDTOMapper _parameterToMolWeightParameterDTOMapper;
 
       protected override void Context()
       {
@@ -38,7 +39,8 @@ namespace PKSim.Presentation
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
          _contextMenuFactory = A.Fake<IParameterContextMenuFactory>();
          _dialogCreator = A.Fake<IDialogCreator>();
-
+         _parameterToMolWeightParameterDTOMapper = A.Fake<IParameterToMolWeightParameterDTOMapper>();
+            
          A.CallTo(() => _scaleParametersPresenter.View).Returns(A.Fake<IScaleParametersView>());
 
          _parameter = new Parameter();
@@ -56,7 +58,7 @@ namespace PKSim.Presentation
             _parameterTask,
             _parameterDTOMapper,
             _contextMenuFactory,
-            _dialogCreator);
+            _parameterToMolWeightParameterDTOMapper);
 
          _halogens = new List<IParameter> { _parameter };
       }
@@ -73,37 +75,6 @@ namespace PKSim.Presentation
       public void should_display_the_parameters_in_the_underlying_view()
       {
          A.CallTo(() => _view.BindTo(A<IEnumerable<ParameterDTO>>._)).MustHaveHappened();
-      }
-   }
-
-   public class When_setting_a_value_that_makes_effective_mol_weight_negative : concern_for_HalogensPresenter
-   {
-      private double _valueInDisplayUnits;
-
-      protected override void Context()
-      {
-         base.Context();
-
-         _valueInDisplayUnits = 5;
-         A.CallTo(() => _effectiveMolWeight.Value).Returns(-0.1);
-         sut.Edit(_halogens, _effectiveMolWeight);
-      }
-
-      protected override void Because()
-      {
-         sut.SetParameterValue(_parameterDTO, _valueInDisplayUnits);
-      }
-
-      [Observation]
-      public void should_show_an_error_message_indicating_effective_mol_weight_cannot_be_negative()
-      {
-         A.CallTo(() => _dialogCreator.MessageBoxError(PKSimConstants.Error.EffectiveMolWeightCannotBeNegative)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_not_delegate_the_set_operation_to_the_edit_parameter_task()
-      {
-         A.CallTo(() => _editParameterPresenterTask.SetParameterValue(sut, _parameterDTO, _valueInDisplayUnits)).MustNotHaveHappened();
       }
    }
 

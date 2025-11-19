@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
-using PKSim.Assets;
-using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.DTO.Mappers;
 using PKSim.Presentation.Presenters.Parameters;
@@ -19,7 +16,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
    public class HalogensPresenter : MultiParameterEditPresenter, IHalogensPresenter
    {
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IParameterToMolWeightParameterDTOMapper _parameterToMolWeightParameterDTOMapper;
       private IReadOnlyList<IParameter> _halogens;
       private IParameter _effectiveMolWeight;
 
@@ -30,23 +27,15 @@ namespace PKSim.Presentation.Presenters.Compounds
          IParameterTask parameterTask,
          IParameterToParameterDTOMapper parameterDTOMapper,
          IParameterContextMenuFactory contextMenuFactory,
-         IDialogCreator dialogCreator) :
+         IParameterToMolWeightParameterDTOMapper parameterToMolWeightParameterDTOMapper) :
          base(view, scaleParametersPresenter, editParameterPresenterTask, parameterTask, parameterDTOMapper, contextMenuFactory)
       {
-         _dialogCreator = dialogCreator;
+         _parameterToMolWeightParameterDTOMapper = parameterToMolWeightParameterDTOMapper;
       }
 
-      public override void SetParameterValue(IParameterDTO parameterDTO, double valueInDisplayUnits)
+      protected override IParameterDTO DTOFrom(IParameter x)
       {
-         var parameter = parameterDTO.Parameter;
-
-         if (!parameter.IsEffectiveMolWeightPositive(parameter.ConvertToBaseUnit(valueInDisplayUnits), _effectiveMolWeight))
-         {
-            _dialogCreator.MessageBoxError(PKSimConstants.Error.EffectiveMolWeightCannotBeNegative);
-            return;
-         }
-
-         base.SetParameterValue(parameterDTO, valueInDisplayUnits);
+         return _parameterToMolWeightParameterDTOMapper.MapFrom(x, _effectiveMolWeight);
       }
 
       public void Edit(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight)

@@ -207,23 +207,6 @@ namespace PKSim.Core.Model
 
          parameter.IsFixedValue = false;
       }
-      
-      /// <summary>
-      /// Returns false if the proposed <paramref name="newValueInBaseUnit"/> will make the value of <paramref name="effectiveMolWeightParameter"/> negative
-      /// </summary>
-      public static bool IsEffectiveMolWeightPositive(this IParameter parameter, double newValueInBaseUnit, IParameter effectiveMolWeightParameter)
-      {
-         var oldValue = parameter.Value;
-         try
-         {
-            parameter.Value = newValueInBaseUnit;
-            return effectiveMolWeightParameter.Value > 0;
-         }
-         finally
-         {
-            parameter.Value = oldValue;
-         }
-      }
    }
 
    public static class ExpressionParameterExtensions

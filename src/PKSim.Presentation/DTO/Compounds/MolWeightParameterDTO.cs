@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Validation;
 using PKSim.Assets;
-using PKSim.Core.Model;
 using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation.DTO.Compounds
@@ -21,7 +20,20 @@ namespace PKSim.Presentation.DTO.Compounds
       {
          private static IBusinessRule effectiveMolWeightPositive { get; } = CreateRule.For<MolWeightParameterDTO>()
             .Property(item => item.Value)
-            .WithRule((dto, folder) => dto.Parameter.IsEffectiveMolWeightPositive(dto.Parameter.ConvertToBaseUnit(folder), dto._effectiveMolWeightParameter))
+            .WithRule((dto, valueInDisplayUnit) =>
+            {
+               var oldValue = dto.Parameter.Value;
+               try
+               {
+                  dto.Parameter.Value = dto.Parameter.ConvertToBaseUnit(valueInDisplayUnit);
+                  return dto._effectiveMolWeightParameter.Value > 0;
+               }
+               finally
+               {
+                  dto.Parameter.Value = oldValue;
+               }
+               
+            })
             .WithError(PKSimConstants.Error.EffectiveMolWeightCannotBeNegative);
 
          public static IEnumerable<IBusinessRule> All()

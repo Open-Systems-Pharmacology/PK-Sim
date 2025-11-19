@@ -89,7 +89,6 @@ namespace PKSim.UI.Views.Parameters
          InitializeWithGrid(_gridView);
          _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView)
          {
-            ValidationMode = ValidationMode.LeavingRow,
             BindingMode = BindingMode.OneWay
          };
       }
