@@ -38,7 +38,9 @@ namespace PKSim.Core
          {
             if (ct.IsCancellationRequested) { tcs.TrySetCanceled(ct); return; }
             try { action(); tcs.SetResult(null); }
-            catch (Exception ex) { tcs.SetException(ex); }
+            catch (Exception ex) when 
+               (!(ex is OutOfMemoryException || ex is StackOverflowException || ex is ThreadAbortException)) 
+            { tcs.SetException(ex); }
          }, null);
          return tcs.Task;
       }
