@@ -15,7 +15,21 @@ namespace PKSim.Presentation.DTO.Mappers
    
    public class ParameterToMolWeightParameterDTOMapper : ParameterToParameterDTOMapper, IParameterToMolWeightParameterDTOMapper
    {
-      public ParameterToMolWeightParameterDTOMapper(IRepresentationInfoRepository representationInfoRepository, IFormulaToFormulaTypeMapper formulaTypeMapper, IPathToPathElementsMapper parameterDisplayPathMapper, IFavoriteRepository favoriteRepository, IEntityPathResolver entityPathResolver, IParameterListOfValuesRetriever parameterListOfValuesRetriever) : base(representationInfoRepository, formulaTypeMapper, parameterDisplayPathMapper, favoriteRepository, entityPathResolver, parameterListOfValuesRetriever)
+      public ParameterToMolWeightParameterDTOMapper(
+         IRepresentationInfoRepository representationInfoRepository,
+         IFormulaToFormulaTypeMapper formulaTypeMapper,
+         IPathToPathElementsMapper parameterDisplayPathMapper,
+         IFavoriteRepository favoriteRepository,
+         IEntityPathResolver entityPathResolver,
+         IParameterListOfValuesRetriever parameterListOfValuesRetriever
+      ) : base(
+         representationInfoRepository,
+         formulaTypeMapper,
+         parameterDisplayPathMapper,
+         favoriteRepository,
+         entityPathResolver,
+         parameterListOfValuesRetriever
+      )
       {
       }
 
