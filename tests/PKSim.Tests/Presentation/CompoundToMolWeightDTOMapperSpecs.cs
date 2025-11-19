@@ -14,7 +14,6 @@ namespace PKSim.Presentation
    {
       protected IParameterToParameterDTOMapper _parameterDTOMapper;
       protected IParameterToMolWeightParameterDTOMapper _molWeightDTOMapper;
-      protected CompoundToMolWeightDTOMapper sut;
 
       protected override void Context()
       {
