@@ -28,7 +28,6 @@ namespace PKSim.Presentation
       protected ParameterDTO _parameterDTO;
       protected IParameter _effectiveMolWeight;
       protected IReadOnlyList<IParameter> _halogens;
-      private IParameterToMolWeightParameterDTOMapper _parameterToMolWeightParameterDTOMapper;
 
       protected override void Context()
       {
@@ -39,7 +38,6 @@ namespace PKSim.Presentation
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
          _contextMenuFactory = A.Fake<IParameterContextMenuFactory>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _parameterToMolWeightParameterDTOMapper = A.Fake<IParameterToMolWeightParameterDTOMapper>();
             
          A.CallTo(() => _scaleParametersPresenter.View).Returns(A.Fake<IScaleParametersView>());
 
@@ -57,8 +55,7 @@ namespace PKSim.Presentation
             _editParameterPresenterTask,
             _parameterTask,
             _parameterDTOMapper,
-            _contextMenuFactory,
-            _parameterToMolWeightParameterDTOMapper);
+            _contextMenuFactory);
 
          _halogens = new List<IParameter> { _parameter };
       }

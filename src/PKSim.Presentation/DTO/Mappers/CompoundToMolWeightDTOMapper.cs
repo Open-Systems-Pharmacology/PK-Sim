@@ -14,12 +14,10 @@ namespace PKSim.Presentation.DTO.Mappers
    public class CompoundToMolWeightDTOMapper : ICompoundToMolWeightDTOMapper
    {
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
-      private readonly IParameterToMolWeightParameterDTOMapper _molWeightDTOMapper;
 
-      public CompoundToMolWeightDTOMapper(IParameterToParameterDTOMapper parameterDTOMapper, IParameterToMolWeightParameterDTOMapper molWeightDTOMapper)
+      public CompoundToMolWeightDTOMapper(IParameterToParameterDTOMapper parameterDTOMapper)
       {
          _parameterDTOMapper = parameterDTOMapper;
-         _molWeightDTOMapper = molWeightDTOMapper;
       }
 
       public MolWeightDTO MapFrom(IEnumerable<IParameter> compoundParameters)
@@ -29,7 +27,7 @@ namespace PKSim.Presentation.DTO.Mappers
          var molWeight = allCompoundParameters.FindByName(Constants.Parameters.MOL_WEIGHT);
          return new MolWeightDTO
          {
-            MolWeightParameter = _molWeightDTOMapper.MapFrom(molWeight, effectiveMolWeight),
+            MolWeightParameter = _parameterDTOMapper.MapMolWeightDTOFrom(molWeight, effectiveMolWeight),
             MolWeightEffParameter = _parameterDTOMapper.MapFrom(effectiveMolWeight),
             HasHalogensParameter = _parameterDTOMapper.MapFrom(allCompoundParameters.FindByName(Constants.Parameters.HAS_HALOGENS)),
          };

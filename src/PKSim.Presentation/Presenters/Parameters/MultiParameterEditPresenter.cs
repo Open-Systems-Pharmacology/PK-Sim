@@ -150,7 +150,7 @@ namespace PKSim.Presentation.Presenters.Parameters
    public class MultiParameterEditPresenter : ParameterSetPresenter<IMultiParameterEditView, IMultiParameterEditPresenter>, IMultiParameterEditPresenter
    {
       private readonly IScaleParametersPresenter _scaleParametersPresenter;
-      private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
+      protected readonly IParameterToParameterDTOMapper _parameterDTOMapper;
       private readonly IParameterContextMenuFactory _contextMenuFactory;
       public event Action<IParameter> ParameterChanged = delegate { };
       public event Action OnSelectedParametersChanged = delegate { };

@@ -16,7 +16,6 @@ namespace PKSim.Presentation.Presenters.Compounds
 
    public class HalogensPresenter : MultiParameterEditPresenter, IHalogensPresenter
    {
-      private readonly IParameterToMolWeightParameterDTOMapper _parameterToMolWeightParameterDTOMapper;
       private IReadOnlyList<IParameter> _halogens;
       private IParameter _effectiveMolWeight;
 
@@ -26,16 +25,14 @@ namespace PKSim.Presentation.Presenters.Compounds
          IEditParameterPresenterTask editParameterPresenterTask,
          IParameterTask parameterTask,
          IParameterToParameterDTOMapper parameterDTOMapper,
-         IParameterContextMenuFactory contextMenuFactory,
-         IParameterToMolWeightParameterDTOMapper parameterToMolWeightParameterDTOMapper) :
+         IParameterContextMenuFactory contextMenuFactory) :
          base(view, scaleParametersPresenter, editParameterPresenterTask, parameterTask, parameterDTOMapper, contextMenuFactory)
       {
-         _parameterToMolWeightParameterDTOMapper = parameterToMolWeightParameterDTOMapper;
       }
 
       protected override IParameterDTO DTOFrom(IParameter x)
       {
-         return _parameterToMolWeightParameterDTOMapper.MapFrom(x, _effectiveMolWeight);
+         return _parameterDTOMapper.MapMolWeightDTOFrom(x, _effectiveMolWeight);
       }
 
       public void Edit(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight)
