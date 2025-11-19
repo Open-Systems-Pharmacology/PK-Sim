@@ -22,7 +22,6 @@ namespace PKSim.Presentation
       protected IParameterTask _parameterTask;
       protected IParameterToParameterDTOMapper _parameterDTOMapper;
       protected IParameterContextMenuFactory _contextMenuFactory;
-      protected IDialogCreator _dialogCreator;
 
       protected IParameter _parameter;
       protected ParameterDTO _parameterDTO;
@@ -37,7 +36,6 @@ namespace PKSim.Presentation
          _parameterTask = A.Fake<IParameterTask>();
          _parameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
          _contextMenuFactory = A.Fake<IParameterContextMenuFactory>();
-         _dialogCreator = A.Fake<IDialogCreator>();
             
          A.CallTo(() => _scaleParametersPresenter.View).Returns(A.Fake<IScaleParametersView>());
 
@@ -98,12 +96,6 @@ namespace PKSim.Presentation
       public void should_delegate_the_set_operation_to_the_edit_parameter_task()
       {
          A.CallTo(() => _editParameterPresenterTask.SetParameterValue(sut, _parameterDTO, _valueInDisplayUnit)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_not_show_an_error_message()
-      {
-         A.CallTo(() => _dialogCreator.MessageBoxError(A<string>._)).MustNotHaveHappened();
       }
    }
 }
