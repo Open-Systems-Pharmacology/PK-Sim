@@ -27,7 +27,7 @@ namespace PKSim.Core.Services
       bool AnySimulationRunning { get; }
    }
 
-   public class InteractiveSimulationRunner : IInteractiveSimulationRunner
+   public class InteractiveSimulationRunner : IInteractiveSimulationRunner, IDisposable
    {
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly ISimulationRunner _simulationRunner;
@@ -187,6 +187,12 @@ namespace PKSim.Core.Services
       {
          return !_cancellationTokenSources.TryGetValue(simulation, out var cts)
                 || cts.IsCancellationRequested;
+      }
+
+      public void Dispose()
+      {
+         _parallelGate.Dispose();
+         GC.SuppressFinalize(this);
       }
    }
 }
