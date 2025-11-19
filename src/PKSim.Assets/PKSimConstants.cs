@@ -401,6 +401,7 @@ namespace PKSim.Assets
          public const string UnknownObserverBuilderType = "Observer builer type unknown.";
          public const string ImporterConfigurationNotFoundInProject = "Importer configuration for this dataset was not found in this project.\n\nThe data cannot be reloaded.";
          public const string SimulationCannotShareNamesWithCompounds = "Simulation cannot share names with compounds";
+         public const string EffectiveMolWeightCannotBeNegative = "Effective mol weight cannot be negative";
          public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
          public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
          public const string FactorShouldBeBiggerThanZero = "Factor should be bigger than 0.";

@@ -50,7 +50,7 @@ namespace PKSim.Presentation.DTO.Mappers
             return new NullParameterDTO();
 
          var parameterDTO = new ParameterDTO(parameter);
-         updateParameterDTOFromParameter(parameterDTO, parameter);
+         UpdateParameterDTOFromParameter(parameterDTO, parameter);
          return parameterDTO;
       }
 
@@ -60,11 +60,11 @@ namespace PKSim.Presentation.DTO.Mappers
             return new NullParameterDTO();
 
          var parameterDTO = new WritableParameterDTO(parameter);
-         updateParameterDTOFromParameter(parameterDTO, parameter);
+         UpdateParameterDTOFromParameter(parameterDTO, parameter);
          return parameterDTO;
       }
 
-      private void updateParameterDTOFromParameter(ParameterDTO parameterDTO, IParameter parameter)
+      protected void UpdateParameterDTOFromParameter(ParameterDTO parameterDTO, IParameter parameter)
       {
          var parameterPath = _entityPathResolver.ObjectPathFor(parameter);
          var representationInfo = _representationInfoRepository.InfoFor(parameter);
