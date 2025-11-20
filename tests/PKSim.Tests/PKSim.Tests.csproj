@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+	<TargetFramework>net8.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
     <Version Condition="'$(Version)' == ''">12.2.0</Version>
     <RootNamespace>PKSim</RootNamespace>

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<OutputPath>bin\$(Configuration)</OutputPath>
       <Version Condition="'$(Version)' == ''">12.2.0</Version>

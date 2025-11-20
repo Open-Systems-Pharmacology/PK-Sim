@@ -38,6 +38,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly IOSPSuiteLogger _logger;
       private readonly Lazy<ISnapshotMapper> _snapshotMapper;
       private readonly IExecutionContext _executionContext;
+      private readonly ICoreUserSettings _userSettings;
+      private readonly ISimulationRunner _simulationRunner;
+
 
       public ProjectMapper(
          SimulationMapper simulationMapper,
@@ -48,7 +51,9 @@ namespace PKSim.Core.Snapshots.Mappers
          IClassificationSnapshotTask classificationSnapshotTask,
          ILazyLoadTask lazyLoadTask,
          ICreationMetaDataFactory creationMetaDataFactory,
-         IOSPSuiteLogger logger)
+         IOSPSuiteLogger logger,
+         ICoreUserSettings userSettings,
+         ISimulationRunner simulationRunner)
       {
          _simulationMapper = simulationMapper;
          _simulationComparisonMapper = simulationComparisonMapper;
@@ -61,6 +66,8 @@ namespace PKSim.Core.Snapshots.Mappers
          _executionContext = executionContext;
          //required to load the snapshot mapper via execution context to avoid circular references
          _snapshotMapper = new Lazy<ISnapshotMapper>(executionContext.Resolve<ISnapshotMapper>);
+         _userSettings = userSettings;
+         _simulationRunner = simulationRunner;
       }
 
       public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
@@ -129,11 +136,41 @@ namespace PKSim.Core.Snapshots.Mappers
          var allQualificationPlans = await allQualificationPlansFrom(snapshot.QualificationPlans, snapshotContext);
          allQualificationPlans?.Each(qualificationPlan => addQualificationPlanToProject(project, qualificationPlan));
 
+         if (projectContext.RunSimulations)
+         {
+            await runParallelSimulations(project);
+         }
+
          //Map all classifications once project is loaded
          await updateProjectClassifications(snapshot, snapshotContext);
 
          return project;
       }
+
+      private async Task runParallelSimulations(PKSimProject project)
+      {
+         var simulations = project.All<Model.Simulation>();
+         if (!simulations.Any())
+            return;
+
+         var options = new ParallelOptions
+         {
+            MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+         };
+         
+         await Parallel.ForEachAsync(simulations, options, async (sim, ct) =>
+         {
+            try
+            {
+               await _simulationRunner.RunSimulation(sim,cancellationToken:ct);
+            }
+            catch (Exception ex)
+            {
+               _logger.AddException(ex);
+            }
+         });
+      }
+
 
       private Task<Classification[]> mapClassifications<TClassifiable>(ModelProject project) where TClassifiable : class, IClassifiableWrapper, new()
       {

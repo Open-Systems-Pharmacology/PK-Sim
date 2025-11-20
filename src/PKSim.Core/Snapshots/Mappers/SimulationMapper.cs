@@ -301,9 +301,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
 
-         if (snapshotContext.Run)
-            await runSimulation(snapshot, simulation);
-
          simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, snapshotContext));
          simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, snapshotContext));
 
