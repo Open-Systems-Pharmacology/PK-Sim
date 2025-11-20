@@ -2,45 +2,44 @@
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
-using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Compounds;
 
 namespace PKSim.Presentation.Presenters.Compounds
 {
    public interface IMolWeightHalogensPresenter : IPresenter<IMolWeightHalogensView>, ICommandCollectorPresenter
    {
-      void EditHalogens(IEnumerable<IParameter> halogenParameters);
+      void EditHalogens(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight);
       void SaveHalogens();
    }
 
    public class MolWeightHalogensPresenter : AbstractCommandCollectorPresenter<IMolWeightHalogensView, IMolWeightHalogensPresenter>, IMolWeightHalogensPresenter
    {
-      private readonly IMultiParameterEditPresenter _parameterEditPresenter;
+      private readonly IHalogensPresenter _halogensPresenter;
 
-      public MolWeightHalogensPresenter(IMolWeightHalogensView view, IMultiParameterEditPresenter parameterEditPresenter) : base(view)
+      public MolWeightHalogensPresenter(IMolWeightHalogensView view, IHalogensPresenter halogensPresenter) : base(view)
       {
-         _parameterEditPresenter = parameterEditPresenter;
-         _parameterEditPresenter.IsSimpleEditor = true;
-         _parameterEditPresenter.ValueOriginVisible = false;
-         _parameterEditPresenter.HeaderVisible = false;
-         AddSubPresenters(_parameterEditPresenter);
-         view.FillWithParameterView(parameterEditPresenter.View);
+         _halogensPresenter = halogensPresenter;
+         _halogensPresenter.IsSimpleEditor = true;
+         _halogensPresenter.ValueOriginVisible = false;
+         _halogensPresenter.HeaderVisible = false;
+         AddSubPresenters(_halogensPresenter);
+         view.FillWithParameterView(halogensPresenter.View);
       }
 
       public override void InitializeWith(ICommandCollector commandCollector)
       {
          base.InitializeWith(commandCollector);
-         _parameterEditPresenter.InitializeWith(commandCollector);
+         _halogensPresenter.InitializeWith(commandCollector);
       }
 
-      public void EditHalogens(IEnumerable<IParameter> halogenParameters)
+      public void EditHalogens(IReadOnlyList<IParameter> halogens, IParameter effectiveMolWeight)
       {
-         _parameterEditPresenter.Edit(halogenParameters);
+         _halogensPresenter.Edit(halogens, effectiveMolWeight);
       }
 
       public void SaveHalogens()
       {
-         _parameterEditPresenter.SaveEditor();
+         _halogensPresenter.SaveEditor();
       }
    }
 }

@@ -150,7 +150,7 @@ namespace PKSim.Presentation.Presenters.Parameters
    public class MultiParameterEditPresenter : ParameterSetPresenter<IMultiParameterEditView, IMultiParameterEditPresenter>, IMultiParameterEditPresenter
    {
       private readonly IScaleParametersPresenter _scaleParametersPresenter;
-      private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
+      protected readonly IParameterToParameterDTOMapper _parameterDTOMapper;
       private readonly IParameterContextMenuFactory _contextMenuFactory;
       public event Action<IParameter> ParameterChanged = delegate { };
       public event Action OnSelectedParametersChanged = delegate { };
@@ -176,7 +176,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       {
          base.Edit(parameters);
          AllParametersDTO.Clear();
-         AllParametersDTO.AddRange(_visibleParameters.MapAllUsing(_parameterDTOMapper).Cast<ParameterDTO>());
+         AllParametersDTO.AddRange(_visibleParameters.Select(DTOFrom).Cast<ParameterDTO>());
 
          _view.DistributionVisible = AllParametersDTO.Any(ParameterIsDistributed);
 
@@ -187,6 +187,11 @@ namespace PKSim.Presentation.Presenters.Parameters
          _view.BindTo(AllParametersDTO);
 
          PerformDefaultGrouping(_visibleParameters);
+      }
+
+      protected virtual IParameterDTO DTOFrom(IParameter x)
+      {
+         return _parameterDTOMapper.MapFrom(x);
       }
 
       protected virtual void PerformDefaultGrouping(IReadOnlyList<IParameter> parameters)
