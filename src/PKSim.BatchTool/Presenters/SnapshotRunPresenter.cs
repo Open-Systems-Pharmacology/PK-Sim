@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
+using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using PKSim.BatchTool.Views;
-using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 
 namespace PKSim.BatchTool.Presenters

@@ -1,16 +1,14 @@
 using System.Linq;
-using OSPSuite.Presentation.Nodes;
-
+using FakeItEasy;
 using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Nodes;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.Mappers;
-using PKSim.Presentation.Nodes;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
 using ITreeNodeFactory = PKSim.Presentation.Nodes.ITreeNodeFactory;
 
 namespace PKSim.Presentation
@@ -23,14 +21,13 @@ namespace PKSim.Presentation
 
       protected override void Context()
       {
-         _representationInfoRepository  = A.Fake<IRepresentationInfoRepository>();
-         _reportGenerator =A.Fake<IReportGenerator>();
+         _representationInfoRepository = A.Fake<IRepresentationInfoRepository>();
+         _reportGenerator = A.Fake<IReportGenerator>();
          _treeNodeFactory = new TreeNodeFactoryForSpecs();
-         sut = new ParameterContainerToTreeNodeMapper(_treeNodeFactory,_representationInfoRepository);
+         sut = new ParameterContainerToTreeNodeMapper(_treeNodeFactory, _representationInfoRepository);
       }
    }
 
-   
    public class When_mapping_a_container_to_a_tree_node_ : concern_for_ParameterContainerToTreeNodeMapper
    {
       private IContainer _container;
@@ -53,7 +50,7 @@ namespace PKSim.Presentation
          _container.Add(childContainer2);
          _container.Add(childContainer3);
          childChildContainer1.Add(distrubutedParameter);
-         _availableInfo =  new RepresentationInfo {DisplayName = "tralal", IconName = "Stop"};
+         _availableInfo = new RepresentationInfo { DisplayName = "tralal", IconName = "Stop" };
          A.CallTo(() => _representationInfoRepository.InfoFor(_container)).Returns(_availableInfo);
          A.CallTo(() => _representationInfoRepository.InfoFor(childChildContainer1)).Returns(new RepresentationInfo());
          A.CallTo(() => _representationInfoRepository.InfoFor(childContainer2)).Returns(new RepresentationInfo());
@@ -83,7 +80,6 @@ namespace PKSim.Presentation
          subNode.Children.Count().ShouldBeEqualTo(0);
       }
 
-
       [Observation]
       public void should_have_set_the_text_and_the_icon_for_each_node_according_to_the_representation_info()
       {
@@ -91,4 +87,4 @@ namespace PKSim.Presentation
          _node.Icon.ShouldBeEqualTo(ApplicationIcons.IconByName(_availableInfo.IconName));
       }
    }
-}	
+}

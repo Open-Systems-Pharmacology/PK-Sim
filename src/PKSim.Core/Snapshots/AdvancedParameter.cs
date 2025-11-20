@@ -1,4 +1,5 @@
 ﻿using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Snapshots;
 
 namespace PKSim.Core.Snapshots
 {

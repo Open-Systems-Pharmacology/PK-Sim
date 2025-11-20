@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraLayout.Utils;
+using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Presentation.DTO.Simulations;
 using PKSim.Presentation.Presenters.Simulations;
 using PKSim.Presentation.Views.Simulations;
 using PKSim.UI.Extensions;
-using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Views;
 
 namespace PKSim.UI.Views.Simulations
 {
@@ -76,7 +76,7 @@ namespace PKSim.UI.Views.Simulations
 
       public override void InitializeBinding()
       {
-         panelBuildingBlockSelection.FillWith((Control) _uxPopulationSelection);
+         panelBuildingBlockSelection.FillWith((Control)_uxPopulationSelection);
          _screenBinder.Bind(x => x.Population)
             .To(_uxPopulationSelection);
 
@@ -148,7 +148,7 @@ namespace PKSim.UI.Views.Simulations
          layoutItemSimulationFileSelection.Text = PKSimConstants.UI.SimulationFilePath.FormatForLabel();
          layoutItemPopulationFileSelection.Text = PKSimConstants.UI.PopulationFilePath.FormatForLabel();
          layoutItemNumberOfIndividuals.Text = PKSimConstants.UI.NumberOfIndividuals.FormatForLabel();
-         btnStartImport.InitWithImage(ApplicationIcons.Run, text: PKSimConstants.UI.StartImport);
+         btnStartImport.InitWithImage(ApplicationIcons.Run, text: Captions.StartImport);
          layoutItemButtonImport.AdjustLargeButtonSize(layoutControl);
 
          layoutControlGroupSimulationFileSelection.Text = PKSimConstants.ObjectTypes.Simulation;

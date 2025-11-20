@@ -30,10 +30,10 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       {
          var objectsToReport = new List<object>();
          var compoundConfig = new TablePart(PKSimConstants.UI.Parameter, PKSimConstants.UI.AlternativeInCompound, PKSimConstants.UI.Value, PKSimConstants.UI.Unit)
-            {
-               Caption = PKSimConstants.UI.CompoundConfiguration
-            };
-         compoundConfig.Types[PKSimConstants.UI.Value] = typeof (double);
+         {
+            Caption = PKSimConstants.UI.CompoundConfiguration
+         };
+         compoundConfig.Types[PKSimConstants.UI.Value] = typeof(double);
 
          var compound = compoundProperties.Compound;
          foreach (var alternativeSelection in compoundProperties.CompoundGroupSelections)
@@ -50,8 +50,6 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
          _builderRepository.Report(objectsToReport, buildTracker);
       }
-
-
 
       private IParameter getParameterForAlternative(Compound compound, CompoundProperties compoundProperties, CompoundGroupSelection alternativeSelection)
       {

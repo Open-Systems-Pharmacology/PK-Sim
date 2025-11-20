@@ -7,6 +7,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
@@ -20,10 +22,11 @@ using ExpressionProfile = PKSim.Core.Model.ExpressionProfile;
 using Formulation = PKSim.Core.Model.Formulation;
 using Individual = PKSim.Core.Model.Individual;
 using ObserverSet = PKSim.Core.Model.ObserverSet;
+using ParameterIdentificationMapper = OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationMapper;
 using Population = PKSim.Core.Model.Population;
 using Project = PKSim.Core.Snapshots.Project;
 using Protocol = PKSim.Core.Model.Protocol;
-using QualificationPlan = PKSim.Core.Model.QualificationPlan;
+using QualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 using Simulation = PKSim.Core.Snapshots.Simulation;
 
 namespace PKSim.Core
@@ -49,22 +52,22 @@ namespace PKSim.Core
       protected ObserverSet _observerSet;
       protected Snapshots.Population _populationSnapshot;
       protected DataRepository _observedData;
-      protected Snapshots.DataRepository _observedDataSnapshot;
+      protected OSPSuite.Core.Snapshots.DataRepository _observedDataSnapshot;
       protected SimulationMapper _simulationMapper;
       protected Simulation _simulationSnapshot;
       protected ClassificationMapper _classificationMapper;
       protected ClassifiableObservedData _classifiableObservedData;
       protected Classification _classification;
-      protected Snapshots.Classification _observedDataClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _observedDataClassificationSnapshot;
       protected IClassificationSnapshotTask _classificationSnapshotTask;
       protected SimulationComparison _simulationComparisonSnapshot;
       protected ParameterIdentification _parameterIdentificationSnapshot;
       protected ISimulationComparison _simulationComparison;
       protected SimulationComparisonMapper _simulationComparisonMapper;
-      protected Snapshots.Classification _simulationClassificationSnapshot;
-      protected Snapshots.Classification _comparisonClassificationSnapshot;
-      protected Snapshots.Classification _parameterIdentificationClassificationSnapshot;
-      protected Snapshots.Classification _qualificationPlanClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _simulationClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _comparisonClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _parameterIdentificationClassificationSnapshot;
+      protected OSPSuite.Core.Snapshots.Classification _qualificationPlanClassificationSnapshot;
       protected ILazyLoadTask _lazyLoadTask;
       protected ParameterIdentificationMapper _parameterIdentificationMapper;
       protected OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification _parameterIdentification;
@@ -143,14 +146,14 @@ namespace PKSim.Core
          _formulationSnapshot = new Snapshots.Formulation();
          _protocolSnapshot = new Snapshots.Protocol();
          _populationSnapshot = new Snapshots.Population();
-         _observedDataSnapshot = new Snapshots.DataRepository();
+         _observedDataSnapshot = new OSPSuite.Core.Snapshots.DataRepository();
          _parameterIdentificationSnapshot = new ParameterIdentification();
-         _observedDataClassificationSnapshot = new Snapshots.Classification();
+         _observedDataClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
          _simulationComparisonSnapshot = new SimulationComparison();
-         _simulationClassificationSnapshot = new Snapshots.Classification();
-         _comparisonClassificationSnapshot = new Snapshots.Classification();
-         _parameterIdentificationClassificationSnapshot = new Snapshots.Classification();
-         _qualificationPlanClassificationSnapshot = new Snapshots.Classification();
+         _simulationClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
+         _comparisonClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
+         _parameterIdentificationClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
+         _qualificationPlanClassificationSnapshot = new OSPSuite.Core.Snapshots.Classification();
          _qualificationPlanSnapshot = new Snapshots.QualificationPlan();
          _expressionProfileSnapshot = new Snapshots.ExpressionProfile();
          _simulationSnapshot = new Simulation();
@@ -344,7 +347,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: true));
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: true));
       }
 
       [Observation]
@@ -463,7 +466,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(runSimulations: false));
+         _newProject = await sut.MapToModel(_snapshot, new ProjectContext(new PKSimProject(), runSimulations: false));
       }
 
       [Observation]

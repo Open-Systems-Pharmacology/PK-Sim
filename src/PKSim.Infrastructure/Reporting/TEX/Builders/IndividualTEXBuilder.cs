@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Items;
@@ -21,7 +20,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       private readonly IFullPathDisplayResolver _fullPathDisplayResolver;
 
       public IndividualTeXBuilder(IContainerTask containerTask, IFullPathDisplayResolver fullPathDisplayResolver,
-                                  ITeXBuilderRepository texBuilderRepository, IReportGenerator reportGenerator, ILazyLoadTask lazyLoadTask) : base(texBuilderRepository, reportGenerator, lazyLoadTask)
+         ITeXBuilderRepository texBuilderRepository, IReportGenerator reportGenerator, ILazyLoadTask lazyLoadTask) : base(texBuilderRepository, reportGenerator, lazyLoadTask)
       {
          _containerTask = containerTask;
          _fullPathDisplayResolver = fullPathDisplayResolver;
@@ -30,11 +29,11 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       protected override IEnumerable<object> BuildingBlockReport(Individual individual, OSPSuiteTracker tracker)
       {
          var report = new List<object>
-            {
-               new SubSection(PKSimConstants.UI.Biometrics),
-               biometricsFor(individual),
-               new SubSection(PKSimConstants.UI.AnatomyAndPhysiology)
-            };
+         {
+            new SubSection(PKSimConstants.UI.Biometrics),
+            biometricsFor(individual),
+            new SubSection(PKSimConstants.UI.AnatomyAndPhysiology)
+         };
 
          anatomyAndPhysiologyFor(individual).Each(report.Add);
 
@@ -60,9 +59,9 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
 
       private IEnumerable<object> moleculeReportFor<TMolecule>(Individual individual, string sectionName) where TMolecule : IndividualMolecule
       {
-         var report = new List<object> {new SubSubSection(sectionName)};
+         var report = new List<object> { new SubSubSection(sectionName) };
          var allMolecules = individual.AllMolecules<TMolecule>().ToList();
-         if(allMolecules.Any())
+         if (allMolecules.Any())
             report.AddRange(allMolecules);
          else
             report.Add(PKSimConstants.UI.MoleculeNotDefined);
@@ -80,7 +79,7 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
             return report;
          }
 
-         var dataTable = new DataTable {TableName = PKSimConstants.UI.AnatomyAndPhysiology};
+         var dataTable = new DataTable { TableName = PKSimConstants.UI.AnatomyAndPhysiology };
          dataTable.AddColumn(PKSimConstants.UI.Parameter);
          dataTable.AddColumn(PKSimConstants.UI.Value);
          dataTable.AddColumn(PKSimConstants.UI.DefaultValue);

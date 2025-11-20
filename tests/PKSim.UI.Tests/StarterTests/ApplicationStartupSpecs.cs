@@ -12,9 +12,9 @@ using PKSim.Core.Mappers;
 using PKSim.Presentation.Presenters.ExpressionProfiles;
 using PKSim.Presentation.Presenters.Individuals;
 using PKSim.Presentation.Services;
-using PKSim.UI.Starter;
+using PKSim.Starter;
 
-namespace PKSim.UI.StarterTests
+namespace PKSim.StarterTests
 {
    public class concern_for_ApplicationStartup : StaticContextSpecification
    {
@@ -24,7 +24,7 @@ namespace PKSim.UI.StarterTests
       {
          SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
          IoC.InitializeWith(new CastleWindsorContainer());
-
+         IoC.RegisterImplementationOf(SynchronizationContext.Current);
          // To initialize the local container, the application starter will take some components from the
          // static container
          IoC.Container.RegisterImplementationOf(A.Fake<IMainViewPresenter>());
@@ -32,7 +32,7 @@ namespace PKSim.UI.StarterTests
          IoC.Container.RegisterImplementationOf(A.Fake<IJournalPresenter>());
          IoC.Container.RegisterImplementationOf(new BaseShell() as IShell);
 
-         _container = ApplicationStartup.Initialize();
+         _container = UIApplicationStartup.Initialize();
       }
    }
 

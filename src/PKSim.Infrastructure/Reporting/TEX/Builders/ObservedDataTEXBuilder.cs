@@ -18,8 +18,8 @@ namespace PKSim.Infrastructure.Reporting.TeX.Builders
       private readonly ITeXBuilderRepository _builderRepository;
 
       public ObservedDataTeXBuilder(
-         IReportGenerator reportGenerator, 
-         IDataRepositoryExportTask dataRepositoryTask, 
+         IReportGenerator reportGenerator,
+         IDataRepositoryExportTask dataRepositoryTask,
          ITeXBuilderRepository builderRepository)
       {
          _reportGenerator = reportGenerator;

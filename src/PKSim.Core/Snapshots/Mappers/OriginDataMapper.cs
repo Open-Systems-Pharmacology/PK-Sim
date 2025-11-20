@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
@@ -11,6 +12,7 @@ using PKSim.Core.Repositories;
 using PKSim.Core.Services;
 using ModelOriginData = PKSim.Core.Model.OriginData;
 using SnapshotOriginData = PKSim.Core.Snapshots.OriginData;
+using Parameter = OSPSuite.Core.Snapshots.Parameter;
 
 namespace PKSim.Core.Snapshots.Mappers
 {

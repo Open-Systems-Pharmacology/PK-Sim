@@ -1,0 +1,36 @@
+name: Build PR V13
+
+on:
+  pull_request:
+    branches:
+    - V13
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Add NuGet Repository
+        run: |
+          nuget sources add -username Open-Systems-Pharmacology -password ${{ secrets.GITHUB_TOKEN }} -name OSP-GitHub-Packages -source "https://nuget.pkg.github.com/Open-Systems-Pharmacology/index.json"
+
+      - name: Build
+        run: dotnet build PKSim.sln /p:Version=12.1.9999 -p:ExcludeDesigner=true
+
+      - name: Test
+        run: dotnet test PKSim.sln -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+
+      - name: Push test log as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: testLog_Windows
+          path: ./testLog*.html

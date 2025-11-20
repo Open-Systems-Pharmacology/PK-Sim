@@ -73,7 +73,7 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         _originData = new OriginData {Species = new Species {Name = "A", Icon = "B"}, Population = A.Fake<SpeciesPopulation>()};
+         _originData = new OriginData { Species = new Species { Name = "A", Icon = "B" }, Population = A.Fake<SpeciesPopulation>() };
          _individual = new Individual();
          _organism = new Organism();
          _neighborhoods = A.Fake<IContainer>();
@@ -83,7 +83,7 @@ namespace PKSim.Core
          A.CallTo(() => _entityBaseFactory.Create<Organism>()).Returns(_organism);
          A.CallTo(() => _entityBaseFactory.Create<IContainer>()).Returns(_neighborhoods);
 
-         _valueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro, Source = ValueOriginSources.Database};
+         _valueOrigin = new ValueOrigin { Method = ValueOriginDeterminationMethods.InVitro, Source = ValueOriginSources.Database };
          _originData.UpdateValueOriginFrom(_valueOrigin);
 
          _originData.Age = new OriginDataParameter(10, _age.DisplayUnit.Name);
@@ -225,9 +225,9 @@ namespace PKSim.Core
       protected override void Context()
       {
          base.Context();
-         var species = new Species {Name = CoreConstants.Species.HUMAN, Id = CoreConstants.Species.HUMAN};
-         species.AddPopulation(new SpeciesPopulation {Name = CoreConstants.Population.ICRP});
-         A.CallTo(() => _speciesRepository.All()).Returns(new[] {species});
+         var species = new Species { Name = CoreConstants.Species.HUMAN, Id = CoreConstants.Species.HUMAN };
+         species.AddPopulation(new SpeciesPopulation { Name = CoreConstants.Population.ICRP });
+         A.CallTo(() => _speciesRepository.All()).Returns(new[] { species });
          _individual = new Individual();
          _organism = A.Fake<Organism>();
          _neighborhoods = A.Fake<IContainer>();

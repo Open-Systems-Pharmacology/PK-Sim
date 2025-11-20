@@ -4,6 +4,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
@@ -53,7 +55,7 @@ namespace PKSim.Core
          _transporterExpressionContainer.Add(_transporterRelativeExpressionParameter);
 
          _individual = new Individual {OriginData = new OriginData {Species = new Species().WithName("Human")}};
-         _expressionContainerMapperContext = new ExpressionContainerMapperContext(new SnapshotContext())
+         _expressionContainerMapperContext = new ExpressionContainerMapperContext(new SnapshotContext(new PKSimProject(), SnapshotVersions.Current))
          {
          };
 

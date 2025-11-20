@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq;
-using PKSim.Assets;
 using OSPSuite.Utility;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Reporting;
 
@@ -17,12 +17,12 @@ namespace PKSim.Infrastructure.Reporting.Summary
          var numberOfIndividuals = populationSettings.AllFiles.Sum(x => x.NumberOfIndividuals);
          var numberOfIndividualPart = new ReportPart().WithTitle(PKSimConstants.UI.NumberOfIndividuals);
          numberOfIndividualPart.AddToContent(numberOfIndividuals.ToString(CultureInfo.InvariantCulture));
-         
+
          var part = new ReportPart().WithTitle(PKSimConstants.UI.CreatedUsingFiles);
-   
+
          foreach (var populationFiles in populationSettings.AllFiles)
          {
-            part.AddToContent(FileHelper.ShortenPathName(populationFiles.FilePath,50));
+            part.AddToContent(FileHelper.ShortenPathName(populationFiles.FilePath, 50));
          }
 
          reportPart.AddPart(baseOnIndividualPart);

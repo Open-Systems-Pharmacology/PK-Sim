@@ -4,6 +4,8 @@ using System.Threading;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using PKSim.Core;
 using PKSim.Core.Mappers;
@@ -31,7 +33,7 @@ namespace PKSim.Infrastructure
          var compoundMapper = IoC.Resolve<CompoundMapper>();
 
          var compoundSnapshot = objectCreator.StandardCompound(lipophilicity: -2, fractionUnbound: 0.8, molWeight: 400, solubilityAtRefPh: 1e-7).Result;
-         return compoundMapper.MapToModel(compoundSnapshot, new SnapshotContext()).Result;
+         return compoundMapper.MapToModel(compoundSnapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)).Result;
       }
 
       public static Protocol CreateStandardIVBolusProtocol()

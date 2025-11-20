@@ -1,84 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility;
 using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 
 namespace PKSim.CLI.Core.Services
-
 {
-  
-   [Flags]
-   public enum SimulationExportMode
-   {
-      /// <summary>
-      ///    Results as json
-      /// </summary>
-      Json = 1 << 0,
-
-      /// <summary>
-      ///    Results as CSV
-      /// </summary>
-      Csv = 1 << 1,
-
-      /// <summary>
-      ///    Sim Model file (simulation used by sim model for Matlab and R)
-      /// </summary>
-      Xml = 1 << 2,
-
-      /// <summary>
-      ///    pkml Model (simulation used by mobi and pksim)
-      /// </summary>
-      Pkml = 1 << 3,
-
-      /// <summary>
-      ///    Export simulation results to excel (Individual simulations only)
-      /// </summary>
-      Xlsx = 1 << 4,
-
-      All = Json | Csv | Xml | Pkml | Xlsx
-   }
-
-   public class SimulationExportOptions
-   {
-      private string _logCategory;
-      public SimulationExportMode ExportMode { get; set; }
-      public string ProjectName { get; set; }
-      public string Category { get; set; }
-      public bool UseDefaultExportName { get; set; } = true;
-      public string OutputFolder { get; set; }
-      public bool PrependProjectName { get; set; } = false;
-
-      public string LogCategory
-      {
-         set => _logCategory = value;
-         get => _logCategory ?? ProjectName;
-      }
-
-      public string TargetPathFor(Simulation simulation, string extension) =>
-         TargetPathFor(simulation.Name, extension);
-
-      public string TargetPathFor(string fileName, string extension) =>
-         pathUnder(fileName, extension);
-
-      public string TargetCSVPathFor(string fileName) => TargetPathFor(fileName, Constants.Filter.CSV_EXTENSION);
-
-      private string pathUnder(string fileName, string extension)
-      {
-         var fileNameWithPrefix = fileName;
-         if (PrependProjectName && !string.IsNullOrEmpty(ProjectName))
-            fileNameWithPrefix = $"{ProjectName}-{fileName}";
-
-         return Path.Combine(OutputFolder, $"{FileHelper.RemoveIllegalCharactersFrom(fileNameWithPrefix)}{extension}");
-      }
-   }
-
    public interface ISimulationExporter
    {
       Task RunAndExport(Simulation simulation, SimulationRunOptions simulationRunOptions, SimulationExportOptions simulationExportOptions);

@@ -2,10 +2,12 @@
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
+using DistributedTableFormula = OSPSuite.Core.Domain.Formulas.DistributedTableFormula;
 
 namespace PKSim.Core
 {
@@ -14,7 +16,7 @@ namespace PKSim.Core
       protected DistributedTableFormulaMapper _distributedTableFormulaMapper;
       protected Ontogeny _ontogeny;
       protected DistributedTableFormula _distributedTableFormula;
-      protected Snapshots.DistributedTableFormula _snapshotTable;
+      protected OSPSuite.Core.Snapshots.DistributedTableFormula _snapshotTable;
       protected ISimulationSubject _simulationSubject;
       private IOntogenyRepository _ontogenyRepository;
 
@@ -26,7 +28,7 @@ namespace PKSim.Core
          sut = new OntogenyMapper(_distributedTableFormulaMapper, _ontogenyRepository);
 
          _distributedTableFormula = new DistributedTableFormula();
-         _snapshotTable = new Snapshots.DistributedTableFormula();
+         _snapshotTable = new OSPSuite.Core.Snapshots.DistributedTableFormula();
          A.CallTo(() => _distributedTableFormulaMapper.MapToSnapshot(_distributedTableFormula)).Returns(_snapshotTable);
 
          _simulationSubject = A.Fake<ISimulationSubject>();
@@ -140,7 +142,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newOntogeny = await sut.MapToModel(_snapshot, new SnapshotContextWithSubject(_simulationSubject, new SnapshotContext()));
+         _newOntogeny = await sut.MapToModel(_snapshot, new SnapshotContextWithSubject(_simulationSubject, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current)));
       }
 
       [Observation]

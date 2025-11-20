@@ -6,10 +6,13 @@ using Microsoft.Extensions.Logging;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
+using CalculationMethodCacheMapper = PKSim.Core.Snapshots.Mappers.CalculationMethodCacheMapper;
 using Compound = PKSim.Core.Model.Compound;
 using CompoundProperties = PKSim.Core.Snapshots.CompoundProperties;
 using Formulation = PKSim.Core.Model.Formulation;
@@ -58,7 +61,7 @@ namespace PKSim.Core
          _processMappingMapper = A.Fake<ProcessMappingMapper>();
          _logger = A.Fake<IOSPSuiteLogger>();
          _project = new PKSimProject();
-         _baseSnapshotContext = new SnapshotContext(_project, ProjectVersions.Current);
+         _baseSnapshotContext = new SnapshotContext(_project, SnapshotVersions.Current);
          _calculationMethodSnapshot = new CalculationMethodCache();
          sut = new CompoundPropertiesMapper(_calculationMethodCacheMapper, _processMappingMapper, _logger);
 

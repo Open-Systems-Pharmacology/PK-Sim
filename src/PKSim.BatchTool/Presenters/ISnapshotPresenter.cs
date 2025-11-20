@@ -1,5 +1,5 @@
-﻿using OSPSuite.Presentation.Presenters;
-using PKSim.CLI.Core.RunOptions;
+﻿using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.Presentation.Presenters;
 
 namespace PKSim.BatchTool.Presenters
 {

@@ -3,8 +3,9 @@
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<OutputPath>bin\$(Configuration)</OutputPath>
-      <Version Condition="'$(Version)' == ''">12.2.0</Version>
+      <Version Condition="'$(Version)' == ''">13.0.0</Version>
 		<RootNamespace>PKSim.UI</RootNamespace>
+      <IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,13 +25,13 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 		<PackageReference Include="nunit" Version="3.14.0" />
-		<PackageReference Include="OSPSuite.Assets" Version="12.2.20" />
+		<PackageReference Include="OSPSuite.Assets" Version="13.0.70" />
 		<PackageReference Include="OSPSuite.BDDHelper" Version="4.0.1.1" />
-		<PackageReference Include="OSPSuite.Core" Version="12.2.20" />
-		<PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" />
-		<PackageReference Include="OSPSuite.UI" Version="12.2.20" />
-		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
-		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
+		<PackageReference Include="OSPSuite.Core" Version="13.0.70" />
+		<PackageReference Include="OSPSuite.SimModel" Version="4.0.0.77" />
+		<PackageReference Include="OSPSuite.UI" Version="13.0.70" />
+		<PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.75" GeneratePathProperty="true" />
+		<PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
 		<None Include="..\..\src\Db\PKSimDB.sqlite" Link="PKSimDB.sqlite">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -38,20 +39,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\PKSim.Core\PKSim.Core.csproj" />
-		<ProjectReference Include="..\..\src\PKSim.UI.Starter\PKSim.UI.Starter.csproj" />
+		<ProjectReference Include="..\..\src\PKSim.Starter\PKSim.Starter.csproj" />
 		<ProjectReference Include="..\..\src\PKSim.UI\PKSim.UI.csproj" />
 
 	</ItemGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<ItemGroup>
-			<WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
-		</ItemGroup>
-		<Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
-	</Target>
-	<PropertyGroup>
-		<ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
-		<CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
-		<CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
-		<CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
-	</PropertyGroup>
 </Project>

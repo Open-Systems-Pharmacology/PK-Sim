@@ -1,16 +1,18 @@
 using FluentNHibernate.Cfg;
 using NHibernate;
 using NHibernate.Cfg;
+using NHibernate.Extensions.Sqlite;
 using NHibernate.Tool.hbm2ddl;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Serialization.Extensions;
 using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace PKSim.Infrastructure.Services
 {
    public class SessionFactoryProvider : ISessionFactoryProvider
    {
-      public ISessionFactory InitalizeSessionFactoryFor(string dataSource)
+      public ISessionFactory InitializeSessionFactoryFor(string dataSource)
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
          //Create schema for database
@@ -22,8 +24,6 @@ namespace PKSim.Infrastructure.Services
       public ISessionFactory OpenSessionFactoryFor(string dataSource)
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
-         var update = new SchemaUpdate(cfg);
-         update.Execute(useStdOut: false, doUpdate: true);
          return createSessionFactory(cfg);
       }
 
@@ -48,11 +48,11 @@ namespace PKSim.Infrastructure.Services
          var path = dataSource.ToUNCPath();
 
          configuration.SetProperty("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-         configuration.SetProperty("connection.driver_class", "NHibernate.Driver.SQLite20Driver");
-         configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
+         configuration.SetProperty("connection.driver_class", typeof(SqliteDriver).AssemblyQualifiedName);
+         configuration.SetProperty("dialect", typeof(SqliteDialect).AssemblyQualifiedName);
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", $"Data Source={path};Version=3;New=False;Compress=True;");
+         configuration.SetProperty("connection.connection_string", ConnectionStringHelper.ConnectionStringFor(path));
 
          return Fluently.Configure(configuration)
             .Mappings(cfg =>

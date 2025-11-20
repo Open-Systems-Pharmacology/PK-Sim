@@ -3,8 +3,14 @@ using FakeItEasy;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Mappers;
+using DistributedTableFormula = OSPSuite.Core.Domain.Formulas.DistributedTableFormula;
+using DistributionMetaData = OSPSuite.Core.Domain.Formulas.DistributionMetaData;
 using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
+using TableFormulaMapper = PKSim.Core.Snapshots.Mappers.TableFormulaMapper;
 
 namespace PKSim.Core
 {
@@ -13,7 +19,7 @@ namespace PKSim.Core
       protected IFormulaFactory _formulaFactory;
       protected TableFormulaMapper _tableFormulaMapper;
       protected DistributedTableFormula _distributedTableFormula;
-      protected Snapshots.DistributedTableFormula _snapshot;
+      protected OSPSuite.Core.Snapshots.DistributedTableFormula _snapshot;
       protected DistributionMetaData _distributionMetaData1;
       protected DistributionMetaData _distributionMetaData2;
 
@@ -96,7 +102,7 @@ namespace PKSim.Core
 
       protected override async Task Because()
       {
-         _newFormula = await sut.MapToModel(_snapshot, new SnapshotContext());
+         _newFormula = await sut.MapToModel(_snapshot, new SnapshotContext(new PKSimProject(), SnapshotVersions.Current));
       }
 
       [Observation]

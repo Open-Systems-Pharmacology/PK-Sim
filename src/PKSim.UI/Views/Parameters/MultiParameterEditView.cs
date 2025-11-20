@@ -28,6 +28,7 @@ using PKSim.Assets;
 using PKSim.Presentation.DTO.Parameters;
 using PKSim.Presentation.Presenters.Parameters;
 using PKSim.Presentation.Views.Parameters;
+using Point = System.Drawing.Point;
 
 namespace PKSim.UI.Views.Parameters
 {

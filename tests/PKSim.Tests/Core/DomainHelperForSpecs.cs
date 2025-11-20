@@ -26,6 +26,7 @@ namespace PKSim.Core
       private static Dimension _fractionDimension;
 
       private static readonly string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
+      private static readonly string PATH_TO_DOCS = "..\\..\\..\\..\\..\\docs\\";
       private static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
       private static readonly string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
 
@@ -68,6 +69,8 @@ namespace PKSim.Core
       {
          return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
       }
+      
+      public static string ProjectSchemaDumpFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DOCS, "project_schema.sql");
 
       public static ExpressionProfile CreateExpressionProfile<TMolecule>(string speciesName = "Species", string moleculeName = "CYP3A4", string category = "Healthy") where TMolecule : IndividualMolecule, new()
       {

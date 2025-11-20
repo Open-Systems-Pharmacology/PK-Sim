@@ -34,6 +34,7 @@ namespace PKSim.IntegrationTests
       protected SimulationRunOptions _simulationRunOptions;
       protected ExpressionProfile _expressionProfile;
       protected IMoleculeExpressionTask<Individual> _moleculeExpressionTask;
+      protected ICoreWorkspace _workspace;
 
       public override void GlobalContext()
       {
@@ -45,6 +46,8 @@ namespace PKSim.IntegrationTests
          _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfile<IndividualEnzyme>(moleculeName: "CYP2A6");
          _pkAnalysesTask = IoC.Resolve<IPKAnalysesTask>();
          _simulationRunOptions = new SimulationRunOptions();
+         _workspace = IoC.Resolve<ICoreWorkspace>();
+         _workspace.Project = new PKSimProject();
       }
    }
 
@@ -178,12 +181,14 @@ namespace PKSim.IntegrationTests
 
       private async Task runPopulationSimulationFor(string populationName, List<string> errors)
       {
+         var individual = DomainFactoryForSpecs.CreateStandardIndividual(populationName);
+         var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
+         _workspace.Project.AddBuildingBlock(individual);
+         _workspace.Project.AddBuildingBlock(population);
+
          try
          {
-            var individual = DomainFactoryForSpecs.CreateStandardIndividual(populationName);
-            var population = DomainFactoryForSpecs.CreateDefaultPopulation(individual);
             var simulation = DomainFactoryForSpecs.CreateSimulationWith(population, _compound, _protocol) as PopulationSimulation;
-
             var simulationEngine = IoC.Resolve<IPopulationSimulationEngine>();
             var simSettingsRetriever = IoC.Resolve<ISimulationSettingsRetriever>();
             simSettingsRetriever.CreatePKSimDefaults(simulation);
@@ -193,6 +198,11 @@ namespace PKSim.IntegrationTests
          {
             var errorMsg = $"Population simulation for the population '{populationName}' failed: {ex.ToString()}";
             errors.Add(errorMsg);
+         }
+         finally
+         {
+            _workspace.Project.RemoveBuildingBlock(individual);
+            _workspace.Project.RemoveBuildingBlock(population);
          }
       }
    }
@@ -280,6 +290,9 @@ namespace PKSim.IntegrationTests
       {
          base.GlobalContext();
          _compound.Parameter(Constants.Parameters.IS_SMALL_MOLECULE).Value = 0;
+         _workspace.Project.AddBuildingBlock(_individual);
+         _workspace.Project.AddBuildingBlock(_protocol);
+         _workspace.Project.AddBuildingBlock(_compound);
          _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol, CoreConstants.Model.TWO_PORES) as IndividualSimulation;
          var simulationConfigurationTask = IoC.Resolve<ISimulationConfigurationTask>();
          _simulationConfiguration = simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);

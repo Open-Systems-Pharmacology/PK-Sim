@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
@@ -17,19 +21,6 @@ using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.Populat
 
 namespace PKSim.Core.Snapshots.Mappers
 {
-   public class SimulationContext : SnapshotContext
-   {
-      public bool Run { get; }
-
-      public SimulationContext(bool run, SnapshotContext baseContext) : base(baseContext)
-      {
-         Run = run;
-      }
-
-      public int NumberOfSimulationsToLoad { get; set; } = 1;
-      public int NumberOfSimulationsLoaded { get; set; } = 1;
-   }
-
    public class SimulationMapper : ObjectBaseSnapshotMapperBase<ModelSimulation, SnapshotSimulation, SimulationContext, PKSimProject>
    {
       private readonly SolverSettingsMapper _solverSettingsMapper;
@@ -272,8 +263,8 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelSimulation> MapToModel(SnapshotSimulation snapshot, SimulationContext snapshotContext)
       {
-         var project = snapshotContext.Project;
-         _logger.AddInfo(PKSimConstants.Information.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
+         var project = snapshotContext.PKSimProject();
+         _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, snapshotContext.NumberOfSimulationsLoaded, snapshotContext.NumberOfSimulationsToLoad), project.Name);
 
          //Local cache of ids' that will be used to retrieve original building block parameters as the project is only registered 
          //in global context once the whole snapshot mapping process is completed
@@ -325,7 +316,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<InteractionSelection> interactionSelectionFrom(CompoundProcessSelection snapshotInteraction, ISimulationSubject simulationSubject, SnapshotContext snapshotContext)
       {
-         var process = findProcess(snapshotContext.Project, snapshotInteraction, simulationSubject);
+         var process = findProcess(snapshotContext.PKSimProject(), snapshotInteraction, simulationSubject);
          if (process == null)
             return null;
 
@@ -350,7 +341,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          //This might be a process that was deselected explicitly by the user
          var molecule = simulationSubject.MoleculeByName(snapshotInteraction.MoleculeName);
-         return molecule == null ? null : new NoInteractionProcess {MoleculeName = molecule.Name};
+         return molecule == null ? null : new NoInteractionProcess { MoleculeName = molecule.Name };
       }
 
       private async Task runSimulation(SnapshotSimulation snapshot, ModelSimulation simulation)
@@ -378,7 +369,7 @@ namespace PKSim.Core.Snapshots.Mappers
             return Task.FromResult(new List<TAnalysis>().ToArray());
 
          var project = simulationContext.Project;
-         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData, simulationContext) {RunSimulation = simulationContext.Run};
+         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData, simulationContext) { RunSimulation = simulationContext.Run };
 
          var individualSimulation = simulation as IndividualSimulation;
          if (individualSimulation?.DataRepository != null)
@@ -396,7 +387,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private async Task<ModelSimulation> createModelLessSimulationFrom(SnapshotSimulation snapshot, SnapshotContext snapshotContext)
       {
-         var project = snapshotContext.Project;
+         var project = snapshotContext.PKSimProject();
          var simulationSubject = simulationSubjectFrom(snapshot, project);
          var compounds = compoundsFrom(snapshot.Compounds, project);
          var modelProperties = modelPropertiesFrom(snapshot.Model, simulationSubject);

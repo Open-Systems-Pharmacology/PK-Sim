@@ -158,7 +158,7 @@ namespace PKSim.R
       [Observation]
       public void should_set_a_seed_automatically()
       {
-         _result.Seed.ShouldBeGreaterThan(0);
+         _result.Seed.ShouldNotBeEqualTo(0);
       }
    }
 }

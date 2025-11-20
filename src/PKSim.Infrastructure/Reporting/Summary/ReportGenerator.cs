@@ -2,6 +2,7 @@ using System;
 using OSPSuite.Core.Domain;
 using PKSim.Core.Reporting;
 using PKSim.Core.Repositories;
+using IReportGenerator = PKSim.Core.Reporting.IReportGenerator;
 
 namespace PKSim.Infrastructure.Reporting.Summary
 {

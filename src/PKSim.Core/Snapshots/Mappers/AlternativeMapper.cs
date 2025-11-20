@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Snapshots;
+using OSPSuite.Core.Snapshots.Mappers;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
@@ -82,5 +84,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
          _compoundAlternativeTask.PrepareSolubilityAlternativeForTableSolubility(solubilityAlternative);
       }
+
+      protected override bool ShouldExportToSnapshot(IParameter parameter) => parameter.ShouldExportToSnapshot();
    }
 }
