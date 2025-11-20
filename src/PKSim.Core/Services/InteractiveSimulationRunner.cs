@@ -145,9 +145,6 @@ namespace PKSim.Core.Services
          return !simulation.OutputSelections.HasSelection;
       }
 
-      private Task runOnUiAsync(Action action, CancellationToken ct = default)
-         => _synchronizationContextUiDispatcher.InvokeAsync(action, ct);
-
       private void addAnalysableToSimulationIfRequired(Simulation simulation)
       {
          if (simulation == null || !simulation.HasResults) return;
