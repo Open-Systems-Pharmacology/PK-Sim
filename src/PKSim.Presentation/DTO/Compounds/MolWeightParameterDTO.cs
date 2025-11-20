@@ -37,7 +37,6 @@ namespace PKSim.Presentation.DTO.Compounds
                {
                   dto.Parameter.Value = oldValue;
                }
-               
             })
             .WithError((dto, value) => PKSimConstants.Error.EffectiveMolWeightMustBeGreaterThan(dto._effectiveMolWeightParameter.ConvertToDisplayUnit(dto._effectiveMolWeightParameter.MinValue), dto._effectiveMolWeightParameter.DisplayUnit.Name));
 
