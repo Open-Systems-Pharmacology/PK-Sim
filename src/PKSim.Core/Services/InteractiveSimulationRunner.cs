@@ -151,7 +151,7 @@ namespace PKSim.Core.Services
       private void addAnalysableToSimulationIfRequired(Simulation simulation)
       {
          if (simulation == null || !simulation.HasResults) return;
-         if (simulation.Analyses.Any()) return;
+         if (simulation.Analyses != null && simulation.Analyses.Any()) return;
 
          _synchronizationContextUiDispatcher.Post(() => _simulationAnalysisCreator.CreateAnalysisFor(simulation));
       }
