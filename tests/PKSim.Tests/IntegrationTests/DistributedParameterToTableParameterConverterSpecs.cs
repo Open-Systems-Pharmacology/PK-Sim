@@ -107,7 +107,8 @@ namespace PKSim.IntegrationTests
       {
          var simulationRunner = IoC.Resolve<ISimulationRunner>();
          //this config may lead to negative values. We want to check here that the simulation can run without errors
-         simulationRunner.RunSimulation(_simulation, new SimulationRunOptions{CheckForNegativeValues = false}).Wait();
+         _simulation.Settings.Solver.CheckForNegativeValues = false;
+         simulationRunner.RunSimulation(_simulation).Wait();
          _simulation.HasResults.ShouldBeTrue();
       }
 

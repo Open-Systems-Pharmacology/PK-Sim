@@ -25,7 +25,7 @@ namespace PKSim.Infrastructure.ORM.Repositories
          IPKSimConfiguration pkSimConfiguration,
          IContainer container)
       {
-         _dimensionFactory = dimensionFactory;
+         _dimensionFactory = dimensionFactory;  
          _dimensionFactory.DimensionRepository = this;
          _unitSystemXmlSerializerRepository = unitSystemXmlSerializerRepository;
          _pkSimConfiguration = pkSimConfiguration;

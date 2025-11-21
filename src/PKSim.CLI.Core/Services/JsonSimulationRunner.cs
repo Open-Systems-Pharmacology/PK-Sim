@@ -41,8 +41,7 @@ namespace PKSim.CLI.Core.Services
          _workspace = workspace;
          _simulationRunOptions = new SimulationRunOptions
          {
-            Validate = false,
-            CheckForNegativeValues = false,
+            Validate = false
          };
       }
 

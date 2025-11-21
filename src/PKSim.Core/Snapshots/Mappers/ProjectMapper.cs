@@ -14,7 +14,9 @@ using PKSim.Core.Services;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using ModelProject = PKSim.Core.Model.PKSimProject;
+using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -24,7 +26,8 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly SimulationComparisonMapper _simulationComparisonMapper;
       private readonly QualificationPlanMapper _qualificationPlanMapper;
       private readonly ILazyLoadTask _lazyLoadTask;
-
+      private readonly ICoreUserSettings _userSettings;
+      private readonly IInteractiveSimulationRunner _simulationRunner;
 
       public ProjectMapper(
          SimulationMapper simulationMapper,
@@ -35,22 +38,16 @@ namespace PKSim.Core.Snapshots.Mappers
          IClassificationSnapshotTask classificationSnapshotTask,
          ILazyLoadTask lazyLoadTask,
          ICreationMetaDataFactory creationMetaDataFactory,
-         IOSPSuiteLogger logger) : base(creationMetaDataFactory, logger, executionContext, classificationSnapshotTask, parameterIdentificationMapper)
          IOSPSuiteLogger logger,
          ICoreUserSettings userSettings,
-         ISimulationRunner simulationRunner)
+         IInteractiveSimulationRunner interactiveSimulationRunner) : base(creationMetaDataFactory, logger, executionContext, classificationSnapshotTask, parameterIdentificationMapper)
       {
          _simulationMapper = simulationMapper;
          _simulationComparisonMapper = simulationComparisonMapper;
          _qualificationPlanMapper = qualificationPlanMapper;
          _lazyLoadTask = lazyLoadTask;
-         _creationMetaDataFactory = creationMetaDataFactory;
-         _logger = logger;
-         _executionContext = executionContext;
-         //required to load the snapshot mapper via execution context to avoid circular references
-         _snapshotMapper = new Lazy<ISnapshotMapper>(executionContext.Resolve<ISnapshotMapper>);
          _userSettings = userSettings;
-         _simulationRunner = simulationRunner;
+         _simulationRunner = interactiveSimulationRunner;
       }
 
       public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
@@ -142,12 +139,12 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
          };
-         
+         var simulationOptions = new SimulationRunOptions{RaiseEvents = true};
          await Parallel.ForEachAsync(simulations, options, async (sim, ct) =>
          {
             try
             {
-               await _simulationRunner.RunSimulation(sim,cancellationToken:ct);
+               await _simulationRunner.RunSimulation(sim,false);
             }
             catch (Exception ex)
             {
@@ -155,13 +152,6 @@ namespace PKSim.Core.Snapshots.Mappers
             }
          });
       }
-
-
-      private Task<Classification[]> mapClassifications<TClassifiable>(ModelProject project) where TClassifiable : class, IClassifiableWrapper, new()
-      {
-         return _classificationSnapshotTask.MapClassificationsToSnapshots<TClassifiable>(project);
-      }
-
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, SnapshotContext snapshotContext)
          => _simulationComparisonMapper.MapToModels(snapshotSimulationComparisons, snapshotContext);

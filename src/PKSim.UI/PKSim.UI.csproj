@@ -46,14 +46,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.2" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.70" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.72" />
     <PackageReference Include="OSPSuite.DataBinding" Version="3.0.1.4" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.1.5" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15.1" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.70" />
-    <PackageReference Include="OSPSuite.UI" Version="13.0.70" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.70" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.72" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.72" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.72" />
     <PackageReference Include="DevExpress.Win.Design" Version="21.2.15" Condition="'$(ExcludeDesigner)' != 'true'" />
   </ItemGroup>
   <ItemGroup>

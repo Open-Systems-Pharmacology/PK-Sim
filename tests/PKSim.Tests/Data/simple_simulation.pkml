@@ -19197,7 +19197,7 @@
       </AllCalculationMethods>
     </BuildConfiguration>
     <SimulationConfiguration randomSeed="1">
-      <Solver solverName="CVODE1002_2" absTol="1E-09" relTol="0.0001" h0="1E-10" hMax="60" hMin="0" mxStep="100000" useJacobian="1" />
+      <Solver solverName="CVODE1002_2" absTol="1E-09" relTol="0.0001" h0="1E-10" hMax="60" hMin="0" mxStep="100000" useJacobian="1" CheckForNegativeValues="0" />
       <OutputSchema id="IYv1IXKuhE-_KbGtQ1jHiQ" name="Output schema" mode="Logical" containerType="Other">
         <Children>
           <OutputInterval id="MuhljKUNZkuQqI6AbIkTxQ" name="Simulation interval high resolution" mode="Logical" containerType="Other">

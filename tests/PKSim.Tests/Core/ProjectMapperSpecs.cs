@@ -79,6 +79,9 @@ namespace PKSim.Core
       protected Snapshots.ObserverSet _observerSetSnapshot;
       protected ExpressionProfile _expressionProfile;
       protected Snapshots.ExpressionProfile _expressionProfileSnapshot;
+      protected ICoreUserSettings _userSettings;
+      protected IInteractiveSimulationRunner _simulationRunner;
+
 
       protected override Task Context()
       {
@@ -93,6 +96,8 @@ namespace PKSim.Core
          _qualificationPlanMapper = A.Fake<QualificationPlanMapper>();
          _creationMetaDataFactory = A.Fake<ICreationMetaDataFactory>();
          _logger = A.Fake<IOSPSuiteLogger>();
+         _userSettings = A.Fake<ICoreUserSettings>();
+         _simulationRunner = A.Fake<IInteractiveSimulationRunner>();   
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -103,7 +108,9 @@ namespace PKSim.Core
             _classificationSnapshotTask,
             _lazyLoadTask,
             _creationMetaDataFactory,
-            _logger);
+            _logger,
+            _userSettings,
+            _simulationRunner);
 
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);
