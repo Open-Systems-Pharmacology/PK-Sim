@@ -866,6 +866,9 @@ namespace PKSim.Assets
             $"Could not find the molecule type {moleculeType}";
 
          public static string CalculationMethodNotFound(string calculationMethod) => $"Calculation method '{calculationMethod}' was not found.";
+
+         public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) =>
+            $"Effective mol weight must be greater than or equal to {valueInDisplayUnit} {displayUnit}";
       }
 
       public static class Information

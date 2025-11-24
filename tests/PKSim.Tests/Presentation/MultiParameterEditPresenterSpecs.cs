@@ -260,10 +260,10 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _visibleParameter = new PKSimParameter {Visible = true};
-         _hiddenUnchangedParameter = new PKSimParameter {Visible = false, IsDefault = true};
-         _hiddenIsFixedParameter = new PKSimParameter {Visible = false, IsFixedValue = true};
-         _hiddenIsNotDefaultParameter = new PKSimParameter {Visible = false, IsDefault = false};
+         _visibleParameter = new PKSimParameter { Visible = true };
+         _hiddenUnchangedParameter = new PKSimParameter { Visible = false, IsDefault = true };
+         _hiddenIsFixedParameter = new PKSimParameter { Visible = false, IsFixedValue = true };
+         _hiddenIsNotDefaultParameter = new PKSimParameter { Visible = false, IsDefault = false };
 
          _parameterList.Add(_visibleParameter);
          _parameterList.Add(_hiddenUnchangedParameter);
@@ -311,15 +311,15 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _para1 = new PKSimParameter {Visible = true};
-         _para2 = new PKSimParameter {Visible = false, IsDefault = true};
+         _para1 = new PKSimParameter { Visible = true };
+         _para2 = new PKSimParameter { Visible = false, IsDefault = true };
          _resetParameterCommand = A.Fake<IPKSimCommand>();
          _parameterList.Add(_para1);
          _parameterList.Add(_para2);
          var parameterDTO = new ParameterDTO(_para1);
 
          A.CallTo(() => _mapper.MapFrom(_para1)).Returns(parameterDTO);
-         A.CallTo(() => _view.AllVisibleParameters).Returns(new[] {parameterDTO});
+         A.CallTo(() => _view.AllVisibleParameters).Returns(new[] { parameterDTO });
 
          A.CallTo(() => _parameterTask.ResetParameters(A<IEnumerable<IParameter>>._))
             .Invokes(x => _parameters = x.GetArgument<IEnumerable<IParameter>>(0))
@@ -355,13 +355,13 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _para1 = new PKSimParameter {Visible = true};
+         _para1 = new PKSimParameter { Visible = true };
          _scaleParameterCommand = A.Fake<IPKSimCommand>();
          _parameterList.Add(_para1);
-         _parameterList.Add(new PKSimParameter {Visible = false, IsDefault = true});
+         _parameterList.Add(new PKSimParameter { Visible = false, IsDefault = true });
          var parameterDTO = new ParameterDTO(_para1);
          A.CallTo(() => _mapper.MapFrom(_para1)).Returns(parameterDTO);
-         A.CallTo(() => _view.AllVisibleParameters).Returns(new[] {parameterDTO});
+         A.CallTo(() => _view.AllVisibleParameters).Returns(new[] { parameterDTO });
 
          A.CallTo(() => _parameterTask.ScaleParameters(A<IEnumerable<IParameter>>._, 10))
             .Invokes(x => _parameters = x.GetArgument<IEnumerable<IParameter>>(0))
@@ -484,7 +484,7 @@ namespace PKSim.Presentation
 
          sut.Edit(_parameterList);
 
-         A.CallTo(() => _view.SelectedParameters).Returns(new[] {_allParameterDTO[0], _allParameterDTO[3]});
+         A.CallTo(() => _view.SelectedParameters).Returns(new[] { _allParameterDTO[0], _allParameterDTO[3] });
       }
 
       protected override void Because()
@@ -531,7 +531,7 @@ namespace PKSim.Presentation
 
       protected override void Because()
       {
-         sut.SelectedParameters = new[] {_parameter1, _parameter4, _parameterNotDisplayed};
+         sut.SelectedParameters = new[] { _parameter1, _parameter4, _parameterNotDisplayed };
       }
 
       [Observation]
@@ -546,7 +546,7 @@ namespace PKSim.Presentation
       protected override void Context()
       {
          base.Context();
-         _view.SelectedParameters = new[] {_parameterDTO,};
+         _view.SelectedParameters = new[] { _parameterDTO, };
       }
 
       protected override void Because()

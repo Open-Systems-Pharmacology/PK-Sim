@@ -42,6 +42,7 @@ namespace PKSim.CLI.Core.Services
          _simulationRunOptions = new SimulationRunOptions
          {
             Validate = false
+
          };
       }
 

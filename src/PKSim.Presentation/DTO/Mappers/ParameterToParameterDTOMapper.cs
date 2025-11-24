@@ -9,6 +9,7 @@ using OSPSuite.Presentation.DTO;
 using PKSim.Core;
 using PKSim.Core.Mappers;
 using PKSim.Core.Repositories;
+using PKSim.Presentation.DTO.Compounds;
 using PKSim.Presentation.DTO.Parameters;
 
 namespace PKSim.Presentation.DTO.Mappers
@@ -16,6 +17,7 @@ namespace PKSim.Presentation.DTO.Mappers
    public interface IParameterToParameterDTOMapper : OSPSuite.Presentation.Mappers.IParameterToParameterDTOMapper
    {
       IParameterDTO MapAsReadWriteFrom(IParameter parameter);
+      MolWeightParameterDTO MapMolWeightDTOFrom(IParameter molWeight, IParameter effectiveMolWeight);
    }
 
    public class ParameterToParameterDTOMapper : IParameterToParameterDTOMapper
@@ -62,6 +64,13 @@ namespace PKSim.Presentation.DTO.Mappers
          var parameterDTO = new WritableParameterDTO(parameter);
          updateParameterDTOFromParameter(parameterDTO, parameter);
          return parameterDTO;
+      }
+
+      public MolWeightParameterDTO MapMolWeightDTOFrom(IParameter molWeight, IParameter effectiveMolWeight)
+      {
+         var molWeightParameterDTO = new MolWeightParameterDTO(molWeight, effectiveMolWeight);
+         updateParameterDTOFromParameter(molWeightParameterDTO, molWeight);
+         return molWeightParameterDTO;
       }
 
       private void updateParameterDTOFromParameter(ParameterDTO parameterDTO, IParameter parameter)
