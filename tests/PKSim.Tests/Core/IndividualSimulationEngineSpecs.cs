@@ -106,8 +106,11 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
+         A.CallTo(() => _simModelManagerFactory.Create())
+            .Returns(_simModelManager);
+
+         A.CallTo(_simModelManager).WithReturnType<Task<SimulationRunResults>>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), new DataRepository()));
          _simulation = A.Fake<IndividualSimulation>();
-         A.CallTo(_simModelManager).WithReturnType<SimulationRunResults>().Returns(new SimulationRunResults( Enumerable.Empty<SolverWarning>(), new DataRepository()));
          await sut.RunAsync(_simulation, _simulationRunOption);
       }
 

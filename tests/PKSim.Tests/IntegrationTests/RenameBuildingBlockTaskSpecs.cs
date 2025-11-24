@@ -4,6 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Container;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
+using PKSim.Infrastructure.ProjectConverter.v13;
 
 namespace PKSim.IntegrationTests
 {
@@ -38,11 +39,12 @@ namespace PKSim.IntegrationTests
 
       public override void GlobalContext()
       {
+         var converter = new Converter12To13();
          base.GlobalContext();
          LoadProject("RenameApplication_V8");
          _iv = FindByName<Protocol>("aa");
          _s1 = FindByName<IndividualSimulation>("aa");
-
+         
          sut.RenameBuildingBlock(_iv, "bb");
       }
 
