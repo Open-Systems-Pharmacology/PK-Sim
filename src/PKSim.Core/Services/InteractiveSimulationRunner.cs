@@ -101,8 +101,7 @@ namespace PKSim.Core.Services
             raiseEvent(new SimulationRunStartedEvent(simulation));
 
             await _simulationRunner
-               .RunSimulation(simulation, _simulationRunOptions, cts.Token)
-               .ConfigureAwait(false);
+               .RunSimulation(simulation, _simulationRunOptions, cts.Token);
 
             addAnalysableToSimulationIfRequired(simulation);
          }
@@ -141,7 +140,8 @@ namespace PKSim.Core.Services
          if (simulation == null || !simulation.HasResults) return;
          if (simulation.Analyses.Count() != 0) return;
 
-         _synchronizationContextUiDispatcher.Post(() => _simulationAnalysisCreator.CreateAnalysisFor(simulation));
+         _simulationAnalysisCreator.CreateAnalysisFor(simulation);
+         //_synchronizationContextUiDispatcher.Post(() => _simulationAnalysisCreator.CreateAnalysisFor(simulation));
       }
 
       private void raiseEvent<T>(T eventToPublish)
