@@ -27,7 +27,7 @@ namespace PKSim.Core.Services
       bool AnySimulationRunning { get; }
    }
 
-   public class InteractiveSimulationRunner : IInteractiveSimulationRunner, IDisposable
+   public class InteractiveSimulationRunner : IInteractiveSimulationRunner
    {
       private readonly ISimulationSettingsRetriever _simulationSettingsRetriever;
       private readonly ISimulationRunner _simulationRunner;
@@ -38,8 +38,6 @@ namespace PKSim.Core.Services
       private readonly ConcurrentDictionary<Simulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<Simulation, CancellationTokenSource>();
       private readonly IEventPublisher _eventPublisher;
       private readonly SimulationRunOptions _simulationRunOptions;
-      private readonly SemaphoreSlim _parallelGate;
-      private readonly ICoreUserSettings _userSettings;
       private readonly ISynchronizationContextUiDispatcher _synchronizationContextUiDispatcher;
 
       public int ActiveSimulationsCount => _cancellationTokenSources.Count;
@@ -53,7 +51,6 @@ namespace PKSim.Core.Services
          ISimulationAnalysisCreator simulationAnalysisCreator,
          ILazyLoadTask lazyLoadTask,
          IExecutionContext executionContext,
-         ICoreUserSettings userSettings,
          ISynchronizationContextUiDispatcher synchronizationContextUiDispatcher
       )
       {
@@ -63,8 +60,6 @@ namespace PKSim.Core.Services
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _executionContext = executionContext;
-         _userSettings = userSettings;
-         _parallelGate = new SemaphoreSlim(Math.Max(1, _userSettings.MaximumNumberOfCoresToUse));
          _synchronizationContextUiDispatcher = synchronizationContextUiDispatcher;
          _simulationRunOptions = new SimulationRunOptions
          {
@@ -87,7 +82,6 @@ namespace PKSim.Core.Services
             return;
 
          var begin = new DateTime();
-         await _parallelGate.WaitAsync(cts.Token).ConfigureAwait(false);
          try
          {
             _lazyLoadTask.Load(simulation);
@@ -122,8 +116,6 @@ namespace PKSim.Core.Services
                   ctsToDispose.Dispose();
                raiseEvent(new SimulationRunFinishedEvent(simulation, timeSpent));
             }
-
-            _parallelGate.Release();
          }
       }
 
@@ -147,7 +139,7 @@ namespace PKSim.Core.Services
       private void addAnalysableToSimulationIfRequired(Simulation simulation)
       {
          if (simulation == null || !simulation.HasResults) return;
-         if (simulation.Analyses != null && simulation.Analyses.Any()) return;
+         if (simulation.Analyses.Count() != 0) return;
 
          _synchronizationContextUiDispatcher.Post(() => _simulationAnalysisCreator.CreateAnalysisFor(simulation));
       }
@@ -183,12 +175,6 @@ namespace PKSim.Core.Services
       {
          return !_cancellationTokenSources.TryGetValue(simulation, out var cts)
                 || cts.IsCancellationRequested;
-      }
-
-      public void Dispose()
-      {
-         _parallelGate.Dispose();
-         GC.SuppressFinalize(this);
       }
    }
 }

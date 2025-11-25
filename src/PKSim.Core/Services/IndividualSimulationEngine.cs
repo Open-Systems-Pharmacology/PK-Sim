@@ -1,15 +1,11 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.Zip;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Journal;
-using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
-using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -26,7 +22,7 @@ namespace PKSim.Core.Services
       public IndividualSimulationEngine(
          IProgressManager progressManager,
          ISimulationResultsSynchronizer simulationResultsSynchronizer,
-         IEventPublisher eventPublisher, 
+         IEventPublisher eventPublisher,
          ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
          ISimModelManagerFactory simModelManagerFactory) : base(eventPublisher)
       {
@@ -59,7 +55,7 @@ namespace PKSim.Core.Services
       {
          _shouldRaiseEvents = simulationRunOptions.RaiseEvents;
          initializeProgress();
-          //make sure that thread methods always catch and handle any exception,
+         //make sure that thread methods always catch and handle any exception,
          //otherwise we risk unplanned application termination
          try
          {
@@ -79,7 +75,6 @@ namespace PKSim.Core.Services
          simModelManager.SimulationProgress += simulationProgress;
          simModelManager.Terminated += terminated;
       }
-
 
       private void initializeProgress()
       {
