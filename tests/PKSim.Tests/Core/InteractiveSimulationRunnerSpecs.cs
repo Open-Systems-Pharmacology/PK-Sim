@@ -40,7 +40,7 @@ namespace PKSim.Core
          _synchronizationContextUiDispatcher = A.Fake<ISynchronizationContextUiDispatcher>();
          _coreUserSettings = A.Fake<ICoreUserSettings>();
 
-         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext, _coreUserSettings , _synchronizationContextUiDispatcher);
+         sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
          return _completed;
       }
    }

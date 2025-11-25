@@ -38,7 +38,6 @@ namespace PKSim.Core.Services
       private readonly ConcurrentDictionary<Simulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<Simulation, CancellationTokenSource>();
       private readonly IEventPublisher _eventPublisher;
       private readonly SimulationRunOptions _simulationRunOptions;
-      private readonly ISynchronizationContextUiDispatcher _synchronizationContextUiDispatcher;
 
       public int ActiveSimulationsCount => _cancellationTokenSources.Count;
       public IReadOnlyCollection<Simulation> ActiveSimulations => _cancellationTokenSources.Keys.ToList().AsReadOnly();
@@ -50,8 +49,7 @@ namespace PKSim.Core.Services
          ICloner cloner,
          ISimulationAnalysisCreator simulationAnalysisCreator,
          ILazyLoadTask lazyLoadTask,
-         IExecutionContext executionContext,
-         ISynchronizationContextUiDispatcher synchronizationContextUiDispatcher
+         IExecutionContext executionContext
       )
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
@@ -60,7 +58,6 @@ namespace PKSim.Core.Services
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _executionContext = executionContext;
-         _synchronizationContextUiDispatcher = synchronizationContextUiDispatcher;
          _simulationRunOptions = new SimulationRunOptions
          {
             RaiseEvents = true, //This is always true, but still worth checking before rising an event since it can change.
@@ -141,7 +138,6 @@ namespace PKSim.Core.Services
          if (simulation.Analyses.Count() != 0) return;
 
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);
-         //_synchronizationContextUiDispatcher.Post(() => _simulationAnalysisCreator.CreateAnalysisFor(simulation));
       }
 
       private void raiseEvent<T>(T eventToPublish)

@@ -80,7 +80,7 @@ namespace PKSim.Core
       protected ExpressionProfile _expressionProfile;
       protected Snapshots.ExpressionProfile _expressionProfileSnapshot;
       protected ICoreUserSettings _userSettings;
-      protected IInteractiveSimulationRunner _simulationRunner;
+      protected ISimulationRunner _simulationRunner;
 
 
       protected override Task Context()
@@ -97,7 +97,7 @@ namespace PKSim.Core
          _creationMetaDataFactory = A.Fake<ICreationMetaDataFactory>();
          _logger = A.Fake<IOSPSuiteLogger>();
          _userSettings = A.Fake<ICoreUserSettings>();
-         _simulationRunner = A.Fake<IInteractiveSimulationRunner>();   
+         _simulationRunner = A.Fake<ISimulationRunner>();   
 
          sut = new ProjectMapper(
             _simulationMapper,

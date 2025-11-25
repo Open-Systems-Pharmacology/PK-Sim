@@ -289,9 +289,6 @@ namespace PKSim.Core.Snapshots.Mappers
 
          updateAlteredBuildingBlock(simulation, snapshot.AlteredBuildingBlocks);
 
-         simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, snapshotContext));
-         simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, snapshotContext));
-
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
          _chartTask.UpdateObservedDataInChartsFor(simulation, snapshotContext.Project);
          return simulation;
@@ -339,32 +336,6 @@ namespace PKSim.Core.Snapshots.Mappers
          //This might be a process that was deselected explicitly by the user
          var molecule = simulationSubject.MoleculeByName(snapshotInteraction.MoleculeName);
          return molecule == null ? null : new NoInteractionProcess { MoleculeName = molecule.Name };
-      }
-
-      private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, SimulationContext simulationContext)
-      {
-         return analysesFrom(simulation, snapshotCharts, simulationContext, _simulationTimeProfileChartMapper.MapToModels);
-      }
-
-      private Task<ModelPopulationAnalysisChart[]> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, SimulationContext simulationContext)
-      {
-         return analysesFrom(simulation, snapshotPopulationAnalyses, simulationContext, _populationAnalysisChartMapper.MapToModels);
-      }
-
-      private Task<TAnalysis[]> analysesFrom<TAnalysis, TSnapshotAnalysis>(ModelSimulation simulation, TSnapshotAnalysis[] snapshotAnalyses, SimulationContext simulationContext,
-         Func<TSnapshotAnalysis[], SimulationAnalysisContext, Task<TAnalysis[]>> mapFunc)
-      {
-         if (snapshotAnalyses == null)
-            return Task.FromResult(new List<TAnalysis>().ToArray());
-
-         var project = simulationContext.Project;
-         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData, simulationContext) { RunSimulation = simulationContext.Run };
-
-         var individualSimulation = simulation as IndividualSimulation;
-         if (individualSimulation?.DataRepository != null)
-            curveChartContext.AddDataRepository(individualSimulation.DataRepository);
-
-         return mapFunc(snapshotAnalyses, curveChartContext);
       }
 
       private async Task<ModelSimulation> createSimulationFrom(SnapshotSimulation snapshot, SnapshotContext snapshotContext)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
@@ -9,14 +10,16 @@ using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
+using PKSim.Core.Chart;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using ModelProject = PKSim.Core.Model.PKSimProject;
-using SimulationRunOptions = PKSim.Core.Services.SimulationRunOptions;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
-using IContainer = OSPSuite.Utility.Container.IContainer;
+using ModelSimulation = PKSim.Core.Model.Simulation;
+using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
+using OSPSuite.SimModel;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -27,7 +30,9 @@ namespace PKSim.Core.Snapshots.Mappers
       private readonly QualificationPlanMapper _qualificationPlanMapper;
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly ICoreUserSettings _userSettings;
-      private readonly IInteractiveSimulationRunner _simulationRunner;
+      private readonly ISimulationRunner _simulationRunner;
+      private readonly SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
+      private readonly PopulationAnalysisChartMapper _populationAnalysisChartMapper;
 
       public ProjectMapper(
          SimulationMapper simulationMapper,
@@ -40,14 +45,19 @@ namespace PKSim.Core.Snapshots.Mappers
          ICreationMetaDataFactory creationMetaDataFactory,
          IOSPSuiteLogger logger,
          ICoreUserSettings userSettings,
-         IInteractiveSimulationRunner interactiveSimulationRunner) : base(creationMetaDataFactory, logger, executionContext, classificationSnapshotTask, parameterIdentificationMapper)
+         ISimulationRunner simulationRunner,
+         SimulationTimeProfileChartMapper simulationTimeProfileChartMapper,
+         PopulationAnalysisChartMapper populationAnalysisChartMapper
+      ) : base(creationMetaDataFactory, logger, executionContext, classificationSnapshotTask, parameterIdentificationMapper)
       {
          _simulationMapper = simulationMapper;
          _simulationComparisonMapper = simulationComparisonMapper;
          _qualificationPlanMapper = qualificationPlanMapper;
          _lazyLoadTask = lazyLoadTask;
          _userSettings = userSettings;
-         _simulationRunner = interactiveSimulationRunner;
+         _simulationRunner = simulationRunner;
+         _simulationTimeProfileChartMapper = simulationTimeProfileChartMapper;
+         _populationAnalysisChartMapper = populationAnalysisChartMapper;
       }
 
       public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
@@ -71,7 +81,7 @@ namespace PKSim.Core.Snapshots.Mappers
          snapshot.Populations = await mapBuildingBlocksToSnapshots<Population>(project.All<Model.Population>());
          snapshot.ObserverSets = await mapBuildingBlocksToSnapshots<ObserverSet>(project.All<Model.ObserverSet>());
          snapshot.ObservedData = await MapObservedDataToSnapshots(project.AllObservedData);
-         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<Model.Simulation>(), project);
+         snapshot.Simulations = await mapSimulationsToSnapshots(project.All<ModelSimulation>(), project);
          snapshot.ParameterIdentifications = await MapParameterIdentificationToSnapshots(project.AllParameterIdentifications);
          snapshot.SimulationComparisons = await mapSimulationComparisonsToSnapshots(project.AllSimulationComparisons);
          snapshot.QualificationPlans = await mapQualificationPlansToSnapshots(project.AllQualificationPlans);
@@ -95,7 +105,7 @@ namespace PKSim.Core.Snapshots.Mappers
          };
 
          //The entry point of our context structure. 
-         System.Diagnostics.Debug.WriteLine(projectSnapshot.Version);
+         Debug.WriteLine(projectSnapshot.Version);
          var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByPKSimProjectVersion(projectSnapshot.Version));
 
          project.Creation.InternalVersion = projectSnapshot.Version;
@@ -107,7 +117,9 @@ namespace PKSim.Core.Snapshots.Mappers
          observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
          var allSimulations = await allSimulationsFrom(projectContext, projectSnapshot.Simulations, snapshotContext);
-         allSimulations?.Each(simulation => addSimulationToProject(project, simulation));
+         allSimulations?.Each(simulation => addSimulationToProject(project, simulation.Item1));
+
+         //projectSnapshot.Simulations
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(projectSnapshot.SimulationComparisons, snapshotContext);
          allSimulationComparisons?.Each(comparison => addComparisonToProject(project, comparison));
@@ -120,8 +132,10 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (projectContext.RunSimulations)
          {
-            await runParallelSimulations(project);
+            await runParallelSimulations(allSimulations, snapshotContext);
          }
+
+         await addAnalysesToSimulations(snapshotContext, allSimulations);
 
          //Map all classifications once project is loaded
          await updateProjectClassifications(projectSnapshot, snapshotContext);
@@ -129,34 +143,79 @@ namespace PKSim.Core.Snapshots.Mappers
          return project;
       }
 
-      private async Task runParallelSimulations(PKSimProject project)
+      private async Task addAnalysesToSimulations(SnapshotContext snapshotContext, IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)> allSimulations)
       {
-         var simulations = project.All<Model.Simulation>();
-         if (!simulations.Any())
+         var simulationContext = new SimulationContext(true, snapshotContext)
+         {
+            NumberOfSimulationsToLoad = allSimulations.Count,
+            NumberOfSimulationsLoaded = 1
+         };
+
+         foreach (var simulationWithSnapshot in allSimulations)
+         {
+            var (simulation, snapshot) = simulationWithSnapshot;
+            simulation.AddAnalyses(await individualAnalysesFrom(simulation, snapshot.IndividualAnalyses, simulationContext));
+            simulation.AddAnalyses(await populationAnalysesFrom(simulation, snapshot.PopulationAnalyses, simulationContext));
+         }
+      }
+
+      private async Task runParallelSimulations(IReadOnlyList<(ModelSimulation, Simulation)> simulationsWithSnapshot, SnapshotContext snapshotContext)
+      {
+         if (!simulationsWithSnapshot.Any())
             return;
 
          var options = new ParallelOptions
          {
             MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
          };
-         var simulationOptions = new SimulationRunOptions{RaiseEvents = true};
-         await Parallel.ForEachAsync(simulations, options, async (sim, ct) =>
+
+         var allSimCount = simulationsWithSnapshot.Count();
+         _logger.AddInfo($"{allSimCount} Simulation(s) Running...");
+         await Parallel.ForEachAsync(simulationsWithSnapshot, options, async (simulationWithSnapshot, ct) =>
          {
             try
             {
-               await _simulationRunner.RunSimulation(sim,false);
+               var (simulation, snapshot) = simulationWithSnapshot;
+               await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
+                allSimCount--;
+               _logger.AddInfo($"{simulation.Name} Finished, {allSimCount} Simulation(s) Remaining...");
             }
             catch (Exception ex)
             {
                _logger.AddException(ex);
             }
          });
+         _logger.AddInfo($"All Simulations Finished Running...");
       }
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, SnapshotContext snapshotContext)
          => _simulationComparisonMapper.MapToModels(snapshotSimulationComparisons, snapshotContext);
 
+      private Task<SimulationTimeProfileChart[]> individualAnalysesFrom(ModelSimulation simulation, CurveChart[] snapshotCharts, SimulationContext simulationContext)
+      {
+         return analysesFrom(simulation, snapshotCharts, simulationContext, _simulationTimeProfileChartMapper.MapToModels);
+      }
 
+      public Task<ModelPopulationAnalysisChart[]> populationAnalysesFrom(ModelSimulation simulation, PopulationAnalysisChart[] snapshotPopulationAnalyses, SimulationContext simulationContext)
+      {
+         return analysesFrom(simulation, snapshotPopulationAnalyses, simulationContext, _populationAnalysisChartMapper.MapToModels);
+      }
+
+      private Task<TAnalysis[]> analysesFrom<TAnalysis, TSnapshotAnalysis>(ModelSimulation simulation, TSnapshotAnalysis[] snapshotAnalyses, SimulationContext simulationContext,
+         Func<TSnapshotAnalysis[], SimulationAnalysisContext, Task<TAnalysis[]>> mapFunc)
+      {
+         if (snapshotAnalyses == null)
+            return Task.FromResult(new List<TAnalysis>().ToArray());
+
+         var project = simulationContext.Project;
+         var curveChartContext = new SimulationAnalysisContext(project.AllObservedData, simulationContext) { RunSimulation = simulationContext.Run };
+
+         var individualSimulation = simulation as IndividualSimulation;
+         if (individualSimulation?.DataRepository != null)
+            curveChartContext.AddDataRepository(individualSimulation.DataRepository);
+
+         return mapFunc(snapshotAnalyses, curveChartContext);
+      }
 
       private Task<OSPSuite.Core.Domain.QualificationPlan[]> allQualificationPlansFrom(QualificationPlan[] qualificationPlans, SnapshotContext snapshotContext)
          => _qualificationPlanMapper.MapToModels(qualificationPlans, snapshotContext);
@@ -170,7 +229,7 @@ namespace PKSim.Core.Snapshots.Mappers
          return await _simulationComparisonMapper.MapToSnapshots(allSimulationComparisons);
       }
 
-      private async Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<Model.Simulation> allSimulations, ModelProject project)
+      private async Task<Simulation[]> mapSimulationsToSnapshots(IReadOnlyCollection<ModelSimulation> allSimulations, ModelProject project)
       {
          allSimulations.Each(loadSimulation);
          return await _simulationMapper.MapToSnapshots(allSimulations, project);
@@ -189,7 +248,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       private void load(ILazyLoadable lazyLoadable) => _lazyLoadTask.Load(lazyLoadable);
 
-      private void loadSimulation(Model.Simulation simulation)
+      private void loadSimulation(ModelSimulation simulation)
       {
          load(simulation);
          _lazyLoadTask.LoadResults(simulation);
@@ -213,8 +272,8 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableObservedData, ModelDataRepository>(
                snapshot.ObservedDataClassifications, snapshotContext, project.AllObservedData),
-            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableSimulation, Model.Simulation>(snapshot.SimulationClassifications,
-               snapshotContext, project.All<Model.Simulation>()),
+            _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableSimulation, ModelSimulation>(snapshot.SimulationClassifications,
+               snapshotContext, project.All<ModelSimulation>()),
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableComparison, ISimulationComparison>(
                snapshot.SimulationComparisonClassifications, snapshotContext, project.AllSimulationComparisons),
             _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableParameterIdentification, ModelParameterIdentification>(
@@ -226,9 +285,9 @@ namespace PKSim.Core.Snapshots.Mappers
          return Task.WhenAll(tasks);
       }
 
-      private void addSimulationToProject(ModelProject project, Model.Simulation simulation)
+      private void addSimulationToProject(ModelProject project, ModelSimulation simulation)
       {
-         AddClassifiableToProject<ClassifiableSimulation, Model.Simulation>(project, simulation, project.AddBuildingBlock, project.All<Model.Simulation>());
+         AddClassifiableToProject<ClassifiableSimulation, ModelSimulation>(project, simulation, project.AddBuildingBlock, project.All<ModelSimulation>());
       }
 
       private void addComparisonToProject(ModelProject project, ISimulationComparison simulationComparison)
@@ -241,12 +300,12 @@ namespace PKSim.Core.Snapshots.Mappers
          AddClassifiableToProject<ClassifiableQualificationPlan, OSPSuite.Core.Domain.QualificationPlan>(project, qualificationPlan, project.AddQualificationPlan, project.AllQualificationPlans);
       }
 
-      private async Task<IReadOnlyList<Model.Simulation>> allSimulationsFrom(ProjectContext projectContext, Simulation[] snapshots, SnapshotContext snapshotContext)
+      private async Task<IReadOnlyList<(ModelSimulation simulation, Simulation snapshotSimulation)>> allSimulationsFrom(ProjectContext projectContext, Simulation[] snapshots, SnapshotContext snapshotContext)
       {
-         var simulations = new List<Model.Simulation>();
+         var simulations = new List<(ModelSimulation, Simulation)>();
 
          if (snapshots == null)
-            return simulations;
+            return (simulations);
 
          var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext)
          {
@@ -260,7 +319,7 @@ namespace PKSim.Core.Snapshots.Mappers
             try
             {
                var simulation = await _simulationMapper.MapToModel(snapshot, simulationContext);
-               simulations.Add(simulation);
+               simulations.Add(new(simulation, snapshot));
                simulationContext.NumberOfSimulationsLoaded++;
             }
             catch (Exception e)
