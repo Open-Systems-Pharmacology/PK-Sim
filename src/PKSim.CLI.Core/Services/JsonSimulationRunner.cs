@@ -137,7 +137,7 @@ namespace PKSim.CLI.Core.Services
          _logger.AddInfo($"Starting batch simulation export for file '{projectFile}'");
          try
          {
-            var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(projectFile.FullName);
+            var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(projectFile.FullName, runSimulations:false);
 
             // The workspace project will be needed to create the exported module snapshot in case PKML export is selected
             _workspace.Project = project;
