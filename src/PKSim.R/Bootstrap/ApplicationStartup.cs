@@ -41,11 +41,9 @@ namespace PKSim.R.Bootstrap
          using (container.OptimizeDependencyResolution())
          {
             container.RegisterImplementationOf(new SynchronizationContext());
-            // add InfrastructureRegister first so that PKSim.Infrastructure.ORM.Repositories.GroupRepository is preferred to
-            // OSPSuite.CLI.Core.MinimalImplementations.GroupRepository which is registered by RRegister
-            container.AddRegister(x => x.FromType<InfrastructureRegister>());
             container.AddRegister(x => x.FromType<RRegister>());
             container.AddRegister(x => x.FromType<CoreRegister>());
+            container.AddRegister(x => x.FromType<InfrastructureRegister>());
             InfrastructureRegister.RegisterSerializationDependencies(container);
             registerMinimalImplementations(container);
          }
