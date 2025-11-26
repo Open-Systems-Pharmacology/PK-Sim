@@ -49,8 +49,7 @@ namespace PKSim.Core.Services
          ICloner cloner,
          ISimulationAnalysisCreator simulationAnalysisCreator,
          ILazyLoadTask lazyLoadTask,
-         IExecutionContext executionContext
-      )
+         IExecutionContext executionContext)
       {
          _simulationSettingsRetriever = simulationSettingsRetriever;
          _simulationRunner = simulationRunner;
@@ -58,6 +57,7 @@ namespace PKSim.Core.Services
          _simulationAnalysisCreator = simulationAnalysisCreator;
          _lazyLoadTask = lazyLoadTask;
          _executionContext = executionContext;
+
          _simulationRunOptions = new SimulationRunOptions
          {
             RaiseEvents = true, //This is always true, but still worth checking before rising an event since it can change.
@@ -91,14 +91,13 @@ namespace PKSim.Core.Services
 
                simulation.OutputSelections.UpdatePropertiesFrom(outputSelections, _cloner);
                mappingsNotSelected(simulation).Each(simulation.OutputMappings.Remove);
+
                raiseEvent(new SimulationOutputSelectionsChangedEvent(simulation));
             }
 
             begin = SystemTime.UtcNow();
             raiseEvent(new SimulationRunStartedEvent(simulation));
-
-            await _simulationRunner
-               .RunSimulation(simulation, _simulationRunOptions, cts.Token);
+            await _simulationRunner.RunSimulation(simulation, _simulationRunOptions, cts.Token);
 
             addAnalysableToSimulationIfRequired(simulation);
          }
@@ -136,7 +135,6 @@ namespace PKSim.Core.Services
       {
          if (simulation == null || !simulation.HasResults) return;
          if (simulation.Analyses.Count() != 0) return;
-
          _simulationAnalysisCreator.CreateAnalysisFor(simulation);
       }
 

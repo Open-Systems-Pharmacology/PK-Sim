@@ -19,7 +19,6 @@ using ModelProject = PKSim.Core.Model.PKSimProject;
 using SnapshotProject = PKSim.Core.Snapshots.Project;
 using ModelSimulation = PKSim.Core.Model.Simulation;
 using ModelPopulationAnalysisChart = PKSim.Core.Model.PopulationAnalyses.PopulationAnalysisChart;
-using OSPSuite.SimModel;
 
 namespace PKSim.Core.Snapshots.Mappers
 {
@@ -95,7 +94,7 @@ namespace PKSim.Core.Snapshots.Mappers
 
       public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext projectContext)
       {
-         _logger.AddDebug($"Loading project '{projectSnapshot.Name}' from snapshot...", projectSnapshot.Name);
+         _logger.AddDebug(PKSimConstants.UI.LoadingProjectFromSnapshot(projectSnapshot.Name), projectSnapshot.Name);
 
          var project = new ModelProject
          {
@@ -170,22 +169,22 @@ namespace PKSim.Core.Snapshots.Mappers
          };
 
          var allSimCount = simulationsWithSnapshot.Count();
-         _logger.AddInfo($"{allSimCount} Simulation(s) Running...");
+         _logger.AddInfo(PKSimConstants.UI.SimulationRunningMessage(allSimCount));
          await Parallel.ForEachAsync(simulationsWithSnapshot, options, async (simulationWithSnapshot, ct) =>
          {
             try
             {
                var (simulation, snapshot) = simulationWithSnapshot;
                await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
-                allSimCount--;
-               _logger.AddInfo($"{simulation.Name} Finished, {allSimCount} Simulation(s) Remaining...");
+               allSimCount--;
+               _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, allSimCount));
             }
             catch (Exception ex)
             {
                _logger.AddException(ex);
             }
          });
-         _logger.AddInfo($"All Simulations Finished Running...");
+         _logger.AddInfo(PKSimConstants.UI.AllSimulationsFinishedMessage());
       }
 
       private Task<ISimulationComparison[]> allSimulationComparisonsFrom(SimulationComparison[] snapshotSimulationComparisons, SnapshotContext snapshotContext)

@@ -611,18 +611,6 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_update_analysis()
-      {
-         _simulation.Analyses.ShouldContain(_simulationTimeProfile);
-      }
-
-      [Observation]
-      public void should_have_added_the_observed_data_from_project_and_the_current_simulation_results_to_the_curve_context()
-      {
-         _context.DataRepositories.ShouldContain(_observedData);
-      }
-
-      [Observation]
       public void should_update_interactions()
       {
          _simulation.InteractionProperties.Interactions.ShouldContain(_interactionSelection, _noInteractionSelection);
@@ -702,12 +690,6 @@ namespace PKSim.Core
          _simulation.ShouldBeAnInstanceOf<PopulationSimulation>();
          var populationSimulation = _simulation.DowncastTo<PopulationSimulation>();
          A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, populationSimulation, _snapshotSimulationContext)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_update_analysis()
-      {
-         _simulation.Analyses.ShouldContain(_populationSimulationAnalysisChart);
       }
    }
 }

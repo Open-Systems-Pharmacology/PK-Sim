@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -24,7 +23,6 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Views;
@@ -152,6 +150,9 @@ namespace PKSim.UI.BootStrapping
 
          var mainPresenter = container.Resolve<IMainViewPresenter>();
          container.RegisterImplementationOf((IChangePropagator)mainPresenter);
+
+         //This runner is only register when running PKSim as an executable. All other implementation should use the ISimulationRunner
+         container.Register<IInteractiveSimulationRunner, InteractiveSimulationRunner>(LifeStyle.Singleton);
       }
 
       private void startStartableObject(IContainer container)

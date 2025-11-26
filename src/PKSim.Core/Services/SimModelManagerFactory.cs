@@ -1,13 +1,7 @@
-﻿using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OSPSuite.Core.Domain.UnitSystem;
 using PKSim.Core.Repositories;
 
 namespace PKSim.Core.Services
@@ -25,7 +19,7 @@ namespace PKSim.Core.Services
       private readonly IDataRepositoryTask _dataRepositoryTask;
       private readonly IDimensionRepository _dimensionRepository;
 
-      public SimModelManagerFactory(ISimModelExporter simModelExporter, ISimModelSimulationFactory simModelSimulationFactory, IExecutionContext context, IDisplayUnitRetriever displayUnitRetriever, IDataRepositoryTask dataRepositoryTask, IDimensionRepository dimensionRepository)
+      public SimModelManagerFactory(ISimModelExporter simModelExporter, ISimModelSimulationFactory simModelSimulationFactory, IDisplayUnitRetriever displayUnitRetriever, IDataRepositoryTask dataRepositoryTask, IDimensionRepository dimensionRepository)
       {
          _simModelExporter = simModelExporter;
          _simModelSimulationFactory = simModelSimulationFactory;

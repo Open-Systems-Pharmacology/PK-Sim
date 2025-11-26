@@ -81,6 +81,8 @@ namespace PKSim.Core
       protected Snapshots.ExpressionProfile _expressionProfileSnapshot;
       protected ICoreUserSettings _userSettings;
       protected ISimulationRunner _simulationRunner;
+      protected SimulationTimeProfileChartMapper _simulationTimeProfileChartMapper;
+      protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
 
 
       protected override Task Context()
@@ -97,7 +99,9 @@ namespace PKSim.Core
          _creationMetaDataFactory = A.Fake<ICreationMetaDataFactory>();
          _logger = A.Fake<IOSPSuiteLogger>();
          _userSettings = A.Fake<ICoreUserSettings>();
-         _simulationRunner = A.Fake<ISimulationRunner>();   
+         _simulationRunner = A.Fake<ISimulationRunner>();
+         _simulationTimeProfileChartMapper = A.Fake<SimulationTimeProfileChartMapper>();
+         _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
 
          sut = new ProjectMapper(
             _simulationMapper,
@@ -110,7 +114,9 @@ namespace PKSim.Core
             _creationMetaDataFactory,
             _logger,
             _userSettings,
-            _simulationRunner);
+            _simulationRunner,
+            _simulationTimeProfileChartMapper,
+            _populationAnalysisChartMapper);
 
 
          A.CallTo(() => _executionContext.Resolve<ISnapshotMapper>()).Returns(_snapshotMapper);

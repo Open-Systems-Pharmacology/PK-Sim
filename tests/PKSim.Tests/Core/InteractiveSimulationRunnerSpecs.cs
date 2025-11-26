@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
@@ -7,7 +6,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
-using OSPSuite.Utility.Events;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -26,7 +24,6 @@ namespace PKSim.Core
       protected IExecutionContext _executionContext;
       protected IInteractiveSimulationRunner _interactiveSimulationRunner;
       protected ICoreUserSettings _coreUserSettings;
-      protected ISynchronizationContextUiDispatcher _synchronizationContextUiDispatcher;
 
       protected override Task Context()
       {
@@ -37,7 +34,6 @@ namespace PKSim.Core
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _executionContext = A.Fake<IExecutionContext>();
          _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
-         _synchronizationContextUiDispatcher = A.Fake<ISynchronizationContextUiDispatcher>();
          _coreUserSettings = A.Fake<ICoreUserSettings>();
 
          sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
@@ -105,20 +101,6 @@ namespace PKSim.Core
       {
          A.CallTo(() => _lazyLoadTask.Load((Simulation)_simulation)).MustHaveHappened();
       }
-
-      [Observation]
-      public void should_create_a_chart_for_the_simulation()
-      {
-
-         A.CallTo(() => _synchronizationContextUiDispatcher.Post(A<Action>.Ignored)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_call_synchronization_context_ui_dispatcher()
-      {
-         A.CallTo(() => _synchronizationContextUiDispatcher.Post(A<Action>.Ignored)).MustHaveHappened();
-      }
-      
    }
 
    public class When_the_simulation_is_notified_that_a_simulation_without_results_and_plot_was_calculated : concern_for_InteractiveSimulationRunner
