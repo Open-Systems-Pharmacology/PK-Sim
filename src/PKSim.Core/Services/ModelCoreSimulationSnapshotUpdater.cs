@@ -56,6 +56,10 @@ public class ModelCoreSimulationSnapshotUpdater(
          case ExpressionProfile expressionProfile:
             addExpression(project, expressionProfile);
             return;
+         case Population population:
+            addBuildingBlockAndDependents(population.FirstIndividual, project);
+            project.AddBuildingBlock(population);
+            return;
          default:
             project.AddBuildingBlock(pkSimBuildingBlock);
             return;

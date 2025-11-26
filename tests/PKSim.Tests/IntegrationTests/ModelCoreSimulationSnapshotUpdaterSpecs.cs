@@ -22,7 +22,7 @@ using Protocol = PKSim.Core.Model.Protocol;
 
 namespace PKSim.IntegrationTests
 {
-   public abstract class concern_for_ModelCoreSimulationSnapshotUpdater : ContextForSimulationIntegration<IModelCoreSimulationSnapshotUpdater, IndividualSimulation>
+   public abstract class concern_for_ModelCoreSimulationSnapshotUpdater : ContextForSimulationIntegration<IModelCoreSimulationSnapshotUpdater>
    {
       protected Compound _compound;
       protected Individual _individual;
@@ -34,12 +34,15 @@ namespace PKSim.IntegrationTests
       protected ISimulationConfigurationTask _simulationConfigurationTask;
       protected ISimulationToModelCoreSimulationMapper _simulationMapper;
       private ExpressionProfile _expressionProfile;
+      protected Simulation _subjectSimulation;
+      protected Population _population;
 
       public override void GlobalContext()
       {
          base.GlobalContext();
          _compound = DomainFactoryForSpecs.CreateStandardCompound();
          _individual = DomainFactoryForSpecs.CreateStandardIndividual();
+         _population = DomainFactoryForSpecs.CreateDefaultPopulation(_individual);
          _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(_individual);
          _protocol = DomainFactoryForSpecs.CreateStandardIVBolusProtocol();
          _snapshotMapper = IoC.Resolve<ISnapshotMapper>();
@@ -53,30 +56,32 @@ namespace PKSim.IntegrationTests
 
          _workspace.Project.AddBuildingBlock(_compound);
          _workspace.Project.AddBuildingBlock(_individual);
+         _workspace.Project.AddBuildingBlock(_population);
          _workspace.Project.AddBuildingBlock(_protocol);
          _workspace.Project.AddBuildingBlock(_expressionProfile);
          _workspace.Project.AddObservedData(_observedData);
 
-         _simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol) as IndividualSimulation;
-         _simulation.AddUsedObservedData(UsedObservedData.From(_observedData));
-         _workspace.Project.AddBuildingBlock(_simulation);
+         _subjectSimulation = CreateSimulation();
+         _workspace.Project.AddBuildingBlock(_subjectSimulation);
       }
+
+      protected abstract Simulation CreateSimulation();
    }
 
-   public class mapping_model_core_simulation_to_project_snapshot_string : concern_for_ModelCoreSimulationSnapshotUpdater
+   public class mapping_individual_model_core_simulation_to_project_snapshot_string : concern_for_ModelCoreSimulationSnapshotUpdater
    {
       private PKSimProject _deserializedProject;
       private IModelCoreSimulation _moBiSimulation;
       protected override void Context()
       {
          base.Context();
-         var configuration = _simulationConfigurationTask.CreateFor(_simulation, shouldValidate: true, createAgingDataInSimulation: false);
-         _moBiSimulation = _simulationMapper.MapFrom(_simulation, configuration, shouldCloneModel: true);
+         var configuration = _simulationConfigurationTask.CreateFor(_subjectSimulation, shouldValidate: true, createAgingDataInSimulation: false);
+         _moBiSimulation = _simulationMapper.MapFrom(_subjectSimulation, configuration, shouldCloneModel: true);
       }
 
       protected override void Because()
       {
-         sut.AddSnapshotsToModelCoreSimulation(_simulation, _moBiSimulation);
+         sut.AddSnapshotsToModelCoreSimulation(_subjectSimulation, _moBiSimulation);
          var project = _jsonSerializer.DeserializeFromString<Project>(Encoding.UTF8.GetString(Convert.FromBase64String(_moBiSimulation.Configuration.ModuleConfigurations.Single().Module.Snapshot))).Result;
          _deserializedProject = _snapshotMapper.MapToModel(project, new ProjectContext(new PKSimProject(), runSimulations: false)).Result as PKSimProject;
       }
@@ -97,6 +102,58 @@ namespace PKSim.IntegrationTests
          _moBiSimulation.Configuration.Individual.Snapshot.ShouldNotBeEmpty();
          _moBiSimulation.Configuration.ModuleConfigurations.Single().Module.Snapshot.ShouldNotBeEmpty();
          _moBiSimulation.Configuration.ExpressionProfiles.Each(x => x.Snapshot.ShouldNotBeEmpty());
+      }
+
+      protected override Simulation CreateSimulation()
+      {
+         var simulation = DomainFactoryForSpecs.CreateSimulationWith(_individual, _compound, _protocol);
+         simulation.AddUsedObservedData(UsedObservedData.From(_observedData));
+         return simulation;
+      }
+   }
+
+   public class mapping_population_model_core_simulation_to_project_snapshot_string : concern_for_ModelCoreSimulationSnapshotUpdater
+   {
+      private PKSimProject _deserializedProject;
+      private IModelCoreSimulation _moBiSimulation;
+      protected override void Context()
+      {
+         base.Context();
+         var configuration = _simulationConfigurationTask.CreateFor(_subjectSimulation, shouldValidate: true, createAgingDataInSimulation: false);
+         _moBiSimulation = _simulationMapper.MapFrom(_subjectSimulation, configuration, shouldCloneModel: true);
+      }
+
+      protected override void Because()
+      {
+         sut.AddSnapshotsToModelCoreSimulation(_subjectSimulation, _moBiSimulation);
+         var project = _jsonSerializer.DeserializeFromString<Project>(Encoding.UTF8.GetString(Convert.FromBase64String(_moBiSimulation.Configuration.ModuleConfigurations.Single().Module.Snapshot))).Result;
+         _deserializedProject = _snapshotMapper.MapToModel(project, new ProjectContext(new PKSimProject(), runSimulations: false)).Result as PKSimProject;
+      }
+
+      [Observation]
+      public void snapshot_should_contain_building_blocks_observed_data_and_simulation()
+      {
+         _deserializedProject.All<Compound>().Count.ShouldBeEqualTo(1);
+         _deserializedProject.All<Protocol>().Count.ShouldBeEqualTo(1);
+         _deserializedProject.All<Individual>().Count.ShouldBeEqualTo(1);
+         _deserializedProject.All<PopulationSimulation>().Count.ShouldBeEqualTo(1);
+         _deserializedProject.All<Population>().Count.ShouldBeEqualTo(1);
+         _deserializedProject.AllObservedData.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_snapshots_should_be_set()
+      {
+         _moBiSimulation.Configuration.Individual.Snapshot.ShouldNotBeEmpty();
+         _moBiSimulation.Configuration.ModuleConfigurations.Single().Module.Snapshot.ShouldNotBeEmpty();
+         _moBiSimulation.Configuration.ExpressionProfiles.Each(x => x.Snapshot.ShouldNotBeEmpty());
+      }
+
+      protected override Simulation CreateSimulation()
+      {
+         var simulation = DomainFactoryForSpecs.CreateSimulationWith(_population, _compound, _protocol);
+         simulation.AddUsedObservedData(UsedObservedData.From(_observedData));
+         return simulation;
       }
    }
 }
