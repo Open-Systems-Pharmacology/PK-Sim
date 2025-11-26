@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Exceptions;
 using PKSim.Assets;
 using PKSim.CLI.Core.MinimalImplementations;
 using PKSim.Core;
