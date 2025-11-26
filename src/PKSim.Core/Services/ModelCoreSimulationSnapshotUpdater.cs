@@ -59,7 +59,7 @@ public class ModelCoreSimulationSnapshotUpdater(
          case Population population:
             addBuildingBlockAndDependents(population.FirstIndividual, project);
             project.AddBuildingBlock(population);
-            break;
+            return;
          default:
             project.AddBuildingBlock(pkSimBuildingBlock);
             return;
