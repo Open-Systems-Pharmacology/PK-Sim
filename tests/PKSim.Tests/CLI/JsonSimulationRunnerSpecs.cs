@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
@@ -5,6 +6,7 @@ using OSPSuite.Core.Services;
 using PKSim.CLI.Core.RunOptions;
 using PKSim.CLI.Core.Services;
 using PKSim.Core;
+using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
 
 namespace PKSim.CLI
@@ -27,6 +29,11 @@ namespace PKSim.CLI
          _logger = A.Fake<IOSPSuiteLogger>();
          _simulationExporter = A.Fake<ISimulationExporter>();
          sut = new JsonSimulationRunner(_simulationExporter, _logger, _snapshotTask);
+         
+         var project = A.Fake<PKSimProject>();
+         A.CallTo(() => project.All<Simulation>()).Returns(new List<Simulation>());
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotFileAsync(A<string>._, false)).Returns(project);
+         
          return Task.CompletedTask;
       }
    }
