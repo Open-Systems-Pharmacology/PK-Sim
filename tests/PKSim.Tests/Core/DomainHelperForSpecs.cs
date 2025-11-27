@@ -26,7 +26,7 @@ namespace PKSim.Core
       private static Dimension _fractionDimension;
 
       private static readonly string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
-      private static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
+      public static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
       private static readonly string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
 
       public static string FilePathFor(string fileNameWithExtension)
