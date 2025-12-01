@@ -46,7 +46,7 @@ namespace PKSim.IntegrationTests
          bsa.ShouldNotBeNull();
 
          bsa.Formula.IsExplicit().ShouldBeTrue();
-         bsa.DisplayUnit = bsa.Dimension.Unit("m�");
+         bsa.DisplayUnit = bsa.Dimension.Unit("m²");
          sut.Organism.Parameter(CoreConstants.Parameters.WEIGHT).Value = 73;
          sut.Organism.Parameter(CoreConstants.Parameters.HEIGHT).Value = 17.6;
          bsa.ValueInDisplayUnit.ShouldBeEqualTo(1.89, 1e-2);
