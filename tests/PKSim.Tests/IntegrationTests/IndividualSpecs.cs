@@ -13,6 +13,7 @@ using PKSim.Core.Services;
 using PKSim.Infrastructure;
 using PKSim.Infrastructure.ProjectConverter;
 using IContainer = OSPSuite.Core.Domain.IContainer;
+using IFormulaFactory = PKSim.Core.Model.IFormulaFactory;
 
 namespace PKSim.IntegrationTests
 {
@@ -45,7 +46,7 @@ namespace PKSim.IntegrationTests
          bsa.ShouldNotBeNull();
 
          bsa.Formula.IsExplicit().ShouldBeTrue();
-         bsa.DisplayUnit = bsa.Dimension.Unit("m²");
+         bsa.DisplayUnit = bsa.Dimension.Unit("mï¿½");
          sut.Organism.Parameter(CoreConstants.Parameters.WEIGHT).Value = 73;
          sut.Organism.Parameter(CoreConstants.Parameters.HEIGHT).Value = 17.6;
          bsa.ValueInDisplayUnit.ShouldBeEqualTo(1.89, 1e-2);
@@ -254,6 +255,48 @@ namespace PKSim.IntegrationTests
          _allRemovedContainers.ShouldOnlyContain(new List<IContainer>(_allMoleculeContainers){_enzyme}); 
          _allMoleculeContainers = sut.AllMoleculeContainersFor(_enzyme);
          _allMoleculeContainers.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_updating_ontogeny_in_expression_profile_used_in_individual : concern_for_Individual
+   {
+      private const string _enzymeName = "CYP";
+      private int _previousIndividualStructureVersion;
+      private ExpressionProfile _expressionProfile;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+
+         sut = DomainFactoryForSpecs.CreateStandardIndividual();
+         _expressionProfile = DomainFactoryForSpecs.CreateExpressionProfileAndAddToIndividual<IndividualEnzyme>(sut, _enzymeName);
+
+         _previousIndividualStructureVersion = sut.StructureVersion;
+      }
+
+      protected override void Because()
+      {
+         var ontogenyTask = IoC.Resolve<IOntogenyTask>();
+         ontogenyTask.SetOntogenyForMolecule(_expressionProfile.Molecule, new UserDefinedOntogeny { Table = createOntogenyTable() }, sut);
+      }
+
+      private DistributedTableFormula createOntogenyTable()
+      {
+         const double yearInMinutes = 365.25 * 24 * 60;
+         var formulaFactory = IoC.Resolve<IFormulaFactory>();
+         var tableFormula = formulaFactory.CreateDistributedTableFormula();
+
+         tableFormula.AddPoint(0, 0.1, new DistributionMetaData());
+         tableFormula.AddPoint(yearInMinutes, 0.5, new DistributionMetaData());
+         tableFormula.AddPoint(30 * yearInMinutes, 0.5, new DistributionMetaData());
+
+         return tableFormula;
+      }
+
+      [Observation]
+      public void should_increment_structure_version_of_individual_after_ontogeny_switch()
+      {
+         _previousIndividualStructureVersion.ShouldBeSmallerThan(sut.StructureVersion);
       }
    }
 }
