@@ -17,7 +17,6 @@ namespace PKSim.Core.Services
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private readonly ISimModelManagerFactory _simModelManagerFactory;
-      private readonly IEventPublisher _eventPublisher;
 
       public IndividualSimulationEngine(
          IProgressManager progressManager,
@@ -29,19 +28,12 @@ namespace PKSim.Core.Services
          _progressManager = progressManager;
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
-         _eventPublisher = eventPublisher;
          _simModelManagerFactory = simModelManagerFactory;
-      }
-
-      private void raiseEvent<T>(T eventToPublish)
-      {
-         if (_shouldRaiseEvents)
-            _eventPublisher.PublishEvent(eventToPublish);
       }
 
       private void terminated(object sender, EventArgs eventArgs)
       {
-         raiseEvent(new ProgressDoneWithMessageEvent(PKSimConstants.UI.SimulationRun));
+         RaiseEvent(new ProgressDoneWithMessageEvent(PKSimConstants.UI.SimulationRun));
          terminated();
       }
 
@@ -76,6 +68,13 @@ namespace PKSim.Core.Services
          simModelManager.Terminated += terminated;
       }
 
+      private void removeEvents(ISimModelManager simModelManager)
+      {
+         if (simModelManager == null) return;
+         simModelManager.SimulationProgress -= simulationProgress;
+         simModelManager.Terminated -= terminated;
+      }
+
       private void initializeProgress()
       {
          if (!_shouldRaiseEvents)
@@ -93,6 +92,8 @@ namespace PKSim.Core.Services
          var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel: false);
          var simResults = await simModelManager.RunSimulationAsync(modelCoreSimulation, cancellationToken, simulationRunOptions);
 
+         removeEvents(simModelManager);
+
          if (!simResults.Success)
             return;
 
@@ -100,7 +101,7 @@ namespace PKSim.Core.Services
          updateResultsName(simulation);
 
          simulation.ClearPKCache();
-         raiseEvent(new SimulationResultsUpdatedEvent(simulation));
+         RaiseEvent(new SimulationResultsUpdatedEvent(simulation));
       }
 
       private void updateResultsName(IndividualSimulation simulation)

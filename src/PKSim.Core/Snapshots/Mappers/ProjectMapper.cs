@@ -116,9 +116,7 @@ namespace PKSim.Core.Snapshots.Mappers
          observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
          var allSimulations = await allSimulationsFrom(projectContext, projectSnapshot.Simulations, snapshotContext);
-         allSimulations?.Each(simulation => addSimulationToProject(project, simulation.Item1));
-
-         //projectSnapshot.Simulations
+         allSimulations?.Each(x => addSimulationToProject(project, x.simulation));
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(projectSnapshot.SimulationComparisons, snapshotContext);
          allSimulationComparisons?.Each(comparison => addComparisonToProject(project, comparison));
@@ -174,7 +172,7 @@ namespace PKSim.Core.Snapshots.Mappers
          {
             try
             {
-               var (simulation, snapshot) = simulationWithSnapshot;
+               var (simulation, _) = simulationWithSnapshot;
                await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
                allSimCount--;
                _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, allSimCount));
