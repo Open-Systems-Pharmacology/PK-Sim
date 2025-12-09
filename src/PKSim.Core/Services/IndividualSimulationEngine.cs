@@ -55,9 +55,12 @@ namespace PKSim.Core.Services
          }
          catch (Exception ex)
          {
-            terminated();
             if (!(ex is TaskCanceledException)) //do not throw if this has been canceled
                throw;
+         }
+         finally
+         {
+            terminated();
          }
       }
 
