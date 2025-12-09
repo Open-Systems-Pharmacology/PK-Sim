@@ -16,19 +16,19 @@ namespace PKSim.Core.Services
       private IProgressUpdater _progressUpdater;
       private readonly ISimulationResultsSynchronizer _simulationResultsSynchronizer;
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
-      private readonly ISimModelManagerFactory _simModelManagerFactory;
+      private readonly IExecutionContext _executionContext;
 
       public IndividualSimulationEngine(
          IProgressManager progressManager,
          ISimulationResultsSynchronizer simulationResultsSynchronizer,
          IEventPublisher eventPublisher,
          ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
-         ISimModelManagerFactory simModelManagerFactory) : base(eventPublisher)
+         IExecutionContext executionContext) : base(eventPublisher)
       {
          _progressManager = progressManager;
          _simulationResultsSynchronizer = simulationResultsSynchronizer;
          _modelCoreSimulationMapper = modelCoreSimulationMapper;
-         _simModelManagerFactory = simModelManagerFactory;
+         _executionContext = executionContext;
       }
 
       private void terminated(object sender, EventArgs eventArgs)
@@ -89,7 +89,7 @@ namespace PKSim.Core.Services
 
       private async Task runSimulation(IndividualSimulation simulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default)
       {
-         var simModelManager = _simModelManagerFactory.Create();
+         var simModelManager = _executionContext.Resolve<ISimModelManager>();
          addEvents(simModelManager);
 
          var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(simulation, shouldCloneModel: false);

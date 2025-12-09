@@ -115,8 +115,8 @@ namespace PKSim.Core.Snapshots.Mappers
          var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
          observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-         var allSimulations = await allSimulationsFrom(projectContext, projectSnapshot.Simulations, snapshotContext);
-         allSimulations?.Each(x => addSimulationToProject(project, x.simulation));
+         var allSimulationsWithSnapshots = await allSimulationsFrom(projectContext, projectSnapshot.Simulations, snapshotContext);
+         allSimulationsWithSnapshots?.Each(x => addSimulationToProject(project, x.simulation));
 
          var allSimulationComparisons = await allSimulationComparisonsFrom(projectSnapshot.SimulationComparisons, snapshotContext);
          allSimulationComparisons?.Each(comparison => addComparisonToProject(project, comparison));
@@ -129,10 +129,10 @@ namespace PKSim.Core.Snapshots.Mappers
 
          if (projectContext.RunSimulations)
          {
-            await runParallelSimulations(allSimulations, snapshotContext);
+            await runParallelSimulations(allSimulationsWithSnapshots, snapshotContext);
          }
 
-         await addAnalysesToSimulations(snapshotContext, allSimulations);
+         await addAnalysesToSimulations(snapshotContext, allSimulationsWithSnapshots);
 
          //Map all classifications once project is loaded
          await updateProjectClassifications(projectSnapshot, snapshotContext);

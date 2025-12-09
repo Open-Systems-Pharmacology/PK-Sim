@@ -28,7 +28,6 @@ namespace PKSim.Core
       protected ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       protected IProgressManager _progressManager;
       protected SimulationRunOptions _simulationRunOption;
-      protected ISimModelManagerFactory _simModelManagerFactory;
       protected IExecutionContext _executionContext;
       protected IndividualSimulation _simulation;
 
@@ -40,10 +39,9 @@ namespace PKSim.Core
          _eventPublisher = A.Fake<IEventPublisher>();
          _simulationResultsSynchronizer = A.Fake<ISimulationResultsSynchronizer>();
          _modelCoreSimulationMapper = A.Fake<ISimulationToModelCoreSimulationMapper>();
-         _simModelManagerFactory = A.Fake<ISimModelManagerFactory>();
          _executionContext = A.Fake<IExecutionContext>();
          sut = new IndividualSimulationEngine(_progressManager, _simulationResultsSynchronizer,
-            _eventPublisher, _modelCoreSimulationMapper, _simModelManagerFactory);
+            _eventPublisher, _modelCoreSimulationMapper, _executionContext);
 
          A.CallTo(() => _progressManager.Create()).Returns(_progressUpdater);
          _simulationRunOption = new SimulationRunOptions {RaiseEvents = true};
@@ -63,7 +61,7 @@ namespace PKSim.Core
          _simulation.Name = "Hello";
          _simulation.DataRepository = new DataRepository();
          _simulation.AucIV["TOTO"] = 55;
-         A.CallTo(() => _simModelManagerFactory.Create())
+         A.CallTo(() => _executionContext.Resolve<ISimModelManager>())
             .Returns(simModelManager);
 
          A.CallTo(simModelManager).WithReturnType<Task<SimulationRunResults>>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), new DataRepository()));
@@ -106,7 +104,7 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         A.CallTo(() => _simModelManagerFactory.Create())
+         A.CallTo(() => _executionContext.Resolve<ISimModelManager>())
             .Returns(_simModelManager);
 
          A.CallTo(_simModelManager).WithReturnType<Task<SimulationRunResults>>().Returns(new SimulationRunResults(Enumerable.Empty<SolverWarning>(), new DataRepository()));
