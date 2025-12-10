@@ -70,7 +70,7 @@ namespace PKSim.Core.Services
             _simulationPersistableUpdater.UpdatePersistableFromSettings(simulation);
 
          updateSolverSettings(simulation, options);
-         await simulationEngine.RunAsync(simulation, options, cancellationToken).ConfigureAwait(false);
+         await simulationEngine.RunAsync(simulation, options, cancellationToken);
          simulation.HasChanged = true;
       }
 
