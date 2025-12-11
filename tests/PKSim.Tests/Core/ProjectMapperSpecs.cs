@@ -533,4 +533,25 @@ namespace PKSim.Core
             .MustHaveHappened(_simulationsWithSnapshots.Count, Times.Exactly);
       }
    }
+
+
+   public class ExpressionProfileEqualityComparer : GenericEqualityComparer<ExpressionProfile>
+   {
+   }
+
+   public class RandomPopulationEqualityComparer : GenericEqualityComparer<RandomPopulation>
+   {
+   }
+
+   public class FormulationEqualityComparer : GenericEqualityComparer<Formulation>
+   {
+   }
+
+   public class PKSimEventEqualityComparer : GenericEqualityComparer<PKSimEvent>
+   {
+   }
+
+   public class ObserverSetEqualityComparer : GenericEqualityComparer<ObserverSet>
+   {
+   }
 }
