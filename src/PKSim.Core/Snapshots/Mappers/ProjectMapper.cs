@@ -302,7 +302,7 @@ namespace PKSim.Core.Snapshots.Mappers
          var simulations = new List<(ModelSimulation, Simulation)>();
 
          if (snapshots == null)
-            return (simulations);
+            return simulations;
 
          var simulationContext = new SimulationContext(projectContext.RunSimulations, snapshotContext)
          {
