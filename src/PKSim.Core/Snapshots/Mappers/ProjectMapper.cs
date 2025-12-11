@@ -166,7 +166,7 @@ namespace PKSim.Core.Snapshots.Mappers
             MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
          };
 
-         var allSimCount = simulationsWithSnapshot.Count();
+         var allSimCount = simulationsWithSnapshot.Count;
          _logger.AddInfo(PKSimConstants.UI.SimulationRunningMessage(allSimCount));
          await Parallel.ForEachAsync(simulationsWithSnapshot, options, async (simulationWithSnapshot, ct) =>
          {
