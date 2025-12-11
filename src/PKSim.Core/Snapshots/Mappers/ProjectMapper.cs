@@ -174,8 +174,8 @@ namespace PKSim.Core.Snapshots.Mappers
             {
                var (simulation, _) = simulationWithSnapshot;
                await _simulationRunner.RunSimulation(simulation, cancellationToken: ct);
-               allSimCount--;
-               _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, allSimCount));
+               var remaining = System.Threading.Interlocked.Decrement(ref allSimCount);
+               _logger.AddInfo(PKSimConstants.UI.SimulationFinishedMessage(simulation.Name, remaining));
             }
             catch (Exception ex)
             {

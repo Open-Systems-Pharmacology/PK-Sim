@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,7 @@ using Project = PKSim.Core.Snapshots.Project;
 using Protocol = PKSim.Core.Model.Protocol;
 using QualificationPlan = OSPSuite.Core.Domain.QualificationPlan;
 using Simulation = PKSim.Core.Snapshots.Simulation;
+using ModelSimulation = PKSim.Core.Model.Simulation;
 
 namespace PKSim.Core
 {
@@ -501,23 +503,34 @@ namespace PKSim.Core
       }
    }
 
-   public class ExpressionProfileEqualityComparer : GenericEqualityComparer<ExpressionProfile>
+   public class When_running_parallel_simulations : concern_for_ProjectMapper
    {
-   }
+      private List<(ModelSimulation, Simulation)> _simulationsWithSnapshots;
+      private SnapshotContext _snapshotContext;
 
-   public class RandomPopulationEqualityComparer : GenericEqualityComparer<RandomPopulation>
-   {
-   }
+      protected override async Task Context()
+      {
+         await base.Context();
+         _simulationsWithSnapshots = new List<(ModelSimulation, Simulation)>
+         {
+            (new IndividualSimulation().WithName("Sim1"), new Simulation()),
+            (new IndividualSimulation().WithName("Sim2"), new Simulation())
+         };
+         _snapshotContext = A.Fake<SnapshotContext>();
+         A.CallTo(() => _userSettings.MaximumNumberOfCoresToUse).Returns(2);
+      }
 
-   public class FormulationEqualityComparer : GenericEqualityComparer<Formulation>
-   {
-   }
+      protected override async Task Because()
+      {
+         var method = typeof(ProjectMapper).GetMethod("runParallelSimulations", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+         await (Task)method.Invoke(sut, new object[] { _simulationsWithSnapshots, _snapshotContext });
+      }
 
-   public class PKSimEventEqualityComparer : GenericEqualityComparer<PKSimEvent>
-   {
-   }
-
-   public class ObserverSetEqualityComparer : GenericEqualityComparer<ObserverSet>
-   {
+      [Observation]
+      public void should_run_simulation_for_each_simulation()
+      {
+         A.CallTo(() => _simulationRunner.RunSimulation(A<ModelSimulation>._, null, A<CancellationToken>._))
+            .MustHaveHappened(_simulationsWithSnapshots.Count, Times.Exactly);
+      }
    }
 }
