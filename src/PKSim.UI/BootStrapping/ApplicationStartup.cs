@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -24,7 +23,6 @@ using PKSim.Assets;
 using PKSim.Core;
 using PKSim.Core.Services;
 using PKSim.Infrastructure;
-using PKSim.Infrastructure.Services;
 using PKSim.Presentation;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Views;

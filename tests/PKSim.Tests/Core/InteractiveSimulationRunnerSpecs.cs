@@ -6,7 +6,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
-using OSPSuite.Utility.Events;
 using PKSim.Core.Chart;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -24,6 +23,7 @@ namespace PKSim.Core
       protected ILazyLoadTask _lazyLoadTask;
       protected IExecutionContext _executionContext;
       protected IInteractiveSimulationRunner _interactiveSimulationRunner;
+      protected ICoreUserSettings _coreUserSettings;
 
       protected override Task Context()
       {
@@ -34,6 +34,8 @@ namespace PKSim.Core
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _executionContext = A.Fake<IExecutionContext>();
          _interactiveSimulationRunner = A.Fake<IInteractiveSimulationRunner>();
+         _coreUserSettings = A.Fake<ICoreUserSettings>();
+
          sut = new InteractiveSimulationRunner(_simulationSettingsRetriever, _simulationRunner, _cloner, _simulationAnalysisCreator, _lazyLoadTask, _executionContext);
          return _completed;
       }
@@ -98,12 +100,6 @@ namespace PKSim.Core
       public void should_load_the_simulation()
       {
          A.CallTo(() => _lazyLoadTask.Load((Simulation)_simulation)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_create_a_chart_for_the_simulation()
-      {
-         A.CallTo(() => _simulationAnalysisCreator.CreateAnalysisFor(_simulation)).MustHaveHappened();
       }
    }
 

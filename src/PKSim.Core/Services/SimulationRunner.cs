@@ -18,9 +18,7 @@ namespace PKSim.Core.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IEntityValidationTask _entityValidationTask;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
-      private ISimulationEngine _simulationEngine;
       private readonly Task _simulationDidNotRun = Task.FromResult(false);
-      private SimulationRunOptions _simulationRunOptions;
 
       public SimulationRunner(
          ISimulationEngineFactory simulationEngineFactory,
@@ -34,44 +32,52 @@ namespace PKSim.Core.Services
          _simulationPersistableUpdater = simulationPersistableUpdater;
       }
 
-      public Task RunSimulation(Simulation simulation, SimulationRunOptions simulationRunOptions = null, CancellationToken cancellationToken = default)
+      public Task RunSimulation(
+         Simulation simulation,
+         SimulationRunOptions simulationRunOptions = null,
+         CancellationToken cancellationToken = default)
       {
-         _simulationRunOptions = simulationRunOptions ?? new SimulationRunOptions();
+         var options = simulationRunOptions ?? new SimulationRunOptions();
          _lazyLoadTask.Load(simulation);
 
-         if (_simulationRunOptions.Validate && !_entityValidationTask.Validate(simulation))
+         if (options.Validate && !_entityValidationTask.Validate(simulation))
             return _simulationDidNotRun;
 
          switch (simulation)
          {
             case IndividualSimulation individualSimulation:
-               return runSimulation<IndividualSimulation, SimulationRunResults>(individualSimulation, cancellationToken);
+               return runSimulation<IndividualSimulation, SimulationRunResults>(individualSimulation, options, cancellationToken);
 
             case PopulationSimulation populationSimulation:
-               return runSimulation<PopulationSimulation, PopulationRunResults>(populationSimulation, cancellationToken);
-         }
+               return runSimulation<PopulationSimulation, PopulationRunResults>(populationSimulation, options, cancellationToken);
 
-         return _simulationDidNotRun;
+            default:
+               return _simulationDidNotRun;
+         }
       }
- 
-      private async Task runSimulation<TSimulation, TResult>(TSimulation simulation, CancellationToken cancellationToken = default) where TSimulation : Simulation
+
+      private async Task runSimulation<TSimulation, TResult>(
+         TSimulation simulation,
+         SimulationRunOptions options,
+         CancellationToken cancellationToken)
+         where TSimulation : Simulation
       {
          var simulationEngine = _simulationEngineFactory.Create<TSimulation, TResult>();
-         _simulationEngine = simulationEngine; 
 
-         if (_simulationRunOptions.RunForAllOutputs)
+         if (options.RunForAllOutputs)
             _simulationPersistableUpdater.ResetPersistable(simulation);
          else
             _simulationPersistableUpdater.UpdatePersistableFromSettings(simulation);
 
-         updateSolverSettings(simulation);
-         await simulationEngine.RunAsync(simulation, _simulationRunOptions, cancellationToken);
+         updateSolverSettings(simulation, options);
+         await simulationEngine.RunAsync(simulation, options, cancellationToken);
          simulation.HasChanged = true;
       }
 
-      private void updateSolverSettings<TSimulation>(TSimulation simulation) where TSimulation : Simulation
+      private static void updateSolverSettings<TSimulation>(TSimulation simulation, SimulationRunOptions options)
+         where TSimulation : Simulation
       {
-         switch (_simulationRunOptions.JacobianUse)
+         switch (options.JacobianUse)
          {
             case JacobianUse.AsIs:
                return;

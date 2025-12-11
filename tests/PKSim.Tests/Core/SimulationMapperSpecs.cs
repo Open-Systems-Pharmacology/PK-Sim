@@ -76,7 +76,6 @@ namespace PKSim.Core
       protected SimulationTimeProfileChartMapper _curveChartMapper;
       protected SimulationTimeProfileChart _simulationTimeProfile;
       protected CurveChart _snapshotSimulationTimeProfile;
-      protected ISimulationRunner _simulationRunner;
       protected PopulationAnalysisChartMapper _populationAnalysisChartMapper;
       protected PopulationAnalysisChart _populationSimulationAnalysisChart;
       protected Snapshots.PopulationAnalysisChart _snapshotPopulationAnalysisChart;
@@ -119,7 +118,6 @@ namespace PKSim.Core
          _simulationModelCreator = A.Fake<ISimulationModelCreator>();
          _simulationBuildingBlockUpdater = A.Fake<ISimulationBuildingBlockUpdater>();
          _modelPropertiesTask = A.Fake<IModelPropertiesTask>();
-         _simulationRunner = A.Fake<ISimulationRunner>();
          _populationAnalysisChartMapper = A.Fake<PopulationAnalysisChartMapper>();
          _simulationParameterOriginIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
          _logger = A.Fake<IOSPSuiteLogger>();
@@ -133,7 +131,7 @@ namespace PKSim.Core
             _populationAnalysisChartMapper, _processMappingMapper, _outputMappingMapper,
             _simulationFactory, _executionContext, _simulationModelCreator,
             _simulationBuildingBlockUpdater, _modelPropertiesTask,
-            _simulationRunner, _simulationParameterOriginIdUpdater,
+            _simulationParameterOriginIdUpdater,
             _logger, _containerTask, _entityPathResolver, _chartTask
          );
 
@@ -558,9 +556,6 @@ namespace PKSim.Core
          _snapshot.HasResults = true;
          _calculatedDataRepository = DomainHelperForSpecs.ObservedData("Calculated");
 
-         A.CallTo(() => _simulationRunner.RunSimulation(individualSimulation, A<SimulationRunOptions>._, A<CancellationToken>.Ignored))
-            .Invokes(x => { individualSimulation.DataRepository = _calculatedDataRepository; });
-
          A.CallTo(() => _eventMappingMapper.MapToModel(_eventSelection, A<SnapshotContext>._)).Returns(_eventMapping);
          A.CallTo(() => _observerSetMappingMapper.MapToModel(_observerSetSelection, A<SnapshotContext>._)).Returns(_observerSetMapping);
       }
@@ -613,24 +608,6 @@ namespace PKSim.Core
       public void should_use_observed_data()
       {
          _simulation.UsesObservedData(_observedData).ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_update_analysis()
-      {
-         _simulation.Analyses.ShouldContain(_simulationTimeProfile);
-      }
-
-      [Observation]
-      public void should_run_the_simulation()
-      {
-         A.CallTo(() => _simulationRunner.RunSimulation(_simulation, A<SimulationRunOptions>._, A<CancellationToken>.Ignored)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_have_added_the_observed_data_from_project_and_the_current_simulation_results_to_the_curve_context()
-      {
-         _context.DataRepositories.ShouldContain(_observedData, _calculatedDataRepository);
       }
 
       [Observation]
@@ -713,12 +690,6 @@ namespace PKSim.Core
          _simulation.ShouldBeAnInstanceOf<PopulationSimulation>();
          var populationSimulation = _simulation.DowncastTo<PopulationSimulation>();
          A.CallTo(() => _advancedParameterMapper.MapToModel(_snapshot.AdvancedParameters, populationSimulation, _snapshotSimulationContext)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_update_analysis()
-      {
-         _simulation.Analyses.ShouldContain(_populationSimulationAnalysisChart);
       }
    }
 }

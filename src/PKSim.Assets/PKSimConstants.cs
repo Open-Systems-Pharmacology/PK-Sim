@@ -2499,6 +2499,10 @@ namespace PKSim.Assets
             return $"{successCount} out of {totalCount} were successful for simulation {simulationName} ({rate:F1}% success rate).";
          }
 
+         public static string LoadingProjectFromSnapshot(string projectName) => $"Loading project '{projectName}' from snapshot...";
+         public static string SimulationRunningMessage(int allSimCount) => $"{allSimCount} Simulation(s) Running...";
+         public static string SimulationFinishedMessage(string simulationName, int allSimCount)=> $"{simulationName} Finished, {allSimCount} Simulation(s) Remaining...";
+         public static string AllSimulationsFinishedMessage() => $"All Simulations Finished Running.";
       }
 
       public static class Reporting
