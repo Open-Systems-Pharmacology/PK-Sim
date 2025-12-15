@@ -27,7 +27,7 @@ namespace PKSim.Core
 
       private static readonly string PATH_TO_SRC = "..\\..\\..\\..\\..\\src\\";
       private static readonly string PATH_TO_DOCS = "..\\..\\..\\..\\..\\docs\\";
-      private static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
+      public static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
       private static readonly string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
 
       public static string FilePathFor(string fileNameWithExtension)
@@ -210,7 +210,7 @@ namespace PKSim.Core
       {
          if (_concentrationDimension == null)
          {
-            _concentrationDimension = new Dimension(new BaseDimensionRepresentation {AmountExponent = 3, LengthExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
+            _concentrationDimension = new Dimension(new BaseDimensionRepresentation {AmountExponent = 3, LengthExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "Âµmol/l");
             _concentrationDimension.AddUnit(new Unit("mol/l", 1E6, 0));
          }
 
@@ -221,7 +221,7 @@ namespace PKSim.Core
       {
          if (_massConcentrationDimension == null)
          {
-            _massConcentrationDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, LengthExponent = -1}, Constants.Dimension.MASS_CONCENTRATION, "µg/l");
+            _massConcentrationDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, LengthExponent = -1}, Constants.Dimension.MASS_CONCENTRATION, "Âµg/l");
             _massConcentrationDimension.AddUnit(new Unit("g/l", 1E6, 0));
          }
 
