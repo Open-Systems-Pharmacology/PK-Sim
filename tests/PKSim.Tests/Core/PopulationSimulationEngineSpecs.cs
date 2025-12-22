@@ -156,4 +156,50 @@ namespace PKSim.Core
          _message.Contains("1 out of 2 were successful for simulation").ShouldBeTrue();
       }
    }
+
+   public class When_the_population_run_has_multiple_failures_ids_are_listed_in_message : concern_for_PopulationSimulationEngine
+   {
+      private string _message;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         var individualResult1 = new IndividualResults { Id = 0 ,IndividualId = 0};
+         var individualResult2 = new IndividualResults { Id = 1 ,IndividualId = 1};
+         var individualResult3 = new IndividualResults { Id = 2 ,IndividualId = 2};
+         _runResults.Add(individualResult1);
+         _runResults.Add(individualResult2);
+         _runResults.Add(individualResult3);
+
+         // Mark failures for ids 2 and 3
+         _runResults.AddFailure(1, "Failed Individual 1");
+         _runResults.AddFailure(2, "Failed Individual 2");
+
+         // Capture the message shown to the user
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
+            .Invokes(call => _message = call.GetArgument<string>(0));
+
+         _simulationRunOptions = new SimulationRunOptions { RaiseEvents = false };
+
+         // Ensure the population runner returns our prepared results
+         A.CallTo(_populationRunner)
+            .WithReturnType<Task<PopulationRunResults>>()
+            .WithAnyArguments()
+            .Returns(_runResults);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunAsync(_populationSimulation, _simulationRunOptions);
+      }
+
+      [Observation]
+      public void should_list_failing_simulation_ids_in_message()
+      {
+         _message.ShouldNotBeNull();
+         _message.Contains("1").ShouldBeTrue();
+         _message.Contains("2").ShouldBeTrue();
+      }
+   }
 }

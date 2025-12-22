@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -103,9 +104,22 @@ namespace PKSim.Core.Services
          if (!failingSimulations.Any())
             return;
 
+         var failingInfoSet = new HashSet<IndividualRunInfo>(failingSimulations);
+         var failingIds = new List<int>();
+         var totalIndividuals = populationRunResults.IndividualRunInfos.Count();
 
-         var successfulCount = populationRunResults.IndividualRunInfos.Count() - failingSimulations.Count();
-         var message = PKSimConstants.UI.PopulationSimulationSuccessful(successfulCount, populationRunResults.IndividualRunInfos.Count(),populationSimulation.Name);
+         for (int id = 0; id < totalIndividuals; id++)
+         {
+            var runInfo = populationRunResults.IndividualRunInfoFor(id);
+
+            if (failingInfoSet.Contains(runInfo))
+            {
+               failingIds.Add(id);
+            }
+         } 
+
+         var message = PKSimConstants.UI.PopulationSimulationFailed(failingIds, totalIndividuals, populationSimulation.Name);
+
          _dialogCreator.MessageBoxInfo(message);
       }
 
