@@ -104,20 +104,10 @@ namespace PKSim.Core.Services
          if (!failingSimulations.Any())
             return;
 
-         var failingInfoSet = new HashSet<IndividualRunInfo>(failingSimulations);
-         var failingIds = new List<int>();
          var totalIndividuals = populationRunResults.IndividualRunInfos.Count();
-
-         for (int id = 0; id < totalIndividuals; id++)
-         {
-            var runInfo = populationRunResults.IndividualRunInfoFor(id);
-
-            if (failingInfoSet.Contains(runInfo))
-            {
-               failingIds.Add(id);
-            }
-         } 
-
+         var failingIds = failingSimulations
+            .Select(info => info.IndividualId)
+            .ToList();
          var message = PKSimConstants.UI.PopulationSimulationFailed(failingIds, totalIndividuals, populationSimulation.Name);
 
          _dialogCreator.MessageBoxInfo(message);
