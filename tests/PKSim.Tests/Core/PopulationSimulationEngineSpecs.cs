@@ -128,12 +128,9 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         var individualResult = new IndividualResults();
-         individualResult.Id = 1;
-         var individualResult2 = new IndividualResults();
-         individualResult2.Id = 2;
+         var individualResult = new IndividualResults { Id = 0, IndividualId = 0 };
          _runResults.Add(individualResult);
-         _runResults.AddFailure(2, "Failed Simulation");
+         _runResults.AddFailure(1, "Failed Simulation");
 
          A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
             .Invokes(x => _message = x.GetArgument<string>(0));
@@ -153,7 +150,7 @@ namespace PKSim.Core
       [Observation]
       public void should_show_message_with_simulations_failed()
       {
-         _message.Contains("1 out of 2 were successful for simulation").ShouldBeTrue();
+         _message.Contains("1 out of 2 individuals failed for simulation").ShouldBeTrue();
       }
    }
 
