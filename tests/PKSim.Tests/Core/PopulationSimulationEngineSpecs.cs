@@ -172,17 +172,14 @@ namespace PKSim.Core
          _runResults.Add(individualResult2);
          _runResults.Add(individualResult3);
 
-         // Mark failures for ids 2 and 3
          _runResults.AddFailure(1, "Failed Individual 1");
          _runResults.AddFailure(2, "Failed Individual 2");
 
-         // Capture the message shown to the user
          A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
             .Invokes(call => _message = call.GetArgument<string>(0));
 
          _simulationRunOptions = new SimulationRunOptions { RaiseEvents = false };
 
-         // Ensure the population runner returns our prepared results
          A.CallTo(_populationRunner)
             .WithReturnType<Task<PopulationRunResults>>()
             .WithAnyArguments()
