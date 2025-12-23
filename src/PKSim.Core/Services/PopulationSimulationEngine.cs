@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
@@ -10,7 +5,13 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
+using PKSim.Core.Extensions;
 using PKSim.Core.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PKSim.Core.Services
 {
@@ -99,26 +100,9 @@ namespace PKSim.Core.Services
 
       private void evaluateResultsAndShowMessage(PopulationSimulation populationSimulation, PopulationRunResults populationRunResults)
       {
-         var failingSimulations = populationRunResults.IndividualRunInfos.Where(x => x.Success != true).ToList();
+         var failingIndividuals = populationRunResults.IndividualRunInfos.Where(x => !x.Success).Select(runInfo => populationRunResults.IndividualRunInfos.IndexOf(runInfo)).ToList();
 
-         if (!failingSimulations.Any())
-            return;
-
-         var failingInfoSet = new HashSet<IndividualRunInfo>(failingSimulations);
-         var failingIds = new List<int>();
-         var totalIndividuals = populationRunResults.IndividualRunInfos.Count();
-
-         for (int id = 0; id < totalIndividuals; id++)
-         {
-            var runInfo = populationRunResults.IndividualRunInfoFor(id);
-
-            if (failingInfoSet.Contains(runInfo))
-            {
-               failingIds.Add(id);
-            }
-         }
-
-         var message = PKSimConstants.UI.PopulationSimulationFailed(failingIds, totalIndividuals, populationSimulation.Name);
+         var message = PKSimConstants.UI.PopulationSimulationFailed(failingIndividuals, populationRunResults.IndividualRunInfos.Count(), populationSimulation.Name);
 
          _dialogCreator.MessageBoxInfo(message);
       }

@@ -2582,7 +2582,7 @@ namespace PKSim.Assets
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
 
          public static string ChildPughScoreFor(string score) => $"Child-Pugh {score}";
-
+         private const int MaxFailedIdsToShow = 20;
          public static string PopulationSimulationFailed(IReadOnlyCollection<int> failedIds, int totalCount, string simulationName)
          {
             if (totalCount == 0)
@@ -2597,12 +2597,12 @@ namespace PKSim.Assets
             {
                var idsToShow = failedIds
                   .OrderBy(id => id)
-                  .Take(20)
+                  .Take(MaxFailedIdsToShow)
                   .ToList();
 
                message +=
-                  $"{Environment.NewLine}Failing individual IDs (first {idsToShow.Count}" +
-                  $"{(failedCount > 20 ? " of " + failedCount : string.Empty)}): " +
+                  $"{Environment.NewLine}Failing individual Indexes (first {idsToShow.Count}" +
+                  $"{(failedCount > MaxFailedIdsToShow ? " of " + failedCount : string.Empty)}): " +
                   string.Join(", ", idsToShow);
             }
 

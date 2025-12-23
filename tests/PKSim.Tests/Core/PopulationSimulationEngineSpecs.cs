@@ -137,7 +137,7 @@ namespace PKSim.Core
          _simulationRunOptions = new SimulationRunOptions { RaiseEvents = false };
 
          A.CallTo(_populationRunner)
-            .WithReturnType<Task<PopulationRunResults>>() 
+            .WithReturnType<Task<PopulationRunResults>>()
             .WithAnyArguments()
             .Returns(_runResults);
       }
@@ -162,9 +162,9 @@ namespace PKSim.Core
       {
          await base.Context();
 
-         var individualResult1 = new IndividualResults { Id = 0 ,IndividualId = 0};
-         var individualResult2 = new IndividualResults { Id = 1 ,IndividualId = 1};
-         var individualResult3 = new IndividualResults { Id = 2 ,IndividualId = 2};
+         var individualResult1 = new IndividualResults { Id = 0, IndividualId = 0 };
+         var individualResult2 = new IndividualResults { Id = 1, IndividualId = 1 };
+         var individualResult3 = new IndividualResults { Id = 2, IndividualId = 2 };
          _runResults.Add(individualResult1);
          _runResults.Add(individualResult2);
          _runResults.Add(individualResult3);
@@ -189,7 +189,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_list_failing_simulation_ids_in_message()
+      public void should_list_failing_individual_ids_in_message()
       {
          _message.ShouldNotBeNull();
          _message.Contains("1").ShouldBeTrue();
