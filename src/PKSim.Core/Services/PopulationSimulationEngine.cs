@@ -100,7 +100,12 @@ namespace PKSim.Core.Services
 
       private void evaluateResultsAndShowMessage(PopulationSimulation populationSimulation, PopulationRunResults populationRunResults)
       {
-         var failingIndividuals = populationRunResults.IndividualRunInfos.Where(x => !x.Success).Select(runInfo => populationRunResults.IndividualRunInfos.IndexOf(runInfo)).ToList();
+         var failingIndividuals = populationRunResults.IndividualRunInfos.Select((runInfo, index) => new { runInfo, index })
+            .Where(x => !x.runInfo.Success)
+            .Select(x => x.index).ToList();
+
+         if (!failingIndividuals.Any())
+            return;
 
          var message = PKSimConstants.UI.PopulationSimulationFailed(failingIndividuals, populationRunResults.IndividualRunInfos.Count(), populationSimulation.Name);
 
