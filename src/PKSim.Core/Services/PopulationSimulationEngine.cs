@@ -1,3 +1,7 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
@@ -5,13 +9,7 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
-using PKSim.Core.Extensions;
 using PKSim.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PKSim.Core.Services
 {

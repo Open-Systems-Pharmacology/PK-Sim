@@ -2580,29 +2580,29 @@ namespace PKSim.Assets
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
-
+         
          public static string ChildPughScoreFor(string score) => $"Child-Pugh {score}";
-         private const int MaxFailedIdsToShow = 20;
-         public static string PopulationSimulationFailed(IReadOnlyCollection<int> failedIds, int totalCount, string simulationName)
+         private const int MaxFailedIndexesToShow = 20;
+         public static string PopulationSimulationFailed(IReadOnlyCollection<int> failedIndexes, int totalCount, string simulationName)
          {
             if (totalCount == 0)
                return $"No simulations were run for {simulationName}.";
 
-            var failedCount = failedIds?.Count ?? 0;
+            var failedCount = failedIndexes?.Count ?? 0;
             var successRate = (double)(totalCount - failedCount) / totalCount * 100;
 
             var message = $"{failedCount} out of {totalCount} individuals failed for simulation {simulationName} ({successRate:F1}% success rate).";
 
             if (failedCount > 0)
             {
-               var idsToShow = failedIds
-                  .OrderBy(id => id)
-                  .Take(MaxFailedIdsToShow)
+               var indexesToShow = failedIndexes
+                  .OrderBy(index => index)
+                  .Take(MaxFailedIndexesToShow)
                   .ToList();
 
                var idsSuffix = failedCount > 20 ? $" of {failedCount}" : string.Empty;
 
-               message += $"{Environment.NewLine}Failing individual numbers (first {idsToShow.Count}{idsSuffix}) {string.Join(", ", idsToShow)}";
+               message += $"{Environment.NewLine}Failing individual numbers (first {indexesToShow.Count}{idsSuffix}) {string.Join(", ", indexesToShow)}";
             }
 
             return message;

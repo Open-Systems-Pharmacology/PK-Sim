@@ -154,7 +154,7 @@ namespace PKSim.Core
       }
    }
 
-   public class When_the_population_run_has_multiple_failures_ids_are_listed_in_message : concern_for_PopulationSimulationEngine
+   public class When_the_population_run_has_multiple_failures_indexes_are_listed_in_message : concern_for_PopulationSimulationEngine
    {
       private string _message;
 
@@ -189,7 +189,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_list_failing_individual_ids_in_message()
+      public void should_list_failing_individual_indexes_in_message()
       {
          _message.ShouldNotBeNull();
          _message.Contains("1").ShouldBeTrue();
