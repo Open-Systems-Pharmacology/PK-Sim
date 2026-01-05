@@ -23,7 +23,7 @@ namespace PKSim.CLI
       {
          _runOptions = new JsonRunOptions
          {
-            InputFolder = DomainHelperForSpecs.PATH_TO_DATA,
+            InputFolder = DomainHelperForSpecs.DataFolder,
             OutputFolder = "c:/tests/temp"
          };
          _snapshotTask = A.Fake<ISnapshotTask>();
