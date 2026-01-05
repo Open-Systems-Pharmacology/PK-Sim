@@ -23,7 +23,7 @@ namespace PKSim.Presentation.UICommands
 
       public void Execute()
       {
-         var reportFileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.CreateReportTitle, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.REPORT, _workspace.Project.Name);
+         var reportFileName = _dialogCreator.AskForFileToSave(PKSimConstants.UI.CreateReportTitle, Constants.Filter.HISTORY_FILE_FILTER, Constants.DirectoryKey.REPORT, _workspace.Project.Name);
          if (reportFileName.IsNullOrEmpty()) return;
          var reportOptions = new ReportOptions {ReportFullPath = reportFileName, SheetName = _workspace.Project.Name, OpenReport = true};
          _reportTask.CreateReport(_workspace.HistoryManager, reportOptions);
