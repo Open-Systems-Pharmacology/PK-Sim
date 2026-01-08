@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using OSPSuite.Assets;
 using OSPSuite.Assets.Extensions;
-using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
 namespace PKSim.Assets
@@ -925,7 +924,7 @@ namespace PKSim.Assets
          public static string SnapshotDuplicateEntryByName(string name, string type) =>
             $"Another {type} named '{name}' already exists in the project. Snapshot file is corrupted.";
 
-         public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) => 
+         public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) =>
             $"Effective mol weight must be greater than or equal to {valueInDisplayUnit} {displayUnit}";
       }
 
@@ -2581,19 +2580,33 @@ namespace PKSim.Assets
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
-
+         
          public static string ChildPughScoreFor(string score) => $"Child-Pugh {score}";
-
-         public static string PopulationSimulationSuccessful(int successCount, int totalCount, string simulationName)
+         private const int MaxFailedIndexesToShow = 20;
+         public static string PopulationSimulationFailed(IReadOnlyCollection<int> failedIndexes, int totalCount, string simulationName)
          {
-            //Probably this is never the case, but we have to prevent dividing by zero anyways. 
             if (totalCount == 0)
                return $"No simulations were run for {simulationName}.";
 
-            var rate = (double)successCount / totalCount * 100;
-            return $"{successCount} out of {totalCount} were successful for simulation {simulationName} ({rate:F1}% success rate).";
-         }
+            var failedCount = failedIndexes?.Count ?? 0;
+            var successRate = (double)(totalCount - failedCount) / totalCount * 100;
 
+            var message = $"{failedCount} out of {totalCount} individuals failed for simulation {simulationName} ({successRate:F1}% success rate).";
+
+            if (failedCount > 0)
+            {
+               var indexesToShow = failedIndexes
+                  .OrderBy(index => index)
+                  .Take(MaxFailedIndexesToShow)
+                  .ToList();
+
+               var idsSuffix = failedCount > MaxFailedIndexesToShow ? $" of {failedCount}" : string.Empty;
+
+               message += $"{Environment.NewLine}Failing individual ids (first {indexesToShow.Count}{idsSuffix}) {string.Join(", ", indexesToShow)}";
+            }
+
+            return message;
+         }
       }
 
       public static class Reporting
