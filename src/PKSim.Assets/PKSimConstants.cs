@@ -2602,7 +2602,7 @@ namespace PKSim.Assets
 
                var idsSuffix = failedCount > MaxFailedIndexesToShow ? $" of {failedCount}" : string.Empty;
 
-               message += $"{Environment.NewLine}Failing individual numbers (first {indexesToShow.Count}{idsSuffix}) {string.Join(", ", indexesToShow)}";
+               message += $"{Environment.NewLine}Failing individual ids (first {indexesToShow.Count}{idsSuffix}) {string.Join(", ", indexesToShow)}";
             }
 
             return message;
