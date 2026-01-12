@@ -1,14 +1,14 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
-using OSPSuite.Utility;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using PKSim.Assets;
-using PKSim.Core.Events;
 using PKSim.Core.Model;
 
 namespace PKSim.Core.Services
@@ -25,7 +25,7 @@ namespace PKSim.Core.Services
 
       protected void RaiseEvent<T>(T eventToPublish)
       {
-         if(_shouldRaiseEvents)
+         if (_shouldRaiseEvents)
             _eventPublisher.PublishEvent(eventToPublish);
       }
    }
@@ -40,6 +40,7 @@ namespace PKSim.Core.Services
       private readonly ISimulationToModelCoreSimulationMapper _modelCoreSimulationMapper;
       private readonly ICoreUserSettings _userSettings;
       private readonly IPopulationSimulationAnalysisSynchronizer _populationSimulationAnalysisSynchronizer;
+      private readonly IDialogCreator _dialogCreator;
 
       public PopulationSimulationEngine(
          IPopulationRunner populationRunner,
@@ -49,7 +50,8 @@ namespace PKSim.Core.Services
          IPopulationExportTask populationExporter,
          ISimulationToModelCoreSimulationMapper modelCoreSimulationMapper,
          ICoreUserSettings userSettings,
-         IPopulationSimulationAnalysisSynchronizer populationSimulationAnalysisSynchronizer) : base(eventPublisher)
+         IPopulationSimulationAnalysisSynchronizer populationSimulationAnalysisSynchronizer,
+         IDialogCreator dialogCreator) : base(eventPublisher)
       {
          _populationRunner = populationRunner;
          _progressManager = progressManager;
@@ -60,6 +62,7 @@ namespace PKSim.Core.Services
          _populationSimulationAnalysisSynchronizer = populationSimulationAnalysisSynchronizer;
          _populationRunner.Terminated += terminated;
          _populationRunner.SimulationProgress += simulationProgress;
+         _dialogCreator = dialogCreator;
       }
 
       public async Task RunAsync(PopulationSimulation populationSimulation, SimulationRunOptions simulationRunOptions, CancellationToken cancellationToken = default)
@@ -69,19 +72,17 @@ namespace PKSim.Core.Services
 
          _shouldRaiseEvents = simulationRunOptions.RaiseEvents;
 
-         var begin = SystemTime.UtcNow();
          try
          {
             var populationData = _populationExporter.CreatePopulationDataFor(populationSimulation);
             var modelCoreSimulation = _modelCoreSimulationMapper.MapFrom(populationSimulation, shouldCloneModel: false);
-            var runOptions = new RunOptions {NumberOfCoresToUse = _userSettings.MaximumNumberOfCoresToUse};
-            var simulationRunStartedEvent = new SimulationRunStartedEvent(populationSimulation);
-            RaiseEvent(simulationRunStartedEvent);
+            var runOptions = new RunOptions { NumberOfCoresToUse = _userSettings.MaximumNumberOfCoresToUse };
             var populationRunResults = await _populationRunner.RunPopulationAsync(modelCoreSimulation, runOptions, populationData, populationSimulation.AgingData.ToDataTable(), cancellationToken: cancellationToken);
             _simulationResultsSynchronizer.Synchronize(populationSimulation, populationRunResults.Results);
+            evaluateResultsAndShowMessage(populationSimulation, populationRunResults);
+
             _populationSimulationAnalysisSynchronizer.UpdateAnalysesDefinedIn(populationSimulation);
             RaiseEvent(new SimulationResultsUpdatedEvent(populationSimulation));
-
          }
          catch (OperationCanceledException)
          {
@@ -93,12 +94,20 @@ namespace PKSim.Core.Services
             simulationTerminated();
             throw;
          }
-         finally
-         {
-            var end = SystemTime.UtcNow();
-            var timeSpent = end - begin;
-            RaiseEvent(new SimulationRunFinishedEvent(populationSimulation, timeSpent));
-         }
+      }
+
+      private void evaluateResultsAndShowMessage(PopulationSimulation populationSimulation, PopulationRunResults populationRunResults)
+      {
+         var failingIndividuals = populationRunResults.IndividualRunInfos.Select((runInfo, index) => new { runInfo, index })
+            .Where(x => !x.runInfo.Success)
+            .Select(x => x.index).ToList();
+
+         if (!failingIndividuals.Any())
+            return;
+
+         var message = PKSimConstants.UI.PopulationSimulationFailed(failingIndividuals, populationRunResults.IndividualRunInfos.Count(), populationSimulation.Name);
+
+         _dialogCreator.MessageBoxInfo(message);
       }
 
       private void simulationTerminated()

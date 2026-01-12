@@ -29,45 +29,23 @@ namespace PKSim.Core
       private static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
       private static readonly string PATH_TO_TEMPLATES = "..\\..\\..\\Templates\\";
 
-      public static string FilePathFor(string fileNameWithExtension)
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileNameWithExtension);
-      }
+      public static string DataFolder => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA);
 
-      public static string DataFilePathFor(string fileNameWithExtension)
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, fileNameWithExtension);
-      }
+      public static string FilePathFor(string fileNameWithExtension) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileNameWithExtension);
 
-      public static string PopulationFilePathFor(string fileNameWithoutExtension)
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "PopulationFiles", fileNameWithoutExtension + ".csv");
-      }
+      public static string DataFilePathFor(string fileNameWithExtension) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, fileNameWithExtension);
 
-      public static string SimulationResultsFilePathFor(string fileNameWithoutExtension)
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "SimulationResultsFiles", fileNameWithoutExtension + ".csv");
-      }
+      public static string PopulationFilePathFor(string fileNameWithoutExtension) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "PopulationFiles", fileNameWithoutExtension + ".csv");
 
-      public static string PKAnalysesFilePathFor(string fileNameWithoutExtension)
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "PKAnalysesFiles", fileNameWithoutExtension + ".csv");
-      }
+      public static string SimulationResultsFilePathFor(string fileNameWithoutExtension) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "SimulationResultsFiles", fileNameWithoutExtension + ".csv");
 
-      public static string TEXTemplateFolder()
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_TEMPLATES, "StandardTemplate");
-      }
+      public static string PKAnalysesFilePathFor(string fileNameWithoutExtension) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DATA, "PKAnalysesFiles", fileNameWithoutExtension + ".csv");
 
-      public static string UserTemplateDatabasePath()
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBUser.template");
-      }
+      public static string TEXTemplateFolder() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_TEMPLATES, "StandardTemplate");
 
-      public static string SystemTemplateDatabasePath()
-      {
-         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
-      }
+      public static string UserTemplateDatabasePath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBUser.template");
+
+      public static string SystemTemplateDatabasePath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_SRC, "Db\\TemplateDB", "PKSimTemplateDBSystem.mdb");
 
       public static ExpressionProfile CreateExpressionProfile<TMolecule>(string speciesName = "Species", string moleculeName = "CYP3A4", string category = "Healthy") where TMolecule : IndividualMolecule, new()
       {
@@ -207,7 +185,7 @@ namespace PKSim.Core
       {
          if (_concentrationDimension == null)
          {
-            _concentrationDimension = new Dimension(new BaseDimensionRepresentation {AmountExponent = 3, LengthExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
+            _concentrationDimension = new Dimension(new BaseDimensionRepresentation {AmountExponent = 3, LengthExponent = -1}, Constants.Dimension.MOLAR_CONCENTRATION, "Âµmol/l");
             _concentrationDimension.AddUnit(new Unit("mol/l", 1E6, 0));
          }
 
@@ -218,7 +196,7 @@ namespace PKSim.Core
       {
          if (_massConcentrationDimension == null)
          {
-            _massConcentrationDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, LengthExponent = -1}, Constants.Dimension.MASS_CONCENTRATION, "µg/l");
+            _massConcentrationDimension = new Dimension(new BaseDimensionRepresentation {MassExponent = 3, LengthExponent = -1}, Constants.Dimension.MASS_CONCENTRATION, "Âµg/l");
             _massConcentrationDimension.AddUnit(new Unit("g/l", 1E6, 0));
          }
 
@@ -326,15 +304,9 @@ namespace PKSim.Core
          return ind;
       }
 
-      private static QuantityValues createValuesArray(int i, int numberOfPoints)
-      {
-         return createArray("Path " + i, LengthDimensionForSpecs(), numberOfPoints);
-      }
+      private static QuantityValues createValuesArray(int i, int numberOfPoints) => createArray("Path " + i, LengthDimensionForSpecs(), numberOfPoints);
 
-      private static QuantityValues createTimeArray(int numberOfPoints)
-      {
-         return createArray("Time", TimeDimensionForSpecs(), numberOfPoints);
-      }
+      private static QuantityValues createTimeArray(int numberOfPoints) => createArray("Time", TimeDimensionForSpecs(), numberOfPoints);
 
       private static QuantityValues createArray(string path, IDimension dimension, int numberOfPoints)
       {

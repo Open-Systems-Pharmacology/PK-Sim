@@ -68,7 +68,8 @@ namespace PKSim.Presentation.Presenters.Main
          IObservedDataInSimulationManager observedDataInSimulationManager,
          ISimulationComparisonTask simulationComparisonTask,
          IExecutionContext executionContext,
-         IMenuBarItemRepository menuBarItemRepository) :
+         IMenuBarItemRepository menuBarItemRepository
+         ) :
          base(view, treeNodeFactory, treeNodeContextMenuFactory, multipleTreeNodeContextMenuFactory, buildingBlockIconRetriever, regionResolver,
             buildingBlockTask, RegionNames.SimulationExplorer, projectRetriever, classificationPresenter, toolTipPartCreator)
       {

@@ -444,7 +444,53 @@ namespace PKSim.Core
          _result.ShouldBeAnInstanceOf<SetParameterUnitStructureChangeCommand>();
       }
    }
+
+   public class When_asked_to_reset_an_expression_parameter_to_its_original_value : concern_for_ParameterTask
+   {
+      private ICommand _result;
+      private IParameter _para1;
+
+      protected override void Context()
+      {
+         base.Context();
+         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName(CoreConstants.Parameters.INITIAL_CONCENTRATION);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.ResetParameter(_para1);
+      }
+
+      [Observation]
+      public void should_return_the_underlying_command_used_to_reset_the_parameters()
+      {
+         _result.ShouldBeAnInstanceOf<ResetExpressionParameterCommand>();
+      }
+   }
    
+   public class When_asked_to_reset_a_parameter_to_its_original_value : concern_for_ParameterTask
+   {
+      private ICommand _result;
+      private IParameter _para1;
+
+      protected override void Context()
+      {
+         base.Context();
+         _para1 = DomainHelperForSpecs.ConstantParameterWithValue(1).WithName("para1");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.ResetParameter(_para1);
+      }
+
+      [Observation]
+      public void should_return_the_underlying_command_used_to_reset_the_parameters()
+      {
+         _result.ShouldBeAnInstanceOf<ResetParameterCommand>();
+      }
+   }
+
    public class When_asked_to_reset_a_set_of_parameters_to_their_original_values : concern_for_ParameterTask
    {
       private ICommand _result;

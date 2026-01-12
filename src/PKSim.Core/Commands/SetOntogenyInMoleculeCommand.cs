@@ -5,7 +5,7 @@ using PKSim.Core.Services;
 
 namespace PKSim.Core.Commands
 {
-   public class SetOntogenyInMoleculeCommand : BuildingBlockChangeCommand
+   public class SetOntogenyInMoleculeCommand : BuildingBlockStructureChangeCommand
    {
       private readonly string _moleculeId;
       private readonly Ontogeny _newOntogeny;

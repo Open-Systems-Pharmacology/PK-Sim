@@ -86,7 +86,7 @@ namespace PKSim.Presentation.Presenters.Compounds
 
       public void EditHalogens()
       {
-         _molWeightHalogensPresenter.EditHalogens(_halogenParameters);
+         _molWeightHalogensPresenter.EditHalogens(_halogenParameters, _molWeightParameters.FindByName(CoreConstants.Parameters.EFFECTIVE_MOLECULAR_WEIGHT));
       }
 
       public void SaveHalogens()
@@ -103,8 +103,8 @@ namespace PKSim.Presentation.Presenters.Compounds
          _molWeightDTO = _molWeightDTOMapper.MapFrom(_molWeightParameters);
 
          //Some parameters may be null in case of an imported model for instance
-         _editableParameters = new List<IParameter>(_halogenParameters) {_molWeightDTO.MolWeightParameter.Parameter}.Where(x => x != null).ToList();
-         var parameterToBindTo = new[] {_molWeightDTO.MolWeightParameter, _molWeightDTO.HasHalogensParameter, _molWeightDTO.MolWeightEffParameter}
+         _editableParameters = new List<IParameter>(_halogenParameters) { _molWeightDTO.MolWeightParameter.Parameter }.Where(x => x != null).ToList();
+         var parameterToBindTo = new[] { _molWeightDTO.MolWeightParameter, _molWeightDTO.HasHalogensParameter, _molWeightDTO.MolWeightEffParameter }
             .Where(x => x.Parameter != null).ToList();
 
          _view.BindTo(parameterToBindTo);

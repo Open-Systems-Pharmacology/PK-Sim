@@ -399,6 +399,7 @@ namespace PKSim.Assets
          public const string DescriptionIsRequired = "Description is required.";
          public const string UnknownObserverBuilderType = "Observer builer type unknown.";
          public const string ImporterConfigurationNotFoundInProject = "Importer configuration for this dataset was not found in this project.\n\nThe data cannot be reloaded.";
+         public const string SimulationCannotShareNamesWithCompounds = "Simulation cannot share names with compounds";
          public static string UnableToCreateIndividual(string constraints) => $"Could not create individuals with given constraint:\n{constraints}";
          public static string UnableToCreatePopulation(string constraints) => $"Could not create population with given constraint:\n{constraints}";
          public const string FactorShouldBeBiggerThanZero = "Factor should be bigger than 0.";
@@ -922,6 +923,9 @@ namespace PKSim.Assets
 
          public static string SnapshotDuplicateEntryByName(string name, string type) =>
             $"Another {type} named '{name}' already exists in the project. Snapshot file is corrupted.";
+
+         public static string EffectiveMolWeightMustBeGreaterThan(double valueInDisplayUnit, string displayUnit) =>
+            $"Effective mol weight must be greater than or equal to {valueInDisplayUnit} {displayUnit}";
       }
 
       public static class Information
@@ -1203,6 +1207,7 @@ namespace PKSim.Assets
          public static string CompareBuildingBlocks(string buildingBlockType) => $"Compare {buildingBlockType}s";
 
          public static string AddObservedDataToSimulation(string simulationName) => $"Add to {ObjectTypes.Simulation} '{simulationName}'";
+         public static readonly string CopyPath = "Copy Path";
       }
 
       public static class QualificationSteps
@@ -2575,8 +2580,33 @@ namespace PKSim.Assets
          public static readonly string DidYouReallyBackupProject = "Did you really make a backup of your project?";
 
          public static string LinkedExpressionProfileIs(string expressionProfileName) => $"Using expression profile <b>{expressionProfileName}</b>";
-
+         
          public static string ChildPughScoreFor(string score) => $"Child-Pugh {score}";
+         private const int MaxFailedIndexesToShow = 20;
+         public static string PopulationSimulationFailed(IReadOnlyCollection<int> failedIndexes, int totalCount, string simulationName)
+         {
+            if (totalCount == 0)
+               return $"No simulations were run for {simulationName}.";
+
+            var failedCount = failedIndexes?.Count ?? 0;
+            var successRate = (double)(totalCount - failedCount) / totalCount * 100;
+
+            var message = $"{failedCount} out of {totalCount} individuals failed for simulation {simulationName} ({successRate:F1}% success rate).";
+
+            if (failedCount > 0)
+            {
+               var indexesToShow = failedIndexes
+                  .OrderBy(index => index)
+                  .Take(MaxFailedIndexesToShow)
+                  .ToList();
+
+               var idsSuffix = failedCount > MaxFailedIndexesToShow ? $" of {failedCount}" : string.Empty;
+
+               message += $"{Environment.NewLine}Failing individual ids (first {indexesToShow.Count}{idsSuffix}) {string.Join(", ", indexesToShow)}";
+            }
+
+            return message;
+         }
       }
 
       public static class Reporting

@@ -87,7 +87,7 @@ namespace PKSim.Core
    public class When_executing_the_reset_command_for_a_default_parameter : concern_for_ResetParameterCommand
    {
       private ValueOrigin _databaseValueOrigin;
-
+      
       protected override void Context()
       {
          base.Context();
@@ -100,7 +100,6 @@ namespace PKSim.Core
             Method = ValueOriginDeterminationMethods.InVivo,
             Source = ValueOriginSources.Database
          };
-         
 
          A.CallTo(() => _parameterInContainerRepository.ValueOriginFor(_parameterToReset)).Returns(_databaseValueOrigin);
       }
@@ -145,7 +144,7 @@ namespace PKSim.Core
       }
 
       [Observation]
-      public void should_simply_set_the_value_of_the_parameter_again_using_a_set_command()
+      public void should_set_the_value_of_the_parameter_again_using_a_set_command()
       {
          _parameterToReset.Value.ShouldBeEqualTo(25);
          _parameterToReset.IsFixedValue.ShouldBeTrue();

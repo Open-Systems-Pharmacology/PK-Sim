@@ -89,7 +89,6 @@ namespace PKSim.UI.Views.Parameters
          InitializeWithGrid(_gridView);
          _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView)
          {
-            ValidationMode = ValidationMode.LeavingRow,
             BindingMode = BindingMode.OneWay
          };
       }
@@ -130,13 +129,18 @@ namespace PKSim.UI.Views.Parameters
             .WithRepository(repoForParameter)
             .WithEditorConfiguration(configureRepository)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
-            .WithOnValueUpdating((o, e) => OnEvent(() => _presenter.SetParameterValue(o, e.NewValue)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => setParameterValue(o, e)));
 
          _comboBoxUnit.ParameterUnitSet += setParameterUnit;
-
          _editTableParameterRepository.ButtonClick += (o, e) => OnEvent(editTable);
          _showTableParameterRepository.ButtonClick += (o, e) => OnEvent(editTable);
          _isFixedParameterEditRepository.ButtonClick += (o, e) => OnEvent(resetParameter);
+      }
+
+      private void setParameterValue(ParameterDTO o, PropertyValueSetEventArgs<double> e)
+      {
+         _presenter.SetParameterValue(o, e.NewValue);
+         _gridView.CloseEditor();
       }
 
       private void editTable()

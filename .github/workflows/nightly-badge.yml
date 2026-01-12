@@ -1,0 +1,29 @@
+name: Badge for Nightly Build
+# This workflow acts as a proxy for the nightly build workflow. 
+# Upon completion of a nightly build, it is invoked to update a repository badge 
+# according to the latest run's result.
+#
+# Behavior summary:
+#   1. If the triggering workflow_run's conclusion is 'success' -> this workflow succeeds (badge passing).
+#   2. If the triggering workflow_run concluded with a non-cancelled failure (e.g. failure, timed_out)
+#      -> this workflow exits with a non-zero status (badge failing).
+#   3. If the triggering workflow_run concluded with 'cancelled' -> this workflow will query the
+#      GitHub Actions API for the latest non-cancelled run of the specified nightly workflow:
+#        - If the latest non-cancelled run's conclusion is 'success', treat the badge as passing.
+#        - Otherwise, exit non-zero (badge failing).
+
+on:
+  workflow_run:
+    workflows:
+      - "Build Nightly 12.2"
+    types:
+      - completed
+
+permissions:
+  actions: read
+
+jobs:
+  badge:
+    uses: Open-Systems-Pharmacology/Workflows/.github/workflows/nightly-badge.yml@main
+    with:
+      nightly-build-workflow: "build-nightly_12.2.yml"

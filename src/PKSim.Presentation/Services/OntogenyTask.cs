@@ -69,7 +69,7 @@ namespace PKSim.Presentation.Services
          };
          dataImporterSettings.AddNamingPatternMetaData(Constants.FILE);
 
-         var fileName = _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA);
+         var fileName = _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA);
          if (string.IsNullOrEmpty(fileName))
             return null;
 

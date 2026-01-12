@@ -84,7 +84,7 @@ namespace PKSim.Presentation.Services
             new List<MetaDataCategory>(), 
             getColumnInfos(), 
             dataImporterSettings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, Constants.DirectoryKey.OBSERVED_DATA)
          ).DataRepositories.FirstOrDefault();
       }
 
