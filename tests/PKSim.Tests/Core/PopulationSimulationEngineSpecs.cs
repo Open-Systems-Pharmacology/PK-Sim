@@ -128,19 +128,16 @@ namespace PKSim.Core
       protected override async Task Context()
       {
          await base.Context();
-         var individualResult = new IndividualResults();
-         individualResult.Id = 1;
-         var individualResult2 = new IndividualResults();
-         individualResult2.Id = 2;
+         var individualResult = new IndividualResults { Id = 0, IndividualId = 0 };
          _runResults.Add(individualResult);
-         _runResults.AddFailure(2, "Failed Simulation");
+         _runResults.AddFailure(1, "Failed Simulation");
 
          A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
             .Invokes(x => _message = x.GetArgument<string>(0));
          _simulationRunOptions = new SimulationRunOptions { RaiseEvents = false };
 
          A.CallTo(_populationRunner)
-            .WithReturnType<Task<PopulationRunResults>>() 
+            .WithReturnType<Task<PopulationRunResults>>()
             .WithAnyArguments()
             .Returns(_runResults);
       }
@@ -153,7 +150,50 @@ namespace PKSim.Core
       [Observation]
       public void should_show_message_with_simulations_failed()
       {
-         _message.Contains("1 out of 2 were successful for simulation").ShouldBeTrue();
+         _message.Contains("1 out of 2 individuals failed for simulation").ShouldBeTrue();
+      }
+   }
+
+   public class When_the_population_run_has_multiple_failures_indexes_are_listed_in_message : concern_for_PopulationSimulationEngine
+   {
+      private string _message;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         var individualResult1 = new IndividualResults { Id = 0, IndividualId = 0 };
+         var individualResult2 = new IndividualResults { Id = 1, IndividualId = 1 };
+         var individualResult3 = new IndividualResults { Id = 2, IndividualId = 2 };
+         _runResults.Add(individualResult1);
+         _runResults.Add(individualResult2);
+         _runResults.Add(individualResult3);
+
+         _runResults.AddFailure(1, "Failed Individual 1");
+         _runResults.AddFailure(2, "Failed Individual 2");
+
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._))
+            .Invokes(call => _message = call.GetArgument<string>(0));
+
+         _simulationRunOptions = new SimulationRunOptions { RaiseEvents = false };
+
+         A.CallTo(_populationRunner)
+            .WithReturnType<Task<PopulationRunResults>>()
+            .WithAnyArguments()
+            .Returns(_runResults);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunAsync(_populationSimulation, _simulationRunOptions);
+      }
+
+      [Observation]
+      public void should_list_failing_individual_indexes_in_message()
+      {
+         _message.ShouldNotBeNull();
+         _message.Contains("1").ShouldBeTrue();
+         _message.Contains("2").ShouldBeTrue();
       }
    }
 }
