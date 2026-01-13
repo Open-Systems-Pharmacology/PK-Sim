@@ -1,5 +1,5 @@
-name: Build Nightly 12.2
-run-name: Version 12.2.${{ github.run_number }}
+name: Build Nightly 12.3
+run-name: Version 12.3.${{ github.run_number }}
 
 on:
   workflow_dispatch:

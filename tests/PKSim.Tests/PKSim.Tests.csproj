@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <IsPackable>false</IsPackable>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">12.3.0</Version>
     <RootNamespace>PKSim</RootNamespace>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>

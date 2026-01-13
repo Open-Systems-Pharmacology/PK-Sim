@@ -1,4 +1,4 @@
-name: Build PR 12.2
+name: Build PR 12.3
 
 on:
   pull_request:
@@ -31,7 +31,7 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: dotnet build PKSim.sln /p:Version=12.2.9999
+        run: dotnet build PKSim.sln /p:Version=12.3.9999
 
       - name: Test
         run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"

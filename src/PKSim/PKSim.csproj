@@ -13,7 +13,7 @@
     <ApplicationIcon>PKSim.ico</ApplicationIcon>
 	 <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">12.3.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

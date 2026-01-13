@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">12.3.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\PKSim.CLI.Core\PKSim.CLI.Core.csproj">

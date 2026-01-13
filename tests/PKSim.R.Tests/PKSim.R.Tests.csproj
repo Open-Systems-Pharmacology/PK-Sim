@@ -6,7 +6,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <RootNamespace>PKSim.R</RootNamespace>
     <PlatformTarget>x64</PlatformTarget>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">12.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
