@@ -1,20 +1,17 @@
-name: Build PR 12.3
+name: Build and Test 12.3
 
 on:
   pull_request:
     branches:
     - develop
-
-env:
-  MAJOR: 12
-  MINOR: 3
-  RUN: ${{ github.run_number }}
-  TARGET_FRAMEWORK: net8
+  push:
+    branches:
+    - develop
 
 permissions:
   contents: read
   packages: read
-
+  
 jobs:
 
   build:

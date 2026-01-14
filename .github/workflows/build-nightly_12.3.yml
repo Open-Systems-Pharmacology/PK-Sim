@@ -7,9 +7,6 @@ on:
     - cron: '0 2 * * *'
 
 env:
-  MAJOR: 12
-  MINOR: 3
-  RUN: ${{ github.run_number }}
   TARGET_FRAMEWORK: net8
 
 permissions:
@@ -57,7 +54,7 @@ jobs:
 
       - name: define env variables
         run: |
-          echo "APP_VERSION=${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.RUN }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "APP_VERSION=12.3.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
         run: |

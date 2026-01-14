@@ -1,17 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B4D05BE-A0E7-41D6-8FCF-1C6005FBE801}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		.github\workflows\build-and-test-pr_12.3.yml = .github\workflows\build-and-test-pr_12.3.yml
-		.github\workflows\build-and-test_12.3.yml = .github\workflows\build-and-test_12.3.yml
 		.github\workflows\build-nightly_12.3.yml = .github\workflows\build-nightly_12.3.yml
+		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
 		db_pre_commit.bat = db_pre_commit.bat
-		.github\workflows\coverage_12.3.yml = .github\workflows\coverage_12.3.yml
+		.github\workflows\coverage.yml = .github\workflows\coverage.yml
 		.github\workflows\nightly-badge.yml = .github\workflows\nightly-badge.yml
 		postclean.bat = postclean.bat
 		rakefile.rb = rakefile.rb
@@ -132,8 +131,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		VisualSVNWorkingCopyRoot = 
 		SolutionGuid = {13620E23-1993-42C6-A4AB-468E29DD24DE}
+		VisualSVNWorkingCopyRoot = 
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\PKSim.ndproj"
