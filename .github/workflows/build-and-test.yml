@@ -34,7 +34,6 @@ jobs:
         run: dotnet test .\tests\**\bin\Debug\net472\PKSim*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Push test log as artifact
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: testLog_Windows
