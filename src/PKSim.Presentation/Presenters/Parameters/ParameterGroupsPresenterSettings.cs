@@ -5,7 +5,6 @@ namespace PKSim.Presentation.Presenters.Parameters
 {
    public class ParameterGroupsPresenterSettings : DefaultPresentationSettings
    {
-      private const string PARAMETER_GROUPING_MODE_ID_SETTING = "ParameterGroupingModeId";
       private const string SELECTED_NODE_ID = "SelectedNodeId";
 
       public virtual string SelectedNodeId
