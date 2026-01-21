@@ -216,7 +216,6 @@ namespace PKSim.UI.Views
          this.layoutControlUserConfig.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControlUserConfig.Location = new System.Drawing.Point(0, 0);
          this.layoutControlUserConfig.Name = "layoutControlUserConfig";
-         this.layoutControlUserConfig.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1315, 438, 1546, 803);
          this.layoutControlUserConfig.OptionsView.UseSkinIndents = false;
          this.layoutControlUserConfig.Root = this.layoutControlGroup;
          this.layoutControlUserConfig.Size = new System.Drawing.Size(640, 623);
