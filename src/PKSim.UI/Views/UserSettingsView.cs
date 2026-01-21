@@ -94,6 +94,11 @@ namespace PKSim.UI.Views
             .WithValues(x => _presenter.AllParameterGroupingMode())
             .AndDisplays(x => _presenter.AllParameterGroupingModeDisplay());
 
+         _screenBinder.Bind(x => x.DefaultParameterGroupingModeForPIAndSA)
+            .To(cbDefaultParameterGroupingModePISA)
+            .WithValues(x => _presenter.AllParameterGroupingMode())
+            .AndDisplays(x => _presenter.AllParameterGroupingModeDisplay());
+
          _screenBinder.Bind(x => x.AbsTol).To(tbAbsTol);
          _screenBinder.Bind(x => x.RelTol).To(tbRelTol);
          _screenBinder.Bind(x => x.NumberOfBins).To(tbNumberOfBins);
@@ -186,7 +191,9 @@ namespace PKSim.UI.Views
          layoutItemChangedColor.Text = PKSimConstants.UI.ChangedColor.FormatForLabel();
          layoutItemDefaultSpecies.Text = PKSimConstants.UI.DefaultSpecies.FormatForLabel();
          layoutItemDefaultPopulation.Text = PKSimConstants.UI.DefaultPopulation.FormatForLabel();
-         layoutItemParameterGroupingMode.Text = PKSimConstants.UI.DefaultParameterGroupLayout.FormatForLabel();
+         layoutItemParameterGroupingMode.Text = PKSimConstants.UI.ForOthers.FormatForLabel();
+         layoutItemParameterGroupingModePISA.Text = PKSimConstants.UI.ForParameterIdentificationAndSensitivityAnalysis.FormatForLabel();
+         layoutGroupParameterLayout.Text = PKSimConstants.UI.ParameterLayout;
          layoutItemDefaultLipoName.Text = PKSimConstants.UI.DefaultLipophilicityName.FormatForLabel();
          layoutItemDefaultFuName.Text = PKSimConstants.UI.DefaultFractionUnboundName.FormatForLabel();
          layoutItemDefaultSolName.Text = PKSimConstants.UI.DefaultSolubilityName.FormatForLabel();

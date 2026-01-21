@@ -25,10 +25,10 @@ namespace PKSim.Presentation.Services
       {
          get
          {
-            if (_userSettings.DefaultParameterGroupingMode == ParameterGroupingModeId.Hierarchical)
+            if (_userSettings.DefaultParameterGroupingModeForPIAndSA == ParameterGroupingModeId.Hierarchical)
                return ParameterGroupingModes.Simple;
 
-            return ParameterGroupingModes.ById(_userSettings.DefaultParameterGroupingMode);
+            return ParameterGroupingModes.ById(_userSettings.DefaultParameterGroupingModeForPIAndSA);
          }
       }
    }

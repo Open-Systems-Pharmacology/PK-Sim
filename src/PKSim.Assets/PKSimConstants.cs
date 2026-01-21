@@ -1667,7 +1667,9 @@ namespace PKSim.Assets
          public static readonly string ModelParameters = "Model Parameters";
          public static readonly string DefaultSpecies = "Species";
          public static readonly string DefaultPopulation = "Population";
-         public static readonly string DefaultParameterGroupLayout = "Parameter layout";
+         public static readonly string ParameterLayout = "Parameter layout";
+         public static readonly string ForParameterIdentificationAndSensitivityAnalysis = "For Parameter Identification and Sensitivity Analysis";
+         public static readonly string ForOthers = "For all others";
          public static readonly string DefaultLipophilicityName = "Lipophilicity";
          public static readonly string DefaultFractionUnboundName = "Fraction unbound";
          public static readonly string DefaultSolubilityName = "Solubility";
