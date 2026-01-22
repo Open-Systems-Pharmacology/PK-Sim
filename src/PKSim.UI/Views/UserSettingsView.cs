@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -91,13 +93,13 @@ namespace PKSim.UI.Views
 
          _screenBinder.Bind(x => x.DefaultParameterGroupingMode)
             .To(cbDefaultParameterGroupingMode)
-            .WithValues(x => _presenter.AllParameterGroupingMode())
-            .AndDisplays(x => _presenter.AllParameterGroupingModeDisplay());
+            .WithValues(x => allModes().Select(mode => mode.Id))
+            .AndDisplays(x => allModes().Select(mode => mode.DisplayName));
 
          _screenBinder.Bind(x => x.DefaultParameterGroupingModeForPIAndSA)
             .To(cbDefaultParameterGroupingModePISA)
-            .WithValues(x => _presenter.AllParameterGroupingMode())
-            .AndDisplays(x => _presenter.AllParameterGroupingModeDisplay());
+            .WithValues(x => allModesForPIAndSA().Select(mode => mode.Id))
+            .AndDisplays(x => allModesForPIAndSA().Select(mode => mode.DisplayName));
 
          _screenBinder.Bind(x => x.AbsTol).To(tbAbsTol);
          _screenBinder.Bind(x => x.RelTol).To(tbRelTol);
@@ -140,6 +142,16 @@ namespace PKSim.UI.Views
          _screenBinder.Changed += NotifyViewChanged;
 
          tbTemplateDatabase.ButtonClick += (o, e) => OnEvent(() => templateDatabaseButtonClick(o, e));
+      }
+
+      private IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> allModesForPIAndSA()
+      {
+         return _presenter.AllParameterGroupingModeForPIAndSA();
+      }
+
+      private IReadOnlyList<ParameterGroupingMode> allModes()
+      {
+         return _presenter.AllParameterGroupingMode();
       }
 
       private void templateDatabaseButtonClick(object sender, ButtonPressedEventArgs e)
@@ -193,7 +205,7 @@ namespace PKSim.UI.Views
          layoutItemDefaultPopulation.Text = PKSimConstants.UI.DefaultPopulation.FormatForLabel();
          layoutItemParameterGroupingMode.Text = PKSimConstants.UI.ForOthers.FormatForLabel();
          layoutItemParameterGroupingModePISA.Text = PKSimConstants.UI.ForParameterIdentificationAndSensitivityAnalysis.FormatForLabel();
-         layoutGroupParameterLayout.Text = PKSimConstants.UI.ParameterLayout;
+         layoutGroupParameterLayout.Text = PKSimConstants.UI.ParameterView;
          layoutItemDefaultLipoName.Text = PKSimConstants.UI.DefaultLipophilicityName.FormatForLabel();
          layoutItemDefaultFuName.Text = PKSimConstants.UI.DefaultFractionUnboundName.FormatForLabel();
          layoutItemDefaultSolName.Text = PKSimConstants.UI.DefaultSolubilityName.FormatForLabel();

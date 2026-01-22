@@ -76,18 +76,11 @@ namespace PKSim.Core
       [Observation]
       public void should_return_the_grouping_mode_from_the_user_settings_for_simple_or_advanced()
       {
-         _userSettings.DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeId.Advanced;
-         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Advanced);
+         _userSettings.DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeIdForParameterAnalyzable.Advanced;
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModesForParameterAnalyzable.Advanced);
 
-         _userSettings.DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeId.Simple;
-         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Simple);
-      }
-
-      [Observation]
-      public void should_return_simple_if_the_default_selection_is_hierarchical()
-      {
-         _userSettings.DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeId.Hierarchical;
-         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Simple);
+         _userSettings.DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeIdForParameterAnalyzable.Simple;
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModesForParameterAnalyzable.Simple);
       }
    }
 }

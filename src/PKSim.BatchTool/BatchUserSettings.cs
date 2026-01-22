@@ -39,7 +39,7 @@ namespace PKSim.BatchTool
       public DisplayUnitsManager DisplayUnits { get; set; } = new DisplayUnitsManager();
       public Color DisabledColor { get; set; }
       public ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }
-      public ParameterGroupingModeId DefaultParameterGroupingModeForPIAndSA { get; set; }
+      public ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
       public string LastIgnoredVersion { get; set; }
 
       public IDiagramOptions DiagramOptions { get; set; }

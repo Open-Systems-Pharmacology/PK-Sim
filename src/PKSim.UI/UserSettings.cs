@@ -34,7 +34,7 @@ namespace PKSim.UI
       public Scalings DefaultChartYScaling { get; set; }
       public bool ShouldRestoreWorkspaceLayout { get; set; }
       public ParameterGroupingModeId DefaultParameterGroupingMode { get; set; }
-      public ParameterGroupingModeId DefaultParameterGroupingModeForPIAndSA { get; set; }
+      public ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
       public string MainViewLayout { get; set; }
       public string RibbonLayout { get; set; }
       public string DefaultChartEditorLayout { get; set; }
@@ -105,7 +105,7 @@ namespace PKSim.UI
          DefaultSpecies = CoreConstants.Species.HUMAN;
          DefaultPopulation = CoreConstants.Population.ICRP;
          DefaultParameterGroupingMode = ParameterGroupingModeId.Simple;
-         DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeId.Simple;
+         DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeIdForParameterAnalyzable.Simple;
          LayoutVersion = CoreConstants.LAYOUT_VERSION;
          AbsTol = CoreConstants.DEFAULT_ABS_TOL;
          RelTol = CoreConstants.DEFAULT_REL_TOL;

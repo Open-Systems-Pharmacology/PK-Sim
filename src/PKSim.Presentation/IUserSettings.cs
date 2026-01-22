@@ -70,7 +70,7 @@ namespace PKSim.Presentation
       /// <summary>
       ///    Default grouping mode for grouping presenter for Parameter Identification and Sensitivity Analysis
       /// </summary>
-      ParameterGroupingModeId DefaultParameterGroupingModeForPIAndSA { get; set; }
+      ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
 
       /// <summary>
       ///    Directory map for the current user
