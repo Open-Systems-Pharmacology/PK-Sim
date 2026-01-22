@@ -149,7 +149,7 @@ namespace PKSim.Core.Services
          eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
          var schemaItems = _schemaItemsMapper.MapFrom(protocol).ToList();
-         var width = System.Math.Max(3, schemaItems.Count.ToString().Length);
+         var width = schemaItems.Count.ToString().Length;
 
          schemaItems.Each((schemaItem, index) =>
          {
