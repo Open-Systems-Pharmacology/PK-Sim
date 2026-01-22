@@ -1,5 +1,4 @@
-﻿using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Core;
+﻿using OSPSuite.Presentation.Core;
 
 namespace PKSim.Presentation.Presenters.Parameters
 {
@@ -11,11 +10,6 @@ namespace PKSim.Presentation.Presenters.Parameters
       {
          get => GetSetting<string>(SELECTED_NODE_ID);
          set => SetSetting(SELECTED_NODE_ID, value);
-      }
-
-      private ParameterGroupingMode groupingModeFrom(ParameterGroupingModeId parameterGroupingModeId)
-      {
-         return ParameterGroupingModes.ById(parameterGroupingModeId);
       }
    }
 }
