@@ -148,10 +148,13 @@ namespace PKSim.Core.Services
 
          eventGroup.SourceCriteria.Add(new MatchTagCondition(CoreConstants.Tags.EVENTS));
 
-         _schemaItemsMapper.MapFrom(protocol).Each((schemaItem, index) =>
+         var schemaItems = _schemaItemsMapper.MapFrom(protocol).ToList();
+         var width = schemaItems.Count.ToString().Length;
+
+         schemaItems.Each((schemaItem, index) =>
          {
-            //+1 to start at 1 for the nomenclature
-            var applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{index + 1}";
+            var number = (index + 1).ToString($"D{width}");
+            var applicationName = $"{CoreConstants.APPLICATION_NAME_TEMPLATE}{number}";
             addApplication(eventGroup, schemaItem, applicationName, compoundProperties, protocol);
          });
 
