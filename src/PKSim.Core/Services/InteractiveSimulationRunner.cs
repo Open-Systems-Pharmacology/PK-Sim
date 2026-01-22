@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using PKSim.Core.Events;
 using PKSim.Core.Model;
@@ -36,7 +35,6 @@ namespace PKSim.Core.Services
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IExecutionContext _executionContext;
       private readonly ConcurrentDictionary<Simulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<Simulation, CancellationTokenSource>();
-      private readonly IEventPublisher _eventPublisher;
       private readonly SimulationRunOptions _simulationRunOptions;
 
       public int ActiveSimulationsCount => _cancellationTokenSources.Count;

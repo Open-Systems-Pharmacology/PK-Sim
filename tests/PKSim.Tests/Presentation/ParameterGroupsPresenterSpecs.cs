@@ -82,7 +82,7 @@ namespace PKSim.Presentation
       protected void CreateSutForSettings(ParameterGroupingModeId parameterGroupingModeId)
       {
          A.CallTo(() => _userSettings.DefaultParameterGroupingMode).Returns(parameterGroupingModeId);
-         var settings = new ParameterGroupsPresenterSettings {DefaultParameterGroupingModeId = parameterGroupingModeId};
+         var settings = new ParameterGroupsPresenterSettings();
 
          A.CallTo(_presenterSettingsTask).WithReturnType<ParameterGroupsPresenterSettings>().Returns(settings);
 

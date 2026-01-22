@@ -34,6 +34,7 @@ namespace PKSim.Infrastructure.Serialization.Xml.Serializers
          Map(x => x.ChangedColor);
          Map(x => x.ShouldRestoreWorkspaceLayout);
          Map(x => x.DefaultParameterGroupingMode);
+         Map(x => x.DefaultParameterGroupingModeForPIAndSA);
          Map(x => x.DefaultLipophilicityName);
          Map(x => x.DefaultFractionUnboundName);
          Map(x => x.DefaultSolubilityName);
