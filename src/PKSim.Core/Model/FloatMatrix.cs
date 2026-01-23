@@ -29,7 +29,7 @@ namespace PKSim.Core.Model
       /// </summary>
       public void AddValuesAndSort(IEnumerable<float> valuesToFilterAndSort)
       {
-         var validValues = valuesToFilterAndSort.Where(x => x.IsValid()).ToArray();
+         var validValues = valuesToFilterAndSort.Where(x => x.IsFinite()).ToArray();
          Array.Sort(validValues);
          AddSortedValues(validValues);
       }

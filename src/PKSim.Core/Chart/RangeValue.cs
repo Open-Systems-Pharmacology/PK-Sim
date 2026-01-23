@@ -39,7 +39,7 @@ namespace PKSim.Core.Chart
       public float UpperPercentile { get; set; }
       public float Median { get; set; }
 
-      public bool IsValid => LowerPercentile.IsValid() && UpperPercentile.IsValid() && Median.IsValid();
+      public bool IsValid => LowerPercentile.IsFinite() && UpperPercentile.IsFinite() && Median.IsFinite();
 
       public string ToString(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension)
       {
