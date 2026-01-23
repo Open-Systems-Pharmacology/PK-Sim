@@ -85,7 +85,7 @@ namespace PKSim.Core.Services
          if (field == null)
             return;
 
-         var fieldValues = field.GetValues(populationDataCollector).Where(x => x.IsValid()).ToFloatArray();
+         var fieldValues = field.GetValues(populationDataCollector).Where(x => x.IsFinite()).ToFloatArray();
          var sortedValues = fieldValues.OrderBy(x => x).ToList();
 
          dataPane.Curves.SelectMany(x => x.YValues).Each(y => updateIndividualId(y, fieldValues, sortedValues));

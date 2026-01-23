@@ -29,7 +29,7 @@ namespace PKSim.Core.Model.PopulationAnalyses
          int numberOfBins = CalculateNumberOfBins(populationDataCollector);
 
          var sortedValues = numericField.GetValues(populationDataCollector)
-            .Where(x => x.IsValid())
+            .Where(x => x.IsFinite())
             .OrderBy(x => x).ToFloatArray();
 
          var limits = new List<double>();
