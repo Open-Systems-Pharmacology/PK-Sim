@@ -1,14 +1,13 @@
-﻿using PKSim.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using PKSim.Presentation.UICommands;
+﻿using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.UICommands;
-using OSPSuite.Assets;
+using PKSim.Assets;
 using PKSim.Core.Model;
+using PKSim.Presentation.UICommands;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using System.ComponentModel;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -21,13 +20,11 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithCommandFor<EditDescriptionUICommand, IObjectBase>(objectBase, container);
       }
 
-    
       public static IMenuBarItem ExportSnapshotMenuFor<T>(T objectToExport, IContainer container) where T : class, IObjectBase
       {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Save Snapshot"))
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportSnapshot)
             .WithCommandFor<ExportSnapshotUICommand<T>, T>(objectToExport, container)
-            .WithIcon(ApplicationIcons.SnapshotExport)
-            .ForDeveloper();        
+            .WithIcon(ApplicationIcons.SnapshotExport);
       }
 
       public static IMenuBarItem ExportMarkdownMenuFor<T>(T objectToExport, IContainer container) where T : class, IObjectBase
@@ -35,15 +32,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Save Markdown"))
             .WithCommandFor<ExportMarkdownUICommand<T>, T>(objectToExport, container)
 //            .WithIcon(ApplicationIcons.SnapshotExport)
-            .ForDeveloper();        
-      }
-    
-      public static IMenuBarItem LoadBuildingBlockFromSnapshot<T>(IContainer container) where T:class, IPKSimBuildingBlock
-      {
-         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Load from Snapshot"))
-            .WithCommand<LoadBuildingBlockFromSnapshotUICommand<T>>(container)
-            .WithIcon(ApplicationIcons.SnapshotImport)
             .ForDeveloper();
+      }
+
+      public static IMenuBarItem LoadBuildingBlockFromSnapshot<T>(IContainer container) where T : class, IPKSimBuildingBlock
+      {
+         return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromSnapshot)
+            .WithCommand<LoadBuildingBlockFromSnapshotUICommand<T>>(container)
+            .WithIcon(ApplicationIcons.SnapshotImport);
       }
 
       public static IMenuBarItem EditMenuFor<TCommand, T>(T objectToEdit, IContainer container) where T : class where TCommand : IObjectUICommand<T>
