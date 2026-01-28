@@ -1,21 +1,20 @@
 using System.Linq;
-using PKSim.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Presentation.Repositories;
+using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
+using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Presentation.Core;
 using PKSim.Presentation.Presenters.Main;
 using PKSim.Presentation.UICommands;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Repositories;
-using OSPSuite.Assets;
-using System;
-using OSPSuite.Utility.Container;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
 {
@@ -38,14 +37,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          foreach (var compound in allCompounds)
          {
             addObservedDataFor.AddItem(CreateMenuButton.WithCaption(compound.Name)
-               .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound, container));  
+               .WithCommandFor<AddObservedDataForCompoundUICommand, Compound>(compound, container));
          }
 
          _view.AddMenuItem(repository[MenuBarItemIds.AddObservedData]);
          if (allCompounds.Any())
             _view.AddMenuItem(addObservedDataFor);
 
-         if ( treeNode.HasChildren) 
+         if (treeNode.HasChildren)
             _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.ColorGroupObservedData(userSettings));
 
 
@@ -54,11 +53,10 @@ namespace PKSim.Presentation.Presenters.ContextMenus
             .WithIcon(ApplicationIcons.LoadFromTemplate)
             .AsGroupStarter());
 
-         _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.AsDeveloperOnly("Load from Snapshot"))
+         _view.AddMenuItem(CreateMenuButton.WithCaption(PKSimConstants.MenuNames.LoadFromSnapshot)
             .WithCommand<LoadObservedDataFromSnapshotUICommand>(container)
-            .WithIcon(ApplicationIcons.SnapshotImport)
-            .ForDeveloper());
-           
+            .WithIcon(ApplicationIcons.SnapshotImport));
+
 
          if (treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
             _view.AddMenuItem(ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(treeNode, container).AsGroupStarter());

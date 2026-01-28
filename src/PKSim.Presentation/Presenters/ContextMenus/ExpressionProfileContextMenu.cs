@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
@@ -22,25 +23,16 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          var allMenuItems = new List<IMenuBarItem>();
          allMenuItems.AddRange(EditContextMenusFor<EditExpressionProfileCommand>(expressionProfile));
-         allMenuItems.AddRange(extendedExportMenus(expressionProfile));
+         allMenuItems.AddRange(ExportContextMenusFor(expressionProfile));
          allMenuItems.AddRange(DeleteContextMenusFor(expressionProfile));
          allMenuItems.AddRange(DebugContextMenusFor(expressionProfile));
          return allMenuItems;
       }
 
-      private IEnumerable<IMenuBarItem> extendedExportMenus(ExpressionProfile expressionProfile)
-      {
-         yield return SaveAsUserTemplateMenuFor(expressionProfile)
-            .AsGroupStarter();
+      protected override IEnumerable<IMenuBarItem> ExportContextMenusFor(ExpressionProfile expressionProfile) =>
+         base.ExportContextMenusFor(expressionProfile).Concat(new[] { exportToPkml(expressionProfile) });
 
-         yield return SaveAsSystemTemplateMenuFor(expressionProfile);
-
-         yield return AddToJournalMenuFor(expressionProfile);
-
-         yield return ExportToPkml(expressionProfile);
-      }
-
-      private IMenuBarItem ExportToPkml(ExpressionProfile expressionProfile)
+      private IMenuBarItem exportToPkml(ExpressionProfile expressionProfile)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.ExportToPKML)
             .WithCommandFor<ExportExpressionProfileToPKMLCommand, ExpressionProfile>(expressionProfile, _container)
@@ -57,9 +49,7 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          _container = container;
       }
 
-      public override IContextMenu CreateFor(ExpressionProfile expressionProfile, IPresenterWithContextMenu<ITreeNode> presenter)
-      {
-         return new ExpressionProfileContextMenu(expressionProfile, _container);
-      }
+      public override IContextMenu CreateFor(ExpressionProfile expressionProfile, IPresenterWithContextMenu<ITreeNode> presenter) =>
+         new ExpressionProfileContextMenu(expressionProfile, _container);
    }
 }
