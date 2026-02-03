@@ -20,7 +20,7 @@ namespace PKSim.Core.Chart
          Value = value;
       }
 
-      public bool IsValid => Value.IsValid();
+      public bool IsValid => Value.IsFinite();
 
       public static implicit operator float(ValueWithIndividualId valueWithIndividualId)
       {

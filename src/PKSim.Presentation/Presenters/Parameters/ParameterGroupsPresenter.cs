@@ -10,7 +10,6 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using PKSim.Core;
 using PKSim.Core.Model;
 using PKSim.Core.Services;
 using PKSim.Presentation.Mappers;
@@ -243,7 +242,6 @@ namespace PKSim.Presentation.Presenters.Parameters
 
             _view.AddNodes(_nodesCache[value]);
             _view.SelectNodeById(_settings.SelectedNodeId);
-            _settings.ParameterGroupingMode = _parameterGroupingMode;
          }
       }
 
@@ -308,7 +306,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       private IGroup parameterGroupFrom(ITreeNode node)
       {
          var parameterGroupNode = node as ITreeNode<IGroup>;
-         return parameterGroupNode == null ? new Group {Name = "not available"} : parameterGroupNode.Tag;
+         return parameterGroupNode == null ? new Group { Name = "not available" } : parameterGroupNode.Tag;
       }
 
       public override bool CanClose => _activePresenter == null || _activePresenter.CanClose;
@@ -316,8 +314,7 @@ namespace PKSim.Presentation.Presenters.Parameters
       public void LoadSettingsForSubject(IWithId subject)
       {
          _settings = _presentationSettingsTask.PresentationSettingsFor<ParameterGroupsPresenterSettings>(this, subject);
-         _settings.DefaultParameterGroupingModeId = _userSettings.DefaultParameterGroupingMode;
-         _parameterGroupingMode = _settings.ParameterGroupingMode;
+         _parameterGroupingMode = ParameterGroupingModes.ById(_userSettings.DefaultParameterGroupingMode);
       }
 
       public string PresentationKey => PresenterConstants.PresenterKeys.ParameterGroupPresenter;

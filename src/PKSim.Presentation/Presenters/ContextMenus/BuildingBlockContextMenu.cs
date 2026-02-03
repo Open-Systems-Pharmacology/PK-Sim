@@ -6,7 +6,6 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
 using PKSim.Assets;
 using PKSim.Core.Model;
-using PKSim.Core.Services;
 using PKSim.Presentation.UICommands;
 
 namespace PKSim.Presentation.Presenters.ContextMenus
@@ -16,7 +15,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected BuildingBlockContextMenu(TBuildingBlock buildingBlock, IContainer container)
          : base(buildingBlock, container)
       {
-         
       }
 
       protected virtual IEnumerable<IMenuBarItem> AllStandardMenuItemsFor<TCommand>(TBuildingBlock buildingBlock) where TCommand : IEditBuildingBlockUICommand<TBuildingBlock>
@@ -47,8 +45,6 @@ namespace PKSim.Presentation.Presenters.ContextMenus
          yield return ParameterValueDebugMenuFor(buildingBlock)
             .AsGroupStarter();
 
-         yield return ExportSnapshotMenuFor(buildingBlock);
-
          yield return ExportMarkdownMenuFor(buildingBlock);
       }
 
@@ -56,6 +52,8 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       {
          yield return SaveAsUserTemplateMenuFor(buildingBlock)
             .AsGroupStarter();
+
+         yield return ExportSnapshotMenuFor(buildingBlock);
 
          yield return SaveAsSystemTemplateMenuFor(buildingBlock);
 
@@ -108,14 +106,14 @@ namespace PKSim.Presentation.Presenters.ContextMenus
       protected IMenuBarItem SaveAsUserTemplateMenuFor(TBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsTemplate)
-            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new[] {buildingBlock,}, _container)
+            .WithCommandFor<SaveBuildingBlockAsTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new[] { buildingBlock, }, _container)
             .WithIcon(ApplicationIcons.SaveAsTemplate);
       }
 
       protected IMenuBarItem SaveAsSystemTemplateMenuFor(TBuildingBlock buildingBlock)
       {
          return CreateMenuButton.WithCaption(PKSimConstants.MenuNames.SaveAsSystemTemplate)
-            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new[] {buildingBlock,}, _container)
+            .WithCommandFor<SaveBuildingBlockAsSystemTemplateCommand<TBuildingBlock>, IReadOnlyList<TBuildingBlock>>(new[] { buildingBlock, }, _container)
             .WithIcon(ApplicationIcons.SaveAsTemplate)
             .ForDeveloper();
       }

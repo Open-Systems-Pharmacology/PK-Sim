@@ -22,7 +22,7 @@ namespace PKSim.Core.Chart
          Value = value;
       }
 
-      public bool IsValid => Value.IsValid();
+      public bool IsValid => Value.IsFinite();
 
       public string ToString(IWithDisplayUnit objectWithTargetUnit, IDimension valueDimension)
       {

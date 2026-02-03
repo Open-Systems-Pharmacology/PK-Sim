@@ -21,15 +21,6 @@ namespace PKSim.Presentation.Services
                 && !ParameterIsCategorial(parameter);
       }
 
-      public override ParameterGroupingMode DefaultParameterSelectionMode
-      {
-         get
-         {
-            if (_userSettings.DefaultParameterGroupingMode == ParameterGroupingModeId.Hierarchical)
-               return ParameterGroupingModes.Simple;
-
-            return ParameterGroupingModes.ById(_userSettings.DefaultParameterGroupingMode);
-         }
-      }
+      public override ParameterGroupingModeForParameterAnalyzable DefaultParameterSelectionMode => ParameterGroupingModesForParameterAnalyzable.ById(_userSettings.DefaultParameterGroupingModeForPIAndSA);
    }
 }

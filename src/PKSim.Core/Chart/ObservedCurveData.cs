@@ -15,7 +15,7 @@ namespace PKSim.Core.Chart
 
       public AuxiliaryType ErrorType { get; set; }
 
-      public bool IsValid => Mean.IsValid();
+      public bool IsValid => Mean.IsFinite();
 
       public ObservedDataYValue()
       {
@@ -63,7 +63,7 @@ namespace PKSim.Core.Chart
          }
       }
 
-      private bool hasError => Error.IsValid() && Error > 0 && ErrorType != AuxiliaryType.Undefined;
+      private bool hasError => Error.IsFinite() && Error > 0 && ErrorType != AuxiliaryType.Undefined;
    }
 
    public class ObservedCurveData : CurveData<TimeProfileXValue, ObservedDataYValue> 

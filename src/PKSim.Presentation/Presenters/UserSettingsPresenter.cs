@@ -40,8 +40,8 @@ namespace PKSim.Presentation.Presenters
       void SpeciesChanged();
       IEnumerable<string> AllPopulationsFor(string speciesName);
       IEnumerable<string> AllPopulationsDisplayName(string speciesName);
-      IEnumerable<ParameterGroupingModeId> AllParameterGroupingMode();
-      IEnumerable<string> AllParameterGroupingModeDisplay();
+      IReadOnlyList<ParameterGroupingMode> AllParameterGroupingMode();
+      IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> AllParameterGroupingModeForPIAndSA();
 
       /// <summary>
       ///    Resets the layout
@@ -63,8 +63,9 @@ namespace PKSim.Presentation.Presenters
       /// </summary>
       string PopulationIconNameFor(PopulationAnalysisType populationAnalysisType);
 
-      IEnumerable<ViewLayout> AllViewLayouts();
-      IEnumerable<Scalings> AllScalings();
+      IReadOnlyList<ViewLayout> AllViewLayouts();
+      IReadOnlyList<Scalings> AllScalings();
+      
    }
 
    public class UserSettingsPresenter : AbstractSubPresenter<IUserSettingsView, IUserSettingsPresenter>, IUserSettingsPresenter
@@ -148,14 +149,14 @@ namespace PKSim.Presentation.Presenters
          return species.Populations.Select(pop => pop.DisplayName);
       }
 
-      public IEnumerable<ParameterGroupingModeId> AllParameterGroupingMode()
+      public IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> AllParameterGroupingModeForPIAndSA()
       {
-         return ParameterGroupingModes.All().Select(x => x.Id);
+         return ParameterGroupingModesForParameterAnalyzable.All();
       }
 
-      public IEnumerable<string> AllParameterGroupingModeDisplay()
+      public IReadOnlyList<ParameterGroupingMode> AllParameterGroupingMode()
       {
-         return ParameterGroupingModes.All().Select(x => x.DisplayName);
+         return ParameterGroupingModes.All();
       }
 
       public void ResetLayout()
@@ -193,14 +194,14 @@ namespace PKSim.Presentation.Presenters
          return $"{populationAnalysisType}Analysis";
       }
 
-      public IEnumerable<ViewLayout> AllViewLayouts()
+      public IReadOnlyList<ViewLayout> AllViewLayouts()
       {
-         return ViewLayouts.All();
+         return ViewLayouts.All().ToList();
       }
 
-      public IEnumerable<Scalings> AllScalings()
+      public IReadOnlyList<Scalings> AllScalings()
       {
-         return EnumHelper.AllValuesFor<Scalings>();
+         return EnumHelper.AllValuesFor<Scalings>().ToList();
       }
 
       public void SaveSettings()
