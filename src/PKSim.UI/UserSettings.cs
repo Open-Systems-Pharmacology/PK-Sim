@@ -44,6 +44,7 @@ namespace PKSim.UI
       public ViewLayout PreferredViewLayout { get; set; }
       public LoadTemplateWithReference LoadTemplateWithReference { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
+      public bool WarnForNonFiniteQuantities { get; set; }
       public string DefaultSpecies { get; set; }
       public string DefaultPopulation { get; set; }
       public uint MRUListItemCount { get; set; }
