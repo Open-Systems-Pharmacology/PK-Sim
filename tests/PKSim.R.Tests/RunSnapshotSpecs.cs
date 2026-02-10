@@ -33,7 +33,7 @@ internal class RunSnapshotSpecs : ContextForStaticIntegration
    public void the_output_folder_contains_one_pksim5_file()
    {
       Directory.Exists(_outputFolder).ShouldBeTrue();
-      File.Exists(Path.Join(_outputFolder, "Atazanavir-Model_1Sim.pksim5"));
+      File.Exists(Path.Join(_outputFolder, "Atazanavir-Model_1Sim.pksim5")).ShouldBeTrue();
    }
 
    public override void Cleanup()
