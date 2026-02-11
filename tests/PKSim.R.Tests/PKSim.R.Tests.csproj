@@ -54,6 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

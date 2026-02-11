@@ -70,7 +70,7 @@ namespace PKSim.R.Bootstrap
       private void registerMinimalImplementations(IContainer container)
       {
          container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
-         container.Register<ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);
+         container.Register<OSPSuite.Core.ICoreUserSettings, ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);
          container.Register<IProgressUpdater, NoneProgressUpdater>();
          container.Register<IOntogenyTask, CLIIndividualOntogenyTask>();
       }
