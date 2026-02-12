@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 
 namespace PKSim.Infrastructure.ProjectConverter
 {
@@ -41,6 +42,13 @@ namespace PKSim.Infrastructure.ProjectConverter
          public static readonly string FRACTION_OF_BLOOD_FOR_SAMPLING = "Fraction of blood for sampling";
          public const string E_GFR = "eGFR";
          public const string GFR = "GFR";
+         public static readonly string BASAL_PH_IN_FASTED_STATE = "Basal pH in fasted state";
+         public static readonly string BASAL_BILE_SALT_CONCENTRATION = "Basal Bile Salt concentration";
+         public static readonly string BILE_SALT_CONCENTRATION_IN_FASTED_STATE = "Bile Salt concentration in fasted state";
+         public static readonly string BILE_SALT_CONCENTRATION_AFTER_MEAL = "Bile Salt concentration after meal";
+         public static readonly string PH_IN_FASTED_STATE = "pH in fasted state";
+         public static readonly string PH = "pH";
+         public static readonly string BILE_SALT_CONCENTRATION = "Bile Salt concentration";
 
          public static string NormParameterFor(string parameter)
          {
@@ -61,7 +69,14 @@ namespace PKSim.Infrastructure.ProjectConverter
             GET_Beta_Variability,
             GastricEmptyingTime,
             SITT,
-            EffectiveSurfaceAreaVariabilityFactor
+            EffectiveSurfaceAreaVariabilityFactor,
+            BASAL_PH_IN_FASTED_STATE,
+            BASAL_BILE_SALT_CONCENTRATION,
+            BILE_SALT_CONCENTRATION_IN_FASTED_STATE,
+            BILE_SALT_CONCENTRATION_AFTER_MEAL,
+            PH_IN_FASTED_STATE,
+            PH,
+            BILE_SALT_CONCENTRATION
          };
       }
 
