@@ -18,6 +18,8 @@ using ISimulationPersistableUpdater = PKSim.Core.Services.ISimulationPersistable
 
 namespace PKSim.IntegrationTests
 {
+   using Parameters = CoreConstantsForSpecs.Parameters;
+
    public abstract class concern_for_SimulationWithParticlesFormulation : concern_for_IndividualSimulation
    {
       protected Formulation _formulation;
@@ -64,7 +66,7 @@ namespace PKSim.IntegrationTests
 
          //store initial drug mass
          _appliedDrugMass = Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
-                            .Parameter(CoreConstantsForSpecs.Parameters.DRUG_MASS).Value.ToFloat();
+                            .Parameter(Parameters.DRUG_MASS).Value.ToFloat();
 
          //Get paths for output quantities of interest
          var (lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, 
@@ -121,15 +123,34 @@ namespace PKSim.IntegrationTests
          set => MoleculeProperties(Constants.Parameters.PRECIPITATED_DRUG_SOLUBLE).Value = value ? 1 : 0;
       }
 
+      protected bool UseHydrodynamicModel
+      {
+         get => FormulationProperties(Parameters.USE_HYDRODYNAMIC_MODEL).Value == 1;
+         set => FormulationProperties(Parameters.USE_HYDRODYNAMIC_MODEL).Value = value ? 1 : 0;
+      }
+
+      protected bool Use_Effective_Diffusion
+      {
+         get => FormulationProperties(Parameters.USE_EFFECTIVE_DIFFUSION).Value == 1;
+         set => FormulationProperties(Parameters.USE_EFFECTIVE_DIFFUSION).Value = value ? 1 : 0;
+      }
+
+      protected bool UseHintzJohnson
+      {
+         get => FormulationProperties(Parameters.USE_HINTZ_JOHNSON).Value == 1;
+         set => FormulationProperties(Parameters.USE_HINTZ_JOHNSON).Value = value ? 1 : 0;
+      }
+
+
       protected double ParticleRadiusDissolved
       {
-         get => MoleculeProperties(CoreConstantsForSpecs.Parameters.PARTICLE_RADIUS_DISSOLVED).Value;
-         set => MoleculeProperties(CoreConstantsForSpecs.Parameters.PARTICLE_RADIUS_DISSOLVED).Value=value;
+         get => MoleculeProperties(Parameters.PARTICLE_RADIUS_DISSOLVED).Value;
+         set => MoleculeProperties(Parameters.PARTICLE_RADIUS_DISSOLVED).Value=value;
       }
 
       protected IParameter IntestinalTransitRateFor(string segment)
       {
-         return Lumen.Container(segment).Parameter(CoreConstantsForSpecs.Parameters.INTESTINAL_TRANSIT_RATE_ABSOLUTE);
+         return Lumen.Container(segment).Parameter(Parameters.INTESTINAL_TRANSIT_RATE_ABSOLUTE);
       }
 
       /// <summary>
@@ -285,6 +306,12 @@ namespace PKSim.IntegrationTests
       protected IParameter MoleculeProperties(string parameterName)
       {
          return _simulation.Model.Root.Container(_compound.Name).Parameter(parameterName);
+      }
+
+      protected IParameter FormulationProperties(string parameterName)
+      {
+         return _simulation.Model.Root.Container(Constants.EVENTS).Container(_protocol.Name)
+            .Container(_formulation.Name).Parameter(parameterName);
       }
 
       /// <summary>
@@ -609,7 +636,7 @@ namespace PKSim.IntegrationTests
          MoleculeProperties("Reference pH").Value = 7;
 
          Application.Container(CoreConstants.ContainerName.ProtocolSchemaItem)
-            .Parameter(CoreConstantsForSpecs.Parameters.DRUG_MASS).Value = 22.2015;
+            .Parameter(Parameters.DRUG_MASS).Value = 22.2015;
       }
 
       private void compareSimulatedValues(float[] newValues, float[] prototypeValues, string location)
@@ -1077,4 +1104,100 @@ namespace PKSim.IntegrationTests
          CheckSolidDrugZeroForTimeGreaterThanZero();
       }
    }
-}	
+
+   public class when_running_particles_simulation_with_two_bins_without_precipitation_without_hydrodynamic_model : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //disable hydrodynamic model (default: enabled)
+         UseHydrodynamicModel = false;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_without_precipitation_with_effective_diffusion : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //enable effective diffusion (default: disabled)
+         Use_Effective_Diffusion = true;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+
+   public class when_running_particles_simulation_with_two_bins_without_precipitation_without_hintz_johnson : concern_for_SimulationWithParticlesFormulation
+   {
+      protected override int NumberOfBins => 2;
+
+      protected override void SetupSimulation()
+      {
+         //disable precipitation
+         PrecipitatedDrugSoluble = true;
+
+         //disable Hintz-Johnson model (default: enabled)
+         UseHintzJohnson = false;
+      }
+
+      [Observation]
+      public void sum_of_particles_number_fractions_must_be_one_for_every_bin()
+      {
+         CheckSumOfParticlesNumberFractionsPerBin();
+      }
+
+      [Observation]
+      public void precipitation_should_not_occur()
+      {
+         CheckNoPrecipitation();
+      }
+
+      [Observation]
+      public void mass_balance_of_drug_should_be_correct()
+      {
+         CheckMassBalance();
+      }
+   }
+}
