@@ -67,13 +67,12 @@ namespace PKSim.IntegrationTests
                             .Parameter(CoreConstantsForSpecs.Parameters.DRUG_MASS).Value.ToFloat();
 
          //Get paths for output quantities of interest
-         (var lumenPaths, var binSolidDrugPaths, var binInsolubleDrugPaths,
-            var binSolidDrugPerSegmentPaths, var binParticlesFractionPerSegmentPaths) = outputPaths(NumberOfBins);
+         var (lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, 
+              binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths) = outputPaths(NumberOfBins);
 
          //add quantities of interest to the simulation outputs
          addOutputs(lumenPaths, binSolidDrugPaths, binInsolubleDrugPaths, binSolidDrugPerSegmentPaths, binParticlesFractionPerSegmentPaths);
 
-         ExportSimulation(_simulation, @"C:\SW-Dev\03_OSP_NextMajor\V13_PArticlesIntegrationTest.pkml");
          RunSimulation(_simulation).Wait();
 
          //fill simulation output times and values required for all further tests
@@ -96,7 +95,7 @@ namespace PKSim.IntegrationTests
 
       protected IContainer ParticleBin(int binIndex)
       {
-         return Application.Container($"ParticleBin_{binIndex + 1}"); //in the model bin inexation starts with 1
+         return Application.Container($"ParticleBin_{binIndex + 1}"); //in the model bin indexation starts with 1
       }
 
       protected IParameter StartParticleRadius(int binIndex)
@@ -327,7 +326,7 @@ namespace PKSim.IntegrationTests
       }
 
       //--------------------------------------------------------------------------------------------
-      // Test routins called by observations in all derived classes
+      // Test routines called by observations in all derived classes
       //--------------------------------------------------------------------------------------------
 
       /// <summary>
@@ -396,7 +395,7 @@ namespace PKSim.IntegrationTests
       /// </summary>
       protected void CheckMassBalance()
       {
-         _appliedDrugMass.ShouldBeGreaterThan(0f); //just to be sure we have really applied smthg :)
+         _appliedDrugMass.ShouldBeGreaterThan(0f); //just to be sure we have really applied something :)
 
          for (int timeIdx = 0; timeIdx < NumberOfSimulatedTimePoints; timeIdx++)
          {
@@ -801,7 +800,7 @@ namespace PKSim.IntegrationTests
          //disable precipitation
          PrecipitatedDrugSoluble = true;
 
-         //following this schema, most of drug will be dissolved in the stomach
+         //following this schema, most of the drug will be dissolved in the stomach
          //in duodenum the drug will be accumulated and nearly all drug will turn into solid form again
          SetSolubilitySchema1WithStopIn(Constants.Compartment.DUODENUM);
       }
