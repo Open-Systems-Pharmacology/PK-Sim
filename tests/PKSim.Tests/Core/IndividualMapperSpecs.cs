@@ -15,7 +15,7 @@ using PKSim.Core.Snapshots.Mappers;
 using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using SnapshotIndividual = PKSim.Core.Snapshots.Individual;
 using ModelIndividual = PKSim.Core.Model.Individual;
-using OriginData = PKSim.Core.Snapshots.OriginData;
+using OriginData = OSPSuite.Core.Snapshots.OriginData;
 
 namespace PKSim.Core
 {

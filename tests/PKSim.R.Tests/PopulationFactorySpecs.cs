@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.R.Domain;
 using OSPSuite.Utility.Exceptions;
 using PKSim.Core;
 using PKSim.Core.Snapshots;

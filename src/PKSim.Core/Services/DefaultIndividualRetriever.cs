@@ -4,7 +4,7 @@ using OSPSuite.Utility.Collections;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
 using PKSim.Core.Snapshots.Mappers;
-using OriginData = PKSim.Core.Snapshots.OriginData;
+using OriginData = OSPSuite.Core.Snapshots.OriginData;
 
 namespace PKSim.Core.Services
 {

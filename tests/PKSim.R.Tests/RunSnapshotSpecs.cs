@@ -1,10 +1,9 @@
-﻿using System;
+﻿using System.IO;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
 using OSPSuite.Utility;
-using System.IO;
 
 namespace PKSim.R;
 

@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
+using OSPSuite.R.Domain;
 using PKSim.Core;
 using PKSim.R.Domain;
 using PKSim.R.Services;

@@ -7,7 +7,7 @@ using OSPSuite.Utility.Extensions;
 using PKSim.Assets;
 using PKSim.Core.Model;
 using PKSim.Core.Repositories;
-using SnapshotDiseaseState = PKSim.Core.Snapshots.DiseaseState;
+using SnapshotDiseaseState = OSPSuite.Core.Snapshots.DiseaseState;
 using ModelOriginData = PKSim.Core.Model.OriginData;
 using Parameter = OSPSuite.Core.Snapshots.Parameter;
 

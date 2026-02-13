@@ -12,7 +12,7 @@ using PKSim.Core.Snapshots;
 using PKSim.Core.Snapshots.Mappers;
 using PKSim.Core.Snapshots.Services;
 using static OSPSuite.Core.Domain.Constants.Parameters;
-using DiseaseState = PKSim.Core.Snapshots.DiseaseState;
+using DiseaseState = OSPSuite.Core.Snapshots.DiseaseState;
 using ExpressionProfile = PKSim.Core.Snapshots.ExpressionProfile;
 using Individual = PKSim.Core.Model.Individual;
 using Ontogeny = PKSim.Core.Model.Ontogeny;

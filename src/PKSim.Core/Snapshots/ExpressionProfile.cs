@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots;
 using PKSim.Core.Model;
 using PKSim.Core.Snapshots.Services;
+using DiseaseState = OSPSuite.Core.Snapshots.DiseaseState;
 
 namespace PKSim.Core.Snapshots
 {
