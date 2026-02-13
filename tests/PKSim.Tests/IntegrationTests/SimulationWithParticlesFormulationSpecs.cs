@@ -1116,6 +1116,8 @@ namespace PKSim.IntegrationTests
 
          //disable hydrodynamic model (default: enabled)
          UseHydrodynamicModel = false;
+
+         _simulation.OutputSchema.Intervals.Last().EndTime.Value = 900;
       }
 
       [Observation]
