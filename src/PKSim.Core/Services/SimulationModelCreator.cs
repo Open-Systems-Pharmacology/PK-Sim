@@ -1,3 +1,4 @@
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -66,7 +67,6 @@ namespace PKSim.Core.Services
 
       private void updateSimulationAfterModelCreation(Simulation simulation)
       {
-         
          var individual = simulation.Individual;
 
          var allIndividualParameters = _containerTask.CacheAllChildren<IParameter>(individual);
@@ -79,6 +79,7 @@ namespace PKSim.Core.Services
          _parameterIdUpdater.UpdateParameterIds(allIndividualParameters, allSimulationParameters);
          //Building block id for the same parameters
          _parameterIdUpdater.UpdateBuildingBlockId(allSimulationParameters, individual);
+         updateMissingTemplateOriginParameterIds(simulation, allSimulationParameters);
          
          //local molecule parameters parameter id need to be updated as well
          individual.AllMolecules().Each(m =>
@@ -93,6 +94,27 @@ namespace PKSim.Core.Services
          });
 
          _simulationPersistableUpdater.ResetPersistable(simulation);
+      }
+
+      private void updateMissingTemplateOriginParameterIds(Simulation simulation, PathCache<IParameter> allSimulationParameters)
+      {
+         var allUsedBuildingBlockParametersById = simulation.UsedBuildingBlocks.ToDictionary(
+            x => x.BuildingBlock.Id,
+            x => _containerTask.CacheAllChildren<IParameter>(x.BuildingBlock));
+
+         allSimulationParameters.KeyValues
+            .Where(x => x.Value.BuildingBlockType == PKSimBuildingBlockType.Template &&
+                        string.IsNullOrEmpty(x.Value.Origin.ParameterId) &&
+                        !string.IsNullOrEmpty(x.Value.Origin.BuilingBlockId))
+            .Each(x =>
+            {
+               if (!allUsedBuildingBlockParametersById.TryGetValue(x.Value.Origin.BuilingBlockId, out var usedBuildingBlockParameters))
+                  return;
+
+               var buildingBlockParameter = usedBuildingBlockParameters[x.Key];
+               if (buildingBlockParameter != null)
+                  x.Value.Origin.ParameterId = buildingBlockParameter.Id;
+            });
       }
 
       private void updateFromIndividualParameter(IParameter parameterToUpdate, IParameter parameterInIndividual, Individual individual)

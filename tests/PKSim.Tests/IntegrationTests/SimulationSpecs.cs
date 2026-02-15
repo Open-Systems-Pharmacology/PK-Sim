@@ -104,7 +104,7 @@ namespace PKSim.IntegrationTests
       public void all_parameters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
       {
          var allParameters = _simulation.ParametersOfType(PKSimBuildingBlockType.Template)
-            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId) && x.ParentContainer?.Name!="Feces");
+            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId));
          allParameters.Count().ShouldBeEqualTo(0);
       }
 
@@ -336,7 +336,7 @@ namespace PKSim.IntegrationTests
       public void all_parameters_defined_in_a_template_building_blocks_should_have_an_origin_parameter_id_set()
       {
          var allParameters = _simulation.ParametersOfType(PKSimBuildingBlockType.Template)
-            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId) && x.ParentContainer?.Name!="Feces");
+            .Where(x => string.IsNullOrEmpty(x.Origin.ParameterId));
          allParameters.Count().ShouldBeEqualTo(0);
       }
    }
