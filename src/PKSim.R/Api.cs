@@ -55,5 +55,20 @@ namespace PKSim.R
             throw;
          }
       }
+
+      internal static (T, U) ResolveTasks<T, U>()
+      {
+         return (ResolveTask<T>(), ResolveTask<U>());
+      }
+
+      internal static (T, U, V) ResolveTasks<T, U, V>()
+      {
+         return (ResolveTask<T>(), ResolveTask<U>(), ResolveTask<V>());
+      }
+
+      internal static (T, U, V, W) ResolveTasks<T, U, V, W>()
+      {
+         return (ResolveTask<T>(), ResolveTask<U>(), ResolveTask<V>(), ResolveTask<W>());
+      }
    }
 }
