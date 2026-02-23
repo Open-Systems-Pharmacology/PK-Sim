@@ -1,5 +1,5 @@
-using OSPSuite.Core.Domain;
 using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 
 namespace PKSim.Infrastructure.ProjectConverter
 {
